@@ -5,7 +5,7 @@ package org.drools.ide.common.client.modeldriven.brl;
  * @author Michael Neale
  *
  */
-public class ISingleFieldConstraint
+public class BaseSingleFieldConstraint
     implements
     PortableObject {
 
@@ -50,14 +50,23 @@ public class ISingleFieldConstraint
      * This is for a field to be a placeholder for a template
      */
     public static final int TYPE_TEMPLATE = 7;
+
+    private String           value;
+    private int              constraintValueType;
     
-    /**
-     * This is for a "expression builder" in the left side of a constraint.
-     */
-//    public static final int TYPE_EXPR_BUILDER_LEFT_SIDE = 8;
+	public void setValue(String value) {
+		this.value = value;
+	}
 
-    public String           value;
-    public int              constraintValueType;
+	public String getValue() {
+		return value;
+	}
 
+	public void setConstraintValueType(int constraintValueType) {
+		this.constraintValueType = constraintValueType;
+	}
 
+	public int getConstraintValueType() {
+		return constraintValueType;
+	}
 }

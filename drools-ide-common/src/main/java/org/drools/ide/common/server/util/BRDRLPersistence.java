@@ -389,42 +389,42 @@ public class BRDRLPersistence implements BRLPersistence {
 
         private void generateSingleFieldConstraint(
                 final SingleFieldConstraint constr, StringBuilder buf) {
-            if (constr.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE) {
+            if (constr.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE) {
                 buf.append("eval( ");
-                buf.append(constr.value);
+                buf.append(constr.getValue());
                 buf.append(" )");
             } else {
-                if (constr.fieldBinding != null) {
-                    buf.append(constr.fieldBinding);
+                if (constr.getFieldBinding() != null) {
+                    buf.append(constr.getFieldBinding());
                     buf.append(" : ");
                 }
-                if ((constr.operator != null && constr.value != null)
-                        || constr.fieldBinding != null 
-                        || constr.constraintValueType == ISingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE
+                if ((constr.getOperator() != null && constr.getValue() != null)
+                        || constr.getFieldBinding() != null 
+                        || constr.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE
                         || constr instanceof SingleFieldConstraintEBLeftSide) {
-                    SingleFieldConstraint parent = (SingleFieldConstraint) constr.parent;
+                    SingleFieldConstraint parent = (SingleFieldConstraint) constr.getParent();
                     StringBuilder parentBuf = new StringBuilder();
                     while (parent != null) {
-                        parentBuf.insert(0, parent.fieldName + ".");
-                        parent = (SingleFieldConstraint) parent.parent;
+                        parentBuf.insert(0, parent.getFieldName() + ".");
+                        parent = (SingleFieldConstraint) parent.getParent();
                     }
                     buf.append(parentBuf);
                     if (constr instanceof SingleFieldConstraintEBLeftSide) {
                     	buf.append(((SingleFieldConstraintEBLeftSide) constr).getExpressionLeftSide().getText());
                     } else {
-                    	buf.append(constr.fieldName);
+                    	buf.append(constr.getFieldName());
                     }
                 }
                 
-                addFieldRestriction(buf, constr.constraintValueType, constr.operator, constr.value, constr
+                addFieldRestriction(buf, constr.getConstraintValueType(), constr.getOperator(), constr.getValue(), constr
                 		.getExpressionValue());
                 
 				// and now do the connectives.
                 if (constr.connectives != null) {
                     for (int j = 0; j < constr.connectives.length; j++) {
                         final ConnectiveConstraint conn = constr.connectives[j];
-                        addFieldRestriction(buf, conn.constraintValueType,
-                                conn.operator, conn.value,null);
+                        addFieldRestriction(buf, conn.getConstraintValueType(),
+                                conn.operator, conn.getValue(),null);
                     }
                 }
             }
@@ -441,12 +441,12 @@ public class BRDRLPersistence implements BRLPersistence {
             buf.append(operator);
             buf.append(" ");
             switch (type) {
-                case ISingleFieldConstraint.TYPE_RET_VALUE:
+                case BaseSingleFieldConstraint.TYPE_RET_VALUE:
                     buf.append("( ");
                     buf.append(value);
                     buf.append(" )");
                     break;
-                case ISingleFieldConstraint.TYPE_LITERAL:
+                case BaseSingleFieldConstraint.TYPE_LITERAL:
                     if (operator.equals("in")) {
                         buf.append(value);
                     } else {
@@ -455,12 +455,12 @@ public class BRDRLPersistence implements BRLPersistence {
                         buf.append('"');
                     }
                     break;
-                case ISingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE:
+                case BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE:
                     if (expression!=null){
                         buf.append(expression.getText());
                     }
                     break;
-                case ISingleFieldConstraint.TYPE_TEMPLATE:
+                case BaseSingleFieldConstraint.TYPE_TEMPLATE:
                 	buf.append("@{").append(value).append("}");
                 	break;
                 default:

@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
@@ -94,8 +94,8 @@ public class GuidedDecisionTable implements PortableObject {
 			// conditions: if its a formula etc, just return String[0],
 			// otherwise check with the sce
 			ConditionCol c = (ConditionCol) col;
-			if (c.constraintValueType == ISingleFieldConstraint.TYPE_RET_VALUE
-					|| c.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE) {
+			if (c.constraintValueType == BaseSingleFieldConstraint.TYPE_RET_VALUE
+					|| c.constraintValueType == BaseSingleFieldConstraint.TYPE_PREDICATE) {
 				return new String[0];
 			} else {
 				if (c.valueList != null && !"".equals(c.valueList)) {
@@ -142,7 +142,7 @@ public class GuidedDecisionTable implements PortableObject {
 			return "salience".equals(at.attr);
 		} else if (col instanceof ConditionCol) {
 			ConditionCol c = (ConditionCol) col;
-			if (c.constraintValueType == ISingleFieldConstraint.TYPE_LITERAL) {
+			if (c.constraintValueType == BaseSingleFieldConstraint.TYPE_LITERAL) {
 				if (c.operator == null || "".equals(c.operator)) {
 					return false;
 				}

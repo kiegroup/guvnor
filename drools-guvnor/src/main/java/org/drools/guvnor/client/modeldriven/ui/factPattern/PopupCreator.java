@@ -94,8 +94,6 @@ public class PopupCreator {
      * Display a little editor for field bindings.
      */
     public void showBindFieldPopup(final Widget w, final SingleFieldConstraint con, String[] fields, final PopupCreator popupCreator) {
-
-
         final FormStylePopup popup = new FormStylePopup();
         popup.setWidth(500);
         final HorizontalPanel vn = new HorizontalPanel();
@@ -111,19 +109,19 @@ public class PopupCreator {
                     Window.alert(Format.format(constants.TheVariableName0IsAlreadyTaken(), var));
                     return;
                 }
-                con.fieldBinding = var;
+                con.setFieldBinding(var);
                 modeller.refreshWidget();
                 popup.hide();
             }
         });
-        popup.addAttribute(Format.format(constants.BindTheFieldCalled0ToAVariable(), con.fieldName), vn);
+        popup.addAttribute(Format.format(constants.BindTheFieldCalled0ToAVariable(), con.getFieldName()), vn);
         if (fields != null) {
             Button sub = new Button(constants.ShowSubFields());
-            popup.addAttribute(Format.format(constants.ApplyAConstraintToASubFieldOf0(), con.fieldName), sub);
+            popup.addAttribute(Format.format(constants.ApplyAConstraintToASubFieldOf0(), con.getFieldName()), sub);
             sub.addClickHandler(new ClickHandler() {
     			public void onClick(ClickEvent event) {
                     popup.hide();
-                    popupCreator.showPatternPopup(w, con.fieldType, con);
+                    popupCreator.showPatternPopup(w, con.getFieldType(), con);
                 }
             });
         }
@@ -247,7 +245,7 @@ public class PopupCreator {
             predicate.addClickHandler(new ClickHandler() {
     			public void onClick(ClickEvent event) {
                     SingleFieldConstraint con = new SingleFieldConstraint();
-                    con.constraintValueType = SingleFieldConstraint.TYPE_PREDICATE;
+                    con.setConstraintValueType(SingleFieldConstraint.TYPE_PREDICATE);
                     pattern.addConstraint(con);
                     modeller.refreshWidget();
                     popup.hide();
@@ -260,7 +258,7 @@ public class PopupCreator {
             ebBtn.addClickHandler(new ClickHandler() {
     			public void onClick(ClickEvent event) {
                     SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
-                    con.constraintValueType = SingleFieldConstraint.TYPE_UNDEFINED;
+                    con.setConstraintValueType(SingleFieldConstraint.TYPE_UNDEFINED);
                     pattern.addConstraint(con);
                     con.setExpressionLeftSide(new ExpressionFormLine(new ExpressionUnboundFact(pattern)));
                     modeller.refreshWidget();

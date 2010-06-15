@@ -237,22 +237,18 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
 
-        String type = "";
-        if ( completions.isGlobalVariable( this.model.variable ) ) {
-            type = (String) completions.getGlobalVariable( this.model.variable );
-        } else {
-            if ( this.getModeller().getModel().getBoundFact( this.model.variable ) != null ) {
-                type = this.getModeller().getModel().getBoundFact( this.model.variable ).factType;
-            } else {
-                if ( this.getModeller().getModel().getRhsBoundFact( this.model.variable ) != null ) {
-                    type = this.getModeller().getModel().getRhsBoundFact( this.model.variable ).factType;
-                }
-            }
-        }
+		String type = "";
+		if (completions.isGlobalVariable(this.model.variable)) {
+			type = completions.getGlobalVariable(this.model.variable);
+		} else {
+			type = this.getModeller().getModel().getBindingType(this.model.variable);
+			if (type == null) {
+				type = this.getModeller().getModel().getRhsBoundFact(this.model.variable).factType;
+			}
+		}
 
-        DropDownData enums = completions.getEnums( type,
-                                                        this.model.fieldValues,
-                                                        val.field );
+		DropDownData enums = completions.getEnums(type, this.model.fieldValues, val.field);
+		
         return new MethodParameterValueEditor(val,
                 enums,
                 this.getModeller(),

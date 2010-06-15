@@ -2,7 +2,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import org.drools.guvnor.client.common.FieldEditListener;
 import org.drools.guvnor.client.common.IDirtyable;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -18,16 +18,16 @@ public class BoundTextBox extends TextBox
     implements
     IDirtyable {
 
-    public BoundTextBox(final ISingleFieldConstraint c) {
+    public BoundTextBox(final BaseSingleFieldConstraint c) {
         setStyleName( "constraint-value-Editor" ); //NON-NLS
-        if ( c.value == null ) {
+        if ( c.getValue() == null ) {
             setText( "" );
         } else {
-            setText( c.value );
+            setText( c.getValue() );
         }
 
-        String v = c.value;
-        if ( c.value == null || v.length() < 7 ) {
+        String v = c.getValue();
+        if ( c.getValue() == null || v.length() < 7 ) {
             setVisibleLength( 8 );
         } else {
             setVisibleLength( v.length() + 1 );
@@ -35,7 +35,7 @@ public class BoundTextBox extends TextBox
 
         addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                c.value = getText();
+                c.setValue(getText());
             }
         } );
 

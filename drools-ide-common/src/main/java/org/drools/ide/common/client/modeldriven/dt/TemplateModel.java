@@ -18,7 +18,7 @@ import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPatt
 import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
@@ -240,8 +240,8 @@ public class TemplateModel extends RuleModel implements PortableObject {
         }
         
 		private void visitSingleFieldConstraint(SingleFieldConstraint sfc) {
-        	if (ISingleFieldConstraint.TYPE_TEMPLATE == sfc.constraintValueType && !vars.containsKey(sfc.value)) {
-        		vars.put(sfc.value, vars.size());
+        	if (BaseSingleFieldConstraint.TYPE_TEMPLATE == sfc.getConstraintValueType() && !vars.containsKey(sfc.getValue())) {
+        		vars.put(sfc.getValue(), vars.size());
         	}
         }
 

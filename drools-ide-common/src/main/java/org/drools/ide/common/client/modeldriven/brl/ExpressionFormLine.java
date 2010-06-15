@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 	
-    private String bindVariable = null;
+    private String binding = null;
 	private LinkedList<ExpressionPart> parts = new LinkedList<ExpressionPart>() ;
     
     public ExpressionFormLine() {}
@@ -22,8 +22,14 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 		}
 	}
 
+	public String getText(boolean renderBindVariable) {
+		return new ToStringVisitor().buildString(
+				renderBindVariable ? getBinding() : null, 
+						getRootExpression());
+	}
+	
 	public String getText() {
-		return new ToStringVisitor().buildString(getBindVariable(), getRootExpression());
+		return getText(false);
 	}
 	
 	public void appendPart(ExpressionPart part) {
@@ -87,15 +93,15 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 	}
 
 	public boolean isBound() {
-		return bindVariable != null;
+		return binding != null;
 	}
 	
-	public String getBindVariable() {
-		return bindVariable;
+	public String getBinding() {
+		return binding;
 	}
 
-	public void setBindVariable(String bindVariable) {
-		this.bindVariable = bindVariable;
+	public void setBinding(String binding) {
+		this.binding = binding;
 	}
 
 	private static class ToStringVisitor implements ExpressionVisitor {
@@ -106,10 +112,10 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 			if (exp == null) {
 				return "";
 			}
-			str = new StringBuilder(bindVariable == null ? "" : bindVariable );
+			str = new StringBuilder( );
 			first = true;
 			exp.accept(this);
-			return str.toString();
+			return (bindVariable == null ? "" : bindVariable + ": ") + str.toString();
 		}
 		
 		public void visit(ExpressionPart part) {
@@ -143,7 +149,6 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 		public void visit(ExpressionUnboundFact part) {
 			moveNext(part, false);
 		}
-
 		
 		public void visit(ExpressionGlobalVariable part) {
 			str.append(part.getName());
@@ -175,7 +180,7 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 			ToStringVisitor stringVisitor = new ToStringVisitor();
 			StringBuilder strParams = new StringBuilder();
 			for (ExpressionFormLine param : params.values()) {
-				strParams.append(", ").append(stringVisitor.buildString(param.getBindVariable(), param.getRootExpression()));
+				strParams.append(", ").append(stringVisitor.buildString(param.getBinding(), param.getRootExpression()));
 			}
 			return strParams.substring(2);
 		}

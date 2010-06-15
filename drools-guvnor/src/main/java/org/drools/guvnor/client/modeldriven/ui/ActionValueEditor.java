@@ -1,6 +1,9 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+
 import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
@@ -135,8 +138,9 @@ public class ActionValueEditor extends DirtyableComposite {
         ListBox listVariable = new ListBox();
         List<String> vars = model.getModel().getBoundFacts();
         for (String v : vars) {
+        	//XXX {bauna} check! this!
             FactPattern factPattern = model.getModel().getBoundFact(v);
-            String fv = model.getModel().getFieldConstraint(v);
+            String fv = model.getModel().getBindingType(v);
 
             if ((factPattern != null && factPattern.factType.equals(this.variableType)) || (fv != null)) {
                 // First selection is empty
@@ -361,7 +365,7 @@ public class ActionValueEditor extends DirtyableComposite {
         for (String v : vars) {
             boolean createButton = false;
             Button variable = new Button(constants.BoundVariable());
-            if (vars2.contains(v) == false) {
+            if (!vars2.contains(v)) {
                 FactPattern factPattern = model.getModel().getBoundFact(v);
                 if (factPattern.factType.equals(this.variableType)) {
                     createButton = true;
@@ -375,9 +379,9 @@ public class ActionValueEditor extends DirtyableComposite {
             if (createButton == true) {
                 form.addAttribute(constants.BoundVariable() + ":",
                         variable);
-                variable.addClickListener(new ClickListener() {
-
-                    public void onClick(Widget w) {
+                variable.addClickHandler(new ClickHandler() {
+					
+					public void onClick(ClickEvent event) {
                         value.nature = ActionFieldValue.TYPE_VARIABLE;
                         value.value = "=";
                         makeDirty();

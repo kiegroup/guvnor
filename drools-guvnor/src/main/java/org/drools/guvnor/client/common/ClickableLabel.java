@@ -24,9 +24,12 @@ public class ClickableLabel extends HTML {
             return "<div class='x-form-field'>" + text + "</div>";            
     }
 
+    @Deprecated
     public ClickableLabel(String text, ClickListener event) {
         this(text, event, true);
 	}
 
-
+    public ClickableLabel(String text, ClickHandler event) {
+        this(text, event, true);
+	}
 }

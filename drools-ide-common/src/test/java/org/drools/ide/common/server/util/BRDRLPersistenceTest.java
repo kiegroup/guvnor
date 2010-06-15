@@ -17,7 +17,7 @@ import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
@@ -165,8 +165,8 @@ public class BRDRLPersistenceTest extends TestCase {
 		pat.boundName = "p1";
 		pat.factType = "Person";
 		final SingleFieldConstraint con = new SingleFieldConstraint();
-		con.fieldBinding = "f1";
-		con.fieldName = "age";
+		con.setFieldBinding("f1");
+		con.setFieldName("age");
 		// con.operator = "<";
 		// con.value = "42";
 		pat.addConstraint(con);
@@ -188,10 +188,10 @@ public class BRDRLPersistenceTest extends TestCase {
 		pat.boundName = "p1";
 		pat.factType = "Person";
 		final SingleFieldConstraint con = new SingleFieldConstraint();
-		con.fieldBinding = "f1";
-		con.fieldName = "age";
-		con.operator = "<";
-		con.value = "42";
+		con.setFieldBinding("f1");
+		con.setFieldName("age");
+		con.setOperator("<");
+		con.setValue("42");
 		pat.addConstraint(con);
 
 		m.addLhsItem(pat);
@@ -223,16 +223,16 @@ public class BRDRLPersistenceTest extends TestCase {
 				CompositeFactPattern.COMPOSITE_TYPE_OR);
 		FactPattern p1 = new FactPattern("Person");
 		SingleFieldConstraint sf1 = new SingleFieldConstraint("age");
-		sf1.operator = "==";
-		sf1.value = "42";
+		sf1.setOperator("==");
+		sf1.setValue("42");
 		p1.addConstraint(sf1);
 
 		cp.addFactPattern(p1);
 
 		FactPattern p2 = new FactPattern("Person");
 		SingleFieldConstraint sf2 = new SingleFieldConstraint("age");
-		sf2.operator = "==";
-		sf2.value = "43";
+		sf2.setOperator("==");
+		sf2.setValue("43");
 		p2.addConstraint(sf2);
 
 		cp.addFactPattern(p2);
@@ -264,8 +264,8 @@ public class BRDRLPersistenceTest extends TestCase {
 				CompositeFactPattern.COMPOSITE_TYPE_EXISTS);
 		FactPattern p1 = new FactPattern("Person");
 		SingleFieldConstraint sf1 = new SingleFieldConstraint("age");
-		sf1.operator = "==";
-		sf1.value = "42";
+		sf1.setOperator("==");
+		sf1.setValue("42");
 		p1.addConstraint(sf1);
 
 		cp.addFactPattern(p1);
@@ -284,16 +284,16 @@ public class BRDRLPersistenceTest extends TestCase {
 		CompositeFactPattern cp = new CompositeFactPattern(type);
 		FactPattern p1 = new FactPattern("Person");
 		SingleFieldConstraint sf1 = new SingleFieldConstraint("age");
-		sf1.operator = "==";
-		sf1.value = "42";
+		sf1.setOperator("==");
+		sf1.setValue("42");
 		p1.addConstraint(sf1);
 
 		cp.addFactPattern(p1);
 
 		FactPattern p2 = new FactPattern("Person");
 		SingleFieldConstraint sf2 = new SingleFieldConstraint("age");
-		sf2.operator = "==";
-		sf2.value = "43";
+		sf2.setOperator("==");
+		sf2.setValue("43");
 		p2.addConstraint(sf2);
 
 		cp.addFactPattern(p2);
@@ -328,39 +328,39 @@ public class BRDRLPersistenceTest extends TestCase {
 		p.addConstraint(comp);
 
 		final SingleFieldConstraint X = new SingleFieldConstraint();
-		X.fieldName = "goo";
-		X.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
-		X.value = "foo";
-		X.operator = "==";
+		X.setFieldName("goo");
+		X.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+		X.setValue("foo");
+		X.setOperator("==");
 		X.connectives = new ConnectiveConstraint[1];
 		X.connectives[0] = new ConnectiveConstraint();
-		X.connectives[0].constraintValueType = ConnectiveConstraint.TYPE_LITERAL;
+		X.connectives[0].setConstraintValueType(ConnectiveConstraint.TYPE_LITERAL);
 		X.connectives[0].operator = "|| ==";
-		X.connectives[0].value = "bar";
+		X.connectives[0].setValue("bar");
 		comp.addConstraint(X);
 
 		final SingleFieldConstraint Y = new SingleFieldConstraint();
-		Y.fieldName = "goo2";
-		Y.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
-		Y.value = "foo";
-		Y.operator = "==";
+		Y.setFieldName("goo2");
+		Y.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+		Y.setValue("foo");
+		Y.setOperator("==");
 		comp.addConstraint(Y);
 
 		CompositeFieldConstraint comp2 = new CompositeFieldConstraint();
 		comp2.compositeJunctionType = CompositeFieldConstraint.COMPOSITE_TYPE_AND;
 		final SingleFieldConstraint Q1 = new SingleFieldConstraint();
-		Q1.fieldName = "goo";
-		Q1.operator = "==";
-		Q1.value = "whee";
-		Q1.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		Q1.setFieldName("goo");
+		Q1.setOperator("==");
+		Q1.setValue("whee");
+		Q1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
 
 		comp2.addConstraint(Q1);
 
 		final SingleFieldConstraint Q2 = new SingleFieldConstraint();
-		Q2.fieldName = "gabba";
-		Q2.operator = "==";
-		Q2.value = "whee";
-		Q2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		Q2.setFieldName("gabba");
+		Q2.setOperator("==");
+		Q2.setValue("whee");
+		Q2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
 
 		comp2.addConstraint(Q2);
 
@@ -368,10 +368,10 @@ public class BRDRLPersistenceTest extends TestCase {
 		comp.addConstraint(comp2);
 
 		final SingleFieldConstraint Z = new SingleFieldConstraint();
-		Z.fieldName = "goo3";
-		Z.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
-		Z.value = "foo";
-		Z.operator = "==";
+		Z.setFieldName("goo3");
+		Z.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+		Z.setValue("foo");
+		Z.setOperator("==");
 
 		p.addConstraint(Z);
 
@@ -407,7 +407,7 @@ public class BRDRLPersistenceTest extends TestCase {
 		assertEqualsIgnoreWhitespace(expected, actual);
 
 		SingleFieldConstraint con = (SingleFieldConstraint) p.constraintList.constraints[0];
-		con.fieldBinding = "q";
+		con.setFieldBinding("q");
 
 		// now it should appear, as we are binding a var to it
 
@@ -426,17 +426,17 @@ public class BRDRLPersistenceTest extends TestCase {
 
 		FactPattern p = new FactPattern("Person");
 		SingleFieldConstraint con = new SingleFieldConstraint();
-		con.fieldName = "field1";
-		con.operator = "==";
-		con.value = "goo";
-		con.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
+		con.setFieldName("field1");
+		con.setOperator("==");
+		con.setValue("goo");
+		con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
 		p.addConstraint(con);
 
 		SingleFieldConstraint con2 = new SingleFieldConstraint();
-		con2.fieldName = "field2";
-		con2.operator = "==";
-		con2.value = "variableHere";
-		con2.constraintValueType = SingleFieldConstraint.TYPE_VARIABLE;
+		con2.setFieldName("field2");
+		con2.setOperator("==");
+		con2.setValue("variableHere");
+		con2.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
 		p.addConstraint(con2);
 
 		m.addLhsItem(p);
@@ -457,15 +457,15 @@ public class BRDRLPersistenceTest extends TestCase {
 
 		FactPattern p = new FactPattern("Person");
 		SingleFieldConstraint con = new SingleFieldConstraint();
-		con.fieldName = "field1";
+		con.setFieldName("field1");
 		p.addConstraint(con);
 
 		SingleFieldConstraint con2 = new SingleFieldConstraint();
-		con2.fieldName = "field2";
-		con2.operator = "==";
-		con2.value = "variableHere";
-		con2.constraintValueType = SingleFieldConstraint.TYPE_VARIABLE;
-		con2.parent = con;
+		con2.setFieldName("field2");
+		con2.setOperator("==");
+		con2.setValue("variableHere");
+		con2.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
+		con2.setParent(con);
 		p.addConstraint(con2);
 
 		m.addLhsItem(p);
@@ -493,10 +493,10 @@ public class BRDRLPersistenceTest extends TestCase {
 		FactPattern p = new FactPattern();
 
 		SingleFieldConstraint con = new SingleFieldConstraint();
-		con.constraintValueType = SingleFieldConstraint.TYPE_RET_VALUE;
-		con.value = "someFunc(x)";
-		con.operator = "==";
-		con.fieldName = "goo";
+		con.setConstraintValueType(SingleFieldConstraint.TYPE_RET_VALUE);
+		con.setValue("someFunc(x)");
+		con.setOperator("==");
+		con.setFieldName("goo");
 		p.factType = "Goober";
 
 		p.addConstraint(con);
@@ -517,8 +517,8 @@ public class BRDRLPersistenceTest extends TestCase {
 		FactPattern p = new FactPattern();
 
 		SingleFieldConstraint con = new SingleFieldConstraint();
-		con.constraintValueType = SingleFieldConstraint.TYPE_PREDICATE;
-		con.value = "field soundslike 'poo'";
+		con.setConstraintValueType(SingleFieldConstraint.TYPE_PREDICATE);
+		con.setValue("field soundslike 'poo'");
 
 		p.factType = "Goober";
 
@@ -540,16 +540,16 @@ public class BRDRLPersistenceTest extends TestCase {
 
 		FactPattern p = new FactPattern("Person");
 		SingleFieldConstraint con = new SingleFieldConstraint();
-		con.fieldName = "field1";
-		con.operator = "==";
-		con.value = "goo";
-		con.constraintValueType = SingleFieldConstraint.TYPE_VARIABLE;
+		con.setFieldName("field1");
+		con.setOperator("==");
+		con.setValue("goo");
+		con.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
 		p.addConstraint(con);
 
 		ConnectiveConstraint connective = new ConnectiveConstraint();
-		connective.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		connective.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
 		connective.operator = "|| ==";
-		connective.value = "blah";
+		connective.setValue("blah");
 
 		con.connectives = new ConnectiveConstraint[1];
 		con.connectives[0] = connective;

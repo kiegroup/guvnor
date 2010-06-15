@@ -10,7 +10,7 @@ import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 import org.drools.ide.common.server.util.BRLPersistence;
@@ -63,11 +63,11 @@ public class BRDRTPersistenceTest extends TestCase {
         fp.boundName = "$p";
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-        sfc.fieldName = "name";
-        sfc.value = "name";
-        sfc.operator = "==";
+        sfc.setFieldName("name");
+        sfc.setValue("name");
+        sfc.setOperator("==");
         	
-        sfc.constraintValueType = ISingleFieldConstraint.TYPE_TEMPLATE;
+        sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
         fp.addConstraint(sfc);
         
         m.lhs[0] = fp;
@@ -110,11 +110,11 @@ public class BRDRTPersistenceTest extends TestCase {
 		fp.boundName = "$p";
 
 		SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-		sfc.fieldName = "name";
-		sfc.value = "name";
-		sfc.operator = "==";
+		sfc.setFieldName("name");
+		sfc.setValue("name");
+		sfc.setOperator("==");
 
-		sfc.constraintValueType = ISingleFieldConstraint.TYPE_TEMPLATE;
+		sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
 		fp.addConstraint(sfc);
 
 		m.lhs[0] = fp;
@@ -171,11 +171,11 @@ public class BRDRTPersistenceTest extends TestCase {
         fp.boundName = "$p";
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-        sfc.fieldName = "name";
-        sfc.value = "name";
-        sfc.operator = "==";
+        sfc.setFieldName("name");
+        sfc.setValue("name");
+        sfc.setOperator("==");
         	
-        sfc.constraintValueType = ISingleFieldConstraint.TYPE_TEMPLATE;
+        sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
         fp.addConstraint(sfc);
         
         m.lhs[0] = fp;
@@ -221,11 +221,11 @@ public class BRDRTPersistenceTest extends TestCase {
         fp.boundName = "$p";
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-        sfc.fieldName = "name";
-        sfc.value = "name";
-        sfc.operator = "==";
+        sfc.setFieldName("name");
+        sfc.setValue("name");
+        sfc.setOperator("==");
         	
-        sfc.constraintValueType = ISingleFieldConstraint.TYPE_TEMPLATE;
+        sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
         fp.addConstraint(sfc);
         
         m.lhs[0] = fp;
@@ -265,11 +265,11 @@ public class BRDRTPersistenceTest extends TestCase {
         fp.boundName = "$p";
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-        sfc.fieldName = "name";
-        sfc.value = "name";
-        sfc.operator = "==";
+        sfc.setFieldName("name");
+        sfc.setValue("name");
+        sfc.setOperator("==");
         	
-        sfc.constraintValueType = ISingleFieldConstraint.TYPE_TEMPLATE;
+        sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
         fp.addConstraint(sfc);
         
         m.lhs[0] = fp;
@@ -299,18 +299,18 @@ public class BRDRTPersistenceTest extends TestCase {
         fp.boundName = "$p";
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-        sfc.fieldName = "name";
-        sfc.value = "name";
-        sfc.operator = "==";
-        sfc.constraintValueType = ISingleFieldConstraint.TYPE_TEMPLATE;
+        sfc.setFieldName("name");
+        sfc.setValue("name");
+        sfc.setOperator("==");
+        sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
         
         fp.addConstraint(sfc);
         
         sfc = new SingleFieldConstraint("age");
-        sfc.fieldName = "age";
-        sfc.value = "age";
-        sfc.operator = "==";
-        sfc.constraintValueType = ISingleFieldConstraint.TYPE_TEMPLATE;
+        sfc.setFieldName("age");
+        sfc.setValue("age");
+        sfc.setOperator("==");
+        sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
         
         fp.addConstraint(sfc);
         

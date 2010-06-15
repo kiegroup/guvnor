@@ -20,7 +20,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
@@ -373,7 +373,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private Widget newCondition() {
         final ConditionCol newCol = new ConditionCol();
-        newCol.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        newCol.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         return new ImageButton( "images/new_item.gif",
                                 constants.AddANewConditionColumn(),
                                 new ClickListener() { //NON-NLS

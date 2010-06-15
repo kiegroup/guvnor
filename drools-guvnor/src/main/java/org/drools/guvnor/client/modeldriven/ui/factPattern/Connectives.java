@@ -8,7 +8,7 @@ import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
@@ -71,8 +71,8 @@ public class Connectives {
             DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
             for ( int i = 0; i < c.connectives.length; i++ ) {
                 ConnectiveConstraint con = c.connectives[i];
-                horiz.add( connectiveOperatorDropDown( con, c.fieldName ) );
-                horiz.add( connectiveValueEditor( con, factClass, c.fieldName ) );
+                horiz.add( connectiveOperatorDropDown( con, c.getFieldName() ) );
+                horiz.add( connectiveValueEditor( con, factClass, c.getFieldName() ) );
             }
             return horiz;
         } else {
@@ -82,7 +82,7 @@ public class Connectives {
 
     }
 
-    private Widget connectiveValueEditor(final ISingleFieldConstraint con, String factClass, String fieldName) {
+    private Widget connectiveValueEditor(final BaseSingleFieldConstraint con, String factClass, String fieldName) {
         String typeNumeric = this.modeller.getSuggestionCompletions().getFieldType( factClass, fieldName );
         return new ConstraintValueEditor(pattern, fieldName, con, this.modeller, typeNumeric,false);
     }

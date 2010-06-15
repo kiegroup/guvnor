@@ -113,7 +113,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint f1 = new SingleFieldConstraint( "f1" );
-        f1.value = "a1";
+        f1.setValue("a1");
         pat.addConstraint( f1 );
         pat.addConstraint( new SingleFieldConstraint( "f2" ) );
 
@@ -368,7 +368,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint sfc = new SingleFieldConstraint( "type" );
-        sfc.value = "sex";
+        sfc.setValue("sex");
         pat.addConstraint( sfc );
         String[] result = sce.getEnums( pat,
                                         "value" ).fixedList;
@@ -381,7 +381,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
         pat = new FactPattern( "Fact" );
         sfc = new SingleFieldConstraint( "type" );
-        sfc.value = "colour";
+        sfc.setValue("colour");
         pat.addConstraint( sfc );
 
         result = sce.getEnums( pat,
@@ -442,10 +442,10 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint sfc = new SingleFieldConstraint( "field1" );
-        sfc.value = "a1";
+        sfc.setValue("a1");
         pat.addConstraint( sfc );
         SingleFieldConstraint sfc2 = new SingleFieldConstraint( "field2" );
-        sfc2.value = "b1";
+        sfc2.setValue("b1");
         pat.addConstraint( sfc2 );
 
         String[] result = sce.getEnums( pat,
@@ -479,23 +479,23 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint sfc = new SingleFieldConstraint( "field1" );
-        sfc.value = "a1";
+        sfc.setValue("a1");
         pat.addConstraint( sfc );
         SingleFieldConstraint sfc2 = new SingleFieldConstraint( "field2" );
-        sfc2.value = "b2";
+        sfc2.setValue("b2");
         pat.addConstraint( sfc2 );
         SingleFieldConstraint sfc3 = new SingleFieldConstraint( "field3" );
-        sfc3.value = "c3";
+        sfc3.setValue("c3");
         pat.addConstraint( sfc3 );
         SingleFieldConstraint sfc4 = new SingleFieldConstraint( "longerField4" );
-        sfc4.value = "d1";
+        sfc4.setValue("d1");
         pat.addConstraint( sfc4 );
 
         assertNull( sce.getEnums( pat,
                                   "field6" ) );
 
         SingleFieldConstraint sfc5 = new SingleFieldConstraint( "field5" );
-        sfc5.value = "e2";
+        sfc5.setValue("e2");
         pat.addConstraint( sfc5 );
 
         String[] result2 = sce.getEnums( pat,
@@ -539,10 +539,10 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint sfc = new SingleFieldConstraint( "f1" );
-        sfc.value = "f1val";
+        sfc.setValue("f1val");
         pat.addConstraint( sfc );
         sfc = new SingleFieldConstraint( "f2" );
-        sfc.value = "f2val";
+        sfc.setValue("f2val");
         pat.addConstraint( sfc );
 
         DropDownData dd = sce.getEnums( pat,
@@ -618,10 +618,10 @@ public class SuggestionCompletionEngineTest extends TestCase {
         
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint sfc = new SingleFieldConstraint( "f1" );
-        sfc.value = "f1val";
+        sfc.setValue("f1val");
         pat.addConstraint( sfc );
         sfc = new SingleFieldConstraint( "f2" );
-        sfc.value = "f2val";
+        sfc.setValue("f2val");
         pat.addConstraint( sfc );
         
         DropDownData dd = sce.getEnums( pat,

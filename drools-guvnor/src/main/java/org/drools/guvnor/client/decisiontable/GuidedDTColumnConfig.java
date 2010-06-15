@@ -12,7 +12,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
@@ -110,30 +110,30 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                       valueTypes );
 
         switch ( editingCol.constraintValueType ) {
-            case ISingleFieldConstraint.TYPE_LITERAL :
+            case BaseSingleFieldConstraint.TYPE_LITERAL :
                 literal.setChecked( true );
                 break;
-            case ISingleFieldConstraint.TYPE_RET_VALUE :
+            case BaseSingleFieldConstraint.TYPE_RET_VALUE :
                 formula.setChecked( true );
                 break;
-            case ISingleFieldConstraint.TYPE_PREDICATE :
+            case BaseSingleFieldConstraint.TYPE_PREDICATE :
                 predicate.setChecked( true );
         }
 
         literal.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                applyConsTypeChange( ISingleFieldConstraint.TYPE_LITERAL );
+                applyConsTypeChange( BaseSingleFieldConstraint.TYPE_LITERAL );
             }
         } );
 
         formula.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                applyConsTypeChange( ISingleFieldConstraint.TYPE_RET_VALUE );
+                applyConsTypeChange( BaseSingleFieldConstraint.TYPE_RET_VALUE );
             }
         } );
         predicate.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                applyConsTypeChange( ISingleFieldConstraint.TYPE_PREDICATE );
+                applyConsTypeChange( BaseSingleFieldConstraint.TYPE_PREDICATE );
             }
         } );
 
@@ -200,7 +200,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                     Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
-                if ( editingCol.constraintValueType != ISingleFieldConstraint.TYPE_PREDICATE ) {
+                if ( editingCol.constraintValueType != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
                     if ( null == editingCol.factField || "".equals( editingCol.factField ) ) {
                         Window.alert( constants.PleaseSelectOrEnterField() );
                         return;
@@ -293,7 +293,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     }
 
     private void doOperatorLabel() {
-        if ( editingCol.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE ) {
+        if ( editingCol.constraintValueType == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
             operatorLabel.setText( constants.notNeededForPredicate() );
         } else if ( nil( editingCol.factType ) ) {
             operatorLabel.setText( constants.pleaseSelectAPatternFirst() );
@@ -318,7 +318,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                          ops[i] );
         }
 
-        if ( ISingleFieldConstraint.TYPE_LITERAL == this.editingCol.constraintValueType ) {
+        if ( BaseSingleFieldConstraint.TYPE_LITERAL == this.editingCol.constraintValueType ) {
             box.addItem( HumanReadable.getOperatorDisplayName( "in" ),
                          "in" );
         }
@@ -342,7 +342,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     }
 
     private void doFieldLabel() {
-        if ( editingCol.constraintValueType == ISingleFieldConstraint.TYPE_PREDICATE ) {
+        if ( editingCol.constraintValueType == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
             fieldLabel.setText( constants.notNeededForPredicate() );
             fieldLabelInterpolationInfo.setVisible( true );
         } else if ( nil( editingCol.factType ) ) {

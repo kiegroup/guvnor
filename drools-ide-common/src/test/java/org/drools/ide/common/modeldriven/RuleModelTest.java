@@ -13,7 +13,7 @@ import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -63,11 +63,11 @@ public class RuleModelTest extends TestCase {
 
 		SingleFieldConstraint sfc = new SingleFieldConstraint("q");
 		x.addConstraint(sfc);
-		sfc.fieldBinding = "field1";
+		sfc.setFieldBinding("field1");
 
 		SingleFieldConstraint sfc2 = new SingleFieldConstraint("q");
 		x.addConstraint(sfc2);
-		sfc2.fieldBinding = "field2";
+		sfc2.setFieldBinding("field2");
 
 		model.lhs[1] = new CompositeFactPattern();
 
@@ -114,16 +114,16 @@ public class RuleModelTest extends TestCase {
 		y.constraintList = new CompositeFieldConstraint();
 		y.constraintList.constraints = cons;
 		cons[0] = new SingleFieldConstraint("age");
-		cons[0].fieldBinding = "qbc";
-		cons[0].fieldType = "String";
+		cons[0].setFieldBinding("qbc");
+		cons[0].setFieldType("String");
 		cons[0].connectives = new ConnectiveConstraint[1];
 		cons[0].connectives[0] = new ConnectiveConstraint("age", "String", "&", "x");
-		cons[0].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		cons[0].connectives[0].setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
 		cons[1] = new SingleFieldConstraint("make");
-		cons[1].fieldType = "Long";
+		cons[1].setFieldType("Long");
 		cons[1].connectives = new ConnectiveConstraint[1];
 		cons[1].connectives[0] = new ConnectiveConstraint("make", "Long", "=", "2");
-		cons[1].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		cons[1].connectives[0].setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
 
 
 		final FactPattern other = new FactPattern("House");
@@ -338,10 +338,10 @@ public class RuleModelTest extends TestCase {
 		y.constraintList.constraints = cons;
 		cons[0] = new SingleFieldConstraint("age");
 		cons[1] = new SingleFieldConstraint("make");
-		cons[0].fieldBinding = "qbc";
+		cons[0].setFieldBinding("qbc");
 		cons[0].connectives = new ConnectiveConstraint[1];
 		cons[0].connectives[0] = new ConnectiveConstraint("age", null, "&", "x");
-		cons[0].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		cons[0].connectives[0].setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
 
 		final FactPattern other = new FactPattern("House");
 		model.lhs[2] = other;
@@ -383,11 +383,11 @@ public class RuleModelTest extends TestCase {
 		cf.addConstraint(new SingleFieldConstraint("x"));
 		p.addConstraint(cf);
 		SingleFieldConstraint sf = new SingleFieldConstraint("q");
-		sf.fieldBinding = "abc";
+		sf.setFieldBinding("abc");
 
 		p.addConstraint(sf);
 		SingleFieldConstraint sf2 = new SingleFieldConstraint("q");
-		sf2.fieldBinding = "qed";
+		sf2.setFieldBinding("qed");
 		cf.addConstraint(sf2);
 		m.addLhsItem(p);
 
@@ -410,16 +410,16 @@ public class RuleModelTest extends TestCase {
 		y.constraintList = new CompositeFieldConstraint();
 		y.constraintList.constraints = cons;
 		cons[0] = new SingleFieldConstraint("age");
-		cons[0].fieldBinding = "qbc";
-		cons[0].fieldType = "String";
+		cons[0].setFieldBinding("qbc");
+		cons[0].setFieldType("String");
 		cons[0].connectives = new ConnectiveConstraint[1];
 		cons[0].connectives[0] = new ConnectiveConstraint("age", "String", "&", "x");
-		cons[0].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		cons[0].connectives[0].setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
 		cons[1] = new SingleFieldConstraint("make");
-		cons[1].fieldType = "Long";
+		cons[1].setFieldType("Long");
 		cons[1].connectives = new ConnectiveConstraint[1];
 		cons[1].connectives[0] = new ConnectiveConstraint("make", "Long", "=", "2");
-		cons[1].connectives[0].constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		cons[1].connectives[0].setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
 
 		final FactPattern other = new FactPattern("House");
 		model.lhs[2] = other;
@@ -428,9 +428,9 @@ public class RuleModelTest extends TestCase {
 		cons2[0] = new SingleFieldConstraint();
 		other.constraintList = new CompositeFieldConstraint();
 		other.constraintList.constraints = cons2;
-		String varTypeString = model.getFieldConstraint("qbc");
+		String varTypeString = model.getBindingType("qbc");
 		assertEquals("String", varTypeString);
-		String varTypeLong = model.getFieldConstraint("make");
+		String varTypeLong = model.getBindingType("make");
 		assertEquals(null, varTypeLong);
 		FactPattern varTypeBoat = model.getBoundFact("x");
 		assertEquals("Boat", varTypeBoat.factType);

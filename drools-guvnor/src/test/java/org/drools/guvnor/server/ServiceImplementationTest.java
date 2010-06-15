@@ -68,7 +68,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
@@ -2104,8 +2104,8 @@ public class ServiceImplementationTest extends TestCase {
         FactPattern pattern = new FactPattern( "Person" );
 
         SingleFieldConstraint con = new SingleFieldConstraint();
-        con.constraintValueType = ISingleFieldConstraint.TYPE_PREDICATE;
-        con.value = "name soundslike 'foobar'";
+        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_PREDICATE);
+        con.setValue("name soundslike 'foobar'");
         pattern.addConstraint( con );
 
         pattern.boundName = "p";
@@ -2540,10 +2540,10 @@ public class ServiceImplementationTest extends TestCase {
         FactPattern p = new FactPattern( "Person" );
         p.boundName = "p";
         SingleFieldConstraint con = new SingleFieldConstraint();
-        con.fieldName = "name";
-        con.value = "mark";
-        con.operator = "==";
-        con.constraintValueType = SingleFieldConstraint.TYPE_LITERAL;
+        con.setFieldName("name");
+        con.setValue("mark");
+        con.setOperator("==");
+        con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
 
         p.addConstraint( con );
 
@@ -3423,7 +3423,7 @@ public class ServiceImplementationTest extends TestCase {
         GuidedDecisionTable dt = new GuidedDecisionTable();
         ConditionCol col = new ConditionCol();
         col.boundName = "p";
-        col.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        col.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         col.factField = "hair";
         col.factType = "Person";
         col.operator = "==";

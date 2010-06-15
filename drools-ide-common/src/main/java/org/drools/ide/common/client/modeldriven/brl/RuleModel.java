@@ -20,6 +20,7 @@ public class RuleModel implements PortableObject {
 
     public RuleModel() {
 	}
+    
     /**
      * This will return the fact pattern that a variable is bound to.
      *
@@ -42,20 +43,23 @@ public class RuleModel implements PortableObject {
         return null;
     }
 
-    public String getFieldConstraint(final String var) {
+    public String getBindingType(final String var) {
         if (this.lhs == null) {
             return null;
         }
         for (int i = 0; i < this.lhs.length; i++) {
-
             if (this.lhs[i] instanceof FactPattern) {
                 final FactPattern p = (FactPattern) this.lhs[i];
+                if (p.isBound() && var.equals(p.boundName) ) {
+                	return p.factType;
+                }
                 for (FieldConstraint z : p.getFieldConstraints()) {
-                    return giveFieldBinding(z,
-                            var);
+                    String type = giveFieldBinding(z, var);
+                    if (type != null) {
+                    	return type;
+                    }
                 }
             }
-
         }
         return null;
     }
@@ -64,8 +68,8 @@ public class RuleModel implements PortableObject {
             String var) {
         if (f instanceof SingleFieldConstraint) {
             SingleFieldConstraint s = (SingleFieldConstraint) f;
-            if (s.isBound() == true && var.equals(s.fieldBinding)) {
-                return s.fieldType;
+            if (s.isBound() && var.equals(s.getFieldBinding())) {
+                return s.getFieldType();
             }
         }
         if (f instanceof CompositeFieldConstraint) {
@@ -138,7 +142,7 @@ public class RuleModel implements PortableObject {
         if (f instanceof SingleFieldConstraint) {
             SingleFieldConstraint sfc = (SingleFieldConstraint) f;
             if (sfc.isBound()) {
-                result.add(sfc.fieldBinding);
+                result.add(sfc.getFieldBinding());
             }
         }
         if (f instanceof CompositeFieldConstraint) {
@@ -474,7 +478,7 @@ public class RuleModel implements PortableObject {
      * what bound variables are in scope for a given constraint (including connectives).
      * Does not take into account globals.
      */
-    public List<String> getBoundVariablesInScope(final ISingleFieldConstraint con) {
+    public List<String> getBoundVariablesInScope(final BaseSingleFieldConstraint con) {
         final List<String> result = new ArrayList<String>();
         for (int i = 0; i < this.lhs.length; i++) {
             final IPattern pat = this.lhs[i];
@@ -499,7 +503,7 @@ public class RuleModel implements PortableObject {
                                     }
                                 }
                                 if (c.isBound()) {
-                                    result.add(c.fieldBinding);
+                                    result.add(c.getFieldBinding());
                                 }
                             }
                         }
@@ -536,8 +540,18 @@ public class RuleModel implements PortableObject {
                     if (fc instanceof SingleFieldConstraint) {
                         SingleFieldConstraint con = (SingleFieldConstraint) fc;
                         if (con.isBound()) {
-                            result.add(con.fieldBinding);
+                            result.add(con.getFieldBinding());
+                        } 
+                        if (con.getExpressionValue() != null && con.getExpressionValue().isBound()) {
+                        	result.add(con.getExpressionValue().getBinding());
                         }
+                        if (con instanceof SingleFieldConstraintEBLeftSide) {
+                        	SingleFieldConstraintEBLeftSide exp = (SingleFieldConstraintEBLeftSide) con;
+                        	if (exp.getExpressionLeftSide() != null && exp.getExpressionLeftSide().isBound()) {
+                            	result.add(exp.getExpressionLeftSide().getBinding());
+                            }
+                        }
+                        
                     }
                 }
             }

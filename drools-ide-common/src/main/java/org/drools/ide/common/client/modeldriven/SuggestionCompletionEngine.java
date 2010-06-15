@@ -275,12 +275,12 @@ public class SuggestionCompletionEngine implements PortableObject {
                         if ( con instanceof SingleFieldConstraint ) {
                             SingleFieldConstraint sfc = (SingleFieldConstraint) con;
 
-                            if ( sfc.fieldName.trim().equals( typeField.trim() ) ) {
+                            if ( sfc.getFieldName().trim().equals( typeField.trim() ) ) {
                                 if ( addOpeninColumn ) {
                                     key += "[";
                                     addOpeninColumn = false;
                                 }
-                                key += typeField + "=" + sfc.value;
+                                key += typeField + "=" + sfc.getValue();
 
                                 if ( j != (splitTypeFields.length - 1) ) {
                                     key += ",";
@@ -316,8 +316,8 @@ public class SuggestionCompletionEngine implements PortableObject {
                         FieldConstraint con = pat.constraintList.constraints[j];
                         if ( con instanceof SingleFieldConstraint ) {
                             SingleFieldConstraint sfc = (SingleFieldConstraint) con;
-                            if ( sfc.fieldName.equals( fieldsNeeded[i] ) ) {
-                                valuePairs[i] = fieldsNeeded[i] + "=" + sfc.value;
+                            if ( sfc.getFieldName().equals( fieldsNeeded[i] ) ) {
+                                valuePairs[i] = fieldsNeeded[i] + "=" + sfc.getValue();
                             }
                         }
                     }

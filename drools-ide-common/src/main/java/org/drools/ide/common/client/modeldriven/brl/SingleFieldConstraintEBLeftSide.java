@@ -19,13 +19,12 @@ public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
 	}
 
 	private ExpressionFormLine expLeftSide = new ExpressionFormLine();
-
+	
     /**
      * Returns true of there is a field binding.
      */
     public boolean isBound() {
-        return super.isBound() 
-        	|| (expLeftSide != null && expLeftSide.isBound()) ;
+        return expLeftSide != null && expLeftSide.isBound();
     }
     
     public ExpressionFormLine getExpressionLeftSide() {
@@ -35,4 +34,20 @@ public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
     public void setExpressionLeftSide(ExpressionFormLine expression) {
         this.expLeftSide = expression;
     }
+    
+    @Override
+    public String getFieldBinding() {
+    	return getExpressionLeftSide().getBinding();
+    }
+    
+    @Override
+    public void setFieldBinding(String fieldBinding) {
+    	getExpressionLeftSide().setBinding(fieldBinding);
+    }
+    
+    @Override
+    public String getFieldType() {
+    	return getExpressionLeftSide().getClassType();
+    }
+
 }

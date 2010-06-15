@@ -7,7 +7,7 @@ import junit.framework.TestCase;
 import org.drools.ide.common.client.modeldriven.ModelField;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
@@ -81,14 +81,14 @@ public class GuidedDecisionTableTest extends TestCase {
         c1.boundName = "c1";
         c1.factType = "Driver";
         c1.factField = "name";
-        c1.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        c1.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         dt.conditionCols.add(c1);
 
         ConditionCol c1_ = new ConditionCol();
         c1_.boundName = "c1";
         c1_.factType = "Driver";
         c1_.factField = "name";
-        c1_.constraintValueType = ISingleFieldConstraint.TYPE_RET_VALUE;
+        c1_.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
 
         dt.conditionCols.add(c1_);
 
@@ -96,7 +96,7 @@ public class GuidedDecisionTableTest extends TestCase {
         c1__.boundName = "c1";
         c1__.factType = "Driver";
         c1__.factField = "name";
-        c1__.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        c1__.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         c1__.valueList = "one,two,three";
         dt.conditionCols.add(c1__);
 
@@ -104,7 +104,7 @@ public class GuidedDecisionTableTest extends TestCase {
         c2.boundName = "c2";
         c2.factType = "Driver";
         c2.factField = "nothing";
-        c2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        c2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         dt.conditionCols.add(c2);
 
 
@@ -230,7 +230,7 @@ public class GuidedDecisionTableTest extends TestCase {
         c1.factType = "Driver";
         c1.factField = "name";
         c1.operator = "==";
-        c1.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        c1.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         dt.conditionCols.add(c1);
 
         ConditionCol c1_ = new ConditionCol();
@@ -238,14 +238,14 @@ public class GuidedDecisionTableTest extends TestCase {
         c1_.factType = "Driver";
         c1_.factField = "age";
         c1_.operator = "==";
-        c1_.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        c1_.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         dt.conditionCols.add(c1_);
 
         ConditionCol c2 = new ConditionCol();
         c2.boundName = "c1";
         c2.factType = "Driver";
         c2.factField = "age";
-        c2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        c2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         dt.conditionCols.add(c2);
 
         ActionSetFieldCol a = new ActionSetFieldCol();
@@ -291,13 +291,13 @@ public class GuidedDecisionTableTest extends TestCase {
         ConditionCol c1 = new ConditionCol();
         c1.boundName = "c1";
         c1.factType = "Driver";
-        c1.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        c1.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         dt.conditionCols.add(c1);
 
         ConditionCol c2 = new ConditionCol();
         c2.boundName = "c2";
         c2.factType = "Driver";
-        c2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        c2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         c2.valueList = "a,b,c";
         dt.conditionCols.add(c2);
 
@@ -318,7 +318,7 @@ public class GuidedDecisionTableTest extends TestCase {
         ConditionCol c1 = new ConditionCol();
         c1.boundName = "c1";
         c1.factType = "Driver";
-        c1.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        c1.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         dt.conditionCols.add(c1);
 
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();

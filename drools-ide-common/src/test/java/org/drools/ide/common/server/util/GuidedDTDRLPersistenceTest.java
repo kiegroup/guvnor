@@ -10,7 +10,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -40,7 +40,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 		ConditionCol con = new ConditionCol();
 		con.boundName = "f1";
-		con.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		con.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
 		con.factField = "age";
 		con.factType = "Driver";
 		con.header = "Driver f1 age";
@@ -49,7 +49,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 		ConditionCol con2 = new ConditionCol();
 		con2.boundName = "f1";
-		con2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		con2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
 		con2.factField = "name";
 		con2.factType = "Driver";
 		con2.header = "Driver f1 name";
@@ -58,7 +58,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 		ConditionCol con3 = new ConditionCol();
 		con3.boundName = "f1";
-		con3.constraintValueType = ISingleFieldConstraint.TYPE_RET_VALUE;
+		con3.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
 		con3.factField = "rating";
 		con3.factType = "Driver";
 		con3.header = "Driver rating";
@@ -68,7 +68,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 		ConditionCol con4 = new ConditionCol();
 		con4.boundName = "f2";
-		con4.constraintValueType = ISingleFieldConstraint.TYPE_PREDICATE;
+		con4.constraintValueType = BaseSingleFieldConstraint.TYPE_PREDICATE;
 		con4.factType = "Driver";
 		con4.header = "Driver 2 pimp";
         con4.factField = "(not needed)";
@@ -132,7 +132,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
         ConditionCol con = new ConditionCol();
         con.boundName = "f1";
-        con.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        con.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         con.factField = "age";
         con.factType = "Driver";
         con.header = "Driver f1 age";
@@ -141,7 +141,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
         ConditionCol con2 = new ConditionCol();
         con2.boundName = "f1";
-        con2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        con2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         con2.factField = "name";
         con2.factType = "Driver";
         con2.header = "Driver f1 name";
@@ -150,7 +150,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
         ConditionCol con3 = new ConditionCol();
         con3.boundName = "f1";
-        con3.constraintValueType = ISingleFieldConstraint.TYPE_RET_VALUE;
+        con3.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
         con3.factField = "rating";
         con3.factType = "Driver";
         con3.header = "Driver rating";
@@ -160,7 +160,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
         ConditionCol con4 = new ConditionCol();
         con4.boundName = "f2";
-        con4.constraintValueType = ISingleFieldConstraint.TYPE_PREDICATE;
+        con4.constraintValueType = BaseSingleFieldConstraint.TYPE_PREDICATE;
         con4.factType = "Driver";
         con4.header = "Driver 2 pimp";
         con4.factField = "this.hasSomething($param)";
@@ -224,7 +224,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
         ConditionCol con = new ConditionCol();
         con.boundName = "f1";
-        con.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        con.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         con.factField = "age";
         con.factType = "Driver";
         con.header = "Driver f1 age";
@@ -233,7 +233,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
         ConditionCol con2 = new ConditionCol();
         con2.boundName = "f1";
-        con2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+        con2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         con2.factField = "name";
         con2.factType = "Driver";
         con2.header = "Driver f1 name";
@@ -242,7 +242,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
         ConditionCol con3 = new ConditionCol();
         con3.boundName = "f1";
-        con3.constraintValueType = ISingleFieldConstraint.TYPE_RET_VALUE;
+        con3.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
         con3.factField = "rating";
         con3.factType = "Driver";
         con3.header = "Driver rating";
@@ -252,7 +252,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
         ConditionCol con4 = new ConditionCol();
         con4.boundName = "f2";
-        con4.constraintValueType = ISingleFieldConstraint.TYPE_PREDICATE;
+        con4.constraintValueType = BaseSingleFieldConstraint.TYPE_PREDICATE;
         con4.factType = "Driver";
         con4.header = "Driver 2 pimp";
         con4.factField = "(not needed)";
@@ -403,7 +403,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		col.boundName = "p1";
 		col.factType = "Person";
 		col.factField = "name";
-		col.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		col.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
 		col.operator = "==";
 		cols.add(col);
 
@@ -411,14 +411,14 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		col2.boundName = "p1";
 		col2.factType = "Person";
 		col2.factField = "age";
-		col2.constraintValueType = ISingleFieldConstraint.TYPE_RET_VALUE;
+		col2.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
 		col2.operator = "<";
 		cols.add(col2);
 
 		ConditionCol col3 = new ConditionCol();
 		col3.boundName = "p1";
 		col3.factType = "Person";
-		col3.constraintValueType = ISingleFieldConstraint.TYPE_PREDICATE;
+		col3.constraintValueType = BaseSingleFieldConstraint.TYPE_PREDICATE;
 		cols.add(col3);
 
 		ConditionCol col4 = new ConditionCol();
@@ -426,7 +426,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		col4.factType = "Cheese";
 		col4.factField = "type";
 		col4.operator = "==";
-		col4.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		col4.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
 		cols.add(col4);
 
 		RuleModel rm = new RuleModel();
@@ -444,30 +444,30 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		FactPattern person = (FactPattern) rm.lhs[0];
 		assertEquals(3, person.constraintList.constraints.length);
 		SingleFieldConstraint cons = (SingleFieldConstraint) person.constraintList.constraints[0];
-		assertEquals(ISingleFieldConstraint.TYPE_LITERAL, cons.constraintValueType);
-		assertEquals("name", cons.fieldName);
-		assertEquals("==", cons.operator);
-		assertEquals("mike", cons.value);
+		assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL, cons.getConstraintValueType());
+		assertEquals("name", cons.getFieldName());
+		assertEquals("==", cons.getOperator());
+		assertEquals("mike", cons.getValue());
 
 		cons = (SingleFieldConstraint) person.constraintList.constraints[1];
-		assertEquals(ISingleFieldConstraint.TYPE_RET_VALUE, cons.constraintValueType);
-		assertEquals("age", cons.fieldName);
-		assertEquals("<", cons.operator);
-		assertEquals("33 + 1", cons.value);
+		assertEquals(BaseSingleFieldConstraint.TYPE_RET_VALUE, cons.getConstraintValueType());
+		assertEquals("age", cons.getFieldName());
+		assertEquals("<", cons.getOperator());
+		assertEquals("33 + 1", cons.getValue());
 
 		cons = (SingleFieldConstraint) person.constraintList.constraints[2];
-		assertEquals(ISingleFieldConstraint.TYPE_PREDICATE, cons.constraintValueType);
-		assertEquals("age > 6", cons.value);
+		assertEquals(BaseSingleFieldConstraint.TYPE_PREDICATE, cons.getConstraintValueType());
+		assertEquals("age > 6", cons.getValue());
 
 
 		//examine the second pattern
 		FactPattern cheese = (FactPattern) rm.lhs[1];
 		assertEquals(1, cheese.constraintList.constraints.length);
 		cons = (SingleFieldConstraint) cheese.constraintList.constraints[0];
-		assertEquals("type", cons.fieldName);
-		assertEquals("==", cons.operator);
-		assertEquals("stilton", cons.value);
-		assertEquals(ISingleFieldConstraint.TYPE_LITERAL, cons.constraintValueType);
+		assertEquals("type", cons.getFieldName());
+		assertEquals("==", cons.getOperator());
+		assertEquals("stilton", cons.getValue());
+		assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL, cons.getConstraintValueType());
 	}
 
 	public void testRHS() {
@@ -551,7 +551,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		ConditionCol c = new ConditionCol();
 		c.boundName = "x";
 		c.factType = "Context";
-		c.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		c.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
 		dt.conditionCols.add(c);
 		ActionSetFieldCol asf = new ActionSetFieldCol();
 		asf.boundName = "x";
@@ -587,7 +587,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		ConditionCol c = new ConditionCol();
 		c.boundName = "x";
 		c.factType = "Context";
-		c.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		c.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
 		dt.conditionCols.add(c);
 		ActionSetFieldCol asf = new ActionSetFieldCol();
 		asf.boundName = "x";
@@ -630,7 +630,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		col2.boundName = "p1";
 		col2.factType = "Person";
 		col2.factField = "age";
-		col2.constraintValueType = ISingleFieldConstraint.TYPE_LITERAL;
+		col2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
 		col2.operator = "";
 		cols.add(col2);
 

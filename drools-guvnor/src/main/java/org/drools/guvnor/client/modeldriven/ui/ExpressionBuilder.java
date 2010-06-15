@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -25,11 +26,17 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.util.Format;
 
 public class ExpressionBuilder extends RuleModellerWidget implements HasExpressionTypeChangeHandlers, HasExpressionChangeHandlers {
 
@@ -39,6 +46,7 @@ public class ExpressionBuilder extends RuleModellerWidget implements HasExpressi
 	// private static final String GLOBAL_COLLECTION_VALUE_PREFIX = "gc";
 	private static final String GLOBAL_VARIABLE_VALUE_PREFIX = "gv";
 	private static final String METHOD_VALUE_PREFIX = "mt";
+	private final SmallLabelClickHandler slch = new SmallLabelClickHandler();
 	private Constants constants = ((Constants) GWT.create(Constants.class));
 	// private FlowPanel panel = new FlowPanel();
 	private HorizontalPanel panel = new HorizontalPanel();
@@ -71,13 +79,20 @@ public class ExpressionBuilder extends RuleModellerWidget implements HasExpressi
 			}
 		} else {
 			if (this.readOnly) {
-				panel.add(new SmallLabel("<b>" + expression.getText() + "</b>"));
+				panel.add(createSmallLabel("<b>" + getBoundText() + expression.getText(false) + "</b>"));
 			} else {
-				panel.add(new SmallLabel("<b>" + expression.getText() + ".</b>"));
+				panel.add(createSmallLabel("<b>" + getBoundText() + expression.getText(false) + ".</b>"));
 				panel.add(getWidgetForCurrentType());
 			}
 		}
 		initWidget(panel);
+	}
+	
+	private String getBoundText() {
+		if (expression.isBound()) {
+			return "[" + expression.getBinding() + "] ";
+		}
+		return "";
 	}
 
 	private Widget createStartPointWidget() {
@@ -144,7 +159,7 @@ public class ExpressionBuilder extends RuleModellerWidget implements HasExpressi
 		w = getWidgetForCurrentType();
 
 		if (!expression.isEmpty()) {
-			panel.add(new SmallLabel("<b>" + expression.getText() + ".</b>"));
+			panel.add(createSmallLabel("<b>" + expression.getText() + ".</b>"));
 		}
 		if (w != null) {
 			panel.add(w);
@@ -238,7 +253,7 @@ public class ExpressionBuilder extends RuleModellerWidget implements HasExpressi
 
 		panel.clear();
 		if (!expression.isEmpty()) {
-			panel.add(new SmallLabel("<b>" + expression.getText() + ".</b>"));
+			panel.add(createSmallLabel("<b>" + expression.getText() + ".</b>"));
 		}
 		if (w != null) {
 			panel.add(w);
@@ -365,5 +380,44 @@ public class ExpressionBuilder extends RuleModellerWidget implements HasExpressi
 
 	public HandlerRegistration addExpressionChangeHandler(ExpressionChangeHandler handler) {
 		return addHandler(handler, ExpressionChangeEvent.getType());
+	}
+	
+	private void showBindingPopUp() {
+		final FormStylePopup popup = new FormStylePopup();
+		popup.setWidth(500);
+		final HorizontalPanel vn = new HorizontalPanel();
+		final TextBox varName = new TextBox();
+		final Button ok = new Button(constants.Set());
+		vn.add(varName);
+		vn.add(ok);
+
+		ok.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				String var = varName.getText();
+				if (getModeller().isVariableNameUsed(var)) {
+					Window.alert(Format.format(constants.TheVariableName0IsAlreadyTaken(), var));
+					return;
+				}
+				expression.setBinding(var);
+				getModeller().refreshWidget();
+				popup.hide();
+			}
+		});
+
+		popup.addRow(vn);
+		popup.show();
+	}
+	
+	private class SmallLabelClickHandler implements ClickHandler {
+		public void onClick(ClickEvent event) {
+			showBindingPopUp();
+		}
+	}
+	
+	
+	private SmallLabel createSmallLabel(String text) {
+		SmallLabel label = new SmallLabel(text);
+		label.addClickHandler(slch);
+		return label;
 	}
 }

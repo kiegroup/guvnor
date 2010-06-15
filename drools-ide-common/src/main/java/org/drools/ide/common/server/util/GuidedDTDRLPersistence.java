@@ -12,7 +12,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
-import org.drools.ide.common.client.modeldriven.brl.ISingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -169,38 +169,38 @@ public class GuidedDTDRLPersistence {
 
 				//now add the constraint from this cell
 				switch (c.constraintValueType) {
-					case ISingleFieldConstraint.TYPE_LITERAL:
-					case ISingleFieldConstraint.TYPE_RET_VALUE:
+					case BaseSingleFieldConstraint.TYPE_LITERAL:
+					case BaseSingleFieldConstraint.TYPE_RET_VALUE:
 						SingleFieldConstraint sfc = new SingleFieldConstraint(c.factField);
 						if (no(c.operator)) {
 
 							String[] a = cell.split("\\s");
 							if (a.length > 1) {
-								sfc.operator = a[0];
-								sfc.value = a[1];
+								sfc.setOperator(a[0]);
+								sfc.setValue(a[1]);
 							} else {
-								sfc.value = cell;
+								sfc.setValue(cell);
 							}
 						} else {
-							sfc.operator = c.operator;
+							sfc.setOperator(c.operator);
                             if (c.operator.equals("in")) {
-                                sfc.value = makeInList(cell);
+                                sfc.setValue(makeInList(cell));
                             } else {
-                                sfc.value = cell;
+                                sfc.setValue(cell);
                             }
 
 						}
-						sfc.constraintValueType = c.constraintValueType;
+						sfc.setConstraintValueType(c.constraintValueType);
 						fp.addConstraint(sfc);
 						break;
-					case ISingleFieldConstraint.TYPE_PREDICATE:
+					case BaseSingleFieldConstraint.TYPE_PREDICATE:
 						SingleFieldConstraint pred = new SingleFieldConstraint();
-						pred.constraintValueType = c.constraintValueType;
+						pred.setConstraintValueType(c.constraintValueType);
                         if (c.factField != null && c.factField.indexOf("$param") > -1) {
                             //handle interpolation
-                            pred.value = c.factField.replace("$param", cell);  
+                            pred.setValue(c.factField.replace("$param", cell));  
                         } else {
-						    pred.value = cell;
+						    pred.setValue(cell);
                         }
 						fp.addConstraint(pred);
 						break;

@@ -67,6 +67,8 @@ import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -149,14 +151,14 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 
         if (this.model.metadataList.length == 0) {
             return false;
-        } else {
-            for (RuleMetadata at : this.model.metadataList) {
-                if (at.attributeName.equals(attr)) {
-                    return true;
-                }
-            }
-            return false;
         }
+
+        for (RuleMetadata at : this.model.metadataList) {
+        	if (at.attributeName.equals(attr)) {
+        		return true;
+        	}
+        }
+        return false;
     }
 
     /** return true if we should not allow unfrozen editing of the RHS */
@@ -178,10 +180,10 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 
         Image addPattern = new ImageButton("images/new_item.gif");
         addPattern.setTitle(constants.AddAConditionToThisRule());
-        addPattern.addClickListener(new ClickListener() {
-
-            public void onClick(Widget w) {
-                showConditionSelector(w, null);
+        addPattern.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+                showConditionSelector((Widget) event.getSource(), null);
             }
         });
 
@@ -205,10 +207,10 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 
         Image addAction = new ImageButton("images/new_item.gif"); //NON-NLS
         addAction.setTitle(constants.AddAnActionToThisRule());
-        addAction.addClickListener(new ClickListener() {
-
-            public void onClick(Widget w) {
-                showActionSelector(w, null);
+        addAction.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+                showActionSelector((Widget) event.getSource(), null);
             }
         });
         if (!lockRHS()) {
@@ -225,9 +227,9 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 
             final RuleModeller self = this;
             if (!this.showingOptions) {
-                ClickableLabel showMoreOptions = new ClickableLabel("(show options...)", new ClickListener() {
-
-                    public void onClick(Widget sender) {
+                ClickableLabel showMoreOptions = new ClickableLabel("(show options...)", new ClickHandler() {
+        			
+        			public void onClick(ClickEvent event) {
                         showingOptions = true;
                         layout.setWidget(tmp1, 0, new SmallLabel(constants.optionsRuleModeller()));
                         layout.setWidget(tmp1, 2, getAddAttribute());
@@ -268,10 +270,10 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
         Image add = new ImageButton("images/new_item.gif"); //NON-NLS
         add.setTitle(constants.AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted());
 
-        add.addClickListener(new ClickListener() {
-
-            public void onClick(Widget w) {
-                showAttributeSelector(w);
+        add.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+                showAttributeSelector((Widget) event.getSource());
             }
         });
         return add;
@@ -287,9 +289,9 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 
         list.setSelectedIndex(0);
 
-        list.addChangeListener(new ChangeListener() {
-
-            public void onChange(Widget w) {
+        list.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
                 String attr = list.getItemText(list.getSelectedIndex());
                 if (attr.equals(RuleAttributeWidget.LOCK_LHS) || attr.equals(RuleAttributeWidget.LOCK_RHS)) {
                     model.addMetadata(new RuleMetadata(attr, "true"));
@@ -304,9 +306,9 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 
         addbutton.setTitle(constants.AddMetadataToTheRule());
 
-        addbutton.addClickListener(new ClickListener() {
-
-            public void onClick(Widget w) {
+        addbutton.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
 
                 model.addMetadata(new RuleMetadata(box.getText(), ""));
                 refreshWidget();
@@ -325,18 +327,18 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
         pop.addAttribute(constants.Attribute1(), list);
 
         Button freezeConditions = new Button(constants.Conditions());
-        freezeConditions.addClickListener(new ClickListener() {
-
-            public void onClick(Widget sender) {
+        freezeConditions.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
                 model.addMetadata(new RuleMetadata(RuleAttributeWidget.LOCK_LHS, "true"));
                 refreshWidget();
                 pop.hide();
             }
         });
         Button freezeActions = new Button(constants.Actions());
-        freezeActions.addClickListener(new ClickListener() {
-
-            public void onClick(Widget sender) {
+        freezeActions.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
                 model.addMetadata(new RuleMetadata(RuleAttributeWidget.LOCK_RHS, "true"));
                 refreshWidget();
                 pop.hide();
@@ -387,9 +389,9 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
             Image remove = new ImageButton("images/delete_faded.gif"); //NON-NLS
             remove.setTitle(constants.RemoveThisAction());
             final int idx = i;
-            remove.addClickListener(new ClickListener() {
-
-                public void onClick(Widget w) {
+            remove.addClickHandler(new ClickHandler() {
+    			
+    			public void onClick(ClickEvent event) {
                     if (Window.confirm(constants.RemoveThisItem())) {
                         model.removeRhsItem(idx);
                         refreshWidget();
@@ -625,8 +627,8 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
         Button b = new Button(constants.OK());
         hp.add(b);
         b.addClickListener(new ClickListener() {
-
-            public void onClick(final Widget sender) {
+			
+			public void onClick(Widget sender) {
                 cl.onChange(sender);
             }
         });
@@ -649,7 +651,6 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
     }
 
     protected void showActionSelector(Widget w, Integer position) {
-        //XXX {Bauna} add RHS Actions
         final FormStylePopup popup = new FormStylePopup();
         popup.setWidth(-1);
         popup.setTitle(constants.AddANewAction());
@@ -910,7 +911,12 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 
     protected void addModify(String itemText, int position) {
         this.model.addRhsItem(new ActionUpdateField(itemText), position);
-        refreshWidget();
+        
+        try {
+			refreshWidget();
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
     }
 
     protected void addNewDSLRhs(DSLSentence sentence, int position) {
@@ -1037,9 +1043,9 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
         final Image remove = new ImageButton("images/delete_faded.gif"); //NON-NLS
         remove.setTitle(constants.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt());
         final int idx = i;
-        remove.addClickListener(new ClickListener() {
-
-            public void onClick(Widget w) {
+        remove.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
                 if (Window.confirm(constants.RemoveThisEntireConditionQ())) {
                     if (model.removeLhsItem(idx)) {
                         refreshWidget();
@@ -1049,7 +1055,6 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
                 }
             }
         });
-
 
         horiz.setWidth("100%");
         w.setWidth("100%");

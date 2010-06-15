@@ -4,7 +4,7 @@ package org.drools.ide.common.client.modeldriven.brl;
  * This is for a connective constraint that adds more options to a field constraint. 
  * @author Michael Neale
  */
-public class ConnectiveConstraint extends ISingleFieldConstraint {
+public class ConnectiveConstraint extends BaseSingleFieldConstraint {
 
     public ConnectiveConstraint() {
     }
@@ -16,7 +16,7 @@ public class ConnectiveConstraint extends ISingleFieldConstraint {
     	this.fieldName = fieldName;
     	this.fieldType = fieldType;
         this.operator = opr;
-        this.value = val;
+        this.setValue(val);
     }
 
     public String operator;
