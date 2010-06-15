@@ -911,12 +911,7 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 
     protected void addModify(String itemText, int position) {
         this.model.addRhsItem(new ActionUpdateField(itemText), position);
-        
-        try {
-			refreshWidget();
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
+        refreshWidget();
     }
 
     protected void addNewDSLRhs(DSLSentence sentence, int position) {
