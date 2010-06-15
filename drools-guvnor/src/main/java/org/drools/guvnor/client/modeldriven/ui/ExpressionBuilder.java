@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
@@ -33,6 +34,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -79,9 +81,9 @@ public class ExpressionBuilder extends RuleModellerWidget implements HasExpressi
 			}
 		} else {
 			if (this.readOnly) {
-				panel.add(createSmallLabel("<b>" + getBoundText() + expression.getText(false) + "</b>"));
+				panel.add(createWidgetForExpression("<b>" + getBoundText() + expression.getText(false) + "</b>"));
 			} else {
-				panel.add(createSmallLabel("<b>" + getBoundText() + expression.getText(false) + ".</b>"));
+				panel.add(createWidgetForExpression("<b>" + getBoundText() + expression.getText(false) + ".</b>"));
 				panel.add(getWidgetForCurrentType());
 			}
 		}
@@ -159,7 +161,7 @@ public class ExpressionBuilder extends RuleModellerWidget implements HasExpressi
 		w = getWidgetForCurrentType();
 
 		if (!expression.isEmpty()) {
-			panel.add(createSmallLabel("<b>" + expression.getText() + ".</b>"));
+			panel.add(createWidgetForExpression("<b>" + expression.getText() + ".</b>"));
 		}
 		if (w != null) {
 			panel.add(w);
@@ -253,7 +255,7 @@ public class ExpressionBuilder extends RuleModellerWidget implements HasExpressi
 
 		panel.clear();
 		if (!expression.isEmpty()) {
-			panel.add(createSmallLabel("<b>" + expression.getText() + ".</b>"));
+			panel.add(createWidgetForExpression("<b>" + expression.getText() + ".</b>"));
 		}
 		if (w != null) {
 			panel.add(w);
@@ -385,9 +387,10 @@ public class ExpressionBuilder extends RuleModellerWidget implements HasExpressi
 	private void showBindingPopUp() {
 		final FormStylePopup popup = new FormStylePopup();
 		popup.setWidth(500);
-		final HorizontalPanel vn = new HorizontalPanel();
+		HorizontalPanel vn = new HorizontalPanel();
 		final TextBox varName = new TextBox();
-		final Button ok = new Button(constants.Set());
+		Button ok = new Button(constants.Set());
+		vn.add(new Label(constants.BindTheExpressionToAVariable()));
 		vn.add(varName);
 		vn.add(ok);
 
@@ -414,10 +417,8 @@ public class ExpressionBuilder extends RuleModellerWidget implements HasExpressi
 		}
 	}
 	
-	
-	private SmallLabel createSmallLabel(String text) {
-		SmallLabel label = new SmallLabel(text);
-		label.addClickHandler(slch);
+	private ClickableLabel createWidgetForExpression(String text) {
+		ClickableLabel label = new ClickableLabel(text, slch);
 		return label;
 	}
 }

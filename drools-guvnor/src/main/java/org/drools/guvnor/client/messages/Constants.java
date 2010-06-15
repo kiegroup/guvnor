@@ -1244,6 +1244,8 @@ public interface Constants extends ConstantsWithLookup {
     String TheVariableName0IsAlreadyTaken();
 
     String BindTheFieldCalled0ToAVariable();
+    
+    String BindTheExpressionToAVariable();
 
     String ShowSubFields();
 
