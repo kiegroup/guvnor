@@ -36,7 +36,7 @@ public class PackageDeploymentURIHelper {
     private String  version;
     private String  packageName;
     private String  assetName = null;
-    private boolean source;
+    private boolean source = true;
     private boolean documentation;
 
     public PackageDeploymentURIHelper(String uri) throws UnsupportedEncodingException {
@@ -44,15 +44,21 @@ public class PackageDeploymentURIHelper {
         String url = URLDecoder.decode( uri,
                                         "UTF-8" );
 
-        if ( url.endsWith( ".drl" ) || url.endsWith( ".pdf" ) ) {
+        if ( url.endsWith( ".drl" ) || url.endsWith( ".bpmn" ) || url.endsWith( ".pdf" ) ) {
+        	int subs = 0;
             if ( url.endsWith( ".drl" ) ) {
                 source = true;
+                subs = 4;
+            } else if ( url.endsWith( ".bpmn" ) ) {
+                source = true;
+                subs = 5;
             } else if ( url.endsWith( ".pdf" ) ) {
                 documentation = true;
+                subs = 4;
             }
 
             url = url.substring( 0,
-                                 url.length() - 4 );
+                                 url.length() - subs );
 
         }
 

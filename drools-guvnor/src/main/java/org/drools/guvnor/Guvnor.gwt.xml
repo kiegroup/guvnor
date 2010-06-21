@@ -33,7 +33,7 @@
 	<script src="js/ext/adapter/ext/ext-base.js" />
 	<script src="js/ext/ext-all.js" />
 
-
+    <servlet path="/guvnorAPI" class="org.drools.guvnor.server.GuvnorAPIServlet" />
 	<servlet path="/guvnorService" class="org.drools.guvnor.server.RepositoryServiceServlet" />
 	<servlet path="/securityService" class="org.drools.guvnor.server.SecurityServiceServlet" />
     <servlet path="/asset" class="org.drools.guvnor.server.files.AssetFileServlet"/>

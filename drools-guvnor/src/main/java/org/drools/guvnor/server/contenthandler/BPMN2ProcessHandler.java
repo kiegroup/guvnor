@@ -17,10 +17,16 @@ package org.drools.guvnor.server.contenthandler;
  */
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
+import org.apache.log4j.Logger;
 import org.drools.bpmn2.xml.BPMNSemanticModule;
 import org.drools.bpmn2.xml.XmlBPMNProcessDumper;
 import org.drools.compiler.DroolsParserException;
@@ -28,12 +34,18 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.xml.XmlProcessReader;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
+import org.drools.guvnor.server.GuvnorAPIServlet;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.RuleFlowContentModelBuilder;
+import org.drools.guvnor.server.builder.RuleFlowProcessBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
+import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
+import org.drools.repository.RulesRepositoryException;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.compiler.xml.XmlProcessReader;
+import org.drools.compiler.xml.XmlRuleFlowProcessDumper;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -41,6 +53,8 @@ public class BPMN2ProcessHandler extends ContentHandler
     implements
     ICompilable {
 
+    private static final Logger     log  = LoggingHelper.getLogger(BPMN2ProcessHandler.class);
+    
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
                                      AssetItem item) throws SerializableException {
@@ -49,7 +63,12 @@ public class BPMN2ProcessHandler extends ContentHandler
             RuleFlowContentModel content = RuleFlowContentModelBuilder.createModel( process );
             content.setXml( item.getContent() );
             asset.content = content;
-        }
+		} else {
+			// we are very fault tolerant
+			RuleFlowContentModel content = new RuleFlowContentModel();
+			content.setXml(item.getContent());
+			asset.content = content;
+		}
     }
 
     protected RuleFlowProcess readProcess(InputStream is) {
@@ -77,7 +96,89 @@ public class BPMN2ProcessHandler extends ContentHandler
 
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializableException {
+    	RuleFlowContentModel content = (RuleFlowContentModel) asset.content;
+    	System.out.println(content);
+        // 
+        // Migrate v4 ruleflows to v5
+        // Added guards to check for nulls in the case where the ruleflows
+        // have not been migrated from drools 4 to 5.
+        //
+        if ( content != null ) {
+            if ( content.getXml() != null ) {
+                RuleFlowProcess process = readProcess( new ByteArrayInputStream( content.getXml().getBytes() ) );
+
+                if ( process != null ) {
+                    RuleFlowProcessBuilder.updateProcess( process,
+                                                          content.getNodes() );
+
+                    XmlRuleFlowProcessDumper dumper = XmlRuleFlowProcessDumper.INSTANCE;
+                    String out = dumper.dump( process );
+
+                    repoAsset.updateContent( out );
+                } else {
+                    //
+                    // Migrate v4 ruleflows to v5
+                    // Put the old contents back as there is no updating possible
+                    //
+                    repoAsset.updateContent( content.getXml() );
+                }
+            }
+            if ( content.getJson() != null) {
+            	try {
+            		String xml = serialize( "http://localhost:8080/designer/bpmn2_0serialization", content.getJson());
+            		System.out.println("xml = " + xml);
+            		repoAsset.updateContent(xml);
+            	} catch (Exception e) {
+            		log.error(e.getMessage(), e);
+            	}
+            }
+        }
     }
+
+    public static String serialize(String serializeUrl, String modelJson) throws IOException {
+    	OutputStream out = null;
+		InputStream content = null;
+		ByteArrayOutputStream bos = null;
+
+		try {
+			modelJson = "data=" + URLEncoder.encode(modelJson, "UTF-8")	+ "&xml=true";
+			byte[] bytes = modelJson.getBytes("UTF-8");
+
+			HttpURLConnection connection = (HttpURLConnection) new URL(serializeUrl).openConnection();
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+			connection.setFixedLengthStreamingMode(bytes.length);
+			connection.setDoOutput(true);
+			out = connection.getOutputStream();
+			out.write(bytes);
+			out.close();
+
+			content = connection.getInputStream();
+
+			bos = new ByteArrayOutputStream();
+			int b = 0;
+			while ((b = content.read()) > -1) {
+				bos.write(b);
+			}
+			bytes = bos.toByteArray();
+			content.close();
+			bos.close();
+			return new String(bytes);
+		} finally {
+			try {
+				if (out != null) {
+					out.close();
+				}
+				if (content != null) {
+					content.close();
+				}
+				if (bos != null) {
+					bos.close();
+				}
+			} catch (IOException e) {
+			}
+		}
+	}
 
     /**
      * The rule flow can not be built if the package name is not the same as the

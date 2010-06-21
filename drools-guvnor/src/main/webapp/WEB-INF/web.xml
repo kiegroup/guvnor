@@ -58,7 +58,10 @@
 		<servlet-name>WSDLParserServlet</servlet-name>
 		<servlet-class>	org.gridcc.mce.mceworkflow.servlets.WSDLParserServlet</servlet-class>
 	</servlet>
-
+    <servlet>
+        <servlet-name>guvnorAPI</servlet-name>
+        <servlet-class>org.drools.guvnor.server.GuvnorAPIServlet</servlet-class>
+    </servlet>
 
 	<servlet-mapping>
 		<servlet-name>guvnorService</servlet-name>
@@ -100,7 +103,10 @@
 		<servlet-name>WSDLParserServlet</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/wsdlparser/*</url-pattern>
 	</servlet-mapping>
-
+	<servlet-mapping>
+		<servlet-name>guvnorAPI</servlet-name>
+		<url-pattern>/org.drools.guvnor.Guvnor/guvnorAPI</url-pattern>
+	</servlet-mapping>
 
     <session-config>
         <session-timeout>180</session-timeout>
