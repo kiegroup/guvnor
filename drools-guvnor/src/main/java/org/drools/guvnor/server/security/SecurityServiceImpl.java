@@ -26,10 +26,10 @@ import java.util.Properties;
 import javax.security.auth.login.LoginException;
 
 import org.apache.log4j.Logger;
+import org.drools.core.util.DateUtils;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.security.Capabilities;
-import org.drools.core.util.DateUtils;
 import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.AuthorizationException;
@@ -93,7 +93,7 @@ public class SecurityServiceImpl
             }
             return new UserSecurityContext( Identity.instance().getCredentials().getUsername() );
         } else {
-            HashSet<String> disabled = new HashSet<String>();
+//            HashSet<String> disabled = new HashSet<String>();
             //return new UserSecurityContext(null);
             return new UserSecurityContext( "SINGLE USER MODE (DEBUG) USE ONLY" );
         }
