@@ -299,9 +299,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
          <scope>test</scope>
       </dependency>
       <dependency>
-         <groupId>commons-logging</groupId>
-         <artifactId>commons-logging</artifactId>
-         <version>1.1</version>
+         <groupId>org.slf4j</groupId>
+         <artifactId>jcl-over-slf4j</artifactId>
          <scope>test</scope>
       </dependency>
       <dependency>
