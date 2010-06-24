@@ -33,46 +33,18 @@ import org.drools.guvnor.client.common.Snapshot;
  */
 public class PackageDeploymentURIHelper {
 
-    private String  version;
-    private String  packageName;
-    private String  assetName = null;
-    private boolean source = true;
-    private boolean documentation;
+    private String version;
+    private String packageName;
+    private String assetName = null;
+
+    private enum FileType {
+        UNKNOWN, SOURCE, DOCUMENTATION
+    }
+
+    private FileType fileType = FileType.UNKNOWN;
 
     public PackageDeploymentURIHelper(String uri) throws UnsupportedEncodingException {
-
-        String url = URLDecoder.decode( uri,
-                                        "UTF-8" );
-
-        if ( url.endsWith( ".drl" ) || url.endsWith( ".bpmn" ) || url.endsWith( ".pdf" ) ) {
-        	int subs = 0;
-            if ( url.endsWith( ".drl" ) ) {
-                source = true;
-                subs = 4;
-            } else if ( url.endsWith( ".bpmn" ) ) {
-                source = true;
-                subs = 5;
-            } else if ( url.endsWith( ".pdf" ) ) {
-                documentation = true;
-                subs = 4;
-            }
-
-            url = url.substring( 0,
-                                 url.length() - subs );
-
-        }
-
-        Pattern pattern = Pattern.compile( ".*/(package|asset)/(.*)" );
-        Matcher m = pattern.matcher( url );
-        if ( m.matches() ) {
-            String result = m.group( 2 );
-            String[] mtoks = result.split( "/" );
-            this.version = mtoks[1];
-            this.packageName = mtoks[0];
-            if ( mtoks.length == 3 ) {
-                this.assetName = mtoks[2];
-            }
-        }
+        new URIProcessor().parseUri( uri );
     }
 
     public String getPackageName() {
@@ -88,21 +60,84 @@ public class PackageDeploymentURIHelper {
     }
 
     public boolean isSource() {
-
-        return source;
+        return fileType == FileType.SOURCE;
     }
 
     public boolean isDocumentation() {
-
-        return documentation;
+        return fileType == FileType.DOCUMENTATION;
     }
 
     public String getAssetName() {
         return this.assetName;
-
     }
 
     public boolean isAsset() {
         return assetName != null;
+    }
+
+    class URIProcessor {
+
+        private static final String PDF  = ".pdf";
+        private static final String BPMN = ".bpmn";
+        private static final String DRL  = ".drl";
+
+        private String              url;
+
+        public void parseUri(String uri) throws UnsupportedEncodingException {
+            url = URLDecoder.decode( uri,
+                                     "UTF-8" );
+
+            String extension = getFileExtensionIfAny();
+            setFileTypeIfAny( extension );
+            stripFileExtensionIfAny( extension );
+            setPackageOrAssetData();
+        }
+
+        private void setPackageOrAssetData() {
+            Pattern pattern = Pattern.compile( ".*/(package|asset)/(.*)" );
+            Matcher matcher = pattern.matcher( url );
+            if ( matcher.matches() ) {
+                String result = matcher.group( 2 );
+                String[] tokens = result.split( "/" );
+                version = tokens[1];
+                packageName = tokens[0];
+                if ( tokens.length == 3 ) {
+                    assetName = tokens[2];
+                }
+            }
+        }
+
+        private void setFileTypeIfAny(String extension) {
+            if ( extension.equals( DRL ) || extension.equals( BPMN ) ) {
+                fileType = FileType.SOURCE;
+            } else if ( extension.equals( PDF ) ) {
+                fileType = FileType.DOCUMENTATION;
+            }
+        }
+
+        private void stripFileExtensionIfAny(String extension) {
+            if ( extension.length() > 0 ) {
+                url = url.substring( 0,
+                                     url.length() - extension.length() );
+            }
+        }
+
+        private String getFileExtensionIfAny() {
+
+            if ( isFileType( DRL ) ) {
+                return DRL;
+            } else if ( isFileType( BPMN ) ) {
+                return BPMN;
+            } else if ( isFileType( PDF ) ) {
+                return PDF;
+            }
+
+            return "";
+        }
+
+        private boolean isFileType(String extension) {
+            return url.endsWith( extension );
+        }
+
     }
 }
