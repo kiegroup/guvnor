@@ -31,6 +31,7 @@ import org.jboss.seam.security.Identity;
 import org.jboss.seam.contexts.Contexts;
 
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * This is a base servlet that all repo servlets inherit behaviour from. 
@@ -110,7 +111,7 @@ public class RepositoryServlet extends HttpServlet {
      */
     public static boolean allowUser(String auth) {
         if (auth == null) return false;  // no auth
-        if (!auth.toUpperCase().startsWith("BASIC "))
+        if (!auth.toUpperCase(Locale.ENGLISH).startsWith("BASIC "))
           return false;  // we only do BASIC
 
         String[] a = unpack(auth);
