@@ -193,7 +193,7 @@ public class AssetItemGrid extends Composite {
                                             //NOTE, GWTEXT only understands certain date formats, for example "yyyy/MM/dd"
                                             //works but other formats such as "yyyy/MM/dd" or localized formats  is not recognizable 
                                             //by GWTEXT. See http://code.google.com/p/gwt-ext/issues/detail?id=459&start=100.
-                                            DateTimeFormat format = DateTimeFormat.getFormat( "yyyy/MM/dd");
+                                            DateTimeFormat format = DateTimeFormat.getFormat( "yyyy/MM/dd HH:mm");
                                              //DateTimeFormat format = DateTimeFormat.getFullDateFormat();
                                             rowData[j] = format.format(dt);
                                          } else {
@@ -460,6 +460,7 @@ public class AssetItemGrid extends Composite {
                                 }
                             } );
                         } else if ( headerType.equals( "class java.util.Calendar" ) ) {
+                        	setWidth( 120 );
                             setRenderer( new Renderer() {
                                 public String render(Object value,
                                                      CellMetadata cellMetadata,
@@ -467,7 +468,8 @@ public class AssetItemGrid extends Composite {
                                                      int rowIndex,
                                                      int colNum,
                                                      Store store) {
-                                    DateTimeFormat format = DateTimeFormat.getMediumDateFormat();// DateTimeFormat.getFormat( "MMM d, yyyy");
+                                    //DateTimeFormat format = DateTimeFormat.getMediumDateFormat();
+                                	DateTimeFormat format = DateTimeFormat.getFormat( "yyyy/MM/dd HH:mm");
                                     //System.out.println("----format.format( (Date) value  )" + format.format( (Date) value  ));
                                     return format.format( (Date) value  );
                                 }
