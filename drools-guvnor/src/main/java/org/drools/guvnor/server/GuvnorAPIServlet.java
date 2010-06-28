@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -43,13 +42,11 @@ import com.google.gwt.user.client.rpc.SerializableException;
  */
 public class GuvnorAPIServlet extends HttpServlet {
 
-    private static final Logger     log  = LoggingHelper.getLogger(GuvnorAPIServlet.class);
+    private static final LoggingHelper     log  = LoggingHelper.getLogger(GuvnorAPIServlet.class);
     
     public void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (log.isDebugEnabled()) {
-            log.debug("Incoming request for Guvnor API:" + request.getRequestURL());
-        }
+        log.debug("Incoming request for Guvnor API:" + request.getRequestURL());
         String action = request.getParameter("action");
         if ("load".equals(action)) {
             String uuid = request.getParameter("uuid");
@@ -74,11 +71,9 @@ public class GuvnorAPIServlet extends HttpServlet {
                     	log.error(e.getMessage(), e);
                         throw new ServletException(e.getMessage(), e);
                     }
-                    if (log.isDebugEnabled()) {
-                        log.debug("Sending model");
-                        log.debug(content);
-                        log.debug("End of sending model");
-                    }
+                    log.debug("Sending model");
+                    log.debug(content);
+                    log.debug("End of sending model");
                     response.setContentLength(content.getBytes().length);
                     response.getOutputStream().write(content.getBytes());
                     response.getOutputStream().close();

@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.CategoryPathType;
@@ -56,7 +55,7 @@ public class RoleBasedPermissionResolver
     implements
     PermissionResolver,
     Serializable {
-	private static final Logger log = LoggingHelper.getLogger(RoleBasedPermissionResolver.class);
+	private static final LoggingHelper log = LoggingHelper.getLogger(RoleBasedPermissionResolver.class);
 
     private boolean enableRoleBasedAuthorization = false;
 

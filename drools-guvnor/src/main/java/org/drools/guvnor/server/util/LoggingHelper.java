@@ -2,15 +2,8 @@ package org.drools.guvnor.server.util;
 
 import java.util.Date;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.spi.ErrorHandler;
-import org.apache.log4j.spi.Filter;
-import org.apache.log4j.spi.LoggingEvent;
 import org.drools.guvnor.client.rpc.LogEntry;
-import org.drools.guvnor.server.ServiceImplementation;
+import org.slf4j.LoggerFactory;
 
 /**
  * Collects messages for displaying in the GUI as well as providing a logger.
@@ -18,104 +11,91 @@ import org.drools.guvnor.server.ServiceImplementation;
  *
  */
 public class LoggingHelper {
+    private final org.slf4j.Logger log;
 
-	static final MessageList messages = new MessageList();
+    static final MessageList       messages = new MessageList();
 
-	public static LogEntry[] getMessages() {
-		return messages.getMessages();
-	}
+    public static LogEntry[] getMessages() {
+        return messages.getMessages();
+    }
 
-	public static void cleanLog() {
-		messages.cleanEntry();
-	}
-	
-	public static Logger getLogger(Class cls) {
+    public static void cleanLog() {
+        messages.cleanEntry();
+    }
 
-		Logger l = Logger.getLogger( cls );
+    public static LoggingHelper getLogger(Class< ? > cls) {
+        return new LoggingHelper( cls );
+    }
 
-		l.addAppender(new Appender() {
+    private LoggingHelper(Class< ? > cls) {
+        log = LoggerFactory.getLogger( cls );
+    }
 
-			public void addFilter(Filter arg0) {
-			}
+    public void info(String message) {
+        log.info( message );
+        messages.add( message,
+                      1 );
+    }
 
-			public void clearFilters() {
-			}
+    public void info(String message,
+                     Throwable error) {
+        log.info( message,
+                  error );
+        messages.add( message + " " + error.getMessage(),
+                      1 );
+    }
 
-			public void close() {
-			}
+    public void debug(String message) {
+        log.debug( message );
+    }
 
-			public void doAppend(LoggingEvent e) {
-				LogEntry ev = new LogEntry();
-				ev.message = e.getRenderedMessage();
-				ev.timestamp = new Date();
-				if (e.getLevel().equals(Level.ERROR)) {
-					ev.severity = 0;
-					messages.add(ev);
-				} else if (e.getLevel().equals(Level.INFO)) {
-					ev.severity = 1;
-					messages.add(ev);
-				}
-			}
+    public void error(String message) {
+        log.error( message );
+        messages.add( message,
+                      0 );
+    }
 
-			public ErrorHandler getErrorHandler() {
-				return null;
-			}
+    public void error(String message,
+                      Throwable error) {
+        log.error( message,
+                   error );
+        messages.add( message + " " + error.getMessage(),
+                      0 );
+    }
 
-			public Filter getFilter() {
-				return null;
-			}
-
-			public Layout getLayout() {
-				return null;
-			}
-
-			public String getName() {
-				return "guilogger";
-			}
-
-			public boolean requiresLayout() {
-				return false;
-			}
-
-			public void setErrorHandler(ErrorHandler arg0) {
-			}
-
-			public void setLayout(Layout arg0) {
-			}
-
-			public void setName(String arg0) {
-			}
-
-		});
-		return l;
-
-	}
+    public void warn(String message) {
+        log.warn( message );
+    }
 
 }
 
 class MessageList {
-	static int MAX = 500;
-	LogEntry[] messages = new LogEntry[MAX];
-	int current = 0;
-	
-	public MessageList() {
+    static int MAX      = 500;
+    LogEntry[] messages = new LogEntry[MAX];
+    int        current  = 0;
 
-	}
+    public MessageList() {
 
-	public synchronized void add(LogEntry e) {
-		if (current == MAX) {
-			current = 0;
-		}
-		messages[current++] = e;
-	}
+    }
 
-	public LogEntry[] getMessages() {
-		return messages;
-	}
-	
-	public synchronized void cleanEntry() {
-		messages = new LogEntry[MAX];
-	}
+    public synchronized void add(String message,
+                                 int severity) {
+        LogEntry entry = new LogEntry();
+        entry.message = message;
+        entry.timestamp = new Date();
+        entry.severity = severity;
 
+        if ( current == MAX ) {
+            current = 0;
+        }
+        messages[current++] = entry;
+    }
+
+    public LogEntry[] getMessages() {
+        return messages;
+    }
+
+    public synchronized void cleanEntry() {
+        messages = new LogEntry[MAX];
+    }
 }
-

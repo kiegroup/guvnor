@@ -1,18 +1,17 @@
 package org.drools.guvnor.server;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.server.security.SecurityServiceImpl;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.security.AuthorizationException;
-import org.apache.log4j.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * Wrapper for GWT RPC.
@@ -22,13 +21,13 @@ import java.io.IOException;
 public class SecurityServiceServlet extends RemoteServiceServlet implements
 		SecurityService {
 
-    private static final Logger log              = LoggingHelper.getLogger(SecurityServiceServlet.class);
+    private static final LoggingHelper log              = LoggingHelper.getLogger(SecurityServiceServlet.class);
 	SecurityService service = new SecurityServiceImpl();
 
     @Override
     protected void doUnexpectedFailure(Throwable e) {
         if (e.getCause() instanceof AuthorizationException) {
-            log.info(e);
+            log.info(e.getMessage(), e);
             HttpServletResponse response = getThreadLocalResponse();
             try {
               response.setContentType("text/plain");
@@ -40,7 +39,7 @@ public class SecurityServiceServlet extends RemoteServiceServlet implements
                   ex);
             }
         } else {
-            log.error(e.getCause());
+            log.error(e.getMessage(), e.getCause());
             super.doUnexpectedFailure(e);
         }
     }

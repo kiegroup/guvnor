@@ -19,8 +19,8 @@ package org.drools.guvnor.server.files;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.zip.ZipOutputStream;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.util.FormData;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.apache.log4j.Logger;
 
 /**
  * 
@@ -41,7 +40,7 @@ import org.apache.log4j.Logger;
  */
 public class RepositoryBackupServlet extends RepositoryServlet {
 
-    private static final Logger log                               = LoggingHelper.getLogger(RepositoryBackupServlet.class);
+    private static final LoggingHelper log                               = LoggingHelper.getLogger(RepositoryBackupServlet.class);
 	private static final long serialVersionUID = 400L;
 
 	// final FileManagerUtils uploadHelper = new FileManagerUtils();

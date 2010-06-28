@@ -26,15 +26,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.apache.log4j.Logger;
 import org.drools.bpmn2.xml.BPMNSemanticModule;
 import org.drools.bpmn2.xml.XmlBPMNProcessDumper;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.compiler.xml.XmlProcessReader;
+import org.drools.compiler.xml.XmlRuleFlowProcessDumper;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
-import org.drools.guvnor.server.GuvnorAPIServlet;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.RuleFlowContentModelBuilder;
 import org.drools.guvnor.server.builder.RuleFlowProcessBuilder;
@@ -42,10 +41,7 @@ import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.drools.repository.RulesRepositoryException;
 import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.compiler.xml.XmlProcessReader;
-import org.drools.compiler.xml.XmlRuleFlowProcessDumper;
 
 import com.google.gwt.user.client.rpc.SerializableException;
 
@@ -53,7 +49,7 @@ public class BPMN2ProcessHandler extends ContentHandler
     implements
     ICompilable {
 
-    private static final Logger     log  = LoggingHelper.getLogger(BPMN2ProcessHandler.class);
+    private static final LoggingHelper     log  = LoggingHelper.getLogger(BPMN2ProcessHandler.class);
     
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,

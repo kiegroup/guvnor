@@ -5,7 +5,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -30,7 +29,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 public class RepositoryServiceServlet extends RemoteServiceServlet implements RepositoryService {
 
-    private static final Logger     log              = LoggingHelper.getLogger(RepositoryServiceServlet.class);
+    private static final LoggingHelper     log              = LoggingHelper.getLogger(RepositoryServiceServlet.class);
     private static boolean testListenerInit = false;
 	/**
 	 * This is used by the pass through methods below.
@@ -62,7 +61,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 		if (e.getCause() instanceof AuthorizationException) {
 			HttpServletResponse response = getThreadLocalResponse();
 		    try {
-		      log.error(e.getCause());
+		      log.error(e.getMessage(),e.getCause());
 		      e.printStackTrace();
 		      response.setContentType("text/plain");
 		      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -73,14 +72,14 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 		          ex);
 		    }
 		} else if (e.getCause() instanceof RulesRepositoryException) {
-			log.error(e.getCause());
+			log.error(e.getMessage(), e.getCause());
             sendErrorMessage(e.getCause().getMessage());
 		} else {
             if (e.getCause() != null) {
-			    log.error(e.getCause());
+			    log.error(e.getMessage(),e.getCause());
                 e.printStackTrace();
             } else {
-                log.error(e);
+                log.error(e.getMessage(),e);
                 e.printStackTrace();
             }
 			sendErrorMessage("Sorry, a technical error occurred. Please contact a system administrator.");

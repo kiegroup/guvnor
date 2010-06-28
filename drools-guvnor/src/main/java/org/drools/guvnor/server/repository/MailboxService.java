@@ -1,15 +1,16 @@
 package org.drools.guvnor.server.repository;
 
-import org.drools.repository.RulesRepository;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
+import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo;
 import org.drools.repository.UserInfo.InboxEntry;
-import org.drools.guvnor.server.util.LoggingHelper;
-import org.apache.log4j.Logger;
-
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
-import java.util.*;
 
 /**
  * This service the "delivery" of messages to users inboxes for events.
@@ -19,7 +20,7 @@ import java.util.*;
  */
 public class MailboxService {
 
-    private static final Logger log = LoggingHelper.getLogger( MailboxService.class );
+    private static final LoggingHelper log = LoggingHelper.getLogger( MailboxService.class );
     public static final String MAILMAN = "mailman";
     private static ExecutorService executor = Executors.newSingleThreadExecutor();
 

@@ -46,7 +46,6 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.util.ISO8601;
-import org.apache.log4j.Logger;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -175,7 +174,7 @@ public class ServiceImplementation
 
     private static final DateFormat     dateFormatter                     = DateFormat.getInstance();
 
-    private static final Logger         log                               = LoggingHelper.getLogger( ServiceImplementation.class );
+    private static final LoggingHelper         log                               = LoggingHelper.getLogger( ServiceImplementation.class );
 
     private MetaDataMapper              metaDataMapper                    = new MetaDataMapper();
 
@@ -1817,7 +1816,7 @@ public class ServiceImplementation
                 }
             }
         } catch ( Exception e ) {
-            log.error( e );
+            log.error("Unable to build asset.", e );
             result = new BuilderResult();
 
             BuilderResultLine res = new BuilderResultLine();
@@ -1848,7 +1847,7 @@ public class ServiceImplementation
             repository.copyPackage( sourcePackageName,
                                     destPackageName );
         } catch ( RulesRepositoryException e ) {
-            log.error( e );
+            log.error("Unable to copy package.", e );
             throw e;
         }
 
@@ -1915,7 +1914,7 @@ public class ServiceImplementation
                     ((ICanHasAttachment) handler).onAttachmentRemoved( item );
                 }
             } catch ( IOException e ) {
-                log.error( e );
+                log.error("Unable to remove asset attachment", e );
             }
 
             item.archiveItem( archive );
@@ -1932,7 +1931,7 @@ public class ServiceImplementation
                   pkg.getName() );
 
         } catch ( RulesRepositoryException e ) {
-            log.error( e );
+            log.error("Unable to get item format.", e );
             throw e;
         }
     }
@@ -1960,7 +1959,7 @@ public class ServiceImplementation
             item.remove();
             repository.save();
         } catch ( RulesRepositoryException e ) {
-            log.error( e );
+            log.error("Unable to remove asset.", e );
             throw e;
         }
     }
@@ -1987,7 +1986,7 @@ public class ServiceImplementation
             item.remove();
             repository.save();
         } catch ( RulesRepositoryException e ) {
-            log.error( e );
+            log.error("Unable to remove package.", e );
             throw e;
         }
     }
@@ -2078,7 +2077,7 @@ public class ServiceImplementation
 
             return result.toArray( new String[result.size()] );
         } catch ( DroolsParserException e ) {
-            log.error( e );
+            log.error("Unable to list rules in package", e );
             return new String[0];
         }
     }
@@ -2209,11 +2208,11 @@ public class ServiceImplementation
             return deserKnowledgebase( item,
                                        cl );
         } catch ( ClassNotFoundException e ) {
-            log.error( e );
+            log.error("Unable to load rule base.", e );
             throw new DetailedSerializableException( "A required class was not found.",
                                                      e.getMessage() );
         } catch ( Exception e ) {
-            log.error( e );
+            log.error("Unable to load rule base.", e );
             log.info( "...but trying to rebuild binaries..." );
             try {
                 BuilderResult res = this.buildPackage( item,
@@ -2947,9 +2946,7 @@ public class ServiceImplementation
                 }
             }
         }
-        if ( log.isDebugEnabled() ) {
-            log.debug( "constraints rules: " + constraintRules );
-        }
+        log.debug( "constraints rules: " + constraintRules );
         try{
             if ( AssetFormats.DECISION_TABLE_GUIDED.equals( asset.metaData.format ) || AssetFormats.DECISION_SPREADSHEET_XLS.equals( asset.metaData.format ) ) {
                 return runner.verify( drl,

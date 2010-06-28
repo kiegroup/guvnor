@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.drools.builder.conf.DefaultPackageNameOption;
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
@@ -34,8 +33,8 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICompilable;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.selector.AssetSelector;
-import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.selector.BuiltInSelector;
+import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.repository.AssetItem;
@@ -53,7 +52,7 @@ import org.drools.rule.Package;
  * @author Michael Neale
  */
 public class ContentPackageAssembler {
-	private static final Logger log  = LoggingHelper.getLogger( ContentPackageAssembler.class );
+	private static final LoggingHelper log  = LoggingHelper.getLogger( ContentPackageAssembler.class );
 
 	private PackageItem pkg;
 

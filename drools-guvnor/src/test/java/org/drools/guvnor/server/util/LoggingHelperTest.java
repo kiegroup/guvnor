@@ -7,45 +7,33 @@ import org.drools.guvnor.client.rpc.LogEntry;
 
 public class LoggingHelperTest extends TestCase {
 
-	public void testAppender() {
-		Logger l = LoggingHelper.getLogger(LoggingHelperTest.class);
-        Logger l_= LoggingHelper.getLogger(LoggingHelperTest.class);
-        assertSame(l, l_);
-        l_ = LoggingHelper.getLogger(TestCase.class);
-        
-        assertNotSame(l, l_);
-
-		assertNotNull(l.getAppender("guilogger"));
-	}
 
 	public void testMessages() throws Exception {
 		final MessageList ml = new MessageList();
 
-		final LogEntry e = new LogEntry();
-		e.message = "heh";
-		ml.add(e);
+		ml.add("heh",0);
 
-		assertEquals(e, ml.getMessages()[0]);
+		assertEquals("heh", ml.getMessages()[0].message);
 
 		for (int i = 0; i < 10000; i++) {
-			ml.add(new LogEntry());
+			ml.add("entry "+i, 0);
 		}
 
 		LogEntry[] results = ml.getMessages();
 		for (int i = 0; i < results.length; i++) {
 			assertNotNull("" + i, results[i]);
-			assertFalse(results[i] == e);
+			assertFalse(results[i].message.equals("heh"));
 		}
 
 		Thread t1 = new Thread(new Runnable() {
 			public void run() {
 				for (int i = 0; i < 10000; i++) {
-					ml.add(new LogEntry());
+					ml.add("thread1 "+1,0);
 				}
 				LogEntry[] results = ml.getMessages();
 				for (int i = 0; i < results.length; i++) {
 					assertNotNull("" + i, results[i]);
-					assertFalse(results[i] == e);
+					assertFalse(results[i].message.equals("heh"));
 				}
 			}
 		});
@@ -54,12 +42,12 @@ public class LoggingHelperTest extends TestCase {
 		Thread t2 = new Thread(new Runnable() {
 			public void run() {
 				for (int i = 0; i < 10000; i++) {
-					ml.add(new LogEntry());
+					ml.add("thread2 "+1,0);
 				}
 				LogEntry[] results = ml.getMessages();
 				for (int i = 0; i < results.length; i++) {
 					assertNotNull("" + i, results[i]);
-					assertFalse(results[i] == e);
+					assertFalse(results[i].message.equals("heh"));
 				}
 			}
 		});
@@ -72,7 +60,7 @@ public class LoggingHelperTest extends TestCase {
 		results = ml.getMessages();
 		for (int i = 0; i < results.length; i++) {
 			assertNotNull("" + i, results[i]);
-			assertFalse(results[i] == e);
+			assertFalse(results[i].message.equals("heh"));
 		}
 
 	}
