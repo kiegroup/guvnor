@@ -128,16 +128,19 @@ public class SecurityServiceImpl
             if ( Identity.instance().hasRole( RoleTypes.ADMIN ) ) {
                 return Capabilities.all( PREFERENCES );
             }
+            
+            RoleBasedPermissionResolver resolver = (RoleBasedPermissionResolver) Component.getInstance( "org.jboss.seam.security.roleBasedPermissionResolver" );
+            if ( !resolver.isEnableRoleBasedAuthorization() ) {
+                return Capabilities.all( PREFERENCES );
+            }
+            
             CapabilityCalculator c = new CapabilityCalculator();
             RoleBasedPermissionManager permManager = (RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" );
 
             List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
             if ( permissions.size() == 0 ) {
-                RoleBasedPermissionResolver resolver = (RoleBasedPermissionResolver) Component.getInstance( "org.jboss.seam.security.roleBasedPermissionResolver" );
-                if ( resolver.isEnableRoleBasedAuthorization() ) {
                     Identity.instance().logout();
                     throw new AuthorizationException( "This user has no permissions setup." );
-                }
             }
             return c.calcCapabilities( permissions,
                                        PREFERENCES );
