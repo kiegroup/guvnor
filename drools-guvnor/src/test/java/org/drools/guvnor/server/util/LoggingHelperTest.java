@@ -2,7 +2,6 @@ package org.drools.guvnor.server.util;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
 import org.drools.guvnor.client.rpc.LogEntry;
 
 public class LoggingHelperTest extends TestCase {

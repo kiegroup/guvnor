@@ -25,7 +25,8 @@ import java.util.Properties;
 
 import javax.security.auth.login.LoginException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.drools.core.util.DateUtils;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
@@ -45,7 +46,7 @@ public class SecurityServiceImpl
     SecurityService {
 
     public static final String       GUEST_LOGIN = "guest";
-    private static final Logger      log         = Logger.getLogger( SecurityServiceImpl.class );
+    private static final Logger      log         = LoggerFactory.getLogger( SecurityServiceImpl.class );
     static final Map<String, String> PREFERENCES = loadPrefs();
 
     public boolean login(String userName,
@@ -75,7 +76,7 @@ public class SecurityServiceImpl
             try {
                 Identity.instance().authenticate();
             } catch ( LoginException e ) {
-                log.error( e );
+                log.error( "Unable to login.", e );
                 return false;
             }
             return Identity.instance().isLoggedIn();

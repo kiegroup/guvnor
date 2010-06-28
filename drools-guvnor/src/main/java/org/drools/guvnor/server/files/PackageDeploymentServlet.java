@@ -220,10 +220,10 @@ public class PackageDeploymentServlet extends RepositoryServlet {
             BulkTestRunResult result = serv.runScenariosInPackage( pkg );
             out.write( result.toString().getBytes() );
         } catch ( DetailedSerializableException e ) {
-            log.error( e );
+            log.error( "Unable to run scenarios.", e );
             out.write( e.getMessage().getBytes() );
         } catch ( SerializableException e ) {
-            log.error( e );
+            log.error( "Unable to run scenarios.", e );
             out.write( e.getMessage().getBytes() );
         }
     }

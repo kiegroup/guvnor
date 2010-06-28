@@ -9,8 +9,9 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.drools.repository.RulesRepository;
 import org.drools.compiler.xml.processes.RuleFlowMigrator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.log4j.Logger;
 
 /**
  * This class is used to migrate version 4 ruleflow assets in a version 4
@@ -34,7 +35,7 @@ import org.apache.log4j.Logger;
  */
 public class MigrateRepository {
 	
-	private static final Logger log  = Logger.getLogger( MigrateRepository.class );
+	private static final Logger log  = LoggerFactory.getLogger( MigrateRepository.class );
 
 	
 	/*************************************************************************

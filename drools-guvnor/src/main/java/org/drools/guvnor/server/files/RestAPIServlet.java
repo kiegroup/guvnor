@@ -29,7 +29,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.util.Base64;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
@@ -47,7 +48,7 @@ import org.jboss.seam.security.Identity;
 public class RestAPIServlet extends RepositoryServlet {
 
     private static final long serialVersionUID = 500L;
-    public static final Logger log              = Logger.getLogger( RestAPIServlet.class );
+    public static final Logger log              = LoggerFactory.getLogger( RestAPIServlet.class );
 
     @Override
     protected void doPost(final HttpServletRequest req,

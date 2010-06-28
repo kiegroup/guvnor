@@ -9,13 +9,14 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.drools.repository.AssetItem;
 
 
 public class SelectorManager {
 
-	private static final Logger log = Logger.getLogger( SelectorManager.class );
+	private static final Logger log = LoggerFactory.getLogger( SelectorManager.class );
 	public static String SELECTOR_CONFIG_PROPERTIES = "/selectors.properties";
 	private static final SelectorManager INSTANCE = new SelectorManager(SELECTOR_CONFIG_PROPERTIES);
 

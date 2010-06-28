@@ -17,7 +17,8 @@ package org.drools.guvnor.server.security;
 
 
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.security.Identity;
 
@@ -29,7 +30,7 @@ import org.jboss.seam.security.Identity;
 @Name("defaultAuthenticator")
 public class DefaultAuthenticator {
     
-    private static final Logger log = Logger.getLogger( DefaultAuthenticator.class );
+    private static final Logger log = LoggerFactory.getLogger( DefaultAuthenticator.class );
     
     public boolean authenticate() {
         if (SecurityServiceImpl.GUEST_LOGIN.equals( Identity.instance().getCredentials().getUsername())) {

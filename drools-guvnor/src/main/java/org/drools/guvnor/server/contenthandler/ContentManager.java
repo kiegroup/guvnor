@@ -22,7 +22,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This configures the content handlers based on a props file.
@@ -30,7 +31,7 @@ import org.apache.log4j.Logger;
  */
 public class ContentManager {
 
-	private static final Logger log = Logger.getLogger( ContentManager.class );
+	private static final Logger log = LoggerFactory.getLogger( ContentManager.class );
 	public static String CONTENT_CONFIG_PROPERTIES = "/contenthandler.properties";
 	private static ContentManager INSTANCE;
 
@@ -54,7 +55,7 @@ public class ContentManager {
 
 			}
 		} catch (IOException e) {
-			log.fatal("UNABLE to load content handlers. Ahem, nothing will actually work. Ignore subsequent errors until this is resolved.", e);
+			log.error("UNABLE to load content handlers. Ahem, nothing will actually work. Ignore subsequent errors until this is resolved.", e);
 		}
 	}
 
@@ -73,13 +74,13 @@ public class ContentManager {
             return (ContentHandler) Thread.currentThread().getContextClassLoader().loadClass( val ).newInstance();
 
         } catch ( InstantiationException e ) {
-            log.error( e );
+            log.error( "Unable to load content handler implementation.", e );
             return null;
         } catch ( IllegalAccessException e ) {
-            log.error( e );
+            log.error( "Unable to load content handler implementation.", e );
             return null;
         } catch ( ClassNotFoundException e ) {
-            log.error( e );
+            log.error( "Unable to load content handler implementation.", e );
             return null;
         }
 

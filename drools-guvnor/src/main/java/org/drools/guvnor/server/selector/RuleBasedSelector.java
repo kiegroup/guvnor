@@ -4,7 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.drools.CheckedDroolsException;
 import org.drools.RuleBase;
 import org.drools.RuntimeDroolsException;
@@ -21,7 +22,7 @@ import org.drools.repository.AssetItem;
  */
 public class RuleBasedSelector implements AssetSelector {
 
-    private static final Logger log = Logger.getLogger( RuleBasedSelector.class );
+    private static final Logger log = LoggerFactory.getLogger( RuleBasedSelector.class );
 
 
 	String ruleFile;
@@ -37,10 +38,10 @@ public class RuleBasedSelector implements AssetSelector {
         try {
             this.ruleBase = RuleBaseLoader.getInstance().loadFromReader( reader );
         } catch ( CheckedDroolsException e ) {
-            log.error( e );
+            log.error( "Unable to load rule base.", e );
             throw new RuntimeDroolsException(e);
         } catch ( IOException e ) {
-            log.error( e );
+            log.error( "Unable to load rule base.", e );
             throw new RuntimeDroolsException(e);
         }
 

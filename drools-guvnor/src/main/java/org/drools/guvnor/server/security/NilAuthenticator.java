@@ -17,7 +17,8 @@ package org.drools.guvnor.server.security;
 
 
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jboss.seam.annotations.Name;
 
 /**
@@ -28,7 +29,7 @@ import org.jboss.seam.annotations.Name;
 @Name("nilAuthenticator")
 public class NilAuthenticator {
     
-    private static final Logger log = Logger.getLogger( NilAuthenticator.class );
+    private static final Logger log = LoggerFactory.getLogger( NilAuthenticator.class );
     
     public boolean authenticate() {
         log.info( "All users are guests.");
