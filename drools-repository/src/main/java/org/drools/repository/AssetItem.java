@@ -10,9 +10,10 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
-import org.apache.log4j.Logger;
 import org.drools.repository.events.StorageEventManager;
 import org.drools.repository.utils.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The RuleItem class is used to abstract away the details of the underlying JCR
@@ -22,7 +23,7 @@ import org.drools.repository.utils.IOUtils;
  * @author btruitt
  */
 public class AssetItem extends CategorisableItem {
-	private Logger log = Logger.getLogger(AssetItem.class);
+	private Logger log = LoggerFactory.getLogger(AssetItem.class);
 	/**
 	 * The name of the rule node type
 	 */
@@ -139,7 +140,7 @@ public class AssetItem extends CategorisableItem {
 				}
 			}
 		} catch (RepositoryException e) {
-			log.error(e);
+			log.error(e.getMessage(), e);
 			throw new RulesRepositoryException(e);
 		}
 	}
@@ -152,7 +153,7 @@ public class AssetItem extends CategorisableItem {
 			Node ruleNode = getVersionContentNode();
 			return ruleNode.hasProperty(CONTENT_PROPERTY_BINARY_NAME);
 		} catch (RepositoryException e) {
-			log.error(e);
+			log.error(e.getMessage(), e);
 			throw new RulesRepositoryException(e);
 		}
 	}
@@ -230,7 +231,7 @@ public class AssetItem extends CategorisableItem {
 				return getContent().getBytes();
 			}
 		} catch (Exception e) {
-			log.error(e);
+			log.error(e.getMessage(), e);
 			if (e instanceof RuntimeException)
 				throw (RuntimeException) e;
 			throw new RulesRepositoryException(e);

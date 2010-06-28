@@ -11,7 +11,8 @@ import javax.jcr.Workspace;
 
 import org.apache.jackrabbit.commons.cnd.CndImporter;
 import org.apache.jackrabbit.core.TransientRepository;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** 
  * This contains code to initialise the repository for jackrabbit.
@@ -20,7 +21,7 @@ import org.apache.log4j.Logger;
  */
 public class JackrabbitRepositoryConfigurator implements JCRRepositoryConfigurator {
 
-    private static final Logger log = Logger.getLogger(JackrabbitRepositoryConfigurator.class);        
+    private static final Logger log = LoggerFactory.getLogger(JackrabbitRepositoryConfigurator.class);        
     
     /* (non-Javadoc)
      * @see org.drools.repository.RepositoryConfigurator#getJCRRepository()

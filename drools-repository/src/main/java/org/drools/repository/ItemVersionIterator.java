@@ -3,7 +3,8 @@ package org.drools.repository;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implements the Iterator interface, allowing iteration over the version history of versionableItem 
@@ -12,7 +13,7 @@ import org.apache.log4j.Logger;
  * @author btruitt
  */
 class ItemVersionIterator implements Iterator {
-    private static final Logger log = Logger.getLogger(ItemVersionIterator.class);
+    private static final Logger log = LoggerFactory.getLogger(ItemVersionIterator.class);
     
     private VersionableItem currentVersionableItem;
     private int iterationType;

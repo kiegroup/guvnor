@@ -17,7 +17,6 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
-//import org.apache.log4j.Logger;
 import org.drools.scm.CompositeScmAction;
 import org.drools.scm.ScmAction;
 import org.drools.scm.ScmActionFactory;

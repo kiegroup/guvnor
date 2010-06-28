@@ -1,16 +1,13 @@
 package org.drools.resource;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
-import org.drools.resource.RepositoryBean;
-import org.drools.resource.ResourceHandler;
-import org.drools.resource.SvnResourceHandler;
 import org.drools.resource.util.SvnUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author James Williams (james.williams@redhat.com)
@@ -18,7 +15,7 @@ import org.drools.resource.util.SvnUtil;
  */
 public class SvnResourceHandlerTest extends TestCase {
 
-    private static Logger       logger       = Logger.getLogger( SvnResourceHandlerTest.class );
+    private static Logger       logger       = LoggerFactory.getLogger( SvnResourceHandlerTest.class );
 
     private static String svnUrl       = "file:///D:/dev/trunk2/rule-resource-handler/target/test-classes/svn_repo";
     private static String testFilePath = "D:/dev/trunk2/rule-resource-handler/target/test-classes/files";

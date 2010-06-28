@@ -3,7 +3,8 @@ package org.drools.repository;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -12,7 +13,7 @@ import org.apache.log4j.Logger;
  * @author btruitt
  */
 public abstract class Item {
-    static Logger log = Logger.getLogger(Item.class);
+    static Logger log = LoggerFactory.getLogger(Item.class);
 
     /**
      * The node within the repository that this item corresponds to

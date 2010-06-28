@@ -7,27 +7,22 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
-//import org.apache.log4j.Logger;
 import org.drools.scm.DefaultScmEntry;
 import org.drools.scm.ScmAction;
 import org.drools.scm.ScmActionFactory;
 import org.drools.scm.ScmEntry;
-
 import org.drools.scm.log.ScmLogEntry;
 import org.drools.scm.log.ScmLogEntry.Add;
 import org.drools.scm.log.ScmLogEntry.Copy;
 import org.drools.scm.log.ScmLogEntry.Delete;
 import org.drools.scm.log.ScmLogEntry.Replaced;
 import org.drools.scm.log.ScmLogEntry.Update;
-
 import org.tmatesoft.svn.core.SVNCommitInfo;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNErrorCode;

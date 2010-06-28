@@ -4,7 +4,8 @@ import javax.jcr.Node;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The StateItem represents the status of an asset.
@@ -15,7 +16,7 @@ import org.apache.log4j.Logger;
  */
 public class StateItem extends Item {
 
-    private Logger             log                  = Logger.getLogger( StateItem.class );
+    private Logger             log                  = LoggerFactory.getLogger( StateItem.class );
 
     /**
      * All assets when created, or a new version saved, have a status of Draft.
@@ -79,7 +80,7 @@ public class StateItem extends Item {
             }
             this.node.remove();
         } catch ( RepositoryException e ) {
-            log.error( e );
+            log.error( "Unable to remove state item.", e );
         }
     }
 }

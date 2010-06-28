@@ -6,7 +6,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Workspace;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is for administering the rules repo.
@@ -17,7 +18,7 @@ import org.apache.log4j.Logger;
  */
 public class RulesRepositoryAdministrator {
 
-    private static final Logger log = Logger.getLogger(RulesRepositoryAdministrator.class);
+    private static final Logger log = LoggerFactory.getLogger(RulesRepositoryAdministrator.class);
     
     private final Session session;
 
@@ -73,10 +74,10 @@ public class RulesRepositoryAdministrator {
             }
         }
         catch(PathNotFoundException e) {                
-            log.error( e );
+            log.error( "Unable to clear rules repository.", e );
         }          
         catch(RepositoryException e) {
-            log.error( e );
+            log.error( "Unable to clear rules repository.", e );
         }
     }  
     

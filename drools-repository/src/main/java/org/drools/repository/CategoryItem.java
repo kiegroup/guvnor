@@ -9,7 +9,8 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The TagItem class abstracts away details of the underlying JCR repository.
@@ -17,7 +18,7 @@ import org.apache.log4j.Logger;
  * @author btruitt
  */
 public class CategoryItem extends Item {
-    private Logger log = Logger.getLogger(CategoryItem.class);
+    private Logger log = LoggerFactory.getLogger(CategoryItem.class);
     
     /**
      * The name of the tag node type
@@ -131,7 +132,7 @@ public class CategoryItem extends Item {
 			}
             this.node.remove();
         } catch ( RepositoryException e ) {
-            log.error( e );
+            log.error("Unable to remove category item.", e );
         }
     }
  
