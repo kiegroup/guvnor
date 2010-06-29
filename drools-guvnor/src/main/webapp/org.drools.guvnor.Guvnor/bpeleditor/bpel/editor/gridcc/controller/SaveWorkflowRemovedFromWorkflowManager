@@ -1,0 +1,102 @@
+		/*
+		private function saveWorkflowOnServer(fileType:String):void {
+			trace("saveWorkflowOnServer " + fileType);
+			tempURLRequest = new URLRequest(servletURL);
+			tempURLRequest.method = URLRequestMethod.POST;	
+			
+			var operationString:String = "operation=save&";
+			var fullPath:String = "fullPath="+dirName+"&"; 
+			//var fileNameTemp:String = "fileName="+ processCreator.BPELProcess.@name ;
+			var fileNameTemp:String = "fileName="+ fileName;
+			var fileContent:String = "fileContent=";
+			
+			
+			switch(fileType){
+				case "wsdl": 
+					fileNameTemp = fileNameTemp+".wsdl&";
+					fileContent = fileContent + WSDLCreator.getInstance().WorkflowWSDL;				
+									
+					
+					var WSDLLoader:URLLoader = new URLLoader();
+					var tempVariables2:URLVariables = new URLVariables(operationString + fullPath + fileNameTemp + fileContent);
+					WSDLLoader.addEventListener(Event.COMPLETE, completeWSDLHandler);
+					tempURLRequest.data = tempVariables2;
+					WSDLLoader.load(tempURLRequest);
+					break;
+					
+				case "bpel":
+					fileNameTemp = fileNameTemp+".bpel&";
+					fileContent = fileContent + processCreator.BPELProcess;					
+					
+					var tempBPELLoader:URLLoader = new URLLoader();
+					var tempBPELVariables:URLVariables = new URLVariables(operationString + fullPath + fileNameTemp + fileContent);	
+					tempBPELLoader.addEventListener(Event.COMPLETE, completeBPELHandler);				
+					tempURLRequest.data = tempBPELVariables;					
+					tempBPELLoader.load(tempURLRequest);			
+					
+					break;
+					
+				case "QoS":
+					fileNameTemp = fileNameTemp+".qos";
+					// To BE Done
+					//fileContent = fileContent + QOS
+					
+					break;
+				
+				case "pdd":
+					fileNameTemp = fileNameTemp + ".pdd";
+					
+					fileContent = fileContent + PDDCreator.getInstance().WorkflowPDD;
+					
+					var tempPDDLoader:URLLoader = new URLLoader();
+					var tempPDDVariables:URLVariables = new URLVariables(operationString + fullPath + fileNameTemp + fileContent);	
+					tempPDDLoader.addEventListener(Event.COMPLETE, completePDDHandler);				
+					tempURLRequest.data = tempPDDVariables;					
+					tempPDDLoader.load(tempURLRequest);
+					
+					break;
+					
+				case "catalog":
+					fileNameTemp = "wsdlCatalog.xml";
+					
+					fileContent = fileContent + WSDLCatalogCreator.getInstance().WSDLCatalog;
+					
+					// WC stands for WSDL Catalog
+					
+					var tempWCLoader:URLLoader = new URLLoader();
+					var tempWCVariables:URLVariables = new URLVariables(operationString + fullPath + fileNameTemp + fileContent);	
+					tempWCLoader.addEventListener(Event.COMPLETE, completeWCHandler);				
+					tempURLRequest.data = tempWCVariables;					
+					tempWCLoader.load(tempURLRequest);	
+					
+					break;
+					
+				case "subDoc":
+					fileNameTemp = fileNameTemp + ".xml";
+					// To BE Done
+					//fileContent = fileContent + QOS
+					
+					break;
+			}			
+		}
+		
+		private function completeBPELHandler(event:Event):void{
+			//saveWorkflowOnServer("pdd");
+		}
+		
+		private function completeWSDLHandler(event:Event):void{
+			saveWorkflowOnServer("bpel");
+		}
+		
+		private function completePDDHandler(event:Event):void{
+			//saveWorkflowOnServer("catalog");
+		}
+		
+		private function completeWCHandler(event:Event):void{
+			//saveWorkflowOnServer("subDoc");
+		}
+		
+		private function completeQoSHandler(event:Event):void{
+			//saveWorkflowOnServer("QoS");
+		}	
+		*/
