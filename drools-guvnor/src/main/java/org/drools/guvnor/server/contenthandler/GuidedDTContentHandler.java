@@ -29,7 +29,8 @@ import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 /**
  * For guided decision tables.
@@ -42,7 +43,7 @@ public class GuidedDTContentHandler extends ContentHandler
 
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
-                                     AssetItem item) throws SerializableException {
+                                     AssetItem item) throws SerializationException {
         GuidedDecisionTable model = GuidedDTXMLPersistence.getInstance().unmarshal( item.getContent() );
 
         asset.content = model;
@@ -50,7 +51,7 @@ public class GuidedDTContentHandler extends ContentHandler
     }
 
     public void storeAssetContent(RuleAsset asset,
-                                  AssetItem repoAsset) throws SerializableException {
+                                  AssetItem repoAsset) throws SerializationException {
         GuidedDecisionTable data = (GuidedDecisionTable) asset.content;
         if ( data.tableName == null ) {
             data.tableName = repoAsset.getName();

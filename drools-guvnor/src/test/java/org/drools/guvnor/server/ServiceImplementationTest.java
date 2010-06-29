@@ -39,7 +39,7 @@ import org.drools.guvnor.client.common.Inbox;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -98,7 +98,8 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 /**
  * This is really a collection of integration tests.
@@ -576,7 +577,7 @@ public class ServiceImplementationTest extends TestCase {
                                 "testCreateNewRuleContainsApostrophe",
                                 AssetFormats.DSL_TEMPLATE_RULE );
             //fail( "did not get expected exception" );
-        } catch ( SerializableException e ) {
+        } catch ( SerializationException e ) {
             //assertTrue( e.getMessage().indexOf( "'testCreateNewRuleContains' character' is not a valid path. ''' not a valid name character" ) >= 0 );
         }
         
@@ -1553,7 +1554,7 @@ public class ServiceImplementationTest extends TestCase {
                                        false,
                                        "" );
             fail( "should not be able to copy snapshot to empty detination" );
-        } catch ( SerializableException e ) {
+        } catch ( SerializationException e ) {
             assertNotNull( e.getMessage() );
         }
 
@@ -1627,7 +1628,7 @@ public class ServiceImplementationTest extends TestCase {
 
         try {
             impl.rebuildSnapshots();
-        } catch ( DetailedSerializableException e ) {
+        } catch ( DetailedSerializationException e ) {
             assertNotNull( e.getMessage() );
             assertNotNull( e.getLongDescription() );
         }
@@ -1658,7 +1659,7 @@ public class ServiceImplementationTest extends TestCase {
         Thread.sleep( 100 );
         try {
             impl.rebuildPackages();
-        } catch ( DetailedSerializableException e ) {
+        } catch ( DetailedSerializationException e ) {
             assertNotNull( e.getMessage() );
             assertNotNull( e.getLongDescription() );
         }

@@ -29,17 +29,16 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.files.RepositoryServlet.A;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
-import org.drools.repository.remoteapi.Response;
-import org.drools.repository.remoteapi.RestAPI;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
+
 
 /**
  * This servlet deals with providing packages in binary form.
@@ -219,10 +218,10 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         try {
             BulkTestRunResult result = serv.runScenariosInPackage( pkg );
             out.write( result.toString().getBytes() );
-        } catch ( DetailedSerializableException e ) {
+        } catch ( DetailedSerializationException e ) {
             log.error( "Unable to run scenarios.", e );
             out.write( e.getMessage().getBytes() );
-        } catch ( SerializableException e ) {
+        } catch ( SerializationException e ) {
             log.error( "Unable to run scenarios.", e );
             out.write( e.getMessage().getBytes() );
         }

@@ -33,7 +33,8 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.util.LoggingHelper;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 /**
  * A servlet opening an API into the Guvnor services.
@@ -78,7 +79,7 @@ public class GuvnorAPIServlet extends HttpServlet {
                     response.getOutputStream().write(content.getBytes());
                     response.getOutputStream().close();
                 }
-            } catch (SerializableException e) {
+            } catch (SerializationException e) {
                 log.error(e.getMessage(), e);
                 throw new ServletException(e.getMessage(), e);
             }

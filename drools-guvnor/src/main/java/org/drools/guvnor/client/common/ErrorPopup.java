@@ -18,7 +18,7 @@ package org.drools.guvnor.client.common;
 
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
@@ -142,7 +142,7 @@ public class ErrorPopup  {
     /**
      * For showing a more detailed report.
      */
-    public static void showMessage(DetailedSerializableException exception) {
+    public static void showMessage(DetailedSerializationException exception) {
 
         if (instance != null) {
             instance.addMessage(exception.getMessage(), exception.getLongDescription());

@@ -29,7 +29,8 @@ import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 /**
  * This is used for handling jar models for the rules.
@@ -41,12 +42,12 @@ public class ModelContentHandler extends ContentHandler
 
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
-                                     AssetItem item) throws SerializableException {
+                                     AssetItem item) throws SerializationException {
         // do nothing, as we have an attachment
     }
 
     public void storeAssetContent(RuleAsset asset,
-                                  AssetItem repoAsset) throws SerializableException {
+                                  AssetItem repoAsset) throws SerializationException {
         // do nothing, as we have an attachment
     }
 

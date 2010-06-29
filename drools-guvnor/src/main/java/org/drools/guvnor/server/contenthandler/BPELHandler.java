@@ -23,12 +23,13 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 public class BPELHandler extends ContentHandler {
 
 	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
-			AssetItem item) throws SerializableException {
+			AssetItem item) throws SerializationException {
 
 		// Get the name
 
@@ -43,7 +44,7 @@ public class BPELHandler extends ContentHandler {
 	}
 
 	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-			throws SerializableException {
+			throws SerializationException {
 	}
 
 }

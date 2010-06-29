@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
-import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.server.util.FormData;
 
 /**

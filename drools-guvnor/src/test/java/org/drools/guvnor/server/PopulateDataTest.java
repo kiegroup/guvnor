@@ -35,7 +35,8 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 /**
  * This class will setup the data in a test state, which is
@@ -135,7 +136,7 @@ public class PopulateDataTest extends TestCase {
 
     }
 
-    private void createSomeRules(ServiceImplementation serv) throws SerializableException {
+    private void createSomeRules(ServiceImplementation serv) throws SerializationException {
         String uuid = serv.createNewRule( "Surfboard_Colour_Combination", "allowable combinations for basic boards.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
         serv.changeState( uuid, "Pending", false );
         uuid = serv.createNewRule( "Premium_Colour_Combinations", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
@@ -145,7 +146,7 @@ public class PopulateDataTest extends TestCase {
         uuid = serv.createNewRule( "SomeDSL", "Ignore me.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.DSL );
     }
 
-    private void createPackages(ServiceImplementation serv) throws SerializableException {
+    private void createPackages(ServiceImplementation serv) throws SerializationException {
         String uuid = serv.createPackage( "com.billasurf.manufacturing", "Rules for manufacturing." );
 
         PackageConfigData conf = serv.loadPackageConfig( uuid );
@@ -159,7 +160,7 @@ public class PopulateDataTest extends TestCase {
 
     }
 
-    private void createStates(ServiceImplementation serv) throws SerializableException {
+    private void createStates(ServiceImplementation serv) throws SerializationException {
         serv.createState( "Approved" );
         serv.createState( "Pending" );
     }

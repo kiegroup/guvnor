@@ -35,7 +35,8 @@ import org.drools.ruleflow.core.RuleFlowProcess;
 import org.drools.compiler.xml.XmlProcessReader;
 import org.drools.compiler.xml.XmlRuleFlowProcessDumper;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 public class RuleFlowHandler extends ContentHandler
     implements
@@ -44,7 +45,7 @@ public class RuleFlowHandler extends ContentHandler
 
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
-                                     AssetItem item) throws SerializableException {
+                                     AssetItem item) throws SerializationException {
 
         RuleFlowProcess process = readProcess( new ByteArrayInputStream( item.getContent().getBytes() ) );
 
@@ -91,7 +92,7 @@ public class RuleFlowHandler extends ContentHandler
     }
 
     public void storeAssetContent(RuleAsset asset,
-                                  AssetItem repoAsset) throws SerializableException {
+                                  AssetItem repoAsset) throws SerializationException {
 
         RuleFlowContentModel content = (RuleFlowContentModel) asset.content;
 

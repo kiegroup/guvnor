@@ -25,7 +25,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * This is what the remote service will implement, as a servlet.
@@ -48,7 +48,7 @@ public interface RepositoryService
     public TableDataResult loadRuleListForCategories(String categoryPath,
                                                      int skip,
                                                      int numRows,
-                                                     String tableConfig) throws SerializableException;
+                                                     String tableConfig) throws SerializationException;
 
     /**
      * Return a a 2d array/grid of results for rules.
@@ -57,7 +57,7 @@ public interface RepositoryService
     public TableDataResult loadRuleListForState(String state,
                                                 int skip,
                                                 int numRows,
-                                                String tableConfig) throws SerializableException;
+                                                String tableConfig) throws SerializationException;
 
     /**
      * This will return a TableConfig of header names.
@@ -81,7 +81,7 @@ public interface RepositoryService
                                 String description,
                                 String initialCategory,
                                 String initialPackage,
-                                String format) throws SerializableException;
+                                String format) throws SerializationException;
 
     /**
      * Creates a new rule which is imported from global area.
@@ -89,7 +89,7 @@ public interface RepositoryService
      * This will not check in the rule, but just leave it as saved in the repo.
      */
     public String createNewImportedRule(String sharedAssetName,
-                                        String initialPackage) throws SerializableException;
+                                        String initialPackage) throws SerializationException;
 
     /**
      * Delete un checked in Asset
@@ -122,15 +122,15 @@ public interface RepositoryService
      * This loads up all the stuff for a
      * rule asset based on the UUID (always latest and editable version).
      */
-    public RuleAsset loadRuleAsset(String UUID) throws SerializableException;
+    public RuleAsset loadRuleAsset(String UUID) throws SerializationException;
 
-    public RuleAsset[] loadRuleAssets(String[] UUIDs) throws SerializableException;
+    public RuleAsset[] loadRuleAssets(String[] UUIDs) throws SerializationException;
 
     /**
      * This will load the history of the given asset, in a summary format suitable
      * for display in a table.
      */
-    public TableDataResult loadAssetHistory(String uuid) throws SerializableException;
+    public TableDataResult loadAssetHistory(String uuid) throws SerializationException;
 
     /**
      * This will load all archived assets, in a summary format suitable
@@ -138,14 +138,14 @@ public interface RepositoryService
      */
 
     public TableDataResult loadArchivedAssets(int skip,
-                                              int numRows) throws SerializableException;
+                                              int numRows) throws SerializationException;
 
     /**
      * This checks in a new version of an asset.
      * @return the UUID of the asset you are checking in,
      * null if there was some problem (and an exception was not thrown).
      */
-    public String checkinVersion(RuleAsset asset) throws SerializableException;
+    public String checkinVersion(RuleAsset asset) throws SerializationException;
 
     /**
      * This will restore the specified version in the repository, saving, and creating
@@ -160,7 +160,7 @@ public interface RepositoryService
      * @return UUID of the created item.
      */
     public String createPackage(String name,
-                                String description) throws SerializableException;
+                                String description) throws SerializationException;
 
     /**
      * This creates a package of the given name, and checks it in.
@@ -168,7 +168,7 @@ public interface RepositoryService
      */
     public String createSubPackage(String name,
                                    String description,
-                                   String parentPackage) throws SerializableException;
+                                   String parentPackage) throws SerializationException;
 
     /**
      * Loads a package by its uuid.
@@ -183,7 +183,7 @@ public interface RepositoryService
      * should be given the option to review them, and correct them if needed
      * (but a save will not be prevented this way - as its not an exception).
      */
-    public ValidatedResponse savePackage(PackageConfigData data) throws SerializableException;
+    public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException;
 
     /**
      * Given a format, this will return assets that match.
@@ -198,34 +198,34 @@ public interface RepositoryService
                                       String formats[],
                                       int skip,
                                       int numRows,
-                                      String tableConfig) throws SerializableException;
+                                      String tableConfig) throws SerializationException;
 
     /**
      * Returns a list of valid states.
      */
-    public String[] listStates() throws SerializableException;
+    public String[] listStates() throws SerializationException;
 
     /**
      * Create a state (status).
      * @return the UUID of the created StateItem.
      */
-    public String createState(String name) throws SerializableException;
+    public String createState(String name) throws SerializationException;
 
     /**
      * Renames a state.
      * @param oldName states old name.
      * @param newName states new name.
-     * @throws SerializableException
+     * @throws SerializationException
      */
     public void renameState(String oldName,
-                            String newName) throws SerializableException;
+                            String newName) throws SerializationException;
 
     /**
      * Removes a state.
      * @param name state name that will be removed.
-     * @throws SerializableException
+     * @throws SerializationException
      */
-    public void removeState(String name) throws SerializableException;
+    public void removeState(String name) throws SerializationException;
 
     /**
      * This will change the state of an asset or package.
@@ -268,7 +268,7 @@ public interface RepositoryService
      * @param destPackageName
      */
     public void copyPackage(String sourcePackageName,
-                            String destPackageName) throws SerializableException;
+                            String destPackageName) throws SerializationException;
 
     /**
      * This will load a list of snapshots for the given package. Snapshots are created
@@ -298,7 +298,7 @@ public interface RepositoryService
     public void copyOrRemoveSnapshot(String packageName,
                                      String snapshotName,
                                      boolean delete,
-                                     String newSnapshotName) throws SerializableException;
+                                     String newSnapshotName) throws SerializationException;
 
     /**
      * This will quickly return a list of assets 
@@ -306,23 +306,23 @@ public interface RepositoryService
     public TableDataResult quickFindAsset(String searchText,
                                           boolean searchArchived,
                                           int skip,
-                                          int numRows) throws SerializableException;
+                                          int numRows) throws SerializationException;
 
     /**
      * This will remove a category. A category must have no
      * current assets linked to it, or else it will not be able to be removed.
      * @param categoryPath The full path to the category. Any sub categories will also
      * be removed.
-     * @throws SerializableException For when it all goes horribly wrong.
+     * @throws SerializationException For when it all goes horribly wrong.
      */
-    public void removeCategory(String categoryPath) throws SerializableException;
+    public void removeCategory(String categoryPath) throws SerializationException;
 
     /**
      * Loads up the SuggestionCompletionEngine for the given package.
      * As this doesn't change that often, its safe to cache. However, if a change is made to
      * a package, should blow away the cache.
      */
-    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializableException;
+    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException;
 
     /**
      * Build the package (may be a snapshot) and return the result.
@@ -342,12 +342,12 @@ public interface RepositoryService
                                       String categoryOperator,
                                       String category,
                                       boolean enableCategorySelector,
-                                      String customSelectorName) throws SerializableException;
+                                      String customSelectorName) throws SerializationException;
 
     /**
      * return custom selector names
      */
-    public String[] getCustomSelectors() throws SerializableException;
+    public String[] getCustomSelectors() throws SerializationException;
 
     /**
      * This will return the effective DRL for a package.
@@ -357,21 +357,21 @@ public interface RepositoryService
      *
      * It should still generate
      *
-     * @throws SerializableException
+     * @throws SerializationException
      */
-    public String buildPackageSource(String packageUUID) throws SerializableException;
+    public String buildPackageSource(String packageUUID) throws SerializationException;
 
     /**
      * This will return the effective source for an asset (in DRL).
      * Used as an aid for debugging.
      */
-    public String buildAssetSource(RuleAsset asset) throws SerializableException;
+    public String buildAssetSource(RuleAsset asset) throws SerializationException;
 
     /**
      * This will build the asset and return any build results (errors).
      * This is only to report on the results - it will generally not store any state or apply any changed.
      */
-    public BuilderResult buildAsset(RuleAsset asset) throws SerializableException;
+    public BuilderResult buildAsset(RuleAsset asset) throws SerializationException;
 
     /**
      * Rename an asset.
@@ -425,47 +425,47 @@ public interface RepositoryService
      * No errors are expected, as there will be no change. If there are errors,
      * an expert will need to look at them.
      */
-    public void rebuildSnapshots() throws SerializableException;
+    public void rebuildSnapshots() throws SerializationException;
 
     /**
      * This will force a rebuild of all packages binary data.
      * No errors are expected, as there will be no change. If there are errors,
      * an expert will need to look at them.
      */
-    public void rebuildPackages() throws SerializableException;
+    public void rebuildPackages() throws SerializationException;
 
     /**
      * This will list the rules available in a package.
      * This has an upper limit of what it will return (it just doesn't make sense to show a list of 20K items !).
      */
-    public String[] listRulesInPackage(String packageName) throws SerializableException;
+    public String[] listRulesInPackage(String packageName) throws SerializationException;
 
     /**
      *
      * @param packageName The package name the scenario is to be run in.
      * @param scenario The scenario to run.
      * @return The scenario, with the results fields populated.
-     * @throws SerializableException
+     * @throws SerializationException
      */
     public SingleScenarioResult runScenario(String packageName,
-                                            Scenario scenario) throws SerializableException;
+                                            Scenario scenario) throws SerializationException;
 
     /**
      * This should be pretty obvious what it does !
      */
-    public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializableException;
+    public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException;
 
     /**
      * Analyse the package and get a report for it.
      */
-    public AnalysisReport analysePackage(String packageUUID) throws SerializableException;
+    public AnalysisReport analysePackage(String packageUUID) throws SerializationException;
 
     /**
      * List the fact types (class names) in the scope of a given package.
      * This may not include things on the "system" classpath, but only things specifically scoped to the package
      * (eg in jars that have been uploaded to it as an asset).
      */
-    public String[] listTypesInPackage(String packageUUID) throws SerializableException;
+    public String[] listTypesInPackage(String packageUUID) throws SerializationException;
 
     /**
      * This will list the last N log entryies logged by the server. For debugging purposes in the GUI.
@@ -491,12 +491,12 @@ public interface RepositoryService
      * @param skip
      * @param numRows
      * @return
-     * @throws SerializableException
+     * @throws SerializationException
      */
     public TableDataResult queryFullText(String text,
                                          boolean seekArchived,
                                          int skip,
-                                         int numRows) throws SerializableException;
+                                         int numRows) throws SerializationException;
 
     /**
      * Run a meta data search. All dates are in format as configured for the system. Pass in null and they will not be included in the search (that
@@ -510,7 +510,7 @@ public interface RepositoryService
      * @param skip
      * @param numRows
      * @return
-     * @throws SerializableException
+     * @throws SerializationException
      */
     public TableDataResult queryMetaData(final MetaDataQuery[] qr,
                                          Date createdAfter,
@@ -519,12 +519,12 @@ public interface RepositoryService
                                          Date modifiedBefore,
                                          boolean seekArchived,
                                          int skip,
-                                         int numRows) throws SerializableException;
+                                         int numRows) throws SerializationException;
 
     /**
      * @return A map of username : list of permission types for display reasons.
      */
-    public Map<String, List<String>> listUserPermissions() throws DetailedSerializableException;
+    public Map<String, List<String>> listUserPermissions() throws DetailedSerializationException;
 
     /**
      * Loads the user permissions.
@@ -578,7 +578,7 @@ public interface RepositoryService
      * Installs the sample repository, wiping out what was already there.
      * Generally shouldn't call this unless it is new !
      */
-    public void installSampleRepository() throws SerializableException;
+    public void installSampleRepository() throws SerializationException;
 
     /**
      * Return a list of discussion items for a given asset...
@@ -602,15 +602,15 @@ public interface RepositoryService
     /**
      * Load the data for a given inbox for the currently logged in user.
      */
-    public TableDataResult loadInbox(String inboxName) throws DetailedSerializableException;
+    public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException;
 
     public SnapshotDiffs compareSnapshots(String packageName,
                                           String firstSnapshotName,
                                           String secondSnapshotName);
 
     public AnalysisReport verifyAsset(RuleAsset asset,
-                                      Set<String> activeWorkingSets) throws SerializableException;
+                                      Set<String> activeWorkingSets) throws SerializationException;
 
     public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
-                                                           Set<String> activeWorkingSets) throws SerializableException;
+                                                           Set<String> activeWorkingSets) throws SerializationException;
 }

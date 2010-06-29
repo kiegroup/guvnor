@@ -9,14 +9,15 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 /**
  *
  */
 public class XmlFileHandler extends PlainTextContentHandler {
     public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)
-            throws SerializableException {
+            throws SerializationException {
         if (item.getContent() != null) {
             RuleContentText text = new RuleContentText();
             text.content = item.getContent();
@@ -24,7 +25,7 @@ public class XmlFileHandler extends PlainTextContentHandler {
         }
     }
 
-    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset) throws SerializableException {
+    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset) throws SerializationException {
 
         RuleContentText text = (RuleContentText) asset.content;
 

@@ -27,7 +27,8 @@ import org.drools.guvnor.server.util.PropertiesPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 /**
  * Handle *.properties file as a content for rule asset instead of a binary
@@ -37,7 +38,7 @@ import com.google.gwt.user.client.rpc.SerializableException;
  */
 public class PropertiesHandler extends ContentHandler {
 	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
-			AssetItem item) throws SerializableException {
+			AssetItem item) throws SerializationException {
 		if (item.getContent() != null) {
 			asset.content = PropertiesPersistence.getInstance().unmarshal(
 					item.getContent());
@@ -45,7 +46,7 @@ public class PropertiesHandler extends ContentHandler {
 	}
 
 	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-			throws SerializableException {
+			throws SerializationException {
 		PropertiesHolder holder = (PropertiesHolder) asset.content;
 		String toSave = PropertiesPersistence.getInstance().marshal(holder);
 

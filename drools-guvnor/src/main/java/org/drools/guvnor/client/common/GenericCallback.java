@@ -16,7 +16,7 @@ package org.drools.guvnor.client.common;
  * limitations under the License.
  */
 
-import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.SessionExpiredException;
 import org.drools.guvnor.client.messages.Constants;
 
@@ -36,8 +36,8 @@ public abstract class GenericCallback<T> implements AsyncCallback<T> {
 		LoadingPopup.close();
 		if (t instanceof SessionExpiredException) {
 			showSessionExpiry();
-		} else if (t instanceof DetailedSerializableException) {
-			ErrorPopup.showMessage((DetailedSerializableException) t);
+		} else if (t instanceof DetailedSerializationException) {
+			ErrorPopup.showMessage((DetailedSerializationException) t);
 		} else {
 			ErrorPopup.showMessage(t.getMessage());
 		}

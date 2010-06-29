@@ -29,7 +29,8 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetPageList;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 /**
  * This utility class handles loading of tables.
@@ -51,14 +52,14 @@ public class TableDisplayHandler {
      * Produce a table dataset for a given iterator.
      * @param list The iterator.
      * @param numRows The number of rows to go to. -1 means don't stop.
-     * @throws SerializableException
+     * @throws SerializationException
      */
 
     public TableDisplayHandler(String tableconfig) {
         ASSET_LIST = new RowLoader( tableconfig );
     }
 
-    public TableDataResult loadRuleListTable(AssetPageList list) throws SerializableException {
+    public TableDataResult loadRuleListTable(AssetPageList list) throws SerializationException {
         List<TableDataRow> data = loadRows(list.assets.iterator(), -1);
         TableDataResult result = new TableDataResult();
         result.data = (TableDataRow[]) data.toArray( new TableDataRow[data.size()] );
@@ -69,7 +70,7 @@ public class TableDisplayHandler {
 
     private TableDataResult loadRuleListTable(
     		List<AssetItem> assetList, long curPos, boolean hasNext)
-    	throws SerializableException {
+    	throws SerializationException {
     	List<TableDataRow> data = loadRows(assetList.iterator(), -1);
     	TableDataResult result = new TableDataResult();
     	result.data = (TableDataRow[]) data.toArray(new TableDataRow[data.size()]);
@@ -79,7 +80,7 @@ public class TableDisplayHandler {
     }
 
     public TableDataResult loadRuleListTable(
-    		List<AssetItem> assetList, int skip, int numRows) throws SerializableException {
+    		List<AssetItem> assetList, int skip, int numRows) throws SerializationException {
     	int size = assetList.size();
     	boolean hasNext = false;
     	int startPos = 0;

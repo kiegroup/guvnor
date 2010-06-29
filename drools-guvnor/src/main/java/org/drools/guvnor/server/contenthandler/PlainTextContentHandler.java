@@ -22,14 +22,15 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 public abstract class PlainTextContentHandler extends ContentHandler {
 
 
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg, 
-                                     AssetItem item) throws SerializableException {
+                                     AssetItem item) throws SerializationException {
         //default to text, goode olde texte, just like mum used to make.
         RuleContentText text = new RuleContentText();
         text.content = item.getContent();
@@ -38,7 +39,7 @@ public abstract class PlainTextContentHandler extends ContentHandler {
     }
 
     public void storeAssetContent(RuleAsset asset,
-                                  AssetItem repoAsset) throws SerializableException {
+                                  AssetItem repoAsset) throws SerializationException {
         repoAsset.updateContent( ((RuleContentText)asset.content).content ); 
 
     }

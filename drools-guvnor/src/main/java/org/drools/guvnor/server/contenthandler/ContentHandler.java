@@ -26,7 +26,8 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 /**
  * All content handlers must implement this, and be registered in content_types.properties
@@ -39,20 +40,20 @@ public abstract class ContentHandler {
      * When loading asset content.
      * @param asset The target.
      * @param item The source.
-     * @throws SerializableException
+     * @throws SerializationException
      */
     public abstract void retrieveAssetContent(RuleAsset asset,
                                               PackageItem pkg,
-                                              AssetItem item) throws SerializableException;
+                                              AssetItem item) throws SerializationException;
 
     /**
      * For storing the asset content back into the repo node (any changes).
      * @param asset
      * @param repoAsset
-     * @throws SerializableException
+     * @throws SerializationException
      */
     public abstract void storeAssetContent(RuleAsset asset,
-                                           AssetItem repoAsset) throws SerializableException;
+                                           AssetItem repoAsset) throws SerializationException;
 
     /**
      * @return true if the current content type is for a rule asset.

@@ -32,7 +32,8 @@ import org.drools.lang.dsl.DefaultExpander;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 public class DSLRuleContentHandler extends ContentHandler
     implements
@@ -40,7 +41,7 @@ public class DSLRuleContentHandler extends ContentHandler
 
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
-                                     AssetItem item) throws SerializableException {
+                                     AssetItem item) throws SerializationException {
         RuleContentText text = new RuleContentText();
         text.content = item.getContent();
 
@@ -49,7 +50,7 @@ public class DSLRuleContentHandler extends ContentHandler
     }
 
     public void storeAssetContent(RuleAsset asset,
-                                  AssetItem repoAsset) throws SerializableException {
+                                  AssetItem repoAsset) throws SerializationException {
 
         RuleContentText text = (RuleContentText) asset.content;
         repoAsset.updateContent( text.content );

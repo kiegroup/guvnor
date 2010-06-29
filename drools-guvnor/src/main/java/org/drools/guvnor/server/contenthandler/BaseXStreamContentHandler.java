@@ -8,7 +8,7 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
 import org.slf4j.Logger;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
@@ -22,25 +22,25 @@ public abstract class BaseXStreamContentHandler<T extends PortableObject> extend
 	}
 
 	@SuppressWarnings("unchecked")
-	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item) throws SerializableException {
+	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item) throws SerializationException {
 		if (item.getContent() != null && item.getContent().length() > 0) {
 			try {
 				asset.content = (T) getXStream().fromXML(item.getContent());
 			} catch (RulesRepositoryException e) {
 				log.error("error marshalling asset content: " + asset.metaData.name, e);
-				throw new SerializableException(e.getMessage());
+				throw new SerializationException(e.getMessage());
 			}
 		} else {
 			asset.content = new WorkingSetConfigData();
 		}
 	}
 
-	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset) throws SerializableException {
+	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset) throws SerializationException {
 		try {
 			repoAsset.updateContent(getXStream().toXML(asset.content));
 		} catch (Exception e) {
 			log.error("error marshalling asset content: " + asset.metaData.name, e);
-			throw new SerializableException(e.getMessage());
+			throw new SerializationException(e.getMessage());
 		}
 	}
 }

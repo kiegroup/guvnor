@@ -43,7 +43,8 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.ruleflow.core.RuleFlowProcess;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 public class BPMN2ProcessHandler extends ContentHandler
     implements
@@ -53,7 +54,7 @@ public class BPMN2ProcessHandler extends ContentHandler
     
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
-                                     AssetItem item) throws SerializableException {
+                                     AssetItem item) throws SerializationException {
         RuleFlowProcess process = readProcess( new ByteArrayInputStream( item.getContent().getBytes() ) );
         if ( process != null ) {
             RuleFlowContentModel content = RuleFlowContentModelBuilder.createModel( process );
@@ -91,7 +92,7 @@ public class BPMN2ProcessHandler extends ContentHandler
     }
 
     public void storeAssetContent(RuleAsset asset,
-                                  AssetItem repoAsset) throws SerializableException {
+                                  AssetItem repoAsset) throws SerializationException {
     	RuleFlowContentModel content = (RuleFlowContentModel) asset.content;
     	System.out.println(content);
         // 

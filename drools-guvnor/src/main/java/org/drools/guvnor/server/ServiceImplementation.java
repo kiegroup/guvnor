@@ -66,7 +66,7 @@ import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rpc.DetailedSerializableException;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.MetaData;
@@ -147,7 +147,8 @@ import org.jboss.seam.web.Session;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
-import com.google.gwt.user.client.rpc.SerializableException;
+import com.google.gwt.user.client.rpc.SerializationException;
+
 
 /**
  * This is the implementation of the repository service to drive the GWT based
@@ -247,7 +248,7 @@ public class ServiceImplementation
                                 String description,
                                 String initialCategory,
                                 String initialPackage,
-                                String format) throws SerializableException {
+                                String format) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( initialPackage ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
@@ -280,7 +281,7 @@ public class ServiceImplementation
             } else {
                 log.error( "An error occurred creating new asset" + ruleName + "] in package [" + initialPackage + "]: ",
                            e );
-                throw new SerializableException( e.getMessage() );
+                throw new SerializationException( e.getMessage() );
             }
         }
 
@@ -292,7 +293,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String createNewImportedRule(String sharedAssetName,
-                                        String initialPackage) throws SerializableException {
+                                        String initialPackage) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( initialPackage ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
@@ -312,7 +313,7 @@ public class ServiceImplementation
             } else {
                 log.error( "An error occurred creating shared asset" + sharedAssetName + "] in package [" + initialPackage + "]: ",
                            e );
-                throw new SerializableException( e.getMessage() );
+                throw new SerializationException( e.getMessage() );
             }
         }
 
@@ -491,7 +492,7 @@ public class ServiceImplementation
     public TableDataResult loadRuleListForCategories(String categoryPath,
                                                      int skip,
                                                      int numRows,
-                                                     String tableConfig) throws SerializableException {
+                                                     String tableConfig) throws SerializationException {
         // love you
         // long time = System.currentTimeMillis();
 
@@ -520,7 +521,7 @@ public class ServiceImplementation
     public TableDataResult loadRuleListForState(String stateName,
                                                 int skip,
                                                 int numRows,
-                                                String tableConfig) throws SerializableException {
+                                                String tableConfig) throws SerializationException {
         // love you
         // long time = System.currentTimeMillis();
 
@@ -557,7 +558,7 @@ public class ServiceImplementation
      */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public RuleAsset loadRuleAsset(String uuid) throws SerializableException {
+    public RuleAsset loadRuleAsset(String uuid) throws SerializationException {
 
         long time = System.currentTimeMillis();
 
@@ -629,11 +630,11 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public RuleAsset[] loadRuleAssets(String[] uuids) throws SerializableException {
+    public RuleAsset[] loadRuleAssets(String[] uuids) throws SerializationException {
         return loadRuleAssets( Arrays.asList( uuids ) );
     }
 
-    private RuleAsset[] loadRuleAssets(Collection<String> uuids) throws SerializableException {
+    private RuleAsset[] loadRuleAssets(Collection<String> uuids) throws SerializationException {
         if ( uuids == null ) {
             return null;
         }
@@ -646,7 +647,7 @@ public class ServiceImplementation
         return assets.toArray( new RuleAsset[assets.size()] );
     }
 
-    private RuleAsset loadAsset(AssetItem item) throws SerializableException {
+    private RuleAsset loadAsset(AssetItem item) throws SerializationException {
 
         RuleAsset asset = new RuleAsset();
         asset.uuid = item.getUUID();
@@ -727,7 +728,7 @@ public class ServiceImplementation
      * 2. The user has a package.developer role or higher (i.e., package.admin)
      * and this role has permission to access the package which the asset belongs to.
      */
-    public String checkinVersion(RuleAsset asset) throws SerializableException {
+    public String checkinVersion(RuleAsset asset) throws SerializationException {
     	
         //Verify if the user has permission to access the asset through package based permission.
         //If failed, then verify if the user has permission to access the asset through category
@@ -797,7 +798,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadAssetHistory(String uuid) throws SerializableException {
+    public TableDataResult loadAssetHistory(String uuid) throws SerializationException {
 
         List<TableDataRow> result = new ArrayList<TableDataRow>();
 
@@ -852,7 +853,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadArchivedAssets(int skip,
-                                              int numRows) throws SerializableException {
+                                              int numRows) throws SerializationException {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
         RepositoryFilter filter = new AssetItemFilter();
 
@@ -923,7 +924,7 @@ public class ServiceImplementation
     @WebRemote
     public String createSubPackage(String name,
                                    String description,
-                                   String parentNode) throws SerializableException {
+                                   String parentNode) throws SerializationException {
         //XXX bauna
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new AdminType(),
@@ -1006,7 +1007,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public ValidatedResponse savePackage(PackageConfigData data) throws SerializableException {
+    public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageUUIDType( data.uuid ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
@@ -1079,10 +1080,10 @@ public class ServiceImplementation
                                       String formats[],
                                       int skip,
                                       int numRows,
-                                      String tableConfig) throws SerializableException {
+                                      String tableConfig) throws SerializationException {
         log.debug( "Loading asset list for [" + uuid + "]" );
         if ( numRows == 0 ) {
-            throw new DetailedSerializableException( "Unable to return zero results (bug)",
+            throw new DetailedSerializationException( "Unable to return zero results (bug)",
                                                      "probably have the parameters around the wrong way, sigh..." );
         }
         long start = System.currentTimeMillis();
@@ -1105,9 +1106,9 @@ public class ServiceImplementation
     public TableDataResult queryFullText(String text,
                                          boolean seekArchived,
                                          int skip,
-                                         int numRows) throws SerializableException {
+                                         int numRows) throws SerializationException {
         if ( numRows == 0 ) {
-            throw new DetailedSerializableException( "Unable to return zero results (bug)",
+            throw new DetailedSerializationException( "Unable to return zero results (bug)",
                                                      "probably have the parameters around the wrong way, sigh..." );
         }
         AssetItemIterator it = repository.queryFullText( text,
@@ -1141,9 +1142,9 @@ public class ServiceImplementation
                                          Date modifiedBefore,
                                          boolean seekArchived,
                                          int skip,
-                                         int numRows) throws SerializableException {
+                                         int numRows) throws SerializationException {
         if ( numRows == 0 ) {
-            throw new DetailedSerializableException( "Unable to return zero results (bug)",
+            throw new DetailedSerializationException( "Unable to return zero results (bug)",
                                                      "probably have the parameters around the wrong way, sigh..." );
         }
         Map<String, String[]> q = new HashMap<String, String[]>() {
@@ -1233,7 +1234,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public String createState(String name) throws SerializableException {
+    public String createState(String name) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " CREATING state: [" + name + "]" );
         try {
             name = cleanHTML( name );
@@ -1241,13 +1242,13 @@ public class ServiceImplementation
             repository.save();
             return uuid;
         } catch ( RepositoryException e ) {
-            throw new SerializableException( "Unable to create the status." );
+            throw new SerializationException( "Unable to create the status." );
         }
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public void removeState(String name) throws SerializableException {
+    public void removeState(String name) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " REMOVING state: [" + name + "]" );
 
         try {
@@ -1255,7 +1256,7 @@ public class ServiceImplementation
             repository.save();
 
         } catch ( RulesRepositoryException e ) {
-            throw new DetailedSerializableException( "Unable to remove status. It is probably still used (even by archived items).",
+            throw new DetailedSerializationException( "Unable to remove status. It is probably still used (even by archived items).",
                                                      e.getMessage() );
         }
     }
@@ -1263,7 +1264,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void renameState(String oldName,
-                            String newName) throws SerializableException {
+                            String newName) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " RENAMING state: [" + oldName + "] to [" + newName + "]" );
         repository.renameState( oldName,
                                 newName );
@@ -1272,7 +1273,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public String[] listStates() throws SerializableException {
+    public String[] listStates() throws SerializationException {
         StateItem[] states = repository.listStates();
         String[] result = new String[states.length];
         for ( int i = 0; i < states.length; i++ ) {
@@ -1460,7 +1461,7 @@ public class ServiceImplementation
     public void copyOrRemoveSnapshot(String packageName,
                                      String snapshotName,
                                      boolean delete,
-                                     String newSnapshotName) throws SerializableException {
+                                     String newSnapshotName) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( packageName ),
                                                  RoleTypes.PACKAGE_ADMIN );
@@ -1472,7 +1473,7 @@ public class ServiceImplementation
                                               snapshotName );
         } else {
             if ( newSnapshotName.equals( "" ) ) {
-                throw new SerializableException( "Need to have a new snapshot name." );
+                throw new SerializationException( "Need to have a new snapshot name." );
             }
             log.info( "USER:" + getCurrentUserName() + " COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
 
@@ -1488,7 +1489,7 @@ public class ServiceImplementation
     public TableDataResult quickFindAsset(String searchText,
                                           boolean searchArchived,
                                           int skip,
-                                          int numRows) throws SerializableException {
+                                          int numRows) throws SerializationException {
         String search = searchText.replace( '*',
                                             '%' );
 
@@ -1524,7 +1525,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public void removeCategory(String categoryPath) throws SerializableException {
+    public void removeCategory(String categoryPath) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " REMOVING CATEGORY path: [" + categoryPath + "]" );
 
         try {
@@ -1533,7 +1534,7 @@ public class ServiceImplementation
         } catch ( RulesRepositoryException e ) {
             log.info( "Unable to remove category [" + categoryPath + "]. It is probably still used: " + e.getMessage() );
 
-            throw new DetailedSerializableException( "Unable to remove category. It is probably still used.",
+            throw new DetailedSerializationException( "Unable to remove category. It is probably still used.",
                                                      e.getMessage() );
         }
     }
@@ -1551,7 +1552,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializableException {
+    public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( packageName ),
                                                  RoleTypes.PACKAGE_READONLY );
@@ -1577,7 +1578,7 @@ public class ServiceImplementation
 
         } catch ( RulesRepositoryException e ) {
             log.error( "An error occurred loadSuggestionCompletionEngine: " + e.getMessage() );
-            throw new SerializableException( e.getMessage() );
+            throw new SerializationException( e.getMessage() );
         } finally {
             Thread.currentThread().setContextClassLoader( originalCL );
         }
@@ -1587,7 +1588,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public BuilderResult buildPackage(String packageUUID,
-                                      boolean force) throws SerializableException {
+                                      boolean force) throws SerializationException {
         return buildPackage( packageUUID,
                              force,
                              null,
@@ -1611,7 +1612,7 @@ public class ServiceImplementation
                                       String categoryOperator,
                                       String category,
                                       boolean enableCategorySelector,
-                                      String customSelectorName) throws SerializableException {
+                                      String customSelectorName) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
@@ -1629,22 +1630,22 @@ public class ServiceImplementation
                                  enableCategorySelector,
                                  customSelectorName );
         } catch ( NoClassDefFoundError e ) {
-            throw new DetailedSerializableException( "Unable to find a class that was needed when building the package  [" + e.getMessage() + "]",
+            throw new DetailedSerializationException( "Unable to find a class that was needed when building the package  [" + e.getMessage() + "]",
                                                      "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
         } catch ( UnsupportedClassVersionError e ) {
-            throw new DetailedSerializableException( "Can not build the package. One or more of the classes that are needed were compiled with an unsupported Java version.",
+            throw new DetailedSerializationException( "Can not build the package. One or more of the classes that are needed were compiled with an unsupported Java version.",
                                                      "For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. [" + e.getMessage() + "]" );
         }
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public String[] getCustomSelectors() throws SerializableException {
+    public String[] getCustomSelectors() throws SerializationException {
         return SelectorManager.getInstance().getCustomSelectors();
     }
 
     private BuilderResult buildPackage(PackageItem item,
-                                       boolean force) throws DetailedSerializableException {
+                                       boolean force) throws DetailedSerializationException {
         return buildPackage( item,
                              force,
                              null,
@@ -1666,7 +1667,7 @@ public class ServiceImplementation
                                        String categoryOperator,
                                        String category,
                                        boolean enableCategorySelector,
-                                       String selectorConfigName) throws DetailedSerializableException {
+                                       String selectorConfigName) throws DetailedSerializationException {
         if ( !force && item.isBinaryUpToDate() ) {
             // we can just return all OK if its up to date.
             return null;
@@ -1701,7 +1702,7 @@ public class ServiceImplementation
             } catch ( Exception e ) {
                 e.printStackTrace();
                 log.error( "An error occurred building the package [" + item.getName() + "]: " + e.getMessage() );
-                throw new DetailedSerializableException( "An error occurred building the package.",
+                throw new DetailedSerializationException( "An error occurred building the package.",
                                                          e.getMessage() );
             }
 
@@ -1711,7 +1712,7 @@ public class ServiceImplementation
     }
 
     private void updateBinaryPackage(PackageItem item,
-                                     ContentPackageAssembler asm) throws SerializableException {
+                                     ContentPackageAssembler asm) throws SerializationException {
         item.updateBinaryUpToDate( true );
         RuleBaseConfiguration conf = new RuleBaseConfiguration();
         // setting the MapBackedClassloader that is the parent of the builder classloader as the parent
@@ -1738,7 +1739,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public String buildPackageSource(String packageUUID) throws SerializableException {
+    public String buildPackageSource(String packageUUID) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
@@ -1752,7 +1753,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public String buildAssetSource(RuleAsset asset) throws SerializableException {
+    public String buildAssetSource(RuleAsset asset) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
@@ -1788,7 +1789,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public BuilderResult buildAsset(RuleAsset asset) throws SerializableException {
+    public BuilderResult buildAsset(RuleAsset asset) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
@@ -1835,7 +1836,7 @@ public class ServiceImplementation
 
     @WebRemote
     public void copyPackage(String sourcePackageName,
-                            String destPackageName) throws SerializableException {
+                            String destPackageName) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new AdminType(),
                                                  RoleTypes.ADMIN );
@@ -2006,7 +2007,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    public void rebuildSnapshots() throws SerializableException {
+    public void rebuildSnapshots() throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new AdminType(),
                                                  RoleTypes.ADMIN );
@@ -2027,7 +2028,7 @@ public class ServiceImplementation
                         buf.append( res.lines[i].toString() );
                         buf.append( '\n' );
                     }
-                    throw new DetailedSerializableException( "Unable to rebuild snapshot [" + snapName,
+                    throw new DetailedSerializationException( "Unable to rebuild snapshot [" + snapName,
                                                              buf.toString() + "]" );
                 }
             }
@@ -2036,7 +2037,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public String[] listRulesInPackage(String packageName) throws SerializableException {
+    public String[] listRulesInPackage(String packageName) throws SerializationException {
 
         // check security
         if ( Contexts.isSessionContextActive() ) {
@@ -2084,14 +2085,14 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public String[] listRulesInGlobalArea() throws SerializableException {
+    public String[] listRulesInGlobalArea() throws SerializationException {
         return listRulesInPackage( RulesRepository.RULE_GLOBAL_AREA );
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public SingleScenarioResult runScenario(String packageName,
-                                            Scenario scenario) throws SerializableException {
+                                            Scenario scenario) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( packageName ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
@@ -2105,7 +2106,7 @@ public class ServiceImplementation
 
     private SingleScenarioResult runScenario(String packageName,
                                              Scenario scenario,
-                                             RuleCoverageListener coverage) throws SerializableException {
+                                             RuleCoverageListener coverage) throws SerializationException {
         PackageItem item = this.repository.loadPackage( packageName );
         SingleScenarioResult result = null;
         // nasty classloader needed to make sure we use the same tree the whole
@@ -2152,8 +2153,8 @@ public class ServiceImplementation
                                   rb,
                                   coverage );
         } catch ( Exception e ) {
-            if ( e instanceof DetailedSerializableException ) {
-                DetailedSerializableException err = (DetailedSerializableException) e;
+            if ( e instanceof DetailedSerializationException ) {
+                DetailedSerializationException err = (DetailedSerializationException) e;
                 result = new SingleScenarioResult();
                 if ( err.getErrs() != null ) {
                     result.result = new ScenarioRunResult( err.getErrs(),
@@ -2171,7 +2172,7 @@ public class ServiceImplementation
     /*
      * Set the Rule base in a cache
      */
-    private RuleBase loadCacheRuleBase(PackageItem item) throws DetailedSerializableException {
+    private RuleBase loadCacheRuleBase(PackageItem item) throws DetailedSerializationException {
         RuleBase rb = null;
         if ( item.isBinaryUpToDate() && this.ruleBaseCache.containsKey( item.getUUID() ) ) {
             rb = this.ruleBaseCache.get( item.getUUID() );
@@ -2194,7 +2195,7 @@ public class ServiceImplementation
                                        buildCl );
                     this.ruleBaseCache.put( item.getUUID(),
                                             rb );
-                } else throw new DetailedSerializableException( "Build error",
+                } else throw new DetailedSerializationException( "Build error",
                                                                 result.lines );
             }
 
@@ -2203,13 +2204,13 @@ public class ServiceImplementation
     }
 
     private RuleBase loadRuleBase(PackageItem item,
-                                  ClassLoader cl) throws DetailedSerializableException {
+                                  ClassLoader cl) throws DetailedSerializationException {
         try {
             return deserKnowledgebase( item,
                                        cl );
         } catch ( ClassNotFoundException e ) {
             log.error("Unable to load rule base.", e );
-            throw new DetailedSerializableException( "A required class was not found.",
+            throw new DetailedSerializationException( "A required class was not found.",
                                                      e.getMessage() );
         } catch ( Exception e ) {
             log.error("Unable to load rule base.", e );
@@ -2219,7 +2220,7 @@ public class ServiceImplementation
                                                        true );
                 if ( res != null && res.lines.length > 0 ) {
                     log.error( "There were errors when rebuilding the knowledgebase." );
-                    throw new DetailedSerializableException( "There were errors when rebuilding the knowledgebase.",
+                    throw new DetailedSerializationException( "There were errors when rebuilding the knowledgebase.",
                                                              "" );
                 }
                 try {
@@ -2227,12 +2228,12 @@ public class ServiceImplementation
                                                cl );
                 } catch ( Exception e2 ) {
                     log.error( "Unable to reload knowledgebase: " + e.getMessage() );
-                    throw new DetailedSerializableException( "Unable to reload knowledgebase.",
+                    throw new DetailedSerializationException( "Unable to reload knowledgebase.",
                                                              e.getMessage() );
                 }
             } catch ( Exception e1 ) {
                 log.error( "Unable to rebuild the rulebase: " + e.getMessage() );
-                throw new DetailedSerializableException( "Unable to rebuild the rulebase.",
+                throw new DetailedSerializationException( "Unable to rebuild the rulebase.",
                                                          "" );
             }
 
@@ -2253,7 +2254,7 @@ public class ServiceImplementation
                                              PackageItem item,
                                              ClassLoader cl,
                                              RuleBase rb,
-                                             RuleCoverageListener coverage) throws DetailedSerializableException {
+                                             RuleCoverageListener coverage) throws DetailedSerializationException {
 
         // RuleBase rb = ruleBaseCache.get(item.getUUID());
         Package bin = rb.getPackages()[0];
@@ -2287,7 +2288,7 @@ public class ServiceImplementation
             return r;
         } catch ( ClassNotFoundException e ) {
             log.error( "Unable to load a required class: " + e.getMessage() );
-            throw new DetailedSerializableException( "Unable to load a required class.",
+            throw new DetailedSerializationException( "Unable to load a required class.",
                                                      e.getMessage() );
         } catch ( ConsequenceException e ) {
             String messageShort = "There was an error executing the consequence of rule [" + e.getRule().getName() + "]";
@@ -2297,18 +2298,18 @@ public class ServiceImplementation
             }
 
             log.error( messageShort+": "+messageLong );
-            throw new DetailedSerializableException( messageShort,
+            throw new DetailedSerializationException( messageShort,
                                                      messageLong );
         } catch ( Exception e ) {
             log.error( "Unable to run the scenario: " + e.getMessage() );
-            throw new DetailedSerializableException( "Unable to run the scenario.",
+            throw new DetailedSerializationException( "Unable to run the scenario.",
                                                      e.getMessage() );
         }
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializableException {
+    public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
@@ -2317,8 +2318,8 @@ public class ServiceImplementation
         return runScenariosInPackage( item );
     }
 
-    public BulkTestRunResult runScenariosInPackage(PackageItem item) throws DetailedSerializableException,
-                                                                    SerializableException {
+    public BulkTestRunResult runScenariosInPackage(PackageItem item) throws DetailedSerializationException,
+                                                                    SerializationException {
         ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
         ClassLoader cl = null;
 
@@ -2404,7 +2405,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public AnalysisReport analysePackage(String packageUUID) throws SerializableException {
+    public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
@@ -2418,7 +2419,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public String[] listTypesInPackage(String packageUUID) throws SerializableException {
+    public String[] listTypesInPackage(String packageUUID) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
                                                  "package.readoly" );
@@ -2465,7 +2466,7 @@ public class ServiceImplementation
             return res.toArray( new String[res.size()] );
         } catch ( IOException e ) {
             log.error( "Unable to read the jar files in the package: " + e.getMessage() );
-            throw new DetailedSerializableException( "Unable to read the jar files in the package.",
+            throw new DetailedSerializationException( "Unable to read the jar files in the package.",
                                                      e.getMessage() );
         } finally {
             IOUtils.closeQuietly( jis );
@@ -2565,7 +2566,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public void rebuildPackages() throws SerializableException {
+    public void rebuildPackages() throws SerializationException {
         Iterator pkit = repository.listPackages();
         StringBuffer errs = new StringBuffer();
         while ( pkit.hasNext() ) {
@@ -2590,7 +2591,7 @@ public class ServiceImplementation
         }
 
         if ( errs.toString().length() > 0 ) {
-            throw new DetailedSerializableException( "Unable to rebuild all packages.",
+            throw new DetailedSerializationException( "Unable to rebuild all packages.",
                                                      errs.toString() );
         }
     }
@@ -2704,7 +2705,7 @@ public class ServiceImplementation
     }
 
     @Restrict("#{identity.loggedIn}")
-    public void installSampleRepository() throws SerializableException {
+    public void installSampleRepository() throws SerializationException {
         checkIfADMIN();
         repository.importRepository( this.getClass().getResourceAsStream( "/mortgage-sample-repository.xml" ) );
         this.rebuildPackages();
@@ -2753,7 +2754,7 @@ public class ServiceImplementation
     }
 
     @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadInbox(String inboxName) throws DetailedSerializableException {
+    public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException {
         try {
             UserInbox ib = new UserInbox( repository );
             if ( inboxName.equals( Inbox.RECENT_VIEWED ) ) {
@@ -2768,7 +2769,7 @@ public class ServiceImplementation
             }
         } catch ( Exception e ) {
             log.error( "Unable to load Inbox: " + e.getMessage() );
-            throw new DetailedSerializableException( "Unable to load Inbox",
+            throw new DetailedSerializationException( "Unable to load Inbox",
                                                      e.getMessage() );
         }
     }
@@ -2905,7 +2906,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public AnalysisReport verifyAsset(RuleAsset asset,
-                                      Set<String> activeWorkingSets) throws SerializableException {
+                                      Set<String> activeWorkingSets) throws SerializationException {
         return this.performAssetVerification( asset,
                                               true,
                                               activeWorkingSets );
@@ -2914,7 +2915,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
-                                                           Set<String> activeWorkingSets) throws SerializableException {
+                                                           Set<String> activeWorkingSets) throws SerializationException {
         return this.performAssetVerification( asset,
                                               false,
                                               activeWorkingSets );
@@ -2922,7 +2923,9 @@ public class ServiceImplementation
 
     private AnalysisReport performAssetVerification(RuleAsset asset,
                                                     boolean useVerifierDefaultConfig,
-                                                    Set<String> activeWorkingSets) throws SerializableException {
+                                                    Set<String> activeWorkingSets) throws SerializationException {
+        long startTime = System.currentTimeMillis();
+        
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
@@ -2947,18 +2950,23 @@ public class ServiceImplementation
             }
         }
         log.debug( "constraints rules: " + constraintRules );
-        try{
+        try {
+            AnalysisReport report;
             if ( AssetFormats.DECISION_TABLE_GUIDED.equals( asset.metaData.format ) || AssetFormats.DECISION_SPREADSHEET_XLS.equals( asset.metaData.format ) ) {
-                return runner.verify( drl,
-                                      VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE,
-                                      constraintRules );
+                report = runner.verify( drl,
+                                        VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE,
+                                        constraintRules );
             } else {
-                return runner.verify( drl,
-                                      VerifierConfiguration.VERIFYING_SCOPE_SINGLE_RULE,
-                                      constraintRules );
+                report = runner.verify( drl,
+                                        VerifierConfiguration.VERIFYING_SCOPE_SINGLE_RULE,
+                                        constraintRules );
             }
+            
+            log.debug( "Asset verification took: "+ (System.currentTimeMillis()-startTime) );
+            
+            return report;
         } catch (Throwable t){
-            throw new SerializableException( t.getMessage() );
+            throw new SerializationException( t.getMessage() );
         }
     }
 }
