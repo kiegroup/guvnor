@@ -2411,9 +2411,11 @@ public class ServiceImplementation
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        String drl = this.buildPackageSource( packageUUID );
+        PackageItem packageItem = repository.loadPackageByUUID( packageUUID );
+        
+        
         VerifierRunner runner = new VerifierRunner();
-        return runner.verify( drl,
+        return runner.verify( packageItem,
                               VerifierConfiguration.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE );
     }
 

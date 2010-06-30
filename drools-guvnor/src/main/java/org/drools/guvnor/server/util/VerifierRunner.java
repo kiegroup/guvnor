@@ -2,6 +2,7 @@ package org.drools.guvnor.server.util;
 
 import java.io.StringReader;
 import java.util.Collection;
+import java.util.Collections;
 
 import org.drools.builder.ResourceType;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -26,30 +27,22 @@ public class VerifierRunner {
 
     private Verifier    verifier;
     private PackageItem packageItem;
-    private boolean useDefaultConfig = true;
-
-	public AnalysisReport verify(String drl, String scope) {
-		return verify(drl, scope, null);
-	}
-
-	public AnalysisReport verify(String drl, String scope,
-			Collection<String> additionalVerifierRules) {
-
-        initVerifier( scope, additionalVerifierRules );
-
-        verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( drl ) ),
-                                       ResourceType.DRL );
-        VerifierReport res = fireAnalysis();
-
-        return VerifierReportCreator.doReport( res );
-    }
-
+    private boolean     useDefaultConfig = true;
 
     public AnalysisReport verify(PackageItem packageItem,
-                                 String scope, Collection<String> additionalVerifierRules) {
+                                 String scope) {
+        return verify( packageItem,
+                       scope,
+                       Collections.EMPTY_LIST );
+    }
+
+    public AnalysisReport verify(PackageItem packageItem,
+                                 String scope,
+                                 Collection<String> additionalVerifierRules) {
         this.packageItem = packageItem;
 
-        initVerifier( scope, additionalVerifierRules );
+        initVerifier( scope,
+                      additionalVerifierRules );
 
         addHeaderToVerifier();
 
@@ -65,7 +58,7 @@ public class VerifierRunner {
         addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.DRL} ),
                        ResourceType.DRL );
 
-        addToRulesVerifier();
+        addRulesToVerifier();
         fireAnalysis();
 
         VerifierReport report = verifier.getResult();
@@ -73,38 +66,37 @@ public class VerifierRunner {
         return VerifierReportCreator.doReport( report );
     }
 
-    private VerifierReport fireAnalysis() throws RuntimeException {
+    private void fireAnalysis() throws RuntimeException {
         verifier.fireAnalysis();
-        if (verifier.hasErrors()) {
-            StringBuilder message = new StringBuilder("Verifier Errors:\n");
-            for (VerifierError verifierError : verifier.getErrors()) {
-                message.append("\t");
-                message.append(verifierError.getMessage());
-                message.append("\n");
+        if ( verifier.hasErrors() ) {
+            StringBuilder message = new StringBuilder( "Verifier Errors:\n" );
+            for ( VerifierError verifierError : verifier.getErrors() ) {
+                message.append( "\t" );
+                message.append( verifierError.getMessage() );
+                message.append( "\n" );
             }
-            throw new RuntimeException(message.toString());
+            throw new RuntimeException( message.toString() );
         }
-        return verifier.getResult();
     }
 
-    private void initVerifier(String scope, Collection<String> additionalVerifierRules) {
+    private void initVerifier(String scope,
+                              Collection<String> additionalVerifierRules) {
         VerifierConfiguration conf = new DefaultVerifierConfiguration();
-        if(useDefaultConfig){
+        if ( useDefaultConfig ) {
             conf = new DefaultVerifierConfiguration();
-        }else{
+        } else {
             conf = new VerifierConfigurationImpl();
         }
 
         conf.getVerifyingScopes().clear();
         conf.getVerifyingScopes().add( scope );
         conf.setAcceptRulesWithoutVerifiyingScope( true );
-		if (additionalVerifierRules != null) {
-			for (String rule : additionalVerifierRules) {
-				conf.getVerifyingResources().put(
-						ResourceFactory.newByteArrayResource(rule.getBytes()),
-						ResourceType.DRL);
-			}
-		}
+        if ( additionalVerifierRules != null ) {
+            for ( String rule : additionalVerifierRules ) {
+                conf.getVerifyingResources().put( ResourceFactory.newByteArrayResource( rule.getBytes() ),
+                                                  ResourceType.DRL );
+            }
+        }
         verifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier( conf );
     }
 
@@ -129,7 +121,7 @@ public class VerifierRunner {
         }
     }
 
-    private void addToRulesVerifier() {
+    private void addRulesToVerifier() {
 
         AssetItemIterator rules = packageItem.listAssetsByFormat( AssetFormats.BUSINESS_RULE_FORMATS );
 
@@ -154,7 +146,5 @@ public class VerifierRunner {
     public void setUseDefaultConfig(boolean useDefaultConfig) {
         this.useDefaultConfig = useDefaultConfig;
     }
-
-
 
 }
