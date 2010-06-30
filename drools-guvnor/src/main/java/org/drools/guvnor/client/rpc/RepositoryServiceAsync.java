@@ -17,9 +17,6 @@ package org.drools.guvnor.client.rpc;
 
 
 
-import org.drools.guvnor.client.common.GenericCallback;
-
-import com.google.gwt.user.client.rpc.RemoteService;
 
 /**
  * 
@@ -114,6 +111,4 @@ public interface RepositoryServiceAsync {
 	void subscribe(com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<org.drools.guvnor.client.rpc.PushResponse>> arg1);
 	void unLockAsset(java.lang.String uuid, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
 	void updateUserPermissions(java.lang.String userName, java.util.Map<java.lang.String, java.util.List<java.lang.String>> perms, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg3);
-	void verifyAsset(org.drools.guvnor.client.rpc.RuleAsset asset, java.util.Set<String> sactiveWorkingSets, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.AnalysisReport> arg2);
-	void verifyAssetWithoutVerifiersRules(org.drools.guvnor.client.rpc.RuleAsset asset, java.util.Set<String> sactiveWorkingSets, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.AnalysisReport> arg2);
 }

@@ -19,7 +19,6 @@ package org.drools.guvnor.client.rpc;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
@@ -608,9 +607,4 @@ public interface RepositoryService
                                           String firstSnapshotName,
                                           String secondSnapshotName);
 
-    public AnalysisReport verifyAsset(RuleAsset asset,
-                                      Set<String> activeWorkingSets) throws SerializationException;
-
-    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
-                                                           Set<String> activeWorkingSets) throws SerializationException;
 }
