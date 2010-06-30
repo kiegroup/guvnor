@@ -1,10 +1,9 @@
 <?xml version="1.0"?>
-<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+                         "http://java.sun.com/dtd/web-app_2_3.dtd">
 <web-app>
-
-    <display-name>JBoss Drools Guvnor</display-name>
-
-    <filter>
+	<display-name>JBoss Drools Guvnor</display-name>
+	<filter>
 		<filter-name>Seam Filter</filter-name>
 		<filter-class>org.jboss.seam.web.ContextFilter</filter-class>
 	</filter>
@@ -12,12 +11,10 @@
 		<filter-name>Seam Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
-    <listener>
-        <listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
-    </listener>
-
-    <!-- servlets - mostly to do with file management -->
+	<listener>
+		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
+	</listener>
+	<!-- servlets - mostly to do with file management -->
 	<servlet>
 		<servlet-name>guvnorService</servlet-name>
 		<servlet-class>org.drools.guvnor.server.RepositoryServiceServlet</servlet-class>
@@ -44,25 +41,28 @@
 	</servlet>
 	<servlet>
 		<servlet-name>RestAPIServlet</servlet-name>
-		<servlet-class>	org.drools.guvnor.server.files.RestAPIServlet</servlet-class>
+		<servlet-class>org.drools.guvnor.server.files.RestAPIServlet</servlet-class>
 	</servlet>
-    <servlet>
+	<servlet>
 		<servlet-name>FeedServlet</servlet-name>
-		<servlet-class>	org.drools.guvnor.server.files.FeedServlet</servlet-class>
+		<servlet-class>org.drools.guvnor.server.files.FeedServlet</servlet-class>
 	</servlet>
-    <servlet>
+	<servlet>
 		<servlet-name>WorkflowManagerServlet</servlet-name>
-		<servlet-class>	org.gridcc.mce.mceworkflow.servlets.WorkflowManagerServlet</servlet-class>
+		<servlet-class>org.gridcc.mce.mceworkflow.servlets.WorkflowManagerServlet</servlet-class>
 	</servlet>
-    <servlet>
+	<servlet>
 		<servlet-name>WSDLParserServlet</servlet-name>
-		<servlet-class>	org.gridcc.mce.mceworkflow.servlets.WSDLParserServlet</servlet-class>
+		<servlet-class>org.gridcc.mce.mceworkflow.servlets.WSDLParserServlet</servlet-class>
 	</servlet>
-    <servlet>
-        <servlet-name>guvnorAPI</servlet-name>
-        <servlet-class>org.drools.guvnor.server.GuvnorAPIServlet</servlet-class>
-    </servlet>
-
+	<servlet>
+		<servlet-name>guvnorAPI</servlet-name>
+		<servlet-class>org.drools.guvnor.server.GuvnorAPIServlet</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>verificationService</servlet-name>
+		<servlet-class>org.drools.guvnor.server.VerificationServiceImplementation</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>guvnorService</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/guvnorService</url-pattern>
@@ -91,15 +91,15 @@
 		<servlet-name>RestAPIServlet</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/api/*</url-pattern>
 	</servlet-mapping>
-   	<servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>FeedServlet</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/feed/*</url-pattern>
 	</servlet-mapping>
-  	<servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>WorkflowManagerServlet</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/workflowmanager/*</url-pattern>
 	</servlet-mapping>
-   	<servlet-mapping>
+	<servlet-mapping>
 		<servlet-name>WSDLParserServlet</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/wsdlparser/*</url-pattern>
 	</servlet-mapping>
@@ -107,10 +107,14 @@
 		<servlet-name>guvnorAPI</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/guvnorAPI</url-pattern>
 	</servlet-mapping>
-
-    <session-config>
-        <session-timeout>180</session-timeout>
-    </session-config>
-
-
+	<servlet-mapping>
+		<servlet-name>verificationService</servlet-name>
+		<url-pattern>/org.drools.guvnor.Guvnor/verificationService</url-pattern>
+	</servlet-mapping>
+	<session-config>
+		<session-timeout>180</session-timeout>
+	</session-config>
+	<login-config>
+		<auth-method>BASIC</auth-method>
+	</login-config>
 </web-app>

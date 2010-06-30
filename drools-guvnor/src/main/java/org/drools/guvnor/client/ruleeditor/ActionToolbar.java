@@ -40,6 +40,8 @@ import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.VerificationService;
+import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
@@ -302,28 +304,31 @@ public class ActionToolbar extends Composite {
         LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
         Set<String> activeWorkingSets = null;
         activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs( asset.metaData.packageName );
-        RepositoryServiceFactory.getService().verifyAsset( asset,
-                                                           activeWorkingSets,
-                                                           new AsyncCallback<AnalysisReport>() {
 
-                                                               public void onSuccess(AnalysisReport report) {
-                                                                   LoadingPopup.close();
-                                                                   final FormStylePopup form = new FormStylePopup( "images/rule_asset.gif",
-                                                                                                                   constants.VerificationReport() );
-                                                                   ScrollPanel scrollPanel = new ScrollPanel( new VerifierResultWidget( report,
-                                                                                                                                        false ) );
-                                                                   scrollPanel.setWidth( "100%" );
-                                                                   form.addRow( scrollPanel );
+        VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
 
-                                                                   LoadingPopup.close();
-                                                                   form.show();
-                                                               }
+        verificationService.verifyAsset( asset,
+                                         activeWorkingSets,
+                                         new AsyncCallback<AnalysisReport>() {
 
-                                                               public void onFailure(Throwable arg0) {
-                                                                   // TODO Auto-generated method stub
+                                             public void onSuccess(AnalysisReport report) {
+                                                 LoadingPopup.close();
+                                                 final FormStylePopup form = new FormStylePopup( "images/rule_asset.gif",
+                                                                                                 constants.VerificationReport() );
+                                                 ScrollPanel scrollPanel = new ScrollPanel( new VerifierResultWidget( report,
+                                                                                                                      false ) );
+                                                 scrollPanel.setWidth( "100%" );
+                                                 form.addRow( scrollPanel );
 
-                                                               }
-                                                           } );
+                                                 LoadingPopup.close();
+                                                 form.show();
+                                             }
+
+                                             public void onFailure(Throwable arg0) {
+                                                 // TODO Auto-generated method stub
+
+                                             }
+                                         } );
 
     }
 
@@ -429,7 +434,8 @@ public class ActionToolbar extends Composite {
     }
 
     protected void showWorkingSetsSelection(RuleModeller modeller) {
-        new WorkingSetSelectorPopup( modeller, asset ).show();
+        new WorkingSetSelectorPopup( modeller,
+                                     asset ).show();
     }
 
     public static interface CheckinAction {

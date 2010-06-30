@@ -66,8 +66,7 @@ public class VerifierRunner {
                        ResourceType.DRL );
 
         addToRulesVerifier();
-
-        this.fireAnalysis();
+        fireAnalysis();
 
         VerifierReport report = verifier.getResult();
 

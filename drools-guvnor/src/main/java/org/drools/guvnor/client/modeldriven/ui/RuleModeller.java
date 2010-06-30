@@ -43,6 +43,8 @@ import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.VerificationService;
+import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -1197,7 +1199,10 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 
         LoadingPopup.showMessage(constants.VerifyingItemPleaseWait());
         Set<String> activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs(asset.metaData.packageName);
-        RepositoryServiceFactory.getService().verifyAssetWithoutVerifiersRules(this.asset, activeWorkingSets,
+        
+        VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
+        
+        verificationService.verifyAssetWithoutVerifiersRules(this.asset, activeWorkingSets,
                 new AsyncCallback<AnalysisReport>() {
 
                     public void onSuccess(AnalysisReport report) {

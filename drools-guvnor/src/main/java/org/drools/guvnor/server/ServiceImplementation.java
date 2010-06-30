@@ -634,7 +634,7 @@ public class ServiceImplementation
         return loadRuleAssets( Arrays.asList( uuids ) );
     }
 
-    private RuleAsset[] loadRuleAssets(Collection<String> uuids) throws SerializationException {
+    RuleAsset[] loadRuleAssets(Collection<String> uuids) throws SerializationException {
         if ( uuids == null ) {
             return null;
         }
@@ -2901,72 +2901,5 @@ public class ServiceImplementation
 
         diffs.diffs = list.toArray( new SnapshotDiff[list.size()] );
         return diffs;
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public AnalysisReport verifyAsset(RuleAsset asset,
-                                      Set<String> activeWorkingSets) throws SerializationException {
-        return this.performAssetVerification( asset,
-                                              true,
-                                              activeWorkingSets );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
-                                                           Set<String> activeWorkingSets) throws SerializationException {
-        return this.performAssetVerification( asset,
-                                              false,
-                                              activeWorkingSets );
-    }
-
-    private AnalysisReport performAssetVerification(RuleAsset asset,
-                                                    boolean useVerifierDefaultConfig,
-                                                    Set<String> activeWorkingSets) throws SerializationException {
-        long startTime = System.currentTimeMillis();
-        
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
-        }
-
-        String drl = "package " + asset.metaData.packageName + "\n" + getDroolsHeader( repository.loadPackage( asset.metaData.packageName ) ) + "\n" + this.buildAssetSource( asset );
-
-        VerifierRunner runner = new VerifierRunner();
-
-        runner.setUseDefaultConfig( useVerifierDefaultConfig );
-
-        RuleAsset[] workingSets = loadRuleAssets( activeWorkingSets );
-        List<String> constraintRules = new LinkedList<String>();
-        if ( workingSets != null ) {
-            for ( RuleAsset ws : workingSets ) {
-                WorkingSetConfigData wsConfig = (WorkingSetConfigData) ws.content;
-                if ( wsConfig.constraints != null ) {
-                    for ( ConstraintConfiguration config : wsConfig.constraints ) {
-                        constraintRules.add( ConstraintsFactory.getInstance().getVerifierRule( config ) );
-                    }
-                }
-            }
-        }
-        log.debug( "constraints rules: " + constraintRules );
-        try {
-            AnalysisReport report;
-            if ( AssetFormats.DECISION_TABLE_GUIDED.equals( asset.metaData.format ) || AssetFormats.DECISION_SPREADSHEET_XLS.equals( asset.metaData.format ) ) {
-                report = runner.verify( drl,
-                                        VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE,
-                                        constraintRules );
-            } else {
-                report = runner.verify( drl,
-                                        VerifierConfiguration.VERIFYING_SCOPE_SINGLE_RULE,
-                                        constraintRules );
-            }
-            
-            log.debug( "Asset verification took: "+ (System.currentTimeMillis()-startTime) );
-            
-            return report;
-        } catch (Throwable t){
-            throw new SerializationException( t.getMessage() );
-        }
     }
 }

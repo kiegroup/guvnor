@@ -44,6 +44,7 @@
     <servlet path="/feed" class="org.drools.guvnor.server.files.FeedServlet"/>
     <servlet path="/workflowmanager" class="org.gridcc.mce.mceworkflow.servlets.WorkflowManagerServlet"/>
     <servlet path="/wsdlparser" class="org.gridcc.mce.mceworkflow.servlets.WSDLParserServlet"/>
+    <servlet path="/verificationService" class="org.drools.guvnor.server.VerificationServiceImplementation"/>
 
 
 	<set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />

@@ -345,15 +345,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public org.drools.guvnor.client.rpc.SnapshotDiffs compareSnapshots(java.lang.String p0, java.lang.String p1, java.lang.String p2)  {
          return getService().compareSnapshots( p0,  p1,  p2);
     }
-
-    public AnalysisReport verifyAsset(RuleAsset asset, Set<String> activeWorkingSets) throws SerializationException {
-        return getService().verifyAsset( asset, activeWorkingSets );
-    }
-
-    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset, Set<String> activeWorkingSets) throws SerializationException{
-        return getService().verifyAssetWithoutVerifiersRules(asset, activeWorkingSets);
-    }
-
     
 
 
