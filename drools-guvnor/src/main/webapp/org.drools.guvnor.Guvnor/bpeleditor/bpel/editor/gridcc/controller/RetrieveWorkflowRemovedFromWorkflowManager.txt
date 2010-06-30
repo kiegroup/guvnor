@@ -1,0 +1,85 @@
+/*
+		private function loadWorkflowFromServer(fileType:String):void {
+						
+			trace("loadWorkflowFromServer " + fileType);
+			tempURLRequest = new URLRequest(servletURL);
+			var operationString:String = "operation=retrieve&";
+			var fullPath:String = "fullPath="+dirName+"&"; 
+			//var fileNameTemp:String = "fileName="+ processCreator.BPELProcess.@name ;
+			var fileNameTemp:String = "fileName="+ fileName;
+			
+			switch(fileType){
+				case "wsdl": 
+					fileNameTemp = fileNameTemp+".wsdl";
+									
+					var tempWSDLLoader:URLLoader = new URLLoader();
+					var tempVariables2:URLVariables = new URLVariables(operationString + fullPath + fileNameTemp );
+					tempWSDLLoader.addEventListener(Event.COMPLETE, completeWSDLLoadHandler);
+					tempURLRequest.data = tempVariables2;
+					tempWSDLLoader.load(tempURLRequest);
+					break;
+					
+				case "bpel":
+					fileNameTemp = fileNameTemp+".bpel";
+								
+					var tempBPELLoader:URLLoader = new URLLoader();
+					var tempBPELVariables:URLVariables = new URLVariables(operationString + fullPath + fileNameTemp);	
+					tempBPELLoader.addEventListener(Event.COMPLETE, completeBPELLoadHandler);				
+					
+					tempURLRequest.data = tempBPELVariables;					
+					tempBPELLoader.load(tempURLRequest);			
+					
+					break;
+					
+				case "pdd":
+					fileNameTemp = fileNameTemp+".pdd";
+					
+					var tempPDDLoader:URLLoader = new URLLoader();
+					var tempPDDVariables:URLVariables = new URLVariables(operationString + fullPath + fileNameTemp);	
+					tempPDDLoader.addEventListener(Event.COMPLETE, completePDDLoadHandler);	
+					
+					tempURLRequest.data = tempPDDVariables;					
+					tempPDDLoader.load(tempURLRequest);	
+					
+					break;
+					
+			case "QoS":
+				fileNameTemp = fileNameTemp+".qos";
+				// To BE Done
+				//fileContent = fileContent + QOS
+				
+				break;
+			}
+		}			
+		
+		private function completeBPELLoadHandler(event:Event):void{
+			//trace("BBPPEELL");
+			//trace(event.target.data);
+			processCreator.BPELProcess = new XML (event.target.data);
+			createGUIFromBPELProcess();
+			loadWorkflowFromServer("pdd");
+		}
+		
+		private function completeWSDLLoadHandler(event:Event):void{
+			//trace("WWSDDDDDDLLLLL");
+			//trace(event.target.data);
+			//processCreator.BPELWSDL = new XML (event.target.data);
+			WSDLCreator.getInstance().WorkflowWSDL = new XML (event.target.data);
+			loadWorkflowFromServer("bpel");
+		}
+		
+		private function completePDDLoadHandler(event:Event):void{
+			//trace("PDD");
+			//trace(event.target.data);
+			
+			// This part is only to avoid the complications
+			trace("WS Local Name passed to PDD Creator: " + fileName);
+			var pddCreator:PDDCreator = PDDCreator.createInstance(this.fileName,"Dummy/Namespace");					
+			pddCreator.WorkflowPDD = null;
+			
+			// This is acturally loading and assigning the PDD file
+			pddCreator.WorkflowPDD = new XML (event.target.data);			
+			//loadWorkflowFromServer("QoS");
+		}
+		
+		*/
