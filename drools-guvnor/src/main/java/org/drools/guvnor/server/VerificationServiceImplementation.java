@@ -27,6 +27,11 @@ import org.jboss.seam.security.Identity;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+/**
+ * 
+ * @author rikkola
+ *
+ */
 @Name("org.drools.guvnor.client.rpc.VerificationService")
 @AutoCreate
 public class VerificationServiceImplementation extends RemoteServiceServlet
@@ -75,8 +80,8 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
         RuleAsset[] workingSets = service.loadRuleAssets( activeWorkingSets );
         List<String> constraintRules = new LinkedList<String>();
         if ( workingSets != null ) {
-            for ( RuleAsset ws : workingSets ) {
-                WorkingSetConfigData wsConfig = (WorkingSetConfigData) ws.content;
+            for ( RuleAsset workingSet : workingSets ) {
+                WorkingSetConfigData wsConfig = (WorkingSetConfigData) workingSet.content;
                 if ( wsConfig.constraints != null ) {
                     for ( ConstraintConfiguration config : wsConfig.constraints ) {
                         constraintRules.add( ConstraintsFactory.getInstance().getVerifierRule( config ) );
