@@ -276,9 +276,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public org.drools.guvnor.client.rpc.BulkTestRunResult runScenariosInPackage(java.lang.String p0) throws SerializationException {
          return getService().runScenariosInPackage( p0);
     }
-    public org.drools.guvnor.client.rpc.AnalysisReport analysePackage(java.lang.String p0) throws SerializationException {
-         return getService().analysePackage( p0);
-    }
     public java.lang.String[] listTypesInPackage(java.lang.String p0) throws SerializationException {
          return getService().listTypesInPackage( p0);
     }

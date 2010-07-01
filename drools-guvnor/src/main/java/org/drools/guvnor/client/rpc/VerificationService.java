@@ -16,6 +16,11 @@ public interface VerificationService
     extends
     RemoteService {
 
+    /**
+     * Analyse the package and get a report for it.
+     */
+    public AnalysisReport analysePackage(String packageUUID) throws SerializationException;
+
     public AnalysisReport verifyAsset(RuleAsset asset,
                                       Set<String> activeWorkingSets) throws SerializationException;
 

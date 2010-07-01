@@ -12,6 +12,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.guvnor.server.security.PackageNameType;
+import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.VerifierRunner;
@@ -42,6 +43,23 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
 
     private static final LoggingHelper log              = LoggingHelper.getLogger( ServiceImplementation.class );
 
+    private ServiceImplementation      service          = RepositoryServiceServlet.getService();
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
+        if ( Contexts.isSessionContextActive() ) {
+            Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
+                                                 RoleTypes.PACKAGE_DEVELOPER );
+        }
+
+        PackageItem packageItem = service.getRulesRepository().loadPackageByUUID( packageUUID );
+
+        VerifierRunner runner = new VerifierRunner();
+        return runner.verify( packageItem,
+                              VerifierConfiguration.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE );
+    }
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public AnalysisReport verifyAsset(RuleAsset asset,
@@ -69,7 +87,6 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
             Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
-        ServiceImplementation service = RepositoryServiceServlet.getService();
 
         PackageItem packageItem = service.getRulesRepository().loadPackage( asset.metaData.packageName );
 
@@ -77,24 +94,14 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
 
         runner.setUseDefaultConfig( useVerifierDefaultConfig );
 
-        RuleAsset[] workingSets = service.loadRuleAssets( activeWorkingSets );
-        List<String> constraintRules = new LinkedList<String>();
-        if ( workingSets != null ) {
-            for ( RuleAsset workingSet : workingSets ) {
-                WorkingSetConfigData wsConfig = (WorkingSetConfigData) workingSet.content;
-                if ( wsConfig.constraints != null ) {
-                    for ( ConstraintConfiguration config : wsConfig.constraints ) {
-                        constraintRules.add( ConstraintsFactory.getInstance().getVerifierRule( config ) );
-                    }
-                }
-            }
-        }
+        List<String> constraintRules = applyWorkingSets( activeWorkingSets );
 
         log.debug( "constraints rules: " + constraintRules );
 
         try {
             AnalysisReport report;
-            if ( AssetFormats.DECISION_TABLE_GUIDED.equals( asset.metaData.format ) || AssetFormats.DECISION_SPREADSHEET_XLS.equals( asset.metaData.format ) ) {
+
+            if ( isAssetDecisionTable( asset ) ) {
                 report = runner.verify( packageItem,
                                         VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE,
                                         constraintRules );
@@ -107,8 +114,29 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
             log.debug( "Asset verification took: " + (System.currentTimeMillis() - startTime) );
 
             return report;
+
         } catch ( Throwable t ) {
             throw new SerializationException( t.getMessage() );
         }
+    }
+
+    private boolean isAssetDecisionTable(RuleAsset asset) {
+        return AssetFormats.DECISION_TABLE_GUIDED.equals( asset.metaData.format ) || AssetFormats.DECISION_SPREADSHEET_XLS.equals( asset.metaData.format );
+    }
+
+    private List<String> applyWorkingSets(Set<String> activeWorkingSets) throws SerializationException {
+        RuleAsset[] workingSets = service.loadRuleAssets( activeWorkingSets );
+        List<String> constraintRules = new LinkedList<String>();
+        if ( workingSets != null ) {
+            for ( RuleAsset workingSet : workingSets ) {
+                WorkingSetConfigData wsConfig = (WorkingSetConfigData) workingSet.content;
+                if ( wsConfig.constraints != null ) {
+                    for ( ConstraintConfiguration config : wsConfig.constraints ) {
+                        constraintRules.add( ConstraintsFactory.getInstance().getVerifierRule( config ) );
+                    }
+                }
+            }
+        }
+        return constraintRules;
     }
 }

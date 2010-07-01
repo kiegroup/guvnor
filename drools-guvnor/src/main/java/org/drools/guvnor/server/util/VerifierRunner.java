@@ -49,16 +49,27 @@ public class VerifierRunner {
         addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.DSL} ),
                        ResourceType.DSL );
 
+        // TODO: Model JARS
+
         addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.DRL_MODEL} ),
                        ResourceType.DRL );
 
         addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.FUNCTION} ),
                        ResourceType.DRL );
 
-        addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.DRL} ),
-                       ResourceType.DRL );
+        addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.DSL_TEMPLATE_RULE} ),
+                       ResourceType.DSLR );
 
-        addRulesToVerifier();
+        addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.DECISION_SPREADSHEET_XLS} ),
+                       ResourceType.DTABLE );
+
+        addGuidedDecisionTablesToVerifier();
+
+        addDRLRulesToVerifier();
+
+        addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.BUSINESS_RULE} ),
+                       ResourceType.BRL );
+
         fireAnalysis();
 
         VerifierReport report = verifier.getResult();
@@ -81,23 +92,23 @@ public class VerifierRunner {
 
     private void initVerifier(String scope,
                               Collection<String> additionalVerifierRules) {
-        VerifierConfiguration conf = new DefaultVerifierConfiguration();
+        VerifierConfiguration configuration = new DefaultVerifierConfiguration();
         if ( useDefaultConfig ) {
-            conf = new DefaultVerifierConfiguration();
+            configuration = new DefaultVerifierConfiguration();
         } else {
-            conf = new VerifierConfigurationImpl();
+            configuration = new VerifierConfigurationImpl();
         }
 
-        conf.getVerifyingScopes().clear();
-        conf.getVerifyingScopes().add( scope );
-        conf.setAcceptRulesWithoutVerifiyingScope( true );
+        configuration.getVerifyingScopes().clear();
+        configuration.getVerifyingScopes().add( scope );
+        configuration.setAcceptRulesWithoutVerifiyingScope( true );
         if ( additionalVerifierRules != null ) {
             for ( String rule : additionalVerifierRules ) {
-                conf.getVerifyingResources().put( ResourceFactory.newByteArrayResource( rule.getBytes() ),
-                                                  ResourceType.DRL );
+                configuration.getVerifyingResources().put( ResourceFactory.newByteArrayResource( rule.getBytes() ),
+                                                           ResourceType.DRL );
             }
         }
-        verifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier( conf );
+        verifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier( configuration );
     }
 
     private void addHeaderToVerifier() {
@@ -121,9 +132,27 @@ public class VerifierRunner {
         }
     }
 
-    private void addRulesToVerifier() {
+    private void addGuidedDecisionTablesToVerifier() {
 
-        AssetItemIterator rules = packageItem.listAssetsByFormat( AssetFormats.BUSINESS_RULE_FORMATS );
+        AssetItemIterator rules = packageItem.listAssetsByFormat( AssetFormats.DECISION_TABLE_GUIDED );
+
+        while ( rules.hasNext() ) {
+            AssetItem rule = rules.next();
+
+            ContentHandler contentHandler = ContentManager.getHandler( rule.getFormat() );
+            if ( contentHandler.isRuleAsset() ) {
+                IRuleAsset ruleAsset = (IRuleAsset) contentHandler;
+                String drl = ruleAsset.getRawDRL( rule );
+                verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( drl ) ),
+                                               ResourceType.DRL );
+
+            }
+        }
+    }
+
+    private void addDRLRulesToVerifier() {
+
+        AssetItemIterator rules = packageItem.listAssetsByFormat( AssetFormats.DRL );
 
         while ( rules.hasNext() ) {
             AssetItem rule = rules.next();

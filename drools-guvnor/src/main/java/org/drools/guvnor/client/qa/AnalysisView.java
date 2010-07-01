@@ -5,6 +5,8 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.VerificationService;
+import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.messages.Constants;
 
@@ -64,19 +66,21 @@ public class AnalysisView extends Composite {
 
     private void runAnalysis() {
         LoadingPopup.showMessage( constants.AnalysingPackageRunning() );
-        RepositoryServiceFactory.getService().analysePackage( packageUUID,
-                                                              new GenericCallback() {
-                                                                  public void onSuccess(Object data) {
-                                                                      AnalysisReport rep = (AnalysisReport) data;
-                                                                      VerifierResultWidget w = new VerifierResultWidget( rep,
-                                                                                                                         true,
-                                                                                                                         edit);
-                                                                      w.setWidth( "100%" );
-                                                                      layout.remove( 1 );
-                                                                      layout.add( w );
-                                                                      LoadingPopup.close();
-                                                                  }
-                                                              } );
+        VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
+
+        verificationService.analysePackage( packageUUID,
+                                            new GenericCallback() {
+                                                public void onSuccess(Object data) {
+                                                    AnalysisReport rep = (AnalysisReport) data;
+                                                    VerifierResultWidget w = new VerifierResultWidget( rep,
+                                                                                                       true,
+                                                                                                       edit );
+                                                    w.setWidth( "100%" );
+                                                    layout.remove( 1 );
+                                                    layout.add( w );
+                                                    LoadingPopup.close();
+                                                }
+                                            } );
 
     }
 

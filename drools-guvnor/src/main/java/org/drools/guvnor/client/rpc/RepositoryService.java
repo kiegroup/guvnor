@@ -455,11 +455,6 @@ public interface RepositoryService
     public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException;
 
     /**
-     * Analyse the package and get a report for it.
-     */
-    public AnalysisReport analysePackage(String packageUUID) throws SerializationException;
-
-    /**
      * List the fact types (class names) in the scope of a given package.
      * This may not include things on the "system" classpath, but only things specifically scoped to the package
      * (eg in jars that have been uploaded to it as an asset).

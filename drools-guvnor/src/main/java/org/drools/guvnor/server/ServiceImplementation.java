@@ -2402,23 +2402,7 @@ public class ServiceImplementation
         }
         return h;
     }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
-        }
-
-        PackageItem packageItem = repository.loadPackageByUUID( packageUUID );
-        
-        
-        VerifierRunner runner = new VerifierRunner();
-        return runner.verify( packageItem,
-                              VerifierConfiguration.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE );
-    }
-
+    
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] listTypesInPackage(String packageUUID) throws SerializationException {
