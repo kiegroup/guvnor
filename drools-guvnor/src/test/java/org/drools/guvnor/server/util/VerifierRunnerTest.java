@@ -1,7 +1,5 @@
 package org.drools.guvnor.server.util;
 
-import java.util.Collections;
-
 import junit.framework.Assert;
 
 import org.drools.guvnor.client.common.AssetFormats;
@@ -10,7 +8,8 @@ import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-import org.drools.verifier.VerifierConfiguration;
+import org.drools.verifier.builder.ScopesAgendaFilter;
+import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,8 +33,8 @@ public class VerifierRunnerTest {
         VerifierRunner verifierRunner = checkinDRLAssetToPackage( "/VerifierCauseTrace.drl" );
 
         AnalysisReport report = verifierRunner.verify( packageItem,
-                                                       VerifierConfiguration.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE,
-                                                       Collections.EMPTY_LIST );
+                                                       new ScopesAgendaFilter( true,
+                                                                               ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE ) );
 
         Assert.assertNotNull( report );
         Assert.assertEquals( 1,
@@ -45,7 +44,7 @@ public class VerifierRunnerTest {
     }
 
     private VerifierRunner checkinDRLAssetToPackage(String assetName) {
-        VerifierRunner verifierRunner = new VerifierRunner();
+        VerifierRunner verifierRunner = new VerifierRunner( VerifierBuilderFactory.newVerifierBuilder().newVerifier() );
         AssetItem asset = packageItem.addAsset( "verifyPackageItem",
                                                 "" );
         asset.updateFormat( AssetFormats.DRL );

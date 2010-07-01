@@ -1,9 +1,11 @@
 package org.drools.guvnor.server;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.builder.ResourceType;
 import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.server.factory.ConstraintsFactory;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -16,8 +18,14 @@ import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.VerifierRunner;
+import org.drools.io.ResourceFactory;
 import org.drools.repository.PackageItem;
+import org.drools.verifier.DefaultVerifierConfiguration;
+import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
+import org.drools.verifier.VerifierConfigurationImpl;
+import org.drools.verifier.builder.ScopesAgendaFilter;
+import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;
@@ -45,6 +53,8 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
 
     private ServiceImplementation      service          = RepositoryServiceServlet.getService();
 
+    private Verifier                   defaultVerifier  = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
@@ -55,9 +65,11 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
 
         PackageItem packageItem = service.getRulesRepository().loadPackageByUUID( packageUUID );
 
-        VerifierRunner runner = new VerifierRunner();
+        VerifierRunner runner = new VerifierRunner( defaultVerifier );
+
         return runner.verify( packageItem,
-                              VerifierConfiguration.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE );
+                              new ScopesAgendaFilter( true,
+                                                      ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE ) );
     }
 
     @WebRemote
@@ -90,26 +102,31 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
 
         PackageItem packageItem = service.getRulesRepository().loadPackage( asset.metaData.packageName );
 
-        VerifierRunner runner = new VerifierRunner();
+        ScopesAgendaFilter verificationScope;
 
-        runner.setUseDefaultConfig( useVerifierDefaultConfig );
+        if ( isAssetDecisionTable( asset ) ) {
+            verificationScope = new ScopesAgendaFilter( true,
+                                                        ScopesAgendaFilter.VERIFYING_SCOPE_DECISION_TABLE );
+        } else {
+            verificationScope = new ScopesAgendaFilter( true,
+                                                        ScopesAgendaFilter.VERIFYING_SCOPE_SINGLE_RULE );
+        }
 
         List<String> constraintRules = applyWorkingSets( activeWorkingSets );
+
+        VerifierRunner runner;
+
+        if ( useVerifierDefaultConfig ) {
+            runner = new VerifierRunner( defaultVerifier );
+        } else {
+            runner = new VerifierRunner( getWorkingSetVerifier( constraintRules ) );
+        }
 
         log.debug( "constraints rules: " + constraintRules );
 
         try {
-            AnalysisReport report;
-
-            if ( isAssetDecisionTable( asset ) ) {
-                report = runner.verify( packageItem,
-                                        VerifierConfiguration.VERIFYING_SCOPE_DECISION_TABLE,
-                                        constraintRules );
-            } else {
-                report = runner.verify( packageItem,
-                                        VerifierConfiguration.VERIFYING_SCOPE_SINGLE_RULE,
-                                        constraintRules );
-            }
+            AnalysisReport report = runner.verify( packageItem,
+                                                   verificationScope );
 
             log.debug( "Asset verification took: " + (System.currentTimeMillis() - startTime) );
 
@@ -138,5 +155,19 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
             }
         }
         return constraintRules;
+    }
+
+    private Verifier getWorkingSetVerifier(Collection<String> additionalVerifierRules) {
+        VerifierConfiguration configuration = new DefaultVerifierConfiguration();
+        configuration = new VerifierConfigurationImpl();
+
+        if ( additionalVerifierRules != null ) {
+            for ( String rule : additionalVerifierRules ) {
+                configuration.getVerifyingResources().put( ResourceFactory.newByteArrayResource( rule.getBytes() ),
+                                                           ResourceType.DRL );
+            }
+        }
+
+        return VerifierBuilderFactory.newVerifierBuilder().newVerifier( configuration );
     }
 }
