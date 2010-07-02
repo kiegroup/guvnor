@@ -67,9 +67,13 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
 
         VerifierRunner runner = new VerifierRunner( defaultVerifier );
 
-        return runner.verify( packageItem,
-                              new ScopesAgendaFilter( true,
-                                                      ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE ) );
+        AnalysisReport report = runner.verify( packageItem,
+                                               new ScopesAgendaFilter( true,
+                                                                       ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE ) );
+
+        defaultVerifier.flushKnowledgeSession();
+
+        return report;
     }
 
     @WebRemote
@@ -127,6 +131,8 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
         try {
             AnalysisReport report = runner.verify( packageItem,
                                                    verificationScope );
+
+            defaultVerifier.flushKnowledgeSession();
 
             log.debug( "Asset verification took: " + (System.currentTimeMillis() - startTime) );
 
