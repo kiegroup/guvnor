@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -194,21 +195,20 @@ public class RuleViewer extends GuvnorEditor {
         doMetaWidget();
 
         hsp = new HorizontalPanel();
-
+        hsp.setHeight("100%");
+        hsp.setWidth("100%");
         layout.add( hsp );
+        layout.setCellHeight(hsp, "100%");
 
         //the document widget
         doco = new RuleDocumentWidget( asset );
         doco.setVisible( docoVisible );
 
         VerticalPanel vert = new VerticalPanel();
-        vert.add( editor );
-        editor.setHeight( "100%" );
-        //vert.add( doco );
-
         vert.setWidth( "100%" );
         vert.setHeight( "100%" );
 
+        vert.add( editor );
         hsp.add( vert );
 
         //hsp.addStyleName("HorizontalSplitPanel");
@@ -218,8 +218,6 @@ public class RuleViewer extends GuvnorEditor {
         hsp.setCellWidth( metaWidget,
                           "25%" );
 
-        //hsp.setSplitPosition("80%");
-        hsp.setHeight( "100%" );
 
         layout.add( doco );
     }

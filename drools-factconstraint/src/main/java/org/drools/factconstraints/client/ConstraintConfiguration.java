@@ -9,7 +9,7 @@ import java.util.Set;
  * @author baunax@gmail.com
  */
 public interface ConstraintConfiguration extends Serializable {
-	public String getFactType();
+    public String getFactType();
     public void setFactType(String factType);
     
     public String getFieldName();

@@ -1,0 +1,168 @@
+package org.drools.guvnor.client.ruleeditor;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import org.drools.factconstraints.client.ConstraintConfiguration;
+import org.drools.factconstraints.client.customform.CustomFormConfiguration;
+import org.drools.factconstraints.client.helper.CustomFormsContainer;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.WorkingSetConfigData;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+
+/**
+ *
+ * @author esteban
+ */
+public class CustomFormsEditorPanel extends Composite {
+    private Constants constants = GWT.create(Constants.class);
+    private ListBox factsCombo = new ListBox(false);
+    private ListBox fieldsCombo = new ListBox(false);
+    private TextBox customFormURL = new TextBox();
+    private boolean validFactsChanged = true;
+    private Map<String, ConstraintConfiguration> contraintsMap = new HashMap<String, ConstraintConfiguration>();
+    private final RuleAsset workingSet;
+    private final WorkingSetEditor workingSetEditor;
+
+    public CustomFormsEditorPanel(final WorkingSetEditor workingSetEditor) {
+
+        this.workingSetEditor = workingSetEditor;
+
+        this.workingSet = workingSetEditor.getWorkingSet();
+
+        factsCombo.setVisibleItemCount(1);
+        fieldsCombo.setVisibleItemCount(1);
+        customFormURL.setWidth("400px");
+        customFormURL.setTitle("Leave it blank if you want to remove the Custom Form URL");
+
+        factsCombo.addChangeHandler(new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                fillSelectedFactFields();
+            }
+        });
+
+        fieldsCombo.addChangeHandler(new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                fillFieldConstrains();
+            }
+        });
+
+        final FlexTable table = new FlexTable();
+
+        VerticalPanel vp = new VerticalPanel();
+        vp.add(new SmallLabel(constants.FactTypes()));
+        vp.add(factsCombo);
+        table.setWidget(0, 0, vp);
+
+        vp = new VerticalPanel();
+        vp.add(new SmallLabel(constants.Field()));
+        vp.add(fieldsCombo);
+        table.setWidget(1, 0, vp);
+
+        vp = new VerticalPanel();
+        vp.add(new SmallLabel("Custom Form URL:")); //TODO i18n
+
+        Button btnUpdateURL = new Button(constants.OK(), new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                if (((WorkingSetConfigData) workingSet.content).customForms == null) {
+                    ((WorkingSetConfigData) workingSet.content).customForms = new ArrayList<CustomFormConfiguration>();
+                }
+
+                String factType = factsCombo.getItemText(factsCombo.getSelectedIndex());
+                String fieldName = fieldsCombo.getItemText(fieldsCombo.getSelectedIndex());
+                
+                CustomFormConfiguration newCustomFormConfiguration = CustomFormsContainer.getEmptyCustomFormConfiguration();
+                newCustomFormConfiguration.setFactType(factType);
+                newCustomFormConfiguration.setFieldName(fieldName);
+                newCustomFormConfiguration.setCustomFormURL(customFormURL.getText());
+                
+                workingSetEditor.getCustomFormsContainer().putCustomForm(newCustomFormConfiguration);
+                ((WorkingSetConfigData) workingSet.content).customForms = workingSetEditor.getCustomFormsContainer().getCustomForms();
+            }
+        });
+
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add(customFormURL);
+        hp.add(btnUpdateURL);
+
+        vp.add(hp);
+        table.setWidget(2, 0, vp);
+
+
+        fillSelectedFacts();
+        fillSelectedFactFields();
+        fillFieldConstrains();
+
+        this.initWidget(table);
+    }
+
+    protected final void fillSelectedFacts() {
+        if (validFactsChanged) {
+            String s = factsCombo.getSelectedIndex() != -1 ? factsCombo.getItemText(factsCombo.getSelectedIndex()) : "";
+            factsCombo.clear();
+            validFactsChanged = false;
+            for (int i = 0; i < workingSetEditor.getValidFactsListBox().getItemCount(); i++) {
+                String itemText = workingSetEditor.getValidFactsListBox().getItemText(i);
+                factsCombo.addItem(itemText);
+                if (s.equals(itemText)) {
+                    factsCombo.setSelectedIndex(i);
+                }
+            }
+            if (factsCombo.getSelectedIndex() == -1 && factsCombo.getItemCount() > 0) {
+                factsCombo.setSelectedIndex(0);
+            }
+            fillSelectedFactFields();
+        }
+    }
+
+    private void fillSelectedFactFields() {
+        if (factsCombo.getSelectedIndex() != -1) {
+            String fact = factsCombo.getItemText(factsCombo.getSelectedIndex());
+            fieldsCombo.clear();
+            for (String field : getCompletionEngine().getFieldCompletions(fact)) {
+                fieldsCombo.addItem(field);
+            }
+        }
+        if (fieldsCombo.getSelectedIndex() == -1 && fieldsCombo.getItemCount() > 0) {
+            fieldsCombo.setSelectedIndex(0);
+        }
+        fillFieldConstrains();
+    }
+
+    private void fillFieldConstrains() {
+        if (fieldsCombo.getSelectedIndex() != -1) {
+            String fieldName = fieldsCombo.getItemText(fieldsCombo.getSelectedIndex());
+            String factField = factsCombo.getItemText(factsCombo.getSelectedIndex());
+            contraintsMap.clear();
+
+            if (this.workingSetEditor.getCustomFormsContainer().containsCustomFormFor(factField, fieldName)){
+                this.customFormURL.setText(this.workingSetEditor.getCustomFormsContainer().getCustomForm(factField, fieldName).getCustomFormURL());
+            }else{
+                this.customFormURL.setText("");
+            }
+        }
+    }
+
+    private SuggestionCompletionEngine getCompletionEngine() {
+        return SuggestionCompletionCache.getInstance().getEngineFromCache(workingSet.metaData.packageName);
+    }
+
+    public void notifyValidFactsChanged(){
+        this.validFactsChanged = true;
+    }
+}
