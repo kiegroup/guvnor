@@ -34,6 +34,7 @@ import org.drools.guvnor.client.qa.ScenarioWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.modeldriven.ui.RuleTemplateEditor;
 
 /**
  * This launches the appropriate editor for the asset type.
@@ -98,6 +99,10 @@ public class EditorLauncher {
                                       viewer );
         } else if ( asset.metaData.format.equals( AssetFormats.FUNCTION ) ) {
             return new FunctionEditor( asset );
+        } else if ( asset.metaData.format.equals( AssetFormats.WORKING_SET ) ) {
+            return new WorkingSetEditor(asset);
+        } else if ( asset.metaData.format.equals( AssetFormats.RULE_TEMPLATE ) ) {
+            return new RuleTemplateEditor(asset);
         } else {
             return new DefaultContentUploadEditor( asset,
                                                    viewer );
