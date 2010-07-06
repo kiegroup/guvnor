@@ -79,9 +79,9 @@ public class VerificationServiceImplementationTest {
 
         Assert.assertEquals( "Message",
                              report.factUsages[0].name );
-        Assert.assertEquals( "RedundancyPattern2",
-                             report.factUsages[1].name );
         Assert.assertEquals( "RedundancyPattern",
+                             report.factUsages[1].name );
+        Assert.assertEquals( "RedundancyPattern2",
                              report.factUsages[2].name );
 
         Assert.assertEquals( 0,
@@ -97,9 +97,9 @@ public class VerificationServiceImplementationTest {
                              report.factUsages[2].fields[0].name );
 
         Assert.assertEquals( 3,
-                             report.factUsages[2].fields[0].rules.length );
-        Assert.assertEquals( 2,
                              report.factUsages[1].fields[0].rules.length );
+        Assert.assertEquals( 2,
+                             report.factUsages[2].fields[0].rules.length );
 
         Assert.assertNotNull( report.factUsages[1].fields[0].rules[0] );
 
