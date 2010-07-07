@@ -27,7 +27,6 @@
 
 	<!-- If svnversion does not work just add the version -->
 	<target name="write-version" if="svnversionDoesNotWork">
-        <touch file="./target/classes/org/drools/guvnor/public/version.txt"/>
         <touch file="./target/classes/org/drools/guvnor/public/version.txt" mkdirs="true"/>
 		<echo file="./target/classes/org/drools/guvnor/public/version.txt">${project.version}</echo>
 	</target>
