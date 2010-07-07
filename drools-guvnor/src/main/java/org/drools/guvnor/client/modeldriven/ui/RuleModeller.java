@@ -41,7 +41,6 @@ import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.packages.WorkingSetManager;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
@@ -69,6 +68,8 @@ import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
@@ -291,9 +292,8 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 
         list.setSelectedIndex(0);
 
-        list.addClickHandler(new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
+        list.addChangeHandler( new  ChangeHandler() {
+            public void onChange(ChangeEvent event) {
                 String attr = list.getItemText(list.getSelectedIndex());
                 if (attr.equals(RuleAttributeWidget.LOCK_LHS) || attr.equals(RuleAttributeWidget.LOCK_RHS)) {
                     model.addMetadata(new RuleMetadata(attr, "true"));

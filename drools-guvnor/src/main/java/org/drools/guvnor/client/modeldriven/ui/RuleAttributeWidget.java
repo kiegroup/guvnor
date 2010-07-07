@@ -83,9 +83,7 @@ public class RuleAttributeWidget extends Composite {
         RuleMetadata[] meta = model.metadataList;
         if (meta.length > 0) {
             HorizontalPanel hp = new HorizontalPanel();
-            //hp.add(new HTML("&nbsp;&nbsp;"));
             hp.add(new SmallLabel(constants.Metadata2()));
-            //attributeConfigWidget.add(hp);
             layout.addRow(hp);
         }
         for (int i = 0; i < meta.length; i++) {
@@ -95,9 +93,7 @@ public class RuleAttributeWidget extends Composite {
         RuleAttribute[] attrs = model.attributes;
         if (attrs.length > 0) {
             HorizontalPanel hp = new HorizontalPanel();
-            //hp.add(new HTML("&nbsp;&nbsp;"));
             hp.add(new SmallLabel(constants.Attributes1()));
-            //attributeConfigWidget.add(hp);
             layout.addRow(hp);
         }
         for (int i = 0; i < attrs.length; i++) {
