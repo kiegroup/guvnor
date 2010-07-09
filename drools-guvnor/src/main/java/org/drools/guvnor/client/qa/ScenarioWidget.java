@@ -158,7 +158,8 @@ public class ScenarioWidget extends Composite {
                                 scenario));
                     } else if (e.getKey().equals(ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP)) {
                         vert.add(new ActivateRuleFlowWidget(itemList,
-                                scenario));
+                                scenario,
+                                this));
                     } else {
                         vert.add(new DataInputWidget((String) e.getKey(),
                                 itemList,

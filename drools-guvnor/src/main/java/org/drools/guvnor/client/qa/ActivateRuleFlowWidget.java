@@ -1,16 +1,22 @@
 package org.drools.guvnor.client.qa;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.*;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
-import org.drools.ide.common.client.modeldriven.testing.RetractFact;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-import java.util.Iterator;
-import java.util.List;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,14 +26,19 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class ActivateRuleFlowWidget extends Composite {
-    private Constants constants = ((Constants) GWT.create( Constants.class ));
+    private Constants            constants = ((Constants) GWT.create( Constants.class ));
+
+    private final ScenarioWidget parent;
 
     public ActivateRuleFlowWidget(List retList,
-                                  Scenario sc) {
+                                  Scenario sc,
+                                  ScenarioWidget parent) {
         FlexTable outer = new FlexTable();
         render( retList,
                 outer,
                 sc );
+
+        this.parent = parent;
 
         initWidget( outer );
     }
@@ -46,7 +57,7 @@ public class ActivateRuleFlowWidget extends Composite {
         outer.setStyleName( "modeller-fact-pattern-Widget" );
         outer.setWidget( 0,
                          0,
-                         new SmallLabel( "Activate rule flow group" ) );
+                         new SmallLabel( constants.ActivateRuleFlowGroup() ) );
         outer.getFlexCellFormatter().setColSpan( 0,
                                                  0,
                                                  2 );
@@ -66,6 +77,7 @@ public class ActivateRuleFlowWidget extends Composite {
                                                  render( retList,
                                                          outer,
                                                          sc );
+                                                 parent.renderEditor();
                                              }
                                          } );
             outer.setWidget( row,

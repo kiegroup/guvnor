@@ -2089,4 +2089,6 @@ public interface Constants extends ConstantsWithLookup {
     String TemplateEditor();
     String TemplateData();
     
+    String ActivateRuleFlowGroup();
+
 }
