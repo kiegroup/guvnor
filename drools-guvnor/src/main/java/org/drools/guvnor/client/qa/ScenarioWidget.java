@@ -485,7 +485,8 @@ public class ScenarioWidget extends Composite {
             Image del = new ImageButton("images/delete_item_small.gif", constants.DeleteTheExpectationForThisFact(), new ClickListener() {     //NON-NLS
 
                 public void onClick(Widget w) {
-                    if (Window.confirm(constants.AreYouSureYouWantToRemoveThisExpectation())) {
+                    if (Window.confirm(Format.format( constants.AreYouSureYouWantToRemoveThisExpectation(),
+							f.name))) {
                         scenario.removeFixture(f);
                         renderEditor();
                     }

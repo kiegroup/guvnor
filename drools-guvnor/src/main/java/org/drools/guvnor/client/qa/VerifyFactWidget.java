@@ -119,7 +119,8 @@ public class VerifyFactWidget extends Composite {
 
             Image del = new ImageButton("images/delete_item_small.gif", constants.RemoveThisFieldExpectation(), new ClickListener() {
 				public void onClick(Widget w) {
-					if (Window.confirm(constants.AreYouSureYouWantToRemoveThisFieldExpectation())) {
+					if (Window.confirm(Format.format( constants.AreYouSureYouWantToRemoveThisFieldExpectation(),
+							fld.fieldName))) {
 						vf.fieldValues.remove(fld);
 				        FlexTable data = render(vf);
 				        outer.setWidget(1, 0, data);
