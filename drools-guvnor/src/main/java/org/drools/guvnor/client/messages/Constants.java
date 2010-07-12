@@ -12,7 +12,9 @@ import com.google.gwt.i18n.client.ConstantsWithLookup;
  *
  * @author Michael Neale
  */
-public interface Constants extends ConstantsWithLookup {
+public interface Constants
+    extends
+    ConstantsWithLookup {
 
     String ActionColumnConfigurationInsertingANewFact();
 
@@ -21,7 +23,7 @@ public interface Constants extends ConstantsWithLookup {
     String Assets();
 
     String Category();
-    
+
     String CategoryColon();
 
     String AddAnotherFieldToThisSoYouCanSetItsValue();
@@ -300,7 +302,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String Login();
 
-
     String LastModified();
 
     String Name();
@@ -316,7 +317,6 @@ public interface Constants extends ConstantsWithLookup {
     String LastContributor();
 
     String Created();
-
 
     String UnableToRunTests();
 
@@ -370,12 +370,9 @@ public interface Constants extends ConstantsWithLookup {
 
     String AddFactToContraint();
 
-
-
     String NewFactPattern();
 
     String chooseFactType();
-
 
     String FormulaEvaluateToAValue();
 
@@ -384,7 +381,6 @@ public interface Constants extends ConstantsWithLookup {
     String RefreshingList();
 
     String UnableToLoadList();
-
 
     String AdvancedOptions();
 
@@ -398,13 +394,11 @@ public interface Constants extends ConstantsWithLookup {
 
     String NewFormula();
 
-
     String FormulaExpressionTip();
 
     String DecisionTableWidgetDescription();
 
     String UploadNewVersionDescription();
-
 
     String Deploy();
 
@@ -414,13 +408,11 @@ public interface Constants extends ConstantsWithLookup {
 
     String PackageSnapshots();
 
-
     String AddANewCondition();
 
     String AddAnAction();
 
     String TheValue0IsNotValidForThisField();
-
 
     String AFormula();
 
@@ -466,7 +458,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String TestScenariosInPackages();
 
-
     String Analysis();
 
     String ScenariosForPackage();
@@ -496,7 +487,6 @@ public interface Constants extends ConstantsWithLookup {
     String DecimalNumber();
 
     String Text();
-
 
     String FieldName();
 
@@ -531,7 +521,6 @@ public interface Constants extends ConstantsWithLookup {
     String RefreshingModel();
 
     String RemoveThisWholeRestriction();
-
 
     String AddAFieldToThisNestedConstraint();
 
@@ -599,7 +588,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String DeleteConditionColumnWarning();
 
-
     String Metadata();
 
     String Attributes();
@@ -617,7 +605,6 @@ public interface Constants extends ConstantsWithLookup {
     String AddAttributeMetadata();
 
     String RemoveThisAttribute();
-
 
     String DeleteActionColumnWarning();
 
@@ -643,7 +630,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String ChooseAnExistingPatternThatThisColumnAddsTo();
 
-
     String Predicate();
 
     String Pattern();
@@ -651,7 +637,6 @@ public interface Constants extends ConstantsWithLookup {
     String CalculationType();
 
     String EditTheFieldThatThisColumnOperatesOn();
-
 
     String EditTheOperatorThatIsUsedToCompareDataWithThisField();
 
@@ -669,13 +654,9 @@ public interface Constants extends ConstantsWithLookup {
 
     String YouMustEnterAColumnHeaderValueDescription();
 
-
     String ThatColumnNameIsAlreadyInUsePleasePickAnother();
 
-
-
     String pleaseChooseAFieldFirst();
-
 
     String SetTheOperator();
 
@@ -720,7 +701,6 @@ public interface Constants extends ConstantsWithLookup {
     String andNotEqualTo();
 
     String andGreaterThan();
-
 
     String orGreaterThan();
 
@@ -767,7 +747,6 @@ public interface Constants extends ConstantsWithLookup {
     String CallMethod();
 
     String LoadingUserPermissions();
-
 
     String WelcomeUser();
 
@@ -853,7 +832,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String NotCheckedInYet();
 
-
     String InitialCategory();
 
     String TypeFormatOfRule();
@@ -889,7 +867,7 @@ public interface Constants extends ConstantsWithLookup {
     String CreateANewPackage();
 
     String CreateANewSubPackage();
-    
+
     String ParentPackage();
 
     String ImportDRLDesc1();
@@ -899,7 +877,6 @@ public interface Constants extends ConstantsWithLookup {
     String ImportDRLDesc3();
 
     String NameColon();
-
 
     String PackageNameTip();
 
@@ -968,7 +945,6 @@ public interface Constants extends ConstantsWithLookup {
     String ReadOnlySourceNote();
 
     String ValidatingAndBuildingPackagePleaseWait();
-
 
     String PackageBuiltSuccessfully();
 
@@ -1062,7 +1038,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String RenamePackageTip();
 
-
     String PackageRenamedSuccessfully();
 
     String CopyThePackage();
@@ -1098,13 +1073,13 @@ public interface Constants extends ConstantsWithLookup {
     String SwitchToTextModeEditing();
 
     String SwitchToAdvancedTextModeForPackageEditing();
-    
+
     String BasicView();
-    
+
     String SwitchToGuidedModeEditing();
-    
+
     String SwitchToGuidedModeForPackageEditing();
-        
+
     String ChooseAFactType();
 
     String loadingList();
@@ -1130,7 +1105,7 @@ public interface Constants extends ConstantsWithLookup {
     String CreateNew();
 
     String NewPackage1();
-    
+
     String NewSubPackage();
 
     String NewRule();
@@ -1179,7 +1154,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String EnablingAuthPopupTip();
 
-
     String UserName1();
 
     String Administrator();
@@ -1207,7 +1181,6 @@ public interface Constants extends ConstantsWithLookup {
     String EditUser0();
 
     String UserAuthenticationTip();
-
 
     String Updating();
 
@@ -1244,7 +1217,7 @@ public interface Constants extends ConstantsWithLookup {
     String TheVariableName0IsAlreadyTaken();
 
     String BindTheFieldCalled0ToAVariable();
-    
+
     String BindTheExpressionToAVariable();
 
     String ShowSubFields();
@@ -1252,7 +1225,6 @@ public interface Constants extends ConstantsWithLookup {
     String ApplyAConstraintToASubFieldOf0();
 
     String AddFieldsToThisConstraint();
-
 
     String AllOfAnd();
 
@@ -1266,18 +1238,13 @@ public interface Constants extends ConstantsWithLookup {
 
     String AddARestrictionOnAField();
 
-
     String AnyOfOr();
 
     String MultipleFieldConstraints();
 
     String MultipleConstraintsTip1();
 
-
-
-
     String AddANewFormulaStyleExpression();
-
 
     String VariableName();
 
@@ -1312,7 +1279,6 @@ public interface Constants extends ConstantsWithLookup {
     String WildCardsSearchTip();
 
     String AfterColon();
-
 
     String Before();
 
@@ -1370,8 +1336,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted();
 
-
-
     String Metadata3();
 
     String Attribute1();
@@ -1393,10 +1357,8 @@ public interface Constants extends ConstantsWithLookup {
     String FreeFormDrl();
 
     String ExpressionEditor();
-    
+
     String ConditionTypeButton();
-
-
 
     String NoModelTip();
 
@@ -1407,7 +1369,6 @@ public interface Constants extends ConstantsWithLookup {
     String NotifyEngineOfChangesUpdateModify();
 
     String ModifyEngineTip();
-
 
     String SetFieldValues();
 
@@ -1439,30 +1400,23 @@ public interface Constants extends ConstantsWithLookup {
 
     String CanTRemoveThatItemAsItIsUsedInTheActionPartOfTheRule();
 
-
     String NewBusinessRuleGuidedEditor();
-
 
     String NewRuleUsingDSL();
 
-
     String NewDRL();
 
-
     String NewDecisionTableSpreadsheet();
-
 
     String NewDecisionTableGuidedEditor();
 
     String TestScenario();
-
 
     String ViewSource();
 
     String Validate();
 
     String ValidatingItemPleaseWait();
-
 
     String ValidationResultsDotDot();
 
@@ -1477,7 +1431,6 @@ public interface Constants extends ConstantsWithLookup {
     String FailedToCheckInTheItemPleaseContactYourSystemAdministrator();
 
     String RefreshingContentAssistance();
-
 
     String RefreshingItem();
 
@@ -1555,7 +1508,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String loadingList1();
 
-
     String ValueFor0();
 
     String globalForScenario();
@@ -1564,18 +1516,17 @@ public interface Constants extends ConstantsWithLookup {
 
     String insertForScenario();
 
-
     String ChooseAFieldToAdd();
 
     String RemoveThisRow();
 
-    String AreYouSureYouWantToRemoveThisRow();
+    String AreYouSureYouWantToRemoveRow0();
 
     String RemoveTheColumnForScenario();
 
     String CanTRemoveThisColumnAsTheName0IsBeingUsed();
 
-    String AreYouSureYouWantToRemoveThisColumn();
+    String AreYouSureYouWantToRemoveColumn0();
 
     String AddAField();
 
@@ -1613,7 +1564,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String AddAFieldToThisExpectation();
 
-
     String equalsScenario();
 
     String doesNotEqualScenario();
@@ -1621,7 +1571,6 @@ public interface Constants extends ConstantsWithLookup {
     String RemoveThisFieldExpectation();
 
     String AreYouSureYouWantToRemoveThisFieldExpectation();
-
 
     String ExpectRules();
 
@@ -1695,7 +1644,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String NewSnapshot();
 
-
     String SnapshotRebuildWarning();
 
     String RebuildingSnapshotsPleaseWaitThisMayTakeSomeTime();
@@ -1716,10 +1664,7 @@ public interface Constants extends ConstantsWithLookup {
 
     String NewStatus();
 
-
-
     String PleaseSelectAStatusToRename();
-
 
     String PleaseSelectAStatusToRemove();
 
@@ -1732,7 +1677,6 @@ public interface Constants extends ConstantsWithLookup {
     String StatusRenamed();
 
     String LoadingStatuses();
-
 
     String PleaseWaitDotDotDot();
 
@@ -1770,7 +1714,6 @@ public interface Constants extends ConstantsWithLookup {
 
     String RestoreThisVersion();
 
-
     String RestoreThisVersionQ();
 
     String NoteNewPackageDrlImportWarning();
@@ -1792,7 +1735,7 @@ public interface Constants extends ConstantsWithLookup {
     String PleaseSelectOrEnterField();
 
     String PleaseSelectAnOperator();
-    
+
     String January();
 
     String February();
@@ -1828,7 +1771,7 @@ public interface Constants extends ConstantsWithLookup {
     String AddAnActionToThisRule();
 
     String optionsRuleModeller();
-    
+
     String clickToAddPattern();
 
     String clickToAddPatterns();
@@ -1858,7 +1801,7 @@ public interface Constants extends ConstantsWithLookup {
     String ThereIsAAn0With();
 
     String ThereIsAAn0();
-    
+
     String All0with();
 
     String AddFirstNewField();
@@ -1898,18 +1841,18 @@ public interface Constants extends ConstantsWithLookup {
     String Predicates();
 
     String PredicatesInfo();
-    
-	String NewBPELPackage();
 
-	String CreateANewBPELPackage();
+    String NewBPELPackage();
 
-	String OpenEditorInNewWindow();
+    String CreateANewBPELPackage();
 
-	String BPELPackages();
+    String OpenEditorInNewWindow();
 
-	String ValueCanNotBeEmpty();
+    String BPELPackages();
 
-	String Value();
+    String ValueCanNotBeEmpty();
+
+    String Value();
 
     String property0ModifiedOn12();
 
@@ -1922,11 +1865,11 @@ public interface Constants extends ConstantsWithLookup {
     String IncomingChanges();
 
     String From();
-    
+
     String FromAccumulate();
 
     String FromCollect();
-    
+
     String URLDocumentionDescription();
 
     String URLForDocumention();
@@ -1936,75 +1879,75 @@ public interface Constants extends ConstantsWithLookup {
     String PleaseSelectARow();
 
     String AddRowBeforeSelectedRow();
-    
+
     String CreateNewAsset();
-    
+
     String CreateLinkedAsset();
-    
+
     String CreateLinkedAssetFromUUID();
-   
+
     String NoteNewLinkedAsset();
 
     String NewLinkedAssetDesc1();
-    
+
     String NewLinkedAssetDesc2();
-    
+
     String NewLinkedAssetDesc3();
-    
+
     String BuildWholePackageTip();
-    
+
     String BuiltInSelectorTip();
 
     String BuildWholePackage();
-    
+
     String BuildPackageUsingBuiltInSelector();
-    
+
     String BuildPackageUsingCustomSelector();
-    
+
     String BuildPackageUsingFollowingAssets();
-    
+
     String BuildPackageUsingBuiltInSelectorStatus();
-    
+
     String BuildPackageUsingBuiltInSelectorCat();
-    
-    String BuiltInSelector();    
-    
-    String BuildPackageUsingCustomSelectorSelector();    
-    
+
+    String BuiltInSelector();
+
+    String BuildPackageUsingCustomSelectorSelector();
+
     String CreateInPackage();
-   
+
     String CreateInGlobalArea();
-    
+
     String AssetToImport();
-    
+
     String Older0();
-    
+
     String Newer0();
-    
+
     String TypeAdded();
-    
+
     String TypeArchived();
-    
+
     String TypeDeleted();
-    
+
     String TypeRestored();
-    
+
     String TypeUpdated();
-    
+
     String Severity();
-    
+
     String CleaningLogMessages();
-    
+
     String MoveUp();
-    
+
     String MoveDown();
-    
+
     String Clean();
 
     String Top();
 
     String Bottom();
-    
+
     String Line0();
 
     String PositionColon();
@@ -2026,23 +1969,23 @@ public interface Constants extends ConstantsWithLookup {
     String DescriptionAndDiscussion();
 
     String Show();
-    
+
     String Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview();
-    
-    String PromoteToGlobal();  
-    
-    String PromoteAreYouSure();   
-    
-    String Promoted();  
-    
+
+    String PromoteToGlobal();
+
+    String PromoteAreYouSure();
+
+    String Promoted();
+
     String ItemAlreadyInGlobalArea();
 
     String VerifyingItemPleaseWait();
 
-    String Verify();  
-    
+    String Verify();
+
     String VerificationReport();
-    
+
     String CanNotSwitchToBasicView();
 
     String Causes();
@@ -2050,45 +1993,77 @@ public interface Constants extends ConstantsWithLookup {
     String ImpactedRules();
 
     String SelectWorkingSets();
-    
-    String ErrorLoadingRules();
-                               ;
+
+    String ErrorLoadingRules();;
+
     String AElementToDelInCollectionList();
-    String  AElementToAddInCollectionList();
+
+    String AElementToAddInCollectionList();
+
     String GuidedList();
+
     String AGuidedList();
+
     String AGuidedListTip();
+
     String AddElementBelow();
+
     String MoveUpList();
+
     String MoveDownListMove();
 
     String WorkingSets();
+
     String NewWorkingSet();
+
     String CreateWorkingSet();
+
     String WorkingSetName();
+
     String CopyTheWorkingSet();
+
     String CopyTheWorkingSetTip();
+
     String NewWorkingSetNameIs();
+
     String NotAValidWorkingSetName();
+
     String WorkingSetCopiedSuccessfully();
+
     String RenameTheWorkingSet();
+
     String RenameTheWorkingSetTip();
+
     String WorkingSetRenamedSuccessfully();
+
     String ConstraintsSection();
+
     String AddNewConstraint();
+
     String removeConstraint();
+
     String theRuleHasErrorsOrWarningsDotDoYouWantToContinue();
+
     String RulesVerification();
+
     String RulesVerificationManager();
+
     String EditRulesVerificationConfiguration();
+
     String AutomaticVerification();
+
     String Enabled();
+
     String NewRuleTemplate();
+
     String TemplateKey();
+
     String AllChangesHaveBeenSaved();
+
     String TemplateEditor();
+
     String TemplateData();
-    
+
     String ActivateRuleFlowGroup();
 
 }

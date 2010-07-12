@@ -217,7 +217,8 @@ public class DataInputWidget extends DirtyableComposite {
                                                      constants.RemoveThisRow() );
                         del.addClickHandler( new ClickHandler() {
                             public void onClick(ClickEvent event) {
-                                if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisRow() ) ) {
+                                if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemoveRow0(),
+                                                                    d.name ) ) ) {
                                     ScenarioHelper.removeFields( defList,
                                                                  fd.name );
                                     outer.setWidget( 1,
@@ -261,7 +262,8 @@ public class DataInputWidget extends DirtyableComposite {
                     if ( scenario.isFactNameUsed( factData ) ) {
                         Window.alert( Format.format( constants.CanTRemoveThisColumnAsTheName0IsBeingUsed(),
                                                      factData.name ) );
-                    } else if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisColumn() ) ) {
+                    } else if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemoveColumn0(),
+                                                               factData.name ) ) ) {
                         scenario.removeFixture( factData );
                         defList.remove( factData );
                         outer.setWidget( 1,
