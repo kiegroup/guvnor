@@ -171,7 +171,9 @@ public class DataInputWidget extends DirtyableComposite {
                     t.setWidget(idx, 0, new SmallLabel(fd.name + ":"));
                     Image del = new ImageButton("images/delete_item_small.gif", constants.RemoveThisRow(), new ClickListener() {
         				public void onClick(Widget w) {
-        					if (Window.confirm(constants.AreYouSureYouWantToRemoveThisRow())) {
+        					if (Window.confirm(Format.format( constants.AreYouSureYouWantToRemoveThisRow(),
+        							fd.name))) {
+
         						ScenarioHelper.removeFields(defList, fd.name);
         						outer.setWidget(1, 0, render(defList, parent, sc));
 
@@ -198,7 +200,7 @@ public class DataInputWidget extends DirtyableComposite {
 				public void onClick(Widget w) {
 					if (scenario.isFactNameUsed(d)) {
                         Window.alert(Format.format(constants.CanTRemoveThisColumnAsTheName0IsBeingUsed(), d.name));
-					} else if (Window.confirm(constants.AreYouSureYouWantToRemoveThisColumn())) {
+					} else if (Window.confirm(Format.format(constants.AreYouSureYouWantToRemoveThisColumn(), d.name))) {
 						scenario.removeFixture(d);
 						defList.remove(d);
 						outer.setWidget(1, 0, render(defList, parent, sc));
