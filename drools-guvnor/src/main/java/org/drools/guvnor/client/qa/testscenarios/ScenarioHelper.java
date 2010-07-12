@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.qa;
+package org.drools.guvnor.client.qa.testscenarios;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +11,8 @@ import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
+import org.drools.ide.common.client.modeldriven.testing.FixtureList;
+import org.drools.ide.common.client.modeldriven.testing.FixturesMap;
 import org.drools.ide.common.client.modeldriven.testing.RetractFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
@@ -32,29 +34,29 @@ public class ScenarioHelper {
      * Man, this will be so much nicer with generics.
      * @return List<List<VeryifyRuleFired or VerifyFact or RetractFact> OR Map<String, List<FactData>> OR ExecutionTrace>
      */
-    public List lumpyMap(List<Fixture> fixtures) {
-        List output = new ArrayList();
+    public List<Fixture> lumpyMap(List<Fixture> fixtures) {
+        List<Fixture> output = new ArrayList<Fixture>();
 
-        Map<String, List< ? extends Fixture>> dataInput = new HashMap<String, List< ? extends Fixture>>();
-        List<VerifyFact> verifyFact = new ArrayList<VerifyFact>();
-        List<VerifyRuleFired> verifyRule = new ArrayList<VerifyRuleFired>();
-        List<RetractFact> retractFacts = new ArrayList<RetractFact>();
+        FixturesMap dataInput = new FixturesMap();
+        FixtureList verifyFact = new FixtureList();
+        FixtureList verifyRule = new FixtureList();
+        FixtureList retractFacts = new FixtureList();
 
         for ( Iterator<Fixture> iterator = fixtures.iterator(); iterator.hasNext(); ) {
-            Fixture f = iterator.next();
-            if ( f instanceof FactData ) {
+            Fixture fixture = iterator.next();
+            if ( fixture instanceof FactData ) {
                 accumulateData( dataInput,
-                                f );
-            } else if ( f instanceof ActivateRuleFlowGroup ) {
+                                fixture );
+            } else if ( fixture instanceof ActivateRuleFlowGroup ) {
                 accumulateData( dataInput,
-                                f );
-            } else if ( f instanceof RetractFact ) {
-                retractFacts.add( (RetractFact) f );
-            } else if ( f instanceof VerifyRuleFired ) {
-                verifyRule.add( (VerifyRuleFired) f );
-            } else if ( f instanceof VerifyFact ) {
-                verifyFact.add( (VerifyFact) f );
-            } else if ( f instanceof ExecutionTrace ) {
+                                fixture );
+            } else if ( fixture instanceof RetractFact ) {
+                retractFacts.add( (RetractFact) fixture );
+            } else if ( fixture instanceof VerifyRuleFired ) {
+                verifyRule.add( (VerifyRuleFired) fixture );
+            } else if ( fixture instanceof VerifyFact ) {
+                verifyFact.add( (VerifyFact) fixture );
+            } else if ( fixture instanceof ExecutionTrace ) {
                 gatherFixtures( output,
                                 dataInput,
                                 verifyFact,
@@ -62,16 +64,12 @@ public class ScenarioHelper {
                                 retractFacts,
                                 false );
 
-                output.add( f );
+                output.add( fixture );
 
-                verifyRule = new ArrayList<VerifyRuleFired>();
-                verifyFact = new ArrayList<VerifyFact>();
-                retractFacts = new ArrayList<RetractFact>();
-                dataInput = new HashMap<String, List<? extends Fixture>>();
-//                verifyRule.clear();
-//                verifyFact.clear();
-//                retractFacts.clear();
-//                dataInput.clear();
+                verifyRule = new FixtureList();
+                verifyFact = new FixtureList();
+                retractFacts = new FixtureList();
+                dataInput = new FixturesMap();
             }
         }
         gatherFixtures( output,
@@ -84,11 +82,11 @@ public class ScenarioHelper {
         return output;
     }
 
-    private void gatherFixtures(List output,
-                                Map<String, List< ? extends Fixture>> dataInput,
-                                List<VerifyFact> verifyFact,
-                                List<VerifyRuleFired> verifyRule,
-                                List<RetractFact> retractFacts,
+    private void gatherFixtures(List<Fixture> output,
+                                FixturesMap dataInput,
+                                FixtureList verifyFact,
+                                FixtureList verifyRule,
+                                FixtureList retractFacts,
                                 boolean end) {
         if ( verifyRule.size() > 0 ) output.add( verifyRule );
         if ( verifyFact.size() > 0 ) output.add( verifyFact );
@@ -100,42 +98,43 @@ public class ScenarioHelper {
     /**
      * Group the globals together by fact type.
      */
-    public Map lumpyMapGlobals(List globals) {
-        Map g = new HashMap();
-        for ( Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
-            FactData f = (FactData) iterator.next();
-            accumulateData( g,
-                            f );
+    public Map<String, FixtureList> lumpyMapGlobals(List<FactData> globals) {
+        Map<String, FixtureList> map = new HashMap<String, FixtureList>();
+        for ( FactData factData : globals ) {
+            accumulateData( map,
+                            factData );
         }
-        return g;
+        return map;
     }
 
-    private void accumulateData(Map dataInput,
+    private void accumulateData(Map<String, FixtureList> dataInput,
                                 Fixture f) {
         if ( f instanceof FactData ) {
             FactData fd = (FactData) f;
             if ( !dataInput.containsKey( fd.type ) ) {
                 dataInput.put( fd.type,
-                               new ArrayList() );
+                               new FixtureList() );
             }
-            ((List) dataInput.get( fd.type )).add( fd );
+            ((FixtureList) dataInput.get( fd.type )).add( fd );
         } else if ( f instanceof ActivateRuleFlowGroup ) {
             if ( !dataInput.containsKey( ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP ) ) {
                 dataInput.put( ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP,
-                               new ArrayList() );
+                               new FixtureList() );
             }
-            ((List) dataInput.get( ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP )).add( f );
+            ((FixtureList) dataInput.get( ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP )).add( f );
         }
     }
 
-    static void removeFields(List factData,
+    static void removeFields(List<Fixture> factDatas,
                              String field) {
-        for ( Iterator iterator = factData.iterator(); iterator.hasNext(); ) {
-            FactData fa = (FactData) iterator.next();
-            for ( Iterator iterator2 = fa.fieldData.iterator(); iterator2.hasNext(); ) {
-                FieldData fi = (FieldData) iterator2.next();
-                if ( fi.name.equals( field ) ) {
-                    iterator2.remove();
+        for ( Fixture fixture : factDatas ) {
+            if ( fixture instanceof FactData ) {
+                FactData factData = (FactData) fixture;
+                for ( Iterator<FieldData> fieldDataIterator = factData.fieldData.iterator(); fieldDataIterator.hasNext(); ) {
+                    FieldData fieldData = fieldDataIterator.next();
+                    if ( fieldData.name.equals( field ) ) {
+                        fieldDataIterator.remove();
+                    }
                 }
             }
         }

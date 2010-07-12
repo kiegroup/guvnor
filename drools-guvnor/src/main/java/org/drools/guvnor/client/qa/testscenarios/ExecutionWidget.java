@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.qa;
+package org.drools.guvnor.client.qa.testscenarios;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.*;

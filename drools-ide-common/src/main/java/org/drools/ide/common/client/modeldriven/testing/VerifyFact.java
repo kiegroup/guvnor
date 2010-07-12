@@ -8,36 +8,43 @@ import java.util.List;
  * @author Michael Neale
  *
  */
-public class VerifyFact implements Expectation {
+public class VerifyFact
+    implements
+    Expectation {
 
-    public List<VerifyField> fieldValues = new ArrayList<VerifyField>();
-    public String name;
-    public String description;
+    private static final long serialVersionUID = -5838612006486574138L;
+
+    public List<VerifyField>  fieldValues      = new ArrayList<VerifyField>();
+    public String             name;
+    public String             description;
 
     /**
      * This is true if it isn't a named fact, but it will just search working memory to verify.
      */
-	public boolean anonymous = false;
+    public boolean            anonymous        = false;
 
+    public VerifyFact() {
+    }
 
-    public VerifyFact() {}
-    public VerifyFact(String factName, List fieldValues, boolean anonymous) {
+    public VerifyFact(String factName,
+                      List<VerifyField> fieldValues,
+                      boolean anonymous) {
         this.name = factName;
         this.fieldValues = fieldValues;
         this.anonymous = anonymous;
     }
 
-    public VerifyFact(String factName, List fieldValues) {
-    	this(factName, fieldValues, false);
+    public VerifyFact(String factName,
+                      List<VerifyField> fieldValues) {
+        this( factName,
+              fieldValues,
+              false );
     }
 
-
-
-
     public boolean wasSuccessful() {
-        for (int i = 0; i < fieldValues.size(); i++) {
-            VerifyField vf = (VerifyField) fieldValues.get(i);
-            if (!vf.successResult.booleanValue()) {
+        for ( int i = 0; i < fieldValues.size(); i++ ) {
+            VerifyField vf = (VerifyField) fieldValues.get( i );
+            if ( !vf.successResult.booleanValue() ) {
                 return false;
             }
         }

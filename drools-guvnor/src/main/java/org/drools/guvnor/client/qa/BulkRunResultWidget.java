@@ -3,6 +3,7 @@ package org.drools.guvnor.client.qa;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
+import org.drools.guvnor.client.qa.testscenarios.ScenarioWidget;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;

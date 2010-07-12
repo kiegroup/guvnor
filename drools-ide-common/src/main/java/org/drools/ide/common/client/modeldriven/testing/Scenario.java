@@ -1,8 +1,14 @@
 package org.drools.ide.common.client.modeldriven.testing;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * This represents a test scenario.
@@ -137,72 +143,71 @@ public class Scenario
 
         Collections.reverse( fixtures );
     }
-    	/**
-	 *
-	 * @return A mapping of variable names to their fact type.
-	 */
-	public Map getFactTypes() {
-		Map m = new HashMap();
+
+    /**
+    *
+    * @return A mapping of variable names to their fact type.
+    */
+    public Map getFactTypes() {
+        Map m = new HashMap();
         int p = this.fixtures.size();
         for ( int i = 0; i < p; i++ ) {
             Fixture f = (Fixture) fixtures.get( i );
             if ( f instanceof FactData ) {
                 FactData fd = (FactData) f;
-                m.put( fd.name,fd );
+                m.put( fd.name,
+                       fd );
             }
         }
-		return m;
-	}
+        return m;
+    }
 
     /**
      *
      * @return A mapping of variable names to their fact type.
      */
-    public Map getVariableTypes() {
-        Map m = new HashMap();
-        for ( Iterator iterator = fixtures.iterator(); iterator.hasNext(); ) {
-            Fixture f = (Fixture) iterator.next();
-            if ( f instanceof FactData ) {
-                FactData fd = (FactData) f;
-                m.put( fd.name,
-                       fd.type );
+    public Map<String, String> getVariableTypes() {
+        Map<String, String> map = new HashMap<String, String>();
+        for ( Fixture fixture : fixtures ) {
+            if ( fixture instanceof FactData ) {
+                FactData factData = (FactData) fixture;
+                map.put( factData.name,
+                         factData.type );
             }
         }
-        for ( Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
-            FactData fd = (FactData) iterator.next();
-            m.put( fd.name,
-                   fd.type );
+        for ( FactData factData : globals ) {
+            map.put( factData.name,
+                     factData.type );
         }
-        return m;
+        return map;
     }
 
     /**
      * This will return a list of fact names that are in scope (including globals).
      * @return List<String>
      */
-    public List getFactNamesInScope(ExecutionTrace ex,
-                                    boolean includeGlobals) {
-        if ( ex == null ) return new ArrayList();
-        List l = new ArrayList();
+    public List<String> getFactNamesInScope(ExecutionTrace ex,
+                                            boolean includeGlobals) {
+        if ( ex == null ) return Collections.emptyList();
+        List<String> factDataNames = new ArrayList<String>();
         int p = this.fixtures.indexOf( ex );
         for ( int i = 0; i < p; i++ ) {
-            Fixture f = (Fixture) fixtures.get( i );
-            if ( f instanceof FactData ) {
-                FactData fd = (FactData) f;
-                l.add( fd.name );
-            } else if ( f instanceof RetractFact ) {
-                RetractFact rf = (RetractFact) f;
-                l.remove( rf.name );
+            Fixture fixture = (Fixture) fixtures.get( i );
+            if ( fixture instanceof FactData ) {
+                FactData factData = (FactData) fixture;
+                factDataNames.add( factData.name );
+            } else if ( fixture instanceof RetractFact ) {
+                RetractFact retractFact = (RetractFact) fixture;
+                factDataNames.remove( retractFact.name );
             }
         }
 
         if ( includeGlobals ) {
-            for ( Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
-                FactData f = (FactData) iterator.next();
-                l.add( f.name );
+            for ( FactData factData : globals ) {
+                factDataNames.add( factData.name );
             }
         }
-        return l;
+        return factDataNames;
     }
 
     /**

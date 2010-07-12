@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.qa;
+package org.drools.guvnor.client.qa.testscenarios;
 
 /**
  * Created by IntelliJ IDEA.

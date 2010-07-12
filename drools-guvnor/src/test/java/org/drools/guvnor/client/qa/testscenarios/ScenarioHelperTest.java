@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.qa;
+package org.drools.guvnor.client.qa.testscenarios;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.drools.guvnor.client.qa.testscenarios.ScenarioHelper;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;

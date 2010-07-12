@@ -30,7 +30,7 @@ import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.modeldriven.ui.RuleModellerWidgetFactory;
 import org.drools.guvnor.client.packages.ModelAttachmentFileWidget;
 import org.drools.guvnor.client.processeditor.BusinessProcessEditor;
-import org.drools.guvnor.client.qa.ScenarioWidget;
+import org.drools.guvnor.client.qa.testscenarios.ScenarioWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
 import com.google.gwt.user.client.ui.Widget;

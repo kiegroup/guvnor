@@ -9,8 +9,8 @@ package org.drools.ide.common.client.modeldriven.testing;
 public class RetractFact implements Fixture {
 
     public RetractFact() {}
-    public RetractFact(String s) {
-        this.name = s;
+    public RetractFact(String name) {
+        this.name = name;
     }
 
     public String name;
