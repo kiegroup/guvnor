@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.FixturesMap;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
@@ -33,12 +34,20 @@ public class GivenPanel extends VerticalPanel {
                                                  scenario,
                                                  parent ) );
             } else {
-                add( new DataInputWidget( e.getKey(),
-                                          itemList,
-                                          false,
-                                          scenario,
-                                          parent,
-                                          listExecutionTrace.get( executionTraceLine ) ) );
+                FactData first = (FactData) itemList.get( 0 );
+                if ( first.isModify ) {
+                    add( new ModifyFactWidget( e.getKey(),
+                                               itemList,
+                                               scenario,
+                                               parent,
+                                               listExecutionTrace.get( executionTraceLine ) ) );
+                } else {
+                    add( new InsertFactWidget( e.getKey(),
+                                               itemList,
+                                               scenario,
+                                               parent,
+                                               listExecutionTrace.get( executionTraceLine ) ) );
+                }
             }
         }
     }

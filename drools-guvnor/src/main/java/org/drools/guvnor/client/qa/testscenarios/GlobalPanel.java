@@ -14,12 +14,11 @@ public class GlobalPanel extends VerticalPanel {
                        ExecutionTrace previousEx,
                        ScenarioWidget scenarioWidget) {
         for ( Map.Entry<String, FixtureList> e : globals.entrySet() ) {
-            add( new DataInputWidget( e.getKey(),
-                                      globals.get( e.getKey() ),
-                                      true,
-                                      scenario,
-                                      scenarioWidget,
-                                      previousEx ) );
+            add( new GlobalFactWidget( e.getKey(),
+                                       globals.get( e.getKey() ),
+                                       scenario,
+                                       scenarioWidget,
+                                       previousEx ) );
         }
     }
 }
