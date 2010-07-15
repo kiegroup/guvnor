@@ -148,7 +148,11 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
     }
 
     private List<String> applyWorkingSets(Set<String> activeWorkingSets) throws SerializationException {
-        RuleAsset[] workingSets = service.loadRuleAssets( activeWorkingSets );
+        if (activeWorkingSets == null){
+            return new LinkedList<String>();
+        }
+        
+        RuleAsset[] workingSets = service.loadRuleAssets( activeWorkingSets.toArray(new String[activeWorkingSets.size()]) );
         List<String> constraintRules = new LinkedList<String>();
         if ( workingSets != null ) {
             for ( RuleAsset workingSet : workingSets ) {
