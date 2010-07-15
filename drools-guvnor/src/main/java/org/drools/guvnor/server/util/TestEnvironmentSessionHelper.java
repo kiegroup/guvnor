@@ -69,7 +69,9 @@ public class TestEnvironmentSessionHelper {
 	                admin.clearRulesRepository( );
 	            }
 	            config.setupRulesRepository( testSession );
-	            PrintWriter out = new PrintWriter(new FileOutputStream("/tmp/pepe.txt"));
+	            File file = File.createTempFile( "pete", "txt" );
+	            file.deleteOnExit();
+	            PrintWriter out = new PrintWriter(new FileOutputStream(file));
 				//dump(testSession.getRootNode(), out);
 //	            OutputStream out = new FileOutputStream("/tmp/pepe.txt");
 //	            testSession.exportSystemView("/", out, true, false);
