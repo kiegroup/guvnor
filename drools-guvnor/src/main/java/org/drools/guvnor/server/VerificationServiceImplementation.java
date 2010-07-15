@@ -120,11 +120,13 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
 
         VerifierRunner runner;
 
+        Verifier verifierToBeUsed = null;
         if ( useVerifierDefaultConfig ) {
-            runner = new VerifierRunner( defaultVerifier );
+            verifierToBeUsed = defaultVerifier;
         } else {
-            runner = new VerifierRunner( getWorkingSetVerifier( constraintRules ) );
+            verifierToBeUsed = getWorkingSetVerifier( constraintRules );
         }
+        runner = new VerifierRunner(verifierToBeUsed);
 
         log.debug( "constraints rules: " + constraintRules );
 
@@ -132,7 +134,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
             AnalysisReport report = runner.verify( packageItem,
                                                    verificationScope );
 
-            defaultVerifier.flushKnowledgeSession();
+            verifierToBeUsed.flushKnowledgeSession();
 
             log.debug( "Asset verification took: " + (System.currentTimeMillis() - startTime) );
 
