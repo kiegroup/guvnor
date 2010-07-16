@@ -406,7 +406,7 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
                 horiz.setWidth("100%");
             }
 
-            if (!lockRHS()) {
+            if (!(this.lockRHS() || w.isReadOnly())) {
                 horiz.add(remove);
             }
 
@@ -1281,4 +1281,10 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
 	public boolean isTemplate() {
 		return widgetFactory.isTemplate();
 	}
+
+    public RuleAsset getAsset() {
+        return asset;
+    }
+
+        
 }

@@ -97,8 +97,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         }
         
         if (readOnly == null) {
-            this.readOnly = !completions.containsFactType(this.variableClass)
-            	|| !mod.getModel().getBoundFacts().contains(this.variableClass);
+            this.readOnly = !completions.containsFactType(this.variableClass);
+            	//|| !mod.getModel().getBoundFacts().contains(this.variableClass);
         } else {
             this.readOnly = readOnly;
         }
