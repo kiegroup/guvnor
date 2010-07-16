@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 public class SelectorManagerTest extends TestCase {
 
     public void testSelectorMangerConfig() {
-        SelectorManager sm = SelectorManager.getInstance();
+    	SelectorManager sm = new SelectorManager("/selectors-test.properties");
         assertNotNull(sm);
         assertNotNull(sm.selectors);
 
@@ -45,7 +45,7 @@ public class SelectorManagerTest extends TestCase {
     }
 
     public void testGetBuiltInSelector() {
-        SelectorManager sm = SelectorManager.getInstance();
+    	SelectorManager sm = new SelectorManager("/selectors-test.properties");
         assertNotNull(sm);
         assertNotNull(sm.selectors);
 
@@ -53,7 +53,7 @@ public class SelectorManagerTest extends TestCase {
     }
     
     public void testGetCustomSelectors() {
-        SelectorManager sm = SelectorManager.getInstance();
+    	SelectorManager sm = new SelectorManager("/selectors-test.properties");
         assertNotNull(sm);
         assertNotNull(sm.selectors);
 
