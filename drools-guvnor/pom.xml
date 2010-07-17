@@ -47,17 +47,14 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                <dependency>
                   <groupId>ant</groupId>
                   <artifactId>ant-nodeps</artifactId>
-                  <version>1.6.5</version>
                </dependency>
                <dependency>
                   <groupId>ant</groupId>
                   <artifactId>ant-apache-regexp</artifactId>
-                  <version>1.6.5</version>
                </dependency>
                <dependency>
                   <artifactId>jakarta-regexp</artifactId>
                   <groupId>jakarta-regexp</groupId>
-                  <version>1.4</version>
                </dependency>
             </dependencies>
          </plugin>
@@ -181,19 +178,16 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>wsdl4j</groupId>
          <artifactId>wsdl4j</artifactId>
-         <version>1.6.2</version>
       </dependency>
 
       <!--REVISIT: This lib is needed by org.apache.util.Base64 in org.drools.guvnor.server.files.RepositoryServlet-->
       <dependency>
          <groupId>apache-slide</groupId>
          <artifactId>webdavlib</artifactId>
-         <version>2.0</version>
       </dependency>
       <dependency>
          <groupId>net.sf.webdav-servlet</groupId>
          <artifactId>webdav-servlet</artifactId>
-         <version>2.0</version>
       </dependency>
       <!-- External dependencies -->
       <!-- now the deps for the web app -->
@@ -205,12 +199,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>pl.balon.gwt</groupId>
          <artifactId>gwt-diagrams</artifactId>
-         <version>0.2-RC00</version>
       </dependency>
       <dependency>
          <groupId>org.cobogw.gwt</groupId>
          <artifactId>cobogw</artifactId>
-         <version>1.0</version>
       </dependency>
       <dependency>
          <groupId>com.google.gwt</groupId>
@@ -232,12 +224,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>org.jboss.seam</groupId>
          <artifactId>jboss-seam-remoting</artifactId>
-         <version>2.1.0.GA</version>
       </dependency>
       <dependency>
          <groupId>org.jboss.seam</groupId>
          <artifactId>jboss-seam</artifactId>
-         <version>2.1.0.GA</version>
       </dependency>
       <dependency>
          <groupId>javax.ejb</groupId>
@@ -247,38 +237,32 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>javassist</groupId>
          <artifactId>javassist</artifactId>
-         <version>3.4.GA</version>
          <scope>runtime</scope>
       </dependency>
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-api</artifactId>
-         <version>1.2</version>
          <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>javax.el</groupId>
          <artifactId>el-ri</artifactId>
-         <version>1.2</version>
          <scope>provided</scope>
       </dependency>
       <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
       <dependency>
          <groupId>javax.transaction</groupId>
          <artifactId>jta</artifactId>
-         <version>1.1</version>
       </dependency>
       <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
       <dependency>
          <groupId>javax.persistence</groupId>
          <artifactId>persistence-api</artifactId>
-         <version>1.0</version>
       </dependency>
       <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
       <dependency>
          <groupId>javax.faces</groupId>
          <artifactId>jsf-api</artifactId>
-         <version>1.2</version>
       </dependency>
       <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead-->
       <dependency>
@@ -295,7 +279,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>org.mortbay.jetty</groupId>
          <artifactId>jetty-embedded</artifactId>
-         <version>6.1.15</version>
          <scope>test</scope>
       </dependency>
       <dependency>
@@ -306,7 +289,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>commons-httpclient</groupId>
          <artifactId>commons-httpclient</artifactId>
-         <version>3.1</version>
          <scope>test</scope>
       </dependency>
    </dependencies>
