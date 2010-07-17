@@ -43,20 +43,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                   </goals>
                </execution>
             </executions>
-            <dependencies>
-               <dependency>
-                  <groupId>ant</groupId>
-                  <artifactId>ant-nodeps</artifactId>
-               </dependency>
-               <dependency>
-                  <groupId>ant</groupId>
-                  <artifactId>ant-apache-regexp</artifactId>
-               </dependency>
-               <dependency>
-                  <artifactId>jakarta-regexp</artifactId>
-                  <groupId>jakarta-regexp</groupId>
-               </dependency>
-            </dependencies>
          </plugin>
       </plugins>
    </build>
@@ -101,23 +87,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                         </goals>
                      </execution>
                   </executions>
-                  <dependencies>
-                     <dependency>
-                        <groupId>ant</groupId>
-                        <artifactId>ant-nodeps</artifactId>
-                        <version>1.6.5</version>
-                     </dependency>
-                     <dependency>
-                        <groupId>ant</groupId>
-                        <artifactId>ant-apache-regexp</artifactId>
-                        <version>1.6.5</version>
-                     </dependency>
-                     <dependency>
-                        <artifactId>jakarta-regexp</artifactId>
-                        <groupId>jakarta-regexp</groupId>
-                        <version>1.4</version>
-                     </dependency>
-                  </dependencies>
                </plugin>
                <plugin>
                   <groupId>org.apache.maven.plugins</groupId>
@@ -232,7 +201,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>javax.ejb</groupId>
          <artifactId>ejb-api</artifactId>
-         <version>3.0</version>
       </dependency>
       <dependency>
          <groupId>javassist</groupId>
@@ -268,7 +236,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       <dependency>
          <groupId>org.hibernate</groupId>
          <artifactId>hibernate-validator</artifactId>
-         <version>3.0.0.GA</version>
       </dependency>
       <!-- NOT needed due to licencing -->
       <dependency>
