@@ -31,6 +31,9 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 
 import com.google.gwt.user.client.Command;
+import java.util.ArrayList;
+import org.drools.factconstraints.client.customform.CustomFormConfiguration;
+import org.drools.factconstraints.client.helper.CustomFormsContainer;
 
 /**
  *
@@ -238,6 +241,39 @@ public class WorkingSetManager {
         this.autoVerifierEnabled = autoVerifierEnabled;
     }
 
+    /**
+     * Returns the associated CustomFormConfiguration for a given FactType and FieldName.
+     * Because CustomFormConfiguration is stored inside a WorkingSet, the
+     * packageName attribute is used to retrieve all the active WorkingSets.
+     * If more than one active WorkingSet contain a CustomFormConfiguration for
+     * the given FactType and FieldName the first to be found (in any specific
+     * nor deterministic order) will be returned.
+     * @param packageName the name of the package. Used to get the active
+     * working sets
+     * @param factType The short class name of the Fact Type
+     * @param fieldName The field name
+     * @return the associated CustomFormConfiguration for the given FactType and
+     * FieldName in the active working sets or null if any.
+     */
+    public CustomFormConfiguration getCustomFormConfiguration(String packageName, String factType, String fieldName){
+        Set<WorkingSetConfigData> packageWorkingSets = this.getActiveWorkingSets(packageName);
+        if (packageWorkingSets != null){
+            List<CustomFormConfiguration> configs = new ArrayList<CustomFormConfiguration>();
+            for (WorkingSetConfigData workingSetConfigData : packageWorkingSets) {
+                if (workingSetConfigData.customForms != null && !workingSetConfigData.customForms.isEmpty()){
+                    configs.addAll(workingSetConfigData.customForms);
+                }
+            }
+            CustomFormsContainer cfc = new CustomFormsContainer(configs);
+
+            if (cfc.containsCustomFormFor(factType, fieldName)){
+                return cfc.getCustomForm(factType, fieldName);
+            }
+        }
+
+        return null;
+
+    }
 
 
 }

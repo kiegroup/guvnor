@@ -52,6 +52,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -62,6 +63,8 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.factconstraints.client.customform.CustomFormConfiguration;
+import org.drools.guvnor.client.packages.WorkingSetManager;
 
 /**
  * This is an editor for constraint values.
@@ -87,10 +90,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private boolean readOnly;
     private Command onValueChangeCommand;
 
-
     public ConstraintValueEditor(FactPattern pattern, String fieldName,
-    		BaseSingleFieldConstraint con, RuleModeller modeller, String valueType,
-			boolean readOnly) {
+            BaseSingleFieldConstraint con, RuleModeller modeller, String valueType,
+            boolean readOnly) {
         this.pattern = pattern;
         this.fieldName = fieldName;
         this.sce = modeller.getSuggestionCompletions();
@@ -102,7 +104,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         valueType = sce.getFieldType(pattern.factType, fieldName);
         this.fieldType = valueType;
         this.numericValue = SuggestionCompletionEngine.TYPE_NUMERIC.equals(valueType);
-        
+
         this.readOnly = readOnly;
         if (SuggestionCompletionEngine.TYPE_BOOLEAN.equals(valueType)) {
             this.dropDownData = DropDownData.create(new String[]{"true", "false"}); //NON-NLS
@@ -114,27 +116,42 @@ public class ConstraintValueEditor extends DirtyableComposite {
         initWidget(panel);
     }
 
-	private void refreshEditor() {
+    private void refreshEditor() {
         panel.clear();
         Widget constraintWidget = null;
         if (constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED) {
             Image clickme = new Image("images/edit.gif"); //NON-NLS
             clickme.addClickHandler(new ClickHandler() {
-				
-				public void onClick(ClickEvent event) {
-					showTypeChoice((Widget) event.getSource(), constraint);
+
+                public void onClick(ClickEvent event) {
+                    showTypeChoice((Widget) event.getSource(), constraint);
                 }
             });
             constraintWidget = clickme;
         } else {
             switch (constraint.getConstraintValueType()) {
                 case SingleFieldConstraint.TYPE_LITERAL:
+
+                    if (this.constraint instanceof SingleFieldConstraint) {
+                        final SingleFieldConstraint con = (SingleFieldConstraint) this.constraint;
+                        CustomFormConfiguration customFormConfiguration = WorkingSetManager.getInstance().getCustomFormConfiguration(modeller.getAsset().metaData.packageName, pattern.factType, fieldName);
+                        if (customFormConfiguration != null) {
+                            constraintWidget = new Button(con.getValue(), new ClickHandler() {
+
+                                public void onClick(ClickEvent event) {
+                                   showTypeChoice((Widget) event.getSource(), constraint);
+                                }
+                            });
+                            break;
+                        }
+                    }
+
                     if (this.dropDownData != null) {
                         constraintWidget = new EnumDropDownLabel(this.pattern,
                                 this.fieldName,
                                 this.sce,
                                 this.constraint);
-                        ((EnumDropDownLabel)constraintWidget).setOnValueChangeCommand(new Command() {
+                        ((EnumDropDownLabel) constraintWidget).setOnValueChangeCommand(new Command() {
 
                             public void execute() {
                                 executeOnValueChangeCommand();
@@ -156,36 +173,36 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                 }
                             });
 
-                            constraintWidget =  datePicker;
+                            constraintWidget = datePicker;
                         } else {
-                        	constraintWidget = new SmallLabel(this.constraint.getValue());
+                            constraintWidget = new SmallLabel(this.constraint.getValue());
                         }
                     } else {
                         if (!this.readOnly) {
-                        	constraintWidget = new DefaultLiteralEditor(this.constraint,
+                            constraintWidget = new DefaultLiteralEditor(this.constraint,
                                     this.numericValue);
-                                ((DefaultLiteralEditor)constraintWidget).setOnValueChangeCommand(new Command() {
+                            ((DefaultLiteralEditor) constraintWidget).setOnValueChangeCommand(new Command() {
 
-                                    public void execute() {
-                                        executeOnValueChangeCommand();
-                                    }
-                                });
+                                public void execute() {
+                                    executeOnValueChangeCommand();
+                                }
+                            });
                         } else {
-                        	constraintWidget = new SmallLabel(this.constraint.getValue());
+                            constraintWidget = new SmallLabel(this.constraint.getValue());
                         }
                     }
                     break;
                 case SingleFieldConstraint.TYPE_RET_VALUE:
-                	constraintWidget = returnValueEditor();
+                    constraintWidget = returnValueEditor();
                     break;
                 case SingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE:
-                	constraintWidget = expressionEditor();
+                    constraintWidget = expressionEditor();
                     break;
                 case SingleFieldConstraint.TYPE_VARIABLE:
-                	constraintWidget = variableEditor();
+                    constraintWidget = variableEditor();
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE:
-                	constraintWidget = new DefaultLiteralEditor(this.constraint, false);
+                    constraintWidget = new DefaultLiteralEditor(this.constraint, false);
                     break;
                 default:
                     break;
@@ -196,7 +213,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
     private Widget variableEditor() {
 
-        if (this.readOnly){
+        if (this.readOnly) {
             return new SmallLabel(this.constraint.getValue());
         }
 
@@ -233,9 +250,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         box.addChangeHandler(new ChangeHandler() {
-			
-			public void onChange(ChangeEvent event) {
-				executeOnValueChangeCommand();
+
+            public void onChange(ChangeEvent event) {
+                executeOnValueChangeCommand();
                 constraint.setValue(box.getItemText(box.getSelectedIndex()));
             }
         });
@@ -269,11 +286,11 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
         ExpressionBuilder builder = new ExpressionBuilder(this.modeller, ((SingleFieldConstraint) this.constraint).getExpressionValue());
         builder.addExpressionTypeChangeHandler(new ExpressionTypeChangeHandler() {
-			
-			public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {
-				System.out.println("type changed: " + event.getOldType() + " -> " + event.getNewType());
-			}
-		});
+
+            public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {
+                System.out.println("type changed: " + event.getOldType() + " -> " + event.getNewType());
+            }
+        });
         builder.addOnModifiedCommand(new Command() {
 
             public void execute() {
@@ -285,19 +302,49 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 builder);
         return ed;
     }
-    
+
     /**
      * Show a list of possibilities for the value type.
      */
     private void showTypeChoice(Widget w,
             final BaseSingleFieldConstraint con) {
+
+        /////////////////////
+        CustomFormConfiguration customFormConfiguration = WorkingSetManager.getInstance().getCustomFormConfiguration(modeller.getAsset().metaData.packageName, pattern.factType, fieldName);
+
+        if (customFormConfiguration != null) {
+            if (!(con instanceof SingleFieldConstraint)) {
+                Window.alert("Unexpected constraint type!");
+                return;
+            }
+            final CustomFormPopUp customFormPopUp = new CustomFormPopUp("images/newex_wiz.gif", constants.FieldValue(), customFormConfiguration);
+
+            final SingleFieldConstraint sfc = (SingleFieldConstraint) con;
+
+            customFormPopUp.addOkButtonHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    sfc.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+                    sfc.setId(customFormPopUp.getFormId());
+                    sfc.setValue(customFormPopUp.getFormValue());
+                    doTypeChosen(customFormPopUp);
+                }
+            });
+
+            customFormPopUp.show(sfc.getId(), sfc.getValue());
+            return;
+        }
+
+        //////////////////////////
+
         final FormStylePopup form = new FormStylePopup("images/newex_wiz.gif",
                 constants.FieldValue());
 
         Button lit = new Button(constants.LiteralValue());
         lit.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+
+            public void onClick(ClickEvent event) {
+                con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
                 doTypeChosen(form);
             }
         });
@@ -306,22 +353,23 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 new InfoPopup(constants.LiteralValue(),
                 constants.LiteralValTip())));
 
-		if (modeller.isTemplate()) {
-	        String templateKeyLabel = constants.TemplateKey();
-	        Button templateKeyButton = new Button(templateKeyLabel);
-	        templateKeyButton.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-	                con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
-	                doTypeChosen(form);
-	            }
-	        });
-	
-	        form.addAttribute(templateKeyLabel + ":",
-	                widgets(templateKeyButton,
-	                new InfoPopup(templateKeyLabel,
-	                constants.LiteralValTip())));
+        if (modeller.isTemplate()) {
+            String templateKeyLabel = constants.TemplateKey();
+            Button templateKeyButton = new Button(templateKeyLabel);
+            templateKeyButton.addClickHandler(new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+                    doTypeChosen(form);
+                }
+            });
+
+            form.addAttribute(templateKeyLabel + ":",
+                    widgets(templateKeyButton,
+                    new InfoPopup(templateKeyLabel,
+                    constants.LiteralValTip())));
         }
-        
+
         form.addRow(new HTML("<hr/>"));
         form.addRow(new SmallLabel(constants.AdvancedOptions()));
 
@@ -333,9 +381,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 FactPattern f = model.getBoundFact(var);
                 String fieldConstraint = model.getBindingType(var);
 
-                if ((f != null && f.factType != null && this.fieldType != null) 
-                		&& (f.factType.equals(this.fieldType) 
-                			|| this.fieldType.equals(fieldConstraint))) {
+                if ((f != null && f.factType != null && this.fieldType != null)
+                        && (f.factType.equals(this.fieldType)
+                        || this.fieldType.equals(fieldConstraint))) {
                     foundABouncVariableThatMatches = true;
                     break;
                 } else {
@@ -351,7 +399,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
             if (foundABouncVariableThatMatches) {
                 Button variable = new Button(constants.BoundVariable());
                 variable.addClickHandler(new ClickHandler() {
-        			public void onClick(ClickEvent event) {
+
+                    public void onClick(ClickEvent event) {
                         con.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
                         doTypeChosen(form);
                     }
@@ -365,7 +414,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         Button formula = new Button(constants.NewFormula());
         formula.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+
+            public void onClick(ClickEvent event) {
                 con.setConstraintValueType(SingleFieldConstraint.TYPE_RET_VALUE);
                 doTypeChosen(form);
             }
@@ -378,7 +428,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         Button expression = new Button(constants.ExpressionEditor());
         expression.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
+
+            public void onClick(ClickEvent event) {
                 con.setConstraintValueType(SingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE);
                 doTypeChosen(form);
             }
@@ -408,12 +459,11 @@ public class ConstraintValueEditor extends DirtyableComposite {
         return panel;
     }
 
-    private void executeOnValueChangeCommand(){
-        if (this.onValueChangeCommand != null){
+    private void executeOnValueChangeCommand() {
+        if (this.onValueChangeCommand != null) {
             this.onValueChangeCommand.execute();
         }
     }
-
 
     public boolean isDirty() {
         return super.isDirty();
@@ -422,6 +472,4 @@ public class ConstraintValueEditor extends DirtyableComposite {
     public void setOnValueChangeCommand(Command onValueChangeCommand) {
         this.onValueChangeCommand = onValueChangeCommand;
     }
-
-
 }

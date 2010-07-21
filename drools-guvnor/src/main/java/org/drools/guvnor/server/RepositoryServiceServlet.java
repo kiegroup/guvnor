@@ -17,17 +17,17 @@
 package org.drools.guvnor.server;
 
 import java.io.IOException;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
+import org.drools.guvnor.client.rpc.BulkTestRunResult;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 
-import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.RepositoryService;
-import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.Component;
@@ -289,6 +289,11 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public org.drools.guvnor.client.rpc.SingleScenarioResult runScenario(java.lang.String p0, org.drools.ide.common.client.modeldriven.testing.Scenario p1) throws SerializationException {
          return getService().runScenario( p0,  p1);
     }
+
+    public BulkTestRunResult runScenariosInPackage(PackageItem item) throws DetailedSerializationException, SerializationException {
+        return getService().runScenariosInPackage(item);
+    }
+
     public org.drools.guvnor.client.rpc.BulkTestRunResult runScenariosInPackage(java.lang.String p0) throws SerializationException {
          return getService().runScenariosInPackage( p0);
     }
@@ -358,7 +363,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public org.drools.guvnor.client.rpc.SnapshotDiffs compareSnapshots(java.lang.String p0, java.lang.String p1, java.lang.String p2)  {
          return getService().compareSnapshots( p0,  p1,  p2);
     }
-    
+
 
 
 }

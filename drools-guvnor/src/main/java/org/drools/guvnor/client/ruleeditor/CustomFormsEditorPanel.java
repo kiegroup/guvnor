@@ -21,6 +21,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -50,6 +51,8 @@ public class CustomFormsEditorPanel extends Composite {
     private ListBox factsCombo = new ListBox(false);
     private ListBox fieldsCombo = new ListBox(false);
     private TextBox customFormURL = new TextBox();
+    private TextBox customFormWidth = new TextBox();
+    private TextBox customFormHeight = new TextBox();
     private boolean validFactsChanged = true;
     private Map<String, ConstraintConfiguration> contraintsMap = new HashMap<String, ConstraintConfiguration>();
     private final RuleAsset workingSet;
@@ -64,7 +67,9 @@ public class CustomFormsEditorPanel extends Composite {
         factsCombo.setVisibleItemCount(1);
         fieldsCombo.setVisibleItemCount(1);
         customFormURL.setWidth("400px");
-        customFormURL.setTitle("Leave it blank if you want to remove the Custom Form URL");
+        customFormURL.setTitle("Leave it blank if you want to remove the Custom Form URL"); //TODO: I18N
+        customFormHeight.setWidth("50px");
+        customFormWidth.setWidth("50px");
 
         factsCombo.addChangeHandler(new ChangeHandler() {
             public void onChange(ChangeEvent event) {
@@ -95,6 +100,18 @@ public class CustomFormsEditorPanel extends Composite {
 
         Button btnUpdateURL = new Button(constants.OK(), new ClickHandler() {
             public void onClick(ClickEvent event) {
+
+                int w;
+                int h;
+
+                try{
+                    w = Integer.parseInt(customFormWidth.getText());
+                    h = Integer.parseInt(customFormHeight.getText());
+                } catch (NumberFormatException ex){
+                    Window.alert("Width and Height must be integer values!"); //TODO: I18N
+                    return;
+                }
+
                 if (((WorkingSetConfigData) workingSet.content).customForms == null) {
                     ((WorkingSetConfigData) workingSet.content).customForms = new ArrayList<CustomFormConfiguration>();
                 }
@@ -106,18 +123,23 @@ public class CustomFormsEditorPanel extends Composite {
                 newCustomFormConfiguration.setFactType(factType);
                 newCustomFormConfiguration.setFieldName(fieldName);
                 newCustomFormConfiguration.setCustomFormURL(customFormURL.getText());
-                
+                newCustomFormConfiguration.setCustomFormWidth(w);
+                newCustomFormConfiguration.setCustomFormHeight(h);
+
                 workingSetEditor.getCustomFormsContainer().putCustomForm(newCustomFormConfiguration);
                 ((WorkingSetConfigData) workingSet.content).customForms = workingSetEditor.getCustomFormsContainer().getCustomForms();
             }
         });
 
-        HorizontalPanel hp = new HorizontalPanel();
-        hp.add(customFormURL);
-        hp.add(btnUpdateURL);
-
-        vp.add(hp);
+        vp.add(customFormURL);
+        vp.add(new SmallLabel("Width:"));
+        vp.add(customFormWidth);
+        vp.add(new SmallLabel("Height:"));
+        vp.add(customFormHeight);
         table.setWidget(2, 0, vp);
+
+
+        table.setWidget(3, 0, btnUpdateURL);
 
 
         fillSelectedFacts();
@@ -167,9 +189,14 @@ public class CustomFormsEditorPanel extends Composite {
             contraintsMap.clear();
 
             if (this.workingSetEditor.getCustomFormsContainer().containsCustomFormFor(factField, fieldName)){
-                this.customFormURL.setText(this.workingSetEditor.getCustomFormsContainer().getCustomForm(factField, fieldName).getCustomFormURL());
+                CustomFormConfiguration customForm = this.workingSetEditor.getCustomFormsContainer().getCustomForm(factField, fieldName);
+                this.customFormURL.setText(customForm.getCustomFormURL());
+                this.customFormWidth.setText(String.valueOf(customForm.getCustomFormWidth()));
+                this.customFormHeight.setText(String.valueOf(customForm.getCustomFormHeight()));
             }else{
                 this.customFormURL.setText("");
+                this.customFormWidth.setText("");
+                this.customFormHeight.setText("");
             }
         }
     }

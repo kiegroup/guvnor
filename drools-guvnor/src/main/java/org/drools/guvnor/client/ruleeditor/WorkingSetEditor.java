@@ -40,7 +40,6 @@ import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.event.PanelListenerAdapter;
-import org.drools.factconstraints.client.customform.CustomFormConfiguration;
 import org.drools.factconstraints.client.helper.CustomFormsContainer;
 
 public class WorkingSetEditor extends Composite {

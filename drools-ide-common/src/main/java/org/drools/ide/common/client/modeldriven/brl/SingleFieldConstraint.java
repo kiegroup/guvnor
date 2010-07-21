@@ -16,7 +16,6 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-
 /**
  * This represents a constraint on a fact - involving a SINGLE FIELD.
  * 
@@ -25,18 +24,21 @@ package org.drools.ide.common.client.modeldriven.brl;
  */
 public class SingleFieldConstraint extends BaseSingleFieldConstraint implements FieldConstraint {
 
-    private String                 fieldBinding;
-    private String                 fieldName;
-    private String                 operator;
-    private String                 fieldType;
-    private FieldConstraint  parent;
-
+    private String fieldBinding;
+    private String fieldName;
+    private String operator;
+    private String fieldType;
+    private FieldConstraint parent;
     /**
      * Used instead of "value" when constraintValueType = TYPE_EXPR_BUILDER.
      * Esteban Aliverti
      */
     private ExpressionFormLine expression = new ExpressionFormLine();
-
+    /**
+     * Used with "value" when using custom forms.
+     * Esteban Aliverti
+     */
+    private String id;
     public ConnectiveConstraint[] connectives;
 
     public SingleFieldConstraint(final String field, final String fieldType, final FieldConstraint parent) {
@@ -58,23 +60,23 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint implements 
     }
 
     public void setFieldBinding(String fieldBinding) {
-		this.fieldBinding = fieldBinding;
-	}
+        this.fieldBinding = fieldBinding;
+    }
 
-	public String getFieldBinding() {
-		return fieldBinding;
-	}
+    public String getFieldBinding() {
+        return fieldBinding;
+    }
 
-	/**
+    /**
      * This adds a new connective.
      *
      */
     public void addNewConnective() {
-        if ( this.connectives == null ) {
+        if (this.connectives == null) {
             this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint(this.getFieldName(), this.getFieldType(), null, null)};
         } else {
             final ConnectiveConstraint[] newList = new ConnectiveConstraint[this.connectives.length + 1];
-            for ( int i = 0; i < this.connectives.length; i++ ) {
+            for (int i = 0; i < this.connectives.length; i++) {
                 newList[i] = this.connectives[i];
             }
             newList[this.connectives.length] = new ConnectiveConstraint(this.getFieldName(), this.getFieldType(), null, null);
@@ -86,7 +88,7 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint implements 
      * Returns true of there is a field binding.
      */
     public boolean isBound() {
-        return this.getFieldBinding() != null && this.getFieldBinding().length() > 0; 
+        return this.getFieldBinding() != null && this.getFieldBinding().length() > 0;
     }
 
     public ExpressionFormLine getExpressionValue() {
@@ -97,35 +99,44 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint implements 
         this.expression = expression;
     }
 
-	public void setFieldName(String fieldName) {
-		this.fieldName = fieldName;
-	}
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
 
-	public String getFieldName() {
-		return fieldName;
-	}
+    public String getFieldName() {
+        return fieldName;
+    }
 
-	public void setOperator(String operator) {
-		this.operator = operator;
-	}
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
 
-	public String getOperator() {
-		return operator;
-	}
+    public String getOperator() {
+        return operator;
+    }
 
-	public void setFieldType(String fieldType) {
-		this.fieldType = fieldType;
-	}
+    public void setFieldType(String fieldType) {
+        this.fieldType = fieldType;
+    }
 
-	public String getFieldType() {
-		return fieldType;
-	}
+    public String getFieldType() {
+        return fieldType;
+    }
 
-	public void setParent(FieldConstraint parent) {
-		this.parent = parent;
-	}
+    public void setParent(FieldConstraint parent) {
+        this.parent = parent;
+    }
 
-	public FieldConstraint getParent() {
-		return parent;
-	}
+    public FieldConstraint getParent() {
+        return parent;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 }
