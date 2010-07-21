@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
@@ -1260,9 +1261,15 @@ public class GuidedDecisionTableWidget extends Composite
                            getSCE() ) ) {
             box.addKeyboardListener( ActionValueEditor.getNumericFilter( box ) );
         }
-
+        
+        
         Panel p = new Panel();
         p.add( box );
+        String typeDescription = dt.getType(colConf, getSCE());
+        if(typeDescription != null) {
+            p.add( new InfoPopup( constants.CategoryParentRules(), Format.format(constants.FillInColumnWithValue(), typeDescription)));       	
+        }
+
         w.add( p );
         w.setBorder( false );
 

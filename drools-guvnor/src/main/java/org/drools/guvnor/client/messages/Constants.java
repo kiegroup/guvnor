@@ -2083,4 +2083,6 @@ public interface Constants
     String ActivateRuleFlowGroup();
 
     String CantRemoveThisBlockAsOneOfTheNamesIsBeingUsed();
+    
+    String FillInColumnWithValue();
 }

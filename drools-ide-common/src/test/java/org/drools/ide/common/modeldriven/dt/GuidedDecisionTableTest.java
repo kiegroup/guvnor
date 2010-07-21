@@ -16,6 +16,7 @@
 
 package org.drools.ide.common.modeldriven.dt;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import junit.framework.TestCase;
@@ -295,11 +296,107 @@ public class GuidedDecisionTableTest extends TestCase {
         assertFalse(dt.isNumeric(ins, sce));
         assertTrue(dt.isNumeric(ins_, sce));
         assertFalse(dt.isNumeric(c2, sce));
-
-
-
     }
+    
+    public void testGetType() {
+        SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 
+        sce.setFieldsForTypes(new HashMap<String, ModelField[]>() {
+            {
+                put("Driver",
+                        new ModelField[]{
+                            new ModelField("age", Integer.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_NUMERIC),
+                            new ModelField("name", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_STRING),
+                            new ModelField("date", Date.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_DATE),
+                            new ModelField("approved", Boolean.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_BOOLEAN)
+                       });
+            }
+        });
+
+        GuidedDecisionTable dt = new GuidedDecisionTable();
+
+        AttributeCol salienceAttribute = new AttributeCol();
+        salienceAttribute.attr = "salience";
+        AttributeCol enabledAttribute = new AttributeCol();
+        enabledAttribute.attr = "enabled";
+
+        dt.attributeCols.add(salienceAttribute);
+        dt.attributeCols.add(enabledAttribute);
+
+        ConditionCol conditionColName = new ConditionCol();
+        conditionColName.boundName = "c1";
+        conditionColName.factType = "Driver";
+        conditionColName.factField = "name";
+        conditionColName.operator = "==";
+        conditionColName.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        dt.conditionCols.add(conditionColName);
+
+        ConditionCol conditionColAge = new ConditionCol();
+        conditionColAge.boundName = "c1";
+        conditionColAge.factType = "Driver";
+        conditionColAge.factField = "age";
+        conditionColAge.operator = "==";
+        conditionColAge.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        dt.conditionCols.add(conditionColAge);
+
+        ConditionCol conditionColDate = new ConditionCol();
+        conditionColDate.boundName = "c1";
+        conditionColDate.factType = "Driver";
+        conditionColDate.factField = "date";
+        conditionColDate.operator = "==";
+        conditionColDate.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        dt.conditionCols.add(conditionColDate);
+
+        ConditionCol conditionColApproved = new ConditionCol();
+        conditionColApproved.boundName = "c1";
+        conditionColApproved.factType = "Driver";
+        conditionColApproved.factField = "approved";
+        conditionColApproved.operator = "==";
+        conditionColApproved.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        dt.conditionCols.add(conditionColApproved);
+
+        ConditionCol conditionColAge2 = new ConditionCol();
+        conditionColAge2.boundName = "c1";
+        conditionColAge2.factType = "Driver";
+        conditionColAge2.factField = "age";
+        conditionColAge2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        dt.conditionCols.add(conditionColAge2);
+
+        ActionSetFieldCol a = new ActionSetFieldCol();
+        a.boundName = "c1";
+        a.factField = "name";
+        dt.actionCols.add(a);
+
+        ActionSetFieldCol a2 = new ActionSetFieldCol();
+        a2.boundName = "c1";
+        a2.factField = "age";
+        dt.actionCols.add(a2);
+
+        ActionInsertFactCol ins = new ActionInsertFactCol();
+        ins.boundName = "x";
+        ins.factType = "Driver";
+        ins.factField = "name";
+        dt.actionCols.add(ins);
+
+        ActionInsertFactCol ins_ = new ActionInsertFactCol();
+        ins_.boundName = "x";
+        ins_.factType = "Driver";
+        ins_.factField = "age";
+        dt.actionCols.add(ins_);
+
+        assertEquals("salience", dt.getType(salienceAttribute, sce));
+        assertEquals("enabled", dt.getType(enabledAttribute, sce));
+        assertEquals(SuggestionCompletionEngine.TYPE_STRING, dt.getType(conditionColName, sce));
+        assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, dt.getType(conditionColAge, sce));
+        assertEquals(SuggestionCompletionEngine.TYPE_DATE, dt.getType(conditionColDate, sce));
+        assertEquals(SuggestionCompletionEngine.TYPE_BOOLEAN, dt.getType(conditionColApproved, sce));
+        assertEquals(SuggestionCompletionEngine.TYPE_STRING, dt.getType(a, sce));
+        assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, dt.getType(a2, sce));
+        assertEquals(SuggestionCompletionEngine.TYPE_STRING, dt.getType(ins, sce));
+        assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, dt.getType(ins_, sce));
+        assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, dt.getType(conditionColAge2, sce));
+    }
+    
     public void testNoConstraintLists() {
         GuidedDecisionTable dt = new GuidedDecisionTable();
 

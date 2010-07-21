@@ -142,6 +142,25 @@ public class GuidedDecisionTable implements PortableObject {
 		return new String[0];
 	}
 
+	public String getType(DTColumnConfig col, SuggestionCompletionEngine sce) {
+		String type = null;
+		if (col instanceof AttributeCol) {
+			AttributeCol at = (AttributeCol) col;
+			type = at.attr;
+		} else if (col instanceof ConditionCol) {
+			ConditionCol c = (ConditionCol) col;
+			type = sce.getFieldType(c.factType, c.factField);
+		} else if (col instanceof ActionSetFieldCol) {
+			ActionSetFieldCol c = (ActionSetFieldCol) col;
+			type = sce.getFieldType(getBoundFactType(c.boundName), c.factField);
+		} else if (col instanceof ActionInsertFactCol) {
+			ActionInsertFactCol c = (ActionInsertFactCol) col;
+			type = sce.getFieldType(c.factType, c.factField);
+		}
+		
+		return type;
+	}
+	
 	private String getBoundFactType(String boundName) {
 		for (Iterator<ConditionCol> iterator = conditionCols.iterator(); iterator.hasNext();) {
 			ConditionCol c = iterator.next();
