@@ -39,6 +39,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
@@ -47,6 +48,8 @@ import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.security.WebDavPackageNameType;
+import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.repository.RulesRepository;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 
@@ -56,7 +59,13 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         assertTrue( true );
     }
 
-    public void FIXME_testCategoryBasedPermissionAnalyst() throws Exception {
+    public void testCategoryBasedPermissionAnalyst() throws Exception {
+    	//NOTE: Have to have this call, otherwise this test will fail others tests. Seems to be related to
+    	//how Seam context initializes the JCR repository, but dont know the exact cause yet. 
+    	ServiceImplementation impl = new ServiceImplementation();
+		impl.repository = new RulesRepository(TestEnvironmentSessionHelper
+				.getSession());
+		
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -120,7 +129,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         Lifecycle.endApplication();
     }
 
-    public void FIXME_testCategoryBasedPermissionAnalystReadOnly() throws Exception {
+    public void testCategoryBasedPermissionAnalystReadOnly() throws Exception {
         // Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -183,7 +192,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         Lifecycle.endApplication();
     }
 
-    public void FIXME_testCategoryBasedPermissionAnalystReadOnly2() throws Exception {
+    public void testCategoryBasedPermissionAnalystReadOnly2() throws Exception {
         // Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -220,7 +229,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         Lifecycle.endApplication();
     }
 
-    public void FIXME_testIsSubPath() {
+    public void testIsSubPath() {
         RoleBasedPermissionResolver pr = new RoleBasedPermissionResolver();
         assertTrue( pr.isSubPath( "foo",
                                   "foo/bar" ) );
@@ -249,7 +258,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     /**
      * This tests that we can navigate the tree if we have sub path permissions.
      */
-    public void FIXME_testCategoryBasedSubPerms() throws Exception {
+    public void testCategoryBasedSubPerms() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -321,7 +330,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     }
 
     //admin: everything
-    public void FIXME_testPackageBasedPermissionAdmin() throws Exception {
+    public void testPackageBasedPermissionAdmin() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -363,7 +372,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     }
 
     //Package.admin: everything for that package, including creating snapshots for that package.
-    public void FIXME_testPackageBasedPermissionPackageAdmin() throws Exception {
+    public void testPackageBasedPermissionPackageAdmin() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -406,7 +415,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     }
 
     //Package.admin: everything for that package, including creating snapshots for that package.
-    public void FIXME_testPackageBasedWebDavPermissionPackageAdmin() throws Exception {
+    public void testPackageBasedWebDavPermissionPackageAdmin() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -446,7 +455,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     }
 
     //Package.developer:  everything for that package, NOT snapshots (can view snapshots of that package only)
-    public void FIXME_testPackageBasedPermissionPackageDeveloper() throws Exception {
+    public void testPackageBasedPermissionPackageDeveloper() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -489,7 +498,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
     }
 
     //Package.readonly: read only as the name suggested
-    public void FIXME_testPackageBasedPermissionPackageReadOnly() throws Exception {
+    public void testPackageBasedPermissionPackageReadOnly() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -531,7 +540,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         Lifecycle.endApplication();
     }
 
-    public void FIXME_testPackageBasedPermissionAnalyst() throws Exception {
+    public void testPackageBasedPermissionAnalyst() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
