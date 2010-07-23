@@ -17,4 +17,10 @@ public interface CustomFormConfiguration extends Serializable{
     String getCustomFormURL();
     void setCustomFormURL(String url);
 
+    int getCustomFormHeight();
+    void setCustomFormHeight(int height);
+
+    int getCustomFormWidth();
+    void setCustomFormWidth(int width);
+
 }

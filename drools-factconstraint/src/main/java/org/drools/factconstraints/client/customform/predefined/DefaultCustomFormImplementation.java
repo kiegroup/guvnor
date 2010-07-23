@@ -9,6 +9,8 @@ import org.drools.factconstraints.client.customform.CustomFormConfiguration;
  */
 public class DefaultCustomFormImplementation implements CustomFormConfiguration, Serializable{
 
+    private int width = 200;
+    private int height = 200;
     private String factType;
     private String fieldName;
     private String url;
@@ -35,6 +37,22 @@ public class DefaultCustomFormImplementation implements CustomFormConfiguration,
 
     public void setCustomFormURL(String url) {
         this.url = url;
+    }
+
+    public int getCustomFormHeight() {
+        return height;
+    }
+
+    public void setCustomFormHeight(int height) {
+        this.height = height;
+    }
+
+    public int getCustomFormWidth() {
+        return width;
+    }
+
+    public void setCustomFormWidth(int width) {
+        this.width = width;
     }
 
 }
