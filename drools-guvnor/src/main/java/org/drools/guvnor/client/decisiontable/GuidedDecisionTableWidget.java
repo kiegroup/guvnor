@@ -29,8 +29,10 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
+import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -49,6 +51,8 @@ import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -1242,46 +1246,74 @@ public class GuidedDecisionTableWidget extends Composite
         w.setPlain( true );
         w.setBodyBorder( false );
         w.setTitle( dta );
-        final TextBox box = new TextBox();
-        box.setText( val );
-        box.addKeyboardListener( new KeyboardListenerAdapter() {
-            public void onKeyUp(Widget sender,
-                                char keyCode,
-                                int modifiers) {
-                if ( keyCode == KeyboardListener.KEY_ENTER ) {
-                    r.set( dta,
-                           box.getText() );
-
-                    w.destroy();
-                }
-            }
-        } );
-
-        if ( dt.isNumeric( colConf,
-                           getSCE() ) ) {
-            box.addKeyboardListener( ActionValueEditor.getNumericFilter( box ) );
-        }
         
-        
-        Panel p = new Panel();
-        p.add( box );
         String typeDescription = dt.getType(colConf, getSCE());
-        if(typeDescription != null) {
-            p.add( new InfoPopup( constants.CategoryParentRules(), Format.format(constants.FillInColumnWithValue(), typeDescription)));       	
-        }
+        Panel p = new Panel();
 
-        w.add( p );
-        w.setBorder( false );
+        if (typeDescription != null
+				&& typeDescription.equals(SuggestionCompletionEngine.TYPE_DATE)) {
+			final DatePickerTextBox datePicker = new DatePickerTextBox(val);
+			String m = Format.format(((Constants) GWT.create(Constants.class))
+					.ValueFor0(), dta);
+			datePicker.setTitle(m);
+			datePicker.addValueChanged(new ValueChanged() {
+				public void valueChanged(String newValue) {
+					r.set(dta, newValue);
+				}
+			});
 
-        Button ok = new Button( constants.OK() );
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget wg) {
-                r.set( dta,
-                       box.getText() );
-                w.destroy();
-            }
-        } );
-        p.add( ok );
+			p.add(datePicker);
+			p.add(new InfoPopup(constants.CategoryParentRules(), Format.format(
+					constants.FillInColumnWithValue(), typeDescription)));
+
+			w.add(p);
+			w.setBorder(false);
+
+			Button ok = new Button(constants.OK());
+			ok.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent arg0) {
+					r.set(dta, datePicker.getDateString());
+					w.destroy();
+				}
+			});
+
+			p.add(ok);
+			
+		} else {
+			final TextBox box = new TextBox();
+			box.setText(val);
+			box.addKeyboardListener(new KeyboardListenerAdapter() {
+				public void onKeyUp(Widget sender, char keyCode, int modifiers) {
+					if (keyCode == KeyboardListener.KEY_ENTER) {
+						r.set(dta, box.getText());
+						w.destroy();
+					}
+				}
+			});
+
+			if (dt.isNumeric(colConf, getSCE())) {
+				box.addKeyboardListener(ActionValueEditor
+								.getNumericFilter(box));
+			}
+
+			p.add(box);
+			if (typeDescription != null) {
+				p.add(new InfoPopup(constants.CategoryParentRules(), Format
+						.format(constants.FillInColumnWithValue(),
+								typeDescription)));
+			}
+			w.add(p);
+			w.setBorder(false);
+
+			Button ok = new Button(constants.OK());
+			ok.addClickListener(new ClickListener() {
+				public void onClick(Widget wg) {
+					r.set(dta, box.getText());
+					w.destroy();
+				}
+			});
+			p.add(ok);
+		} 
 
         w.setPosition( e.getPageX(),
                        e.getPageY() );
