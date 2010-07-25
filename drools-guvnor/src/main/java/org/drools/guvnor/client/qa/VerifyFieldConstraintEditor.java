@@ -35,6 +35,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
+import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.modeldriven.ui.EnumDropDown;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -110,6 +111,18 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                              }
                                          },
                                          DropDownData.create( c ) ) );
+        } else if (flType != null && flType.equals(SuggestionCompletionEngine.TYPE_DATE)) {           
+            final DatePickerTextBox datePicker = new DatePickerTextBox( field.expected );
+            String m = Format.format(((Constants) GWT.create(Constants.class)).ValueFor0(),
+            		field.fieldName);
+            datePicker.setTitle(m);
+            datePicker.addValueChanged(new ValueChanged() {
+                public void valueChanged(String newValue) {
+                	field.expected = newValue;
+                }
+            });
+
+             panel.add(datePicker);
         } else {
             String[] enums = sce.getDataEnumList( key );
             if ( enums != null ) {
