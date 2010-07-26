@@ -404,7 +404,7 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
             horiz.setWidth("100%");
             //horiz.setBorderWidth(2);
 
-            Image remove = new ImageButton("images/delete_faded.gif"); //NON-NLS
+            Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
             remove.setTitle(constants.RemoveThisAction());
             final int idx = i;
             remove.addClickHandler(new ClickHandler() {
@@ -1053,7 +1053,7 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
             RuleModellerWidget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton("images/delete_faded.gif"); //NON-NLS
+        final Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
         remove.setTitle(constants.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt());
         final int idx = i;
         remove.addClickHandler(new ClickHandler() {

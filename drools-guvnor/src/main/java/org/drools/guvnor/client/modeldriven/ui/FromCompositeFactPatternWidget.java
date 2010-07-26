@@ -190,7 +190,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
     protected Widget addRemoveButton(Widget w, ClickListener listener) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton("images/delete_faded.gif"); //NON-NLS
+        final Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
         remove.setTitle(constants.RemoveThisBlockOfData());
         remove.addClickListener(listener);
 

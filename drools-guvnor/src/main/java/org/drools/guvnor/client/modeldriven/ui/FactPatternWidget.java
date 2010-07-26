@@ -199,7 +199,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             //now the clear icon
             final int currentRow = i;
-            Image clear = new ImageButton("images/delete_faded.gif");//NON-NLS
+            Image clear = new ImageButton("images/delete_item_small.gif");//NON-NLS
             clear.setTitle(constants.RemoveThisWholeRestriction());
             clear.addClickHandler(new ClickHandler() {
 				
@@ -305,7 +305,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                 this.renderFieldConstraint(inner, i, nested[i], false, 0);
                 //add in remove icon here...
                 final int currentRow = i;
-                Image clear = new ImageButton("images/delete_faded.gif"); //NON-NLS
+                Image clear = new ImageButton("images/delete_item_small.gif"); //NON-NLS
                 clear.setTitle(constants.RemoveThisNestedRestriction());
                 clear.addClickHandler(new ClickHandler() {
 					
