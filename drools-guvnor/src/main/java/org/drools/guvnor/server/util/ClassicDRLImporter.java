@@ -98,7 +98,8 @@ public class ClassicDRLImporter {
                 StringBuffer currentRule = new StringBuffer();
                 laConsumeToEnd( lines,
                                 currentRule,
-                                "end" );
+                                "end",
+                                false );
                 addRule( ruleName,
                          currentRule );
 
@@ -124,9 +125,11 @@ public class ClassicDRLImporter {
             } else if ( line.startsWith( "/*" ) ) {
 
                 StringBuffer comment = new StringBuffer();
+                comment.append( line + "\n");
                 laConsumeToEnd( lines,
                                 comment,
-                                "*/" );
+                                "*/",
+                                true );
 
                 header.append( comment );
 
@@ -264,11 +267,14 @@ public class ClassicDRLImporter {
 
     private void laConsumeToEnd(StringTokenizer lines,
                                 StringBuffer currentRule,
-                                String end) {
+                                String end, boolean addLastLine) {
         String line;
         while ( lines.hasMoreTokens() ) {
             line = lines.nextToken();
             if ( line.trim().startsWith( end ) ) {
+                if ( addLastLine ) {
+                    currentRule.append( line + "\n" );
+                }
                 break;
             }
             currentRule.append( line );

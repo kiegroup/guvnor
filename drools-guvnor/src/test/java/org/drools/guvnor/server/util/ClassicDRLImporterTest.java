@@ -137,10 +137,12 @@ public class ClassicDRLImporterTest extends TestCase {
         assertTrue( imp.isDSLEnabled() );
         assertEquals( 2,
                       imp.getAssets().size() );
+        System.out.println( imp.getPackageHeader()  );   
+        
         assertEquals( "foo",
-                      imp.getPackageName() );
-        assertEqualsIgnoreWhitespace( "import goo.wee global ka.cha",
-                                      imp.getPackageHeader() );
+                      imp.getPackageName() );   
+        assertTrue( imp.getPackageHeader().contains( "import goo.wee" ));
+        assertTrue( imp.getPackageHeader().contains( "global ka.cha" ));
 
         assertEqualsIgnoreWhitespace( "when ka chow then bam",
                                       imp.getAssets().get( 0 ).content );
