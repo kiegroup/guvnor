@@ -946,7 +946,8 @@ public class GuidedDecisionTableWidget extends Composite
         GroupingView gv = new GroupingView();
 
         //to stretch it out
-        gv.setForceFit( true );
+        //BRMS-311
+        //gv.setForceFit( true );
         gv.setGroupTextTpl( "{text} ({[values.rs.length]} {[values.rs.length > 1 ? \"" //NON-NLS
                             + constants.Items() + "\" : \"" + constants.Item() + "\"]})" );
 
