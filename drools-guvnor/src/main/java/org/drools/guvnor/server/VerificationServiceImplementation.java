@@ -42,8 +42,6 @@ import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.VerifierConfigurationImpl;
 import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.builder.VerifierBuilderFactory;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
@@ -57,8 +55,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @author rikkola
  *
  */
-@Name("org.drools.guvnor.client.rpc.VerificationService")
-@AutoCreate
 public class VerificationServiceImplementation extends RemoteServiceServlet
     implements
     VerificationService {
@@ -67,9 +63,11 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
 
     private static final LoggingHelper log              = LoggingHelper.getLogger( ServiceImplementation.class );
 
-    private ServiceImplementation      service          = RepositoryServiceServlet.getService();
-
     private Verifier                   defaultVerifier  = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
+
+    private ServiceImplementation getService() {
+        return RepositoryServiceServlet.getService();
+    }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
@@ -79,7 +77,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        PackageItem packageItem = service.getRulesRepository().loadPackageByUUID( packageUUID );
+        PackageItem packageItem = getService().getRulesRepository().loadPackageByUUID( packageUUID );
 
         VerifierRunner runner = new VerifierRunner( defaultVerifier );
 
@@ -120,7 +118,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        PackageItem packageItem = service.getRulesRepository().loadPackage( asset.metaData.packageName );
+        PackageItem packageItem = getService().getRulesRepository().loadPackage( asset.metaData.packageName );
 
         ScopesAgendaFilter verificationScope;
 
@@ -142,7 +140,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
         } else {
             verifierToBeUsed = getWorkingSetVerifier( constraintRules );
         }
-        runner = new VerifierRunner(verifierToBeUsed);
+        runner = new VerifierRunner( verifierToBeUsed );
 
         log.debug( "constraints rules: " + constraintRules );
 
@@ -166,11 +164,11 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
     }
 
     private List<String> applyWorkingSets(Set<String> activeWorkingSets) throws SerializationException {
-        if (activeWorkingSets == null){
+        if ( activeWorkingSets == null ) {
             return new LinkedList<String>();
         }
-        
-        RuleAsset[] workingSets = service.loadRuleAssets( activeWorkingSets.toArray(new String[activeWorkingSets.size()]) );
+
+        RuleAsset[] workingSets = getService().loadRuleAssets( activeWorkingSets.toArray( new String[activeWorkingSets.size()] ) );
         List<String> constraintRules = new LinkedList<String>();
         if ( workingSets != null ) {
             for ( RuleAsset workingSet : workingSets ) {
