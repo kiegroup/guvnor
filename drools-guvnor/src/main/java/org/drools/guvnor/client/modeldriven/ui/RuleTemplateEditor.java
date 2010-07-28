@@ -26,7 +26,10 @@ import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.ArrayReader;
@@ -36,11 +39,8 @@ import com.gwtext.client.data.MemoryProxy;
 import com.gwtext.client.data.Record;
 import com.gwtext.client.data.RecordDef;
 import com.gwtext.client.data.StringFieldDef;
-import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.TabPanel;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarMenuButton;
-import com.gwtext.client.widgets.event.TabPanelListenerAdapter;
 import com.gwtext.client.widgets.form.TextField;
 import com.gwtext.client.widgets.grid.ColumnConfig;
 import com.gwtext.client.widgets.grid.ColumnModel;
@@ -63,49 +63,31 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 	private RuleModeller ruleModeller;
 	private Constants constants = ((Constants) GWT.create(Constants.class));
 	
-
 	public RuleTemplateEditor(RuleAsset asset) {
 		model = (TemplateModel) asset.content;
-		TabPanel tPanel = new TabPanel();
-		tPanel.setWidth(800);
-//		tPanel.setAutoWidth(true);
-//		tPanel.setAutoHeight(true);
-		
-		Panel pnl = new Panel();
-//		pnl.setAutoWidth(true);
-		pnl.setClosable(false);
-		pnl.setTitle(constants.TemplateEditor());
-//		pnl.setAutoHeight(true);
-		ruleModeller = new RuleModeller(asset, new TemplateModellerWidgetFactory());
-		pnl.add(ruleModeller);
-		tPanel.add(pnl);
 
-		pnl = new Panel();
-//		pnl.setAutoWidth(true);
-		pnl.setClosable(false);
-		pnl.setTitle(constants.TemplateData());
-//		pnl.setAutoHeight(true);
-		pnl.add(buildTemplateTable());
-		pnl.setId("tplTable");
-		tPanel.add(pnl);
+		final TabPanel tPanel = new TabPanel();
+		tPanel.setWidth("100%");
+		ruleModeller = new RuleModeller(asset, new TemplateModellerWidgetFactory());
+		tPanel.add(ruleModeller, constants.TemplateEditor());
+		tPanel.add(buildTemplateTable(), constants.TemplateData());
 		
-		tPanel.addListener(new TabPanelListenerAdapter() {
+		tPanel.addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>() {
 			
-			@Override
-			public boolean doBeforeTabChange(TabPanel source, Panel newPanel, Panel oldPanel) {
-				if ("tplTable".equals(newPanel.getId())) {
+			public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
+				if (event.getItem() == 1) {
 					Set<String> keySet = new HashSet<String>(model.getTable().keySet());
 					model.putInSync();
 					if (!keySet.equals(model.getTable().keySet()) || model.getRowsCount() == 0) {
-						newPanel.clear();
-						newPanel.add(buildTemplateTable());
+						tPanel.remove(tPanel.getWidgetCount() - 1);
+						tPanel.add(buildTemplateTable(), constants.TemplateData());
 					}
 				}
-				return true;
+				
 			}
 		});
-
-		tPanel.setActiveTab(0);
+		
+		tPanel.selectTab(0);
 		initWidget(tPanel);
 	}
 
@@ -206,7 +188,7 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 				model.setValue(field, rowIndex, (String) newValue);
 			}
 		});
-
+		grid.setWidth(800);
 		return grid;
 	}
 	
