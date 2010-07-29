@@ -123,6 +123,7 @@ public class GuidedDecisionTableWidget extends Composite
     private SuggestionCompletionEngine sce;
     private GroupingStore              store;
     private Constants                  constants = ((Constants) GWT.create( Constants.class ));
+    RecordDef recordDef;
 
     public GuidedDecisionTableWidget(RuleAsset asset,
                                      RuleViewer viewer) {
@@ -143,6 +144,8 @@ public class GuidedDecisionTableWidget extends Composite
         config.setBodyBorder( false );
         config.setCollapsed( true );
         config.setCollapsible( true );
+        
+
 
         FieldSet conditions = new FieldSet( constants.ConditionColumns() );
         conditions.setCollapsible( true );
@@ -160,9 +163,12 @@ public class GuidedDecisionTableWidget extends Composite
         grouping.add( getGrouping() );
         grouping.add( getAttributes() );
         config.add( grouping );
-
         layout.add( config );
-
+        
+        VerticalPanel buttonPanel = new   VerticalPanel();
+        buttonPanel.add(getToolbarMenuButton());
+        layout.add( buttonPanel);
+        
         refreshGrid();
 
         initWidget( layout );
@@ -695,8 +701,8 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private void refreshGrid() {
-        if ( layout.getWidgetCount() > 1 ) {
-            layout.remove( 1 );
+        if ( layout.getWidgetCount() > 2 ) {
+            layout.remove( 2 );
         }
         if ( dt.actionCols.size() == 0 && dt.conditionCols.size() == 0 && dt.actionCols.size() == 0 ) {
             VerticalPanel vp = new VerticalPanel();
@@ -881,7 +887,7 @@ public class GuidedDecisionTableWidget extends Composite
             colCount++;
         }
 
-        final RecordDef recordDef = new RecordDef( fds );
+        recordDef = new RecordDef( fds );
         ArrayReader reader = new ArrayReader( recordDef );
         MemoryProxy proxy = new MemoryProxy( dt.data );
 
@@ -946,8 +952,7 @@ public class GuidedDecisionTableWidget extends Composite
         GroupingView gv = new GroupingView();
 
         //to stretch it out
-        //BRMS-311
-        //gv.setForceFit( true );
+        gv.setForceFit( true );
         gv.setGroupTextTpl( "{text} ({[values.rs.length]} {[values.rs.length > 1 ? \"" //NON-NLS
                             + constants.Items() + "\" : \"" + constants.Item() + "\"]})" );
 
@@ -1009,6 +1014,10 @@ public class GuidedDecisionTableWidget extends Composite
             }
         } );
 
+        return grid;
+    }
+
+    private ToolbarMenuButton getToolbarMenuButton() {
         Toolbar tb = new Toolbar();
         Menu menu = new Menu();
         menu.addItem( new Item( constants.AddRow(),
@@ -1149,16 +1158,11 @@ public class GuidedDecisionTableWidget extends Composite
         //        menu.addItem( new com.gwtext.client.widgets.menu.MenuItem( "Move",
         //                                                                   subMenu ) );
 
-        ToolbarMenuButton tbb = new ToolbarMenuButton( constants.Modify(),
-                                                       menu );
+		ToolbarMenuButton tbb = new ToolbarMenuButton(constants.Modify(), menu);
 
-        tb.addButton( tbb );
-        grid.add( tb );
-
-        return grid;
-
+		return tbb;
     }
-
+    
     /**
      * Show a drop down editor, obviously.
      */
