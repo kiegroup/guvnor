@@ -28,7 +28,7 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * @author bauna
  */
 public class WorkingSetConfigData implements PortableObject, Serializable {
-	private static final long serialVersionUID = 510L;
+	private static final long serialVersionUID = 510l;
 
 	public String name;
 	public String description;

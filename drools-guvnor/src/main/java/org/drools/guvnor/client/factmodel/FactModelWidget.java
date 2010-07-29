@@ -69,7 +69,7 @@ public class FactModelWidget extends Composite
     private int                        editingFact       = -1;
     private static Constants           constants         = ((Constants) GWT.create( Constants.class ));
     private static Map<String, String> TYPE_DESCRIPTIONS = new HashMap<String, String>() {
-                                                             private static final long serialVersionUID = 6673195099559934035L;
+                                                             private static final long serialVersionUID = 510l;
                                                              {
                                                                  put( "Integer",
                                                                       constants.WholeNumberInteger() );

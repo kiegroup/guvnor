@@ -36,7 +36,7 @@ import net.sf.webdav.WebDavServletBean;
  *
  */
 public class WebdavServlet extends WebDavServletBean {
-    private static final long serialVersionUID = 5L;
+    private static final long serialVersionUID = 510l;
 
     public void init() throws ServletException {
 

@@ -61,7 +61,7 @@ import org.drools.repository.RulesRepositoryException;
  *            specified file on the server
  */
 public class WorkflowManagerServlet extends AssetFileServlet {
-	private static final long serialVersionUID = 6185939588315646350L;
+	private static final long serialVersionUID = 510l;
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {

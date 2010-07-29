@@ -28,7 +28,7 @@ import java.util.Set;
  *
  */
 public class MultiKeyMap<T> {
-    private static final long       serialVersionUID = -3028001095889963235L;
+    private static final long       serialVersionUID = 510l;
 
     private HashMap<Set<String>, T> map              = new HashMap<Set<String>, T>();
 
@@ -63,7 +63,7 @@ public class MultiKeyMap<T> {
     public T put(final String key,
                  T value) {
         return map.put( new HashSet<String>() {
-                            private static final long serialVersionUID = 6639904539329507948L;
+                            private static final long serialVersionUID = 510l;
                             {
                                 add( key );
                             }

@@ -26,7 +26,7 @@ import org.drools.ide.common.client.modeldriven.FactTypeFilter;
 
 public class SetFactTypeFilter implements FactTypeFilter {
 
-	private static final long serialVersionUID = 501L;
+	private static final long serialVersionUID = 501l;
 	private final Set<String> validFacts;
 
 	public SetFactTypeFilter() {

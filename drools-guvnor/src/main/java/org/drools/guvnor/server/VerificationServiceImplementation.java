@@ -59,7 +59,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
     implements
     VerificationService {
 
-    private static final long          serialVersionUID = -1618598780198053452L;
+    private static final long          serialVersionUID = 510l;
 
     private static final LoggingHelper log              = LoggingHelper.getLogger( ServiceImplementation.class );
 

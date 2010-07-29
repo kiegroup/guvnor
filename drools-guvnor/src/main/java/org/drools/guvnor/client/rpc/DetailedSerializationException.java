@@ -24,7 +24,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * Typically there is a short message and longer message. The longer one is used by support. The shorter one displayed by default.
  */
 public class DetailedSerializationException extends SerializationException {
-    private static final long serialVersionUID = 3971826310143149345L;
+    private static final long serialVersionUID = 510l;
 
     private String longDescription;
 
