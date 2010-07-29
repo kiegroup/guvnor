@@ -180,9 +180,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 		                                                                     "" );
 		                fileName = "ChangeSet.xml";
 		                String xml = "";
-		                xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'\n";
-		                xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'\n";
-		                xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd' >\n";
+		                xml += "<change-set xmlns='http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >\n";
 		                xml += "    <add>\n ";
 		                xml += "        <resource source='" + url + "' type='PKG' />\n";
 		                xml += "    </add>\n";
