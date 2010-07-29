@@ -174,8 +174,8 @@ public class PopupCreator {
 
         box.setSelectedIndex( 0 );
 
-        box.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
+        box.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
                 composite.addConstraint( new SingleFieldConstraint( box.getItemText( box.getSelectedIndex() ) ) );
                 modeller.refreshWidget();
                 popup.hide();
@@ -192,8 +192,8 @@ public class PopupCreator {
                             CompositeFieldConstraint.COMPOSITE_TYPE_OR );
         composites.setSelectedIndex( 0 );
 
-        composites.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
+        composites.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
                 CompositeFieldConstraint comp = new CompositeFieldConstraint();
                 comp.compositeJunctionType = composites.getValue( composites.getSelectedIndex() );
                 composite.addConstraint( comp );

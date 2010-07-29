@@ -1018,7 +1018,6 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private ToolbarMenuButton getToolbarMenuButton() {
-        Toolbar tb = new Toolbar();
         Menu menu = new Menu();
         menu.addItem( new Item( constants.AddRow(),
                                 new BaseItemListenerAdapter() {
