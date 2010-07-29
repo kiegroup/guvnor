@@ -28,7 +28,7 @@ public class VerifyFact
     implements
     Expectation {
 
-    private static final long serialVersionUID = -5838612006486574138L;
+    private static final long serialVersionUID = 510l;
 
     public List<VerifyField>  fieldValues      = new ArrayList<VerifyField>();
     public String             name;

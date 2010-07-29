@@ -24,7 +24,7 @@ public class ActivateRuleFlowGroup
     implements
     Fixture {
 
-    private static final long serialVersionUID = 3884484303169593496L;
+    private static final long serialVersionUID = 510l;
 
     public ActivateRuleFlowGroup() {
     }

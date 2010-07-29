@@ -22,7 +22,7 @@ import java.util.List;
 public class FactData
     implements
     Fixture {
-    private static final long serialVersionUID = 1692174722646380925L;
+    private static final long serialVersionUID = 510l;
 
     /**
      * The type (class)

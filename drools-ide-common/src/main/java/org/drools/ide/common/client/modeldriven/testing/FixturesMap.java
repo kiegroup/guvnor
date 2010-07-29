@@ -22,6 +22,6 @@ public class FixturesMap extends HashMap<String, FixtureList>
     implements
     Fixture {
 
-    private static final long serialVersionUID = -2351122576376545038L;
+    private static final long serialVersionUID = 510l;
 
 }

@@ -26,6 +26,6 @@ import java.util.ArrayList;
 public class FixtureList extends ArrayList<Fixture>
     implements
     Fixture {
-    private static final long serialVersionUID = 44059602278059571L;
+    private static final long serialVersionUID = 510l;
 
 }
