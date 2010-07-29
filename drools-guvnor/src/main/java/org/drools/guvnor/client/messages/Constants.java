@@ -2085,4 +2085,6 @@ public interface Constants
     String CantRemoveThisBlockAsOneOfTheNamesIsBeingUsed();
     
     String FillInColumnWithValue();
+    
+    String LoadTemplateData();
 }

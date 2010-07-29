@@ -54,6 +54,7 @@ public class FormStylePopup {
 
     private Boolean         shadow;
     private Integer         width;
+    private Integer			height;
     private boolean         modal   = true;
     private int             popLeft = -1;
     private int             popTop;
@@ -163,6 +164,10 @@ public class FormStylePopup {
             }
         } );
 
+        if (getHeight() != null) {
+        	this.dialog.setHeight(getHeight());
+        }
+        
         this.dialog.show();
 
     }
@@ -183,5 +188,13 @@ public class FormStylePopup {
     public void setWidth(int i) {
         this.width = new Integer( i );
     }
+
+	public Integer getHeight() {
+		return height;
+	}
+
+	public void setHeight(Integer height) {
+		this.height = height;
+	}
 
 }

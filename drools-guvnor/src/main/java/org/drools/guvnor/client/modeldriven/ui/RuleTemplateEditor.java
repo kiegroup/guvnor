@@ -16,20 +16,22 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
-import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.ArrayReader;
@@ -66,28 +68,30 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 	public RuleTemplateEditor(RuleAsset asset) {
 		model = (TemplateModel) asset.content;
 
-		final TabPanel tPanel = new TabPanel();
+		final VerticalPanel tPanel = new VerticalPanel();
 		tPanel.setWidth("100%");
 		ruleModeller = new RuleModeller(asset, new TemplateModellerWidgetFactory());
-		tPanel.add(ruleModeller, constants.TemplateEditor());
-		tPanel.add(buildTemplateTable(), constants.TemplateData());
 		
-		tPanel.addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>() {
+		tPanel.add(new Button(constants.LoadTemplateData(), new ClickHandler() {
 			
-			public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
-				if (event.getItem() == 1) {
-					Set<String> keySet = new HashSet<String>(model.getTable().keySet());
-					model.putInSync();
-					if (!keySet.equals(model.getTable().keySet()) || model.getRowsCount() == 0) {
-						tPanel.remove(tPanel.getWidgetCount() - 1);
-						tPanel.add(buildTemplateTable(), constants.TemplateData());
+			public void onClick(ClickEvent event) {
+				final FormStylePopup popUp = new FormStylePopup(null, constants.TemplateData(), (int) (Window.getClientWidth() * 0.8), false);
+				popUp.setHeight((int) (Window.getClientHeight() * 0.8));
+				popUp.addAttribute("", buildTemplateTable());
+				Button close = new Button(constants.Close(), new ClickHandler() {
+					public void onClick(ClickEvent event) {
+						popUp.hide();
 					}
-				}
+				});
+				HorizontalPanel pnlClose = new HorizontalPanel();
+				pnlClose.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+				pnlClose.add(close);
+				popUp.addAttribute("", pnlClose);
 				
+				popUp.show();
 			}
-		});
-		
-		tPanel.selectTab(0);
+		}));
+		tPanel.add(ruleModeller);
 		initWidget(tPanel);
 	}
 
@@ -188,7 +192,7 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 				model.setValue(field, rowIndex, (String) newValue);
 			}
 		});
-		grid.setWidth(800);
+		grid.setWidth((int) (Window.getClientWidth() * 0.75));
 		return grid;
 	}
 	
