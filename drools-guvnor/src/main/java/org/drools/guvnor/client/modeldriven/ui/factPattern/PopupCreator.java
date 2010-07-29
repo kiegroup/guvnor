@@ -240,6 +240,9 @@ public class PopupCreator {
         box.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );
+                if ("...".equals(fieldName)) {
+                	return;
+                }
                 String qualifiedName = factType + "." + fieldName;
                 String fieldType = completions.getFieldType( qualifiedName );
                 pattern.addConstraint( new SingleFieldConstraint( fieldName,
