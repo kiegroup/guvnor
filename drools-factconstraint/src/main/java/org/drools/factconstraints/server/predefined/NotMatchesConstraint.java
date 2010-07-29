@@ -26,7 +26,7 @@ import org.drools.factconstraints.server.DefaultFieldConstraintImpl;
 public class NotMatchesConstraint extends DefaultFieldConstraintImpl {
 
 	public static final String NOT_MATCHES_ARGUMENT = "matches";
-	private static final long serialVersionUID = 501L;
+	private static final long serialVersionUID = 501l;
 	public static final String NAME = "NotMatches";
 
 	@Override

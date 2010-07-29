@@ -29,7 +29,7 @@ import org.drools.factconstraints.server.DefaultFieldConstraintImpl;
  * @author esteban.aliverti@gmail.com
  */
 public class NotNullConstraint extends DefaultFieldConstraintImpl {
-	private static final long serialVersionUID = 501L;
+	private static final long serialVersionUID = 501l;
 	public static final String NAME = "NotNull";
 
 	public NotNullConstraint() {

@@ -24,7 +24,7 @@ import org.drools.factconstraints.client.ConstraintConfiguration;
 
 public class SimpleConstraintConfigurationImpl implements ConstraintConfiguration {
 
-	private static final long serialVersionUID = 501L;
+	private static final long serialVersionUID = 501l;
 	private Map<String, String> args = new HashMap<String, String>();
 	private String constraintName = null;
 	private String factType;

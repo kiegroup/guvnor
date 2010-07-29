@@ -30,7 +30,7 @@ import org.drools.factconstraints.client.ConstraintConfiguration;
  */
 public abstract class DefaultMultiRulesConstraintImpl extends DefaultFieldConstraintImpl {
 
-	private static final long serialVersionUID = 501L;
+	private static final long serialVersionUID = 501l;
 	protected static final String RULE_COUNT = "ruleCount";
 	
     protected void resetRuleCount(Map<String, Object> context){

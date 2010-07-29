@@ -30,7 +30,7 @@ import org.drools.factconstraints.server.Constraint;
  */
 public class RangeConstraint implements Constraint {
 
-    private static final long serialVersionUID = 501L;
+    private static final long serialVersionUID = 501l;
     public static final String NAME = "RangeConstraint";
     public static final String RANGE_CONSTRAINT_MIN = "Min.value";
     public static final String RANGE_CONSTRAINT_MAX = "Max.value";

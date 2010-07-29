@@ -33,7 +33,7 @@ import org.drools.verifier.report.components.Severity;
  */
 public abstract class DefaultFieldConstraintImpl implements Constraint {
 
-	private static final long serialVersionUID = 501L;
+	private static final long serialVersionUID = 501l;
 	private long ruleNum = 0;
 
     public static final List<Operator> supportedOperators = new ArrayList<Operator>();
