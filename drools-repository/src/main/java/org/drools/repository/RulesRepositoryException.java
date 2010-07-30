@@ -27,7 +27,7 @@ public class RulesRepositoryException extends RuntimeException {
     /**
      * version id for serialization purposes
      */
-    private static final long serialVersionUID = 400L;
+    private static final long serialVersionUID = 510l;
 
     /**
      * Default constructor. constructs a RulesRepositoryException object with null as its detail 
