@@ -40,11 +40,15 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.*;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.widgets.event.KeyListener;
-import com.gwtext.client.widgets.form.TextField;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 
 /**
  * Used for logging in, obviously !
@@ -61,47 +65,39 @@ public class LoginWidget {
 	public void show() {
 		final FormStylePopup pop = new FormStylePopup("images/login.gif", messages.Login());
 
-		final TextField userName = new TextField("username");
+		final TextBox userName = new TextBox();
 		pop.addAttribute(messages.UserName(), userName);
-
-		final TextField password = new TextField("password" );
-		password.setPassword(true);
+		final PasswordTextBox password = new PasswordTextBox();
 		pop.addAttribute(messages.Password(), password);
 
-        KeyListener kl = new KeyListener() {
-          	public void onKey(int key, EventObject e) {
-				if (key == KeyboardListener.KEY_ENTER) {
-                    doLogin(userName, password, pop);
-                }
-				
-            }
-        };
-
-        userName.addKeyListener(KeyboardListener.KEY_ENTER, kl);
-        password.addKeyListener(KeyboardListener.KEY_ENTER, kl);
-
-		Button b = new Button(messages.OK());
-
-		b.addClickListener(new ClickListener() {
-			public void onClick(Widget arg0) {
-                doLogin(userName, password, pop);
+		KeyPressHandler kph = new KeyPressHandler() {
+			public void onKeyPress(KeyPressEvent event) {
+				if (KeyCodes.KEY_ENTER == event.getNativeEvent().getKeyCode()) {
+					doLogin(userName, password, pop);
+				}
 			}
+		};
+	    userName.addKeyPressHandler(kph);
+	    password.addKeyPressHandler(kph);
+
+	    Button b = new Button(messages.OK());
+		b.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+                doLogin(userName, password, pop);
+			}			
 		});
 		
 		pop.addAttribute("", b);
-    //
 
         pop.setAfterShow(new Command() {
             public void execute() {
-                userName.focus(true,100);                    
-            	
+                userName.setFocus(true);             
             }
         });
-		pop.show();
-		
+		pop.show();		
 	}
 
-    private void doLogin(final TextField userName, TextField password, final FormStylePopup pop) {
+    private void doLogin(final TextBox userName, PasswordTextBox password, final FormStylePopup pop) {
         LoadingPopup.showMessage(messages.Authenticating());
         RepositoryServiceFactory.login( userName.getText(), password.getText(), new GenericCallback() {
             public void onSuccess(Object o) {
