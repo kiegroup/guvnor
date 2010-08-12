@@ -218,12 +218,12 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                 }
                 if ( editingCol.constraintValueType != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
                     if ( null == editingCol.factField || "".equals( editingCol.factField ) ) {
-                        Window.alert( constants.PleaseSelectOrEnterField() );
-                        return;
+                        Window.alert(constants.PleaseSelectOrEnterField());
+                    	return;
                     }
                     if ( null == editingCol.operator || "".equals( editingCol.operator ) ) {
-                        Window.alert( constants.PleaseSelectAnOperator() );
-                        return;
+                    	// Operator field optional
+                        Window.alert( constants.NotifyNoSelectedOperator() );
                     }
 
                 }

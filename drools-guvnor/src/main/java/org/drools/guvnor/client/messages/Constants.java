@@ -1749,8 +1749,12 @@ public interface Constants
     String HideThisColumn();
 
     String PleaseSelectOrEnterField();
+    
+    String NotifyNoSelectedOrEnteredField();
 
     String PleaseSelectAnOperator();
+    
+    String NotifyNoSelectedOperator();
 
     String January();
 
