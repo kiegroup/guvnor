@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.core.EventObject;
+import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarButton;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
@@ -87,7 +88,7 @@ public class ArchivedAssetManager extends Composite {
         final ToolbarButton restorePackage = new ToolbarButton();
         restorePackage.addListener(new ButtonListenerAdapter() {
         			public void onClick(
-        					com.gwtext.client.widgets.Button button,
+        					Button button,
         					EventObject e) {
         				restorePackage(packages.getValue(packages.getSelectedIndex()));
         			}
@@ -103,7 +104,7 @@ public class ArchivedAssetManager extends Composite {
         delPackage.setText(constants.PermanentlyDeletePackage());
         delPackage.addListener(new ButtonListenerAdapter() {
         			public void onClick(
-        					com.gwtext.client.widgets.Button button,
+        					Button button,
         					EventObject e) {
         				if (Window.confirm(constants.AreYouSurePackageDelete())) {
         					deletePackage(packages.getValue(packages.getSelectedIndex()));
@@ -127,7 +128,7 @@ public class ArchivedAssetManager extends Composite {
         restoreAsset.setText(constants.RestoreSelectedAsset());
         tb.addButton(restoreAsset);
         restoreAsset.addListener(new ButtonListenerAdapter() {
-        			public void onClick(com.gwtext.client.widgets.Button button, EventObject e) {
+        			public void onClick(Button button, EventObject e) {
                     	if (grid.getSelectedRowUUIDs() == null) {
                     		Window.alert(constants.PleaseSelectAnItemToRestore());
                     		return;
@@ -149,7 +150,7 @@ public class ArchivedAssetManager extends Composite {
         deleteAsset.addListener(
         		new ButtonListenerAdapter() {
         			public void onClick(
-        					com.gwtext.client.widgets.Button button,
+        					Button button,
         					EventObject e) {
                     	if (grid.getSelectedRowUUIDs() == null) {
                     		Window.alert(constants.PleaseSelectAnItemToPermanentlyDelete());

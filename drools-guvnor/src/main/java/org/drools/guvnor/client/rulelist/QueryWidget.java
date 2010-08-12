@@ -37,7 +37,6 @@ import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
 import com.gwtext.client.util.Format;
 import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.form.DateField;
 
 public class QueryWidget extends Composite {
 

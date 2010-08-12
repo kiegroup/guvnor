@@ -42,7 +42,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.util.Format;
-import com.gwtext.client.widgets.*;
+import com.gwtext.client.widgets.QuickTipsConfig;
+import com.gwtext.client.widgets.Toolbar;
+import com.gwtext.client.widgets.ToolbarButton;
+import com.gwtext.client.widgets.ToolbarMenuButton;
+import com.gwtext.client.widgets.ToolbarTextItem;
 import com.gwtext.client.widgets.menu.Menu;
 import com.gwtext.client.widgets.menu.Item;
 import com.gwtext.client.widgets.menu.BaseItem;
@@ -152,7 +156,7 @@ public class ActionToolbar extends Composite {
         save.setText( constants.SaveChanges() );
         save.setTooltip( getTip( constants.CommitAnyChangesForThisAsset() ) );
         save.addListener( new ButtonListenerAdapter() {
-            public void onClick(com.gwtext.client.widgets.Button button,
+            public void onClick(Button button,
                                 EventObject e) {
                 verifyAndDoCheckinConfirm( button,
                                            false );
