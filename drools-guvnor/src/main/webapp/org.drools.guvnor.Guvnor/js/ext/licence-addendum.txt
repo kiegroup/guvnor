@@ -1,0 +1,15 @@
+  Ext JS, LLC has licensed the accompanying version of the Ext
+  JavaScript library under the terms of version 3 of the GNU Lesser
+  General Public License (LGPLv3).  LGPLv3 incorporates the terms and
+  conditions of version 3 of the GNU General Public License (GPLv3).
+  In accordance with section 7 of GPLv3, Ext JS has expressly
+  authorized its licensees to remove terms coupled to LGPLv3 license
+  notices that are "further restrictions" within the meaning of GPLv3.
+
+  Red Hat has opted to preserve the text of the Ext license notice in
+  its entirety to clarify the provenance of the code.  However, to the
+  extent that any statements in the Ext LGPLv3 license notice are
+  effectively "further restrictions", Red Hat regards those
+  restrictions as constructively removed and therefore inapplicable to
+  this copy of the Ext library and to all subsequent copies and
+  modified versions made from this copy.
