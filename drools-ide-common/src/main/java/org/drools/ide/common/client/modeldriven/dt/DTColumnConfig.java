@@ -35,5 +35,10 @@ public class DTColumnConfig implements PortableObject {
      * to hide the column (eg if it has a mandatory default).
      */
     public boolean hideColumn = false;
+    
+    /**
+     * to use the row number as number for the salience attribute.
+     */
+    public boolean useRowNumber = false;
 
 }

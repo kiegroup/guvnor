@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.decisiontable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -513,6 +514,19 @@ public class GuidedDecisionTableWidget extends Composite
                     at.defaultValue = defaultValue.getText();
                 }
             } );
+            // GUVNOR-605
+            if(at.attr.equals(RuleAttributeWidget.SALIENCE_ATTR)) {
+            	hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
+            	final CheckBox useRowNumber = new CheckBox();
+            	useRowNumber.setChecked(at.useRowNumber);
+            	useRowNumber.addClickListener( new ClickListener() {
+                    public void onClick(Widget sender) {
+                        at.useRowNumber = useRowNumber.isChecked();
+                    }
+                } );
+                hp.add( useRowNumber );
+            	hp.add( new SmallLabel( constants.UseRowNumber() ) );       	
+            }
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) ); //NON-NLS
             hp.add( new SmallLabel( constants.DefaultValue() ) );
             hp.add( defaultValue );
@@ -1026,8 +1040,9 @@ public class GuidedDecisionTableWidget extends Composite
                                         Record r = recordDef.createRecord( new Object[recordDef.getFields().length] );
                                         r.set( "num",
                                                store.getRecords().length + 1 ); //NON-NLS
-
-                                        store.add( r );
+                                        store.add( r );                              
+                                        // GUVNOR-605
+                                        renumberSalience(store.getRecords());
                                     }
                                 } ) );
 
@@ -1052,7 +1067,6 @@ public class GuidedDecisionTableWidget extends Composite
                                                                    num ); //NON-NLS
                                                     temp.set( "num",
                                                               num + 1 ); //NON-NLS
-
                                                     store.addSorted( newRecord );
 
                                                 } else if ( num > selected ) {
@@ -1060,6 +1074,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                               num + 1 ); //NON-NLS
                                                 }
                                             }
+                                            // GUVNOR-605
+                                            renumberSalience(store.getRecords());
                                         } else {
                                             ErrorPopup.showMessage( constants.PleaseSelectARow() );
                                         }
@@ -1076,6 +1092,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                 store.remove( selected[i] );
                                             }
                                             renumber( store.getRecords() );
+                                            // GUVNOR-605
+                                            renumberSalience(store.getRecords());
                                         }
                                     }
                                 } ) );
@@ -1094,6 +1112,8 @@ public class GuidedDecisionTableWidget extends Composite
                                             store.add( r );
                                         }
                                         renumber( store.getRecords() );
+                                        // GUVNOR-605
+                                        renumberSalience(store.getRecords());
                                     }
                                 } ) );
 
@@ -1234,6 +1254,23 @@ public class GuidedDecisionTableWidget extends Composite
             rs[i].set( "num",
                        "" + (i + 1) ); //NON-NLS
         }
+    }
+    
+    // GUVNOR-605
+    private void renumberSalience(Record[] rs) {
+    	List<AttributeCol> attcols =  dt.attributeCols;
+    	for(AttributeCol ac : attcols) {
+    		if(ac.useRowNumber == true) {
+    			for(int i=0; i<rs.length;i++) {
+    	    		Record nextrecord = rs[i];
+    	    		List<String> allFields = Arrays.asList(nextrecord.getFields());
+    	        	if(allFields.contains("salience")) {
+    	        		rs[i].set( "salience", "" + (i + 1) ); //NON-NLS
+    	        	}
+    	    	}
+    		}
+    		break;
+    	}
     }
 
     /**

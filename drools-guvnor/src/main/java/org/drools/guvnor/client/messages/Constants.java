@@ -613,7 +613,9 @@ public interface Constants
     String AddAnOptionToTheRule();
 
     String AddMetadataToTheRule();
-
+    
+    String UseRowNumber();
+    
     String Metadata1();
 
     String Attribute();
