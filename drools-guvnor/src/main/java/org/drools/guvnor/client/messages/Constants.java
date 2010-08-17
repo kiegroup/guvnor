@@ -616,6 +616,8 @@ public interface Constants
     
     String UseRowNumber();
     
+    String ReverseOrder();
+    
     String Metadata1();
 
     String Attribute();

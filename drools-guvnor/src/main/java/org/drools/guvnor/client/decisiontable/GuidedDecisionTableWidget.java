@@ -516,7 +516,7 @@ public class GuidedDecisionTableWidget extends Composite
             } );
             // GUVNOR-605
             if(at.attr.equals(RuleAttributeWidget.SALIENCE_ATTR)) {
-            	hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
+            	hp.add( new HTML( "&nbsp;&nbsp;" ) );
             	final CheckBox useRowNumber = new CheckBox();
             	useRowNumber.setChecked(at.useRowNumber);
             	useRowNumber.addClickListener( new ClickListener() {
@@ -525,7 +525,18 @@ public class GuidedDecisionTableWidget extends Composite
                     }
                 } );
                 hp.add( useRowNumber );
-            	hp.add( new SmallLabel( constants.UseRowNumber() ) );       	
+            	hp.add( new SmallLabel( constants.UseRowNumber() ) );
+            	hp.add( new SmallLabel( "(" ) );
+            	final CheckBox reverseOrder = new CheckBox();
+            	reverseOrder.setChecked(at.reverseOrder);
+            	reverseOrder.addClickListener( new ClickListener() {
+                    public void onClick(Widget sender) {
+                        at.reverseOrder = reverseOrder.isChecked();
+                    }
+                } );
+            	hp.add(reverseOrder);
+            	hp.add( new SmallLabel( constants.ReverseOrder() ) );
+            	hp.add( new SmallLabel( ")" ) );
             }
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) ); //NON-NLS
             hp.add( new SmallLabel( constants.DefaultValue() ) );
@@ -1260,12 +1271,16 @@ public class GuidedDecisionTableWidget extends Composite
     private void renumberSalience(Record[] rs) {
     	List<AttributeCol> attcols =  dt.attributeCols;
     	for(AttributeCol ac : attcols) {
-    		if(ac.useRowNumber == true) {
+    		if(ac.useRowNumber) {
     			for(int i=0; i<rs.length;i++) {
     	    		Record nextrecord = rs[i];
     	    		List<String> allFields = Arrays.asList(nextrecord.getFields());
     	        	if(allFields.contains("salience")) {
-    	        		rs[i].set( "salience", "" + (i + 1) ); //NON-NLS
+    	        		if(ac.reverseOrder) {
+    	        			rs[i].set( "salience", "" + (rs.length - i) ); //NON-NLS
+    	        		} else {
+    	        		   rs[i].set( "salience", "" + (i + 1) ); //NON-NLS
+    	        		}
     	        	}
     	    	}
     		}

@@ -65,7 +65,7 @@ public class RuleAttributeWidget extends Composite {
     /**
      * These are the names of all of the rule attributes for this widget
      */
-    public static final String SALIENCE_ATTR = "salience";
+    public static final String SALIENCE_ATTR = "salience"; // needs to be public
     private static final String ENABLED_ATTR = "enabled";
     private static final String DATE_EFFECTIVE_ATTR = "date-effective";
     private static final String DATE_EXPIRES_ATTR = "date-expires";
