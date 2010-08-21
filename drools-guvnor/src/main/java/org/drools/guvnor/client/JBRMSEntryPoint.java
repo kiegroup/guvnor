@@ -25,10 +25,13 @@ import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.HistoryListener;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.gwtext.client.util.CSS;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.QuickTips;
@@ -42,9 +45,7 @@ import com.gwtext.client.widgets.form.Field;
  * If you hadn't noticed, this is using GWT from google. Refer to GWT docs
  * if GWT is new to you (it is quite a different way of building web apps).
  */
-public class JBRMSEntryPoint
-    implements
-    EntryPoint, HistoryListener {
+public class JBRMSEntryPoint implements EntryPoint {
 
     private LoggedInUserInfo loggedInUserInfo;
 
@@ -55,13 +56,11 @@ public class JBRMSEntryPoint
         loggedInUserInfo = new LoggedInUserInfo();
         loggedInUserInfo.setVisible(false);
         checkLoggedIn();
-        History.addHistoryListener(this);
     }
 
 	private Panel createMain(Capabilities caps) {
 		return (new ExplorerLayoutManager(loggedInUserInfo, caps)).getBaseLayout();
 	}
-
 
     /**
      * Check if user is logged in, if not, then show prompt.
@@ -74,7 +73,6 @@ public class JBRMSEntryPoint
                 	showMain();
                     loggedInUserInfo.setUserName( ctx.userName );
                     loggedInUserInfo.setVisible( true );
-
                 } else {
                 	final LoginWidget lw = new LoginWidget();
                 	lw.setLoggedInEvent(new Command() {
@@ -87,8 +85,6 @@ public class JBRMSEntryPoint
                 	lw.show();
                 }
             }
-
-
         } );
     }
 
@@ -97,17 +93,18 @@ public class JBRMSEntryPoint
 		RepositoryServiceFactory.getSecurityService().getUserCapabilities(new GenericCallback<Capabilities>() {
 			public void onSuccess(Capabilities cp) {
 				Window.setStatus(" ");
+				//RootLayoutPanel.get().add(createMain(cp));
 				new Viewport(createMain(cp));
 
 			}
 		});
+		
+	    // Setup a history handler to reselect the associate menu item
+	    final ValueChangeHandler<String> historyHandler = new ValueChangeHandler<String>() {
+	      public void onValueChange(ValueChangeEvent<String> event) {
+              //TODO: Handle History
+	      }
+	    };
+	    History.addValueChangeHandler(historyHandler);		
 	}
-
-	public void onHistoryChanged(String a) {
-
-	}
-
-
-
-
 }
