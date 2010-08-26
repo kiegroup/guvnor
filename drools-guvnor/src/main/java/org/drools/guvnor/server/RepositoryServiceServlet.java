@@ -17,6 +17,7 @@
 package org.drools.guvnor.server;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
@@ -364,6 +365,8 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
          return getService().compareSnapshots( p0,  p1,  p2);
     }
 
-
+	public String processTemplate(String p0, Map<String, Object> p1) {
+		return getService().processTemplate(p0, p1);
+	}
 
 }

@@ -22,7 +22,9 @@ import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectOutput;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +48,7 @@ import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -149,6 +152,10 @@ import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+
+import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.Template;
 
 
 /**
@@ -2889,4 +2896,22 @@ public class ServiceImplementation
         diffs.diffs = list.toArray( new SnapshotDiff[list.size()] );
         return diffs;
     }
+    
+    /**
+     * Load and process the repository configuration templates.
+     */
+     public String processTemplate(String name, Map<String, Object> data) {
+    	 try {
+ 			Configuration cfg = new Configuration();
+ 			cfg.setObjectWrapper(new DefaultObjectWrapper());
+ 			cfg.setTemplateUpdateDelay(0);
+
+ 			Template temp = new Template(name, new InputStreamReader(ServiceImplementation.class.getResourceAsStream("/repoconfig/" + name + ".xml")), cfg);	
+ 			StringWriter strw = new StringWriter();
+ 			temp.process(data, strw);
+ 			return StringEscapeUtils.escapeXml(strw.toString());
+ 		} catch (Exception e) {
+ 			return "";
+ 		}
+     }
 }

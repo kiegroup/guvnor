@@ -2095,4 +2095,40 @@ public interface Constants
     String FillInColumnWithValue();
     
     String LoadTemplateData();
+    
+    String RepositoryConfiguration();
+    
+    String RepositoryConfig();
+    
+    String ManageRepositoryConfig();
+    
+    String ManageRepositoryConfigDesc();
+    
+    String SelectRdbmsType();
+    
+    String UseJndi();
+    
+    String PleaseSelectRdbmsType();
+    
+    String PleaseEnterDriver();
+    
+    String PleaseEnterUrl();
+    
+    String PleaseEnterUserName();
+    
+    String PleaseEnterPassword();
+    
+    String PleaseEnterJndiName();
+    
+    String GenerateRepositoryConfiguration();
+    
+    String RepositoryXml();
+    
+    String UnableToProcessRepositoryConfiguration();
+    
+    String SaveRepo();
+    
+    String SaveTheRepositoryConfig();
+    
+    String SaveRepoInfo();
 }

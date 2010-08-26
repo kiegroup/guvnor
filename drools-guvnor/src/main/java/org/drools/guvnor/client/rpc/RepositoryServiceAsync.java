@@ -15,6 +15,8 @@
  */
 
 package org.drools.guvnor.client.rpc;
+
+import java.util.Map;
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -126,4 +128,5 @@ public interface RepositoryServiceAsync {
 	void subscribe(com.google.gwt.user.client.rpc.AsyncCallback<java.util.List<org.drools.guvnor.client.rpc.PushResponse>> arg1);
 	void unLockAsset(java.lang.String uuid, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
 	void updateUserPermissions(java.lang.String userName, java.util.Map<java.lang.String, java.util.List<java.lang.String>> perms, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg3);
+	void processTemplate(java.lang.String name, java.util.Map<String, Object> data, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg4);
 }

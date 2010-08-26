@@ -21,6 +21,7 @@ import org.drools.guvnor.client.admin.BackupManager;
 import org.drools.guvnor.client.admin.CategoryManager;
 import org.drools.guvnor.client.admin.LogViewer;
 import org.drools.guvnor.client.admin.PermissionViewer;
+import org.drools.guvnor.client.admin.RepoConfigManager;
 import org.drools.guvnor.client.admin.StateManager;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
@@ -97,12 +98,17 @@ public class AdministrationPanel extends GenericPanel {
 					aboutPop.addAttribute(constants.Version() + ":", aboutFrame);
 					aboutPop.show();
 					break;
-                                    case 7:
-                                        if (!centertabbedPanel.showIfOpen("ruleVerifierManager"))
-						centertabbedPanel.addTab(constants.RulesVerificationManager(),
-								true, new RuleVerifierManager(),
-								"ruleVerifierManager");
-                                        break;
+                 case 7:
+                	 if (!centertabbedPanel.showIfOpen("ruleVerifierManager"))
+                		    centertabbedPanel.addTab(constants.RulesVerificationManager(),
+						     true, new RuleVerifierManager(),
+							 "ruleVerifierManager");
+                      break;
+                  case 8:
+                	  if (!centertabbedPanel.showIfOpen("repoconfig")) //NON-NLS
+                    	   centertabbedPanel.addTab(constants.RepositoryConfig(), true,
+                    	   new RepoConfigManager(), "repoconfig");
+                  break;
 				}
 			}
 		});

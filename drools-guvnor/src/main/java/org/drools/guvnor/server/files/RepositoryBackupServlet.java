@@ -17,6 +17,7 @@
 package org.drools.guvnor.server.files;
 
 
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -52,25 +53,31 @@ public class RepositoryBackupServlet extends RepositoryServlet {
 	protected void doPost(final HttpServletRequest request,
 			final HttpServletResponse response) throws ServletException, IOException {
 
-        doAuthorizedAction(request, response, new A() {
+		doAuthorizedAction(request, response, new A() {
 			public void a() throws Exception {
 
-				response.setContentType("text/html");
-				FormData uploadItem = FileManagerUtils.getFormData(request);
+				String repoConfig = request.getParameter("repoConfig");
+				
+				if(repoConfig != null) {
+					processExportRepoConfig(response, repoConfig);
+				} else {	
+					response.setContentType("text/html");
+					FormData uploadItem = FileManagerUtils.getFormData(request);
 
-				String packageImport = request.getParameter("packageImport");
+					String packageImport = request.getParameter("packageImport");
 
-				if ("true".equals(packageImport)) {
-					boolean importAsNew = "true".equals(request
-							.getParameter("importAsNew"));
+					if ("true".equals(packageImport)) {
+						boolean importAsNew = "true".equals(request
+								.getParameter("importAsNew"));
 
-					response.getWriter().write(
-							processImportPackage(uploadItem.getFile().getInputStream(),
-									importAsNew));
-				} else {
-					response.getWriter().write(
-							processImportRepository(uploadItem.getFile()
-									.getInputStream()));
+						response.getWriter().write(
+								processImportPackage(uploadItem.getFile().getInputStream(),
+										importAsNew));
+					} else {
+						response.getWriter().write(
+								processImportRepository(uploadItem.getFile()
+										.getInputStream()));
+					}
 				}
 			}
         });
@@ -99,6 +106,18 @@ public class RepositoryBackupServlet extends RepositoryServlet {
 		}
 			}
 	        });
+	}
+	
+	private void processExportRepoConfig(HttpServletResponse res, String repoConfig) 
+		    throws IOException {
+		log.debug("Exporting Repository Config...");
+		res.setContentType("application/x-download");
+		res.setHeader("Content-Disposition",
+				"attachment; filename=repository.xml;");
+		log.debug("Starting to process repository configuration");
+		res.getOutputStream().write(repoConfig.getBytes());
+		res.getOutputStream().flush();
+        log.debug("Done exporting repository config!");
 	}
 
 	private void processExportRepositoryDownload(HttpServletResponse res)
