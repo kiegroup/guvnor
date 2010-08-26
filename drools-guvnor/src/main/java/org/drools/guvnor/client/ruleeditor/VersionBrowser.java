@@ -46,6 +46,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.table.DataModel;
+import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
@@ -62,7 +63,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.core.client.GWT;
-import com.gwtext.client.util.Format;
 
 /**
  * This widget shows a list of versions.

@@ -37,6 +37,7 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
@@ -47,7 +48,6 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
-import com.gwtext.client.util.Format;
 
 /**
  * This provides a popup for editing a category (name etc).

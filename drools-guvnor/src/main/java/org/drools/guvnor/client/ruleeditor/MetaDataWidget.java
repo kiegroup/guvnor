@@ -1,21 +1,3 @@
-/**
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.drools.guvnor.client.ruleeditor;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -32,6 +14,8 @@ package org.drools.guvnor.client.ruleeditor;
  * limitations under the License.
  */
 
+package org.drools.guvnor.client.ruleeditor;
+
 import java.util.Date;
 
 import org.drools.guvnor.client.common.*;
@@ -40,6 +24,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
@@ -55,7 +40,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.util.Format;
 import com.gwtext.client.widgets.form.FormPanel;
 import com.gwtext.client.widgets.form.event.FormPanelListener;
 import com.gwtext.client.widgets.form.event.FormPanelListenerAdapter;

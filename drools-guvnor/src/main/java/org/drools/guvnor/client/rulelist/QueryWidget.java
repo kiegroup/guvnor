@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,6 +28,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.Preferences;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerLabel;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
@@ -35,7 +36,6 @@ import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
-import com.gwtext.client.util.Format;
 import com.gwtext.client.widgets.Panel;
 
 public class QueryWidget extends Composite {
