@@ -47,11 +47,8 @@ import org.drools.concurrent.ExecutorService;
 import org.drools.event.AgendaEventListener;
 import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
-import org.drools.event.RuleFlowEventListener;
-import org.drools.event.RuleFlowEventSupport;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.process.instance.ProcessInstance;
 import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.WorkItemManager;
 import org.drools.process.instance.event.SignalManager;
@@ -69,6 +66,8 @@ import org.drools.runtime.ExitPoint;
 import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.impl.ExecutionResultImpl;
+import org.drools.runtime.process.InternalProcessRuntime;
+import org.drools.runtime.process.ProcessInstance;
 import org.drools.spi.Activation;
 import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
@@ -262,11 +261,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public void setRuleFlowEventSupport(RuleFlowEventSupport ruleFlowEventSupport) {
-        // TODO Auto-generated method stub
-        
-    }
-
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport) {
         // TODO Auto-generated method stub
         
@@ -440,17 +434,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public void addEventListener(RuleFlowEventListener listener) {
-        // TODO Auto-generated method stub
-        
-    }
-
     public List getAgendaEventListeners() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public List getRuleFlowEventListeners() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -466,11 +450,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public void removeEventListener(AgendaEventListener listener) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public void removeEventListener(RuleFlowEventListener listener) {
         // TODO Auto-generated method stub
         
     }
@@ -658,6 +637,11 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
 	public Map<String, Channel> getChannels() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public InternalProcessRuntime getProcessRuntime() {
 		// TODO Auto-generated method stub
 		return null;
 	}
