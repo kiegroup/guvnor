@@ -19,44 +19,43 @@ package org.drools.guvnor.client.util;
 /**
  * 
  * @author rikkola
- *
+ * 
  */
 public class Format {
 
-    public static String format(String text,
-                                String... strings) {
+	public static String format(String text, String... strings) {
 
-        StringBuilder result = new StringBuilder( text );
+		StringBuilder result = new StringBuilder(text);
 
-        for ( int i = 0; i < strings.length; i++ ) {
-            String string = strings[i];
-            String placeKeeper = "{" + i + "}";
+		for (int i = 0; i < strings.length; i++) {
+			String string = strings[i];
+			String placeKeeper = "{" + i + "}";
 
-            int start = result.indexOf( placeKeeper );
-            int end = start + placeKeeper.length();
+			int start = result.indexOf(placeKeeper);
+			if (start == -1) {
+				start = 0;
+			} else {
+				int end = start + placeKeeper.length();
+				result.replace(start, end, string);
+			}
+			
+		}
 
-            result.replace( start,
-                            end,
-                            string );
-        }
+		return result.toString();
+	}
 
-        return result.toString();
-    }
+	public static String format(String text, int... ints) {
+		return format(text, toStringArray(ints));
+	}
 
-    public static String format(String text,
-                                int... ints) {
-        return format( text,
-                       toStringArray( ints ) );
-    }
+	private static String[] toStringArray(int[] intArray) {
+		String[] result = new String[intArray.length];
 
-    private static String[] toStringArray(int[] intArray) {
-        String[] result = new String[intArray.length];
+		for (int i = 0; i < intArray.length; i++) {
+			result[i] = String.valueOf(intArray[i]);
 
-        for ( int i = 0; i < intArray.length; i++ ) {
-            result[i] = String.valueOf( intArray[i] );
+		}
 
-        }
-
-        return result;
-    }
+		return result;
+	}
 }

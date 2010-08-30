@@ -21,7 +21,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 
 /**
- * ­
+ * ï¿½
  * @author rikkola
  *
  */
@@ -101,5 +101,16 @@ public class FormatTest {
 
         Assert.assertEquals( "Hello, this test called Toni was created by {2}",
                              result );
+    }
+    @Test
+    public void FormatNotIndicated() {
+        String test = "number:";
+
+        String result = Format.format( test,
+                                       "tt" );
+
+        Assert.assertEquals( "number:",
+                             result );
+
     }
 }
