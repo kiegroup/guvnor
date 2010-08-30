@@ -622,4 +622,6 @@ public interface RepositoryService
      * Load and process the repository configuration templates.
      */
      public String processTemplate(String name, Map<String, Object> data);
+     
+     public Boolean isHostedMode();
 }

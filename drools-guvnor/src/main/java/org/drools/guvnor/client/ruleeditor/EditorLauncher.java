@@ -37,6 +37,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.DefaultContentUploadEditor;
+import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.decisiontable.DecisionTableXLSWidget;
 import org.drools.guvnor.client.decisiontable.GuidedDecisionTableWidget;
@@ -47,6 +48,8 @@ import org.drools.guvnor.client.modeldriven.ui.RuleModellerWidgetFactory;
 import org.drools.guvnor.client.packages.ModelAttachmentFileWidget;
 import org.drools.guvnor.client.processeditor.BusinessProcessEditor;
 import org.drools.guvnor.client.qa.testscenarios.ScenarioWidget;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -67,6 +70,18 @@ import org.drools.guvnor.client.modeldriven.ui.RuleTemplateEditor;
 public class EditorLauncher {
 
     public static final Map<String, String> TYPE_IMAGES = getTypeImages();
+    private static RepositoryServiceAsync SERVICE = RepositoryServiceFactory.getService();
+    public static Boolean HOSTED_MODE = Boolean.FALSE;
+    
+    static {
+    	SERVICE.isHostedMode( 
+    			new GenericCallback<Boolean>() {
+    	        	public void onSuccess(Boolean result) {
+    	        		if(result.booleanValue()) {
+    	        			HOSTED_MODE = Boolean.TRUE;
+    	        		}
+    	        }});
+    }
 
     /**
      * This will return the appropriate viewer for the asset.

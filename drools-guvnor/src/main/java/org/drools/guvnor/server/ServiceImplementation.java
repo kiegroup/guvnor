@@ -2914,4 +2914,12 @@ public class ServiceImplementation
  			return "";
  		}
      }
+     
+     /**
+      * Check to see if app context is active (not in hosted)
+      */
+     public Boolean isHostedMode() {
+    	 Boolean hm = Contexts.isApplicationContextActive() ? Boolean.FALSE : Boolean.TRUE;
+    	 return hm;
+     }
 }

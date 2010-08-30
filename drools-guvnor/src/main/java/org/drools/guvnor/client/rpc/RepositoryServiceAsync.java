@@ -129,4 +129,5 @@ public interface RepositoryServiceAsync {
 	void unLockAsset(java.lang.String uuid, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
 	void updateUserPermissions(java.lang.String userName, java.util.Map<java.lang.String, java.util.List<java.lang.String>> perms, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg3);
 	void processTemplate(java.lang.String name, java.util.Map<String, Object> data, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg4);
+	void isHostedMode(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg1);
 }

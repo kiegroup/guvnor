@@ -368,5 +368,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 	public String processTemplate(String p0, Map<String, Object> p1) {
 		return getService().processTemplate(p0, p1);
 	}
+	
+	public Boolean isHostedMode() {
+		return getService().isHostedMode();
+	}
 
 }

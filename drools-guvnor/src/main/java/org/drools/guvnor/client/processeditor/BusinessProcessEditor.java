@@ -17,8 +17,12 @@
 package org.drools.guvnor.client.processeditor;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
+import org.drools.guvnor.client.ruleeditor.EditorLauncher;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
 import com.google.gwt.dom.client.Document;
@@ -42,8 +46,16 @@ public class BusinessProcessEditor extends DirtyableComposite implements SaveEve
         initWidgets();
     }
     
-    protected void initWidgets() {
-        String name = "/designer/editor";
+    private void initWidgets() {
+    	String name;
+    	if(EditorLauncher.HOSTED_MODE.booleanValue()) {
+    		// THIS IS A HACK TO GET DESIGNER WORKING ON HOSTED MODE
+    		// I will add ability to input where oryx designer is 
+    		// available in the admin section soon
+    		name = "http://localhost:8080/designer/editor";
+    	} else {
+    		name = "/designer/editor"; 
+    	}
         name += "?uuid=" + modelUUID;
         frame = new Frame(name);
         frame.getElement().setAttribute("domain", Document.get().getDomain());
