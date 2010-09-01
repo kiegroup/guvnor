@@ -362,7 +362,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 						public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {
 							try {
 								constraint.setFieldType(event.getNewType());
-								inner.setWidget(row, 1 + col, operatorDropDown(constraint, constraint.getFieldType()));
+								inner.setWidget(row, 1 + col, operatorDropDown(constraint, event.getNewType()));
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
