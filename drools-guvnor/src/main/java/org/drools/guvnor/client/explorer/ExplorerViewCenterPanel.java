@@ -23,7 +23,9 @@ import java.util.Map;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.images.Images;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.PackageEditor;
 import org.drools.guvnor.client.packages.SnapshotView;
@@ -42,16 +44,25 @@ import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 
 import com.gwtext.client.core.Ext;
-import com.gwtext.client.widgets.Button;
+
 
 
 /**
@@ -59,6 +70,8 @@ import com.gwtext.client.widgets.Button;
  * @author Fernando Meyer, Michael Neale
  */
 public class ExplorerViewCenterPanel {
+    private Constants constants = ((Constants)GWT.create(Constants.class));
+    private static Images images = (Images)GWT.create(Images.class);       
 
     final TabLayoutPanel                      tp;
 
@@ -68,9 +81,10 @@ public class ExplorerViewCenterPanel {
     /** to keep track of what is dirty, filthy */
     private Map<String, GuvnorEditor>   openedAssetEditors   = new HashMap<String, GuvnorEditor>();
     private Map<String, PackageEditor> openedPackageEditors = new HashMap<String, PackageEditor>();
+    
+    private Map<Panel, String[]> itemWidgets = new HashMap<Panel, String[]>();
 
-    private Button                      closeAllButton;
-    private Constants                   constants            = ((Constants) GWT.create( Constants.class ));
+    //private Button                      closeAllButton;
 
     public ExplorerViewCenterPanel() {
         tp = new TabLayoutPanel(2, Unit.EM);
@@ -155,7 +169,8 @@ public class ExplorerViewCenterPanel {
         
         ScrollPanel localTP = new ScrollPanel();
         localTP.add(widget);
-        tp.add(localTP, tabname);
+        //tp.add(localTP, tabname);
+        tp.add(localTP, newClosableLabel(localTP, tabname));
         tp.selectTab(localTP);
 
 /*        localTP.ad( new PanelListenerAdapter() {
@@ -179,10 +194,36 @@ public class ExplorerViewCenterPanel {
 
         //tp.activate( localTP.getId() );
 
-        openedTabs.put( keys,
-                        localTP );
+        openedTabs.put(keys, localTP);
+        itemWidgets.put(localTP, keys);
     }
+    
+	private Widget newClosableLabel(final Panel panel, final String title) {
+		final HorizontalPanel hPanel = new HorizontalPanel();
+		final Label label = new Label(title);
+		DOM.setStyleAttribute(label.getElement(), "whiteSpace", "nowrap");
+		//ImageButton closeBtn = new ImageButton(images.backupSmall().getURL());
+		Button closeBtn = new Button("x");
+		closeBtn.addClickHandler(new ClickHandler() {
 
+			public void onClick(ClickEvent arg0) {
+				int widgetIndex = tp.getWidgetIndex(panel);
+				if (widgetIndex == tp.getSelectedIndex()) {
+					tp.selectTab(widgetIndex - 1);
+				}
+				tp.remove(widgetIndex);
+				String[] keys = itemWidgets.get(panel);
+				openedTabs.remove(keys);				
+			}
+			
+		});
+
+		hPanel.add(label);
+		hPanel.add(new HTML("&nbsp&nbsp&nbsp"));
+		hPanel.add(closeBtn);
+		return hPanel;
+	}
+    
     /**
      * Will open if existing. If not it will return false;
      */
