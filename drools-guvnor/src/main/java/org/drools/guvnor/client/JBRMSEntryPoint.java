@@ -30,12 +30,11 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
-import com.google.gwt.user.client.ui.RootPanel;
+
 import com.gwtext.client.util.CSS;
-import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.QuickTips;
-import com.gwtext.client.widgets.Viewport;
 import com.gwtext.client.widgets.form.Field;
 
 /**
@@ -93,9 +92,8 @@ public class JBRMSEntryPoint implements EntryPoint {
 		RepositoryServiceFactory.getSecurityService().getUserCapabilities(new GenericCallback<Capabilities>() {
 			public void onSuccess(Capabilities cp) {
 				Window.setStatus(" ");
-				//RootLayoutPanel.get().add(createMain(cp));
-				new Viewport(createMain(cp));
-
+				RootLayoutPanel.get().add(createMain(cp));
+				//new Viewport(createMain(cp));
 			}
 		});
 		

@@ -1,0 +1,122 @@
+/**
+ * Copyright 2010 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.guvnor.client.explorer;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.guvnor.client.admin.ArchivedAssetManager;
+import org.drools.guvnor.client.admin.BackupManager;
+import org.drools.guvnor.client.admin.CategoryManager;
+import org.drools.guvnor.client.admin.LogViewer;
+import org.drools.guvnor.client.admin.PermissionViewer;
+import org.drools.guvnor.client.admin.StateManager;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.images.Images;
+import org.drools.guvnor.client.messages.Constants;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
+
+import org.drools.guvnor.client.admin.RuleVerifierManager;
+
+
+public class AdministrationTree extends AbstractTree {
+    private static Constants constants = GWT.create(Constants.class);
+    private static Images images = (Images) GWT.create(Images.class);       
+
+    private Map<TreeItem, String> itemWidgets = new HashMap<TreeItem, String>();
+
+    public AdministrationTree(ExplorerViewCenterPanel tabbedPanel) {
+        super(tabbedPanel);
+        this.name = constants.Administration();
+        this.image = images.rules();
+        
+        mainTree = ExplorerNodeConfig.getAdminStructure(itemWidgets);
+
+        //Add Selection listener
+        mainTree.addSelectionHandler(this);
+	}
+    
+    // Show the associated widget in the deck panel
+    public void onSelection(SelectionEvent<TreeItem> event) {
+        TreeItem item = event.getSelectedItem();
+        String widgetID = itemWidgets.get(item);
+                
+		int id = Integer.parseInt(widgetID);
+		switch (id) {
+		case 0:
+			if (!centertabbedPanel.showIfOpen("catman")) //NON-NLS
+				centertabbedPanel.addTab(constants.CategoryManager(), true,
+						new CategoryManager(), "catman"); //NON-NLS
+			break;
+		case 1:
+			if (!centertabbedPanel.showIfOpen("archman"))  //NON-NLS
+				centertabbedPanel.addTab(constants.ArchivedManager(), true,
+						new ArchivedAssetManager(centertabbedPanel),
+						"archman");      //NON-NLS
+			break;
+
+		case 2:
+			if (!centertabbedPanel.showIfOpen("stateman")) //NON-NLS
+				centertabbedPanel.addTab(constants.StateManager(), true,
+						new StateManager(), "stateman");
+			break;
+		case 3:
+			if (!centertabbedPanel.showIfOpen("bakman"))
+				centertabbedPanel.addTab(constants.ImportExport(), true,
+						new BackupManager(), "bakman");
+			break;
+
+		case 4:
+			if (!centertabbedPanel.showIfOpen("errorLog"))
+				centertabbedPanel.addTab(constants.EventLog(), true,
+						new LogViewer(), "errorLog");
+			break;
+		case 5:
+			if (!centertabbedPanel.showIfOpen("securityPermissions"))
+				centertabbedPanel.addTab(constants.UserPermissionMappings(),
+						true, new PermissionViewer(),
+						"securityPermissions");
+			break;
+		case 6:
+			Frame aboutFrame = new Frame("version.txt");  //NON-NLS
+
+			FormStylePopup aboutPop = new FormStylePopup();
+            aboutPop.setWidth(600);
+			aboutPop.setTitle(constants.About());
+			String hhurl = GWT.getModuleBaseURL() + "webdav";
+			aboutPop.addAttribute(constants.WebDAVURL(), new SmallLabel("<b>"
+					+ hhurl + "</b>"));
+			aboutPop.addAttribute(constants.Version() + ":", aboutFrame);
+			aboutPop.show();
+			break;
+                            
+		case 7:
+            if (!centertabbedPanel.showIfOpen("ruleVerifierManager")) {
+				centertabbedPanel.addTab(constants.RulesVerificationManager(),
+						true, new RuleVerifierManager(),
+						"ruleVerifierManager");
+            }
+            break;
+		}
+    }
+}

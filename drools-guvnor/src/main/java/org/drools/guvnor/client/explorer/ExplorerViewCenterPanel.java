@@ -41,24 +41,18 @@ import org.drools.guvnor.client.rulelist.QueryWidget;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.core.EventObject;
+
 import com.gwtext.client.core.Ext;
-import com.gwtext.client.core.Margins;
-import com.gwtext.client.core.RegionPosition;
 import com.gwtext.client.widgets.Button;
-import com.gwtext.client.widgets.Component;
-import com.gwtext.client.widgets.Container;
-import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.TabPanel;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import com.gwtext.client.widgets.event.PanelListenerAdapter;
-import com.gwtext.client.widgets.event.TabPanelListenerAdapter;
-import com.gwtext.client.widgets.layout.BorderLayoutData;
+
 
 /**
  * This is the tab panel manager.
@@ -66,11 +60,10 @@ import com.gwtext.client.widgets.layout.BorderLayoutData;
  */
 public class ExplorerViewCenterPanel {
 
-    final TabPanel                      tp;
+    final TabLayoutPanel                      tp;
 
     private MultiKeyMap<Panel>          openedTabs           = new MultiKeyMap<Panel>();
     private String                      id                   = Ext.generateId();
-    private BorderLayoutData            centerLayoutData;
 
     /** to keep track of what is dirty, filthy */
     private Map<String, GuvnorEditor>   openedAssetEditors   = new HashMap<String, GuvnorEditor>();
@@ -80,25 +73,11 @@ public class ExplorerViewCenterPanel {
     private Constants                   constants            = ((Constants) GWT.create( Constants.class ));
 
     public ExplorerViewCenterPanel() {
-        tp = new TabPanel();
+        tp = new TabLayoutPanel(2, Unit.EM);
 
-        tp.setBodyBorder( false );
-        tp.setEnableTabScroll( true );
-        tp.setAutoDestroy( true );
-        tp.setResizeTabs( true );
-        tp.setLayoutOnTabChange( true );
-        tp.setActiveTab( 0 );
-        tp.setEnableTabScroll( true );
-        tp.setMinTabWidth( 90 );
-
-        centerLayoutData = new BorderLayoutData( RegionPosition.CENTER );
-        centerLayoutData.setMargins( new Margins( 5,
-                                                  0,
-                                                  5,
-                                                  5 ) );
-
+        //TODO (JLIU): 
         //listener to try and stop people from forgetting to save...
-        tp.addListener( new TabPanelListenerAdapter() {
+/*        tp.addListener( new TabPanelListenerAdapter() {
             @Override
             public boolean doBeforeRemove(Container self,
                                           final Component component) {
@@ -115,14 +94,14 @@ public class ExplorerViewCenterPanel {
                 }
                 return true;
             }
-        } );
+        } );*/
 
         addCloseAllButton();
-
     }
 
+    //TODO (JLIU):
     private void addCloseAllButton() {
-        closeAllButton = new Button( constants.CloseAllItems() );
+/*        closeAllButton = new Button( constants.CloseAllItems() );
         closeAllButton.addListener( new ButtonListenerAdapter() {
             @Override
             public void onClick(Button button,
@@ -136,10 +115,10 @@ public class ExplorerViewCenterPanel {
                 }
             }
         } );
-        tp.addButton( closeAllButton );
+        tp.addButton( closeAllButton );*/
     }
 
-    public TabPanel getPanel() {
+    public TabLayoutPanel getPanel() {
         return tp;
     }
 
@@ -173,16 +152,13 @@ public class ExplorerViewCenterPanel {
                        final String[] keys) {
 
         final String panelId = (keys.length == 1 ? keys[0] + id : Arrays.toString( keys ) + id);
-        Panel localTP = new Panel();
-        localTP.setClosable( closeable );
-        localTP.setTitle( tabname );
-        localTP.setId( panelId );
-        localTP.setAutoScroll( true );
-        localTP.add( widget );
-        tp.add( localTP,
-                this.centerLayoutData );
+        
+        ScrollPanel localTP = new ScrollPanel();
+        localTP.add(widget);
+        tp.add(localTP, tabname);
+        tp.selectTab(localTP);
 
-        localTP.addListener( new PanelListenerAdapter() {
+/*        localTP.ad( new PanelListenerAdapter() {
             public void onDestroy(Component component) {
                 Panel p = openedTabs.remove( keys );
                 if ( p != null ) {
@@ -192,7 +168,7 @@ public class ExplorerViewCenterPanel {
                 openedPackageEditors.remove( tabname );
             }
         } );
-
+*/
         if ( widget instanceof GuvnorEditor ) {
             this.openedAssetEditors.put( panelId,
                                          (GuvnorEditor) widget );
@@ -201,32 +177,35 @@ public class ExplorerViewCenterPanel {
                                            (PackageEditor) widget );
         }
 
-        tp.activate( localTP.getId() );
+        //tp.activate( localTP.getId() );
 
         openedTabs.put( keys,
                         localTP );
-
     }
 
     /**
      * Will open if existing. If not it will return false;
      */
     public boolean showIfOpen(String key) {
-        if ( openedTabs.containsKey( key ) ) {
+        if (openedTabs.containsKey(key)) {
             LoadingPopup.close();
-
-            Panel tpi = (Panel) openedTabs.get( key );
-            this.tp.activate( tpi.getId() );
-
+            Panel tpi = (Panel)openedTabs.get(key);
+            tp.selectTab(tpi);      
             return true;
         } 
         return false;
     }
 
     public void close(String key) {
-        tp.remove( key + id );
-        Panel p = openedTabs.remove( key );
-        if ( p != null ) p.destroy();
+        //tp.remove( key + id );
+        Panel tpi = openedTabs.remove(key);
+        
+        int widgetIndex = tp.getWidgetIndex(tpi);
+        if (widgetIndex == tp.getSelectedIndex()) {
+            tp.selectTab(widgetIndex - 1);
+        }
+        tp.remove(widgetIndex);      
+        //if (tpi != null ) tpi.destroy();
     }
 
     /**
@@ -403,23 +382,23 @@ public class ExplorerViewCenterPanel {
     public void openSnapshot(final SnapshotInfo snap) {
         //make this refresh the 'snap'
 
-        if ( !showIfOpen( snap.name + snap.uuid ) ) {
-            LoadingPopup.showMessage( constants.LoadingSnapshot() );
-            RepositoryServiceFactory.getService().loadPackageConfig( snap.uuid,
-                                                                     new GenericCallback<PackageConfigData>() {
-                                                                         public void onSuccess(PackageConfigData conf) {
-                                                                             addTab( Format.format( constants.SnapshotLabel(),
-                                                                                                    snap.name ),
+        if (!showIfOpen( snap.name + snap.uuid)) {
+            LoadingPopup.showMessage(constants.LoadingSnapshot());
+            RepositoryServiceFactory.getService().loadPackageConfig(snap.uuid,
+                                                                    new GenericCallback<PackageConfigData>() {
+                                                                        public void onSuccess(PackageConfigData conf) {
+                                                                             addTab(Format.format(constants.SnapshotLabel(),
+                                                                                                   snap.name),
                                                                                      true,
-                                                                                     new SnapshotView( snap,
-                                                                                                       conf,
-                                                                                                       new Command() {
-                                                                                                           public void execute() {
-                                                                                                               close( snap.name + snap.uuid );
-                                                                                                           }
-                                                                                                       },
-                                                                                                       ExplorerViewCenterPanel.this ),
-                                                                                     snap.name + snap.uuid );
+                                                                                     new SnapshotView(snap,
+                                                                                                      conf,
+                                                                                                      new Command() {
+                                                                                                          public void execute() {
+                                                                                                              close( snap.name + snap.uuid );
+                                                                                                          }
+                                                                                                      },
+                                                                                                      ExplorerViewCenterPanel.this),
+                                                                                     snap.name + snap.uuid);
                                                                              LoadingPopup.close();
                                                                          }
                                                                      } );

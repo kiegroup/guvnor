@@ -20,30 +20,25 @@ import org.drools.guvnor.client.LoggedInUserInfo;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.security.Capabilities;
 
+import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
+import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.WindowCloseListener;
 import com.google.gwt.core.client.GWT;
-import com.gwtext.client.core.Margins;
-import com.gwtext.client.core.RegionPosition;
-import com.gwtext.client.widgets.Panel;
+import com.google.gwt.dom.client.Style.Unit;
+
 import com.gwtext.client.widgets.QuickTips;
-import com.gwtext.client.widgets.form.Field;
-import com.gwtext.client.widgets.layout.AccordionLayout;
-import com.gwtext.client.widgets.layout.BorderLayout;
-import com.gwtext.client.widgets.layout.BorderLayoutData;
-import com.gwtext.client.widgets.layout.FitLayout;
-import com.gwtext.client.widgets.tree.TreeNode;
-import com.gwtext.client.widgets.tree.TreePanel;
 
 
 /**
  * This is the main part of the app that lays everything out. 
  */
 public class ExplorerLayoutManager {
+    private static Constants constants = GWT.create(Constants.class);
 
     /**
      * These are used to decide what to display or not.
@@ -52,74 +47,101 @@ public class ExplorerLayoutManager {
 
     private ExplorerViewCenterPanel centertabbedPanel;
 
-    private Panel northPanel;
-    private Panel accordion;
-    private Panel mainPanel;
+    private DockPanel titlePanel;
+    private StackLayoutPanel navigationStackLayoutPanel;
+    //private Panel mainPanel;
+    private DockLayoutPanel mainPanel;
 
 
     public ExplorerLayoutManager(LoggedInUserInfo uif, Capabilities caps) {
-        Field.setMsgTarget("side");
+        //Field.setMsgTarget("side");
         QuickTips.init();
 
         Preferences.INSTANCE.loadPrefs(caps);
 
         String tok = History.getToken();
 
-        centertabbedPanel = new ExplorerViewCenterPanel();
-
         /**
          * we use this to decide what to display.
          */
         BookmarkInfo bi = handleHistoryToken(tok);
-
-
         ExplorerLayoutManager.capabilities = caps;
         
+        
+        mainPanel = new DockLayoutPanel(Unit.EM);        
+        
         if (bi.showChrome) {
- 
-        //north
-            northPanel = new Panel();
-            DockPanel dock = new DockPanel();
-            dock.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
-            dock.add(new HTML("<div class='header'><img src='header_logo.gif' /></div>"), DockPanel.WEST);
-            dock.add(uif, DockPanel.EAST);
-            dock.setStyleName("header");
-            dock.setWidth("100%");
-
-
-
-            northPanel.add(dock);
-            northPanel.setHeight(50);
-
-            // add a navigation for the west area
-            accordion = new Panel();
-            accordion.setLayout(new AccordionLayout(true));
-
-            createNavigationPanels();
-
-            centertabbedPanel.openFind();
-
-
+        	setupTitlePanel(uif);
         }
-
-        setUpMain(bi);
+        setupExplorerViewCenterPanel();
+        setupNavigationPanels();
+      
+        
+        if (bi.showChrome) {
+            mainPanel.addNorth(titlePanel, 4);
+        }        
+        SplitLayoutPanel centerPanel = new SplitLayoutPanel();        
+        centerPanel.addWest(navigationStackLayoutPanel, 192);
+        centerPanel.add(centertabbedPanel.getPanel());        
+        mainPanel.add(centerPanel);
 
         if (bi.loadAsset) {
             centertabbedPanel.openAsset(bi.assetId);
         }
-
+        centertabbedPanel.openFind();
     }
+    
+    /**
+     * Create the title bar at the top of the application.
+     * 
+     * @param constants the constant values to use
+     */
+    private void setupTitlePanel(LoggedInUserInfo uif) {  
+        titlePanel = new DockPanel();
+        titlePanel.setVerticalAlignment(DockPanel.ALIGN_MIDDLE);
+        titlePanel.add(new HTML("<div class='header'><img src='header_logo.gif' /></div>"), DockPanel.WEST);
+        titlePanel.add(uif, DockPanel.EAST);
+        titlePanel.setStyleName("header");
+        titlePanel.setWidth("100%");
+    }   
+    
+    /**
+     * Create the navigation panel for the west area.
+     * 
+     * @param constants the constants with text
+     */
+    private void setupNavigationPanels() {  
+        navigationStackLayoutPanel = new StackLayoutPanel(Unit.EM);
 
-    private void createNavigationPanels() {
-
-
-        accordion.add(new CategoriesPanel(centertabbedPanel));
-
-
-
+        //Browse
+        DockLayoutPanel browseDockLayoutPanel = new DockLayoutPanel(Unit.EM);
+        BrowseTree categoriesTreeItem = new BrowseTree(centertabbedPanel);
+        ScrollPanel categoriesTreeItemPanel = new ScrollPanel(categoriesTreeItem.getTree());
+        
+        if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_CREATE_NEW_ASSET)) {
+        	browseDockLayoutPanel.addNorth(RulesNewMenu.getMenu(categoriesTreeItem),2);
+        }
+        browseDockLayoutPanel.add(categoriesTreeItemPanel);
+        
+        navigationStackLayoutPanel.add(browseDockLayoutPanel, categoriesTreeItem.getHeaderHTML(), 2);
+       
+      
+        //Knowledge Bases (Packages)
         if (shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
-            final PackagesPanel pp = new PackagesPanel(centertabbedPanel);
-            accordion.add(pp);
+        	DockLayoutPanel packageDockLayoutPanel = new DockLayoutPanel(Unit.EM);
+            PackagesTree packagesTreeItem = new PackagesTree(centertabbedPanel);
+            ScrollPanel packagesTreeItemPanel = new ScrollPanel(packagesTreeItem.getTree());
+            
+            if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_CREATE_NEW_ASSET)) {
+            	packageDockLayoutPanel.addNorth(PackagesNewMenu.getMenu(packagesTreeItem),2);
+            }
+            packageDockLayoutPanel.add(packagesTreeItemPanel);
+            
+            navigationStackLayoutPanel.add(packageDockLayoutPanel, packagesTreeItem.getHeaderHTML(), 2);
+                  	
+        	
+            //final PackagesPanel pp = new PackagesPanel(centertabbedPanel);
+            //accordion.add(createMailItem(images), mailHeader, true);
             /*
             DeferredCommand.addCommand(new Command() {
                 public void execute() {
@@ -130,70 +152,56 @@ public class ExplorerLayoutManager {
 
         }
 
-
+        //QA
         if (shouldShow(Capabilities.SHOW_QA)) {
-            accordion.add(new QAPanel(centertabbedPanel));
+        	DockLayoutPanel qaDockLayoutPanel = new DockLayoutPanel(Unit.EM);
+        	QATree qaTreeItem = new QATree(centertabbedPanel);
+            ScrollPanel qaTreeItemPanel = new ScrollPanel(qaTreeItem.getTree());
+
+            qaDockLayoutPanel.add(qaTreeItemPanel);
+            
+            navigationStackLayoutPanel.add(qaDockLayoutPanel, qaTreeItem.getHeaderHTML(), 2);               	
         }
 
+        //Deployment(Package snapshots)
         if (shouldShow(Capabilities.SHOW_DEPLOYMENT, Capabilities.SHOW_DEPLOYMENT_NEW)) {
-            accordion.add(new DeploymentPanel(centertabbedPanel));
+        	DockLayoutPanel deploymentDockLayoutPanel = new DockLayoutPanel(Unit.EM);
+        	DeploymentTree deploymentTreeItem = new DeploymentTree(centertabbedPanel);
+            ScrollPanel deploymentTreeItemPanel = new ScrollPanel(deploymentTreeItem.getTree());
+            
+            if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_CREATE_NEW_ASSET)) {
+            	deploymentDockLayoutPanel.addNorth(DeploymentNewMenu.getMenu(deploymentTreeItem),2);
+            }
+            
+            deploymentDockLayoutPanel.add(deploymentTreeItemPanel);
+            
+            navigationStackLayoutPanel.add(deploymentDockLayoutPanel, deploymentTreeItem.getHeaderHTML(), 2);   
         }
 
+        //Admin
         if (shouldShow(Capabilities.SHOW_ADMIN)) {
-            accordion.add(new AdministrationPanel(centertabbedPanel));
+        	DockLayoutPanel adminDockLayoutPanel = new DockLayoutPanel(Unit.EM);
+        	AdministrationTree deploymentTreeItem = new AdministrationTree(centertabbedPanel);
+            ScrollPanel adminTreeItemPanel = new ScrollPanel(deploymentTreeItem.getTree());
+
+            adminDockLayoutPanel.add(adminTreeItemPanel);
+            
+            navigationStackLayoutPanel.add(adminDockLayoutPanel, deploymentTreeItem.getHeaderHTML(), 2);   
         }
 
         //accordion.add(new ProcessServerPanel("Process Server", centertabbedPanel));
 
     }
 
-    private void setUpMain(BookmarkInfo bi) {
-
-        mainPanel = new Panel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setMargins(0, 0, 0, 0);
-
-        BorderLayoutData northLayoutData = new BorderLayoutData(RegionPosition.NORTH);
-        northLayoutData.setMargins(0, 0, 0, 0);
-
-        BorderLayoutData centerLayoutData = new BorderLayoutData(RegionPosition.CENTER);
-        centerLayoutData.setMargins(new Margins(5, 0, 5, 5));
-
-        Panel centerPanelWrappper = new Panel();
-        centerPanelWrappper.setLayout(new FitLayout());
-        centerPanelWrappper.setBorder(false);
-        centerPanelWrappper.setBodyBorder(false);
-
-        if (bi.showChrome) {
-            //setup the west regions layout properties
-            BorderLayoutData westLayoutData = new BorderLayoutData(RegionPosition.WEST);
-            westLayoutData.setMargins(new Margins(5, 5, 0, 5));
-            westLayoutData.setCMargins(new Margins(5, 5, 5, 5));
-            westLayoutData.setMinSize(155);
-            westLayoutData.setMaxSize(350);
-            westLayoutData.setSplit(true);
-
-            //create the west panel and add it to the main panel applying the west region layout properties
-            Panel westPanel = new Panel();
-            westPanel.setId("side-nav");
-            westPanel.setTitle(((Constants) GWT.create(Constants.class)).Navigate());
-            westPanel.setLayout(new FitLayout());
-            westPanel.setWidth(210);
-            westPanel.setCollapsible(true);//MN createWestPanel();
-            westPanel.add(accordion);
-            mainPanel.add(westPanel, westLayoutData);
-        }
-
-        centerPanelWrappper.add(centertabbedPanel.getPanel());
-
-        mainPanel.add(centerPanelWrappper, centerLayoutData);
-        if (bi.showChrome) {
-            mainPanel.add(northPanel, northLayoutData);
-        }
-
-    }
-
-
+    /**
+     * Create the explorer view tabbed panel 
+     * 
+     * @param constants the constant values to use
+     */
+    private void setupExplorerViewCenterPanel() {  
+    	centertabbedPanel = new ExplorerViewCenterPanel();
+    }   
+   
     public Panel getBaseLayout() {
         return mainPanel;
     }
@@ -206,20 +214,6 @@ public class ExplorerLayoutManager {
         }
         return false;
     }
-
-    public static TreePanel genericExplorerWidget(final TreeNode childNode) {
-        // create and configure the main tree
-        final TreePanel menuTree = new TreePanel();
-        menuTree.setAnimate(true);
-        menuTree.setEnableDD(true);
-        menuTree.setContainerScroll(true);
-        menuTree.setRootVisible(true);
-        menuTree.setBodyBorder(false);
-        menuTree.setBorder(false);
-        menuTree.setRootNode(childNode);
-        return menuTree;
-    }
-
 
     /**
      * Parse the bookmark/history token (the bit after the "#" in the URL)
@@ -247,12 +241,9 @@ public class ExplorerLayoutManager {
        return bi;
     }
 
-
     public static class BookmarkInfo {
         String assetId;
         boolean showChrome = true;
         boolean loadAsset = false;
     }
-
-
 }

@@ -17,7 +17,9 @@
 package org.drools.guvnor.client.packages;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -27,6 +29,7 @@ import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.explorer.GenericPanel;
+import org.drools.guvnor.client.explorer.PackagesTree;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
@@ -40,6 +43,8 @@ import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -52,13 +57,12 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.widgets.tree.TreeNode;
-import com.gwtext.client.widgets.tree.TreePanel;
-import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
 
 /**
  * This is the new snapshot view.
@@ -373,18 +377,21 @@ public class SnapshotView extends Composite {
     }
 
     protected Widget packageTree() {
-        TreeNode pkg = ExplorerNodeConfig.getPackageItemStructure( parentConf.name,
-                                                                   snapInfo.uuid );
-        pkg.setUserObject( snapInfo );
-        TreeNode root = new TreeNode( snapInfo.name );
-        root.appendChild( pkg );
-        TreePanel tp = GenericPanel.genericExplorerWidget( root );
-        tp.setRootVisible( false );
-        tp.addListener( new TreePanelListenerAdapter() {
+    	Map<TreeItem, String> itemWidgets = new HashMap<TreeItem, String>();
+    	Tree root = new Tree();    	
+    	root.setAnimationEnabled(true);
 
-            public void onClick(TreeNode node,
-                                EventObject e) {
-                Object uo = node.getUserObject();
+    	
+        TreeItem pkg = ExplorerNodeConfig.getPackageItemStructure( parentConf.name,
+                                                                   snapInfo.uuid,
+                                                                   itemWidgets);
+        pkg.setUserObject( snapInfo );
+        root.addItem(pkg);
+        
+        ScrollPanel packagesTreeItemPanel = new ScrollPanel(root);
+        root.addSelectionHandler(new SelectionHandler<TreeItem>() {
+        	public void onSelection(SelectionEvent<TreeItem> event) {
+                Object uo = event.getSelectedItem().getUserObject();
                 if ( uo instanceof Object[] ) {
                     Object o = ((Object[]) uo)[0];
                     showAssetList( (String[]) o );
@@ -393,12 +400,11 @@ public class SnapshotView extends Composite {
                     //todo - add snap notice to this..
                     centerPanel.openPackageEditor( s.uuid,
                                                    null );
-                }
+                }       	
+        	}
+        });
 
-            }
-        } );
-        return tp;
-
+        return packagesTreeItemPanel;
     }
 
     protected void showAssetList(final String[] assetTypes) {

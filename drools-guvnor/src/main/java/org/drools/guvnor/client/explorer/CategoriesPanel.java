@@ -35,6 +35,7 @@ import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarMenuButton;
 import com.gwtext.client.widgets.event.SplitButtonListenerAdapter;
+import com.gwtext.client.widgets.menu.Menu;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
@@ -82,7 +83,7 @@ public class CategoriesPanel extends GenericPanel {
         
         Toolbar rulesToolBar = new Toolbar();
 
-        final ToolbarMenuButton menuButton = new ToolbarMenuButton(constants.CreateNew(), RulesNewMenu.getMenu( this ) );
+        final ToolbarMenuButton menuButton = new ToolbarMenuButton(constants.CreateNew(), /*RulesNewMenu.getMenu( this )*/ new Menu() );
         rulesToolBar.addButton( menuButton );
         menuButton.addListener( new SplitButtonListenerAdapter() {
 
@@ -97,14 +98,14 @@ public class CategoriesPanel extends GenericPanel {
             rulesPanel.add(rulesToolBar);
         }
 
-        TreePanel categoryTree = basicTreeStructure(ExplorerNodeConfig.getRulesStructure(), new TreePanelListenerAdapter() {
+        TreePanel categoryTree = basicTreeStructure(/*ExplorerNodeConfig.getRulesStructure()*/new TreeNode(), new TreePanelListenerAdapter() {
             public void onClick(final TreeNode self, EventObject e) {
                 
                 //this refreshes the list.
                 if (self.getAttribute("id").equals(ExplorerNodeConfig.CATEGORY_ID)) {  //NON-NLS
-                    self.getParentNode().replaceChild(ExplorerNodeConfig.getCategoriesStructure(), self);
+                    self.getParentNode().replaceChild(/*ExplorerNodeConfig.getCategoriesStructure()*/new TreeNode(), self);
                 } else if (self.getAttribute("id").equals(ExplorerNodeConfig.STATES_ID)) {   //NON-NLS
-                    self.getParentNode().replaceChild(ExplorerNodeConfig.getStatesStructure(), self);
+                    self.getParentNode().replaceChild(/*ExplorerNodeConfig.getStatesStructure()*/new TreeNode(), self);
                 } else if (self.getAttribute("id").equals("FIND")) {     //NON-NLS
                     centertabbedPanel.openFind();
                 } else if (self.getAttribute("id").startsWith("inbox")) {

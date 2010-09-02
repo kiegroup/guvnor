@@ -4,6 +4,7 @@
 
     <inherits name="com.google.gwt.i18n.I18N"/>
     <inherits name="com.google.gwt.user.User"/>
+<inherits name="com.google.gwt.user.theme.chrome.Chrome"/>
     <inherits name="com.gwtext.GwtExt"/>
     <inherits name="com.gwtext.Pagebus"/>
 	<inherits name="pl.balon.gwt.diagrams.Diagrams"/>

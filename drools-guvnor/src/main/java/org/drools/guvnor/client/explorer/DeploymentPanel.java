@@ -177,7 +177,8 @@ public class DeploymentPanel extends GenericPanel {
             }
         });
 
-        return PackagesPanel.wrapScroll(panel);
+        //return PackagesPanel.wrapScroll(panel);
+        return null;
     }
 
 	private void deploymentListPackages(final TreeNode root) {

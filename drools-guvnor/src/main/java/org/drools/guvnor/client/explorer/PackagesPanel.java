@@ -369,7 +369,7 @@ public class PackagesPanel extends GenericPanel {
                 new GenericCallback<PackageConfigData>() {
                     public void onSuccess(PackageConfigData value) {
 
-                                TreeNode globalRootNode = ExplorerNodeConfig.getPackageItemStructure("Global Area", value.uuid);
+                                TreeNode globalRootNode = /*ExplorerNodeConfig.getPackageItemStructure("Global Area", value.uuid)*/new TreeNode();
                                 globalRootNode.setUserObject(value);
                                 
                                 globalRootNode.setAttribute("icon", "images/silk/chart_organisation.gif");   //NON-NLS
@@ -396,7 +396,7 @@ public class PackagesPanel extends GenericPanel {
     }
 
     private TreeNode loadPackage(String name, PackageConfigData conf) {
-        TreeNode pn = ExplorerNodeConfig.getPackageItemStructure(name, conf.uuid);
+        TreeNode pn = /*ExplorerNodeConfig.getPackageItemStructure(name, conf.uuid)*/new TreeNode();
 //        TreeNode wsNode = new TreeNode(constants.WorkingSets(), "images/workingset.gif");
 //        ExplorerNodeConfig.getWorkingSetItemsStructure(wsNode, conf.workingsets);
 //        pn.appendChild(wsNode);

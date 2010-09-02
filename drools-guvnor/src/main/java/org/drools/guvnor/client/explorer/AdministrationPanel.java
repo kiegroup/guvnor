@@ -46,8 +46,8 @@ public class AdministrationPanel extends GenericPanel {
 		super(constants.Administration(), tabbedPanel);
 		setIconCls("nav-admin"); //NON-NLS
 
-		TreePanel adminTree = basicTreeStructure(ExplorerNodeConfig
-				.getAdminStructure(), new TreePanelListenerAdapter() {
+		TreePanel adminTree = basicTreeStructure(/*ExplorerNodeConfig
+				.getAdminStructure()*/ new TreeNode(), new TreePanelListenerAdapter() {
 			public void onClick(TreeNode self, EventObject e) {
 
 				int id = Integer.parseInt(self.getAttribute("id"));

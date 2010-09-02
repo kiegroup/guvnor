@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,435 +16,397 @@
 
 package org.drools.guvnor.client.explorer;
 
+import java.util.Map;
+
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.Inbox;
+import org.drools.guvnor.client.common.Util;
+import org.drools.guvnor.client.images.Images;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.qa.AnalysisView;
-import org.drools.guvnor.client.qa.ScenarioPackageView;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.WorkingSetConfigData;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Timer;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.data.Node;
-import com.gwtext.client.widgets.tree.TreeNode;
-import com.gwtext.client.widgets.tree.event.TreeNodeListenerAdapter;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 
 /*
  * This class contains static node config for BRMS' explorer widgets
  */
 public class ExplorerNodeConfig {
+    
+    private static Constants constants   = ((Constants) GWT.create( Constants.class ));
+    private static Images images = (Images) GWT.create(Images.class);
 
+    //Browse
+    public static final String FIND_ID = "find";
     public static String     CATEGORY_ID = "category";                                 //NON-NLS
     public static String     STATES_ID   = "states";                                   //NON-NLS
-    private static Constants constants   = ((Constants) GWT.create( Constants.class ));
+    public static final String RECENT_EDITED_ID = "recentEdited";
+    public static final String RECENT_VIEWED_ID = "recentViewed";
+    public static final String INCOMING_ID = "incoming";
 
-    public static TreeNode getPackageItemStructure(String packageName,
-                                                   String uuid) {
+    //QA
+    public static final String TEST_SCENARIOS = "testScenarios";
+    public static final String ANALYSIS = "analysis";
+        
+    //Package snapshot
+    public static final String PACKAGE_SNAPSHOTS = "packageSnapshots";
 
-        TreeNode pkg = new TreeNode( packageName );
-        pkg.setAttribute( "uuid",
-                          uuid );
-        pkg.setAttribute( "icon",
-                          "images/package.gif" );
+    
+    public static TreeItem getPackageItemStructure(String packageName,
+                                                   String uuid,
+                                                   final Map<TreeItem, String> itemWidgets) {
+    	TreeItem pkg = new TreeItem(Util.getHeader(images.packages(), packageName));
+        itemWidgets.put(pkg, uuid);
 
-        pkg.appendChild( makeItem( constants.BusinessRuleAssets(),
-                                   "images/rule_asset.gif",
-                                   AssetFormats.BUSINESS_RULE_FORMATS ) );
-        pkg.appendChild( makeItem( constants.TechnicalRuleAssets(),
-                                   "images/technical_rule_assets.gif",
-                                   new String[]{AssetFormats.DRL} ) );
-        pkg.appendChild( makeItem( constants.Functions(),
-                                   "images/function_assets.gif",
-                                   new String[]{AssetFormats.FUNCTION} ) );
-        pkg.appendChild( makeItem( constants.DSLConfigurations(),
-                                   "images/dsl.gif",
-
-                                   new String[]{AssetFormats.DSL} ) );
-        pkg.appendChild( makeItem( constants.Model(),
-                                   "images/model_asset.gif",
-
-                                   new String[]{AssetFormats.MODEL, AssetFormats.DRL_MODEL} ) );
-
+        TreeItem item = new TreeItem(Util.getHeader(images.ruleAsset(), constants.BusinessRuleAssets()));
+        //itemWidgets.put(item, AssetFormats.BUSINESS_RULE_FORMATS[0]);
+        item.setUserObject(AssetFormats.BUSINESS_RULE_FORMATS);
+        pkg.addItem(item);
+        
+        item = new TreeItem(Util.getHeader(images.technicalRuleAssets(), constants.TechnicalRuleAssets()));
+        itemWidgets.put(item, AssetFormats.DRL);
+        item.setUserObject(new String[]{AssetFormats.DRL});
+        pkg.addItem(item);        
+        
+        item = new TreeItem(Util.getHeader(images.functionAssets(), constants.Functions()));
+        itemWidgets.put(item, AssetFormats.FUNCTION);
+        item.setUserObject(new String[]{AssetFormats.FUNCTION});
+        pkg.addItem(item);        
+        
+        item = new TreeItem(Util.getHeader(images.modelAsset(), constants.Model()));
+        itemWidgets.put(item, AssetFormats.DSL);
+        item.setUserObject(new String[]{AssetFormats.DSL});
+        pkg.addItem(item);        
+        
+        item = new TreeItem(Util.getHeader(images.ruleAsset(), constants.BusinessRuleAssets()));
+        itemWidgets.put(item, AssetFormats.DRL_MODEL);
+        item.setUserObject(new String[]{AssetFormats.DRL_MODEL});
+        pkg.addItem(item);
+        
         if ( Preferences.getBooleanPref( "flex-bpel-editor" ) ) {
-            pkg.appendChild( makeItem( constants.RuleFlows(),
-                                       "images/ruleflow_small.gif",
-                                       new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN2_PROCESS, AssetFormats.BPEL_PACKAGE} ) );
+            item = new TreeItem(Util.getHeader(images.ruleflowSmall(), constants.RuleFlows()));
+            itemWidgets.put(item, AssetFormats.RULE_FLOW_RF);
+            item.setUserObject(new String[]{AssetFormats.RULE_FLOW_RF});
+            pkg.addItem(item);
         } else {
-            pkg.appendChild( makeItem( constants.RuleFlows(),
-                                       "images/ruleflow_small.gif",
-                                       new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN2_PROCESS} ) );
+            item = new TreeItem(Util.getHeader(images.ruleflowSmall(), constants.RuleFlows()));
+            itemWidgets.put(item, AssetFormats.RULE_FLOW_RF);
+            item.setUserObject(new String[]{AssetFormats.RULE_FLOW_RF});
+            pkg.addItem(item);
+            
         }
+        
+        item = new TreeItem(Util.getHeader(images.enumeration(), constants.Enumerations()));
+        itemWidgets.put(item, AssetFormats.ENUMERATION);
+        item.setUserObject(new String[]{AssetFormats.ENUMERATION});
+        pkg.addItem(item);
+        
+        item = new TreeItem(Util.getHeader(images.testManager(), constants.TestScenarios()));
+        itemWidgets.put(item, AssetFormats.TEST_SCENARIO);
+        item.setUserObject(new String[]{AssetFormats.TEST_SCENARIO});
+        pkg.addItem(item);
+        
+        item = new TreeItem(Util.getHeader(images.newFile(), constants.XMLProperties()));
+        itemWidgets.put(item, AssetFormats.PROPERTIES);
+        item.setUserObject(new String[]{AssetFormats.PROPERTIES});
+        pkg.addItem(item);
+        
+        item = new TreeItem(Util.getHeader(images.newFile(), constants.OtherAssetsDocumentation()));
+        itemWidgets.put(item, AssetFormats.PROPERTIES);
+        item.setUserObject(new String[0]);
+        pkg.addItem(item);      
+        
+        item = new TreeItem(Util.getHeader(images.workingset(), constants.WorkingSets()));
+        itemWidgets.put(item, AssetFormats.WORKING_SET);
+        item.setUserObject(new String[]{AssetFormats.WORKING_SET});
+        pkg.addItem(item);
 
-        pkg.appendChild( makeItem( constants.Enumerations(),
-                                   "images/enumeration.gif",
-
-                                   new String[]{AssetFormats.ENUMERATION} ) );
-
-        pkg.appendChild( makeItem( constants.TestScenarios(),
-                                   "images/test_manager.gif",
-
-                                   new String[]{AssetFormats.TEST_SCENARIO} ) );
-
-        pkg.appendChild( makeItem( constants.XMLProperties(),
-                                   "images/new_file.gif",
-                                   new String[]{AssetFormats.XML, AssetFormats.PROPERTIES} ) );
-
-        pkg.appendChild( makeItem( constants.OtherAssetsDocumentation(),
-                                   "images/new_file.gif",
-                                   new String[0] ) );
-
-		pkg.appendChild(makeItem(constants.WorkingSets(), "images/workingset.gif", new String[] {AssetFormats.WORKING_SET}));
-		
         return pkg;
     }
+    
+    public static Tree getDeploymentTree(Map<TreeItem, String> itemWidgets) {
+    	Tree tree = new Tree();    	
+        tree.setAnimationEnabled(true);
 
-    private static TreeNode makeItem(final String txt,
-                                     final String img,
-                                     final String[] formats) {
-        TreeNode tn = new TreeNode();
-        tn.setIcon( img );
-        tn.setText( txt );
-        tn.setUserObject( new Object[]{formats, txt} );
-        return tn;
+        TreeItem root = tree.addItem(Util.getHeader(images.chartOrganisation(), constants.PackageSnapshots()));
+        itemWidgets.put(root, PACKAGE_SNAPSHOTS);
+        deploymentListPackages(root);
+
+        return tree;
+    }
+    
+	private static void deploymentListPackages(final TreeItem root) {
+		RepositoryServiceFactory.getService().listPackages(new GenericCallback<PackageConfigData[]>() {
+			public void onSuccess(PackageConfigData[] values) {
+				PackageHierarchy ph = new PackageHierarchy();
+
+				for (PackageConfigData val : values) {
+					ph.addPackage(val);
+				}
+				for (PackageHierarchy.Folder hf : ph.root.children) {
+					buildDeploymentTree(root, hf);
+				}
+				//root.expand();
+			}
+		});
+	}
+
+    private static void buildDeploymentTree(TreeItem root, PackageHierarchy.Folder fldr) {
+        if (fldr.conf != null) {
+        	TreeItem pkg = new TreeItem(Util.getHeader(images.snapshotSmall(), fldr.conf.name));
+            pkg.setUserObject(fldr.conf);
+            pkg.addItem(new TreeItem(constants.PleaseWaitDotDotDot()));
+            root.addItem(pkg);
+        } else {
+        	TreeItem tn = new TreeItem(Util.getHeader(images.emptyPackage(), fldr.name));
+            root.addItem(tn);
+            for (PackageHierarchy.Folder c : fldr.children) {
+                buildDeploymentTree(tn, c);
+            }
+        }
     }
 
-    public static TreeNode getAdminStructure() {
+    public static Tree getAdminStructure(Map<TreeItem, String> itemWidgets) {
+    	Tree tree = new Tree();    	
+        tree.setAnimationEnabled(true); 
 
-        TreeNode adminNode = new TreeNode( constants.Admin() );
+        //TreeItem adminNode = new TreeItem( constants.Admin() );
+        //tree.addItem(adminNode);
         //adminNode.setAttribute("icon", "images/managment.gif");
 
-		String[][] adminStructure = new String[][] {
-				{ constants.Category(), "images/category_small.gif", "0"},
-                { constants.Status(), "images/tag.png", "2" },
-				{ constants.Archive(), "images/backup_small.gif", "1" }, 
-                { constants.EventLog(), "images/error.gif", "4" },
-                { constants.UserPermission(), "images/icoUsers.gif", "5" },
-				{ constants.ImportExport(), "images/save_edit.gif", "3" },
-				{ constants.RulesVerification(), "images/rule_verification.png", "7" },
-				{ constants.About(), "images/information.gif", "6" },
-				{ constants.RepositoryConfiguration(), "images/config.png", "8"}};
+        Object[][] adminStructure = new Object[][] {
+				{ constants.Category(), images.categorySmall(), "0"},
+                { constants.Status(), images.tag(), "2" },
+				{ constants.Archive(), images.backupSmall(), "1" }, 
+                { constants.EventLog(), images.error(), "4" },
+                { constants.UserPermission(), images.icoUsers(), "5" },
+				{ constants.ImportExport(), images.saveEdit(), "3" },
+				{ constants.RulesVerification(), images.ruleVerification(), "7" },
+				{ constants.About(), images.information(), "6" }};
 
         for ( int i = 0; i < adminStructure.length; i++ ) {
 
-            String[] packageData = adminStructure[i];
-            TreeNode localChildNode = new TreeNode( packageData[0] );
-			localChildNode.setAttribute("icon", packageData[1]);   //NON-NLS
-			localChildNode.setAttribute("id", packageData[2]);
+            Object[] packageData = adminStructure[i];
+            TreeItem localChildNode = new TreeItem(Util.getHeader((ImageResource)packageData[1], (String)packageData[0]));
+            itemWidgets.put(localChildNode, (String)packageData[2]);
+			//localChildNode.setAttribute("id", packageData[2]);
 
-            adminNode.appendChild( localChildNode );
+            tree.addItem(localChildNode);
         }
-        return adminNode;
+        return tree;
     }
 
-    public static TreeNode getRulesStructure() {
-        TreeNode tn = new TreeNode();
-        tn.setText( constants.AssetsTreeView() );
-        tn.setExpanded( true );
+    public static Tree getBrowseTree(Map<TreeItem, String> itemWidgets) {
+    	Tree tree = new Tree();    	
+        tree.setAnimationEnabled(true);
+ 
+        TreeItem root = tree.addItem(Util.getHeader(images.ruleAsset(), constants.AssetsTreeView()));
+        //itemWidgets.put(root, constants.AssetsTreeView());
 
-        TreeNode tnc = new TreeNode();
-        tnc.setIcon( "images/find.gif" ); //NON-NLS
-        tnc.setId( "FIND" );
-        tnc.setText( constants.Find() );
+        TreeItem option = root.addItem(Util.getHeader(images.find(), constants.Find()));
+        itemWidgets.put(option, FIND_ID);
 
-        final TreeNode inbox = getInboxStructure();
-        tn.appendChild( tnc );
+        TreeItem inbox = getInboxStructure(itemWidgets);
+        root.addItem(inbox);
 
-        tn.appendChild( inbox );
-        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
-            tn.appendChild( getStatesStructure() );
+        if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+            TreeItem states = getStatesStructure(itemWidgets);
+            root.addItem(states);
         }
-        tn.appendChild( getCategoriesStructure() );
-
-        //seem to have to open it on a timer...
-        Timer t = new Timer() {
-            public void run() {
-                inbox.expand();
-            }
-        };
-        t.schedule( 100 );
-
-        return tn;
-
-    }
-
-    private static TreeNode getInboxStructure() {
-        final TreeNode treeNode = new TreeNode( "Inbox" );
-        treeNode.setAttribute( "icon",
-                               "images/inbox.gif" ); //NON-NLS
-        treeNode.setAttribute( "id",
-                               "inboxes" );
-
-        treeNode.setAttribute("open", false);
         
-        TreeNode incoming = new TreeNode( constants.IncomingChanges() );
-        incoming.setId( "inbox3" );
-        incoming.setAttribute( "icon",
-                               "images/category_small.gif" ); //NON-NLS
-        incoming.setUserObject( Inbox.INCOMING );
-        treeNode.appendChild( incoming );
+        root.addItem(getCategoriesStructure(itemWidgets));
 
-        TreeNode recentOpened = new TreeNode( constants.RecentlyOpened() );
-        recentOpened.setId( "inbox1" );
-        recentOpened.setAttribute( "icon",
-                                   "images/category_small.gif" ); //NON-NLS
-        recentOpened.setUserObject( Inbox.RECENT_VIEWED );
-        treeNode.appendChild( recentOpened );
-
-        TreeNode recentEdited = new TreeNode( constants.RecentlyEdited() );
-        recentEdited.setId( "inbox2" );
-        recentEdited.setAttribute( "icon",
-                                   "images/category_small.gif" ); //NON-NLS
-        recentEdited.setUserObject( Inbox.RECENT_EDITED );
-        treeNode.appendChild( recentEdited );
-
-        treeNode.expand();
-
-        return treeNode;
-
+        return tree;
     }
 
-    public static TreeNode getCategoriesStructure() {
-        final TreeNode treeNode = new TreeNode( constants.ByCategory() );
-        treeNode.setAttribute( "icon",
-                               "images/silk/chart_organisation.gif" );
-        treeNode.setAttribute( "id",
-                               CATEGORY_ID );
-        doCategoryNode( treeNode,
-                        "/" );
-        return treeNode;
+    private static TreeItem getInboxStructure(Map<TreeItem, String> itemWidgets) {
+        TreeItem inbox = new TreeItem(Util.getHeader(images.inbox(), constants.Inbox()));
+        
+        TreeItem incomingChanges = new TreeItem(Util.getHeader(images.categorySmall(), constants.IncomingChanges()));
+        itemWidgets.put(incomingChanges, INCOMING_ID);
+        inbox.addItem(incomingChanges);
+
+        TreeItem recentOpened = new TreeItem(Util.getHeader(images.categorySmall(), constants.RecentlyOpened()));
+        itemWidgets.put(recentOpened, RECENT_VIEWED_ID);
+        inbox.addItem(recentOpened);
+
+        TreeItem recentEdited = new TreeItem(Util.getHeader(images.categorySmall(), constants.RecentlyEdited()));
+        itemWidgets.put(recentEdited, RECENT_EDITED_ID);
+        inbox.addItem(recentEdited);
+        
+        return inbox;
     }
 
-    private static void doCategoryNode(final TreeNode treeNode,
-                                       final String path) {
-        infanticide( treeNode );
-        RepositoryServiceFactory.getService().loadChildCategories( path,
-                                                                   new GenericCallback() {
-                                                                       public void onSuccess(Object data) {
-                                                                           final String value[] = (String[]) data;
-                                                                           if ( value.length == 0 ) {
-                                                                               if ( path.equals( "/" ) && ExplorerLayoutManager.shouldShow( Capabilities.SHOW_ADMIN ) ) {
-                                                                                   RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
-                                                                                       public void onSuccess(PackageConfigData[] result) {
-                                                                                           if ( result.length == 1 ) {
-                                                                                               doNewRepoDialog();
-                                                                                           }
-                                                                                       }
-                                                                                   } );
+    public static TreeItem getCategoriesStructure(final Map<TreeItem, String> itemWidgets) {
+        TreeItem byCategory = new TreeItem(Util.getHeader(images.chartOrganisation(), constants.ByCategory()));
+        //itemWidgets.put(byCategory, constants.Inbox());
 
-                                                                               }
-                                                                               infanticide( treeNode );
-                                                                           } else {
-                                                                               for ( int i = 0; i < value.length; i++ ) {
+        doCategoryNode(byCategory,
+                        "/", 
+                        itemWidgets);
 
-                                                                                   final String current = value[i];
-                                                                                   System.err.println( "VALUE: " + current + "(" + i + ")" );
-                                                                                   final TreeNode childNode = new TreeNode();
-                                                                                   childNode.setIcon( "images/category_small.gif" );
-                                                                                   childNode.setText( current );
-
-                                                                                   childNode.setUserObject( (path.equals( "/" )) ? current : path + "/" + current );
-                                                                                   childNode.appendChild( new TreeNode( constants.PleaseWaitDotDotDot() ) );
-                                                                                   childNode.addListener( new TreeNodeListenerAdapter() {
-                                                                                       boolean expanding = false;
-
-                                                                                       public void onExpand(Node node) {
-
-                                                                                           if ( !expanding ) {
-                                                                                               expanding = true;
-                                                                                               infanticide( childNode );
-                                                                                               doCategoryNode( childNode,
-                                                                                                               (String) childNode.getUserObject() );
-                                                                                               childNode.expand();
-                                                                                               expanding = false;
-                                                                                           }
-                                                                                       }
-                                                                                   } );
-
-                                                                                   treeNode.appendChild( childNode );
-                                                                               }
-                                                                           }
-                                                                       }
-
-                                                                       private void doNewRepoDialog() {
-                                                                           NewRepoDialog diag = new NewRepoDialog();
-                                                                           diag.show();
-                                                                       }
-
-                                                                   } );
+        return byCategory;
     }
 
-    private static void infanticide(final TreeNode treeNode) {
-        Node[] children = treeNode.getChildNodes();
-        for ( int i = 0; i < children.length; i++ ) {
-            treeNode.removeChild( children[i] );
-        }
-    }
+	private static void doCategoryNode(final TreeItem treeItem,
+			final String path, final Map<TreeItem, String> itemWidgets) {
+		infanticide(treeItem);
+		RepositoryServiceFactory.getService().loadChildCategories(path,
+				new GenericCallback() {
+					public void onSuccess(Object data) {
+						final String value[] = (String[]) data;
+						if (value.length == 0) {
+							if (path.equals("/")
+									&& ExplorerLayoutManager
+											.shouldShow(Capabilities.SHOW_ADMIN)) {
+								RepositoryServiceFactory
+										.getService()
+										.listPackages(
+												new GenericCallback<PackageConfigData[]>() {
+													public void onSuccess(
+															PackageConfigData[] result) {
+														if (result.length == 1) {
+															doNewRepoDialog();
+														}
+													}
+												});
+							}
+							infanticide(treeItem);
+						} else {
+							for (int i = 0; i < value.length; i++) {
 
-    public static TreeNode getStatesStructure() {
+								final String current = value[i];
+								final TreeItem childNode = new TreeItem(
+										Util.getHeader(images.categorySmall(),
+												current));
+								
+								//ID for category tabs. 
+								String widgetId = CATEGORY_ID + "-" + ((path.equals("/")) ? current : path
+										+ "/" + current);
+								itemWidgets.put(childNode, widgetId);
+								treeItem.addItem(childNode);
+								
+/*								childNode.setUserObject(path.equals("/") ? current : path
+								+ "/" + current);*/
+								childNode.addItem(new TreeItem(Util.getHeader(images.categorySmall(),
+										constants.PleaseWaitDotDotDot())));
+								childNode.getTree().addOpenHandler(
+										new OpenHandler<TreeItem>() {
+											boolean expanding = false;
 
-        final TreeNode treeNode = new TreeNode( constants.ByStatus() );
-        treeNode.setAttribute( "icon",
-                               "images/status_small.gif" ); //NON-NLS
-        treeNode.setAttribute( "id",
-                               STATES_ID );
+											public void onOpen(
+													OpenEvent<TreeItem> event) {
+												if (!expanding && event.getTarget() == childNode) {
+													expanding = true;
+													String widgetID = itemWidgets.get(event.getTarget());
+													String path = widgetID.substring(widgetID.indexOf("-") + 1);
+													infanticide( childNode );
+													doCategoryNode(
+															childNode,
+															path,
+															itemWidgets);
+													// childNode.expand();
+													expanding = false;
+												}
+											}
+										});
+							}
+						}
+					}
 
+					private void doNewRepoDialog() {
+						NewRepoDialog diag = new NewRepoDialog();
+						diag.show();
+					}
+
+				});
+	}
+
+	private static void infanticide(final TreeItem treeNode) {
+		treeNode.removeItems();
+	}
+
+    public static TreeItem getStatesStructure(final Map<TreeItem, String> itemWidgets) {
+        final TreeItem byStatus = new TreeItem(Util.getHeader(images.statusSmall(), constants.ByStatus()));
+        
         RepositoryServiceFactory.getService().listStates( new GenericCallback<String[]>() {
             public void onSuccess(String[] value) {
                 for ( int i = 0; i < value.length; i++ ) {
-                    TreeNode childNode = new TreeNode( value[i] );
-                    childNode.setAttribute( "icon",
-                                            "images/category_small.gif" ); //NON-NLS
-                    childNode.setUserObject( "-" + value[i] );
-                    treeNode.appendChild( childNode );
+                	TreeItem childNode = new TreeItem(Util.getHeader(images.categorySmall(), value[i]));
+                	
+                	//ID for state tabs. 
+                	String widgetID = STATES_ID + "-" + value[i];
+                    itemWidgets.put(childNode, widgetID);
+                    byStatus.addItem(childNode);
                 }
             }
         } );
 
-        return treeNode;
+        return byStatus;
     }
 
-    public static TreeNode getQAStructure(final ExplorerViewCenterPanel centerPanel) {
+    public static Tree getQAStructure(final Map<TreeItem, String> itemWidgets) {
+    	Tree tree = new Tree();    	
+        tree.setAnimationEnabled(true);
 
-        final TreeNode treeNode = new TreeNode();
-        treeNode.setText( constants.QA() );
+        final TreeItem scenarios = new TreeItem(Util.getHeader(images.testManager(), constants.TestScenariosInPackages()));
+        scenarios.addItem(new TreeItem(constants.PleaseWaitDotDotDot()));
+        tree.addItem(scenarios);
+        tree.addOpenHandler(
+				new OpenHandler<TreeItem>() {
+					public void onOpen(
+							OpenEvent<TreeItem> event) {
+		                RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
+		                    public void onSuccess(PackageConfigData[] conf) {
+		                        for ( int i = 0; i < conf.length; i++ ) {
+		                            final PackageConfigData c = conf[i];
+		                            TreeItem pkg = new TreeItem(Util.getHeader(images.packages(), c.name));
 
-        final TreeNode scenarios = new TreeNode();
-        scenarios.setText( constants.TestScenariosInPackages() );
-        scenarios.setIcon( "images/test_manager.gif" ); //NON-NLS
+		                            scenarios.addItem(pkg);
+		                            pkg.setUserObject(c);	
+		                            itemWidgets.put(pkg, TEST_SCENARIOS);
+		                        }
+		                        scenarios.removeItem(scenarios.getChild(0));
+		                    }
+		                } );
+					}
+		});
 
-        final EditItemEvent edit = new EditItemEvent() {
-            public void open(String key) {
-                centerPanel.openAsset( key );
-            }
+		
+        final TreeItem analysis = new TreeItem(Util.getHeader(images.analyze(), constants.Analysis()));
+        analysis.addItem(new TreeItem(constants.PleaseWaitDotDotDot()));
 
-            public void open(MultiViewRow[] rows) {
-                for ( MultiViewRow row : rows ) {
-                    centerPanel.openAsset( row.uuid );
-                }
-            }
-        };
+        if (Preferences.getBooleanPref("verifier")) {
+        	tree.addItem(analysis);
+            tree.addOpenHandler(
+    				new OpenHandler<TreeItem>() {
+    					public void onOpen(
+    							OpenEvent<TreeItem> event) {
+    				           RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
+    				                public void onSuccess(PackageConfigData[] conf) {
 
-        scenarios.appendChild( new TreeNode( constants.PleaseWaitDotDotDot() ) );
-        treeNode.appendChild( scenarios );
+    				                    for ( int i = 0; i < conf.length; i++ ) {
+    				                        final PackageConfigData c = conf[i];
+    			                            TreeItem pkg = new TreeItem(Util.getHeader(images.packages(), c.name));
 
-        final TreeNode analysis = new TreeNode();
-        analysis.setText( constants.Analysis() );
-        analysis.setIcon( "images/analyze.gif" ); //NON-NLS
-        analysis.setExpanded( false );
-        analysis.appendChild( new TreeNode( constants.PleaseWaitDotDotDot() ) );
-
-        if ( Preferences.getBooleanPref( "verifier" ) ) {
-            treeNode.appendChild( analysis );
+    				                        analysis.addItem(pkg);
+    			                            pkg.setUserObject(c);	
+    			                            itemWidgets.put(pkg, ANALYSIS);
+     				                    }
+    				                    analysis.removeItem(analysis.getChild(0));
+    				                }
+    				            } );
+    					}
+    		});        
+        	
         }
 
-        scenarios.addListener( new TreeNodeListenerAdapter() {
-            public void onExpand(Node node) {
-
-                RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
-                    public void onSuccess(PackageConfigData[] conf) {
-                        for ( int i = 0; i < conf.length; i++ ) {
-                            final PackageConfigData c = conf[i];
-                            TreeNode pkg = new TreeNode();
-                            pkg.setText( c.name );
-                            pkg.setIcon( "images/package.gif" ); //NON-NLS
-
-                            scenarios.appendChild( pkg );
-                            pkg.addListener( new TreeNodeListenerAdapter() {
-                                public void onClick(Node node,
-                                                    EventObject e) {
-                                    if ( !centerPanel.showIfOpen( "scenarios" + c.uuid ) ) { //NON-NLS
-                                        String m = Format.format( constants.ScenariosForPackage(),
-                                                                  c.name );
-                                        centerPanel.addTab( m,
-                                                            true,
-                                                            new ScenarioPackageView( c.uuid,
-                                                                                     c.name,
-                                                                                     edit,
-                                                                                     centerPanel ),
-                                                            "scenarios" + c.uuid ); //NON-NLS
-                                    }
-                                }
-                            } );
-                        }
-                        scenarios.removeChild( scenarios.getFirstChild() );
-
-                    }
-                } );
-            }
-
-            public void onCollapse(Node node) {
-                Node[] cs = node.getChildNodes();
-                for ( int i = 0; i < cs.length; i++ ) {
-                    node.removeChild( cs[i] );
-                }
-                node.appendChild( new TreeNode( constants.PleaseWaitDotDotDot() ) );
-            }
-        } );
-
-        analysis.addListener( new TreeNodeListenerAdapter() {
-
-            public void onExpand(Node node) {
-                RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
-                    public void onSuccess(PackageConfigData[] conf) {
-
-                        for ( int i = 0; i < conf.length; i++ ) {
-                            final PackageConfigData c = conf[i];
-                            TreeNode pkg = new TreeNode();
-                            pkg.setText( c.name );
-                            pkg.setIcon( "images/package.gif" ); //NON-NLS
-
-                            analysis.appendChild( pkg );
-                            pkg.addListener( new TreeNodeListenerAdapter() {
-                                public void onClick(Node node,
-                                                    EventObject e) {
-                                    if ( !centerPanel.showIfOpen( "analysis" + c.uuid ) ) { //NON-NLS
-                                        final EditItemEvent edit = new EditItemEvent() {
-                                            public void open(String key) {
-                                                centerPanel.openAsset( key );
-                                            }
-
-                                            public void open(MultiViewRow[] rows) {
-                                                for ( MultiViewRow row : rows ) {
-                                                    centerPanel.openAsset( row.uuid );
-                                                }
-                                            }
-                                        };
-                                        String m = Format.format( constants.AnalysisForPackage(),
-                                                                  c.name );
-                                        centerPanel.addTab( m,
-                                                            true,
-                                                            new AnalysisView( c.uuid,
-                                                                              c.name,
-                                                                              edit ),
-                                                            "analysis" + c.uuid ); //NON-NLS
-                                    }
-                                }
-                            } );
-                        }
-                        analysis.removeChild( analysis.getFirstChild() );
-
-                    }
-                } );
-            }
-
-            public void onCollapse(Node node) {
-                Node[] cs = node.getChildNodes();
-                for ( int i = 0; i < cs.length; i++ ) {
-                    node.removeChild( cs[i] );
-                }
-                node.appendChild( new TreeNode( constants.PleaseWaitDotDotDot() ) );
-            }
-        } );
-
-        return treeNode;
+        return tree;
     }
-
 }
