@@ -51,14 +51,12 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 
 import com.gwtext.client.core.Ext;
@@ -73,13 +71,13 @@ public class ExplorerViewCenterPanel {
     private Constants constants = ((Constants)GWT.create(Constants.class));
     private static Images images = (Images)GWT.create(Images.class);       
 
-    final TabLayoutPanel                      tp;
+    final TabLayoutPanel tp;
 
-    private MultiKeyMap<Panel>          openedTabs           = new MultiKeyMap<Panel>();
-    private String                      id                   = Ext.generateId();
+    private MultiKeyMap<Panel> openedTabs = new MultiKeyMap<Panel>();
+    private String id = Ext.generateId();
 
     /** to keep track of what is dirty, filthy */
-    private Map<String, GuvnorEditor>   openedAssetEditors   = new HashMap<String, GuvnorEditor>();
+    private Map<String, GuvnorEditor> openedAssetEditors = new HashMap<String, GuvnorEditor>();
     private Map<String, PackageEditor> openedPackageEditors = new HashMap<String, PackageEditor>();
     
     private Map<Panel, String[]> itemWidgets = new HashMap<Panel, String[]>();
@@ -89,7 +87,7 @@ public class ExplorerViewCenterPanel {
     public ExplorerViewCenterPanel() {
         tp = new TabLayoutPanel(2, Unit.EM);
 
-        //TODO (JLIU): 
+        //TODO: Dirtyable does not work.  
         //listener to try and stop people from forgetting to save...
 /*        tp.addListener( new TabPanelListenerAdapter() {
             @Override
@@ -113,7 +111,7 @@ public class ExplorerViewCenterPanel {
         addCloseAllButton();
     }
 
-    //TODO (JLIU):
+    //TODO:
     private void addCloseAllButton() {
 /*        closeAllButton = new Button( constants.CloseAllItems() );
         closeAllButton.addListener( new ButtonListenerAdapter() {
@@ -139,40 +137,34 @@ public class ExplorerViewCenterPanel {
     /**
      * Add a new tab. Should only do this if have checked showIfOpen to avoid dupes being opened.
      * @param tabname The displayed tab name.
-     * @param closeable If you can close it !
      * @param widget The contents.
      * @param key A key which is unique.
      */
     public void addTab(final String tabname,
-                       boolean closeable,
                        Widget widget,
                        final String key) {
-        addTab( tabname,
-                closeable,
-                widget,
-                new String[]{key} );
+        addTab(tabname,
+               widget,
+               new String[]{key});
     }
 
     /**
      * Add a new tab. Should only do this if have checked showIfOpen to avoid dupes being opened.
      * @param tabname The displayed tab name.
-     * @param closeable If you can close it !
      * @param widget The contents.
      * @param keys An array of keys which are unique.
      */
     public void addTab(final String tabname,
-                       boolean closeable,
                        Widget widget,
                        final String[] keys) {
-
-        final String panelId = (keys.length == 1 ? keys[0] + id : Arrays.toString( keys ) + id);
+        final String panelId = (keys.length == 1 ? keys[0] + id : Arrays.toString(keys) + id);
         
         ScrollPanel localTP = new ScrollPanel();
         localTP.add(widget);
-        //tp.add(localTP, tabname);
         tp.add(localTP, newClosableLabel(localTP, tabname));
         tp.selectTab(localTP);
 
+        //TODO: Dirtyable
 /*        localTP.ad( new PanelListenerAdapter() {
             public void onDestroy(Component component) {
                 Panel p = openedTabs.remove( keys );
@@ -184,15 +176,11 @@ public class ExplorerViewCenterPanel {
             }
         } );
 */
-        if ( widget instanceof GuvnorEditor ) {
-            this.openedAssetEditors.put( panelId,
-                                         (GuvnorEditor) widget );
-        } else if ( widget instanceof PackageEditor ) {
-            this.openedPackageEditors.put( tabname,
-                                           (PackageEditor) widget );
+        if (widget instanceof GuvnorEditor) {
+            this.openedAssetEditors.put(panelId, (GuvnorEditor)widget);
+        } else if (widget instanceof PackageEditor) {
+            this.openedPackageEditors.put( tabname,(PackageEditor)widget);
         }
-
-        //tp.activate( localTP.getId() );
 
         openedTabs.put(keys, localTP);
         itemWidgets.put(localTP, keys);
@@ -205,17 +193,15 @@ public class ExplorerViewCenterPanel {
 		//ImageButton closeBtn = new ImageButton(images.backupSmall().getURL());
 		Button closeBtn = new Button("x");
 		closeBtn.addClickHandler(new ClickHandler() {
-
 			public void onClick(ClickEvent arg0) {
 				int widgetIndex = tp.getWidgetIndex(panel);
 				if (widgetIndex == tp.getSelectedIndex()) {
 					tp.selectTab(widgetIndex - 1);
 				}
 				tp.remove(widgetIndex);
-				String[] keys = itemWidgets.get(panel);
+				String[] keys = itemWidgets.remove(panel);
 				openedTabs.remove(keys);				
-			}
-			
+			}			
 		});
 
 		hPanel.add(label);
@@ -245,8 +231,9 @@ public class ExplorerViewCenterPanel {
         if (widgetIndex == tp.getSelectedIndex()) {
             tp.selectTab(widgetIndex - 1);
         }
-        tp.remove(widgetIndex);      
-        //if (tpi != null ) tpi.destroy();
+        
+        tp.remove(widgetIndex);
+		itemWidgets.remove(tpi);
     }
 
     /**
@@ -260,7 +247,7 @@ public class ExplorerViewCenterPanel {
 
 		if (!showIfOpen(uuid)) {
 
-			final boolean[] loading = { true };
+			final boolean[] loading = {true};
 
 			Timer t = new Timer() {
 				public void run() {
@@ -288,15 +275,14 @@ public class ExplorerViewCenterPanel {
 								}
 							};
 							RuleViewer rv = new RuleViewer(a, edit);
-							addTab(a.metaData.name, true, rv, uuid);
+							addTab(a.metaData.name, rv, uuid);
 							rv.setCloseCommand(new Command() {
 								public void execute() {
 									close(uuid);
 								}
 							});
 
-							// When model is saved update the package view if it is
-							// opened.
+							// When model is saved update the package view if it is opened.
 							if (a.metaData.format.equals(AssetFormats.MODEL)) {
 							    Command command =new Command() {
                                     public void execute() {
@@ -306,14 +292,13 @@ public class ExplorerViewCenterPanel {
                                         }
                                     }
                                 };
-								rv.setCheckedInCommand( command );
-								rv.setArchiveCommand( command );
+								rv.setCheckedInCommand(command);
+								rv.setArchiveCommand(command);
 							}
 
 							LoadingPopup.close();
 						}
 					});
-
 				}
 			});
 		}
@@ -325,9 +310,9 @@ public class ExplorerViewCenterPanel {
         final String[] uuids = new String[rows.length];
         final String[] names = new String[rows.length];
 
-        for ( int i = 0; i < rows.length; i++ ) {
+        for (int i = 0; i < rows.length; i++) {
             // Check if any of these assets are already opened.
-            if ( showIfOpen( rows[i].uuid ) ) {
+            if (showIfOpen(rows[i].uuid)) {
                 blockingAssetName = rows[i].name;
                 break;
             }
@@ -335,37 +320,36 @@ public class ExplorerViewCenterPanel {
             names[i] = rows[i].name;
         }
 
-        if ( blockingAssetName != null ) {
-            FormStylePopup popup = new FormStylePopup( "images/information.gif", //NON-NLS
-                                                       Format.format( constants.Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview(),
-                                                                      blockingAssetName ) );
+        if (blockingAssetName != null) {
+            FormStylePopup popup = new FormStylePopup("images/information.gif", //NON-NLS
+                                                      Format.format( constants.Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview(),
+                                                                      blockingAssetName));
             popup.show();
             return;
         }
 
-        MultiViewEditor multiview = new MultiViewEditor( rows,
-                                                         new EditItemEvent() {
-                                                             public void open(String key) {
-                                                                 openAsset( key );
-                                                             }
+        MultiViewEditor multiview = new MultiViewEditor(rows,
+                                                        new EditItemEvent() {
+                                                            public void open(String key) {
+                                                                openAsset(key);
+                                                            }
 
                                                              public void open(MultiViewRow[] rows) {
-                                                                 for ( MultiViewRow row : rows ) {
-                                                                     openAsset( row.uuid );
+                                                                 for (MultiViewRow row : rows) {
+                                                                     openAsset(row.uuid);
                                                                  }
                                                              }
                                                          } );
 
-        multiview.setCloseCommand( new Command() {
+        multiview.setCloseCommand(new Command() {
             public void execute() {
-                close( Arrays.toString( uuids ) );
+                close(Arrays.toString(uuids));
             }
-        } );
+        });
 
-        addTab( Arrays.toString( names ),
-                true,
-                multiview,
-                uuids );
+        addTab(Arrays.toString(names),
+               multiview,
+               uuids );
 
     }
 
@@ -393,7 +377,7 @@ public class ExplorerViewCenterPanel {
 							}
 						}
 					});
-					addTab(conf.name, true, ed, conf.uuid);
+					addTab(conf.name, ed, conf.uuid);
 					LoadingPopup.close();
 				}
 			});
@@ -403,7 +387,6 @@ public class ExplorerViewCenterPanel {
     public void openFind() {
         if ( !showIfOpen( "FIND" ) ) { //NON-NLS
             this.addTab( constants.Find(),
-                         true,
                          new QueryWidget( new EditItemEvent() {
                              public void open(String uuid) {
                                  openAsset( uuid );
@@ -429,16 +412,15 @@ public class ExplorerViewCenterPanel {
                                                                     new GenericCallback<PackageConfigData>() {
                                                                         public void onSuccess(PackageConfigData conf) {
                                                                              addTab(Format.format(constants.SnapshotLabel(),
-                                                                                                   snap.name),
-                                                                                     true,
-                                                                                     new SnapshotView(snap,
-                                                                                                      conf,
-                                                                                                      new Command() {
-                                                                                                          public void execute() {
-                                                                                                              close( snap.name + snap.uuid );
-                                                                                                          }
-                                                                                                      },
-                                                                                                      ExplorerViewCenterPanel.this),
+                                                                                                  snap.name),
+                                                                                                  new SnapshotView(snap,
+                                                                                                  conf,
+                                                                                                  new Command() {
+                                                                                                      public void execute() {
+                                                                                                          close( snap.name + snap.uuid );
+                                                                                                      }
+                                                                                                  },
+                                                                                                  ExplorerViewCenterPanel.this),
                                                                                      snap.name + snap.uuid);
                                                                              LoadingPopup.close();
                                                                          }

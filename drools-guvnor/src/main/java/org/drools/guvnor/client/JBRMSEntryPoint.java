@@ -35,7 +35,7 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
 
 import com.gwtext.client.util.CSS;
 import com.gwtext.client.widgets.QuickTips;
-import com.gwtext.client.widgets.form.Field;
+
 
 /**
  * This is the main launching/entry point for the JBRMS web console.
@@ -49,7 +49,7 @@ public class JBRMSEntryPoint implements EntryPoint {
     private LoggedInUserInfo loggedInUserInfo;
 
     public void onModuleLoad() {
-        Field.setMsgTarget("side");
+        //Field.setMsgTarget("side");
         QuickTips.init();
         CSS.swapStyleSheet("theme", "js/ext/resources/css/xtheme-gray.css");
         loggedInUserInfo = new LoggedInUserInfo();
@@ -93,7 +93,6 @@ public class JBRMSEntryPoint implements EntryPoint {
 			public void onSuccess(Capabilities cp) {
 				Window.setStatus(" ");
 				RootLayoutPanel.get().add(createMain(cp));
-				//new Viewport(createMain(cp));
 			}
 		});
 		

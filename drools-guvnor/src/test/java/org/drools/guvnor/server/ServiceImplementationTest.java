@@ -33,6 +33,9 @@ package org.drools.guvnor.server;
  */
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -41,6 +44,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.jcr.PathNotFoundException;
 
 import junit.framework.TestCase;
 
@@ -51,7 +56,7 @@ import org.drools.core.util.BinaryRuleBaseLoader;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.Inbox;
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
@@ -135,14 +140,14 @@ public class ServiceImplementationTest extends TestCase {
 
     public void testInboxEvents() throws Exception {
         ServiceImplementation impl = getService();
-        assertNotNull( impl.loadInbox( Inbox.RECENT_EDITED ) );
+        assertNotNull( impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
         //this should trigger the fact that the original user edited something
         RulesRepository repo1 = impl.repository;
         AssetItem as = impl.repository.loadDefaultPackage().addAsset( "testLoadInbox",
                                                                       "" );
         as.checkin( "" );
-        TableDataResult res = impl.loadInbox( Inbox.RECENT_EDITED );
+        TableDataResult res = impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID );
         boolean found = false;
         for ( TableDataRow row : res.data ) {
             if ( row.id.equals( as.getUUID() ) ) found = true;
@@ -151,7 +156,7 @@ public class ServiceImplementationTest extends TestCase {
 
         //but should not be in "incoming" yet
         found = false;
-        res = impl.loadInbox( Inbox.INCOMING );
+        res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
         for ( TableDataRow row : res.data ) {
             if ( row.id.equals( as.getUUID() ) ) found = true;
         }
@@ -167,7 +172,7 @@ public class ServiceImplementationTest extends TestCase {
 
         //now check that it is in the first users inbox
         TableDataRow rowMatch = null;
-        res = impl.loadInbox( Inbox.INCOMING );
+        res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
         for ( TableDataRow row : res.data ) {
             if ( row.id.equals( as.getUUID() ) ) {
                 rowMatch = row;
@@ -202,7 +207,7 @@ public class ServiceImplementationTest extends TestCase {
 
         //and also still in the original user...
         found = false;
-        res = impl.loadInbox( Inbox.INCOMING );
+        res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
         for ( TableDataRow row : res.data ) {
             if ( row.id.equals( as.getUUID() ) ) found = true;
         }
@@ -211,7 +216,7 @@ public class ServiceImplementationTest extends TestCase {
         //now lets open it with first user, and check that it disappears from the incoming...
         impl.loadRuleAsset( as.getUUID() );
         found = false;
-        res = impl.loadInbox( Inbox.INCOMING );
+        res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
         for ( TableDataRow row : res.data ) {
             if ( row.id.equals( as.getUUID() ) ) found = true;
         }
@@ -1761,6 +1766,59 @@ public class ServiceImplementationTest extends TestCase {
         impl.removePackage( p.getUUID() );
         assertEquals( n,
                       impl.listPackages().length );
+    }
+    
+    public void xtestImportPackage() throws Exception {
+        ServiceImplementation impl = getService();
+        
+        try {
+			PackageItem item = impl.repository.loadPackage("testExportPackage");
+			fail();
+			assertNull(item);
+		} catch (Exception e) {
+			// expected
+		}
+
+        //impl.createCategory( "/", "testExportPackageCat1", "desc" );
+        //impl.createCategory( "/", "testExportPackageCat2", "desc" );
+
+		File file = new File("d:\\testExportPackage.xml");
+		
+		FileInputStream fis = new FileInputStream(file);
+		byte[] byteArray = new byte[fis.available()];
+		fis.read(byteArray);
+		
+		impl.importPackages(byteArray, true);
+		
+		PackageItem item = impl.repository.loadPackage( "testExportPackage" );
+        assertNotNull( item );
+        assertEquals( "desc",
+                      item.getDescription() );
+    }
+    
+    public void xtestExportPackage() throws Exception {
+        ServiceImplementation impl = getService();
+        int n = impl.listPackages().length;
+        impl.createCategory( "/", "testExportPackageCat1", "desc" );
+        impl.createCategory( "/", "testExportPackageCat2", "desc" );
+        PackageItem p = impl.repository.createPackage("testExportPackage", "");
+
+		String uuid1 = impl.createNewRule("testExportPackageAsset1", "desc",
+				"testExportPackageCat1", "testExportPackage", "dsl");
+
+		String uuid2 = impl.createNewRule("testExportPackageAsset2", "desc",
+				"testExportPackageCat2", "testExportPackage", "dsl");
+
+		byte[] exportedPackage = impl.exportPackages("testExportPackage");
+		
+	    assertNotNull(exportedPackage);
+
+		File file = new File("d:\\testExportPackage.xml");
+		
+		FileOutputStream fos = new FileOutputStream(file);
+		
+		fos.write(exportedPackage);
+		fos.close();
     }
 
     public void testArchiveAsset() throws Exception {

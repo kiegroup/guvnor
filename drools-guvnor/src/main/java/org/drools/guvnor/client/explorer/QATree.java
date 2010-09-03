@@ -73,7 +73,7 @@ public class QATree extends AbstractTree {
 
 					String m = Format.format(constants.ScenariosForPackage(),
 							pc.name);
-					centertabbedPanel.addTab(m, true, new ScenarioPackageView(
+					centertabbedPanel.addTab(m, new ScenarioPackageView(
 							pc.uuid, pc.name, edit, centertabbedPanel),
 							"scenarios" + pc.uuid);
 				}
@@ -94,7 +94,6 @@ public class QATree extends AbstractTree {
                     String m = Format.format(constants.AnalysisForPackage(),
                                               pc.name);
                     centertabbedPanel.addTab(m,
-                                        true,
                                         new AnalysisView(pc.uuid,
                                         		         pc.name,
                                         		         edit),

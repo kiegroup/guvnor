@@ -12,7 +12,6 @@ import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 
 public abstract class AbstractTree implements SelectionHandler<TreeItem> {
-
 	protected String name;
 	protected ImageResource image;
 
@@ -39,7 +38,6 @@ public abstract class AbstractTree implements SelectionHandler<TreeItem> {
 	}
 
 	protected void launchWizard(String format, String title, boolean showCats) {
-
 		NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
 			public void open(String key) {
 				centertabbedPanel.openAsset(key);

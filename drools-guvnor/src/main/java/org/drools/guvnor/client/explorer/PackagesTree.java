@@ -41,6 +41,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
+import com.gwtext.client.widgets.tree.TreeNode;
 
 
 
@@ -56,22 +57,7 @@ public class PackagesTree extends AbstractTree {
         super(tabbedPanel);
         this.name = constants.KnowledgeBases();
         this.image = images.packages();
-/*
-        Toolbar pkgToolbar = new Toolbar();
-        final ToolbarMenuButton menuButton = new ToolbarMenuButton(constants.CreateNew(), packageNewMenu());
-        pkgToolbar.addButton( menuButton );
 
-        menuButton.addListener( new SplitButtonListenerAdapter() {
-
-            public void onClick(Button button,
-                                EventObject e) {
-                menuButton.showMenu();
-            }
-        } );
-        
-        packagesPanel = new VerticalPanel();
-        packagesPanel.setWidth("100%");
-        packagesPanel.add(pkgToolbar);*/
 
         //these panels are lazy loaded to easy startup wait time.
 /*        addListener(new PanelListenerAdapter() {
@@ -104,25 +90,12 @@ public class PackagesTree extends AbstractTree {
     	Tree rootNode = new Tree();    	
     	rootNode.setAnimationEnabled(true);
  
-		//Tree rootNode = new Tree(constants.Admin());
-
-        TreeItem packageRootNode = rootNode.addItem(Util.getHeader(images.chartOrganisation(), constants.Packages()));
-        //itemWidgets.put(root, constants.AssetsTreeView());
-        //Tree packageRootNode = new Tree(constants.Packages());
-		//packageRootNode.setAttribute("icon", "images/silk/chart_organisation.gif"); // NON-NLS
+    	TreeItem packageRootNode = rootNode.addItem(Util.getHeader(images.chartOrganisation(), constants.Packages()));
+        packageRootNode.setState(true);
 		loadPackages(packageRootNode, itemWidgets);
-
-		/*
-		 * TreeNode globalRootNode = new TreeNode("Global area");
-		 * globalRootNode.setAttribute("icon",
-		 * "images/silk/chart_organisation.gif"); //NON-NLS
-		 * globalRootNode.setAttribute("id", "globalarea");
-		 */
-		//loadGlobal(rootNode);
-
 		rootNode.addItem(packageRootNode);
-		// rootNode.appendChild(globalRootNode);
 
+		loadGlobal(rootNode, itemWidgets);
 
 /*            @Override
             public void onCollapseNode(final TreeItem node) {
@@ -134,13 +107,6 @@ public class PackagesTree extends AbstractTree {
                     loadPackages(node, itemWidgets);
                 }
             }*/
-
-
-         // register listener
-/*        panel.addListener(treePanelListener);
-
-        final ScrollPanel scp = wrapScroll(panel);*/
-
 
         return rootNode;
     }
@@ -164,38 +130,27 @@ public class PackagesTree extends AbstractTree {
                 });
     }
 
-    //TODO (JLIU):
-/*    private void loadGlobal(final TreeNode root) {
+    private void loadGlobal(final Tree root, final Map<TreeItem, String> itemWidgets) {
         RepositoryServiceFactory.getService().loadGlobalPackage(
                 new GenericCallback<PackageConfigData>() {
                     public void onSuccess(PackageConfigData value) {
-
-                                TreeNode globalRootNode = ExplorerNodeConfig.getPackageItemStructure("Global Area", value.uuid);
-                                globalRootNode.setUserObject(value);
-                                
-                                globalRootNode.setAttribute("icon", "images/silk/chart_organisation.gif");   //NON-NLS
-                                globalRootNode.setAttribute("id", "globalarea");
+                    	TreeItem globalRootNode = ExplorerNodeConfig.getPackageItemStructure(constants.GlobalArea(), value.uuid, itemWidgets);
+                    	globalRootNode.setHTML(Util.getHeader(images.chartOrganisation(), constants.GlobalArea()));
+                    	globalRootNode.setUserObject(value);
                         		
-                                root.appendChild(globalRootNode);
-
+                        root.addItem(globalRootNode);
                     }
                 });
     }
-    */
+    
     private void buildPkgTree(TreeItem root, PackageHierarchy.Folder fldr) {
         if (fldr.conf != null) {
             root.addItem(loadPackage(fldr.name, fldr.conf));
-        } else {
-        	TreeItem tn = new TreeItem(Util.getHeader(images.ruleAsset(), fldr.name));
-        	
-            TreeItem item = new TreeItem(Util.getHeader(images.emptyPackage(), constants.BusinessRuleAssets()));
-            itemWidgets.put(item, AssetFormats.BUSINESS_RULE_FORMATS[0]);
-            root.addItem(item);
+        } else {        	
+            TreeItem tn = new TreeItem(Util.getHeader(images.emptyPackage(), fldr.name));
+            //itemWidgets.put(item, AssetFormats.BUSINESS_RULE_FORMATS[0]);
+            root.addItem(tn);
 
-            
-/*            tn.setText(fldr.name);
-            tn.setIcon("images/empty_package.gif"); //NON-NLS
-            root.addItem(tn);*/
             for (PackageHierarchy.Folder c : fldr.children) {
                 buildPkgTree(tn, c);
             }
@@ -204,9 +159,6 @@ public class PackagesTree extends AbstractTree {
 
     private TreeItem loadPackage(String name, PackageConfigData conf) {
     	TreeItem pn = ExplorerNodeConfig.getPackageItemStructure(name, conf.uuid, itemWidgets);
-//        TreeNode wsNode = new TreeNode(constants.WorkingSets(), "images/workingset.gif");
-//        ExplorerNodeConfig.getWorkingSetItemsStructure(wsNode, conf.workingsets);
-//        pn.appendChild(wsNode);
         pn.setUserObject(conf);
         return pn;
     }
@@ -271,7 +223,7 @@ public class PackagesTree extends AbstractTree {
 					}
 				}, GWT.getModuleBaseURL() + "feed/package?name=" + pc.name + "&viewUrl="
 						+ CategoriesPanel.getSelfURL() + "&status=*");
-				centertabbedPanel.addTab(node.getText() + " [" + pc.name + "]", true, list, key);
+				centertabbedPanel.addTab(node.getText() + " [" + pc.name + "]", list, key);
 
 				final ServerPushNotification sub = new ServerPushNotification() {
 					public void messageReceived(PushResponse response) {

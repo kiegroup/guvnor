@@ -2133,4 +2133,6 @@ public interface Constants
     String SaveRepoInfo();
 
     String Inbox();
+    
+    String GlobalArea();
 }

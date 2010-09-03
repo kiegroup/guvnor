@@ -33,7 +33,6 @@ import org.drools.guvnor.client.messages.Constants;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
 import org.drools.guvnor.client.admin.RuleVerifierManager;
@@ -64,37 +63,37 @@ public class AdministrationTree extends AbstractTree {
 		int id = Integer.parseInt(widgetID);
 		switch (id) {
 		case 0:
-			if (!centertabbedPanel.showIfOpen("catman")) //NON-NLS
-				centertabbedPanel.addTab(constants.CategoryManager(), true,
-						new CategoryManager(), "catman"); //NON-NLS
+			if (!centertabbedPanel.showIfOpen("catman"))
+				centertabbedPanel.addTab(constants.CategoryManager(), 
+						new CategoryManager(), "catman"); 
 			break;
 		case 1:
-			if (!centertabbedPanel.showIfOpen("archman"))  //NON-NLS
-				centertabbedPanel.addTab(constants.ArchivedManager(), true,
+			if (!centertabbedPanel.showIfOpen("archman")) 
+				centertabbedPanel.addTab(constants.ArchivedManager(), 
 						new ArchivedAssetManager(centertabbedPanel),
-						"archman");      //NON-NLS
+						"archman");     
 			break;
 
 		case 2:
-			if (!centertabbedPanel.showIfOpen("stateman")) //NON-NLS
-				centertabbedPanel.addTab(constants.StateManager(), true,
+			if (!centertabbedPanel.showIfOpen("stateman")) 
+				centertabbedPanel.addTab(constants.StateManager(), 
 						new StateManager(), "stateman");
 			break;
 		case 3:
 			if (!centertabbedPanel.showIfOpen("bakman"))
-				centertabbedPanel.addTab(constants.ImportExport(), true,
+				centertabbedPanel.addTab(constants.ImportExport(), 
 						new BackupManager(), "bakman");
 			break;
 
 		case 4:
 			if (!centertabbedPanel.showIfOpen("errorLog"))
-				centertabbedPanel.addTab(constants.EventLog(), true,
+				centertabbedPanel.addTab(constants.EventLog(), 
 						new LogViewer(), "errorLog");
 			break;
 		case 5:
 			if (!centertabbedPanel.showIfOpen("securityPermissions"))
 				centertabbedPanel.addTab(constants.UserPermissionMappings(),
-						true, new PermissionViewer(),
+						new PermissionViewer(),
 						"securityPermissions");
 			break;
 		case 6:
@@ -113,7 +112,7 @@ public class AdministrationTree extends AbstractTree {
 		case 7:
             if (!centertabbedPanel.showIfOpen("ruleVerifierManager")) {
 				centertabbedPanel.addTab(constants.RulesVerificationManager(),
-						true, new RuleVerifierManager(),
+						new RuleVerifierManager(),
 						"ruleVerifierManager");
             }
             break;

@@ -444,7 +444,6 @@ public class SnapshotView extends Composite {
             vp.add( new HTML( "<i><small>" + constants.SnapshotListingFor() + this.snapInfo.name + "</small></i>" ) );
             vp.add( grid );
             centerPanel.addTab( constants.SnapshotItems(),
-                                true,
                                 vp,
                                 key );
         }

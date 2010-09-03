@@ -17,7 +17,6 @@
 package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.Inbox;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
@@ -58,8 +57,8 @@ public class CategoriesPanel extends GenericPanel {
             conf.headerTypes[0] = "class java.lang.String";
             conf.headerTypes[1] = "class java.util.Calendar";
             conf.rowsPerPage = 500;
-            AssetItemGrid.registerTableConf(conf, Inbox.RECENT_EDITED);
-            AssetItemGrid.registerTableConf(conf, Inbox.RECENT_VIEWED);
+            AssetItemGrid.registerTableConf(conf, ExplorerNodeConfig.RECENT_EDITED_ID);
+            AssetItemGrid.registerTableConf(conf, ExplorerNodeConfig.RECENT_VIEWED_ID);
 
             conf = new TableConfig();
             conf.headers = new String[3];
@@ -72,7 +71,7 @@ public class CategoriesPanel extends GenericPanel {
             conf.headerTypes[2] = "class java.lang.String";
             conf.rowsPerPage = 500;
 
-            AssetItemGrid.registerTableConf(conf, Inbox.INCOMING);
+            AssetItemGrid.registerTableConf(conf, ExplorerNodeConfig.INCOMING_ID);
     }
 
 
@@ -136,7 +135,7 @@ public class CategoriesPanel extends GenericPanel {
                     RepositoryServiceFactory.getService().loadInbox(inboxName, cb);
                 }
             });
-            centertabbedPanel.addTab(title, true, g, inboxName);
+            centertabbedPanel.addTab(title, g, inboxName);
         }
     }
 
@@ -184,7 +183,7 @@ public class CategoriesPanel extends GenericPanel {
                 }
             });
 
-            centertabbedPanel.addTab(((isState) ? constants.Status() : constants.CategoryColon()) + self.getText(), true, list, key);
+            centertabbedPanel.addTab(((isState) ? constants.Status() : constants.CategoryColon()) + self.getText(), list, key);
         }
     }
 

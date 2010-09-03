@@ -290,7 +290,7 @@ public class PackagesPanel extends GenericPanel {
 							}
 						}, GWT.getModuleBaseURL() + "feed/package?name=" + pc.name + "&viewUrl="
 								+ CategoriesPanel.getSelfURL() + "&status=*");
-						tabPanel.addTab(uo[1] + " [" + pc.name + "]", true, list, key);
+						tabPanel.addTab(uo[1] + " [" + pc.name + "]", list, key);
 
 						final ServerPushNotification sub = new ServerPushNotification() {
 							public void messageReceived(PushResponse response) {

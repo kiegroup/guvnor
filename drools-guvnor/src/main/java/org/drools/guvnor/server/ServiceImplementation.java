@@ -45,6 +45,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import javax.jcr.ItemExistsException;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
@@ -65,7 +66,7 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.factconstraints.server.factory.ConstraintsFactory;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.Inbox;
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
@@ -2015,6 +2016,36 @@ public class ServiceImplementation
     }
 
     @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public byte[] exportPackages(String packageName) {
+        if ( Contexts.isSessionContextActive() ) {
+            Identity.instance().checkPermission( new PackageNameType( packageName ),
+                                                 RoleTypes.PACKAGE_ADMIN );
+        }
+        log.info( "USER:" + getCurrentUserName() + " export package [name: " + packageName + "] ");
+   	
+        byte[] result = null;
+        
+        try {
+			result =  repository.dumpPackageFromRepositoryXml( packageName);
+		} catch (PathNotFoundException e) {
+			throw new RulesRepositoryException(e);
+		} catch (IOException e) {
+			throw new RulesRepositoryException(e);
+		} catch (RepositoryException e) {
+			throw new RulesRepositoryException(e);
+		}
+        return result;
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    //TODO: Not working. GUVNOR-475
+    public void importPackages(byte[] byteArray,  boolean importAsNew) {
+    	repository.importPackageToRepository( byteArray, importAsNew);
+    }
+    
+    @WebRemote
     public void rebuildSnapshots() throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new AdminType(),
@@ -2751,10 +2782,10 @@ public class ServiceImplementation
     public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException {
         try {
             UserInbox ib = new UserInbox( repository );
-            if ( inboxName.equals( Inbox.RECENT_VIEWED ) ) {
+            if ( inboxName.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
                 return UserInbox.toTable( ib.loadRecentOpened(),
                                           false );
-            } else if ( inboxName.equals( Inbox.RECENT_EDITED ) ) {
+            } else if ( inboxName.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) ) {
                 return UserInbox.toTable( ib.loadRecentEdited(),
                                           false );
             } else {

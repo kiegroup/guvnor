@@ -17,7 +17,6 @@
 package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.LoggedInUserInfo;
-import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -28,7 +27,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
 import com.google.gwt.user.client.History;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 
 import com.gwtext.client.widgets.QuickTips;
@@ -38,53 +36,39 @@ import com.gwtext.client.widgets.QuickTips;
  * This is the main part of the app that lays everything out. 
  */
 public class ExplorerLayoutManager {
-    private static Constants constants = GWT.create(Constants.class);
-
     /**
      * These are used to decide what to display or not.
      */
     protected static Capabilities capabilities;
 
-    private ExplorerViewCenterPanel centertabbedPanel;
-
     private DockPanel titlePanel;
     private StackLayoutPanel navigationStackLayoutPanel;
-    //private Panel mainPanel;
+    private ExplorerViewCenterPanel centertabbedPanel;
     private DockLayoutPanel mainPanel;
 
 
     public ExplorerLayoutManager(LoggedInUserInfo uif, Capabilities caps) {
-        //Field.setMsgTarget("side");
         QuickTips.init();
 
         Preferences.INSTANCE.loadPrefs(caps);
 
         String tok = History.getToken();
 
-        /**
-         * we use this to decide what to display.
-         */
+
+        //we use this to decide what to display.
         BookmarkInfo bi = handleHistoryToken(tok);
         ExplorerLayoutManager.capabilities = caps;
-        
-        
-        mainPanel = new DockLayoutPanel(Unit.EM);        
+                
         
         if (bi.showChrome) {
         	setupTitlePanel(uif);
         }
         setupExplorerViewCenterPanel();
-        setupNavigationPanels();
-      
-        
-        if (bi.showChrome) {
-            mainPanel.addNorth(titlePanel, 4);
-        }        
-        SplitLayoutPanel centerPanel = new SplitLayoutPanel();        
-        centerPanel.addWest(navigationStackLayoutPanel, 192);
-        centerPanel.add(centertabbedPanel.getPanel());        
-        mainPanel.add(centerPanel);
+        setupNavigationPanels();      
+        setupMainPanel(bi);
 
+        
+        //Open default widgets
         if (bi.loadAsset) {
             centertabbedPanel.openAsset(bi.assetId);
         }
@@ -94,7 +78,7 @@ public class ExplorerLayoutManager {
     /**
      * Create the title bar at the top of the application.
      * 
-     * @param constants the constant values to use
+     * @param LoggedInUserInfo uif
      */
     private void setupTitlePanel(LoggedInUserInfo uif) {  
         titlePanel = new DockPanel();
@@ -108,7 +92,6 @@ public class ExplorerLayoutManager {
     /**
      * Create the navigation panel for the west area.
      * 
-     * @param constants the constants with text
      */
     private void setupNavigationPanels() {  
         navigationStackLayoutPanel = new StackLayoutPanel(Unit.EM);
@@ -196,12 +179,27 @@ public class ExplorerLayoutManager {
     /**
      * Create the explorer view tabbed panel 
      * 
-     * @param constants the constant values to use
      */
     private void setupExplorerViewCenterPanel() {  
     	centertabbedPanel = new ExplorerViewCenterPanel();
     }   
    
+    /**
+     * Create the main panel.
+     * 
+     */
+    private void setupMainPanel(BookmarkInfo bi) {        
+        mainPanel = new DockLayoutPanel(Unit.EM);        
+        
+        if (bi.showChrome) {
+            mainPanel.addNorth(titlePanel, 4);
+        }        
+        SplitLayoutPanel centerPanel = new SplitLayoutPanel();        
+        centerPanel.addWest(navigationStackLayoutPanel, 192);
+        centerPanel.add(centertabbedPanel.getPanel());        
+        mainPanel.add(centerPanel);
+    }
+    
     public Panel getBaseLayout() {
         return mainPanel;
     }

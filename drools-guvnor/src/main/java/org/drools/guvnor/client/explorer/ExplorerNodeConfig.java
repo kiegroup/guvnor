@@ -203,24 +203,30 @@ public class ExplorerNodeConfig {
     }
 
     public static Tree getBrowseTree(Map<TreeItem, String> itemWidgets) {
+    	//TODO: TreeItem.setState(true) does not work as expected.
+    	
     	Tree tree = new Tree();    	
         tree.setAnimationEnabled(true);
  
         TreeItem root = tree.addItem(Util.getHeader(images.ruleAsset(), constants.AssetsTreeView()));
         //itemWidgets.put(root, constants.AssetsTreeView());
 
-        TreeItem option = root.addItem(Util.getHeader(images.find(), constants.Find()));
-        itemWidgets.put(option, FIND_ID);
+        TreeItem find = root.addItem(Util.getHeader(images.find(), constants.Find()));
+        itemWidgets.put(find, FIND_ID);
 
         TreeItem inbox = getInboxStructure(itemWidgets);
+        inbox.setState(true);
         root.addItem(inbox);
 
         if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
             TreeItem states = getStatesStructure(itemWidgets);
+            //states.setState(true);
             root.addItem(states);
         }
         
-        root.addItem(getCategoriesStructure(itemWidgets));
+        TreeItem categories = getCategoriesStructure(itemWidgets);
+        //categories.setState(true);
+        root.addItem(categories);
 
         return tree;
     }
@@ -245,12 +251,7 @@ public class ExplorerNodeConfig {
 
     public static TreeItem getCategoriesStructure(final Map<TreeItem, String> itemWidgets) {
         TreeItem byCategory = new TreeItem(Util.getHeader(images.chartOrganisation(), constants.ByCategory()));
-        //itemWidgets.put(byCategory, constants.Inbox());
-
-        doCategoryNode(byCategory,
-                        "/", 
-                        itemWidgets);
-
+        doCategoryNode(byCategory, "/", itemWidgets);
         return byCategory;
     }
 

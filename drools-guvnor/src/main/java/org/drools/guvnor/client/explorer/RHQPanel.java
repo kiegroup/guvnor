@@ -58,7 +58,7 @@ public class RHQPanel extends GenericPanel {
 
 			public void onClick(Node node, EventObject e) {
 				if (!centertabbedPanel.showIfOpen(title)) {
-					centertabbedPanel.addTab(title, true, content, title);
+					centertabbedPanel.addTab(title, content, title);
 				}
 			}
 		});

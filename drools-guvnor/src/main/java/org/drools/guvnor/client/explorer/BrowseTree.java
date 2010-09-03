@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.Inbox;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
@@ -44,31 +43,31 @@ public class BrowseTree extends AbstractTree {
 
 
     /** Table set up for the inboxes */
-    static {
-            TableConfig conf = new TableConfig();
-            conf.headers = new String[2];
-            conf.headers[0] = constants.Name();// "Name ";
-            conf.headers[1] = constants.Date();//"Date ";
-            conf.headerTypes = new String[2];
-            conf.headerTypes[0] = "class java.lang.String";
-            conf.headerTypes[1] = "class java.util.Calendar";
-            conf.rowsPerPage = 500;
-            AssetItemGrid.registerTableConf(conf, Inbox.RECENT_EDITED);
-            AssetItemGrid.registerTableConf(conf, Inbox.RECENT_VIEWED);
+	static {
+		TableConfig conf = new TableConfig();
+		conf.headers = new String[2];
+		conf.headers[0] = constants.Name();// "Name ";
+		conf.headers[1] = constants.Date();// "Date ";
+		conf.headerTypes = new String[2];
+		conf.headerTypes[0] = "class java.lang.String";
+		conf.headerTypes[1] = "class java.util.Calendar";
+		conf.rowsPerPage = 500;
+		AssetItemGrid.registerTableConf(conf, ExplorerNodeConfig.RECENT_EDITED_ID);
+		AssetItemGrid.registerTableConf(conf, ExplorerNodeConfig.RECENT_VIEWED_ID);
 
-            conf = new TableConfig();
-            conf.headers = new String[3];
-            conf.headers[0] = constants.Name();
-            conf.headers[1] = constants.Date();
-            conf.headers[2] = constants.From();
-            conf.headerTypes = new String[3];
-            conf.headerTypes[0] = "class java.lang.String";
-            conf.headerTypes[1] = "class java.util.Calendar";
-            conf.headerTypes[2] = "class java.lang.String";
-            conf.rowsPerPage = 500;
+		conf = new TableConfig();
+		conf.headers = new String[3];
+		conf.headers[0] = constants.Name();
+		conf.headers[1] = constants.Date();
+		conf.headers[2] = constants.From();
+		conf.headerTypes = new String[3];
+		conf.headerTypes[0] = "class java.lang.String";
+		conf.headerTypes[1] = "class java.util.Calendar";
+		conf.headerTypes[2] = "class java.lang.String";
+		conf.rowsPerPage = 500;
 
-            AssetItemGrid.registerTableConf(conf, Inbox.INCOMING);
-    }
+		AssetItemGrid.registerTableConf(conf, ExplorerNodeConfig.INCOMING_ID);
+	}
        
     public BrowseTree(ExplorerViewCenterPanel tabbedPanel) {
         super(tabbedPanel);
@@ -116,7 +115,7 @@ public class BrowseTree extends AbstractTree {
                     RepositoryServiceFactory.getService().loadInbox(widgetID, cb);
                 }
             });
-            centertabbedPanel.addTab(title, true, g, widgetID);
+            centertabbedPanel.addTab(title, g, widgetID);
         }
     }
 
@@ -124,7 +123,6 @@ public class BrowseTree extends AbstractTree {
      * open a state or category !
      */
     private void openState(String title, String widgetID) {
-
         if (!centertabbedPanel.showIfOpen(widgetID)) {
         	final String stateName = widgetID.substring(widgetID.indexOf("-") + 1);
        	    final AssetItemGrid list = new AssetItemGrid(createEditEvent(),
@@ -152,7 +150,7 @@ public class BrowseTree extends AbstractTree {
                 }
             });
 
-            centertabbedPanel.addTab(constants.Status() + title, true, list, widgetID);
+            centertabbedPanel.addTab(constants.Status() + title, list, widgetID);
         }
     }
 
@@ -186,7 +184,7 @@ public class BrowseTree extends AbstractTree {
                 }
             });
 
-            centertabbedPanel.addTab((constants.CategoryColon()) + title, true, list, widgetID);
+            centertabbedPanel.addTab((constants.CategoryColon()) + title, list, widgetID);
         }
     }
     

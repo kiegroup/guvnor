@@ -57,7 +57,7 @@ public class ProcessServerPanel extends GenericPanel {
                 @Override
                 public void onClick(Node node, EventObject eventObject) {
                   if (!centertabbedPanel.showIfOpen(tn.getId())) {
-                      centertabbedPanel.addTab(tn.getText(), true, openEmbedded(tn.getAttribute("url")), tn.getId());
+                      centertabbedPanel.addTab(tn.getText(), openEmbedded(tn.getAttribute("url")), tn.getId());
                   }
                 }
             });

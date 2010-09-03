@@ -20,8 +20,8 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo;
 import org.drools.repository.AssetItem;
 import org.drools.repository.UserInfo.InboxEntry;
-import static org.drools.guvnor.client.common.Inbox.*;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 
@@ -60,21 +60,21 @@ public class UserInbox {
      * Simply adds to the list...
      */
     public void addToRecentEdited(String assetId, String note) {
-        addToInbox(RECENT_EDITED, assetId, note, "self");
+        addToInbox(ExplorerNodeConfig.RECENT_EDITED_ID, assetId, note, "self");
     }
 
 
     public void addToRecentOpened(String assetId, String note) {
-        addToInbox(RECENT_VIEWED, assetId, note, "self");
+        addToInbox(ExplorerNodeConfig.RECENT_VIEWED_ID, assetId, note, "self");
     }
 
     public void addToIncoming(String assetId, String note, String userFrom) {
-        addToInbox(INCOMING, assetId, note, userFrom);
+        addToInbox(ExplorerNodeConfig.INCOMING_ID, assetId, note, userFrom);
     }
 
 
     private void addToInbox(String boxName, String assetId, String note, String userFrom) {
-        assert boxName.equals(RECENT_EDITED) || boxName.equals(RECENT_VIEWED) || boxName.equals(INCOMING);
+        assert boxName.equals(ExplorerNodeConfig.RECENT_EDITED_ID) || boxName.equals(ExplorerNodeConfig.RECENT_VIEWED_ID) || boxName.equals(ExplorerNodeConfig.INCOMING_ID);
         List<InboxEntry> entries =  removeAnyExisting(assetId, userInfo.readEntries(INBOX, boxName));     
 
         if (entries.size() >= MAX_RECENT_EDITED) {
@@ -99,28 +99,28 @@ public class UserInbox {
     }
 
     public List<InboxEntry> loadRecentEdited() {
-        return userInfo.readEntries(INBOX, RECENT_EDITED);
+        return userInfo.readEntries(INBOX, ExplorerNodeConfig.RECENT_EDITED_ID);
     }
 
     public List<InboxEntry> loadRecentOpened() {
-        return userInfo.readEntries(INBOX, RECENT_VIEWED);
+        return userInfo.readEntries(INBOX, ExplorerNodeConfig.RECENT_VIEWED_ID);
     }
 
     public List<InboxEntry> loadIncoming() {
-        return userInfo.readEntries(INBOX, INCOMING);
+        return userInfo.readEntries(INBOX, ExplorerNodeConfig.INCOMING_ID);
     }
 
     /**
      * Wipe them out, all of them.
      */
     public void clearAll() {
-        userInfo.clear(INBOX, RECENT_EDITED);
-        userInfo.clear(INBOX, RECENT_VIEWED);
-        userInfo.clear(INBOX, INCOMING);
+        userInfo.clear(INBOX, ExplorerNodeConfig.RECENT_EDITED_ID);
+        userInfo.clear(INBOX, ExplorerNodeConfig.RECENT_VIEWED_ID);
+        userInfo.clear(INBOX, ExplorerNodeConfig.INCOMING_ID);
     }
 
     public void clearIncoming() {
-        userInfo.clear(INBOX, INCOMING);
+        userInfo.clear(INBOX, ExplorerNodeConfig.INCOMING_ID);
     }
 
 
@@ -159,7 +159,7 @@ public class UserInbox {
 		ib.addToRecentOpened(item.getUUID(), item.getName());
 		List<InboxEntry> unreadIncoming = ib.removeAnyExisting(item.getUUID(),
 				ib.loadIncoming());
-		ib.userInfo.writeEntries(INBOX, INCOMING, unreadIncoming);
+		ib.userInfo.writeEntries(INBOX, ExplorerNodeConfig.INCOMING_ID, unreadIncoming);
 
 		ib.save();
 	}
