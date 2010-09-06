@@ -8,7 +8,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
   If by chance the slackers who maintain the other projects have left the build slight broken,
   you can skip the tests by doing:
 
-  "mvn -Dmaven.test.skip=true install" and it should work.
+  "mvn -DskipTests install" and it should work.
 
   -->
    <modelVersion>4.0.0</modelVersion>

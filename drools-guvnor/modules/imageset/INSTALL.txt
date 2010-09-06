@@ -23,7 +23,7 @@
    mvn install:install-file -DgroupId=org.drools.guvnor -DartifactId=rolodex-image-set -Dversion=0.1 -Dpackaging=jar -Dfile=modules/imageset/rolodex-image-set-0.1.jar
 
 8) build Guvnor
-   mvn -Dmaven.test.skip=true clean install
+   mvn -DskipTests clean install
 
 9) deploy
 
