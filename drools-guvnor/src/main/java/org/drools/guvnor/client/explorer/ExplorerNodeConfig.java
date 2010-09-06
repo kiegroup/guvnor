@@ -53,8 +53,10 @@ public class ExplorerNodeConfig {
     public static final String INCOMING_ID = "incoming";
 
     //QA
-    public static final String TEST_SCENARIOS = "testScenarios";
-    public static final String ANALYSIS = "analysis";
+    public static final String TEST_SCENARIOS_ID = "testScenarios";
+    public static final String TEST_SCENARIOS_ROOT_ID = "roottestScenarios";
+    public static final String ANALYSIS_ID = "analysis";
+    public static final String ANALYSIS_ROOT_ID = "rootanalysis";
         
     //Package snapshot
     public static final String PACKAGE_SNAPSHOTS = "packageSnapshots";
@@ -355,53 +357,14 @@ public class ExplorerNodeConfig {
         final TreeItem scenarios = new TreeItem(Util.getHeader(images.testManager(), constants.TestScenariosInPackages()));
         scenarios.addItem(new TreeItem(constants.PleaseWaitDotDotDot()));
         tree.addItem(scenarios);
-        tree.addOpenHandler(
-				new OpenHandler<TreeItem>() {
-					public void onOpen(
-							OpenEvent<TreeItem> event) {
-		                RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
-		                    public void onSuccess(PackageConfigData[] conf) {
-		                        for ( int i = 0; i < conf.length; i++ ) {
-		                            final PackageConfigData c = conf[i];
-		                            TreeItem pkg = new TreeItem(Util.getHeader(images.packages(), c.name));
-
-		                            scenarios.addItem(pkg);
-		                            pkg.setUserObject(c);	
-		                            itemWidgets.put(pkg, TEST_SCENARIOS);
-		                        }
-		                        scenarios.removeItem(scenarios.getChild(0));
-		                    }
-		                } );
-					}
-		});
-
+        itemWidgets.put(scenarios, TEST_SCENARIOS_ROOT_ID);
 		
         final TreeItem analysis = new TreeItem(Util.getHeader(images.analyze(), constants.Analysis()));
         analysis.addItem(new TreeItem(constants.PleaseWaitDotDotDot()));
+        itemWidgets.put(analysis, ANALYSIS_ROOT_ID);
 
         if (Preferences.getBooleanPref("verifier")) {
         	tree.addItem(analysis);
-            tree.addOpenHandler(
-    				new OpenHandler<TreeItem>() {
-    					public void onOpen(
-    							OpenEvent<TreeItem> event) {
-    				           RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
-    				                public void onSuccess(PackageConfigData[] conf) {
-
-    				                    for ( int i = 0; i < conf.length; i++ ) {
-    				                        final PackageConfigData c = conf[i];
-    			                            TreeItem pkg = new TreeItem(Util.getHeader(images.packages(), c.name));
-
-    				                        analysis.addItem(pkg);
-    			                            pkg.setUserObject(c);	
-    			                            itemWidgets.put(pkg, ANALYSIS);
-     				                    }
-    				                    analysis.removeItem(analysis.getChild(0));
-    				                }
-    				            } );
-    					}
-    		});        
-        	
         }
 
         return tree;

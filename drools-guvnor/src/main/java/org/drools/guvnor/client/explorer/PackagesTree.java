@@ -56,6 +56,12 @@ public class PackagesTree extends AbstractTree {
         this.name = constants.KnowledgeBases();
         this.image = images.packages();
 
+    	mainTree = new Tree();    	
+    	mainTree.setAnimationEnabled(true);
+    	//lazy loaded to easy startup wait time.
+        //setupPackagesTree(this.centertabbedPanel);
+        mainTree.addSelectionHandler(this);
+
 
         //these panels are lazy loaded to easy startup wait time.
 /*        addListener(new PanelListenerAdapter() {
@@ -65,21 +71,17 @@ public class PackagesTree extends AbstractTree {
         });
 
         add(packagesPanel);
-        */
-    	mainTree = new Tree();    	
-    	mainTree.setAnimationEnabled(true);
-        setupPackagesTree(tabbedPanel);
-        mainTree.addSelectionHandler(this);
-
+        */    
     }
-/*
+
     public void loadPackageList() {
         if (!packagesLoaded) {
-            packagesPanel.add(packageExplorer(centertabbedPanel));
+            setupPackagesTree(this.centertabbedPanel);
+            mainTree.addSelectionHandler(this);
             packagesLoaded = true;
         }
     }
-*/
+
     public void refreshTree() {
     	mainTree.clear(); 
     	itemWidgets.clear();

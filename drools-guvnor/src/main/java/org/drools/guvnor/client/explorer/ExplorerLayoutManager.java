@@ -26,6 +26,8 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.dom.client.Style.Unit;
 
@@ -112,7 +114,7 @@ public class ExplorerLayoutManager {
         //Knowledge Bases (Packages)
         if (shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
         	DockLayoutPanel packageDockLayoutPanel = new DockLayoutPanel(Unit.EM);
-            PackagesTree packagesTreeItem = new PackagesTree(centertabbedPanel);
+            final PackagesTree packagesTreeItem = new PackagesTree(centertabbedPanel);
             ScrollPanel packagesTreeItemPanel = new ScrollPanel(packagesTreeItem.getTree());
             
             if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_CREATE_NEW_ASSET)) {
@@ -121,18 +123,13 @@ public class ExplorerLayoutManager {
             packageDockLayoutPanel.add(packagesTreeItemPanel);
             
             navigationStackLayoutPanel.add(packageDockLayoutPanel, packagesTreeItem.getHeaderHTML(), 2);
-                  	
-        	
-            //final PackagesPanel pp = new PackagesPanel(centertabbedPanel);
-            //accordion.add(createMailItem(images), mailHeader, true);
-            /*
+  
+            //lazy loaded to easy startup wait time.
             DeferredCommand.addCommand(new Command() {
                 public void execute() {
-                    pp.loadPackageList();
+                	packagesTreeItem.loadPackageList();
                 }
-            });
-            */
-
+            });         
         }
 
         //QA

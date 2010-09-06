@@ -17,23 +17,29 @@
 package org.drools.guvnor.client.explorer;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 
 import com.gwtext.client.util.Format;
 
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.images.Images;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.qa.AnalysisView;
 import org.drools.guvnor.client.qa.ScenarioPackageView;
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 
-public class QATree extends AbstractTree {
+public class QATree extends AbstractTree implements OpenHandler<TreeItem> {
     private static Constants constants = GWT.create(Constants.class);
     private static Images images = (Images) GWT.create(Images.class);       
 
@@ -48,6 +54,7 @@ public class QATree extends AbstractTree {
 
         //Add Selection listener
         mainTree.addSelectionHandler(this);
+        mainTree.addOpenHandler((OpenHandler<TreeItem>)this);       
     }
     
     public void onSelection(SelectionEvent<TreeItem> event) {
@@ -57,8 +64,8 @@ public class QATree extends AbstractTree {
 			PackageConfigData pc = (PackageConfigData) item.getUserObject();
 			String id = itemWidgets.get(item);
 			
-			if (ExplorerNodeConfig.TEST_SCENARIOS.equals(id)) {
-				if (!centertabbedPanel.showIfOpen("scenarios" + pc.uuid)) { // NON-NLS
+			if (ExplorerNodeConfig.TEST_SCENARIOS_ID.equals(id)) {
+				if (!centertabbedPanel.showIfOpen("scenarios" + pc.uuid)) { 
 					final EditItemEvent edit = new EditItemEvent() {
 						public void open(String key) {
 							centertabbedPanel.openAsset(key);
@@ -77,7 +84,7 @@ public class QATree extends AbstractTree {
 							pc.uuid, pc.name, edit, centertabbedPanel),
 							"scenarios" + pc.uuid);
 				}
-			} else if (ExplorerNodeConfig.ANALYSIS.equals(id)) {
+			} else if (ExplorerNodeConfig.ANALYSIS_ID.equals(id)) {
                 if (!centertabbedPanel.showIfOpen("analysis" + pc.uuid)) { //NON-NLS
                     final EditItemEvent edit = new EditItemEvent() {
                         public void open(String key) {
@@ -102,4 +109,64 @@ public class QATree extends AbstractTree {
 			}
         }
     }  
+    
+	public void onOpen(OpenEvent<TreeItem> event) {
+		final TreeItem node = event.getTarget();
+		if (ExplorerNodeConfig.TEST_SCENARIOS_ROOT_ID.equals(itemWidgets.get(node))) { 
+            RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
+                public void onSuccess(PackageConfigData[] conf) {
+                    node.removeItems();
+                    removeTestScenarioIDs(itemWidgets);
+
+                    for ( int i = 0; i < conf.length; i++ ) {
+                        final PackageConfigData c = conf[i];
+                        TreeItem pkg = new TreeItem(Util.getHeader(images.packages(), c.name));
+
+                        node.addItem(pkg);
+                        pkg.setUserObject(c);	
+                        itemWidgets.put(pkg, ExplorerNodeConfig.TEST_SCENARIOS_ID);
+                    }
+                    //scenarios.removeItem(scenarios.getChild(0));
+                }
+            } );
+		} else if (ExplorerNodeConfig.ANALYSIS_ROOT_ID.equals(itemWidgets.get(node))) { 
+	           RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
+	                public void onSuccess(PackageConfigData[] conf) {
+	                    node.removeItems();
+	                    removeAnalysisIDs(itemWidgets);
+	                    for ( int i = 0; i < conf.length; i++ ) {
+	                        final PackageConfigData c = conf[i];
+                           TreeItem pkg = new TreeItem(Util.getHeader(images.packages(), c.name));
+
+                           node.addItem(pkg);
+                           pkg.setUserObject(c);	
+                           itemWidgets.put(pkg, ExplorerNodeConfig.ANALYSIS_ID);
+	                    }
+	                }
+	            } );
+		}		
+	}
+	
+	private void removeTestScenarioIDs(Map<TreeItem, String> itemWidgets) {
+		Iterator<TreeItem> it = itemWidgets.keySet().iterator();		
+		while(it.hasNext()) {
+			TreeItem item = (TreeItem)it.next();
+		    String id = itemWidgets.get(item);
+			if(ExplorerNodeConfig.TEST_SCENARIOS_ID.equals(id)) {
+				it.remove();
+			}			
+		}
+	}
+	
+	
+	private void removeAnalysisIDs(Map<TreeItem, String> itemWidgets) {
+		Iterator<TreeItem> it = itemWidgets.keySet().iterator();		
+		while(it.hasNext()) {
+			TreeItem item = (TreeItem)it.next();
+		    String id = itemWidgets.get(item);
+			if(ExplorerNodeConfig.ANALYSIS_ID.equals(id)) {
+				it.remove();
+			}			
+		}
+	}
 }
