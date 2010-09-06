@@ -37,6 +37,10 @@ public abstract class AbstractTree implements SelectionHandler<TreeItem> {
 		return Util.getHeaderHTML(image, name);
 	}
 
+	public void refreshTree() {
+		
+	}
+	
 	protected void launchWizard(String format, String title, boolean showCats) {
 		NewAssetWizard pop = new NewAssetWizard(new EditItemEvent() {
 			public void open(String key) {

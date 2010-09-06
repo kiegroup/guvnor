@@ -19,7 +19,6 @@ package org.drools.guvnor.client.explorer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.common.Util;
@@ -41,7 +40,6 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
-import com.gwtext.client.widgets.tree.TreeNode;
 
 
 
@@ -68,7 +66,9 @@ public class PackagesTree extends AbstractTree {
 
         add(packagesPanel);
         */
-        mainTree = packageExplorer(tabbedPanel);
+    	mainTree = new Tree();    	
+    	mainTree.setAnimationEnabled(true);
+        setupPackagesTree(tabbedPanel);
         mainTree.addSelectionHandler(this);
 
     }
@@ -80,22 +80,19 @@ public class PackagesTree extends AbstractTree {
         }
     }
 */
-    private void refreshPackageTree() {
-    	//TODO (JLIU):
-        //packagesPanel.remove(1);
-        //packagesPanel.add(packageExplorer(centertabbedPanel));
+    public void refreshTree() {
+    	mainTree.clear(); 
+    	itemWidgets.clear();
+    	setupPackagesTree(centertabbedPanel);
     }
 
-    private Tree packageExplorer(final ExplorerViewCenterPanel tabPanel) {
-    	Tree rootNode = new Tree();    	
-    	rootNode.setAnimationEnabled(true);
- 
-    	TreeItem packageRootNode = rootNode.addItem(Util.getHeader(images.chartOrganisation(), constants.Packages()));
+    private void setupPackagesTree(final ExplorerViewCenterPanel tabPanel) {
+    	TreeItem packageRootNode = mainTree.addItem(Util.getHeader(images.chartOrganisation(), constants.Packages()));
         packageRootNode.setState(true);
 		loadPackages(packageRootNode, itemWidgets);
-		rootNode.addItem(packageRootNode);
+		mainTree.addItem(packageRootNode);
 
-		loadGlobal(rootNode, itemWidgets);
+		loadGlobal(mainTree, itemWidgets);
 
 /*            @Override
             public void onCollapseNode(final TreeItem node) {
@@ -108,7 +105,7 @@ public class PackagesTree extends AbstractTree {
                 }
             }*/
 
-        return rootNode;
+        //return mainTree;
     }
 
     private void loadPackages(final TreeItem root, final Map<TreeItem, String> itemWidgets) {
@@ -179,13 +176,6 @@ public class PackagesTree extends AbstractTree {
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem node = event.getSelectedItem();
         //String widgetID = itemWidgets.get(node);
-         
-/*        //this refreshes the list.
-        if (content.equals(ExplorerNodeConfig.CATEGORY_ID)) { 
-            //self.getParentNode().replaceChild(ExplorerNodeConfig.getCategoriesStructure(), self);
-        } else if (content.equals(ExplorerNodeConfig.STATES_ID)) {   
-            //self.getParentNode().replaceChild(ExplorerNodeConfig.getStatesStructure(), self);
-        } else */
         	
 		if (node.getUserObject() instanceof PackageConfigData
 				&& !"global".equals(((PackageConfigData) node.getUserObject()).name)) {
@@ -196,7 +186,7 @@ public class PackagesTree extends AbstractTree {
 			centertabbedPanel.openPackageEditor(uuid, new Command() {
 				public void execute() {
 					// refresh the package tree.
-					refreshPackageTree();
+					refreshTree();
 				}
 			});
 		} else if (node.getUserObject() instanceof Object[]) {

@@ -47,7 +47,7 @@ public class PackagesNewMenu {
             public void execute() {
                 NewPackageWizard wiz = new NewPackageWizard(new Command() {
                     public void execute() {
-                        //refreshPackageTree();
+                    	manager.refreshTree();
                     }
                 });
                 wiz.show();            }

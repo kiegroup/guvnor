@@ -44,8 +44,10 @@ public class ExplorerNodeConfig {
 
     //Browse
     public static final String FIND_ID = "find";
+    public static String     CATEGORY_ROOT_ID = "rootcategory";                                 //NON-NLS
     public static String     CATEGORY_ID = "category";                                 //NON-NLS
     public static String     STATES_ID   = "states";                                   //NON-NLS
+    public static String     STATES_ROOT_ID   = "rootstates";                                   //NON-NLS
     public static final String RECENT_EDITED_ID = "recentEdited";
     public static final String RECENT_VIEWED_ID = "recentViewed";
     public static final String INCOMING_ID = "incoming";
@@ -202,11 +204,8 @@ public class ExplorerNodeConfig {
         return tree;
     }
 
-    public static Tree getBrowseTree(Map<TreeItem, String> itemWidgets) {
+    public static void setupBrowseTree(Tree tree, Map<TreeItem, String> itemWidgets) {
     	//TODO: TreeItem.setState(true) does not work as expected.
-    	
-    	Tree tree = new Tree();    	
-        tree.setAnimationEnabled(true);
  
         TreeItem root = tree.addItem(Util.getHeader(images.ruleAsset(), constants.AssetsTreeView()));
         //itemWidgets.put(root, constants.AssetsTreeView());
@@ -219,16 +218,19 @@ public class ExplorerNodeConfig {
         root.addItem(inbox);
 
         if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
-            TreeItem states = getStatesStructure(itemWidgets);
+            final TreeItem byStatus = new TreeItem(Util.getHeader(images.statusSmall(), constants.ByStatus()));
+            itemWidgets.put(byStatus, STATES_ROOT_ID);
+            setupStatesStructure(byStatus, itemWidgets);
             //states.setState(true);
-            root.addItem(states);
+            root.addItem(byStatus);
         }
         
-        TreeItem categories = getCategoriesStructure(itemWidgets);
-        //categories.setState(true);
-        root.addItem(categories);
+        TreeItem byCategory = new TreeItem(Util.getHeader(images.chartOrganisation(), constants.ByCategory()));
+        itemWidgets.put(byCategory, CATEGORY_ROOT_ID);
 
-        return tree;
+        setupCategoriesStructure(byCategory, itemWidgets);
+        //categories.setState(true);
+        root.addItem(byCategory);
     }
 
     private static TreeItem getInboxStructure(Map<TreeItem, String> itemWidgets) {
@@ -249,10 +251,8 @@ public class ExplorerNodeConfig {
         return inbox;
     }
 
-    public static TreeItem getCategoriesStructure(final Map<TreeItem, String> itemWidgets) {
-        TreeItem byCategory = new TreeItem(Util.getHeader(images.chartOrganisation(), constants.ByCategory()));
+    public static void setupCategoriesStructure(TreeItem byCategory, final Map<TreeItem, String> itemWidgets) {
         doCategoryNode(byCategory, "/", itemWidgets);
-        return byCategory;
     }
 
 	private static void doCategoryNode(final TreeItem treeItem,
@@ -333,9 +333,7 @@ public class ExplorerNodeConfig {
 		treeNode.removeItems();
 	}
 
-    public static TreeItem getStatesStructure(final Map<TreeItem, String> itemWidgets) {
-        final TreeItem byStatus = new TreeItem(Util.getHeader(images.statusSmall(), constants.ByStatus()));
-        
+    public static void setupStatesStructure(final TreeItem byStatus, final Map<TreeItem, String> itemWidgets) {
         RepositoryServiceFactory.getService().listStates( new GenericCallback<String[]>() {
             public void onSuccess(String[] value) {
                 for ( int i = 0; i < value.length; i++ ) {
@@ -348,8 +346,6 @@ public class ExplorerNodeConfig {
                 }
             }
         } );
-
-        return byStatus;
     }
 
     public static Tree getQAStructure(final Map<TreeItem, String> itemWidgets) {

@@ -63,6 +63,8 @@ public class DeploymentTree extends AbstractTree {
 							RepositoryServiceFactory.getService().listSnapshots(conf.name,
 									new GenericCallback<SnapshotInfo[]>() {
 										public void onSuccess(SnapshotInfo[] snaps) {
+											node.removeItems();
+											//node.removeItem(node.getChild(0));
 											for (final SnapshotInfo snapInfo : snaps) {
 												TreeItem snap = new TreeItem(snapInfo.name);
 												//snap.setTooltip(snapInfo.comment);
@@ -70,7 +72,6 @@ public class DeploymentTree extends AbstractTree {
 												snap.setUserObject(new Object[] { snapInfo, conf });
 												node.addItem(snap);
 											}
-											node.removeItem(node.getChild(0));
 										}
 									});
 						}

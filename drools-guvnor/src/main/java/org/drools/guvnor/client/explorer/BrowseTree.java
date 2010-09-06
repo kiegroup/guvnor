@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.explorer;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.GenericCallback;
@@ -28,14 +29,17 @@ import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.images.Images;
 import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 
 
-public class BrowseTree extends AbstractTree {
+public class BrowseTree extends AbstractTree implements OpenHandler<TreeItem> {
     private static Constants constants = GWT.create(Constants.class);
     private static Images images = (Images) GWT.create(Images.class);       
 
@@ -74,23 +78,23 @@ public class BrowseTree extends AbstractTree {
         this.name = constants.Browse();
         this.image = images.ruleAsset();
         
-        mainTree = ExplorerNodeConfig.getBrowseTree(itemWidgets);
-
-        //Add Selection listener
+    	mainTree = new Tree();    	
+    	mainTree.setAnimationEnabled(true);
+    	ExplorerNodeConfig.setupBrowseTree(mainTree, itemWidgets);
         mainTree.addSelectionHandler(this);
+        mainTree.addOpenHandler((OpenHandler<TreeItem>)this);       
     }
 
+    public void refreshTree() {
+    	mainTree.clear();    	
+    	itemWidgets.clear();
+    	ExplorerNodeConfig.setupBrowseTree(mainTree, itemWidgets);
+    }
+    
     // Show the associated widget in the deck panel
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem item = event.getSelectedItem();
         String widgetID = itemWidgets.get(item);
-         
-/*        //this refreshes the list.
-        if (content.equals(ExplorerNodeConfig.CATEGORY_ID)) { 
-            //self.getParentNode().replaceChild(ExplorerNodeConfig.getCategoriesStructure(), self);
-        } else if (content.equals(ExplorerNodeConfig.STATES_ID)) {   
-            //self.getParentNode().replaceChild(ExplorerNodeConfig.getStatesStructure(), self);
-        } else */
         	
         if (widgetID.equals(ExplorerNodeConfig.FIND_ID)) {     
             centertabbedPanel.openFind();
@@ -105,6 +109,41 @@ public class BrowseTree extends AbstractTree {
         }
     }  
 
+	public void onOpen(OpenEvent<TreeItem> event) {
+		final TreeItem node = event.getTarget();
+		if (ExplorerNodeConfig.STATES_ROOT_ID.equals(itemWidgets.get(node))) { 
+			removeStateIDs(itemWidgets);
+			node.removeItems();
+			ExplorerNodeConfig.setupStatesStructure(node, itemWidgets);
+		} else if (ExplorerNodeConfig.CATEGORY_ROOT_ID.equals(itemWidgets.get(node))) { 
+			removeCategoryIDs(itemWidgets);
+			node.removeItems();
+			ExplorerNodeConfig.setupCategoriesStructure(node, itemWidgets);
+		}		
+	}
+		
+	private void removeStateIDs(Map<TreeItem, String> itemWidgets) {
+		Iterator<TreeItem> it = itemWidgets.keySet().iterator();		
+		while(it.hasNext()) {
+			TreeItem item = (TreeItem)it.next();
+		    String id = itemWidgets.get(item);
+			if(id.startsWith(ExplorerNodeConfig.STATES_ID + "-")) {
+				it.remove();
+			}			
+		}
+	}
+	
+	private void removeCategoryIDs(Map<TreeItem, String> itemWidgets) {
+		Iterator<TreeItem> it = itemWidgets.keySet().iterator();		
+		while(it.hasNext()) {
+			TreeItem item = (TreeItem)it.next();
+		    String id = itemWidgets.get(item);
+			if(id.startsWith(ExplorerNodeConfig.CATEGORY_ID + "-")) {
+				it.remove();
+			}			
+		}	
+	}
+	
     /**
      * Show the inbox of the given name.
      */
