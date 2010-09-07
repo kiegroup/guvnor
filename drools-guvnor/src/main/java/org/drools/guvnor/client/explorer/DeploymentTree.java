@@ -30,11 +30,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
 
-public class DeploymentTree extends AbstractTree {
+public class DeploymentTree extends AbstractTree implements OpenHandler<TreeItem> {
     private static Constants constants = GWT.create(Constants.class);
     private static Images images = (Images) GWT.create(Images.class);       
 
@@ -51,32 +50,7 @@ public class DeploymentTree extends AbstractTree {
 
         //Add Selection listener
         mainTree.addSelectionHandler(this);
-        mainTree.addOpenHandler(
-				new OpenHandler<TreeItem>() {
-					public void onOpen(OpenEvent<TreeItem> event) {
-						final TreeItem node = event.getTarget();
-						if (ExplorerNodeConfig.PACKAGE_SNAPSHOTS.equals(itemWidgets.get(node))) { 
-							return;
-						}
-						final PackageConfigData conf = (PackageConfigData) node.getUserObject();
-						if (conf != null) {
-							RepositoryServiceFactory.getService().listSnapshots(conf.name,
-									new GenericCallback<SnapshotInfo[]>() {
-										public void onSuccess(SnapshotInfo[] snaps) {
-											node.removeItems();
-											//node.removeItem(node.getChild(0));
-											for (final SnapshotInfo snapInfo : snaps) {
-												TreeItem snap = new TreeItem(snapInfo.name);
-												//snap.setTooltip(snapInfo.comment);
-												//snap.setText(snapInfo.name);
-												snap.setUserObject(new Object[] { snapInfo, conf });
-												node.addItem(snap);
-											}
-										}
-									});
-						}
-					}
-				});
+        mainTree.addOpenHandler((OpenHandler<TreeItem>)this);       
     }
     
     public void onSelection(SelectionEvent<TreeItem> event) {
@@ -98,5 +72,26 @@ public class DeploymentTree extends AbstractTree {
             });
         }
     }
-
+    
+	public void onOpen(OpenEvent<TreeItem> event) {
+		final TreeItem node = event.getTarget();
+		if (ExplorerNodeConfig.PACKAGE_SNAPSHOTS.equals(itemWidgets.get(node))) { 
+			return;
+		}
+		final PackageConfigData conf = (PackageConfigData) node.getUserObject();
+		if (conf != null) {
+			RepositoryServiceFactory.getService().listSnapshots(conf.name,
+					new GenericCallback<SnapshotInfo[]>() {
+						public void onSuccess(SnapshotInfo[] snaps) {
+							node.removeItems();
+							for (final SnapshotInfo snapInfo : snaps) {
+								TreeItem snap = new TreeItem(snapInfo.name);
+								//snap.setTooltip(snapInfo.comment);
+								snap.setUserObject(new Object[]{snapInfo, conf});
+								node.addItem(snap);
+							}
+						}
+					});
+		}		
+	}
 }
