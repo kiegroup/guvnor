@@ -35,6 +35,7 @@ import org.drools.RuleBase;
 import org.drools.SessionConfiguration;
 import org.drools.WorkingMemoryEntryPoint;
 import org.drools.common.InternalFactHandle;
+import org.drools.common.InternalKnowledgeRuntime;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.common.NodeMemory;
@@ -63,7 +64,6 @@ import org.drools.runtime.Calendars;
 import org.drools.runtime.Channel;
 import org.drools.runtime.Environment;
 import org.drools.runtime.ExitPoint;
-import org.drools.runtime.KnowledgeRuntime;
 import org.drools.runtime.ObjectFilter;
 import org.drools.runtime.impl.ExecutionResultImpl;
 import org.drools.runtime.process.InternalProcessRuntime;
@@ -502,12 +502,12 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public KnowledgeRuntime getKnowledgeRuntime() {
+    public InternalKnowledgeRuntime getKnowledgeRuntime() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    public void setKnowledgeRuntime(KnowledgeRuntime kruntime) {
+    public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime) {
         // TODO Auto-generated method stub
         
     }
