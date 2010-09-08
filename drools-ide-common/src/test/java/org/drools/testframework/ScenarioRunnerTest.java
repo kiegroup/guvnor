@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.drools.Cheese;
 import org.drools.Cheesery;
+import org.drools.Cheesery.Maturity;
 import org.drools.OuterFact;
 import org.drools.Person;
 import org.drools.WorkingMemory;
@@ -35,6 +36,8 @@ import org.drools.base.mvel.DroolsMVELFactory;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
+import org.drools.ide.common.client.modeldriven.testing.CallFieldValue;
+import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Expectation;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
@@ -1502,4 +1505,82 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue(listChesse.getCheeses().contains(f3));
   
     }
+    public void testCallMethodNoArgumentOnFact() throws Exception {
+
+        ScenarioRunner runner = new ScenarioRunner( new Scenario(),
+                                                    null,
+                                                    new MockWorkingMemory() );
+        Cheesery listChesse = new Cheesery();
+        listChesse.setTotalAmount(1000);
+		runner.populatedData.put("cheese", listChesse);
+        CallMethod mCall = new CallMethod();
+        mCall.variable="cheese";
+        mCall.methodName="setTotalAmountToZero";
+        runner.executeMethodOnObject(mCall, listChesse);
+        assertTrue(listChesse.getTotalAmount()==0);
+    }
+    
+    public void testCallMethodOnStandardArgumentOnFact() throws Exception {
+
+        ScenarioRunner runner = new ScenarioRunner( new Scenario(),
+                                                    null,
+                                                    new MockWorkingMemory() );
+        Cheesery listChesse = new Cheesery();
+        listChesse.setTotalAmount(1000);
+		runner.populatedData.put("cheese", listChesse);
+        CallMethod mCall = new CallMethod();
+        mCall.variable="cheese";
+        mCall.methodName="addToTotalAmount";
+        CallFieldValue field = new CallFieldValue();
+        field.value="5";
+        mCall.addFieldValue(field);
+        runner.executeMethodOnObject(mCall, listChesse);
+        assertTrue(listChesse.getTotalAmount()==1005);
+    }
+    
+    public void testCallMethodOnClassArgumentOnFact() throws Exception {
+
+        ScenarioRunner runner = new ScenarioRunner( new Scenario(),
+                                                    null,
+                                                    new MockWorkingMemory() );
+        Cheesery listChesse = new Cheesery();
+        listChesse.setTotalAmount(1000);
+		runner.populatedData.put("cheese", listChesse);
+        Maturity m = new Maturity();
+        runner.populatedData.put( "m",
+                                  m );
+        CallMethod mCall = new CallMethod();
+        mCall.variable="cheese";
+        mCall.methodName="setGoodMaturity";
+        CallFieldValue field = new CallFieldValue();
+        field.value="=m";
+        mCall.addFieldValue(field);
+        runner.executeMethodOnObject(mCall, listChesse);
+        assertTrue(listChesse.getMaturity().equals(m));
+        assertTrue(listChesse.getMaturity()==m);
+    }
+    public void testCallMethodOnClassArgumentAndOnArgumentStandardOnFact() throws Exception {
+
+        ScenarioRunner runner = new ScenarioRunner( new Scenario(),
+                                                    null,
+                                                    new MockWorkingMemory() );
+        Cheesery listChesse = new Cheesery();
+        listChesse.setTotalAmount(1000);
+		runner.populatedData.put("cheese", listChesse);
+        Maturity m = new Maturity("veryYoung");
+        runner.populatedData.put( "m",
+                                  m );
+        CallMethod mCall = new CallMethod();
+        mCall.variable="cheese";
+        mCall.methodName="setAgeToMaturity";
+        CallFieldValue field = new CallFieldValue();
+        field.value="=m";
+        mCall.addFieldValue(field);
+        CallFieldValue field2 = new CallFieldValue();
+        field2.value="veryold";
+        mCall.addFieldValue(field2);
+        runner.executeMethodOnObject(mCall, listChesse);
+        assertTrue(m.getAge().equals("veryold"));
+    }
+    
 }
