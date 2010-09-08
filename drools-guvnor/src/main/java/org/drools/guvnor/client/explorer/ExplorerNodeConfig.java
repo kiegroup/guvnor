@@ -134,15 +134,11 @@ public class ExplorerNodeConfig {
         return pkg;
     }
     
-    public static Tree getDeploymentTree(Map<TreeItem, String> itemWidgets) {
-    	Tree tree = new Tree();    	
-        tree.setAnimationEnabled(true);
-
+    public static void setupDeploymentTree(Tree tree, Map<TreeItem, String> itemWidgets) {
         TreeItem root = tree.addItem(Util.getHeader(images.chartOrganisation(), constants.PackageSnapshots()));
+        root.setState(true);
         itemWidgets.put(root, PACKAGE_SNAPSHOTS);
         deploymentListPackages(root);
-
-        return tree;
     }
     
 	private static void deploymentListPackages(final TreeItem root) {

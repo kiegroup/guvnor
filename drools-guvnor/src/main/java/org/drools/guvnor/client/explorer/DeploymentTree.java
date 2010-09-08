@@ -30,6 +30,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
 
@@ -46,11 +47,17 @@ public class DeploymentTree extends AbstractTree implements OpenHandler<TreeItem
         this.name = constants.PackageSnapshots();
         this.image = images.deploy();
         
-        mainTree = ExplorerNodeConfig.getDeploymentTree(itemWidgets);
-
-        //Add Selection listener
+    	mainTree = new Tree();    	
+    	mainTree.setAnimationEnabled(true);
+        ExplorerNodeConfig.setupDeploymentTree(mainTree, itemWidgets);
         mainTree.addSelectionHandler(this);
-        mainTree.addOpenHandler((OpenHandler<TreeItem>)this);       
+        mainTree.addOpenHandler((OpenHandler<TreeItem>)this);      
+    }    
+
+    public void refreshTree() {
+    	mainTree.clear(); 
+    	itemWidgets.clear();
+    	ExplorerNodeConfig.setupDeploymentTree(mainTree, itemWidgets);
     }
     
     public void onSelection(SelectionEvent<TreeItem> event) {

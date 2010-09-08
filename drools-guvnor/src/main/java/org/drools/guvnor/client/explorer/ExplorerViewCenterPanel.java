@@ -403,30 +403,27 @@ public class ExplorerViewCenterPanel {
         }
     }
 
-    public void openSnapshot(final SnapshotInfo snap) {
-        //make this refresh the 'snap'
+	public void openSnapshot(final SnapshotInfo snap) {
+		// make this refresh the 'snap'
 
-        if (!showIfOpen( snap.name + snap.uuid)) {
-            LoadingPopup.showMessage(constants.LoadingSnapshot());
-            RepositoryServiceFactory.getService().loadPackageConfig(snap.uuid,
-                                                                    new GenericCallback<PackageConfigData>() {
-                                                                        public void onSuccess(PackageConfigData conf) {
-                                                                             addTab(Format.format(constants.SnapshotLabel(),
-                                                                                                  snap.name),
-                                                                                                  new SnapshotView(snap,
-                                                                                                  conf,
-                                                                                                  new Command() {
-                                                                                                      public void execute() {
-                                                                                                          close( snap.name + snap.uuid );
-                                                                                                      }
-                                                                                                  },
-                                                                                                  ExplorerViewCenterPanel.this),
-                                                                                     snap.name + snap.uuid);
-                                                                             LoadingPopup.close();
-                                                                         }
-                                                                     } );
+		if (!showIfOpen(snap.name + snap.uuid)) {
+			LoadingPopup.showMessage(constants.LoadingSnapshot());
+			RepositoryServiceFactory.getService().loadPackageConfig(snap.uuid,
+					new GenericCallback<PackageConfigData>() {
+						public void onSuccess(PackageConfigData conf) {
+							addTab(Format.format(constants.SnapshotLabel(),
+									snap.name), new SnapshotView(snap, conf,
+									new Command() {
+										public void execute() {
+											close(snap.name + snap.uuid);
+										}
+									}, ExplorerViewCenterPanel.this), snap.name
+									+ snap.uuid);
+							LoadingPopup.close();
+						}
+					});
 
-        }
-    }
+		}
+	}
 
 }

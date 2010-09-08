@@ -450,7 +450,7 @@ public class SnapshotView extends Composite {
 
     }
 
-    public static void showNewSnapshot() {
+    public static void showNewSnapshot(final Command refreshCmd) {
         final FormStylePopup pop = new FormStylePopup( "images/snapshot.png",
                                                        ((Constants) GWT.create( Constants.class )).NewSnapshot() );
         final RulePackageSelector sel = new RulePackageSelector();
@@ -466,7 +466,7 @@ public class SnapshotView extends Composite {
             public void onClick(Widget w) {
                 pop.hide();
                 String pkg = sel.getSelectedPackage();
-                PackageBuilderWidget.showSnapshotDialog( pkg );
+                PackageBuilderWidget.showSnapshotDialog( pkg, refreshCmd);
             }
         } );
 

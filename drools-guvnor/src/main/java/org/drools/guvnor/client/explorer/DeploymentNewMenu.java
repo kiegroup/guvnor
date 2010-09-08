@@ -41,7 +41,12 @@ public class DeploymentNewMenu {
         		true,
         		new Command() {
                     public void execute() {
-            	       SnapshotView.showNewSnapshot();           
+            	       SnapshotView.showNewSnapshot(new Command() {
+           				public void execute() {
+           					//we have to refresh the whole tree when a snapshot was added to previously empty package.
+           					manager.refreshTree();
+        				}
+        			});           
                 }
         });
 
