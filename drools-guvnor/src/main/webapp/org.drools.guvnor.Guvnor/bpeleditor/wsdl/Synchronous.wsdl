@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="DUMMY_PROCESS"
+             targetNamespace="http://gridcc.org/workflows/DUMMY_PROCESS"
+             xmlns:client="http://gridcc.org/workflows/DUMMY_PROCESS"
+             xmlns:hdtns="http://gridcc.org/wsdl/workflows/headerTypes"
+             xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"             
+             xmlns:xs="http://www.w3.org/2001/XMLSchema"
+             xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+	
+	<types>
+	<!--
+		<schema xmlns="http://www.w3.org/2001/XMLSchema">		
+			<import namespace="http://gridcc.ac.uk/DUMMY_PROCESS" schemaLocation="DUMMY_PROCESS.xsd" />		
+		</schema>
+	-->
+		<xsd:schema targetNamespace="http://gridcc.org/wsdl/workflows/headerTypes" 
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      	<xsd:element name="TriggerID">
+	        <xsd:complexType>
+	          <xsd:sequence>
+	            <xsd:element name="part1" type="xs:string"/>
+	            <xsd:element name="part2" type="xs:string"/>
+	          </xsd:sequence>
+	        </xsd:complexType>
+	      </xsd:element>  
+	    <xsd:element name="SimpleTriggerID" type="xs:string"/>  
+	  </xsd:schema>		
+	</types>
+     
+	<message name="DUMMY_PROCESSRequestMessage">
+		<part name="FreePart" type="xs:string"/>
+		
+		<!--
+    	<part name="IE_URL" type="xs:string"/>
+    	<part name="username" type="xs:string"/>
+    	<part name="password" type="xs:string"/>  
+    	 --> 	
+    	<!-- For Workflow Specific Elements Start -->
+    	
+    	<!-- For Workflow Specific Elements End -->   
+    	 	
+		<part name="LoopCount" type="xs:integer"/>
+				
+		<!-- For Testing Only --> 
+		<part name="payload" type="xs:string"/>
+	</message>
+	
+	<message name="DUMMY_PROCESSResponseMessage">		
+		<part name="payload" type="xs:string"/>
+	</message>
+
+	<!-- portType implemented by the  BPEL process -->
+	<portType name="DUMMY_PROCESS_PT">
+		<operation name="process">
+			<input  message="client:DUMMY_PROCESSRequestMessage" />
+			<output message="client:DUMMY_PROCESSResponseMessage"/>
+		</operation>
+	</portType>
+	
+	<plnk:partnerLinkType name="DUMMY_PROCESS_PLT" xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
+		<plnk:role name="DUMMY_PROCESSProvider">
+			<plnk:portType name="client:DUMMY_PROCESS_PT"/>
+		</plnk:role>
+	</plnk:partnerLinkType>
+</definitions>
