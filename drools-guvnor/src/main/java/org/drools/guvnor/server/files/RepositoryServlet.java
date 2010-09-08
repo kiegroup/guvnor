@@ -120,7 +120,11 @@ public class RepositoryServlet extends HttpServlet {
         String usr = a[0];
         String pwd = a[1];
         if ( Contexts.isApplicationContextActive() ) {
-           // return (FileManagerUtils) Component.getInstance( "fileManager" );
+        	//If the request is from same session, the user should be logged already.
+        	if (Identity.instance().isLoggedIn()) {
+        		return true;
+        	}
+        	
             Identity ids = Identity.instance();
             ids.getCredentials().setUsername(usr);
             ids.getCredentials().setPassword(pwd);
