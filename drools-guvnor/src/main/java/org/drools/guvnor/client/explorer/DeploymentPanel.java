@@ -86,7 +86,7 @@ public class DeploymentPanel extends GenericPanel {
 
         Item nds = new Item(constants.NewDeploymentSnapshot(), new BaseItemListenerAdapter() {
             public void onClick(BaseItem item, EventObject e) {
-                SnapshotView.showNewSnapshot();
+                SnapshotView.showNewSnapshot(null);
             }
         });
         nds.setIcon("images/snapshot_small.gif"); //NON-NLS
