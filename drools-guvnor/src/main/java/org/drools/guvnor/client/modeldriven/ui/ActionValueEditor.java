@@ -383,7 +383,7 @@ public class ActionValueEditor extends DirtyableComposite {
             Button variable = new Button(constants.BoundVariable());
             if (!vars2.contains(v)) {
                 FactPattern factPattern = model.getModel().getBoundFact(v);
-                if (factPattern.factType.equals(this.variableType)) {
+                if (factPattern != null && factPattern.factType.equals(this.variableType)) {
                     createButton = true;
                 }
             } else {
