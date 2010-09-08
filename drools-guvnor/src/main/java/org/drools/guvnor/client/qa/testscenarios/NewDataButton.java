@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
+import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
@@ -78,6 +79,7 @@ public class NewDataButton extends TestScenarioButton {
 
                 addAttribute( constants.RetractAnExistingFactScenario(),
                               new ExtractFactPanel( varsInScope ) );
+                
 
             }
 
@@ -97,7 +99,7 @@ public class NewDataButton extends TestScenarioButton {
                 return new ActivateRuleFlowGroup( valueWidget.getText() );
             }
         }
-
+        
         class ExtractFactPanel extends ListBoxBasePanel {
 
             public ExtractFactPanel(List<String> listItems) {

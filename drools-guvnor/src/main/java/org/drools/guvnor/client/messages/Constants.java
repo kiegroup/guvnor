@@ -613,11 +613,11 @@ public interface Constants
     String AddAnOptionToTheRule();
 
     String AddMetadataToTheRule();
-
+    
     String UseRowNumber();
-
+    
     String ReverseOrder();
-
+    
     String Metadata1();
 
     String Attribute();
@@ -1507,6 +1507,10 @@ public interface Constants
     String ModifyAnExistingFactScenario();
 
     String RetractAnExistingFactScenario();
+    
+    String CallAMethodOnAFactScenario();
+    
+    String CALL();
 
     String AddANewExpectation();
 
@@ -1753,11 +1757,11 @@ public interface Constants
     String HideThisColumn();
 
     String PleaseSelectOrEnterField();
-
+    
     String NotifyNoSelectedOrEnteredField();
 
     String PleaseSelectAnOperator();
-
+    
     String NotifyNoSelectedOperator();
 
     String January();
@@ -2091,45 +2095,45 @@ public interface Constants
     String ActivateRuleFlowGroup();
 
     String CantRemoveThisBlockAsOneOfTheNamesIsBeingUsed();
-
+    
     String FillInColumnWithValue();
-
+    
     String LoadTemplateData();
-
+    
     String RepositoryConfiguration();
-
+    
     String RepositoryConfig();
-
+    
     String ManageRepositoryConfig();
-
+    
     String ManageRepositoryConfigDesc();
-
+    
     String SelectRdbmsType();
-
+    
     String UseJndi();
-
+    
     String PleaseSelectRdbmsType();
-
+    
     String PleaseEnterDriver();
-
+    
     String PleaseEnterUrl();
-
+    
     String PleaseEnterUserName();
-
+    
     String PleaseEnterPassword();
-
+    
     String PleaseEnterJndiName();
-
+    
     String GenerateRepositoryConfiguration();
-
+    
     String RepositoryXml();
-
+    
     String UnableToProcessRepositoryConfiguration();
-
+    
     String SaveRepo();
-
+    
     String SaveTheRepositoryConfig();
-
+    
     String SaveRepoInfo();
 
     String Inbox();

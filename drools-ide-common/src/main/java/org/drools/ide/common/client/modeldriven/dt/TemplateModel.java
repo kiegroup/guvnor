@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldList;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
@@ -222,7 +223,7 @@ public class TemplateModel extends RuleModel implements PortableObject {
         
         private void visitActionFieldList(ActionFieldList afl) {
             for (ActionFieldValue afv : afl.fieldValues) {
-            	if (afv.nature == ActionFieldValue.TYPE_TEMPLATE && !vars.containsKey(afv.value)) {
+            	if (afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey(afv.value)) {
             		vars.put(afv.value, vars.size());
             	}
             }

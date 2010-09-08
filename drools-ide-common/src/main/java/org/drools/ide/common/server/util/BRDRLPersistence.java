@@ -17,6 +17,7 @@
 package org.drools.ide.common.server.util;
 
 import org.drools.core.util.ReflectiveVisitor;
+import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.*;
 
@@ -640,7 +641,7 @@ public class BRDRLPersistence implements BRLPersistence {
                 buf.append("( ");
                 if (fieldValues[i].isFormula()) {
                     buf.append(fieldValues[i].value.substring(1));
-                } else if (fieldValues[i].nature == ActionFieldValue.TYPE_TEMPLATE) {
+                } else if (fieldValues[i].nature == FieldNature.TYPE_TEMPLATE) {
                 	buf.append("@{").append(fieldValues[i].value).append("}");
                 } else if (SuggestionCompletionEngine.TYPE_STRING.equals(fieldValues[i].type)) {
                     buf.append("\"");
@@ -658,7 +659,7 @@ public class BRDRLPersistence implements BRLPersistence {
 		}
 
         private void generateSetMethodCallsMethod(final ActionCallMethod action,
-                final ActionFieldValue[] fieldValues) {
+                final FieldNature[] fieldValues) {
             buf.append("\t\t");
             if (isDSLEnhanced) {
                 buf.append(">");

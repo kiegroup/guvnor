@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.modeldriven.ui;
+package org.drools.guvnor.client.qa.testscenarios;
 
 import java.util.List;
 
@@ -24,17 +24,21 @@ import org.drools.guvnor.client.common.FieldEditListener;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.ui.EnumDropDown;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.ActionFieldFunction;
-import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.testing.CallFieldValue;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -54,19 +58,21 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Nicolas Heron
  * 
  */
-public class MethodParameterValueEditor extends DirtyableComposite {
+public class MethodParameterCallValueEditor extends DirtyableComposite {
 
-    private ActionFieldFunction methodParameter;
+    private CallFieldValue methodParameter;
     private DropDownData        enums;
     private SimplePanel         root;
     private Constants           constants     = GWT.create( Constants.class );
-    private RuleModeller        model         = null;
+    private Scenario        model         = null;
     private String              parameterType = null;
     private Command             onValueChangeCommand = null;
+    private ExecutionTrace    ex;
 
-    public MethodParameterValueEditor(final ActionFieldFunction val,
+    public MethodParameterCallValueEditor(final CallFieldValue val,
                                       final DropDownData enums,
-                                      RuleModeller model,
+                                      ExecutionTrace ex,
+                                      Scenario model,
                                       String parameterType, Command onValueChangeCommand) {
         if ( val.type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             this.enums = DropDownData.create( new String[]{"true", "false"} );
@@ -74,6 +80,7 @@ public class MethodParameterValueEditor extends DirtyableComposite {
             this.enums = enums;
         }
         this.root = new SimplePanel();
+        this.ex=ex;
         this.methodParameter = val;
         this.model = model;
         this.parameterType = parameterType;
@@ -125,31 +132,17 @@ public class MethodParameterValueEditor extends DirtyableComposite {
          * If there is a bound variable that is the same type of the current
          * variable type, then propose a list
          */
-        ListBox listVariable = new ListBox();
-        List<String> vars = model.getModel().getBoundFacts();
+        final ListBox listVariable = new ListBox();
+        List<String> vars = model.getFactNamesInScope(ex, true);
         for ( String v : vars ) {
-            FactPattern factPattern = model.getModel().getBoundFact( v );
-            if ( factPattern.factType.equals( this.methodParameter.type ) ) {
+        	FactData factData=(FactData)model.getFactTypes().get(v);
+            if ( factData.type.equals( this.methodParameter.type ) ) {
                 // First selection is empty
                 if ( listVariable.getItemCount() == 0 ) {
                     listVariable.addItem( "..." );
                 }
 
-                listVariable.addItem( v );
-            }
-        }
-        /*
-         * add the bound variable of the rhs
-         */
-        List<String> vars2 = model.getModel().getRhsBoundFacts();
-        for ( String v : vars2 ) {
-            ActionInsertFact factPattern = model.getModel().getRhsBoundFact( v );
-            if ( factPattern.factType.equals( this.methodParameter.type ) ) {
-                // First selection is empty
-                if ( listVariable.getItemCount() == 0 ) {
-                    listVariable.addItem( "..." );
-                }
-                listVariable.addItem( v );
+                listVariable.addItem( "="+v );
             }
         }
         if ( methodParameter.value.equals( "=" ) ) {
@@ -163,23 +156,35 @@ public class MethodParameterValueEditor extends DirtyableComposite {
         }
         if ( listVariable.getItemCount() > 0 ) {
 
-            listVariable.addChangeListener( new ChangeListener() {
-                public void onChange(Widget arg0) {
-                    ListBox w = (ListBox) arg0;
-                    methodParameter.value = w.getValue( w.getSelectedIndex() );
+        	listVariable.addChangeHandler(new ChangeHandler() {
+				
+				public void onChange(ChangeEvent event) {
+                    methodParameter.value = listVariable.getValue( listVariable.getSelectedIndex() );
                     if (onValueChangeCommand != null){
                         onValueChangeCommand.execute();
                     }
                     makeDirty();
                     refresh();
                 }
-
-            } );
+			});
+        	
+//            listVariable.addChangeListener( new ChangeListener() {
+//                public void onChange(Widget arg0) {
+//                    ListBox w = (ListBox) arg0;
+//                    methodParameter.value = w.getValue( w.getSelectedIndex() );
+//                    if (onValueChangeCommand != null){
+//                        onValueChangeCommand.execute();
+//                    }
+//                    makeDirty();
+//                    refresh();
+//                }
+//
+//            } );
         }
         return listVariable;
     }
 
-    private TextBox boundTextBox(final ActionFieldValue c) {
+    private TextBox boundTextBox(final CallFieldValue c) {
         final TextBox box = new TextBox();
         box.setStyleName( "constraint-value-Editor" );
         if ( c.value == null ) {
@@ -276,51 +281,27 @@ public class MethodParameterValueEditor extends DirtyableComposite {
             }
 
         } );
-
         form.addAttribute( constants.LiteralValue() + ":",
                            widgets( lit,
                                     new InfoPopup( constants.Literal(),
                                                    constants.LiteralValTip() ) ) );
         form.addRow( new HTML( "<hr/>" ) );
         form.addRow( new SmallLabel( constants.AdvancedSection() ) );
-        /*
-         * no formula possible for a function
-         */
-        //		Button formula = new Button(constants.Formula());
-        //		formula.addClickListener(new ClickListener() {
-        //
-        //			public void onClick(Widget w) {
-        //				methodParameter.nature = ActionFieldValue.TYPE_FORMULA;
-        //				methodParameter.value = "=";
-        //				makeDirty();
-        //				refresh();
-        //				form.hide();
-        //			}
-        //
-        //		});
+
 
         /*
          * If there is a bound variable that is the same type of the current
          * variable type, then show abutton
          */
-        List<String> vars = model.getModel().getBoundFacts();
-        List<String> vars2 = model.getModel().getRhsBoundFacts();
-        for ( String i : vars2 ) {
-            vars.add( i );
-        }
-        for ( String v : vars ) {
+        
+        
+        List<String> vars = model.getFactNamesInScope(ex, true);
+         for ( String v : vars ) {
             boolean createButton = false;
             Button variable = new Button( constants.BoundVariable() );
-            if ( vars2.contains( v ) == false ) {
-                FactPattern factPattern = model.getModel().getBoundFact( v );
-                if ( factPattern.factType.equals( this.parameterType ) ) {
-                    createButton = true;
-                }
-            } else {
-                ActionInsertFact factPattern = model.getModel().getRhsBoundFact( v );
-                if ( factPattern.factType.equals( this.parameterType ) ) {
-                    createButton = true;
-                }
+            FactData factData=(FactData)model.getFactTypes().get(v);
+            if ( factData.type.equals( this.parameterType ) ) {
+            	createButton = true;
             }
             if ( createButton == true ) {
                 form.addAttribute( constants.BoundVariable() + ":",
@@ -339,38 +320,6 @@ public class MethodParameterValueEditor extends DirtyableComposite {
             }
 
         }
-
-        //			FactPattern factPattern = model.getModel().getBoundFact(v);
-        //			if (factPattern.factType.equals(this.parameterType)) {
-        //				Button variable = new Button(constants.BoundVariable());
-        //				form.addAttribute(constants.BoundVariable()+":", variable);
-        //				variable.addClickListener(new ClickListener() {
-        //
-        //					public void onClick(Widget w) {
-        //						methodParameter.nature = ActionFieldValue.TYPE_VARIABLE;
-        //						methodParameter.value = "=";
-        //						makeDirty();
-        //						refresh();
-        //						form.hide();
-        //					}
-        //
-        //				});
-        //				break;
-        //			}
-        //		}
-
-        //		form.addAttribute(constants.Formula() + ":", widgets(formula,
-        //				new InfoPopup(constants.Formula(), constants.FormulaTip())));
-
-        // if (model != null){
-        // for (int i=0;i< model.lhs.length;i++){
-        // IPattern p = model.lhs[i];
-        //        		
-        // if (model.lhs[i].)
-        // }
-        // if (model.lhs.)
-        //        	
-        // }
         form.show();
     }
 

@@ -34,6 +34,8 @@ import org.drools.base.TypeResolver;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
+import org.drools.ide.common.client.modeldriven.testing.CallFieldValue;
+import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Expectation;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
@@ -179,7 +181,12 @@ public class ScenarioRunner {
                 RetractFact retractFact = (RetractFact) fixture;
                 this.workingMemory.retract( this.factHandles.get( retractFact.name ) );
                 this.populatedData.remove( retractFact.name );
+            } else if (fixture instanceof CallMethod){
+            	CallMethod aCall = (CallMethod)(fixture);
+            	Object targetInstance = populatedData.get(aCall.variable);
+            	executeMethodOnObject(aCall,targetInstance);
             } else if ( fixture instanceof ActivateRuleFlowGroup ) {
+       
                 workingMemory.getAgenda().activateRuleFlowGroup( ((ActivateRuleFlowGroup) fixture).name );
             } else if ( fixture instanceof ExecutionTrace ) {
                 doPopulate( toPopulate );
@@ -348,6 +355,34 @@ public class ScenarioRunner {
         }
         return factObject;
     }
+
+	Object executeMethodOnObject(CallMethod fact, Object factObject) {
+		Map<String, Object> vars = new HashMap<String, Object>();
+		vars.put("__fact__", factObject);
+		String methodName = "__fact__." + fact.methodName + "(";
+		for (int i = 0; i < fact.callFieldValues.length; i++) {
+			CallFieldValue field = (CallFieldValue) fact.callFieldValues[i];
+			Object val;
+			if (field.value != null && !field.value.equals("")) {
+				if (field.value.startsWith("=")) {
+					// eval the val into existence
+					val = populatedData.get(field.value.substring(1));
+				} else {
+					val = field.value;
+				}
+				vars.put("__val" + i + "__", val);
+				methodName = methodName + "__val" + i + "__";
+				if (i < fact.callFieldValues.length - 1) {
+					methodName = methodName + ",";
+				}
+
+			}
+		}
+		methodName = methodName + ")";
+		eval(methodName, vars);
+		return factObject;
+	}
+    
 
     /**
      * True if the scenario was run with 100% success.

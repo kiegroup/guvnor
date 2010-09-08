@@ -20,6 +20,7 @@ import java.util.HashSet;
 
 import junit.framework.TestCase;
 
+import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
@@ -142,7 +143,7 @@ public class BRDRTPersistenceTest extends TestCase {
 
 		ActionInsertFact aif = new ActionInsertFact("Person");
 		ActionFieldValue afv = new ActionFieldValue("age", "age", ""); 
-		afv.nature = ActionFieldValue.TYPE_TEMPLATE;
+		afv.nature = FieldNature.TYPE_TEMPLATE;
 
 		aif.addFieldValue(afv);
 		m.rhs[0] = aif;
@@ -198,7 +199,7 @@ public class BRDRTPersistenceTest extends TestCase {
         
         ActionInsertFact aif = new ActionInsertFact("Person");
         ActionFieldValue afv = new ActionFieldValue("age", "age", ""); 
-        afv.nature = ActionFieldValue.TYPE_TEMPLATE;
+        afv.nature = FieldNature.TYPE_TEMPLATE;
         
         aif.addFieldValue(afv);
         m.rhs[0] = aif;

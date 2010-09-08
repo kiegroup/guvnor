@@ -30,6 +30,7 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.DropDownData;
+import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
@@ -115,23 +116,23 @@ public class ActionValueEditor extends DirtyableComposite {
             // bons editeurs suivant le type
             // si la valeur vaut 0 il faut mettre un stylo (
 
-            if (value.value != null && value.value.length() > 0 && value.nature == ActionFieldValue.TYPE_UNDEFINED) {
+            if (value.value != null && value.value.length() > 0 && value.nature == FieldNature.TYPE_UNDEFINED) {
                 ///JBDS-894
                 if (value.value.charAt(0) == '=') {
-                    value.nature = ActionFieldValue.TYPE_VARIABLE;
+                    value.nature = FieldNature.TYPE_VARIABLE;
                 } else {
-                    value.nature = ActionFieldValue.TYPE_LITERAL;
+                    value.nature = FieldNature.TYPE_LITERAL;
                 }
             }
-            if (value.nature == ActionFieldValue.TYPE_UNDEFINED) {
+            if (value.nature == FieldNature.TYPE_UNDEFINED) {
                 // we have a blank slate..
                 // have to give them a choice
                 root.add(choice());
             } else {
-                if (value.nature == ActionFieldValue.TYPE_VARIABLE) {
+                if (value.nature == FieldNature.TYPE_VARIABLE) {
                     Widget list = boundVariable(value);
                     root.add(list);
-                } else if(value.nature == ActionFieldValue.TYPE_TEMPLATE){
+                } else if(value.nature == FieldNature.TYPE_TEMPLATE){
                 	value.type = SuggestionCompletionEngine.TYPE_STRING;
                     Widget box = boundTextBox(this.value);
                     root.add(box);
@@ -146,7 +147,7 @@ public class ActionValueEditor extends DirtyableComposite {
         }
     }
 
-    private Widget boundVariable(final ActionFieldValue c) {
+    private Widget boundVariable(final FieldNature c) {
         /*
          * If there is a bound variable that is the same type of the current
          * variable type, then propose a list
@@ -212,7 +213,7 @@ public class ActionValueEditor extends DirtyableComposite {
         return listVariable;
     }
 
-    private Widget boundEnum(final ActionFieldValue c) {
+    private Widget boundEnum(final FieldNature c) {
         EnumDropDown enumDropDown = new EnumDropDown(value.value, new DropDownValueChanged() {
 
             public void valueChanged(String newText, String newValue) {
@@ -324,7 +325,7 @@ public class ActionValueEditor extends DirtyableComposite {
         lit.addClickListener(new ClickListener() {
 
             public void onClick(Widget w) {
-                value.nature = ActionFieldValue.TYPE_LITERAL;
+                value.nature = FieldNature.TYPE_LITERAL;
                 value.value = " ";
                 makeDirty();
                 executeOnChageCommand();
@@ -341,7 +342,7 @@ public class ActionValueEditor extends DirtyableComposite {
         if(model.isTemplate()){
 	        Button templateButton = new Button(constants.TemplateKey(), new ClickListener() {
 	            public void onClick(Widget arg0) {
-	                value.nature = ActionFieldValue.TYPE_TEMPLATE;
+	                value.nature = FieldNature.TYPE_TEMPLATE;
 	                value.value = " ";
 	                makeDirty();
 	                refresh();
@@ -361,7 +362,7 @@ public class ActionValueEditor extends DirtyableComposite {
         formula.addClickListener(new ClickListener() {
 
             public void onClick(Widget w) {
-                value.nature = ActionFieldValue.TYPE_FORMULA;
+                value.nature = FieldNature.TYPE_FORMULA;
                 value.value = "=";
                 makeDirty();
                 refresh();
@@ -398,7 +399,7 @@ public class ActionValueEditor extends DirtyableComposite {
                 variable.addClickHandler(new ClickHandler() {
 					
 					public void onClick(ClickEvent event) {
-                        value.nature = ActionFieldValue.TYPE_VARIABLE;
+                        value.nature = FieldNature.TYPE_VARIABLE;
                         value.value = "=";
                         makeDirty();
                         refresh();

@@ -29,6 +29,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.testing.CallFixtureMap;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
@@ -146,7 +147,7 @@ public class ScenarioWidget extends Composite {
                                                                             2,
                                                                             HasHorizontalAlignment.ALIGN_LEFT );
 
-            } else if ( fixture instanceof FixturesMap ) {
+			} else if (fixture instanceof FixturesMap) {
                 editorLayout.setWidget( layoutRow,
                                         0,
                                         new GivenLabelButton( previousEx,
@@ -163,7 +164,19 @@ public class ScenarioWidget extends Composite {
                                                            executionTraceLine,
                                                            (FixturesMap) fixture ) );
                 }
-            } else {
+            } else if (fixture instanceof CallFixtureMap) {
+				editorLayout.setWidget(layoutRow, 0,
+						new CallMethodLabelButton(previousEx, scenario,
+								listExecutionTrace.get(executionTraceLine),
+								this));
+
+				layoutRow++;
+				editorLayout.setWidget(
+						layoutRow,
+						1,
+						newCallMethodOnGivenPanel(listExecutionTrace,
+								executionTraceLine, (CallFixtureMap) fixture));
+			} else {
                 FixtureList fixturesList = (FixtureList) fixture;
                 Fixture first = fixturesList.get( 0 );
                 if ( first instanceof VerifyFact ) {
@@ -240,6 +253,21 @@ public class ScenarioWidget extends Composite {
         }
     }
 
+	private Widget newCallMethodOnGivenPanel(
+			List<ExecutionTrace> listExecutionTrace, int executionTraceLine,
+			CallFixtureMap given) {
+
+		if (given.size() > 0) {
+			return new CallMethodOnGivenPanel(listExecutionTrace, executionTraceLine,
+					given, scenario, this);
+
+		} else {
+			return new HTML("<i><small>"
+					+ constants.AddInputDataAndExpectationsHere()
+					+ "</small></i>");
+		}
+	}
+    
     public Widget getRuleSelectionWidget(final String packageName,
                                          final RuleSelectionEvent selected) {
         final HorizontalPanel horizontalPanel = new HorizontalPanel();

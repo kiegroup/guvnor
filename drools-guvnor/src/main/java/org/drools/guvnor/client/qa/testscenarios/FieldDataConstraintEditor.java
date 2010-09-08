@@ -314,7 +314,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
     
 
         if (this.field.collectionFieldList.size()==0){
-            Image add = new ImageButton("images/new_item.gif", Format.format(constants.AElementToAddInCollectionList(), "tt"), new ClickListener() {
+            Image add = new ImageButton("images/new_item.gif",Format.format(constants.AElementToAddInCollectionList(),"tt") , new ClickListener() {
                 public void onClick(Widget w) {
                     FieldData newFieldData = new FieldData();
                     newFieldData.name = field.name;

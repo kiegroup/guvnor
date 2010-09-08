@@ -99,9 +99,8 @@ abstract class TestScenarioButton extends ImageButton {
                 add.addClickHandler( new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
-
                         scenario.insertBetween( previousEx,
-                                                getFixture() );
+                        		getFixture() );
                         parent.renderEditor();
                         hide();
                     }

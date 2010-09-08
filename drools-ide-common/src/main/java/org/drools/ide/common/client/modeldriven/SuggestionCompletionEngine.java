@@ -353,7 +353,7 @@ public class SuggestionCompletionEngine implements PortableObject {
      * Similar to the one above - but this one is for RHS.
      */
     public DropDownData getEnums(String type,
-                                 ActionFieldValue[] currentValues,
+                                 FieldNature[] currentValues,
                                  String field) {
 
         if ( currentValues != null ) {
@@ -363,9 +363,9 @@ public class SuggestionCompletionEngine implements PortableObject {
             if ( _typeField instanceof String ) {
                 String typeField = (String) dataEnumLookupFields.get( type + "." + field );
                 for ( int i = 0; i < currentValues.length; i++ ) {
-                    ActionFieldValue val = currentValues[i];
-                    if ( val.field.equals( typeField ) ) {
-                        String key = type + "." + field + "[" + typeField + "=" + val.value + "]";
+                	FieldNature val = currentValues[i];
+                    if ( val.getField().equals( typeField ) ) {
+                        String key = type + "." + field + "[" + typeField + "=" + val.getValue() + "]";
                         return DropDownData.create( this.getDataEnumList( key ) );
                     }
                 }
@@ -381,9 +381,9 @@ public class SuggestionCompletionEngine implements PortableObject {
                 // as a string...
                 for ( int i = 0; i < fieldsNeeded.length; i++ ) {
                     for ( int j = 0; j < currentValues.length; j++ ) {
-                        ActionFieldValue con = currentValues[j];
-                        if ( con.field.equals( fieldsNeeded[i] ) ) {
-                            valuePairs[i] = fieldsNeeded[i] + "=" + con.value;
+                    	FieldNature con = currentValues[j];
+                        if ( con.getField().equals( fieldsNeeded[i] ) ) {
+                            valuePairs[i] = fieldsNeeded[i] + "=" + con.getValue();
                         }
                     }
                 }

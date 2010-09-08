@@ -105,7 +105,7 @@ public class ErrorPopup  {
     }
 
     private void addMessage(String message, String longMessage) {
-        if (message.contains("ItemExistsException")) {    //NON-NLS
+        if (message!=null && message.contains("ItemExistsException")) {    //NON-NLS
             longMessage = message;
             message = constants.SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother();
 

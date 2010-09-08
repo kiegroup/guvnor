@@ -91,13 +91,15 @@ public class Scenario
     public void insertBetween(Fixture fix,
                               Fixture toAdd) {
 
-        boolean inserted = false;
+    	boolean inserted = false;
         int start = (fix == null) ? 0 : fixtures.indexOf( fix ) + 1;
+      
         for ( int j = start; j < fixtures.size(); j++ ) {
             Fixture f = (Fixture) fixtures.get( j );
             if ( f instanceof ExecutionTrace ) {
                 fixtures.add( j,
                               toAdd );
+                System.out.println(toAdd.toString());
                 return;
             }
         }

@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.ide.common.client.modeldriven.brl;
+package org.drools.ide.common.client.modeldriven.testing;
 
 import org.drools.ide.common.client.modeldriven.FieldNature;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * Holds field and value for "action" parts of the rule.
  * 
  * @author Michael Neale
  */
-public class ActionFieldValue implements PortableObject, FieldNature {
+public class CallFieldValue implements  FieldNature,PortableObject {
 
 	public String field;
 	public String value;
@@ -33,77 +34,59 @@ public class ActionFieldValue implements PortableObject, FieldNature {
 	 */
 	public String type;
 
-	public ActionFieldValue(final String field, final String value,
+
+
+	public CallFieldValue(final String field, final String value,
 			final String type) {
 		this.field = field;
 		this.value = value;
 		this.type = type;
 	}
 
-	public ActionFieldValue() {
+	public CallFieldValue() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#isFormula()
+	/**
+	 * This will return true if the value is really a "formula" - in the sense
+	 * of like an excel spreadsheet.
+	 * 
+	 * If it IS a formula, then the value should never be turned into a string,
+	 * always left as-is.
+	 * 
 	 */
 	public boolean isFormula() {
 		return this.value != null && this.value.trim().startsWith("=");
 	}
 
-	/* (non-Javadoc)
-	 * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getField()
-	 */
 	public String getField() {
-		return field;
+		return this.field;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#setField(java.lang.String)
-	 */
 	public void setField(String field) {
 		this.field = field;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getValue()
-	 */
 	public String getValue() {
-		return value;
+		return this.value;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#setValue(java.lang.String)
-	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getNature()
-	 */
 	public long getNature() {
-		return nature;
+		return this.nature;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#setNature(long)
-	 */
 	public void setNature(long nature) {
 		this.nature = nature;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getType()
-	 */
 	public String getType() {
-		return type;
+		return this.type;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#setType(java.lang.String)
-	 */
 	public void setType(String type) {
 		this.type = type;
 	}
-
 }
