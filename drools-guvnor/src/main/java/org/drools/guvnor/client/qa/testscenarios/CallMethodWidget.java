@@ -23,12 +23,15 @@ import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -83,7 +86,6 @@ public class CallMethodWidget extends DirtyableComposite {
 			this.variableClass = (String) suggestionCompletionEngine
 					.getGlobalVariable(mCall.variable);
 		} else {
-			String varType=scenario.getVariableTypes().get(mCall.variable);
 			FactData pattern = (FactData) scenario.getFactTypes().get(mCall.variable);
 			if (pattern != null) {
 				List<String> methodList = suggestionCompletionEngine
@@ -114,17 +116,6 @@ public class CallMethodWidget extends DirtyableComposite {
 
 			inner.setWidget(i, 0, fieldSelector(val));
 			inner.setWidget(i, 1, valueEditor(val));
-			final int idx = i;
-			/*
-			 * It is not possible to remove a parameter of a function
-			 * 
-			 * Image remove = new ImageButton("images/delete_item_small.gif");
-			 * //NON-NLS remove.addClickListener( new ClickListener() { public
-			 * void onClick(Widget w) { if
-			 * (Window.confirm(constants.RemoveThisItem())) { model.removeField(
-			 * idx ); modeller.refreshWidget(); }; } }); inner.setWidget( i, 3,
-			 * remove );
-			 */
 		}
 		layout.setWidget(0, 1, inner);
 	}
@@ -136,11 +127,21 @@ public class CallMethodWidget extends DirtyableComposite {
 			Image edit = new ImageButton("images/add_field_to_fact.gif"); // NON-
 			// NLS
 			edit.setTitle(constants.AddAnotherFieldToThisSoYouCanSetItsValue());
-			edit.addClickListener(new ClickListener() {
-				public void onClick(Widget w) {
+			
+			edit.addClickHandler(new ClickHandler() {
+				
+				public void onClick(ClickEvent event) {
+					Image w = (Image)event.getSource();
 					showAddFieldPopup(w);
+					
 				}
 			});
+				
+//			edit.addClickListener(new ClickListener() {
+//				public void onClick(Widget w) {
+//					showAddFieldPopup(w);
+//				}
+//			});
 			horiz.add(new SmallLabel(HumanReadable.getActionDisplayName("call")
 					+ " [" + mCall.variable + "]")); // NON-NLS
                 horiz.add( edit );
@@ -156,7 +157,7 @@ public class CallMethodWidget extends DirtyableComposite {
 
 		final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif",
 				constants.ChooseAMethodToInvoke()); // NON-NLS
-		final ListBox box = new ListBox();
+		ListBox box = new ListBox();
 		box.addItem("...");
 
 		for (int i = 0; i < fieldCompletionTexts.length; i++) {
@@ -166,12 +167,13 @@ public class CallMethodWidget extends DirtyableComposite {
 		box.setSelectedIndex(0);
 
 		popup.addAttribute(constants.ChooseAMethodToInvoke(), box);
-		box.addChangeListener(new ChangeListener() {
-			public void onChange(Widget w) {
+		box.addChangeHandler(new ChangeHandler() {
+			
+			public void onChange(ChangeEvent event) {
 				mCall.state = ActionCallMethod.TYPE_DEFINED;
-
-				String methodName = box.getItemText(box.getSelectedIndex());
-				String methodNameWithParams = box.getValue(box
+				ListBox sourceW = (ListBox)event.getSource();
+				String methodName = sourceW.getItemText(sourceW.getSelectedIndex());
+				String methodNameWithParams = sourceW.getValue(sourceW
 						.getSelectedIndex());
 
 				mCall.methodName = methodName;
@@ -191,8 +193,10 @@ public class CallMethodWidget extends DirtyableComposite {
 
 				parent.renderEditor();
 				popup.hide();
+				
 			}
 		});
+
 		popup.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
 		popup.show();
 
@@ -215,7 +219,7 @@ public class CallMethodWidget extends DirtyableComposite {
 				val.type, new Command() {
 
 					public void execute() {
-						//setModified(true);
+						makeDirty();
 					}
 				});
 	}
@@ -226,25 +230,40 @@ public class CallMethodWidget extends DirtyableComposite {
 	 * first value is a "=" which means it is meant to be taken as the user
 	 * typed)
 	 */
-	public static KeyboardListener getNumericFilter(final TextBox box) {
-		return new KeyboardListener() {
-
-			public void onKeyDown(Widget arg0, char arg1, int arg2) {
-
-			}
-
-			public void onKeyPress(Widget w, char c, int i) {
+	public static KeyPressHandler getNumericFilter(final TextBox box){
+		return new KeyPressHandler() {
+			
+			public void onKeyPress(KeyPressEvent event) {
+				TextBox w = (TextBox)event.getSource();
+				char c= event.getCharCode();
 				if (Character.isLetter(c) && c != '='
-						&& !(box.getText().startsWith("="))) {
-					((TextBox) w).cancelKey();
-				}
+					&& !(box.getText().startsWith("="))) {
+				((TextBox) w).cancelKey();
 			}
-
-			public void onKeyUp(Widget arg0, char arg1, int arg2) {
+				
 			}
-
 		};
 	}
+	
+//	public static KeyboardListener getNumericFilter(final TextBox box) {
+//		return new KeyboardListener() {
+//
+//			public void onKeyDown(Widget arg0, char arg1, int arg2) {
+//
+//			}
+//
+//			public void onKeyPress(Widget w, char c, int i) {
+//				if (Character.isLetter(c) && c != '='
+//						&& !(box.getText().startsWith("="))) {
+//					((TextBox) w).cancelKey();
+//				}
+//			}
+//
+//			public void onKeyUp(Widget arg0, char arg1, int arg2) {
+//			}
+//
+//		};
+//	}
 
 	private Widget fieldSelector(final CallFieldValue val) {
 		return new SmallLabel(val.type);
@@ -261,14 +280,14 @@ public class CallMethodWidget extends DirtyableComposite {
 				box.addItem(modifiers[i]);
 			}
 		}
-		box.addChangeListener(new ChangeListener() {
-
-			public void onChange(Widget arg0) {
+		box.addChangeHandler(new ChangeHandler() {
+			
+			public void onChange(ChangeEvent event) {
 				String methodName = box.getItemText(box.getSelectedIndex());
 				val.setMethod(methodName);
 			}
-
 		});
+
 		return box;
 	}
 
