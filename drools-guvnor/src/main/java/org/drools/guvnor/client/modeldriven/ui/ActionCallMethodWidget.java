@@ -37,12 +37,15 @@ import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -182,11 +185,14 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
             Image edit = new ImageButton( "images/add_field_to_fact.gif" ); //NON-
             // NLS
             edit.setTitle( constants.AddAnotherFieldToThisSoYouCanSetItsValue() );
-            edit.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                    showAddFieldPopup( w );
-                }
-            } );
+            edit.addClickHandler(new ClickHandler() {
+				
+				public void onClick(ClickEvent event) {
+					Widget w = (Widget)event.getSource();
+					showAddFieldPopup( w );
+					
+				}
+			});
             horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + model.variable + "]" ) ); // NON-NLS
             if (!this.readOnly){
                 horiz.add( edit );
@@ -216,8 +222,9 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         popup.addAttribute( constants.ChooseAMethodToInvoke(),
                             box );
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
+        box.addChangeHandler(new ChangeHandler() {
+			
+			public void onChange(ChangeEvent event) {
                 model.state = ActionCallMethod.TYPE_DEFINED;
 
                 String methodName = box.getItemText( box.getSelectedIndex() );
@@ -241,8 +248,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
                 getModeller().refreshWidget();
                 popup.hide();
-            }
-        } );
+			}
+		});
         popup.setPopupPosition( w.getAbsoluteLeft(),
                                 w.getAbsoluteTop() );
         popup.show();
@@ -282,30 +289,20 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
      * first value is a "=" which means it is meant to be taken as the user
      * typed)
      */
-    public static KeyboardListener getNumericFilter(final TextBox box) {
-        return new KeyboardListener() {
+	public static KeyPressHandler getNumericFilter(final TextBox box) {
+		return new KeyPressHandler() {
 
-            public void onKeyDown(Widget arg0,
-                                  char arg1,
-                                  int arg2) {
+			public void onKeyPress(KeyPressEvent event) {
+				char c = event.getCharCode();
+				TextBox w = (TextBox) event.getSource();
+				if (Character.isLetter(c) && c != '='
+						&& !(box.getText().startsWith("="))) {
+					((TextBox) w).cancelKey();
+				}
+			}
+		};
+	}
 
-            }
-
-            public void onKeyPress(Widget w,
-                                   char c,
-                                   int i) {
-                if ( Character.isLetter( c ) && c != '=' && !(box.getText().startsWith( "=" )) ) {
-                    ((TextBox) w).cancelKey();
-                }
-            }
-
-            public void onKeyUp(Widget arg0,
-                                char arg1,
-                                int arg2) {
-            }
-
-        };
-    }
 
     private Widget fieldSelector(final ActionFieldFunction val) {
         return new SmallLabel( val.type );
@@ -323,14 +320,14 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                 box.addItem( modifiers[i] );
             }
         }
-        box.addChangeListener( new ChangeListener() {
-
-            public void onChange(Widget arg0) {
+        box.addChangeHandler(new ChangeHandler() {
+			
+			public void onChange(ChangeEvent event) {
+				// TODO Auto-generated method stub
                 String methodName = box.getItemText( box.getSelectedIndex() );
                 val.setMethod( methodName );
-            }
-
-        } );
+			}
+		});
         return box;
     }
 
