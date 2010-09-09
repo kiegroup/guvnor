@@ -1512,6 +1512,10 @@ public interface Constants
     
     String CALL();
 
+    String RemoveCallMethod();
+    
+    String AreYouSureToRemoveCallMethod();
+    
     String AddANewExpectation();
 
     String NewExpectation();
