@@ -20,6 +20,7 @@ import org.drools.ide.common.client.modeldriven.testing.CallFieldValue;
 import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.core.client.GWT;
@@ -30,6 +31,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
@@ -116,8 +118,10 @@ public class CallMethodWidget extends DirtyableComposite {
 
 			inner.setWidget(i, 0, fieldSelector(val));
 			inner.setWidget(i, 1, valueEditor(val));
+			
 		}
 		layout.setWidget(0, 1, inner);
+		layout.setWidget(0, 2, new DeleteButton());
 	}
 
 	private Widget getSetterLabel() {
@@ -137,11 +141,6 @@ public class CallMethodWidget extends DirtyableComposite {
 				}
 			});
 				
-//			edit.addClickListener(new ClickListener() {
-//				public void onClick(Widget w) {
-//					showAddFieldPopup(w);
-//				}
-//			});
 			horiz.add(new SmallLabel(HumanReadable.getActionDisplayName("call")
 					+ " [" + mCall.variable + "]")); // NON-NLS
                 horiz.add( edit );
@@ -245,26 +244,6 @@ public class CallMethodWidget extends DirtyableComposite {
 		};
 	}
 	
-//	public static KeyboardListener getNumericFilter(final TextBox box) {
-//		return new KeyboardListener() {
-//
-//			public void onKeyDown(Widget arg0, char arg1, int arg2) {
-//
-//			}
-//
-//			public void onKeyPress(Widget w, char c, int i) {
-//				if (Character.isLetter(c) && c != '='
-//						&& !(box.getText().startsWith("="))) {
-//					((TextBox) w).cancelKey();
-//				}
-//			}
-//
-//			public void onKeyUp(Widget arg0, char arg1, int arg2) {
-//			}
-//
-//		};
-//	}
-
 	private Widget fieldSelector(final CallFieldValue val) {
 		return new SmallLabel(val.type);
 	}
@@ -301,5 +280,25 @@ public class CallMethodWidget extends DirtyableComposite {
 	public boolean isDirty() {
 		return layout.hasDirty();
 	}
+    protected void onDelete() {
+        if ( Window.confirm( constants.AreYouSureToRemoveCallMethod() ) ) {
+            scenario.removeFixture( mCall );
+            parent.renderEditor();
+        }
+    }
+    
+    class DeleteButton extends ImageButton {
+        public DeleteButton() {
+            super( "images/delete_item_small.gif",
+                   constants.RemoveCallMethod());
 
+            addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    onDelete();
+                }
+            } );
+        }
+    }
+  
 }
