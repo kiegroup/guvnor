@@ -20,7 +20,6 @@ import org.drools.ide.common.client.modeldriven.testing.CallFieldValue;
 import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
-import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.core.client.GWT;
