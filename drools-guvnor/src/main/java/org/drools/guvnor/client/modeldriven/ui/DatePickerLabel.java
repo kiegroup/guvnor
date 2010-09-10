@@ -18,7 +18,11 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import java.util.Date;
 
+import org.drools.guvnor.client.messages.Constants;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.Label;
@@ -33,6 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class DatePickerLabel extends DatePicker {
 
     protected Label labelWidget = new Label();
+    private Constants constants  = ((Constants) GWT.create( Constants.class ));
 
     public DatePickerLabel(String selectedDate) {
         this( selectedDate,
@@ -47,16 +52,21 @@ public class DatePickerLabel extends DatePicker {
 
         datePickerPopUp = new DatePickerPopUp( new ClickListener() {
                                                    public void onClick(Widget arg0) {
-                                                       Date date = fillDate();
+                                                       try {
+                                                    	   Date date = fillDate();
+                                                    	   
+                                                    	   textWidget.setText( visualFormatFormatter.format( date ) );
+                                                           labelWidget.setText( textWidget.getText() );
 
-                                                       textWidget.setText( visualFormatFormatter.format( date ) );
-                                                       labelWidget.setText( textWidget.getText() );
-
-                                                       valueChanged();
-                                                       makeDirty();
-                                                       panel.clear();
-                                                       panel.add( labelWidget );
-                                                       datePickerPopUp.hide();
+                                                           valueChanged();
+                                                           makeDirty();
+                                                           panel.clear();
+                                                           panel.add( labelWidget );
+                                                           datePickerPopUp.hide();
+                                                       } catch(Exception e) {
+                                                    	   Window.alert( constants.InvalidDateFormatMessage() );  
+                                                       }
+                                                       
                                                    }
                                                },
                                                visualFormatFormatter );

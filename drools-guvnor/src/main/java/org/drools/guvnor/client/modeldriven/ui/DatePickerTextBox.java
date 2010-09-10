@@ -19,8 +19,11 @@ package org.drools.guvnor.client.modeldriven.ui;
 import java.util.Date;
 
 import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.TextBox;
@@ -29,6 +32,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class DatePickerTextBox extends DatePicker {
 
     private ImageButton select = new ImageButton( "images/edit_tiny.gif" );
+    private Constants constants  = ((Constants) GWT.create( Constants.class ));
 
     public DatePickerTextBox(String selectedDate) {
         this( selectedDate,
@@ -43,13 +47,17 @@ public class DatePickerTextBox extends DatePicker {
 
         datePickerPopUp = new DatePickerPopUp( new ClickListener() {
                                                    public void onClick(Widget arg0) {
-                                                       Date date = fillDate();
+                                                       try {
+                                                    	   Date date = fillDate();
 
-                                                       textWidget.setText( visualFormatFormatter.format( date ) );
+                                                    	   textWidget.setText( visualFormatFormatter.format( date ) );
 
-                                                       valueChanged();
-                                                       makeDirty();
-                                                       datePickerPopUp.hide();
+                                                    	   valueChanged();
+                                                    	   makeDirty();
+                                                    	   datePickerPopUp.hide();
+                                                       } catch(Exception e) {
+                                                    	   Window.alert( constants.InvalidDateFormatMessage() );  
+                                                       }
                                                    }
                                                },
                                                visualFormatFormatter );

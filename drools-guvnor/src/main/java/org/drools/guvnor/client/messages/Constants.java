@@ -2143,4 +2143,6 @@ public interface Constants
     String Inbox();
     
     String GlobalArea();
+    
+    String InvalidDateFormatMessage();
 }
