@@ -119,7 +119,7 @@ public class RuleModeller extends DirtyableComposite implements RuleModelEditor 
     private final Command onWidgetModifiedCommand = new Command() {
 
         public void execute() {
-            GWT.log("Widget Modified!");
+            //GWT.log("Widget Modified!");
             hasModifiedWidgets = true;
         }
     };
