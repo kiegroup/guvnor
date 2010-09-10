@@ -1,0 +1,56 @@
+#loading {
+    position: absolute;
+    left: 45%;
+    top: 40%;
+    padding: 2px;
+    z-index: 20001;
+    height: auto;
+    border: 1px solid #ccc;
+}
+
+#loading a {
+    color: #225588;
+}
+
+#loading .loading-indicator {
+    background: white;
+    color: #444;
+    font: bold 13px tahoma, arial, helvetica;
+    padding: 10px;
+    margin: 0;
+    height: auto;
+}
+
+#loading-msg {
+    font: normal 10px arial, tahoma, sans-serif;
+}
+
+.x-portlet {
+    margin-bottom:10px;
+}
+
+.x-portal .x-panel-dd-spacer {
+    margin-bottom:10px;
+}
+
+/*
+ * FF3 grid support
+ */
+.x-grid3 table {
+    table-layout:fixed;
+}
+
+/*
+ * FF3 calendar support
+ */
+div.x-date-picker {
+    width:10px;
+}
+
+/*
+ * FF2 / FF3 issue with scrolling when having an EditorGridPanel
+ */
+.ext-gecko .x-grid-editor {
+	position: relative !important;
+	float: left;
+}
