@@ -165,7 +165,8 @@ public class FileManagerUtils {
     public static FormData getFormData(HttpServletRequest request) {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload( factory );
-
+        upload.setHeaderEncoding("UTF-8");
+        
         FormData data = new FormData();
         try {
             List items = upload.parseRequest( request );
