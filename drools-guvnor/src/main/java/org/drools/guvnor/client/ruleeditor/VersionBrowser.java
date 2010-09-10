@@ -216,7 +216,7 @@ public class VersionBrowser extends Composite {
                 asset.isreadonly = true;
                 asset.metaData.name = metaData.name;
                 final FormStylePopup pop = new FormStylePopup("images/snapshot.png", Format.format(constants.VersionNumber0Of1(), "" + asset.metaData.versionNumber, asset.metaData.name),
-                		new Integer(800), new Boolean(false));
+                		new Integer(800));
 
                 Button restore = new Button(constants.RestoreThisVersion());
                 restore.addClickListener( new ClickListener() {

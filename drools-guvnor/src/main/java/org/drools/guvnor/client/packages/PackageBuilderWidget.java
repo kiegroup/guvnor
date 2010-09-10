@@ -252,7 +252,8 @@ public class PackageBuilderWidget extends Composite {
         Button snap = new Button( constants.CreateSnapshotForDeployment() );
         snap.addClickListener( new ClickListener() {
             public void onClick(Widget w) {
-                showSnapshotDialog( conf.name, null);
+                showSnapshotDialog( conf.name,
+                                    null );
             }
         } );
         layout.addAttribute( constants.TakeSnapshot(),
@@ -357,8 +358,7 @@ public class PackageBuilderWidget extends Composite {
         final FormStylePopup pop = new FormStylePopup( "images/view_source.gif", //NON-NLS
                                                        Format.format( constants.ViewingSourceFor0(),
                                                                       name ),
-                                                       new Integer( 600 ),
-                                                       Boolean.FALSE );
+                                                       new Integer( 600 ) );
 
         String[] rows = content.split( "\n" );
 
@@ -574,7 +574,8 @@ public class PackageBuilderWidget extends Composite {
     /**
      * This will display a dialog for creating a snapshot.
      */
-    public static void showSnapshotDialog(final String packageName, final Command refreshCmd) {
+    public static void showSnapshotDialog(final String packageName,
+                                          final Command refreshCmd) {
         LoadingPopup.showMessage( constants.LoadingExistingSnapshots() );
         final FormStylePopup form = new FormStylePopup( "images/snapshot.png", //NON-NLS
                                                         constants.CreateASnapshotForDeployment() );
@@ -660,7 +661,7 @@ public class PackageBuilderWidget extends Composite {
                                                                                      Window.alert( Format.format( constants.TheSnapshotCalled0WasSuccessfullyCreated(),
                                                                                                                   name ) );
                                                                                      form.hide();
-                                                                                     if(refreshCmd != null) {
+                                                                                     if ( refreshCmd != null ) {
                                                                                          refreshCmd.execute();
                                                                                      }
                                                                                      LoadingPopup.close();

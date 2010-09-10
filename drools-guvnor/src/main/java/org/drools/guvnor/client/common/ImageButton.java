@@ -15,6 +15,7 @@
  */
 
 package org.drools.guvnor.client.common;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -31,8 +32,7 @@ package org.drools.guvnor.client.common;
  * limitations under the License.
  */
 
-
-
+import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Image;
 
@@ -43,20 +43,25 @@ import com.google.gwt.user.client.ui.Image;
  */
 public class ImageButton extends Image {
 
-    public ImageButton(String img) {
-        super(img);
+    public @UiConstructor
+    ImageButton(String img) {
+        super( img );
         setStyleName( "image-Button" );
     }
 
-    public ImageButton(String img, String tooltip) {
-        super(img);
+    public ImageButton(String img,
+                       String tooltip) {
+        super( img );
         setStyleName( "image-Button" );
         setTitle( tooltip );
     }
 
-    public ImageButton(String img, String tooltip, ClickListener action) {
-    	this(img, tooltip);
-    	this.addClickListener(action);
+    public ImageButton(String img,
+                       String tooltip,
+                       ClickListener action) {
+        this( img,
+              tooltip );
+        this.addClickListener( action );
     }
 
 }

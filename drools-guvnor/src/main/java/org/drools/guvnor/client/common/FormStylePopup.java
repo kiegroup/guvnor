@@ -1,21 +1,3 @@
-/**
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.drools.guvnor.client.common;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -32,13 +14,22 @@ package org.drools.guvnor.client.common;
  * limitations under the License.
  */
 
+package org.drools.guvnor.client.common;
+
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.event.dom.client.MouseMoveEvent;
+import com.google.gwt.event.dom.client.MouseMoveHandler;
+import com.google.gwt.event.dom.client.MouseUpEvent;
+import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.widgets.BoxComponent;
-import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.Window;
-import com.gwtext.client.widgets.event.WindowListenerAdapter;
-import com.gwtext.client.widgets.layout.FitLayout;
 
 /**
  * This builds on the FormStyleLayout for providing common popup features in a
@@ -49,22 +40,26 @@ import com.gwtext.client.widgets.layout.FitLayout;
 public class FormStylePopup {
 
     private FormStyleLayout form;
-    private Window          dialog;
+    private Popup           dialog;
     private String          title;
 
-    private Boolean         shadow;
     private Integer         width;
-    private Integer			height;
+    private Integer         height;
     private boolean         modal   = true;
     private int             popLeft = -1;
     private int             popTop;
     private Command         afterShowEvent;
+
+    private boolean         dragged = false;
+    private int             dragStartX;
+    private int             dragStartY;
 
     public FormStylePopup(String image,
                           final String title) {
 
         form = new FormStyleLayout( image,
                                     title );
+
         this.title = title;
 
     }
@@ -75,11 +70,9 @@ public class FormStylePopup {
 
     public FormStylePopup(String image,
                           final String title,
-                          Integer width,
-                          Boolean shadow) {
+                          Integer width) {
         this( image,
               title );
-        this.shadow = shadow;
         this.width = width;
     }
 
@@ -100,7 +93,6 @@ public class FormStylePopup {
     public void hide() {
         if ( dialog != null ) {
             this.dialog.hide();
-            this.dialog.destroy();
         }
     }
 
@@ -116,59 +108,81 @@ public class FormStylePopup {
 
     public void show() {
 
-        dialog = new Window();
-        dialog.setAutoScroll( true );
+        dialog = new Popup();
+
+        if ( title != null ) {
+            dialog.setTitle( title );
+        }
         dialog.setModal( modal );
-        dialog.setPlain( true );
-        dialog.setConstrainHeader( true );
-        dialog.setBodyBorder( false );
-        dialog.setBorder( false );
         if ( width == null ) {
-            dialog.setWidth( 430 );
+            dialog.setWidth( 430 + "px" );
         } else if ( width != -1 ) {
-            dialog.setWidth( width );
-        }
-        dialog.setShadow( (shadow == null) ? true : shadow.booleanValue() );
-        dialog.setResizable( true );
-        dialog.setClosable( true );
-        dialog.setTitle( title );
-        if ( popLeft > -1 ) {
-            dialog.setPosition( popLeft,
-                                popTop );
+            dialog.setWidth( width + "px" );
         }
 
-        Panel p = new Panel();
-        p.setLayout( new FitLayout() );
-        p.add( form );
-        dialog.add( p );
-        p.setBodyBorder( false );
-        p.setPaddings( 0 );
+        VerticalPanel p = new VerticalPanel();
+        p.setHorizontalAlignment( VerticalPanel.ALIGN_RIGHT );
 
-        if ( this.afterShowEvent != null ) {
-            this.dialog.addListener( new WindowListenerAdapter() {
-                @Override
-                public void onActivate(Panel panel) {
-                    afterShowEvent.execute();
+        final PopupTitleBar titleBar = new PopupTitleBar( this.title );
+
+        titleBar.closeButton.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                dialog.hide();
+            }
+        } );
+        titleBar.addMouseDownHandler( new MouseDownHandler() {
+
+            public void onMouseDown(MouseDownEvent event) {
+                dragged = true;
+                dragStartX = event.getRelativeX( dialog.getElement() );
+                dragStartY = event.getRelativeY( dialog.getElement() );
+                DOM.setCapture( titleBar.getElement() );
+            }
+        } );
+        titleBar.addMouseMoveHandler( new MouseMoveHandler() {
+
+            public void onMouseMove(MouseMoveEvent event) {
+                if ( dragged ) {
+                    dialog.setPopupPosition( event.getClientX() - dragStartX,
+                                             event.getClientY() - dragStartY );
                 }
-            } );
-        }
+            }
+        } );
+        titleBar.addMouseUpHandler( new MouseUpHandler() {
 
-        dialog.addListener( new WindowListenerAdapter() {
-
-            public void onResize(BoxComponent component,
-                                 int adjWidth,
-                                 int adjHeight,
-                                 int rawWidth,
-                                 int rawHeight) {
-                dialog.doLayout();
+            public void onMouseUp(MouseUpEvent event) {
+                dragged = false;
+                DOM.releaseCapture( titleBar.getElement() );
             }
         } );
 
-        if (getHeight() != null) {
-        	this.dialog.setHeight(getHeight());
+        p.add( titleBar );
+
+        p.add( form );
+        dialog.add( p );
+
+        if ( getHeight() != null ) {
+            this.dialog.setHeight( getHeight() + "px" );
         }
-        
-        this.dialog.show();
+
+        if ( popLeft > -1 ) {
+            dialog.setPopupPosition( popLeft,
+                                     popTop );
+            this.dialog.show();
+        } else {
+            dialog.setPopupPosition( 100,
+                                     100 );
+            this.dialog.show();
+
+            dialog.center();
+
+            int left = (Window.getClientWidth() - dialog.getOffsetWidth()) >> 1;
+            int top = (Window.getClientHeight() - dialog.getOffsetHeight()) >> 1;
+            setPopupPosition( Math.max( Window.getScrollLeft() + left,
+                                        0 ),
+                              Math.max( Window.getScrollTop() + top,
+                                        0 ) );
+        }
 
     }
 
@@ -189,12 +203,26 @@ public class FormStylePopup {
         this.width = new Integer( i );
     }
 
-	public Integer getHeight() {
-		return height;
-	}
+    public Integer getHeight() {
+        return height;
+    }
 
-	public void setHeight(Integer height) {
-		this.height = height;
-	}
+    public void setHeight(Integer height) {
+        this.height = height;
+    }
+
+    class Popup extends PopupPanel {
+
+        @Override
+        public void show() {
+            super.show();
+
+            if ( afterShowEvent != null ) {
+                afterShowEvent.execute();
+            }
+
+        }
+
+    }
 
 }

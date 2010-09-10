@@ -75,7 +75,7 @@ public class RuleTemplateEditor extends DirtyableComposite implements RuleModelE
 		tPanel.add(new Button(constants.LoadTemplateData(), new ClickHandler() {
 			
 			public void onClick(ClickEvent event) {
-				final FormStylePopup popUp = new FormStylePopup(null, constants.TemplateData(), (int) (Window.getClientWidth() * 0.8), false);
+				final FormStylePopup popUp = new FormStylePopup(null, constants.TemplateData(), (int) (Window.getClientWidth() * 0.8) );
 				popUp.setHeight((int) (Window.getClientHeight() * 0.8));
 				popUp.addAttribute("", buildTemplateTable());
 				Button close = new Button(constants.Close(), new ClickHandler() {

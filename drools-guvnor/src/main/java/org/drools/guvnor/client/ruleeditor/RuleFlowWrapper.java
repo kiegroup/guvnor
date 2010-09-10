@@ -100,7 +100,7 @@ public class RuleFlowWrapper extends Composite implements SaveEventListener {
 
 		try {
 			FormStylePopup pop = new FormStylePopup("images/view_source.gif", // NON-NLS
-					constants.ViewingDiagram(), new Integer(800), Boolean.FALSE);
+					constants.ViewingDiagram(), new Integer(800));
 
 			pop.addRow(new ScrollPanel(ruleFlowViewer));
 			pop.addRow(parameterPanel);
