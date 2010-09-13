@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-
-
 <!--
  This is a module specific script for GWT related issues mainly you should only need to worry about this
  if you are modifying the GUI itself.
@@ -8,120 +6,108 @@
  @author Michael Neale
 -->
 <project name="org.drools.guvnor.Guvnor" default="gwt-compile" basedir="." xmlns:gwt="antlib:de.samaflost.gwttasks">
-	<taskdef uri="antlib:de.samaflost.gwttasks"
-	              resource="de/samaflost/gwttasks/antlib.xml"
-	              classpath="../lib/gwttasks.jar"/>
+  <taskdef uri="antlib:de.samaflost.gwttasks"
+           resource="de/samaflost/gwttasks/antlib.xml"
+           classpath="../lib/gwttasks.jar"/>
 
 
-	<property file="build.properties"/>
+  <property file="build.properties"/>
 
-	<property name="jbossAS.tempdir" location="tempdir" />
+  <property name="jbossAS.tempdir" location="tempdir"/>
 
+  <property name="src.dir" value="src/main/java"/>
+  <property name="build.dir" value="target/drools-guvnor/"/>
 
+  <path id="compile.classpath">
+    <fileset dir="${build.dir}/WEB-INF/lib">
+      <include name="**/*.jar"/>
+      <include name="**/*.xml"/>
+    </fileset>
+  </path>
 
-<property name="src.dir" value="src/main/java" />
-<property name="build.dir" value="target/drools-guvnor/" />
-
-<path id="compile.classpath">
-        <fileset dir="${build.dir}/WEB-INF/lib">
-                <include name="**/*.jar" />
-                <include name="**/*.xml" />
-        </fileset>
-    </path>
-
-<path id="gwt.classpath">
-        <fileset dir="${gwt.home}">
-                <include name="*.jar" />
-                <include name="*.xml" />
-        </fileset>
-    </path>
+  <path id="gwt.classpath">
+    <fileset dir="${gwt.home}">
+      <include name="*.jar"/>
+      <include name="*.xml"/>
+    </fileset>
+  </path>
 
 
-<target name="gwt-compile"  description="GWT compile to JavaScript">
-                <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
-  			<classpath>                      
-      			        <path refid="gwt.classpath" />
-      			        <pathelement location="${src.dir}" />
-				<pathelement location="../drools-ide-common/src/main/java" />
-				<pathelement location="../drools-ide-common/src/main/resources" />
-				<pathelement location="../lib/cobogw-1.0.jar" />
-				<pathelement location="../lib/gwt-diagrams-0.1.jar" />
-				<pathelement location="../drools-factconstraint/src/main/java" />
-				<pathelement location="../lib/gwtext.jar" />
-				<pathelement location="../drools-factconstraint/src/main/resources" />
-				<!--pathelement location="" /-->
-                                <path refid="compile.classpath" />
-                        </classpath>
-                        <jvmarg value="-Xmx256M" />
-                        <arg value="org.drools.guvnor.Guvnor" />
-                </java>
+  <target name="gwt-compile" description="GWT compile to JavaScript">
+    <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
+      <classpath>
+        <path refid="gwt.classpath"/>
+        <pathelement location="${src.dir}"/>
+        <pathelement location="../drools-ide-common/src/main/java"/>
+        <pathelement location="../drools-ide-common/src/main/resources"/>
+        <pathelement location="../lib/cobogw-1.0.jar"/>
+        <pathelement location="../lib/gwt-diagrams-0.1.jar"/>
+        <pathelement location="../drools-factconstraint/src/main/java"/>
+        <pathelement location="../lib/gwtext.jar"/>
+        <pathelement location="../drools-factconstraint/src/main/resources"/>
+        <!--pathelement location="" /-->
+        <path refid="compile.classpath"/>
+      </classpath>
+      <jvmarg value="-Xmx256M"/>
+      <arg value="org.drools.guvnor.Guvnor"/>
+    </java>
 
-	 	 <delete>
-	      <fileset dir="src/main/webapp/org.drools.guvnor.Guvnor" includes="*.gwt.rpc *.cache.html *.cache.js *.cache.xml *.cache.png"/>
-	    </delete>
-		<copy todir="src/main/webapp">
-			<fileset dir="war">
-				<include name="**/*" />
-			</fileset>
-		</copy>
-	 	<delete>
-	      <fileset dir="war"/>
-	    </delete>
-        </target>
-
-
+    <delete>
+      <fileset dir="src/main/webapp/org.drools.guvnor.Guvnor" includes="*.gwt.rpc *.cache.html *.cache.js *.cache.xml *.cache.png"/>
+    </delete>
+    <copy todir="src/main/webapp">
+      <fileset dir="war">
+        <include name="**/*"/>
+      </fileset>
+    </copy>
+    <delete>
+      <fileset dir="war"/>
+    </delete>
+  </target>
 
 
+  <!-- Creates a stand alone zip. JBoss AS + Guvnor -->
+  <target name="guvnor-standalone">
 
+    <condition property="isJBossASDowloaded">
+      <available file="${jbossAS.version}.zip"/>
+    </condition>
+    <antcall target="download-jboss-as"/>
 
+    <mkdir dir="${jbossAS.tempdir}"/>
+    <unzip src="${jbossAS.version}.zip"
+           dest="${jbossAS.tempdir}"/>
+    <delete dir="${jbossAS.tempdir}/${jbossAS.version}/docs"/>
+    <delete dir="${jbossAS.tempdir}/${jbossAS.version}/server/all"/>
+    <delete dir="${jbossAS.tempdir}/${jbossAS.version}/server/minimal"/>
+    <unzip src="target/drools-guvnor.war"
+           dest="${jbossAS.tempdir}/${jbossAS.version}/server/default/deploy/drools-guvnor.war"/>
+    <zip basedir="${jbossAS.tempdir}"
+         destfile="guvnor-standalone.zip"/>
+    <delete dir="${jbossAS.tempdir}"/>
 
+    <antcall target="remove-jboss-as"/>
+  </target>
 
+  <!-- If JBoss AS is not downloaded get it -->
+  <target name="download-jboss-as" unless="isJBossASDowloaded">
+    <get src="http://heanet.dl.sourceforge.net/sourceforge/jboss/${jbossAS.version}.zip"
+         dest="${jbossAS.version}.zip"/>
+  </target>
 
+  <!-- If JBoss AS was downloaded remove it -->
+  <target name="remove-jboss-as" unless="isJBossASDowloaded">
+    <delete file="${jbossAS.version}.zip"/>
+  </target>
 
+  <target name="plug-editors">
+    <taskdef name="editorlauncher" classname="org.drools.guvnor.EditorLauncherGenerator" classpath="../lib/editors-task.jar"/>
+    <editorlauncher configuration="guvnor-editors.properties"
+                    outPath="src/main/java/org/drools/guvnor/client/ruleeditor"/>
+    <taskdef name="rulemenu" classname="org.drools.guvnor.RulesNewMenuGenerator" classpath="../lib/editors-task.jar"/>
+    <rulemenu configuration="rules-new-menu.properties"
+              outPath="src/main/java/org/drools/guvnor/client/ruleeditor"/>
+  </target>
 
-
-
-	<!-- Creates a stand alone zip. JBoss AS + Guvnor -->
-	<target name="guvnor-standalone" >
-
-		<condition property="isJBossASDowloaded" >
-			<available file="${jbossAS.version}.zip" />
-		</condition>
-	    <antcall target="download-jboss-as"/>
-				
-		<mkdir dir="${jbossAS.tempdir}" />
-		<unzip src="${jbossAS.version}.zip" 
-			dest="${jbossAS.tempdir}" />
-		<delete dir="${jbossAS.tempdir}/${jbossAS.version}/docs" />
-		<delete dir="${jbossAS.tempdir}/${jbossAS.version}/server/all" />
-		<delete dir="${jbossAS.tempdir}/${jbossAS.version}/server/minimal" />
-		<unzip src="target/drools-guvnor.war" 
-			dest="${jbossAS.tempdir}/${jbossAS.version}/server/default/deploy/drools-guvnor.war" />
-		<zip basedir="${jbossAS.tempdir}"
-			destfile="guvnor-standalone.zip" />
-		<delete dir="${jbossAS.tempdir}" />	
-
-	    <antcall target="remove-jboss-as"/>		
-	</target>
-	
-	<!-- If JBoss AS is not downloaded get it -->
-	<target name="download-jboss-as" unless="isJBossASDowloaded">
-		<get src="http://heanet.dl.sourceforge.net/sourceforge/jboss/${jbossAS.version}.zip" 
-				dest="${jbossAS.version}.zip" />
-	</target>
-
-	<!-- If JBoss AS was downloaded remove it -->
-	<target name="remove-jboss-as" unless="isJBossASDowloaded">
-		<delete file="${jbossAS.version}.zip" />
-	</target>
-
-    <target name="plug-editors">
-      <taskdef name="editorlauncher" classname="org.drools.guvnor.EditorLauncherGenerator" classpath="../lib/editors-task.jar"/>
-      <editorlauncher configuration="guvnor-editors.properties"
-                      outPath="src/main/java/org/drools/guvnor/client/ruleeditor"/>
-      <taskdef name="rulemenu" classname="org.drools.guvnor.RulesNewMenuGenerator" classpath="../lib/editors-task.jar"/>
-      <rulemenu configuration="rules-new-menu.properties"
-                outPath="src/main/java/org/drools/guvnor/client/ruleeditor"/>
-    </target>
 </project>
 
