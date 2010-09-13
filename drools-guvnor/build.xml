@@ -13,7 +13,7 @@
 
   <property file="build.properties"/>
 
-  <property name="jbossAS.tempdir" location="tempdir"/>
+  <property name="jbossAS.tempdir" location="target/guvnor-standalone"/>
 
   <property name="src.dir" value="src/main/java"/>
   <property name="build.dir" value="target/drools-guvnor/"/>
@@ -83,7 +83,7 @@
     <unzip src="target/drools-guvnor.war"
            dest="${jbossAS.tempdir}/${jbossAS.version}/server/default/deploy/drools-guvnor.war"/>
     <zip basedir="${jbossAS.tempdir}"
-         destfile="guvnor-standalone.zip"/>
+         destfile="target/guvnor-standalone.zip"/>
     <delete dir="${jbossAS.tempdir}"/>
 
     <antcall target="remove-jboss-as"/>
