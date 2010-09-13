@@ -23,10 +23,13 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.drools.guvnor.client.qa.testscenarios.ScenarioHelper;
+import org.drools.ide.common.client.modeldriven.testing.CallFixtureMap;
+import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
+import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.RetractFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
@@ -35,6 +38,7 @@ public class ScenarioHelperTest extends TestCase {
 
 
 	//need to get out chunks, so we get data (insert, update, retract)
+	//then callMethodData
 	//then execute
 	//then expectations
 	//then data
@@ -48,6 +52,9 @@ public class ScenarioHelperTest extends TestCase {
 		l.add(new FactData("Q", "y", new ArrayList(), false));
 		l.add(new FactData("X", "a", new ArrayList(), false));
 		l.add(new FactData("X", "b", new ArrayList(), false));
+		l.add(new CallMethod("x","hello"));
+		l.add(new CallMethod("x","helloItherWay"));
+		l.add(new CallMethod("v","helloAgain"));
 		ExecutionTrace ex1 = new ExecutionTrace();
 		l.add(ex1);
 
@@ -55,6 +62,8 @@ public class ScenarioHelperTest extends TestCase {
 		l.add(new FactData("Q", "x", new ArrayList(), true));
 		l.add(new FactData("Q", "y", new ArrayList(), true));
 		l.add(new RetractFact("y"));
+		l.add(new CallMethod("x","hello"));
+		
 
 		VerifyFact vf1 = new VerifyFact();
 		VerifyFact vf2 = new VerifyFact();
@@ -74,7 +83,7 @@ public class ScenarioHelperTest extends TestCase {
 		ScenarioHelper hlp = new ScenarioHelper();
 
 		List fx = hlp.lumpyMap(l);
-		assertEquals(7, fx.size());
+		assertEquals(9, fx.size());
 
 		Map first  = (Map) fx.get(0);
 		assertEquals(2, first.size());
@@ -90,26 +99,38 @@ public class ScenarioHelperTest extends TestCase {
 		fd = (FactData) fdl.get(0);
 		assertEquals("a", fd.name);
 
-		assertEquals(ex1, fx.get(1));
+		CallFixtureMap callMap = (CallFixtureMap)fx.get(1);
+		assertEquals(2, callMap.size());
+		assertTrue(callMap.containsKey("x"));
+		FixtureList lcall1 = callMap.get("x");
+		CallMethod c1 = (CallMethod)lcall1.get(0);
+		assertTrue(c1.variable.equals("x"));
+		assertTrue(c1.methodName.equals("hello"));
+		CallMethod c2 = (CallMethod)lcall1.get(1);
+		assertTrue(c2.variable.equals("x"));
+		assertTrue(c2.methodName.equals("helloItherWay"));
+		assertTrue(callMap.containsKey("v"));
+		FixtureList lcall2 = callMap.get("v");
+		CallMethod c3= (CallMethod)lcall2.get(0);
+		assertTrue(c3.variable.equals("v"));
+		assertTrue(c3.methodName.equals("helloAgain"));
+		
+		
+		assertEquals(ex1, fx.get(2));
 
-		List ruleFired = (List) fx.get(2);
+		List ruleFired = (List) fx.get(3);
 		assertEquals(2, ruleFired.size());
 		assertEquals(vr1, ruleFired.get(0));
 		assertEquals(vr2, ruleFired.get(1));
 
-		List verifyFact = (List) fx.get(3);
+		List verifyFact = (List) fx.get(4);
 		assertEquals(2, verifyFact.size());
 		assertEquals(vf1, verifyFact.get(0));
 		assertEquals(vf2, verifyFact.get(1));
 
 
-//		List retracts = (List) fx.get(4);
-//		assertEquals(1, retracts.size());
-//		RetractFact ret = (RetractFact) retracts.get(0);
-//		assertEquals("y", ret.name);
 
-
-		Map second = (Map) fx.get(4);
+		Map second = (Map) fx.get(5);
 		assertEquals(3, second.size());
 		assertTrue(second.containsKey("Z"));
 		assertTrue(second.containsKey("Q"));
@@ -122,11 +143,19 @@ public class ScenarioHelperTest extends TestCase {
 		RetractFact ret = (RetractFact) retracts.get(0);
 		assertEquals("y", ret.name);
 
-		assertEquals(ex2, fx.get(5));
+	
+		CallFixtureMap third = (CallFixtureMap)fx.get(6);
+		assertEquals(1, third.size());
+		assertTrue(third.containsKey("x"));
+		FixtureList lcall3 = third.get("x");
+		CallMethod c4= (CallMethod)lcall3.get(0);
+		assertTrue(c4.variable.equals("x"));
+		assertTrue(c4.methodName.equals("hello"));
+		assertEquals(ex2, fx.get(7));
 
 
 
-		List last = (List) fx.get(6);
+		List last = (List) fx.get(8);
 		assertEquals(1, last.size());
 		assertEquals(vf3, last.get(0));
 
@@ -196,17 +225,24 @@ public class ScenarioHelperTest extends TestCase {
 
 		ScenarioHelper hlp = new ScenarioHelper();
 		List r = hlp.lumpyMap(fl);
-		assertEquals(4, r.size());
+		assertEquals(6, r.size());
 		assertTrue(r.get(0) instanceof Map);
-		assertTrue(r.get(1) instanceof ExecutionTrace);
-		assertTrue(r.get(2) instanceof Map);
-		assertTrue(r.get(3) instanceof ExecutionTrace);
+		assertTrue(r.get(1) instanceof Map);
+		assertTrue(r.get(2) instanceof ExecutionTrace);
+		assertTrue(r.get(3) instanceof Map);
+		assertTrue(r.get(4) instanceof Map);
+		assertTrue(r.get(5) instanceof ExecutionTrace);
 
-		Map r_ = (Map) r.get(2);
+		Map r_ = (Map) r.get(3);
 		assertEquals(0, r_.size());
-
+		r_ = (Map) r.get(4);
+		assertEquals(0, r_.size());
+		
+		
 		r_ = (Map) r.get(0);
 		assertEquals(1, r_.size());
+		r_ = (Map) r.get(1);
+		assertEquals(0, r_.size());
 
 	}
 

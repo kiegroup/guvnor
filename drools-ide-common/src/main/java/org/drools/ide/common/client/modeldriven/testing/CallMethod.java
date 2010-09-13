@@ -32,6 +32,14 @@ public class CallMethod implements Fixture {
 		this.variable = variable;
 	}
 
+	
+	public CallMethod(String variable, String methodName) {
+		super();
+		this.state = state;
+		this.methodName = methodName;
+		this.variable = variable;
+	}
+
 	public void removeField(final int idx) {
 
 		final CallFieldValue[] newList = new CallFieldValue[this.callFieldValues.length - 1];
