@@ -24,6 +24,7 @@
     <extend-property name="locale" values="zh_CN"/>
     <extend-property name="locale" values="ja_JP"/>
     <extend-property name="locale" values="pt_BR"/>
+    <extend-property name="locale" values="fr_FR"/>
 
 
     <!-- Specify the app entry point class.                   -->
