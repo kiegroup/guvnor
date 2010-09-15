@@ -325,9 +325,10 @@ public class WebDAVImpl
             PackageItem pkg = repository.loadPackage( path[1] );
             if ( path.length == 2 ) {
                 //dealing with package
-                return createStoredObject( uri,
-                                           pkg,
-                                           0 );
+            	return createStoredObject( uri,
+                        pkg,
+                        0 );
+
             } else {
                 String fileName = path[2];
                 String assetName = AssetItem.getAssetNameFromFileName( fileName )[0];
@@ -343,18 +344,27 @@ public class WebDAVImpl
             }
         } else if ( path[0].equals( "snapshots" ) && checkPackagePermission( path[1],
                                                                              RoleTypes.PACKAGE_READONLY ) ) {
-            if ( path.length == 3 ) {
+        	if( path.length == 2 ){
+        		PackageItem pkg = repository.loadPackage( path[1] );
+        		StoredObject so = createStoredObject( uri,
+                        pkg,
+                        0 );
+                so.setFolder( isFolder( uri ) );
+
+                return so;
+        	}
+        	else if ( path.length == 3 ) {
                 PackageItem snapshot = repository.loadPackageSnapshot( path[1],
                                                                        path[2] );
-                AssetItem asset;
-                try {
-                    asset = snapshot.loadAsset( AssetItem.getAssetNameFromFileName( path[2] )[0] );
-                } catch ( Exception e ) {
-                    return null;
-                }
+//                AssetItem asset;
+//                try {
+//                    asset = snapshot.loadAsset( AssetItem.getAssetNameFromFileName( path[2] )[0] );
+//                } catch ( Exception e ) {
+//                    return null;
+//                }
                 return createStoredObject( uri,
                                            snapshot,
-                                           asset.getContentLength() );
+                                           0 );
             } else if ( path.length == 4 ) {
                 PackageItem pkg = repository.loadPackageSnapshot( path[1],
                                                                   path[2] );
