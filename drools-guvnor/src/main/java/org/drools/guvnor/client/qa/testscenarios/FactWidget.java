@@ -19,6 +19,7 @@ package org.drools.guvnor.client.qa.testscenarios;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
@@ -62,7 +63,8 @@ public abstract class FactWidget extends HorizontalPanel {
 
     protected void onDelete() {
         if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisBlockOfData() ) ) {
-            scenario.removeFixture( definitionList );
+            for (Fixture f : definitionList)
+                scenario.removeFixture( f );
             parent.renderEditor();
         }
     }
