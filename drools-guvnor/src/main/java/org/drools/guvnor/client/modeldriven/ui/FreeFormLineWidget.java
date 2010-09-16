@@ -33,12 +33,16 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
-
-import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Free form DRL line widget
@@ -92,13 +96,15 @@ public class FreeFormLineWidget extends RuleModellerWidget {
         tb.setTitle(constants.ThisIsADrlExpressionFreeForm());
 
         if (!this.readOnly) {
-            tb.addChangeListener(new ChangeListener() {
+        	tb.addChangeHandler(new ChangeHandler() {
+				
+				public void onChange(ChangeEvent event) {
+					  setModified(true);
+	                    action.text = tb.getText();
+					
+				}
+			});
 
-                public void onChange(Widget arg0) {
-                    setModified(true);
-                    action.text = tb.getText();
-                }
-            });
             
         } else {
             tb.setEnabled(false);

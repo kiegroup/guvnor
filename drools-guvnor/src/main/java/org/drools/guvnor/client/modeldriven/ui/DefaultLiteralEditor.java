@@ -22,6 +22,14 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -67,12 +75,13 @@ public class DefaultLiteralEditor extends Composite {
         this.numericValue = numericValue;
 
         textWidget.setStyleName( "x-form-field" );
+        textWidget.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				showPopup();
+			}
+		});
 
-        textWidget.addClickListener( new ClickListener() {
-            public void onClick(Widget arg0) {
-                showPopup();
-            }
-        } );
 
         if ( constraint.getValue() != null && !"".equals( constraint.getValue() ) ) {
             textWidget.setText( constraint.getValue() );
@@ -90,8 +99,9 @@ public class DefaultLiteralEditor extends Composite {
         popup.setPopupPosition( this.getAbsoluteLeft(),
                                 this.getAbsoluteTop() );
 
-        okButton.addClickListener( new ClickListener() {
-            public void onClick(Widget arg0) {
+        okButton.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
 
                 if ( !isValueEmpty( constraint.getValue() ) ) {
                     if (onValueChangeCommand != null){
@@ -102,7 +112,7 @@ public class DefaultLiteralEditor extends Composite {
                     popup.hide();
                 }
             }
-        } );
+		});
 
         horizontalPanel.add( getTextBox() );
         horizontalPanel.add( okButton );
@@ -116,8 +126,7 @@ public class DefaultLiteralEditor extends Composite {
     public TextBox getTextBox() {
 
         final TextBox box = new BoundTextBox( constraint );
-
-        box.addKeyboardListener( new KeyboardListener() {
+         box.addKeyboardListener( new KeyboardListener() {
 
             public void onKeyDown(Widget arg0,
                                   char arg1,

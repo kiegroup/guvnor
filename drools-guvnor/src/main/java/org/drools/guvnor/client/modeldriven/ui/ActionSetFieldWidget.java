@@ -33,6 +33,10 @@ import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
@@ -129,20 +133,21 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             final int idx = i;
             Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
             //Image remove = new ImageButton("images/delete_item_fade.gif"); //NON-NLS
-            remove.addClickListener(new ClickListener() {
-
-                public void onClick(Widget w) {
+            remove.addClickHandler(new ClickHandler() {
+				
+				public void onClick(ClickEvent event) {
                     if (Window.confirm(constants.RemoveThisItem())) {
                         model.removeField(idx);
                         setModified(true);
                         getModeller().refreshWidget();
                     }
-                }
-            });
+                }				
+			});
             if (!this.readOnly) {
                 layout.setWidget(i, 3, remove);
             }
-            remove.addMouseListener(new MouseListenerAdapter() {
+
+             remove.addMouseListener(new MouseListenerAdapter() {
 
                 @Override
                 public void onMouseEnter(Widget sender) {
@@ -178,13 +183,14 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     private Widget getSetterLabel() {
 
 
-
-        ClickListener clk = new ClickListener() {
-
-            public void onClick(Widget w) {
-                showAddFieldPopup(w);
-            }
-        };
+        ClickHandler clk = new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				Widget w = (Widget)event.getSource();
+				 showAddFieldPopup(w);
+				
+			}
+		};
         String modifyType = "set";
         if (this.model instanceof ActionUpdateField) {
             modifyType = "modify";
@@ -214,9 +220,9 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         box.setSelectedIndex(0);
 
         popup.addAttribute(constants.AddField(), box);
-        box.addChangeListener(new ChangeListener() {
-
-            public void onChange(Widget w) {
+        box.addChangeHandler(new ChangeHandler() {
+			
+			public void onChange(ChangeEvent event) {
                 String fieldName = box.getItemText(box.getSelectedIndex());
 
                 String fieldType = completions.getFieldType(variableClass, fieldName);
@@ -225,7 +231,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                 getModeller().refreshWidget();
                 popup.hide();
             }
-        });
+		});
+
 
 
         popup.show();

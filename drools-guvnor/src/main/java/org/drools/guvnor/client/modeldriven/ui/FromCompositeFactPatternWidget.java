@@ -16,25 +16,28 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  *
@@ -99,18 +102,34 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
                             setModified(true);
                         }
                     });
-                    this.layout.setWidget(r,
-                            0,
-                            addRemoveButton(factPatternWidget, new ClickListener() {
+//                    this.layout.setWidget(r,
+//                            0,
+//                            addRemoveButton(factPatternWidget, new ClickListener() {
+//
+//                        public void onClick(Widget w) {
+//                            if (Window.confirm(constants.RemoveThisEntireConditionQ())) {
+//                                setModified(true);
+//                                pattern.setFactPattern(null);
+//                                getModeller().refreshWidget();
+//                            }
+//                        }
+//                    }));
+					this.layout.setWidget(
+							r,
+							0,
+							addRemoveButton(factPatternWidget,
+									new ClickHandler() {
 
-                        public void onClick(Widget w) {
-                            if (Window.confirm(constants.RemoveThisEntireConditionQ())) {
-                                setModified(true);
-                                pattern.setFactPattern(null);
-                                getModeller().refreshWidget();
-                            }
-                        }
-                    }));
+										public void onClick(ClickEvent event) {
+											if (Window.confirm(constants
+													.RemoveThisEntireConditionQ())) {
+												setModified(true);
+												pattern.setFactPattern(null);
+												getModeller().refreshWidget();
+											}
+
+										}
+									}));
                 }
                 r++;
             }
@@ -124,12 +143,14 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected Widget getCompositeLabel() {
 
-        ClickListener click = new ClickListener() {
-
-            public void onClick(Widget w) {
-                showFactTypeSelector(w);
-            }
-        };
+    	ClickHandler click = new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				Widget w = (Widget)event.getSource();
+				showFactTypeSelector(w);
+				
+			}
+		};
         String lbl = "<div class='x-form-field'>" + HumanReadable.getCEDisplayName("from") + "</div>";
 
         DirtyableFlexTable panel = new DirtyableFlexTable();
@@ -173,26 +194,27 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         popup.setTitle(constants.NewFactPattern());
         popup.addAttribute(constants.chooseFactType(),
                 box);
-
-        box.addChangeListener(new ChangeListener() {
-
-            public void onChange(Widget w) {
+        box.addChangeHandler(new ChangeHandler() {
+			
+			public void onChange(ChangeEvent event) {
                 pattern.setFactPattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
                 setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
-            }
-        });
+			}
+		});
+
 
         popup.show();
     }
 
-    protected Widget addRemoveButton(Widget w, ClickListener listener) {
+    protected Widget addRemoveButton(Widget w, ClickHandler listener) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
         final Image remove = new ImageButton("images/delete_item_small.gif"); //NON-NLS
         remove.setTitle(constants.RemoveThisBlockOfData());
-        remove.addClickListener(listener);
+        remove.addClickHandler(listener);
+        //remove.addClickListener(listener);
 
 
         horiz.setWidth("100%");

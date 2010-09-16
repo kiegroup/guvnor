@@ -26,11 +26,11 @@ import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A drop down for enumerated values
@@ -49,13 +49,12 @@ public class EnumDropDown extends ListBox
         final Constants cs = GWT.create( Constants.class );
 
         this.valueChanged = valueChanged;
-
-        addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                valueChanged.valueChanged( getItemText( getSelectedIndex() ),
-                                           getValue( getSelectedIndex() ) );
-            }
-        } );
+		addChangeHandler(new ChangeHandler() {
+			public void onChange(ChangeEvent event) {
+				valueChanged.valueChanged(getItemText(getSelectedIndex()),
+						getValue(getSelectedIndex()));
+			}
+		});
 
         //if we have to do it lazy, we will hit up the server when the widget gets focus
         if ( dropData.fixedList == null && dropData.queryExpression != null ) {

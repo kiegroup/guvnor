@@ -18,9 +18,13 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 
 
-import org.drools.guvnor.client.common.*;
-import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.common.ClickableLabel;
+import org.drools.guvnor.client.common.DirtyableFlexTable;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
@@ -29,10 +33,20 @@ import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is used when asserting a new fact into working memory.
@@ -97,15 +111,15 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
             inner.setWidget( i, 1 + col, valueEditor(val) );
             final int idx = i;
             Image remove = new ImageButton("images/delete_item_small.gif");
-            remove.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                	if (Window.confirm(constants.RemoveThisItem())) {
-                            model.removeField( idx );
-                            setModified(true);
-                            getModeller().refreshWidget();
-                	};
-                }
-            });
+			remove.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent event) {
+					if (Window.confirm(constants.RemoveThisItem())) {
+						model.removeField(idx);
+						setModified(true);
+						getModeller().refreshWidget();
+					}
+				}
+			});
             if (!this.readOnly) {
                 inner.setWidget( i, 2 + col, remove );
             }
@@ -138,12 +152,15 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private Widget getAssertLabel() {
 
 
-        ClickListener cl =  new ClickListener() {
-            public void onClick(Widget w) {
-                showAddFieldPopup(w);
-            }
-        };
-
+        ClickHandler cl = new ClickHandler(
+        		) {
+			
+			public void onClick(ClickEvent event) {
+				Widget w = (Widget)event.getSource();
+				showAddFieldPopup(w);
+				
+			}
+		};
 
         String assertType = "assert";  //NON-NLS
         if (this.model instanceof ActionInsertLogicalFact) {
@@ -173,19 +190,18 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
 
         popup.addAttribute( constants.AddField(),
                             box );
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                String fieldName = box.getItemText( box.getSelectedIndex() );
-                String fieldType = completions.getFieldType( model.factType,
-                                                             fieldName );
-                model.addFieldValue( new ActionFieldValue( fieldName,
-                                                           "",
-                                                           fieldType ) );
-                setModified(true);
-                getModeller().refreshWidget();
-                popup.hide();
-            }
-        } );
+		box.addChangeHandler(new ChangeHandler() {
+			public void onChange(ChangeEvent event) {
+				String fieldName = box.getItemText(box.getSelectedIndex());
+				String fieldType = completions.getFieldType(model.factType,
+						fieldName);
+				model.addFieldValue(new ActionFieldValue(fieldName, "",
+						fieldType));
+				setModified(true);
+				getModeller().refreshWidget();
+				popup.hide();
+			}
+		});
         /*
          * Propose a textBox to the user
          * to make him set a variable name 
@@ -198,21 +214,26 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         final Button ok = new Button( constants.Set() );
         vn.add( varName );
         vn.add( ok );
+        ok.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				String var = varName.getText();
+				if (getModeller().isVariableNameUsed(var)
+						&& ((model.getBoundName() != null && model
+								.getBoundName().equals(var) == false) || model
+								.getBoundName() == null)) {
+					Window.alert(Format.format(
+							constants.TheVariableName0IsAlreadyTaken(), var));
+					return;
+				}
+				model.setBoundName(var);
+				setModified(true);
+				getModeller().refreshWidget();
+				popup.hide();
+			}
+		});
+       
 
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                String var = varName.getText();
-                if ( getModeller().isVariableNameUsed( var ) && ((model.getBoundName() != null && model.getBoundName().equals( var ) == false) || model.getBoundName() == null) ) {
-                    Window.alert( Format.format( constants.TheVariableName0IsAlreadyTaken(),
-                                                 var ) );
-                    return;
-                }
-                model.setBoundName( var );
-                setModified(true);
-                getModeller().refreshWidget();
-                popup.hide();
-            }
-        } );
         popup.addAttribute( constants.BoundVariable(),
                             vn );
         popup.show();

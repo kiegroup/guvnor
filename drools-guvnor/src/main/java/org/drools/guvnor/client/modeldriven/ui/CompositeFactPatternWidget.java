@@ -45,6 +45,8 @@ import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,12 +139,13 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
     }
 
     protected Widget getCompositeLabel() {
-
-        ClickListener click =  new ClickListener() {
-            public void onClick(Widget w) {
-                showFactTypeSelector( w );
-            }
-        };
+    	ClickHandler click = new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				Widget w = (Widget)event.getSource();
+				showFactTypeSelector( w );
+			}
+		};
         String lbl = HumanReadable.getCEDisplayName( pattern.type );
 
         if (pattern.patterns == null || pattern.patterns.length ==0) {

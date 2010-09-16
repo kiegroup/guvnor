@@ -20,19 +20,19 @@ import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -71,13 +71,13 @@ public class EnumDropDownLabel extends Composite {
     private Label getTextLabel() {
         Label label = new Label();
         label.setStyleName( "x-form-field" );
-
-        label.addClickListener( new ClickListener() {
-            public void onClick(Widget arg0) {
-                showPopup();
-            }
-        } );
-
+        label.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				showPopup();
+				
+			}
+		});
         if ( label.getText() == null && "".equals( label.getText() ) ) {
             label.setText( constants.Value() );
         }
@@ -92,15 +92,17 @@ public class EnumDropDownLabel extends Composite {
         popup.setPopupPosition( this.getAbsoluteLeft(),
                                 this.getAbsoluteTop() );
 
-        okButton.addClickListener( new ClickListener() {
-            public void onClick(Widget arg0) {
-                executeOnValueChangeCommand();
+        okButton.addClickHandler(new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				executeOnValueChangeCommand();
                 panel.clear();
                 panel.add( textWidget );
                 popup.hide();
-            }
-        } );
-
+				
+			}
+		});
+ 
         horizontalPanel.add( enumDropDown );
         horizontalPanel.add( okButton );
 

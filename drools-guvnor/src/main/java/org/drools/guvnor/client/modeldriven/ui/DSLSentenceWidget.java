@@ -31,9 +31,11 @@ import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -305,22 +307,23 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             panel.add( new HTML( "&nbsp;" ) );
             panel.add( box );
             panel.add( new HTML( "&nbsp;" ) );
+			box.addChangeHandler(new ChangeHandler() {
 
-            box.addChangeListener( new ChangeListener() {
-                public void onChange(Widget w) {
-                    TextBox otherBox = (TextBox) w;
+				public void onChange(ChangeEvent event) {
+					TextBox otherBox = (TextBox) event.getSource();
 
-                    if ( !regex.equals( "" ) && !otherBox.getText().matches( regex ) ) {
-                        Window.alert( Format.format( constants.TheValue0IsNotValidForThisField(),
-                                                     otherBox.getText() ) );
-                        box.setText( oldValue );
-                    } else {
-                        oldValue = otherBox.getText();
-                        updateSentence();
-                        makeDirty();
-                    }
-                }
-            } );
+					if (!regex.equals("") && !otherBox.getText().matches(regex)) {
+						Window.alert(Format.format(
+								constants.TheValue0IsNotValidForThisField(),
+								otherBox.getText()));
+						box.setText(oldValue);
+					} else {
+						oldValue = otherBox.getText();
+						updateSentence();
+						makeDirty();
+					}
+				}
+			});
 
             initWidget( panel );
         }
@@ -399,13 +402,14 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                 }
                 if ( selected >= 0 ) list.setSelectedIndex( selected );
             }
-            list.addChangeListener( new ChangeListener() {
-                public void onChange(Widget w) {
-                    updateSentence();
-                    makeDirty();
-                }
-            } );
-
+            list.addChangeHandler(new ChangeHandler() {
+				
+				public void onChange(ChangeEvent event) {
+					 updateSentence();
+	                    makeDirty();
+				}
+			});
+ 
             initWidget( list );
             resultWidget = list;
         }
@@ -459,11 +463,14 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                 resultWidget.setSelectedIndex( 1 );
             }
 
-            resultWidget.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                    updateSentence();
-                }
-            } );
+            resultWidget.addClickHandler(new ClickHandler() {
+				
+				public void onClick(ClickEvent event) {
+					updateSentence();
+					
+				}
+			});
+
 
             resultWidget.setVisible( true );
             initWidget( resultWidget );

@@ -16,16 +16,9 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -37,6 +30,17 @@ import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactP
 import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
+
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  *
@@ -65,20 +69,21 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
     @Override
     protected Widget getCompositeLabel() {
+		ClickHandler  leftPatternclick = new ClickHandler() {
 
-        ClickListener leftPatternclick = new ClickListener() {
+			public void onClick(ClickEvent event) {
+				Widget w = (Widget) event.getSource();
+				showFactTypeSelector(w);
 
-            public void onClick(Widget w) {
-                showFactTypeSelector(w);
-            }
-        };
-
-        ClickListener rightPatternclick = new ClickListener() {
-
-            public void onClick(Widget w) {
-                showRightPatternSelector(w);
-            }
-        };
+			}
+		};
+		ClickHandler  rightPatternclick = new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				Widget w = (Widget) event.getSource();
+				showRightPatternSelector(w);
+			}
+		};
 
 
         String lbl = "<div class='x-form-field'>" + HumanReadable.getCEDisplayName("from collect") + "</div>";
@@ -120,18 +125,18 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                 }
             });
 
-            panel.setWidget(r++,
-                    0,
-                    addRemoveButton(patternWidget, new ClickListener() {
+			panel.setWidget(r++, 0,
+					addRemoveButton(patternWidget, new ClickHandler() {
 
-                public void onClick(Widget sender) {
-                    if (Window.confirm(constants.RemoveThisBlockOfData())) {
-                        setModified(true);
-                        getFromCollectPattern().setRightPattern(null);
-                        getModeller().refreshWidget();
-                    }
-                }
-            }));
+						public void onClick(ClickEvent event) {
+							if (Window.confirm(constants
+									.RemoveThisBlockOfData())) {
+								setModified(true);
+								getFromCollectPattern().setRightPattern(null);
+								getModeller().refreshWidget();
+							}
+						}
+					}));
         }
 
         return panel;
@@ -156,16 +161,16 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 //        box.addItem("TODO: Add Facts that extedns Collection");
 
         box.setSelectedIndex(0);
+		box.addChangeHandler(new ChangeHandler() {
+			public void onChange(ChangeEvent event) {
+				pattern.setFactPattern(new FactPattern(box.getValue(box
+						.getSelectedIndex())));
+				setModified(true);
+				getModeller().refreshWidget();
+				popup.hide();
+			}
+		});
 
-        box.addChangeListener(new ChangeListener() {
-
-            public void onChange(Widget w) {
-                pattern.setFactPattern(new FactPattern(box.getValue(box.getSelectedIndex())));
-                setModified(true);
-                getModeller().refreshWidget();
-                popup.hide();
-            }
-        });
 
         popup.addAttribute(constants.chooseFactType(),
                 box);
@@ -191,26 +196,29 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         popup.setTitle(constants.NewFactPattern());
         popup.addAttribute(constants.chooseFactType(),
                 box);
+		box.addChangeHandler(new ChangeHandler() {
 
-        box.addChangeListener(new ChangeListener() {
+			public void onChange(ChangeEvent event) {
+				getFromCollectPattern()
+						.setRightPattern(
+								new FactPattern(box.getItemText(box
+										.getSelectedIndex())));
+				setModified(true);
+				getModeller().refreshWidget();
+				popup.hide();
 
-            public void onChange(Widget w) {
-                getFromCollectPattern().setRightPattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
-                setModified(true);
-                getModeller().refreshWidget();
-                popup.hide();
-            }
-        });
+			}
+		});
 
         final Button freeFormDRLBtn = new Button(constants.FreeFormDrl());
         final Button fromBtn = new Button(constants.From());
         final Button fromAccumulateBtn = new Button(constants.FromAccumulate());
         final Button fromCollectBtn = new Button(constants.FromCollect());
 
-        ClickListener btnsClickListener = new ClickListener() {
-
-            public void onClick(Widget sender) {
-
+        ClickHandler btnsClickHandler = new ClickHandler() {
+			
+			public void onClick(ClickEvent event) {
+				Widget sender = (Widget)event.getSource();
                 if (sender == fromBtn) {
                     getFromCollectPattern().setRightPattern(new FromCompositeFactPattern());
                 } else if (sender == fromAccumulateBtn) {
@@ -225,13 +233,15 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                 setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
-            }
-        };
+				
+			}
+		};
+        
 
-        freeFormDRLBtn.addClickListener(btnsClickListener);
-        fromBtn.addClickListener(btnsClickListener);
-        fromAccumulateBtn.addClickListener(btnsClickListener);
-        fromCollectBtn.addClickListener(btnsClickListener);
+        freeFormDRLBtn.addClickHandler(btnsClickHandler);
+        fromBtn.addClickHandler(btnsClickHandler);
+        fromAccumulateBtn.addClickHandler(btnsClickHandler);
+        fromCollectBtn.addClickHandler(btnsClickHandler);
 
         popup.addAttribute("", freeFormDRLBtn);
         popup.addAttribute("", fromBtn);
