@@ -739,7 +739,121 @@ public class ServiceImplementationTest extends TestCase {
         asset = impl.loadRuleAsset( uuid );
         assertTrue( asset.content instanceof RuleContentText );
     }
+    
+    public void testListAssets() throws Exception {
+        ServiceImplementation impl = getService();
+        PackageItem pacakgeItem = impl.repository.createPackage("testListAssetsPackage",
+                                      "desc");
+        impl.createCategory("",
+                            "testListAssetsCat",
+                            "this is a cat");
 
+        String uuid1 = impl.createNewRule("testLoadArchivedAssets1",
+                            "description",
+                            "testListAssetsCat",
+                            "testListAssetsPackage",
+                            AssetFormats.BUSINESS_RULE);
+
+        String uuid2 = impl.createNewRule("testLoadArchivedAssets2",
+                "description",
+                "testListAssetsCat",
+                "testListAssetsPackage",
+                AssetFormats.BUSINESS_RULE);
+        
+        String uuid3 = impl.createNewRule("testLoadArchivedAssets3",
+                "description",
+                "testListAssetsCat",
+                "testListAssetsPackage",
+                AssetFormats.BUSINESS_RULE);
+       
+        String uuid4 = impl.createNewRule("testLoadArchivedAssets4",
+                "description",
+                "testListAssetsCat",
+                "testListAssetsPackage",
+                AssetFormats.BUSINESS_RULE);
+        
+        String uuid5 = impl.createNewRule("testLoadArchivedAssets5",
+                "description",
+                "testListAssetsCat",
+                "testListAssetsPackage",
+                AssetFormats.BUSINESS_RULE);
+        
+    
+        TableDataResult res = impl.listAssets(pacakgeItem.getUUID(), new String[]{AssetFormats.BUSINESS_RULE}, 0, 2, AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID);
+        
+        assertEquals(2, res.data.length);
+        assertTrue(5 == res.total);
+        assertTrue(res.currentPosition == 2);
+        assertTrue(res.hasNext);
+        
+        res = impl.listAssets(pacakgeItem.getUUID(), new String[]{AssetFormats.BUSINESS_RULE}, 2, 2, AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID);
+		assertEquals(2, res.data.length);
+		assertTrue(5 == res.total);
+		assertTrue(res.currentPosition == 4);
+		assertTrue(res.hasNext);  
+    }
+    
+    public void testLoadArchivedAssets() throws Exception {
+        ServiceImplementation impl = getService();
+        impl.repository.createPackage("testLoadArchivedAssetsPackage",
+                                      "desc");
+        impl.createCategory("",
+                            "testLoadArchivedAssetsCat",
+                            "this is a cat");
+
+        String uuid1 = impl.createNewRule("testLoadArchivedAssets1",
+                            "description",
+                            "testLoadArchivedAssetsCat",
+                            "testLoadArchivedAssetsPackage",
+                            AssetFormats.DRL);
+        impl.archiveAsset(uuid1);
+
+        String uuid2 = impl.createNewRule("testLoadArchivedAssets2",
+                "description",
+                "testLoadArchivedAssetsCat",
+                "testLoadArchivedAssetsPackage",
+                AssetFormats.DRL);
+        impl.archiveAsset(uuid2);
+        
+        String uuid3 = impl.createNewRule("testLoadArchivedAssets3",
+                "description",
+                "testLoadArchivedAssetsCat",
+                "testLoadArchivedAssetsPackage",
+                AssetFormats.DRL);
+        impl.archiveAsset(uuid3);
+        
+        String uuid4 = impl.createNewRule("testLoadArchivedAssets4",
+                "description",
+                "testLoadArchivedAssetsCat",
+                "testLoadArchivedAssetsPackage",
+                AssetFormats.DRL);
+        impl.archiveAsset(uuid4);
+        
+        String uuid5 = impl.createNewRule("testLoadArchivedAssets5",
+                "description",
+                "testLoadArchivedAssetsCat",
+                "testLoadArchivedAssetsPackage",
+                AssetFormats.DRL);
+        impl.archiveAsset(uuid5);
+        
+        //We do not know how many archived assets we have in the test repo,
+        //but definitely more than 5 (as we just created 5)
+        TableDataResult res = impl.loadArchivedAssets(0, 2);
+        
+        assertEquals(2, res.data.length);
+        //may return -1 as per JCR2.0 when precise count is not available due to performance reasons. 
+        //assertTrue(-1 != res.total);
+        assertTrue(res.currentPosition == 2);
+        assertTrue(res.hasNext);
+        
+        res = impl.loadArchivedAssets(2, 2);
+        
+        assertEquals(2, res.data.length);
+        //assertTrue(-1 != res.total);
+        assertEquals(res.currentPosition, 4);
+        assertTrue(res.hasNext);
+    }
+    
     public void testTrackRecentOpenedChanged() throws Exception {
         ServiceImplementation impl = getService();
         UserInbox ib = new UserInbox( impl.repository );
@@ -3550,6 +3664,57 @@ public class ServiceImplementationTest extends TestCase {
         BulkTestRunResult res = serv.runScenariosInPackage( puuid );
         assertEquals( null,
                       res.result );
+    }
+    
+    //GUVNOR-296
+    public void IGNORE_testHistoryAfterReImportSampleRepository() throws Exception {
+        ServiceImplementation impl = getService();
+        
+        //Import sample, do a sanity check, make sure sample is installed correctly
+        impl.installSampleRepository();        
+        PackageConfigData[] cfgs = impl.listPackages();
+        assertEquals(2, cfgs.length);
+        assertTrue( cfgs[0].name.equals("mortgages") || cfgs[1].name.equals("mortgages"));
+        
+		TableDataResult res = impl.quickFindAsset("Bankruptcy history", false, 0, 20);
+		assertEquals(1, res.data.length);		
+		String uuid = res.data[0].id;
+
+		// create version 4.
+		RuleAsset ai = impl.loadRuleAsset(uuid);
+		ai.metaData.checkinComment = "version 4";
+		impl.checkinVersion(ai);	
+		
+		// create version 5.
+		ai = impl.loadRuleAsset(uuid);
+		ai.metaData.checkinComment = "version 5";
+		impl.checkinVersion(ai);
+		
+		System.out.println("old uuid: " + uuid);
+
+		//NOTE: Have not figured out the reason, but if we dont create a random package here, 
+		//we will get an InvalidItemStateException during impl.installSampleRepository()
+        impl.repository.createPackage( "testHistoryAfterReImportSampleRepository", "desc" );
+		
+		TableDataResult result = impl.loadAssetHistory(uuid);
+		assertNotNull(result);
+		TableDataRow[] rows = result.data;
+		assertEquals(1, rows.length);
+		
+		//Import sample again
+        impl.installSampleRepository();
+		res = impl.quickFindAsset("Bankruptcy history", false,
+				0, 20);
+		assertEquals(1, res.data.length);		
+		String newUuid = res.data[0].id;
+		
+		//Now verify history, should be zero.
+		result = impl.loadAssetHistory(newUuid);
+		System.out.println("new uuid: " + newUuid);
+
+		assertNotNull(result);
+		rows = result.data;
+		assertEquals(1, rows.length);
     }
 
     public void testAddCategories() throws Exception {

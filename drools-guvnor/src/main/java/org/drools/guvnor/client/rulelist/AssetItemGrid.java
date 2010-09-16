@@ -367,7 +367,8 @@ public class AssetItemGrid extends Composite {
             public void onClick(Button button,
                                 EventObject e) {
                 if ( forward ) {
-                    int newPos = currentCursorPosition - 2;
+                    //int newPos = currentCursorPosition - 2;
+                    int newPos = currentCursorPosition;
                     if ( newPos > 0 ) {
                         cursorPositions.push( newPos );
                     }

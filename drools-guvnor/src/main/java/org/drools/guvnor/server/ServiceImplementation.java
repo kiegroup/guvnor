@@ -895,7 +895,10 @@ public class ServiceImplementation
 
         TableDataResult table = new TableDataResult();
         table.data = result.toArray( new TableDataRow[result.size()] );
-        table.currentPosition = it.getPosition();
+        table.currentPosition = it.getPosition();        
+        table.total  = it.getSize();
+        table.hasNext = it.hasNext();
+        
         return table;
     }
 
