@@ -41,7 +41,7 @@
         <pathelement location="../drools-ide-common/src/main/java"/>
         <pathelement location="../drools-ide-common/src/main/resources"/>
         <pathelement location="../lib/cobogw-1.0.jar"/>
-        <pathelement location="../lib/gwt-diagrams-0.1.jar"/>
+        <pathelement location="../lib/gwt-diagrams-0.2-RC00.jar"/>
         <pathelement location="../drools-factconstraint/src/main/java"/>
         <pathelement location="../lib/gwtext.jar"/>
         <pathelement location="../drools-factconstraint/src/main/resources"/>
