@@ -24,20 +24,10 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.widgets.Button;
-import com.gwtext.client.widgets.QuickTipsConfig;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.ToolbarMenuButton;
-import com.gwtext.client.widgets.ToolbarTextItem;
-import com.gwtext.client.widgets.menu.Menu;
-import com.gwtext.client.widgets.menu.Item;
-import com.gwtext.client.widgets.menu.BaseItem;
-import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import org.drools.guvnor.client.common.*;
 import static org.drools.guvnor.client.common.AssetFormats.*;
 import org.drools.guvnor.client.messages.Constants;
@@ -63,19 +53,25 @@ import org.drools.guvnor.client.packages.WorkingSetManager;
  */
 public class ActionToolbar extends Composite {
 
+    private Constants       constants          = GWT.create( Constants.class );
+
     static String[]         VALIDATING_FORMATS = new String[]{BUSINESS_RULE, DSL_TEMPLATE_RULE, DECISION_SPREADSHEET_XLS, DRL, ENUMERATION, DECISION_TABLE_GUIDED, DRL_MODEL, DSL, FUNCTION, RULE_TEMPLATE};
 
     static String[]         VERIFY_FORMATS     = new String[]{BUSINESS_RULE, DECISION_SPREADSHEET_XLS, DRL, DECISION_TABLE_GUIDED, DRL_MODEL, RULE_TEMPLATE};
 
-    private Toolbar         toolbar;
+    private MenuBar         toolbar            = new MenuBar();
     private CheckinAction   checkinAction;
     private Command         archiveAction;
     private Command         deleteAction;
-    private ToolbarTextItem state;
+    private MenuItem        state              = new MenuItem( constants.Status() + " ",
+                                                               new Command() {
+                                                                   public void execute() {
+                                                                       // Why can't there be a simple text menu item.
+                                                                   }
+                                                               } );
     final private RuleAsset asset;
     private Command         afterCheckinEvent;
-    private Constants       constants          = GWT.create( Constants.class );
-    private SmallLabel      savedOK;
+    private MenuItem        savedOK;
     private Widget          editor;
     private Command         closeCommand;
     private Command         copyCommand;
@@ -99,10 +95,6 @@ public class ActionToolbar extends Composite {
         this.closeCommand = closeCommand;
         this.copyCommand = copyCommand;
         this.promptCommand = promptCommand;
-
-        this.state = new ToolbarTextItem( constants.Status() + " " );
-
-        toolbar = new Toolbar();
 
         String status = asset.metaData.status;
 
@@ -139,150 +131,126 @@ public class ActionToolbar extends Composite {
     }
 
     private void controls() {
-        ToolbarButton save = new ToolbarButton();
-        save.setText( constants.SaveChanges() );
-        save.setTooltip( getTip( constants.CommitAnyChangesForThisAsset() ) );
-        save.addListener( new ButtonListenerAdapter() {
-            public void onClick(Button button,
-                                EventObject e) {
-                verifyAndDoCheckinConfirm( button,
-                                           false );
-            }
-        } );
-        toolbar.addButton( save );
+        MenuItem save = new MenuItem( constants.SaveChanges(),
+                                      new Command() {
+                                          public void execute() {
+                                              verifyAndDoCheckinConfirm( false );
+                                          }
+                                      } );
 
-        ToolbarButton saveAndClose = new ToolbarButton();
-        saveAndClose.setText( constants.SaveAndClose() );
-        saveAndClose.setTooltip( getTip( constants.CommitAnyChangesForThisAsset() ) );
-        saveAndClose.addListener( new ButtonListenerAdapter() {
-            public void onClick(Button button,
-                                EventObject e) {
-                verifyAndDoCheckinConfirm( button,
-                                           true );
-            }
-        } );
-        toolbar.addButton( saveAndClose );
+        save.setTitle( constants.CommitAnyChangesForThisAsset() );
+        toolbar.addItem( save );
 
-        savedOK = new SmallLabel( "<font color='green'>" + constants.SavedOK() + "</font>" );
+        MenuItem saveAndClose = new MenuItem( constants.SaveAndClose(),
+                                              new Command() {
+                                                  public void execute() {
+                                                      verifyAndDoCheckinConfirm( true );
+                                                  }
+                                              } );
+        saveAndClose.setTitle( constants.CommitAnyChangesForThisAsset() );
+        toolbar.addItem( saveAndClose );
+
+        savedOK = new MenuItem( constants.SavedOK(),
+                                new Command() {
+                                    public void execute() {
+                                        // Nothing here
+                                        // TODO : MOVE THIS TEXT TO INFO AREA
+                                    }
+                                } );
         savedOK.setVisible( false );
-        toolbar.addElement( savedOK.getElement() );
 
-        toolbar.addFill();
+        toolbar.addItem( savedOK );
+
         toolbar.addSeparator();
 
-        Menu moreMenu = new Menu();
-        moreMenu.addItem( new Item( constants.Copy(),
-                                    new BaseItemListenerAdapter() {
-                                        @Override
-                                        public void onClick(BaseItem baseItem,
-                                                            EventObject eventObject) {
-                                            copyCommand.execute();
-                                        }
-                                    } ) );
-        moreMenu.addItem( new Item( constants.PromoteToGlobal(),
-                                    new BaseItemListenerAdapter() {
-                                        @Override
-                                        public void onClick(BaseItem baseItem,
-                                                            EventObject eventObject) {
-                                            promptCommand.execute();
-                                        }
-                                    } ) );
-        moreMenu.addItem( new Item( constants.Archive(),
-                                    new BaseItemListenerAdapter() {
-                                        @Override
-                                        public void onClick(BaseItem baseItem,
-                                                            EventObject eventObject) {
-                                            if ( Window.confirm( constants.AreYouSureYouWantToArchiveThisItem() + "\n" + constants.ArchiveThisAssetThisWillNotPermanentlyDeleteIt() ) ) {
-                                                archiveAction.execute();
-                                            }
-                                        }
-                                    } ) );
+        MenuBar moreMenu = new MenuBar( true );
+        moreMenu.addItem( constants.Copy(),
+                          new Command() {
+                              public void execute() {
+                                  copyCommand.execute();
+                              }
+                          } );
+        moreMenu.addItem( constants.PromoteToGlobal(),
+                          new Command() {
+                              public void execute() {
+                                  promptCommand.execute();
+                              }
+                          } );
+        moreMenu.addItem( constants.Archive(),
+                          new Command() {
+                              public void execute() {
+                                  if ( Window.confirm( constants.AreYouSureYouWantToArchiveThisItem() + "\n" + constants.ArchiveThisAssetThisWillNotPermanentlyDeleteIt() ) ) {
+                                      archiveAction.execute();
+                                  }
+                              }
+                          } );
 
-        final Item deleteItem = new Item( constants.Delete(),
-                                          new BaseItemListenerAdapter() {
-                                              @Override
-                                              public void onClick(BaseItem baseItem,
-                                                                  EventObject eventObject) {
-                                                  if ( Window.confirm( constants.DeleteAreYouSure() ) ) {
-                                                      deleteAction.execute();
-                                                  }
-                                              }
-                                          } );
+        final MenuItem deleteItem = new MenuItem( constants.Delete(),
+                                                  new Command() {
+                                                      public void execute() {
+                                                          if ( Window.confirm( constants.DeleteAreYouSure() ) ) {
+                                                              deleteAction.execute();
+                                                          }
+                                                      }
+                                                  } );
         moreMenu.addItem( deleteItem );
         deleteItem.setTitle( constants.DeleteAssetTooltip() );
         this.afterCheckinEvent = new Command() {
             public void execute() {
-                deleteItem.setDisabled( true );
+                deleteItem.setVisible( true );
             }
         };
 
         if ( !notCheckedInYet() ) {
-            deleteItem.setDisabled( true );
+            deleteItem.setVisible( true );
         }
 
-        moreMenu.addItem( new Item( constants.ChangeStatus(),
-                                    new BaseItemListenerAdapter() {
-                                        @Override
-                                        public void onClick(BaseItem baseItem,
-                                                            EventObject eventObject) {
-                                            showStatusChanger();
-                                        }
-                                    } ) );
-
-        ToolbarMenuButton more = new ToolbarMenuButton( constants.Actions(),
-                                                        moreMenu );
+        moreMenu.addItem( constants.ChangeStatus(),
+                          new Command() {
+                              public void execute() {
+                                  showStatusChanger();
+                              }
+                          } );
 
         if ( isValidatorTypeAsset() ) {
 
             if ( editor instanceof RuleModelEditor ) {
-                ToolbarButton workingSets = new ToolbarButton();
-                workingSets.setText( constants.SelectWorkingSets() );
-                workingSets.addListener( new ButtonListenerAdapter() {
-                    public void onClick(com.gwtext.client.widgets.Button button,
-                                        EventObject e) {
-                        showWorkingSetsSelection( ((RuleModelEditor) editor).getRuleModeller() );
-                    }
-                } );
-                toolbar.addButton( workingSets );
+                toolbar.addItem( new MenuItem( constants.SelectWorkingSets(),
+                                               new Command() {
+                                                   public void execute() {
+                                                       showWorkingSetsSelection( ((RuleModelEditor) editor).getRuleModeller() );
+                                                   }
+                                               } ) );
             }
 
-            ToolbarButton validate = new ToolbarButton();
-            validate.setText( constants.Validate() );
-            validate.addListener( new ButtonListenerAdapter() {
-                public void onClick(com.gwtext.client.widgets.Button button,
-                                    EventObject e) {
-                    doValidate();
-                }
-            } );
-            toolbar.addButton( validate );
+            toolbar.addItem( constants.Validate(),
+                             new Command() {
+                                 public void execute() {
+                                     doValidate();
+                                 }
+                             } );
 
             if ( isVerificationTypeAsset() ) {
-                ToolbarButton verify = new ToolbarButton();
-                verify.setText( constants.Verify() );
-                verify.addListener( new ButtonListenerAdapter() {
-                    public void onClick(com.gwtext.client.widgets.Button button,
-                                        EventObject e) {
-                        doVerify();
-                    }
-                } );
-                toolbar.addButton( verify );
-
+                toolbar.addItem( constants.Verify(),
+                                 new Command() {
+                                     public void execute() {
+                                         doVerify();
+                                     }
+                                 } );
             }
 
             if ( shouldShowViewSource() ) {
-                ToolbarButton viewSource = new ToolbarButton();
-                viewSource.setText( constants.ViewSource() );
-                viewSource.addListener( new ButtonListenerAdapter() {
-                    public void onClick(com.gwtext.client.widgets.Button button,
-                                        EventObject e) {
-                        doViewsource();
-                    }
-                } );
-                toolbar.addButton( viewSource );
+                toolbar.addItem( constants.ViewSource(),
+                                 new Command() {
+                                     public void execute() {
+                                         doViewsource();
+                                     }
+                                 } );
             }
         }
 
-        toolbar.addButton( more );
+        toolbar.addItem( constants.MoreDotDot(),
+                         moreMenu );
     }
 
     private boolean shouldShowViewSource() {
@@ -377,16 +345,7 @@ public class ActionToolbar extends Composite {
         return asset.metaData.versionNumber == 0;
     }
 
-    private QuickTipsConfig getTip(final String t) {
-        return new QuickTipsConfig() {
-            {
-                setText( t );
-            }
-        };
-    }
-
-    protected void verifyAndDoCheckinConfirm(final Widget w,
-                                             final boolean closeAfter) {
+    protected void verifyAndDoCheckinConfirm(final boolean closeAfter) {
         if ( editor instanceof RuleModeller ) {
             ((RuleModeller) editor).verifyRule( new Command() {
 
@@ -396,13 +355,11 @@ public class ActionToolbar extends Composite {
                             return;
                         }
                     }
-                    doCheckinConfirm( w,
-                                      closeAfter );
+                    doCheckinConfirm( closeAfter );
                 }
             } );
         } else {
-            doCheckinConfirm( w,
-                              closeAfter );
+            doCheckinConfirm( closeAfter );
         }
     }
 
@@ -410,11 +367,8 @@ public class ActionToolbar extends Composite {
      * Called when user wants to checkin.
      * set closeAfter to true if it should close this whole thing after saving it.
      */
-    protected void doCheckinConfirm(Widget w,
-                                    final boolean closeAfter) {
-        final CheckinPopup pop = new CheckinPopup( w.getAbsoluteLeft(),
-                                                   w.getAbsoluteTop(),
-                                                   constants.CheckInChanges() );
+    protected void doCheckinConfirm(final boolean closeAfter) {
+        final CheckinPopup pop = new CheckinPopup( constants.CheckInChanges() );
         pop.setCommand( new Command() {
             public void execute() {
                 checkinAction.doCheckin( pop.getCheckinComment() );

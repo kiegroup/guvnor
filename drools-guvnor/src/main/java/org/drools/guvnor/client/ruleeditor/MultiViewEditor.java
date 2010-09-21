@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -195,9 +195,7 @@ public class MultiViewEditor extends GuvnorEditor {
     }
 
     private void checkin(final boolean closeAfter) {
-        final CheckinPopup pop = new CheckinPopup( this.getAbsoluteLeft(),
-                                                   this.getAbsoluteTop(),
-                                                   constants.CheckInChanges() );
+        final CheckinPopup pop = new CheckinPopup( constants.CheckInChanges() );
         pop.setCommand( new Command() {
             public void execute() {
                 String comment = pop.getCheckinComment();

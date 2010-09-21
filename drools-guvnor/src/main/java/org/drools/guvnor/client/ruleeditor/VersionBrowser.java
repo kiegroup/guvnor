@@ -76,7 +76,7 @@ public class VersionBrowser extends Composite {
     private String    uuid;
     private MetaData  metaData;
     private Command   refreshCommand;
-    private Constants constants = ((Constants) GWT.create(Constants.class));
+    private Constants constants = ((Constants) GWT.create( Constants.class ));
 
     public VersionBrowser(String uuid,
                           MetaData data,
@@ -93,18 +93,22 @@ public class VersionBrowser extends Composite {
             public void onClick(Widget w) {
                 clickLoadHistory();
             }
-        } ;
+        };
         layout = new FlexTable();
-        ClickableLabel vh = new ClickableLabel(constants.VersionHistory1(), cl );
-        layout.setWidget( 0, 0, vh );
-        layout.getCellFormatter().setStyleName( 0, 0, "metadata-Widget" ); //NON-NLS
+        ClickableLabel vh = new ClickableLabel( constants.VersionHistory1(),
+                                                cl );
+        layout.setWidget( 0,
+                          0,
+                          vh );
+        layout.getCellFormatter().setStyleName( 0,
+                                                0,
+                                                "metadata-Widget" ); //NON-NLS
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         formatter.setHorizontalAlignment( 0,
                                           0,
                                           HasHorizontalAlignment.ALIGN_LEFT );
 
-        refresh = new ImageButton( "images/refresh.gif" );  //NON-NLS
-
+        refresh = new ImageButton( "images/refresh.gif" ); //NON-NLS
 
         refresh.addClickListener( cl );
 
@@ -149,50 +153,64 @@ public class VersionBrowser extends Composite {
 
                                                                     public void onSuccess(TableDataResult table) {
                                                                         if ( table == null ) {
-                                                                            layout.setWidget( 1, 0, new Label(constants.NoHistory()) );
+                                                                            layout.setWidget( 1,
+                                                                                              0,
+                                                                                              new Label( constants.NoHistory() ) );
                                                                             showStaticIcon();
                                                                             return;
                                                                         }
                                                                         TableDataRow[] rows = table.data;
-                                                                        Arrays.sort(rows, new Comparator<TableDataRow>() {
-																			public int compare(
-																					TableDataRow r1,
-																					TableDataRow r2) {
-																			    
-																			    Integer v2 = Integer.valueOf( r2.values[0] );
-                                                                                Integer v1 = Integer.valueOf( r1.values[0] );
-																			    
-																				return v2.compareTo( v1 );
-																			}
-                                                                        });
+                                                                        Arrays.sort( rows,
+                                                                                     new Comparator<TableDataRow>() {
+                                                                                         public int compare(TableDataRow r1,
+                                                                                                            TableDataRow r2) {
 
+                                                                                             Integer v2 = Integer.valueOf( r2.values[0] );
+                                                                                             Integer v1 = Integer.valueOf( r1.values[0] );
 
-                                                                        final ListBox history = new ListBox(true);
-                                                                        
-                                                                        for (int i = 0; i < rows.length; i++) {
-																			TableDataRow row = rows[i];
-                                                                            String s = Format.format(constants.property0ModifiedOn12(), row.values[0], row.values[2], row.values[1] ) ;
-																			history.addItem(s, row.id);
-																		}
+                                                                                             return v2.compareTo( v1 );
+                                                                                         }
+                                                                                     } );
 
+                                                                        final ListBox history = new ListBox( true );
 
-                                                                        layout.setWidget( 1, 0, history );
+                                                                        for ( int i = 0; i < rows.length; i++ ) {
+                                                                            TableDataRow row = rows[i];
+                                                                            String s = Format.format( constants.property0ModifiedOn12(),
+                                                                                                      row.values[0],
+                                                                                                      row.values[2],
+                                                                                                      row.values[1] );
+                                                                            history.addItem( s,
+                                                                                             row.id );
+                                                                        }
+
+                                                                        layout.setWidget( 1,
+                                                                                          0,
+                                                                                          history );
                                                                         FlexCellFormatter formatter = layout.getFlexCellFormatter();
 
-                                                                        formatter.setColSpan( 1,0,2 );
+                                                                        formatter.setColSpan( 1,
+                                                                                              0,
+                                                                                              2 );
 
-                                                                        Button open = new Button(constants.View());
+                                                                        Button open = new Button( constants.View() );
 
                                                                         open.addClickListener( new ClickListener() {
                                                                             public void onClick(Widget w) {
-                                                                            	showVersion(history.getValue(history.getSelectedIndex()));
+                                                                                showVersion( history.getValue( history.getSelectedIndex() ) );
                                                                             }
 
                                                                         } );
 
-                                                                        layout.setWidget( 2, 0, open );
-                                                                        formatter.setColSpan( 2, 1, 3 );
-                                                                        formatter.setHorizontalAlignment( 2,1,HasHorizontalAlignment.ALIGN_CENTER );
+                                                                        layout.setWidget( 2,
+                                                                                          0,
+                                                                                          open );
+                                                                        formatter.setColSpan( 2,
+                                                                                              1,
+                                                                                              3 );
+                                                                        formatter.setHorizontalAlignment( 2,
+                                                                                                          1,
+                                                                                                          HasHorizontalAlignment.ALIGN_CENTER );
 
                                                                         showStaticIcon();
 
@@ -206,73 +224,86 @@ public class VersionBrowser extends Composite {
      * This should popup a view of the chosen historical version.
      */
     private void showVersion(final String versionUUID) {
-//        VersionViewer viewer = new VersionViewer( this.metaData, versionUUID, uuid, refreshCommand );
+        //        VersionViewer viewer = new VersionViewer( this.metaData, versionUUID, uuid, refreshCommand );
 
-        LoadingPopup.showMessage(constants.LoadingVersionFromHistory());
+        LoadingPopup.showMessage( constants.LoadingVersionFromHistory() );
 
-        RepositoryServiceFactory.getService().loadRuleAsset( versionUUID, new GenericCallback<RuleAsset>() {
+        RepositoryServiceFactory.getService().loadRuleAsset( versionUUID,
+                                                             new GenericCallback<RuleAsset>() {
 
-            public void onSuccess(RuleAsset asset) {
-                asset.isreadonly = true;
-                asset.metaData.name = metaData.name;
-                final FormStylePopup pop = new FormStylePopup("images/snapshot.png", Format.format(constants.VersionNumber0Of1(), "" + asset.metaData.versionNumber, asset.metaData.name),
-                		new Integer(800));
+                                                                 public void onSuccess(RuleAsset asset) {
+                                                                     asset.isreadonly = true;
+                                                                     asset.metaData.name = metaData.name;
+                                                                     final FormStylePopup pop = new FormStylePopup( "images/snapshot.png",
+                                                                                                                    Format.format( constants.VersionNumber0Of1(),
+                                                                                                                                   "" + asset.metaData.versionNumber,
+                                                                                                                                   asset.metaData.name ),
+                                                                                                                    new Integer( 800 ) );
 
-                Button restore = new Button(constants.RestoreThisVersion());
-                restore.addClickListener( new ClickListener() {
-                    public void onClick(Widget w) {
-                        restore(w, versionUUID, new Command() {
-							public void execute() {
-								refreshCommand.execute();
-								pop.hide();
-							}
-                        });
-                    }
-                });
+                                                                     Button restore = new Button( constants.RestoreThisVersion() );
+                                                                     restore.addClickListener( new ClickListener() {
+                                                                         public void onClick(Widget w) {
+                                                                             restore( w,
+                                                                                      versionUUID,
+                                                                                      new Command() {
+                                                                                          public void execute() {
+                                                                                              refreshCommand.execute();
+                                                                                              pop.hide();
+                                                                                          }
+                                                                                      } );
+                                                                         }
+                                                                     } );
 
-                RuleViewer viewer = new RuleViewer(asset, null, true);
-                viewer.setWidth( "100%" );
+                                                                     RuleViewer viewer = new RuleViewer( asset,
+                                                                                                         null,
+                                                                                                         true );
+                                                                     viewer.setWidth( "100%" );
 
-
-                pop.addRow(restore);
-                pop.addRow(viewer);
-                pop.show();
-            }
-        });
+                                                                     pop.addRow( restore );
+                                                                     pop.addRow( viewer );
+                                                                     pop.show();
+                                                                 }
+                                                             } );
     }
 
-    private void restore(Widget w, final String versionUUID, final Command refresh) {
+    private void restore(Widget w,
+                         final String versionUUID,
+                         final Command refresh) {
 
-        final CheckinPopup pop = new CheckinPopup(w.getAbsoluteLeft() + 10,
-                                                  w.getAbsoluteTop() + 10,
-                constants.RestoreThisVersionQ());
+        final CheckinPopup pop = new CheckinPopup( constants.RestoreThisVersionQ() );
         pop.setCommand( new Command() {
             public void execute() {
-                RepositoryServiceFactory.getService().restoreVersion( versionUUID, uuid, pop.getCheckinComment(), new GenericCallback() {
-                    public void onSuccess(Object data) {
-                        refresh.execute();
-                    }
-                });
+                RepositoryServiceFactory.getService().restoreVersion( versionUUID,
+                                                                      uuid,
+                                                                      pop.getCheckinComment(),
+                                                                      new GenericCallback() {
+                                                                          public void onSuccess(Object data) {
+                                                                              refresh.execute();
+                                                                          }
+                                                                      } );
             }
-        });
+        } );
         pop.show();
     }
 
+    private void restore(Widget w,
+                         final Command refresh,
+                         final String versionUUID,
+                         final String headUUID) {
 
-    private void restore(Widget w, final Command refresh, final String versionUUID, final String headUUID) {
-
-        final CheckinPopup pop = new CheckinPopup(w.getAbsoluteLeft() + 10,
-                                                  w.getAbsoluteTop() + 10,
-                constants.RestoreThisVersionQ());
+        final CheckinPopup pop = new CheckinPopup( constants.RestoreThisVersionQ() );
         pop.setCommand( new Command() {
             public void execute() {
-                RepositoryServiceFactory.getService().restoreVersion( versionUUID, headUUID, pop.getCheckinComment(), new GenericCallback() {
-                    public void onSuccess(Object data) {
-                        refresh.execute();
-                    }
-                });
+                RepositoryServiceFactory.getService().restoreVersion( versionUUID,
+                                                                      headUUID,
+                                                                      pop.getCheckinComment(),
+                                                                      new GenericCallback() {
+                                                                          public void onSuccess(Object data) {
+                                                                              refresh.execute();
+                                                                          }
+                                                                      } );
             }
-        });
+        } );
         pop.show();
     }
 

@@ -102,20 +102,6 @@ select {
 	border-color:#ccc!important;
 	padding:0!important;
 }
-.gwt-MenuBar {
-	border:1px solid #aa9;
-	cursor:default;
-	-moz-border-radius:.7em;
-	-webkit-border-radius:.7em;
-	-khtml-border-radius:.7em;
-	border-radius:.7em;
-	background:#aa9;
-}
-.gwt-MenuBar .gwt-MenuItem {
-
-	cursor:default;
-	padding:1px 4px;
-}
 .model-builder-Background {
 	#-moz-border-radius:.7em;
 	#-webkit-border-radius:.7em;
