@@ -16,10 +16,32 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.explorer.CategoriesPanel;
+import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.client.rpc.PushClient;
+import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.ServerPushNotification;
+import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.util.Format;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -28,26 +50,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.http.client.URL;
-import com.gwtext.client.widgets.Panel;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.DiscussionRecord;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.PushClient;
-import org.drools.guvnor.client.rpc.ServerPushNotification;
-import org.drools.guvnor.client.rpc.PushResponse;
-import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
-import org.drools.guvnor.client.explorer.CategoriesPanel;
-import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.client.util.Format;
-
-import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * 
@@ -73,26 +75,31 @@ public class DiscussionWidget extends Composite {
 
     public DiscussionWidget(final RuleAsset asset) {
         this.asset = asset;
-        final Panel discussionPanel = new Panel();
+
+        DisclosurePanel discussionPanel = new DisclosurePanel(
+        		constants.Discussion() + ":" );
+        discussionPanel.setAnimationEnabled(true);
+        discussionPanel.addStyleName("my-DisclosurePanel");
+        discussionPanel.setWidth("100%");
+        //discussionPanel.setOpen(true);
+        
+/*        final Panel discussionPanel = new Panel();
         discussionPanel.setCollapsible( true );
         discussionPanel.setTitle(constants.Discussion() + ":" );
-        discussionPanel.setBodyBorder(false);
+        discussionPanel.setBodyBorder(false);*/
 
         commentList.setWidth("100%");
         VerticalPanel discussionLayout = new VerticalPanel();
-        discussionLayout.setWidth("100%");
-
-        discussionPanel.add(discussionLayout);
-
+        discussionLayout.setWidth("90%");
         discussionLayout.add(commentList);
+        
         newCommentLayout.setWidth("100%");
-
         refreshDiscussion();
-
-
         discussionLayout.add(newCommentLayout);
         showNewCommentButton();
 
+        discussionPanel.setContent(discussionLayout);
+        
         pushNotify = new ServerPushNotification() {
             public void messageReceived(PushResponse response) {
                 if ("discussion".equals(response.messageType) &&
@@ -108,13 +115,10 @@ public class DiscussionWidget extends Composite {
         initWidget(discussionPanel);
     }
 
-
-
     /** Hit up the server */
     public void refreshDiscussion() {
         RepositoryServiceFactory.getService().loadDiscussionForAsset(asset.uuid, new GenericCallback<List<DiscussionRecord>>() {
             public void onSuccess(List<DiscussionRecord> result) {
-
                 updateCommentList(result);
             }
         });
@@ -140,7 +144,6 @@ public class DiscussionWidget extends Composite {
         return hrd;
     }
 
-
     private void showNewCommentButton() {
         newCommentLayout.clear();
 
@@ -149,13 +152,11 @@ public class DiscussionWidget extends Composite {
         Button createNewComment = new Button(constants.AddADiscussionComment());
         hp.add(createNewComment);
 
-
-
         if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_ADMIN)) {
             Button adminClearAll = new Button(constants.EraseAllComments());
             hp.add(adminClearAll);
-            adminClearAll.addClickListener(new ClickListener() {
-                public void onClick(Widget sender) {
+            adminClearAll.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent sender) {
                     if (Window.confirm(constants.EraseAllCommentsWarning())) {
                         RepositoryServiceFactory.getService().clearAllDiscussionsForAsset(asset.uuid, new GenericCallback() {
                             public void onSuccess(Object result) {
@@ -164,10 +165,8 @@ public class DiscussionWidget extends Composite {
                         });
                     }
                 }
-            });
-            
+            });            
         }
-
 
         String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + asset.metaData.packageName+
                 "&assetName=" + URL.encode(asset.metaData.name) + "&viewUrl=" + CategoriesPanel.getSelfURL();
@@ -176,8 +175,8 @@ public class DiscussionWidget extends Composite {
         newCommentLayout.add(hp);
         
         newCommentLayout.setCellHorizontalAlignment(hp, HasHorizontalAlignment.ALIGN_RIGHT);
-        createNewComment.addClickListener(new ClickListener() {
-            public void onClick(Widget sender) {
+        createNewComment.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent sender) {
                 showAddNewComment();
             }
         });
@@ -192,14 +191,14 @@ public class DiscussionWidget extends Composite {
         Button ok = new Button(constants.OK());
         Button cancel = new Button(constants.Cancel());
 
-        ok.addClickListener(new ClickListener() {
-            public void onClick(Widget sender) {
+        ok.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent sender) {
                 sendNewComment(comment.getText());
             }
         });
 
-        cancel.addClickListener(new ClickListener() {
-            public void onClick(Widget sender) {
+        cancel.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent sender) {
                 showNewCommentButton();
             }
         });
@@ -210,7 +209,6 @@ public class DiscussionWidget extends Composite {
         newCommentLayout.add(hp);
         
         comment.setFocus(true);
-
     }
 
     private void sendNewComment(String text) {
@@ -222,8 +220,5 @@ public class DiscussionWidget extends Composite {
                 updateCommentList(result);
             }
         });
-
     }
-
-
 }

@@ -36,9 +36,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Command;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarTextItem;
-import com.gwtext.client.widgets.Panel;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.MetaData;
@@ -58,24 +55,24 @@ public class RuleDocumentWidget extends DirtyableComposite {
     public RuleDocumentWidget(final RuleAsset asset) {
         MetaData data = asset.metaData;
 		text = new TextArea();
-        text.setWidth( "100%" );
+        text.setWidth( "90%" );
         text.setVisibleLines( 5 );
         text.setStyleName( "rule-viewer-Documentation" ); //NON-NLS
         text.setTitle(constants.RuleDocHint());
 
-
-        Panel p = new Panel();
-        p.setCollapsible( true );
-        p.setTitle( constants.Description() + ":" );
-        p.setBodyBorder(false);
-
+        DisclosurePanel p = new DisclosurePanel(
+        		constants.Description() + ":" );
+        p.setAnimationEnabled(true);
+        p.addStyleName("my-DisclosurePanel");
+        p.setWidth("100%");
 
         if (data.description == null || data.description.equals("") || data.description.equals("<documentation>")) {
-            p.setCollapsed(true);
+            p.setOpen(true);
         }
-        p.add(text);
+        p.setContent(text);
 
         final VerticalPanel vp = new VerticalPanel();
+
         vp.add(p);
 
         DeferredCommand.addCommand(new Command() {
@@ -91,8 +88,6 @@ public class RuleDocumentWidget extends DirtyableComposite {
         initWidget(vp);
 	}
 
-
-
     private void loadData(final MetaData data) {
         text.setText(data.description);
         text.addChangeListener( new ChangeListener() {
@@ -105,7 +100,4 @@ public class RuleDocumentWidget extends DirtyableComposite {
             text.setText(constants.documentationDefault());
         }
     }
-
-
-
 }
