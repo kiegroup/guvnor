@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.core.client.GWT;
+
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Panel;
 import com.gwtext.client.widgets.Toolbar;

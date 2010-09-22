@@ -41,6 +41,8 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
+import org.drools.guvnor.client.packages.WorkingSetManager;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -48,8 +50,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.gwtext.client.widgets.tree.TreePanel;
-import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
-import org.drools.guvnor.client.packages.WorkingSetManager;
 
 public class WorkingSetSelectorPopup {
 

@@ -26,7 +26,6 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 
-import com.gwtext.client.util.Format;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.Util;
@@ -38,6 +37,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.util.Format;
 
 public class QATree extends AbstractTree implements OpenHandler<TreeItem> {
     private static Constants constants = GWT.create(Constants.class);

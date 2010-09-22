@@ -72,6 +72,7 @@ public class QueryWidget extends Composite {
         DisclosurePanel advancedDisclosure = new DisclosurePanel(
         		constants.AttributeSearch());
         advancedDisclosure.setAnimationEnabled(true);
+        advancedDisclosure.addStyleName("my-DisclosurePanel");
         advancedDisclosure.setOpen(true);
 
         final Map<String, MetaDataQuery> atts = new HashMap<String, MetaDataQuery>() {
@@ -191,7 +192,6 @@ public class QueryWidget extends Composite {
         fm.addRow( resultsP );
         advancedDisclosure.setContent(fm);
         
-        advancedDisclosure.addStyleName("my-DisclosurePanel");
         //p.add( fm );
         //p.setCollapsed( true );
         layout.add(advancedDisclosure);
