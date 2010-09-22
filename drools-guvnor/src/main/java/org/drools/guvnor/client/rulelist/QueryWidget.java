@@ -73,7 +73,8 @@ public class QueryWidget extends Composite {
         		constants.AttributeSearch());
         advancedDisclosure.setAnimationEnabled(true);
         advancedDisclosure.addStyleName("my-DisclosurePanel");
-        advancedDisclosure.setOpen(true);
+        advancedDisclosure.setWidth("100%");
+        //advancedDisclosure.setOpen(true);
 
         final Map<String, MetaDataQuery> atts = new HashMap<String, MetaDataQuery>() {
             {
@@ -193,7 +194,6 @@ public class QueryWidget extends Composite {
         advancedDisclosure.setContent(fm);
         
         //p.add( fm );
-        //p.setCollapsed( true );
         layout.add(advancedDisclosure);
     }
 
@@ -203,27 +203,19 @@ public class QueryWidget extends Composite {
 		advancedDisclosure.setAnimationEnabled(true);
 		advancedDisclosure.ensureDebugId("cwDisclosurePanel");
         advancedDisclosure.addStyleName("my-DisclosurePanel");
+        advancedDisclosure.setWidth("100%");
 		advancedDisclosure.setContent(new QuickFindWidget(openItem));
-            //layout.setWidget(3, 0, advancedDisclosure);
-            //cellFormatter.setColSpan(3, 0, 2);
-
-/*        Panel p = new Panel();
-        p.setCollapsible( true );
-        p.setTitle( constants.NameSearch() );
-        p.add( new QuickFindWidget( openItem ) );
-
-        p.setCollapsed( false );*/
 
         layout.add( advancedDisclosure );
     }
 
     private void doTextSearch() {
 		DisclosurePanel advancedDisclosure = new DisclosurePanel(
-				constants.SearchFor());
+				constants.TextSearch());
 		advancedDisclosure.setAnimationEnabled(true);
         advancedDisclosure.addStyleName("my-DisclosurePanel");
-		//advancedDisclosure.ensureDebugId("cwDisclosurePanel");
-            
+        advancedDisclosure.setWidth("100%");        
+        advancedDisclosure.setOpen(true);
             
 /*        Panel p = new Panel();
         p.setCollapsible( true );
@@ -240,7 +232,6 @@ public class QueryWidget extends Composite {
         ts.addAttribute( "",
                          go );
         ts.setWidth( "100%" );
-        //p.add( ts );
         advancedDisclosure.setContent(ts);
 
         
