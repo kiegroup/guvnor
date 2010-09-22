@@ -42,10 +42,10 @@ import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
  * This provides a popup for editing a status (name etc).
@@ -66,8 +66,8 @@ public class StatusEditor extends FormStylePopup {
                       name );
 
         Button ok = new Button( constants.OK() );
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget arg0) {
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
                 ok();
             }
 

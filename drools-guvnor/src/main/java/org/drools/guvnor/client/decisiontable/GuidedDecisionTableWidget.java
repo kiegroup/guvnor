@@ -59,7 +59,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -70,6 +69,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.SortDir;
 import com.gwtext.client.data.ArrayReader;
@@ -218,8 +218,8 @@ public class GuidedDecisionTableWidget extends Composite
         h.add( list );
 
         Button ok = new Button( constants.Apply() );
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 dt.groupField = list.getValue( list.getSelectedIndex() );
                 scrapeData( -1 );
                 refreshGrid();
@@ -252,8 +252,8 @@ public class GuidedDecisionTableWidget extends Composite
     private Widget editAction(final ActionCol c) {
         return new ImageButton( "images/edit.gif",
                                 constants.EditThisActionColumnConfiguration(),
-                                new ClickListener() { //NON-NLS
-                                    public void onClick(Widget w) {
+                                new ClickHandler() { //NON-NLS
+                                    public void onClick(ClickEvent w) {
                                         if ( c instanceof ActionSetFieldCol ) {
                                             ActionSetFieldCol asf = (ActionSetFieldCol) c;
                                             ActionSetColumn ed = new ActionSetColumn( getSCE(),
@@ -292,8 +292,8 @@ public class GuidedDecisionTableWidget extends Composite
     private Widget newAction() {
         return new ImageButton( "images/new_item.gif",
                                 constants.CreateANewActionColumn(),
-                                new ClickListener() { //NON-NLS
-                                    public void onClick(Widget w) {
+                                new ClickHandler() { //NON-NLS
+                                    public void onClick(ClickEvent w) {
                                         final FormStylePopup pop = new FormStylePopup();
                                         pop.setModal( false );
 
@@ -303,8 +303,8 @@ public class GuidedDecisionTableWidget extends Composite
                                         choice.addItem( constants.SetTheValueOfAFieldOnANewFact(),
                                                         "insert" );
                                         Button ok = new Button( "OK" );
-                                        ok.addClickListener( new ClickListener() {
-                                            public void onClick(Widget w) {
+                                        ok.addClickHandler( new ClickHandler() {
+                                            public void onClick(ClickEvent w) {
                                                 String s = choice.getValue( choice.getSelectedIndex() );
                                                 if ( s.equals( "set" ) ) {
                                                     showSet();
@@ -362,8 +362,8 @@ public class GuidedDecisionTableWidget extends Composite
     private Widget removeAction(final ActionCol c) {
         Image del = new ImageButton( "images/delete_item_small.gif",
                                      constants.RemoveThisActionColumn(),
-                                     new ClickListener() { //NON-NLS
-                                         public void onClick(Widget w) {
+                                     new ClickHandler() { //NON-NLS
+                                         public void onClick(ClickEvent w) {
                                              String cm = Format.format( constants.DeleteActionColumnWarning(),
                                                                         c.header );
                                              if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
@@ -404,8 +404,8 @@ public class GuidedDecisionTableWidget extends Composite
         newCol.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
         return new ImageButton( "images/new_item.gif",
                                 constants.AddANewConditionColumn(),
-                                new ClickListener() { //NON-NLS
-                                    public void onClick(Widget w) {
+                                new ClickHandler() { //NON-NLS
+                                    public void onClick(ClickEvent w) {
                                         GuidedDTColumnConfig dialog = new GuidedDTColumnConfig( getSCE(),
                                                                                                 dt,
                                                                                                 new Command() {
@@ -426,8 +426,8 @@ public class GuidedDecisionTableWidget extends Composite
     private Widget editCondition(final ConditionCol c) {
         return new ImageButton( "images/edit.gif",
                                 constants.EditThisColumnsConfiguration(),
-                                new ClickListener() { //NON-NLS
-                                    public void onClick(Widget w) {
+                                new ClickHandler() { //NON-NLS
+                                    public void onClick(ClickEvent w) {
                                         GuidedDTColumnConfig dialog = new GuidedDTColumnConfig( getSCE(),
                                                                                                 dt,
                                                                                                 new Command() {
@@ -454,8 +454,8 @@ public class GuidedDecisionTableWidget extends Composite
     private Widget removeCondition(final ConditionCol c) {
         Image del = new ImageButton( "images/delete_item_small.gif",
                                      constants.RemoveThisConditionColumn(),
-                                     new ClickListener() { //NON-NLS
-                                         public void onClick(Widget w) {
+                                     new ClickHandler() { //NON-NLS
+                                         public void onClick(ClickEvent w) {
                                              String cm = Format.format( constants.DeleteConditionColumnWarning(),
                                                                         c.header );
                                              if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
@@ -518,20 +518,20 @@ public class GuidedDecisionTableWidget extends Composite
             if(at.attr.equals(RuleAttributeWidget.SALIENCE_ATTR)) {
             	hp.add( new HTML( "&nbsp;&nbsp;" ) );
             	final CheckBox useRowNumber = new CheckBox();
-            	useRowNumber.setChecked(at.useRowNumber);
-            	useRowNumber.addClickListener( new ClickListener() {
-                    public void onClick(Widget sender) {
-                        at.useRowNumber = useRowNumber.isChecked();
+            	useRowNumber.setEnabled(at.useRowNumber);
+            	useRowNumber.addClickHandler( new ClickHandler() {
+                    public void onClick(ClickEvent sender) {
+                        at.useRowNumber = useRowNumber.isEnabled();
                     }
                 } );
                 hp.add( useRowNumber );
             	hp.add( new SmallLabel( constants.UseRowNumber() ) );
             	hp.add( new SmallLabel( "(" ) );
             	final CheckBox reverseOrder = new CheckBox();
-            	reverseOrder.setChecked(at.reverseOrder);
-            	reverseOrder.addClickListener( new ClickListener() {
-                    public void onClick(Widget sender) {
-                        at.reverseOrder = reverseOrder.isChecked();
+            	reverseOrder.setEnabled(at.reverseOrder);
+            	reverseOrder.addClickHandler( new ClickHandler() {
+                    public void onClick(ClickEvent sender) {
+                        at.reverseOrder = reverseOrder.isEnabled();
                     }
                 } );
             	hp.add(reverseOrder);
@@ -543,10 +543,10 @@ public class GuidedDecisionTableWidget extends Composite
             hp.add( defaultValue );
 
             final CheckBox hide = new CheckBox();
-            hide.setChecked( at.hideColumn );
-            hide.addClickListener( new ClickListener() {
-                public void onClick(Widget sender) {
-                    at.hideColumn = hide.isChecked();
+            hide.setEnabled( at.hideColumn );
+            hide.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent sender) {
+                    at.hideColumn = hide.isEnabled();
                 }
             } );
             hp.add( hide );
@@ -560,8 +560,8 @@ public class GuidedDecisionTableWidget extends Composite
     private Widget newAttr() {
         ImageButton but = new ImageButton( "images/new_item.gif",
                                            constants.AddANewAttributeMetadata(),
-                                           new ClickListener() { //NON-NLS
-                                               public void onClick(Widget w) {
+                                           new ClickHandler() { //NON-NLS
+                                               public void onClick(ClickEvent w) {
                                                    //show choice of attributes
                                                    final FormStylePopup pop = new FormStylePopup( "images/config.png",
                                                                                                   constants.AddAnOptionToTheRule() ); //NON-NLS
@@ -587,8 +587,8 @@ public class GuidedDecisionTableWidget extends Composite
 
                                                    addbutton.setTitle( constants.AddMetadataToTheRule() );
 
-                                                   addbutton.addClickListener( new ClickListener() {
-                                                       public void onClick(Widget w) {
+                                                   addbutton.addClickHandler( new ClickHandler() {
+                                                       public void onClick(ClickEvent w) {
                                                            MetadataCol met = new MetadataCol();
                                                            met.attr = box.getText();
                                                            dt.getMetadataCols().add( met );
@@ -636,8 +636,8 @@ public class GuidedDecisionTableWidget extends Composite
     private Widget removeAttr(final AttributeCol at) {
         Image del = new ImageButton( "images/delete_item_small.gif",
                                      constants.RemoveThisAttribute(),
-                                     new ClickListener() { //NON-NLS
-                                         public void onClick(Widget w) {
+                                     new ClickHandler() { //NON-NLS
+                                         public void onClick(ClickEvent w) {
                                              String ms = Format.format( constants.DeleteActionColumnWarning(),
                                                                         at.attr );
                                              if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
@@ -656,8 +656,8 @@ public class GuidedDecisionTableWidget extends Composite
     private Widget removeMeta(final MetadataCol md) {
         Image del = new ImageButton( "images/delete_item_small.gif",
                                      constants.RemoveThisMetadata(),
-                                     new ClickListener() { //NON-NLS
-                                         public void onClick(Widget w) {
+                                     new ClickHandler() { //NON-NLS
+                                         public void onClick(ClickEvent w) {
                                              String ms = Format.format( constants.DeleteActionColumnWarning(),
                                                                         md.attr );
                                              if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
@@ -1245,8 +1245,8 @@ public class GuidedDecisionTableWidget extends Composite
         w.setBorder( false );
 
         Button ok = new Button( constants.OK() );
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget wg) {
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent wg) {
                 r.set( dataIdx,
                        drop.getValue( drop.getSelectedIndex() ) );
                 w.destroy();
@@ -1362,8 +1362,8 @@ public class GuidedDecisionTableWidget extends Composite
 			w.setBorder(false);
 
 			Button ok = new Button(constants.OK());
-			ok.addClickListener(new ClickListener() {
-				public void onClick(Widget wg) {
+			ok.addClickHandler(new ClickHandler() {
+				public void onClick(ClickEvent wg) {
 					r.set(dta, box.getText());
 					w.destroy();
 				}

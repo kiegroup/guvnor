@@ -41,11 +41,12 @@ import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
 import com.google.gwt.user.client.ui.FormHandler;
@@ -112,8 +113,8 @@ public class BackupManager extends Composite {
         HorizontalPanel horiz = new HorizontalPanel();
 
         Button create = new Button(constants.Export());
-        create.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        create.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 exportRepository();
             }
         } );
@@ -126,8 +127,8 @@ public class BackupManager extends Composite {
         final HorizontalPanel horiz = new HorizontalPanel();
 
         final Button create = new Button( constants.Export() );
-        create.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        create.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 exportPackageFromRepository( box.getSelectedPackage() );
             }
         } );
@@ -174,8 +175,8 @@ public class BackupManager extends Composite {
 
         //panel.add( new Label( "import:" ) );
         Button ok = new Button(constants.Import());
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget sender) {
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent sender) {
                 doImportFile( uploadFormPanel );
             }
 
@@ -232,14 +233,14 @@ public class BackupManager extends Composite {
 
         panel.add( new Label( constants.Import() + ":" ) );
         ImageButton ok = new ImageButton( "images/upload.gif" );
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget sender) {
-                uploadFormPanel.setAction( GWT.getModuleBaseURL() + "backup?packageImport=true&importAsNew=" + !overWriteCheckBox.isChecked() );
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent sender) {
+                uploadFormPanel.setAction( GWT.getModuleBaseURL() + "backup?packageImport=true&importAsNew=" + !overWriteCheckBox.isEnabled() );
                 doImportFile( uploadFormPanel );
             }
 
             private void doImportFile(final FormPanel uploadFormPanel) {
-                if ( (overWriteCheckBox.isChecked() && Window.confirm(constants.ImportPackageConfirm())) || !overWriteCheckBox.isChecked() ) {
+                if ( (overWriteCheckBox.isEnabled() && Window.confirm(constants.ImportPackageConfirm())) || !overWriteCheckBox.isEnabled() ) {
                     LoadingPopup.showMessage(constants.ImportingPackage());
                     uploadFormPanel.submit();
                 }

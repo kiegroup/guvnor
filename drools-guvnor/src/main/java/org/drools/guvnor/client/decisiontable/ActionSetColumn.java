@@ -36,13 +36,14 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 
 public class ActionSetColumn extends FormStylePopup {
 
@@ -80,8 +81,8 @@ public class ActionSetColumn extends FormStylePopup {
 
         Image changePattern = new ImageButton( "images/edit.gif",
                                                constants.ChooseABoundFactThatThisColumnPertainsTo(),
-                                               new ClickListener() {
-                                                   public void onClick(Widget w) {
+                                               new ClickHandler() {
+                                                   public void onClick(ClickEvent w) {
                                                        showChangeFact( w );
                                                    }
                                                } );
@@ -93,8 +94,8 @@ public class ActionSetColumn extends FormStylePopup {
         field.add( fieldLabel );
         Image editField = new ImageButton( "images/edit.gif",
                                            constants.EditTheFieldThatThisColumnOperatesOn(),
-                                           new ClickListener() {
-                                               public void onClick(Widget w) {
+                                           new ClickHandler() {
+                                               public void onClick(ClickEvent w) {
                                                    showFieldChange();
                                                }
                                            } );
@@ -134,8 +135,8 @@ public class ActionSetColumn extends FormStylePopup {
                       GuidedDTColumnConfig.getDefaultEditor( editingCol ) );
 
         Button apply = new Button( constants.ApplyChanges() );
-        apply.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        apply.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 if ( null == editingCol.header || "".equals( editingCol.header ) ) {
                     Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
@@ -185,15 +186,15 @@ public class ActionSetColumn extends FormStylePopup {
         HorizontalPanel hp = new HorizontalPanel();
 
         final CheckBox cb = new CheckBox();
-        cb.setChecked( editingCol.update );
+        cb.setEnabled( editingCol.update );
         cb.setText( "" );
-        cb.addClickListener( new ClickListener() {
-            public void onClick(Widget arg0) {
+        cb.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
                 if ( sce.isGlobalVariable( editingCol.boundName ) ) {
-                    cb.setChecked( false );
+                    cb.setEnabled( false );
                     editingCol.update = false;
                 } else {
-                    editingCol.update = cb.isChecked();
+                    editingCol.update = cb.isEnabled();
                 }
             }
         } );
@@ -228,8 +229,8 @@ public class ActionSetColumn extends FormStylePopup {
         Button b = new Button( constants.OK() );
         pop.addAttribute( "",
                           b );
-        b.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        b.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 editingCol.factField = box.getItemText( box.getSelectedIndex() );
                 editingCol.type = sce.getFieldType( factType,
                                                     editingCol.factField );
@@ -257,7 +258,7 @@ public class ActionSetColumn extends FormStylePopup {
     }
 
     private String getFactType(String boundName) {
-        for ( Iterator iterator = dt.conditionCols.iterator(); iterator.hasNext(); ) {
+        for ( Iterator<ConditionCol> iterator = dt.conditionCols.iterator(); iterator.hasNext(); ) {
             ConditionCol col = (ConditionCol) iterator.next();
             if ( col.boundName.equals( boundName ) ) {
                 return col.factType;
@@ -266,7 +267,7 @@ public class ActionSetColumn extends FormStylePopup {
         return "";
     }
 
-    private void showChangeFact(Widget w) {
+    private void showChangeFact(ClickEvent w) {
         final FormStylePopup pop = new FormStylePopup();
 
         final ListBox pats = this.loadBoundFacts();
@@ -276,8 +277,8 @@ public class ActionSetColumn extends FormStylePopup {
         pop.addAttribute( "",
                           ok );
 
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 String val = pats.getValue( pats.getSelectedIndex() );
                 editingCol.boundName = val;
                 doBindingLabel();
@@ -297,7 +298,7 @@ public class ActionSetColumn extends FormStylePopup {
         }
 
         ListBox box = new ListBox();
-        for ( Iterator iterator = facts.iterator(); iterator.hasNext(); ) {
+        for ( Iterator<String> iterator = facts.iterator(); iterator.hasNext(); ) {
             String b = (String) iterator.next();
             box.addItem( b );
         }

@@ -28,6 +28,7 @@ import org.drools.guvnor.client.messages.Constants;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.core.client.GWT;
+
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.SortDir;
 import com.gwtext.client.data.ArrayReader;

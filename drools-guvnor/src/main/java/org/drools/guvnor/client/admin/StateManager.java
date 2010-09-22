@@ -42,13 +42,13 @@ import org.drools.guvnor.client.messages.Constants;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 
 public class StateManager extends Composite {
 
@@ -73,8 +73,8 @@ public class StateManager extends Composite {
         HorizontalPanel hPanel = new HorizontalPanel();
         Button create = new Button(constants.NewStatus());
         create.setTitle(constants.CreateANewCategory());
-        create.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        create.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 StatusEditor newCat = new StatusEditor( new Command() {
                     public void execute() {
                         refreshList();
@@ -86,8 +86,8 @@ public class StateManager extends Composite {
         } );
 
         Button edit = new Button(constants.RenameSelected());
-        edit.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        edit.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
 
                 if ( !currentStatuses.isItemSelected( currentStatuses.getSelectedIndex() ) ) {
                     Window.alert(constants.PleaseSelectAStatusToRename());
@@ -99,8 +99,8 @@ public class StateManager extends Composite {
         } );
 
         Button remove = new Button(constants.DeleteSelected());
-        remove.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        remove.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
 
                 if ( !currentStatuses.isItemSelected( currentStatuses.getSelectedIndex() ) ) {
                     Window.alert(constants.PleaseSelectAStatusToRemove());

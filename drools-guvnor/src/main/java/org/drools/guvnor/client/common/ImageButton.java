@@ -32,8 +32,8 @@ package org.drools.guvnor.client.common;
  * limitations under the License.
  */
 
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiConstructor;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Image;
 
 /**
@@ -58,10 +58,10 @@ public class ImageButton extends Image {
 
     public ImageButton(String img,
                        String tooltip,
-                       ClickListener action) {
+                       ClickHandler action) {
         this( img,
               tooltip );
-        this.addClickListener( action );
+        this.addClickHandler( action );
     }
 
 }

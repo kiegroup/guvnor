@@ -40,7 +40,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
@@ -165,9 +164,9 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             HorizontalPanel h = new HorizontalPanel();
             h.add(getSetterLabel());
             if (!this.readOnly) {
-                h.add(new ImageButton("images/edit_tiny.gif", constants.AddFirstNewField(), new ClickListener() {
+                h.add(new ImageButton("images/edit_tiny.gif", constants.AddFirstNewField(), new ClickHandler() {
 
-                    public void onClick(Widget sender) {
+                    public void onClick(ClickEvent sender) {
                         showAddFieldPopup(sender);
                     }
                 }));
@@ -186,8 +185,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         ClickHandler clk = new ClickHandler() {
 			
 			public void onClick(ClickEvent event) {
-				Widget w = (Widget)event.getSource();
-				 showAddFieldPopup(w);
+				//Widget w = (Widget)event.getSource();
+				showAddFieldPopup(event);
 				
 			}
 		};
@@ -206,7 +205,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         return new ClickableLabel(sl, clk, !this.readOnly);//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);
     }
 
-    protected void showAddFieldPopup(Widget w) {
+    protected void showAddFieldPopup(ClickEvent w) {
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif", constants.AddAField());
 

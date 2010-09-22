@@ -26,13 +26,13 @@ import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Created by IntelliJ IDEA.
@@ -86,8 +86,8 @@ public class ActivateRuleFlowWidget extends Composite {
                              new SmallLabel( acticateRuleFlowGroup.name ) );
             Image del = new ImageButton( "images/delete_item_small.gif",
                                          "Remove this rule flow activation.",
-                                         new ClickListener() {
-                                             public void onClick(Widget w) {
+                                         new ClickHandler() {
+                                             public void onClick(ClickEvent w) {
                                                  retList.remove( acticateRuleFlowGroup );
                                                  sc.fixtures.remove( acticateRuleFlowGroup );
                                                  render( retList,

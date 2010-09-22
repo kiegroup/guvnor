@@ -41,9 +41,10 @@ import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -149,8 +150,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                 if (field.nature == FieldData.TYPE_UNDEFINED &&
                         (isThereABoundVariableToSet() == true || isItAList() == true)) {
                     Image clickme = new Image("images/edit.gif"); // NON-NLS
-                    clickme.addClickListener(new ClickListener() {
-                        public void onClick(Widget w) {
+                    clickme.addClickHandler(new ClickHandler() {
+                        public void onClick(ClickEvent w) {
                             showTypeChoice(w,
                                     field);
                         }
@@ -252,8 +253,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             }, f, givenFact, sce, scenario, executionTrace);
             hpanel.add(fieldElement);
             final int index = i;
-            Image del = new ImageButton("images/delete_item_small.gif", Format.format(constants.AElementToDelInCollectionList(), "tt"), new ClickListener() {
-                public void onClick(Widget w) {
+            Image del = new ImageButton("images/delete_item_small.gif", Format.format(constants.AElementToDelInCollectionList(), "tt"), new ClickHandler() {
+                public void onClick(ClickEvent w) {
                     field.collectionFieldList.remove(index);
                     calculateValueFromList();
                     refreshEditor();
@@ -266,8 +267,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             addPattern.setTitle(constants.AddElementBelow());
 
 
-            addPattern.addClickListener(new ClickListener(){
-                public void onClick(Widget sender) {
+            addPattern.addClickHandler(new ClickHandler(){
+                public void onClick(ClickEvent sender) {
                    FieldData newFieldData = new FieldData();
                    newFieldData.name = field.name;
                    newFieldData.collectionType = field.collectionType;
@@ -279,8 +280,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             hpanel.add(addPattern);
             Image moveDown = new ImageButton("images/shuffle_down.gif");
             moveDown.setTitle(constants.MoveDownListMove());
-            moveDown.addClickListener(new ClickListener(){
-                public void onClick(Widget sender) {
+            moveDown.addClickHandler(new ClickHandler(){
+                public void onClick(ClickEvent sender) {
                    if (index <field.collectionFieldList.size()-1){
                           FieldData onMyLine =field.collectionFieldList.get(index);
                           FieldData onDown =field.collectionFieldList.get(index+1);
@@ -295,8 +296,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
             Image moveUp = new ImageButton("images/shuffle_up.gif");
             moveUp.setTitle(constants.MoveUpList());
-            moveUp.addClickListener(new ClickListener(){
-                public void onClick(Widget sender) {
+            moveUp.addClickHandler(new ClickHandler(){
+                public void onClick(ClickEvent sender) {
                    if (index >0){
                           FieldData oneUp =field.collectionFieldList.get(index-1);
                           FieldData onMyLine =field.collectionFieldList.get(index);
@@ -314,8 +315,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
     
 
         if (this.field.collectionFieldList.size()==0){
-            Image add = new ImageButton("images/new_item.gif",Format.format(constants.AElementToAddInCollectionList(),"tt") , new ClickListener() {
-                public void onClick(Widget w) {
+            Image add = new ImageButton("images/new_item.gif",Format.format(constants.AElementToAddInCollectionList(),"tt") , new ClickHandler() {
+                public void onClick(ClickEvent w) {
                     FieldData newFieldData = new FieldData();
                     newFieldData.name = field.name;
                     newFieldData.collectionType = field.collectionType;
@@ -344,14 +345,14 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         this.field.value = "=[" + listContent.substring(1) + "]";
     }
 
-    private void showTypeChoice(Widget w,
+    private void showTypeChoice(ClickEvent w,
                                 final FieldData con) {
         final FormStylePopup form = new FormStylePopup("images/newex_wiz.gif",
                 constants.FieldValue());
 
         Button lit = new Button(constants.LiteralValue());
-        lit.addClickListener(new ClickListener() {
-            public void onClick(Widget w) {
+        lit.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 con.nature = FieldData.TYPE_LITERAL;
                 doTypeChosen(form);
             }
@@ -369,8 +370,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         // me
         if (isThereABoundVariableToSet() == true) {
             Button variable = new Button(constants.BoundVariable());
-            variable.addClickListener(new ClickListener() {
-                public void onClick(Widget w) {
+            variable.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent w) {
                     con.nature = FieldData.TYPE_VARIABLE;
                     doTypeChosen(form);
                 }
@@ -382,8 +383,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         }
         if (isItAList() == true) {
             Button variable = new Button(constants.GuidedList());
-            variable.addClickListener(new ClickListener() {
-                public void onClick(Widget w) {
+            variable.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent w) {
                     String factCollectionType = sce.getParametricFieldType(factType, field.name);
                     con.setNature(FieldData.TYPE_COLLECTION, factCollectionType);
                     doTypeChosen(form);

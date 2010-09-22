@@ -17,8 +17,22 @@
 package org.drools.guvnor.client.qa;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.Grid;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
+
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
@@ -80,8 +94,8 @@ public class VerifyFactWidget extends Composite {
 
         Image add = new ImageButton( "images/add_field_to_fact.gif",
                                      constants.AddAFieldToThisExpectation(),
-                                     new ClickListener() { //NON-NLS
-                                         public void onClick(Widget w) {
+                                     new ClickHandler() { //NON-NLS
+                                         public void onClick(ClickEvent w) {
 
                                              String[] fields = (String[]) sce.getModelFields( type );
                                              final FormStylePopup pop = new FormStylePopup( "images/rule_asset.gif",
@@ -92,8 +106,8 @@ public class VerifyFactWidget extends Composite {
                                              }
                                              pop.addRow( b );
                                              Button ok = new Button( constants.OK() );
-                                             ok.addClickListener( new ClickListener() {
-                                                 public void onClick(Widget w) {
+                                             ok.addClickHandler( new ClickHandler() {
+                                                 public void onClick(ClickEvent w) {
                                                      String f = b.getItemText( b.getSelectedIndex() );
                                                      vf.fieldValues.add( new VerifyField( f,
                                                                                           "",
@@ -173,8 +187,8 @@ public class VerifyFactWidget extends Composite {
 
             Image del = new ImageButton( "images/delete_item_small.gif",
                                          constants.RemoveThisFieldExpectation(),
-                                         new ClickListener() {
-                                             public void onClick(Widget w) {
+                                         new ClickHandler() {
+                                             public void onClick(ClickEvent w) {
                                                  if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemoveThisFieldExpectation(),
                                                                                      fld.fieldName ) ) ) {
                                                      vf.fieldValues.remove( fld );

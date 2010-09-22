@@ -34,6 +34,8 @@ import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -100,8 +102,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         Image changePattern = new ImageButton( "images/edit.gif",
                                                constants.ChooseAnExistingPatternThatThisColumnAddsTo(),
-                                               new ClickListener() { //NON-NLS
-                                                   public void onClick(Widget w) {
+                                               new ClickHandler() { //NON-NLS
+                                                   public void onClick(ClickEvent w) {
                                                        showChangePattern( w );
                                                    }
                                                } );
@@ -127,28 +129,28 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         switch ( editingCol.constraintValueType ) {
             case BaseSingleFieldConstraint.TYPE_LITERAL :
-                literal.setChecked( true );
+                literal.setEnabled( true );
                 break;
             case BaseSingleFieldConstraint.TYPE_RET_VALUE :
-                formula.setChecked( true );
+                formula.setEnabled( true );
                 break;
             case BaseSingleFieldConstraint.TYPE_PREDICATE :
-                predicate.setChecked( true );
+                predicate.setEnabled( true );
         }
 
-        literal.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        literal.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 applyConsTypeChange( BaseSingleFieldConstraint.TYPE_LITERAL );
             }
         } );
 
-        formula.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        formula.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 applyConsTypeChange( BaseSingleFieldConstraint.TYPE_RET_VALUE );
             }
         } );
-        predicate.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        predicate.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 applyConsTypeChange( BaseSingleFieldConstraint.TYPE_PREDICATE );
             }
         } );
@@ -158,8 +160,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         field.add( fieldLabelInterpolationInfo );
         Image editField = new ImageButton( "images/edit.gif",
                                            constants.EditTheFieldThatThisColumnOperatesOn(),
-                                           new ClickListener() { //NON-NLS
-                                               public void onClick(Widget w) {
+                                           new ClickHandler() { //NON-NLS
+                                               public void onClick(ClickEvent w) {
                                                    showFieldChange();
                                                }
                                            } );
@@ -172,8 +174,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         operator.add( operatorLabel );
         Image editOp = new ImageButton( "images/edit.gif",
                                         constants.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
-                                        new ClickListener() { //NON-NLS
-                                            public void onClick(Widget w) {
+                                        new ClickHandler() { //NON-NLS
+                                            public void onClick(ClickEvent w) {
                                                 showOperatorChange();
                                             }
                                         } );
@@ -210,8 +212,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                       getDefaultEditor( editingCol ) );
 
         Button apply = new Button( constants.ApplyChanges() );
-        apply.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        apply.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 if ( null == editingCol.header || "".equals( editingCol.header ) ) {
                     Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
@@ -268,10 +270,10 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         final TextBox defaultValue = new TextBox();
         defaultValue.setText( editingCol.defaultValue );
         final CheckBox hide = new CheckBox( ((Constants) GWT.create( Constants.class )).HideThisColumn() );
-        hide.setChecked( editingCol.hideColumn );
-        hide.addClickListener( new ClickListener() {
-            public void onClick(Widget sender) {
-                editingCol.hideColumn = hide.isChecked();
+        hide.setEnabled(editingCol.hideColumn );
+        hide.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent sender) {
+                editingCol.hideColumn = hide.isEnabled();
             }
         } );
         defaultValue.addChangeListener( new ChangeListener() {
@@ -346,8 +348,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         Button b = new Button( constants.OK() );
         pop.addAttribute( "",
                           b );
-        b.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        b.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 editingCol.operator = box.getValue( box.getSelectedIndex() );
                 doOperatorLabel();
                 pop.hide();
@@ -391,8 +393,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         Button b = new Button( constants.OK() );
         pop.addAttribute( "",
                           b );
-        b.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        b.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 editingCol.factField = box.getItemText( box.getSelectedIndex() );
                 doFieldLabel();
                 doOperatorLabel();
@@ -411,7 +413,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
     }
 
-    protected void showChangePattern(Widget w) {
+    protected void showChangePattern(ClickEvent w) {
 
         final ListBox pats = this.loadPatterns();
         if ( pats.getItemCount() == 0 ) {
@@ -430,8 +432,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                           new HTML( constants.ORwithEmphasis() ) );
 
         Button createPattern = new Button( constants.CreateNewFactPattern() );
-        createPattern.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        createPattern.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 pop.hide();
                 showNewPatternDialog();
             }
@@ -439,8 +441,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         pop.addAttribute( "",
                           createPattern );
 
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" );
                 editingCol.factType = val[0];
                 editingCol.boundName = val[1];
@@ -472,8 +474,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                           binding );
 
         Button ok = new Button( constants.OK() );
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
 
                 String ft = types.getItemText( types.getSelectedIndex() );
                 String fn = binding.getText();

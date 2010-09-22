@@ -17,7 +17,6 @@
 package org.drools.guvnor.client.admin;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +35,6 @@ import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -47,6 +45,9 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.SortDir;
 import com.gwtext.client.data.ArrayReader;
@@ -65,7 +66,6 @@ import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.grid.ColumnConfig;
 import com.gwtext.client.widgets.grid.ColumnModel;
 import com.gwtext.client.widgets.grid.GridPanel;
-import com.gwtext.client.widgets.grid.GroupingView;
 import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
 
 public class PermissionViewer extends Composite {
@@ -223,8 +223,8 @@ public class PermissionViewer extends Composite {
                 com.google.gwt.user.client.ui.Button create = new com.google.gwt.user.client.ui.Button( constants.OK() );
                 form.addAttribute( "",
                                    create );
-                create.addClickListener( new ClickListener() {
-                    public void onClick(Widget w) {
+                create.addClickHandler( new ClickHandler() {
+                    public void onClick(ClickEvent w) {
                         if ( userName.getText() != null && userName.getText().length() != 0 ) {
                             RepositoryServiceFactory.getService().createUser( userName.getText(),
                                                                               new GenericCallback() {
@@ -285,8 +285,8 @@ public class PermissionViewer extends Composite {
                                                                                com.google.gwt.user.client.ui.Button save = new com.google.gwt.user.client.ui.Button( constants.SaveChanges() );
                                                                                editor.addAttribute( "",
                                                                                                     save );
-                                                                               save.addClickListener( new ClickListener() {
-                                                                                   public void onClick(Widget w) {
+                                                                               save.addClickHandler( new ClickHandler() {
+                                                                                   public void onClick(ClickEvent w) {
                                                                                        LoadingPopup.showMessage( constants.Updating() );
                                                                                        RepositoryServiceFactory.getService().updateUserPermissions( userName,
                                                                                                                                                     perms,
@@ -319,8 +319,8 @@ public class PermissionViewer extends Composite {
                 h.add( new HTML( "<b>" + constants.ThisUserIsAnAdministrator() + "</b>" ) ); //NON-NLS
                 com.google.gwt.user.client.ui.Button del = new com.google.gwt.user.client.ui.Button( constants.RemoveAdminRights() );
 
-                del.addClickListener( new ClickListener() {
-                    public void onClick(Widget w) {
+                del.addClickHandler( new ClickHandler() {
+                    public void onClick(ClickEvent w) {
                         if ( Window.confirm( constants.AreYouSureYouWantToRemoveAdministratorPermissions() ) ) {
                             perms.remove( "admin" ); //NON-NLS
                             doPermsPanel( perms,
@@ -344,8 +344,8 @@ public class PermissionViewer extends Composite {
                     final String p = permList.get( i );
                     ImageButton del = new ImageButton( "images/delete_item_small.gif",
                                                        constants.RemovePermission(),
-                                                       new ClickListener() { //NON-NLS
-                                                           public void onClick(Widget w) {
+                                                       new ClickHandler() { //NON-NLS
+                                                           public void onClick(ClickEvent w) {
                                                                if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemovePermission0(),
                                                                                                    p ) ) ) {
                                                                    permList.remove( p );
@@ -374,8 +374,8 @@ public class PermissionViewer extends Composite {
         //now to be able to add...
         ImageButton newPermission = new ImageButton( "images/new_item.gif",
                                                      constants.AddANewPermission(),
-                                                     new ClickListener() { //NON-NLS
-                                                         public void onClick(Widget w) {
+                                                     new ClickHandler() { //NON-NLS
+                                                         public void onClick(ClickEvent w) {
                                                              final FormStylePopup pop = new FormStylePopup();
                                                              final ListBox permTypeBox = new ListBox();
                                                              permTypeBox.addItem( constants.Loading() );
@@ -406,8 +406,8 @@ public class PermissionViewer extends Composite {
 
                                                                          pop.addAttribute( constants.MakeThisUserAdmin(),
                                                                                            ok );
-                                                                         ok.addClickListener( new ClickListener() {
-                                                                             public void onClick(Widget w) {
+                                                                         ok.addClickHandler( new ClickHandler() {
+                                                                             public void onClick(ClickEvent w) {
                                                                                  perms.put( "admin",
                                                                                             new ArrayList<String>() ); //NON-NLS
 
@@ -437,8 +437,8 @@ public class PermissionViewer extends Composite {
                                                                      } else if ( sel.startsWith( "package" ) ) {
                                                                          final RulePackageSelector rps = new RulePackageSelector( true );
                                                                          com.google.gwt.user.client.ui.Button ok = new com.google.gwt.user.client.ui.Button( constants.OK() );
-                                                                         ok.addClickListener( new ClickListener() {
-                                                                             public void onClick(Widget w) {
+                                                                         ok.addClickHandler( new ClickHandler() {
+                                                                             public void onClick(ClickEvent w) {
                                                                                  String pkName = rps.getSelectedPackage();
                                                                                  if ( perms.containsKey( sel ) ) {
                                                                                      perms.get( sel ).add( "package=" + pkName ); //NON-NLS

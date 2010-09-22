@@ -23,7 +23,7 @@ code {
 .my-DisclosurePanel .header,
 .my-DisclosurePanel .header a,
 .my-DisclosurePanel .header td {
-  height:25px;
+  height:30px;
   background: white;
   text-decoration: none;  /* Remove underline from header */
   color: white; 

@@ -44,14 +44,14 @@ import org.drools.guvnor.client.messages.Constants;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
  * This controls category administration.
@@ -87,8 +87,8 @@ public class CategoryManager extends Composite {
 
         Button newCat = new Button(constants.NewCategory());
         newCat.setTitle(constants.CreateANewCategory());
-        newCat.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        newCat.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 CategoryEditor newCat = new CategoryEditor( explorer.getSelectedPath(), new Command() {
 					public void execute() {
 						explorer.refresh();
@@ -102,8 +102,8 @@ public class CategoryManager extends Composite {
         actions.add(newCat);
 
         Button rename = new Button(constants.RenameSelected());
-        rename.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
+        rename.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent w) {
 				if (!explorer.isSelected()) {
 					Window.alert(constants.PleaseSelectACategoryToRename());
 					return;
@@ -116,8 +116,8 @@ public class CategoryManager extends Composite {
 
 
         Button delete = new Button(constants.DeleteSelected());
-        delete.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        delete.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
             	if (!explorer.isSelected())  {
             		Window.alert(constants.PleaseSelectACategoryToDelete());
             		return;

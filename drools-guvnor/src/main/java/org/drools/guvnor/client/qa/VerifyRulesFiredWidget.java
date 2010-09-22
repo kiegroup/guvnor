@@ -27,9 +27,10 @@ import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
@@ -141,8 +142,8 @@ public class VerifyRulesFiredWidget extends Composite {
             h.add(b); h.add(num);
             data.setWidget(i, 2, h);
 
-            Image del = new ImageButton("images/delete_item_small.gif", constants.RemoveThisRuleExpectation(), new ClickListener() {
-				public void onClick(Widget w) {
+            Image del = new ImageButton("images/delete_item_small.gif", constants.RemoveThisRuleExpectation(), new ClickHandler() {
+				public void onClick(ClickEvent w) {
 					if (Window.confirm(constants.AreYouSureYouWantToRemoveThisRuleExpectation())) {
 						rfl.remove(v);
 						sc.removeFixture(v);

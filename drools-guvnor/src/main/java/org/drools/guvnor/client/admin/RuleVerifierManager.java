@@ -36,6 +36,7 @@ package org.drools.guvnor.client.admin;
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.WorkingSetManager;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -46,7 +47,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
-import org.drools.guvnor.client.packages.WorkingSetManager;
 
 /**
  * This controls category administration.

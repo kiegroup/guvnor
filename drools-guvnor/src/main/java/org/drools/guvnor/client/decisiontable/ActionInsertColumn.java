@@ -34,7 +34,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -42,6 +41,8 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
  * This is an editor for columns that are for inserting facts.
@@ -83,8 +84,8 @@ public class ActionInsertColumn extends FormStylePopup {
 
         Image changePattern = new ImageButton( "images/edit.gif",
                                                constants.ChooseAPatternThatThisColumnAddsDataTo(),
-                                               new ClickListener() {
-                                                   public void onClick(Widget w) {
+                                               new ClickHandler() {
+                                                   public void onClick(ClickEvent w) {
                                                        showChangePattern( w );
                                                    }
                                                } ); //NON-NLS
@@ -96,8 +97,8 @@ public class ActionInsertColumn extends FormStylePopup {
         field.add( fieldLabel );
         Image editField = new ImageButton( "images/edit.gif",
                                            constants.EditTheFieldThatThisColumnOperatesOn(),
-                                           new ClickListener() {
-                                               public void onClick(Widget w) {
+                                           new ClickHandler() {
+                                               public void onClick(ClickEvent w) {
                                                    showFieldChange();
                                                }
                                            } ); //NON-NLS
@@ -134,8 +135,8 @@ public class ActionInsertColumn extends FormStylePopup {
                       GuidedDTColumnConfig.getDefaultEditor( editingCol ) );
 
         Button apply = new Button( constants.ApplyChanges() );
-        apply.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        apply.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 if ( null == editingCol.header || "".equals( editingCol.header ) ) {
                     Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
@@ -202,8 +203,8 @@ public class ActionInsertColumn extends FormStylePopup {
         Button b = new Button( constants.OK() );
         pop.addAttribute( "",
                           b );
-        b.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        b.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 editingCol.factField = box.getItemText( box.getSelectedIndex() );
                 editingCol.type = sce.getFieldType( editingCol.factType,
                                                     editingCol.factField );
@@ -234,7 +235,7 @@ public class ActionInsertColumn extends FormStylePopup {
         }
     }
 
-    protected void showChangePattern(Widget w) {
+    protected void showChangePattern(ClickEvent w) {
 
         final ListBox pats = this.loadPatterns();
         if ( pats.getItemCount() == 0 ) {
@@ -253,8 +254,8 @@ public class ActionInsertColumn extends FormStylePopup {
                           new HTML( constants.ORwithEmphasis() ) );
 
         Button createPattern = new Button( constants.CreateNewFactPattern() );
-        createPattern.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        createPattern.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 pop.hide();
                 showNewPatternDialog();
             }
@@ -262,8 +263,8 @@ public class ActionInsertColumn extends FormStylePopup {
         pop.addAttribute( "",
                           createPattern );
 
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" ); //NON-NLS
                 editingCol.factType = val[0];
                 editingCol.boundName = val[1];
@@ -289,8 +290,8 @@ public class ActionInsertColumn extends FormStylePopup {
                           binding );
 
         Button ok = new Button( constants.OK() );
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 editingCol.boundName = binding.getText();
                 editingCol.factType = types.getItemText( types.getSelectedIndex() );
                 doPatternLabel();
