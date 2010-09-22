@@ -14,6 +14,28 @@ code {
 	border:0;
 }
 
+.my-DisclosurePanel {
+}
+.my-DisclosurePanel-open {
+}
+.my-DisclosurePanel-closed {
+}
+.my-DisclosurePanel .header,
+.my-DisclosurePanel .header a,
+.my-DisclosurePanel .header td {
+  height:25px;
+  background: white;
+  text-decoration: none;  /* Remove underline from header */
+  color: white; 
+  cursor: pointer;
+  cursor: hand;
+}
+.my-DisclosurePanel .content {
+  border-left: 3px solid #e3e3e3;
+  padding: 4px 0px 4px 8px;
+  margin-left: 16px;
+}
+
 
 .VerticalSplitPanel .vsplitter
 {

@@ -30,13 +30,25 @@ import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.ui.DatePickerLabel;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.core.client.GWT;
-import com.gwtext.client.widgets.Panel;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+
 
 public class QueryWidget extends Composite {
 
@@ -52,17 +64,15 @@ public class QueryWidget extends Composite {
         doMetaSearch();
 
         layout.setWidth( "100%" );
-
         initWidget( layout );
-
         setWidth( "100%" );
-
     }
 
     private void doMetaSearch() {
-        Panel p = new Panel();
-        p.setCollapsible( true );
-        p.setTitle( constants.AttributeSearch() );
+        DisclosurePanel advancedDisclosure = new DisclosurePanel(
+        		constants.AttributeSearch());
+        advancedDisclosure.setAnimationEnabled(true);
+        advancedDisclosure.setOpen(true);
 
         final Map<String, MetaDataQuery> atts = new HashMap<String, MetaDataQuery>() {
             {
@@ -88,17 +98,17 @@ public class QueryWidget extends Composite {
         };
 
         FormStyleLayout fm = new FormStyleLayout();
-        for ( Iterator iterator = atts.keySet().iterator(); iterator.hasNext(); ) {
+        for ( Iterator<String> iterator = atts.keySet().iterator(); iterator.hasNext(); ) {
             String fieldName = (String) iterator.next();
             final MetaDataQuery q = (MetaDataQuery) atts.get( fieldName );
             final TextBox box = new TextBox();
             box.setTitle( constants.WildCardsSearchTip() );
             fm.addAttribute( fieldName + ":",
                              box );
-            box.addChangeListener( new ChangeListener() {
-                public void onChange(Widget w) {
-                    q.valueList = box.getText();
-                }
+            box.addChangeHandler(new ChangeHandler() {
+				public void onChange(ChangeEvent arg0) {
+                    q.valueList = box.getText();					
+				}
             } );
         }
 
@@ -134,8 +144,8 @@ public class QueryWidget extends Composite {
         Button search = new Button( constants.Search() );
         fm.addAttribute( "",
                          search );
-        search.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        search.addClickHandler(new ClickHandler() {        	
+            public void onClick(ClickEvent arg0) {
                 resultsP.clear();
                 AssetItemGrid grid = new AssetItemGrid( openItem,
                                                         "searchresults",
@@ -145,7 +155,7 @@ public class QueryWidget extends Composite {
                                                                                  GenericCallback cb) {
                                                                 MetaDataQuery[] mdq = new MetaDataQuery[atts.size()];
                                                                 int i = 0;
-                                                                for ( Iterator iterator = atts.keySet().iterator(); iterator.hasNext(); ) {
+                                                                for ( Iterator<String> iterator = atts.keySet().iterator(); iterator.hasNext(); ) {
                                                                     String name = (String) iterator.next();
                                                                     mdq[i] = (MetaDataQuery) atts.get( name );
                                                                     i++;
@@ -179,28 +189,47 @@ public class QueryWidget extends Composite {
             }
         } );
         fm.addRow( resultsP );
-        p.add( fm );
-        p.setCollapsed( true );
-        layout.add( p );
+        advancedDisclosure.setContent(fm);
+        
+        advancedDisclosure.addStyleName("my-DisclosurePanel");
+        //p.add( fm );
+        //p.setCollapsed( true );
+        layout.add(advancedDisclosure);
     }
 
     private void doQuickFind() {
-        Panel p = new Panel();
+		DisclosurePanel advancedDisclosure = new DisclosurePanel(
+				constants.NameSearch());
+		advancedDisclosure.setAnimationEnabled(true);
+		advancedDisclosure.ensureDebugId("cwDisclosurePanel");
+        advancedDisclosure.addStyleName("my-DisclosurePanel");
+		advancedDisclosure.setContent(new QuickFindWidget(openItem));
+            //layout.setWidget(3, 0, advancedDisclosure);
+            //cellFormatter.setColSpan(3, 0, 2);
+
+/*        Panel p = new Panel();
         p.setCollapsible( true );
         p.setTitle( constants.NameSearch() );
         p.add( new QuickFindWidget( openItem ) );
 
-        p.setCollapsed( false );
+        p.setCollapsed( false );*/
 
-        layout.add( p );
+        layout.add( advancedDisclosure );
     }
 
     private void doTextSearch() {
-        Panel p = new Panel();
+		DisclosurePanel advancedDisclosure = new DisclosurePanel(
+				constants.SearchFor());
+		advancedDisclosure.setAnimationEnabled(true);
+        advancedDisclosure.addStyleName("my-DisclosurePanel");
+		//advancedDisclosure.ensureDebugId("cwDisclosurePanel");
+            
+            
+/*        Panel p = new Panel();
         p.setCollapsible( true );
         p.setTitle( constants.TextSearch() );
 
-        p.setCollapsed( true );
+        p.setCollapsed( true );*/
 
         FormStyleLayout ts = new FormStyleLayout();
         final TextBox tx = new TextBox();
@@ -211,11 +240,15 @@ public class QueryWidget extends Composite {
         ts.addAttribute( "",
                          go );
         ts.setWidth( "100%" );
-        p.add( ts );
+        //p.add( ts );
+        advancedDisclosure.setContent(ts);
 
+        
         final SimplePanel resultsP = new SimplePanel();
-        final ClickListener cl = new ClickListener() {
-            public void onClick(Widget w) {
+        final ClickHandler cl = new ClickHandler() {
+        	
+        	
+            public void onClick(ClickEvent arg0) {
                 if ( tx.getText().equals( "" ) ) {
                     Window.alert( constants.PleaseEnterSomeSearchText() );
                     return;
@@ -236,21 +269,20 @@ public class QueryWidget extends Composite {
                                                         } );
                 resultsP.add( grid );
             }
+
         };
 
-        go.addClickListener( cl );
-        tx.addKeyboardListener( new KeyboardListenerAdapter() {
-            @Override
-            public void onKeyUp(Widget sender,
-                                char keyCode,
-                                int modifiers) {
-                if ( keyCode == KeyboardListener.KEY_ENTER ) {
-                    cl.onClick( sender );
+        go.addClickHandler(cl);
+        tx.addKeyPressHandler(new KeyPressHandler() {
+            public void onKeyPress(KeyPressEvent event) {
+                if (event.getCharCode() == KeyCodes.KEY_ENTER) {
+                    cl.onClick( null );
                 }
-            }
-        } );
+              }        	
+        });
+
         ts.addRow( resultsP );
-        layout.add( p );
+        layout.add( advancedDisclosure );
     }
 
 }
