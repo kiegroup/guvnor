@@ -22,28 +22,20 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.util.LoadContentCommand;
+import org.drools.guvnor.client.util.LazyStackPanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.ToolbarMenuButton;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import com.gwtext.client.widgets.event.PanelListenerAdapter;
-import com.gwtext.client.widgets.menu.CheckItem;
-import com.gwtext.client.widgets.menu.Menu;
-import com.gwtext.client.widgets.menu.event.CheckItemListener;
-import com.gwtext.client.widgets.menu.event.CheckItemListenerAdapter;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -56,10 +48,8 @@ public class MultiViewEditor extends GuvnorEditor {
 
     private VerticalPanel           viewsPanel      = new VerticalPanel();
 
-    private CheckItem               showMetadata    = new CheckItem( constants.Metadata(),
-                                                                     false );
-    private CheckItem               showDescription = new CheckItem( constants.DescriptionAndDiscussion(),
-                                                                     false );
+    private boolean                 showMetadata    = false;
+    private boolean                 showDescription = false;
 
     private Command                 closeCommand;
 
@@ -90,42 +80,40 @@ public class MultiViewEditor extends GuvnorEditor {
         initWidget( rootPanel );
     }
 
-    private Toolbar createToolbar() {
-        Toolbar toolbar = new Toolbar();
+    //    MenuBar layoutMenu = new MenuBar( true );
+    //    layoutMenu.addItem( new MenuItem( showMetadataText(),
+    //                                      new Command() {
+    //                                          public void execute() {
+    //                                              doViews();
+    //                                          }
+    //                                      } ) );
+    //    layoutMenu.addItem( new MenuItem( showDescriptionAndDiscussionText(),
+    //                                      new Command() {
+    //                                          public void execute() {
+    //                                              doViews();
+    //                                          }
+    //                                      } ) );
+    //
+    //    toolbar.addItem( constants.Show(),
+    //                     layoutMenu );
 
-        ToolbarButton checkinAll = new ToolbarButton( constants.SaveAllChanges() );
-        checkinAll.addListener( new ButtonListenerAdapter() {
-            public void onClick(com.gwtext.client.widgets.Button button,
-                                EventObject e) {
-                checkin( false );
-            }
-        } );
-        toolbar.addButton( checkinAll );
-        ToolbarButton checkinAndCloseAll = new ToolbarButton( constants.SaveAndCloseAll() );
-        toolbar.addButton( checkinAndCloseAll );
-        checkinAndCloseAll.addListener( new ButtonListenerAdapter() {
-            public void onClick(com.gwtext.client.widgets.Button button,
-                                EventObject e) {
-                checkin( true );
-            }
-        } );
+    private MenuBar createToolbar() {
+        MenuBar toolbar = new MenuBar();
 
-        CheckItemListener refresh = new CheckItemListenerAdapter() {
-            @Override
-            public void onCheckChange(CheckItem item,
-                                      boolean checked) {
-                doViews();
-            }
-        };
+        toolbar.addItem( constants.SaveAllChanges(),
+                         new Command() {
 
-        Menu layoutMenu = new Menu();
-        showMetadata.addListener( refresh );
-        layoutMenu.addItem( showMetadata );
-        showDescription.addListener( refresh );
-        layoutMenu.addItem( showDescription );
-        ToolbarMenuButton layout = new ToolbarMenuButton( constants.Show(),
-                                                          layoutMenu );
-        toolbar.addButton( layout );
+                             public void execute() {
+                                 checkin( false );
+                             }
+                         } );
+        toolbar.addItem( constants.SaveAndCloseAll(),
+                         new Command() {
+
+                             public void execute() {
+                                 checkin( true );
+                             }
+                         } );
 
         return toolbar;
     }
@@ -134,63 +122,75 @@ public class MultiViewEditor extends GuvnorEditor {
 
         viewsPanel.clear();
         ruleViews.clear();
+        final LazyStackPanel panel = new LazyStackPanel();
 
         for ( final MultiViewRow row : rows ) {
-            Panel panel = new Panel( row.name );
-            panel.setIconCls( EditorLauncher.getAssetFormatBGStyle( row.format ) ); //NON-NLS
-            panel.setCollapsible( true );
-            panel.setTitleCollapse( true );
-            panel.setCollapsed( true );
-            panel.setWidth( "100%" );
+            //            panel.add( row.name );
+            //            panel.setIconCls( EditorLauncher.getAssetFormatBGStyle( row.format ) ); //NON-NLS
+            //            panel.setCollapsible( true );
+            //            panel.setTitleCollapse( true );
+            //            panel.setCollapsed( true );
+            //            panel.setWidth( "100%" );
 
-            panel.addListener( new PanelListenerAdapter() {
-                public void onExpand(final Panel panel) {
+            //            panel.addListener( new PanelListenerAdapter() {
+            //                public void onExpand(final Panel panel) {
 
-                    // Only load if it doesn't exist yet.
-                    if ( ruleViews.get( row.uuid ) == null ) {
+            panel.add( row.name,
+                       new LoadContentCommand() {
 
-                        RepositoryServiceFactory.getService().loadRuleAsset( row.uuid,
-                                                                             new GenericCallback<RuleAsset>() {
-                                                                                 public void onSuccess(final RuleAsset asset) {
-                                                                                     SuggestionCompletionCache.getInstance().doAction( asset.metaData.packageName,
-                                                                                                                                       new Command() {
-                                                                                                                                           public void execute() {
+                           public Widget load() {
+                               final SimplePanel content = new SimplePanel();
+                               RepositoryServiceFactory.getService().loadRuleAsset( row.uuid,
+                                                                                    new GenericCallback<RuleAsset>() {
+                                                                                        public void onSuccess(final RuleAsset asset) {
+                                                                                            SuggestionCompletionCache.getInstance().doAction( asset.metaData.packageName,
+                                                                                                                                              new Command() {
+                                                                                                                                                  public void execute() {
 
-                                                                                                                                               final RuleViewer ruleViewer = new RuleViewer( asset,
-                                                                                                                                                                                             editItemEvent );
-                                                                                                                                               ruleViewer.setDocoVisible( showDescription.isChecked() );
-                                                                                                                                               ruleViewer.setMetaVisible( showMetadata.isChecked() );
+                                                                                                                                                      final RuleViewer ruleViewer = new RuleViewer( asset,
+                                                                                                                                                                                                    editItemEvent );
+                                                                                                                                                      ruleViewer.setDocoVisible( showDescription );
+                                                                                                                                                      ruleViewer.setMetaVisible( showMetadata );
 
-                                                                                                                                               ruleViewer.setWidth( "100%" );
+                                                                                                                                                      content.add( ruleViewer );
 
-                                                                                                                                               panel.add( ruleViewer );
-                                                                                                                                               ruleViewer.setCloseCommand( new Command() {
+                                                                                                                                                      ruleViewer.setWidth( "100%" );
 
-                                                                                                                                                   public void execute() {
-                                                                                                                                                       ruleViews.remove( ruleViewer );
-                                                                                                                                                       rows.remove( row );
-                                                                                                                                                       doViews();
-                                                                                                                                                   }
-                                                                                                                                               } );
+                                                                                                                                                      ruleViewer.setCloseCommand( new Command() {
 
-                                                                                                                                               ruleViews.put( row.uuid,
-                                                                                                                                                              ruleViewer );
+                                                                                                                                                          public void execute() {
+                                                                                                                                                              ruleViews.remove( ruleViewer );
+                                                                                                                                                              rows.remove( row );
+                                                                                                                                                              doViews();
+                                                                                                                                                          }
+                                                                                                                                                      } );
 
-                                                                                                                                               panel.doLayout();
-                                                                                                                                           }
-                                                                                                                                       } );
-                                                                                 }
-                                                                             } );
-                    } else {
-                        panel.add( ruleViews.get( row.uuid ) );
-                        panel.doLayout();
-                    }
-                }
+                                                                                                                                                      ruleViews.put( row.uuid,
+                                                                                                                                                                     ruleViewer );
 
-            } );
+                                                                                                                                                  }
+                                                                                                                                              } );
+                                                                                        }
+                                                                                    } );
 
-            viewsPanel.add( panel );
+                               return content;
+                           }
+                       } );
+
+            // Only load if it doesn't exist yet.
+            //            if ( ruleViews.get( row.uuid ) == null ) {
+            //
+            //            } else {
+            //                panel.add( ruleViews.get( row.uuid ) );
+            //                //                        panel.doLayout();
+            //            }
+            //            //                }
+            //
+            //            //            } );
+            //
         }
+
+        viewsPanel.add( panel );
 
     }
 
