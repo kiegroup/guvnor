@@ -223,8 +223,9 @@ public class RuleViewer extends GuvnorEditor {
         VerticalPanel vert = new VerticalPanel();
         vert.setWidth( "100%" );
         vert.setHeight( "100%" );
-
+        
         vert.add( editor );
+        vert.setCellHeight( editor, "100%" );
         hsp.add( vert );
 
         //hsp.addStyleName("HorizontalSplitPanel");

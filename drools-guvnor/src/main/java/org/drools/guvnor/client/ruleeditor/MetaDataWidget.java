@@ -70,6 +70,7 @@ public class MetaDataWidget extends Composite {
 
         super();
 
+        layout.setWidth( "100%" );
         this.metaDataRefreshView = metaDataRefreshView;
         this.fullRefreshView = fullRefreshView;
 
@@ -97,7 +98,6 @@ public class MetaDataWidget extends Composite {
         }
 
         initWidget( layout );
-
     }
 
     private void render(MetaData d,
