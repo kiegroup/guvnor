@@ -27,22 +27,23 @@ import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.widgets.form.FormPanel;
-import com.gwtext.client.widgets.form.event.FormPanelListener;
-import com.gwtext.client.widgets.form.event.FormPanelListenerAdapter;
+
 
 /**
  * This displays the metadata for a versionable asset.
@@ -81,12 +82,10 @@ public class MetaDataWidget extends Composite {
             
         } else {
             Button show = new Button( constants.showMoreInfo() );
-            show.addClickListener( new ClickListener() {
-                public void onClick(Widget sender) {
+            show.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent sender) {
                     layout.clear();
-                    render( d,
-                            readOnly,
-                            uuid );
+                    render(d, readOnly, uuid);
                 }
             } );
 
@@ -115,8 +114,8 @@ public class MetaDataWidget extends Composite {
         if ( !readOnly ) {
             Image edit = new ImageButton( "images/edit.gif", //NON-NLS
                                           constants.RenameThisAsset() );
-            edit.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
+            edit.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent w) {
                     showRenameAsset( w );
                 }
             } );
@@ -271,12 +270,14 @@ public class MetaDataWidget extends Composite {
     }
 
     private void endSection(boolean collapsed) {
-        FormPanel config = new FormPanel();
-        config.setTitle( currentSectionName );
-        config.setCollapsible( true );
-        config.setCollapsed( collapsed );
-        config.add( this.currentSection );
-        layout.add( config );
+        DisclosurePanel advancedDisclosure = new DisclosurePanel(
+        		currentSectionName);
+        advancedDisclosure.setAnimationEnabled(true);
+        advancedDisclosure.addStyleName("my-DisclosurePanel");
+        advancedDisclosure.setWidth("100%");
+        advancedDisclosure.setOpen(collapsed);
+        advancedDisclosure.setContent(this.currentSection);
+        layout.add(advancedDisclosure);
     }
 
     private void startSection(String name) {
@@ -292,8 +293,8 @@ public class MetaDataWidget extends Composite {
             horiz.setStyleName( "metadata-Widget" ); //NON-NLS
             horiz.add( readOnlyText( packageName ) );
             Image editPackage = new ImageButton( "images/edit.gif" ); //NON-NLS
-            editPackage.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
+            editPackage.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent w) {
                     showEditPackage( packageName,
                                      w );
                 }
@@ -303,8 +304,8 @@ public class MetaDataWidget extends Composite {
         }
     }
 
-    private void showRenameAsset(Widget source) {
-        final FormStylePopup pop = new FormStylePopup( "images/package_large.png", //NON-NLS
+    private void showRenameAsset(ClickEvent source) {
+        final FormStylePopup pop = new FormStylePopup( "images/package_large.png", 
                                                        constants.RenameThisItem() );
         final TextBox box = new TextBox();
         box.setText( data.name );
@@ -313,8 +314,8 @@ public class MetaDataWidget extends Composite {
         Button ok = new Button( constants.RenameItem() );
         pop.addAttribute( "",
                           ok );
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
                 RepositoryServiceFactory.getService().renameAsset( uuid,
                                                                    box.getText(),
                                                                    new GenericCallback() {
@@ -331,7 +332,7 @@ public class MetaDataWidget extends Composite {
     }
 
     private void showEditPackage(final String pkg,
-                                 Widget source) {
+    		ClickEvent source) {
         final FormStylePopup pop = new FormStylePopup( "images/package_large.png", //NON-NLS
                                                        constants.MoveThisItemToAnotherPackage() );
         pop.addAttribute( constants.CurrentPackage(),
@@ -342,9 +343,9 @@ public class MetaDataWidget extends Composite {
         Button ok = new Button( constants.ChangePackage() );
         pop.addAttribute( "",
                           ok );
-        ok.addClickListener( new ClickListener() {
+        ok.addClickHandler( new ClickHandler() {
 
-            public void onClick(Widget w) {
+            public void onClick(ClickEvent w) {
                 if ( sel.getSelectedPackage().equals( pkg ) ) {
                     Window.alert( constants.YouNeedToPickADifferentPackageToMoveThisTo() );
                     return;
@@ -405,12 +406,12 @@ public class MetaDataWidget extends Composite {
             box.setTitle( toolTip );
             box.setText( bind.getValue() );
             box.setVisibleLength( 10 );
-            ChangeListener listener = new ChangeListener() {
-                public void onChange(Widget w) {
+            ChangeHandler listener = new ChangeHandler() {
+                public void onChange(ChangeEvent w) {
                     bind.setValue( box.getText() );
                 }
             };
-            box.addChangeListener( listener );
+            box.addChangeHandler( listener );
             return box;
         } else {
             return new Label( bind.getValue() );
@@ -429,19 +430,19 @@ public class MetaDataWidget extends Composite {
         if ( !readOnly ) {
             final CheckBox box = new CheckBox();
             box.setTitle( toolTip );
-            box.setChecked( bind.getValue() );
-            ClickListener listener = new ClickListener() {
-                public void onClick(Widget w) {
-                    boolean b = box.isChecked();
+            box.setEnabled( bind.getValue() );
+            ClickHandler listener = new ClickHandler() {
+                public void onClick(ClickEvent w) {
+                    boolean b = box.isEnabled();
                     bind.setValue( b );
                 }
             };
-            box.addClickListener( listener );
+            box.addClickHandler( listener );
             return box;
         } else {
             final CheckBox box = new CheckBox();
 
-            box.setChecked( bind.getValue() );
+            box.setEnabled( bind.getValue() );
             box.setEnabled( false );
 
             return box;
