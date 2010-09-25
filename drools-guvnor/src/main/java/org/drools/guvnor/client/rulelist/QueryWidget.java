@@ -193,7 +193,6 @@ public class QueryWidget extends Composite {
         fm.addRow( resultsP );
         advancedDisclosure.setContent(fm);
         
-        //p.add( fm );
         layout.add(advancedDisclosure);
     }
 
@@ -217,12 +216,6 @@ public class QueryWidget extends Composite {
         advancedDisclosure.addStyleName("my-DisclosurePanel");
         advancedDisclosure.setWidth("100%");        
         advancedDisclosure.setOpen(true);
-            
-/*        Panel p = new Panel();
-        p.setCollapsible( true );
-        p.setTitle( constants.TextSearch() );
-
-        p.setCollapsed( true );*/
 
         FormStyleLayout ts = new FormStyleLayout();
         final TextBox tx = new TextBox();
@@ -234,7 +227,6 @@ public class QueryWidget extends Composite {
                          go );
         ts.setWidth( "100%" );
         advancedDisclosure.setContent(ts);
-
         
         final SimplePanel resultsP = new SimplePanel();
         final ClickHandler cl = new ClickHandler() {

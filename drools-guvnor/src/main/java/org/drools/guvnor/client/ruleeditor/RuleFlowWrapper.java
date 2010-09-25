@@ -27,16 +27,15 @@ import org.drools.guvnor.client.explorer.Preferences;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 
 /**
  * 
@@ -50,7 +49,7 @@ public class RuleFlowWrapper extends Composite implements SaveEventListener {
 	private RuleAsset asset;
 
 	private RuleFlowViewer ruleFlowViewer;
-	private Panel parameterPanel;
+	private DisclosurePanel parameterPanel;
 	private Constants constants = ((Constants) GWT.create(Constants.class));
 
 	public RuleFlowWrapper(final RuleAsset asset, final RuleViewer viewer) {
@@ -71,23 +70,17 @@ public class RuleFlowWrapper extends Composite implements SaveEventListener {
 			initRuleflowViewer();
 
 			if (ruleFlowViewer != null && parameterPanel != null) {
-				Toolbar tb = new Toolbar();
-
-				ToolbarButton viewSource = new ToolbarButton();
+				Button viewSource = new Button();
 				viewSource.setText(constants.OpenEditorInNewWindow());
-				viewSource.addListener(new ButtonListenerAdapter() {
-					public void onClick(
-							com.gwtext.client.widgets.Button button,
-							EventObject e) {
+				viewSource.addClickHandler(new ClickHandler() {
+					public void onClick(ClickEvent arg0) {
 						doViewDiagram();
 
 						ruleFlowViewer.update();
 					}
 				});
 
-				tb.addButton(viewSource);
-				panel.add(tb);
-
+				panel.add(viewSource);
 			}
 		}
 
@@ -121,17 +114,19 @@ public class RuleFlowWrapper extends Composite implements SaveEventListener {
 
 		if (rfcm != null && rfcm.getXml() != null && rfcm.getNodes() != null) {
 			try {
-
-				parameterPanel = new Panel();
-				parameterPanel.setCollapsible(true);
-				parameterPanel.setTitle(constants.Parameters());
+				parameterPanel = new DisclosurePanel(
+						constants.Parameters());
+				parameterPanel.setAnimationEnabled(true);
+				parameterPanel.ensureDebugId("cwDisclosurePanel");
+				parameterPanel.addStyleName("my-DisclosurePanel");
+				parameterPanel.setWidth("100%");
+				parameterPanel.setOpen(false);
 
 				FormStyleLayout parametersForm = new FormStyleLayout();
-				parametersForm.setHeight("120px"); // NON-NLS
-				parameterPanel.add(parametersForm);
+				parametersForm.setHeight("120px"); 
+				parameterPanel.setContent(parametersForm);
 
 				ruleFlowViewer = new RuleFlowViewer(rfcm, parametersForm);
-
 			} catch (Exception e) {
 				Window.alert(e.toString());
 			}
