@@ -23,13 +23,13 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
+
 
 public class BPELWrapper extends Composite {
 
@@ -49,9 +49,7 @@ public class BPELWrapper extends Composite {
 		VerticalPanel panel = new VerticalPanel();
 		panel.add(uploadWidget);
 
-		Toolbar tb = new Toolbar();
-
-		ToolbarButton viewSource = new ToolbarButton();
+		Button viewSource = new Button();
 		viewSource.setText(constants.OpenEditorInNewWindow());
 
 		final String url = Format
@@ -59,18 +57,12 @@ public class BPELWrapper extends Composite {
 						"bpeleditor/BPELEditor.html?uuid={0}&fileName={1}&dirName={2}&servletName={3}&isNew={4}",
 						new String[] { uuid, fileName, dirName, servletName,
 								isNew });
-
-		viewSource.addListener(new ButtonListenerAdapter() {
-			public void onClick(com.gwtext.client.widgets.Button button,
-					EventObject e) {
-
-				Window.open(url, "_" + fileName, null);
-
-			}
+		viewSource.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent arg0) {
+				Window.open(url, "_" + fileName, null);			}
 		});
 
-		tb.addButton(viewSource);
-		panel.add(tb);
+		panel.add(viewSource);
 
 		initWidget(panel);
 
@@ -78,6 +70,6 @@ public class BPELWrapper extends Composite {
 	}
 
 	public String getOverallStyleName() {
-		return "decision-Table-upload"; // NON-NLS
+		return "decision-Table-upload";
 	}
 }
