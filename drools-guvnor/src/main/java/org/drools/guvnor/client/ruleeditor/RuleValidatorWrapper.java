@@ -31,21 +31,14 @@ package org.drools.guvnor.client.ruleeditor;
  * limitations under the License.
  */
 
-
-
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
-import org.drools.guvnor.client.security.Capabilities;
 
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -54,11 +47,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
-
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 
 /**
  * This widget wraps a rule asset widget, and provides actions to validate and view source.
@@ -77,17 +65,19 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
         this.editor = editor;
 
         layout.add(editor);
-        if (!asset.isreadonly) {
+/*        if (!asset.isreadonly) {
         	validatorActions();
-        }
+        }*/
 
         layout.setWidth("100%");
         layout.setHeight( "100%" );
 
         initWidget( layout );
     }
-
-    private void validatorActions() {
+    
+    
+//This is duplicate to ActionToolbar    
+/*    private void validatorActions() {
         Toolbar tb = new Toolbar();
 
         layout.setCellHeight(editor, "95%");
@@ -145,7 +135,8 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
         PackageBuilderWidget.showSource( src, this.asset.metaData.name );
         LoadingPopup.close();
     }
-
+    */
+    
     /**
      * This will show a popup of error messages in compilation.
      */
@@ -198,7 +189,4 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
 			el.onAfterSave();
 		}
 	}
-
-
-
 }
