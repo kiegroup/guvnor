@@ -381,9 +381,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 FactPattern f = model.getBoundFact(var);
                 String fieldConstraint = model.getBindingType(var);
 
-                if ((f != null && f.factType != null && this.fieldType != null)
-                        && (f.factType.equals(this.fieldType)
-                        || this.fieldType.equals(fieldConstraint))) {
+                if ((f != null && f.factType != null && f.factType.equals(this.fieldType))
+                        || (this.fieldType != null && this.fieldType.equals(fieldConstraint))) {
                     foundABouncVariableThatMatches = true;
                     break;
                 } else {
