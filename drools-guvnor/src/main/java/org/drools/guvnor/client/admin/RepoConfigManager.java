@@ -27,11 +27,12 @@ import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -95,8 +96,8 @@ public class RepoConfigManager extends Composite {
         idock.add(repoDisplayArea, DockPanel.WEST);
 
         final Button saveButton = new Button(constants.SaveRepo());
-        saveButton.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        saveButton.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
             	String name = rdbmsConf.getDbType() + "-repository";
         		if(rdbmsConf.isJndi()) name += "-jndi";
         		hiddenRepoConfig.setValue(repoDisplayArea.getText());
@@ -213,11 +214,11 @@ public class RepoConfigManager extends Composite {
         layoutA.setHTML(2, 0, constants.UseJndi());
         
         final CheckBox useJndi = new CheckBox();
-        useJndi.setChecked(rdbmsConf.isJndi());
-        useJndi.addClickListener(new ClickListener() {
-            public void onClick(Widget w) {
-            	rdbmsConf.setJndi(useJndi.isChecked());
-            	if(useJndi.isChecked()) {
+        useJndi.setEnabled(rdbmsConf.isJndi());
+        useJndi.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent w) {
+            	rdbmsConf.setJndi(useJndi.isEnabled());
+            	if(useJndi.isEnabled()) {
             		noJndiInfo.setVisible(false);
             	    jndiInfo.setVisible(true);
             	} else {
@@ -231,13 +232,13 @@ public class RepoConfigManager extends Composite {
         layoutA.setWidget(2, 1, useJndi);
         
         Button continueButton = new  Button("Continue");
-        continueButton.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        continueButton.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
             	if ( databaseList.getSelectedIndex() == 0) {
                     Window.alert(constants.PleaseSelectRdbmsType());
                     return;
                 }
-            	if(!useJndi.isChecked()) {
+            	if(!useJndi.isEnabled()) {
             	    jndiInfo.setVisible(false);
             	}
             	vPanel2.setVisible(true);
@@ -264,8 +265,8 @@ public class RepoConfigManager extends Composite {
         if(rdbmsConf.getDbDriver() != null && rdbmsConf.getDbDriver().trim().length() > 0) {
         	driverInput.setValue(rdbmsConf.getDbDriver());    
         }
-        driverInput.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        driverInput.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
             	repoDisplayArea.setVisible(false);
             	saveRepoConfigForm.setVisible(false);
             }
@@ -277,8 +278,8 @@ public class RepoConfigManager extends Composite {
         if(rdbmsConf.getDbUrl() != null && rdbmsConf.getDbUrl().trim().length() > 0) {
         	urlInput.setValue(rdbmsConf.getDbUrl());    
         }
-        urlInput.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        urlInput.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
             	repoDisplayArea.setVisible(false);
             	saveRepoConfigForm.setVisible(false);
             }
@@ -290,8 +291,8 @@ public class RepoConfigManager extends Composite {
         if(rdbmsConf.getDbUser() != null && rdbmsConf.getDbUser().trim().length() > 0) {
         	userNameInput.setValue(rdbmsConf.getDbUser());    
         }
-        userNameInput.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        userNameInput.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
             	repoDisplayArea.setVisible(false);
             	saveRepoConfigForm.setVisible(false);
             }
@@ -303,8 +304,8 @@ public class RepoConfigManager extends Composite {
         if(rdbmsConf.getDbPass() != null && rdbmsConf.getDbPass().trim().length() > 0) {
         	userPassInput.setValue(rdbmsConf.getDbPass());    
         }
-        userPassInput.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        userPassInput.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
             	repoDisplayArea.setVisible(false);
             	saveRepoConfigForm.setVisible(false);
             }
@@ -312,8 +313,8 @@ public class RepoConfigManager extends Composite {
         layoutB.setWidget(4, 1, userPassInput);
 	    
 	    Button generateButton = new  Button(constants.GenerateRepositoryConfiguration());
-        generateButton.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        generateButton.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
             		if ( driverInput.getValue() == null || driverInput.getValue().trim().length() < 1 ) {
             			Window.alert(constants.PleaseEnterDriver());
             			return;
@@ -355,8 +356,8 @@ public class RepoConfigManager extends Composite {
         if(rdbmsConf.getJndiDsName() != null && rdbmsConf.getJndiDsName().trim().length() > 0) {
         	jndiNameInput.setValue(rdbmsConf.getJndiDsName());    
         }
-        jndiNameInput.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        jndiNameInput.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
             	repoDisplayArea.setVisible(false);
             	saveRepoConfigForm.setVisible(false);
             }
@@ -364,8 +365,8 @@ public class RepoConfigManager extends Composite {
         layoutC.setWidget(1, 1, jndiNameInput);
 	    
 	    Button generateButton = new  Button(constants.GenerateRepositoryConfiguration());
-        generateButton.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        generateButton.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
             		if ( jndiNameInput.getValue() == null || jndiNameInput.getValue().trim().length() < 1 ) {
             			Window.alert(constants.PleaseEnterJndiName());
             			return;

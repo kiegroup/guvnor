@@ -24,6 +24,7 @@ import org.drools.guvnor.client.admin.BackupManager;
 import org.drools.guvnor.client.admin.CategoryManager;
 import org.drools.guvnor.client.admin.LogViewer;
 import org.drools.guvnor.client.admin.PermissionViewer;
+import org.drools.guvnor.client.admin.RepoConfigManager;
 import org.drools.guvnor.client.admin.StateManager;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
@@ -116,6 +117,11 @@ public class AdministrationTree extends AbstractTree {
 						"ruleVerifierManager");
             }
             break;
+        case 8:
+      	  if (!centertabbedPanel.showIfOpen("repoconfig")) //NON-NLS
+          	   centertabbedPanel.addTab(constants.RepositoryConfig(), 
+          	   new RepoConfigManager(), "repoconfig");
+        break;            
 		}
     }
 }

@@ -188,6 +188,7 @@ public class ExplorerNodeConfig {
                 { constants.UserPermission(), images.icoUsers(), "5" },
 				{ constants.ImportExport(), images.saveEdit(), "3" },
 				{ constants.RulesVerification(), images.ruleVerification(), "7" },
+		        { constants.RepositoryConfiguration(), images.config(), "8"},
 				{ constants.About(), images.information(), "6" }};
 
         for ( int i = 0; i < adminStructure.length; i++ ) {
