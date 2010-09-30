@@ -96,12 +96,12 @@ public class ExplorerNodeConfig {
         if ( Preferences.getBooleanPref( "flex-bpel-editor" ) ) {
             item = new TreeItem(Util.getHeader(images.ruleflowSmall(), constants.RuleFlows()));
             itemWidgets.put(item, AssetFormats.RULE_FLOW_RF);
-            item.setUserObject(new String[]{AssetFormats.RULE_FLOW_RF});
+            item.setUserObject(new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN2_PROCESS, AssetFormats.BPEL_PACKAGE});
             pkg.addItem(item);
         } else {
             item = new TreeItem(Util.getHeader(images.ruleflowSmall(), constants.RuleFlows()));
             itemWidgets.put(item, AssetFormats.RULE_FLOW_RF);
-            item.setUserObject(new String[]{AssetFormats.RULE_FLOW_RF});
+            item.setUserObject(new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN2_PROCESS});
             pkg.addItem(item);
             
         }
