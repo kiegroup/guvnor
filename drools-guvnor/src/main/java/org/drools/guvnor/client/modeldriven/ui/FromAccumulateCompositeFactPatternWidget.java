@@ -36,10 +36,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.TabPanel;
 
 /**
  *
@@ -144,6 +144,8 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 							}));
 		}
 
+        //REVISIT: Nested TabLayoutPanel does not work, its content is truncated. 
+        //TabLayoutPanel tPanel = new TabLayoutPanel(2, Unit.EM);
         TabPanel tPanel = new TabPanel();
 
         DirtyableFlexTable codeTable = new DirtyableFlexTable();
@@ -176,14 +178,12 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
 
         //panel.setWidget(r++, 0, codeTable);
-        Panel codePanel = new Panel();
-        codePanel.setAutoWidth(true);
-        codePanel.setClosable(false);
-        codePanel.setTitle("Custom Code");
-        codePanel.setAutoHeight(true);
+        ScrollPanel codePanel = new ScrollPanel();
         codePanel.add(codeTable);
-        codePanel.setDisabled(this.readOnly);
-        tPanel.add(codePanel);
+        //TODO:
+        //codePanel.setDisabled(this.readOnly);
+        
+        tPanel.add(codePanel,"Custom Code");
 
         DirtyableFlexTable functionTable = new DirtyableFlexTable();
 
@@ -195,14 +195,11 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
 //        panel.setWidget(r++, 0, functionTable);
 
-        Panel functionPanel = new Panel();
-        functionPanel.setAutoWidth(true);
-        functionPanel.setClosable(false);
-        functionPanel.setTitle("Function");
-        functionPanel.setAutoHeight(true);
+        ScrollPanel functionPanel = new ScrollPanel();
         functionPanel.add(functionTable);
-        functionPanel.setDisabled(this.readOnly);
-        tPanel.add(functionPanel);
+        //TODO:
+        //functionPanel.setDisabled(this.readOnly);
+        tPanel.add(functionPanel,"Function");
         ChangeHandler changehandler = new ChangeHandler() {
 			
 			public void onChange(ChangeEvent event) {
@@ -246,13 +243,13 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         boolean useFunction = getFromAccumulatePattern().useFunctionOrCode().equals(FromAccumulateCompositeFactPattern.USE_FUNCTION);
         
-        tPanel.setActiveTab(useFunction?1:0);
+        tPanel.selectTab(useFunction?1:0);
+        
+        //tPanel.setBorder(false);
+        //tPanel.setBodyBorder(false);
+        //tPanel.setWidth(200);
 
-        tPanel.setBorder(false);
-        tPanel.setBodyBorder(false);
-        tPanel.setWidth(200);
-
-        tPanel.setDisabled(this.readOnly);
+        //tPanel.setDisabled(this.readOnly);
 
 //        functionTable.setVisible(useFunction);
 //        codeTable.setVisible(!useFunction);
