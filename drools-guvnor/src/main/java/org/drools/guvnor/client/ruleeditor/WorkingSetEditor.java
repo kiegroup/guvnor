@@ -31,17 +31,17 @@ import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.factconstraints.client.helper.CustomFormsContainer;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TabPanel;
 
-import com.gwtext.client.widgets.Component;
-import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.TabPanel;
-import com.gwtext.client.widgets.event.PanelListenerAdapter;
 
 public class WorkingSetEditor extends Composite {
 
@@ -71,45 +71,43 @@ public class WorkingSetEditor extends Composite {
         WorkingSetConfigData wsData = (WorkingSetConfigData) workingSet.content;
 
         TabPanel tPanel = new TabPanel();
-        tPanel.setWidth(800);
-        Panel pnl = new Panel();
+        //tPanel.setWidth(800);
+        ScrollPanel pnl = new ScrollPanel();
 //        pnl.setAutoWidth(true);
-        pnl.setClosable(false);
+        //pnl.setClosable(false);
         pnl.setTitle("WS Definition"); //TODO {bauna} i18n
 //        pnl.setAutoHeight(true);
         pnl.add(buildDoubleList(wsData));
-        tPanel.add(pnl);
+        tPanel.add(pnl, "WS Definition");
 
-        pnl = new Panel();
+        pnl = new ScrollPanel();
 //        pnl.setAutoWidth(true);
-        pnl.setClosable(false);
-        pnl.setTitle("WS Constraints"); //TODO {bauna} i18n
+        //pnl.setClosable(false);
+        //pnl.setTitle("WS Constraints"); //TODO {bauna} i18n
 //        pnl.setAutoHeight(true);
         this.factsConstraintsgEditorPanel = new FactsConstraintsEditorPanel(this);
         pnl.add(this.factsConstraintsgEditorPanel);
-        tPanel.add(pnl);
+        tPanel.add(pnl, "WS Constraints");
 
-        pnl = new Panel();
+        pnl = new ScrollPanel();
 //        pnl.setAutoWidth(true);
-        pnl.setClosable(false);
+        //pnl.setClosable(false);
         pnl.setTitle("WS Custom Forms"); //TODO {bauna} i18n
 //        pnl.setAutoHeight(true);
         this.customFormsEditorPanel = new CustomFormsEditorPanel(this);
         pnl.add(this.customFormsEditorPanel);
-        tPanel.add(pnl);
+        tPanel.add(pnl, "WS Custom Forms");
+        tPanel.addBeforeSelectionHandler(new BeforeSelectionHandler<java.lang.Integer>() {
 
-        tPanel.addListener(new PanelListenerAdapter() {
-            @Override
-            public boolean doBeforeShow(Component component) {
+			public void onBeforeSelection(BeforeSelectionEvent<java.lang.Integer> arg0) {
                 factsConstraintsgEditorPanel.fillSelectedFacts();
                 customFormsEditorPanel.fillSelectedFacts();
-                return true;
             }
+        	
         });
 
 
-
-        tPanel.setActiveTab(0);
+        tPanel.selectTab(0);
         initWidget(tPanel);
     }
 
@@ -141,9 +139,9 @@ public class WorkingSetEditor extends Composite {
 
             Grid btnsPanel = new Grid(2, 1);
 
-            btnsPanel.setWidget(0, 0, new Button(">", new ClickListener() {
+            btnsPanel.setWidget(0, 0, new Button(">", new ClickHandler() {
 
-                public void onClick(Widget sender) {
+                public void onClick(ClickEvent sender) {
                     copySelected(availFacts, validFacts);
                     updateAsset(validFacts);
                     factsConstraintsgEditorPanel.fillSelectedFacts();
@@ -151,9 +149,9 @@ public class WorkingSetEditor extends Composite {
                 }
             }));
 
-            btnsPanel.setWidget(1, 0, new Button("&lt;", new ClickListener() {
+            btnsPanel.setWidget(1, 0, new Button("&lt;", new ClickHandler() {
 
-                public void onClick(Widget sender) {
+                public void onClick(ClickEvent sender) {
                     copySelected(validFacts, availFacts);
                     updateAsset(validFacts);
                     factsConstraintsgEditorPanel.fillSelectedFacts();
