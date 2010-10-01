@@ -20,23 +20,24 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.widgets.Button;
-import com.gwtext.client.widgets.Window;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import com.gwtext.client.widgets.event.WindowListenerAdapter;
-import com.gwtext.client.widgets.layout.VerticalLayout;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Generic error dialog popup.
  */
-public class ErrorPopup {
+public class ErrorPopup extends Popup {
 
     public static ErrorPopup instance  = null;
     private Constants        constants = ((Constants) GWT.create( Constants.class ));
@@ -45,36 +46,35 @@ public class ErrorPopup {
     private ErrorPopup(String message,
                        String longMessage) {
 
-        Window w = new Window();
-        w.setTitle( constants.Error() );
-        w.setWidth( 400 );
-        w.setModal( true );
-        w.setShadow( true );
-        w.setClosable( true );
-        w.setPlain( true );
+        setTitle( constants.Error() );
+        setWidth( 400 + "px" );
+        setModal( true );
 
-        w.setLayout( new VerticalLayout() );
         body = new VerticalPanel();
 
         addMessage( message,
                     longMessage );
 
         body.setWidth( "100%" );
-        w.add( body );
 
-        w.show();
+        show();
 
-        w.addListener( new WindowListenerAdapter() {
-            @Override
-            public void onDeactivate(Window window) {
+        addCloseHandler( new CloseHandler<PopupPanel>() {
+
+            public void onClose(CloseEvent<PopupPanel> event) {
                 instance = null;
             }
         } );
-
     }
 
-    private void addMessage(String message, String longMessage) {
-        if (message!=null && message.contains("ItemExistsException")) {    //NON-NLS
+    @Override
+    public Widget getContent() {
+        return body;
+    }
+
+    private void addMessage(String message,
+                            String longMessage) {
+        if ( message != null && message.contains( "ItemExistsException" ) ) { //NON-NLS
             longMessage = message;
             message = constants.SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother();
 
@@ -92,9 +92,9 @@ public class ErrorPopup {
         final SimplePanel detailPanel = new SimplePanel();
         if ( longMessage != null && !"".equals( longMessage ) ) {
             Button showD = new Button( constants.ShowDetail() );
-            showD.addListener( new ButtonListenerAdapter() {
-                public void onClick(Button button,
-                                    EventObject e) {
+            showD.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
                     detailPanel.clear();
                     VerticalPanel vp = new VerticalPanel();
                     vp.add( new HTML( "<hr/>" ) );

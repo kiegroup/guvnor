@@ -57,163 +57,188 @@ import com.gwtext.client.widgets.menu.Item;
 import com.gwtext.client.widgets.menu.Menu;
 import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
 
-public class RuleTemplateEditor extends DirtyableComposite implements RuleModelEditor {
+public class RuleTemplateEditor extends DirtyableComposite
+    implements
+    RuleModelEditor {
 
-	private TemplateModel model;
-	private GroupingStore store = null;
-	private EditorGridPanel grid = null;
-	private RuleModeller ruleModeller;
-	private Constants constants = ((Constants) GWT.create(Constants.class));
-	
-	public RuleTemplateEditor(RuleAsset asset) {
-		model = (TemplateModel) asset.content;
+    private TemplateModel   model;
+    private GroupingStore   store     = null;
+    private EditorGridPanel grid      = null;
+    private RuleModeller    ruleModeller;
+    private Constants       constants = ((Constants) GWT.create( Constants.class ));
 
-		final VerticalPanel tPanel = new VerticalPanel();
-		tPanel.setWidth("100%");
-		ruleModeller = new RuleModeller(asset, new TemplateModellerWidgetFactory());
-		
-		tPanel.add(new Button(constants.LoadTemplateData(), new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
-				final FormStylePopup popUp = new FormStylePopup(null, constants.TemplateData(), (int) (Window.getClientWidth() * 0.8) );
-				popUp.setHeight((int) (Window.getClientHeight() * 0.8));
-				popUp.addAttribute("", buildTemplateTable());
-				Button close = new Button(constants.Close(), new ClickHandler() {
-					public void onClick(ClickEvent event) {
-						popUp.hide();
-					}
-				});
-				HorizontalPanel pnlClose = new HorizontalPanel();
-				pnlClose.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-				pnlClose.add(close);
-				popUp.addAttribute("", pnlClose);
-				
-				popUp.show();
-			}
-		}));
-		tPanel.add(ruleModeller);
-		initWidget(tPanel);
-	}
+    public RuleTemplateEditor(RuleAsset asset) {
+        model = (TemplateModel) asset.content;
 
-	private Widget buildTemplateTable() {
+        final VerticalPanel tPanel = new VerticalPanel();
+        tPanel.setWidth( "100%" );
+        ruleModeller = new RuleModeller( asset,
+                                         new TemplateModellerWidgetFactory() );
 
-		String[] vars = model.getInterpolationVariablesList();
-		if (vars.length == 0) {
-			return new Label("");
-		}
+        tPanel.add( new Button( constants.LoadTemplateData(),
+                                new ClickHandler() {
 
-		FieldDef[] fds = new FieldDef[vars.length];
-		ColumnConfig[] cols = new ColumnConfig[fds.length];
+                                    public void onClick(ClickEvent event) {
+                                        final FormStylePopup popUp = new FormStylePopup( null,
+                                                                                         constants.TemplateData(),
+                                                                                         (int) (Window.getClientWidth() * 0.8) );
+                                        popUp.setHeight( ((int) (Window.getClientHeight() * 0.8)) + "px" );
+                                        popUp.addAttribute( "",
+                                                            buildTemplateTable() );
+                                        Button close = new Button( constants.Close(),
+                                                                   new ClickHandler() {
+                                                                       public void onClick(ClickEvent event) {
+                                                                           popUp.hide();
+                                                                       }
+                                                                   } );
+                                        HorizontalPanel pnlClose = new HorizontalPanel();
+                                        pnlClose.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_RIGHT );
+                                        pnlClose.add( close );
+                                        popUp.addAttribute( "",
+                                                            pnlClose );
 
-		int idx = 0;
-		for (String var: vars) {
-			cols[idx] = new ColumnConfig();
-			cols[idx].setHeader(var);
-			cols[idx].setDataIndex(var);
-			cols[idx].setSortable(false);
-			cols[idx].setWidth(50);
-			cols[idx].setResizable(true);
-			cols[idx].setEditor(new GridEditor(new TextField()));
-			fds[idx] = new StringFieldDef(var);
-			idx++;
-		}
-		final RecordDef recordDef = new RecordDef(fds);
-		ArrayReader reader = new ArrayReader(recordDef);
-		
-		MemoryProxy proxy = new MemoryProxy(model.getTableAsArray());
+                                        popUp.show();
+                                    }
+                                } ) );
+        tPanel.add( ruleModeller );
+        initWidget( tPanel );
+    }
 
-		ColumnModel cm = new ColumnModel(cols);
-		
-		for (int i = 0; i < cm.getColumnCount(); i++) {
-			cm.setEditable(i, true);
-		}
-		store = new GroupingStore(proxy, reader);
-		store.load();
-		grid = new EditorGridPanel(store, cm);
-		grid.setStripeRows(true);
+    private Widget buildTemplateTable() {
 
-//		GroupingView gv = new GroupingView();
-		GridView gv = new GridView(); 
+        String[] vars = model.getInterpolationVariablesList();
+        if ( vars.length == 0 ) {
+            return new Label( "" );
+        }
 
-		// to stretch it out
-		gv.setForceFit(true);
-//		gv.setGroupTextTpl("{text} ({[values.rs.length]} {[values.rs.length > 1 ? \"" // NON-NLS
-//				+ constants.Items() + "\" : \"" + constants.Item() + "\"]})");
+        FieldDef[] fds = new FieldDef[vars.length];
+        ColumnConfig[] cols = new ColumnConfig[fds.length];
 
-		grid.setView(gv);
+        int idx = 0;
+        for ( String var : vars ) {
+            cols[idx] = new ColumnConfig();
+            cols[idx].setHeader( var );
+            cols[idx].setDataIndex( var );
+            cols[idx].setSortable( false );
+            cols[idx].setWidth( 50 );
+            cols[idx].setResizable( true );
+            cols[idx].setEditor( new GridEditor( new TextField() ) );
+            fds[idx] = new StringFieldDef( var );
+            idx++;
+        }
+        final RecordDef recordDef = new RecordDef( fds );
+        ArrayReader reader = new ArrayReader( recordDef );
 
-		grid.setStore(store);
-		grid.setAutoWidth(true);
-		grid.setAutoHeight(true);
+        MemoryProxy proxy = new MemoryProxy( model.getTableAsArray() );
 
-		Toolbar tb = new Toolbar();
-		Menu menu = new Menu();
+        ColumnModel cm = new ColumnModel( cols );
 
-		menu.addItem(new Item(constants.AddRow(), new BaseItemListenerAdapter() {
-			public void onClick(BaseItem item, EventObject e) {
-				String[] rowData = new String[recordDef.getFields().length];
-				for (int i = 0; i < rowData.length; i++) {
-					rowData[i] = "";
-				}
-				Record newRecord = recordDef.createRecord(rowData);
-				store.add(newRecord);
-				model.addRow(newRecord.getId(), rowData);
-			}
-		}));
-		
-		menu.addItem(new Item(constants.RemoveSelectedRowS(), new BaseItemListenerAdapter() {
-			public void onClick(BaseItem item, EventObject e) {
-				removeSelectedRows(grid);
-			}
-		}));
-		
-		grid.addGridListener(new GridListenerAdapter() {
-			
-			public void onKeyPress(EventObject e) {
-				int k = e.getKey();
-				if (k == KeyCodes.KEY_DELETE || k == KeyCodes.KEY_BACKSPACE) {
-					removeSelectedRows(grid);
-				} 
-				else if (k == KeyCodes.KEY_ENTER) {
-					int[] selectedCell = grid.getCellSelectionModel().getSelectedCell();
-					grid.startEditing(selectedCell[0], selectedCell[1]);
-				}
-			}
-		});
-//		grid.setSelectionModel(new RowSelectionModel(false));
-		ToolbarMenuButton tbb = new ToolbarMenuButton(constants.Modify(), menu);
-		tb.addButton(tbb);
-		grid.add(tb);
-		
-		grid.addEditorGridListener(new EditorGridListenerAdapter() {
-			@Override
-			public void onAfterEdit(GridPanel grid, Record record, String field, Object newValue, Object oldValue,
-					int rowIndex, int colIndex) {
-				model.setValue(field, rowIndex, (String) newValue);
-			}
-		});
-		grid.setWidth((int) (Window.getClientWidth() * 0.75));
-		return grid;
-	}
-	
-	private void removeSelectedRows(EditorGridPanel grid) {
-		if (com.google.gwt.user.client.Window.confirm(constants.AreYouSureYouWantToDeleteTheSelectedRowS())) {
-			int row = grid.getCellSelectionModel().getSelectedCell()[0];
-			Record rec = store.getAt(row);
-			model.removeRowById(rec.getId());
-			store.remove(rec);
-		}
-	}
-	
-	@Override
-	public void resetDirty() {
-		super.resetDirty();
-		if (store != null) {
-			store.commitChanges();
-		}
-	}
+        for ( int i = 0; i < cm.getColumnCount(); i++ ) {
+            cm.setEditable( i,
+                            true );
+        }
+        store = new GroupingStore( proxy,
+                                   reader );
+        store.load();
+        grid = new EditorGridPanel( store,
+                                    cm );
+        grid.setStripeRows( true );
 
-	public RuleModeller getRuleModeller() {
-		return ruleModeller;
-	}
+        //		GroupingView gv = new GroupingView();
+        GridView gv = new GridView();
+
+        // to stretch it out
+        gv.setForceFit( true );
+        //		gv.setGroupTextTpl("{text} ({[values.rs.length]} {[values.rs.length > 1 ? \"" // NON-NLS
+        //				+ constants.Items() + "\" : \"" + constants.Item() + "\"]})");
+
+        grid.setView( gv );
+
+        grid.setStore( store );
+        grid.setAutoWidth( true );
+        grid.setAutoHeight( true );
+
+        Toolbar tb = new Toolbar();
+        Menu menu = new Menu();
+
+        menu.addItem( new Item( constants.AddRow(),
+                                new BaseItemListenerAdapter() {
+                                    public void onClick(BaseItem item,
+                                                        EventObject e) {
+                                        String[] rowData = new String[recordDef.getFields().length];
+                                        for ( int i = 0; i < rowData.length; i++ ) {
+                                            rowData[i] = "";
+                                        }
+                                        Record newRecord = recordDef.createRecord( rowData );
+                                        store.add( newRecord );
+                                        model.addRow( newRecord.getId(),
+                                                      rowData );
+                                    }
+                                } ) );
+
+        menu.addItem( new Item( constants.RemoveSelectedRowS(),
+                                new BaseItemListenerAdapter() {
+                                    public void onClick(BaseItem item,
+                                                        EventObject e) {
+                                        removeSelectedRows( grid );
+                                    }
+                                } ) );
+
+        grid.addGridListener( new GridListenerAdapter() {
+
+            public void onKeyPress(EventObject e) {
+                int k = e.getKey();
+                if ( k == KeyCodes.KEY_DELETE || k == KeyCodes.KEY_BACKSPACE ) {
+                    removeSelectedRows( grid );
+                } else if ( k == KeyCodes.KEY_ENTER ) {
+                    int[] selectedCell = grid.getCellSelectionModel().getSelectedCell();
+                    grid.startEditing( selectedCell[0],
+                                       selectedCell[1] );
+                }
+            }
+        } );
+        //		grid.setSelectionModel(new RowSelectionModel(false));
+        ToolbarMenuButton tbb = new ToolbarMenuButton( constants.Modify(),
+                                                       menu );
+        tb.addButton( tbb );
+        grid.add( tb );
+
+        grid.addEditorGridListener( new EditorGridListenerAdapter() {
+            @Override
+            public void onAfterEdit(GridPanel grid,
+                                    Record record,
+                                    String field,
+                                    Object newValue,
+                                    Object oldValue,
+                                    int rowIndex,
+                                    int colIndex) {
+                model.setValue( field,
+                                rowIndex,
+                                (String) newValue );
+            }
+        } );
+        grid.setWidth( (int) (Window.getClientWidth() * 0.75) );
+        return grid;
+    }
+
+    private void removeSelectedRows(EditorGridPanel grid) {
+        if ( com.google.gwt.user.client.Window.confirm( constants.AreYouSureYouWantToDeleteTheSelectedRowS() ) ) {
+            int row = grid.getCellSelectionModel().getSelectedCell()[0];
+            Record rec = store.getAt( row );
+            model.removeRowById( rec.getId() );
+            store.remove( rec );
+        }
+    }
+
+    @Override
+    public void resetDirty() {
+        super.resetDirty();
+        if ( store != null ) {
+            store.commitChanges();
+        }
+    }
+
+    public RuleModeller getRuleModeller() {
+        return ruleModeller;
+    }
 }

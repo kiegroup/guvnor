@@ -116,7 +116,7 @@ public class PopupCreator {
                                    String[] fields,
                                    final PopupCreator popupCreator) {
         final FormStylePopup popup = new FormStylePopup();
-        popup.setWidth( 500 );
+        popup.setWidth( 500 + "px" );
         final HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();
         final Button ok = new Button( constants.Set() );
@@ -240,8 +240,8 @@ public class PopupCreator {
         box.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );
-                if ("...".equals(fieldName)) {
-                	return;
+                if ( "...".equals( fieldName ) ) {
+                    return;
                 }
                 String qualifiedName = factType + "." + fieldName;
                 String fieldType = completions.getFieldType( qualifiedName );

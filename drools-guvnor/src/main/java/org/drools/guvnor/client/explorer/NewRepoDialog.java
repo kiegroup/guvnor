@@ -41,41 +41,43 @@ public class NewRepoDialog extends FormStylePopup {
     private Constants constants;
 
     public NewRepoDialog() {
-		//super("images/new_wiz.gif", "Welcome to Guvnor !");
-		setTitle(((Constants) GWT.create(Constants.class)).WelcomeToGuvnor());
-		setWidth(300);
+        //super("images/new_wiz.gif", "Welcome to Guvnor !");
+        setTitle( ((Constants) GWT.create( Constants.class )).WelcomeToGuvnor() );
+        setWidth( 300 + "px" );
 
-        constants = ((Constants) GWT.create(Constants.class));
-        addAttribute("", new HTML("<div class='highlight'>" + constants.BrandNewRepositoryNote() + "</div>"));  //NON-NLS
+        constants = ((Constants) GWT.create( Constants.class ));
+        addAttribute( "",
+                      new HTML( "<div class='highlight'>" + constants.BrandNewRepositoryNote() + "</div>" ) ); //NON-NLS
 
-		HorizontalPanel hp = new HorizontalPanel();
+        HorizontalPanel hp = new HorizontalPanel();
 
-		Button ins = new Button(constants.YesPleaseInstallSamples());
-		hp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		hp.add(ins);
-		Button no = new Button(constants.NoThanks());
-		hp.add(no);
+        Button ins = new Button( constants.YesPleaseInstallSamples() );
+        hp.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
+        hp.add( ins );
+        Button no = new Button( constants.NoThanks() );
+        hp.add( no );
 
-		addAttribute("", hp);
-		ins.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				if (!Window.confirm(constants.AboutToInstallSampleRepositoryAreYouSure())) return;
-				LoadingPopup.showMessage(constants.ImportingAndProcessing());
-				RepositoryServiceFactory.getService().installSampleRepository(new GenericCallback() {
-					public void onSuccess(Object a) {
-						Window.alert(constants.RepositoryInstalledSuccessfully());
-						hide();
-						Window.Location.reload();
-					}
-				});
-			}
-		});
-		no.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				hide();
-			}
-		});
+        addAttribute( "",
+                      hp );
+        ins.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                if ( !Window.confirm( constants.AboutToInstallSampleRepositoryAreYouSure() ) ) return;
+                LoadingPopup.showMessage( constants.ImportingAndProcessing() );
+                RepositoryServiceFactory.getService().installSampleRepository( new GenericCallback() {
+                    public void onSuccess(Object a) {
+                        Window.alert( constants.RepositoryInstalledSuccessfully() );
+                        hide();
+                        Window.Location.reload();
+                    }
+                } );
+            }
+        } );
+        no.addClickListener( new ClickListener() {
+            public void onClick(Widget w) {
+                hide();
+            }
+        } );
 
-	}
+    }
 
 }

@@ -15,6 +15,7 @@
  */
 
 package org.drools.guvnor.client.ruleeditor;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -52,122 +53,130 @@ import com.google.gwt.core.client.GWT;
  * This widget wraps a rule asset widget, and provides actions to validate and view source.
  * @author Michael Neale
  */
-public class RuleValidatorWrapper extends DirtyableComposite implements SaveEventListener {
+public class RuleValidatorWrapper extends DirtyableComposite
+    implements
+    SaveEventListener {
 
-    private RuleAsset asset;
-    private VerticalPanel layout = new VerticalPanel();
-	private Widget editor;
-    
-    private static Constants constants = ((Constants) GWT.create(Constants.class));
+    private RuleAsset        asset;
+    private VerticalPanel    layout    = new VerticalPanel();
+    private Widget           editor;
 
-    public RuleValidatorWrapper(Widget editor, RuleAsset asset) {
+    private static Constants constants = ((Constants) GWT.create( Constants.class ));
+
+    public RuleValidatorWrapper(Widget editor,
+                                RuleAsset asset) {
         this.asset = asset;
         this.editor = editor;
 
-        layout.add(editor);
-/*        if (!asset.isreadonly) {
-        	validatorActions();
-        }*/
+        layout.add( editor );
+        /*        if (!asset.isreadonly) {
+                	validatorActions();
+                }*/
 
-        layout.setWidth("100%");
+        layout.setWidth( "100%" );
         layout.setHeight( "100%" );
 
         initWidget( layout );
     }
-    
-    
-//This is duplicate to ActionToolbar    
-/*    private void validatorActions() {
-        Toolbar tb = new Toolbar();
 
-        layout.setCellHeight(editor, "95%");
-        layout.add(tb);
+    //This is duplicate to ActionToolbar    
+    /*    private void validatorActions() {
+            Toolbar tb = new Toolbar();
 
-        ToolbarButton viewSource = new ToolbarButton();
-        viewSource.setText(constants.ViewSource());
-        viewSource.addListener(new ButtonListenerAdapter()  {
-			public void onClick(
-					com.gwtext.client.widgets.Button button,
-					EventObject e) {
-                doViewsource();
-			}
-		});
+            layout.setCellHeight(editor, "95%");
+            layout.add(tb);
 
-        //only show this for advanced users
-        if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
-            tb.addButton(viewSource);
-            tb.addSeparator();
+            ToolbarButton viewSource = new ToolbarButton();
+            viewSource.setText(constants.ViewSource());
+            viewSource.addListener(new ButtonListenerAdapter()  {
+    			public void onClick(
+    					com.gwtext.client.widgets.Button button,
+    					EventObject e) {
+                    doViewsource();
+    			}
+    		});
+
+            //only show this for advanced users
+            if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+                tb.addButton(viewSource);
+                tb.addSeparator();
+            }
+
+            ToolbarButton validate = new ToolbarButton();
+            validate.setText(constants.Validate());
+            validate.addListener(new ButtonListenerAdapter()  {
+            			public void onClick(
+            					com.gwtext.client.widgets.Button button,
+            					EventObject e) {
+            				doValidate();
+            			}
+            		});
+            tb.addButton(validate);
+
+
         }
 
-        ToolbarButton validate = new ToolbarButton();
-        validate.setText(constants.Validate());
-        validate.addListener(new ButtonListenerAdapter()  {
-        			public void onClick(
-        					com.gwtext.client.widgets.Button button,
-        					EventObject e) {
-        				doValidate();
-        			}
-        		});
-        tb.addButton(validate);
+        private void doValidate() {
+        	onSave();
+            LoadingPopup.showMessage(constants.ValidatingItemPleaseWait());
+            RepositoryServiceFactory.getService().buildAsset( asset, new GenericCallback<BuilderResult>() {
+                public void onSuccess(BuilderResult result) {showBuilderErrors(result);}
+            });
 
+        }
 
-    }
+        private void doViewsource() {
+        	onSave();
+            LoadingPopup.showMessage(constants.CalculatingSource());
+            RepositoryServiceFactory.getService().buildAssetSource( this.asset, new GenericCallback<String>() {
+                public void onSuccess(String src) { showSource(src);}
+            });
 
-    private void doValidate() {
-    	onSave();
-        LoadingPopup.showMessage(constants.ValidatingItemPleaseWait());
-        RepositoryServiceFactory.getService().buildAsset( asset, new GenericCallback<BuilderResult>() {
-            public void onSuccess(BuilderResult result) {showBuilderErrors(result);}
-        });
+        }
 
-    }
+        private void showSource(String src) {
+            PackageBuilderWidget.showSource( src, this.asset.metaData.name );
+            LoadingPopup.close();
+        }
+        */
 
-    private void doViewsource() {
-    	onSave();
-        LoadingPopup.showMessage(constants.CalculatingSource());
-        RepositoryServiceFactory.getService().buildAssetSource( this.asset, new GenericCallback<String>() {
-            public void onSuccess(String src) { showSource(src);}
-        });
-
-    }
-
-    private void showSource(String src) {
-        PackageBuilderWidget.showSource( src, this.asset.metaData.name );
-        LoadingPopup.close();
-    }
-    */
-    
     /**
      * This will show a popup of error messages in compilation.
      */
     public static void showBuilderErrors(BuilderResult result) {
 
-        if (result == null || result.lines == null || result.lines.length == 0) {
-        	FormStylePopup pop = new FormStylePopup();
-        	pop.setWidth(200);
-        	pop.setTitle(constants.ValidationResultsDotDot());
-        	HorizontalPanel h = new HorizontalPanel();
-        	h.add(new SmallLabel("<img src='images/tick_green.gif'/><i>" + constants.ItemValidatedSuccessfully() + "</i>")); //NON-NLS
-
+        if ( result == null || result.lines == null || result.lines.length == 0 ) {
+            FormStylePopup pop = new FormStylePopup();
+            pop.setWidth( 200 + "px" );
+            pop.setTitle( constants.ValidationResultsDotDot() );
+            HorizontalPanel h = new HorizontalPanel();
+            h.add( new SmallLabel( "<img src='images/tick_green.gif'/><i>" + constants.ItemValidatedSuccessfully() + "</i>" ) ); //NON-NLS
 
             pop.addRow( h );
             pop.show();
         } else {
-        	FormStylePopup pop = new FormStylePopup("images/package_builder.png", constants.ValidationResults()); //NON-NLS
+            FormStylePopup pop = new FormStylePopup( "images/package_builder.png",
+                                                     constants.ValidationResults() ); //NON-NLS
             FlexTable errTable = new FlexTable();
             errTable.setStyleName( "build-Results" ); //NON-NLS
             for ( int i = 0; i < result.lines.length; i++ ) {
                 int row = i;
                 final BuilderResultLine res = result.lines[i];
-                errTable.setWidget( row, 0, new Image("images/error.gif")); //NON-NLS
-                if( res.assetFormat.equals( "package" )) {
-                    errTable.setText( row, 1, constants.packageConfigurationProblem() + res.message );
+                errTable.setWidget( row,
+                                    0,
+                                    new Image( "images/error.gif" ) ); //NON-NLS
+                if ( res.assetFormat.equals( "package" ) ) {
+                    errTable.setText( row,
+                                      1,
+                                      constants.packageConfigurationProblem() + res.message );
                 } else {
-                    errTable.setText( row, 1, "[" + res.assetName + "] " + res.message );
+                    errTable.setText( row,
+                                      1,
+                                      "[" + res.assetName + "] " + res.message );
                 }
 
             }
-            ScrollPanel scroll = new ScrollPanel(errTable);
+            ScrollPanel scroll = new ScrollPanel( errTable );
             scroll.setWidth( "100%" );
             pop.addRow( scroll );
             pop.show();
@@ -176,17 +185,17 @@ public class RuleValidatorWrapper extends DirtyableComposite implements SaveEven
         LoadingPopup.close();
     }
 
-	public void onSave() {
-		if (editor instanceof SaveEventListener) {
-			SaveEventListener el = (SaveEventListener) editor;
-			el.onSave();
-		}
-	}
+    public void onSave() {
+        if ( editor instanceof SaveEventListener ) {
+            SaveEventListener el = (SaveEventListener) editor;
+            el.onSave();
+        }
+    }
 
-	public void onAfterSave() {
-		if (editor instanceof SaveEventListener) {
-			SaveEventListener el = (SaveEventListener) editor;
-			el.onAfterSave();
-		}
-	}
+    public void onAfterSave() {
+        if ( editor instanceof SaveEventListener ) {
+            SaveEventListener el = (SaveEventListener) editor;
+            el.onAfterSave();
+        }
+    }
 }

@@ -40,84 +40,89 @@ import org.drools.guvnor.client.admin.RuleVerifierManager;
  * @author Anton Arhipov
  */
 public class AdministrationPanel extends GenericPanel {
-    private static Constants constants = GWT.create(Constants.class);
+    private static Constants constants = GWT.create( Constants.class );
 
     public AdministrationPanel(ExplorerViewCenterPanel tabbedPanel) {
-		super(constants.Administration(), tabbedPanel);
-		setIconCls("nav-admin"); //NON-NLS
+        super( constants.Administration(),
+               tabbedPanel );
+        setIconCls( "nav-admin" ); //NON-NLS
 
-		TreePanel adminTree = basicTreeStructure(/*ExplorerNodeConfig
-				.getAdminStructure()*/ new TreeNode(), new TreePanelListenerAdapter() {
-			public void onClick(TreeNode self, EventObject e) {
+        TreePanel adminTree = basicTreeStructure( /*ExplorerNodeConfig
+                                                  .getAdminStructure()*/new TreeNode(),
+                                                  new TreePanelListenerAdapter() {
+                                                      public void onClick(TreeNode self,
+                                                                          EventObject e) {
 
-				int id = Integer.parseInt(self.getAttribute("id"));
-				switch (id) {
-				case 0:
-					if (!centertabbedPanel.showIfOpen("catman")) //NON-NLS
-						centertabbedPanel.addTab(constants.CategoryManager(), 
-								new CategoryManager(), "catman"); //NON-NLS
-					break;
-				case 1:
-					if (!centertabbedPanel.showIfOpen("archman"))  //NON-NLS
-						centertabbedPanel.addTab(constants.ArchivedManager(), 
-								new ArchivedAssetManager(centertabbedPanel),
-								"archman");      //NON-NLS
-					break;
+                                                          int id = Integer.parseInt( self.getAttribute( "id" ) );
+                                                          switch ( id ) {
+                                                              case 0 :
+                                                                  if ( !centertabbedPanel.showIfOpen( "catman" ) ) //NON-NLS
+                                                                  centertabbedPanel.addTab( constants.CategoryManager(),
+                                                                                            new CategoryManager(),
+                                                                                            "catman" ); //NON-NLS
+                                                                  break;
+                                                              case 1 :
+                                                                  if ( !centertabbedPanel.showIfOpen( "archman" ) ) //NON-NLS
+                                                                  centertabbedPanel.addTab( constants.ArchivedManager(),
+                                                                                            new ArchivedAssetManager( centertabbedPanel ),
+                                                                                            "archman" ); //NON-NLS
+                                                                  break;
 
-				case 2:
-					if (!centertabbedPanel.showIfOpen("stateman")) //NON-NLS
-						centertabbedPanel.addTab(constants.StateManager(), 
-								new StateManager(), "stateman");
-					break;
-				case 3:
-					if (!centertabbedPanel.showIfOpen("bakman"))
-						centertabbedPanel.addTab(constants.ImportExport(), 
-								new BackupManager(), "bakman");
-					break;
+                                                              case 2 :
+                                                                  if ( !centertabbedPanel.showIfOpen( "stateman" ) ) //NON-NLS
+                                                                  centertabbedPanel.addTab( constants.StateManager(),
+                                                                                            new StateManager(),
+                                                                                            "stateman" );
+                                                                  break;
+                                                              case 3 :
+                                                                  if ( !centertabbedPanel.showIfOpen( "bakman" ) ) centertabbedPanel.addTab( constants.ImportExport(),
+                                                                                                                                             new BackupManager(),
+                                                                                                                                             "bakman" );
+                                                                  break;
 
-				case 4:
-					if (!centertabbedPanel.showIfOpen("errorLog"))
-						centertabbedPanel.addTab(constants.EventLog(), 
-								new LogViewer(), "errorLog");
-					break;
-				case 5:
-					if (!centertabbedPanel.showIfOpen("securityPermissions"))
-						centertabbedPanel.addTab(constants.UserPermissionMappings(),
-								new PermissionViewer(),
-								"securityPermissions");
-					break;
-				case 6:
-					Frame aboutFrame = new Frame("version.txt");  //NON-NLS
+                                                              case 4 :
+                                                                  if ( !centertabbedPanel.showIfOpen( "errorLog" ) ) centertabbedPanel.addTab( constants.EventLog(),
+                                                                                                                                               new LogViewer(),
+                                                                                                                                               "errorLog" );
+                                                                  break;
+                                                              case 5 :
+                                                                  if ( !centertabbedPanel.showIfOpen( "securityPermissions" ) ) centertabbedPanel.addTab( constants.UserPermissionMappings(),
+                                                                                                                                                          new PermissionViewer(),
+                                                                                                                                                          "securityPermissions" );
+                                                                  break;
+                                                              case 6 :
+                                                                  Frame aboutFrame = new Frame( "version.txt" ); //NON-NLS
 
-					FormStylePopup aboutPop = new FormStylePopup();
-                    aboutPop.setWidth(600);
-					aboutPop.setTitle(constants.About());
-					String hhurl = GWT.getModuleBaseURL() + "webdav";
-					aboutPop.addAttribute(constants.WebDAVURL(), new SmallLabel("<b>"
-							+ hhurl + "</b>"));
-					aboutPop.addAttribute(constants.Version() + ":", aboutFrame);
-					aboutPop.show();
-					break;
-                 case 7:
-                	 if (!centertabbedPanel.showIfOpen("ruleVerifierManager"))
-                		    centertabbedPanel.addTab(constants.RulesVerificationManager(),
-						     new RuleVerifierManager(),
-							 "ruleVerifierManager");
-                      break;
-                  case 8:
-                	  if (!centertabbedPanel.showIfOpen("repoconfig")) //NON-NLS
-                    	   centertabbedPanel.addTab(constants.RepositoryConfig(), 
-                    	   new RepoConfigManager(), "repoconfig");
-                  break;
-				}
-			}
-		});
-		adminTree.setRootVisible(false);
+                                                                  FormStylePopup aboutPop = new FormStylePopup();
+                                                                  aboutPop.setWidth( 600 + "px" );
+                                                                  aboutPop.setTitle( constants.About() );
+                                                                  String hhurl = GWT.getModuleBaseURL() + "webdav";
+                                                                  aboutPop.addAttribute( constants.WebDAVURL(),
+                                                                                         new SmallLabel( "<b>" + hhurl + "</b>" ) );
+                                                                  aboutPop.addAttribute( constants.Version() + ":",
+                                                                                         aboutFrame );
+                                                                  aboutPop.show();
+                                                                  break;
+                                                              case 7 :
+                                                                  if ( !centertabbedPanel.showIfOpen( "ruleVerifierManager" ) ) centertabbedPanel.addTab( constants.RulesVerificationManager(),
+                                                                                                                                                          new RuleVerifierManager(),
+                                                                                                                                                          "ruleVerifierManager" );
+                                                                  break;
+                                                              case 8 :
+                                                                  if ( !centertabbedPanel.showIfOpen( "repoconfig" ) ) //NON-NLS
+                                                                  centertabbedPanel.addTab( constants.RepositoryConfig(),
+                                                                                            new RepoConfigManager(),
+                                                                                            "repoconfig" );
+                                                                  break;
+                                                          }
+                                                      }
+                                                  } );
+        adminTree.setRootVisible( false );
 
-		VerticalPanel adminPanel = new VerticalPanel();
-		adminPanel.add(adminTree);
-		adminPanel.setWidth("100%");
-		add(adminPanel);
-	}
+        VerticalPanel adminPanel = new VerticalPanel();
+        adminPanel.add( adminTree );
+        adminPanel.setWidth( "100%" );
+        add( adminPanel );
+    }
 
 }
