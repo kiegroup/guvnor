@@ -23,6 +23,17 @@
   <build>
     <finalName>drools-guvnor</finalName>
     <plugins>
+      <!-- TODO JBRULES-2686 -->
+      <!--<plugin>-->
+        <!--<groupId>org.codehaus.mojo</groupId>-->
+        <!--<artifactId>gwt-maven-plugin</artifactId>-->
+        <!--<version>1.2</version>-->
+        <!--<configuration>-->
+          <!--<module>org.drools.guvnor.Guvnor</module>-->
+          <!--<runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>-->
+          <!--&lt;!&ndash; TODO experiment with <draftCompile>true</draftCompile> &ndash;&gt;-->
+        <!--</configuration>-->
+      <!--</plugin>-->
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
@@ -159,10 +170,24 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-factconstraint</artifactId>
     </dependency>
+    <!-- TODO JBRULES-2686 -->
+    <!--<dependency>&lt;!&ndash; TODO with maven-gwt-plugin 2.1 use compileSourcesArtifacts instead (http://jira.codehaus.org/browse/MGWT-170) &ndash;&gt;-->
+      <!--<groupId>org.drools</groupId>-->
+      <!--<artifactId>drools-factconstraint</artifactId>-->
+      <!--<version>${project.version}</version>-->
+      <!--<classifier>sources</classifier>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-ide-common</artifactId>
     </dependency>
+    <!-- TODO JBRULES-2686 -->
+    <!--<dependency>&lt;!&ndash; TODO with maven-gwt-plugin 2.1 use compileSourcesArtifacts instead (http://jira.codehaus.org/browse/MGWT-170) &ndash;&gt;-->
+      <!--<groupId>org.drools</groupId>-->
+      <!--<artifactId>drools-ide-common</artifactId>-->
+      <!--<version>${project.version}</version>-->
+      <!--<classifier>sources</classifier>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>wsdl4j</groupId>
       <artifactId>wsdl4j</artifactId>
@@ -195,6 +220,11 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
+    </dependency>
+    <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.gwtext</groupId>
