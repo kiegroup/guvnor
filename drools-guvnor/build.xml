@@ -53,9 +53,9 @@
     </java>
 
     <delete>
-      <fileset dir="src/main/webapp/org.drools.guvnor.Guvnor" includes="*.gwt.rpc *.cache.html *.cache.js *.cache.xml *.cache.png"/>
+      <fileset dir="target/drools-guvnor/org.drools.guvnor.Guvnor" includes="*.gwt.rpc *.cache.html *.cache.js *.cache.xml *.cache.png"/>
     </delete>
-    <copy todir="src/main/webapp">
+    <copy todir="target/drools-guvnor">
       <fileset dir="war">
         <include name="**/*"/>
       </fileset>

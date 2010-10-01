@@ -20,8 +20,16 @@
         <configuration>
           <module>org.drools.guvnor.Guvnor</module>
           <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
-          <!-- TODO experiment with <draftCompile>true</draftCompile> -->
+          <draftCompile>true</draftCompile><!-- TODO make production profile that sets draft on false -->
+          <extraJvmArgs>-Xmx512m</extraJvmArgs>
         </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
