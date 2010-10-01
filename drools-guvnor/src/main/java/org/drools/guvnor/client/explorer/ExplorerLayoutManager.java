@@ -192,7 +192,7 @@ public class ExplorerLayoutManager {
             mainPanel.addNorth(titlePanel, 4);
         }        
         SplitLayoutPanel centerPanel = new SplitLayoutPanel();        
-        centerPanel.addWest(navigationStackLayoutPanel, 192);
+        centerPanel.addWest(navigationStackLayoutPanel, 230);
         centerPanel.add(centertabbedPanel.getPanel());        
         mainPanel.add(centerPanel);
     }
