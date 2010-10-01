@@ -60,6 +60,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -69,7 +70,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.SortDir;
 import com.gwtext.client.data.ArrayReader;
@@ -83,11 +83,9 @@ import com.gwtext.client.data.SortState;
 import com.gwtext.client.data.Store;
 import com.gwtext.client.data.StringFieldDef;
 import com.gwtext.client.widgets.Panel;
-import com.gwtext.client.widgets.Toolbar;
 import com.gwtext.client.widgets.ToolbarMenuButton;
 import com.gwtext.client.widgets.Window;
 import com.gwtext.client.widgets.form.FieldSet;
-import com.gwtext.client.widgets.form.FormPanel;
 import com.gwtext.client.widgets.grid.BaseColumnConfig;
 import com.gwtext.client.widgets.grid.CellMetadata;
 import com.gwtext.client.widgets.grid.ColumnConfig;
@@ -112,19 +110,19 @@ public class GuidedDecisionTableWidget extends Composite
     implements
     SaveEventListener {
 
-    private GuidedDecisionTable        dt;
-    private VerticalPanel              layout;
-    private GridPanel                  grid;
-    private FieldDef[]                 fds;
-    private VerticalPanel              attributeConfigWidget;
-    private VerticalPanel              conditionsConfigWidget;
-    private String                     packageName;
-    private VerticalPanel              actionsConfigWidget;
+    private GuidedDecisionTable         dt;
+    private VerticalPanel               layout;
+    private GridPanel                   grid;
+    private FieldDef[]                  fds;
+    private VerticalPanel               attributeConfigWidget;
+    private VerticalPanel               conditionsConfigWidget;
+    private String                      packageName;
+    private VerticalPanel               actionsConfigWidget;
     private Map<String, DTColumnConfig> colMap;
-    private SuggestionCompletionEngine sce;
-    private GroupingStore              store;
-    private Constants                  constants = ((Constants) GWT.create( Constants.class ));
-    RecordDef recordDef;
+    private SuggestionCompletionEngine  sce;
+    private GroupingStore               store;
+    private Constants                   constants = ((Constants) GWT.create( Constants.class ));
+    RecordDef                           recordDef;
 
     public GuidedDecisionTableWidget(RuleAsset asset,
                                      RuleViewer viewer) {
@@ -139,14 +137,14 @@ public class GuidedDecisionTableWidget extends Composite
 
         layout = new VerticalPanel();
 
-        FormPanel config = new FormPanel();
-        config.setTitle( constants.DecisionTable() );
+        DisclosurePanel disclosurePanel = new DisclosurePanel( constants.DecisionTable() );
+        disclosurePanel.setAnimationEnabled(true);
+        disclosurePanel.addStyleName("my-DisclosurePanel");
+        disclosurePanel.setWidth("100%");
+        disclosurePanel.setTitle( constants.DecisionTable() );
 
-        config.setBodyBorder( false );
-        config.setCollapsed( true );
-        config.setCollapsible( true );
-        
-
+        VerticalPanel config = new VerticalPanel();
+        disclosurePanel.add( config );
 
         FieldSet conditions = new FieldSet( constants.ConditionColumns() );
         conditions.setCollapsible( true );
@@ -164,12 +162,12 @@ public class GuidedDecisionTableWidget extends Composite
         grouping.add( getGrouping() );
         grouping.add( getAttributes() );
         config.add( grouping );
-        layout.add( config );
-        
-        VerticalPanel buttonPanel = new   VerticalPanel();
-        buttonPanel.add(getToolbarMenuButton());
-        layout.add( buttonPanel);
-        
+        layout.add( disclosurePanel );
+
+        VerticalPanel buttonPanel = new VerticalPanel();
+        buttonPanel.add( getToolbarMenuButton() );
+        layout.add( buttonPanel );
+
         refreshGrid();
 
         initWidget( layout );
@@ -180,35 +178,40 @@ public class GuidedDecisionTableWidget extends Composite
 
         list.addItem( constants.Description(),
                       "desc" ); //NON-NLS
-		if (dt.getMetadataCols() == null) {
-			dt.setMetadataCols(new ArrayList<MetadataCol>());
-		}
-		for (MetadataCol c : dt.getMetadataCols()) {
-			list.addItem(c.attr, c.attr);
-			if (c.attr.equals(dt.groupField)) {
-				list.setSelectedIndex(list.getItemCount() - 1);
-			}
-		}
-		for (AttributeCol c : dt.attributeCols) {
-			list.addItem(c.attr, c.attr);
-			if (c.attr.equals(dt.groupField)) {
-				list.setSelectedIndex(list.getItemCount() - 1);
-			}
-		}
-		for (ConditionCol c : dt.conditionCols) {
-			list.addItem(c.header, c.header);
-			if (c.header.equals(dt.groupField)) {
-				list.setSelectedIndex(list.getItemCount() - 1);
-			}
-		}
-		for (ActionCol c : dt.actionCols) {
-			list.addItem(c.header, c.header);
-			if (c.header.equals(dt.groupField)) {
-				list.setSelectedIndex(list.getItemCount() - 1);
-			}
-		}
+        if ( dt.getMetadataCols() == null ) {
+            dt.setMetadataCols( new ArrayList<MetadataCol>() );
+        }
+        for ( MetadataCol c : dt.getMetadataCols() ) {
+            list.addItem( c.attr,
+                          c.attr );
+            if ( c.attr.equals( dt.groupField ) ) {
+                list.setSelectedIndex( list.getItemCount() - 1 );
+            }
+        }
+        for ( AttributeCol c : dt.attributeCols ) {
+            list.addItem( c.attr,
+                          c.attr );
+            if ( c.attr.equals( dt.groupField ) ) {
+                list.setSelectedIndex( list.getItemCount() - 1 );
+            }
+        }
+        for ( ConditionCol c : dt.conditionCols ) {
+            list.addItem( c.header,
+                          c.header );
+            if ( c.header.equals( dt.groupField ) ) {
+                list.setSelectedIndex( list.getItemCount() - 1 );
+            }
+        }
+        for ( ActionCol c : dt.actionCols ) {
+            list.addItem( c.header,
+                          c.header );
+            if ( c.header.equals( dt.groupField ) ) {
+                list.setSelectedIndex( list.getItemCount() - 1 );
+            }
+        }
 
-		list.addItem(constants.none(), "");
+        list.addItem( constants.none(),
+                      "" );
         if ( dt.groupField == null ) {
             list.setSelectedIndex( list.getItemCount() - 1 );
         }
@@ -239,7 +242,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void refreshActionsWidget() {
         this.actionsConfigWidget.clear();
-        for (ActionCol c : dt.actionCols) {
+        for ( ActionCol c : dt.actionCols ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( removeAction( c ) );
             hp.add( editAction( c ) );
@@ -486,7 +489,7 @@ public class GuidedDecisionTableWidget extends Composite
             hp.add( new SmallLabel( constants.Metadata() ) );
             attributeConfigWidget.add( hp );
         }
-        for (MetadataCol at : dt.getMetadataCols()) {
+        for ( MetadataCol at : dt.getMetadataCols() ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) ); //NON-NLS
             hp.add( removeMeta( at ) );
@@ -500,8 +503,8 @@ public class GuidedDecisionTableWidget extends Composite
             attributeConfigWidget.add( hp );
         }
 
-        for (AttributeCol atc : dt.attributeCols) {
-        	final AttributeCol at = atc;
+        for ( AttributeCol atc : dt.attributeCols ) {
+            final AttributeCol at = atc;
             HorizontalPanel hp = new HorizontalPanel();
 
             hp.add( new SmallLabel( at.attr ) );
@@ -515,28 +518,28 @@ public class GuidedDecisionTableWidget extends Composite
                 }
             } );
             // GUVNOR-605
-            if(at.attr.equals(RuleAttributeWidget.SALIENCE_ATTR)) {
-            	hp.add( new HTML( "&nbsp;&nbsp;" ) );
-            	final CheckBox useRowNumber = new CheckBox();
-            	useRowNumber.setEnabled(at.useRowNumber);
-            	useRowNumber.addClickHandler( new ClickHandler() {
+            if ( at.attr.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
+                hp.add( new HTML( "&nbsp;&nbsp;" ) );
+                final CheckBox useRowNumber = new CheckBox();
+                useRowNumber.setEnabled( at.useRowNumber );
+                useRowNumber.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent sender) {
                         at.useRowNumber = useRowNumber.isEnabled();
                     }
                 } );
                 hp.add( useRowNumber );
-            	hp.add( new SmallLabel( constants.UseRowNumber() ) );
-            	hp.add( new SmallLabel( "(" ) );
-            	final CheckBox reverseOrder = new CheckBox();
-            	reverseOrder.setEnabled(at.reverseOrder);
-            	reverseOrder.addClickHandler( new ClickHandler() {
+                hp.add( new SmallLabel( constants.UseRowNumber() ) );
+                hp.add( new SmallLabel( "(" ) );
+                final CheckBox reverseOrder = new CheckBox();
+                reverseOrder.setEnabled( at.reverseOrder );
+                reverseOrder.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent sender) {
                         at.reverseOrder = reverseOrder.isEnabled();
                     }
                 } );
-            	hp.add(reverseOrder);
-            	hp.add( new SmallLabel( constants.ReverseOrder() ) );
-            	hp.add( new SmallLabel( ")" ) );
+                hp.add( reverseOrder );
+                hp.add( new SmallLabel( constants.ReverseOrder() ) );
+                hp.add( new SmallLabel( ")" ) );
             }
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) ); //NON-NLS
             hp.add( new SmallLabel( constants.DefaultValue() ) );
@@ -809,7 +812,8 @@ public class GuidedDecisionTableWidget extends Composite
 
                 }
             };
-            colMap.put( attr.attr, attr );
+            colMap.put( attr.attr,
+                        attr );
             colCount++;
         }
 
@@ -864,28 +868,28 @@ public class GuidedDecisionTableWidget extends Composite
         //the split thing
         //The separator column causes confusion, see GUVNOR-498. Remove this column for now until  
         //we find a better way to represent a column for the purpose of separator. 
-/*        cols[colCount] = new ColumnConfig() {
-            {
-                setDataIndex( "x" );
-                setHeader( "x" );
-                //setFixed(true);
-                setSortable( false );
-                setResizable( false );
-                //setWidth(60);
-                setRenderer( new Renderer() {
-                    public String render(Object value,
-                                         CellMetadata cellMetadata,
-                                         Record record,
-                                         int rowIndex,
-                                         int colNum,
-                                         Store store) {
-                        return "<image src='images/production.gif'/>"; //NON-NLS
+        /*        cols[colCount] = new ColumnConfig() {
+                    {
+                        setDataIndex( "x" );
+                        setHeader( "x" );
+                        //setFixed(true);
+                        setSortable( false );
+                        setResizable( false );
+                        //setWidth(60);
+                        setRenderer( new Renderer() {
+                            public String render(Object value,
+                                                 CellMetadata cellMetadata,
+                                                 Record record,
+                                                 int rowIndex,
+                                                 int colNum,
+                                                 Store store) {
+                                return "<image src='images/production.gif'/>"; //NON-NLS
+                            }
+                        } );
+                        setWidth( 20 );
                     }
-                } );
-                setWidth( 20 );
-            }
-        };
-        colCount++;*/
+                };
+                colCount++;*/
 
         for ( int i = 0; i < dt.actionCols.size(); i++ ) {
             //here we could also deal with numeric type?
@@ -925,16 +929,17 @@ public class GuidedDecisionTableWidget extends Composite
         if ( this.dt.groupField != null ) {
             store.setGroupField( dt.groupField );
         }
-        cm.addListener(new ColumnModelListenerAdapter(){
- 			    public void onHiddenChange(ColumnModel cm, int colIndex,
- 					  boolean hidden) {
- 				     final String dta = cm.getDataIndex(colIndex);        		
-         			if (colMap.containsKey(dta)) {
-         				DTColumnConfig col = colMap.get(dta);
-         				col.hideColumn = hidden;
-         			}
-         		}  	
-         });
+        cm.addListener( new ColumnModelListenerAdapter() {
+            public void onHiddenChange(ColumnModel cm,
+                                       int colIndex,
+                                       boolean hidden) {
+                final String dta = cm.getDataIndex( colIndex );
+                if ( colMap.containsKey( dta ) ) {
+                    DTColumnConfig col = colMap.get( dta );
+                    col.hideColumn = hidden;
+                }
+            }
+        } );
 
         store.load();
 
@@ -1051,9 +1056,9 @@ public class GuidedDecisionTableWidget extends Composite
                                         Record r = recordDef.createRecord( new Object[recordDef.getFields().length] );
                                         r.set( "num",
                                                store.getRecords().length + 1 ); //NON-NLS
-                                        store.add( r );                              
+                                        store.add( r );
                                         // GUVNOR-605
-                                        renumberSalience(store.getRecords());
+                                        renumberSalience( store.getRecords() );
                                     }
                                 } ) );
 
@@ -1086,13 +1091,13 @@ public class GuidedDecisionTableWidget extends Composite
                                                 }
                                             }
                                             // GUVNOR-605
-                                            renumberSalience(store.getRecords());
+                                            renumberSalience( store.getRecords() );
                                         } else {
                                             ErrorPopup.showMessage( constants.PleaseSelectARow() );
                                         }
                                     }
                                 } ) );
-        
+
         menu.addItem( new Item( constants.RemoveSelectedRowS(),
                                 new BaseItemListenerAdapter() {
                                     public void onClick(BaseItem item,
@@ -1104,7 +1109,7 @@ public class GuidedDecisionTableWidget extends Composite
                                             }
                                             renumber( store.getRecords() );
                                             // GUVNOR-605
-                                            renumberSalience(store.getRecords());
+                                            renumberSalience( store.getRecords() );
                                         }
                                     }
                                 } ) );
@@ -1124,7 +1129,7 @@ public class GuidedDecisionTableWidget extends Composite
                                         }
                                         renumber( store.getRecords() );
                                         // GUVNOR-605
-                                        renumberSalience(store.getRecords());
+                                        renumberSalience( store.getRecords() );
                                     }
                                 } ) );
 
@@ -1188,11 +1193,12 @@ public class GuidedDecisionTableWidget extends Composite
         //        menu.addItem( new com.gwtext.client.widgets.menu.MenuItem( "Move",
         //                                                                   subMenu ) );
 
-		ToolbarMenuButton tbb = new ToolbarMenuButton(constants.Modify(), menu);
+        ToolbarMenuButton tbb = new ToolbarMenuButton( constants.Modify(),
+                                                       menu );
 
-		return tbb;
+        return tbb;
     }
-    
+
     /**
      * Show a drop down editor, obviously.
      */
@@ -1266,26 +1272,28 @@ public class GuidedDecisionTableWidget extends Composite
                        "" + (i + 1) ); //NON-NLS
         }
     }
-    
+
     // GUVNOR-605
     private void renumberSalience(Record[] rs) {
-    	List<AttributeCol> attcols =  dt.attributeCols;
-    	for(AttributeCol ac : attcols) {
-    		if(ac.useRowNumber) {
-    			for(int i=0; i<rs.length;i++) {
-    	    		Record nextrecord = rs[i];
-    	    		List<String> allFields = Arrays.asList(nextrecord.getFields());
-    	        	if(allFields.contains("salience")) {
-    	        		if(ac.reverseOrder) {
-    	        			rs[i].set( "salience", "" + (rs.length - i) ); //NON-NLS
-    	        		} else {
-    	        		   rs[i].set( "salience", "" + (i + 1) ); //NON-NLS
-    	        		}
-    	        	}
-    	    	}
-    		}
-    		break;
-    	}
+        List<AttributeCol> attcols = dt.attributeCols;
+        for ( AttributeCol ac : attcols ) {
+            if ( ac.useRowNumber ) {
+                for ( int i = 0; i < rs.length; i++ ) {
+                    Record nextrecord = rs[i];
+                    List<String> allFields = Arrays.asList( nextrecord.getFields() );
+                    if ( allFields.contains( "salience" ) ) {
+                        if ( ac.reverseOrder ) {
+                            rs[i].set( "salience",
+                                       "" + (rs.length - i) ); //NON-NLS
+                        } else {
+                            rs[i].set( "salience",
+                                       "" + (i + 1) ); //NON-NLS
+                        }
+                    }
+                }
+            }
+            break;
+        }
     }
 
     /**
@@ -1302,74 +1310,81 @@ public class GuidedDecisionTableWidget extends Composite
         w.setPlain( true );
         w.setBodyBorder( false );
         w.setTitle( dta );
-        
-        String typeDescription = dt.getType(colConf, getSCE());
+
+        String typeDescription = dt.getType( colConf,
+                                             getSCE() );
         Panel p = new Panel();
 
-        if (typeDescription != null
-				&& typeDescription.equals(SuggestionCompletionEngine.TYPE_DATE)) {
-			final DatePickerTextBox datePicker = new DatePickerTextBox(val);
-			String m = Format.format(((Constants) GWT.create(Constants.class))
-					.ValueFor0(), dta);
-			datePicker.setTitle(m);
-			datePicker.addValueChanged(new ValueChanged() {
-				public void valueChanged(String newValue) {
-					r.set(dta, newValue);
-				}
-			});
+        if ( typeDescription != null && typeDescription.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+            final DatePickerTextBox datePicker = new DatePickerTextBox( val );
+            String m = Format.format( ((Constants) GWT.create( Constants.class )).ValueFor0(),
+                                      dta );
+            datePicker.setTitle( m );
+            datePicker.addValueChanged( new ValueChanged() {
+                public void valueChanged(String newValue) {
+                    r.set( dta,
+                           newValue );
+                }
+            } );
 
-			p.add(datePicker);
-			p.add(new InfoPopup(constants.CategoryParentRules(), Format.format(
-					constants.FillInColumnWithValue(), typeDescription)));
+            p.add( datePicker );
+            p.add( new InfoPopup( constants.CategoryParentRules(),
+                                  Format.format( constants.FillInColumnWithValue(),
+                                                 typeDescription ) ) );
 
-			w.add(p);
-			w.setBorder(false);
+            w.add( p );
+            w.setBorder( false );
 
-			Button ok = new Button(constants.OK());
-			ok.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent arg0) {
-					r.set(dta, datePicker.getDateString());
-					w.destroy();
-				}
-			});
+            Button ok = new Button( constants.OK() );
+            ok.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent arg0) {
+                    r.set( dta,
+                           datePicker.getDateString() );
+                    w.destroy();
+                }
+            } );
 
-			p.add(ok);
-			
-		} else {
-			final TextBox box = new TextBox();
-			box.setText(val);
-			box.addKeyboardListener(new KeyboardListenerAdapter() {
-				public void onKeyUp(Widget sender, char keyCode, int modifiers) {
-					if (keyCode == KeyboardListener.KEY_ENTER) {
-						r.set(dta, box.getText());
-						w.destroy();
-					}
-				}
-			});
+            p.add( ok );
 
-			if (dt.isNumeric(colConf, getSCE())) {
-				box.addKeyboardListener(ActionValueEditor
-								.getNumericFilter(box));
-			}
+        } else {
+            final TextBox box = new TextBox();
+            box.setText( val );
+            box.addKeyboardListener( new KeyboardListenerAdapter() {
+                public void onKeyUp(Widget sender,
+                                    char keyCode,
+                                    int modifiers) {
+                    if ( keyCode == KeyboardListener.KEY_ENTER ) {
+                        r.set( dta,
+                               box.getText() );
+                        w.destroy();
+                    }
+                }
+            } );
 
-			p.add(box);
-			if (typeDescription != null) {
-				p.add(new InfoPopup(constants.CategoryParentRules(), Format
-						.format(constants.FillInColumnWithValue(),
-								typeDescription)));
-			}
-			w.add(p);
-			w.setBorder(false);
+            if ( dt.isNumeric( colConf,
+                               getSCE() ) ) {
+                box.addKeyboardListener( ActionValueEditor.getNumericFilter( box ) );
+            }
 
-			Button ok = new Button(constants.OK());
-			ok.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent wg) {
-					r.set(dta, box.getText());
-					w.destroy();
-				}
-			});
-			p.add(ok);
-		} 
+            p.add( box );
+            if ( typeDescription != null ) {
+                p.add( new InfoPopup( constants.CategoryParentRules(),
+                                      Format.format( constants.FillInColumnWithValue(),
+                                                     typeDescription ) ) );
+            }
+            w.add( p );
+            w.setBorder( false );
+
+            Button ok = new Button( constants.OK() );
+            ok.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent wg) {
+                    r.set( dta,
+                           box.getText() );
+                    w.destroy();
+                }
+            } );
+            p.add( ok );
+        }
 
         w.setPosition( e.getPageX(),
                        e.getPageY() );
@@ -1392,15 +1407,18 @@ public class GuidedDecisionTableWidget extends Composite
 
     }
 
-	private void changeRowPositions(Record from, Record to) {
-		int fromNum = from.getAsInteger("num");
-		int toNum = to.getAsInteger("num");
-		from.set("num", toNum);
-		to.set("num", fromNum);
+    private void changeRowPositions(Record from,
+                                    Record to) {
+        int fromNum = from.getAsInteger( "num" );
+        int toNum = to.getAsInteger( "num" );
+        from.set( "num",
+                  toNum );
+        to.set( "num",
+                fromNum );
 
-		scrapeData(-1);
+        scrapeData( -1 );
 
-		refreshGrid();
-	}
+        refreshGrid();
+    }
 
 }
