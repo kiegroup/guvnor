@@ -21,7 +21,7 @@
           <module>org.drools.guvnor.Guvnor</module>
           <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
           <draftCompile>true</draftCompile><!-- TODO make production profile that sets draft on false -->
-          <localWorkers>2</localWorkers>
+          <localWorkers>2</localWorkers><!-- Using all workers can temporarily hang te mouse and isn't much faster -->
           <extraJvmArgs>-Xmx512m</extraJvmArgs>
         </configuration>
         <executions>
