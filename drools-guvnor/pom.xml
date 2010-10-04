@@ -34,27 +34,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>generate-sources</id>
-            <phase>generate-sources</phase>
-            <configuration>
-              <!--
-              <tasks>
-                <ant antfile="${basedir}/revision-number.xml" target="find_revision">
-                        <property name="project.version" value="${project.version}"/>
-                </ant>
-              </tasks>
-              -->
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
         <inherited>false</inherited>
         <executions>
           <execution>
@@ -71,6 +50,21 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <webResources>
+            <resource>
+              <directory>${basedir}/src/main/webapp</directory>
+            </resource>
+            <resource>
+              <directory>${basedir}/src/main/filtered-webapp</directory>
+              <filtering>true</filtering>
+            </resource>
+          </webResources>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -89,20 +83,6 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
-                <id>generate-sources</id>
-                <phase>generate-sources</phase>
-                <configuration>
-                  <tasks>
-                    <ant antfile="${basedir}/revision-number.xml" target="find_revision">
-                      <property name="project.version" value="${project.version}"/>
-                    </ant>
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-              <execution>
                 <id>soa_overlay</id>
                 <phase>package</phase>
                 <configuration>
@@ -119,6 +99,17 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+              <webResources><!-- TODO verify that it's needed to repeat this from the normal war configuration -->
+                <resource>
+                  <directory>${basedir}/src/main/webapp</directory>
+                </resource>
+                <resource>
+                  <directory>${basedir}/src/main/filtered-webapp</directory>
+                  <filtering>true</filtering>
+                </resource>
+              </webResources>
+            </configuration>
             <executions>
               <execution>
                 <id>war-it</id>

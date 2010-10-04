@@ -95,16 +95,16 @@ public class AdministrationTree extends AbstractTree {
                                                                                                         "securityPermissions" );
                 break;
             case 6 :
-                Frame aboutFrame = new Frame( "version.txt" ); //NON-NLS
+                Frame aboutInfoFrame = new Frame( "../AboutInfo.html" ); //NON-NLS
 
                 FormStylePopup aboutPop = new FormStylePopup();
                 aboutPop.setWidth( 600 + "px" );
                 aboutPop.setTitle( constants.About() );
                 String hhurl = GWT.getModuleBaseURL() + "webdav";
-                aboutPop.addAttribute( constants.WebDAVURL(),
+                aboutPop.addAttribute( constants.WebDAVURL() + ":",
                                        new SmallLabel( "<b>" + hhurl + "</b>" ) );
                 aboutPop.addAttribute( constants.Version() + ":",
-                                       aboutFrame );
+                                       aboutInfoFrame );
                 aboutPop.show();
                 break;
 
