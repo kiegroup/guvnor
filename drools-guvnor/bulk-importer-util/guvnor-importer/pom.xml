@@ -31,30 +31,30 @@
   </build>
   
   <profiles>
-  <profile>
-    <id>gen-brms-import</id>
-    <activation>
-      <activeByDefault>true</activeByDefault>
-    </activation>
-    <build>
-      <plugins>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>1.1</version>
+    <profile>
+      <id>gen-brms-import</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>1.1</version>
 
-          <executions>
-            <execution>
-              <id>gen-brms-import</id>
-              <phase>package</phase> <!-- after compile since we need the class to be on the cp before executing -->
-              <goals>
-                <goal>java</goal>
-              </goals>
-            </execution>
-          </executions>
+            <executions>
+              <execution>
+                <id>gen-brms-import</id>
+                <phase>package</phase> <!-- after compile since we need the class to be on the cp before executing -->
+                <goals>
+                  <goal>java</goal>
+                </goals>
+              </execution>
+            </executions>
 
-          <configuration>
-            <mainClass>org.jboss.drools.guvnor.importgenerator.ImportFileGenerator</mainClass>
+            <configuration>
+              <mainClass>org.jboss.drools.guvnor.importgenerator.ImportFileGenerator</mainClass>
               <arguments>
                 <argument>-classpath</argument> <!-- bring in the project classpath dependencies below -->
 
@@ -97,19 +97,19 @@
 
                 <argument>-V</argument> <!-- verbose output (v=verbose, V=very verbose -->
               </arguments>
-          </configuration>
+            </configuration>
 
-        </plugin>
-      </plugins>
-    </build>
-  </profile>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
   
   <repositories>
-  <repository>
-    <id>jboss-std</id>
-    <url>http://repository.jboss.com/maven2</url>
-  </repository>
+    <repository>
+      <id>jboss-std</id>
+      <url>http://repository.jboss.com/maven2</url>
+    </repository>
   </repositories>
   
   <dependencies>
