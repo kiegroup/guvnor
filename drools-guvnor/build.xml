@@ -1,69 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
- This is a module specific script for GWT related issues mainly you should only need to worry about this
- if you are modifying the GUI itself.
-
  @author Michael Neale
 -->
 <project name="org.drools.guvnor.Guvnor" default="gwt-compile" basedir="." xmlns:gwt="antlib:de.samaflost.gwttasks">
-  <taskdef uri="antlib:de.samaflost.gwttasks"
-           resource="de/samaflost/gwttasks/antlib.xml"
-           classpath="../lib/gwttasks.jar"/>
-
 
   <property file="build.properties"/>
 
   <property name="jbossAS.tempdir" location="target/guvnor-standalone"/>
-
-  <property name="src.dir" value="src/main/java"/>
-  <property name="build.dir" value="target/drools-guvnor/"/>
-
-  <path id="compile.classpath">
-    <fileset dir="${build.dir}/WEB-INF/lib">
-      <include name="**/*.jar"/>
-      <include name="**/*.xml"/>
-    </fileset>
-  </path>
-
-  <path id="gwt.classpath">
-    <fileset dir="${gwt.home}">
-      <include name="*.jar"/>
-      <include name="*.xml"/>
-    </fileset>
-  </path>
-
-
-  <target name="gwt-compile" description="GWT compile to JavaScript">
-    <java failonerror="true" fork="true" classname="com.google.gwt.dev.Compiler">
-      <classpath>
-        <path refid="gwt.classpath"/>
-        <pathelement location="${src.dir}"/>
-        <pathelement location="../drools-ide-common/src/main/java"/>
-        <pathelement location="../drools-ide-common/src/main/resources"/>
-        <pathelement location="../lib/cobogw-1.0.jar"/>
-        <pathelement location="../lib/gwt-diagrams-0.2-RC00.jar"/>
-        <pathelement location="../drools-factconstraint/src/main/java"/>
-        <pathelement location="../lib/gwtext.jar"/>
-        <pathelement location="../drools-factconstraint/src/main/resources"/>
-        <!--pathelement location="" /-->
-        <path refid="compile.classpath"/>
-      </classpath>
-      <jvmarg value="-Xmx256M"/>
-      <arg value="org.drools.guvnor.Guvnor"/>
-    </java>
-
-    <delete>
-      <fileset dir="target/drools-guvnor/org.drools.guvnor.Guvnor" includes="*.gwt.rpc *.cache.html *.cache.js *.cache.xml *.cache.png"/>
-    </delete>
-    <copy todir="target/drools-guvnor">
-      <fileset dir="war">
-        <include name="**/*"/>
-      </fileset>
-    </copy>
-    <delete>
-      <fileset dir="war"/>
-    </delete>
-  </target>
 
 
   <!-- Creates a stand alone zip. JBoss AS + Guvnor -->
