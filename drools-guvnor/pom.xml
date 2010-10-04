@@ -21,6 +21,10 @@
           <module>org.drools.guvnor.Guvnor</module>
           <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
           <draftCompile>true</draftCompile><!-- TODO make production profile that sets draft on false -->
+          <compileSourcesArtifacts>
+            <compileSourcesArtifact>org.drools:drools-factconstraint</compileSourcesArtifact>
+            <compileSourcesArtifact>org.drools:drools-ide-common</compileSourcesArtifact>
+          </compileSourcesArtifacts>
           <localWorkers>2</localWorkers><!-- Using all workers can temporarily hang te mouse and isn't much faster -->
           <extraJvmArgs>-Xmx512m</extraJvmArgs>
         </configuration>
@@ -159,21 +163,9 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-factconstraint</artifactId>
     </dependency>
-    <dependency><!-- TODO with maven-gwt-plugin 2.1 use compileSourcesArtifacts instead (http://jira.codehaus.org/browse/MGWT-170) -->
-      <groupId>org.drools</groupId>
-      <artifactId>drools-factconstraint</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
-    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-ide-common</artifactId>
-    </dependency>
-    <dependency><!-- TODO with maven-gwt-plugin 2.1 use compileSourcesArtifacts instead (http://jira.codehaus.org/browse/MGWT-170) -->
-      <groupId>org.drools</groupId>
-      <artifactId>drools-ide-common</artifactId>
-      <version>${project.version}</version>
-      <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>wsdl4j</groupId>
