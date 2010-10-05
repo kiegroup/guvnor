@@ -122,7 +122,7 @@ public class GuidedDecisionTableWidget extends Composite
     private SuggestionCompletionEngine  sce;
     private GroupingStore               store;
     private Constants                   constants = ((Constants) GWT.create( Constants.class ));
-    RecordDef                           recordDef;
+    private RecordDef                   recordDef;
 
     public GuidedDecisionTableWidget(RuleAsset asset,
                                      RuleViewer viewer) {
