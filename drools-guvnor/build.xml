@@ -2,7 +2,7 @@
 <!--
  @author Michael Neale
 -->
-<project name="org.drools.guvnor.Guvnor" default="gwt-compile" basedir="." xmlns:gwt="antlib:de.samaflost.gwttasks">
+<project name="org.drools.guvnor.Guvnor" basedir=".">
 
   <property file="build.properties"/>
 
