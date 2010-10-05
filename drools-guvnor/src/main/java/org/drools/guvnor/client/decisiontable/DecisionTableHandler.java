@@ -27,7 +27,7 @@ import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 
 /**
  * Helps to move rows and columns in Decision Table.
- * 
+ *
  * @author Toni Rikkola
  *
  */
@@ -44,7 +44,7 @@ public class DecisionTableHandler {
 
     /**
      * Checks if old and new column have the same type.
-     * 
+     *
      * @param dt
      * @param oldIndex
      * @param newIndex
@@ -64,7 +64,7 @@ public class DecisionTableHandler {
 
     /**
      * Moves the column if the old and new index columns have the same type.
-     * 
+     *
      * @param dt
      * @param oldIndex
      * @param newIndex
@@ -86,28 +86,28 @@ public class DecisionTableHandler {
         int add = COUNTER_AND_DESCRIPTION;
         switch ( type ) {
             case METADATA :
-                dt.setMetadataCols( new Mover<MetadataCol>().moveColumnHeader( dt.getMetadataCols(),
-                                                                               oldIndex - add,
-                                                                               newIndex - add ) );
+                dt.setMetadataCols( moveColumnHeader( dt.getMetadataCols(),
+                                                      oldIndex - add,
+                                                      newIndex - add ) );
                 break;
             case ATTRIBUTE :
                 add = COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size();
-                dt.attributeCols = new Mover<AttributeCol>().moveColumnHeader( dt.attributeCols,
-                                                                               oldIndex - add,
-                                                                               newIndex - add );
+                dt.attributeCols = moveColumnHeader( dt.attributeCols,
+                                                     oldIndex - add,
+                                                     newIndex - add );
                 break;
             case CONDITION :
                 add = COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size() + dt.attributeCols.size();
-                dt.conditionCols = new Mover<ConditionCol>().moveColumnHeader( dt.conditionCols,
-                                                                               oldIndex - add,
-                                                                               newIndex - add );
+                dt.conditionCols = moveColumnHeader( dt.conditionCols,
+                                                     oldIndex - add,
+                                                     newIndex - add );
                 break;
             case ACTION :
                 // +1 as we have an arrow between conditions and actions.
                 add = COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size() + dt.attributeCols.size() + ARROW + dt.conditionCols.size();
-                dt.actionCols = new Mover<ActionCol>().moveColumnHeader( dt.actionCols,
-                                                                         oldIndex - add,
-                                                                         newIndex - add );
+                dt.actionCols = moveColumnHeader( dt.actionCols,
+                                                  oldIndex - add,
+                                                  newIndex - add );
                 break;
             default :
                 break;
@@ -199,14 +199,10 @@ public class DecisionTableHandler {
             }
         }
     }
-}
 
-class Mover<T> {
-
-    public List<T> moveColumnHeader(List<T> list,
+    public static <T> List <T>moveColumnHeader(List<T> list,
                                     int oldIndex,
                                     int newIndex) {
-
         T from = list.get( oldIndex );
         T to = list.get( newIndex );
 
@@ -228,4 +224,5 @@ class Mover<T> {
 
         return newList;
     }
+
 }
