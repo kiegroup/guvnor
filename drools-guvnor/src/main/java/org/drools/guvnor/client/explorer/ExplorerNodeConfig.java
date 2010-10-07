@@ -83,14 +83,14 @@ public class ExplorerNodeConfig {
         item.setUserObject(new String[]{AssetFormats.FUNCTION});
         pkg.addItem(item);        
         
-        item = new TreeItem(Util.getHeader(images.modelAsset(), constants.Model()));
+        item = new TreeItem(Util.getHeader(images.modelAsset(), constants.DSLConfigurations()));
         itemWidgets.put(item, AssetFormats.DSL);
         item.setUserObject(new String[]{AssetFormats.DSL});
         pkg.addItem(item);        
-        
-        item = new TreeItem(Util.getHeader(images.ruleAsset(), constants.BusinessRuleAssets()));
+
+        item = new TreeItem(Util.getHeader(images.modelAsset(), constants.Model()));
         itemWidgets.put(item, AssetFormats.DRL_MODEL);
-        item.setUserObject(new String[]{AssetFormats.DRL_MODEL});
+        item.setUserObject(new String[]{AssetFormats.DRL_MODEL,AssetFormats.MODEL});
         pkg.addItem(item);
         
         if ( Preferences.getBooleanPref( "flex-bpel-editor" ) ) {
