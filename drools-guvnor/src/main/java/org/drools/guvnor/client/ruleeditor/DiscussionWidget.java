@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.explorer.CategoriesPanel;
+import org.drools.guvnor.client.explorer.BrowseTree;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
@@ -169,7 +169,7 @@ public class DiscussionWidget extends Composite {
         }
 
         String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + asset.metaData.packageName+
-                "&assetName=" + URL.encode(asset.metaData.name) + "&viewUrl=" + CategoriesPanel.getSelfURL();
+                "&assetName=" + URL.encode(asset.metaData.name) + "&viewUrl=" + BrowseTree.getSelfURL();
         hp.add(new HTML("<a href='" + feedURL + "' target='_blank'><img src='images/feed.png'/></a>"));
 
         newCommentLayout.add(hp);

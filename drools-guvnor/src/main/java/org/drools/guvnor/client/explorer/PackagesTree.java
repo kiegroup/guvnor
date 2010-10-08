@@ -214,7 +214,7 @@ public class PackagesTree extends AbstractTree {
 								AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID, cb);
 					}
 				}, GWT.getModuleBaseURL() + "feed/package?name=" + pc.name + "&viewUrl="
-						+ CategoriesPanel.getSelfURL() + "&status=*");
+						+ BrowseTree.getSelfURL() + "&status=*");
 				centertabbedPanel.addTab(node.getText() + " [" + pc.name + "]", list, key);
 
 				final ServerPushNotification sub = new ServerPushNotification() {
