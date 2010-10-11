@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,19 +26,27 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  *
  * @author Michael Neale
  */
-public class FactMetaModel implements PortableObject {
+public class FactMetaModel
+    implements
+    PortableObject {
 
-	public String name;
+    private static final long   serialVersionUID = 510L;
 
-	public List<FieldMetaModel> fields = new ArrayList<FieldMetaModel>();
+    public String               name;
 
-	public FactMetaModel() {}
-	public FactMetaModel(String name, List fields) {
-		this.name = name;
-		this.fields = fields;
-	}
+    public List<FieldMetaModel> fields           = new ArrayList<FieldMetaModel>();
 
+    public FactMetaModel() {
+    }
 
+    public FactMetaModel(String name) {
+        this.name = name;
+    }
+
+    public FactMetaModel(String name,
+                         List<FieldMetaModel> fields) {
+        this.name = name;
+        this.fields = fields;
+    }
 
 }
-

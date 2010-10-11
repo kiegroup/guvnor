@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.guvnor.client.factmodel;
 
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
-public class FieldMetaModel implements PortableObject {
+public class FieldMetaModel
+    implements
+    PortableObject {
 
-	public String name;
-	public String type;
+    private static final long serialVersionUID = 510l;
+    public String             name;
+    public String             type;
 
-	public FieldMetaModel() {}
-	public FieldMetaModel(String name, String type) {
-		this.name = name;
-		this.type = type;
-	}
+    public FieldMetaModel() {
+    }
+
+    public FieldMetaModel(String name,
+                          String type) {
+        this.name = name;
+        this.type = type;
+    }
 
 }

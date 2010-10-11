@@ -16,10 +16,14 @@
 package org.drools.guvnor.client.util;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,14 +33,14 @@ import com.google.gwt.user.client.ui.Widget;
  * @author rikkola
  *
  */
-public class LazyStackPanelHeader extends Composite {
+public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
 
     interface LazyStackPanelHeaderBinder
         extends
         UiBinder<Widget, LazyStackPanelHeader> {
     }
 
-    private static LazyStackPanelHeaderBinder uiBinder = GWT.create( LazyStackPanelHeaderBinder.class );
+    private static LazyStackPanelHeaderBinder uiBinder           = GWT.create( LazyStackPanelHeaderBinder.class );
 
     @UiField
     Image                                     icon;
@@ -44,15 +48,55 @@ public class LazyStackPanelHeader extends Composite {
     @UiField
     Label                                     titleLabel;
 
+    private ClickHandler                      expandClickHandler = new ClickHandler() {
+
+                                                                     public void onClick(ClickEvent event) {
+                                                                         onTitleClicked();
+                                                                     }
+                                                                 };
+
     public LazyStackPanelHeader(String headerText) {
 
-        initWidget( uiBinder.createAndBindUi( this ) );
+        add( uiBinder.createAndBindUi( this ) );
 
         titleLabel.setText( headerText );
+
+        icon.addClickHandler( expandClickHandler );
+        titleLabel.addClickHandler( expandClickHandler );
+
+        setIconImage();
+
+        addOpenHandler( new OpenHandler<AbstractLazyStackPanelHeader>() {
+            public void onOpen(OpenEvent<AbstractLazyStackPanelHeader> event) {
+                expanded = true;
+                setIconImage();
+            }
+        } );
+
+        addCloseHandler( new CloseHandler<AbstractLazyStackPanelHeader>() {
+            public void onClose(CloseEvent<AbstractLazyStackPanelHeader> event) {
+                expanded = false;
+                setIconImage();
+            }
+        } );
     }
 
-    public void addClickHandler(ClickHandler clickHandler) {
-        icon.addClickHandler( clickHandler );
-        titleLabel.addClickHandler( clickHandler );
+    private void setIconImage() {
+        if ( expanded ) {
+            icon.setUrl( "images/collapse.gif" );
+        } else {
+            icon.setUrl( "images/expand.gif" );
+        }
+
+    }
+
+    private void onTitleClicked() {
+        if ( expanded ) {
+            CloseEvent.fire( this,
+                             this );
+        } else {
+            OpenEvent.fire( this,
+                            this );
+        }
     }
 }

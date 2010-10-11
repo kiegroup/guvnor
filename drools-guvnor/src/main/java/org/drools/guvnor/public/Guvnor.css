@@ -31,25 +31,31 @@ code {
 }
 
 .my-DisclosurePanel {
+	
 }
+
 .my-DisclosurePanel-open {
+	
 }
+
 .my-DisclosurePanel-closed {
+	
 }
-.my-DisclosurePanel .header,
-.my-DisclosurePanel .header a,
-.my-DisclosurePanel .header td {
-  height:30px;
-  background: white;
-  text-decoration: none;  /* Remove underline from header */
-  color: white; 
-  cursor: pointer;
-  cursor: hand;
+
+.my-DisclosurePanel .header,.my-DisclosurePanel .header a,.my-DisclosurePanel .header td
+	{
+	height: 30px;
+	background: white;
+	text-decoration: none; /* Remove underline from header */
+	color: white;
+	cursor: pointer;
+	cursor: hand;
 }
+
 .my-DisclosurePanel .content {
-  border-left: 3px solid #e3e3e3;
-  padding: 4px 0px 4px 8px;
-  margin-left: 16px;
+	border-left: 3px solid #e3e3e3;
+	padding: 4px 0px 4px 8px;
+	margin-left: 16px;
 }
 
 .VerticalSplitPanel .vsplitter {
@@ -628,4 +634,12 @@ div.smallish-progress-text { /* Don't change the following lines. */
 .guvnor-FormPanel {
 	background-color: #E3E3E3;
 	padding: 2px;
+}
+
+.guvnor-bold-label {
+	font-weight: bold;
+}
+
+.guvnor-lazyStackPanel {
+	border-collapse:collapse;
 }

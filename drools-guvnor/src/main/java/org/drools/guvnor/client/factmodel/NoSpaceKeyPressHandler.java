@@ -13,25 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.guvnor.client.factmodel;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * 
  * @author rikkola
  *
  */
-public class FactModels
+public class NoSpaceKeyPressHandler
     implements
-    PortableObject {
+    KeyPressHandler {
 
-    private static final long  serialVersionUID = 510L;
+    public void onKeyPress(KeyPressEvent event) {
+        if ( isTheCharacterSpace( event ) ) {
+            ((TextBox) event.getSource()).cancelKey();
+        }
+    }
 
-    public List<FactMetaModel> models           = new ArrayList<FactMetaModel>();
+    private boolean isTheCharacterSpace(KeyPressEvent event) {
+        return event.getCharCode() == ' ';
+    }
 
 }

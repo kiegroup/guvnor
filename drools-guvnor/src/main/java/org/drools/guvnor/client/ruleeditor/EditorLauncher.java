@@ -42,7 +42,7 @@ import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.decisiontable.DecisionTableXLSWidget;
 import org.drools.guvnor.client.decisiontable.GuidedDecisionTableWidget;
 import org.drools.guvnor.client.explorer.Preferences;
-import org.drools.guvnor.client.factmodel.FactModelWidget;
+import org.drools.guvnor.client.factmodel.FactModelsWidget;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.modeldriven.ui.RuleModellerWidgetFactory;
 import org.drools.guvnor.client.packages.ModelAttachmentFileWidget;
@@ -119,7 +119,7 @@ public class EditorLauncher {
         } else if ( asset.metaData.format.equals( AssetFormats.DECISION_TABLE_GUIDED ) ) {
             return new GuidedDecisionTableWidget( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.DRL_MODEL ) ) {
-            return new FactModelWidget( asset );
+            return new FactModelsWidget( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.DSL ) ) {
             return new DefaultRuleContentWidget( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.PROPERTIES ) ) {

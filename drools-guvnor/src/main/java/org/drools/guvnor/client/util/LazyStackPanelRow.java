@@ -24,17 +24,19 @@ import com.google.gwt.user.client.ui.Widget;
  * @author rikkola
  *
  */
-class LazyStackPanelRow extends VerticalPanel {
+public class LazyStackPanelRow extends VerticalPanel {
 
-    private final LazyStackPanelHeader header;
-    private final LoadContentCommand   contentLoad;
-    private Widget                     contentWidget = null;
-    private SimplePanel                contentPanel  = new SimplePanel();
+    private final AbstractLazyStackPanelHeader header;
+    private final LoadContentCommand           contentLoad;
+    private Widget                             contentWidget = null;
+    private SimplePanel                        contentPanel  = new SimplePanel();
 
-    private boolean                    expanded;
+    private boolean                            expanded;
 
-    public LazyStackPanelRow(LazyStackPanelHeader titleWidget,
-                         LoadContentCommand contentLoad) {
+    public LazyStackPanelRow(AbstractLazyStackPanelHeader titleWidget,
+                             LoadContentCommand contentLoad) {
+
+        this.setWidth( "100%" );
 
         this.header = titleWidget;
         this.contentLoad = contentLoad;
@@ -44,12 +46,6 @@ class LazyStackPanelRow extends VerticalPanel {
     private void init() {
         clear();
 
-        if ( expanded ) {
-            header.icon.setUrl( "images/collapse.gif" );
-        } else {
-            header.icon.setUrl( "images/expand.gif" );
-        }
-
         add( header );
 
         if ( contentWidget != null ) {
@@ -57,6 +53,10 @@ class LazyStackPanelRow extends VerticalPanel {
             contentPanel.add( contentWidget );
         }
 
+    }
+
+    public AbstractLazyStackPanelHeader getHeader() {
+        return header;
     }
 
     public SimplePanel getContentPanel() {

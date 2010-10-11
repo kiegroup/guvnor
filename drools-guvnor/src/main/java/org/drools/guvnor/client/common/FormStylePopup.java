@@ -34,6 +34,9 @@ public class FormStylePopup extends Popup {
         form = new FormStyleLayout( image,
                                     title );
 
+        setModal( true );
+        setGlassEnabled( true );
+
         setTitle( title );
 
     }
