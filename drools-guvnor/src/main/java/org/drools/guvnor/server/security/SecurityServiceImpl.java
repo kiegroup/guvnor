@@ -195,6 +195,13 @@ public class SecurityServiceImpl
         final String dateFormat = "drools.dateformat";
         final String defaultLanguage = "drools.defaultlanguage";
         final String defaultCountry = "drools.defaultcountry";
+        final String serializationSign = "drools.serialization.sign";
+        final String privateKeyStoreURL = "drools.serialization.private.keyStoreURL";
+        final String privateKeyStorePwd = "drools.serialization.private.keyStorePwd";
+        final String privateKeyAlias = "drools.serialization.private.keyAlias";
+        final String privateKeyPwd = "drools.serialization.private.keyPwd";
+        final String publicKeyStoreURL = "drools.serialization.public.keyStoreURL";
+        final String publicKeyStorePwd = "drools.serialization.public.keyStorePwd";
 
         // Set properties that were specified in the properties file
         if ( prefs.containsKey( dateFormat ) ) {
@@ -208,6 +215,35 @@ public class SecurityServiceImpl
         if ( prefs.containsKey( defaultCountry ) ) {
             System.setProperty( defaultCountry,
                                 prefs.get( defaultCountry ) );
+        }
+        
+        if ( prefs.containsKey( serializationSign ) ) {
+            System.setProperty( serializationSign,
+                                prefs.get( serializationSign ) );
+        }
+        if ( prefs.containsKey( privateKeyStoreURL ) ) {
+            System.setProperty( privateKeyStoreURL,
+                                prefs.get( privateKeyStoreURL ) );
+        }
+        if ( prefs.containsKey( privateKeyStorePwd ) ) {
+            System.setProperty( privateKeyStorePwd,
+                                prefs.get( privateKeyStorePwd ) );
+        }
+        if ( prefs.containsKey( privateKeyAlias ) ) {
+            System.setProperty( privateKeyAlias,
+                                prefs.get( privateKeyAlias ) );
+        }
+        if ( prefs.containsKey( privateKeyPwd ) ) {
+            System.setProperty( privateKeyPwd,
+                                prefs.get( privateKeyPwd ) );
+        }
+        if ( prefs.containsKey( publicKeyStoreURL ) ) {
+            System.setProperty( publicKeyStoreURL,
+                                prefs.get( publicKeyStoreURL ) );
+        }
+        if ( prefs.containsKey( publicKeyStorePwd ) ) {
+            System.setProperty( publicKeyStorePwd,
+                                prefs.get( publicKeyStorePwd ) );
         }
 
         // If properties were not set in the file, use the defaults
@@ -223,5 +259,9 @@ public class SecurityServiceImpl
             prefs.put( defaultCountry,
                        System.getProperty( defaultCountry ) );
         }
+        
+        // For security Serialization we DO NOT want to set any default 
+        // as those can be set through other means and we don't want 
+        // to override or mess with that
     }
 }
