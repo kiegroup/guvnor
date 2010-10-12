@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,198 +41,220 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-
-
 public class PackagesTree extends AbstractTree {
-    private static Constants constants = GWT.create(Constants.class);
-    private static Images images = (Images) GWT.create(Images.class);       
+    private static Constants      constants      = GWT.create( Constants.class );
+    private static Images         images         = (Images) GWT.create( Images.class );
 
-    private Map<TreeItem, String> itemWidgets = new HashMap<TreeItem, String>();
+    private Map<TreeItem, String> itemWidgets    = new HashMap<TreeItem, String>();
 
-    private boolean packagesLoaded = false;
+    private boolean               packagesLoaded = false;
 
     public PackagesTree(ExplorerViewCenterPanel tabbedPanel) {
-        super(tabbedPanel);
+        super( tabbedPanel );
         this.name = constants.KnowledgeBases();
         this.image = images.packages();
 
-    	mainTree = new Tree();    	
-    	mainTree.setAnimationEnabled(true);
-    	//lazy loaded to easy startup wait time.
+        mainTree = new Tree();
+        mainTree.setAnimationEnabled( true );
+        //lazy loaded to easy startup wait time.
         //setupPackagesTree(this.centertabbedPanel);
-        mainTree.addSelectionHandler(this);
-
+        mainTree.addSelectionHandler( this );
 
         //these panels are lazy loaded to easy startup wait time.
-/*        addListener(new PanelListenerAdapter() {
-        	public void onExpand(Panel panel) {
-                loadPackageList();
-            }
-        });
+        /*        addListener(new PanelListenerAdapter() {
+                	public void onExpand(Panel panel) {
+                        loadPackageList();
+                    }
+                });
 
-        add(packagesPanel);
-        */    
+                add(packagesPanel);
+                */
     }
 
     public void loadPackageList() {
-        if (!packagesLoaded) {
-            setupPackagesTree(this.centertabbedPanel);
-            mainTree.addSelectionHandler(this);
+        if ( !packagesLoaded ) {
+            setupPackagesTree( this.centertabbedPanel );
             packagesLoaded = true;
         }
     }
 
     public void refreshTree() {
-    	mainTree.clear(); 
-    	itemWidgets.clear();
-    	setupPackagesTree(centertabbedPanel);
+        mainTree.clear();
+        itemWidgets.clear();
+
+        setupPackagesTree( centertabbedPanel );
     }
 
     private void setupPackagesTree(final ExplorerViewCenterPanel tabPanel) {
-    	TreeItem packageRootNode = mainTree.addItem(Util.getHeader(images.chartOrganisation(), constants.Packages()));
-        packageRootNode.setState(true);
-		loadPackages(packageRootNode, itemWidgets);
-		mainTree.addItem(packageRootNode);
+        TreeItem packageRootNode = mainTree.addItem( Util.getHeader( images.chartOrganisation(),
+                                                                     constants.Packages() ) );
+        packageRootNode.setState( true );
+        loadPackages( packageRootNode,
+                      itemWidgets );
+        mainTree.addItem( packageRootNode );
 
-		loadGlobal(mainTree, itemWidgets);
+        loadGlobal( mainTree,
+                    itemWidgets );
 
-/*            @Override
-            public void onCollapseNode(final TreeItem node) {
-                if (node.getText().equals(constants.Packages())) {
-                    Node[] children = node.getChildNodes();
-                    for (Node child : children) {
-                        node.removeChild(child);
-                    }
-                    loadPackages(node, itemWidgets);
-                }
-            }*/
+        /*            @Override
+                    public void onCollapseNode(final TreeItem node) {
+                        if (node.getText().equals(constants.Packages())) {
+                            Node[] children = node.getChildNodes();
+                            for (Node child : children) {
+                                node.removeChild(child);
+                            }
+                            loadPackages(node, itemWidgets);
+                        }
+                    }*/
 
         //return mainTree;
     }
 
-    private void loadPackages(final TreeItem root, final Map<TreeItem, String> itemWidgets) {
-        RepositoryServiceFactory.getService().listPackages(
-                new GenericCallback<PackageConfigData[]>() {
-                    public void onSuccess(PackageConfigData[] value) {
-                        PackageHierarchy ph = new PackageHierarchy();
+    private void loadPackages(final TreeItem root,
+                              final Map<TreeItem, String> itemWidgets) {
+        RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
+            public void onSuccess(PackageConfigData[] value) {
+                PackageHierarchy ph = new PackageHierarchy();
 
-                        for (PackageConfigData val : value) {
-                            ph.addPackage(val);
-                        }
+                for ( PackageConfigData val : value ) {
+                    ph.addPackage( val );
+                }
 
-                        for (PackageHierarchy.Folder hf : ph.root.children) {
-                            buildPkgTree(root, hf);
-                        }
+                for ( PackageHierarchy.Folder hf : ph.root.children ) {
+                    buildPkgTree( root,
+                                  hf );
+                }
 
-                        //root.expand();
-                    }
-                });
+                //root.expand();
+            }
+        } );
     }
 
-    private void loadGlobal(final Tree root, final Map<TreeItem, String> itemWidgets) {
-        RepositoryServiceFactory.getService().loadGlobalPackage(
-                new GenericCallback<PackageConfigData>() {
-                    public void onSuccess(PackageConfigData value) {
-                    	TreeItem globalRootNode = ExplorerNodeConfig.getPackageItemStructure(constants.GlobalArea(), value.uuid, itemWidgets);
-                    	globalRootNode.setHTML(Util.getHeader(images.chartOrganisation(), constants.GlobalArea()));
-                    	globalRootNode.setUserObject(value);
-                        		
-                        root.addItem(globalRootNode);
-                    }
-                });
+    private void loadGlobal(final Tree root,
+                            final Map<TreeItem, String> itemWidgets) {
+        RepositoryServiceFactory.getService().loadGlobalPackage( new GenericCallback<PackageConfigData>() {
+            public void onSuccess(PackageConfigData value) {
+                TreeItem globalRootNode = ExplorerNodeConfig.getPackageItemStructure( constants.GlobalArea(),
+                                                                                      value.uuid,
+                                                                                      itemWidgets );
+                globalRootNode.setHTML( Util.getHeader( images.chartOrganisation(),
+                                                        constants.GlobalArea() ) );
+                globalRootNode.setUserObject( value );
+
+                root.addItem( globalRootNode );
+            }
+        } );
     }
-    
-    private void buildPkgTree(TreeItem root, PackageHierarchy.Folder fldr) {
-        if (fldr.conf != null) {
-            root.addItem(loadPackage(fldr.name, fldr.conf));
-        } else {        	
-            TreeItem tn = new TreeItem(Util.getHeader(images.emptyPackage(), fldr.name));
+
+    private void buildPkgTree(TreeItem root,
+                              PackageHierarchy.Folder fldr) {
+        if ( fldr.conf != null ) {
+            root.addItem( loadPackage( fldr.name,
+                                       fldr.conf ) );
+        } else {
+            TreeItem tn = new TreeItem( Util.getHeader( images.emptyPackage(),
+                                                        fldr.name ) );
             //itemWidgets.put(item, AssetFormats.BUSINESS_RULE_FORMATS[0]);
-            root.addItem(tn);
+            root.addItem( tn );
 
-            for (PackageHierarchy.Folder c : fldr.children) {
-                buildPkgTree(tn, c);
+            for ( PackageHierarchy.Folder c : fldr.children ) {
+                buildPkgTree( tn,
+                              c );
             }
         }
     }
 
-    private TreeItem loadPackage(String name, PackageConfigData conf) {
-    	TreeItem pn = ExplorerNodeConfig.getPackageItemStructure(name, conf.uuid, itemWidgets);
-        pn.setUserObject(conf);
+    private TreeItem loadPackage(String name,
+                                 PackageConfigData conf) {
+        TreeItem pn = ExplorerNodeConfig.getPackageItemStructure( name,
+                                                                  conf.uuid,
+                                                                  itemWidgets );
+        pn.setUserObject( conf );
         return pn;
     }
 
-    public static String key(String[] fmts, PackageConfigData userObject) {
+    public static String key(String[] fmts,
+                             PackageConfigData userObject) {
         String key = userObject.uuid;
-        for (String fmt : fmts) {
+        for ( String fmt : fmts ) {
             key = key + fmt;
         }
-        if (fmts.length == 0) {
+        if ( fmts.length == 0 ) {
             key = key + "[0]";
         }
         return key;
     }
-    
 
     // Show the associated widget in the deck panel
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem node = event.getSelectedItem();
         //String widgetID = itemWidgets.get(node);
-        	
-		if (node.getUserObject() instanceof PackageConfigData
-				&& !"global".equals(((PackageConfigData) node.getUserObject()).name)) {
-			PackageConfigData pc = (PackageConfigData) node.getUserObject();
-			RulePackageSelector.currentlySelectedPackage = pc.name;
 
-			String uuid = pc.uuid;
-			centertabbedPanel.openPackageEditor(uuid, new Command() {
-				public void execute() {
-					// refresh the package tree.
-					refreshTree();
-				}
-			});
-		} else if (node.getUserObject() instanceof Object[]) {
-			//Object[] uo = (Object[]) node.getUserObject();
-			//final String[] fmts = (String[]) uo[0];
-			final String[] fmts = (String[]) node.getUserObject();
-			final PackageConfigData pc = (PackageConfigData) node.getParentItem().getUserObject();
-			RulePackageSelector.currentlySelectedPackage = pc.name;
-			String key = key(fmts, pc);
-			if (!centertabbedPanel.showIfOpen(key)) {
+        if ( node.getUserObject() instanceof PackageConfigData && !"global".equals( ((PackageConfigData) node.getUserObject()).name ) ) {
+            PackageConfigData pc = (PackageConfigData) node.getUserObject();
+            RulePackageSelector.currentlySelectedPackage = pc.name;
 
-				final AssetItemGrid list = new AssetItemGrid(new EditItemEvent() {
-					public void open(String uuid) {
-						centertabbedPanel.openAsset(uuid);
-					}
+            String uuid = pc.uuid;
+            centertabbedPanel.openPackageEditor( uuid,
+                                                 new Command() {
+                                                     public void execute() {
+                                                         // refresh the package tree.
+                                                         refreshTree();
+                                                     }
+                                                 } );
+        } else if ( node.getUserObject() instanceof Object[] ) {
+            //Object[] uo = (Object[]) node.getUserObject();
+            //final String[] fmts = (String[]) uo[0];
+            final String[] fmts = (String[]) node.getUserObject();
+            final PackageConfigData pc = (PackageConfigData) node.getParentItem().getUserObject();
+            RulePackageSelector.currentlySelectedPackage = pc.name;
+            String key = key( fmts,
+                              pc );
+            if ( !centertabbedPanel.showIfOpen( key ) ) {
 
-					public void open(MultiViewRow[] rows) {
-						centertabbedPanel.openAssets(rows);
-					}
-				}, AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID, new AssetItemGridDataLoader() {
-					public void loadData(int startRow, int numberOfRows, GenericCallback<TableDataResult> cb) {
-						RepositoryServiceFactory.getService().listAssets(pc.uuid, fmts, startRow, numberOfRows,
-								AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID, cb);
-					}
-				}, GWT.getModuleBaseURL() + "feed/package?name=" + pc.name + "&viewUrl="
-						+ BrowseTree.getSelfURL() + "&status=*");
-				centertabbedPanel.addTab(node.getText() + " [" + pc.name + "]", list, key);
+                final AssetItemGrid list = new AssetItemGrid( new EditItemEvent() {
+                                                                  public void open(String uuid) {
+                                                                      centertabbedPanel.openAsset( uuid );
+                                                                  }
 
-				final ServerPushNotification sub = new ServerPushNotification() {
-					public void messageReceived(PushResponse response) {
-						if (response.messageType.equals("packageChange") && response.message.equals(pc.name)) {
-							list.refreshGrid();
-						}
-					}
-				};
-				PushClient.instance().subscribe(sub);
-				list.addUnloadListener(new Command() {
-					public void execute() {
-						PushClient.instance().unsubscribe(sub);
-					}
-				});
-			}
-		}
+                                                                  public void open(MultiViewRow[] rows) {
+                                                                      centertabbedPanel.openAssets( rows );
+                                                                  }
+                                                              },
+                                                              AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID,
+                                                              new AssetItemGridDataLoader() {
+                                                                  public void loadData(int startRow,
+                                                                                       int numberOfRows,
+                                                                                       GenericCallback<TableDataResult> cb) {
+                                                                      RepositoryServiceFactory.getService().listAssets( pc.uuid,
+                                                                                                                        fmts,
+                                                                                                                        startRow,
+                                                                                                                        numberOfRows,
+                                                                                                                        AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID,
+                                                                                                                        cb );
+                                                                  }
+                                                              },
+                                                              GWT.getModuleBaseURL() + "feed/package?name=" + pc.name + "&viewUrl=" + BrowseTree.getSelfURL() + "&status=*" );
+                centertabbedPanel.addTab( node.getText() + " [" + pc.name + "]",
+                                          list,
+                                          key );
 
-    }  
-    
+                final ServerPushNotification sub = new ServerPushNotification() {
+                    public void messageReceived(PushResponse response) {
+                        if ( response.messageType.equals( "packageChange" ) && response.message.equals( pc.name ) ) {
+                            list.refreshGrid();
+                        }
+                    }
+                };
+                PushClient.instance().subscribe( sub );
+                list.addUnloadListener( new Command() {
+                    public void execute() {
+                        PushClient.instance().unsubscribe( sub );
+                    }
+                } );
+            }
+        }
+
+    }
+
 }
