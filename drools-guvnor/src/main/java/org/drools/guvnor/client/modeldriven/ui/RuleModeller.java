@@ -65,34 +65,26 @@ import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPatt
 import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
-import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.KeyboardListener;
-import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.MouseListenerAdapter;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.gwtext.client.core.ExtElement;
 
 /**
  * This is the parent widget that contains the model based rule builder.
@@ -121,7 +113,6 @@ public class RuleModeller extends DirtyableComposite
     private final Command            onWidgetModifiedCommand = new Command() {
 
                                                                  public void execute() {
-                                                                     //GWT.log("Widget Modified!");
                                                                      hasModifiedWidgets = true;
                                                                  }
                                                              };
@@ -153,8 +144,6 @@ public class RuleModeller extends DirtyableComposite
 
     private boolean isLock(String attr) {
 
-        //UNCOMMENT THIS WHEN READY !
-        //if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_CREATE_NEW_PACKAGE)) return true;
         if ( this.asset.isreadonly ) {
             return true;
         }
@@ -204,8 +193,6 @@ public class RuleModeller extends DirtyableComposite
                                               "87%" );
         layout.getColumnFormatter().setWidth( 2,
                                               "5%" );
-
-        //layout.setBorderWidth(2);
 
         layout.setWidget( currentLayoutRow,
                           0,
@@ -297,7 +284,6 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private boolean showAttributes() {
-        //return false;
         return ExplorerLayoutManager.shouldShow( Capabilities.SHOW_PACKAGE_VIEW );
     }
 
@@ -314,93 +300,22 @@ public class RuleModeller extends DirtyableComposite
         add.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                showAttributeSelector( (Widget) event.getSource() );
+                showAttributeSelector();
             }
         } );
         return add;
     }
 
-    protected void showAttributeSelector(Widget w) {
-        final FormStylePopup pop = new FormStylePopup( "images/config.png",
-                                                       constants.AddAnOptionToTheRule() ); //NON-NLS
-        final ListBox list = RuleAttributeWidget.getAttributeList();
+    protected void showAttributeSelector() {
+        AttributeSelectorPopup pop = new AttributeSelectorPopup( model,
+                                                                 lockLHS(),
+                                                                 lockRHS(),
+                                                                 new Command() {
 
-        final Image addbutton = new ImageButton( "images/new_item.gif" ); //NON-NLS
-        final TextBox box = new TextBox();
-
-        list.setSelectedIndex( 0 );
-
-        list.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                String attr = list.getItemText( list.getSelectedIndex() );
-                if ( attr.equals( RuleAttributeWidget.LOCK_LHS ) || attr.equals( RuleAttributeWidget.LOCK_RHS ) ) {
-                    model.addMetadata( new RuleMetadata( attr,
-                                                         "true" ) );
-                } else {
-                    model.addAttribute( new RuleAttribute( attr,
-                                                           "" ) );
-                }
-                refreshWidget();
-                pop.hide();
-            }
-        } );
-        box.setVisibleLength( 15 );
-
-        addbutton.setTitle( constants.AddMetadataToTheRule() );
-
-        addbutton.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-
-                model.addMetadata( new RuleMetadata( box.getText(),
-                                                     "" ) );
-                refreshWidget();
-                pop.hide();
-            }
-        } );
-        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-        horiz.add( box );
-        horiz.add( addbutton );
-
-        pop.addAttribute( constants.Metadata3(),
-                          horiz );
-        pop.addAttribute( constants.Attribute1(),
-                          list );
-
-        Button freezeConditions = new Button( constants.Conditions() );
-        freezeConditions.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                model.addMetadata( new RuleMetadata( RuleAttributeWidget.LOCK_LHS,
-                                                     "true" ) );
-                refreshWidget();
-                pop.hide();
-            }
-        } );
-        Button freezeActions = new Button( constants.Actions() );
-        freezeActions.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                model.addMetadata( new RuleMetadata( RuleAttributeWidget.LOCK_RHS,
-                                                     "true" ) );
-                refreshWidget();
-                pop.hide();
-            }
-        } );
-        HorizontalPanel hz = new HorizontalPanel();
-        if ( !lockLHS() ) {
-            hz.add( freezeConditions );
-        }
-        if ( !lockRHS() ) {
-            hz.add( freezeActions );
-        }
-        hz.add( new InfoPopup( constants.FrozenAreas(),
-                               constants.FrozenExplanation() ) );
-
-        if ( hz.getWidgetCount() > 1 ) {
-            pop.addAttribute( constants.FreezeAreasForEditing(),
-                              hz );
-        }
+                                                                     public void execute() {
+                                                                         refreshWidget();
+                                                                     }
+                                                                 } );
 
         pop.show();
     }
@@ -480,23 +395,23 @@ public class RuleModeller extends DirtyableComposite
             final int index = i;
             if ( !(this.lockRHS() || w.isReadOnly()) ) {
                 this.addActionsButtonsToLayout( constants.AddAnActionBelow(),
-                                                new ClickListener() {
+                                                new ClickHandler() {
 
-                                                    public void onClick(Widget w) {
-                                                        showActionSelector( w,
+                                                    public void onClick(ClickEvent event) {
+                                                        showActionSelector( (Widget) event.getSource(),
                                                                             index + 1 );
                                                     }
                                                 },
-                                                new ClickListener() {
+                                                new ClickHandler() {
 
-                                                    public void onClick(Widget sender) {
+                                                    public void onClick(ClickEvent event) {
                                                         model.moveRhsItemDown( index );
                                                         refreshWidget();
                                                     }
                                                 },
-                                                new ClickListener() {
+                                                new ClickHandler() {
 
-                                                    public void onClick(Widget sender) {
+                                                    public void onClick(ClickEvent event) {
                                                         model.moveRhsItemUp( index );
                                                         refreshWidget();
                                                     }
@@ -515,7 +430,6 @@ public class RuleModeller extends DirtyableComposite
      */
     protected void showConditionSelector(final Widget w,
                                          Integer position) {
-        //XXX {bauna} add actions for LHS
         final FormStylePopup popup = new FormStylePopup();
         popup.setTitle( constants.AddAConditionToTheRule() );
 
@@ -644,46 +558,17 @@ public class RuleModeller extends DirtyableComposite
                           }
                       } );
 
-            //XXX used to test 
-            //            choices.addItem("..................");
-            //            choices.addItem(constants.ExpressionEditor(), "EE");
-            //            cmds.put("EE", new Command() {
-            //
-            //                public void execute() {
-            //                    model.addLhsItem(new ExpressionFormLine(), Integer.parseInt(positionCbo.getValue(positionCbo.getSelectedIndex())));
-            //                    refreshWidget();
-            //                    popup.hide();
-            //                }
-            //            });
         }
 
         if ( completions.getDSLConditions().length == 0 && facts.length == 0 ) {
             popup.addRow( new HTML( "<div class='highlight'>" + constants.NoModelTip() + "</div>" ) ); //NON-NLS
         }
 
-        final ChangeListener cl = new ChangeListener() {
-
-            public void onChange(Widget sender) {
-                int sel = choices.getSelectedIndex();
-                if ( sel != -1 ) {
-                    Command cmd = cmds.get( choices.getValue( choices.getSelectedIndex() ) );
-                    if ( cmd != null ) {
-                        cmd.execute();
-                    }
-                    verifyRule( null );
-                }
-            }
-        };
-        //choices.addChangeListener(cl);
-
-        choices.addKeyboardListener( new KeyboardListenerAdapter() {
-
-            @Override
-            public void onKeyUp(final Widget sender,
-                                char keyCode,
-                                int modifiers) {
-                if ( keyCode == KeyboardListener.KEY_ENTER ) {
-                    cl.onChange( sender );
+        choices.addKeyUpHandler( new KeyUpHandler() {
+            public void onKeyUp(com.google.gwt.event.dom.client.KeyUpEvent event) {
+                if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
+                    selectSomething( choices,
+                                     cmds );
                 }
             }
         } );
@@ -702,10 +587,11 @@ public class RuleModeller extends DirtyableComposite
         hp.add( choices );
         Button b = new Button( constants.OK() );
         hp.add( b );
-        b.addClickListener( new ClickListener() {
+        b.addClickHandler( new ClickHandler() {
 
-            public void onClick(Widget sender) {
-                cl.onChange( sender );
+            public void onClick(ClickEvent event) {
+                selectSomething( choices,
+                                 cmds );
             }
         } );
         popup.addRow( hp );
@@ -719,6 +605,19 @@ public class RuleModeller extends DirtyableComposite
                 choices.setFocus( true );
             }
         } );
+    }
+
+    private void selectSomething(ListBox choices,
+                                 Map<String, Command> cmds) {
+        int sel = choices.getSelectedIndex();
+        if ( sel != -1 ) {
+            Command cmd = cmds.get( choices.getValue( choices.getSelectedIndex() ) );
+            if ( cmd != null ) {
+                cmd.execute();
+            }
+            verifyRule( null );
+        }
+
     }
 
     protected void addNewDSLLhs(DSLSentence sentence,
@@ -792,7 +691,6 @@ public class RuleModeller extends DirtyableComposite
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
 
-            //varBox.addItem( v );
             choices.addItem( Format.format( constants.ChangeFieldValuesOf0(),
                                             v ),
                              "VAR" + v ); //NON-NLS
@@ -827,7 +725,6 @@ public class RuleModeller extends DirtyableComposite
         //RETRACT
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
-            //retractBox.addItem( v );
             choices.addItem( Format.format( constants.Retract0(),
                                             v ),
                              "RET" + v ); //NON-NLS
@@ -845,7 +742,6 @@ public class RuleModeller extends DirtyableComposite
         //MODIFY
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
-            // modifyBox.addItem( v );
 
             choices.addItem( Format.format( constants.Modify0(),
                                             v ),
@@ -1003,36 +899,37 @@ public class RuleModeller extends DirtyableComposite
         }
 
         HorizontalPanel hp = new HorizontalPanel();
-        final ClickListener cl = new ClickListener() {
 
-            public void onClick(Widget sender) {
-                int sel = choices.getSelectedIndex();
-                if ( sel != -1 ) {
-                    cmds.get( choices.getValue( sel ) ).execute();
-                }
-            }
-        };
+        choices.addKeyUpHandler( new KeyUpHandler() {
 
-        choices.addKeyboardListener( new KeyboardListenerAdapter() {
-
-            @Override
-            public void onKeyUp(Widget sender,
-                                char keyCode,
-                                int modifiers) {
-                if ( keyCode == KeyboardListener.KEY_ENTER ) {
-                    cl.onClick( sender );
-                }
+            public void onKeyUp(KeyUpEvent event) {
+                selectSomethingElse( choices,
+                                     cmds );
             }
         } );
 
         Button ok = new Button( constants.OK() );
-        ok.addClickListener( cl );
+        ok.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                selectSomethingElse( choices,
+                                     cmds );
+            }
+        } );
         hp.add( choices );
         hp.add( ok );
         popup.addRow( hp );
 
         popup.show();
         choices.setFocus( true );
+    }
+
+    private void selectSomethingElse(final ListBox choices,
+                                     final Map<String, Command> cmds) {
+        int sel = choices.getSelectedIndex();
+        if ( sel != -1 ) {
+            cmds.get( choices.getValue( sel ) ).execute();
+        }
     }
 
     protected void addModify(String itemText,
@@ -1154,23 +1051,23 @@ public class RuleModeller extends DirtyableComposite
             final int index = i;
             if ( !(this.lockLHS() || w.isReadOnly()) ) {
                 this.addActionsButtonsToLayout( constants.AddAConditionBelow(),
-                                                new ClickListener() {
+                                                new ClickHandler() {
 
-                                                    public void onClick(Widget w) {
-                                                        showConditionSelector( w,
+                                                    public void onClick(ClickEvent event) {
+                                                        showConditionSelector( (Widget) event.getSource(),
                                                                                index + 1 );
                                                     }
                                                 },
-                                                new ClickListener() {
+                                                new ClickHandler() {
 
-                                                    public void onClick(Widget sender) {
+                                                    public void onClick(ClickEvent event) {
                                                         model.moveLhsItemDown( index );
                                                         refreshWidget();
                                                     }
                                                 },
-                                                new ClickListener() {
+                                                new ClickHandler() {
 
-                                                    public void onClick(Widget sender) {
+                                                    public void onClick(ClickEvent event) {
                                                         model.moveLhsItemUp( index );
                                                         refreshWidget();
                                                     }
@@ -1272,54 +1169,31 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private void addActionsButtonsToLayout(String title,
-                                           ClickListener addBelowListener,
-                                           ClickListener moveDownListener,
-                                           ClickListener moveUpListener) {
+                                           ClickHandler addBelowListener,
+                                           ClickHandler moveDownListener,
+                                           ClickHandler moveUpListener) {
 
-        DirtyableHorizontalPane hp = new DirtyableHorizontalPane();
+        final DirtyableHorizontalPane hp = new DirtyableHorizontalPane();
 
         Image addPattern = new ImageButton( "images/new_item_below.png" );
         addPattern.setTitle( title );
-        addPattern.addClickListener( addBelowListener );
+        addPattern.addClickHandler( addBelowListener );
 
         Image moveDown = new ImageButton( "images/shuffle_down.gif" );
         moveDown.setTitle( constants.MoveDown() );
-        moveDown.addClickListener( moveDownListener );
+        moveDown.addClickHandler( moveDownListener );
 
         Image moveUp = new ImageButton( "images/shuffle_up.gif" );
         moveUp.setTitle( constants.MoveUp() );
-        moveUp.addClickListener( moveUpListener );
+        moveUp.addClickHandler( moveUpListener );
 
         hp.add( addPattern );
         hp.add( moveDown );
         hp.add( moveUp );
 
-        final ExtElement e = new ExtElement( hp.getElement() );
-        e.setOpacity( 0.1f,
-                      false );
-
-        FocusPanel actionPanel = new FocusPanel( hp );
-
-        MouseListenerAdapter mouseListenerAdapter = new MouseListenerAdapter() {
-
-            @Override
-            public void onMouseEnter(Widget sender) {
-                e.setOpacity( 1,
-                              false );
-            }
-
-            @Override
-            public void onMouseLeave(Widget sender) {
-                e.setOpacity( 0.1f,
-                              false );
-            }
-        };
-
-        actionPanel.addMouseListener( mouseListenerAdapter );
-
         layout.setWidget( currentLayoutRow,
                           2,
-                          actionPanel );
+                          hp );
         layout.getFlexCellFormatter().setHorizontalAlignment( currentLayoutRow,
                                                               2,
                                                               HasHorizontalAlignment.ALIGN_CENTER );
