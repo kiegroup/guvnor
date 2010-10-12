@@ -112,6 +112,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private GuidedDecisionTable         dt;
     private VerticalPanel               layout;
+    private PrettyFormLayout            configureColumnsNote;
     private GridPanel                   grid;
     private FieldDef[]                  fds;
     private VerticalPanel               attributeConfigWidget;
@@ -167,6 +168,14 @@ public class GuidedDecisionTableWidget extends Composite
         VerticalPanel buttonPanel = new VerticalPanel();
         buttonPanel.add( getToolbarMenuButton() );
         layout.add( buttonPanel );
+
+        configureColumnsNote = new PrettyFormLayout();
+        configureColumnsNote.startSection();
+        configureColumnsNote.addRow(
+                new HTML( "<img src='images/information.gif'/>&nbsp;" + constants.ConfigureColumnsNote()) );
+        configureColumnsNote.endSection();
+        configureColumnsNote.setVisible( false );
+        layout.add( configureColumnsNote );
 
         refreshGrid();
 
@@ -729,26 +738,13 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private void refreshGrid() {
-        if ( layout.getWidgetCount() > 2 ) {
-            layout.remove( 2 );
-        }
-        if ( dt.actionCols.size() == 0 && dt.conditionCols.size() == 0 && dt.actionCols.size() == 0 ) {
-            VerticalPanel vp = new VerticalPanel();
-            vp.setWidth( "100%" );
-            PrettyFormLayout pfl = new PrettyFormLayout();
-            pfl.startSection();
-            pfl.addRow( new HTML( "<img src='images/information.gif'/>&nbsp;" + constants.ConfigureColumnsNote() ) );
+        configureColumnsNote.setVisible( dt.actionCols.size() == 0 && dt.conditionCols.size() == 0 && dt.actionCols.size() == 0 );
 
-            pfl.endSection();
-            vp.add( pfl );
-            grid = doGrid();
-            vp.add( grid );
-            layout.add( vp );
-
-        } else {
-            grid = doGrid();
-            layout.add( grid );
+        if ( layout.getWidgetIndex( grid ) >= 0 ) {
+            layout.remove( grid );
         }
+        grid = doGrid();
+        layout.add( grid );
     }
 
     private GridPanel doGrid() {
