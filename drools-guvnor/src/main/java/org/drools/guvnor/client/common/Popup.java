@@ -58,8 +58,8 @@ public abstract class Popup extends PopupPanel {
             afterShowEvent.execute();
         }
 
-        VerticalPanel p = new VerticalPanel();
-        p.setHorizontalAlignment( VerticalPanel.ALIGN_RIGHT );
+        VerticalPanel verticalPanel = new VerticalPanel();
+        verticalPanel.setHorizontalAlignment( VerticalPanel.ALIGN_RIGHT );
 
         final PopupTitleBar titleBar = new PopupTitleBar( getTitle() );
 
@@ -94,10 +94,13 @@ public abstract class Popup extends PopupPanel {
             }
         } );
 
-        p.add( titleBar );
+        verticalPanel.add( titleBar );
 
-        p.add( getContent() );
-        add( p );
+        Widget content = getContent();
+
+        content.setWidth( "100%" );
+        verticalPanel.add( content );
+        add( verticalPanel );
 
         super.show();
 

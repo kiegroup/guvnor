@@ -20,13 +20,14 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.KeyboardListener;
-import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  *
@@ -35,53 +36,57 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  *
  */
-public class CheckinPopup {
+public class CheckinPopup extends FormStylePopup {
 
-    private TextArea       comment;
-    private Button         save;
-    private FormStylePopup pop;
-    private Constants      constants = ((Constants) GWT.create( Constants.class ));
+    private Constants constants = ((Constants) GWT.create( Constants.class ));
+
+    private TextArea  comment;
+    private Button    save;
+
+    private Command   checkin;
 
     public CheckinPopup(String message) {
-        pop = new FormStylePopup();
-        pop.setTitle( message );
+        setTitle( message );
         comment = new TextArea();
         comment.setWidth( "100%" );
         comment.setTitle( constants.AddAnOptionalCheckInComment() );
 
         save = new Button( constants.CheckIn() );
-        pop.addRow( comment );
-        pop.addRow( save );
+        addRow( comment );
+        addRow( save );
 
     }
 
     public void setCommand(final Command checkin) {
-        final ClickListener cl = new ClickListener() {
-            public void onClick(Widget w) {
-                checkin.execute();
-                pop.hide();
+        this.checkin = checkin;
+
+        save.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                checkIn();
             }
-        };
-        save.addClickListener( cl );
-        comment.addKeyboardListener( new KeyboardListenerAdapter() {
-            @Override
-            public void onKeyUp(Widget sender,
-                                char keyCode,
-                                int modifiers) {
-                if ( keyCode == KeyboardListener.KEY_ENTER ) {
-                    cl.onClick( null );
+        } );
+
+        comment.addKeyUpHandler( new KeyUpHandler() {
+            public void onKeyUp(KeyUpEvent event) {
+                if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
+                    checkIn();
                 }
             }
         } );
     }
 
+    private void checkIn() {
+        checkin.execute();
+        hide();
+    }
+
     public void show() {
-        pop.setAfterShow( new Command() {
+        setAfterShow( new Command() {
             public void execute() {
                 comment.setFocus( true );
             }
         } );
-        pop.show();
+        super.show();
         comment.setFocus( true );
 
     }

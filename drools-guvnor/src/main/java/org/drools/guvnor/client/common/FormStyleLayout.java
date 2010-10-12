@@ -45,6 +45,7 @@ public class FormStyleLayout extends Composite {
                            String title) {
         addHeader( image,
                    title );
+        
         initWidget( layout );
     }
 
