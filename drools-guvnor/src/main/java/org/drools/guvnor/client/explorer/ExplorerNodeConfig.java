@@ -88,7 +88,7 @@ public class ExplorerNodeConfig {
         item.setUserObject( new String[]{AssetFormats.FUNCTION} );
         pkg.addItem( item );
 
-        item = new TreeItem( Util.getHeader( images.modelAsset(),
+        item = new TreeItem( Util.getHeader( images.dsl(),
                                              constants.DSLConfigurations() ) );
         itemWidgets.put( item,
                          AssetFormats.DSL );
