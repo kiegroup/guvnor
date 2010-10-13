@@ -59,10 +59,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import com.gwtext.client.core.Ext;
-
-
-
 /**
  * This is the tab panel manager.
  * @author Fernando Meyer, Michael Neale
@@ -74,7 +70,7 @@ public class ExplorerViewCenterPanel {
     final TabLayoutPanel tp;
 
     private MultiKeyMap<Panel> openedTabs = new MultiKeyMap<Panel>();
-    private String id = Ext.generateId();
+    private static int id = 0;
 
     /** to keep track of what is dirty, filthy */
     private Map<String, GuvnorEditor> openedAssetEditors = new HashMap<String, GuvnorEditor>();
@@ -157,7 +153,7 @@ public class ExplorerViewCenterPanel {
     public void addTab(final String tabname,
                        Widget widget,
                        final String[] keys) {
-        final String panelId = (keys.length == 1 ? keys[0] + id : Arrays.toString(keys) + id);
+        final String panelId = (keys.length == 1 ? keys[0] + id++ : Arrays.toString(keys) + id++);
         
         ScrollPanel localTP = new ScrollPanel();
         localTP.add(widget);
