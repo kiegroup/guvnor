@@ -273,7 +273,6 @@ public class MetaDataWidget extends Composite {
         DisclosurePanel advancedDisclosure = new DisclosurePanel(
         		currentSectionName);
         advancedDisclosure.setAnimationEnabled(true);
-        advancedDisclosure.addStyleName("my-DisclosurePanel");
         advancedDisclosure.setWidth("100%");
         advancedDisclosure.setOpen(collapsed);
         advancedDisclosure.setContent(this.currentSection);

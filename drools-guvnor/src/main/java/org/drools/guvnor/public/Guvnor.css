@@ -30,29 +30,20 @@ code {
 	border: 0;
 }
 
-.my-DisclosurePanel {
+.gwt-DisclosurePanel .header {
+	border: 1px solid #BCBCBC;
+	background: #E3E3E3;
+	padding-bottom:2px;
 	
-}
-
-.my-DisclosurePanel-open {
-	
-}
-
-.my-DisclosurePanel-closed {
-	
-}
-
-.my-DisclosurePanel .header,.my-DisclosurePanel .header a,.my-DisclosurePanel .header td
-	{
-	height: 30px;
-	background: white;
+	width:100%;
+	height: 20px;
 	text-decoration: none; /* Remove underline from header */
 	color: white;
 	cursor: pointer;
 	cursor: hand;
 }
 
-.my-DisclosurePanel .content {
+.gwt-DisclosurePanel .content {
 	border-left: 3px solid #e3e3e3;
 	padding: 4px 0px 4px 8px;
 	margin-left: 16px;

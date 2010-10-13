@@ -72,11 +72,12 @@ public class QueryWidget extends Composite {
         DisclosurePanel advancedDisclosure = new DisclosurePanel(
         		constants.AttributeSearch());
         advancedDisclosure.setAnimationEnabled(true);
-        advancedDisclosure.addStyleName("my-DisclosurePanel");
         advancedDisclosure.setWidth("100%");
         advancedDisclosure.setOpen(true);
 
         final Map<String, MetaDataQuery> atts = new HashMap<String, MetaDataQuery>() {
+            private static final long serialVersionUID = 510l;
+
             {
                 put( constants.CreatedBy(),
                      new MetaDataQuery( "drools:creator" ) ); //NON-NLS

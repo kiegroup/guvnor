@@ -140,7 +140,6 @@ public class GuidedDecisionTableWidget extends Composite
 
         DisclosurePanel disclosurePanel = new DisclosurePanel( constants.DecisionTable() );
         disclosurePanel.setAnimationEnabled(true);
-        disclosurePanel.addStyleName("my-DisclosurePanel");
         disclosurePanel.setWidth("100%");
         disclosurePanel.setTitle( constants.DecisionTable() );
 

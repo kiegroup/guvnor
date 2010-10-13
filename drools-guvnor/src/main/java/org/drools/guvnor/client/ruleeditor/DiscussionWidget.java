@@ -59,88 +59,82 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DiscussionWidget extends Composite {
 
-    private static Constants constants = ((Constants) GWT.create(Constants.class));
+    private static Constants       constants        = ((Constants) GWT.create( Constants.class ));
 
-    private VerticalPanel commentList = new VerticalPanel();
-    private VerticalPanel newCommentLayout = new VerticalPanel();
-    private RuleAsset asset;
+    private VerticalPanel          commentList      = new VerticalPanel();
+    private VerticalPanel          newCommentLayout = new VerticalPanel();
+    private RuleAsset              asset;
     private ServerPushNotification pushNotify;
-    private int lastCount = 0;
+    private int                    lastCount        = 0;
 
     @Override
     protected void onUnload() {
-        super.onUnload();    //To change body of overridden methods use File | Settings | File Templates.
-        PushClient.instance().unsubscribe(pushNotify);
+        super.onUnload(); //To change body of overridden methods use File | Settings | File Templates.
+        PushClient.instance().unsubscribe( pushNotify );
     }
 
     public DiscussionWidget(final RuleAsset asset) {
         this.asset = asset;
 
-        DisclosurePanel discussionPanel = new DisclosurePanel(
-        		constants.Discussion() + ":" );
-        discussionPanel.setAnimationEnabled(true);
-        discussionPanel.addStyleName("my-DisclosurePanel");
-        discussionPanel.setWidth("100%");
-        //discussionPanel.setOpen(true);
-        
-/*        final Panel discussionPanel = new Panel();
-        discussionPanel.setCollapsible( true );
-        discussionPanel.setTitle(constants.Discussion() + ":" );
-        discussionPanel.setBodyBorder(false);*/
+        DisclosurePanel discussionPanel = new DisclosurePanel( constants.Discussion() );
+        discussionPanel.setAnimationEnabled( true );
+        discussionPanel.setWidth( "100%" );
 
-        commentList.setWidth("100%");
+        commentList.setWidth( "100%" );
         VerticalPanel discussionLayout = new VerticalPanel();
-        discussionLayout.setWidth("90%");
-        discussionLayout.add(commentList);
-        
-        newCommentLayout.setWidth("100%");
+        discussionLayout.setWidth( "90%" );
+        discussionLayout.add( commentList );
+
+        newCommentLayout.setWidth( "100%" );
         refreshDiscussion();
-        discussionLayout.add(newCommentLayout);
+        discussionLayout.add( newCommentLayout );
         showNewCommentButton();
 
-        discussionPanel.setContent(discussionLayout);
-        
+        discussionPanel.setContent( discussionLayout );
+
         pushNotify = new ServerPushNotification() {
             public void messageReceived(PushResponse response) {
-                if ("discussion".equals(response.messageType) &&
-                        asset.uuid.equals(response.message)) {
-                    System.err.println("Refreshing discussion...");
+                if ( "discussion".equals( response.messageType ) && asset.uuid.equals( response.message ) ) {
+                    System.err.println( "Refreshing discussion..." );
                     refreshDiscussion();
                 }
             }
         };
 
-        PushClient.instance().subscribe(pushNotify);
+        PushClient.instance().subscribe( pushNotify );
 
-        initWidget(discussionPanel);
+        initWidget( discussionPanel );
     }
 
     /** Hit up the server */
     public void refreshDiscussion() {
-        RepositoryServiceFactory.getService().loadDiscussionForAsset(asset.uuid, new GenericCallback<List<DiscussionRecord>>() {
-            public void onSuccess(List<DiscussionRecord> result) {
-                updateCommentList(result);
-            }
-        });
+        RepositoryServiceFactory.getService().loadDiscussionForAsset( asset.uuid,
+                                                                      new GenericCallback<List<DiscussionRecord>>() {
+                                                                          public void onSuccess(List<DiscussionRecord> result) {
+                                                                              updateCommentList( result );
+                                                                          }
+                                                                      } );
     }
 
     private void updateCommentList(List<DiscussionRecord> ls) {
-        if (ls.size() == lastCount) return; //don't want to over do it boys...
+        if ( ls.size() == lastCount ) return; //don't want to over do it boys...
         commentList.clear();
-        for(DiscussionRecord dr: ls) {
-            appendComment(dr);
+        for ( DiscussionRecord dr : ls ) {
+            appendComment( dr );
         }
         lastCount = ls.size();
     }
 
     private Widget appendComment(DiscussionRecord r) {
-        SmallLabel hrd = new SmallLabel(Format.format(constants.smallCommentBy0On1Small(), r.author, new Date(r.timestamp).toString()));
-        hrd.addStyleName("discussion-header");
-        commentList.add(hrd);
-        Label lbl = new Label(r.note);
-        lbl.setStyleName("x-form-field");
-        commentList.add(lbl);
-        commentList.add(new HTML("<br/>"));
+        SmallLabel hrd = new SmallLabel( Format.format( constants.smallCommentBy0On1Small(),
+                                                        r.author,
+                                                        new Date( r.timestamp ).toString() ) );
+        hrd.addStyleName( "discussion-header" );
+        commentList.add( hrd );
+        Label lbl = new Label( r.note );
+        lbl.setStyleName( "x-form-field" );
+        commentList.add( lbl );
+        commentList.add( new HTML( "<br/>" ) );
         return hrd;
     }
 
@@ -149,76 +143,80 @@ public class DiscussionWidget extends Composite {
 
         HorizontalPanel hp = new HorizontalPanel();
 
-        Button createNewComment = new Button(constants.AddADiscussionComment());
-        hp.add(createNewComment);
+        Button createNewComment = new Button( constants.AddADiscussionComment() );
+        hp.add( createNewComment );
 
-        if (ExplorerLayoutManager.shouldShow(Capabilities.SHOW_ADMIN)) {
-            Button adminClearAll = new Button(constants.EraseAllComments());
-            hp.add(adminClearAll);
-            adminClearAll.addClickHandler(new ClickHandler() {
+        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_ADMIN ) ) {
+            Button adminClearAll = new Button( constants.EraseAllComments() );
+            hp.add( adminClearAll );
+            adminClearAll.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
-                    if (Window.confirm(constants.EraseAllCommentsWarning())) {
-                        RepositoryServiceFactory.getService().clearAllDiscussionsForAsset(asset.uuid, new GenericCallback() {
-                            public void onSuccess(Object result) {
-                                updateCommentList(new ArrayList<DiscussionRecord>());
-                            }
-                        });
+                    if ( Window.confirm( constants.EraseAllCommentsWarning() ) ) {
+                        RepositoryServiceFactory.getService().clearAllDiscussionsForAsset( asset.uuid,
+                                                                                           new GenericCallback() {
+                                                                                               public void onSuccess(Object result) {
+                                                                                                   updateCommentList( new ArrayList<DiscussionRecord>() );
+                                                                                               }
+                                                                                           } );
                     }
                 }
-            });            
+            } );
         }
 
-        String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + asset.metaData.packageName+
-                "&assetName=" + URL.encode(asset.metaData.name) + "&viewUrl=" + BrowseTree.getSelfURL();
-        hp.add(new HTML("<a href='" + feedURL + "' target='_blank'><img src='images/feed.png'/></a>"));
+        String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + asset.metaData.packageName + "&assetName=" + URL.encode( asset.metaData.name ) + "&viewUrl=" + BrowseTree.getSelfURL();
+        hp.add( new HTML( "<a href='" + feedURL + "' target='_blank'><img src='images/feed.png'/></a>" ) );
 
-        newCommentLayout.add(hp);
-        
-        newCommentLayout.setCellHorizontalAlignment(hp, HasHorizontalAlignment.ALIGN_RIGHT);
-        createNewComment.addClickHandler(new ClickHandler() {
+        newCommentLayout.add( hp );
+
+        newCommentLayout.setCellHorizontalAlignment( hp,
+                                                     HasHorizontalAlignment.ALIGN_RIGHT );
+        createNewComment.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent sender) {
                 showAddNewComment();
             }
-        });
+        } );
     }
 
     private void showAddNewComment() {
         newCommentLayout.clear();
         final TextArea comment = new TextArea();
-        comment.setWidth("100%");
-        newCommentLayout.add(comment);
+        comment.setWidth( "100%" );
+        newCommentLayout.add( comment );
 
-        Button ok = new Button(constants.OK());
-        Button cancel = new Button(constants.Cancel());
+        Button ok = new Button( constants.OK() );
+        Button cancel = new Button( constants.Cancel() );
 
-        ok.addClickHandler(new ClickHandler() {
+        ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent sender) {
-                sendNewComment(comment.getText());
+                sendNewComment( comment.getText() );
             }
-        });
+        } );
 
-        cancel.addClickHandler(new ClickHandler() {
+        cancel.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent sender) {
                 showNewCommentButton();
             }
-        });
+        } );
 
         HorizontalPanel hp = new HorizontalPanel();
-        hp.add(ok); hp.add(cancel);
+        hp.add( ok );
+        hp.add( cancel );
 
-        newCommentLayout.add(hp);
-        
-        comment.setFocus(true);
+        newCommentLayout.add( hp );
+
+        comment.setFocus( true );
     }
 
     private void sendNewComment(String text) {
         newCommentLayout.clear();
-        newCommentLayout.add(new Image("images/spinner.gif"));
-        RepositoryServiceFactory.getService().addToDiscussionForAsset(asset.uuid, text, new GenericCallback<List<DiscussionRecord>>() {
-            public void onSuccess(List<DiscussionRecord> result) {
-                showNewCommentButton();
-                updateCommentList(result);
-            }
-        });
+        newCommentLayout.add( new Image( "images/spinner.gif" ) );
+        RepositoryServiceFactory.getService().addToDiscussionForAsset( asset.uuid,
+                                                                       text,
+                                                                       new GenericCallback<List<DiscussionRecord>>() {
+                                                                           public void onSuccess(List<DiscussionRecord> result) {
+                                                                               showNewCommentButton();
+                                                                               updateCommentList( result );
+                                                                           }
+                                                                       } );
     }
 }

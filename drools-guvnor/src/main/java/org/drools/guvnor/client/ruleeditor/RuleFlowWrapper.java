@@ -118,7 +118,6 @@ public class RuleFlowWrapper extends Composite implements SaveEventListener {
 						constants.Parameters());
 				parameterPanel.setAnimationEnabled(true);
 				parameterPanel.ensureDebugId("cwDisclosurePanel");
-				parameterPanel.addStyleName("my-DisclosurePanel");
 				parameterPanel.setWidth("100%");
 				parameterPanel.setOpen(false);
 
