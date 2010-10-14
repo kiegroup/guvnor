@@ -31,8 +31,6 @@ import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.dom.client.Style.Unit;
 
-import com.gwtext.client.widgets.QuickTips;
-
 
 /**
  * This is the main part of the app that lays everything out. 
@@ -50,8 +48,6 @@ public class ExplorerLayoutManager {
 
 
     public ExplorerLayoutManager(LoggedInUserInfo uif, Capabilities caps) {
-        QuickTips.init();
-
         Preferences.INSTANCE.loadPrefs(caps);
 
         String tok = History.getToken();
