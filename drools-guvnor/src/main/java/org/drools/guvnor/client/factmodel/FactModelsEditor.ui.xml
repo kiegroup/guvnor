@@ -18,8 +18,10 @@
 	xmlns:gwt='urn:import:com.google.gwt.user.client.ui' xmlns:guvnor='urn:import:org.drools.guvnor.client.util'>
 
 	<gwt:HTMLPanel>
-		<guvnor:AddButton ui:field="addFactIcon" ></guvnor:AddButton>
-		<guvnor:LazyStackPanel ui:field="factModelsPanel"></guvnor:LazyStackPanel>
+		<div style="margin-bottom:20px;">
+			<guvnor:AddButton ui:field="addFactIcon" ></guvnor:AddButton>
+			<guvnor:LazyStackPanel ui:field="factModelsPanel"></guvnor:LazyStackPanel>
+		</div>
 	</gwt:HTMLPanel>
 
 </ui:UiBinder>

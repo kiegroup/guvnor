@@ -31,11 +31,10 @@ code {
 }
 
 .gwt-DisclosurePanel .header {
-	border: 1px solid #BCBCBC;
+	border: 1px solid #BBBBBB;
 	background: #E3E3E3;
-	padding-bottom:2px;
-	
-	width:100%;
+	padding-bottom: 2px;
+	width: 100%;
 	height: 20px;
 	text-decoration: none; /* Remove underline from header */
 	color: white;
@@ -611,8 +610,7 @@ div.smallish-progress-text { /* Don't change the following lines. */
 }
 
 .guvnor-LazyStackPanel-row-header {
-	border-top: 1px solid black;
-	border-bottom: 1px solid black;
+	border: 1px solid #BBBBBB;
 	padding: 1px 0px 1px 5px;
 	min-width: 640px;
 	background-color: #E3E3E3;
@@ -632,5 +630,12 @@ div.smallish-progress-text { /* Don't change the following lines. */
 }
 
 .guvnor-lazyStackPanel {
-	border-collapse:collapse;
+	border-collapse: collapse;
+}
+
+.guvnor-modelview-button-bar {
+	background-color: #EBEBEB;
+	border: 1px solid #BBBBBB;
+	border-top: 0px;
+	margin-left: 1px;
 }

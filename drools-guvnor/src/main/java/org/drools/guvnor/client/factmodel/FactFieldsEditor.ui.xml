@@ -18,7 +18,7 @@
 	xmlns:gwt='urn:import:com.google.gwt.user.client.ui' xmlns:guvnor='urn:import:org.drools.guvnor.client.util'>
 
 	<gwt:HTMLPanel>
-		<div style="background-color:#EBEBEB; border: 1px solid #BBBBBB;">
+		<div class="guvnor-modelview-button-bar" >
 			<div style="float:right;padding-right:20px;">
 				<guvnor:AddButton ui:field="addFieldIcon"></guvnor:AddButton>
 			</div>
