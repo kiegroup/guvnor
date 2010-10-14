@@ -127,4 +127,7 @@ public interface Images extends ClientBundle {
 	
 	@Source("config.png")
 	ImageResource config();	
+	
+	@Source("close.gif")
+	ImageResource close();	
 }

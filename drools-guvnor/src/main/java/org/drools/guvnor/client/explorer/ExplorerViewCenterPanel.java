@@ -186,8 +186,8 @@ public class ExplorerViewCenterPanel {
 		final HorizontalPanel hPanel = new HorizontalPanel();
 		final Label label = new Label(title);
 		DOM.setStyleAttribute(label.getElement(), "whiteSpace", "nowrap");
-		//ImageButton closeBtn = new ImageButton(images.backupSmall().getURL());
-		Button closeBtn = new Button("x");
+		ImageButton closeBtn = new ImageButton(images.close().getURL());
+		//Button closeBtn = new Button("x");
 		closeBtn.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent arg0) {
 				int widgetIndex = tp.getWidgetIndex(panel);
