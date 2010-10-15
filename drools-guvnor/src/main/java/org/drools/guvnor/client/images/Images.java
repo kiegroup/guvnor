@@ -113,6 +113,9 @@ public interface Images extends ClientBundle {
 	@Source("error.gif")
 	ImageResource error();	
 	
+	@Source("icoUsers_small.gif")
+	ImageResource icoUsersSmall();	
+	
 	@Source("icoUsers.gif")
 	ImageResource icoUsers();	
 	

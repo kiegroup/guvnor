@@ -36,8 +36,18 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
 public class AdministrationTree extends AbstractTree {
-    private static Constants constants = GWT.create( Constants.class );
-    private static Images    images    = (Images) GWT.create( Images.class );
+
+    private static final String REPOCONFIG            = "repoconfig";
+    private static final String RULE_VERIFIER_MANAGER = "ruleVerifierManager";
+    private static final String SECURITY_PERMISSIONS  = "securityPermissions";
+    private static final String ERROR_LOG             = "errorLog";
+    private static final String BAKMAN                = "bakman";
+    private static final String STATEMAN              = "stateman";
+    private static final String ARCHMAN               = "archman";
+    private static final String CATMAN                = "catman";
+
+    private static Constants    constants             = GWT.create( Constants.class );
+    private static Images       images                = (Images) GWT.create( Images.class );
 
     public AdministrationTree(ExplorerViewCenterPanel tabbedPanel) {
         super( tabbedPanel );
@@ -61,36 +71,48 @@ public class AdministrationTree extends AbstractTree {
         int id = Integer.parseInt( widgetID );
         switch ( id ) {
             case 0 :
-                if ( !centertabbedPanel.showIfOpen( "catman" ) ) centertabbedPanel.addTab( constants.CategoryManager(),
-                                                                                           new CategoryManager(),
-                                                                                           "catman" );
+                if ( !centertabbedPanel.showIfOpen( CATMAN ) ) {
+                    centertabbedPanel.addTab( constants.CategoryManager(),
+                                              new CategoryManager(),
+                                              CATMAN );
+                }
                 break;
             case 1 :
-                if ( !centertabbedPanel.showIfOpen( "archman" ) ) centertabbedPanel.addTab( constants.ArchivedManager(),
-                                                                                            new ArchivedAssetManager( centertabbedPanel ),
-                                                                                            "archman" );
+                if ( !centertabbedPanel.showIfOpen( ARCHMAN ) ) {
+                    centertabbedPanel.addTab( constants.ArchivedManager(),
+                                              new ArchivedAssetManager( centertabbedPanel ),
+                                              ARCHMAN );
+                }
                 break;
 
             case 2 :
-                if ( !centertabbedPanel.showIfOpen( "stateman" ) ) centertabbedPanel.addTab( constants.StateManager(),
-                                                                                             new StateManager(),
-                                                                                             "stateman" );
+                if ( !centertabbedPanel.showIfOpen( STATEMAN ) ) {
+                    centertabbedPanel.addTab( constants.StateManager(),
+                                              new StateManager(),
+                                              STATEMAN );
+                }
                 break;
             case 3 :
-                if ( !centertabbedPanel.showIfOpen( "bakman" ) ) centertabbedPanel.addTab( constants.ImportExport(),
-                                                                                           new BackupManager(),
-                                                                                           "bakman" );
+                if ( !centertabbedPanel.showIfOpen( BAKMAN ) ) {
+                    centertabbedPanel.addTab( constants.ImportExport(),
+                                              new BackupManager(),
+                                              BAKMAN );
+                }
                 break;
 
             case 4 :
-                if ( !centertabbedPanel.showIfOpen( "errorLog" ) ) centertabbedPanel.addTab( constants.EventLog(),
-                                                                                             new LogViewer(),
-                                                                                             "errorLog" );
+                if ( !centertabbedPanel.showIfOpen( ERROR_LOG ) ) {
+                    centertabbedPanel.addTab( constants.EventLog(),
+                                              new LogViewer(),
+                                              ERROR_LOG );
+                }
                 break;
             case 5 :
-                if ( !centertabbedPanel.showIfOpen( "securityPermissions" ) ) centertabbedPanel.addTab( constants.UserPermissionMappings(),
-                                                                                                        new PermissionViewer(),
-                                                                                                        "securityPermissions" );
+                if ( !centertabbedPanel.showIfOpen( SECURITY_PERMISSIONS ) ) {
+                    centertabbedPanel.addTab( constants.UserPermissionMappings(),
+                                              new PermissionViewer(),
+                                              SECURITY_PERMISSIONS );
+                }
                 break;
             case 6 :
                 Frame aboutInfoFrame = new Frame( "../AboutInfo.html" ); //NON-NLS
@@ -107,17 +129,17 @@ public class AdministrationTree extends AbstractTree {
                 break;
 
             case 7 :
-                if ( !centertabbedPanel.showIfOpen( "ruleVerifierManager" ) ) {
+                if ( !centertabbedPanel.showIfOpen( RULE_VERIFIER_MANAGER ) ) {
                     centertabbedPanel.addTab( constants.RulesVerificationManager(),
                                               new RuleVerifierManager(),
-                                              "ruleVerifierManager" );
+                                              RULE_VERIFIER_MANAGER );
                 }
                 break;
             case 8 :
-                if ( !centertabbedPanel.showIfOpen( "repoconfig" ) ) //NON-NLS
+                if ( !centertabbedPanel.showIfOpen( REPOCONFIG ) ) //NON-NLS
                 centertabbedPanel.addTab( constants.RepositoryConfig(),
                                           new RepoConfigManager(),
-                                          "repoconfig" );
+                                          REPOCONFIG );
                 break;
         }
     }
