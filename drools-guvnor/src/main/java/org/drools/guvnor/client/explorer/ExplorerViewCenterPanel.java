@@ -53,6 +53,7 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -151,17 +152,24 @@ public class ExplorerViewCenterPanel extends Composite {
         DOM.setStyleAttribute( label.getElement(),
                                "whiteSpace",
                                "nowrap" );
-        ImageButton closeBtn = new ImageButton( images.close().getURL() );
-        //Button closeBtn = new Button("x");
+        Image closeBtn = new Image( images.close() );
         closeBtn.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 int widgetIndex = tabLayoutPanel.getWidgetIndex( panel );
                 if ( widgetIndex == tabLayoutPanel.getSelectedIndex() ) {
-                    tabLayoutPanel.selectTab( widgetIndex - 1 );
+                    if ( isOnlyOneTabLeft() ) {
+                        tabLayoutPanel.clear();
+                    } else {
+                        tabLayoutPanel.selectTab( widgetIndex - 1 );
+                    }
                 }
                 tabLayoutPanel.remove( widgetIndex );
                 String[] keys = itemWidgets.remove( panel );
                 openedTabs.remove( keys );
+            }
+
+            private boolean isOnlyOneTabLeft() {
+                return tabLayoutPanel.getWidgetCount() == 1;
             }
         } );
 
