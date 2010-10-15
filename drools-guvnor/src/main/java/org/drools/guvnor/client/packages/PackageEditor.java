@@ -19,7 +19,7 @@ package org.drools.guvnor.client.packages;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Map.Entry;
 
 import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.categorynav.CategorySelectHandler;
@@ -32,21 +32,21 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.StatusChangePopup;
 import org.drools.guvnor.client.common.ValidationMessageWidget;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.util.Format;
-import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -81,7 +81,6 @@ public class PackageEditor extends PrettyFormLayout {
         this.refreshPackageList = refreshPackageList;
         this.editEvent = editEvent;
 
-        //setStyleName( "package-Editor" );
         setWidth( "100%" );
         refreshWidgets();
     }
@@ -98,7 +97,6 @@ public class PackageEditor extends PrettyFormLayout {
                                  new Label( this.conf.name ) );
         if ( !conf.isSnapshot ) {
 
-            //headerWidgets.setWidget(1, 1, modifyWidgets() );
             headerWidgets.setWidget( 1,
                                      0,
                                      modifyWidgets() );
@@ -109,8 +107,6 @@ public class PackageEditor extends PrettyFormLayout {
 
         addHeader( "images/package_large.png",
                    headerWidgets ); //NON-NLS
-
-        //addHeader( "images/package_large.png", headerWidgets );
 
         startSection( constants.ConfigurationSection() );
 
@@ -126,8 +122,9 @@ public class PackageEditor extends PrettyFormLayout {
 
         if ( !conf.isSnapshot ) {
             Button save = new Button( constants.SaveAndValidateConfiguration() );
-            save.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
+            save.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
                     doSaveAction( null );
                 }
             } );
@@ -156,8 +153,9 @@ public class PackageEditor extends PrettyFormLayout {
         addAttribute( constants.DateCreated(),
                       new Label( getDateString( this.conf.dateCreated ) ) );
         Button buildSource = new Button( constants.ShowPackageSource() );
-        buildSource.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        buildSource.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
                 PackageBuilderWidget.doBuildSource( conf.uuid,
                                                     conf.name );
             }
@@ -196,9 +194,10 @@ public class PackageEditor extends PrettyFormLayout {
         HorizontalPanel statusBar = new HorizontalPanel();
         Image editState = new ImageButton( "images/edit.gif" ); //NON-NLS
         editState.setTitle( constants.ChangeStatusDot() );
-        editState.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                showStatusChanger( w );
+        editState.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                showStatusChanger( (Widget) event.getSource() );
             }
 
         } );
@@ -230,8 +229,8 @@ public class PackageEditor extends PrettyFormLayout {
         if ( conf.catRules != null && conf.catRules.size() > 0 ) {
             VerticalPanel vp = new VerticalPanel();
 
-            for ( Iterator i = conf.catRules.entrySet().iterator(); i.hasNext(); ) {
-                Map.Entry entry = (Map.Entry) i.next();
+            for ( Iterator<Entry<String, String>> iterator = conf.catRules.entrySet().iterator(); iterator.hasNext(); ) {
+                Entry<String, String> entry = iterator.next();
                 HorizontalPanel hp = new HorizontalPanel();
                 String m = Format.format( constants.AllRulesForCategory0WillNowExtendTheRule1(),
                                           (String) entry.getValue(),
@@ -248,8 +247,9 @@ public class PackageEditor extends PrettyFormLayout {
 
     private Image getRemoveCatRulesIcon(final String rule) {
         Image remove = new Image( "images/delete_item_small.gif" ); //NON-NLS
-        remove.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        remove.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
                 if ( Window.confirm( constants.RemoveThisCategoryRule() ) ) {
                     conf.catRules.remove( rule );
                     refreshWidgets();
@@ -263,9 +263,10 @@ public class PackageEditor extends PrettyFormLayout {
         Image add = new ImageButton( "images/new_item.gif" );
         add.setTitle( constants.AddCatRuleToThePackage() );
 
-        add.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                showCatRuleSelector( w );
+        add.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                showCatRuleSelector( (Widget) event.getSource() );
             }
         } );
 
@@ -303,17 +304,17 @@ public class PackageEditor extends PrettyFormLayout {
 
         addbutton.setTitle( constants.CreateCategoryRule() );
 
-        addbutton.addClickHandler(new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
-				if ( exw.getSelectedPath().length() > 0 && ruleName.getText().trim().length() > 0 ) {
+        addbutton.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                if ( exw.getSelectedPath().length() > 0 && ruleName.getText().trim().length() > 0 ) {
                     addToCatRules( exw.getSelectedPath(),
                                    ruleName.getText() );
                 }
                 refreshWidgets();
                 pop.hide();
-			}
-		});
+            }
+        } );
 
         pop.addAttribute( constants.AllTheRulesInFollowingCategory(),
                           exw );
@@ -338,8 +339,9 @@ public class PackageEditor extends PrettyFormLayout {
             HTML msg = new HTML( "<b>" + constants.ThereWereErrorsValidatingThisPackageConfiguration() + "</b>" ); //NON-NLS
             h.add( msg );
             Button show = new Button( constants.ViewErrors() );
-            show.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
+            show.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
                     ValidationMessageWidget wid = new ValidationMessageWidget( previousResponse.errorHeader,
                                                                                previousResponse.errorMessage );
                     wid.show();
@@ -411,24 +413,24 @@ public class PackageEditor extends PrettyFormLayout {
         HorizontalPanel horiz = new HorizontalPanel();
 
         Button copy = new Button( constants.Copy() );
-        copy.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        copy.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 showCopyDialog();
             }
         } );
         horiz.add( copy );
 
         Button rename = new Button( constants.Rename() );
-        rename.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        rename.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 showRenameDialog();
             }
         } );
         horiz.add( rename );
 
         Button archive = new Button( constants.Archive() );
-        archive.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        archive.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 if ( Window.confirm( constants.AreYouSureYouWantToArchiveRemoveThisPackage() ) ) {
                     conf.archived = true;
                     Command ref = new Command() {
@@ -457,8 +459,9 @@ public class PackageEditor extends PrettyFormLayout {
         pop.addAttribute( "",
                           ok );
 
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        ok.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
                 RepositoryServiceFactory.getService().renamePackage( conf.uuid,
                                                                      name.getText(),
                                                                      new GenericCallback<String>() {
@@ -490,8 +493,9 @@ public class PackageEditor extends PrettyFormLayout {
         pop.addAttribute( "",
                           ok );
 
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        ok.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
                 if ( !PackageNameValidator.validatePackageName( name.getText() ) ) {
                     Window.alert( constants.NotAValidPackageName() );
                     return;
@@ -556,8 +560,9 @@ public class PackageEditor extends PrettyFormLayout {
         final TextBox box = new TextBox();
         box.setWidth( "100%" );
         box.setText( this.conf.externalURI );
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
+        box.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
                 conf.externalURI = box.getText();
             }
         } );
@@ -574,8 +579,9 @@ public class PackageEditor extends PrettyFormLayout {
 
         final TextArea box = new TextArea();
         box.setText( conf.description );
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget arg0) {
+        box.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
                 conf.description = box.getText();
             }
         } );
