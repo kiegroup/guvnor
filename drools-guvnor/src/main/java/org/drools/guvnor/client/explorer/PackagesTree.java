@@ -42,19 +42,16 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
 public class PackagesTree extends AbstractTree {
-    private static Constants      constants      = GWT.create( Constants.class );
-    private static Images         images         = (Images) GWT.create( Images.class );
+    private static Constants constants      = GWT.create( Constants.class );
+    private static Images    images         = (Images) GWT.create( Images.class );
 
-    private Map<TreeItem, String> itemWidgets    = new HashMap<TreeItem, String>();
-
-    private boolean               packagesLoaded = false;
+    private boolean          packagesLoaded = false;
 
     public PackagesTree(ExplorerViewCenterPanel tabbedPanel) {
         super( tabbedPanel );
         this.name = constants.KnowledgeBases();
         this.image = images.packages();
 
-        mainTree = new Tree();
         mainTree.setAnimationEnabled( true );
         //lazy loaded to easy startup wait time.
         //setupPackagesTree(this.centertabbedPanel);
@@ -69,6 +66,11 @@ public class PackagesTree extends AbstractTree {
 
                 add(packagesPanel);
                 */
+    }
+
+    @Override
+    Tree getTree() {
+        return new Tree();
     }
 
     public void loadPackageList() {

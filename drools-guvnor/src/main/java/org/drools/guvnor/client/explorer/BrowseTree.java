@@ -38,203 +38,235 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 
-
-public class BrowseTree extends AbstractTree implements OpenHandler<TreeItem> {
-    private static Constants constants = GWT.create(Constants.class);
-    private static Images images = (Images) GWT.create(Images.class);       
-
-    private Map<TreeItem, String> itemWidgets = new HashMap<TreeItem, String>();
-
+public class BrowseTree extends AbstractTree
+    implements
+    OpenHandler<TreeItem> {
+    private static Constants constants = GWT.create( Constants.class );
+    private static Images    images    = (Images) GWT.create( Images.class );
 
     /** Table set up for the inboxes */
-	static {
-		TableConfig conf = new TableConfig();
-		conf.headers = new String[2];
-		conf.headers[0] = constants.Name();// "Name ";
-		conf.headers[1] = constants.Date();// "Date ";
-		conf.headerTypes = new String[2];
-		conf.headerTypes[0] = "class java.lang.String";
-		conf.headerTypes[1] = "class java.util.Calendar";
-		conf.rowsPerPage = 500;
-		AssetItemGrid.registerTableConf(conf, ExplorerNodeConfig.RECENT_EDITED_ID);
-		AssetItemGrid.registerTableConf(conf, ExplorerNodeConfig.RECENT_VIEWED_ID);
+    static {
+        TableConfig conf = new TableConfig();
+        conf.headers = new String[2];
+        conf.headers[0] = constants.Name();// "Name ";
+        conf.headers[1] = constants.Date();// "Date ";
+        conf.headerTypes = new String[2];
+        conf.headerTypes[0] = "class java.lang.String";
+        conf.headerTypes[1] = "class java.util.Calendar";
+        conf.rowsPerPage = 500;
+        AssetItemGrid.registerTableConf( conf,
+                                         ExplorerNodeConfig.RECENT_EDITED_ID );
+        AssetItemGrid.registerTableConf( conf,
+                                         ExplorerNodeConfig.RECENT_VIEWED_ID );
 
-		conf = new TableConfig();
-		conf.headers = new String[3];
-		conf.headers[0] = constants.Name();
-		conf.headers[1] = constants.Date();
-		conf.headers[2] = constants.From();
-		conf.headerTypes = new String[3];
-		conf.headerTypes[0] = "class java.lang.String";
-		conf.headerTypes[1] = "class java.util.Calendar";
-		conf.headerTypes[2] = "class java.lang.String";
-		conf.rowsPerPage = 500;
+        conf = new TableConfig();
+        conf.headers = new String[3];
+        conf.headers[0] = constants.Name();
+        conf.headers[1] = constants.Date();
+        conf.headers[2] = constants.From();
+        conf.headerTypes = new String[3];
+        conf.headerTypes[0] = "class java.lang.String";
+        conf.headerTypes[1] = "class java.util.Calendar";
+        conf.headerTypes[2] = "class java.lang.String";
+        conf.rowsPerPage = 500;
 
-		AssetItemGrid.registerTableConf(conf, ExplorerNodeConfig.INCOMING_ID);
-	}
-       
+        AssetItemGrid.registerTableConf( conf,
+                                         ExplorerNodeConfig.INCOMING_ID );
+    }
+
     public BrowseTree(ExplorerViewCenterPanel tabbedPanel) {
-        super(tabbedPanel);
+        super( tabbedPanel );
         this.name = constants.Browse();
         this.image = images.ruleAsset();
-        
-    	mainTree = new Tree();    	
-    	mainTree.setAnimationEnabled(true);
-    	ExplorerNodeConfig.setupBrowseTree(mainTree, itemWidgets);
-        mainTree.addSelectionHandler(this);
-        mainTree.addOpenHandler((OpenHandler<TreeItem>)this);       
+
+        mainTree.setAnimationEnabled( true );
+        ExplorerNodeConfig.setupBrowseTree( mainTree,
+                                            itemWidgets );
+        mainTree.addSelectionHandler( this );
+        mainTree.addOpenHandler( (OpenHandler<TreeItem>) this );
+    }
+
+    @Override
+    protected Tree getTree() {
+        return new Tree();
     }
 
     public void refreshTree() {
-    	mainTree.clear();    	
-    	itemWidgets.clear();
-    	ExplorerNodeConfig.setupBrowseTree(mainTree, itemWidgets);
+        mainTree.clear();
+        itemWidgets.clear();
+        ExplorerNodeConfig.setupBrowseTree( mainTree,
+                                            itemWidgets );
     }
-    
+
     // Show the associated widget in the deck panel
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem item = event.getSelectedItem();
-        String widgetID = itemWidgets.get(item);
-        	
-        if (widgetID.equals(ExplorerNodeConfig.FIND_ID)) {     
-            centertabbedPanel.openFind();
-        } else if (widgetID.equals(ExplorerNodeConfig.INCOMING_ID) || 
-        		widgetID.equals(ExplorerNodeConfig.RECENT_EDITED_ID) ||
-        		widgetID.equals(ExplorerNodeConfig.RECENT_VIEWED_ID)) {
-       		openInbox(item.getText(), widgetID);
-        } else if (widgetID.startsWith(ExplorerNodeConfig.STATES_ID)){
-            openState(item.getText(), widgetID);
-        } else if (widgetID.startsWith(ExplorerNodeConfig.CATEGORY_ID)){
-            openCategory(item.getText(), widgetID);
-        }
-    }  
+        String widgetID = itemWidgets.get( item );
 
-	public void onOpen(OpenEvent<TreeItem> event) {
-		final TreeItem node = event.getTarget();
-		if (ExplorerNodeConfig.STATES_ROOT_ID.equals(itemWidgets.get(node))) { 
-			removeStateIDs(itemWidgets);
-			node.removeItems();
-			ExplorerNodeConfig.setupStatesStructure(node, itemWidgets);
-		} else if (ExplorerNodeConfig.CATEGORY_ROOT_ID.equals(itemWidgets.get(node))) { 
-			removeCategoryIDs(itemWidgets);
-			node.removeItems();
-			ExplorerNodeConfig.setupCategoriesStructure(node, itemWidgets);
-		}		
-	}
-		
-	private void removeStateIDs(Map<TreeItem, String> itemWidgets) {
-		Iterator<TreeItem> it = itemWidgets.keySet().iterator();		
-		while(it.hasNext()) {
-			TreeItem item = (TreeItem)it.next();
-		    String id = itemWidgets.get(item);
-			if(id.startsWith(ExplorerNodeConfig.STATES_ID + "-")) {
-				it.remove();
-			}			
-		}
-	}
-	
-	private void removeCategoryIDs(Map<TreeItem, String> itemWidgets) {
-		Iterator<TreeItem> it = itemWidgets.keySet().iterator();		
-		while(it.hasNext()) {
-			TreeItem item = (TreeItem)it.next();
-		    String id = itemWidgets.get(item);
-			if(id.startsWith(ExplorerNodeConfig.CATEGORY_ID + "-")) {
-				it.remove();
-			}			
-		}	
-	}
-	
+        if ( widgetID.equals( ExplorerNodeConfig.FIND_ID ) ) {
+            centertabbedPanel.openFind();
+        } else if ( widgetID.equals( ExplorerNodeConfig.INCOMING_ID ) || widgetID.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) || widgetID.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
+            openInbox( item.getText(),
+                       widgetID );
+        } else if ( widgetID.startsWith( ExplorerNodeConfig.STATES_ID ) ) {
+            openState( item.getText(),
+                       widgetID );
+        } else if ( widgetID.startsWith( ExplorerNodeConfig.CATEGORY_ID ) ) {
+            openCategory( item.getText(),
+                          widgetID );
+        }
+    }
+
+    public void onOpen(OpenEvent<TreeItem> event) {
+        final TreeItem node = event.getTarget();
+        if ( ExplorerNodeConfig.STATES_ROOT_ID.equals( itemWidgets.get( node ) ) ) {
+            removeStateIDs( itemWidgets );
+            node.removeItems();
+            ExplorerNodeConfig.setupStatesStructure( node,
+                                                     itemWidgets );
+        } else if ( ExplorerNodeConfig.CATEGORY_ROOT_ID.equals( itemWidgets.get( node ) ) ) {
+            removeCategoryIDs( itemWidgets );
+            node.removeItems();
+            ExplorerNodeConfig.setupCategoriesStructure( node,
+                                                         itemWidgets );
+        }
+    }
+
+    private void removeStateIDs(Map<TreeItem, String> itemWidgets) {
+        Iterator<TreeItem> it = itemWidgets.keySet().iterator();
+        while ( it.hasNext() ) {
+            TreeItem item = (TreeItem) it.next();
+            String id = itemWidgets.get( item );
+            if ( id.startsWith( ExplorerNodeConfig.STATES_ID + "-" ) ) {
+                it.remove();
+            }
+        }
+    }
+
+    private void removeCategoryIDs(Map<TreeItem, String> itemWidgets) {
+        Iterator<TreeItem> it = itemWidgets.keySet().iterator();
+        while ( it.hasNext() ) {
+            TreeItem item = (TreeItem) it.next();
+            String id = itemWidgets.get( item );
+            if ( id.startsWith( ExplorerNodeConfig.CATEGORY_ID + "-" ) ) {
+                it.remove();
+            }
+        }
+    }
+
     /**
      * Show the inbox of the given name.
      */
-    private void openInbox(String title, final String widgetID) {   	
-        if (!centertabbedPanel.showIfOpen(widgetID)) {
-            AssetItemGrid g = new AssetItemGrid(createEditEvent(), widgetID, new AssetItemGridDataLoader() {
-                public void loadData(int startRow, int numberOfRows, GenericCallback<TableDataResult> cb) {
-                    RepositoryServiceFactory.getService().loadInbox(widgetID, cb);
-                }
-            });
-            centertabbedPanel.addTab(title, g, widgetID);
+    private void openInbox(String title,
+                           final String widgetID) {
+        if ( !centertabbedPanel.showIfOpen( widgetID ) ) {
+            AssetItemGrid g = new AssetItemGrid( createEditEvent(),
+                                                 widgetID,
+                                                 new AssetItemGridDataLoader() {
+                                                     public void loadData(int startRow,
+                                                                          int numberOfRows,
+                                                                          GenericCallback<TableDataResult> cb) {
+                                                         RepositoryServiceFactory.getService().loadInbox( widgetID,
+                                                                                                          cb );
+                                                     }
+                                                 } );
+            centertabbedPanel.addTab( title,
+                                      g,
+                                      widgetID );
         }
     }
 
     /**
      * open a state or category !
      */
-    private void openState(String title, String widgetID) {
-        if (!centertabbedPanel.showIfOpen(widgetID)) {
-        	final String stateName = widgetID.substring(widgetID.indexOf("-") + 1);
-       	    final AssetItemGrid list = new AssetItemGrid(createEditEvent(),
-                    AssetItemGrid.RULE_LIST_TABLE_ID,
-                    new AssetItemGridDataLoader() {
-                        public void loadData(int skip, int numberOfRows, GenericCallback cb) {
-                             RepositoryServiceFactory.getService().
-                                        loadRuleListForState(stateName, skip,
-                                                numberOfRows, AssetItemGrid.RULE_LIST_TABLE_ID, cb);
-                            
-                        }
-                    },
-                    null);
-           final ServerPushNotification push = new ServerPushNotification() {
+    private void openState(String title,
+                           String widgetID) {
+        if ( !centertabbedPanel.showIfOpen( widgetID ) ) {
+            final String stateName = widgetID.substring( widgetID.indexOf( "-" ) + 1 );
+            final AssetItemGrid list = new AssetItemGrid( createEditEvent(),
+                                                          AssetItemGrid.RULE_LIST_TABLE_ID,
+                                                          new AssetItemGridDataLoader() {
+                                                              public void loadData(int skip,
+                                                                                   int numberOfRows,
+                                                                                   GenericCallback cb) {
+                                                                  RepositoryServiceFactory.getService().loadRuleListForState( stateName,
+                                                                                                                              skip,
+                                                                                                                              numberOfRows,
+                                                                                                                              AssetItemGrid.RULE_LIST_TABLE_ID,
+                                                                                                                              cb );
+
+                                                              }
+                                                          },
+                                                          null );
+            final ServerPushNotification push = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
-                        if (response.messageType.equals("statusChange") && (response.message).equals(stateName)) {
-                            list.refreshGrid();
-                        }
+                    if ( response.messageType.equals( "statusChange" ) && (response.message).equals( stateName ) ) {
+                        list.refreshGrid();
+                    }
                 }
             };
-            PushClient.instance().subscribe(push);
-            list.addUnloadListener(new Command() {
+            PushClient.instance().subscribe( push );
+            list.addUnloadListener( new Command() {
                 public void execute() {
-                    PushClient.instance().unsubscribe(push);
+                    PushClient.instance().unsubscribe( push );
                 }
-            });
+            } );
 
-            centertabbedPanel.addTab(constants.Status() + title, list, widgetID);
+            centertabbedPanel.addTab( constants.Status() + title,
+                                      list,
+                                      widgetID );
         }
     }
 
     /**
      * open a category 
      */
-    private void openCategory(String title, String widgetID) {
-        if (!centertabbedPanel.showIfOpen(widgetID)) {
-    	    final String categoryName = widgetID.substring(widgetID.indexOf("-") + 1);
-            final AssetItemGrid list = new AssetItemGrid(createEditEvent(),
-                    AssetItemGrid.RULE_LIST_TABLE_ID,
-                    new AssetItemGridDataLoader() {
-                        public void loadData(int skip, int numberOfRows, GenericCallback cb) {
-                                RepositoryServiceFactory.getService().
-                                        loadRuleListForCategories(categoryName, skip, numberOfRows,
-                                                AssetItemGrid.RULE_LIST_TABLE_ID, cb);                           
-                        }
-                    },
-                    GWT.getModuleBaseURL() + "feed/category?name=" + categoryName + "&viewUrl=" + getSelfURL());
-           final ServerPushNotification push = new ServerPushNotification() {
+    private void openCategory(String title,
+                              String widgetID) {
+        if ( !centertabbedPanel.showIfOpen( widgetID ) ) {
+            final String categoryName = widgetID.substring( widgetID.indexOf( "-" ) + 1 );
+            final AssetItemGrid list = new AssetItemGrid( createEditEvent(),
+                                                          AssetItemGrid.RULE_LIST_TABLE_ID,
+                                                          new AssetItemGridDataLoader() {
+                                                              public void loadData(int skip,
+                                                                                   int numberOfRows,
+                                                                                   GenericCallback cb) {
+                                                                  RepositoryServiceFactory.getService().loadRuleListForCategories( categoryName,
+                                                                                                                                   skip,
+                                                                                                                                   numberOfRows,
+                                                                                                                                   AssetItemGrid.RULE_LIST_TABLE_ID,
+                                                                                                                                   cb );
+                                                              }
+                                                          },
+                                                          GWT.getModuleBaseURL() + "feed/category?name=" + categoryName + "&viewUrl=" + getSelfURL() );
+            final ServerPushNotification push = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
-                        if (response.messageType.equals("categoryChange") && response.message.equals(categoryName)) {
-                            list.refreshGrid();
-                        }
+                    if ( response.messageType.equals( "categoryChange" ) && response.message.equals( categoryName ) ) {
+                        list.refreshGrid();
+                    }
                 }
             };
-            PushClient.instance().subscribe(push);
-            list.addUnloadListener(new Command() {
+            PushClient.instance().subscribe( push );
+            list.addUnloadListener( new Command() {
                 public void execute() {
-                    PushClient.instance().unsubscribe(push);
+                    PushClient.instance().unsubscribe( push );
                 }
-            });
+            } );
 
-            centertabbedPanel.addTab((constants.CategoryColon()) + title, list, widgetID);
+            centertabbedPanel.addTab( (constants.CategoryColon()) + title,
+                                      list,
+                                      widgetID );
         }
     }
-    
+
     private EditItemEvent createEditEvent() {
         return new EditItemEvent() {
             public void open(String uuid) {
-                centertabbedPanel.openAsset(uuid);
+                centertabbedPanel.openAsset( uuid );
             }
 
             public void open(MultiViewRow[] rows) {
-                for ( MultiViewRow row: rows) {
+                for ( MultiViewRow row : rows ) {
                     centertabbedPanel.openAsset( row.uuid );
                 }
             }
@@ -247,8 +279,9 @@ public class BrowseTree extends AbstractTree implements OpenHandler<TreeItem> {
      */
     public static String getSelfURL() {
         String selfURL = Window.Location.getHref();
-        if (selfURL.contains("#")) {
-            selfURL = selfURL.substring(0, selfURL.indexOf("#"));
+        if ( selfURL.contains( "#" ) ) {
+            selfURL = selfURL.substring( 0,
+                                         selfURL.indexOf( "#" ) );
         }
         return selfURL;
     }

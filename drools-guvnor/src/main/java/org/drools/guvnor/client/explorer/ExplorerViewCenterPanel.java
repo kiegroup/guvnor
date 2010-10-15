@@ -50,7 +50,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -63,71 +63,27 @@ import com.google.gwt.user.client.ui.Widget;
  * This is the tab panel manager.
  * @author Fernando Meyer, Michael Neale
  */
-public class ExplorerViewCenterPanel {
-    private Constants constants = ((Constants)GWT.create(Constants.class));
-    private static Images images = (Images)GWT.create(Images.class);       
+public class ExplorerViewCenterPanel extends Composite {
+    private Constants                  constants            = ((Constants) GWT.create( Constants.class ));
+    private static Images              images               = (Images) GWT.create( Images.class );
 
-    final TabLayoutPanel tp;
+    private final TabLayoutPanel       tabLayoutPanel;
 
-    private MultiKeyMap<Panel> openedTabs = new MultiKeyMap<Panel>();
-    private static int id = 0;
+    private MultiKeyMap<Panel>         openedTabs           = new MultiKeyMap<Panel>();
+    private static int                 id                   = 0;
 
     /** to keep track of what is dirty, filthy */
-    private Map<String, GuvnorEditor> openedAssetEditors = new HashMap<String, GuvnorEditor>();
+    private Map<String, GuvnorEditor>  openedAssetEditors   = new HashMap<String, GuvnorEditor>();
     private Map<String, PackageEditor> openedPackageEditors = new HashMap<String, PackageEditor>();
-    
-    private Map<Panel, String[]> itemWidgets = new HashMap<Panel, String[]>();
+
+    private Map<Panel, String[]>       itemWidgets          = new HashMap<Panel, String[]>();
 
     //private Button                      closeAllButton;
 
     public ExplorerViewCenterPanel() {
-        tp = new TabLayoutPanel(2, Unit.EM);
-
-        //TODO: Dirtyable does not work.  
-        //listener to try and stop people from forgetting to save...
-/*        tp.addListener( new TabPanelListenerAdapter() {
-            @Override
-            public boolean doBeforeRemove(Container self,
-                                          final Component component) {
-
-                if ( openedAssetEditors.containsKey( component.getId() ) ) {
-
-                    GuvnorEditor rv = openedAssetEditors.get( component.getId() );
-                    if ( rv.isDirty() ) {
-                        component.show();
-                        return Window.confirm( constants.AreYouSureCloseWarningUnsaved() );
-                    } else {
-                        return true;
-                    }
-                }
-                return true;
-            }
-        } );*/
-
-        addCloseAllButton();
-    }
-
-    //TODO:
-    private void addCloseAllButton() {
-/*        closeAllButton = new Button( constants.CloseAllItems() );
-        closeAllButton.addListener( new ButtonListenerAdapter() {
-            @Override
-            public void onClick(Button button,
-                                EventObject e) {
-                if ( Window.confirm( constants.AreYouSureYouWantToCloseOpenItems() ) ) {
-                    tp.clear();
-                    openedAssetEditors.clear();
-                    openedPackageEditors.clear();
-                    openedTabs.clear();
-                    openFind();
-                }
-            }
-        } );
-        tp.addButton( closeAllButton );*/
-    }
-
-    public TabLayoutPanel getPanel() {
-        return tp;
+        tabLayoutPanel = new TabLayoutPanel( 2,
+                                             Unit.EM );
+        initWidget( tabLayoutPanel );
     }
 
     /**
@@ -139,9 +95,9 @@ public class ExplorerViewCenterPanel {
     public void addTab(final String tabname,
                        Widget widget,
                        final String key) {
-        addTab(tabname,
-               widget,
-               new String[]{key});
+        addTab( tabname,
+                widget,
+                new String[]{key} );
     }
 
     /**
@@ -153,152 +109,165 @@ public class ExplorerViewCenterPanel {
     public void addTab(final String tabname,
                        Widget widget,
                        final String[] keys) {
-        final String panelId = (keys.length == 1 ? keys[0] + id++ : Arrays.toString(keys) + id++);
-        
+        final String panelId = (keys.length == 1 ? keys[0] + id++ : Arrays.toString( keys ) + id++);
+
         ScrollPanel localTP = new ScrollPanel();
-        localTP.add(widget);
-        tp.add(localTP, newClosableLabel(localTP, tabname));
-        tp.selectTab(localTP);
+        localTP.add( widget );
+        tabLayoutPanel.add( localTP,
+                            newClosableLabel( localTP,
+                                              tabname ) );
+        tabLayoutPanel.selectTab( localTP );
 
         //TODO: Dirtyable
-/*        localTP.ad( new PanelListenerAdapter() {
-            public void onDestroy(Component component) {
-                Panel p = openedTabs.remove( keys );
-                if ( p != null ) {
-                    p.destroy();
-                }
-                openedAssetEditors.remove( panelId );
-                openedPackageEditors.remove( tabname );
-            }
-        } );
-*/
-        if (widget instanceof GuvnorEditor) {
-            this.openedAssetEditors.put(panelId, (GuvnorEditor)widget);
-        } else if (widget instanceof PackageEditor) {
-            this.openedPackageEditors.put( tabname,(PackageEditor)widget);
+        /*        localTP.ad( new PanelListenerAdapter() {
+                    public void onDestroy(Component component) {
+                        Panel p = openedTabs.remove( keys );
+                        if ( p != null ) {
+                            p.destroy();
+                        }
+                        openedAssetEditors.remove( panelId );
+                        openedPackageEditors.remove( tabname );
+                    }
+                } );
+        */
+        if ( widget instanceof GuvnorEditor ) {
+            this.openedAssetEditors.put( panelId,
+                                         (GuvnorEditor) widget );
+        } else if ( widget instanceof PackageEditor ) {
+            this.openedPackageEditors.put( tabname,
+                                           (PackageEditor) widget );
         }
 
-        openedTabs.put(keys, localTP);
-        itemWidgets.put(localTP, keys);
+        openedTabs.put( keys,
+                        localTP );
+        itemWidgets.put( localTP,
+                         keys );
     }
-    
-	private Widget newClosableLabel(final Panel panel, final String title) {
-		final HorizontalPanel hPanel = new HorizontalPanel();
-		final Label label = new Label(title);
-		DOM.setStyleAttribute(label.getElement(), "whiteSpace", "nowrap");
-		ImageButton closeBtn = new ImageButton(images.close().getURL());
-		//Button closeBtn = new Button("x");
-		closeBtn.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent arg0) {
-				int widgetIndex = tp.getWidgetIndex(panel);
-				if (widgetIndex == tp.getSelectedIndex()) {
-					tp.selectTab(widgetIndex - 1);
-				}
-				tp.remove(widgetIndex);
-				String[] keys = itemWidgets.remove(panel);
-				openedTabs.remove(keys);				
-			}			
-		});
 
-		hPanel.add(label);
-		hPanel.add(new HTML("&nbsp&nbsp&nbsp"));
-		hPanel.add(closeBtn);
-		return hPanel;
-	}
-    
+    private Widget newClosableLabel(final Panel panel,
+                                    final String title) {
+        final HorizontalPanel hPanel = new HorizontalPanel();
+        final Label label = new Label( title );
+        DOM.setStyleAttribute( label.getElement(),
+                               "whiteSpace",
+                               "nowrap" );
+        ImageButton closeBtn = new ImageButton( images.close().getURL() );
+        //Button closeBtn = new Button("x");
+        closeBtn.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
+                int widgetIndex = tabLayoutPanel.getWidgetIndex( panel );
+                if ( widgetIndex == tabLayoutPanel.getSelectedIndex() ) {
+                    tabLayoutPanel.selectTab( widgetIndex - 1 );
+                }
+                tabLayoutPanel.remove( widgetIndex );
+                String[] keys = itemWidgets.remove( panel );
+                openedTabs.remove( keys );
+            }
+        } );
+
+        hPanel.add( label );
+        hPanel.add( new HTML( "&nbsp&nbsp&nbsp" ) );
+        hPanel.add( closeBtn );
+        return hPanel;
+    }
+
     /**
      * Will open if existing. If not it will return false;
      */
     public boolean showIfOpen(String key) {
-        if (openedTabs.containsKey(key)) {
+        if ( openedTabs.containsKey( key ) ) {
             LoadingPopup.close();
-            Panel tpi = (Panel)openedTabs.get(key);
-            tp.selectTab(tpi);      
+            Panel tpi = (Panel) openedTabs.get( key );
+            tabLayoutPanel.selectTab( tpi );
             return true;
-        } 
+        }
         return false;
     }
 
     public void close(String key) {
-        //tp.remove( key + id );
-        Panel tpi = openedTabs.remove(key);
-        
-        int widgetIndex = tp.getWidgetIndex(tpi);
-        if (widgetIndex == tp.getSelectedIndex()) {
-            tp.selectTab(widgetIndex - 1);
+        Panel tpi = openedTabs.remove( key );
+
+        int widgetIndex = tabLayoutPanel.getWidgetIndex( tpi );
+        if ( widgetIndex == tabLayoutPanel.getSelectedIndex() ) {
+            tabLayoutPanel.selectTab( widgetIndex - 1 );
         }
-        
-        tp.remove(widgetIndex);
-		itemWidgets.remove(tpi);
+
+        tabLayoutPanel.remove( widgetIndex );
+        itemWidgets.remove( tpi );
     }
 
     /**
      * Open an asset if it is not already open.
      */
-	public void openAsset(final String uuid) {
-		if (uuid.contains("<")) {
-			return;
-		}
-		History.newItem("asset=" + uuid); // NON-NLS
+    public void openAsset(final String uuid) {
+        if ( uuid.contains( "<" ) ) {
+            return;
+        }
+        History.newItem( "asset=" + uuid ); // NON-NLS
 
-		if (!showIfOpen(uuid)) {
+        if ( !showIfOpen( uuid ) ) {
 
-			final boolean[] loading = {true};
+            final boolean[] loading = {true};
 
-			Timer t = new Timer() {
-				public void run() {
-					if (loading[0]) {
-						LoadingPopup.showMessage(constants.LoadingAsset());
-					}
-				}
-			};
-			t.schedule(200);
+            Timer t = new Timer() {
+                public void run() {
+                    if ( loading[0] ) {
+                        LoadingPopup.showMessage( constants.LoadingAsset() );
+                    }
+                }
+            };
+            t.schedule( 200 );
 
-			RepositoryServiceFactory.getService().loadRuleAsset(uuid, new GenericCallback<RuleAsset>() {
-				public void onSuccess(final RuleAsset a) {
-					SuggestionCompletionCache.getInstance().doAction(a.metaData.packageName, new Command() {
-						public void execute() {
-							loading[0] = false;
-							EditItemEvent edit = new EditItemEvent() {
-								public void open(String key) {
-									openAsset(key);
-								}
+            RepositoryServiceFactory.getService().loadRuleAsset( uuid,
+                                                                 new GenericCallback<RuleAsset>() {
+                                                                     public void onSuccess(final RuleAsset a) {
+                                                                         SuggestionCompletionCache.getInstance().doAction( a.metaData.packageName,
+                                                                                                                           new Command() {
+                                                                                                                               public void execute() {
+                                                                                                                                   loading[0] = false;
+                                                                                                                                   EditItemEvent edit = new EditItemEvent() {
+                                                                                                                                       public void open(String key) {
+                                                                                                                                           openAsset( key );
+                                                                                                                                       }
 
-								public void open(MultiViewRow[] rows) {
-									for (MultiViewRow row : rows) {
-										openAsset(row.uuid);
-									}
-								}
-							};
-							RuleViewer rv = new RuleViewer(a, edit);
-							addTab(a.metaData.name, rv, uuid);
-							rv.setCloseCommand(new Command() {
-								public void execute() {
-									close(uuid);
-								}
-							});
+                                                                                                                                       public void open(MultiViewRow[] rows) {
+                                                                                                                                           for ( MultiViewRow row : rows ) {
+                                                                                                                                               openAsset( row.uuid );
+                                                                                                                                           }
+                                                                                                                                       }
+                                                                                                                                   };
+                                                                                                                                   RuleViewer rv = new RuleViewer( a,
+                                                                                                                                                                   edit );
+                                                                                                                                   addTab( a.metaData.name,
+                                                                                                                                           rv,
+                                                                                                                                           uuid );
+                                                                                                                                   rv.setCloseCommand( new Command() {
+                                                                                                                                       public void execute() {
+                                                                                                                                           close( uuid );
+                                                                                                                                       }
+                                                                                                                                   } );
 
-							// When model is saved update the package view if it is opened.
-							if (a.metaData.format.equals(AssetFormats.MODEL)) {
-							    Command command =new Command() {
-                                    public void execute() {
-                                        PackageEditor packageEditor = openedPackageEditors.get(a.metaData.packageName);
-                                        if (packageEditor != null) {
-                                            packageEditor.reload();
-                                        }
-                                    }
-                                };
-								rv.setCheckedInCommand(command);
-								rv.setArchiveCommand(command);
-							}
+                                                                                                                                   // When model is saved update the package view if it is opened.
+                                                                                                                                   if ( a.metaData.format.equals( AssetFormats.MODEL ) ) {
+                                                                                                                                       Command command = new Command() {
+                                                                                                                                           public void execute() {
+                                                                                                                                               PackageEditor packageEditor = openedPackageEditors.get( a.metaData.packageName );
+                                                                                                                                               if ( packageEditor != null ) {
+                                                                                                                                                   packageEditor.reload();
+                                                                                                                                               }
+                                                                                                                                           }
+                                                                                                                                       };
+                                                                                                                                       rv.setCheckedInCommand( command );
+                                                                                                                                       rv.setArchiveCommand( command );
+                                                                                                                                   }
 
-							LoadingPopup.close();
-						}
-					});
-				}
-			});
-		}
-	}
+                                                                                                                                   LoadingPopup.close();
+                                                                                                                               }
+                                                                                                                           } );
+                                                                     }
+                                                                 } );
+        }
+    }
 
     public void openAssets(MultiViewRow[] rows) {
 
@@ -306,9 +275,9 @@ public class ExplorerViewCenterPanel {
         final String[] uuids = new String[rows.length];
         final String[] names = new String[rows.length];
 
-        for (int i = 0; i < rows.length; i++) {
+        for ( int i = 0; i < rows.length; i++ ) {
             // Check if any of these assets are already opened.
-            if (showIfOpen(rows[i].uuid)) {
+            if ( showIfOpen( rows[i].uuid ) ) {
                 blockingAssetName = rows[i].name;
                 break;
             }
@@ -316,69 +285,76 @@ public class ExplorerViewCenterPanel {
             names[i] = rows[i].name;
         }
 
-        if (blockingAssetName != null) {
-            FormStylePopup popup = new FormStylePopup("images/information.gif", //NON-NLS
-                                                      Format.format( constants.Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview(),
-                                                                      blockingAssetName));
+        if ( blockingAssetName != null ) {
+            FormStylePopup popup = new FormStylePopup( "images/information.gif", //NON-NLS
+                                                       Format.format( constants.Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview(),
+                                                                      blockingAssetName ) );
             popup.show();
             return;
         }
 
-        MultiViewEditor multiview = new MultiViewEditor(rows,
-                                                        new EditItemEvent() {
-                                                            public void open(String key) {
-                                                                openAsset(key);
-                                                            }
+        MultiViewEditor multiview = new MultiViewEditor( rows,
+                                                         new EditItemEvent() {
+                                                             public void open(String key) {
+                                                                 openAsset( key );
+                                                             }
 
                                                              public void open(MultiViewRow[] rows) {
-                                                                 for (MultiViewRow row : rows) {
-                                                                     openAsset(row.uuid);
+                                                                 for ( MultiViewRow row : rows ) {
+                                                                     openAsset( row.uuid );
                                                                  }
                                                              }
                                                          } );
 
-        multiview.setCloseCommand(new Command() {
+        multiview.setCloseCommand( new Command() {
             public void execute() {
-                close(Arrays.toString(uuids));
+                close( Arrays.toString( uuids ) );
             }
-        });
+        } );
 
-        addTab(Arrays.toString(names),
-               multiview,
-               uuids );
+        addTab( Arrays.toString( names ),
+                multiview,
+                uuids );
 
     }
 
     /**
      * Open a package editor if it is not already open.
      */
-	public void openPackageEditor(final String uuid, final Command refPackageList) {
+    public void openPackageEditor(final String uuid,
+                                  final Command refPackageList) {
 
-		if (!showIfOpen(uuid)) {
-			LoadingPopup.showMessage(constants.LoadingPackageInformation());
-			RepositoryServiceFactory.getService().loadPackageConfig(uuid, new GenericCallback<PackageConfigData>() {
-				public void onSuccess(PackageConfigData conf) {
-					PackageEditor ed = new PackageEditor(conf, new Command() {
-						public void execute() {
-							close(uuid);
-						}
-					}, refPackageList, new EditItemEvent() {
-						public void open(String uuid) {
-							openAsset(uuid);
-						}
+        if ( !showIfOpen( uuid ) ) {
+            LoadingPopup.showMessage( constants.LoadingPackageInformation() );
+            RepositoryServiceFactory.getService().loadPackageConfig( uuid,
+                                                                     new GenericCallback<PackageConfigData>() {
+                                                                         public void onSuccess(PackageConfigData conf) {
+                                                                             PackageEditor ed = new PackageEditor( conf,
+                                                                                                                   new Command() {
+                                                                                                                       public void execute() {
+                                                                                                                           close( uuid );
+                                                                                                                       }
+                                                                                                                   },
+                                                                                                                   refPackageList,
+                                                                                                                   new EditItemEvent() {
+                                                                                                                       public void open(String uuid) {
+                                                                                                                           openAsset( uuid );
+                                                                                                                       }
 
-						public void open(MultiViewRow[] rows) {
-							for (MultiViewRow row : rows) {
-								openAsset(row.uuid);
-							}
-						}
-					});
-					addTab(conf.name, ed, conf.uuid);
-					LoadingPopup.close();
-				}
-			});
-		}
-	}
+                                                                                                                       public void open(MultiViewRow[] rows) {
+                                                                                                                           for ( MultiViewRow row : rows ) {
+                                                                                                                               openAsset( row.uuid );
+                                                                                                                           }
+                                                                                                                       }
+                                                                                                                   } );
+                                                                             addTab( conf.name,
+                                                                                     ed,
+                                                                                     conf.uuid );
+                                                                             LoadingPopup.close();
+                                                                         }
+                                                                     } );
+        }
+    }
 
     public void openFind() {
         if ( !showIfOpen( "FIND" ) ) { //NON-NLS
@@ -399,27 +375,30 @@ public class ExplorerViewCenterPanel {
         }
     }
 
-	public void openSnapshot(final SnapshotInfo snap) {
-		// make this refresh the 'snap'
+    public void openSnapshot(final SnapshotInfo snap) {
+        // make this refresh the 'snap'
 
-		if (!showIfOpen(snap.name + snap.uuid)) {
-			LoadingPopup.showMessage(constants.LoadingSnapshot());
-			RepositoryServiceFactory.getService().loadPackageConfig(snap.uuid,
-					new GenericCallback<PackageConfigData>() {
-						public void onSuccess(PackageConfigData conf) {
-							addTab(Format.format(constants.SnapshotLabel(),
-									snap.name), new SnapshotView(snap, conf,
-									new Command() {
-										public void execute() {
-											close(snap.name + snap.uuid);
-										}
-									}, ExplorerViewCenterPanel.this), snap.name
-									+ snap.uuid);
-							LoadingPopup.close();
-						}
-					});
+        if ( !showIfOpen( snap.name + snap.uuid ) ) {
+            LoadingPopup.showMessage( constants.LoadingSnapshot() );
+            RepositoryServiceFactory.getService().loadPackageConfig( snap.uuid,
+                                                                     new GenericCallback<PackageConfigData>() {
+                                                                         public void onSuccess(PackageConfigData conf) {
+                                                                             addTab( Format.format( constants.SnapshotLabel(),
+                                                                                                    snap.name ),
+                                                                                     new SnapshotView( snap,
+                                                                                                       conf,
+                                                                                                       new Command() {
+                                                                                                           public void execute() {
+                                                                                                               close( snap.name + snap.uuid );
+                                                                                                           }
+                                                                                                       },
+                                                                                                       ExplorerViewCenterPanel.this ),
+                                                                                     snap.name + snap.uuid );
+                                                                             LoadingPopup.close();
+                                                                         }
+                                                                     } );
 
-		}
-	}
+        }
+    }
 
 }

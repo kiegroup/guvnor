@@ -33,72 +33,78 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
+public class DeploymentTree extends AbstractTree
+    implements
+    OpenHandler<TreeItem> {
+    private static Constants constants                = GWT.create( Constants.class );
+    private static Images    images                   = (Images) GWT.create( Images.class );
 
-public class DeploymentTree extends AbstractTree implements OpenHandler<TreeItem> {
-    private static Constants constants = GWT.create(Constants.class);
-    private static Images images = (Images) GWT.create(Images.class);       
+    private boolean          deploymentPackagesLoaded = false;
 
-    private Map<TreeItem, String> itemWidgets = new HashMap<TreeItem, String>();
-
-    private boolean deploymentPackagesLoaded = false;
-    
     public DeploymentTree(ExplorerViewCenterPanel tabbedPanel) {
-        super(tabbedPanel);
+        super( tabbedPanel );
         this.name = constants.PackageSnapshots();
         this.image = images.deploy();
-        
-    	mainTree = new Tree();    	
-    	mainTree.setAnimationEnabled(true);
-        ExplorerNodeConfig.setupDeploymentTree(mainTree, itemWidgets);
-        mainTree.addSelectionHandler(this);
-        mainTree.addOpenHandler((OpenHandler<TreeItem>)this);      
-    }    
+
+        mainTree.setAnimationEnabled( true );
+        ExplorerNodeConfig.setupDeploymentTree( mainTree,
+                                                itemWidgets );
+        mainTree.addSelectionHandler( this );
+        mainTree.addOpenHandler( (OpenHandler<TreeItem>) this );
+    }
+
+    @Override
+    Tree getTree() {
+        return new Tree();
+    }
 
     public void refreshTree() {
-    	mainTree.clear(); 
-    	itemWidgets.clear();
-    	ExplorerNodeConfig.setupDeploymentTree(mainTree, itemWidgets);
+        mainTree.clear();
+        itemWidgets.clear();
+        ExplorerNodeConfig.setupDeploymentTree( mainTree,
+                                                itemWidgets );
     }
-    
+
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem item = event.getSelectedItem();
-        
-        if (item.getUserObject() instanceof Object[]) {
+
+        if ( item.getUserObject() instanceof Object[] ) {
             Object[] o = (Object[]) item.getUserObject();
-            final String snapName = ((SnapshotInfo)o[0]).name;
-            PackageConfigData conf = (PackageConfigData)o[1];
-            RepositoryServiceFactory.getService().listSnapshots(conf.name, new GenericCallback<SnapshotInfo[]>() {
-                public void onSuccess(SnapshotInfo[] a) {
-                    for(SnapshotInfo snap : a) {
-                    	if (snap.name.equals(snapName)) {
-                    		centertabbedPanel.openSnapshot(snap);
-                    		return;
-                    	}
-                    }
-                }
-            });
+            final String snapName = ((SnapshotInfo) o[0]).name;
+            PackageConfigData conf = (PackageConfigData) o[1];
+            RepositoryServiceFactory.getService().listSnapshots( conf.name,
+                                                                 new GenericCallback<SnapshotInfo[]>() {
+                                                                     public void onSuccess(SnapshotInfo[] a) {
+                                                                         for ( SnapshotInfo snap : a ) {
+                                                                             if ( snap.name.equals( snapName ) ) {
+                                                                                 centertabbedPanel.openSnapshot( snap );
+                                                                                 return;
+                                                                             }
+                                                                         }
+                                                                     }
+                                                                 } );
         }
     }
-    
-	public void onOpen(OpenEvent<TreeItem> event) {
-		final TreeItem node = event.getTarget();
-		if (ExplorerNodeConfig.PACKAGE_SNAPSHOTS.equals(itemWidgets.get(node))) { 
-			return;
-		}
-		final PackageConfigData conf = (PackageConfigData) node.getUserObject();
-		if (conf != null) {
-			RepositoryServiceFactory.getService().listSnapshots(conf.name,
-					new GenericCallback<SnapshotInfo[]>() {
-						public void onSuccess(SnapshotInfo[] snaps) {
-							node.removeItems();
-							for (final SnapshotInfo snapInfo : snaps) {
-								TreeItem snap = new TreeItem(snapInfo.name);
-								//snap.setTooltip(snapInfo.comment);
-								snap.setUserObject(new Object[]{snapInfo, conf});
-								node.addItem(snap);
-							}
-						}
-					});
-		}		
-	}
+
+    public void onOpen(OpenEvent<TreeItem> event) {
+        final TreeItem node = event.getTarget();
+        if ( ExplorerNodeConfig.PACKAGE_SNAPSHOTS.equals( itemWidgets.get( node ) ) ) {
+            return;
+        }
+        final PackageConfigData conf = (PackageConfigData) node.getUserObject();
+        if ( conf != null ) {
+            RepositoryServiceFactory.getService().listSnapshots( conf.name,
+                                                                 new GenericCallback<SnapshotInfo[]>() {
+                                                                     public void onSuccess(SnapshotInfo[] snaps) {
+                                                                         node.removeItems();
+                                                                         for ( final SnapshotInfo snapInfo : snaps ) {
+                                                                             TreeItem snap = new TreeItem( snapInfo.name );
+                                                                             //snap.setTooltip(snapInfo.comment);
+                                                                             snap.setUserObject( new Object[]{snapInfo, conf} );
+                                                                             node.addItem( snap );
+                                                                         }
+                                                                     }
+                                                                 } );
+        }
+    }
 }

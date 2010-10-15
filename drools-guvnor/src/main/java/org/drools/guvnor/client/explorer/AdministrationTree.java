@@ -16,15 +16,13 @@
 
 package org.drools.guvnor.client.explorer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.guvnor.client.admin.ArchivedAssetManager;
 import org.drools.guvnor.client.admin.BackupManager;
 import org.drools.guvnor.client.admin.CategoryManager;
 import org.drools.guvnor.client.admin.LogViewer;
 import org.drools.guvnor.client.admin.PermissionViewer;
 import org.drools.guvnor.client.admin.RepoConfigManager;
+import org.drools.guvnor.client.admin.RuleVerifierManager;
 import org.drools.guvnor.client.admin.StateManager;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
@@ -34,25 +32,25 @@ import org.drools.guvnor.client.messages.Constants;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-import org.drools.guvnor.client.admin.RuleVerifierManager;
-
 public class AdministrationTree extends AbstractTree {
-    private static Constants      constants   = GWT.create( Constants.class );
-    private static Images         images      = (Images) GWT.create( Images.class );
-
-    private Map<TreeItem, String> itemWidgets = new HashMap<TreeItem, String>();
+    private static Constants constants = GWT.create( Constants.class );
+    private static Images    images    = (Images) GWT.create( Images.class );
 
     public AdministrationTree(ExplorerViewCenterPanel tabbedPanel) {
         super( tabbedPanel );
         this.name = constants.Administration();
         this.image = images.rules();
 
-        mainTree = ExplorerNodeConfig.getAdminStructure( itemWidgets );
-
         //Add Selection listener
         mainTree.addSelectionHandler( this );
+    }
+
+    @Override
+    Tree getTree() {
+        return ExplorerNodeConfig.getAdminStructure( itemWidgets );
     }
 
     // Show the associated widget in the deck panel
