@@ -225,10 +225,6 @@ select {
 	padding: 0;
 }
 
-.gwt-Tree .gwt-TreeItem-selected {
-	background: #FF0;
-}
-
 .gwt-StackPanel .gwt-StackPanelItem {
 	cursor: hand;
 	background: #aa9;
@@ -509,6 +505,10 @@ textarea:focus,textarea:active {
 
 .image-Button {
 	cursor: pointer !important;
+}
+
+.gwt-Tree .gwt-TreeItem-selected {
+	background: none !important;
 }
 
 .gwt-TreeItem {
