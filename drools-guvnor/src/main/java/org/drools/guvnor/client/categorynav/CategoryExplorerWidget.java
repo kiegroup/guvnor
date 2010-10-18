@@ -1,20 +1,3 @@
-/**
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.drools.guvnor.client.categorynav;
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -31,27 +14,30 @@ package org.drools.guvnor.client.categorynav;
  * limitations under the License.
  */
 
-
+package org.drools.guvnor.client.categorynav;
 
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.TreeListener;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 
 /**
  * This is a rule/resource navigator that uses the server side categories to
@@ -60,7 +46,8 @@ import com.google.gwt.core.client.GWT;
  */
 public class CategoryExplorerWidget extends Composite
     implements
-    TreeListener {
+    SelectionHandler<TreeItem>,
+    OpenHandler<TreeItem> {
 
     private Tree                   navTreeWidget = new Tree();
     private VerticalPanel          panel         = new VerticalPanel();
@@ -68,30 +55,27 @@ public class CategoryExplorerWidget extends Composite
     private CategorySelectHandler  categorySelectHandler;
     private String                 selectedPath;
     private Panel                  emptyCategories;
-    private static Constants constants = ((Constants) GWT.create(Constants.class));
-
+    private static Constants       constants     = ((Constants) GWT.create( Constants.class ));
 
     public void setTreeSize(String width) {
         navTreeWidget.setWidth( width );
     }
-
-
 
     /**
      * Create a new cat explorer.
      * @param handler
      */
     public CategoryExplorerWidget(CategorySelectHandler handler) {
-        panel.add(navTreeWidget);
+        panel.add( navTreeWidget );
 
         this.categorySelectHandler = handler;
         loadInitialTree();
 
         initWidget( panel );
-        navTreeWidget.addTreeListener( this );
+        navTreeWidget.addSelectionHandler( this );
+        navTreeWidget.addOpenHandler( this );
         this.setStyleName( "category-explorer-Tree" );
     }
-
 
     /**
      * This refreshes the view.
@@ -104,19 +88,19 @@ public class CategoryExplorerWidget extends Composite
 
     public void showEmptyTree() {
 
-        if (this.emptyCategories == null) {
-                AbsolutePanel p = new AbsolutePanel();
-                 p.add( new HTML(constants.NoCategoriesCreatedYetTip()) );
-                 Button b = new Button(constants.Refresh());
-                 b.addClickListener( new ClickListener() {
-                    public void onClick(Widget w) {
-                        refresh();
-                    }
-                 });
-                 p.add( b );
-                 p.setStyleName( "small-Text" ); //NON-NLS
-                 this.emptyCategories = p;
-                 this.panel.add( this.emptyCategories );
+        if ( this.emptyCategories == null ) {
+            AbsolutePanel p = new AbsolutePanel();
+            p.add( new HTML( constants.NoCategoriesCreatedYetTip() ) );
+            Button b = new Button( constants.Refresh() );
+            b.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    refresh();
+                }
+            } );
+            p.add( b );
+            p.setStyleName( "small-Text" ); //NON-NLS
+            this.emptyCategories = p;
+            this.panel.add( this.emptyCategories );
         }
         emptyCategories.setVisible( true );
 
@@ -125,66 +109,61 @@ public class CategoryExplorerWidget extends Composite
     /** This will refresh the tree and restore it back to the original state */
     private void loadInitialTree() {
         navTreeWidget.addItem( constants.PleaseWait() );
-        DeferredCommand.addCommand(new Command() {
-			public void execute() {
-		        service.loadChildCategories( "/",
-		                                     new GenericCallback() {
+        DeferredCommand.addCommand( new Command() {
+            public void execute() {
+                service.loadChildCategories( "/",
+                                             new GenericCallback<String[]>() {
 
+                                                 public void onSuccess(String[] categories) {
+                                                     selectedPath = null;
+                                                     navTreeWidget.removeItems();
 
-		                                         public void onSuccess(Object result) {
-		                                             selectedPath = null;
-		                                             navTreeWidget.removeItems();
+                                                     TreeItem root = new TreeItem();
+                                                     root.setHTML( "<img src=\"images/desc.gif\"/>" );
+                                                     navTreeWidget.addItem( root );
 
-		                                             TreeItem root = new TreeItem();
-		                                             root.setHTML("<img src=\"images/desc.gif\"/>");
-		                                             navTreeWidget.addItem(root);
+                                                     if ( categories.length == 0 ) {
+                                                         showEmptyTree();
+                                                     } else {
+                                                         hideEmptyTree();
+                                                     }
+                                                     for ( int i = 0; i < categories.length; i++ ) {
+                                                         TreeItem it = new TreeItem();
+                                                         it.setHTML( "<img src=\"images/category_small.gif\"/>" + h( categories[i] ) );
+                                                         it.setUserObject( categories[i] );
+                                                         it.addItem( new PendingItem() );
+                                                         root.addItem( it );
+                                                     }
 
-		                                             String[] categories = (String[]) result;
+                                                     root.setState( true );
+                                                 }
 
-		                                             if (categories.length == 0) {
-		                                                 showEmptyTree();
-		                                             } else {
-		                                                 hideEmptyTree();
-		                                             }
-		                                             for ( int i = 0; i < categories.length; i++ ) {
-		                                                 TreeItem it = new TreeItem();
-		                                                 it.setHTML( "<img src=\"images/category_small.gif\"/>" + h(categories[i]) );
-		                                                 it.setUserObject( categories[i] );
-		                                                 it.addItem( new PendingItem() );
-		                                                 root.addItem( it );
-		                                             }
-
-		                                             root.setState(true);
-		                                         }
-
-
-
-		                                     } );
-			}}
-        );
+                                             } );
+            }
+        } );
 
     }
 
     private String h(String cat) {
-        return cat.replace("<", "&lt;").replace(">", "&gt;");
+        return cat.replace( "<",
+                            "&lt;" ).replace( ">",
+                                              "&gt;" );
     }
 
-
     private void hideEmptyTree() {
-        if (this.emptyCategories != null) {
+        if ( this.emptyCategories != null ) {
             this.emptyCategories.setVisible( false );
         }
 
     }
 
-
-
-    public void onTreeItemSelected(TreeItem item) {
-            this.selectedPath = getPath( item );
-            this.categorySelectHandler.selected( selectedPath );
+    public void onSelection(SelectionEvent<TreeItem> event) {
+        this.selectedPath = getPath( event.getSelectedItem() );
+        this.categorySelectHandler.selected( selectedPath );
     }
 
-    public void onTreeItemStateChanged(TreeItem item) {
+    public void onOpen(OpenEvent<TreeItem> event) {
+        TreeItem item = event.getTarget();
 
         if ( hasBeenLoaded( item ) ) {
             return;
@@ -195,18 +174,15 @@ public class CategoryExplorerWidget extends Composite
         //walk back up to build a tree
         this.selectedPath = getPath( item );
 
-        //item.setUserObject( new Boolean( true ) );
-
         service.loadChildCategories( selectedPath,
-                                     new GenericCallback() {
+                                     new GenericCallback<String[]>() {
 
-                                         public void onSuccess(Object result) {
+                                         public void onSuccess(String[] list) {
                                              TreeItem child = root.getChild( 0 );
                                              if ( child instanceof PendingItem ) {
                                                  // root.removeItem( child );
                                                  child.setVisible( false );
                                              }
-                                             String[] list = (String[]) result;
                                              for ( int i = 0; i < list.length; i++ ) {
                                                  TreeItem it = new TreeItem();
                                                  it.setHTML( "<img src=\"images/category_small.gif\"/>" + list[i] );
@@ -222,7 +198,7 @@ public class CategoryExplorerWidget extends Composite
     }
 
     private boolean hasBeenLoaded(TreeItem item) {
-        if (item.getChildCount() == 1 && item.getChild( 0 ) instanceof PendingItem) {
+        if ( item.getChildCount() == 1 && item.getChild( 0 ) instanceof PendingItem ) {
             return false;
         }
         return true;
@@ -230,10 +206,10 @@ public class CategoryExplorerWidget extends Composite
 
     private String getPath(TreeItem item) {
         String categoryPath = (String) item.getUserObject();
-        if (categoryPath == null) return null;
+        if ( categoryPath == null ) return null;
         TreeItem parent = item.getParentItem();
         while ( parent.getUserObject() != null ) {
-            categoryPath = ((String)parent.getUserObject()) + "/" + categoryPath;
+            categoryPath = ((String) parent.getUserObject()) + "/" + categoryPath;
             parent = parent.getParentItem();
         }
         return categoryPath;
@@ -250,9 +226,8 @@ public class CategoryExplorerWidget extends Composite
         return this.selectedPath;
     }
 
-
-	public boolean isSelected() {
-		return this.selectedPath != null;
-	}
+    public boolean isSelected() {
+        return this.selectedPath != null;
+    }
 
 }

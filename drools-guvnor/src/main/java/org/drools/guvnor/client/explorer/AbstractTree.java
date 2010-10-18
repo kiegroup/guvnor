@@ -35,6 +35,7 @@ public abstract class AbstractTree extends Composite
     public AbstractTree() {
 
         mainTree = getTree();
+        mainTree.setStyleName( "guvnor-Tree" );
 
         initWidget( mainTree );
     }

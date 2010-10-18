@@ -507,7 +507,7 @@ textarea:focus,textarea:active {
 	cursor: pointer !important;
 }
 
-.gwt-Tree .gwt-TreeItem-selected {
+.guvnor-Tree .gwt-TreeItem-selected {
 	background: none !important;
 }
 
