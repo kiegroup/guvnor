@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,27 +16,21 @@
 
 package org.drools.guvnor.client.explorer;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.rpc.*;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.images.Images;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.TableConfig;
+import org.drools.guvnor.client.rulelist.AssetItemGrid;
+import org.drools.guvnor.client.util.TabOpener;
 
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 
 public class BrowseTree extends AbstractTree
     implements
@@ -74,8 +68,7 @@ public class BrowseTree extends AbstractTree
                                          ExplorerNodeConfig.INCOMING_ID );
     }
 
-    public BrowseTree(ExplorerViewCenterPanel tabbedPanel) {
-        super( tabbedPanel );
+    public BrowseTree() {
         this.name = constants.Browse();
         this.image = images.ruleAsset();
 
@@ -103,17 +96,19 @@ public class BrowseTree extends AbstractTree
         TreeItem item = event.getSelectedItem();
         String widgetID = itemWidgets.get( item );
 
+        TabOpener opener = TabOpener.getInstance();
+
         if ( widgetID.equals( ExplorerNodeConfig.FIND_ID ) ) {
-            centertabbedPanel.openFind();
+            opener.openFind();
         } else if ( widgetID.equals( ExplorerNodeConfig.INCOMING_ID ) || widgetID.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) || widgetID.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
-            openInbox( item.getText(),
-                       widgetID );
+            opener.openInbox( item.getText(),
+                              widgetID );
         } else if ( widgetID.startsWith( ExplorerNodeConfig.STATES_ID ) ) {
-            openState( item.getText(),
-                       widgetID );
+            opener.openState( item.getText(),
+                              widgetID );
         } else if ( widgetID.startsWith( ExplorerNodeConfig.CATEGORY_ID ) ) {
-            openCategory( item.getText(),
-                          widgetID );
+            opener.openCategory( item.getText(),
+                                 widgetID );
         }
     }
 
@@ -154,135 +149,4 @@ public class BrowseTree extends AbstractTree
         }
     }
 
-    /**
-     * Show the inbox of the given name.
-     */
-    private void openInbox(String title,
-                           final String widgetID) {
-        if ( !centertabbedPanel.showIfOpen( widgetID ) ) {
-            AssetItemGrid g = new AssetItemGrid( createEditEvent(),
-                                                 widgetID,
-                                                 new AssetItemGridDataLoader() {
-                                                     public void loadData(int startRow,
-                                                                          int numberOfRows,
-                                                                          GenericCallback<TableDataResult> cb) {
-                                                         RepositoryServiceFactory.getService().loadInbox( widgetID,
-                                                                                                          cb );
-                                                     }
-                                                 } );
-            centertabbedPanel.addTab( title,
-                                      g,
-                                      widgetID );
-        }
-    }
-
-    /**
-     * open a state or category !
-     */
-    private void openState(String title,
-                           String widgetID) {
-        if ( !centertabbedPanel.showIfOpen( widgetID ) ) {
-            final String stateName = widgetID.substring( widgetID.indexOf( "-" ) + 1 );
-            final AssetItemGrid list = new AssetItemGrid( createEditEvent(),
-                                                          AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                          new AssetItemGridDataLoader() {
-                                                              public void loadData(int skip,
-                                                                                   int numberOfRows,
-                                                                                   GenericCallback cb) {
-                                                                  RepositoryServiceFactory.getService().loadRuleListForState( stateName,
-                                                                                                                              skip,
-                                                                                                                              numberOfRows,
-                                                                                                                              AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                                                                                              cb );
-
-                                                              }
-                                                          },
-                                                          null );
-            final ServerPushNotification push = new ServerPushNotification() {
-                public void messageReceived(PushResponse response) {
-                    if ( response.messageType.equals( "statusChange" ) && (response.message).equals( stateName ) ) {
-                        list.refreshGrid();
-                    }
-                }
-            };
-            PushClient.instance().subscribe( push );
-            list.addUnloadListener( new Command() {
-                public void execute() {
-                    PushClient.instance().unsubscribe( push );
-                }
-            } );
-
-            centertabbedPanel.addTab( constants.Status() + title,
-                                      list,
-                                      widgetID );
-        }
-    }
-
-    /**
-     * open a category 
-     */
-    private void openCategory(String title,
-                              String widgetID) {
-        if ( !centertabbedPanel.showIfOpen( widgetID ) ) {
-            final String categoryName = widgetID.substring( widgetID.indexOf( "-" ) + 1 );
-            final AssetItemGrid list = new AssetItemGrid( createEditEvent(),
-                                                          AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                          new AssetItemGridDataLoader() {
-                                                              public void loadData(int skip,
-                                                                                   int numberOfRows,
-                                                                                   GenericCallback cb) {
-                                                                  RepositoryServiceFactory.getService().loadRuleListForCategories( categoryName,
-                                                                                                                                   skip,
-                                                                                                                                   numberOfRows,
-                                                                                                                                   AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                                                                                                   cb );
-                                                              }
-                                                          },
-                                                          GWT.getModuleBaseURL() + "feed/category?name=" + categoryName + "&viewUrl=" + getSelfURL() );
-            final ServerPushNotification push = new ServerPushNotification() {
-                public void messageReceived(PushResponse response) {
-                    if ( response.messageType.equals( "categoryChange" ) && response.message.equals( categoryName ) ) {
-                        list.refreshGrid();
-                    }
-                }
-            };
-            PushClient.instance().subscribe( push );
-            list.addUnloadListener( new Command() {
-                public void execute() {
-                    PushClient.instance().unsubscribe( push );
-                }
-            } );
-
-            centertabbedPanel.addTab( (constants.CategoryColon()) + title,
-                                      list,
-                                      widgetID );
-        }
-    }
-
-    private EditItemEvent createEditEvent() {
-        return new EditItemEvent() {
-            public void open(String uuid) {
-                centertabbedPanel.openAsset( uuid );
-            }
-
-            public void open(MultiViewRow[] rows) {
-                for ( MultiViewRow row : rows ) {
-                    centertabbedPanel.openAsset( row.uuid );
-                }
-            }
-        };
-    }
-
-    /**
-     * The URL that will be used to open up assets in a feed.
-     * (by tacking asset id on the end, of course !). 
-     */
-    public static String getSelfURL() {
-        String selfURL = Window.Location.getHref();
-        if ( selfURL.contains( "#" ) ) {
-            selfURL = selfURL.substring( 0,
-                                         selfURL.indexOf( "#" ) );
-        }
-        return selfURL;
-    }
 }

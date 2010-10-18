@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.common;
+package org.drools.guvnor.client.util;
+
+import org.drools.guvnor.client.common.HeaderHTML;
 
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -52,5 +55,18 @@ public class Util {
         headerHTML.setImageResource( image );
 
         return new HTML( headerHTML.getElement().getString() );
+    }
+
+    /**
+     * The URL that will be used to open up assets in a feed.
+     * (by tacking asset id on the end, of course !). 
+     */
+    public static String getSelfURL() {
+        String selfURL = Window.Location.getHref();
+        if ( selfURL.contains( "#" ) ) {
+            selfURL = selfURL.substring( 0,
+                                         selfURL.indexOf( "#" ) );
+        }
+        return selfURL;
     }
 }

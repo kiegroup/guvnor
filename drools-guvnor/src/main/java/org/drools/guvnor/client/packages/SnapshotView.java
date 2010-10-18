@@ -27,18 +27,14 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.util.Format;
+import org.drools.guvnor.client.util.TabOpener;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -69,23 +65,21 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class SnapshotView extends Composite {
 
-    public static final String      LATEST_SNAPSHOT = "LATEST";
+    public static final String     LATEST_SNAPSHOT = "LATEST";
 
-    private PackageConfigData       parentConf;
-    private SnapshotInfo            snapInfo;
+    private PackageConfigData      parentConf;
+    private SnapshotInfo           snapInfo;
 
-    private Command                 close;
+    private Command                close;
 
-    private final SnapshotDiffView  diffGrid;
-    private ListBox                 box             = new ListBox();
+    private final SnapshotDiffView diffGrid;
+    private ListBox                box             = new ListBox();
 
-    private ExplorerViewCenterPanel centerPanel;
-    private static Constants        constants       = ((Constants) GWT.create( Constants.class ));
+    private static Constants       constants       = ((Constants) GWT.create( Constants.class ));
 
     public SnapshotView(SnapshotInfo snapInfo,
                         PackageConfigData parentPackage,
-                        Command closeSnap,
-                        ExplorerViewCenterPanel center) {
+                        Command closeSnap) {
 
         VerticalPanel vert = new VerticalPanel();
         this.snapInfo = snapInfo;
@@ -96,13 +90,11 @@ public class SnapshotView extends Composite {
         head.addHeader( "images/snapshot.png",
                         header() );
 
-        this.centerPanel = center;
-
         vert.add( head );
 
         vert.add( infoPanel() );
 
-        diffGrid = new SnapshotDiffView( center );
+        diffGrid = new SnapshotDiffView();
 
         vert.add( diffGrid );
 
@@ -273,46 +265,46 @@ public class SnapshotView extends Composite {
                                                 options.add( existing );
                                                 vert.add( existing );
                                             }
-                                            
-                    						HorizontalPanel newNameHorizontalPanel = new HorizontalPanel();
+
+                                            HorizontalPanel newNameHorizontalPanel = new HorizontalPanel();
                                             final TextBox newNameTextBox = new TextBox();
-                                    		final String newNameText = constants.NEW() + ": ";
+                                            final String newNameText = constants.NEW() + ": ";
 
-                    						final RadioButton newNameRadioButton = new RadioButton( "snapshotNameGroup",
-                    								newNameText);
-                    						newNameHorizontalPanel.add(newNameRadioButton);
-                    						newNameTextBox.setEnabled(false);
-                    						newNameRadioButton.addClickListener(new ClickListener() {
-                    							public void onClick(Widget w) {
-                    								newNameTextBox.setEnabled(true);
-                    							}
-                    						});
+                                            final RadioButton newNameRadioButton = new RadioButton( "snapshotNameGroup",
+                                                                                                    newNameText );
+                                            newNameHorizontalPanel.add( newNameRadioButton );
+                                            newNameTextBox.setEnabled( false );
+                                            newNameRadioButton.addClickListener( new ClickListener() {
+                                                public void onClick(Widget w) {
+                                                    newNameTextBox.setEnabled( true );
+                                                }
+                                            } );
 
-                    						newNameHorizontalPanel.add(newNameTextBox);
-                    						options.add(newNameRadioButton);
-                    						vert.add(newNameHorizontalPanel);                    						
+                                            newNameHorizontalPanel.add( newNameTextBox );
+                                            options.add( newNameRadioButton );
+                                            vert.add( newNameHorizontalPanel );
 
-                                            copy.addAttribute(constants.ExistingSnapshots(),
+                                            copy.addAttribute( constants.ExistingSnapshots(),
                                                                vert );
 
                                             Button ok = new Button( constants.OK() );
-                                            copy.addAttribute( "", ok );
+                                            copy.addAttribute( "",
+                                                               ok );
                                             ok.addClickListener( new ClickListener() {
                                                 public void onClick(Widget w) {
-                                                	
-                                        			boolean oneButtonIsSelected = false;
-                                        			for ( RadioButton rb : options ) {
+
+                                                    boolean oneButtonIsSelected = false;
+                                                    for ( RadioButton rb : options ) {
                                                         if ( rb.isChecked() ) {
-                                                        	oneButtonIsSelected = true;
-                                                        	break;
+                                                            oneButtonIsSelected = true;
+                                                            break;
                                                         }
-                                        			}
-                                    				if (!oneButtonIsSelected) {
-                                    					Window.alert(constants.YouHaveToEnterOrChoseALabelNameForTheSnapshot());
-                                    					return;
-                                    				}
-                                    				
-                                    				
+                                                    }
+                                                    if ( !oneButtonIsSelected ) {
+                                                        Window.alert( constants.YouHaveToEnterOrChoseALabelNameForTheSnapshot() );
+                                                        return;
+                                                    }
+
                                                     if ( newNameRadioButton.isChecked() ) {
                                                         if ( checkUnique( snaps,
                                                                           newNameTextBox.getText() ) ) {
@@ -375,32 +367,31 @@ public class SnapshotView extends Composite {
     }
 
     protected Widget packageTree() {
-    	Map<TreeItem, String> itemWidgets = new HashMap<TreeItem, String>();
-    	Tree root = new Tree();    	
-    	root.setAnimationEnabled(true);
+        Map<TreeItem, String> itemWidgets = new HashMap<TreeItem, String>();
+        Tree root = new Tree();
+        root.setAnimationEnabled( true );
 
-    	
         TreeItem pkg = ExplorerNodeConfig.getPackageItemStructure( parentConf.name,
                                                                    snapInfo.uuid,
-                                                                   itemWidgets);
+                                                                   itemWidgets );
         pkg.setUserObject( snapInfo );
-        root.addItem(pkg);
-        
-        ScrollPanel packagesTreeItemPanel = new ScrollPanel(root);
-        root.addSelectionHandler(new SelectionHandler<TreeItem>() {
-        	public void onSelection(SelectionEvent<TreeItem> event) {
+        root.addItem( pkg );
+
+        ScrollPanel packagesTreeItemPanel = new ScrollPanel( root );
+        root.addSelectionHandler( new SelectionHandler<TreeItem>() {
+            public void onSelection(SelectionEvent<TreeItem> event) {
                 Object uo = event.getSelectedItem().getUserObject();
                 if ( uo instanceof Object[] ) {
                     Object o = ((Object[]) uo)[0];
                     showAssetList( (String[]) o );
                 } else if ( uo instanceof SnapshotInfo ) {
                     SnapshotInfo s = (SnapshotInfo) uo;
-                    //todo - add snap notice to this..
-                    centerPanel.openPackageEditor( s.uuid,
-                                                   null );
-                }       	
-        	}
-        });
+                    TabOpener tabOpener = TabOpener.getInstance();
+                    tabOpener.openPackageEditor( s.uuid,
+                                                 null );
+                }
+            }
+        } );
 
         return packagesTreeItemPanel;
     }
@@ -412,40 +403,11 @@ public class SnapshotView extends Composite {
             key = key + assetTypes[i];
         }
 
-        if ( !centerPanel.showIfOpen( key ) ) {
-            AssetItemGrid grid = new AssetItemGrid( new EditItemEvent() {
-                                                        public void open(String key) {
-                                                            //todo add snap notice to this...
-                                                            centerPanel.openAsset( key );
-                                                        }
-                                                        public void open(MultiViewRow[] rows) {
-                                                            for ( MultiViewRow row : rows ) {
-                                                                centerPanel.openAsset( row.uuid);
-                                                            }
-                                                        }
-                                                    },
-                                                    AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                    new AssetItemGridDataLoader() {
-                                                        public void loadData(int startRow,
-                                                                             int numberOfRows,
-                                                                             GenericCallback cb) {
-                                                            RepositoryServiceFactory.getService().listAssets( snapInfo.uuid,
-                                                                                                              assetTypes,
-                                                                                                              startRow,
-                                                                                                              numberOfRows,
-                                                                                                              AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                                                                              cb );
-                                                        }
-                                                    } );
-
-            VerticalPanel vp = new VerticalPanel();
-            vp.add( new HTML( "<i><small>" + constants.SnapshotListingFor() + this.snapInfo.name + "</small></i>" ) );
-            vp.add( grid );
-            centerPanel.addTab( constants.SnapshotItems(),
-                                vp,
-                                key );
-        }
-
+        TabOpener tabOpener = TabOpener.getInstance();
+        tabOpener.openSnapshotAssetList( snapInfo.name,
+                                         snapInfo.uuid,
+                                         assetTypes,
+                                         key );
     }
 
     public static void showNewSnapshot(final Command refreshCmd) {
@@ -464,7 +426,8 @@ public class SnapshotView extends Composite {
             public void onClick(Widget w) {
                 pop.hide();
                 String pkg = sel.getSelectedPackage();
-                PackageBuilderWidget.showSnapshotDialog( pkg, refreshCmd);
+                PackageBuilderWidget.showSnapshotDialog( pkg,
+                                                         refreshCmd );
             }
         } );
 

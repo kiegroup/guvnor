@@ -16,24 +16,16 @@
 
 package org.drools.guvnor.client.explorer;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.RulePackageSelector;
-import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.images.Images;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.PushClient;
-import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.ServerPushNotification;
-import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.util.TabOpener;
+import org.drools.guvnor.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -47,8 +39,7 @@ public class PackagesTree extends AbstractTree {
 
     private boolean          packagesLoaded = false;
 
-    public PackagesTree(ExplorerViewCenterPanel tabbedPanel) {
-        super( tabbedPanel );
+    public PackagesTree() {
         this.name = constants.KnowledgeBases();
         this.image = images.packages();
 
@@ -75,7 +66,7 @@ public class PackagesTree extends AbstractTree {
 
     public void loadPackageList() {
         if ( !packagesLoaded ) {
-            setupPackagesTree( this.centertabbedPanel );
+            setupPackagesTree();
             packagesLoaded = true;
         }
     }
@@ -84,10 +75,10 @@ public class PackagesTree extends AbstractTree {
         mainTree.clear();
         itemWidgets.clear();
 
-        setupPackagesTree( centertabbedPanel );
+        setupPackagesTree();
     }
 
-    private void setupPackagesTree(final ExplorerViewCenterPanel tabPanel) {
+    private void setupPackagesTree() {
         TreeItem packageRootNode = mainTree.addItem( Util.getHeader( images.chartOrganisation(),
                                                                      constants.Packages() ) );
         packageRootNode.setState( true );
@@ -190,71 +181,32 @@ public class PackagesTree extends AbstractTree {
     // Show the associated widget in the deck panel
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem node = event.getSelectedItem();
-        //String widgetID = itemWidgets.get(node);
+
+        TabOpener opener = TabOpener.getInstance();
 
         if ( node.getUserObject() instanceof PackageConfigData && !"global".equals( ((PackageConfigData) node.getUserObject()).name ) ) {
             PackageConfigData pc = (PackageConfigData) node.getUserObject();
             RulePackageSelector.currentlySelectedPackage = pc.name;
 
             String uuid = pc.uuid;
-            centertabbedPanel.openPackageEditor( uuid,
-                                                 new Command() {
-                                                     public void execute() {
-                                                         // refresh the package tree.
-                                                         refreshTree();
-                                                     }
-                                                 } );
+            opener.openPackageEditor( uuid,
+                                      new Command() {
+                                          public void execute() {
+                                              // refresh the package tree.
+                                              refreshTree();
+                                          }
+                                      } );
         } else if ( node.getUserObject() instanceof Object[] ) {
-            //Object[] uo = (Object[]) node.getUserObject();
-            //final String[] fmts = (String[]) uo[0];
-            final String[] fmts = (String[]) node.getUserObject();
-            final PackageConfigData pc = (PackageConfigData) node.getParentItem().getUserObject();
-            RulePackageSelector.currentlySelectedPackage = pc.name;
-            String key = key( fmts,
-                              pc );
-            if ( !centertabbedPanel.showIfOpen( key ) ) {
-
-                final AssetItemGrid list = new AssetItemGrid( new EditItemEvent() {
-                                                                  public void open(String uuid) {
-                                                                      centertabbedPanel.openAsset( uuid );
-                                                                  }
-
-                                                                  public void open(MultiViewRow[] rows) {
-                                                                      centertabbedPanel.openAssets( rows );
-                                                                  }
-                                                              },
-                                                              AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID,
-                                                              new AssetItemGridDataLoader() {
-                                                                  public void loadData(int startRow,
-                                                                                       int numberOfRows,
-                                                                                       GenericCallback<TableDataResult> cb) {
-                                                                      RepositoryServiceFactory.getService().listAssets( pc.uuid,
-                                                                                                                        fmts,
-                                                                                                                        startRow,
-                                                                                                                        numberOfRows,
-                                                                                                                        AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID,
-                                                                                                                        cb );
-                                                                  }
-                                                              },
-                                                              GWT.getModuleBaseURL() + "feed/package?name=" + pc.name + "&viewUrl=" + BrowseTree.getSelfURL() + "&status=*" );
-                centertabbedPanel.addTab( node.getText() + " [" + pc.name + "]",
-                                          list,
-                                          key );
-
-                final ServerPushNotification sub = new ServerPushNotification() {
-                    public void messageReceived(PushResponse response) {
-                        if ( response.messageType.equals( "packageChange" ) && response.message.equals( pc.name ) ) {
-                            list.refreshGrid();
-                        }
-                    }
-                };
-                PushClient.instance().subscribe( sub );
-                list.addUnloadListener( new Command() {
-                    public void execute() {
-                        PushClient.instance().unsubscribe( sub );
-                    }
-                } );
-            }
+            final String[] formats = (String[]) node.getUserObject();
+            final PackageConfigData packageConfigData = (PackageConfigData) node.getParentItem().getUserObject();
+            RulePackageSelector.currentlySelectedPackage = packageConfigData.name;
+            String key = key( formats,
+                              packageConfigData );
+            opener.openPackageViewAssets( packageConfigData.uuid,
+                                          packageConfigData.name,
+                                          key,
+                                          formats,
+                                          node.getText() );
         }
 
     }

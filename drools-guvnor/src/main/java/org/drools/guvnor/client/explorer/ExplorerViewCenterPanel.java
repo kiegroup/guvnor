@@ -20,36 +20,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.images.Images;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.PackageEditor;
-import org.drools.guvnor.client.packages.SnapshotView;
-import org.drools.guvnor.client.packages.SuggestionCompletionCache;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
-import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.ruleeditor.RuleViewer;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
-import org.drools.guvnor.client.rulelist.QueryWidget;
-import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -65,7 +46,6 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Fernando Meyer, Michael Neale
  */
 public class ExplorerViewCenterPanel extends Composite {
-    private Constants                  constants            = ((Constants) GWT.create( Constants.class ));
     private static Images              images               = (Images) GWT.create( Images.class );
 
     private final TabLayoutPanel       tabLayoutPanel;
@@ -78,8 +58,6 @@ public class ExplorerViewCenterPanel extends Composite {
     private Map<String, PackageEditor> openedPackageEditors = new HashMap<String, PackageEditor>();
 
     private Map<Panel, String[]>       itemWidgets          = new HashMap<Panel, String[]>();
-
-    //private Button                      closeAllButton;
 
     public ExplorerViewCenterPanel() {
         tabLayoutPanel = new TabLayoutPanel( 2,
@@ -135,8 +113,8 @@ public class ExplorerViewCenterPanel extends Composite {
             this.openedAssetEditors.put( panelId,
                                          (GuvnorEditor) widget );
         } else if ( widget instanceof PackageEditor ) {
-            this.openedPackageEditors.put( tabname,
-                                           (PackageEditor) widget );
+            this.getOpenedPackageEditors().put( tabname,
+                                                (PackageEditor) widget );
         }
 
         openedTabs.put( keys,
@@ -204,209 +182,8 @@ public class ExplorerViewCenterPanel extends Composite {
         itemWidgets.remove( tpi );
     }
 
-    /**
-     * Open an asset if it is not already open.
-     */
-    public void openAsset(final String uuid) {
-        if ( uuid.contains( "<" ) ) {
-            return;
-        }
-        History.newItem( "asset=" + uuid ); // NON-NLS
-
-        if ( !showIfOpen( uuid ) ) {
-
-            final boolean[] loading = {true};
-
-            Timer t = new Timer() {
-                public void run() {
-                    if ( loading[0] ) {
-                        LoadingPopup.showMessage( constants.LoadingAsset() );
-                    }
-                }
-            };
-            t.schedule( 200 );
-
-            RepositoryServiceFactory.getService().loadRuleAsset( uuid,
-                                                                 new GenericCallback<RuleAsset>() {
-                                                                     public void onSuccess(final RuleAsset a) {
-                                                                         SuggestionCompletionCache.getInstance().doAction( a.metaData.packageName,
-                                                                                                                           new Command() {
-                                                                                                                               public void execute() {
-                                                                                                                                   loading[0] = false;
-                                                                                                                                   EditItemEvent edit = new EditItemEvent() {
-                                                                                                                                       public void open(String key) {
-                                                                                                                                           openAsset( key );
-                                                                                                                                       }
-
-                                                                                                                                       public void open(MultiViewRow[] rows) {
-                                                                                                                                           for ( MultiViewRow row : rows ) {
-                                                                                                                                               openAsset( row.uuid );
-                                                                                                                                           }
-                                                                                                                                       }
-                                                                                                                                   };
-                                                                                                                                   RuleViewer rv = new RuleViewer( a,
-                                                                                                                                                                   edit );
-                                                                                                                                   addTab( a.metaData.name,
-                                                                                                                                           rv,
-                                                                                                                                           uuid );
-                                                                                                                                   rv.setCloseCommand( new Command() {
-                                                                                                                                       public void execute() {
-                                                                                                                                           close( uuid );
-                                                                                                                                       }
-                                                                                                                                   } );
-
-                                                                                                                                   // When model is saved update the package view if it is opened.
-                                                                                                                                   if ( a.metaData.format.equals( AssetFormats.MODEL ) ) {
-                                                                                                                                       Command command = new Command() {
-                                                                                                                                           public void execute() {
-                                                                                                                                               PackageEditor packageEditor = openedPackageEditors.get( a.metaData.packageName );
-                                                                                                                                               if ( packageEditor != null ) {
-                                                                                                                                                   packageEditor.reload();
-                                                                                                                                               }
-                                                                                                                                           }
-                                                                                                                                       };
-                                                                                                                                       rv.setCheckedInCommand( command );
-                                                                                                                                       rv.setArchiveCommand( command );
-                                                                                                                                   }
-
-                                                                                                                                   LoadingPopup.close();
-                                                                                                                               }
-                                                                                                                           } );
-                                                                     }
-                                                                 } );
-        }
-    }
-
-    public void openAssets(MultiViewRow[] rows) {
-
-        String blockingAssetName = null;
-        final String[] uuids = new String[rows.length];
-        final String[] names = new String[rows.length];
-
-        for ( int i = 0; i < rows.length; i++ ) {
-            // Check if any of these assets are already opened.
-            if ( showIfOpen( rows[i].uuid ) ) {
-                blockingAssetName = rows[i].name;
-                break;
-            }
-            uuids[i] = rows[i].uuid;
-            names[i] = rows[i].name;
-        }
-
-        if ( blockingAssetName != null ) {
-            FormStylePopup popup = new FormStylePopup( "images/information.gif", //NON-NLS
-                                                       Format.format( constants.Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview(),
-                                                                      blockingAssetName ) );
-            popup.show();
-            return;
-        }
-
-        MultiViewEditor multiview = new MultiViewEditor( rows,
-                                                         new EditItemEvent() {
-                                                             public void open(String key) {
-                                                                 openAsset( key );
-                                                             }
-
-                                                             public void open(MultiViewRow[] rows) {
-                                                                 for ( MultiViewRow row : rows ) {
-                                                                     openAsset( row.uuid );
-                                                                 }
-                                                             }
-                                                         } );
-
-        multiview.setCloseCommand( new Command() {
-            public void execute() {
-                close( Arrays.toString( uuids ) );
-            }
-        } );
-
-        addTab( Arrays.toString( names ),
-                multiview,
-                uuids );
-
-    }
-
-    /**
-     * Open a package editor if it is not already open.
-     */
-    public void openPackageEditor(final String uuid,
-                                  final Command refPackageList) {
-
-        if ( !showIfOpen( uuid ) ) {
-            LoadingPopup.showMessage( constants.LoadingPackageInformation() );
-            RepositoryServiceFactory.getService().loadPackageConfig( uuid,
-                                                                     new GenericCallback<PackageConfigData>() {
-                                                                         public void onSuccess(PackageConfigData conf) {
-                                                                             PackageEditor ed = new PackageEditor( conf,
-                                                                                                                   new Command() {
-                                                                                                                       public void execute() {
-                                                                                                                           close( uuid );
-                                                                                                                       }
-                                                                                                                   },
-                                                                                                                   refPackageList,
-                                                                                                                   new EditItemEvent() {
-                                                                                                                       public void open(String uuid) {
-                                                                                                                           openAsset( uuid );
-                                                                                                                       }
-
-                                                                                                                       public void open(MultiViewRow[] rows) {
-                                                                                                                           for ( MultiViewRow row : rows ) {
-                                                                                                                               openAsset( row.uuid );
-                                                                                                                           }
-                                                                                                                       }
-                                                                                                                   } );
-                                                                             addTab( conf.name,
-                                                                                     ed,
-                                                                                     conf.uuid );
-                                                                             LoadingPopup.close();
-                                                                         }
-                                                                     } );
-        }
-    }
-
-    public void openFind() {
-        if ( !showIfOpen( "FIND" ) ) { //NON-NLS
-            this.addTab( constants.Find(),
-                         new QueryWidget( new EditItemEvent() {
-                             public void open(String uuid) {
-                                 openAsset( uuid );
-                             }
-
-                             public void open(MultiViewRow[] rows) {
-                                 for ( MultiViewRow row : rows ) {
-                                     openAsset( row.uuid );
-                                 }
-                             }
-                         } ),
-                         "FIND" ); //NON-NLS
-
-        }
-    }
-
-    public void openSnapshot(final SnapshotInfo snap) {
-        // make this refresh the 'snap'
-
-        if ( !showIfOpen( snap.name + snap.uuid ) ) {
-            LoadingPopup.showMessage( constants.LoadingSnapshot() );
-            RepositoryServiceFactory.getService().loadPackageConfig( snap.uuid,
-                                                                     new GenericCallback<PackageConfigData>() {
-                                                                         public void onSuccess(PackageConfigData conf) {
-                                                                             addTab( Format.format( constants.SnapshotLabel(),
-                                                                                                    snap.name ),
-                                                                                     new SnapshotView( snap,
-                                                                                                       conf,
-                                                                                                       new Command() {
-                                                                                                           public void execute() {
-                                                                                                               close( snap.name + snap.uuid );
-                                                                                                           }
-                                                                                                       },
-                                                                                                       ExplorerViewCenterPanel.this ),
-                                                                                     snap.name + snap.uuid );
-                                                                             LoadingPopup.close();
-                                                                         }
-                                                                     } );
-
-        }
+    public Map<String, PackageEditor> getOpenedPackageEditors() {
+        return openedPackageEditors;
     }
 
 }

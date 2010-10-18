@@ -16,28 +16,23 @@
 
 package org.drools.guvnor.client.explorer;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.images.Images;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.util.TabOpener;
+import org.drools.guvnor.client.util.Util;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
-
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.Util;
-import org.drools.guvnor.client.images.Images;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.qa.AnalysisView;
-import org.drools.guvnor.client.qa.ScenarioPackageView;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
-import org.drools.guvnor.client.util.Format;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 
 public class QATree extends AbstractTree
     implements
@@ -45,8 +40,7 @@ public class QATree extends AbstractTree
     private static Constants constants = GWT.create( Constants.class );
     private static Images    images    = (Images) GWT.create( Images.class );
 
-    public QATree(ExplorerViewCenterPanel tabbedPanel) {
-        super( tabbedPanel );
+    public QATree() {
         this.name = constants.QA1();
         this.image = images.analyze();
 
@@ -67,51 +61,14 @@ public class QATree extends AbstractTree
             PackageConfigData pc = (PackageConfigData) item.getUserObject();
             String id = itemWidgets.get( item );
 
+            TabOpener opener = TabOpener.getInstance();
+
             if ( ExplorerNodeConfig.TEST_SCENARIOS_ID.equals( id ) ) {
-                if ( !centertabbedPanel.showIfOpen( "scenarios" + pc.uuid ) ) {
-                    final EditItemEvent edit = new EditItemEvent() {
-                        public void open(String key) {
-                            centertabbedPanel.openAsset( key );
-                        }
-
-                        public void open(MultiViewRow[] rows) {
-                            for ( MultiViewRow row : rows ) {
-                                centertabbedPanel.openAsset( row.uuid );
-                            }
-                        }
-                    };
-
-                    String m = Format.format( constants.ScenariosForPackage(),
-                                              pc.name );
-                    centertabbedPanel.addTab( m,
-                                              new ScenarioPackageView( pc.uuid,
-                                                                       pc.name,
-                                                                       edit,
-                                                                       centertabbedPanel ),
-                                              "scenarios" + pc.uuid );
-                }
+                opener.openTestScenario( pc.uuid,
+                                         pc.name );
             } else if ( ExplorerNodeConfig.ANALYSIS_ID.equals( id ) ) {
-                if ( !centertabbedPanel.showIfOpen( "analysis" + pc.uuid ) ) { //NON-NLS
-                    final EditItemEvent edit = new EditItemEvent() {
-                        public void open(String key) {
-                            centertabbedPanel.openAsset( key );
-                        }
-
-                        public void open(MultiViewRow[] rows) {
-                            for ( MultiViewRow row : rows ) {
-                                centertabbedPanel.openAsset( row.uuid );
-                            }
-                        }
-                    };
-
-                    String m = Format.format( constants.AnalysisForPackage(),
-                                              pc.name );
-                    centertabbedPanel.addTab( m,
-                                              new AnalysisView( pc.uuid,
-                                                                pc.name,
-                                                                edit ),
-                                              "analysis" + pc.uuid );
-                }
+                opener.openVerifierView( pc.uuid,
+                                         pc.name );
             }
         }
     }
@@ -134,7 +91,6 @@ public class QATree extends AbstractTree
                         itemWidgets.put( pkg,
                                          ExplorerNodeConfig.TEST_SCENARIOS_ID );
                     }
-                    //scenarios.removeItem(scenarios.getChild(0));
                 }
             } );
         } else if ( ExplorerNodeConfig.ANALYSIS_ROOT_ID.equals( itemWidgets.get( node ) ) ) {

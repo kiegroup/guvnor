@@ -21,6 +21,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.SnapshotDiff;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.util.Format;
+import org.drools.guvnor.client.util.TabOpener;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
@@ -44,15 +45,13 @@ import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
 
 public class SnapshotDiffView extends Composite {
 
-    private static Constants        constants = GWT.create( Constants.class );
-    private ExplorerViewCenterPanel centerPanel;
+    private static Constants constants = GWT.create( Constants.class );
 
-    private SimplePanel             layout    = new SimplePanel();
-    private String                  leftHeader;
-    private String                  rightHeader;
+    private SimplePanel      layout    = new SimplePanel();
+    private String           leftHeader;
+    private String           rightHeader;
 
-    public SnapshotDiffView(ExplorerViewCenterPanel center) {
-        this.centerPanel = center;
+    public SnapshotDiffView() {
         initWidget( layout );
     }
 
@@ -135,7 +134,8 @@ public class SnapshotDiffView extends Composite {
                                       int rowIndex,
                                       EventObject e) {
                 String uuid = grid.getSelectionModel().getSelected().getAsString( "uuid" ); //NON-NLS
-                centerPanel.openAsset( uuid );
+                TabOpener tabOpener = TabOpener.getInstance();
+                tabOpener.openAsset( uuid );
             }
         } );
 

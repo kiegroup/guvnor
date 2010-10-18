@@ -10,21 +10,21 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.util.TabOpener;
+import org.drools.guvnor.client.util.Util;
 
 public abstract class AbstractTree extends Composite
     implements
     SelectionHandler<TreeItem> {
-    protected String                  name;
-    protected ImageResource           image;
+    protected String                name;
+    protected ImageResource         image;
 
-    protected ExplorerViewCenterPanel centertabbedPanel;
-    protected final Tree              mainTree;
+    protected final Tree            mainTree;
 
-    protected Map<TreeItem, String>   itemWidgets = new HashMap<TreeItem, String>();
+    protected Map<TreeItem, String> itemWidgets = new HashMap<TreeItem, String>();
 
     /**
      * Constructor.
@@ -32,8 +32,7 @@ public abstract class AbstractTree extends Composite
      * @param ExplorerViewCenterPanel
      *            the centertabbedPanel
      */
-    public AbstractTree(ExplorerViewCenterPanel centertabbedPanel) {
-        this.centertabbedPanel = centertabbedPanel;
+    public AbstractTree() {
 
         mainTree = getTree();
 
@@ -59,14 +58,16 @@ public abstract class AbstractTree extends Composite
     protected void launchWizard(String format,
                                 String title,
                                 boolean showCats) {
+        final TabOpener tabOpener = TabOpener.getInstance();
+
         NewAssetWizard pop = new NewAssetWizard( new EditItemEvent() {
                                                      public void open(String key) {
-                                                         centertabbedPanel.openAsset( key );
+                                                         tabOpener.openAsset( key );
                                                      }
 
                                                      public void open(MultiViewRow[] rows) {
                                                          for ( MultiViewRow row : rows ) {
-                                                             centertabbedPanel.openAsset( row.uuid );
+                                                             tabOpener.openAsset( row.uuid );
                                                          }
                                                      }
                                                  },

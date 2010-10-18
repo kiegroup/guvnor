@@ -17,9 +17,9 @@
 package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.Util;
 import org.drools.guvnor.client.images.Images;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;

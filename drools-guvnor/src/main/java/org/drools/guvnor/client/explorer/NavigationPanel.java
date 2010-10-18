@@ -32,11 +32,8 @@ import com.google.gwt.user.client.ui.StackLayoutPanel;
  */
 public class NavigationPanel extends StackLayoutPanel {
 
-    private final ExplorerViewCenterPanel centertabbedPanel;
-
-    public NavigationPanel(ExplorerViewCenterPanel centertabbedPanel) {
+    public NavigationPanel() {
         super( Unit.EM );
-        this.centertabbedPanel = centertabbedPanel;
 
         addCategoriesPanel();
 
@@ -61,7 +58,7 @@ public class NavigationPanel extends StackLayoutPanel {
 
     private void addAdminPanel() {
         DockLayoutPanel adminDockLayoutPanel = new DockLayoutPanel( Unit.EM );
-        AdministrationTree deploymentTreeItem = new AdministrationTree( centertabbedPanel );
+        AdministrationTree deploymentTreeItem = new AdministrationTree();
         ScrollPanel adminTreeItemPanel = new ScrollPanel( deploymentTreeItem );
 
         adminDockLayoutPanel.add( adminTreeItemPanel );
@@ -73,7 +70,7 @@ public class NavigationPanel extends StackLayoutPanel {
 
     private void addDeploymentPanel() {
         DockLayoutPanel deploymentDockLayoutPanel = new DockLayoutPanel( Unit.EM );
-        DeploymentTree deploymentTreeItem = new DeploymentTree( centertabbedPanel );
+        DeploymentTree deploymentTreeItem = new DeploymentTree();
         ScrollPanel deploymentTreeItemPanel = new ScrollPanel( deploymentTreeItem );
 
         if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
@@ -90,7 +87,7 @@ public class NavigationPanel extends StackLayoutPanel {
 
     private void addQAPanel() {
         DockLayoutPanel qaDockLayoutPanel = new DockLayoutPanel( Unit.EM );
-        QATree qaTreeItem = new QATree( centertabbedPanel );
+        QATree qaTreeItem = new QATree();
         ScrollPanel qaTreeItemPanel = new ScrollPanel( qaTreeItem );
 
         qaDockLayoutPanel.add( qaTreeItemPanel );
@@ -102,7 +99,7 @@ public class NavigationPanel extends StackLayoutPanel {
 
     private void addPackagesPanel() {
         DockLayoutPanel packageDockLayoutPanel = new DockLayoutPanel( Unit.EM );
-        final PackagesTree packagesTreeItem = new PackagesTree( centertabbedPanel );
+        final PackagesTree packagesTreeItem = new PackagesTree();
         ScrollPanel packagesTreeItemPanel = new ScrollPanel( packagesTreeItem );
 
         if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
@@ -125,7 +122,7 @@ public class NavigationPanel extends StackLayoutPanel {
 
     private void addCategoriesPanel() {
         DockLayoutPanel browseDockLayoutPanel = new DockLayoutPanel( Unit.EM );
-        BrowseTree categoriesTreeItem = new BrowseTree( centertabbedPanel );
+        BrowseTree categoriesTreeItem = new BrowseTree();
         ScrollPanel categoriesTreeItemPanel = new ScrollPanel( categoriesTreeItem );
 
         if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {

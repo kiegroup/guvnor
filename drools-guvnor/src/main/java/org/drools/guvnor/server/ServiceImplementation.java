@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -63,11 +63,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.factconstraints.client.ConstraintConfiguration;
-import org.drools.factconstraints.server.factory.ConstraintsFactory;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
@@ -90,7 +87,6 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
-import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
@@ -116,7 +112,6 @@ import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
-import org.drools.guvnor.server.util.VerifierRunner;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.lang.descr.PackageDescr;
@@ -130,17 +125,16 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepository.DateQuery;
 import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.VersionableItem;
-import org.drools.repository.RulesRepository.DateQuery;
 import org.drools.repository.security.PermissionManager;
 import org.drools.rule.Package;
 import org.drools.runtime.rule.ConsequenceException;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
-import org.drools.verifier.VerifierConfiguration;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;

@@ -16,15 +16,13 @@
 
 package org.drools.guvnor.client.explorer;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.images.Images;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.util.TabOpener;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -41,8 +39,7 @@ public class DeploymentTree extends AbstractTree
 
     private boolean          deploymentPackagesLoaded = false;
 
-    public DeploymentTree(ExplorerViewCenterPanel tabbedPanel) {
-        super( tabbedPanel );
+    public DeploymentTree() {
         this.name = constants.PackageSnapshots();
         this.image = images.deploy();
 
@@ -77,7 +74,8 @@ public class DeploymentTree extends AbstractTree
                                                                      public void onSuccess(SnapshotInfo[] a) {
                                                                          for ( SnapshotInfo snap : a ) {
                                                                              if ( snap.name.equals( snapName ) ) {
-                                                                                 centertabbedPanel.openSnapshot( snap );
+                                                                                 TabOpener opener = TabOpener.getInstance();
+                                                                                 opener.openSnapshot( snap );
                                                                                  return;
                                                                              }
                                                                          }

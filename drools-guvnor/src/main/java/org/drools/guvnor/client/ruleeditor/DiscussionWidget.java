@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.explorer.BrowseTree;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
@@ -33,6 +32,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ServerPushNotification;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.util.Format;
+import org.drools.guvnor.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -163,7 +163,7 @@ public class DiscussionWidget extends Composite {
             } );
         }
 
-        String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + asset.metaData.packageName + "&assetName=" + URL.encode( asset.metaData.name ) + "&viewUrl=" + BrowseTree.getSelfURL();
+        String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + asset.metaData.packageName + "&assetName=" + URL.encode( asset.metaData.name ) + "&viewUrl=" + Util.getSelfURL();
         hp.add( new HTML( "<a href='" + feedURL + "' target='_blank'><img src='images/feed.png'/></a>" ) );
 
         newCommentLayout.add( hp );

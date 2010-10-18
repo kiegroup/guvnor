@@ -18,6 +18,7 @@ package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.LoggedInUserInfo;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.util.TabOpener;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.History;
@@ -46,6 +47,8 @@ public class ExplorerLayoutManager {
 
         String tok = History.getToken();
 
+        TabOpener.initIstance( centertabbedPanel );
+
         //we use this to decide what to display.
         BookmarkInfo bookmarkInfo = handleHistoryToken( tok );
         ExplorerLayoutManager.capabilities = caps;
@@ -54,14 +57,16 @@ public class ExplorerLayoutManager {
             titlePanel = new TitlePanel( uif );
         }
 
-        navigationStackLayoutPanel = new NavigationPanel( centertabbedPanel );
+        navigationStackLayoutPanel = new NavigationPanel();
         setupMainPanel( bookmarkInfo );
+
+        TabOpener tabOpener = TabOpener.getInstance();
 
         //Open default widgets
         if ( bookmarkInfo.isLoadAsset() ) {
-            centertabbedPanel.openAsset( bookmarkInfo.getAssetId() );
+            tabOpener.openAsset( bookmarkInfo.getAssetId() );
         }
-        centertabbedPanel.openFind();
+        tabOpener.openFind();
     }
 
     /**
