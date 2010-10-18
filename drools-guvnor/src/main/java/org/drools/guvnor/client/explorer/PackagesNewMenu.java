@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,7 +68,15 @@ public class PackagesNewMenu {
             	manager.launchWizard(null, constants.NewRule(), true);
             }
         });      	
-    	
+
+        createNewMenu.addItem(Util.getHeader(images.newTemplate(), constants.NewRuleTemplate()),
+                true,
+                new Command() {
+            public void execute() {
+                manager.launchWizard(AssetFormats.RULE_TEMPLATE, constants.NewRuleTemplate(), true);
+           }
+        }); 
+        
     	createNewMenu.addItem(Util.getHeader(images.modelAsset(), constants.UploadPOJOModelJar()),
         		true,
         		new Command() {
@@ -157,14 +165,6 @@ public class PackagesNewMenu {
                     });
                 }
             }
-        }); 
-    	
-    	createNewMenu.addItem(Util.getHeader(images.newTemplate(), constants.NewRuleTemplate()),
-        		true,
-        		new Command() {
-            public void execute() {
-                manager.launchWizard(AssetFormats.RULE_TEMPLATE, constants.NewRuleTemplate(), true);
-           }
         }); 
     	
 
