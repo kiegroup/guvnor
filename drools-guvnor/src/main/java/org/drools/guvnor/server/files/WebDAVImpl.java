@@ -635,19 +635,27 @@ public class WebDAVImpl
         return 0;
     }
 
+    //REVISIT: We should never reach this code which is using webdav as regex,
+    //i.e., input uri is sth like /webdav/packages/mypackage
     String[] getPath(String uri) {
+    	return getPath(uri, false);
+    }
+
+    String[] getPath(String uri, boolean usingWebdavAsRegex) {
         if ( uri.equals( "/" ) ) {
             return new String[0];
         }
 
-        if ( uri.endsWith( "webdav" ) || uri.endsWith( "webdav/" ) ) {
-            return new String[0];
-        }
-        if ( uri.indexOf( "webdav" ) > -1 ) {
-            return uri.split( "webdav/" )[1].split( "/" );
-        } else {
-            return uri.substring( 1 ).split( "/" );
-        }
+		if (usingWebdavAsRegex) {
+			if (uri.endsWith("webdav") || uri.endsWith("webdav/")) {
+				return new String[0];
+			}
+			if (uri.indexOf("webdav/") > -1) {
+				return uri.split("webdav/", 2)[1].split("/");
+			}
+		}
+
+		return uri.substring(1).split("/");
     }
 
     private boolean isAdmin() {
