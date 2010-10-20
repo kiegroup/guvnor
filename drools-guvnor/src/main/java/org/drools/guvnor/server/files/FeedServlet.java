@@ -228,10 +228,10 @@ public class FeedServlet extends RepositoryServlet {
             public AtomEntry(HttpServletRequest req, AssetItem asset) {
                 this.name = asset.getName();
                 this.format = asset.getFormat();
-                //Escape & with %26 to make generated XML safe. 
+                //Escape & with %26 to make generated XML safe.
                 this.webURL = req.getParameter(VIEW_URL) + "#asset=" + asset.getUUID() + "%26nochrome";
                 //Each history version of asset has its unique UUID. &version is not needed here. Plus &version
-                //is not being parsed on the server side 
+                //is not being parsed on the server side
                 //this.id = asset.getUUID() + "&version=" + asset.getVersionNumber();
                 this.id = asset.getUUID();
                 this.updated = ISO8601.format(asset.getLastModified());
@@ -247,7 +247,7 @@ public class FeedServlet extends RepositoryServlet {
                 this.name = asset.getName();
                 this.format = asset.getFormat();
                 this.webURL = req.getParameter(VIEW_URL) + "#asset=" + asset.getUUID() + "%26nochrome";
-                this.id = asset.getUUID() + "&discussion=" + discussionRec.timestamp + "&author=" + discussionRec.author;
+                this.id = asset.getUUID();
                 Calendar c = Calendar.getInstance();
                 c.setTime(new Date(discussionRec.timestamp));
                 this.updated = ISO8601.format(c);
