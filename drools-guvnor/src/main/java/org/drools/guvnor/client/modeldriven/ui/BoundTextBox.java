@@ -16,14 +16,14 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-import org.drools.guvnor.client.common.FieldEditListener;
 import org.drools.guvnor.client.common.IDirtyable;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -49,16 +49,16 @@ public class BoundTextBox extends TextBox
             setVisibleLength( v.length() + 1 );
         }
 
-        addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                c.setValue(getText());
+        addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                c.setValue( getText() );
             }
         } );
 
-        addKeyboardListener( new FieldEditListener( new Command() {
-            public void execute() {
+        addKeyUpHandler( new KeyUpHandler() {
+            public void onKeyUp(KeyUpEvent event) {
                 setVisibleLength( getText().length() );
             }
-        } ) );
+        } );
     }
 }

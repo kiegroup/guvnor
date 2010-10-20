@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,17 +20,15 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DropDownValueChanged;
-import org.drools.guvnor.client.common.FieldEditListener;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.EnumDropDown;
+import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
-import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.testing.CallFieldValue;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
@@ -39,14 +37,15 @@ import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.KeyboardListener;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -61,26 +60,27 @@ import com.google.gwt.user.client.ui.Widget;
 public class MethodParameterCallValueEditor extends DirtyableComposite {
 
     private CallFieldValue methodParameter;
-    private DropDownData        enums;
-    private SimplePanel         root;
-    private Constants           constants     = GWT.create( Constants.class );
-    private Scenario        model         = null;
-    private String              parameterType = null;
-    private Command             onValueChangeCommand = null;
-    private ExecutionTrace    ex;
+    private DropDownData   enums;
+    private SimplePanel    root;
+    private Constants      constants            = GWT.create( Constants.class );
+    private Scenario       model                = null;
+    private String         parameterType        = null;
+    private Command        onValueChangeCommand = null;
+    private ExecutionTrace ex;
 
     public MethodParameterCallValueEditor(final CallFieldValue val,
-                                      final DropDownData enums,
-                                      ExecutionTrace ex,
-                                      Scenario model,
-                                      String parameterType, Command onValueChangeCommand) {
+                                          final DropDownData enums,
+                                          ExecutionTrace ex,
+                                          Scenario model,
+                                          String parameterType,
+                                          Command onValueChangeCommand) {
         if ( val.type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             this.enums = DropDownData.create( new String[]{"true", "false"} );
         } else {
             this.enums = enums;
         }
         this.root = new SimplePanel();
-        this.ex=ex;
+        this.ex = ex;
         this.methodParameter = val;
         this.model = model;
         this.parameterType = parameterType;
@@ -97,7 +97,7 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                                             public void valueChanged(String newText,
                                                                      String newValue) {
                                                 methodParameter.value = newValue;
-                                                if (onValueChangeCommand != null){
+                                                if ( onValueChangeCommand != null ) {
                                                     onValueChangeCommand.execute();
                                                 }
                                                 makeDirty();
@@ -133,16 +133,17 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
          * variable type, then propose a list
          */
         final ListBox listVariable = new ListBox();
-        List<String> vars = model.getFactNamesInScope(ex, true);
+        List<String> vars = model.getFactNamesInScope( ex,
+                                                       true );
         for ( String v : vars ) {
-        	FactData factData=(FactData)model.getFactTypes().get(v);
+            FactData factData = (FactData) model.getFactTypes().get( v );
             if ( factData.type.equals( this.methodParameter.type ) ) {
                 // First selection is empty
                 if ( listVariable.getItemCount() == 0 ) {
                     listVariable.addItem( "..." );
                 }
 
-                listVariable.addItem( "="+v );
+                listVariable.addItem( "=" + v );
             }
         }
         if ( methodParameter.value.equals( "=" ) ) {
@@ -156,30 +157,30 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
         }
         if ( listVariable.getItemCount() > 0 ) {
 
-        	listVariable.addChangeHandler(new ChangeHandler() {
-				
-				public void onChange(ChangeEvent event) {
+            listVariable.addChangeHandler( new ChangeHandler() {
+
+                public void onChange(ChangeEvent event) {
                     methodParameter.value = listVariable.getValue( listVariable.getSelectedIndex() );
-                    if (onValueChangeCommand != null){
+                    if ( onValueChangeCommand != null ) {
                         onValueChangeCommand.execute();
                     }
                     makeDirty();
                     refresh();
                 }
-			});
-        	
-//            listVariable.addChangeListener( new ChangeListener() {
-//                public void onChange(Widget arg0) {
-//                    ListBox w = (ListBox) arg0;
-//                    methodParameter.value = w.getValue( w.getSelectedIndex() );
-//                    if (onValueChangeCommand != null){
-//                        onValueChangeCommand.execute();
-//                    }
-//                    makeDirty();
-//                    refresh();
-//                }
-//
-//            } );
+            } );
+
+            //            listVariable.addChangeListener( new ChangeListener() {
+            //                public void onChange(Widget arg0) {
+            //                    ListBox w = (ListBox) arg0;
+            //                    methodParameter.value = w.getValue( w.getSelectedIndex() );
+            //                    if (onValueChangeCommand != null){
+            //                        onValueChangeCommand.execute();
+            //                    }
+            //                    makeDirty();
+            //                    refresh();
+            //                }
+            //
+            //            } );
         }
         return listVariable;
     }
@@ -202,10 +203,11 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
             box.setVisibleLength( c.value.length() - 1 );
         }
 
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
+        box.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
                 c.value = box.getText();
-                if (onValueChangeCommand != null) {
+                if ( onValueChangeCommand != null ) {
                     onValueChangeCommand.execute();
                 }
                 makeDirty();
@@ -213,55 +215,26 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
 
         } );
 
-        box.addKeyboardListener( new FieldEditListener( new Command() {
-            public void execute() {
+        box.addKeyUpHandler( new KeyUpHandler() {
+
+            public void onKeyUp(KeyUpEvent event) {
                 box.setVisibleLength( box.getText().length() );
             }
-        } ) );
+        } );
 
         if ( methodParameter.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            box.addKeyboardListener( getNumericFilter( box ) );
+            box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
         }
 
         return box;
     }
 
-    /**
-     * This will return a keyboard listener for field setters, which will obey
-     * numeric conventions - it will also allow formulas (a formula is when the
-     * first value is a "=" which means it is meant to be taken as the user
-     * typed)
-     */
-    public static KeyboardListener getNumericFilter(final TextBox box) {
-        return new KeyboardListener() {
-
-            public void onKeyDown(Widget arg0,
-                                  char arg1,
-                                  int arg2) {
-
-            }
-
-            public void onKeyPress(Widget w,
-                                   char c,
-                                   int i) {
-                if ( Character.isLetter( c ) && c != '=' && !(box.getText().startsWith( "=" )) ) {
-                    ((TextBox) w).cancelKey();
-                }
-            }
-
-            public void onKeyUp(Widget arg0,
-                                char arg1,
-                                int arg2) {
-            }
-
-        };
-    }
-
     private Widget choice() {
         Image clickme = new Image( "images/edit.gif" );
-        clickme.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                showTypeChoice( w );
+        clickme.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                showTypeChoice( (Widget) event.getSource() );
             }
         } );
         return clickme;
@@ -271,8 +244,9 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
         final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif",
                                                         constants.FieldValue() );
         Button lit = new Button( constants.LiteralValue() );
-        lit.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        lit.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
                 methodParameter.nature = FieldNature.TYPE_LITERAL;
                 methodParameter.value = " ";
                 makeDirty();
@@ -288,26 +262,26 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
         form.addRow( new HTML( "<hr/>" ) );
         form.addRow( new SmallLabel( constants.AdvancedSection() ) );
 
-
         /*
          * If there is a bound variable that is the same type of the current
          * variable type, then show abutton
          */
-        
-        
-        List<String> vars = model.getFactNamesInScope(ex, true);
-         for ( String v : vars ) {
+
+        List<String> vars = model.getFactNamesInScope( ex,
+                                                       true );
+        for ( String v : vars ) {
             boolean createButton = false;
             Button variable = new Button( constants.BoundVariable() );
-            FactData factData=(FactData)model.getFactTypes().get(v);
+            FactData factData = (FactData) model.getFactTypes().get( v );
             if ( factData.type.equals( this.parameterType ) ) {
-            	createButton = true;
+                createButton = true;
             }
             if ( createButton == true ) {
                 form.addAttribute( constants.BoundVariable() + ":",
                                    variable );
-                variable.addClickListener( new ClickListener() {
-                    public void onClick(Widget w) {
+                variable.addClickHandler( new ClickHandler() {
+
+                    public void onClick(ClickEvent event) {
                         methodParameter.nature = FieldNature.TYPE_VARIABLE;
                         methodParameter.value = "=";
                         makeDirty();

@@ -25,7 +25,6 @@ package org.drools.guvnor.client.qa;
  */
 
 import java.util.List;
-import java.util.Map;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DropDownValueChanged;
@@ -34,10 +33,10 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.modeldriven.ui.EnumDropDown;
 import org.drools.guvnor.client.util.Format;
+import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -47,9 +46,11 @@ import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -99,7 +100,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
             final TextBox box = editableTextBox( callback,
                                                  field.fieldName,
                                                  field.expected );
-            box.addKeyboardListener( ActionValueEditor.getNumericFilter( box ) );
+            box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
             panel.add( box );
         } else if ( flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             String[] c = new String[]{"true", "false"};
@@ -111,18 +112,18 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                              }
                                          },
                                          DropDownData.create( c ) ) );
-        } else if (flType != null && flType.equals(SuggestionCompletionEngine.TYPE_DATE)) {           
+        } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
             final DatePickerTextBox datePicker = new DatePickerTextBox( field.expected );
-            String m = Format.format(((Constants) GWT.create(Constants.class)).ValueFor0(),
-            		field.fieldName);
-            datePicker.setTitle(m);
-            datePicker.addValueChanged(new ValueChanged() {
+            String m = Format.format( ((Constants) GWT.create( Constants.class )).ValueFor0(),
+                                      field.fieldName );
+            datePicker.setTitle( m );
+            datePicker.addValueChanged( new ValueChanged() {
                 public void valueChanged(String newValue) {
-                	field.expected = newValue;
+                    field.expected = newValue;
                 }
-            });
+            } );
 
-             panel.add(datePicker);
+            panel.add( datePicker );
         } else {
             String[] enums = sce.getDataEnumList( key );
             if ( enums != null ) {
@@ -146,9 +147,10 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                 }
                 if ( field.nature == FieldData.TYPE_UNDEFINED && isThereABoundVariableToSet() == true ) {
                     Image clickme = new Image( "images/edit.gif" ); // NON-NLS
-                    clickme.addClickListener( new ClickListener() {
-                        public void onClick(Widget w) {
-                            showTypeChoice( w,
+                    clickme.addClickHandler( new ClickHandler() {
+
+                        public void onClick(ClickEvent event) {
+                            showTypeChoice( (Widget) event.getSource(),
                                             field );
                         }
                     } );
@@ -166,9 +168,8 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
     }
 
     private Widget variableEditor() {
-        // sce.
-        List vars = this.scenario.getFactNamesInScope( this.executionTrace,
-                                                       true );
+        List<String> vars = this.scenario.getFactNamesInScope( this.executionTrace,
+                                                               true );
 
         final ListBox box = new ListBox();
 
@@ -177,8 +178,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         }
         int j = 0;
         for ( int i = 0; i < vars.size(); i++ ) {
-            String var = (String) vars.get( i );
-            Map m = this.scenario.getVariableTypes();
+            String var = vars.get( i );
             FactData f = (FactData) scenario.getFactTypes().get( var );
             String fieldType = sce.getFieldType( this.factType,
                                                  field.fieldName );
@@ -195,8 +195,9 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
             }
         }
 
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
+        box.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
                 field.expected = box.getItemText( box.getSelectedIndex() );
             }
         } );
@@ -213,8 +214,9 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         String m = Format.format( ((Constants) GWT.create( Constants.class )).ValueFor0(),
                                   fieldName );
         tb.setTitle( m );
-        tb.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
+        tb.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
                 changed.valueChanged( tb.getText() );
             }
         } );
@@ -228,8 +230,9 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                                         constants.FieldValue() );
 
         Button lit = new Button( constants.LiteralValue() );
-        lit.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        lit.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
                 con.nature = FieldData.TYPE_LITERAL;
                 doTypeChosen( form );
             }
@@ -247,8 +250,9 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         // me
 
         Button variable = new Button( constants.BoundVariable() );
-        variable.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        variable.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
                 con.nature = FieldData.TYPE_VARIABLE;
                 doTypeChosen( form );
             }
@@ -263,12 +267,11 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
     private boolean isThereABoundVariableToSet() {
         boolean retour = false;
-        List vars = this.scenario.getFactNamesInScope( executionTrace,
-                                                       true );
+        List<String> vars = this.scenario.getFactNamesInScope( executionTrace,
+                                                               true );
         if ( vars.size() > 0 ) {
             for ( int i = 0; i < vars.size(); i++ ) {
                 String var = (String) vars.get( i );
-                Map m = this.scenario.getVariableTypes();
                 FactData f = (FactData) scenario.getFactTypes().get( var );
                 String fieldType = sce.getFieldType( this.factType,
                                                      field.fieldName );

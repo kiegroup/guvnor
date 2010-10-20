@@ -1,21 +1,3 @@
-/**
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.drools.guvnor.client.ruleeditor;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -32,6 +14,8 @@ package org.drools.guvnor.client.ruleeditor;
  * limitations under the License.
  */
 
+package org.drools.guvnor.client.ruleeditor;
+
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -40,29 +24,29 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
-import org.drools.guvnor.client.table.DataModel;
 import org.drools.guvnor.client.util.Format;
-import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
-import com.google.gwt.core.client.GWT;
 
 /**
  * This widget shows a list of versions.
@@ -89,14 +73,15 @@ public class VersionBrowser extends Composite {
         this.uuid = uuid;
         HorizontalPanel wrapper = new HorizontalPanel();
 
-        ClickListener cl = new ClickListener() {
-            public void onClick(Widget w) {
+        ClickHandler clickHandler = new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
                 clickLoadHistory();
             }
         };
         layout = new FlexTable();
         ClickableLabel vh = new ClickableLabel( constants.VersionHistory1(),
-                                                cl );
+                                                clickHandler );
         layout.setWidget( 0,
                           0,
                           vh );
@@ -110,7 +95,7 @@ public class VersionBrowser extends Composite {
 
         refresh = new ImageButton( "images/refresh.gif" ); //NON-NLS
 
-        refresh.addClickListener( cl );
+        refresh.addClickHandler( clickHandler );
 
         layout.setWidget( 0,
                           1,
@@ -195,8 +180,9 @@ public class VersionBrowser extends Composite {
 
                                                                         Button open = new Button( constants.View() );
 
-                                                                        open.addClickListener( new ClickListener() {
-                                                                            public void onClick(Widget w) {
+                                                                        open.addClickHandler( new ClickHandler() {
+
+                                                                            public void onClick(ClickEvent event) {
                                                                                 showVersion( history.getValue( history.getSelectedIndex() ) );
                                                                             }
 
@@ -224,7 +210,6 @@ public class VersionBrowser extends Composite {
      * This should popup a view of the chosen historical version.
      */
     private void showVersion(final String versionUUID) {
-        //        VersionViewer viewer = new VersionViewer( this.metaData, versionUUID, uuid, refreshCommand );
 
         LoadingPopup.showMessage( constants.LoadingVersionFromHistory() );
 
@@ -241,9 +226,10 @@ public class VersionBrowser extends Composite {
                                                                                                                     new Integer( 800 ) );
 
                                                                      Button restore = new Button( constants.RestoreThisVersion() );
-                                                                     restore.addClickListener( new ClickListener() {
-                                                                         public void onClick(Widget w) {
-                                                                             restore( w,
+                                                                     restore.addClickHandler( new ClickHandler() {
+
+                                                                         public void onClick(ClickEvent event) {
+                                                                             restore( (Widget) event.getSource(),
                                                                                       versionUUID,
                                                                                       new Command() {
                                                                                           public void execute() {
@@ -276,29 +262,8 @@ public class VersionBrowser extends Composite {
                 RepositoryServiceFactory.getService().restoreVersion( versionUUID,
                                                                       uuid,
                                                                       pop.getCheckinComment(),
-                                                                      new GenericCallback() {
-                                                                          public void onSuccess(Object data) {
-                                                                              refresh.execute();
-                                                                          }
-                                                                      } );
-            }
-        } );
-        pop.show();
-    }
-
-    private void restore(Widget w,
-                         final Command refresh,
-                         final String versionUUID,
-                         final String headUUID) {
-
-        final CheckinPopup pop = new CheckinPopup( constants.RestoreThisVersionQ() );
-        pop.setCommand( new Command() {
-            public void execute() {
-                RepositoryServiceFactory.getService().restoreVersion( versionUUID,
-                                                                      headUUID,
-                                                                      pop.getCheckinComment(),
-                                                                      new GenericCallback() {
-                                                                          public void onSuccess(Object data) {
+                                                                      new GenericCallback<Void>() {
+                                                                          public void onSuccess(Void v) {
                                                                               refresh.execute();
                                                                           }
                                                                       } );
@@ -309,30 +274,6 @@ public class VersionBrowser extends Composite {
 
     private void showStaticIcon() {
         refresh.setUrl( "images/refresh.gif" );
-    }
-
-    private DataModel getTableDataModel(final TableDataRow[] rows) {
-        return new DataModel() {
-
-            public int getNumberOfRows() {
-                return rows.length;
-            }
-
-            public String getRowId(int row) {
-                return rows[row].id;
-            }
-
-            public Comparable getValue(int row,
-                                       int col) {
-                return rows[row].values[col];
-            }
-
-            public Widget getWidget(int row,
-                                    int col) {
-                return null;
-            }
-
-        };
     }
 
 }

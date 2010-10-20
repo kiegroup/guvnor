@@ -19,7 +19,6 @@ package org.drools.guvnor.client.decisiontable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +31,6 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.ui.ActionValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
@@ -40,6 +38,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 import org.drools.guvnor.client.util.Format;
+import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
@@ -53,19 +52,21 @@ import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.KeyboardListener;
-import com.google.gwt.user.client.ui.KeyboardListenerAdapter;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -139,8 +140,8 @@ public class GuidedDecisionTableWidget extends Composite
         layout = new VerticalPanel();
 
         DisclosurePanel disclosurePanel = new DisclosurePanel( constants.DecisionTable() );
-        disclosurePanel.setAnimationEnabled(true);
-        disclosurePanel.setWidth("100%");
+        disclosurePanel.setAnimationEnabled( true );
+        disclosurePanel.setWidth( "100%" );
         disclosurePanel.setTitle( constants.DecisionTable() );
 
         VerticalPanel config = new VerticalPanel();
@@ -170,8 +171,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         configureColumnsNote = new PrettyFormLayout();
         configureColumnsNote.startSection();
-        configureColumnsNote.addRow(
-                new HTML( "<img src='images/information.gif'/>&nbsp;" + constants.ConfigureColumnsNote()) );
+        configureColumnsNote.addRow( new HTML( "<img src='images/information.gif'/>&nbsp;" + constants.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();
         configureColumnsNote.setVisible( false );
         layout.add( configureColumnsNote );
@@ -520,12 +520,12 @@ public class GuidedDecisionTableWidget extends Composite
             hp.add( removeAttr( at ) );
             final TextBox defaultValue = new TextBox();
             defaultValue.setText( at.defaultValue );
-            defaultValue.addChangeListener( new ChangeListener() {
-                public void onChange(Widget sender) {
+            defaultValue.addChangeHandler( new ChangeHandler() {
+                public void onChange(ChangeEvent event) {
                     at.defaultValue = defaultValue.getText();
                 }
             } );
-            // GUVNOR-605
+
             if ( at.attr.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 hp.add( new HTML( "&nbsp;&nbsp;" ) );
                 final CheckBox useRowNumber = new CheckBox();
@@ -583,8 +583,8 @@ public class GuidedDecisionTableWidget extends Composite
 
                                                    list.setSelectedIndex( 0 );
 
-                                                   list.addChangeListener( new ChangeListener() {
-                                                       public void onChange(Widget w) {
+                                                   list.addChangeHandler( new ChangeHandler() {
+                                                       public void onChange(ChangeEvent event) {
                                                            AttributeCol attr = new AttributeCol();
                                                            attr.attr = list.getItemText( list.getSelectedIndex() );
 
@@ -617,26 +617,9 @@ public class GuidedDecisionTableWidget extends Composite
                                                                      horiz );
                                                    pop.addAttribute( constants.Attribute(),
                                                                      list );
-                                                   //		        pop.addAttribute("", ok);
                                                    pop.show();
                                                }
 
-                                               private void addItem(String at,
-                                                                    final ListBox list) {
-                                                   if ( !hasAttribute( at,
-                                                                       dt.attributeCols ) ) list.addItem( at );
-                                               }
-
-                                               private boolean hasAttribute(String at,
-                                                                            List<AttributeCol> attributeCols) {
-                                                   for ( Iterator<AttributeCol> iterator = attributeCols.iterator(); iterator.hasNext(); ) {
-                                                       AttributeCol c = iterator.next();
-                                                       if ( c.attr.equals( at ) ) {
-                                                           return true;
-                                                       }
-                                                   }
-                                                   return false;
-                                               }
                                            } );
         HorizontalPanel h = new HorizontalPanel();
         h.add( new SmallLabel( constants.AddAttributeMetadata() ) );
@@ -712,10 +695,6 @@ public class GuidedDecisionTableWidget extends Composite
                 }
             }
         }
-        //		String groupF = store.getGroupField();
-        //		if (groupF == null || groupF.equals("")) {
-        //			dt.groupField = groupF;
-        //		}
     }
 
     /**
@@ -859,32 +838,6 @@ public class GuidedDecisionTableWidget extends Composite
                         c );
             colCount++;
         }
-
-        //the split thing
-        //The separator column causes confusion, see GUVNOR-498. Remove this column for now until  
-        //we find a better way to represent a column for the purpose of separator. 
-        /*        cols[colCount] = new ColumnConfig() {
-                    {
-                        setDataIndex( "x" );
-                        setHeader( "x" );
-                        //setFixed(true);
-                        setSortable( false );
-                        setResizable( false );
-                        //setWidth(60);
-                        setRenderer( new Renderer() {
-                            public String render(Object value,
-                                                 CellMetadata cellMetadata,
-                                                 Record record,
-                                                 int rowIndex,
-                                                 int colNum,
-                                                 Store store) {
-                                return "<image src='images/production.gif'/>"; //NON-NLS
-                            }
-                        } );
-                        setWidth( 20 );
-                    }
-                };
-                colCount++;*/
 
         for ( int i = 0; i < dt.actionCols.size(); i++ ) {
             //here we could also deal with numeric type?
@@ -1052,7 +1005,6 @@ public class GuidedDecisionTableWidget extends Composite
                                         r.set( "num",
                                                store.getRecords().length + 1 ); //NON-NLS
                                         store.add( r );
-                                        // GUVNOR-605
                                         renumberSalience( store.getRecords() );
                                     }
                                 } ) );
@@ -1085,7 +1037,6 @@ public class GuidedDecisionTableWidget extends Composite
                                                               num + 1 ); //NON-NLS
                                                 }
                                             }
-                                            // GUVNOR-605
                                             renumberSalience( store.getRecords() );
                                         } else {
                                             ErrorPopup.showMessage( constants.PleaseSelectARow() );
@@ -1103,7 +1054,6 @@ public class GuidedDecisionTableWidget extends Composite
                                                 store.remove( selected[i] );
                                             }
                                             renumber( store.getRecords() );
-                                            // GUVNOR-605
                                             renumberSalience( store.getRecords() );
                                         }
                                     }
@@ -1123,70 +1073,9 @@ public class GuidedDecisionTableWidget extends Composite
                                             store.add( r );
                                         }
                                         renumber( store.getRecords() );
-                                        // GUVNOR-605
                                         renumberSalience( store.getRecords() );
                                     }
                                 } ) );
-
-        //        Menu subMenu = new Menu();
-        //        subMenu.addItem( new Item( "Move up",
-        //                                   new BaseItemListenerAdapter() {
-        //                                       public void onClick(BaseItem item,
-        //                                                           EventObject e) {
-        //                                           Record[] selected = grid.getSelectionModel().getSelections();
-        //                                           if ( selected.length == 1 ) {
-        //                                               Record from = selected[0];
-        //
-        //                                               grid.getSelectionModel().selectPrevious();
-        //
-        //                                               selected = grid.getSelectionModel().getSelections();
-        //                                               Record to = selected[0];
-        //
-        //                                               changeRowPositions( from,
-        //                                                                   to );
-        //
-        //                                           } else {
-        //                                               // TODO: Popup: Please select one.
-        //                                           }
-        //                                       }
-        //                                   } ) );
-        //        subMenu.addItem( new Item( "Move down",
-        //                                   new BaseItemListenerAdapter() {
-        //                                       public void onClick(BaseItem item,
-        //                                                           EventObject e) {
-        //                                           Record[] selected = grid.getSelectionModel().getSelections();
-        //                                           if ( selected.length == 1 ) {
-        //                                               Record from = selected[0];
-        //
-        //                                               grid.getSelectionModel().selectNext();
-        //
-        //                                               selected = grid.getSelectionModel().getSelections();
-        //                                               Record to = selected[0];
-        //
-        //                                               changeRowPositions( from,
-        //                                                                   to );
-        //
-        //                                           } else {
-        //                                               // TODO: Popup: Please select one.
-        //                                           }
-        //                                       }
-        //                                   } ) );
-        //        subMenu.addItem( new Item( "Switch selected",
-        //                                   new BaseItemListenerAdapter() {
-        //                                       public void onClick(BaseItem item,
-        //                                                           EventObject e) {
-        //                                           Record[] selected = grid.getSelectionModel().getSelections();
-        //                                           if ( selected.length == 2 ) {
-        //
-        //                                               changeRowPositions( selected[0],
-        //                                                                   selected[1] );
-        //                                           } else {
-        //                                               // TODO: Popup: Please select two.
-        //                                           }
-        //                                       }
-        //                                   } ) );
-        //        menu.addItem( new com.gwtext.client.widgets.menu.MenuItem( "Move",
-        //                                                                   subMenu ) );
 
         ToolbarMenuButton tbb = new ToolbarMenuButton( constants.Modify(),
                                                        menu );
@@ -1228,11 +1117,9 @@ public class GuidedDecisionTableWidget extends Composite
             }
 
         }
-        drop.addKeyboardListener( new KeyboardListenerAdapter() {
-            public void onKeyUp(Widget sender,
-                                char keyCode,
-                                int modifiers) {
-                if ( keyCode == KeyboardListener.KEY_ENTER ) {
+        drop.addKeyUpHandler( new KeyUpHandler() {
+            public void onKeyUp(KeyUpEvent event) {
+                if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
                     r.set( dataIdx,
                            drop.getValue( drop.getSelectedIndex() ) );
                     w.destroy();
@@ -1268,7 +1155,6 @@ public class GuidedDecisionTableWidget extends Composite
         }
     }
 
-    // GUVNOR-605
     private void renumberSalience(Record[] rs) {
         List<AttributeCol> attcols = dt.attributeCols;
         for ( AttributeCol ac : attcols ) {
@@ -1344,11 +1230,10 @@ public class GuidedDecisionTableWidget extends Composite
         } else {
             final TextBox box = new TextBox();
             box.setText( val );
-            box.addKeyboardListener( new KeyboardListenerAdapter() {
-                public void onKeyUp(Widget sender,
-                                    char keyCode,
-                                    int modifiers) {
-                    if ( keyCode == KeyboardListener.KEY_ENTER ) {
+            box.addKeyUpHandler( new KeyUpHandler() {
+
+                public void onKeyUp(KeyUpEvent event) {
+                    if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
                         r.set( dta,
                                box.getText() );
                         w.destroy();
@@ -1358,7 +1243,7 @@ public class GuidedDecisionTableWidget extends Composite
 
             if ( dt.isNumeric( colConf,
                                getSCE() ) ) {
-                box.addKeyboardListener( ActionValueEditor.getNumericFilter( box ) );
+                box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
             }
 
             p.add( box );
@@ -1400,20 +1285,6 @@ public class GuidedDecisionTableWidget extends Composite
     public void onAfterSave() {
         //not needed.
 
-    }
-
-    private void changeRowPositions(Record from,
-                                    Record to) {
-        int fromNum = from.getAsInteger( "num" );
-        int toNum = to.getAsInteger( "num" );
-        from.set( "num",
-                  toNum );
-        to.set( "num",
-                fromNum );
-
-        scrapeData( -1 );
-
-        refreshGrid();
     }
 
 }

@@ -41,13 +41,10 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -58,25 +55,28 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActionCallMethodWidget extends RuleModellerWidget {
 
-    final private ActionCallMethod           model;
-    final private DirtyableFlexTable         layout;
-    private boolean                          isBoundFact = false;
+    final private ActionCallMethod   model;
+    final private DirtyableFlexTable layout;
+    private boolean                  isBoundFact = false;
 
-    private String[]                         fieldCompletionTexts;
-    private String[]                         fieldCompletionValues;
-    private String                           variableClass;
-    private Constants                        constants   = GWT.create( Constants.class );
+    private String[]                 fieldCompletionTexts;
+    private String[]                 fieldCompletionValues;
+    private String                   variableClass;
+    private Constants                constants   = GWT.create( Constants.class );
 
-    private boolean readOnly;
+    private boolean                  readOnly;
 
     public ActionCallMethodWidget(RuleModeller mod,
                                   ActionCallMethod set) {
-        this(mod, set, null);
+        this( mod,
+              set,
+              null );
     }
 
     public ActionCallMethodWidget(RuleModeller mod,
-                                  ActionCallMethod set, Boolean readOnly) {
-        super(mod);
+                                  ActionCallMethod set,
+                                  Boolean readOnly) {
+        super( mod );
         this.model = set;
         this.layout = new DirtyableFlexTable();
 
@@ -131,16 +131,15 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
             }
         }
 
-        if (readOnly == null){
-           this.readOnly = !completions.containsFactType(this.variableClass);
-        }else{
-           this.readOnly = readOnly;
+        if ( readOnly == null ) {
+            this.readOnly = !completions.containsFactType( this.variableClass );
+        } else {
+            this.readOnly = readOnly;
         }
 
-        if (this.readOnly){
-            layout.addStyleName("editor-disabled-widget");
+        if ( this.readOnly ) {
+            layout.addStyleName( "editor-disabled-widget" );
         }
-
 
         doLayout();
         initWidget( this.layout );
@@ -161,17 +160,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
             inner.setWidget( i,
                              1,
                              valueEditor( val ) );
-            final int idx = i;
-            /*
-             * It is not possible to remove a parameter of a function
-             * 
-             * Image remove = new ImageButton("images/delete_item_small.gif");
-             * //NON-NLS remove.addClickListener( new ClickListener() { public
-             * void onClick(Widget w) { if
-             * (Window.confirm(constants.RemoveThisItem())) { model.removeField(
-             * idx ); modeller.refreshWidget(); }; } }); inner.setWidget( i, 3,
-             * remove );
-             */
+
         }
         layout.setWidget( 0,
                           1,
@@ -185,22 +174,22 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
             Image edit = new ImageButton( "images/add_field_to_fact.gif" ); //NON-
             // NLS
             edit.setTitle( constants.AddAnotherFieldToThisSoYouCanSetItsValue() );
-            edit.addClickHandler(new ClickHandler() {
-				
-				public void onClick(ClickEvent event) {
-					Widget w = (Widget)event.getSource();
-					showAddFieldPopup( w );
-					
-				}
-			});
+            edit.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    Widget w = (Widget) event.getSource();
+                    showAddFieldPopup( w );
+
+                }
+            } );
             horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + model.variable + "]" ) ); // NON-NLS
-            if (!this.readOnly){
+            if ( !this.readOnly ) {
                 horiz.add( edit );
             }
         } else {
             horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + model.variable + "." + model.methodName + "]" ) ); // NON-NLS
         }
-        
+
         return horiz;
     }
 
@@ -222,9 +211,9 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         popup.addAttribute( constants.ChooseAMethodToInvoke(),
                             box );
-        box.addChangeHandler(new ChangeHandler() {
-			
-			public void onChange(ChangeEvent event) {
+        box.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
                 model.state = ActionCallMethod.TYPE_DEFINED;
 
                 String methodName = box.getItemText( box.getSelectedIndex() );
@@ -248,8 +237,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
                 getModeller().refreshWidget();
                 popup.hide();
-			}
-		});
+            }
+        } );
         popup.setPopupPosition( w.getAbsoluteLeft(),
                                 w.getAbsoluteTop() );
         popup.show();
@@ -260,75 +249,34 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
 
-		String type = "";
-		if (completions.isGlobalVariable(this.model.variable)) {
-			type = completions.getGlobalVariable(this.model.variable);
-		} else {
-			type = this.getModeller().getModel().getBindingType(this.model.variable);
-			if (type == null) {
-				type = this.getModeller().getModel().getRhsBoundFact(this.model.variable).factType;
-			}
-		}
-
-		DropDownData enums = completions.getEnums(type, this.model.fieldValues, val.field);
-		
-        return new MethodParameterValueEditor(val,
-                enums,
-                this.getModeller(),
-                val.type, new Command() {
-
-            public void execute() {
-                setModified(true);
+        String type = "";
+        if ( completions.isGlobalVariable( this.model.variable ) ) {
+            type = completions.getGlobalVariable( this.model.variable );
+        } else {
+            type = this.getModeller().getModel().getBindingType( this.model.variable );
+            if ( type == null ) {
+                type = this.getModeller().getModel().getRhsBoundFact( this.model.variable ).factType;
             }
-        });
+        }
+
+        DropDownData enums = completions.getEnums( type,
+                                                   this.model.fieldValues,
+                                                   val.field );
+
+        return new MethodParameterValueEditor( val,
+                                               enums,
+                                               this.getModeller(),
+                                               val.type,
+                                               new Command() {
+
+                                                   public void execute() {
+                                                       setModified( true );
+                                                   }
+                                               } );
     }
-
-    /**
-     * This will return a keyboard listener for field setters, which will obey
-     * numeric conventions - it will also allow formulas (a formula is when the
-     * first value is a "=" which means it is meant to be taken as the user
-     * typed)
-     */
-	public static KeyPressHandler getNumericFilter(final TextBox box) {
-		return new KeyPressHandler() {
-
-			public void onKeyPress(KeyPressEvent event) {
-				char c = event.getCharCode();
-				TextBox w = (TextBox) event.getSource();
-				if (Character.isLetter(c) && c != '='
-						&& !(box.getText().startsWith("="))) {
-					((TextBox) w).cancelKey();
-				}
-			}
-		};
-	}
-
 
     private Widget fieldSelector(final ActionFieldFunction val) {
         return new SmallLabel( val.type );
-    }
-
-    private Widget actionSelector(final ActionFieldFunction val) {
-        SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
-        
-        final ListBox box = new ListBox();
-        final String fieldType = val.type;
-        final String[] modifiers = completions.getModifiers( fieldType );
-
-        if ( modifiers != null ) {
-            for ( int i = 0; i < modifiers.length; i++ ) {
-                box.addItem( modifiers[i] );
-            }
-        }
-        box.addChangeHandler(new ChangeHandler() {
-			
-			public void onChange(ChangeEvent event) {
-				// TODO Auto-generated method stub
-                String methodName = box.getItemText( box.getSelectedIndex() );
-                val.setMethod( methodName );
-			}
-		});
-        return box;
     }
 
     /**
