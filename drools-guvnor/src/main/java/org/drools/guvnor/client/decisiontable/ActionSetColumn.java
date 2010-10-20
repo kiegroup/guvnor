@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,19 +31,20 @@ import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 
 public class ActionSetColumn extends FormStylePopup {
 
@@ -63,14 +64,14 @@ public class ActionSetColumn extends FormStylePopup {
         this.dt = dt;
         this.sce = sce;
 
-        editingCol.boundName = col.boundName;
-        editingCol.factField = col.factField;
-        editingCol.header = col.header;
-        editingCol.type = col.type;
-        editingCol.valueList = col.valueList;
-        editingCol.update = col.update;
-        editingCol.defaultValue = col.defaultValue;
-        editingCol.hideColumn = col.hideColumn;
+        editingCol.setBoundName( col.getBoundName() );
+        editingCol.setFactField( col.getFactField() );
+        editingCol.setHeader( col.getHeader() );
+        editingCol.setType( col.getType() );
+        editingCol.setValueList( col.getValueList() );
+        editingCol.setUpdate( col.isUpdate() );
+        editingCol.setDefaultValue( col.getDefaultValue() );
+        editingCol.setHideColumn( col.isHideColumn() );
 
         super.setModal( false );
         setTitle( constants.ColumnConfigurationSetAFieldOnAFact() );
@@ -105,10 +106,10 @@ public class ActionSetColumn extends FormStylePopup {
         doFieldLabel();
 
         final TextBox valueList = new TextBox();
-        valueList.setText( editingCol.valueList );
-        valueList.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                editingCol.valueList = valueList.getText();
+        valueList.setText( editingCol.getValueList() );
+        valueList.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                editingCol.setValueList( valueList.getText() );
             }
         } );
         HorizontalPanel vl = new HorizontalPanel();
@@ -119,10 +120,10 @@ public class ActionSetColumn extends FormStylePopup {
                       vl );
 
         final TextBox header = new TextBox();
-        header.setText( col.header );
-        header.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                editingCol.header = header.getText();
+        header.setText( col.getHeader() );
+        header.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                editingCol.setHeader( header.getText() );
             }
         } );
         addAttribute( constants.ColumnHeaderDescription(),
@@ -137,33 +138,33 @@ public class ActionSetColumn extends FormStylePopup {
         Button apply = new Button( constants.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                if ( null == editingCol.header || "".equals( editingCol.header ) ) {
+                if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
                     Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( isNew ) {
-                    if ( !unique( editingCol.header ) ) {
+                    if ( !unique( editingCol.getHeader() ) ) {
                         Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
-                    dt.actionCols.add( editingCol );
+                    dt.getActionCols().add( editingCol );
 
                 } else {
-                    if ( !col.header.equals( editingCol.header ) ) {
-                        if ( !unique( editingCol.header ) ) {
+                    if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
+                        if ( !unique( editingCol.getHeader() ) ) {
                             Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
 
-                    col.boundName = editingCol.boundName;
-                    col.factField = editingCol.factField;
-                    col.header = editingCol.header;
-                    col.type = editingCol.type;
-                    col.valueList = editingCol.valueList;
-                    col.update = editingCol.update;
-                    col.defaultValue = editingCol.defaultValue;
-                    col.hideColumn = editingCol.hideColumn;
+                    col.setBoundName( editingCol.getBoundName() );
+                    col.setFactField( editingCol.getFactField() );
+                    col.setHeader( editingCol.getHeader() );
+                    col.setType( editingCol.getType() );
+                    col.setValueList( editingCol.getValueList() );
+                    col.setUpdate( editingCol.isUpdate() );
+                    col.setDefaultValue( editingCol.getDefaultValue() );
+                    col.setHideColumn( editingCol.isHideColumn() );
                 }
                 refreshGrid.execute();
                 hide();
@@ -176,8 +177,8 @@ public class ActionSetColumn extends FormStylePopup {
     }
 
     private boolean unique(String header) {
-        for ( ActionCol o : dt.actionCols ) {
-            if ( o.header.equals( header ) ) return false;
+        for ( ActionCol o : dt.getActionCols() ) {
+            if ( o.getHeader().equals( header ) ) return false;
         }
         return true;
     }
@@ -186,15 +187,15 @@ public class ActionSetColumn extends FormStylePopup {
         HorizontalPanel hp = new HorizontalPanel();
 
         final CheckBox cb = new CheckBox();
-        cb.setEnabled( editingCol.update );
+        cb.setEnabled( editingCol.isUpdate() );
         cb.setText( "" );
         cb.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
-                if ( sce.isGlobalVariable( editingCol.boundName ) ) {
+                if ( sce.isGlobalVariable( editingCol.getBoundName() ) ) {
                     cb.setEnabled( false );
-                    editingCol.update = false;
+                    editingCol.setUpdate( false );
                 } else {
-                    editingCol.update = cb.isEnabled();
+                    editingCol.setUpdate( cb.isEnabled() );
                 }
             }
         } );
@@ -206,9 +207,9 @@ public class ActionSetColumn extends FormStylePopup {
 
     private TextBox getFieldLabel() {
         final TextBox box = new TextBox();
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
-                editingCol.factField = box.getText();
+        box.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                editingCol.setFactField( box.getText() );
             }
         } );
         return box;
@@ -231,9 +232,9 @@ public class ActionSetColumn extends FormStylePopup {
                           b );
         b.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                editingCol.factField = box.getItemText( box.getSelectedIndex() );
-                editingCol.type = sce.getFieldType( factType,
-                                                    editingCol.factField );
+                editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
+                editingCol.setType( sce.getFieldType( factType,
+                                                      editingCol.getFactField() ) );
                 doFieldLabel();
                 pop.hide();
             }
@@ -243,25 +244,25 @@ public class ActionSetColumn extends FormStylePopup {
     }
 
     private String getFactType() {
-        if ( sce.isGlobalVariable( editingCol.boundName ) ) {
-            return sce.getGlobalVariable( editingCol.boundName );
+        if ( sce.isGlobalVariable( editingCol.getBoundName() ) ) {
+            return sce.getGlobalVariable( editingCol.getBoundName() );
         }
-        return getFactType( this.editingCol.boundName );
+        return getFactType( this.editingCol.getBoundName() );
     }
 
     private void doFieldLabel() {
-        if ( this.editingCol.factField != null ) {
-            this.fieldLabel.setText( this.editingCol.factField );
+        if ( this.editingCol.getFactField() != null ) {
+            this.fieldLabel.setText( this.editingCol.getFactField() );
         } else {
             this.fieldLabel.setText( constants.pleaseChooseAFactPatternFirst() );
         }
     }
 
     private String getFactType(String boundName) {
-        for ( Iterator<ConditionCol> iterator = dt.conditionCols.iterator(); iterator.hasNext(); ) {
+        for ( Iterator<ConditionCol> iterator = dt.getConditionCols().iterator(); iterator.hasNext(); ) {
             ConditionCol col = (ConditionCol) iterator.next();
-            if ( col.boundName.equals( boundName ) ) {
-                return col.factType;
+            if ( col.getBoundName().equals( boundName ) ) {
+                return col.getFactField();
             }
         }
         return "";
@@ -280,7 +281,7 @@ public class ActionSetColumn extends FormStylePopup {
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 String val = pats.getValue( pats.getSelectedIndex() );
-                editingCol.boundName = val;
+                editingCol.setBoundName( val );
                 doBindingLabel();
                 pop.hide();
             }
@@ -291,10 +292,10 @@ public class ActionSetColumn extends FormStylePopup {
     }
 
     private ListBox loadBoundFacts() {
-        Set facts = new HashSet();
-        for ( int i = 0; i < this.dt.conditionCols.size(); i++ ) {
-            ConditionCol c = (ConditionCol) dt.conditionCols.get( i );
-            facts.add( c.boundName );
+        Set<String> facts = new HashSet<String>();
+        for ( int i = 0; i < this.dt.getConditionCols().size(); i++ ) {
+            ConditionCol c = (ConditionCol) dt.getConditionCols().get( i );
+            facts.add( c.getBoundName() );
         }
 
         ListBox box = new ListBox();
@@ -312,8 +313,8 @@ public class ActionSetColumn extends FormStylePopup {
     }
 
     private void doBindingLabel() {
-        if ( this.editingCol.boundName != null ) {
-            this.bindingLabel.setText( "" + this.editingCol.boundName );
+        if ( this.editingCol.getBoundName() != null ) {
+            this.bindingLabel.setText( "" + this.editingCol.getBoundName() );
         } else {
             this.bindingLabel.setText( constants.pleaseChooseABoundFactForThisColumn() );
         }

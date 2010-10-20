@@ -32,25 +32,25 @@ public class DecisionTableHandlerTest extends TestCase {
 
         GuidedDecisionTable dt = new GuidedDecisionTable();
 
-        dt.attributeCols.add( TestData.newAttributeCol( "date-effective" ) );
-        dt.attributeCols.add( TestData.newAttributeCol( "date-expires" ) );
-        dt.conditionCols.add( TestData.newConditionCol( "amount max" ) );
-        dt.conditionCols.add( TestData.newConditionCol( "amount min" ) );
-        dt.conditionCols.add( TestData.newConditionCol( "period" ) );
-        dt.actionCols.add( TestData.newActionCol( "LMI1" ) );
-        dt.actionCols.add( TestData.newActionCol( "LMI2" ) );
-        dt.actionCols.add( TestData.newActionCol( "LMI3" ) );
-        dt.data = TestData.newData( dt.attributeCols.size(),
-                                    dt.conditionCols.size(),
-                                    dt.actionCols.size() );
+        dt.getAttributeCols().add( TestData.newAttributeCol( "date-effective" ) );
+        dt.getAttributeCols().add( TestData.newAttributeCol( "date-expires" ) );
+        dt.getConditionCols().add( TestData.newConditionCol( "amount max" ) );
+        dt.getConditionCols().add( TestData.newConditionCol( "amount min" ) );
+        dt.getConditionCols().add( TestData.newConditionCol( "period" ) );
+        dt.getActionCols().add( TestData.newActionCol( "LMI1" ) );
+        dt.getActionCols().add( TestData.newActionCol( "LMI2" ) );
+        dt.getActionCols().add( TestData.newActionCol( "LMI3" ) );
+        dt.setData( TestData.newData( dt.getAttributeCols().size(),
+                                    dt.getConditionCols().size(),
+                                    dt.getActionCols().size() ) );
 
-        Order.assertAttributeOrder( dt.attributeCols,
+        Order.assertAttributeOrder( dt.getAttributeCols(),
                                     new String[]{"date-effective", "date-expires"} );
-        Order.assertConditionOrder( dt.conditionCols,
+        Order.assertConditionOrder( dt.getConditionCols(),
                                     new String[]{"amount max", "amount min", "period"} );
-        Order.assertActionOrder( dt.actionCols,
+        Order.assertActionOrder( dt.getActionCols(),
                                  new String[]{"LMI1", "LMI2", "LMI3"} );
-        Order.assertDataOrder( dt.data,
+        Order.assertDataOrder( dt.getData(),
                                new String[][]{
                                               new String[]{"0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9" }, 
                                               new String[]{"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9" }, 
@@ -64,14 +64,14 @@ public class DecisionTableHandlerTest extends TestCase {
                                          oldIndex,
                                          newIndex );
 
-        Order.assertAttributeOrder( dt.attributeCols,
+        Order.assertAttributeOrder( dt.getAttributeCols(),
                                     new String[]{"date-expires", "date-effective"} );
-        Order.assertConditionOrder( dt.conditionCols,
+        Order.assertConditionOrder( dt.getConditionCols(),
                                     new String[]{"amount max", "amount min", "period"} );
-        Order.assertActionOrder( dt.actionCols,
+        Order.assertActionOrder( dt.getActionCols(),
                                  new String[]{"LMI1", "LMI2", "LMI3"} );
         
-        Order.assertDataOrder( dt.data,
+        Order.assertDataOrder( dt.getData(),
                                new String[][]{
                                               new String[]{"0.0", "0.1", "0.3", "0.2", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9" }, 
                                               new String[]{"1.0", "1.1", "1.3", "1.2", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9" }, 
@@ -85,11 +85,11 @@ public class DecisionTableHandlerTest extends TestCase {
                                          oldIndex,
                                          newIndex );
 
-        Order.assertAttributeOrder( dt.attributeCols,
+        Order.assertAttributeOrder( dt.getAttributeCols(),
                                     new String[]{"date-effective", "date-expires"} );
-        Order.assertConditionOrder( dt.conditionCols,
+        Order.assertConditionOrder( dt.getConditionCols(),
                                     new String[]{"amount max", "amount min", "period"} );
-        Order.assertDataOrder( dt.data,
+        Order.assertDataOrder( dt.getData(),
                                new String[][]{
                                               new String[]{"0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9" }, 
                                               new String[]{"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9" }, 
@@ -101,25 +101,25 @@ public class DecisionTableHandlerTest extends TestCase {
         
         GuidedDecisionTable dt = new GuidedDecisionTable();
         
-        dt.attributeCols.add( TestData.newAttributeCol( "date-effective" ) );
-        dt.attributeCols.add( TestData.newAttributeCol( "date-expires" ) );
-        dt.conditionCols.add( TestData.newConditionCol( "amount max" ) );
-        dt.conditionCols.add( TestData.newConditionCol( "amount min" ) );
-        dt.conditionCols.add( TestData.newConditionCol( "period" ) );
-        dt.actionCols.add( TestData.newActionCol( "LMI1" ) );
-        dt.actionCols.add( TestData.newActionCol( "LMI2" ) );
-        dt.actionCols.add( TestData.newActionCol( "LMI3" ) );
-        dt.data = TestData.newData( dt.attributeCols.size(),
-                                    dt.conditionCols.size(),
-                                    dt.actionCols.size() );
+        dt.getAttributeCols().add( TestData.newAttributeCol( "date-effective" ) );
+        dt.getAttributeCols().add( TestData.newAttributeCol( "date-expires" ) );
+        dt.getConditionCols().add( TestData.newConditionCol( "amount max" ) );
+        dt.getConditionCols().add( TestData.newConditionCol( "amount min" ) );
+        dt.getConditionCols().add( TestData.newConditionCol( "period" ) );
+        dt.getActionCols().add( TestData.newActionCol( "LMI1" ) );
+        dt.getActionCols().add( TestData.newActionCol( "LMI2" ) );
+        dt.getActionCols().add( TestData.newActionCol( "LMI3" ) );
+        dt.setData( TestData.newData( dt.getAttributeCols().size(),
+                                    dt.getConditionCols().size(),
+                                    dt.getActionCols().size() ) );
         
-        Order.assertAttributeOrder( dt.attributeCols,
+        Order.assertAttributeOrder( dt.getAttributeCols(),
                                     new String[]{"date-effective", "date-expires"} );
-        Order.assertConditionOrder( dt.conditionCols,
+        Order.assertConditionOrder( dt.getConditionCols(),
                                     new String[]{"amount max", "amount min", "period"} );
-        Order.assertActionOrder( dt.actionCols,
+        Order.assertActionOrder( dt.getActionCols(),
                                  new String[]{"LMI1", "LMI2", "LMI3"} );
-        Order.assertDataOrder( dt.data,
+        Order.assertDataOrder( dt.getData(),
                                new String[][]{
                                               new String[]{"0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9" }, 
                                               new String[]{"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9" }, 
@@ -133,13 +133,13 @@ public class DecisionTableHandlerTest extends TestCase {
                                          oldIndex,
                                          newIndex );
         
-        Order.assertAttributeOrder( dt.attributeCols,
+        Order.assertAttributeOrder( dt.getAttributeCols(),
                                     new String[]{"date-effective", "date-expires"} );
-        Order.assertConditionOrder( dt.conditionCols,
+        Order.assertConditionOrder( dt.getConditionCols(),
                                     new String[]{"amount min", "period", "amount max"} );
-        Order.assertActionOrder( dt.actionCols,
+        Order.assertActionOrder( dt.getActionCols(),
                                  new String[]{"LMI1", "LMI2", "LMI3"} );
-        Order.assertDataOrder( dt.data,
+        Order.assertDataOrder( dt.getData(),
                                new String[][]{
                                               new String[]{"0.0", "0.1", "0.2", "0.3", "0.5", "0.6", "0.4", "0.7", "0.8", "0.9" }, 
                                               new String[]{"1.0", "1.1", "1.2", "1.3", "1.5", "1.6", "1.4", "1.7", "1.8", "1.9" }, 
@@ -153,14 +153,14 @@ public class DecisionTableHandlerTest extends TestCase {
                                          oldIndex,
                                          newIndex );
         
-        Order.assertAttributeOrder( dt.attributeCols,
+        Order.assertAttributeOrder( dt.getAttributeCols(),
                                     new String[]{"date-effective", "date-expires"} );
-        Order.assertConditionOrder( dt.conditionCols,
+        Order.assertConditionOrder( dt.getConditionCols(),
                                     new String[]{"amount min", "amount max", "period"} );
-        Order.assertActionOrder( dt.actionCols,
+        Order.assertActionOrder( dt.getActionCols(),
                                  new String[]{"LMI1", "LMI2", "LMI3"} );
 
-        Order.assertDataOrder( dt.data,
+        Order.assertDataOrder( dt.getData(),
                                new String[][]{
                                               new String[]{"0.0", "0.1", "0.2", "0.3", "0.5", "0.4", "0.6", "0.7", "0.8", "0.9" }, 
                                               new String[]{"1.0", "1.1", "1.2", "1.3", "1.5", "1.4", "1.6", "1.7", "1.8", "1.9" }, 
@@ -172,25 +172,25 @@ public class DecisionTableHandlerTest extends TestCase {
         
         GuidedDecisionTable dt = new GuidedDecisionTable();
         
-        dt.attributeCols.add( TestData.newAttributeCol( "date-effective" ) );
-        dt.attributeCols.add( TestData.newAttributeCol( "date-expires" ) );
-        dt.conditionCols.add( TestData.newConditionCol( "amount max" ) );
-        dt.conditionCols.add( TestData.newConditionCol( "amount min" ) );
-        dt.conditionCols.add( TestData.newConditionCol( "period" ) );
-        dt.actionCols.add( TestData.newActionCol( "LMI1" ) );
-        dt.actionCols.add( TestData.newActionCol( "LMI2" ) );
-        dt.actionCols.add( TestData.newActionCol( "LMI3" ) );
-        dt.data = TestData.newData( dt.attributeCols.size(),
-                                    dt.conditionCols.size(),
-                                    dt.actionCols.size() );
+        dt.getAttributeCols().add( TestData.newAttributeCol( "date-effective" ) );
+        dt.getAttributeCols().add( TestData.newAttributeCol( "date-expires" ) );
+        dt.getConditionCols().add( TestData.newConditionCol( "amount max" ) );
+        dt.getConditionCols().add( TestData.newConditionCol( "amount min" ) );
+        dt.getConditionCols().add( TestData.newConditionCol( "period" ) );
+        dt.getActionCols().add( TestData.newActionCol( "LMI1" ) );
+        dt.getActionCols().add( TestData.newActionCol( "LMI2" ) );
+        dt.getActionCols().add( TestData.newActionCol( "LMI3" ) );
+        dt.setData( TestData.newData( dt.getAttributeCols().size(),
+                                    dt.getConditionCols().size(),
+                                    dt.getActionCols().size() ) );
         
-        Order.assertAttributeOrder( dt.attributeCols,
+        Order.assertAttributeOrder( dt.getAttributeCols(),
                                     new String[]{"date-effective", "date-expires"} );
-        Order.assertConditionOrder( dt.conditionCols,
+        Order.assertConditionOrder( dt.getConditionCols(),
                                     new String[]{"amount max", "amount min", "period"} );
-        Order.assertActionOrder( dt.actionCols,
+        Order.assertActionOrder( dt.getActionCols(),
                                  new String[]{"LMI1", "LMI2", "LMI3"} );
-        Order.assertDataOrder( dt.data,
+        Order.assertDataOrder( dt.getData(),
                                new String[][]{
                                               new String[]{"0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9" }, 
                                               new String[]{"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9" }, 
@@ -202,13 +202,13 @@ public class DecisionTableHandlerTest extends TestCase {
                                          oldIndex,
                                          newIndex );
         
-        Order.assertAttributeOrder( dt.attributeCols,
+        Order.assertAttributeOrder( dt.getAttributeCols(),
                                     new String[]{"date-effective", "date-expires"} );
-        Order.assertConditionOrder( dt.conditionCols,
+        Order.assertConditionOrder( dt.getConditionCols(),
                                     new String[]{"amount max", "amount min", "period"} );
-        Order.assertActionOrder( dt.actionCols,
+        Order.assertActionOrder( dt.getActionCols(),
                                  new String[]{"LMI1", "LMI3", "LMI2"} );
-        Order.assertDataOrder( dt.data,
+        Order.assertDataOrder( dt.getData(),
                                new String[][]{
                                               new String[]{"0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.9", "0.8" }, 
                                               new String[]{"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.9", "1.8" }, 
@@ -220,13 +220,13 @@ public class DecisionTableHandlerTest extends TestCase {
                                          oldIndex,
                                          newIndex );
         
-        Order.assertAttributeOrder( dt.attributeCols,
+        Order.assertAttributeOrder( dt.getAttributeCols(),
                                     new String[]{"date-effective", "date-expires"} );
-        Order.assertConditionOrder( dt.conditionCols,
+        Order.assertConditionOrder( dt.getConditionCols(),
                                     new String[]{"amount max", "amount min", "period"} );
-        Order.assertActionOrder( dt.actionCols,
+        Order.assertActionOrder( dt.getActionCols(),
                                  new String[]{"LMI2", "LMI1", "LMI3"} );
-        Order.assertDataOrder( dt.data,
+        Order.assertDataOrder( dt.getData(),
                                new String[][]{
                                               new String[]{"0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.8", "0.7", "0.9" }, 
                                               new String[]{"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.8", "1.7", "1.9" }, 
@@ -261,7 +261,7 @@ class TestData {
     static ConditionCol newConditionCol(String header) {
         ConditionCol c = new ConditionCol();
 
-        c.header = header;
+        c.setHeader( header );
 
         return c;
     }
@@ -269,7 +269,7 @@ class TestData {
     static ActionCol newActionCol(String header) {
         ActionCol a = new ActionCol();
 
-        a.header = header;
+        a.setHeader( header );
 
         return a;
     }
@@ -285,7 +285,7 @@ class Order {
                              cols.size() );
 
         for ( int i = 0; i < list.length; i++ ) {
-            Assert.assertEquals( cols.get( i ).header,
+            Assert.assertEquals( cols.get( i ).getHeader(),
                                  list[i] );
         }
     }
@@ -334,7 +334,7 @@ class Order {
                              cols.size() );
 
         for ( int i = 0; i < list.length; i++ ) {
-            Assert.assertEquals( cols.get( i ).header,
+            Assert.assertEquals( cols.get( i ).getHeader(),
                                  list[i] );
         }
     }

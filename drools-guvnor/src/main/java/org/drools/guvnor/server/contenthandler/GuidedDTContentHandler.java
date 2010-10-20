@@ -69,13 +69,13 @@ public class GuidedDTContentHandler extends ContentHandler
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
         GuidedDecisionTable data = (GuidedDecisionTable) asset.content;
-        if ( data.tableName == null ) {
-            data.tableName = repoAsset.getName();
+        if ( data.getTableName() == null ) {
+            data.setTableName( repoAsset.getName() );
         }
 
         // Change the row numbers so they are in the same order as the rows.
-        for ( int i = 0; i < data.data.length; i++ ) {
-            data.data[i][0] = String.valueOf( i + 1 );
+        for ( int i = 0; i < data.getData().length; i++ ) {
+            data.getData()[i][0] = String.valueOf( i + 1 );
         }
 
         repoAsset.updateContent( GuidedDTXMLPersistence.getInstance().marshal( data ) );
@@ -99,9 +99,9 @@ public class GuidedDTContentHandler extends ContentHandler
 
     public String getRawDRL(AssetItem asset) {
         GuidedDecisionTable model = GuidedDTXMLPersistence.getInstance().unmarshal( asset.getContent() );
-        model.tableName = asset.getName();
-        model.parentName = this.parentNameFromCategory( asset,
-                                                        model.parentName );
+        model.setTableName( asset.getName() );
+        model.setParentName( this.parentNameFromCategory( asset,
+                                                        model.getParentName() ) );
 
         return GuidedDTDRLPersistence.getInstance().marshal( model );
     }

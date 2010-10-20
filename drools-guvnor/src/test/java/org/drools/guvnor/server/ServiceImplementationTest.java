@@ -3536,20 +3536,20 @@ public class ServiceImplementationTest extends TestCase {
 
         GuidedDecisionTable dt = new GuidedDecisionTable();
         ConditionCol col = new ConditionCol();
-        col.boundName = "p";
-        col.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        col.factField = "hair";
-        col.factType = "Person";
-        col.operator = "==";
-        dt.conditionCols.add( col );
+        col.setBoundName( "p" );
+        col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        col.setFactField( "hair" );
+        col.setFactType( "Person" );
+        col.setOperator( "==" );
+        dt.getConditionCols().add( col );
 
         ActionSetFieldCol ac = new ActionSetFieldCol();
-        ac.boundName = "p";
-        ac.factField = "likes";
-        ac.type = SuggestionCompletionEngine.TYPE_STRING;
-        dt.actionCols.add( ac );
+        ac.setBoundName( "p" );
+        ac.setFactField( "likes" );
+        ac.setType( SuggestionCompletionEngine.TYPE_STRING );
+        dt.getActionCols().add( ac );
 
-        dt.data = new String[][]{new String[]{"1", "descrip", "pink", "cheese"}};
+        dt.setData( new String[][]{new String[]{"1", "descrip", "pink", "cheese"}} );
 
         String uid = impl.createNewRule( "decTable",
                                          "",

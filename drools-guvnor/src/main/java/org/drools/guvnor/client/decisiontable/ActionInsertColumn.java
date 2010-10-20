@@ -67,14 +67,14 @@ public class ActionInsertColumn extends FormStylePopup {
         this.dt = dt;
         this.sce = sce;
         this.editingCol = new ActionInsertFactCol();
-        editingCol.boundName = col.boundName;
-        editingCol.type = col.type;
-        editingCol.factField = col.factField;
-        editingCol.factType = col.factType;
-        editingCol.header = col.header;
-        editingCol.valueList = col.valueList;
-        editingCol.defaultValue = col.defaultValue;
-        editingCol.hideColumn = col.hideColumn;
+        editingCol.setBoundName( col.getBoundName() );
+        editingCol.setType( col.getType() );
+        editingCol.setFactField( col.getFactField() );
+        editingCol.setFactType( col.getFactType() );
+        editingCol.setHeader( col.getHeader() );
+        editingCol.setValueList( col.getValueList() );
+        editingCol.setDefaultValue( col.getDefaultValue() );
+        editingCol.setHideColumn( col.isHideColumn() );
 
         setTitle( constants.ActionColumnConfigurationInsertingANewFact() );
 
@@ -108,10 +108,10 @@ public class ActionInsertColumn extends FormStylePopup {
         doFieldLabel();
 
         final TextBox valueList = new TextBox();
-        valueList.setText( editingCol.valueList );
+        valueList.setText( editingCol.getValueList() );
         valueList.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                editingCol.valueList = valueList.getText();
+                editingCol.setValueList( valueList.getText() );
             }
         } );
         HorizontalPanel vl = new HorizontalPanel();
@@ -122,10 +122,10 @@ public class ActionInsertColumn extends FormStylePopup {
                       vl );
 
         final TextBox header = new TextBox();
-        header.setText( col.header );
+        header.setText( col.getHeader() );
         header.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                editingCol.header = header.getText();
+                editingCol.setHeader( header.getText() );
             }
         } );
         addAttribute( constants.ColumnHeaderDescription(),
@@ -137,31 +137,31 @@ public class ActionInsertColumn extends FormStylePopup {
         Button apply = new Button( constants.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                if ( null == editingCol.header || "".equals( editingCol.header ) ) {
+                if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
                     Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( isNew ) {
-                    if ( !unique( editingCol.header ) ) {
+                    if ( !unique( editingCol.getHeader() ) ) {
                         Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
-                    dt.actionCols.add( editingCol );
+                    dt.getActionCols().add( editingCol );
                 } else {
-                    if ( !col.header.equals( editingCol.header ) ) {
-                        if ( !unique( editingCol.header ) ) {
+                    if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
+                        if ( !unique( editingCol.getHeader() ) ) {
                             Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
-                    col.boundName = editingCol.boundName;
-                    col.type = editingCol.type;
-                    col.factField = editingCol.factField;
-                    col.factType = editingCol.factType;
-                    col.header = editingCol.header;
-                    col.valueList = editingCol.valueList;
-                    col.defaultValue = editingCol.defaultValue;
-                    col.hideColumn = editingCol.hideColumn;
+                    col.setBoundName( editingCol.getBoundName() );
+                    col.setType( editingCol.getType() );
+                    col.setFactField( editingCol.getFactField() );
+                    col.setFactType( editingCol.getFactType() );
+                    col.setHeader( editingCol.getHeader() );
+                    col.setValueList( editingCol.getValueList() );
+                    col.setDefaultValue( editingCol.getDefaultValue() );
+                    col.setHideColumn( editingCol.isHideColumn() );
                 }
                 refreshGrid.execute();
                 hide();
@@ -173,8 +173,8 @@ public class ActionInsertColumn extends FormStylePopup {
     }
 
     private boolean unique(String header) {
-        for ( ActionCol o : dt.actionCols ) {
-            if ( o.header.equals( header ) ) return false;
+        for ( ActionCol o : dt.getActionCols() ) {
+            if ( o.getHeader().equals( header ) ) return false;
         }
         return true;
     }
@@ -183,7 +183,7 @@ public class ActionInsertColumn extends FormStylePopup {
         final TextBox box = new TextBox();
         box.addChangeListener( new ChangeListener() {
             public void onChange(Widget w) {
-                editingCol.factField = box.getText();
+                editingCol.setFactField( box.getText() );
             }
         } );
         return box;
@@ -193,7 +193,7 @@ public class ActionInsertColumn extends FormStylePopup {
         final FormStylePopup pop = new FormStylePopup();
         pop.setModal( false );
         String[] fields = this.sce.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-                                                        this.editingCol.factType );
+                                                        this.editingCol.getFactType() );
         final ListBox box = new ListBox();
         for ( int i = 0; i < fields.length; i++ ) {
             box.addItem( fields[i] );
@@ -205,9 +205,9 @@ public class ActionInsertColumn extends FormStylePopup {
                           b );
         b.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                editingCol.factField = box.getItemText( box.getSelectedIndex() );
-                editingCol.type = sce.getFieldType( editingCol.factType,
-                                                    editingCol.factField );
+                editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
+                editingCol.setType( sce.getFieldType( editingCol.getFactType(),
+                                                    editingCol.getFactField() ) );
                 doFieldLabel();
                 pop.hide();
             }
@@ -217,10 +217,10 @@ public class ActionInsertColumn extends FormStylePopup {
     }
 
     private void doFieldLabel() {
-        if ( nil( this.editingCol.factField ) ) {
+        if ( nil( this.editingCol.getFactField() ) ) {
             fieldLabel.setText( constants.pleaseChooseFactType() );
         } else {
-            fieldLabel.setText( editingCol.factField );
+            fieldLabel.setText( editingCol.getFactField() );
         }
 
     }
@@ -230,8 +230,8 @@ public class ActionInsertColumn extends FormStylePopup {
     }
 
     private void doPatternLabel() {
-        if ( this.editingCol.factType != null ) {
-            this.patternLabel.setText( this.editingCol.factType + " [" + editingCol.boundName + "]" );
+        if ( this.editingCol.getFactType() != null ) {
+            this.patternLabel.setText( this.editingCol.getFactType() + " [" + editingCol.getBoundName() + "]" );
         }
     }
 
@@ -266,8 +266,8 @@ public class ActionInsertColumn extends FormStylePopup {
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" ); //NON-NLS
-                editingCol.factType = val[0];
-                editingCol.boundName = val[1];
+                editingCol.setFactType( val[0] );
+                editingCol.setBoundName( val[1] );
                 doPatternLabel();
                 pop.hide();
             }
@@ -292,8 +292,8 @@ public class ActionInsertColumn extends FormStylePopup {
         Button ok = new Button( constants.OK() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                editingCol.boundName = binding.getText();
-                editingCol.factType = types.getItemText( types.getSelectedIndex() );
+                editingCol.setBoundName( binding.getText() );
+                editingCol.setFactType( types.getItemText( types.getSelectedIndex() ) );
                 doPatternLabel();
                 pop.hide();
             }
@@ -308,14 +308,14 @@ public class ActionInsertColumn extends FormStylePopup {
         Set vars = new HashSet();
         ListBox patterns = new ListBox();
 
-        for ( Object o : dt.actionCols ) {
+        for ( Object o : dt.getActionCols() ) {
             ActionCol col = (ActionCol) o;
             if ( col instanceof ActionInsertFactCol ) {
                 ActionInsertFactCol c = (ActionInsertFactCol) col;
-                if ( !vars.contains( c.boundName ) ) {
-                    patterns.addItem( c.factType + " [" + c.boundName + "]",
-                                      c.factType + " " + c.boundName );
-                    vars.add( c.boundName );
+                if ( !vars.contains( c.getBoundName() ) ) {
+                    patterns.addItem( c.getFactType() + " [" + c.getBoundName() + "]",
+                                      c.getFactType() + " " + c.getBoundName() );
+                    vars.add( c.getBoundName() );
                 }
             }
 

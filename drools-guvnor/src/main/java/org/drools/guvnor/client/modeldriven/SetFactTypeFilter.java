@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.guvnor.client.modeldriven;
 
 import java.util.Collections;
@@ -26,7 +23,7 @@ import org.drools.ide.common.client.modeldriven.FactTypeFilter;
 
 public class SetFactTypeFilter implements FactTypeFilter {
 
-	private static final long serialVersionUID = 501l;
+	private static final long serialVersionUID = 510l;
 	private final Set<String> validFacts;
 
 	public SetFactTypeFilter() {

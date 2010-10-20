@@ -92,22 +92,22 @@ public class DecisionTableHandler {
                 break;
             case ATTRIBUTE :
                 add = COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size();
-                dt.attributeCols = moveColumnHeader( dt.attributeCols,
+                dt.setAttributeCols( moveColumnHeader( dt.getAttributeCols(),
                                                      oldIndex - add,
-                                                     newIndex - add );
+                                                     newIndex - add ) );
                 break;
             case CONDITION :
-                add = COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size() + dt.attributeCols.size();
-                dt.conditionCols = moveColumnHeader( dt.conditionCols,
+                add = COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size() + dt.getAttributeCols().size();
+                dt.setConditionCols( moveColumnHeader( dt.getConditionCols(),
                                                      oldIndex - add,
-                                                     newIndex - add );
+                                                     newIndex - add ) );
                 break;
             case ACTION :
                 // +1 as we have an arrow between conditions and actions.
-                add = COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size() + dt.attributeCols.size() + ARROW + dt.conditionCols.size();
-                dt.actionCols = moveColumnHeader( dt.actionCols,
+                add = COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size() + dt.getAttributeCols().size() + ARROW + dt.getConditionCols().size();
+                dt.setActionCols( moveColumnHeader( dt.getActionCols(),
                                                   oldIndex - add,
-                                                  newIndex - add );
+                                                  newIndex - add ) );
                 break;
             default :
                 break;
@@ -117,12 +117,12 @@ public class DecisionTableHandler {
         switch ( type ) {
             case ACTION :
                 // If we are moving action parts we need to jump over the arrow separator. 
-                moveData( dt.data,
+                moveData( dt.getData(),
                           oldIndex - 1,
                           newIndex - 1 );
                 break;
             default :
-                moveData( dt.data,
+                moveData( dt.getData(),
                           oldIndex,
                           newIndex );
                 break;
@@ -135,9 +135,9 @@ public class DecisionTableHandler {
 
         if ( index < (COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size()) ) {
             return DTColumnConfigType.METADATA;
-        } else if ( index < (COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size() + dt.attributeCols.size()) ) {
+        } else if ( index < (COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size() + dt.getAttributeCols().size()) ) {
             return DTColumnConfigType.ATTRIBUTE;
-        } else if ( index < (COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size() + dt.attributeCols.size() + dt.conditionCols.size() + ARROW) ) {
+        } else if ( index < (COUNTER_AND_DESCRIPTION + dt.getMetadataCols().size() + dt.getAttributeCols().size() + dt.getConditionCols().size() + ARROW) ) {
             return DTColumnConfigType.CONDITION;
         } else {
             return DTColumnConfigType.ACTION;
