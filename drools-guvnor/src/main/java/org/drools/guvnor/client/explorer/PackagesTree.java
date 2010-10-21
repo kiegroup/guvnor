@@ -184,8 +184,9 @@ public class PackagesTree extends AbstractTree {
 
         TabOpener opener = TabOpener.getInstance();
 
-        if ( node.getUserObject() instanceof PackageConfigData && !"global".equals( ((PackageConfigData) node.getUserObject()).name ) ) {
-            PackageConfigData pc = (PackageConfigData) node.getUserObject();
+        Object userObject = node.getUserObject();
+        if ( userObject instanceof PackageConfigData && !"global".equals( ((PackageConfigData) userObject).name ) ) {
+            PackageConfigData pc = (PackageConfigData) userObject;
             RulePackageSelector.currentlySelectedPackage = pc.name;
 
             String uuid = pc.uuid;
@@ -196,8 +197,8 @@ public class PackagesTree extends AbstractTree {
                                               refreshTree();
                                           }
                                       } );
-        } else if ( node.getUserObject() instanceof Object[] ) {
-            final String[] formats = (String[]) node.getUserObject();
+        } else if ( userObject instanceof String[] ) {
+            final String[] formats = (String[]) userObject;
             final PackageConfigData packageConfigData = (PackageConfigData) node.getParentItem().getUserObject();
             RulePackageSelector.currentlySelectedPackage = packageConfigData.name;
             String key = key( formats,
