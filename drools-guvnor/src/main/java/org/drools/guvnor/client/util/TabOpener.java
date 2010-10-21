@@ -404,7 +404,7 @@ public class TabOpener {
                           String widgetID) {
         if ( !explorerViewCenterPanel.showIfOpen( widgetID ) ) {
             final String stateName = widgetID.substring( widgetID.indexOf( "-" ) + 1 );
-            final AssetItemGrid list = new AssetItemGrid( createEditEvent(),
+            final AssetItemGrid grid = new AssetItemGrid( createEditEvent(),
                                                           AssetItemGrid.RULE_LIST_TABLE_ID,
                                                           new AssetItemGridDataLoader() {
                                                               public void loadData(int skip,
@@ -422,19 +422,19 @@ public class TabOpener {
             final ServerPushNotification push = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
                     if ( response.messageType.equals( "statusChange" ) && (response.message).equals( stateName ) ) {
-                        list.refreshGrid();
+                        grid.refreshGrid();
                     }
                 }
             };
             PushClient.instance().subscribe( push );
-            list.addUnloadListener( new Command() {
+            grid.addUnloadListener( new Command() {
                 public void execute() {
                     PushClient.instance().unsubscribe( push );
                 }
             } );
 
             explorerViewCenterPanel.addTab( constants.Status() + title,
-                                            list,
+                                            grid,
                                             widgetID );
         }
     }
@@ -446,7 +446,7 @@ public class TabOpener {
                              String widgetID) {
         if ( !explorerViewCenterPanel.showIfOpen( widgetID ) ) {
             final String categoryName = widgetID.substring( widgetID.indexOf( "-" ) + 1 );
-            final AssetItemGrid list = new AssetItemGrid( createEditEvent(),
+            final AssetItemGrid grid = new AssetItemGrid( createEditEvent(),
                                                           AssetItemGrid.RULE_LIST_TABLE_ID,
                                                           new AssetItemGridDataLoader() {
                                                               public void loadData(int skip,
@@ -463,19 +463,19 @@ public class TabOpener {
             final ServerPushNotification push = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
                     if ( response.messageType.equals( "categoryChange" ) && response.message.equals( categoryName ) ) {
-                        list.refreshGrid();
+                        grid.refreshGrid();
                     }
                 }
             };
             PushClient.instance().subscribe( push );
-            list.addUnloadListener( new Command() {
+            grid.addUnloadListener( new Command() {
                 public void execute() {
                     PushClient.instance().unsubscribe( push );
                 }
             } );
 
             explorerViewCenterPanel.addTab( (constants.CategoryColon()) + title,
-                                            list,
+                                            grid,
                                             widgetID );
         }
     }
@@ -501,7 +501,7 @@ public class TabOpener {
                                       final String itemName) {
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
 
-            final AssetItemGrid list = new AssetItemGrid( new EditItemEvent() {
+            final AssetItemGrid grid = new AssetItemGrid( new EditItemEvent() {
                                                               public void open(String uuid) {
                                                                   openAsset( uuid );
                                                               }
@@ -525,18 +525,18 @@ public class TabOpener {
                                                           },
                                                           GWT.getModuleBaseURL() + "feed/package?name=" + packageName + "&viewUrl=" + Util.getSelfURL() + "&status=*" );
             explorerViewCenterPanel.addTab( itemName + " [" + packageName + "]",
-                                            list,
+                                            grid,
                                             key );
 
             final ServerPushNotification sub = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
                     if ( response.messageType.equals( "packageChange" ) && response.message.equals( packageName ) ) {
-                        list.refreshGrid();
+                        grid.refreshGrid();
                     }
                 }
             };
             PushClient.instance().subscribe( sub );
-            list.addUnloadListener( new Command() {
+            grid.addUnloadListener( new Command() {
                 public void execute() {
                     PushClient.instance().unsubscribe( sub );
                 }
