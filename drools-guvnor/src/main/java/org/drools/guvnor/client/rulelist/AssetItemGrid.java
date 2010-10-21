@@ -99,42 +99,45 @@ public class AssetItemGrid extends Composite {
      * Call this to set up a table config instead of loading it from the server. You then pass in the config name for later use.
      * Can save a round trip.
      */
-    public static void registerTableConf(TableConfig conf, String tableConfig) {
-       if (columnConfigs.containsKey(tableConfig)) return;
-       ColumnModel cm = createColumnModel( conf );
-       columnConfigs.put( tableConfig, cm );
-       RecordDef rd = createRecordDef( conf );
-       recordDefs.put( tableConfig, rd );
-       rowsPerPage.put( tableConfig, new Integer( conf.rowsPerPage ) );
+    public static void registerTableConfig(TableConfig tableConfig, String tableConfigKey) {
+       if (columnConfigs.containsKey(tableConfigKey))
+       {
+           return;
+       }
+       ColumnModel cm = createColumnModel( tableConfig );
+       columnConfigs.put( tableConfigKey, cm );
+       RecordDef rd = createRecordDef( tableConfig );
+       recordDefs.put( tableConfigKey, rd );
+       rowsPerPage.put( tableConfigKey, new Integer( tableConfig.rowsPerPage ) );
     }
 
 
     /**
      * Create a grid using the given config - config will be loaded from the server if it is not already cached.
-     * You can use registerTableConf to register it to avoid a server hit.
+     * You can use registerTableConfig to register it to avoid a server hit.
      */
     public AssetItemGrid(final EditItemEvent event,
-                         final String tableConfig,
+                         final String tableConfigKey,
                          final AssetItemGridDataLoader source) {
 
         this.editEvent = event;
         this.layout = new SimplePanel();
-        if ( !columnConfigs.containsKey( tableConfig ) ) {
-            RepositoryServiceFactory.getService().loadTableConfig( tableConfig,
+        if ( !columnConfigs.containsKey( tableConfigKey ) ) {
+            RepositoryServiceFactory.getService().loadTableConfig( tableConfigKey,
                                                                    new GenericCallback<TableConfig>() {
-                                                                       public void onSuccess(TableConfig conf) {
-                                                                           registerTableConf(conf, tableConfig);
+                                                                       public void onSuccess(TableConfig tableConfig) {
+                                                                           registerTableConfig(tableConfig, tableConfigKey);
                                                                            doGrid( source,
-                                                                                   columnConfigs.get(tableConfig),
-                                                                                   recordDefs.get(tableConfig),
-                                                                                   conf.rowsPerPage );
+                                                                                   columnConfigs.get(tableConfigKey),
+                                                                                   recordDefs.get(tableConfigKey),
+                                                                                   tableConfig.rowsPerPage );
                                                                        }
                                                                    } );
         } else {
             doGrid( source,
-                    columnConfigs.get( tableConfig ),
-                    recordDefs.get( tableConfig ),
-                    (rowsPerPage.get( tableConfig )).intValue() );
+                    columnConfigs.get( tableConfigKey ),
+                    recordDefs.get( tableConfigKey ),
+                    (rowsPerPage.get( tableConfigKey )).intValue() );
         }
 
         initWidget( layout );

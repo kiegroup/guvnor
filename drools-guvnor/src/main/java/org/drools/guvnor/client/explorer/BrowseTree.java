@@ -48,9 +48,9 @@ public class BrowseTree extends AbstractTree
         conf.headerTypes[0] = "class java.lang.String";
         conf.headerTypes[1] = "class java.util.Calendar";
         conf.rowsPerPage = 500;
-        AssetItemGrid.registerTableConf( conf,
+        AssetItemGrid.registerTableConfig( conf,
                                          ExplorerNodeConfig.RECENT_EDITED_ID );
-        AssetItemGrid.registerTableConf( conf,
+        AssetItemGrid.registerTableConfig( conf,
                                          ExplorerNodeConfig.RECENT_VIEWED_ID );
 
         conf = new TableConfig();
@@ -64,7 +64,7 @@ public class BrowseTree extends AbstractTree
         conf.headerTypes[2] = "class java.lang.String";
         conf.rowsPerPage = 500;
 
-        AssetItemGrid.registerTableConf( conf,
+        AssetItemGrid.registerTableConfig( conf,
                                          ExplorerNodeConfig.INCOMING_ID );
     }
 
