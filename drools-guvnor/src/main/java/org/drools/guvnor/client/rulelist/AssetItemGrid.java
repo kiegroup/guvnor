@@ -84,7 +84,7 @@ public class AssetItemGrid extends Composite {
     /**
      * Used for tracking paging.
      */
-    private Stack<Integer>      cursorPositions             = getPositionStack();
+    private Stack<Integer>      cursorPositions             = createPositionStack();
 
     private int                 currentCursorPosition       = 0;
 
@@ -132,9 +132,9 @@ public class AssetItemGrid extends Composite {
                                                                    } );
         } else {
             doGrid( source,
-                    (ColumnModel) columnConfigs.get( tableConfig ),
-                    (RecordDef) recordDefs.get( tableConfig ),
-                    ((Integer) rowsPerPage.get( tableConfig )).intValue() );
+                    columnConfigs.get( tableConfig ),
+                    recordDefs.get( tableConfig ),
+                    (rowsPerPage.get( tableConfig )).intValue() );
         }
 
         initWidget( layout );
@@ -153,7 +153,7 @@ public class AssetItemGrid extends Composite {
     }
     
 
-    private Stack<Integer> getPositionStack() {
+    private Stack<Integer> createPositionStack() {
         Stack<Integer> cursorPositions = new Stack<Integer>();
         cursorPositions.push( 0 );
         return cursorPositions;
