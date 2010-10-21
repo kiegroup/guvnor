@@ -50,7 +50,7 @@ public class QATree extends AbstractTree
     }
 
     @Override
-    Tree getTree() {
+    protected Tree createTree() {
         return ExplorerNodeConfig.getQAStructure( itemWidgets );
     }
 

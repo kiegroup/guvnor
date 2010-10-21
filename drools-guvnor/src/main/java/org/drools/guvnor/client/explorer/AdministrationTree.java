@@ -39,7 +39,7 @@ public class AdministrationTree extends AbstractTree {
     }
 
     @Override
-    Tree getTree() {
+    protected Tree createTree() {
         return ExplorerNodeConfig.getAdminStructure( itemWidgets );
     }
 

@@ -60,7 +60,7 @@ public class PackagesTree extends AbstractTree {
     }
 
     @Override
-    Tree getTree() {
+    protected Tree createTree() {
         return new Tree();
     }
 

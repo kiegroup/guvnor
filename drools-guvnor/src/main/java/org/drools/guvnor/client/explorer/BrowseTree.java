@@ -80,7 +80,7 @@ public class BrowseTree extends AbstractTree
     }
 
     @Override
-    protected Tree getTree() {
+    protected Tree createTree() {
         return new Tree();
     }
 

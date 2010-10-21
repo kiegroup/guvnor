@@ -28,19 +28,16 @@ public abstract class AbstractTree extends Composite
 
     /**
      * Constructor.
-     * 
-     * @param ExplorerViewCenterPanel
-     *            the centertabbedPanel
      */
     public AbstractTree() {
 
-        mainTree = getTree();
+        mainTree = createTree();
         mainTree.setStyleName( "guvnor-Tree" );
 
         initWidget( mainTree );
     }
 
-    abstract Tree getTree();
+    protected abstract Tree createTree();
 
     /**
      * Get a string representation of the header that includes an image and some

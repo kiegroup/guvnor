@@ -51,7 +51,7 @@ public class DeploymentTree extends AbstractTree
     }
 
     @Override
-    Tree getTree() {
+    protected Tree createTree() {
         return new Tree();
     }
 
