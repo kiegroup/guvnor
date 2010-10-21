@@ -157,7 +157,7 @@ class TestRunnerWidget extends Composite {
 
 			} else if (f instanceof ExecutionTrace) {
 				ExecutionTrace ex = (ExecutionTrace) f;
-				if (ex.numberOfRulesFired == data.result.scenario.maxRuleFirings) {
+				if (ex.getNumberOfRulesFired() == data.result.scenario.maxRuleFirings) {
                     Window.alert(Format.format(constants.MaxRuleFiringsReachedWarning(), data.result.scenario.maxRuleFirings));
 				}
 			}

@@ -16,15 +16,29 @@
 
 package org.drools.guvnor.client.qa.testscenarios;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.*;
+import java.util.Date;
+
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 
-import java.util.Date;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,113 +48,127 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class ExecutionWidget extends Composite {
-    private Constants constants = ((Constants) GWT.create(Constants.class));
+    private Constants            constants = ((Constants) GWT.create( Constants.class ));
 
-    public ExecutionWidget(final ExecutionTrace ext, boolean showResults) {
+    private final ExecutionTrace executionTrace;
 
+    public ExecutionWidget(final ExecutionTrace executionTrace,
+                           boolean showResults) {
 
-    	final Widget dt = simulDate(ext);
-    	dt.setVisible(ext.scenarioSimulatedDate != null);
+        this.executionTrace = executionTrace;
 
-    	final ListBox choice = new ListBox();
+        final HorizontalPanel simulDatePanel = simulDate();
+        simulDatePanel.setVisible( isScenarioSimulatedDateSet() );
 
-        choice.addItem(constants.UseRealDateAndTime());
-    	choice.addItem(constants.UseASimulatedDateAndTime());
-    	choice.setSelectedIndex((ext.scenarioSimulatedDate == null) ? 0 : 1);
-    	choice.addChangeListener(new ChangeListener() {
-			public void onChange(Widget w) {
-				if (choice.getSelectedIndex() == 0) {
-					dt.setVisible( false );
-					ext.scenarioSimulatedDate = null;
-				} else {
-					dt.setVisible(true);
-				}
-			}
-		});
+        final ListBox choice = new ListBox();
 
-    	HorizontalPanel p = new HorizontalPanel();
-    	p.add(new Image("images/execution_trace.gif"));   //NON-NLS
-    	p.add(choice);
-    	p.add(dt);
+        choice.addItem( constants.UseRealDateAndTime() );
+        choice.addItem( constants.UseASimulatedDateAndTime() );
+        choice.setSelectedIndex( (executionTrace.getScenarioSimulatedDate() == null) ? 0 : 1 );
+        choice.addChangeHandler( new ChangeHandler() {
 
-    	VerticalPanel vert = new VerticalPanel();
-    	if (showResults && ext.executionTimeResult != null
-    			&& ext.numberOfRulesFired != null) {
-            HTML rep = new HTML("<i><small>" + Format.format(constants.property0RulesFiredIn1Ms(), ext.numberOfRulesFired.toString(), ext.executionTimeResult.toString()) + "</small></i>");
+            public void onChange(ChangeEvent event) {
+                if ( choice.getSelectedIndex() == 0 ) {
+                    simulDatePanel.setVisible( false );
+                    executionTrace.setScenarioSimulatedDate( null );
+                } else {
+                    simulDatePanel.setVisible( true );
+                }
+            }
+        } );
 
+        HorizontalPanel layout = new HorizontalPanel();
+        layout.add( new Image( "images/execution_trace.gif" ) ); //NON-NLS
+        layout.add( choice );
+        layout.add( simulDatePanel );
 
-    		final HorizontalPanel h = new HorizontalPanel();
-    		h.add(rep);
-    		vert.add(h);
+        if ( showResults && isResultNotNullAndHaveRulesFired() ) {
+            VerticalPanel replacingLayout = new VerticalPanel();
 
-    		final Button show = new Button(constants.ShowRulesFired());
-    		show.addClickListener(new ClickListener() {
-				public void onClick(Widget w) {
-					ListBox rules = new ListBox(true);
-					for (int i = 0; i < ext.rulesFired.length; i++) {
-						rules.addItem(ext.rulesFired[i]);
-					}
-					h.add(new SmallLabel("&nbsp:" + constants.RulesFired()));
-					h.add(rules);
-					show.setVisible(false);
-				}
-    		});
-    		h.add(show);
-
-
-    		vert.add(p);
-    		initWidget(vert);
-    	} else {
-    		initWidget(p);
-    	}
+            replacingLayout.add( getShowPanel() );
+            replacingLayout.add( layout );
+            initWidget( replacingLayout );
+        } else {
+            initWidget( layout );
+        }
     }
 
+    private boolean isResultNotNullAndHaveRulesFired() {
+        return executionTrace.getExecutionTimeResult() != null && executionTrace.getNumberOfRulesFired() != null;
+    }
 
+    private HorizontalPanel getShowPanel() {
+        HTML rep = new HTML( "<i><small>" + Format.format( constants.property0RulesFiredIn1Ms(),
+                                                           executionTrace.getNumberOfRulesFired().toString(),
+                                                           executionTrace.getExecutionTimeResult().toString() ) + "</small></i>" );
 
-    private Widget simulDate(final ExecutionTrace ext) {
-    	HorizontalPanel ab = new HorizontalPanel();
-        final String fmt = "dd-MMM-YYYY"; //NON-NLS
-        final TextBox dt = new TextBox();
-        if (ext.scenarioSimulatedDate == null) {
-            dt.setText("<" + fmt + ">");
+        final HorizontalPanel horizontalPanel = new HorizontalPanel();
+        horizontalPanel.add( rep );
+
+        final Button show = new Button( constants.ShowRulesFired() );
+        show.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                ListBox rules = new ListBox( true );
+                for ( int i = 0; i < executionTrace.getRulesFired().length; i++ ) {
+                    rules.addItem( executionTrace.getRulesFired()[i] );
+                }
+                horizontalPanel.add( new SmallLabel( "&nbsp:" + constants.RulesFired() ) );
+                horizontalPanel.add( rules );
+                show.setVisible( false );
+            }
+        } );
+        horizontalPanel.add( show );
+        return horizontalPanel;
+    }
+
+    private boolean isScenarioSimulatedDateSet() {
+        return executionTrace.getScenarioSimulatedDate() != null;
+    }
+
+    private HorizontalPanel simulDate() {
+        HorizontalPanel horizontalPanel = new HorizontalPanel();
+        final String format = "dd-MMM-YYYY"; //NON-NLS
+        final TextBox textBox = new TextBox();
+        if ( executionTrace.getScenarioSimulatedDate() == null ) {
+            textBox.setText( "<" + format + ">" );
         } else {
-            dt.setText(ext.scenarioSimulatedDate.toLocaleString());
+            textBox.setText( executionTrace.getScenarioSimulatedDate().toLocaleString() );
         }
         final SmallLabel dateHint = new SmallLabel();
-        dt.addKeyboardListener(new KeyboardListener() {
-			public void onKeyDown(Widget arg0, char arg1, int arg2) {}
-			public void onKeyPress(Widget arg0, char arg1, int arg2) {}
-			public void onKeyUp(Widget w, char arg1, int arg2) {
-				try {
-					Date d = new Date(dt.getText());
-					dateHint.setText(d.toLocaleString());
-				} catch (Exception e) {
-					dateHint.setText("...");
-				}
-			}
-        });
+        textBox.addKeyUpHandler( new KeyUpHandler() {
 
-        dt.addChangeListener(new ChangeListener() {
-            public void onChange(Widget w) {
-                if (dt.getText().trim().equals("")) {
-                    dt.setText(constants.currentDateAndTime());
+            public void onKeyUp(KeyUpEvent event) {
+                try {
+                    Date d = new Date( textBox.getText() );
+                    dateHint.setText( d.toLocaleString() );
+                } catch ( Exception e ) {
+                    dateHint.setText( "..." );
+                }
+            }
+        } );
+
+        textBox.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
+                if ( textBox.getText().trim().equals( "" ) ) {
+                    textBox.setText( constants.currentDateAndTime() );
                 } else {
                     try {
-                        Date d = new Date(dt.getText());
-                        ext.scenarioSimulatedDate = d;
-                        dt.setText(d.toLocaleString());
-                        dateHint.setText("");
-                    } catch (Exception e) {
-                        ErrorPopup.showMessage(Format.format(constants.BadDateFormatPleaseTryAgainTryTheFormatOf0(), fmt));
+                        Date date = new Date( textBox.getText() );
+                        executionTrace.setScenarioSimulatedDate( date );
+                        textBox.setText( date.toLocaleString() );
+                        dateHint.setText( "" );
+                    } catch ( Exception e ) {
+                        ErrorPopup.showMessage( Format.format( constants.BadDateFormatPleaseTryAgainTryTheFormatOf0(),
+                                                               format ) );
                     }
                 }
             }
-        });
-        ab.add(dt);
-        ab.add(dateHint);
-        return ab;
+        } );
+        horizontalPanel.add( textBox );
+        horizontalPanel.add( dateHint );
+        return horizontalPanel;
     }
 
-
 }
-
