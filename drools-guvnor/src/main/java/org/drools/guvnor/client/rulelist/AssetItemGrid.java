@@ -142,7 +142,7 @@ public class AssetItemGrid extends Composite {
 
 
     /**
-     * Similar to the other constructor, but takes an optional feelURL to show with an atom icon in the top right.
+     * Similar to the other constructor, but takes an optional feedURL to show with an atom icon in the top right.
      */
     public AssetItemGrid(final EditItemEvent event,
                      final String tableConfig,
