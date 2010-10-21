@@ -181,37 +181,38 @@ public class PackagesTree extends AbstractTree {
     // Show the associated widget in the deck panel
     public void onSelection(SelectionEvent<TreeItem> event) {
         TreeItem node = event.getSelectedItem();
+        Object userObject = node.getUserObject();
 
         TabOpener opener = TabOpener.getInstance();
 
-        Object userObject = node.getUserObject();
-        if ( userObject instanceof PackageConfigData && !"global".equals( ((PackageConfigData) userObject).name ) ) {
-            PackageConfigData pc = (PackageConfigData) userObject;
-            RulePackageSelector.currentlySelectedPackage = pc.name;
+        if ( userObject != null) {
+            if ( userObject instanceof PackageConfigData && !"global".equals( ((PackageConfigData) userObject).name ) ) {
+                PackageConfigData pc = (PackageConfigData) userObject;
+                RulePackageSelector.currentlySelectedPackage = pc.name;
 
-            String uuid = pc.uuid;
-            opener.openPackageEditor( uuid,
-                                      new Command() {
-                                          public void execute() {
-                                              // refresh the package tree.
-                                              refreshTree();
-                                          }
-                                      } );
-        } else if ( userObject instanceof String[] ) {
-            final String[] formats = (String[]) userObject;
-            final PackageConfigData packageConfigData = (PackageConfigData) node.getParentItem().getUserObject();
-            RulePackageSelector.currentlySelectedPackage = packageConfigData.name;
-            String key = key( formats,
-                              packageConfigData );
-            opener.openPackageViewAssets( packageConfigData.uuid,
-                                          packageConfigData.name,
-                                          key,
-                                          formats,
-                                          node.getText() );
-        } else {
-            throw new IllegalArgumentException("The userObject (" + userObject + ") is not supported.");
+                String uuid = pc.uuid;
+                opener.openPackageEditor( uuid,
+                                          new Command() {
+                                              public void execute() {
+                                                  // refresh the package tree.
+                                                  refreshTree();
+                                              }
+                                          } );
+            } else if ( userObject instanceof String[] ) {
+                final String[] formats = (String[]) userObject;
+                final PackageConfigData packageConfigData = (PackageConfigData) node.getParentItem().getUserObject();
+                RulePackageSelector.currentlySelectedPackage = packageConfigData.name;
+                String key = key( formats,
+                                  packageConfigData );
+                opener.openPackageViewAssets( packageConfigData.uuid,
+                                              packageConfigData.name,
+                                              key,
+                                              formats,
+                                              node.getText() );
+            } else {
+                throw new IllegalArgumentException("The userObject (" + userObject + ") is not supported.");
+            }
         }
-
     }
 
 }
