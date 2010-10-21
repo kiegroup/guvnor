@@ -207,9 +207,9 @@ public class ScenarioRunner {
                 this.workingMemory.fireAllRules( listener.getAgendaFilter( ruleList,
                                                                            scenario.inclusive ),
                                                  scenario.maxRuleFirings );
-                executionTrace.executionTimeResult = System.currentTimeMillis() - time;
-                executionTrace.numberOfRulesFired = listener.totalFires;
-                executionTrace.rulesFired = listener.getRulesFiredSummary();
+                executionTrace.setExecutionTimeResult( System.currentTimeMillis() - time );
+                executionTrace.setNumberOfRulesFired( listener.totalFires );
+                executionTrace.setRulesFired( listener.getRulesFiredSummary() );
 
             } else if ( fixture instanceof Expectation ) {
                 doPopulate( toPopulate );
@@ -249,9 +249,9 @@ public class ScenarioRunner {
 
     private void applyTimeMachine(final InternalWorkingMemory wm,
                                   ExecutionTrace executionTrace) {
-        if ( executionTrace.scenarioSimulatedDate != null ) {
+        if ( executionTrace.getScenarioSimulatedDate() != null ) {
             final Calendar now = Calendar.getInstance();
-            now.setTimeInMillis( executionTrace.scenarioSimulatedDate.getTime() );
+            now.setTimeInMillis( executionTrace.getScenarioSimulatedDate().getTime() );
             wm.setTimeMachine( new TimeMachine() {
                 @Override
                 public Calendar getNow() {

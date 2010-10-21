@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,34 +23,66 @@ import java.util.Date;
  * This will be used to filter the rule engines behaviour under test.
  * @author Michael Neale
  */
-public class ExecutionTrace implements Fixture {
+public class ExecutionTrace
+    implements
+    Fixture {
 
+    private static final long serialVersionUID      = 510l;
 
+    /**
+     * This is the simulated date - leaving it as null means it will use
+     * the current time.
+     */
+    private Date              scenarioSimulatedDate = null;
 
-	/**
-	 * This is the simulated date - leaving it as null means it will use
-	 * the current time.
-	 */
-	public Date		scenarioSimulatedDate = null;
+    /**
+     * The time taken for execution.
+     */
+    private Long              executionTimeResult;
 
+    /**
+     * This is pretty obvious really. The total firing count of all rules.
+     */
+    private Long              numberOfRulesFired;
 
-	/**
-	 * The time taken for execution.
-	 */
-	public Long executionTimeResult;
+    /**
+     * A summary of the rules fired.
+     */
+    private String[]          rulesFired;
 
-	/**
-	 * This is pretty obvious really. The total firing count of all rules.
-	 */
-	public Long numberOfRulesFired;
+    public ExecutionTrace() {
+    }
 
-	/**
-	 * A summary of the rules fired.
-	 */
-	public String[] rulesFired;
+    public void setScenarioSimulatedDate(Date scenarioSimulatedDate) {
+        this.scenarioSimulatedDate = scenarioSimulatedDate;
+    }
 
-	public ExecutionTrace() {}
+    public Date getScenarioSimulatedDate() {
+        return scenarioSimulatedDate;
+    }
 
+    public void setExecutionTimeResult(Long executionTimeResult) {
+        this.executionTimeResult = executionTimeResult;
+    }
 
+    public Long getExecutionTimeResult() {
+        return executionTimeResult;
+    }
+
+    public void setNumberOfRulesFired(Long numberOfRulesFired) {
+        this.numberOfRulesFired = numberOfRulesFired;
+    }
+
+    public Long getNumberOfRulesFired() {
+        return numberOfRulesFired;
+    }
+
+    public void setRulesFired(String[] rulesFired) {
+        this.rulesFired = rulesFired;
+    }
+
+    public String[] getRulesFired() {
+        return rulesFired;
+    }
 
 }

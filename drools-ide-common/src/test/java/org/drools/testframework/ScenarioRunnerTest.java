@@ -791,14 +791,14 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue( future > time );
 
         ExecutionTrace ext = new ExecutionTrace();
-        ext.scenarioSimulatedDate = new Date( "10-Jul-1974" );
+        ext.setScenarioSimulatedDate( new Date( "10-Jul-1974" ) );
         sc.fixtures.add( ext );
         run = new ScenarioRunner( sc,
                                   null,
                                   wm );
         tm = run.workingMemory.getTimeMachine();
 
-        long expected = ext.scenarioSimulatedDate.getTime();
+        long expected = ext.getScenarioSimulatedDate().getTime();
         assertEquals( expected,
                       tm.getNow().getTimeInMillis() );
         Thread.sleep( 50 );
@@ -945,7 +945,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                                                  (InternalWorkingMemory) wm );
 
         assertEquals( 2,
-                      executionTrace.numberOfRulesFired.intValue() );
+                      executionTrace.getNumberOfRulesFired().intValue() );
 
         assertSame( run.scenario,
                     sc );
@@ -963,9 +963,9 @@ public class ScenarioRunnerTest extends RuleUnit {
         Thread.sleep( 50 );
 
         assertTrue( (new Date()).after( sc.lastRunResult ) );
-        assertTrue( executionTrace.executionTimeResult != null );
+        assertTrue( executionTrace.getExecutionTimeResult() != null );
 
-        assertTrue( executionTrace.rulesFired.length > 0 );
+        assertTrue( executionTrace.getRulesFired().length > 0 );
 
     }
 
@@ -1037,7 +1037,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                                                  (InternalWorkingMemory) wm );
 
         assertEquals( sc.maxRuleFirings,
-                      executionTrace.numberOfRulesFired.intValue() );
+                      executionTrace.getNumberOfRulesFired().intValue() );
 
     }
 
@@ -1097,7 +1097,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                                                  (InternalWorkingMemory) wm );
 
         assertEquals( 1,
-                      executionTrace.numberOfRulesFired.intValue() );
+                      executionTrace.getNumberOfRulesFired().intValue() );
 
         assertSame( run.scenario,
                     sc );
@@ -1162,7 +1162,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                                                  (InternalWorkingMemory) wm );
 
         assertEquals( 0,
-                      executionTrace.numberOfRulesFired.intValue() );
+                      executionTrace.getNumberOfRulesFired().intValue() );
 
         assertSame( run.scenario,
                     sc );
@@ -1190,7 +1190,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                                   (InternalWorkingMemory) wm );
 
         assertEquals( 1,
-                      executionTrace.numberOfRulesFired.intValue() );
+                      executionTrace.getNumberOfRulesFired().intValue() );
 
         assertSame( run.scenario,
                     sc );

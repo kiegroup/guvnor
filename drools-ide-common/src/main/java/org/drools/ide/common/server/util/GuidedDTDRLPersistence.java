@@ -57,21 +57,21 @@ public class GuidedDTDRLPersistence {
 
 		StringBuilder sb = new StringBuilder();
 
-		for (int i = 0; i < dt.data.length; i++) {
-			String[] row = dt.data[i];
+		for (int i = 0; i < dt.getData().length; i++) {
+			String[] row = dt.getData()[i];
 			String num = row[0];
 			String desc = row[1];
 
 			RuleModel rm = new RuleModel();
-			rm.name = getName(dt.tableName, num);
+			rm.name = getName(dt.getTableName(), num);
 
 			doMetadata(dt.getMetadataCols(), row, rm);
-			doAttribs(dt.getMetadataCols().size(), dt.attributeCols, row, rm);
-			doConditions(dt.getMetadataCols().size() + dt.attributeCols.size(), dt.conditionCols, row, rm);
-			doActions(dt.getMetadataCols().size() + dt.attributeCols.size() + dt.conditionCols.size(), dt.actionCols, row, rm);
+			doAttribs(dt.getMetadataCols().size(), dt.getAttributeCols(), row, rm);
+			doConditions(dt.getMetadataCols().size() + dt.getAttributeCols().size(), dt.getConditionCols(), row, rm);
+			doActions(dt.getMetadataCols().size() + dt.getAttributeCols().size() + dt.getConditionCols().size(), dt.getActionCols(), row, rm);
 
-			if(dt.parentName != null){
-				rm.parentName = dt.parentName;
+			if(dt.getParentName() != null){
+				rm.parentName = dt.getParentName();
 			}
 
 			sb.append("#from row number: " + (i + 1) + "\n");
@@ -91,22 +91,22 @@ public class GuidedDTDRLPersistence {
 			ActionCol c = actionCols.get(i);
 			String cell = row[condAndAttrs + i + GuidedDecisionTable.INTERNAL_ELEMENTS];
             if (!validCell(cell)) {
-                cell = c.defaultValue;
+                cell = c.getDefaultValue();
             }
 			if (validCell(cell)) {
 				if (c instanceof ActionInsertFactCol) {
 					ActionInsertFactCol ac = (ActionInsertFactCol)c;
-					LabelledAction a = findByLabelledAction(actions, ac.boundName);
+					LabelledAction a = findByLabelledAction(actions, ac.getBoundName());
 					if (a == null) {
 						a = new LabelledAction();
-						a.boundName  = ac.boundName;
-						ActionInsertFact ins = new ActionInsertFact(ac.factType);
-						ins.setBoundName( ac.boundName );
+						a.boundName  = ac.getBoundName();
+						ActionInsertFact ins = new ActionInsertFact(ac.getFactType());
+						ins.setBoundName( ac.getBoundName() );
 						a.action = ins;
 						actions.add(a);
 					}
 					ActionInsertFact ins = (ActionInsertFact) a.action;
-					ActionFieldValue val = new ActionFieldValue(ac.factField, cell, ac.type);
+					ActionFieldValue val = new ActionFieldValue(ac.getFactField(), cell, ac.getType());
 					ins.addFieldValue(val);
 				} else if (c instanceof ActionRetractFactCol) {
 					ActionRetractFactCol rf = (ActionRetractFactCol)c;
@@ -119,25 +119,25 @@ public class GuidedDTDRLPersistence {
 					}
 				} else if (c instanceof ActionSetFieldCol) {
 					ActionSetFieldCol sf = (ActionSetFieldCol)c;
-					LabelledAction a = findByLabelledAction(actions, sf.boundName);
+					LabelledAction a = findByLabelledAction(actions, sf.getBoundName());
 					if (a == null) {
 						a = new LabelledAction();
-						a.boundName = sf.boundName;
-						if (!sf.update) {
-							a.action = new ActionSetField(sf.boundName);
+						a.boundName = sf.getBoundName();
+						if (!sf.isUpdate()) {
+							a.action = new ActionSetField(sf.getBoundName());
 						} else {
-							a.action = new ActionUpdateField(sf.boundName);
+							a.action = new ActionUpdateField(sf.getBoundName());
 						}
 						actions.add(a);
-					} else if (sf.update && !(a.action instanceof ActionUpdateField)) {
+					} else if (sf.isUpdate() && !(a.action instanceof ActionUpdateField)) {
 						//lets swap it out for an update as the user has asked for it.
 						ActionSetField old = (ActionSetField) a.action;
-						ActionUpdateField update = new ActionUpdateField(sf.boundName);
+						ActionUpdateField update = new ActionUpdateField(sf.getBoundName());
 						update.fieldValues = old.fieldValues;
 						a.action = update;
 					}
 					ActionSetField asf = (ActionSetField) a.action;
-					ActionFieldValue val = new ActionFieldValue(sf.factField, cell, sf.type);
+					ActionFieldValue val = new ActionFieldValue(sf.getFactField(), cell, sf.getType());
 					asf.addFieldValue(val);
 				}
 			}
@@ -168,27 +168,27 @@ public class GuidedDTDRLPersistence {
 
             if (!validCell(cell)) {
                 //try default value
-                cell = c.defaultValue;
+                cell = c.getDefaultValue();
             }
             
 			if (validCell(cell)) {
 
 				//get or create the pattern it belongs too
-				FactPattern fp = findByFactPattern(patterns, c.boundName);
+				FactPattern fp = findByFactPattern(patterns, c.getBoundName());
 				if (fp == null) {
-					fp = new FactPattern(c.factType);
-					fp.boundName = c.boundName;
+					fp = new FactPattern(c.getFactType());
+					fp.boundName = c.getBoundName();
 					patterns.add(fp);
 				}
 
 
 
 				//now add the constraint from this cell
-				switch (c.constraintValueType) {
+				switch (c.getConstraintValueType()) {
 					case BaseSingleFieldConstraint.TYPE_LITERAL:
 					case BaseSingleFieldConstraint.TYPE_RET_VALUE:
-						SingleFieldConstraint sfc = new SingleFieldConstraint(c.factField);
-						if (no(c.operator)) {
+						SingleFieldConstraint sfc = new SingleFieldConstraint(c.getFactField());
+						if (no(c.getOperator())) {
 
 							String[] a = cell.split("\\s");
 							if (a.length > 1) {
@@ -198,30 +198,30 @@ public class GuidedDTDRLPersistence {
 								sfc.setValue(cell);
 							}
 						} else {
-							sfc.setOperator(c.operator);
-                            if (c.operator.equals("in")) {
+							sfc.setOperator(c.getOperator());
+                            if (c.getOperator().equals("in")) {
                                 sfc.setValue(makeInList(cell));
                             } else {
                                 sfc.setValue(cell);
                             }
 
 						}
-						sfc.setConstraintValueType(c.constraintValueType);
+						sfc.setConstraintValueType(c.getConstraintValueType());
 						fp.addConstraint(sfc);
 						break;
 					case BaseSingleFieldConstraint.TYPE_PREDICATE:
 						SingleFieldConstraint pred = new SingleFieldConstraint();
-						pred.setConstraintValueType(c.constraintValueType);
-                        if (c.factField != null && c.factField.indexOf("$param") > -1) {
+						pred.setConstraintValueType(c.getConstraintValueType());
+                        if (c.getFactField() != null && c.getFactField().indexOf("$param") > -1) {
                             //handle interpolation
-                            pred.setValue(c.factField.replace("$param", cell));  
+                            pred.setValue(c.getFactField().replace("$param", cell));  
                         } else {
 						    pred.setValue(cell);
                         }
 						fp.addConstraint(pred);
 						break;
 				default:
-					throw new IllegalArgumentException("Unknown constraintValueType: " + c.constraintValueType);
+					throw new IllegalArgumentException("Unknown constraintValueType: " + c.getConstraintValueType());
 				}
 			}
 		}
@@ -268,8 +268,8 @@ public class GuidedDTDRLPersistence {
 			String cell = row[j + GuidedDecisionTable.INTERNAL_ELEMENTS + numOfMeta];
 			if (validCell(cell)) {
 				attribs.add(new RuleAttribute(at.attr, cell));
-			} else if (at.defaultValue != null) {
-                attribs.add(new RuleAttribute(at.attr, at.defaultValue));                
+			} else if (at.getDefaultValue() != null) {
+                attribs.add(new RuleAttribute(at.attr, at.getDefaultValue()));                
             }
 		}
 		if (attribs.size() > 0) {

@@ -95,64 +95,64 @@ public class GuidedDecisionTableTest extends TestCase {
 
         //add cols for LHS
         ConditionCol c1 = new ConditionCol();
-        c1.boundName = "c1";
-        c1.factType = "Driver";
-        c1.factField = "name";
-        c1.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        dt.conditionCols.add(c1);
+        c1.setBoundName( "c1" );
+        c1.setFactType( "Driver" );
+        c1.setFactField( "name" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        dt.getConditionCols().add(c1);
 
         ConditionCol c1_ = new ConditionCol();
-        c1_.boundName = "c1";
-        c1_.factType = "Driver";
-        c1_.factField = "name";
-        c1_.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
+        c1_.setBoundName( "c1" );
+        c1_.setFactType( "Driver" );
+        c1_.setFactField( "name" );
+        c1_.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
 
-        dt.conditionCols.add(c1_);
+        dt.getConditionCols().add(c1_);
 
         ConditionCol c1__ = new ConditionCol();
-        c1__.boundName = "c1";
-        c1__.factType = "Driver";
-        c1__.factField = "name";
-        c1__.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        c1__.valueList = "one,two,three";
-        dt.conditionCols.add(c1__);
+        c1__.setBoundName( "c1" );
+        c1__.setFactType( "Driver" );
+        c1__.setFactField( "name" );
+        c1__.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        c1__.setValueList( "one,two,three" );
+        dt.getConditionCols().add(c1__);
 
         ConditionCol c2 = new ConditionCol();
-        c2.boundName = "c2";
-        c2.factType = "Driver";
-        c2.factField = "nothing";
-        c2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        dt.conditionCols.add(c2);
+        c2.setBoundName( "c2" );
+        c2.setFactType( "Driver" );
+        c2.setFactField( "nothing" );
+        c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        dt.getConditionCols().add(c2);
 
 
         ActionSetFieldCol asf = new ActionSetFieldCol();
-        asf.boundName = "c1";
-        asf.factField = "name";
-        dt.actionCols.add(asf);
+        asf.setBoundName( "c1" );
+        asf.setFactField( "name" );
+        dt.getActionCols().add(asf);
 
         ActionInsertFactCol ins = new ActionInsertFactCol();
-        ins.boundName = "x";
-        ins.factField = "rating";
-        ins.factType = "Person";
-        dt.actionCols.add(ins);
+        ins.setBoundName( "x" );
+        ins.setFactField( "rating" );
+        ins.setFactType( "Person" );
+        dt.getActionCols().add(ins);
 
         ActionInsertFactCol ins_ = new ActionInsertFactCol();
-        ins_.boundName = "x";
-        ins_.factField = "rating";
-        ins_.factType = "Person";
-        ins_.valueList = "one,two,three";
-        dt.actionCols.add(ins_);
+        ins_.setBoundName( "x" );
+        ins_.setFactField( "rating" );
+        ins_.setFactType( "Person" );
+        ins_.setValueList( "one,two,three" );
+        dt.getActionCols().add(ins_);
 
         ActionSetFieldCol asf_ = new ActionSetFieldCol();
-        asf_.boundName = "c1";
-        asf_.factField = "goo";
-        dt.actionCols.add(asf_);
+        asf_.setBoundName( "c1" );
+        asf_.setFactField( "goo" );
+        dt.getActionCols().add(asf_);
 
         ActionSetFieldCol asf__ = new ActionSetFieldCol();
-        asf__.boundName = "c1";
-        asf__.factField = "goo";
-        asf__.valueList = "one,two,three";
-        dt.actionCols.add(asf__);
+        asf__.setBoundName( "c1" );
+        asf__.setFactField( "goo" );
+        asf__.setValueList( "one,two,three" );
+        dt.getActionCols().add(asf__);
 
 
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
@@ -204,7 +204,7 @@ public class GuidedDecisionTableTest extends TestCase {
 
         AttributeCol at = new AttributeCol();
         at.attr = "no-loop";
-        dt.attributeCols.add(at);
+        dt.getAttributeCols().add(at);
 
         r = dt.getValueList(at, sce);
         assertEquals(2, r.length);
@@ -239,53 +239,53 @@ public class GuidedDecisionTableTest extends TestCase {
         AttributeCol at_ = new AttributeCol();
         at_.attr = "enabled";
 
-        dt.attributeCols.add(at);
-        dt.attributeCols.add(at_);
+        dt.getAttributeCols().add(at);
+        dt.getAttributeCols().add(at_);
 
         ConditionCol c1 = new ConditionCol();
-        c1.boundName = "c1";
-        c1.factType = "Driver";
-        c1.factField = "name";
-        c1.operator = "==";
-        c1.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        dt.conditionCols.add(c1);
+        c1.setBoundName( "c1" );
+        c1.setFactType( "Driver" );
+        c1.setFactField( "name" );
+        c1.setOperator( "==" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        dt.getConditionCols().add(c1);
 
         ConditionCol c1_ = new ConditionCol();
-        c1_.boundName = "c1";
-        c1_.factType = "Driver";
-        c1_.factField = "age";
-        c1_.operator = "==";
-        c1_.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        dt.conditionCols.add(c1_);
+        c1_.setBoundName( "c1" );
+        c1_.setFactType( "Driver" );
+        c1_.setFactField( "age" );
+        c1_.setOperator( "==" );
+        c1_.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        dt.getConditionCols().add(c1_);
 
         ConditionCol c2 = new ConditionCol();
-        c2.boundName = "c1";
-        c2.factType = "Driver";
-        c2.factField = "age";
-        c2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        dt.conditionCols.add(c2);
+        c2.setBoundName( "c1" );
+        c2.setFactType( "Driver" );
+        c2.setFactField( "age" );
+        c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        dt.getConditionCols().add(c2);
 
         ActionSetFieldCol a = new ActionSetFieldCol();
-        a.boundName = "c1";
-        a.factField = "name";
-        dt.actionCols.add(a);
+        a.setBoundName( "c1" );
+        a.setFactField( "name" );
+        dt.getActionCols().add(a);
 
         ActionSetFieldCol a2 = new ActionSetFieldCol();
-        a2.boundName = "c1";
-        a2.factField = "age";
-        dt.actionCols.add(a2);
+        a2.setBoundName( "c1" );
+        a2.setFactField( "age" );
+        dt.getActionCols().add(a2);
 
         ActionInsertFactCol ins = new ActionInsertFactCol();
-        ins.boundName = "x";
-        ins.factType = "Driver";
-        ins.factField = "name";
-        dt.actionCols.add(ins);
+        ins.setBoundName( "x" );
+        ins.setFactType( "Driver" );
+        ins.setFactField( "name" );
+        dt.getActionCols().add(ins);
 
         ActionInsertFactCol ins_ = new ActionInsertFactCol();
-        ins_.boundName = "x";
-        ins_.factType = "Driver";
-        ins_.factField = "age";
-        dt.actionCols.add(ins_);
+        ins_.setBoundName( "x" );
+        ins_.setFactType( "Driver" );
+        ins_.setFactField( "age" );
+        dt.getActionCols().add(ins_);
 
         assertTrue(dt.isNumeric(at, sce));
         assertFalse(dt.isNumeric(at_, sce));
@@ -320,69 +320,69 @@ public class GuidedDecisionTableTest extends TestCase {
         AttributeCol enabledAttribute = new AttributeCol();
         enabledAttribute.attr = "enabled";
 
-        dt.attributeCols.add(salienceAttribute);
-        dt.attributeCols.add(enabledAttribute);
+        dt.getAttributeCols().add(salienceAttribute);
+        dt.getAttributeCols().add(enabledAttribute);
 
         ConditionCol conditionColName = new ConditionCol();
-        conditionColName.boundName = "c1";
-        conditionColName.factType = "Driver";
-        conditionColName.factField = "name";
-        conditionColName.operator = "==";
-        conditionColName.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        dt.conditionCols.add(conditionColName);
+        conditionColName.setBoundName( "c1" );
+        conditionColName.setFactType( "Driver" );
+        conditionColName.setFactField( "name" );
+        conditionColName.setOperator( "==" );
+        conditionColName.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        dt.getConditionCols().add(conditionColName);
 
         ConditionCol conditionColAge = new ConditionCol();
-        conditionColAge.boundName = "c1";
-        conditionColAge.factType = "Driver";
-        conditionColAge.factField = "age";
-        conditionColAge.operator = "==";
-        conditionColAge.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        dt.conditionCols.add(conditionColAge);
+        conditionColAge.setBoundName( "c1" );
+        conditionColAge.setFactType( "Driver" );
+        conditionColAge.setFactField( "age" );
+        conditionColAge.setOperator( "==" );
+        conditionColAge.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        dt.getConditionCols().add(conditionColAge);
 
         ConditionCol conditionColDate = new ConditionCol();
-        conditionColDate.boundName = "c1";
-        conditionColDate.factType = "Driver";
-        conditionColDate.factField = "date";
-        conditionColDate.operator = "==";
-        conditionColDate.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        dt.conditionCols.add(conditionColDate);
+        conditionColDate.setBoundName( "c1" );
+        conditionColDate.setFactType( "Driver" );
+        conditionColDate.setFactField( "date" );
+        conditionColDate.setOperator( "==" );
+        conditionColDate.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        dt.getConditionCols().add(conditionColDate);
 
         ConditionCol conditionColApproved = new ConditionCol();
-        conditionColApproved.boundName = "c1";
-        conditionColApproved.factType = "Driver";
-        conditionColApproved.factField = "approved";
-        conditionColApproved.operator = "==";
-        conditionColApproved.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        dt.conditionCols.add(conditionColApproved);
+        conditionColApproved.setBoundName( "c1" );
+        conditionColApproved.setFactType( "Driver" );
+        conditionColApproved.setFactField( "approved" );
+        conditionColApproved.setOperator( "==" );
+        conditionColApproved.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        dt.getConditionCols().add(conditionColApproved);
 
         ConditionCol conditionColAge2 = new ConditionCol();
-        conditionColAge2.boundName = "c1";
-        conditionColAge2.factType = "Driver";
-        conditionColAge2.factField = "age";
-        conditionColAge2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        dt.conditionCols.add(conditionColAge2);
+        conditionColAge2.setBoundName( "c1" );
+        conditionColAge2.setFactType( "Driver" );
+        conditionColAge2.setFactField( "age" );
+        conditionColAge2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        dt.getConditionCols().add(conditionColAge2);
 
         ActionSetFieldCol a = new ActionSetFieldCol();
-        a.boundName = "c1";
-        a.factField = "name";
-        dt.actionCols.add(a);
+        a.setBoundName( "c1" );
+        a.setFactField( "name" );
+        dt.getActionCols().add(a);
 
         ActionSetFieldCol a2 = new ActionSetFieldCol();
-        a2.boundName = "c1";
-        a2.factField = "age";
-        dt.actionCols.add(a2);
+        a2.setBoundName( "c1" );
+        a2.setFactField( "age" );
+        dt.getActionCols().add(a2);
 
         ActionInsertFactCol ins = new ActionInsertFactCol();
-        ins.boundName = "x";
-        ins.factType = "Driver";
-        ins.factField = "name";
-        dt.actionCols.add(ins);
+        ins.setBoundName( "x" );
+        ins.setFactType( "Driver" );
+        ins.setFactField( "name" );
+        dt.getActionCols().add(ins);
 
         ActionInsertFactCol ins_ = new ActionInsertFactCol();
-        ins_.boundName = "x";
-        ins_.factType = "Driver";
-        ins_.factField = "age";
-        dt.actionCols.add(ins_);
+        ins_.setBoundName( "x" );
+        ins_.setFactType( "Driver" );
+        ins_.setFactField( "age" );
+        dt.getActionCols().add(ins_);
 
         assertEquals("salience", dt.getType(salienceAttribute, sce));
         assertEquals("enabled", dt.getType(enabledAttribute, sce));
@@ -402,17 +402,17 @@ public class GuidedDecisionTableTest extends TestCase {
 
         //add cols for LHS
         ConditionCol c1 = new ConditionCol();
-        c1.boundName = "c1";
-        c1.factType = "Driver";
-        c1.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        dt.conditionCols.add(c1);
+        c1.setBoundName( "c1" );
+        c1.setFactType( "Driver" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        dt.getConditionCols().add(c1);
 
         ConditionCol c2 = new ConditionCol();
-        c2.boundName = "c2";
-        c2.factType = "Driver";
-        c2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        c2.valueList = "a,b,c";
-        dt.conditionCols.add(c2);
+        c2.setBoundName( "c2" );
+        c2.setFactType( "Driver" );
+        c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        c2.setValueList( "a,b,c" );
+        dt.getConditionCols().add(c2);
 
 
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
@@ -429,10 +429,10 @@ public class GuidedDecisionTableTest extends TestCase {
 
         //add cols for LHS
         ConditionCol c1 = new ConditionCol();
-        c1.boundName = "c1";
-        c1.factType = "Driver";
-        c1.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        dt.conditionCols.add(c1);
+        c1.setBoundName( "c1" );
+        c1.setFactType( "Driver" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        dt.getConditionCols().add(c1);
 
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 

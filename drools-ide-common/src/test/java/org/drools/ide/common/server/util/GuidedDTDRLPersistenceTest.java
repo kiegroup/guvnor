@@ -47,78 +47,78 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 	public void test2Rules() throws Exception {
 		GuidedDecisionTable dt = new GuidedDecisionTable();
-		dt.tableName = "michael";
+		dt.setTableName( "michael" );
 
 		AttributeCol attr = new AttributeCol();
 		attr.attr = "salience";
-        attr.defaultValue = "66";
-		dt.attributeCols.add(attr);
+        attr.setDefaultValue( "66" );
+		dt.getAttributeCols().add(attr);
 
 		ConditionCol con = new ConditionCol();
-		con.boundName = "f1";
-		con.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-		con.factField = "age";
-		con.factType = "Driver";
-		con.header = "Driver f1 age";
-		con.operator = "==";
-		dt.conditionCols.add(con);
+		con.setBoundName( "f1" );
+		con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+		con.setFactField( "age" );
+		con.setFactType( "Driver" );
+		con.setHeader( "Driver f1 age" );
+		con.setOperator( "==" );
+		dt.getConditionCols().add(con);
 
 		ConditionCol con2 = new ConditionCol();
-		con2.boundName = "f1";
-		con2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-		con2.factField = "name";
-		con2.factType = "Driver";
-		con2.header = "Driver f1 name";
-		con2.operator = "==";
-		dt.conditionCols.add(con2);
+		con2.setBoundName( "f1" );
+		con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+		con2.setFactField( "name" );
+		con2.setFactType( "Driver" );
+		con2.setHeader( "Driver f1 name" );
+		con2.setOperator( "==" );
+		dt.getConditionCols().add(con2);
 
 		ConditionCol con3 = new ConditionCol();
-		con3.boundName = "f1";
-		con3.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
-		con3.factField = "rating";
-		con3.factType = "Driver";
-		con3.header = "Driver rating";
-		con3.operator = "==";
-		dt.conditionCols.add(con3);
+		con3.setBoundName( "f1" );
+		con3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
+		con3.setFactField( "rating" );
+		con3.setFactType( "Driver" );
+		con3.setHeader( "Driver rating" );
+		con3.setOperator( "==" );
+		dt.getConditionCols().add(con3);
 
 
 		ConditionCol con4 = new ConditionCol();
-		con4.boundName = "f2";
-		con4.constraintValueType = BaseSingleFieldConstraint.TYPE_PREDICATE;
-		con4.factType = "Driver";
-		con4.header = "Driver 2 pimp";
-        con4.factField = "(not needed)";
-		dt.conditionCols.add(con4);
+		con4.setBoundName( "f2" );
+		con4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
+		con4.setFactType( "Driver" );
+		con4.setHeader( "Driver 2 pimp" );
+        con4.setFactField( "(not needed)" );
+		dt.getConditionCols().add(con4);
 
 
 		ActionInsertFactCol ins = new ActionInsertFactCol();
-		ins.boundName = "ins";
-		ins.factType = "Cheese";
-		ins.factField = "price";
-		ins.type = SuggestionCompletionEngine.TYPE_NUMERIC;
-		dt.actionCols.add(ins);
+		ins.setBoundName( "ins" );
+		ins.setFactType( "Cheese" );
+		ins.setFactField( "price" );
+		ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+		dt.getActionCols().add(ins);
 
 		ActionRetractFactCol ret = new ActionRetractFactCol();
 		ret.boundName = "f2";
-		dt.actionCols.add(ret);
+		dt.getActionCols().add(ret);
 
 		ActionSetFieldCol set = new ActionSetFieldCol();
-		set.boundName = "f1";
-		set.factField = "goo1";
-		set.type = SuggestionCompletionEngine.TYPE_STRING;
-		dt.actionCols.add(set);
+		set.setBoundName( "f1" );
+		set.setFactField( "goo1" );
+		set.setType( SuggestionCompletionEngine.TYPE_STRING );
+		dt.getActionCols().add(set);
 
 		ActionSetFieldCol set2 = new ActionSetFieldCol();
-		set2.boundName = "f1";
-		set2.factField = "goo2";
-        set2.defaultValue = "whee";
-		set2.type = SuggestionCompletionEngine.TYPE_STRING;
-		dt.actionCols.add(set2);
+		set2.setBoundName( "f1" );
+		set2.setFactField( "goo2" );
+        set2.setDefaultValue( "whee" );
+		set2.setType( SuggestionCompletionEngine.TYPE_STRING );
+		dt.getActionCols().add(set2);
 
-		dt.data = new String[][] {
+		dt.setData( new String[][] {
 				new String[] {"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", null},
 				new String[] {"2", "desc", "", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", ""}
-		};
+		} );
 
 
 
@@ -139,78 +139,78 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
     public void testInterpolate() {
         GuidedDecisionTable dt = new GuidedDecisionTable();
-        dt.tableName = "michael";
+        dt.setTableName( "michael" );
 
         AttributeCol attr = new AttributeCol();
         attr.attr = "salience";
-        attr.defaultValue = "66";
-        dt.attributeCols.add(attr);
+        attr.setDefaultValue( "66" );
+        dt.getAttributeCols().add(attr);
 
         ConditionCol con = new ConditionCol();
-        con.boundName = "f1";
-        con.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        con.factField = "age";
-        con.factType = "Driver";
-        con.header = "Driver f1 age";
-        con.operator = "==";
-        dt.conditionCols.add(con);
+        con.setBoundName( "f1" );
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        con.setFactField( "age" );
+        con.setFactType( "Driver" );
+        con.setHeader( "Driver f1 age" );
+        con.setOperator( "==" );
+        dt.getConditionCols().add(con);
 
         ConditionCol con2 = new ConditionCol();
-        con2.boundName = "f1";
-        con2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        con2.factField = "name";
-        con2.factType = "Driver";
-        con2.header = "Driver f1 name";
-        con2.operator = "==";
-        dt.conditionCols.add(con2);
+        con2.setBoundName( "f1" );
+        con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        con2.setFactField( "name" );
+        con2.setFactType( "Driver" );
+        con2.setHeader( "Driver f1 name" );
+        con2.setOperator( "==" );
+        dt.getConditionCols().add(con2);
 
         ConditionCol con3 = new ConditionCol();
-        con3.boundName = "f1";
-        con3.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
-        con3.factField = "rating";
-        con3.factType = "Driver";
-        con3.header = "Driver rating";
-        con3.operator = "==";
-        dt.conditionCols.add(con3);
+        con3.setBoundName( "f1" );
+        con3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
+        con3.setFactField( "rating" );
+        con3.setFactType( "Driver" );
+        con3.setHeader( "Driver rating" );
+        con3.setOperator( "==" );
+        dt.getConditionCols().add(con3);
 
 
         ConditionCol con4 = new ConditionCol();
-        con4.boundName = "f2";
-        con4.constraintValueType = BaseSingleFieldConstraint.TYPE_PREDICATE;
-        con4.factType = "Driver";
-        con4.header = "Driver 2 pimp";
-        con4.factField = "this.hasSomething($param)";
-        dt.conditionCols.add(con4);
+        con4.setBoundName( "f2" );
+        con4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
+        con4.setFactType( "Driver" );
+        con4.setHeader( "Driver 2 pimp" );
+        con4.setFactField( "this.hasSomething($param)" );
+        dt.getConditionCols().add(con4);
 
 
         ActionInsertFactCol ins = new ActionInsertFactCol();
-        ins.boundName = "ins";
-        ins.factType = "Cheese";
-        ins.factField = "price";
-        ins.type = SuggestionCompletionEngine.TYPE_NUMERIC;
-        dt.actionCols.add(ins);
+        ins.setBoundName( "ins" );
+        ins.setFactType( "Cheese" );
+        ins.setFactField( "price" );
+        ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        dt.getActionCols().add(ins);
 
         ActionRetractFactCol ret = new ActionRetractFactCol();
         ret.boundName = "f2";
-        dt.actionCols.add(ret);
+        dt.getActionCols().add(ret);
 
         ActionSetFieldCol set = new ActionSetFieldCol();
-        set.boundName = "f1";
-        set.factField = "goo1";
-        set.type = SuggestionCompletionEngine.TYPE_STRING;
-        dt.actionCols.add(set);
+        set.setBoundName( "f1" );
+        set.setFactField( "goo1" );
+        set.setType( SuggestionCompletionEngine.TYPE_STRING );
+        dt.getActionCols().add(set);
 
         ActionSetFieldCol set2 = new ActionSetFieldCol();
-        set2.boundName = "f1";
-        set2.factField = "goo2";
-        set2.defaultValue = "whee";
-        set2.type = SuggestionCompletionEngine.TYPE_STRING;
-        dt.actionCols.add(set2);
+        set2.setBoundName( "f1" );
+        set2.setFactField( "goo2" );
+        set2.setDefaultValue( "whee" );
+        set2.setType( SuggestionCompletionEngine.TYPE_STRING );
+        dt.getActionCols().add(set2);
 
-        dt.data = new String[][] {
+        dt.setData( new String[][] {
                 new String[] {"1", "desc", "42", "33", "michael", "age * 0.2", "BAM", "6.60", "true", "gooVal1", null},
                 new String[] {"2", "desc", "", "39", "bob", "age * 0.3", "BAM", "6.60", "", "gooVal1", ""}
-        };
+        } );
 
 
 
@@ -231,78 +231,78 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
     public void testInOperator() {
         GuidedDecisionTable dt = new GuidedDecisionTable();
-        dt.tableName = "michael";
+        dt.setTableName( "michael" );
 
         AttributeCol attr = new AttributeCol();
         attr.attr = "salience";
-        attr.defaultValue = "66";
-        dt.attributeCols.add(attr);
+        attr.setDefaultValue( "66" );
+        dt.getAttributeCols().add(attr);
 
         ConditionCol con = new ConditionCol();
-        con.boundName = "f1";
-        con.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        con.factField = "age";
-        con.factType = "Driver";
-        con.header = "Driver f1 age";
-        con.operator = "==";
-        dt.conditionCols.add(con);
+        con.setBoundName( "f1" );
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        con.setFactField( "age" );
+        con.setFactType( "Driver" );
+        con.setHeader( "Driver f1 age" );
+        con.setOperator( "==" );
+        dt.getConditionCols().add(con);
 
         ConditionCol con2 = new ConditionCol();
-        con2.boundName = "f1";
-        con2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-        con2.factField = "name";
-        con2.factType = "Driver";
-        con2.header = "Driver f1 name";
-        con2.operator = "in";
-        dt.conditionCols.add(con2);
+        con2.setBoundName( "f1" );
+        con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        con2.setFactField( "name" );
+        con2.setFactType( "Driver" );
+        con2.setHeader( "Driver f1 name" );
+        con2.setOperator( "in" );
+        dt.getConditionCols().add(con2);
 
         ConditionCol con3 = new ConditionCol();
-        con3.boundName = "f1";
-        con3.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
-        con3.factField = "rating";
-        con3.factType = "Driver";
-        con3.header = "Driver rating";
-        con3.operator = "==";
-        dt.conditionCols.add(con3);
+        con3.setBoundName( "f1" );
+        con3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
+        con3.setFactField( "rating" );
+        con3.setFactType( "Driver" );
+        con3.setHeader( "Driver rating" );
+        con3.setOperator( "==" );
+        dt.getConditionCols().add(con3);
 
 
         ConditionCol con4 = new ConditionCol();
-        con4.boundName = "f2";
-        con4.constraintValueType = BaseSingleFieldConstraint.TYPE_PREDICATE;
-        con4.factType = "Driver";
-        con4.header = "Driver 2 pimp";
-        con4.factField = "(not needed)";
-        dt.conditionCols.add(con4);
+        con4.setBoundName( "f2" );
+        con4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
+        con4.setFactType( "Driver" );
+        con4.setHeader( "Driver 2 pimp" );
+        con4.setFactField( "(not needed)" );
+        dt.getConditionCols().add(con4);
 
 
         ActionInsertFactCol ins = new ActionInsertFactCol();
-        ins.boundName = "ins";
-        ins.factType = "Cheese";
-        ins.factField = "price";
-        ins.type = SuggestionCompletionEngine.TYPE_NUMERIC;
-        dt.actionCols.add(ins);
+        ins.setBoundName( "ins" );
+        ins.setFactType( "Cheese" );
+        ins.setFactField( "price" );
+        ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        dt.getActionCols().add(ins);
 
         ActionRetractFactCol ret = new ActionRetractFactCol();
         ret.boundName = "f2";
-        dt.actionCols.add(ret);
+        dt.getActionCols().add(ret);
 
         ActionSetFieldCol set = new ActionSetFieldCol();
-        set.boundName = "f1";
-        set.factField = "goo1";
-        set.type = SuggestionCompletionEngine.TYPE_STRING;
-        dt.actionCols.add(set);
+        set.setBoundName( "f1" );
+        set.setFactField( "goo1" );
+        set.setType( SuggestionCompletionEngine.TYPE_STRING );
+        dt.getActionCols().add(set);
 
         ActionSetFieldCol set2 = new ActionSetFieldCol();
-        set2.boundName = "f1";
-        set2.factField = "goo2";
-        set2.defaultValue = "whee";
-        set2.type = SuggestionCompletionEngine.TYPE_STRING;
-        dt.actionCols.add(set2);
+        set2.setBoundName( "f1" );
+        set2.setFactField( "goo2" );
+        set2.setDefaultValue( "whee" );
+        set2.setType( SuggestionCompletionEngine.TYPE_STRING );
+        dt.getActionCols().add(set2);
 
-        dt.data = new String[][] {
+        dt.setData( new String[][] {
                 new String[] {"1", "desc", "42", "33", "michael, manik", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", null},
                 new String[] {"2", "desc", "", "39", "bob, frank", "age * 0.3", "age > 7", "6.60", "", "gooVal1", ""}
-        };
+        } );
 
 
 
@@ -416,33 +416,33 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 		List<ConditionCol> cols = new ArrayList<ConditionCol>();
 		ConditionCol col = new ConditionCol();
-		col.boundName = "p1";
-		col.factType = "Person";
-		col.factField = "name";
-		col.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-		col.operator = "==";
+		col.setBoundName( "p1" );
+		col.setFactType( "Person" );
+		col.setFactField( "name" );
+		col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+		col.setOperator( "==" );
 		cols.add(col);
 
 		ConditionCol col2 = new ConditionCol();
-		col2.boundName = "p1";
-		col2.factType = "Person";
-		col2.factField = "age";
-		col2.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
-		col2.operator = "<";
+		col2.setBoundName( "p1" );
+		col2.setFactType( "Person" );
+		col2.setFactField( "age" );
+		col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
+		col2.setOperator( "<" );
 		cols.add(col2);
 
 		ConditionCol col3 = new ConditionCol();
-		col3.boundName = "p1";
-		col3.factType = "Person";
-		col3.constraintValueType = BaseSingleFieldConstraint.TYPE_PREDICATE;
+		col3.setBoundName( "p1" );
+		col3.setFactType( "Person" );
+		col3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
 		cols.add(col3);
 
 		ConditionCol col4 = new ConditionCol();
-		col4.boundName = "c";
-		col4.factType = "Cheese";
-		col4.factField = "type";
-		col4.operator = "==";
-		col4.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+		col4.setBoundName( "c" );
+		col4.setFactType( "Cheese" );
+		col4.setFactField( "type" );
+		col4.setOperator( "==" );
+		col4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
 		cols.add(col4);
 
 		RuleModel rm = new RuleModel();
@@ -492,17 +492,17 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 		List<ActionCol> cols = new ArrayList<ActionCol>();
 		ActionSetFieldCol asf1 = new ActionSetFieldCol();
-		asf1.boundName = "a";
-		asf1.factField = "field1";
+		asf1.setBoundName( "a" );
+		asf1.setFactField( "field1" );
 
-		asf1.type = SuggestionCompletionEngine.TYPE_STRING;
+		asf1.setType( SuggestionCompletionEngine.TYPE_STRING );
 		cols.add(asf1);
 
 		ActionSetFieldCol asf2 = new ActionSetFieldCol();
-		asf2.boundName = "a";
-		asf2.factField = "field2";
-		asf2.update = true;
-		asf2.type = SuggestionCompletionEngine.TYPE_NUMERIC;
+		asf2.setBoundName( "a" );
+		asf2.setFactField( "field2" );
+		asf2.setUpdate( true );
+		asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
 		cols.add(asf2);
 
 		ActionRetractFactCol ret = new ActionRetractFactCol();
@@ -510,17 +510,17 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		cols.add(ret);
 
 		ActionInsertFactCol ins1 = new ActionInsertFactCol();
-		ins1.boundName = "ins";
-		ins1.factType = "Cheese";
-		ins1.factField = "price";
-		ins1.type = SuggestionCompletionEngine.TYPE_NUMERIC;
+		ins1.setBoundName( "ins" );
+		ins1.setFactType( "Cheese" );
+		ins1.setFactField( "price" );
+		ins1.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
 		cols.add(ins1);
 
 		ActionInsertFactCol ins2 = new ActionInsertFactCol();
-		ins2.boundName = "ins";
-		ins2.factType = "Cheese";
-		ins2.factField = "type";
-		ins2.type = SuggestionCompletionEngine.TYPE_NUMERIC;
+		ins2.setBoundName( "ins" );
+		ins2.setFactType( "Cheese" );
+		ins2.setFactField( "type" );
+		ins2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
 		cols.add(ins2);
 
 
@@ -565,21 +565,21 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 	public void testNoConstraints() {
 		GuidedDecisionTable dt = new GuidedDecisionTable();
 		ConditionCol c = new ConditionCol();
-		c.boundName = "x";
-		c.factType = "Context";
-		c.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-		dt.conditionCols.add(c);
+		c.setBoundName( "x" );
+		c.setFactType( "Context" );
+		c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+		dt.getConditionCols().add(c);
 		ActionSetFieldCol asf = new ActionSetFieldCol();
-		asf.boundName = "x";
-		asf.factField = "age";
-		asf.type = "String";
+		asf.setBoundName( "x" );
+		asf.setFactField( "age" );
+		asf.setType( "String" );
 
-		dt.actionCols.add(asf);
+		dt.getActionCols().add(asf);
 
 		String[][] data = new String[][] {
 			new String[] {"1", "desc", "y", "old"}
 		};
-		dt.data = data;
+		dt.setData( data );
 
 		String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
 
@@ -589,9 +589,9 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		assertTrue(drl.indexOf("x.setAge") > drl.indexOf("Context( )"));
 		assertFalse(drl.indexOf("update( x );") > -1);
 
-		dt.data = new String[][] {
+		dt.setData( new String[][] {
 				new String[] {"1", "desc", "", "old"}
-			};
+			} );
 		drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
 		assertEquals(-1, drl.indexOf("Context( )"));
 
@@ -601,22 +601,22 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 	public void testUpdateModify() {
 		GuidedDecisionTable dt = new GuidedDecisionTable();
 		ConditionCol c = new ConditionCol();
-		c.boundName = "x";
-		c.factType = "Context";
-		c.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-		dt.conditionCols.add(c);
+		c.setBoundName( "x" );
+		c.setFactType( "Context" );
+		c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+		dt.getConditionCols().add(c);
 		ActionSetFieldCol asf = new ActionSetFieldCol();
-		asf.boundName = "x";
-		asf.factField = "age";
-		asf.type = "String";
-		asf.update = true;
+		asf.setBoundName( "x" );
+		asf.setFactField( "age" );
+		asf.setType( "String" );
+		asf.setUpdate( true );
 
-		dt.actionCols.add(asf);
+		dt.getActionCols().add(asf);
 
 		String[][] data = new String[][] {
 			new String[] {"1", "desc", "y", "old"}
 		};
-		dt.data = data;
+		dt.setData( data );
 
 		String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
 
@@ -626,9 +626,9 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		assertTrue(drl.indexOf("x.setAge") > drl.indexOf("Context( )"));
 
 
-		dt.data = new String[][] {
+		dt.setData( new String[][] {
 				new String[] {"1", "desc", "", "old"}
-			};
+			} );
 		drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
 		assertEquals(-1, drl.indexOf("Context( )"));
 
@@ -643,11 +643,11 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		List<ConditionCol> cols = new ArrayList<ConditionCol>();
 
 		ConditionCol col2 = new ConditionCol();
-		col2.boundName = "p1";
-		col2.factType = "Person";
-		col2.factField = "age";
-		col2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
-		col2.operator = "";
+		col2.setBoundName( "p1" );
+		col2.setFactType( "Person" );
+		col2.setFactField( "age" );
+		col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+		col2.setOperator( "" );
 		cols.add(col2);
 
 

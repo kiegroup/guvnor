@@ -43,22 +43,22 @@ public class GuidedDTXMLPersistenceTest extends TestCase {
 
 		GuidedDecisionTable dt = new GuidedDecisionTable();
 
-		dt.actionCols.add(new ActionInsertFactCol());
+		dt.getActionCols().add(new ActionInsertFactCol());
 		ActionSetFieldCol set = new ActionSetFieldCol();
-		set.factField = "foo";
-		dt.actionCols.add(set);
+		set.setFactField( "foo" );
+		dt.getActionCols().add(set);
 
 		dt.getMetadataCols().add(new MetadataCol());
 
-		dt.attributeCols.add(new AttributeCol());
+		dt.getAttributeCols().add(new AttributeCol());
 
-		dt.conditionCols.add(new ConditionCol());
+		dt.getConditionCols().add(new ConditionCol());
 
-		dt.data = new String[][] {
+		dt.setData( new String[][] {
 				new String[] {"hola"}
-		};
-		dt.tableName = "blah";
-		dt.descriptionWidth = 42;
+		} );
+		dt.setTableName( "blah" );
+		dt.setDescriptionWidth( 42 );
 
 
 		String xml = GuidedDTXMLPersistence.getInstance().marshal(dt);
@@ -70,12 +70,12 @@ public class GuidedDTXMLPersistenceTest extends TestCase {
 
 		GuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
 		assertNotNull(dt_);
-		assertEquals(42, dt_.descriptionWidth);
-		assertEquals("blah", dt_.tableName);
+		assertEquals(42, dt_.getDescriptionWidth());
+		assertEquals("blah", dt_.getTableName());
 		assertEquals(1, dt_.getMetadataCols().size());
-		assertEquals(1, dt_.attributeCols.size());
-		assertEquals(2, dt_.actionCols.size());
-		assertEquals(1, dt_.conditionCols.size());
+		assertEquals(1, dt_.getAttributeCols().size());
+		assertEquals(2, dt_.getActionCols().size());
+		assertEquals(1, dt_.getConditionCols().size());
 
 	}
 
@@ -83,17 +83,17 @@ public class GuidedDTXMLPersistenceTest extends TestCase {
 		String xml = BRLPersistenceTest.loadResource("ExistingDecisionTable.xml");
 		GuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
 		assertNotNull(dt_);
-		assertEquals(42, dt_.descriptionWidth);
-		assertEquals("blah", dt_.tableName);
+		assertEquals(42, dt_.getDescriptionWidth());
+		assertEquals("blah", dt_.getTableName());
 		assertEquals(1, dt_.getMetadataCols().size());
-		assertEquals(1, dt_.attributeCols.size());
-		assertEquals(2, dt_.actionCols.size());
-		assertEquals(1, dt_.conditionCols.size());
+		assertEquals(1, dt_.getAttributeCols().size());
+		assertEquals(2, dt_.getActionCols().size());
+		assertEquals(1, dt_.getConditionCols().size());
 
-		assertTrue(dt_.actionCols.get(1) instanceof ActionSetFieldCol );
-		ActionSetFieldCol asf = (ActionSetFieldCol) dt_.actionCols.get(1);
-		assertEquals("foo", asf.factField);
-		assertEquals(false, asf.update);
+		assertTrue(dt_.getActionCols().get(1) instanceof ActionSetFieldCol );
+		ActionSetFieldCol asf = (ActionSetFieldCol) dt_.getActionCols().get(1);
+		assertEquals("foo", asf.getFactField());
+		assertEquals(false, asf.isUpdate());
 	}
 
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,34 +18,75 @@ package org.drools.ide.common.client.modeldriven.dt;
 
 public class ActionInsertFactCol extends ActionCol {
 
-	/**
-	 * The fact type (class) that is to be created.
-	 * eg Driver, Person, Cheese.
-	 */
-	public String factType;
+    private static final long serialVersionUID = 510l;
 
-	/**
-	 * The bound name of the variable to be effected.
-	 * If the same name appears twice, is it merged into the same action.
-	 */
-	public String boundName;
+    /**
+     * The fact type (class) that is to be created.
+     * eg Driver, Person, Cheese.
+     */
+    private String            factType;
 
-	/**
-	 * The field on the fact being effected.
-	 */
-	public String factField;
+    /**
+     * The bound name of the variable to be effected.
+     * If the same name appears twice, is it merged into the same action.
+     */
+    private String            boundName;
 
-	/**
-	 * Same as the type in ActionFieldValue - eg, either a String, or Numeric.
-	 * Refers to the data type of the literal value in the cell.
-	 * Refer to the types in SuggestionCompletionEngine.
-	 */
-	public String type;
+    /**
+     * The field on the fact being effected.
+     */
+    private String            factField;
 
-	/**
-	 * An optional comman separated list of values.
-	 */
-	public String valueList;
+    /**
+     * Same as the type in ActionFieldValue - eg, either a String, or Numeric.
+     * Refers to the data type of the literal value in the cell.
+     * Refer to the types in SuggestionCompletionEngine.
+     */
+    private String            type;
 
+    /**
+     * An optional comman separated list of values.
+     */
+    private String            valueList;
+
+    public void setFactType(String factType) {
+        this.factType = factType;
+    }
+
+    public String getFactType() {
+        return factType;
+    }
+
+    public void setBoundName(String boundName) {
+        this.boundName = boundName;
+    }
+
+    public String getBoundName() {
+        return boundName;
+    }
+
+    public void setFactField(String factField) {
+        this.factField = factField;
+    }
+
+    public String getFactField() {
+        return factField;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setValueList(String valueList) {
+        this.valueList = valueList;
+    }
+
+    public String getValueList() {
+        return valueList;
+    }
 
 }

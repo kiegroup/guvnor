@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,32 +18,73 @@ package org.drools.ide.common.client.modeldriven.dt;
 
 public class ActionSetFieldCol extends ActionCol {
 
-	/**
-	 * The bound name of the variable to be effected.
-	 * If the same name appears twice, is it merged into the same action.
-	 */
-	public String boundName;
+    private static final long serialVersionUID = 510l;
 
-	/**
-	 * The field on the fact being effected.
-	 */
-	public String factField;
+    /**
+     * The bound name of the variable to be effected.
+     * If the same name appears twice, is it merged into the same action.
+     */
+    private String            boundName;
 
-	/**
-	 * Same as the type in ActionFieldValue - eg, either a String, or Numeric.
-	 * Refers to the data type of the literal value in the cell.
-	 * These values come from SuggestionCompletionEngine.
-	 */
-	public String type;
+    /**
+     * The field on the fact being effected.
+     */
+    private String            factField;
 
-	/**
-	 * An optional comma separated list of values.
-	 */
-	public String valueList;
+    /**
+     * Same as the type in ActionFieldValue - eg, either a String, or Numeric.
+     * Refers to the data type of the literal value in the cell.
+     * These values come from SuggestionCompletionEngine.
+     */
+    private String            type;
 
+    /**
+     * An optional comma separated list of values.
+     */
+    private String            valueList;
 
-	/**
-	 * This will be true if it is meant to be a modify to the engine, when in inferencing mode.
-	 */
-	public boolean update = false;
+    /**
+     * This will be true if it is meant to be a modify to the engine, when in inferencing mode.
+     */
+    private boolean           update           = false;
+
+    public void setValueList(String valueList) {
+        this.valueList = valueList;
+    }
+
+    public String getValueList() {
+        return valueList;
+    }
+
+    public void setBoundName(String boundName) {
+        this.boundName = boundName;
+    }
+
+    public String getBoundName() {
+        return boundName;
+    }
+
+    public void setFactField(String factField) {
+        this.factField = factField;
+    }
+
+    public String getFactField() {
+        return factField;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setUpdate(boolean update) {
+        this.update = update;
+    }
+
+    public boolean isUpdate() {
+        return update;
+    }
 }

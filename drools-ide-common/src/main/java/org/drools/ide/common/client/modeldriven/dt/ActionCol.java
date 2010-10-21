@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,20 @@
 
 package org.drools.ide.common.client.modeldriven.dt;
 
-
 public class ActionCol extends DTColumnConfig {
 
-	/**
-	 * The header to be displayed.
-	 */
-	public String header;
+    private static final long serialVersionUID = 501l;
+    /**
+     * The header to be displayed.
+     */
+    private String            header;
 
+    public void setHeader(String header) {
+        this.header = header;
+    }
+
+    public String getHeader() {
+        return header;
+    }
 
 }
