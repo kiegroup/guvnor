@@ -208,6 +208,8 @@ public class PackagesTree extends AbstractTree {
                                           key,
                                           formats,
                                           node.getText() );
+        } else {
+            throw new IllegalArgumentException("The userObject (" + userObject + ") is not supported.");
         }
 
     }
