@@ -98,17 +98,19 @@ public class BrowseTree extends AbstractTree
 
         TabOpener opener = TabOpener.getInstance();
 
-        if ( widgetID.equals( ExplorerNodeConfig.FIND_ID ) ) {
-            opener.openFind();
-        } else if ( widgetID.equals( ExplorerNodeConfig.INCOMING_ID ) || widgetID.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) || widgetID.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
-            opener.openInbox( item.getText(),
-                              widgetID );
-        } else if ( widgetID.startsWith( ExplorerNodeConfig.STATES_ID ) ) {
-            opener.openState( item.getText(),
-                              widgetID );
-        } else if ( widgetID.startsWith( ExplorerNodeConfig.CATEGORY_ID ) ) {
-            opener.openCategory( item.getText(),
-                                 widgetID );
+        if (widgetID != null) {
+            if ( widgetID.equals( ExplorerNodeConfig.FIND_ID ) ) {
+                opener.openFind();
+            } else if ( widgetID.equals( ExplorerNodeConfig.INCOMING_ID ) || widgetID.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) || widgetID.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
+                opener.openInbox( item.getText(),
+                                  widgetID );
+            } else if ( widgetID.startsWith( ExplorerNodeConfig.STATES_ID ) ) {
+                opener.openState( item.getText(),
+                                  widgetID );
+            } else if ( widgetID.startsWith( ExplorerNodeConfig.CATEGORY_ID ) ) {
+                opener.openCategory( item.getText(),
+                                     widgetID );
+            }
         }
     }
 
