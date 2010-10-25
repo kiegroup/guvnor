@@ -214,7 +214,7 @@ public class RepoConfigManager extends Composite {
         layoutA.setHTML(2, 0, constants.UseJndi());
         
         final CheckBox useJndi = new CheckBox();
-        useJndi.setEnabled(rdbmsConf.isJndi());
+        useJndi.setValue(rdbmsConf.isJndi());
         useJndi.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent w) {
             	rdbmsConf.setJndi(useJndi.isEnabled());
