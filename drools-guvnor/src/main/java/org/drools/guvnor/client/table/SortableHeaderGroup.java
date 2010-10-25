@@ -60,7 +60,7 @@ public class SortableHeaderGroup<R extends Comparable> {
             public int compare(R left, R right) {
                 for (SortableHeader<R, ?> sortableHeader : sortOrderList) {
                     Comparable leftValue = sortableHeader.getColumn().getValue(left);
-                    Comparable rightValue = sortableHeader.getColumn().getValue(left);
+                    Comparable rightValue = sortableHeader.getColumn().getValue(right);
                     int comparison = (leftValue == rightValue) ? 0
                             : (leftValue == null) ? -1
                             : (rightValue == null) ? 1
@@ -71,6 +71,7 @@ public class SortableHeaderGroup<R extends Comparable> {
                                 break;
                             case DESCENDING:
                                 comparison = -comparison;
+                                break;
                             default:
                                 throw new IllegalStateException("Sorting can only be enabled for ASCENDING or" +
                                         " DESCENDING, not sortDirection (" + sortableHeader.getSortDirection() + ") .");
