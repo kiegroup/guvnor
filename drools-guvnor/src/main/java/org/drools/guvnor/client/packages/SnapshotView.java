@@ -260,10 +260,13 @@ public class SnapshotView extends Composite {
                                             final List<RadioButton> options = new ArrayList<RadioButton>();
                                             VerticalPanel vert = new VerticalPanel();
                                             for ( int i = 0; i < snaps.length; i++ ) {
-                                                RadioButton existing = new RadioButton( "snapshotNameGroup",
+                                            	// cant copy onto to itself...
+                                            	if(!snaps[i].name.equals(snapshotName)) {
+                                            		RadioButton existing = new RadioButton( "snapshotNameGroup",
                                                                                         snaps[i].name ); //NON-NLS
-                                                options.add( existing );
-                                                vert.add( existing );
+                                            		options.add( existing );
+                                            		vert.add( existing );
+                                            	}
                                             }
 
                                             HorizontalPanel newNameHorizontalPanel = new HorizontalPanel();
