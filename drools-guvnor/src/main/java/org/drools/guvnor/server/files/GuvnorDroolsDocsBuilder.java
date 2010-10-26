@@ -106,6 +106,7 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
         list.add( "Created date :" + formatter.format( versionableItem.getCreatedDate().getTime() ) );
         list.add( "Last contributor :" + versionableItem.getLastContributor() );
         list.add( "Last modified :" + formatter.format( versionableItem.getLastModified().getTime() ) );
+        list.add( "Description :" + versionableItem.getDescription() );
 
         return list;
     }
