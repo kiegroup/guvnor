@@ -11,24 +11,23 @@ import com.google.gwt.user.cellview.client.CellTable;
 /**
  * @author Geoffrey De Smet
  */
-public class SortableHeaderGroup<R extends Comparable> {
+public class SortableHeaderGroup<T extends Comparable> {
 
-    private final CellTable<R> cellTable;
+    private final CellTable<T> cellTable;
     // TODO change List into Deque after upgrade to java 6
-    private List<SortableHeader<R, ?>> sortOrderList = new LinkedList<SortableHeader<R, ?>>();
+    private List<SortableHeader<T, ?>> sortOrderList = new LinkedList<SortableHeader<T, ?>>();
 
-    public SortableHeaderGroup(CellTable<R> cellTable) {
-
+    public SortableHeaderGroup(CellTable<T> cellTable) {
         this.cellTable = cellTable;
     }
 
-    public void headerClicked(SortableHeader<R, ?> header) {
+    public void headerClicked(SortableHeader<T, ?> header) {
         updateSortOrder(header);
         cellTable.redrawHeaders();
         updateData();
     }
 
-    private void updateSortOrder(SortableHeader<R, ?> header) {
+    private void updateSortOrder(SortableHeader<T, ?> header) {
         int index = sortOrderList.indexOf(header);
         if (index == 0) {
             if (header.getSortDirection() != SortDirection.ASCENDING) {
@@ -46,7 +45,7 @@ public class SortableHeaderGroup<R extends Comparable> {
             sortOrderList.add(0, header);
             // Update sortIndexes
             int sortIndex = 0;
-            for (SortableHeader<R, ?> sortableHeader : sortOrderList) {
+            for (SortableHeader<T, ?> sortableHeader : sortOrderList) {
                 sortableHeader.setSortIndex(sortIndex);
                 sortIndex++;
             }
@@ -55,16 +54,16 @@ public class SortableHeaderGroup<R extends Comparable> {
 
     private void updateData() {
         // TODO If paging is used, this should be a back-end call with a sorting meta data parameter
-        List<R> displayedItems = new ArrayList(cellTable.getDisplayedItems());
-        Collections.sort(displayedItems, new Comparator<R>() {
-            public int compare(R left, R right) {
-                for (SortableHeader<R, ?> sortableHeader : sortOrderList) {
-                    Comparable leftValue = sortableHeader.getColumn().getValue(left);
-                    Comparable rightValue = sortableHeader.getColumn().getValue(right);
-                    int comparison = (leftValue == rightValue) ? 0
-                            : (leftValue == null) ? -1
-                            : (rightValue == null) ? 1
-                            : leftValue.compareTo(rightValue);
+        List<T> displayedItems = new ArrayList<T>(cellTable.getDisplayedItems());
+        Collections.sort(displayedItems, new Comparator<T>() {
+            public int compare(T leftRow, T rightRow) {
+                for (SortableHeader<T, ?> sortableHeader : sortOrderList) {
+                    Comparable leftColumnValue = sortableHeader.getColumn().getValue(leftRow);
+                    Comparable rightColumnValue = sortableHeader.getColumn().getValue(rightRow);
+                    int comparison = (leftColumnValue == rightColumnValue) ? 0
+                            : (leftColumnValue == null) ? -1
+                            : (rightColumnValue == null) ? 1
+                            : leftColumnValue.compareTo(rightColumnValue);
                     if (comparison != 0) {
                         switch (sortableHeader.getSortDirection()) {
                             case ASCENDING:
@@ -79,7 +78,7 @@ public class SortableHeaderGroup<R extends Comparable> {
                         return comparison;
                     }
                 }
-                return left.compareTo(right);
+                return leftRow.compareTo(rightRow);
             }
         });
         cellTable.setRowData(0, displayedItems);
