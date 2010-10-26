@@ -47,6 +47,7 @@ import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.security.CapabilitiesManager;
 import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
@@ -284,7 +285,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private boolean showAttributes() {
-        return ExplorerLayoutManager.shouldShow( Capabilities.SHOW_PACKAGE_VIEW );
+        return CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW );
     }
 
     public void refreshWidget() {
@@ -543,7 +544,7 @@ public class RuleModeller extends DirtyableComposite
                       } );
         }
 
-        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
             choices.addItem( ".................." );
             choices.addItem( constants.FreeFormDrl(),
                              "FF" );
@@ -822,7 +823,7 @@ public class RuleModeller extends DirtyableComposite
             }
         }
 
-        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
             choices.addItem( constants.AddFreeFormDrl(),
                              "FF" ); //NON-NLS
             cmds.put( "FF",

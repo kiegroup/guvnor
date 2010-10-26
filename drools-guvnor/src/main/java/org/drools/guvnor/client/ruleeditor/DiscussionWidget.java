@@ -31,6 +31,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ServerPushNotification;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.security.CapabilitiesManager;
 import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.util.Util;
 
@@ -161,7 +162,7 @@ public class DiscussionWidget extends Composite {
         Button createNewComment = new Button( constants.AddADiscussionComment() );
         hp.add( createNewComment );
 
-        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_ADMIN ) ) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_ADMIN ) ) {
             Button adminClearAll = new Button( constants.EraseAllComments() );
             hp.add( adminClearAll );
             adminClearAll.addClickHandler( new ClickHandler() {

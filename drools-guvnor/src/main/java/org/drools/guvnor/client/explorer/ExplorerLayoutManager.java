@@ -17,7 +17,7 @@
 package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.LoggedInUserInfo;
-import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.security.CapabilitiesManager;
 import org.drools.guvnor.client.util.TabOpener;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -30,20 +30,15 @@ import com.google.gwt.user.client.ui.SplitLayoutPanel;
  * This is the main part of the app that lays everything out. 
  */
 public class ExplorerLayoutManager {
-    /**
-     * These are used to decide what to display or not.
-     */
-    protected static Capabilities         capabilities;
-
+    
     private TitlePanel                    titlePanel;
     private NavigationPanel               navigationStackLayoutPanel;
     private DockLayoutPanel               mainPanel;
 
     private final ExplorerViewCenterPanel centertabbedPanel = new ExplorerViewCenterPanel();
 
-    public ExplorerLayoutManager(LoggedInUserInfo uif,
-                                 Capabilities caps) {
-        Preferences.INSTANCE.loadPrefs( caps );
+    public ExplorerLayoutManager(LoggedInUserInfo uif) {
+        Preferences.INSTANCE.loadPrefs( CapabilitiesManager.getInstance().getCapabilities());
 
         String tok = History.getToken();
 
@@ -51,7 +46,6 @@ public class ExplorerLayoutManager {
 
         //we use this to decide what to display.
         BookmarkInfo bookmarkInfo = handleHistoryToken( tok );
-        ExplorerLayoutManager.capabilities = caps;
 
         if ( bookmarkInfo.isShowChrome() ) {
             titlePanel = new TitlePanel( uif );
@@ -89,15 +83,6 @@ public class ExplorerLayoutManager {
 
     public Panel getBaseLayout() {
         return mainPanel;
-    }
-
-    public static boolean shouldShow(Integer... capability) {
-        for ( Integer cap : capability ) {
-            if ( capabilities.list.contains( cap ) ) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

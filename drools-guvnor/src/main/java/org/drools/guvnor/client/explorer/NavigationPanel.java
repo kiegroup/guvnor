@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.security.CapabilitiesManager;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
@@ -37,20 +38,20 @@ public class NavigationPanel extends StackLayoutPanel {
 
         addCategoriesPanel();
 
-        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
             addPackagesPanel();
         }
 
-        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_QA ) ) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_QA ) ) {
             addQAPanel();
         }
 
-        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_DEPLOYMENT,
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_DEPLOYMENT,
                                                Capabilities.SHOW_DEPLOYMENT_NEW ) ) {
             addDeploymentPanel();
         }
 
-        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_ADMIN ) ) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_ADMIN ) ) {
             addAdminPanel();
         }
 
@@ -73,7 +74,7 @@ public class NavigationPanel extends StackLayoutPanel {
         DeploymentTree deploymentTreeItem = new DeploymentTree();
         ScrollPanel deploymentTreeItemPanel = new ScrollPanel( deploymentTreeItem );
 
-        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
             deploymentDockLayoutPanel.addNorth( DeploymentNewMenu.getMenu( deploymentTreeItem ),
                                                 2 );
         }
@@ -102,7 +103,7 @@ public class NavigationPanel extends StackLayoutPanel {
         final PackagesTree packagesTreeItem = new PackagesTree();
         ScrollPanel packagesTreeItemPanel = new ScrollPanel( packagesTreeItem );
 
-        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
             packageDockLayoutPanel.addNorth( PackagesNewMenu.getMenu( packagesTreeItem ),
                                              2 );
         }
@@ -125,7 +126,7 @@ public class NavigationPanel extends StackLayoutPanel {
         BrowseTree categoriesTreeItem = new BrowseTree();
         ScrollPanel categoriesTreeItemPanel = new ScrollPanel( categoriesTreeItem );
 
-        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
             browseDockLayoutPanel.addNorth( RulesNewMenu.getMenu( categoriesTreeItem ),
                                             2 );
         }

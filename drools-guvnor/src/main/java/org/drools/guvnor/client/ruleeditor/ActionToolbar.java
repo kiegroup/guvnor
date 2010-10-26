@@ -42,6 +42,7 @@ import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.security.CapabilitiesManager;
 import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.packages.WorkingSetManager;
@@ -254,7 +255,7 @@ public class ActionToolbar extends Composite {
     }
 
     private boolean shouldShowViewSource() {
-        return ExplorerLayoutManager.shouldShow( Capabilities.SHOW_PACKAGE_VIEW );
+        return CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW );
     }
 
     private void doViewsource() {

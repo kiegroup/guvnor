@@ -18,10 +18,12 @@ package org.drools.guvnor.client;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
+import org.drools.guvnor.client.ruleeditor.GuidedEditorManager;
 import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.security.CapabilitiesManager;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -45,15 +47,18 @@ public class JBRMSEntryPoint implements EntryPoint {
 
     private LoggedInUserInfo loggedInUserInfo;
 
-    public void onModuleLoad() {
+    public void onModuleLoad() {    	
         //Field.setMsgTarget("side");
         loggedInUserInfo = new LoggedInUserInfo();
         loggedInUserInfo.setVisible(false);
         checkLoggedIn();
     }
 
-	private Panel createMain(Capabilities caps) {
-		return (new ExplorerLayoutManager(loggedInUserInfo, caps)).getBaseLayout();
+	private Panel createMain() {
+		if (Window.Location.getPath().contains("GuidedEditor.html")){
+			return (new GuidedEditorManager().getBaseLayout());
+		}
+		return (new ExplorerLayoutManager(loggedInUserInfo)).getBaseLayout();
 	}
 
     /**
@@ -84,12 +89,15 @@ public class JBRMSEntryPoint implements EntryPoint {
 
 	private void showMain() {
 		Window.setStatus(((Constants) GWT.create(Constants.class)).LoadingUserPermissions());
-		RepositoryServiceFactory.getSecurityService().getUserCapabilities(new GenericCallback<Capabilities>() {
-			public void onSuccess(Capabilities cp) {
+		
+		CapabilitiesManager.getInstance().refreshAllowedCapabilities(new Command() {
+			
+			public void execute() {
 				Window.setStatus(" ");
-				RootLayoutPanel.get().add(createMain(cp));
+				RootLayoutPanel.get().add(createMain());
 			}
 		});
+			
 		
 	    // Setup a history handler to reselect the associate menu item
 	    final ValueChangeHandler<String> historyHandler = new ValueChangeHandler<String>() {

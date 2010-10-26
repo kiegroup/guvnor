@@ -25,6 +25,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.security.CapabilitiesManager;
 import org.drools.guvnor.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
@@ -238,7 +239,7 @@ public class ExplorerNodeConfig {
         inbox.setState( true );
         root.addItem( inbox );
 
-        if ( ExplorerLayoutManager.shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
             final TreeItem byStatus = new TreeItem( Util.getHeader( images.statusSmall(),
                                                                     constants.ByStatus() ) );
             itemWidgets.put( byStatus,
@@ -298,7 +299,7 @@ public class ExplorerNodeConfig {
                                                                    new GenericCallback<String[]>() {
                                                                        public void onSuccess(String[] value) {
                                                                            if ( value.length == 0 ) {
-                                                                               if ( path.equals( "/" ) && ExplorerLayoutManager.shouldShow( Capabilities.SHOW_ADMIN ) ) {
+                                                                               if ( path.equals( "/" ) && CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_ADMIN ) ) {
                                                                                    RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
                                                                                        public void onSuccess(PackageConfigData[] result) {
                                                                                            if ( result.length == 1 ) {
