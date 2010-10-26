@@ -2986,16 +2986,16 @@ public class ServiceImplementationTest extends TestCase {
         ScenarioRunResult res = impl.runScenario( pkg.getName(),
                                                   sc ).result;
         assertEquals( null,
-                      res.errors );
-        assertNotNull( res.scenario );
+                      res.getErrors() );
+        assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
         assertEquals( null,
-                      res.errors );
-        assertNotNull( res.scenario );
+                      res.getErrors() );
+        assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
@@ -3003,8 +3003,8 @@ public class ServiceImplementationTest extends TestCase {
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
         assertEquals( null,
-                      res.errors );
-        assertNotNull( res.scenario );
+                      res.getErrors() );
+        assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
@@ -3019,10 +3019,10 @@ public class ServiceImplementationTest extends TestCase {
         repo.save();
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
-        assertNotNull( res.errors );
-        assertNull( res.scenario );
+        assertNotNull( res.getErrors() );
+        assertNull( res.getScenario() );
 
-        assertTrue( res.errors.length > 0 );
+        assertTrue( res.getErrors().length > 0 );
 
         impl.createCategory( "/",
                              "sc",
@@ -3101,8 +3101,8 @@ public class ServiceImplementationTest extends TestCase {
 
         ScenarioRunResult res = res_.result;
         assertEquals( null,
-                      res.errors );
-        assertNotNull( res.scenario );
+                      res.getErrors() );
+        assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
@@ -3268,16 +3268,16 @@ public class ServiceImplementationTest extends TestCase {
         ScenarioRunResult res = impl.runScenario( pkg.getName(),
                                                   sc ).result;
         assertEquals( null,
-                      res.errors );
-        assertNotNull( res.scenario );
+                      res.getErrors() );
+        assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
         assertEquals( null,
-                      res.errors );
-        assertNotNull( res.scenario );
+                      res.getErrors() );
+        assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
@@ -3286,8 +3286,8 @@ public class ServiceImplementationTest extends TestCase {
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
         assertEquals( null,
-                      res.errors );
-        assertNotNull( res.scenario );
+                      res.getErrors() );
+        assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
@@ -3336,15 +3336,15 @@ public class ServiceImplementationTest extends TestCase {
             fail( "Probably failed when loading a source file instead of class file. " + e );
         }
         assertEquals( null,
-                      res.errors );
-        assertNotNull( res.scenario );
+                      res.getErrors() );
+        assertNotNull( res.getScenario() );
         assertTrue( vr.wasSuccessful() );
 
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
         assertEquals( null,
-                      res.errors );
-        assertNotNull( res.scenario );
+                      res.getErrors() );
+        assertNotNull( res.getScenario() );
         assertTrue( vr.wasSuccessful() );
 
         impl.ruleBaseCache.clear();
@@ -3352,8 +3352,8 @@ public class ServiceImplementationTest extends TestCase {
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
         assertEquals( null,
-                      res.errors );
-        assertNotNull( res.scenario );
+                      res.getErrors() );
+        assertNotNull( res.getScenario() );
         assertTrue( vr.wasSuccessful() );
 
     }

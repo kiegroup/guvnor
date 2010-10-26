@@ -27,13 +27,9 @@ import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
@@ -48,6 +44,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * To change this template use File | Settings | File Templates.
  */
 public class ExecutionWidget extends Composite {
+
     private Constants            constants = ((Constants) GWT.create( Constants.class ));
 
     private final ExecutionTrace executionTrace;
@@ -85,7 +82,7 @@ public class ExecutionWidget extends Composite {
         if ( showResults && isResultNotNullAndHaveRulesFired() ) {
             VerticalPanel replacingLayout = new VerticalPanel();
 
-            replacingLayout.add( getShowPanel() );
+            replacingLayout.add( new FiredRulesPanel( executionTrace ) );
             replacingLayout.add( layout );
             initWidget( replacingLayout );
         } else {
@@ -95,31 +92,6 @@ public class ExecutionWidget extends Composite {
 
     private boolean isResultNotNullAndHaveRulesFired() {
         return executionTrace.getExecutionTimeResult() != null && executionTrace.getNumberOfRulesFired() != null;
-    }
-
-    private HorizontalPanel getShowPanel() {
-        HTML rep = new HTML( "<i><small>" + Format.format( constants.property0RulesFiredIn1Ms(),
-                                                           executionTrace.getNumberOfRulesFired().toString(),
-                                                           executionTrace.getExecutionTimeResult().toString() ) + "</small></i>" );
-
-        final HorizontalPanel horizontalPanel = new HorizontalPanel();
-        horizontalPanel.add( rep );
-
-        final Button show = new Button( constants.ShowRulesFired() );
-        show.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                ListBox rules = new ListBox( true );
-                for ( int i = 0; i < executionTrace.getRulesFired().length; i++ ) {
-                    rules.addItem( executionTrace.getRulesFired()[i] );
-                }
-                horizontalPanel.add( new SmallLabel( "&nbsp:" + constants.RulesFired() ) );
-                horizontalPanel.add( rules );
-                show.setVisible( false );
-            }
-        } );
-        horizontalPanel.add( show );
-        return horizontalPanel;
     }
 
     private boolean isScenarioSimulatedDateSet() {

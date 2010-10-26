@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,17 +25,29 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * It will either be a list of rule compiler errors (should it have to compile), or the scenario run results.
  * @author Michael Neale
  */
-public class ScenarioRunResult implements IsSerializable {
+public class ScenarioRunResult
+    implements
+    IsSerializable {
 
-	public ScenarioRunResult() {}
+    private BuilderResultLine[] errors;
+    private Scenario            scenario;
 
+    public ScenarioRunResult() {
+    }
 
-	public BuilderResultLine[] errors;
-	public Scenario scenario;
-	public ScenarioRunResult(BuilderResultLine[] errors, Scenario scenario) {
+    public ScenarioRunResult(BuilderResultLine[] errors,
+                             Scenario scenario) {
 
-		this.errors = errors;
-		this.scenario = scenario;
-	}
+        this.errors = errors;
+        this.scenario = scenario;
+    }
+
+    public Scenario getScenario() {
+        return scenario;
+    }
+
+    public BuilderResultLine[] getErrors() {
+        return errors;
+    }
 
 }
