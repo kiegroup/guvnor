@@ -25,7 +25,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class TableDataRow
     implements
-    IsSerializable {
+    IsSerializable, Comparable<TableDataRow> {
 
     /**
      * The unique ID for the resource.
@@ -69,5 +69,9 @@ public class TableDataRow
     public static String getFormat(String key) {
         return key.split( "\\," )[1];
     }
-    
+
+    public int compareTo(TableDataRow other) {
+        return id.compareTo(other.id);
+    }
+
 }
