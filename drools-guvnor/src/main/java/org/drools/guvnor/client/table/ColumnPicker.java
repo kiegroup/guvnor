@@ -66,8 +66,7 @@ public class ColumnPicker<T> {
         });
         VerticalPanel popupContent = new VerticalPanel();
         for (final ColumnMeta<T> columnMeta : columnMetaList) {
-            final CheckBox checkBox = new CheckBox();
-            checkBox.setName(columnMeta.getHeader().getValue());
+            final CheckBox checkBox = new CheckBox(columnMeta.getHeader().getValue());
             checkBox.setValue(columnMeta.isVisible());
             checkBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
                 public void onValueChange(ValueChangeEvent<Boolean> booleanValueChangeEvent) {
