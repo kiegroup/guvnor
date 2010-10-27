@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <!-- README: if you have problems running the build.
-  you may need to go up one directory, and run "mvn install" to
-  make sure all the deps are ready.
-
-  If by chance the slackers who maintain the other projects have left the build slight broken,
-  you can skip the tests by doing:
-
-  "mvn -DskipTests install" and it should work.
-
-  -->
-
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -31,7 +20,7 @@
       <groupId>commons-httpclient</groupId>
       <artifactId>commons-httpclient</artifactId>
       <scope>test</scope>
-    </dependency>   
+    </dependency>
 
     <dependency>
       <groupId>org.drools</groupId>
@@ -72,19 +61,19 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http-jetty</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-testutils</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-        
+
   </dependencies>
 
 </project>
