@@ -38,6 +38,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.security.auth.login.LoginException;
+
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
@@ -47,7 +49,10 @@ public class MockIdentity extends Identity {
 	private boolean hasRole;
 	private Set<String> roles = new HashSet<String>();
 	private List<PermissionResolver> resolvers = new ArrayList<PermissionResolver>();
-    boolean loggoutCalled = false;
+	private boolean isLoggedIn = true;
+    boolean loggoutCalled = true;
+    boolean allowLogin = true;
+    boolean checkPermission = false;
 
     @Override
 	public boolean addRole(String r) {
@@ -66,7 +71,11 @@ public class MockIdentity extends Identity {
 	}
 
 	public boolean isLoggedIn() {
-		return true;
+		return isLoggedIn;
+	}
+	
+	public void setIsLoggedIn(boolean isLoggedIn) {
+		this.isLoggedIn = isLoggedIn;
 	}
 
 	public boolean isLoggedIn(boolean attemptLogin) {
@@ -110,4 +119,28 @@ public class MockIdentity extends Identity {
 			   }
 		};
 	}   
+	
+	public void authenticate() throws LoginException {
+		if(allowLogin) {
+			return;
+		}
+		
+		throw new LoginException();
+	}
+	
+	public void setAllowLogin (boolean allowLogin) {
+		this.allowLogin = allowLogin;
+	}
+	
+	public void setCheckPermission (boolean checkPermission) {
+		this.checkPermission = checkPermission;
+	}
+	
+	public void checkPermission(Object target, String action ) {
+		if(checkPermission) {
+		System.out.println("MockIdentity.checkPermission");
+		} else {
+			super.checkPermission(target, action);
+		}
+	}
 }

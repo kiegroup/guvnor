@@ -20,10 +20,13 @@ import junit.framework.TestCase;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.PackageItem;
 import org.drools.repository.AssetItem;
+import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.apache.util.Base64;
-import org.jboss.seam.security.AuthorizationException;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.contexts.Lifecycle;
+
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
@@ -35,13 +38,28 @@ import java.util.HashMap;
  */
 public class FeedServletTest extends TestCase {
 
-    public void testPackageFeed() throws Exception {
+    public void testPackageFeed() throws Exception {        
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
         PackageItem pkg = repo.createPackage("testPackageFeed", "");
         AssetItem asset = pkg.addAsset("asset1", "desc");
         asset.updateFormat("drl");
         asset.checkin("");
+        
+       //Mock up SEAM contexts
+        Map application = new HashMap<String, Object>();
+        Lifecycle.beginApplication( application );
+        Lifecycle.beginCall();
+        MockIdentity midentity = new MockIdentity();
+        midentity.setIsLoggedIn(false);
+        midentity.setAllowLogin(false);
+        midentity.setCheckPermission(true);
+        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+                                          midentity );        
+        FileManagerUtils manager = new FileManagerUtils();
+        manager.setRepository(repo);
+        Contexts.getSessionContext().set( "fileManager", manager );
 
+ 
         Map<String, String> headers = new HashMap<String, String>() {
             {
                 put("Irrelevant", "garbage");
@@ -55,10 +73,12 @@ public class FeedServletTest extends TestCase {
         fs.doGet(req, res);
         assertEquals(HttpServletResponse.SC_UNAUTHORIZED, res.errorCode);
 
-        //try again with bad password
+        //try again with valid user and password
+        midentity.setAllowLogin(true);
+
         headers = new HashMap<String, String>() {
             {
-                put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
+                put("Authorization", "BASIC " + new String(Base64.encode("testuser:password".getBytes())));
             }
         };
         req = new MockHTTPRequest("/org.foo/feed/package", headers, new HashMap<String, String>() {
@@ -111,7 +131,8 @@ public class FeedServletTest extends TestCase {
         r = new String(out.toByteArray());
         assertNotNull(r);
         assertTrue(r.indexOf("asset1") > -1);
-
+        
+        Lifecycle.endApplication();
     }
 
     public void testCategoryFeed() throws Exception {
@@ -123,11 +144,26 @@ public class FeedServletTest extends TestCase {
         asset.updateCategoryList(new String[] {"testCategoryFeedCat"});
         asset.checkin("");
 
+        //Mock up SEAM contexts
+        Map application = new HashMap<String, Object>();
+        Lifecycle.beginApplication( application );
+        Lifecycle.beginCall();
+        MockIdentity midentity = new MockIdentity();
+        midentity.setIsLoggedIn(false);
+        midentity.setAllowLogin(true);
+        midentity.setCheckPermission(true);
+        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+                                          midentity );
+        
+        FileManagerUtils manager = new FileManagerUtils();
+        manager.setRepository(repo);
+        Contexts.getSessionContext().set( "fileManager", manager );
 
-        //try again with bad password
+
+        //try with valid password
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
-                put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
+                put("Authorization", "BASIC " + new String(Base64.encode("testuser:password".getBytes())));
             }
         };
         MockHTTPRequest req = new MockHTTPRequest("/org.foo/feed/category", headers, new HashMap<String, String>() {
@@ -136,7 +172,7 @@ public class FeedServletTest extends TestCase {
                 put("viewUrl", "http://foo.bar");
             }
         });
-        MockFeedServlet fs = new MockFeedServlet();
+        FeedServlet fs = new FeedServlet();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         MockHTTPResponse res = new MockHTTPResponse(out);
         fs.doGet(req, res);
@@ -155,7 +191,7 @@ public class FeedServletTest extends TestCase {
                 put("status", "*");
             }
         });
-        fs = new MockFeedServlet();
+        fs = new FeedServlet();
         out = new ByteArrayOutputStream();
         res = new MockHTTPResponse(out);
         fs.doGet(req, res);
@@ -166,19 +202,16 @@ public class FeedServletTest extends TestCase {
         assertTrue(r.indexOf("asset1") > -1);
         assertTrue(r.indexOf("http://foo.bar") > -1);
 
-
-        fs = new MockFeedServlet();
-        fs.throwAuthException = true;
+        
+        midentity.setAllowLogin(false);
+        fs = new FeedServlet();
         out = new ByteArrayOutputStream();
         res = new MockHTTPResponse(out);
         fs.doGet(req, res);
-
         assertEquals(HttpServletResponse.SC_UNAUTHORIZED, res.errorCode);
 
-
+        Lifecycle.endApplication();
     }
-
-
 
     public void testDiscussionFeed() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
@@ -186,6 +219,21 @@ public class FeedServletTest extends TestCase {
         AssetItem asset = pkg.addAsset("asset1", "desc");
         asset.updateFormat("drl");
         asset.checkin("");
+        
+        //Mock up SEAM contexts
+        Map application = new HashMap<String, Object>();
+        Lifecycle.beginApplication( application );
+        Lifecycle.beginCall();
+        MockIdentity midentity = new MockIdentity();
+        midentity.setIsLoggedIn(false);
+        midentity.setAllowLogin(false);
+        midentity.setCheckPermission(true);
+        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+                                          midentity );
+        
+        FileManagerUtils manager = new FileManagerUtils();
+        manager.setRepository(repo);
+        Contexts.getSessionContext().set( "fileManager", manager );
 
         ServiceImplementation impl = new ServiceImplementation();
         impl.repository = repo;
@@ -212,6 +260,7 @@ public class FeedServletTest extends TestCase {
         };
 
 
+        midentity.setAllowLogin(true);
         req = new MockHTTPRequest("/org.foo/feed/discussion", headers, new HashMap<String, String>() {
             {
                 put("package", "testDiscussionFeed");
@@ -229,24 +278,7 @@ public class FeedServletTest extends TestCase {
         assertTrue(r.indexOf("This is another comment") > r.indexOf("This is a comment"));
         System.err.println(r);
 
-
-
-    }
-
-
-    class MockFeedServlet extends FeedServlet {
-        boolean throwAuthException = false;
-        @Override
-        void checkCategoryPermission(String cat) {
-            if (throwAuthException) throw new AuthorizationException("NO");
-            super.checkCategoryPermission(cat);    //To change body of overridden methods use File | Settings | File Templates.
-        }
-
-        @Override
-        void checkPackageReadPermission(String packageName) {
-            if (throwAuthException) throw new AuthorizationException("NO");
-            super.checkPackageReadPermission(packageName);    //To change body of overridden methods use File | Settings | File Templates.
-        }
+        Lifecycle.endApplication();
     }
     
 }

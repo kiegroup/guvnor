@@ -22,43 +22,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.jcr.Session;
 
 import junit.framework.TestCase;
 
 import org.apache.util.Base64;
+import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.contexts.Lifecycle;
 
 public class RestAPIServletTest extends TestCase {
 
-
-	public void testUnpack() {
-		String b42 = "BASIC " + new String( Base64.encode("user:pass".getBytes()) );
-		RestAPIServlet serv = new RestAPIServlet();
-		String[] d = serv.unpack(b42);
-		assertEquals("user", d[0]);
-		assertEquals("pass", d[1]);
-
-	}
-
-	public void testAllowUser() {
-		RestAPIServlet serv = new RestAPIServlet();
-		assertFalse(serv.allowUser(null));
-		assertFalse(serv.allowUser(""));
-		assertFalse(serv.allowUser("bgoo"));
-		String b42 = "BASIC " + new String( Base64.encode("user:pass".getBytes()) );
-		assertFalse(serv.allowUser(b42));
-		b42 = "BASIC " + new String( Base64.encode("test:password".getBytes()) );
-		assertTrue(serv.allowUser(b42));
-	}
-
-
-
-	public void testGet() throws Exception {
+	public void testGet() throws Exception {        
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
 		PackageItem pkg = repo.createPackage("testGetRestServlet", "");
 		AssetItem ass = pkg.addAsset("asset1", "");
@@ -66,8 +45,21 @@ public class RestAPIServletTest extends TestCase {
 		ass.updateContent("some content");
 		ass.checkin("hey ho");
 
-
-
+        //Mock up SEAM contexts
+        Map application = new HashMap<String, Object>();
+        Lifecycle.beginApplication( application );
+        Lifecycle.beginCall();
+        MockIdentity midentity = new MockIdentity();
+        midentity.setIsLoggedIn(false);
+        midentity.setAllowLogin(false);
+        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+                                          midentity );        
+        FileManagerUtils manager = new FileManagerUtils();
+        manager.setRepository(repo);
+        Contexts.getSessionContext().set( "fileManager", manager );
+        Contexts.getSessionContext().set( "repository", repo );
+        
+        
 		RestAPIServlet serv = new RestAPIServlet();
 		assertNotNull(serv.getAPI());
 		Map<String, String> headers = new HashMap<String, String>() {
@@ -99,9 +91,11 @@ public class RestAPIServletTest extends TestCase {
 		assertTrue(res.headers.containsKey("WWW-Authenticate"));
 
 		//finally, making it work
+        midentity.setAllowLogin(true);
+
 		headers = new HashMap<String, String>() {
 			{
-				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
+				put("Authorization", "BASIC " + new String(Base64.encode("testuser:password".getBytes())));
 			}
 		};
 
@@ -129,17 +123,33 @@ public class RestAPIServletTest extends TestCase {
 		assertFalse("some content".equals(data));
 		assertNotNull(data);
 
+        Lifecycle.endApplication();
 	}
 
 	public void testPost() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
 		PackageItem pkg = repo.createPackage("testPostRestServlet", "");
 
+        //Mock up SEAM contexts
+        Map application = new HashMap<String, Object>();
+        Lifecycle.beginApplication( application );
+        Lifecycle.beginCall();
+        MockIdentity midentity = new MockIdentity();
+        midentity.setIsLoggedIn(false);
+        midentity.setAllowLogin(true);
+        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+                                          midentity );        
+        FileManagerUtils manager = new FileManagerUtils();
+        manager.setRepository(repo);
+        Contexts.getSessionContext().set( "fileManager", manager );
+        Contexts.getSessionContext().set( "repository", repo );
+        
+        
 		HashMap<String, String> headers = new HashMap<String, String>() {
 			{
 				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
 			}
-		};
+		};		
 
 		ByteArrayInputStream in = new ByteArrayInputStream("some new content".getBytes());
 		RestAPIServlet serv = new RestAPIServlet();
@@ -174,17 +184,33 @@ public class RestAPIServletTest extends TestCase {
 
         repo.logout();
 
+        Lifecycle.endApplication();
 	}
 
 	public void testPut() throws Exception {
-
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
 		PackageItem pkg = repo.createPackage("testPutRestServlet", "");
 		AssetItem ass = pkg.addAsset("asset1", "abc");
 		ass.updateFormat("drl");
 		ass.checkin("");
 		long ver = ass.getVersionNumber();
+		
+		
+        //Mock up SEAM contexts
+        Map application = new HashMap<String, Object>();
+        Lifecycle.beginApplication( application );
+        Lifecycle.beginCall();
+        MockIdentity midentity = new MockIdentity();
+        midentity.setIsLoggedIn(false);
+        midentity.setAllowLogin(true);
+        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+                                          midentity );        
+        FileManagerUtils manager = new FileManagerUtils();
+        manager.setRepository(repo);
+        Contexts.getSessionContext().set( "fileManager", manager );
+        Contexts.getSessionContext().set( "repository", repo );
 
+        
 		HashMap<String, String> headers = new HashMap<String, String>() {
 			{
 				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
@@ -208,6 +234,8 @@ public class RestAPIServletTest extends TestCase {
 		assertEquals("hey ho", ass.getCheckinComment());
 
         repo.logout();
+
+        Lifecycle.endApplication();        
 	}
 
 
@@ -217,7 +245,22 @@ public class RestAPIServletTest extends TestCase {
 		AssetItem ass = pkg.addAsset("asset1", "abc");
 		ass.updateFormat("drl");
 		ass.checkin("");
-
+		
+        //Mock up SEAM contexts
+        Map application = new HashMap<String, Object>();
+        Lifecycle.beginApplication( application );
+        Lifecycle.beginCall();
+        MockIdentity midentity = new MockIdentity();
+        midentity.setIsLoggedIn(false);
+        midentity.setAllowLogin(true);
+        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+                                          midentity );        
+        FileManagerUtils manager = new FileManagerUtils();
+        manager.setRepository(repo);
+        Contexts.getSessionContext().set( "fileManager", manager );
+        Contexts.getSessionContext().set( "repository", repo );
+        
+        
 		HashMap<String, String> headers = new HashMap<String, String>() {
 			{
 				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
@@ -240,5 +283,6 @@ public class RestAPIServletTest extends TestCase {
 
         repo.logout();
 
+        Lifecycle.endApplication();
 	}
 }

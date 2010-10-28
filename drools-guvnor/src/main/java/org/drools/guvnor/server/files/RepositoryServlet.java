@@ -112,13 +112,9 @@ public class RepositoryServlet extends HttpServlet {
      * uses Seam Identity component to set the user up.
      */
     public static boolean allowUser(String auth) {
-        if (auth == null) return false;  // no auth
-        if (!auth.toUpperCase(Locale.ENGLISH).startsWith("BASIC "))
-          return false;  // we only do BASIC
+        String usr = null;
+        String pwd = null;
 
-        String[] a = unpack(auth);
-        String usr = a[0];
-        String pwd = a[1];
         if ( Contexts.isApplicationContextActive() ) {
         	//If the request is from same session, the user should be logged already.
         	if (Identity.instance().isLoggedIn()) {
@@ -126,8 +122,13 @@ public class RepositoryServlet extends HttpServlet {
         	}
         	
             Identity ids = Identity.instance();
-            ids.getCredentials().setUsername(usr);
-            ids.getCredentials().setPassword(pwd);
+            if(auth != null && auth.toUpperCase(Locale.ENGLISH).startsWith("BASIC ")) {
+                String[] a = unpack(auth);
+                usr = a[0];
+                pwd = a[1];
+                ids.getCredentials().setUsername(usr);
+                ids.getCredentials().setPassword(pwd);
+            }
             try {
                 ids.authenticate();
                 log.info(usr + " authenticated for rest api");
@@ -139,11 +140,14 @@ public class RepositoryServlet extends HttpServlet {
             }
         } else {
             //MN: NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
+            String[] a = unpack(auth);
+            usr = a[0];
+            pwd = a[1];
+      	
             return usr.equals("test") && pwd.equals("password");
         }
 
     }
-
 
     /**
      * For closures. Damn you java when will you catch up with the 70s.
@@ -162,6 +166,4 @@ public class RepositoryServlet extends HttpServlet {
         a[1] = a[1].trim();
 		return a;
 	}
-
-
 }
