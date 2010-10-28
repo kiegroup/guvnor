@@ -328,7 +328,7 @@ public class PopupCreator {
      * not be editable.
      */
     private void doBindingEditor(final FormStylePopup popup) {
-        if ( bindable && !(modeller.getModel().isBoundFactUsed( pattern.boundName )) ) {
+        if ( bindable || !(modeller.getModel().isBoundFactUsed( pattern.boundName )) ) {
             HorizontalPanel varName = new HorizontalPanel();
             final TextBox varTxt = new TextBox();
             if ( pattern.boundName == null ) {
