@@ -491,7 +491,7 @@ public class GuidedDecisionTableWidget extends Composite
             if ( at.attr.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 hp.add( new HTML( "&nbsp;&nbsp;" ) );
                 final CheckBox useRowNumber = new CheckBox();
-                useRowNumber.setEnabled( at.isUseRowNumber() );
+                useRowNumber.setValue( at.isUseRowNumber() );
                 useRowNumber.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent sender) {
                         at.setUseRowNumber( useRowNumber.isEnabled() );
@@ -501,7 +501,7 @@ public class GuidedDecisionTableWidget extends Composite
                 hp.add( new SmallLabel( constants.UseRowNumber() ) );
                 hp.add( new SmallLabel( "(" ) );
                 final CheckBox reverseOrder = new CheckBox();
-                reverseOrder.setEnabled( at.isReverseOrder() );
+                reverseOrder.setValue( at.isReverseOrder() );
                 reverseOrder.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent sender) {
                         at.setReverseOrder( reverseOrder.isEnabled() );
@@ -516,7 +516,7 @@ public class GuidedDecisionTableWidget extends Composite
             hp.add( defaultValue );
 
             final CheckBox hide = new CheckBox();
-            hide.setEnabled( at.isHideColumn() );
+            hide.setValue( at.isHideColumn() );
             hide.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     at.setHideColumn( hide.isEnabled() );
@@ -719,7 +719,7 @@ public class GuidedDecisionTableWidget extends Composite
                                          int rowIndex,
                                          int colNum,
                                          Store store) {
-                        return "<span class='x-grid3-cell-inner x-grid3-td-numberer'>" + (rowIndex + 1) + "</span>"; //NON-NLS
+                    	return "<span class='x-grid3-cell-inner x-grid3-td-numberer'>" + (rowIndex + 1) + "</span>"; //NON-NLS
                     }
                 } );
             }
