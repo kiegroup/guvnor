@@ -27,6 +27,7 @@
           </compileSourcesArtifacts>
           <localWorkers>2</localWorkers><!-- Using all workers can temporarily hang te mouse and isn't much faster -->
           <extraJvmArgs>-Xmx512m</extraJvmArgs>
+          <soyc>false</soyc><!-- Otherwise extra dir 2GB, which is too big for hudson builds -->
         </configuration>
         <dependencies>
           <!-- Explicitly declare gwt dependencies to ensure the use of the same GWT version. -->
