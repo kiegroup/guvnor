@@ -19,6 +19,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.StandaloneGuidedEditorService;
 import org.drools.guvnor.client.rpc.StandaloneGuidedEditorServiceAsync;
+import org.drools.guvnor.client.ruleeditor.toolbar.StandaloneGuidedEditorIndividualActionToolbarButtonsConfigurationProvider;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
 /**
@@ -76,7 +77,7 @@ public class GuidedEditorManager {
                             public void open(String key) {
                                 // TODO Auto-generated method stub
                             }
-                        });
+                        }, new StandaloneGuidedEditorIndividualActionToolbarButtonsConfigurationProvider());
 
                         mainPanel.add(viewer);
                     }

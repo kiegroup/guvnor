@@ -39,10 +39,11 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
+import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -73,6 +74,8 @@ public class RuleViewer extends GuvnorEditor {
     private Constants                  constants   = ((Constants) GWT.create( Constants.class ));
 
     private final EditItemEvent        editEvent;
+    
+    private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
     /**
      * @param historicalReadOnly true if this is a read only view for historical purposes.
@@ -81,30 +84,33 @@ public class RuleViewer extends GuvnorEditor {
                       final EditItemEvent event) {
         this( asset,
               event,
-              false );
+              false, null );
     }
-
-    public void setDocoVisible(boolean docoVisible) {
-        this.docoVisible = docoVisible;
-        this.doco.setVisible( docoVisible );
-    }
-
-    public void setMetaVisible(boolean metaVisible) {
-        this.metaVisible = metaVisible;
-        this.metaWidget.setVisible( metaVisible );
-    }
-
+    
     /**
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
                       final EditItemEvent event,
                       boolean historicalReadOnly) {
+        this (asset, event, historicalReadOnly, null);
+    }
+
+    /**
+     * @param historicalReadOnly true if this is a read only view for historical purposes.
+     * @param actionToolbarButtonsConfigurationProvider used to change the default
+     * button configuration provider.
+     */
+    public RuleViewer(RuleAsset asset,
+                      final EditItemEvent event,
+                      boolean historicalReadOnly, ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider) {
         this.editEvent = event;
         this.asset = asset;
         this.readOnly = historicalReadOnly && asset.isreadonly;
 
         this.layout = new VerticalPanel();
+        
+        this.actionToolbarButtonsConfigurationProvider = actionToolbarButtonsConfigurationProvider;
 
         layout.setWidth( "100%" );
         layout.setHeight( "100%" );
@@ -132,7 +138,18 @@ public class RuleViewer extends GuvnorEditor {
 
         LoadingPopup.close();
     }
+    
+    public void setDocoVisible(boolean docoVisible) {
+        this.docoVisible = docoVisible;
+        this.doco.setVisible( docoVisible );
+    }
 
+    public void setMetaVisible(boolean metaVisible) {
+        this.metaVisible = metaVisible;
+        this.metaWidget.setVisible( metaVisible );
+    }
+
+    @Override
     public boolean isDirty() {
         return (System.currentTimeMillis() - lastSaved) > 3600000;
     }
@@ -152,6 +169,7 @@ public class RuleViewer extends GuvnorEditor {
         toolbar = new ActionToolbar( asset,
                                      readOnly,
                                      editor,
+                                     actionToolbarButtonsConfigurationProvider,
                                      checkInCommand,
                                      new Command() {
                                          public void execute() {
@@ -178,7 +196,7 @@ public class RuleViewer extends GuvnorEditor {
                                              doPromptToGlobal();
                                          }
                                      } );
-
+                                     
         //layout.add(toolbar, DockPanel.NORTH);
         layout.add( toolbar );
         layout.setCellHeight( toolbar,
@@ -516,7 +534,7 @@ public class RuleViewer extends GuvnorEditor {
                                                                                 }
                                                                             } );
 
-        };
+        }
 
     }
 }

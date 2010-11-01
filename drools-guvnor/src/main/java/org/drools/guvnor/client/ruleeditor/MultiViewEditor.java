@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 
 /**
  * 
@@ -53,12 +54,19 @@ public class MultiViewEditor extends GuvnorEditor {
     private final Set<MultiViewRow> rows;
     private Map<String, RuleViewer> ruleViews = new HashMap<String, RuleViewer>();
     private final EditItemEvent editItemEvent;
+    private ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider;
 
     public MultiViewEditor(MultiViewRow[] rows,
             EditItemEvent editItemEvent) {
+        this(rows, editItemEvent, null);
+    }
+    
+    public MultiViewEditor(MultiViewRow[] rows,
+            EditItemEvent editItemEvent, ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
         this.editItemEvent = editItemEvent;
         this.rows = new HashSet<MultiViewRow>();
         this.rows.addAll(Arrays.asList(rows));
+        this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
 
         VerticalPanel rootPanel = new VerticalPanel();
 
@@ -145,7 +153,7 @@ public class MultiViewEditor extends GuvnorEditor {
                                                         public void execute() {
 
                                                             final RuleViewer ruleViewer = new RuleViewer(asset,
-                                                                    editItemEvent);
+                                                                    editItemEvent,false, individualActionToolbarButtonsConfigurationProvider);
                                                             ruleViewer.setDocoVisible(showDescription);
                                                             ruleViewer.setMetaVisible(showMetadata);
 
