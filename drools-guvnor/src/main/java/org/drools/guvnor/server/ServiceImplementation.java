@@ -2949,5 +2949,5 @@ public class ServiceImplementation
      public Boolean isHostedMode() {
     	 Boolean hm = Contexts.isApplicationContextActive() ? Boolean.FALSE : Boolean.TRUE;
     	 return hm;
-     }
+     }     
 }

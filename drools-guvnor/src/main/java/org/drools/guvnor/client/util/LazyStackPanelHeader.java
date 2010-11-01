@@ -80,6 +80,19 @@ public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
             }
         } );
     }
+    
+    
+    public void expand(){
+        if (!expanded){
+            onTitleClicked();
+        }
+    }
+    
+    public void collapse(){
+        if (expanded){
+            onTitleClicked();
+        }
+    }
 
     private void setIconImage() {
         if ( expanded ) {

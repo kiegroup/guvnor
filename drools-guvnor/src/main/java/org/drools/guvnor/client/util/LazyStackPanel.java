@@ -38,129 +38,155 @@ import com.google.gwt.user.client.ui.Widget;
  *
  */
 public class LazyStackPanel extends Composite
-    implements
-    HasSelectionHandlers<LazyStackPanelRow> {
+        implements
+        HasSelectionHandlers<LazyStackPanelRow> {
 
     private FlexTable flexTable = new FlexTable();
-
-    private int       rowIndex  = 0;
+    private int rowIndex = 0;
 
     public LazyStackPanel() {
 
-        initWidget( flexTable );
+        initWidget(flexTable);
 
-        
-        flexTable.setStyleName( "guvnor-lazyStackPanel" );
-        
-        addSelectionHandler( new SelectionHandler<LazyStackPanelRow>() {
+
+        flexTable.setStyleName("guvnor-lazyStackPanel");
+
+        addSelectionHandler(new SelectionHandler<LazyStackPanelRow>() {
+
             public void onSelection(SelectionEvent<LazyStackPanelRow> event) {
                 LazyStackPanelRow row = event.getSelectedItem();
-                if ( row.isExpanded() ) {
+                if (row.isExpanded()) {
                     row.compress();
                 } else {
                     row.expand();
                 }
             }
-        } );
+        });
+    }
+
+    /**
+     * Add a new (collapsed) element to the stack.
+     * @param headerText
+     * @param contentLoad
+     */
+    public void add(String headerText,
+            LoadContentCommand contentLoad) {
+        this.add(headerText, contentLoad, false);
     }
 
     public void add(String headerText,
-                    LoadContentCommand contentLoad) {
+            LoadContentCommand contentLoad, boolean expanded) {
 
-        LazyStackPanelHeader header = new LazyStackPanelHeader( headerText );
+        LazyStackPanelHeader header = new LazyStackPanelHeader(headerText);
 
-        add( header,
-             contentLoad );
+        add(header,
+                contentLoad, expanded);
 
     }
 
+    /**
+     * Add a new (collapsed) element to the stack.
+     * @param headerText
+     * @param contentLoad
+     */
     public void add(AbstractLazyStackPanelHeader header,
-                    LoadContentCommand contentLoad) {
-        final LazyStackPanelRow row = new LazyStackPanelRow( header,
-                                                             contentLoad );
+            LoadContentCommand contentLoad) {
+        this.add(header, contentLoad, false);
+    }
+    
+    public void add(AbstractLazyStackPanelHeader header,
+            LoadContentCommand contentLoad, boolean expanded) {
+        final LazyStackPanelRow row = new LazyStackPanelRow(header,
+                contentLoad);
 
-        header.addOpenHandler( new OpenHandler<AbstractLazyStackPanelHeader>() {
+        header.addOpenHandler(new OpenHandler<AbstractLazyStackPanelHeader>() {
+
             public void onOpen(OpenEvent<AbstractLazyStackPanelHeader> event) {
-                selectRow( row );
+                selectRow(row);
             }
-        } );
+        });
 
-        header.addCloseHandler( new CloseHandler<AbstractLazyStackPanelHeader>() {
+        header.addCloseHandler(new CloseHandler<AbstractLazyStackPanelHeader>() {
+
             public void onClose(com.google.gwt.event.logical.shared.CloseEvent<AbstractLazyStackPanelHeader> event) {
-                selectRow( row );
+                selectRow(row);
             }
-        } );
+        });
 
-        addHeaderRow( row );
+        addHeaderRow(row);
 
-        addContentRow( row.getContentPanel() );
+        addContentRow(row.getContentPanel());
+        
+        if (expanded){
+            header.expand();
+        }
     }
 
     private void addHeaderRow(final LazyStackPanelRow row) {
-        flexTable.setWidget( rowIndex,
-                             0,
-                             row );
-        flexTable.getFlexCellFormatter().setStyleName( rowIndex,
-                                                       0,
-                                                       "guvnor-LazyStackPanel-row-header" );
+        flexTable.setWidget(rowIndex,
+                0,
+                row);
+        flexTable.getFlexCellFormatter().setStyleName(rowIndex,
+                0,
+                "guvnor-LazyStackPanel-row-header");
         rowIndex++;
     }
 
     private void addContentRow(final SimplePanel panel) {
-        flexTable.setWidget( rowIndex++,
-                             0,
-                             panel );
+        flexTable.setWidget(rowIndex++,
+                0,
+                panel);
     }
 
     private void selectRow(LazyStackPanelRow row) {
-        SelectionEvent.fire( this,
-                             row );
+        SelectionEvent.fire(this,
+                row);
     }
 
     public HandlerRegistration addSelectionHandler(SelectionHandler<LazyStackPanelRow> handler) {
-        return addHandler( handler,
-                           SelectionEvent.getType() );
+        return addHandler(handler,
+                SelectionEvent.getType());
     }
 
     public void swap(int firstIndex,
-                     int secondIndex) {
+            int secondIndex) {
 
         // Every list item is made of the header and content row.
         // So we have twice as many rows.
         firstIndex = firstIndex * 2;
         secondIndex = secondIndex * 2;
 
-        Widget firstHeader = flexTable.getWidget( firstIndex,
-                                                  0 );
-        Widget firstContent = flexTable.getWidget( firstIndex + 1,
-                                                   0 );
-        Widget secondHeader = flexTable.getWidget( secondIndex,
-                                                   0 );
-        Widget secondContent = flexTable.getWidget( secondIndex + 1,
-                                                    0 );
+        Widget firstHeader = flexTable.getWidget(firstIndex,
+                0);
+        Widget firstContent = flexTable.getWidget(firstIndex + 1,
+                0);
+        Widget secondHeader = flexTable.getWidget(secondIndex,
+                0);
+        Widget secondContent = flexTable.getWidget(secondIndex + 1,
+                0);
 
-        flexTable.setWidget( firstIndex,
-                             0,
-                             secondHeader );
-        flexTable.setWidget( firstIndex + 1,
-                             0,
-                             secondContent );
-        flexTable.setWidget( secondIndex,
-                             0,
-                             firstHeader );
-        flexTable.setWidget( secondIndex + 1,
-                             0,
-                             firstContent );
+        flexTable.setWidget(firstIndex,
+                0,
+                secondHeader);
+        flexTable.setWidget(firstIndex + 1,
+                0,
+                secondContent);
+        flexTable.setWidget(secondIndex,
+                0,
+                firstHeader);
+        flexTable.setWidget(secondIndex + 1,
+                0,
+                firstContent);
     }
 
     public Iterator<AbstractLazyStackPanelHeader> getHeaderIterator() {
         List<AbstractLazyStackPanelHeader> result = new ArrayList<AbstractLazyStackPanelHeader>();
         Iterator<Widget> iterator = flexTable.iterator();
 
-        while ( iterator.hasNext() ) {
+        while (iterator.hasNext()) {
             Widget widget = (Widget) iterator.next();
-            if ( widget instanceof LazyStackPanelRow ) {
-                result.add( ((LazyStackPanelRow) widget).getHeader() );
+            if (widget instanceof LazyStackPanelRow) {
+                result.add(((LazyStackPanelRow) widget).getHeader());
             }
         }
 
@@ -171,7 +197,7 @@ public class LazyStackPanel extends Composite
 
         index = index * 2;
 
-        flexTable.removeRow( index + 1 );
-        flexTable.removeRow( index );
+        flexTable.removeRow(index + 1);
+        flexTable.removeRow(index);
     }
 }

@@ -25,5 +25,9 @@ public abstract class AbstractLazyStackPanelHeader extends SimplePanel
         return addHandler( handler,
                            CloseEvent.getType() );
     }
+    
+    public abstract void expand();
+    
+    public abstract void collapse();
 
 }

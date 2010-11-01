@@ -63,6 +63,14 @@
 		<servlet-name>verificationService</servlet-name>
 		<servlet-class>org.drools.guvnor.server.VerificationServiceImplementation</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>standaloneGuidedEditorService</servlet-name>
+		<servlet-class>org.drools.guvnor.server.StandaloneGuidedEditorServiceImplementation</servlet-class>
+	</servlet>
+	<servlet>
+		<servlet-name>guidedEditorServlet</servlet-name>
+		<servlet-class>org.drools.guvnor.server.GuidedEditorServlet</servlet-class>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>guvnorService</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/guvnorService</url-pattern>
@@ -110,6 +118,14 @@
 	<servlet-mapping>
 		<servlet-name>verificationService</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/verificationService</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>standaloneGuidedEditorService</servlet-name>
+		<url-pattern>/org.drools.guvnor.Guvnor/standaloneGuidedEditorService</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>guidedEditorServlet</servlet-name>
+		<url-pattern>/org.drools.guvnor.Guvnor/guidedEditorServlet</url-pattern>
 	</servlet-mapping>
 	<session-config>
 		<session-timeout>180</session-timeout>

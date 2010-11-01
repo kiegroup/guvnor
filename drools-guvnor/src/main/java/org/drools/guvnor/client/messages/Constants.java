@@ -2147,4 +2147,6 @@ public interface Constants
     String InvalidDateFormatMessage();
 
     String NewColumn();
+    
+    String NoRulesFound();
 }

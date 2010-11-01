@@ -62,7 +62,7 @@ public class PushClient {
                     }
 
                     public void onSuccess(List<PushResponse> result) {
-                        System.err.println("Got response !" + System.currentTimeMillis());
+                        //System.err.println("Got response !" + System.currentTimeMillis());
                         processResult(result);
                     }
                 });

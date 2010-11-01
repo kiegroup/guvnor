@@ -363,6 +363,8 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     private void refreshMetaWidgetOnly(final boolean showBusy) {
+    	
+    	
         if ( showBusy ) LoadingPopup.showMessage( constants.RefreshingItem() );
         RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.guvnor.client.ruleeditor;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -31,6 +31,7 @@ import org.drools.guvnor.client.util.LoadContentCommand;
 import org.drools.guvnor.client.util.LazyStackPanel;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -44,40 +45,33 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MultiViewEditor extends GuvnorEditor {
 
-    private Constants               constants       = GWT.create( Constants.class );
-
-    private VerticalPanel           viewsPanel      = new VerticalPanel();
-
-    private boolean                 showMetadata    = false;
-    private boolean                 showDescription = false;
-
-    private Command                 closeCommand;
-
+    private Constants constants = GWT.create(Constants.class);
+    private VerticalPanel viewsPanel = new VerticalPanel();
+    private boolean showMetadata = false;
+    private boolean showDescription = false;
+    private Command closeCommand;
     private final Set<MultiViewRow> rows;
-    private Map<String, RuleViewer> ruleViews       = new HashMap<String, RuleViewer>();
-
-    private final EditItemEvent     editItemEvent;
+    private Map<String, RuleViewer> ruleViews = new HashMap<String, RuleViewer>();
+    private final EditItemEvent editItemEvent;
 
     public MultiViewEditor(MultiViewRow[] rows,
-                           EditItemEvent editItemEvent) {
+            EditItemEvent editItemEvent) {
         this.editItemEvent = editItemEvent;
         this.rows = new HashSet<MultiViewRow>();
-        for ( MultiViewRow row : rows ) {
-            this.rows.add( row );
-        }
+        this.rows.addAll(Arrays.asList(rows));
 
         VerticalPanel rootPanel = new VerticalPanel();
 
-        rootPanel.setWidth( "100%" );
+        rootPanel.setWidth("100%");
 
-        rootPanel.add( createToolbar() );
+        rootPanel.add(createToolbar());
 
-        viewsPanel.setWidth( "100%" );
-        rootPanel.add( viewsPanel );
+        viewsPanel.setWidth("100%");
+        rootPanel.add(viewsPanel);
 
         doViews();
 
-        initWidget( rootPanel );
+        initWidget(rootPanel);
     }
 
     //    MenuBar layoutMenu = new MenuBar( true );
@@ -96,24 +90,23 @@ public class MultiViewEditor extends GuvnorEditor {
     //
     //    toolbar.addItem( constants.Show(),
     //                     layoutMenu );
-
     private MenuBar createToolbar() {
         MenuBar toolbar = new MenuBar();
 
-        toolbar.addItem( constants.SaveAllChanges(),
-                         new Command() {
+        toolbar.addItem(constants.SaveAllChanges(),
+                new Command() {
 
-                             public void execute() {
-                                 checkin( false );
-                             }
-                         } );
-        toolbar.addItem( constants.SaveAndCloseAll(),
-                         new Command() {
+                    public void execute() {
+                        checkin(false);
+                    }
+                });
+        toolbar.addItem(constants.SaveAndCloseAll(),
+                new Command() {
 
-                             public void execute() {
-                                 checkin( true );
-                             }
-                         } );
+                    public void execute() {
+                        checkin(true);
+                    }
+                });
 
         return toolbar;
     }
@@ -123,8 +116,10 @@ public class MultiViewEditor extends GuvnorEditor {
         viewsPanel.clear();
         ruleViews.clear();
         final LazyStackPanel panel = new LazyStackPanel();
-
-        for ( final MultiViewRow row : rows ) {
+        
+        //the first row will be expanded
+        int rowNumber = 1;
+        for (final MultiViewRow row : rows) {
             //            panel.add( row.name );
             //            panel.setIconCls( EditorLauncher.getAssetFormatBGStyle( row.format ) ); //NON-NLS
             //            panel.setCollapsible( true );
@@ -135,47 +130,50 @@ public class MultiViewEditor extends GuvnorEditor {
             //            panel.addListener( new PanelListenerAdapter() {
             //                public void onExpand(final Panel panel) {
 
-            panel.add( row.name,
-                       new LoadContentCommand() {
+            panel.add(row.name,
+                    new LoadContentCommand() {
 
-                           public Widget load() {
-                               final SimplePanel content = new SimplePanel();
-                               RepositoryServiceFactory.getService().loadRuleAsset( row.uuid,
-                                                                                    new GenericCallback<RuleAsset>() {
-                                                                                        public void onSuccess(final RuleAsset asset) {
-                                                                                            SuggestionCompletionCache.getInstance().doAction( asset.metaData.packageName,
-                                                                                                                                              new Command() {
-                                                                                                                                                  public void execute() {
+                        public Widget load() {
+                            final SimplePanel content = new SimplePanel();
+                            RepositoryServiceFactory.getService().loadRuleAsset(row.uuid,
+                                    new GenericCallback<RuleAsset>() {
 
-                                                                                                                                                      final RuleViewer ruleViewer = new RuleViewer( asset,
-                                                                                                                                                                                                    editItemEvent );
-                                                                                                                                                      ruleViewer.setDocoVisible( showDescription );
-                                                                                                                                                      ruleViewer.setMetaVisible( showMetadata );
+                                        public void onSuccess(final RuleAsset asset) {
+                                            SuggestionCompletionCache.getInstance().doAction(asset.metaData.packageName,
+                                                    new Command() {
 
-                                                                                                                                                      content.add( ruleViewer );
+                                                        public void execute() {
 
-                                                                                                                                                      ruleViewer.setWidth( "100%" );
+                                                            final RuleViewer ruleViewer = new RuleViewer(asset,
+                                                                    editItemEvent);
+                                                            ruleViewer.setDocoVisible(showDescription);
+                                                            ruleViewer.setMetaVisible(showMetadata);
 
-                                                                                                                                                      ruleViewer.setCloseCommand( new Command() {
+                                                            content.add(ruleViewer);
+                                                            OpenEvent.fire(null, content);
 
-                                                                                                                                                          public void execute() {
-                                                                                                                                                              ruleViews.remove( ruleViewer );
-                                                                                                                                                              rows.remove( row );
-                                                                                                                                                              doViews();
-                                                                                                                                                          }
-                                                                                                                                                      } );
+                                                            ruleViewer.setWidth("100%");
 
-                                                                                                                                                      ruleViews.put( row.uuid,
-                                                                                                                                                                     ruleViewer );
+                                                            ruleViewer.setCloseCommand(new Command() {
 
-                                                                                                                                                  }
-                                                                                                                                              } );
-                                                                                        }
-                                                                                    } );
+                                                                public void execute() {
+                                                                    ruleViews.remove(ruleViewer);
+                                                                    rows.remove(row);
+                                                                    doViews();
+                                                                }
+                                                            });
 
-                               return content;
-                           }
-                       } );
+                                                            ruleViews.put(row.uuid,
+                                                                    ruleViewer);
+
+                                                        }
+                                                    });
+                                        }
+                                    });
+
+                            return content;
+                        }
+                    },rowNumber == 1);
 
             // Only load if it doesn't exist yet.
             //            if ( ruleViews.get( row.uuid ) == null ) {
@@ -188,25 +186,27 @@ public class MultiViewEditor extends GuvnorEditor {
             //
             //            //            } );
             //
+            rowNumber++;
         }
 
-        viewsPanel.add( panel );
+        viewsPanel.add(panel);
 
     }
 
     private void checkin(final boolean closeAfter) {
-        final CheckinPopup pop = new CheckinPopup( constants.CheckInChanges() );
-        pop.setCommand( new Command() {
+        final CheckinPopup pop = new CheckinPopup(constants.CheckInChanges());
+        pop.setCommand(new Command() {
+
             public void execute() {
                 String comment = pop.getCheckinComment();
-                for ( RuleViewer ruleViewer : ruleViews.values() ) {
-                    ruleViewer.checkInCommand.doCheckin( comment );
+                for (RuleViewer ruleViewer : ruleViews.values()) {
+                    ruleViewer.checkInCommand.doCheckin(comment);
                 }
-                if ( closeAfter ) {
+                if (closeAfter) {
                     close();
                 }
             }
-        } );
+        });
         pop.show();
 
     }
@@ -222,16 +222,13 @@ public class MultiViewEditor extends GuvnorEditor {
 
     public void makeDirty() {
         // TODO Auto-generated method stub
-
     }
 
     public void resetDirty() {
         // TODO Auto-generated method stub
-
     }
 
     public void setCloseCommand(Command command) {
         closeCommand = command;
     }
-
 }

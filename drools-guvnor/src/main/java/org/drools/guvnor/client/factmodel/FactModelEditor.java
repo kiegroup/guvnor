@@ -174,7 +174,20 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
     public void setDownVisible(boolean visible) {
         moveDownIcon.setVisible( visible );
     }
-
+    
+    
+    public void expand(){
+        if (!expanded){
+            onTitleClicked();
+        }
+    }
+    
+    public void collapse(){
+        if (expanded){
+            onTitleClicked();
+        }
+    }
+    
     private void onTitleClicked() {
         if ( expanded ) {
             CloseEvent.fire( this,
