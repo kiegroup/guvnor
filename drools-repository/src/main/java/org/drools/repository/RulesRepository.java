@@ -1207,7 +1207,7 @@ public class RulesRepository {
     }
 
     /**
-     * This will rename an assset and apply the change immediately.
+     * This will rename an asset and apply the change immediately.
      * @return the UUID of the new asset
      */
     public String renameAsset(String uuid,
@@ -1314,13 +1314,13 @@ public class RulesRepository {
             if ( !snaps.hasNode( packageName ) ) {
                 return new String[0];
             } else {
-                List result = new ArrayList();
+                List<String> result = new ArrayList<String>();
                 NodeIterator it = snaps.getNode( packageName ).getNodes();
                 while ( it.hasNext() ) {
                     Node element = (Node) it.next();
                     result.add( element.getName() );
                 }
-                return (String[]) result.toArray( new String[result.size()] );
+                return result.toArray( new String[result.size()] );
             }
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
@@ -1400,8 +1400,6 @@ public class RulesRepository {
     /**
      * This will do a general predicate search.
      * @param params - a map of field to a list of possible values (which are or-ed together if there is more then one).
-     * @param position - where to start returning results from.
-     * @param maxRows - maximum number of rows to return;
      * @param seekArchived - include archived stuff in the results.
      */
     public AssetItemIterator query(Map<String, String[]> params,
@@ -1488,7 +1486,7 @@ public class RulesRepository {
      * @return A list of statii in the system.
      */
     public StateItem[] listStates() {
-        List states = new ArrayList();
+        List<StateItem> states = new ArrayList<StateItem>();
         NodeIterator it;
         try {
             it = this.getAreaNode( STATE_AREA ).getNodes();
@@ -1501,7 +1499,7 @@ public class RulesRepository {
             log.error( e.getMessage(), e );
             throw new RulesRepositoryException( e );
         }
-        return (StateItem[]) states.toArray( new StateItem[states.size()] );
+        return states.toArray( new StateItem[states.size()] );
     }
 
     /**
