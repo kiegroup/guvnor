@@ -19,6 +19,7 @@ package org.drools.guvnor.client.table;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -29,6 +30,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -38,6 +40,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class ColumnPicker<T> {
 
+    private static final TableImageResources TABLE_IMAGE_RESOURCES = GWT.create(TableImageResources.class);
+    private static final Image COLUMN_PICKER_IMAGE = new Image(TABLE_IMAGE_RESOURCES.columnPicker());
+    
     private final CellTable<T> cellTable;
     private List<ColumnMeta<T>> columnMetaList = new ArrayList<ColumnMeta<T>>();
 
@@ -57,7 +62,7 @@ public class ColumnPicker<T> {
     }
 
     public ToggleButton createToggleButton() {
-        final ToggleButton button = new ToggleButton("KP");
+        final ToggleButton button = new ToggleButton(COLUMN_PICKER_IMAGE);
         final PopupPanel popup = new PopupPanel(true);
         popup.addCloseHandler(new CloseHandler<PopupPanel>() {
             public void onClose(CloseEvent<PopupPanel> popupPanelCloseEvent) {

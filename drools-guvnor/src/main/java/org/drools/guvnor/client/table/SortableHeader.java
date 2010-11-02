@@ -15,11 +15,11 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
  */
 public class SortableHeader<T, C extends Comparable> extends Header<String> {
 
-    private static final SortableHeaderResources SORTABLE_HEADER_RESOURCES = GWT.create(SortableHeaderResources.class);
-    private static final String DOWN_ARROW = makeImage(SORTABLE_HEADER_RESOURCES.downArrow());
-    private static final String SMALL_DOWN_ARROW = makeImage(SORTABLE_HEADER_RESOURCES.smallDownArrow());
-    private static final String UP_ARROW = makeImage(SORTABLE_HEADER_RESOURCES.upArrow());
-    private static final String SMALL_UP_ARROW = makeImage(SORTABLE_HEADER_RESOURCES.smallUpArrow());
+    private static final TableImageResources TABLE_IMAGE_RESOURCES = GWT.create(TableImageResources.class);
+    private static final String DOWN_ARROW = makeImage(TABLE_IMAGE_RESOURCES.downArrow());
+    private static final String SMALL_DOWN_ARROW = makeImage(TABLE_IMAGE_RESOURCES.smallDownArrow());
+    private static final String UP_ARROW = makeImage(TABLE_IMAGE_RESOURCES.upArrow());
+    private static final String SMALL_UP_ARROW = makeImage(TABLE_IMAGE_RESOURCES.smallUpArrow());
 
     private static String makeImage(ImageResource resource) {
         AbstractImagePrototype prototype = AbstractImagePrototype.create(resource);

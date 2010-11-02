@@ -6,7 +6,7 @@ import com.google.gwt.resources.client.ImageResource;
 /**
  * @author Geoffrey De Smet
  */
-public interface SortableHeaderResources extends ClientBundle {
+public interface TableImageResources extends ClientBundle {
 
     @Source("downArrow.png")
     ImageResource downArrow();
@@ -19,5 +19,8 @@ public interface SortableHeaderResources extends ClientBundle {
 
     @Source("smallUpArrow.png")
     ImageResource smallUpArrow();
+
+    @Source("columnPicker.png")
+    ImageResource columnPicker();
 
 }
