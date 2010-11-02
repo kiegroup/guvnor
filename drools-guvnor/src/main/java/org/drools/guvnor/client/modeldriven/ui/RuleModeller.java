@@ -35,7 +35,6 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
@@ -143,34 +142,6 @@ public class RuleModeller extends DirtyableComposite
         setHeight( "100%" );
     }
 
-    private boolean isLock(String attr) {
-
-        if ( this.asset.isreadonly ) {
-            return true;
-        }
-
-        if ( this.model.metadataList.length == 0 ) {
-            return false;
-        }
-
-        for ( RuleMetadata at : this.model.metadataList ) {
-            if ( at.attributeName.equals( attr ) ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /** return true if we should not allow unfrozen editing of the RHS */
-    public boolean lockRHS() {
-        return isLock( RuleAttributeWidget.LOCK_RHS ); //NON-NLS
-    }
-
-    /** return true if we should not allow unfrozen editing of the LHS */
-    public boolean lockLHS() {
-        return isLock( RuleAttributeWidget.LOCK_LHS ); //NON-NLS
-    }
-
     /**
      * This updates the widget to reflect the state of the model.
      */
@@ -194,42 +165,46 @@ public class RuleModeller extends DirtyableComposite
                                               "87%" );
         layout.getColumnFormatter().setWidth( 2,
                                               "5%" );
-
-        layout.setWidget( currentLayoutRow,
-                          0,
-                          new SmallLabel( "<b>" + constants.WHEN() + "</b>" ) );
-
-        if ( !lockLHS() ) {
+        
+        if (this.showLHS()){                                      
             layout.setWidget( currentLayoutRow,
-                              2,
-                              addPattern );
+                              0,
+                              new SmallLabel( "<b>" + constants.WHEN() + "</b>" ) );
+
+            if ( !lockLHS() ) {
+                layout.setWidget( currentLayoutRow,
+                                  2,
+                                  addPattern );
+            }
+            currentLayoutRow++;
+
+            renderLhs( this.model );
         }
-        currentLayoutRow++;
-
-        renderLhs( this.model );
-
-        layout.setWidget( currentLayoutRow,
+        
+        if (this.showRHS()){
+            layout.setWidget( currentLayoutRow,
                           0,
                           new SmallLabel( "<b>" + constants.THEN() + "</b>" ) );
 
-        Image addAction = new ImageButton( "images/new_item.gif" ); //NON-NLS
-        addAction.setTitle( constants.AddAnActionToThisRule() );
-        addAction.addClickHandler( new ClickHandler() {
+            Image addAction = new ImageButton( "images/new_item.gif" ); //NON-NLS
+            addAction.setTitle( constants.AddAnActionToThisRule() );
+            addAction.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
-                showActionSelector( (Widget) event.getSource(),
-                                    null );
+                public void onClick(ClickEvent event) {
+                    showActionSelector( (Widget) event.getSource(),
+                                        null );
+                }
+            } );
+            if ( !lockRHS() ) {
+                layout.setWidget( currentLayoutRow,
+                                  2,
+                                  addAction );
             }
-        } );
-        if ( !lockRHS() ) {
-            layout.setWidget( currentLayoutRow,
-                              2,
-                              addAction );
+            currentLayoutRow++;
+
+            renderRhs( this.model );
         }
-        currentLayoutRow++;
-
-        renderRhs( this.model );
-
+        
         if ( showAttributes() ) {
 
             final int tmp1 = currentLayoutRow;
@@ -284,8 +259,69 @@ public class RuleModeller extends DirtyableComposite
         this.verifyRule( null );
     }
 
+    private boolean isLock(String attr) {
+
+        if ( this.asset.isreadonly ) {
+            return true;
+        }
+
+        if ( this.model.metadataList.length == 0 ) {
+            return false;
+        }
+
+        for ( RuleMetadata at : this.model.metadataList ) {
+            if ( at.attributeName.equals( attr ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean showRHS(){
+        for ( RuleMetadata at : this.model.metadataList ) {
+            if ( at.attributeName.equals( RuleMetadata.HIDE_RHS_IN_EDITOR ) ) {
+                if (at.value != null && Boolean.parseBoolean(at.value)){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    /** return true if we should not allow unfrozen editing of the RHS */
+    public boolean lockRHS() {
+        return isLock( RuleAttributeWidget.LOCK_RHS ); //NON-NLS
+    }
+    
+    public boolean showLHS(){
+        for ( RuleMetadata at : this.model.metadataList ) {
+            if ( at.attributeName.equals( RuleMetadata.HIDE_LHS_IN_EDITOR ) ) {
+                if (at.value != null && Boolean.parseBoolean(at.value)){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /** return true if we should not allow unfrozen editing of the LHS */
+    public boolean lockLHS() {
+        return isLock( RuleAttributeWidget.LOCK_LHS ); //NON-NLS
+    }
+    
     private boolean showAttributes() {
-        return CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW );
+        if (!CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW )){
+            return false;
+        }
+        
+        for ( RuleMetadata at : this.model.metadataList ) {
+            if ( at.attributeName.equals( RuleMetadata.HIDE_ATTRIBUTES_IN_EDITOR ) ) {
+                if (at.value != null && Boolean.parseBoolean(at.value)){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void refreshWidget() {

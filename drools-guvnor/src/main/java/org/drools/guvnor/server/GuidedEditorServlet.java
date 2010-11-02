@@ -28,20 +28,47 @@ import javax.servlet.http.HttpSession;
 
 public class GuidedEditorServlet extends HttpServlet {
 
-    public static String GE_PACKAGE_PARAMETER_NAME = "packageName";
-    public static String GE_CATEGORY_PARAMETER_NAME = "categoryName";
-    public static String GE_BRL_PARAMETER_NAME = "brlSource";
+    public static enum GUIDED_EDITOR_SERVLET_PARAMETERS{
+        GE_PACKAGE_PARAMETER_NAME("packageName",false),
+        GE_CATEGORY_PARAMETER_NAME("categoryName",false),
+        GE_BRL_PARAMETER_NAME("brlSource",true),
+        
+        GE_HIDE_RULE_LHS_PARAMETER_NAME("hideRuleLHS",false),
+        GE_HIDE_RULE_RHS_PARAMETER_NAME("hideRuleRHS",false),
+        GE_HIDE_RULE_ATTRIBUTES_PARAMETER_NAME("hideRuleAttributes",false);
+        
+        private String parameterName;
+        private boolean multipleValues;
+
+        private GUIDED_EDITOR_SERVLET_PARAMETERS(String parameterName, boolean multipleValues){
+            this.parameterName = parameterName;
+            this.multipleValues = multipleValues;
+        }
+        
+        public String getParameterName() {
+            return parameterName;
+        }
+
+        public boolean isMultipleValues() {
+            return multipleValues;
+        }
+        
+    }
     
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(true);
-        session.setAttribute(GE_PACKAGE_PARAMETER_NAME, req.getParameter(GE_PACKAGE_PARAMETER_NAME));
-        session.setAttribute(GE_CATEGORY_PARAMETER_NAME, req.getParameter(GE_CATEGORY_PARAMETER_NAME));
-        session.setAttribute(GE_BRL_PARAMETER_NAME, req.getParameterValues(GE_BRL_PARAMETER_NAME));
+        
+        //copy each registered parameter from request to session
+        for (GUIDED_EDITOR_SERVLET_PARAMETERS parameter : GUIDED_EDITOR_SERVLET_PARAMETERS.values()) {
+            if (parameter.isMultipleValues()){
+                session.setAttribute(parameter.getParameterName(), req.getParameterValues(parameter.getParameterName()));
+            }else{
+                session.setAttribute(parameter.getParameterName(), req.getParameter(parameter.getParameterName()));
+            }
+        }
         
         resp.sendRedirect("GuidedEditor.html?"+req.getQueryString());
-        //RequestDispatcher requestDispatcher = req.getRequestDispatcher("GuidedEditor.html");
-        //requestDispatcher.forward(req, resp);
     }
 
 	

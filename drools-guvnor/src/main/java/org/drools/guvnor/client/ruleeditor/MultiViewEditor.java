@@ -158,8 +158,6 @@ public class MultiViewEditor extends GuvnorEditor {
                                                             ruleViewer.setMetaVisible(showMetadata);
 
                                                             content.add(ruleViewer);
-                                                            OpenEvent.fire(null, content);
-
                                                             ruleViewer.setWidth("100%");
 
                                                             ruleViewer.setCloseCommand(new Command() {

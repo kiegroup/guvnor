@@ -146,7 +146,7 @@ public class ActionToolbar extends Composite {
      * Sets the visible status display.
      */
     private void setState(String status) {
-        state.setText(Format.format(constants.statusIs(),
+        state.setHTML(Format.format(constants.statusIs(),
                 status));
     }
 

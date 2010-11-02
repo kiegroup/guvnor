@@ -24,6 +24,7 @@ import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.StandaloneGuidedEditorService;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.annotations.In;
@@ -56,9 +57,27 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
         
         HttpSession session = this.getThreadLocalRequest().getSession();
         
-        String packageName = (String)session.getAttribute(GuidedEditorServlet.GE_PACKAGE_PARAMETER_NAME);
-        String categoryName = (String)session.getAttribute(GuidedEditorServlet.GE_CATEGORY_PARAMETER_NAME);
-        String[] initialBRL = (String[])session.getAttribute(GuidedEditorServlet.GE_BRL_PARAMETER_NAME);
+        String packageName = (String)session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_PACKAGE_PARAMETER_NAME.getParameterName());
+        String categoryName = (String)session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CATEGORY_PARAMETER_NAME.getParameterName());
+        String[] initialBRL = (String[])session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_BRL_PARAMETER_NAME.getParameterName());
+        
+        boolean hideLHSInEditor = false;
+        Object attribute = session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_LHS_PARAMETER_NAME.getParameterName());
+        if (attribute != null){
+            hideLHSInEditor = Boolean.parseBoolean(attribute.toString());
+        }
+        
+        boolean hideRHSInEditor = false;
+        attribute = session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_RHS_PARAMETER_NAME.getParameterName());
+        if (attribute != null){
+            hideRHSInEditor = Boolean.parseBoolean(attribute.toString());
+        }
+        
+        boolean hideAttributesInEditor = false;
+        attribute = session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_ATTRIBUTES_PARAMETER_NAME.getParameterName());
+        if (attribute != null){
+            hideAttributesInEditor = Boolean.parseBoolean(attribute.toString());
+        }
         
         List<RuleModel> models = new ArrayList<RuleModel>(initialBRL.length);
         List<RuleAsset> assets = new ArrayList<RuleAsset>(initialBRL.length);
@@ -73,7 +92,7 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
         //no unmarshal errors, it's time to create the rules
         try{
             for (RuleModel ruleModel : models) {
-                assets.add(this.createRuleAssetFromRuleModel(packageName, categoryName, ruleModel));
+                assets.add(this.createRuleAssetFromRuleModel(packageName, categoryName, ruleModel, hideLHSInEditor, hideRHSInEditor, hideAttributesInEditor));
             }
         } catch (Exception e){
             //if something failed, delete the generated assets
@@ -92,7 +111,7 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
         
     }
     
-    private RuleAsset createRuleAssetFromRuleModel(String packageName, String categoryName, RuleModel model) throws DetailedSerializationException {
+    private RuleAsset createRuleAssetFromRuleModel(String packageName, String categoryName, RuleModel model, Boolean hideLHSInEditor, Boolean hideRHSInEditor, Boolean hideAttributesInEditor) throws DetailedSerializationException {
 
         try {
             //creates a new empty rule with a unique name (this is because
@@ -101,6 +120,9 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
             RuleAsset newRule = this.getService().loadRuleAsset(ruleUUID);
             
             //update its content and persist
+            model.addMetadata(new RuleMetadata(RuleMetadata.HIDE_LHS_IN_EDITOR, hideLHSInEditor.toString()));
+            model.addMetadata(new RuleMetadata(RuleMetadata.HIDE_RHS_IN_EDITOR, hideRHSInEditor.toString()));
+            model.addMetadata(new RuleMetadata(RuleMetadata.HIDE_ATTRIBUTES_IN_EDITOR, hideAttributesInEditor.toString()));
             newRule.content = model;
             ruleUUID = this.getService().checkinVersion(newRule);
 
