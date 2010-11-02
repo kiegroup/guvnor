@@ -438,25 +438,22 @@ public class AssetItem extends CategorisableItem {
 	 */
 	public String toString() {
 		try {
-			StringBuffer returnString = new StringBuffer();
-			returnString.append("Content of rule item named '" + this.getName()
-					+ "':\n");
-			returnString.append("Content: " + this.getContent() + "\n");
+			StringBuilder returnString = new StringBuilder();
+            returnString.append("Content of rule item named '").append(this.getName()).append("':\n");
+            returnString.append("Content: ").append(this.getContent()).append("\n");
 			returnString.append("------\n");
 
-			returnString.append("Archived: " + this.isArchived() + "\n");
+            returnString.append("Archived: ").append(this.isArchived()).append("\n");
 			returnString.append("------\n");
 
-			returnString.append("Date Effective: " + this.getDateEffective()
-					+ "\n");
-			returnString
-					.append("Date Expired: " + this.getDateExpired() + "\n");
+            returnString.append("Date Effective: ").append(this.getDateEffective()).append("\n");
+            returnString.append("Date Expired: ").append(this.getDateExpired()).append("\n");
 			returnString.append("------\n");
 
 			returnString.append("Rule state: ");
 			StateItem stateItem = this.getState();
 			if (stateItem != null) {
-				returnString.append(this.getState().getName() + "\n");
+                returnString.append(this.getState().getName()).append("\n");
 			} else {
 				returnString.append("NO STATE SET FOR THIS NODE\n");
 			}
@@ -465,7 +462,7 @@ public class AssetItem extends CategorisableItem {
 			returnString.append("Rule tags:\n");
 			for (Iterator it = this.getCategories().iterator(); it.hasNext();) {
 				CategoryItem currentTag = (CategoryItem) it.next();
-				returnString.append(currentTag.getName() + "\n");
+                returnString.append(currentTag.getName()).append("\n");
 			}
 			returnString.append("--------------\n");
 			return returnString.toString();
