@@ -829,7 +829,7 @@ public class RulesRepository {
      *
      * @param tagName
      *            the name of the tag to get. If the tag to get is within a
-     *            heirarchy of tag nodes, specify the full path to the tag node
+     *            hierarchy of tag nodes, specify the full path to the tag node
      *            of interest (e.g. if you want to get back 'child-tag', use
      *            "parent-tag/child-tag")
      * @return a TagItem object encapsulating the node for the tag in the
