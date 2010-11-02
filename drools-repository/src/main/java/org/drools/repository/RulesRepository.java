@@ -50,7 +50,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * RulesRepository is the class that defines the bahavior for the JBoss Rules
+ * RulesRepository is the class that defines the behavior for the JBoss Rules
  * (drools) rule repository based upon the JCR specification (JSR-170).
  * <p>
  * An instance of this class is capable of storing rules used by the JBoss Rule
