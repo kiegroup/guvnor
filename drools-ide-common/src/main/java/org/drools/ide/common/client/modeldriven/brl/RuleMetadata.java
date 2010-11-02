@@ -23,7 +23,11 @@ package org.drools.ide.common.client.modeldriven.brl;
  */
 public class RuleMetadata implements PortableObject {
 
-	public String attributeName;
+        public static String HIDE_LHS_IN_EDITOR = "HideLHSInEditor";
+        public static String HIDE_RHS_IN_EDITOR = "HideRHSInEditor";
+        public static String HIDE_ATTRIBUTES_IN_EDITOR = "HideAttributesInEditor";
+    
+        public String attributeName;
 	public String value;
 	
 	public RuleMetadata() {

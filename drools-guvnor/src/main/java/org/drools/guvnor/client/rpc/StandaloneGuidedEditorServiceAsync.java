@@ -25,5 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface StandaloneGuidedEditorServiceAsync {
 
-    public void loadRuleAssetsFromSession(AsyncCallback<RuleAsset[]> asyncCallback);
+    void loadRuleAssetsFromSession(AsyncCallback<RuleAsset[]> asyncCallback);
+    void getAsstesDRL(String[] assetsUids, AsyncCallback<String[]> asyncCallback);
+    void getAsstesBRL(String[] assetsUids, AsyncCallback<String[]> asyncCallback);
 }

@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.rpc.StandaloneGuidedEditorService;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 
 /**
@@ -163,7 +164,7 @@ public class MultiViewEditor extends GuvnorEditor {
                                                             ruleViewer.setCloseCommand(new Command() {
 
                                                                 public void execute() {
-                                                                    ruleViews.remove(ruleViewer);
+                                                                    ruleViews.remove(row.uuid);
                                                                     rows.remove(row);
                                                                     doViews();
                                                                 }
@@ -216,7 +217,7 @@ public class MultiViewEditor extends GuvnorEditor {
         pop.show();
 
     }
-
+    
     public void close() {
         closeCommand.execute();
     }

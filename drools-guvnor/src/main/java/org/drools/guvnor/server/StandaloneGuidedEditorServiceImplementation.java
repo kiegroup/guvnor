@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.server;
 
+import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.drools.guvnor.client.rpc.StandaloneGuidedEditorService;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.annotations.In;
 
@@ -33,6 +35,8 @@ import org.jboss.seam.annotations.In;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 
 /**
+ * All the needed Services in order to get the Guided Editor running as standalone
+ * app.
  * @author esteban.aliverti
  */
 public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceServlet
@@ -52,9 +56,19 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
         return RepositoryServiceServlet.getService();
     }
 
-       
+    /**
+     * To open the Guided Editor as standalone, you should be gone through 
+     * GuidedEditorServlet first. This servlet put all the POST parameters into
+     * session. This method takes those parameters and load the corresponding
+     * assets.
+     * If you are passing BRLs to the Guided Editor, this method will create
+     * one asset per BRL with a unique name.
+     * @return
+     * @throws DetailedSerializationException
+     */   
     public RuleAsset[] loadRuleAssetsFromSession() throws DetailedSerializationException{
         
+        //Get the parameters from the session
         HttpSession session = this.getThreadLocalRequest().getSession();
         
         String packageName = (String)session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_PACKAGE_PARAMETER_NAME.getParameterName());
@@ -111,6 +125,18 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
         
     }
     
+    /**
+     * Creates a new RuleAsset from a RuleModel. The name of the RuleAsset will
+     * be the original name plus a unique number.
+     * @param packageName
+     * @param categoryName
+     * @param model
+     * @param hideLHSInEditor
+     * @param hideRHSInEditor
+     * @param hideAttributesInEditor
+     * @return
+     * @throws DetailedSerializationException
+     */
     private RuleAsset createRuleAssetFromRuleModel(String packageName, String categoryName, RuleModel model, Boolean hideLHSInEditor, Boolean hideRHSInEditor, Boolean hideAttributesInEditor) throws DetailedSerializationException {
 
         try {
@@ -137,5 +163,42 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
                     ex.getMessage());
         }
 
+    }
+    
+    /**
+     * Returns the DRL source code of the given assets.
+     * @param assetsUids
+     * @return
+     * @throws SerializationException
+     */
+    public String[] getAsstesDRL(String[] assetsUids) throws SerializationException{
+        
+        String[] sources = new String[assetsUids.length];
+        
+        for (int i = 0; i < assetsUids.length; i++) {
+            RuleAsset ruleAsset = this.getService().loadRuleAsset(assetsUids[i]);
+            sources[i] = this.getService().buildAssetSource(ruleAsset);
+        }
+        
+        return sources;
+    }
+    
+    /**
+     * Returns the DRL source code of the given assets.
+     * @param assetsUids
+     * @return
+     * @throws SerializationException
+     */
+    public String[] getAsstesBRL(String[] assetsUids) throws SerializationException{
+        
+        String[] sources = new String[assetsUids.length];
+        
+        BRLPersistence converter = BRXMLPersistence.getInstance();
+        for (int i = 0; i < assetsUids.length; i++) {
+            RuleAsset ruleAsset = this.getService().loadRuleAsset(assetsUids[i]);
+            sources[i] = converter.marshal((RuleModel) ruleAsset.content);
+        }
+        
+        return sources;
     }
 }
