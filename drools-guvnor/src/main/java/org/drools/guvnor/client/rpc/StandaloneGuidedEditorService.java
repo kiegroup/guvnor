@@ -36,5 +36,6 @@ public interface StandaloneGuidedEditorService
      
      String[] getAsstesDRL(String[] assetsUids) throws SerializationException;
      String[] getAsstesBRL(String[] assetsUids) throws SerializationException;
+     void removeAssets(String[] assetsUUIDs);
 
 }

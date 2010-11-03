@@ -24,6 +24,10 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.StandaloneGuidedEditorService;
+import org.drools.guvnor.server.guidededitor.BRLRuleAssetProvider;
+import org.drools.guvnor.server.guidededitor.NewRuleAssetProvider;
+import org.drools.guvnor.server.guidededitor.RuleAssetProvider;
+import org.drools.guvnor.server.guidededitor.UUIDRuleAssetProvider;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -74,9 +78,19 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
         String packageName = (String)session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_PACKAGE_PARAMETER_NAME.getParameterName());
         String categoryName = (String)session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CATEGORY_PARAMETER_NAME.getParameterName());
         String[] initialBRL = (String[])session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_BRL_PARAMETER_NAME.getParameterName());
+        String[] assetsUUIDs = (String[])session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_ASSETS_UUIDS_PARAMETER_NAME.getParameterName());
+        
+        boolean createNewAsset = false;
+        Object attribute = session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CREATE_NEW_ASSET_PARAMETER_NAME.getParameterName());
+        if (attribute != null){
+            createNewAsset = Boolean.parseBoolean(attribute.toString());
+        }
+        String ruleName = (String)session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_RULE_PARAMETER_NAME.getParameterName());
+        
+        
         
         boolean hideLHSInEditor = false;
-        Object attribute = session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_LHS_PARAMETER_NAME.getParameterName());
+        attribute = session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_LHS_PARAMETER_NAME.getParameterName());
         if (attribute != null){
             hideLHSInEditor = Boolean.parseBoolean(attribute.toString());
         }
@@ -93,90 +107,38 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
             hideAttributesInEditor = Boolean.parseBoolean(attribute.toString());
         }
         
-        List<RuleModel> models = new ArrayList<RuleModel>(initialBRL.length);
-        List<RuleAsset> assets = new ArrayList<RuleAsset>(initialBRL.length);
         
-        //We wan't to avoid inconsistent states, that is why we first unmarshal
-        //each brl and then (if nothing fails) create each rule
-        for (String brl : initialBRL) {
-            //convert the BRL to RuleModel and update the rule
-            models.add(BRXMLPersistence.getInstance().unmarshal(brl));
+        RuleAssetProvider provider; 
+        Object data;
+        if (createNewAsset){
+            provider = new NewRuleAssetProvider();
+            data = ruleName;
+        }else if (assetsUUIDs != null){
+            provider = new UUIDRuleAssetProvider();
+            data = assetsUUIDs;
+        }else if (initialBRL != null){
+            provider = new BRLRuleAssetProvider();
+            data = initialBRL;
+        }else{
+            throw new IllegalStateException();
         }
         
-        //no unmarshal errors, it's time to create the rules
-        try{
-            for (RuleModel ruleModel : models) {
-                assets.add(this.createRuleAssetFromRuleModel(packageName, categoryName, ruleModel, hideLHSInEditor, hideRHSInEditor, hideAttributesInEditor));
-            }
-        } catch (Exception e){
-            //if something failed, delete the generated assets
-            for (RuleAsset ruleAsset : assets) {
-                this.getService().removeAsset(ruleAsset.uuid);
-            }
-            
-            if (e instanceof DetailedSerializationException){
-                throw (DetailedSerializationException)e;
-            }
-            
-            throw new DetailedSerializationException("Error creating assets", e.getMessage());
-        }
+        return provider.getRuleAssets(packageName, categoryName, data, hideLHSInEditor, hideRHSInEditor, hideAttributesInEditor);
         
-        return assets.toArray(new RuleAsset[assets.size()]);
-        
-    }
-    
-    /**
-     * Creates a new RuleAsset from a RuleModel. The name of the RuleAsset will
-     * be the original name plus a unique number.
-     * @param packageName
-     * @param categoryName
-     * @param model
-     * @param hideLHSInEditor
-     * @param hideRHSInEditor
-     * @param hideAttributesInEditor
-     * @return
-     * @throws DetailedSerializationException
-     */
-    private RuleAsset createRuleAssetFromRuleModel(String packageName, String categoryName, RuleModel model, Boolean hideLHSInEditor, Boolean hideRHSInEditor, Boolean hideAttributesInEditor) throws DetailedSerializationException {
-
-        try {
-            //creates a new empty rule with a unique name (this is because
-            //multiple clients could be opening the same rule at the same time)
-            String ruleUUID = this.getService().createNewRule(model.name+System.nanoTime(), "imported from BRL", categoryName, packageName, AssetFormats.BUSINESS_RULE);
-            RuleAsset newRule = this.getService().loadRuleAsset(ruleUUID);
-            
-            //update its content and persist
-            model.addMetadata(new RuleMetadata(RuleMetadata.HIDE_LHS_IN_EDITOR, hideLHSInEditor.toString()));
-            model.addMetadata(new RuleMetadata(RuleMetadata.HIDE_RHS_IN_EDITOR, hideRHSInEditor.toString()));
-            model.addMetadata(new RuleMetadata(RuleMetadata.HIDE_ATTRIBUTES_IN_EDITOR, hideAttributesInEditor.toString()));
-            newRule.content = model;
-            ruleUUID = this.getService().checkinVersion(newRule);
-
-            if (ruleUUID == null) {
-                throw new IllegalStateException("Failed checking int the new version");
-            }
-
-            return this.getService().loadRuleAsset(ruleUUID);
-        } catch (Exception ex) {
-            log.error("Unable to create Rule: " + ex.getMessage());
-            throw new DetailedSerializationException("Unable to create Rule",
-                    ex.getMessage());
-        }
-
     }
     
     /**
      * Returns the DRL source code of the given assets.
-     * @param assetsUids
+     * @param assetsUUIDs
      * @return
      * @throws SerializationException
      */
-    public String[] getAsstesDRL(String[] assetsUids) throws SerializationException{
+    public String[] getAsstesDRL(String[] assetsUUIDs) throws SerializationException{
         
-        String[] sources = new String[assetsUids.length];
+        String[] sources = new String[assetsUUIDs.length];
         
-        for (int i = 0; i < assetsUids.length; i++) {
-            RuleAsset ruleAsset = this.getService().loadRuleAsset(assetsUids[i]);
+        for (int i = 0; i < assetsUUIDs.length; i++) {
+            RuleAsset ruleAsset = this.getService().loadRuleAsset(assetsUUIDs[i]);
             sources[i] = this.getService().buildAssetSource(ruleAsset);
         }
         
@@ -185,20 +147,28 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
     
     /**
      * Returns the DRL source code of the given assets.
-     * @param assetsUids
+     * @param assetsUUIDs
      * @return
      * @throws SerializationException
      */
-    public String[] getAsstesBRL(String[] assetsUids) throws SerializationException{
+    public String[] getAsstesBRL(String[] assetsUUIDs) throws SerializationException{
         
-        String[] sources = new String[assetsUids.length];
+        String[] sources = new String[assetsUUIDs.length];
         
         BRLPersistence converter = BRXMLPersistence.getInstance();
-        for (int i = 0; i < assetsUids.length; i++) {
-            RuleAsset ruleAsset = this.getService().loadRuleAsset(assetsUids[i]);
+        for (int i = 0; i < assetsUUIDs.length; i++) {
+            RuleAsset ruleAsset = this.getService().loadRuleAsset(assetsUUIDs[i]);
             sources[i] = converter.marshal((RuleModel) ruleAsset.content);
         }
         
         return sources;
+    }
+    
+    /**
+     * Remove all the given assets
+     * @param assetsUUIDs the assets UUIDs
+     */
+    public void removeAssets(String[] assetsUUIDs){
+        this.getService().removeAssets(assetsUUIDs);
     }
 }

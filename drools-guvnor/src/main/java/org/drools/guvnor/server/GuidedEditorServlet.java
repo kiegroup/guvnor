@@ -19,7 +19,6 @@ package org.drools.guvnor.server;
 
 import java.io.IOException;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +31,13 @@ public class GuidedEditorServlet extends HttpServlet {
         GE_PACKAGE_PARAMETER_NAME("packageName",false),
         GE_CATEGORY_PARAMETER_NAME("categoryName",false),
         GE_BRL_PARAMETER_NAME("brlSource",true),
+        GE_ASSETS_UUIDS_PARAMETER_NAME("assetsUUIDs",true),
+        GE_CREATE_NEW_ASSET_PARAMETER_NAME("createNewAsset",false),
+        
+        //Only used when creating a new Rule
+        GE_RULE_PARAMETER_NAME("ruleName",false),
+        
+        GE_RULE_REMOVE_ASSETS_ON_CLOSE_PARAMETER_NAME("removeAssetsOnClose",false),
         
         GE_HIDE_RULE_LHS_PARAMETER_NAME("hideRuleLHS",false),
         GE_HIDE_RULE_RHS_PARAMETER_NAME("hideRuleRHS",false),
@@ -68,7 +74,9 @@ public class GuidedEditorServlet extends HttpServlet {
             }
         }
         
-        resp.sendRedirect("GuidedEditor.html?"+req.getQueryString());
+        boolean removeAssetsOnClose = req.getParameter(GUIDED_EDITOR_SERVLET_PARAMETERS.GE_RULE_REMOVE_ASSETS_ON_CLOSE_PARAMETER_NAME.getParameterName())==null?false:Boolean.parseBoolean(req.getParameter(GUIDED_EDITOR_SERVLET_PARAMETERS.GE_RULE_REMOVE_ASSETS_ON_CLOSE_PARAMETER_NAME.getParameterName()));
+        
+        resp.sendRedirect("GuidedEditor.html?"+GUIDED_EDITOR_SERVLET_PARAMETERS.GE_RULE_REMOVE_ASSETS_ON_CLOSE_PARAMETER_NAME.getParameterName()+"="+removeAssetsOnClose+"&"+req.getQueryString());
     }
 
 	

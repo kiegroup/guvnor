@@ -1,6 +1,7 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window.ClosingEvent;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
@@ -10,6 +11,7 @@ import org.drools.guvnor.client.rulelist.EditItemEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -39,10 +41,22 @@ public class GuidedEditorManager {
     
     private String[] assetsUids;
     
+    private Window.ClosingHandler windowCloseingHandler = new Window.ClosingHandler() {
+
+                public void onWindowClosing(ClosingEvent event) {
+                    removeAssets();
+                }
+            };
+    
     public Panel getBaseLayout() {
         
         //init JS hoocks
         this.setHooks(this);
+        
+        //remove assets on close
+        if (Boolean.parseBoolean(Window.Location.getParameter("removeAssetsOnClose"))){
+            Window.addWindowClosingHandler(windowCloseingHandler);
+        }
         
         mainLayout = new DockLayoutPanel(Unit.EM);
         
@@ -99,6 +113,13 @@ public class GuidedEditorManager {
                             }
                         }, new StandaloneGuidedEditorIndividualActionToolbarButtonsConfigurationProvider());
 
+                        editor.setCloseCommand(new Command() {
+
+                            public void execute() {
+                                afterSaveAndClose();
+                            }
+                        });
+                        
                         //Add the editor to main panel
                         mainPanel.add(editor);
                     }
@@ -111,6 +132,22 @@ public class GuidedEditorManager {
         return mainLayout;
     }
     
+    /**
+     * Remove the assets used by this Guided Editor instance
+     */
+    public void removeAssets(){
+        standaloneGuidedEditorService.removeAssets(assetsUids, new AsyncCallback<Void>() {
+
+            public void onFailure(Throwable caught) {
+                removeAssetsCallback(false,caught.getMessage());
+            }
+
+            public void onSuccess(Void result) {
+                LoadingPopup.showMessage("Assets removed");
+                removeAssetsCallback(true,"Assets removed");
+            }
+        });
+    }
     
     /**
      * This method should be invoked from JS using window.getEditorDRL().
@@ -181,8 +218,18 @@ public class GuidedEditorManager {
             $wnd.guvnorGuidedEditorBRLCallbackFunction = callbackFunction;
             app.@org.drools.guvnor.client.ruleeditor.GuidedEditorManager::getBRLs()();
         };
-                                  
-
+                                                          
+                                                         
+        $wnd.removeAssets = function (callbackFunction) {
+            $wnd.guvnorGuidedEditorRemoveAssetsCallbackFunction = callbackFunction;
+            app.@org.drools.guvnor.client.ruleeditor.GuidedEditorManager::removeAssets()();
+        };           
+       
+        //close function listener. The function you register here will be called
+        //after the "Save and Close" button is pressed                                                                                                                 
+        $wnd.guvnorGuidedEditorOnSaveAndCloseFunction=null;
+                                                         
+                                                         
     }-*/;
     
     /**
@@ -202,6 +249,26 @@ public class GuidedEditorManager {
     public native void returnBRL(String brl)/*-{
         if ($wnd.guvnorGuidedEditorBRLCallbackFunction){
             $wnd.guvnorGuidedEditorBRLCallbackFunction(brl);
+        }
+    }-*/;
+    
+    /**
+     * Callback method invoked from removeAssets().
+     * @param success
+     * @param message
+     */
+    public native void removeAssetsCallback(boolean success, String message)/*-{
+        if ($wnd.guvnorGuidedEditorRemoveAssetsCallbackFunction){
+            $wnd.guvnorGuidedEditorRemoveAssetsCallbackFunction(success, message);
+        }
+    }-*/;
+    
+    /**
+     * Method invoked after the "Save an Close" button is pressed. 
+     */
+    public native void afterSaveAndClose()/*-{
+        if ($wnd.guvnorGuidedEditorOnSaveAndCloseFunction){
+            $wnd.guvnorGuidedEditorOnSaveAndCloseFunction();
         }
     }-*/;
 }
