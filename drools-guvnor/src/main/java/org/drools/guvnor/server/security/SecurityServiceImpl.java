@@ -64,6 +64,8 @@ public class SecurityServiceImpl
     public static final String       GUEST_LOGIN = "guest";
     private static final Logger      log         = LoggerFactory.getLogger( SecurityServiceImpl.class );
     static final Map<String, String> PREFERENCES = loadPrefs();
+    private static String[] serializationProperties = new String[] {"drools.serialization.private.keyStoreURL", "drools.serialization.private.keyStorePwd",
+    	"drools.serialization.private.keyAlias", "drools.serialization.private.keyPwd", "drools.serialization.public.keyStoreURL", "drools.serialization.public.keyStorePwd"};
 
     public boolean login(String userName,
                          String password) {  	
@@ -158,11 +160,32 @@ public class SecurityServiceImpl
                     Identity.instance().logout();
                     throw new AuthorizationException( "This user has no permissions setup." );
             }
+            
+            if(invalidSecuritySerilizationSetup()) {
+            	Identity.instance().logout();
+                throw new AuthorizationException( " Configuration error - Please refer to the Administration Guide section on installation. You must configure a key store before proceding.  " );
+            }
             return c.calcCapabilities( permissions,
                                        PREFERENCES );
         } else {
+        	if(invalidSecuritySerilizationSetup()) {
+                throw new AuthorizationException( " Configuration error - Please refer to the Administration Guide section on installation. You must configure a key store before proceding.  " );
+            }
             return Capabilities.all( PREFERENCES );
         }
+    }
+    
+    private boolean invalidSecuritySerilizationSetup() {
+    	String ssecurity = System.getProperty("drools.serialization.sign");
+    	if(ssecurity != null && ssecurity.equalsIgnoreCase( "true" )) {
+    		for(String nextProp : serializationProperties) {
+    			String nextPropVal = System.getProperty(nextProp);
+    			if(nextPropVal == null || nextPropVal.trim().equals("")) {
+    				return true;
+    			}
+    		}
+    	}
+    	return false;
     }
 
     private static Map<String, String> loadPrefs() {
