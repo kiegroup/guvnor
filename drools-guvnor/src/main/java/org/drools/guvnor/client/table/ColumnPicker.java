@@ -27,8 +27,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -50,7 +49,7 @@ public class ColumnPicker<T> {
         this.cellTable = cellTable;
     }
 
-    public void addColumn(TextColumn<T> column, SortableHeader<T, ?> header, boolean visible) {
+    public void addColumn(Column<T, ?> column, SortableHeader<T, ?> header, boolean visible) {
         addColumn(new ColumnMeta<T>(column, header, visible));
     }
 
@@ -112,21 +111,21 @@ public class ColumnPicker<T> {
     }
 
     private static class ColumnMeta<T> {
-        private TextColumn<T> column;
+        private Column<T, ?> column;
         private SortableHeader<T, ?> header;
         private boolean visible;
 
-        private ColumnMeta(TextColumn<T> column, SortableHeader<T, ?> header, boolean visible) {
+        private ColumnMeta(Column<T, ?> column, SortableHeader<T, ?> header, boolean visible) {
             this.column = column;
             this.header = header;
             this.visible = visible;
         }
 
-        public TextColumn<T> getColumn() {
+        public Column<T, ?> getColumn() {
             return column;
         }
 
-        public void setColumn(TextColumn<T> column) {
+        public void setColumn(Column<T, ?> column) {
             this.column = column;
         }
 
