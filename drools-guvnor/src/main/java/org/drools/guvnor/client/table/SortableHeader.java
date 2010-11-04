@@ -23,7 +23,7 @@ public class SortableHeader<T, C extends Comparable> extends Header<String> {
 
     private static String makeImage(ImageResource resource) {
         AbstractImagePrototype prototype = AbstractImagePrototype.create(resource);
-        return prototype.getHTML().replace("style='", "style='position:absolute;right:0px;top:0px;");
+        return prototype.getHTML();
     }
 
     private final SortableHeaderGroup sortableHeaderGroup;
@@ -73,10 +73,14 @@ public class SortableHeader<T, C extends Comparable> extends Header<String> {
 
     @Override
     public void render(SafeHtmlBuilder sb) {
-        sb.appendHtmlConstant("<div style='position:relative;cursor:hand;cursor:pointer;padding-right:16px;'>");
+        sb.appendHtmlConstant("<div style='position: relative; cursor: pointer; padding: 0px;'>");
+        sb.appendHtmlConstant("<span style='padding-right: 10px'>");
+        sb.appendEscaped(text);
+        sb.appendHtmlConstant("</span>");
+//        sb.appendHtmlConstant("<div style='position:absolute;right:0px;top:0px;'></div>");
         switch (sortDirection) {
             case NONE:
-                sb.appendHtmlConstant("<div style='position:absolute;display:none;'></div>");
+                // nothing
                 break;
             case ASCENDING:
                 sb.appendHtmlConstant(sortIndex == 0 ? UP_ARROW : SMALL_UP_ARROW);
@@ -87,9 +91,9 @@ public class SortableHeader<T, C extends Comparable> extends Header<String> {
             default:
                 throw new IllegalArgumentException("Unknown sortDirection (" + sortDirection + ").");
         }
-        sb.appendHtmlConstant("<div>");
-        sb.appendEscaped(text);
-        sb.appendHtmlConstant("</div></div>");
+        sb.appendHtmlConstant("</div>");
+//        sb.appendHtmlConstant("<div>");
+//        sb.appendHtmlConstant("</div></div>");
     }
 
 }
