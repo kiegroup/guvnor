@@ -2747,7 +2747,7 @@ public class ServiceImplementation
         Discussion dp = new Discussion();
         List<DiscussionRecord> discussion = dp.fromString( asset.getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
         discussion.add( new DiscussionRecord( repo.getSession().getUserID(),
-                                              comment ) );
+        		 StringEscapeUtils.escapeXml(comment) ) );
         asset.updateStringProperty( dp.toString( discussion ),
                                     Discussion.DISCUSSION_PROPERTY_KEY,
                                     false );
