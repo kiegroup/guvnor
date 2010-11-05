@@ -23,7 +23,7 @@
         virtual file system where the repository stores global state
         (e.g. registered namespaces, custom node types, etc.)
     -->
-    <FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">    
+    <FileSystem class="org.apache.jackrabbit.core.fs.db.MSSqlFileSystem">    
        <param name="driver" value="${dbDriver}"/>
        <param name="url" value="${dbUrl}"/>
        <param name="schema" value="mssql"/>
@@ -71,7 +71,7 @@
         -->
 
 		
-		<FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">
+		<FileSystem class="org.apache.jackrabbit.core.fs.db.MSSqlFileSystem">
 			<param name="driver" value="${dbDriver}"/>
        		<param name="url" value="${dbUrl}"/>
        		<param name="user" value="${dbUser}"/>
@@ -114,7 +114,7 @@
             persistence manager
         -->
 
-        <FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">
+        <FileSystem class="org.apache.jackrabbit.core.fs.db.MSSqlFileSystem">
 			<param name="driver" value="${dbDriver}"/>
        		<param name="url" value="${dbUrl}"/>
        		<param name="user" value="${dbUser}"/>
