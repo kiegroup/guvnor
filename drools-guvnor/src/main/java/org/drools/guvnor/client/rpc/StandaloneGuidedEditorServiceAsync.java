@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.drools.guvnor.client.ruleeditor.standalone.StandaloneGuidedEditorInvocationParameters;
 
 /**
  * 
@@ -25,7 +26,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public interface StandaloneGuidedEditorServiceAsync {
 
-    void loadRuleAssetsFromSession(AsyncCallback<RuleAsset[]> asyncCallback);
+    void getInvocationParameters(AsyncCallback<StandaloneGuidedEditorInvocationParameters> asyncCallback);
     void getAsstesDRL(String[] assetsUids, AsyncCallback<String[]> asyncCallback);
     void getAsstesBRL(String[] assetsUids, AsyncCallback<String[]> asyncCallback);
     void removeAssets(String[] assetsUUIDs, AsyncCallback<Void> asyncCallback);

@@ -26,6 +26,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
  */
 public interface RuleAssetProvider {
     
-    RuleAsset[] getRuleAssets(String packageName, String categoryName, Object data, Boolean hideLHSInEditor, Boolean hideRHSInEditor, Boolean hideAttributesInEditor) throws DetailedSerializationException ; 
+    RuleAsset[] getRuleAssets() throws DetailedSerializationException ; 
     
 }

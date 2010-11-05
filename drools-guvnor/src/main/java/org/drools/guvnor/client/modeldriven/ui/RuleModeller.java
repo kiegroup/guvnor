@@ -96,21 +96,22 @@ public class RuleModeller extends DirtyableComposite
     implements
     RuleModelEditor {
 
-    private DirtyableFlexTable       layout;
-    private RuleModel                model;
-    private Constants                constants               = ((Constants) GWT.create( Constants.class ));
-    private boolean                  showingOptions          = false;
-    private int                      currentLayoutRow        = 0;
-    private String                   packageName;
-    private RuleAsset                asset;
-    private ModellerWidgetFactory    widgetFactory;
+    private DirtyableFlexTable          layout;
+    private RuleModel                   model;
+    private Constants                   constants               = ((Constants) GWT.create( Constants.class ));
+    private RuleModellerConfiguration   configuration               = RuleModellerConfiguration.getInstance();
+    private boolean                     showingOptions          = false;
+    private int                         currentLayoutRow        = 0;
+    private String                      packageName;
+    private RuleAsset                   asset;
+    private ModellerWidgetFactory       widgetFactory;
 
-    private List<RuleModellerWidget> lhsWidgets              = new ArrayList<RuleModellerWidget>();
-    private List<RuleModellerWidget> rhsWidgets              = new ArrayList<RuleModellerWidget>();
+    private List<RuleModellerWidget>    lhsWidgets              = new ArrayList<RuleModellerWidget>();
+    private List<RuleModellerWidget>    rhsWidgets              = new ArrayList<RuleModellerWidget>();
 
-    private boolean                  hasModifiedWidgets;
+    private boolean                     hasModifiedWidgets;
 
-    private final Command            onWidgetModifiedCommand = new Command() {
+    private final Command               onWidgetModifiedCommand = new Command() {
 
                                                                  public void execute() {
                                                                      hasModifiedWidgets = true;
@@ -278,14 +279,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     public boolean showRHS(){
-        for ( RuleMetadata at : this.model.metadataList ) {
-            if ( at.attributeName.equals( RuleMetadata.HIDE_RHS_IN_EDITOR ) ) {
-                if (at.value != null && Boolean.parseBoolean(at.value)){
-                    return false;
-                }
-            }
-        }
-        return true;
+        return !this.configuration.isHideRHS();
     }
     
     /** return true if we should not allow unfrozen editing of the RHS */
@@ -294,14 +288,7 @@ public class RuleModeller extends DirtyableComposite
     }
     
     public boolean showLHS(){
-        for ( RuleMetadata at : this.model.metadataList ) {
-            if ( at.attributeName.equals( RuleMetadata.HIDE_LHS_IN_EDITOR ) ) {
-                if (at.value != null && Boolean.parseBoolean(at.value)){
-                    return false;
-                }
-            }
-        }
-        return true;
+        return !this.configuration.isHideLHS();
     }
 
     /** return true if we should not allow unfrozen editing of the LHS */
@@ -314,14 +301,7 @@ public class RuleModeller extends DirtyableComposite
             return false;
         }
         
-        for ( RuleMetadata at : this.model.metadataList ) {
-            if ( at.attributeName.equals( RuleMetadata.HIDE_ATTRIBUTES_IN_EDITOR ) ) {
-                if (at.value != null && Boolean.parseBoolean(at.value)){
-                    return false;
-                }
-            }
-        }
-        return true;
+        return !this.configuration.isHideAttributes();
     }
 
     public void refreshWidget() {

@@ -19,8 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.rpc.StandaloneGuidedEditorService;
 import org.drools.guvnor.client.rpc.StandaloneGuidedEditorServiceAsync;
+import org.drools.guvnor.client.ruleeditor.standalone.StandaloneGuidedEditorInvocationParameters;
 import org.drools.guvnor.client.ruleeditor.toolbar.StandaloneGuidedEditorIndividualActionToolbarButtonsConfigurationProvider;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
@@ -66,40 +68,57 @@ public class GuidedEditorManager {
 
         //The package must exist (because we need at least a model to work with)
         //To make things easier (to me), the category must exist too.
-        standaloneGuidedEditorService.loadRuleAssetsFromSession(new GenericCallback<RuleAsset[]>() {
+        standaloneGuidedEditorService.getInvocationParameters(new GenericCallback<StandaloneGuidedEditorInvocationParameters>() {
 
-            public void onSuccess(final RuleAsset[] assets) {
-                GuidedEditorManager.this.assetsUids = new String[assets.length];
+            public void onSuccess(final StandaloneGuidedEditorInvocationParameters parameters) {
+                GuidedEditorManager.this.assetsUids = new String[parameters.getAssetsToBeEdited().length];
                 
                 //no assets? This is an error!
-                if (assets.length == 0){
+                if (parameters.getAssetsToBeEdited().length == 0){
                     Window.alert(constants.NoRulesFound());
                     return;
                 }
                
                 //we need to store the uids of each asset.
-                for (int i = 0; i < assets.length; i++) {
-                    RuleAsset ruleAsset = assets[i];
+                for (int i = 0; i < parameters.getAssetsToBeEdited().length; i++) {
+                    RuleAsset ruleAsset = parameters.getAssetsToBeEdited()[i];
                     GuidedEditorManager.this.assetsUids[i] = ruleAsset.uuid;
                 }
                 
                 //Load SCE and create a MultiViewEditor for the assets.
                 //We take the package from the first asset (because all the assets
                 //must belong to the same package)
-                SuggestionCompletionCache.getInstance().loadPackage(assets[0].metaData.packageName, new Command() {
+                SuggestionCompletionCache.getInstance().loadPackage(parameters.getAssetsToBeEdited()[0].metaData.packageName, new Command() {
 
                     public void execute() {
+                        
+//                        Set<String> validFacts = new HashSet<String>();
+//                        validFacts.add("LoanApplication");
+//                        
+//                        SuggestionCompletionCache.getInstance().applyFactFilter(assets[0].metaData.packageName, new SetFactTypeFilter(validFacts), new Command() {
+//
+//                            public void execute() {
+//                                throw new UnsupportedOperationException("Not supported yet.");
+//                            }
+//                        });
+                        
                         LoadingPopup.close();
 
                         //For each asset we need to create a MultiViewRow
                         List<MultiViewRow> rows = new ArrayList<MultiViewRow>();
-                        for (RuleAsset ruleAsset : assets) {
+                        for (RuleAsset ruleAsset : parameters.getAssetsToBeEdited()) {
                             MultiViewRow row = new MultiViewRow();
                             row.uuid = ruleAsset.uuid;
-                            row.name = ((RuleModel)ruleAsset.content).name;
+                            row.name = ruleAsset.metaData.name;
+                            //row.name = ((RuleModel)ruleAsset.content).name;
                             row.format = AssetFormats.BUSINESS_RULE;
                             rows.add(row);
                         }
+                        //Configure RuleModeller
+                        RuleModellerConfiguration ruleModellerConfiguration = RuleModellerConfiguration.getInstance();
+                        ruleModellerConfiguration.setHideLHS(parameters.isHideLHS());
+                        ruleModellerConfiguration.setHideRHS(parameters.isHideRHS());
+                        ruleModellerConfiguration.setHideAttributes(parameters.isHideAttributes());
                         
                         //Create the editor
                         editor = new MultiViewEditor(rows.toArray(new MultiViewRow[rows.size()]), new EditItemEvent() {

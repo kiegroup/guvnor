@@ -20,6 +20,7 @@ package org.drools.guvnor.client.rpc;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.SerializationException;
+import org.drools.guvnor.client.ruleeditor.standalone.StandaloneGuidedEditorInvocationParameters;
 
 /**
  * 
@@ -32,8 +33,7 @@ public interface StandaloneGuidedEditorService
     RemoteService {
 
     
-     RuleAsset[] loadRuleAssetsFromSession() throws DetailedSerializationException;
-     
+     StandaloneGuidedEditorInvocationParameters getInvocationParameters() throws DetailedSerializationException;
      String[] getAsstesDRL(String[] assetsUids) throws SerializationException;
      String[] getAsstesBRL(String[] assetsUids) throws SerializationException;
      void removeAssets(String[] assetsUUIDs);

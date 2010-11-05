@@ -23,8 +23,6 @@ import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 
@@ -36,23 +34,24 @@ import org.drools.ide.common.server.util.BRXMLPersistence;
  */
 public class BRLRuleAssetProvider implements RuleAssetProvider {
     
-    private static final LoggingHelper log = LoggingHelper.getLogger(BRLRuleAssetProvider.class);
+    private String packageName;
+    private String categoryName; 
+    private String[] initialBRLs;
 
-    public RuleAsset[] getRuleAssets(String packageName, String categoryName, Object initialBRLs, Boolean hideLHSInEditor, Boolean hideRHSInEditor, Boolean hideAttributesInEditor) throws DetailedSerializationException {
+    public BRLRuleAssetProvider(String packageName, String categoryName, String[] initialBRLs) {
+        this.packageName = packageName;
+        this.categoryName = categoryName;
+        this.initialBRLs = initialBRLs;
+    }
+    
+    public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
         
-        //initialBRLs must be a String[] containing the brl code
-        if (!(initialBRLs instanceof String[])){
-            throw new IllegalArgumentException("Expected String[] and not "+initialBRLs.getClass().getName());
-        }
-        
-        String[] brls = (String[])initialBRLs;
-        
-        List<RuleModel> models = new ArrayList<RuleModel>(brls.length);
-        List<RuleAsset> assets = new ArrayList<RuleAsset>(brls.length);
+        List<RuleModel> models = new ArrayList<RuleModel>(initialBRLs.length);
+        List<RuleAsset> assets = new ArrayList<RuleAsset>(initialBRLs.length);
         
         //We wan't to avoid inconsistent states, that is why we first unmarshal
         //each brl and then (if nothing fails) create each rule
-        for (String brl : brls) {
+        for (String brl : initialBRLs) {
             //convert the BRL to RuleModel
             models.add(BRXMLPersistence.getInstance().unmarshal(brl));
         }
@@ -60,7 +59,7 @@ public class BRLRuleAssetProvider implements RuleAssetProvider {
         //no unmarshal errors, it's time to create the rules
         try{
             for (RuleModel ruleModel : models) {
-                assets.add(this.createRuleAssetFromRuleModel(packageName, categoryName, ruleModel, hideLHSInEditor, hideRHSInEditor, hideAttributesInEditor));
+                assets.add(this.createRuleAssetFromRuleModel(ruleModel));
             }
         } catch (Exception e){
             //if something failed, delete the generated assets
@@ -81,16 +80,10 @@ public class BRLRuleAssetProvider implements RuleAssetProvider {
     /**
      * Creates a new RuleAsset from a RuleModel. The name of the RuleAsset will
      * be the original name plus a unique number.
-     * @param packageName
-     * @param categoryName
-     * @param model
-     * @param hideLHSInEditor
-     * @param hideRHSInEditor
-     * @param hideAttributesInEditor
      * @return
      * @throws DetailedSerializationException
      */
-    private RuleAsset createRuleAssetFromRuleModel(String packageName, String categoryName, RuleModel model, Boolean hideLHSInEditor, Boolean hideRHSInEditor, Boolean hideAttributesInEditor) throws DetailedSerializationException {
+    private RuleAsset createRuleAssetFromRuleModel(RuleModel model) throws DetailedSerializationException {
 
         try {
             //creates a new empty rule with a unique name (this is because
@@ -99,9 +92,6 @@ public class BRLRuleAssetProvider implements RuleAssetProvider {
             RuleAsset newRule = this.getService().loadRuleAsset(ruleUUID);
             
             //update its content and persist
-            model.updateMetadata(new RuleMetadata(RuleMetadata.HIDE_LHS_IN_EDITOR, hideLHSInEditor.toString()));
-            model.updateMetadata(new RuleMetadata(RuleMetadata.HIDE_RHS_IN_EDITOR, hideRHSInEditor.toString()));
-            model.updateMetadata(new RuleMetadata(RuleMetadata.HIDE_ATTRIBUTES_IN_EDITOR, hideAttributesInEditor.toString()));
             newRule.content = model;
             ruleUUID = this.getService().checkinVersion(newRule);
 
@@ -110,8 +100,8 @@ public class BRLRuleAssetProvider implements RuleAssetProvider {
             }
 
             return this.getService().loadRuleAsset(ruleUUID);
+            
         } catch (Exception ex) {
-            log.error("Unable to create Rule: " + ex.getMessage());
             throw new DetailedSerializationException("Unable to create Rule",
                     ex.getMessage());
         }

@@ -20,9 +20,6 @@ import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
-import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
 /**
  * Creates a new RuleAsset.
@@ -30,32 +27,20 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
  */
 public class UUIDRuleAssetProvider implements RuleAssetProvider {
 
-    private static final LoggingHelper log = LoggingHelper.getLogger(UUIDRuleAssetProvider.class);
+    private String[] assetsUUIDs;
 
-    public RuleAsset[] getRuleAssets(String packageName, String categoryName, Object assetsUUIDs, Boolean hideLHSInEditor, Boolean hideRHSInEditor, Boolean hideAttributesInEditor) throws DetailedSerializationException {
+    public UUIDRuleAssetProvider(String[] assetsUUIDs) {
+        this.assetsUUIDs = assetsUUIDs;
+    }
+    
+    public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
         try {
-            //assetsUUIDs must be a String[]
-            if (!(assetsUUIDs instanceof String[])) {
-                throw new IllegalArgumentException("Expected String[] and not " + assetsUUIDs.getClass().getName());
-            }
 
-            String[] uuids = (String[]) assetsUUIDs;
-            RuleAsset[] assets = new RuleAsset[uuids.length];
+            RuleAsset[] assets = new RuleAsset[assetsUUIDs.length];
             
-            for (int i = 0; i < uuids.length; i++) {
-                String uuid = uuids[i];
+            for (int i = 0; i < assetsUUIDs.length; i++) {
+                String uuid = assetsUUIDs[i];
                 assets[i] = this.getService().loadRuleAsset(uuid);
-            }
-            
-            //update its content and reload
-            for (int i = 0; i < assets.length; i++) {
-                RuleAsset ruleAsset = assets[i];
-                RuleModel model = (RuleModel) ruleAsset.content;
-                model.updateMetadata(new RuleMetadata(RuleMetadata.HIDE_LHS_IN_EDITOR, hideLHSInEditor.toString()));
-                model.updateMetadata(new RuleMetadata(RuleMetadata.HIDE_RHS_IN_EDITOR, hideRHSInEditor.toString()));
-                model.updateMetadata(new RuleMetadata(RuleMetadata.HIDE_ATTRIBUTES_IN_EDITOR, hideAttributesInEditor.toString()));
-                String ruleUUID = this.getService().checkinVersion(ruleAsset);
-                assets[i] = this.getService().loadRuleAsset(ruleUUID);
             }
             
             return assets;
@@ -69,4 +54,5 @@ public class UUIDRuleAssetProvider implements RuleAssetProvider {
     private ServiceImplementation getService() {
         return RepositoryServiceServlet.getService();
     }
+
 }

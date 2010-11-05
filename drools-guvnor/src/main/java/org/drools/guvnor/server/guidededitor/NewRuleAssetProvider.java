@@ -16,19 +16,11 @@
 package org.drools.guvnor.server.guidededitor;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
-import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.ide.common.server.util.BRXMLPersistence;
 
 /**
  * Creates a new RuleAsset.
@@ -36,40 +28,27 @@ import org.drools.ide.common.server.util.BRXMLPersistence;
  */
 public class NewRuleAssetProvider implements RuleAssetProvider {
 
-    private static final LoggingHelper log = LoggingHelper.getLogger(NewRuleAssetProvider.class);
+    private String packageName;
+    private String categoryName; 
+    private String ruleName;
 
-    public RuleAsset[] getRuleAssets(String packageName, String categoryName, Object ruleName, Boolean hideLHSInEditor, Boolean hideRHSInEditor, Boolean hideAttributesInEditor) throws DetailedSerializationException {
+    public NewRuleAssetProvider(String packageName, String categoryName, String ruleName) {
+        this.packageName = packageName;
+        this.categoryName = categoryName;
+        this.ruleName = ruleName;
+    }
+    
+    public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
         try {
-            //ruleName must be a String
-            if (!(ruleName instanceof String)) {
-                throw new IllegalArgumentException("Expected String and not " + ruleName.getClass().getName());
-            }
-
-            String name = (String) ruleName;
-
             //creates a new empty rule with a unique name (this is because
             //multiple clients could be opening the same rule at the same time)
-            String ruleUUID = this.getService().createNewRule(name, "created by standalone guided editor", categoryName, packageName, AssetFormats.BUSINESS_RULE);
+            String ruleUUID = this.getService().createNewRule(ruleName, "created by standalone guided editor", categoryName, packageName, AssetFormats.BUSINESS_RULE);
             RuleAsset newRule = this.getService().loadRuleAsset(ruleUUID);
 
-            //update its content and persist
-            RuleModel model = (RuleModel) newRule.content;
-            model.updateMetadata(new RuleMetadata(RuleMetadata.HIDE_LHS_IN_EDITOR, hideLHSInEditor.toString()));
-            model.updateMetadata(new RuleMetadata(RuleMetadata.HIDE_RHS_IN_EDITOR, hideRHSInEditor.toString()));
-            model.updateMetadata(new RuleMetadata(RuleMetadata.HIDE_ATTRIBUTES_IN_EDITOR, hideAttributesInEditor.toString()));
-            ruleUUID = this.getService().checkinVersion(newRule);
-
-            if (ruleUUID == null) {
-                throw new IllegalStateException("Failed checking int the new version");
-            }
-
-            newRule = this.getService().loadRuleAsset(ruleUUID);
-            
             return new RuleAsset[]{newRule};
         } catch (SerializationException ex) {
             throw new DetailedSerializationException("Error creating rule asset", ex.getMessage());
         }
-
 
     }
 
