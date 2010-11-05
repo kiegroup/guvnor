@@ -186,7 +186,7 @@ public class PackagesTree extends AbstractTree {
         TabOpener opener = TabOpener.getInstance();
 
         if ( userObject != null) {
-            if ( userObject instanceof PackageConfigData && !"global".equals( ((PackageConfigData) userObject).name ) ) {
+            if ( userObject instanceof PackageConfigData && !((PackageConfigData) userObject).isGlobal() ) {
                 PackageConfigData pc = (PackageConfigData) userObject;
                 RulePackageSelector.currentlySelectedPackage = pc.name;
 

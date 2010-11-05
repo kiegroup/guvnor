@@ -50,4 +50,9 @@ public class PackageConfigData implements IsSerializable {
     public HashMap<String,String> catRules;
     
     public PackageConfigData[] subPackages;
+
+    public boolean isGlobal() {
+        return "global".equals(name); // TODO kills i18n
+    }
+
 }
