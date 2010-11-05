@@ -873,7 +873,7 @@ public class RulesRepository {
      * yourself... mahahahaha).
      *
      */
-    public AssetPageList findAssetsByCategory(String categoryTag,
+    public AssetItemPageResult findAssetsByCategory(String categoryTag,
                                               boolean seekArchivedAsset,
                                               int skip,
                                               int numRowsToReturn) throws RulesRepositoryException {
@@ -893,7 +893,7 @@ public class RulesRepository {
      * Pass in startRow of 0 to start at zero, numRowsToReturn can be set to -1 should you want it all.
      * @param filter an AssetItem filter
      */
-    public AssetPageList findAssetsByCategory(String categoryTag,
+    public AssetItemPageResult findAssetsByCategory(String categoryTag,
                                               boolean seekArchivedAsset,
                                               int skip,
                                               int numRowsToReturn,
@@ -915,7 +915,7 @@ public class RulesRepository {
      * Finds the AssetItem's linked to the requested state.
      * Similar to finding by category.
      */
-    public AssetPageList findAssetsByState(String stateName,
+    public AssetItemPageResult findAssetsByState(String stateName,
                                            boolean seekArchivedAsset,
                                            int skip,
                                            int numRowsToReturn) throws RulesRepositoryException {
@@ -932,7 +932,7 @@ public class RulesRepository {
      * @param filter an AssetItem filter
      *
      */
-    public AssetPageList findAssetsByState(String stateName,
+    public AssetItemPageResult findAssetsByState(String stateName,
                                            boolean seekArchivedAsset,
                                            int skip,
                                            int numRowsToReturn,
@@ -949,7 +949,7 @@ public class RulesRepository {
         }
     }
 
-    private AssetPageList loadLinkedAssets(boolean seekArchivedAsset,
+    private AssetItemPageResult loadLinkedAssets(boolean seekArchivedAsset,
                                            int skip,
                                            int numRowsToReturn,
                                            Node n,
@@ -976,10 +976,10 @@ public class RulesRepository {
             }
         }
 
-        return new AssetPageList(results, it);
+        return new AssetItemPageResult(results, it);
     }
 
-    public AssetPageList findAssetsByCategory(String categoryTag,
+    public AssetItemPageResult findAssetsByCategory(String categoryTag,
                                               int skip,
                                               int numRowsToReturn) throws RulesRepositoryException {
         return this.findAssetsByCategory( categoryTag,

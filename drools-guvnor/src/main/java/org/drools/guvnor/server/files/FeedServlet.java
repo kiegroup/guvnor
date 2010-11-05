@@ -23,7 +23,7 @@ import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.drools.repository.AssetPageList;
+import org.drools.repository.AssetItemPageResult;
 import org.drools.core.util.StringUtils;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
@@ -101,7 +101,7 @@ public class FeedServlet extends RepositoryServlet {
         String cat = request.getParameter("name");
         String status = request.getParameter("status");
         checkCategoryPermission(cat);
-        AssetPageList pg = getFileManager().getRepository().findAssetsByCategory(cat, false, 0, -1);
+        AssetItemPageResult pg = getFileManager().getRepository().findAssetsByCategory(cat, false, 0, -1);
         Iterator<AssetItem> it = pg.assets.iterator();
         List<AtomFeed.AtomEntry> entries = new ArrayList<AtomFeed.AtomEntry>();
         buildEntries(request, entries, it, status);

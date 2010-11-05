@@ -310,37 +310,37 @@ public class AssetItemTest extends TestCase {
             a.addCategory("testPagedTag");
             a.checkin("");
 
-            AssetPageList list = getRepo().findAssetsByCategory("testPagedTag", 0, -1);
-            assertTrue(list.currentPosition > 0);
-            assertEquals(5, list.assets.size());
-            assertEquals(false, list.hasNext);
+            AssetItemPageResult result = getRepo().findAssetsByCategory("testPagedTag", 0, -1);
+            assertTrue(result.currentPosition > 0);
+            assertEquals(5, result.assets.size());
+            assertEquals(false, result.hasNext);
 
 
 
-            list = getRepo().findAssetsByCategory("testPagedTag", 0, 2);
-            assertTrue(list.currentPosition > 0);
-            assertEquals(true, list.hasNext);
-            assertEquals(2, list.assets.size());
+            result = getRepo().findAssetsByCategory("testPagedTag", 0, 2);
+            assertTrue(result.currentPosition > 0);
+            assertEquals(true, result.hasNext);
+            assertEquals(2, result.assets.size());
 
-            assertEquals("testPage1", ((AssetItem)list.assets.get(0)).getName());
-            assertEquals("testPage2", ((AssetItem)list.assets.get(1)).getName());
+            assertEquals("testPage1", ((AssetItem) result.assets.get(0)).getName());
+            assertEquals("testPage2", ((AssetItem) result.assets.get(1)).getName());
 
-            list = getRepo().findAssetsByCategory("testPagedTag", 2, 2);
-            assertTrue(list.currentPosition > 0);
-            assertEquals(true, list.hasNext);
-            assertEquals(2, list.assets.size());
+            result = getRepo().findAssetsByCategory("testPagedTag", 2, 2);
+            assertTrue(result.currentPosition > 0);
+            assertEquals(true, result.hasNext);
+            assertEquals(2, result.assets.size());
 
-            assertEquals("testPage3", ((AssetItem)list.assets.get(0)).getName());
-            assertEquals("testPage4", ((AssetItem)list.assets.get(1)).getName());
+            assertEquals("testPage3", ((AssetItem) result.assets.get(0)).getName());
+            assertEquals("testPage4", ((AssetItem) result.assets.get(1)).getName());
 
-            list = getRepo().findAssetsByCategory("testPagedTag", 2, 3);
-            assertTrue(list.currentPosition > 0);
-            assertEquals(false, list.hasNext);
-            assertEquals(3, list.assets.size());
+            result = getRepo().findAssetsByCategory("testPagedTag", 2, 3);
+            assertTrue(result.currentPosition > 0);
+            assertEquals(false, result.hasNext);
+            assertEquals(3, result.assets.size());
 
-            assertEquals("testPage3", ((AssetItem)list.assets.get(0)).getName());
-            assertEquals("testPage4", ((AssetItem)list.assets.get(1)).getName());
-            assertEquals("testPage5", ((AssetItem)list.assets.get(2)).getName());
+            assertEquals("testPage3", ((AssetItem) result.assets.get(0)).getName());
+            assertEquals("testPage4", ((AssetItem) result.assets.get(1)).getName());
+            assertEquals("testPage5", ((AssetItem) result.assets.get(2)).getName());
 
     }
 

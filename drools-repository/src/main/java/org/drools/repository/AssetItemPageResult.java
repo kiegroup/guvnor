@@ -26,19 +26,19 @@ import javax.jcr.RangeIterator;
  *
  * @author Michael Neale
  */
-public class AssetPageList {
+public class AssetItemPageResult {
 
 	public final List<AssetItem> assets;
 	public final boolean hasNext;
 	public long currentPosition;
 
-	public AssetPageList(List<AssetItem> categories, RangeIterator it) {
+	public AssetItemPageResult(List<AssetItem> categories, RangeIterator it) {
 		this.assets = categories;
 		this.hasNext = it.hasNext();
 		this.currentPosition = it.getPosition();
 	}
 
-	public AssetPageList() {
+	public AssetItemPageResult() {
 		hasNext = false;
 		currentPosition = 0;
 		assets = new ArrayList<AssetItem>();

@@ -29,6 +29,6 @@ public class TableDataResult
     public TableDataRow[] data;
     public long total = -1; //-1 means we won't show a total, as we just don't know...
     public boolean hasNext;
-    public long currentPosition; //the current cursor position in the result set
+    public long currentPosition; //the current cursor position in the result set // TODO this is not of the first row but apparently of the last row ?
 
 }

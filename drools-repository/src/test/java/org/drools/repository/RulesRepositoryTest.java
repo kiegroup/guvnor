@@ -18,7 +18,6 @@ package org.drools.repository;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,20 +26,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
-import javax.jcr.LoginException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.Workspace;
 
-import org.apache.jackrabbit.core.TransientRepository;
 import org.drools.repository.RulesRepository.DateQuery;
 import org.drools.repository.migration.MigrateDroolsPackage;
 
@@ -107,7 +99,7 @@ public class RulesRepositoryTest extends TestCase {
         asset.checkin( "" );
 
         cat = repo.loadCategory( "testCatRename/testAnother" );
-        AssetPageList as = repo.findAssetsByCategory( "testCatRename/testAnother",
+        AssetItemPageResult as = repo.findAssetsByCategory( "testCatRename/testAnother",
                                                       0,
                                                       -1 );
         assertEquals( "fooBar",
@@ -176,12 +168,12 @@ public class RulesRepositoryTest extends TestCase {
         asset1.checkin( "" );
         asset2.checkin( "" );
 
-        AssetPageList list = repo.findAssetsByState( "testFindByState",
+        AssetItemPageResult result = repo.findAssetsByState( "testFindByState",
                                                      true,
                                                      0,
                                                      -1 );
         assertEquals( 2,
-                      list.assets.size() );
+                      result.assets.size() );
 
     }
 
@@ -608,7 +600,7 @@ public class RulesRepositoryTest extends TestCase {
 
         repo.save();
 
-        AssetPageList apl = repo.findAssetsByState( "Draft",
+        AssetItemPageResult apl = repo.findAssetsByState( "Draft",
                                                     false,
                                                     0,
                                                     -1,
@@ -655,7 +647,7 @@ public class RulesRepositoryTest extends TestCase {
         assertEquals( 2,
                       items.size() );
 
-        AssetPageList apl = repo.findAssetsByCategory( "/testFindAssetsByCategoryUsingFilterCat",
+        AssetItemPageResult apl = repo.findAssetsByCategory( "/testFindAssetsByCategoryUsingFilterCat",
                                                        false,
                                                        0,
                                                        -1,

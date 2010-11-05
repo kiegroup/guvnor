@@ -119,7 +119,7 @@ import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.AssetPageList;
+import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
@@ -505,17 +505,17 @@ public class ServiceImplementation
                                                      RoleTypes.ANALYST_READ ) ) {
 
                 TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-                return handler.loadRuleListTable( new AssetPageList() );
+                return handler.loadRuleListTable( new AssetItemPageResult() );
             }
         }
 
-        AssetPageList list = repository.findAssetsByCategory( categoryPath,
+        AssetItemPageResult result = repository.findAssetsByCategory( categoryPath,
                                                               false,
                                                               skip,
                                                               numRows);
         TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
         // log.debug("time for load: " + (System.currentTimeMillis() - time) );
-        return handler.loadRuleListTable( list );
+        return handler.loadRuleListTable(result);
 
     }
 
@@ -530,14 +530,14 @@ public class ServiceImplementation
 
     	//TODO: May need to use a filter that acts on both package based and category based. 
         RepositoryFilter filter = new AssetItemFilter();
-        AssetPageList list = repository.findAssetsByState( stateName,
+        AssetItemPageResult result = repository.findAssetsByState( stateName,
                                                            false,
                                                            skip,
                                                            numRows,
                                                            filter );
         TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
         // log.debug("time for load: " + (System.currentTimeMillis() - time) );
-        return handler.loadRuleListTable( list );
+        return handler.loadRuleListTable(result);
     }
 
     @WebRemote
