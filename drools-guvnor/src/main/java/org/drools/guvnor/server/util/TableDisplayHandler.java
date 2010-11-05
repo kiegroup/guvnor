@@ -27,7 +27,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
-import org.drools.repository.AssetPageList;
+import org.drools.repository.AssetItemPageResult;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -59,7 +59,7 @@ public class TableDisplayHandler {
         ASSET_LIST = new RowLoader( tableconfig );
     }
 
-    public TableDataResult loadRuleListTable(AssetPageList list) throws SerializationException {
+    public TableDataResult loadRuleListTable(AssetItemPageResult list) throws SerializationException {
         List<TableDataRow> data = loadRows(list.assets.iterator(), -1);
         TableDataResult result = new TableDataResult();
         result.data = (TableDataRow[]) data.toArray( new TableDataRow[data.size()] );
