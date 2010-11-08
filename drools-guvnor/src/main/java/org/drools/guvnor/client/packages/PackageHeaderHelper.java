@@ -52,7 +52,16 @@ public class PackageHeaderHelper {
 						}
 						String[] gt = tk.split("\\s+");
 						t.globals.add(new Global(gt[0], gt[1]));
-					} else {
+					} else if(tk.startsWith("rule")) {
+						t.hasRules = true;
+						return t;
+					} else if(tk.startsWith("declare")) {
+						t.hasDeclaredTypes = true;
+						return t;
+					} else if(tk.startsWith("function")) {
+						t.hasFunctions = true;
+						return t;
+				    } else {
 						return null;
 					}
 				}
