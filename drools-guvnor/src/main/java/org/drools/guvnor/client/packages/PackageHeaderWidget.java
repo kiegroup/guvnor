@@ -201,11 +201,19 @@ public class PackageHeaderWidget extends Composite {
                         conf.header = area.getText();
                         final Types t = PackageHeaderHelper.parseHeader( conf.header );
                         if ( t == null ) {
-                            Window.alert( constants.CanNotSwitchToBasicView() );
+                        	Window.alert( constants.CanNotSwitchToBasicView() );
                         } else {
-                            if ( Window.confirm( constants.SwitchToGuidedModeForPackageEditing() ) ) {
-                                basicEditorVersion( t );
-                            }
+                        	if(t.hasDeclaredTypes) {
+                        		Window.alert( constants.CanNotSwitchToBasicViewDeclaredTypes() );
+                        	} else if (t.hasFunctions) {
+                        		Window.alert( constants.CanNotSwitchToBasicViewFunctions() );
+                        	} else if(t.hasRules) {
+                        		Window.alert( constants.CanNotSwitchToBasicViewRules() );
+                        	} else {
+                        		if ( Window.confirm( constants.SwitchToGuidedModeForPackageEditing() ) ) {
+                        			basicEditorVersion( t );
+                        		}
+                        	}
                         }
                     }
                 } );
@@ -315,6 +323,9 @@ public class PackageHeaderWidget extends Composite {
     static class Types {
         List imports = new ArrayList();
         List globals = new ArrayList();
+        boolean hasDeclaredTypes;
+        boolean hasFunctions;
+        boolean hasRules;
     }
 
     static class Import {
