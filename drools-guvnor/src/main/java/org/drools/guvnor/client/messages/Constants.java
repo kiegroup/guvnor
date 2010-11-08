@@ -2019,6 +2019,12 @@ public interface Constants
     String VerificationReport();
 
     String CanNotSwitchToBasicView();
+    
+    String CanNotSwitchToBasicViewRules();
+    
+    String CanNotSwitchToBasicViewFunctions();
+    
+    String CanNotSwitchToBasicViewDeclaredTypes();
 
     String Causes();
 
