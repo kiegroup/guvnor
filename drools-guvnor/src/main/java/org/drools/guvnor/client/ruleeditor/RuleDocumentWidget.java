@@ -31,9 +31,21 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class RuleDocumentWidget extends DirtyableComposite {
 
-    final VerticalPanel layout = new VerticalPanel();
+    final VerticalPanel     layout = new VerticalPanel();
 
-    public RuleDocumentWidget(final RuleAsset asset) {
+    private final RuleAsset asset;
+
+    public RuleDocumentWidget(final RuleAsset asset,
+                              boolean visible) {
+        this.asset = asset;
+
+        initWidget( layout );
+
+        setVisible( visible );
+    }
+
+    private void initLayout() {
+        layout.clear();
 
         layout.add( new CommentWidget( asset.metaData ) );
 
@@ -45,7 +57,13 @@ public class RuleDocumentWidget extends DirtyableComposite {
 
         layout.setWidth( "100%" );
 
-        initWidget( layout );
     }
 
+    public void setVisible(boolean visible) {
+        if ( visible && layout.getWidgetCount() == 0 ) {
+            initLayout();
+        }
+
+        super.setVisible( visible );
+    };
 }

@@ -33,6 +33,7 @@ package org.drools.guvnor.server.contenthandler;
  */
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 
 import org.drools.compiler.DroolsParserException;
@@ -45,7 +46,6 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-
 
 /**
  * This is for handling XLS content (classic decision tables).
@@ -68,6 +68,13 @@ public class DecisionTableXLSHandler extends ContentHandler
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
+                            RuleAsset asset,
+                            StringBuffer buf) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
                             StringBuffer buf) {
         buf.append( getRawDRL( asset ) );
@@ -87,9 +94,13 @@ public class DecisionTableXLSHandler extends ContentHandler
     }
 
     public String getRawDRL(AssetItem asset) {
+        return getDRL( asset.getBinaryContentAttachment() );
+    }
+
+    private String getDRL(InputStream stream) {
         SpreadsheetCompiler comp = new SpreadsheetCompiler();
         String drl = comp.compile( false,
-                                   asset.getBinaryContentAttachment(),
+                                   stream,
                                    InputType.XLS );
         return drl;
     }

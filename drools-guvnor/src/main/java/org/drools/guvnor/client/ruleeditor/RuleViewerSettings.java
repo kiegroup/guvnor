@@ -13,19 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.drools.ide.common.client.modeldriven.brl;
-
-import java.io.Serializable;
-
+package org.drools.guvnor.client.ruleeditor;
 
 /**
- * This is the marker interface for portable Ajaxy type objects.
- * This is replaced in the BRMS with a GWT specific one, and only used here so the RuleModel
- * can compile. It does nothing, and is strictly a marker interface only.
- * @author Michael Neale
+ * 
+ * @author rikkola
  *
  */
-public interface PortableObject extends Serializable {
+public class RuleViewerSettings {
 
+    private boolean metaVisible = true;
+    private boolean docoVisible = true;
+
+    public void setMetaVisible(boolean metaVisible) {
+        this.metaVisible = metaVisible;
+    }
+
+    public void setDocoVisible(boolean docoVisible) {
+        this.docoVisible = docoVisible;
+    }
+
+    public boolean isDocoVisible() {
+        return docoVisible;
+    }
+
+    public boolean isMetaVisible() {
+        return metaVisible;
+    }
 }

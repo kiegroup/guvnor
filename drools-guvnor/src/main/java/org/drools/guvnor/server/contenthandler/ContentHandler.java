@@ -44,7 +44,6 @@ import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-
 /**
  * All content handlers must implement this, and be registered in content_types.properties
  * @author Michael Neale

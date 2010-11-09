@@ -52,29 +52,28 @@ import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigura
  */
 public class RuleViewer extends GuvnorEditor {
 
-    private Command                    closeCommand;
-    private Command                    archiveCommand;
-    public Command                     checkedInCommand;
-    public ActionToolbar.CheckinAction checkInCommand;
-    protected RuleAsset                asset;
+    private Command                                   closeCommand;
+    private Command                                   archiveCommand;
+    public Command                                    checkedInCommand;
+    public ActionToolbar.CheckinAction                checkInCommand;
+    protected RuleAsset                               asset;
 
-    private boolean                    readOnly;
+    private boolean                                   readOnly;
 
-    private boolean                    metaVisible = true;
-    private boolean                    docoVisible = true;
-    private MetaDataWidget             metaWidget;
-    private RuleDocumentWidget         doco;
-    private Widget                     editor;
+    private final RuleViewerSettings                  ruleViewerSettings;
+    private MetaDataWidget                            metaWidget;
+    private RuleDocumentWidget                        ruleDocumentWidget;
+    private Widget                                    editor;
 
-    private ActionToolbar              toolbar;
-    private VerticalPanel              layout;
-    private HorizontalPanel            hsp;
+    private ActionToolbar                             toolbar;
+    private VerticalPanel                             layout;
+    private HorizontalPanel                           hsp;
 
-    private long                       lastSaved   = System.currentTimeMillis();
-    private Constants                  constants   = ((Constants) GWT.create( Constants.class ));
+    private long                                      lastSaved = System.currentTimeMillis();
+    private Constants                                 constants = ((Constants) GWT.create( Constants.class ));
 
-    private final EditItemEvent        editEvent;
-    
+    private final EditItemEvent                       editEvent;
+
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
     /**
@@ -84,16 +83,22 @@ public class RuleViewer extends GuvnorEditor {
                       final EditItemEvent event) {
         this( asset,
               event,
-              false, null );
+              false,
+              null,
+              null );
     }
-    
+
     /**
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
                       final EditItemEvent event,
                       boolean historicalReadOnly) {
-        this (asset, event, historicalReadOnly, null);
+        this( asset,
+              event,
+              historicalReadOnly,
+              null,
+              null );
     }
 
     /**
@@ -103,13 +108,21 @@ public class RuleViewer extends GuvnorEditor {
      */
     public RuleViewer(RuleAsset asset,
                       final EditItemEvent event,
-                      boolean historicalReadOnly, ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider) {
+                      boolean historicalReadOnly,
+                      ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
+                      RuleViewerSettings ruleViewerSettings) {
         this.editEvent = event;
         this.asset = asset;
         this.readOnly = historicalReadOnly && asset.isreadonly;
 
+        if ( ruleViewerSettings == null ) {
+            this.ruleViewerSettings = new RuleViewerSettings();
+        } else {
+            this.ruleViewerSettings = ruleViewerSettings;
+        }
+
         this.layout = new VerticalPanel();
-        
+
         this.actionToolbarButtonsConfigurationProvider = actionToolbarButtonsConfigurationProvider;
 
         layout.setWidth( "100%" );
@@ -138,14 +151,14 @@ public class RuleViewer extends GuvnorEditor {
 
         LoadingPopup.close();
     }
-    
+
     public void setDocoVisible(boolean docoVisible) {
-        this.docoVisible = docoVisible;
-        this.doco.setVisible( docoVisible );
+        this.ruleViewerSettings.setDocoVisible( docoVisible );
+        this.ruleDocumentWidget.setVisible( docoVisible );
     }
 
     public void setMetaVisible(boolean metaVisible) {
-        this.metaVisible = metaVisible;
+        this.ruleViewerSettings.setMetaVisible( metaVisible );
         this.metaWidget.setVisible( metaVisible );
     }
 
@@ -196,7 +209,7 @@ public class RuleViewer extends GuvnorEditor {
                                              doPromptToGlobal();
                                          }
                                      } );
-                                     
+
         //layout.add(toolbar, DockPanel.NORTH);
         layout.add( toolbar );
         layout.setCellHeight( toolbar,
@@ -213,21 +226,23 @@ public class RuleViewer extends GuvnorEditor {
         doMetaWidget();
 
         hsp = new HorizontalPanel();
-        hsp.setHeight("100%");
-        hsp.setWidth("100%");
+        hsp.setHeight( "100%" );
+        hsp.setWidth( "100%" );
         layout.add( hsp );
-        layout.setCellHeight(hsp, "100%");
+        layout.setCellHeight( hsp,
+                              "100%" );
 
         //the document widget
-        doco = new RuleDocumentWidget( asset );
-        doco.setVisible( docoVisible );
+        ruleDocumentWidget = new RuleDocumentWidget( asset,
+                                                     ruleViewerSettings.isDocoVisible() );
 
         VerticalPanel vert = new VerticalPanel();
         vert.setWidth( "100%" );
         vert.setHeight( "100%" );
-        
+
         vert.add( editor );
-        vert.setCellHeight( editor, "100%" );
+        vert.setCellHeight( editor,
+                            "100%" );
         hsp.add( vert );
 
         //hsp.addStyleName("HorizontalSplitPanel");
@@ -237,8 +252,7 @@ public class RuleViewer extends GuvnorEditor {
         hsp.setCellWidth( metaWidget,
                           "25%" );
 
-
-        layout.add( doco );
+        layout.add( ruleDocumentWidget );
     }
 
     private void doMetaWidget() {
@@ -255,7 +269,7 @@ public class RuleViewer extends GuvnorEditor {
                                                  refreshDataAndView();
                                              }
                                          } );
-        metaWidget.setVisible( metaVisible );
+        metaWidget.setVisible( ruleViewerSettings.isMetaVisible() );
     }
 
     protected boolean hasDirty() {
@@ -295,16 +309,16 @@ public class RuleViewer extends GuvnorEditor {
         //layout.clear();
         this.asset.metaData.checkinComment = comment;
         final boolean[] saved = {false};
-        
+
         if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
 
-       //Not sure why we need a delay here.       
-/*        Timer t = new Timer() {
-            public void run() {
-                if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
-            }
-        };
-        t.schedule( 500 );*/
+        //Not sure why we need a delay here.       
+        /*        Timer t = new Timer() {
+                    public void run() {
+                        if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
+                    }
+                };
+                t.schedule( 500 );*/
 
         RepositoryServiceFactory.getService().checkinVersion( this.asset,
                                                               new GenericCallback<String>() {
@@ -326,7 +340,7 @@ public class RuleViewer extends GuvnorEditor {
                                                                           ((DirtyableComposite) editor).resetDirty();
                                                                       }
 
-                                                                      doco.resetDirty();
+                                                                      ruleDocumentWidget.resetDirty();
 
                                                                       refreshMetaWidgetOnly( false );
 
@@ -381,8 +395,7 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     private void refreshMetaWidgetOnly(final boolean showBusy) {
-    	
-    	
+
         if ( showBusy ) LoadingPopup.showMessage( constants.RefreshingItem() );
         RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
@@ -434,18 +447,18 @@ public class RuleViewer extends GuvnorEditor {
         pop.addRow( new HTML( constants.AreYouSureYouWantToDiscardChanges() ) );
         pop.addRow( hor );
 
-        dis.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent arg0) {
+        dis.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
                 closeCommand.execute();
-                pop.hide();				
-			}     	
-        });
-                
-        can.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent arg0) {
-                pop.hide();			
-			}     	
-        });
+                pop.hide();
+            }
+        } );
+
+        can.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
+                pop.hide();
+            }
+        } );
 
         pop.show();
     }
@@ -461,9 +474,9 @@ public class RuleViewer extends GuvnorEditor {
                            sel );
 
         Button ok = new Button( constants.CreateCopy() );
-        
-        ok.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent arg0) {
+
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
                 if ( newName.getText() == null || newName.getText().equals( "" ) ) {
                     Window.alert( constants.AssetNameMustNotBeEmpty() );
                     return;
@@ -493,12 +506,11 @@ public class RuleViewer extends GuvnorEditor {
                                                                      }
                                                                  } );
             }
-		
-   	
-        });
-        
 
-        form.addAttribute( "", ok );
+        } );
+
+        form.addAttribute( "",
+                           ok );
 
         //form.setPopupPosition((DirtyableComposite.getWidth() - form.getOffsetWidth()) / 2, 100);
         form.show();

@@ -32,7 +32,6 @@ import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.annotations.In;
 
-
 import org.drools.ide.common.server.util.BRXMLPersistence;
 
 /**
@@ -41,11 +40,11 @@ import org.drools.ide.common.server.util.BRXMLPersistence;
  * @author esteban.aliverti
  */
 public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceServlet
-        implements
-        StandaloneGuidedEditorService {
+    implements
+    StandaloneGuidedEditorService {
 
     @In
-    public RulesRepository repository;
+    public RulesRepository    repository;
     private static final long serialVersionUID = 520l;
 
     public RulesRepository getRulesRepository() {
@@ -56,43 +55,40 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
         return RepositoryServiceServlet.getService();
     }
 
-    
-    public StandaloneGuidedEditorInvocationParameters getInvocationParameters() throws DetailedSerializationException{
-        
+    public StandaloneGuidedEditorInvocationParameters getInvocationParameters() throws DetailedSerializationException {
+
         //Get the parameters from the session
         HttpSession session = this.getThreadLocalRequest().getSession();
-        
+
         boolean hideLHSInEditor = false;
-        Object attribute = session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_LHS_PARAMETER_NAME.getParameterName());
-        if (attribute != null){
-            hideLHSInEditor = Boolean.parseBoolean(attribute.toString());
+        Object attribute = session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_LHS_PARAMETER_NAME.getParameterName() );
+        if ( attribute != null ) {
+            hideLHSInEditor = Boolean.parseBoolean( attribute.toString() );
         }
-        
+
         boolean hideRHSInEditor = false;
-        attribute = session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_RHS_PARAMETER_NAME.getParameterName());
-        if (attribute != null){
-            hideRHSInEditor = Boolean.parseBoolean(attribute.toString());
+        attribute = session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_RHS_PARAMETER_NAME.getParameterName() );
+        if ( attribute != null ) {
+            hideRHSInEditor = Boolean.parseBoolean( attribute.toString() );
         }
-        
+
         boolean hideAttributesInEditor = false;
-        attribute = session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_ATTRIBUTES_PARAMETER_NAME.getParameterName());
-        if (attribute != null){
-            hideAttributesInEditor = Boolean.parseBoolean(attribute.toString());
+        attribute = session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_ATTRIBUTES_PARAMETER_NAME.getParameterName() );
+        if ( attribute != null ) {
+            hideAttributesInEditor = Boolean.parseBoolean( attribute.toString() );
         }
-        
-        
+
         StandaloneGuidedEditorInvocationParameters parameters = new StandaloneGuidedEditorInvocationParameters();
-        
-        parameters.setAssetsToBeEdited(this.loadRuleAssetsFromSession());
-        
-        parameters.setHideLHS(hideLHSInEditor);
-        parameters.setHideRHS(hideRHSInEditor);
-        parameters.setHideAttributes(hideAttributesInEditor);
-        
-        
+
+        parameters.setAssetsToBeEdited( this.loadRuleAssetsFromSession() );
+
+        parameters.setHideLHS( hideLHSInEditor );
+        parameters.setHideRHS( hideRHSInEditor );
+        parameters.setHideAttributes( hideAttributesInEditor );
+
         return parameters;
     }
-    
+
     /**
      * To open the Guided Editor as standalone, you should be gone through 
      * GuidedEditorServlet first. This servlet put all the POST parameters into
@@ -102,81 +98,84 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
      * one asset per BRL with a unique name.
      * @return
      * @throws DetailedSerializationException
-     */   
-    private RuleAsset[] loadRuleAssetsFromSession() throws DetailedSerializationException{
-        
+     */
+    private RuleAsset[] loadRuleAssetsFromSession() throws DetailedSerializationException {
+
         //Get the parameters from the session
         HttpSession session = this.getThreadLocalRequest().getSession();
-        
-        String packageName = (String)session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_PACKAGE_PARAMETER_NAME.getParameterName());
-        String categoryName = (String)session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CATEGORY_PARAMETER_NAME.getParameterName());
-        String[] initialBRL = (String[])session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_BRL_PARAMETER_NAME.getParameterName());
-        String[] assetsUUIDs = (String[])session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_ASSETS_UUIDS_PARAMETER_NAME.getParameterName());
-        
+
+        String packageName = (String) session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_PACKAGE_PARAMETER_NAME.getParameterName() );
+        String categoryName = (String) session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CATEGORY_PARAMETER_NAME.getParameterName() );
+        String[] initialBRL = (String[]) session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_BRL_PARAMETER_NAME.getParameterName() );
+        String[] assetsUUIDs = (String[]) session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_ASSETS_UUIDS_PARAMETER_NAME.getParameterName() );
+
         boolean createNewAsset = false;
-        Object attribute = session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CREATE_NEW_ASSET_PARAMETER_NAME.getParameterName());
-        if (attribute != null){
-            createNewAsset = Boolean.parseBoolean(attribute.toString());
+        Object attribute = session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CREATE_NEW_ASSET_PARAMETER_NAME.getParameterName() );
+        if ( attribute != null ) {
+            createNewAsset = Boolean.parseBoolean( attribute.toString() );
         }
-        String ruleName = (String)session.getAttribute(GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_RULE_PARAMETER_NAME.getParameterName());
-        
-        RuleAssetProvider provider; 
-        if (createNewAsset){
-            provider = new NewRuleAssetProvider(packageName,categoryName,ruleName);
-        }else if (assetsUUIDs != null){
-            provider = new UUIDRuleAssetProvider(assetsUUIDs);
-        }else if (initialBRL != null){
-            provider = new BRLRuleAssetProvider(packageName,categoryName,initialBRL);
-        }else{
+        String ruleName = (String) session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_RULE_PARAMETER_NAME.getParameterName() );
+
+        RuleAssetProvider provider;
+        if ( createNewAsset ) {
+            provider = new NewRuleAssetProvider( packageName,
+                                                 categoryName,
+                                                 ruleName );
+        } else if ( assetsUUIDs != null ) {
+            provider = new UUIDRuleAssetProvider( assetsUUIDs );
+        } else if ( initialBRL != null ) {
+            provider = new BRLRuleAssetProvider( packageName,
+                                                 initialBRL );
+        } else {
             throw new IllegalStateException();
         }
-        
+
         return provider.getRuleAssets();
-        
+
     }
-    
+
     /**
      * Returns the DRL source code of the given assets.
      * @param assetsUUIDs
      * @return
      * @throws SerializationException
      */
-    public String[] getAsstesDRL(String[] assetsUUIDs) throws SerializationException{
-        
+    public String[] getAsstesDRL(String[] assetsUUIDs) throws SerializationException {
+
         String[] sources = new String[assetsUUIDs.length];
-        
-        for (int i = 0; i < assetsUUIDs.length; i++) {
-            RuleAsset ruleAsset = this.getService().loadRuleAsset(assetsUUIDs[i]);
-            sources[i] = this.getService().buildAssetSource(ruleAsset);
+
+        for ( int i = 0; i < assetsUUIDs.length; i++ ) {
+            RuleAsset ruleAsset = this.getService().loadRuleAsset( assetsUUIDs[i] );
+            sources[i] = this.getService().buildAssetSource( ruleAsset );
         }
-        
+
         return sources;
     }
-    
+
     /**
      * Returns the BRL source code of the given assets.
      * @param assetsUUIDs
      * @return
      * @throws SerializationException
      */
-    public String[] getAsstesBRL(String[] assetsUUIDs) throws SerializationException{
-        
+    public String[] getAsstesBRL(String[] assetsUUIDs) throws SerializationException {
+
         String[] sources = new String[assetsUUIDs.length];
-        
+
         BRLPersistence converter = BRXMLPersistence.getInstance();
-        for (int i = 0; i < assetsUUIDs.length; i++) {
-            RuleAsset ruleAsset = this.getService().loadRuleAsset(assetsUUIDs[i]);
-            sources[i] = converter.marshal((RuleModel) ruleAsset.content);
+        for ( int i = 0; i < assetsUUIDs.length; i++ ) {
+            RuleAsset ruleAsset = this.getService().loadRuleAsset( assetsUUIDs[i] );
+            sources[i] = converter.marshal( (RuleModel) ruleAsset.content );
         }
-        
+
         return sources;
     }
-    
+
     /**
      * Remove all the given assets
      * @param assetsUUIDs the assets UUIDs
      */
-    public void removeAssets(String[] assetsUUIDs){
-        this.getService().removeAssets(assetsUUIDs);
+    public void removeAssets(String[] assetsUUIDs) {
+        this.getService().removeAssets( assetsUUIDs );
     }
 }

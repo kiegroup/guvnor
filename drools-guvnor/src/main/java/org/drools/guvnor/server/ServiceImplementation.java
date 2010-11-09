@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.server;
 
-
 import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
 
 import java.io.ByteArrayInputStream;
@@ -114,6 +113,7 @@ import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.server.util.GuidedDTDRLPersistence;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.repository.AssetHistoryIterator;
@@ -152,7 +152,6 @@ import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 
-
 /**
  * This is the implementation of the repository service to drive the GWT based
  * front end.
@@ -178,7 +177,7 @@ public class ServiceImplementation
 
     private static final DateFormat     dateFormatter                     = DateFormat.getInstance();
 
-    private static final LoggingHelper         log                               = LoggingHelper.getLogger( ServiceImplementation.class );
+    private static final LoggingHelper  log                               = LoggingHelper.getLogger( ServiceImplementation.class );
 
     private MetaDataMapper              metaDataMapper                    = new MetaDataMapper();
 
@@ -510,12 +509,12 @@ public class ServiceImplementation
         }
 
         AssetItemPageResult result = repository.findAssetsByCategory( categoryPath,
-                                                              false,
-                                                              skip,
-                                                              numRows);
+                                                                      false,
+                                                                      skip,
+                                                                      numRows );
         TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
         // log.debug("time for load: " + (System.currentTimeMillis() - time) );
-        return handler.loadRuleListTable(result);
+        return handler.loadRuleListTable( result );
 
     }
 
@@ -528,16 +527,16 @@ public class ServiceImplementation
         // love you
         // long time = System.currentTimeMillis();
 
-    	//TODO: May need to use a filter that acts on both package based and category based. 
+        //TODO: May need to use a filter that acts on both package based and category based. 
         RepositoryFilter filter = new AssetItemFilter();
         AssetItemPageResult result = repository.findAssetsByState( stateName,
-                                                           false,
-                                                           skip,
-                                                           numRows,
-                                                           filter );
+                                                                   false,
+                                                                   skip,
+                                                                   numRows,
+                                                                   filter );
         TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
         // log.debug("time for load: " + (System.currentTimeMillis() - time) );
-        return handler.loadRuleListTable(result);
+        return handler.loadRuleListTable( result );
     }
 
     @WebRemote
@@ -576,36 +575,34 @@ public class ServiceImplementation
         //Verify if the user has permission to access the asset through package based permission.
         //If failed, then verify if the user has permission to access the asset through category
         //based permission
-        if (Contexts.isSessionContextActive()) {
-			boolean passed = false;
+        if ( Contexts.isSessionContextActive() ) {
+            boolean passed = false;
 
-			try {
-				Identity.instance().checkPermission(
-						new PackageNameType(asset.metaData.packageName),
-						RoleTypes.PACKAGE_READONLY);
-			} catch (RuntimeException e) {
-				if (asset.metaData.categories.length == 0) {
-					Identity.instance().checkPermission(
-							new CategoryPathType(null), RoleTypes.ANALYST_READ);
-				} else {
-					RuntimeException exception = null;
+            try {
+                Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
+                                                     RoleTypes.PACKAGE_READONLY );
+            } catch ( RuntimeException e ) {
+                if ( asset.metaData.categories.length == 0 ) {
+                    Identity.instance().checkPermission( new CategoryPathType( null ),
+                                                         RoleTypes.ANALYST_READ );
+                } else {
+                    RuntimeException exception = null;
 
-					for (String cat : asset.metaData.categories) {
-						try {
-							Identity.instance().checkPermission(
-									new CategoryPathType(cat),
-									RoleTypes.ANALYST_READ);
-							passed = true;
-						} catch (RuntimeException re) {
-							exception = re;
-						}
-					}
-					if (!passed) {
-						throw exception;
-					}
-				}
-			}
-		}
+                    for ( String cat : asset.metaData.categories ) {
+                        try {
+                            Identity.instance().checkPermission( new CategoryPathType( cat ),
+                                                                 RoleTypes.ANALYST_READ );
+                            passed = true;
+                        } catch ( RuntimeException re ) {
+                            exception = re;
+                        }
+                    }
+                    if ( !passed ) {
+                        throw exception;
+                    }
+                }
+            }
+        }
 
         // get package header
 
@@ -618,7 +615,7 @@ public class ServiceImplementation
         handler.retrieveAssetContent( asset,
                                       pkgItem,
                                       item );
-        
+
         asset.isreadonly = asset.metaData.hasSucceedingVersion;
 
         if ( pkgItem.isSnapshot() ) {
@@ -694,6 +691,7 @@ public class ServiceImplementation
 
         meta.packageName = item.getPackageName();
         meta.packageUUID = item.getPackage().getUUID();
+        meta.setBinary( item.isBinary() );
 
         List cats = item.getCategories();
         meta.categories = new String[cats.size()];
@@ -732,42 +730,39 @@ public class ServiceImplementation
      * and this role has permission to access the package which the asset belongs to.
      */
     public String checkinVersion(RuleAsset asset) throws SerializationException {
-    	
+
         //Verify if the user has permission to access the asset through package based permission.
         //If failed, then verify if the user has permission to access the asset through category
         //based permission
-        if (Contexts.isSessionContextActive()) {
-			boolean passed = false;
+        if ( Contexts.isSessionContextActive() ) {
+            boolean passed = false;
 
-			try {
-				Identity.instance().checkPermission(
-						new PackageNameType(asset.metaData.packageName),
-						RoleTypes.PACKAGE_DEVELOPER);
-			} catch (RuntimeException e) {
-				if (asset.metaData.categories.length == 0) {
-					Identity.instance().checkPermission(
-							new CategoryPathType(null), RoleTypes.ANALYST);
-				} else {
-					RuntimeException exception = null;
+            try {
+                Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
+                                                     RoleTypes.PACKAGE_DEVELOPER );
+            } catch ( RuntimeException e ) {
+                if ( asset.metaData.categories.length == 0 ) {
+                    Identity.instance().checkPermission( new CategoryPathType( null ),
+                                                         RoleTypes.ANALYST );
+                } else {
+                    RuntimeException exception = null;
 
-					for (String cat : asset.metaData.categories) {
-						try {
-							Identity.instance().checkPermission(
-									new CategoryPathType(cat),
-									RoleTypes.ANALYST);
-							passed = true;
-						} catch (RuntimeException re) {
-							exception = re;
-						}
-					}
-					if (!passed) {
-						throw exception;
-					}
-				}
-			}
-		}
-        
-  
+                    for ( String cat : asset.metaData.categories ) {
+                        try {
+                            Identity.instance().checkPermission( new CategoryPathType( cat ),
+                                                                 RoleTypes.ANALYST );
+                            passed = true;
+                        } catch ( RuntimeException re ) {
+                            exception = re;
+                        }
+                    }
+                    if ( !passed ) {
+                        throw exception;
+                    }
+                }
+            }
+        }
+
         log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "] " );
 
         AssetItem repoAsset = repository.loadAssetByUUID( asset.uuid );
@@ -889,10 +884,10 @@ public class ServiceImplementation
 
         TableDataResult table = new TableDataResult();
         table.data = result.toArray( new TableDataRow[result.size()] );
-        table.currentPosition = it.getPosition();        
-        table.total  = it.getSize();
+        table.currentPosition = it.getPosition();
+        table.total = it.getSize();
         table.hasNext = it.hasNext();
-        
+
         return table;
     }
 
@@ -1090,7 +1085,7 @@ public class ServiceImplementation
         log.debug( "Loading asset list for [" + uuid + "]" );
         if ( numRows == 0 ) {
             throw new DetailedSerializationException( "Unable to return zero results (bug)",
-                                                     "probably have the parameters around the wrong way, sigh..." );
+                                                      "probably have the parameters around the wrong way, sigh..." );
         }
         long start = System.currentTimeMillis();
         PackageItem pkg = repository.loadPackageByUUID( uuid );
@@ -1115,7 +1110,7 @@ public class ServiceImplementation
                                          int numRows) throws SerializationException {
         if ( numRows == 0 ) {
             throw new DetailedSerializationException( "Unable to return zero results (bug)",
-                                                     "probably have the parameters around the wrong way, sigh..." );
+                                                      "probably have the parameters around the wrong way, sigh..." );
         }
         AssetItemIterator it = repository.queryFullText( text,
                                                          seekArchived );
@@ -1151,7 +1146,7 @@ public class ServiceImplementation
                                          int numRows) throws SerializationException {
         if ( numRows == 0 ) {
             throw new DetailedSerializationException( "Unable to return zero results (bug)",
-                                                     "probably have the parameters around the wrong way, sigh..." );
+                                                      "probably have the parameters around the wrong way, sigh..." );
         }
         Map<String, String[]> q = new HashMap<String, String[]>() {
             {
@@ -1263,7 +1258,7 @@ public class ServiceImplementation
 
         } catch ( RulesRepositoryException e ) {
             throw new DetailedSerializationException( "Unable to remove status. It is probably still used (even by archived items).",
-                                                     e.getMessage() );
+                                                      e.getMessage() );
         }
     }
 
@@ -1306,54 +1301,50 @@ public class ServiceImplementation
 
         if ( !wholePackage ) {
             AssetItem asset = repository.loadAssetByUUID( uuid );
- 
+
             //Verify if the user has permission to access the asset through package based permission.
             //If failed, then verify if the user has permission to access the asset through category
             //based permission
-            if (Contexts.isSessionContextActive()) {
-    			boolean passed = false;
+            if ( Contexts.isSessionContextActive() ) {
+                boolean passed = false;
 
-    			try {
-    				Identity.instance().checkPermission(
-    						new PackageUUIDType(asset.getPackage().getUUID()),
-    						RoleTypes.PACKAGE_DEVELOPER);
-    			} catch (RuntimeException e) {
-     				if (asset.getCategories().size() == 0) {
-    					Identity.instance().checkPermission(
-    							new CategoryPathType(null), RoleTypes.ANALYST);
-    				} else {
-    					RuntimeException exception = null;
+                try {
+                    Identity.instance().checkPermission( new PackageUUIDType( asset.getPackage().getUUID() ),
+                                                         RoleTypes.PACKAGE_DEVELOPER );
+                } catch ( RuntimeException e ) {
+                    if ( asset.getCategories().size() == 0 ) {
+                        Identity.instance().checkPermission( new CategoryPathType( null ),
+                                                             RoleTypes.ANALYST );
+                    } else {
+                        RuntimeException exception = null;
 
-    					for (CategoryItem cat : asset.getCategories()) {
-    						try {
-    							Identity.instance().checkPermission(
-    									new CategoryPathType(cat.getName()),
-    									RoleTypes.ANALYST);
-    							passed = true;
-    						} catch (RuntimeException re) {
-    							exception = re;
-    						}
-    					}
-    					if (!passed) {
-    						throw exception;
-    					}
-    				}
-    			}
-    		}
-            
- 
-            log.info("USER:" + getCurrentUserName()
-					+ " CHANGING ASSET STATUS. Asset name, uuid: " + "["
-					+ asset.getName() + ", " + asset.getUUID() + "]" + " to ["
-					+ newState + "]");
-			String oldState = asset.getStateDescription();
-			asset.updateState(newState);
+                        for ( CategoryItem cat : asset.getCategories() ) {
+                            try {
+                                Identity.instance().checkPermission( new CategoryPathType( cat.getName() ),
+                                                                     RoleTypes.ANALYST );
+                                passed = true;
+                            } catch ( RuntimeException re ) {
+                                exception = re;
+                            }
+                        }
+                        if ( !passed ) {
+                            throw exception;
+                        }
+                    }
+                }
+            }
 
-			push("statusChange", oldState);
-			push("statusChange", newState);
+            log.info( "USER:" + getCurrentUserName() + " CHANGING ASSET STATUS. Asset name, uuid: " + "[" + asset.getName() + ", " + asset.getUUID() + "]" + " to [" + newState + "]" );
+            String oldState = asset.getStateDescription();
+            asset.updateState( newState );
 
-			addToDiscussionForAsset(asset.getUUID(), oldState + " -> "
-					+ newState);           
+            push( "statusChange",
+                  oldState );
+            push( "statusChange",
+                  newState );
+
+            addToDiscussionForAsset( asset.getUUID(),
+                                     oldState + " -> " + newState );
         } else {
             if ( Contexts.isSessionContextActive() ) {
                 Identity.instance().checkPermission( new PackageUUIDType( uuid ),
@@ -1541,7 +1532,7 @@ public class ServiceImplementation
             log.info( "Unable to remove category [" + categoryPath + "]. It is probably still used: " + e.getMessage() );
 
             throw new DetailedSerializationException( "Unable to remove category. It is probably still used.",
-                                                     e.getMessage() );
+                                                      e.getMessage() );
         }
     }
 
@@ -1637,10 +1628,10 @@ public class ServiceImplementation
                                  customSelectorName );
         } catch ( NoClassDefFoundError e ) {
             throw new DetailedSerializationException( "Unable to find a class that was needed when building the package  [" + e.getMessage() + "]",
-                                                     "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
+                                                      "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
         } catch ( UnsupportedClassVersionError e ) {
             throw new DetailedSerializationException( "Can not build the package. One or more of the classes that are needed were compiled with an unsupported Java version.",
-                                                     "For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. [" + e.getMessage() + "]" );
+                                                      "For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. [" + e.getMessage() + "]" );
         }
     }
 
@@ -1709,7 +1700,7 @@ public class ServiceImplementation
                 e.printStackTrace();
                 log.error( "An error occurred building the package [" + item.getName() + "]: " + e.getMessage() );
                 throw new DetailedSerializationException( "An error occurred building the package.",
-                                                         e.getMessage() );
+                                                          e.getMessage() );
             }
 
             return null;
@@ -1765,29 +1756,37 @@ public class ServiceImplementation
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        AssetItem item = repository.loadAssetByUUID( asset.uuid );
+        ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
 
-        ContentHandler handler = ContentManager.getHandler( item.getFormat() );// new
-        // AssetContentFormatHandler();
-        handler.storeAssetContent( asset,
-                                   item );
         StringBuffer buf = new StringBuffer();
         if ( handler.isRuleAsset() ) {
 
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
-            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(),
+            PackageItem packageItem = repository.loadPackage( asset.metaData.packageName );
+            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( packageItem,
                                                                         new BRMSPackageBuilder.DSLErrorEvent() {
                                                                             public void recordError(AssetItem asset,
                                                                                                     String message) {
                                                                                 // ignore at this point...
                                                                             }
                                                                         } ) );
-            ((IRuleAsset) handler).assembleDRL( builder,
-                                                item,
-                                                buf );
-        } else {
-            return item.getContent();
+
+            if ( asset.metaData.isBinary() ) {
+                AssetItem item = repository.loadAssetByUUID( asset.uuid );
+
+                // AssetContentFormatHandler();
+                handler.storeAssetContent( asset,
+                                           item );
+                ((IRuleAsset) handler).assembleDRL( builder,
+                                                    item,
+                                                    buf );
+            } else {
+                ((IRuleAsset) handler).assembleDRL( builder,
+                                                    asset,
+                                                    buf );
+            }
+
         }
 
         return buf.toString();
@@ -1823,7 +1822,8 @@ public class ServiceImplementation
                 }
             }
         } catch ( Exception e ) {
-            log.error("Unable to build asset.", e );
+            log.error( "Unable to build asset.",
+                       e );
             result = new BuilderResult();
 
             BuilderResultLine res = new BuilderResultLine();
@@ -1854,7 +1854,8 @@ public class ServiceImplementation
             repository.copyPackage( sourcePackageName,
                                     destPackageName );
         } catch ( RulesRepositoryException e ) {
-            log.error("Unable to copy package.", e );
+            log.error( "Unable to copy package.",
+                       e );
             throw e;
         }
 
@@ -1921,7 +1922,8 @@ public class ServiceImplementation
                     ((ICanHasAttachment) handler).onAttachmentRemoved( item );
                 }
             } catch ( IOException e ) {
-                log.error("Unable to remove asset attachment", e );
+                log.error( "Unable to remove asset attachment",
+                           e );
             }
 
             item.archiveItem( archive );
@@ -1938,7 +1940,8 @@ public class ServiceImplementation
                   pkg.getName() );
 
         } catch ( RulesRepositoryException e ) {
-            log.error("Unable to get item format.", e );
+            log.error( "Unable to get item format.",
+                       e );
             throw e;
         }
     }
@@ -1966,7 +1969,8 @@ public class ServiceImplementation
             item.remove();
             repository.save();
         } catch ( RulesRepositoryException e ) {
-            log.error("Unable to remove asset.", e );
+            log.error( "Unable to remove asset.",
+                       e );
             throw e;
         }
     }
@@ -1993,7 +1997,8 @@ public class ServiceImplementation
             item.remove();
             repository.save();
         } catch ( RulesRepositoryException e ) {
-            log.error("Unable to remove package.", e );
+            log.error( "Unable to remove package.",
+                       e );
             throw e;
         }
     }
@@ -2019,29 +2024,31 @@ public class ServiceImplementation
             Identity.instance().checkPermission( new PackageNameType( packageName ),
                                                  RoleTypes.PACKAGE_ADMIN );
         }
-        log.info( "USER:" + getCurrentUserName() + " export package [name: " + packageName + "] ");
-   	
+        log.info( "USER:" + getCurrentUserName() + " export package [name: " + packageName + "] " );
+
         byte[] result = null;
-        
+
         try {
-			result =  repository.dumpPackageFromRepositoryXml( packageName);
-		} catch (PathNotFoundException e) {
-			throw new RulesRepositoryException(e);
-		} catch (IOException e) {
-			throw new RulesRepositoryException(e);
-		} catch (RepositoryException e) {
-			throw new RulesRepositoryException(e);
-		}
+            result = repository.dumpPackageFromRepositoryXml( packageName );
+        } catch ( PathNotFoundException e ) {
+            throw new RulesRepositoryException( e );
+        } catch ( IOException e ) {
+            throw new RulesRepositoryException( e );
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
         return result;
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     //TODO: Not working. GUVNOR-475
-    public void importPackages(byte[] byteArray,  boolean importAsNew) {
-    	repository.importPackageToRepository( byteArray, importAsNew);
+    public void importPackages(byte[] byteArray,
+                               boolean importAsNew) {
+        repository.importPackageToRepository( byteArray,
+                                              importAsNew );
     }
-    
+
     @WebRemote
     public void rebuildSnapshots() throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
@@ -2065,7 +2072,7 @@ public class ServiceImplementation
                         buf.append( '\n' );
                     }
                     throw new DetailedSerializationException( "Unable to rebuild snapshot [" + snapName,
-                                                             buf.toString() + "]" );
+                                                              buf.toString() + "]" );
                 }
             }
         }
@@ -2114,7 +2121,8 @@ public class ServiceImplementation
 
             return result.toArray( new String[result.size()] );
         } catch ( DroolsParserException e ) {
-            log.error("Unable to list rules in package", e );
+            log.error( "Unable to list rules in package",
+                       e );
             return new String[0];
         }
     }
@@ -2232,7 +2240,7 @@ public class ServiceImplementation
                     this.ruleBaseCache.put( item.getUUID(),
                                             rb );
                 } else throw new DetailedSerializationException( "Build error",
-                                                                result.lines );
+                                                                 result.lines );
             }
 
         }
@@ -2245,11 +2253,13 @@ public class ServiceImplementation
             return deserKnowledgebase( item,
                                        cl );
         } catch ( ClassNotFoundException e ) {
-            log.error("Unable to load rule base.", e );
+            log.error( "Unable to load rule base.",
+                       e );
             throw new DetailedSerializationException( "A required class was not found.",
-                                                     e.getMessage() );
+                                                      e.getMessage() );
         } catch ( Exception e ) {
-            log.error("Unable to load rule base.", e );
+            log.error( "Unable to load rule base.",
+                       e );
             log.info( "...but trying to rebuild binaries..." );
             try {
                 BuilderResult res = this.buildPackage( item,
@@ -2257,7 +2267,7 @@ public class ServiceImplementation
                 if ( res != null && res.lines.length > 0 ) {
                     log.error( "There were errors when rebuilding the knowledgebase." );
                     throw new DetailedSerializationException( "There were errors when rebuilding the knowledgebase.",
-                                                             "" );
+                                                              "" );
                 }
                 try {
                     return deserKnowledgebase( item,
@@ -2265,12 +2275,12 @@ public class ServiceImplementation
                 } catch ( Exception e2 ) {
                     log.error( "Unable to reload knowledgebase: " + e.getMessage() );
                     throw new DetailedSerializationException( "Unable to reload knowledgebase.",
-                                                             e.getMessage() );
+                                                              e.getMessage() );
                 }
             } catch ( Exception e1 ) {
                 log.error( "Unable to rebuild the rulebase: " + e.getMessage() );
                 throw new DetailedSerializationException( "Unable to rebuild the rulebase.",
-                                                         "" );
+                                                          "" );
             }
 
         }
@@ -2325,21 +2335,21 @@ public class ServiceImplementation
         } catch ( ClassNotFoundException e ) {
             log.error( "Unable to load a required class: " + e.getMessage() );
             throw new DetailedSerializationException( "Unable to load a required class.",
-                                                     e.getMessage() );
+                                                      e.getMessage() );
         } catch ( ConsequenceException e ) {
             String messageShort = "There was an error executing the consequence of rule [" + e.getRule().getName() + "]";
             String messageLong = e.getMessage();
-            if (e.getCause() != null){
-                messageLong += "\nCAUSED BY "+e.getCause().getMessage();
+            if ( e.getCause() != null ) {
+                messageLong += "\nCAUSED BY " + e.getCause().getMessage();
             }
 
-            log.error( messageShort+": "+messageLong );
+            log.error( messageShort + ": " + messageLong );
             throw new DetailedSerializationException( messageShort,
-                                                     messageLong );
+                                                      messageLong );
         } catch ( Exception e ) {
             log.error( "Unable to run the scenario: " + e.getMessage() );
             throw new DetailedSerializationException( "Unable to run the scenario.",
-                                                     e.getMessage() );
+                                                      e.getMessage() );
         }
     }
 
@@ -2438,7 +2448,7 @@ public class ServiceImplementation
         }
         return h;
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] listTypesInPackage(String packageUUID) throws SerializationException {
@@ -2489,7 +2499,7 @@ public class ServiceImplementation
         } catch ( IOException e ) {
             log.error( "Unable to read the jar files in the package: " + e.getMessage() );
             throw new DetailedSerializationException( "Unable to read the jar files in the package.",
-                                                     e.getMessage() );
+                                                      e.getMessage() );
         } finally {
             IOUtils.closeQuietly( jis );
         }
@@ -2614,7 +2624,7 @@ public class ServiceImplementation
 
         if ( errs.toString().length() > 0 ) {
             throw new DetailedSerializationException( "Unable to rebuild all packages.",
-                                                     errs.toString() );
+                                                      errs.toString() );
         }
     }
 
@@ -2747,7 +2757,7 @@ public class ServiceImplementation
         Discussion dp = new Discussion();
         List<DiscussionRecord> discussion = dp.fromString( asset.getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
         discussion.add( new DiscussionRecord( repo.getSession().getUserID(),
-        		 StringEscapeUtils.escapeXml(comment) ) );
+                                              StringEscapeUtils.escapeXml( comment ) ) );
         asset.updateStringProperty( dp.toString( discussion ),
                                     Discussion.DISCUSSION_PROPERTY_KEY,
                                     false );
@@ -2792,7 +2802,7 @@ public class ServiceImplementation
         } catch ( Exception e ) {
             log.error( "Unable to load Inbox: " + e.getMessage() );
             throw new DetailedSerializationException( "Unable to load Inbox",
-                                                     e.getMessage() );
+                                                      e.getMessage() );
         }
     }
 
@@ -2806,15 +2816,15 @@ public class ServiceImplementation
     }
 
     public List<PushResponse> subscribe() {
-    	if (Contexts.isApplicationContextActive() && !Session.instance().isInvalid()) {
-			try {
-				return backchannel.await(getCurrentUserName());
-			} catch (InterruptedException e) {
-				return new ArrayList<PushResponse>();
-			}
-		} else {
-			return new ArrayList<PushResponse>();
-		}
+        if ( Contexts.isApplicationContextActive() && !Session.instance().isInvalid() ) {
+            try {
+                return backchannel.await( getCurrentUserName() );
+            } catch ( InterruptedException e ) {
+                return new ArrayList<PushResponse>();
+            }
+        } else {
+            return new ArrayList<PushResponse>();
+        }
     }
 
     private String getCurrentUserName() {
@@ -2924,30 +2934,34 @@ public class ServiceImplementation
         diffs.diffs = list.toArray( new SnapshotDiff[list.size()] );
         return diffs;
     }
-    
+
     /**
      * Load and process the repository configuration templates.
      */
-     public String processTemplate(String name, Map<String, Object> data) {
-    	 try {
- 			Configuration cfg = new Configuration();
- 			cfg.setObjectWrapper(new DefaultObjectWrapper());
- 			cfg.setTemplateUpdateDelay(0);
+    public String processTemplate(String name,
+                                  Map<String, Object> data) {
+        try {
+            Configuration cfg = new Configuration();
+            cfg.setObjectWrapper( new DefaultObjectWrapper() );
+            cfg.setTemplateUpdateDelay( 0 );
 
- 			Template temp = new Template(name, new InputStreamReader(ServiceImplementation.class.getResourceAsStream("/repoconfig/" + name + ".xml")), cfg);	
- 			StringWriter strw = new StringWriter();
- 			temp.process(data, strw);
- 			return StringEscapeUtils.escapeXml(strw.toString());
- 		} catch (Exception e) {
- 			return "";
- 		}
-     }
-     
-     /**
-      * Check to see if app context is active (not in hosted)
-      */
-     public Boolean isHostedMode() {
-    	 Boolean hm = Contexts.isApplicationContextActive() ? Boolean.FALSE : Boolean.TRUE;
-    	 return hm;
-     }     
+            Template temp = new Template( name,
+                                          new InputStreamReader( ServiceImplementation.class.getResourceAsStream( "/repoconfig/" + name + ".xml" ) ),
+                                          cfg );
+            StringWriter strw = new StringWriter();
+            temp.process( data,
+                          strw );
+            return StringEscapeUtils.escapeXml( strw.toString() );
+        } catch ( Exception e ) {
+            return "";
+        }
+    }
+
+    /**
+     * Check to see if app context is active (not in hosted)
+     */
+    public Boolean isHostedMode() {
+        Boolean hm = Contexts.isApplicationContextActive() ? Boolean.FALSE : Boolean.TRUE;
+        return hm;
+    }
 }

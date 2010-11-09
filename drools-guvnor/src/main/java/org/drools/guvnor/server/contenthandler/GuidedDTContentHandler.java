@@ -47,7 +47,6 @@ import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-
 /**
  * For guided decision tables.
  *
@@ -91,6 +90,14 @@ public class GuidedDTContentHandler extends ContentHandler
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
+                            RuleAsset asset,
+                            StringBuffer buf) {
+        GuidedDecisionTable model = (GuidedDecisionTable) asset.content;
+
+        buf.append( GuidedDTDRLPersistence.getInstance().marshal( model ) );
+    }
+
+    public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
                             StringBuffer buf) {
         String drl = getRawDRL( asset );
@@ -101,7 +108,7 @@ public class GuidedDTContentHandler extends ContentHandler
         GuidedDecisionTable model = GuidedDTXMLPersistence.getInstance().unmarshal( asset.getContent() );
         model.setTableName( asset.getName() );
         model.setParentName( this.parentNameFromCategory( asset,
-                                                        model.getParentName() ) );
+                                                          model.getParentName() ) );
 
         return GuidedDTDRLPersistence.getInstance().marshal( model );
     }

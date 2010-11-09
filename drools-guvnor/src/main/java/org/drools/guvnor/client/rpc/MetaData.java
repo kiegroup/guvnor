@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,34 +28,36 @@ public class MetaData
     implements
     IsSerializable {
 
-    public String   name             = "";
-    public String   description      = "";
+    public String   name                 = "";
+    public String   description          = "";
 
-    public String   title            = "";
-    public String   status           = "";
+    public String   title                = "";
+    public String   status               = "";
 
     public Date     lastModifiedDate;
-    public String   lastContributor  = "";
+    public String   lastContributor      = "";
     public long     versionNumber;
 
     public Date     createdDate;
 
-    public String   packageName      = "";
-    public String   packageUUID      = "";
-    public String[] categories       = new String[0];
+    public String   packageName          = "";
+    public String   packageUUID          = "";
+    public String[] categories           = new String[0];
 
-    public String   format           = "";
-    public String   type             = "";
-    public String   creator          = "";
-    public String   externalSource   = "";
-    public String   subject          = "";
-    public String   externalRelation = "";
-    public String   rights           = "";
-    public String   coverage         = "";
-    public String   publisher        = "";
-    public String   checkinComment   = "";
+    public String   format               = "";
+    public String   type                 = "";
+    public String   creator              = "";
+    public String   externalSource       = "";
+    public String   subject              = "";
+    public String   externalRelation     = "";
+    public String   rights               = "";
+    public String   coverage             = "";
+    public String   publisher            = "";
+    public String   checkinComment       = "";
 
-    public boolean  disabled         = false;
+    private boolean binary               = false;
+
+    public boolean  disabled             = false;
     public boolean  hasPreceedingVersion = false;
     public boolean  hasSucceedingVersion = false;
 
@@ -96,6 +98,14 @@ public class MetaData
         newList[list.length] = cat;
 
         this.categories = newList;
+    }
+
+    public void setBinary(boolean binary) {
+        this.binary = binary;
+    }
+
+    public boolean isBinary() {
+        return binary;
     }
 
 }

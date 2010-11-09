@@ -127,30 +127,32 @@ public class DiscussionWidget extends Composite {
     }
 
     private Widget appendComment(DiscussionRecord r) {
-        SmallLabel hrd = new SmallLabel(Format.format(constants.smallCommentBy0On1Small(), r.author, new Date(r.timestamp).toString()));
-        hrd.addStyleName("discussion-header");
-        commentList.add(hrd);
-        
-        String[] parts = r.note.split("\n");
-        
-        if(parts.length > 0) {
-        	String txt = "";
-        	for(int i=0;i<parts.length;i++) {
-        		txt += parts[i];
-        		if(i != parts.length-1) {
-        			txt += "<br/>";
-        		}
-        	}
-        	HTML hth = new HTML(txt);
-        	hth.setStyleName("x-form-field");
-        	commentList.add(hth);
+        SmallLabel hrd = new SmallLabel( Format.format( constants.smallCommentBy0On1Small(),
+                                                        r.author,
+                                                        new Date( r.timestamp ).toString() ) );
+        hrd.addStyleName( "discussion-header" );
+        commentList.add( hrd );
+
+        String[] parts = r.note.split( "\n" );
+
+        if ( parts.length > 0 ) {
+            String txt = "";
+            for ( int i = 0; i < parts.length; i++ ) {
+                txt += parts[i];
+                if ( i != parts.length - 1 ) {
+                    txt += "<br/>";
+                }
+            }
+            HTML hth = new HTML( txt );
+            hth.setStyleName( "x-form-field" );
+            commentList.add( hth );
         } else {
-        	Label lbl = new Label(r.note);
-        	lbl.setStyleName("x-form-field");
-        	commentList.add(lbl);
+            Label lbl = new Label( r.note );
+            lbl.setStyleName( "x-form-field" );
+            commentList.add( lbl );
         }
-        
-        commentList.add(new HTML("<br/>"));
+
+        commentList.add( new HTML( "<br/>" ) );
         return hrd;
     }
 

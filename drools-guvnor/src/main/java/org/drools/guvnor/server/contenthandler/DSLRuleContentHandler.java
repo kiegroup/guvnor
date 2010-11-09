@@ -50,7 +50,6 @@ import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-
 public class DSLRuleContentHandler extends ContentHandler
     implements
     IRuleAsset {
@@ -86,7 +85,7 @@ public class DSLRuleContentHandler extends ContentHandler
         if ( DRLFileContentHandler.isStandAloneRule( source ) ) {
             String parentName = this.parentNameFromCategory( asset,
                                                              "" );
-            source = wrapRule( asset,
+            source = wrapRule( asset.getName(),
                                parentName,
                                source );
         }
@@ -119,6 +118,20 @@ public class DSLRuleContentHandler extends ContentHandler
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
+                            RuleAsset asset,
+                            StringBuffer buf) {
+        RuleContentText text = (RuleContentText) asset.content;
+        String source = text.content;
+
+        source = getDRL( source,
+                         asset.metaData.name,
+                         null );
+
+        DefaultExpander expander = builder.getDSLExpander();
+        buf.append( expander.expand( source ) );
+    }
+
+    public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
                             StringBuffer buf) {
         //add the rule keyword if its 'stand alone'
@@ -129,23 +142,33 @@ public class DSLRuleContentHandler extends ContentHandler
 
     }
 
-    private String wrapRule(AssetItem asset,
+    private String wrapRule(String assetName,
                             String parentName,
                             String source) {
         if ( parentName == null || "".equals( parentName ) ) {
-            return "rule '" + asset.getName() + "' \n" + source + "\nend";
+            return "rule '" + assetName + "' \n" + source + "\nend";
         } else {
-            return "rule '" + asset.getName() + "' extends " + parentName + " \n" + source + "\nend";
+            return "rule '" + assetName + "' extends " + parentName + " \n" + source + "\nend";
 
         }
     }
 
     public String getRawDRL(AssetItem asset) {
         String source = asset.getContent();
+        String parentName = this.parentNameFromCategory( asset,
+                                                         "" );
+        source = getDRL( source,
+                         asset.getName(),
+                         parentName );
+
+        return source;
+    }
+
+    public String getDRL(String source,
+                         String assetName,
+                         String parentName) {
         if ( DRLFileContentHandler.isStandAloneRule( source ) ) {
-            String parentName = this.parentNameFromCategory( asset,
-                                                             "" );
-            source = wrapRule( asset,
+            source = wrapRule( assetName,
                                parentName,
                                source );
         }

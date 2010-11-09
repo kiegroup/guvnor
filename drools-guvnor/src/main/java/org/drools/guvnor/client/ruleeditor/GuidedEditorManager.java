@@ -104,16 +104,6 @@ public class GuidedEditorManager {
                         
                         LoadingPopup.close();
 
-                        //For each asset we need to create a MultiViewRow
-                        List<MultiViewRow> rows = new ArrayList<MultiViewRow>();
-                        for (RuleAsset ruleAsset : parameters.getAssetsToBeEdited()) {
-                            MultiViewRow row = new MultiViewRow();
-                            row.uuid = ruleAsset.uuid;
-                            row.name = ruleAsset.metaData.name;
-                            //row.name = ((RuleModel)ruleAsset.content).name;
-                            row.format = AssetFormats.BUSINESS_RULE;
-                            rows.add(row);
-                        }
                         //Configure RuleModeller
                         RuleModellerConfiguration ruleModellerConfiguration = RuleModellerConfiguration.getInstance();
                         ruleModellerConfiguration.setHideLHS(parameters.isHideLHS());
@@ -121,7 +111,7 @@ public class GuidedEditorManager {
                         ruleModellerConfiguration.setHideAttributes(parameters.isHideAttributes());
                         
                         //Create the editor
-                        editor = new MultiViewEditor(rows.toArray(new MultiViewRow[rows.size()]), new EditItemEvent() {
+                        editor = new MultiViewEditor(parameters.getAssetsToBeEdited(), new EditItemEvent() {
 
                             public void open(MultiViewRow[] rows) {
                                 // TODO Auto-generated method stub

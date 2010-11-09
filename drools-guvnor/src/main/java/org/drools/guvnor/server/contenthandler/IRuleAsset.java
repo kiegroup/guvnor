@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.server.contenthandler;
 
+import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.repository.AssetItem;
 
@@ -34,8 +35,13 @@ public interface IRuleAsset
                             AssetItem asset,
                             StringBuffer buf);
 
+    public void assembleDRL(BRMSPackageBuilder builder,
+                            RuleAsset asset,
+                            StringBuffer buf);
+
     /**
      * If the rule has DSL in it, it is presented unexpanded.
      */
     public String getRawDRL(AssetItem asset);
+
 }

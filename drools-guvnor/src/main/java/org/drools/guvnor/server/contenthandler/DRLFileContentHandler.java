@@ -37,6 +37,8 @@ import java.io.StringReader;
 import java.util.StringTokenizer;
 
 import org.drools.compiler.DroolsParserException;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.repository.AssetItem;
@@ -111,6 +113,22 @@ public class DRLFileContentHandler extends PlainTextContentHandler
         } else {
             return false;
         }
+    }
+
+    public void assembleDRL(BRMSPackageBuilder builder,
+                            RuleAsset asset,
+                            StringBuffer buf) {
+
+        String content = ((RuleContentText) asset.content).content;
+
+        if ( isStandAloneRule( content ) ) {
+
+            content = wrapRuleDeclaration( asset.metaData.name,
+                                           "",
+                                           content );
+        }
+
+        buf.append( content );
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
