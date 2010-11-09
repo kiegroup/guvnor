@@ -15,16 +15,12 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import java.util.ArrayList;
-import java.util.List;
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.rpc.StandaloneGuidedEditorService;
 import org.drools.guvnor.client.rpc.StandaloneGuidedEditorServiceAsync;
 import org.drools.guvnor.client.ruleeditor.standalone.StandaloneGuidedEditorInvocationParameters;
 import org.drools.guvnor.client.ruleeditor.toolbar.StandaloneGuidedEditorIndividualActionToolbarButtonsConfigurationProvider;
-import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 
 /**
  * Class used to manage the stand-alone version of the Guided Editor (RuleModeller)
@@ -41,7 +37,7 @@ public class GuidedEditorManager {
     
     private StandaloneGuidedEditorServiceAsync standaloneGuidedEditorService = GWT.create( StandaloneGuidedEditorService.class );
     
-    private String[] assetsUids;
+    private RuleAsset[] assets;
     
     private Window.ClosingHandler windowCloseingHandler = new Window.ClosingHandler() {
 
@@ -71,7 +67,6 @@ public class GuidedEditorManager {
         standaloneGuidedEditorService.getInvocationParameters(new GenericCallback<StandaloneGuidedEditorInvocationParameters>() {
 
             public void onSuccess(final StandaloneGuidedEditorInvocationParameters parameters) {
-                GuidedEditorManager.this.assetsUids = new String[parameters.getAssetsToBeEdited().length];
                 
                 //no assets? This is an error!
                 if (parameters.getAssetsToBeEdited().length == 0){
@@ -79,11 +74,8 @@ public class GuidedEditorManager {
                     return;
                 }
                
-                //we need to store the uids of each asset.
-                for (int i = 0; i < parameters.getAssetsToBeEdited().length; i++) {
-                    RuleAsset ruleAsset = parameters.getAssetsToBeEdited()[i];
-                    GuidedEditorManager.this.assetsUids[i] = ruleAsset.uuid;
-                }
+                //we need to store the assets.
+                GuidedEditorManager.this.assets = parameters.getAssetsToBeEdited();
                 
                 //Load SCE and create a MultiViewEditor for the assets.
                 //We take the package from the first asset (because all the assets
@@ -145,7 +137,14 @@ public class GuidedEditorManager {
      * Remove the assets used by this Guided Editor instance
      */
     public void removeAssets(){
-        standaloneGuidedEditorService.removeAssets(assetsUids, new AsyncCallback<Void>() {
+        
+        String[] assetsIds = new String[this.assets.length];
+        for (int i = 0; i < this.assets.length; i++) {
+            RuleAsset ruleAsset = this.assets[i];
+            assetsIds[i] = ruleAsset.uuid;
+        }
+        
+        standaloneGuidedEditorService.removeAssets(assetsIds, new AsyncCallback<Void>() {
 
             public void onFailure(Throwable caught) {
                 removeAssetsCallback(false,caught.getMessage());
@@ -165,11 +164,11 @@ public class GuidedEditorManager {
      * in the JS invocation.
      */
     public void getDRLs(){        
-        if (assetsUids == null || assetsUids.length == 0){
+        if (assets == null || assets.length == 0){
             returnDRL("");
         }
         
-        standaloneGuidedEditorService.getAsstesDRL(assetsUids, new GenericCallback<String[]>() {
+        standaloneGuidedEditorService.getAsstesDRL(assets, new GenericCallback<String[]>() {
 
             public void onSuccess(String[] drls) {
                 String result = "";
@@ -191,11 +190,11 @@ public class GuidedEditorManager {
      * in the JS invocation.
      */
     public void getBRLs(){        
-        if (assetsUids == null || assetsUids.length == 0){
+        if (assets == null || assets.length == 0){
             returnDRL("");
         }
         
-        standaloneGuidedEditorService.getAsstesBRL(assetsUids, new GenericCallback<String[]>() {
+        standaloneGuidedEditorService.getAsstesBRL(assets, new GenericCallback<String[]>() {
 
             public void onSuccess(String[] drls) {
                 String result = "";

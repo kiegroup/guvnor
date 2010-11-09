@@ -47,7 +47,6 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-import com.sun.tools.javac.resources.compiler;
 
 public class BRLContentHandler extends ContentHandler
     implements

@@ -117,7 +117,6 @@ public class FactPatternWidget extends RuleModellerWidget {
         this.bindable = canBind;
 
         this.connectives = new Connectives();
-        this.connectives.setCompletions(mod.getSuggestionCompletions());
         this.connectives.setModeller(mod);
         this.connectives.setPattern(pattern);
 

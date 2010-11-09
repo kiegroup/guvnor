@@ -136,17 +136,16 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
 
     /**
      * Returns the DRL source code of the given assets.
-     * @param assetsUUIDs
+     * @param assets
      * @return
      * @throws SerializationException
      */
-    public String[] getAsstesDRL(String[] assetsUUIDs) throws SerializationException {
+    public String[] getAsstesDRL(RuleAsset[] assets) throws SerializationException {
 
-        String[] sources = new String[assetsUUIDs.length];
+        String[] sources = new String[assets.length];
 
-        for ( int i = 0; i < assetsUUIDs.length; i++ ) {
-            RuleAsset ruleAsset = this.getService().loadRuleAsset( assetsUUIDs[i] );
-            sources[i] = this.getService().buildAssetSource( ruleAsset );
+        for ( int i = 0; i < assets.length; i++ ) {
+            sources[i] = this.getService().buildAssetSource( assets[i] );
         }
 
         return sources;
@@ -154,18 +153,17 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
 
     /**
      * Returns the BRL source code of the given assets.
-     * @param assetsUUIDs
+     * @param assets
      * @return
      * @throws SerializationException
      */
-    public String[] getAsstesBRL(String[] assetsUUIDs) throws SerializationException {
+    public String[] getAsstesBRL(RuleAsset[] assets) throws SerializationException {
 
-        String[] sources = new String[assetsUUIDs.length];
+        String[] sources = new String[assets.length];
 
         BRLPersistence converter = BRXMLPersistence.getInstance();
-        for ( int i = 0; i < assetsUUIDs.length; i++ ) {
-            RuleAsset ruleAsset = this.getService().loadRuleAsset( assetsUUIDs[i] );
-            sources[i] = converter.marshal( (RuleModel) ruleAsset.content );
+        for ( int i = 0; i < assets.length; i++ ) {
+            sources[i] = converter.marshal( (RuleModel) assets[i].content );
         }
 
         return sources;

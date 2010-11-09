@@ -27,7 +27,8 @@ import org.drools.guvnor.client.ruleeditor.standalone.StandaloneGuidedEditorInvo
 public interface StandaloneGuidedEditorServiceAsync {
 
     void getInvocationParameters(AsyncCallback<StandaloneGuidedEditorInvocationParameters> asyncCallback);
-    void getAsstesDRL(String[] assetsUids, AsyncCallback<String[]> asyncCallback);
-    void getAsstesBRL(String[] assetsUids, AsyncCallback<String[]> asyncCallback);
+    void getAsstesDRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
+    void getAsstesBRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
     void removeAssets(String[] assetsUUIDs, AsyncCallback<Void> asyncCallback);
+
 }

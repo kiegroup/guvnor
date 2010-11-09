@@ -35,7 +35,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class Connectives {
     private FactPattern                pattern;
-    private SuggestionCompletionEngine completions;
     private RuleModeller               modeller;
     private Constants constants = ((Constants) GWT.create(Constants.class));
 
@@ -58,14 +57,7 @@ public class Connectives {
      * Returns the completions.
      */
     public SuggestionCompletionEngine getCompletions() {
-        return completions;
-    }
-
-    /**
-     * Sets completions.
-     */
-    public void setCompletions(SuggestionCompletionEngine completions) {
-        this.completions = completions;
+        return this.modeller.getSuggestionCompletions();
     }
 
     /**
@@ -104,7 +96,7 @@ public class Connectives {
     }
 
     private Widget connectiveOperatorDropDown(final ConnectiveConstraint con, String fieldName) {
-        String[] ops = completions.getConnectiveOperatorCompletions( pattern.factType, fieldName );
+        String[] ops = this.getCompletions().getConnectiveOperatorCompletions( pattern.factType, fieldName );
         final ListBox box = new ListBox();
         box.addItem(constants.pleaseChoose());
         for ( int i = 0; i < ops.length; i++ ) {
