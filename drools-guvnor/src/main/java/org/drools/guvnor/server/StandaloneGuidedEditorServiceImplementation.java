@@ -26,7 +26,6 @@ import org.drools.guvnor.server.guidededitor.BRLRuleAssetProvider;
 import org.drools.guvnor.server.guidededitor.NewRuleAssetProvider;
 import org.drools.guvnor.server.guidededitor.RuleAssetProvider;
 import org.drools.guvnor.server.guidededitor.UUIDRuleAssetProvider;
-import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.repository.RulesRepository;
@@ -167,13 +166,5 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
         }
 
         return sources;
-    }
-
-    /**
-     * Remove all the given assets
-     * @param assetsUUIDs the assets UUIDs
-     */
-    public void removeAssets(String[] assetsUUIDs) {
-        this.getService().removeAssets( assetsUUIDs );
     }
 }

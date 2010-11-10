@@ -38,9 +38,6 @@ public class GuidedEditorServlet extends HttpServlet {
         GE_RULE_PARAMETER_NAME(
                 "ruleName", false),
 
-        GE_RULE_REMOVE_ASSETS_ON_CLOSE_PARAMETER_NAME(
-                "removeAssetsOnClose", false),
-
         GE_HIDE_RULE_LHS_PARAMETER_NAME(
                 "hideRuleLHS", false), GE_HIDE_RULE_RHS_PARAMETER_NAME(
                 "hideRuleRHS", false), GE_HIDE_RULE_ATTRIBUTES_PARAMETER_NAME(
@@ -82,9 +79,7 @@ public class GuidedEditorServlet extends HttpServlet {
             }
         }
 
-        boolean removeAssetsOnClose = req.getParameter( GUIDED_EDITOR_SERVLET_PARAMETERS.GE_RULE_REMOVE_ASSETS_ON_CLOSE_PARAMETER_NAME.getParameterName() ) == null ? false : Boolean.parseBoolean( req.getParameter( GUIDED_EDITOR_SERVLET_PARAMETERS.GE_RULE_REMOVE_ASSETS_ON_CLOSE_PARAMETER_NAME.getParameterName() ) );
-
-        resp.sendRedirect( "GuidedEditor.html?" + GUIDED_EDITOR_SERVLET_PARAMETERS.GE_RULE_REMOVE_ASSETS_ON_CLOSE_PARAMETER_NAME.getParameterName() + "=" + removeAssetsOnClose + "&" + req.getQueryString() );
+        resp.sendRedirect( "GuidedEditor.html?" + req.getQueryString() );
     }
 
 }

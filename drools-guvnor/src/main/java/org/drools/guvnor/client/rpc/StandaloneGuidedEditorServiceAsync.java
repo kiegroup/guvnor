@@ -29,6 +29,5 @@ public interface StandaloneGuidedEditorServiceAsync {
     void getInvocationParameters(AsyncCallback<StandaloneGuidedEditorInvocationParameters> asyncCallback);
     void getAsstesDRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
     void getAsstesBRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
-    void removeAssets(String[] assetsUUIDs, AsyncCallback<Void> asyncCallback);
 
 }

@@ -36,6 +36,5 @@ public interface StandaloneGuidedEditorService
      StandaloneGuidedEditorInvocationParameters getInvocationParameters() throws DetailedSerializationException;
      String[] getAsstesDRL(RuleAsset[] assets) throws SerializationException;
      String[] getAsstesBRL(RuleAsset[] assets) throws SerializationException;
-     void removeAssets(String[] assetsUUIDs);
 
 }
