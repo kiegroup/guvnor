@@ -65,6 +65,7 @@ public class ScenarioRunner {
     final Map<String, FactHandle> factHandles   = new HashMap<String, FactHandle>();
 
     final InternalWorkingMemory   workingMemory;
+    final TypeResolver resolver;
 
     /**
      * This constructor is normally used by Guvnor for running tests on a users request.
@@ -86,8 +87,9 @@ public class ScenarioRunner {
                           final InternalWorkingMemory wm) throws ClassNotFoundException {
         this.scenario = scenario;
         this.workingMemory = wm;
+        this.resolver = resolver;
         runScenario( scenario,
-                     resolver );
+                     this.resolver );
     }
 
     /**
@@ -98,12 +100,12 @@ public class ScenarioRunner {
                           RuleBase rb) throws ClassNotFoundException {
         this.scenario = ScenarioXMLPersistence.getInstance().unmarshal( xml );
         this.workingMemory = (InternalWorkingMemory) rb.newStatefulSession();
-        Package pk = rb.getPackages()[0];
+                Package pk = rb.getPackages()[0];
         ClassLoader cl = ((InternalRuleBase) rb).getRootClassLoader();
         HashSet<String> imports = new HashSet<String>();
         imports.add( pk.getName() + ".*" );
         imports.addAll( pk.getImports().keySet() );
-        TypeResolver resolver = new ClassTypeResolver( imports,
+        this.resolver = new ClassTypeResolver( imports,
                                                        cl );
         runScenario( scenario,
                      resolver );
@@ -132,7 +134,8 @@ public class ScenarioRunner {
                 public void go() {
                     populateFields( fact,
                                     globalData,
-                                    factObject );
+                                    factObject,
+                                    resolver);
                 }
             } );
             globalData.put( fact.name,
@@ -159,7 +162,8 @@ public class ScenarioRunner {
                         public void go() {
                             populateFields( fact,
                                             populatedData,
-                                            factObject );
+                                            factObject,
+                                            resolver);
                             workingMemory.update( factHandles.get( fact.name ),
                                                   factObject );
                         }
@@ -171,7 +175,8 @@ public class ScenarioRunner {
                         public void go() {
                             populateFields( fact,
                                             populatedData,
-                                            factObject );
+                                            factObject,
+                                            resolver);
                             factHandles.put( fact.name,
                                              workingMemory.insert( factObject ) );
                         }
@@ -306,7 +311,8 @@ public class ScenarioRunner {
             if ( factObject == null ) factObject = this.globalData.get( value.name );
             FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
                                                                                value.name,
-                                                                               factObject );
+                                                                               factObject,
+                                                                               resolver);
             fieldVerifier.checkFields( value.fieldValues );
         } else {
             Iterator obs = this.workingMemory.iterateObjects();
@@ -315,7 +321,8 @@ public class ScenarioRunner {
                 if ( factObject.getClass().getSimpleName().equals( value.name ) ) {
                     FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
                                                                                        value.name,
-                                                                                       factObject );
+                                                                                       factObject,
+                                                                                       resolver );
                     fieldVerifier.checkFields( value.fieldValues );
                     if ( value.wasSuccessful() ) return;
                 }
@@ -331,24 +338,44 @@ public class ScenarioRunner {
 
     Object populateFields(FactData fact,
                           Map<String, Object> factData,
-                          Object factObject) {
+                          Object factObject,
+                          final TypeResolver resolver) {
         for ( int i = 0; i < fact.fieldData.size(); i++ ) {
             FieldData field = (FieldData) fact.fieldData.get( i );
-            Object val;
+            Object val = null;
+            
             if ( field.value != null && !field.value.equals( "" ) ) {
+             		
                 if ( field.value.startsWith( "=" ) ) {
                     // eval the val into existence
                     val = eval( field.value.substring( 1 ),
                                 factData );
-                } else {
-                    val = field.value;
-                }
+				} else if (field.getNature() == FieldData.TYPE_ENUM) {
+					try {
+						// The string representation of enum value is using 
+						// format like CheeseType.CHEDDAR
+						String classNameOfEnum = field.value.substring(0,
+								field.value.indexOf("."));
+						String valueOfEnum = field.value.substring(field.value
+								.indexOf(".") + 1);
+						String fullName = resolver
+								.getFullTypeName(classNameOfEnum);
+
+						val = eval(fullName + "." + valueOfEnum);
+					} catch (ClassNotFoundException e) {
+						//Do nothing. 
+					}
+				} else {
+					val = field.value;
+				}
+                
                 Map<String, Object> vars = new HashMap<String, Object>();
                 vars.putAll( factData );
                 vars.put( "__val__",
-                          val );
+                		val );
                 vars.put( "__fact__",
                           factObject );
+                //System.out.println("eval: " + "__fact__." + field.name + " = __val__");
                 eval( "__fact__." + field.name + " = __val__",
                       vars );
             }

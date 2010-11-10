@@ -233,7 +233,8 @@ public class SuggestionCompletionEngineBuilder {
                     int i = 0;
                     for (Field f : flds) {
                         if (f.isEnumConstant()) {
-                            listEnum.add(i + "=" + f.getName());
+                        	String shortName = fieldClass.getName().substring(fieldClass.getName().lastIndexOf(".")+1)+ "."+ f.getName();
+                         	listEnum.add(shortName + "=" + shortName);
                             i++;
                         }
                     }

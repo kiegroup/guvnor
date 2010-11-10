@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.base.TypeResolver;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
@@ -41,13 +42,16 @@ public class FactFieldValueVerifier {
     private final Object              factObject;
 
     private VerifyField               currentField;
-
+    final TypeResolver resolver;
+    
     public FactFieldValueVerifier(Map<String, Object> populatedData,
                              String factName,
-                             Object factObject) {
+                             Object factObject,
+                             final TypeResolver resolver) {
         this.populatedData = populatedData;
         this.factName = factName;
         this.factObject = factObject;
+        this.resolver = resolver;
     }
 
     public void checkFields(List<VerifyField> fieldValues) {
@@ -80,7 +84,21 @@ public class FactFieldValueVerifier {
         if ( currentField.expected.startsWith( "=" ) ) {
             expectedResult = eval( currentField.expected.substring( 1 ),
                                    this.populatedData );
-        }
+        } else if (currentField.getNature() == VerifyField.TYPE_ENUM) {
+			try {
+				// The string representation of enum value is using a  
+				// format like CheeseType.CHEDDAR
+				String classNameOfEnum = currentField.expected.substring(0,
+						currentField.expected.indexOf("."));
+				String valueOfEnum = currentField.expected.substring(currentField.expected
+						.indexOf(".") + 1);
+				String fullName = resolver.getFullTypeName(classNameOfEnum);
+
+				expectedResult = eval(fullName + "." + valueOfEnum);
+			} catch (ClassNotFoundException e) {
+				//Do nothing. 
+			}
+		} 
         return expectedResult;
     }
 

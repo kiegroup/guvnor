@@ -36,6 +36,7 @@ public class Cheese
     private int               oldPrice;
     private Date              usedBy;
     private double            doublePrice;
+    private CheeseType        cheeseType;
 
     public Cheese() {
 
@@ -63,7 +64,15 @@ public class Cheese
         this.oldPrice = oldPrice;
     }
 
-    public int getPrice() {
+    public CheeseType getCheeseType() {
+		return cheeseType;
+	}
+
+	public void setCheeseType(CheeseType cheeseType) {
+		this.cheeseType = cheeseType;
+	}
+
+	public int getPrice() {
         return this.price;
     }
 

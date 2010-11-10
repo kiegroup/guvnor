@@ -77,4 +77,12 @@ public class VerifyField implements PortableObject {
         this.operator = operator;
     }
 
+	public long getNature() {
+		return nature;
+	}
+
+	public void setNature(long nature) {
+		this.nature = nature;
+	}
+
 }

@@ -209,9 +209,9 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertTrue(eng.hasDataEnumLists());
         assertEquals(eng.getDataEnumList("SomeFact.anEnum").length,3);
         String a[] = eng.getDataEnumList("SomeFact.anEnum") ;
-        assertEquals(a[0],"0="+EnumClass.v1);
-        assertEquals(a[1],"1="+EnumClass.v2);
-        assertEquals(a[2],"2="+EnumClass.v3);
+        assertEquals(a[0],"EnumClass.v1=EnumClass.v1");
+        assertEquals(a[1],"EnumClass.v2=EnumClass.v2");
+        assertEquals(a[2],"EnumClass.v3=EnumClass.v3");
     }
 
     public void testSortOrderOfFacts() throws Exception {

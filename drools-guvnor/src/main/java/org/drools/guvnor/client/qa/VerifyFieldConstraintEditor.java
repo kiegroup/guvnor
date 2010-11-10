@@ -127,6 +127,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         } else {
             String[] enums = sce.getDataEnumList( key );
             if ( enums != null ) {
+            	field.nature = FieldData.TYPE_ENUM;
                 panel.add( new EnumDropDown( field.expected,
                                              new DropDownValueChanged() {
                                                  public void valueChanged(String newText,

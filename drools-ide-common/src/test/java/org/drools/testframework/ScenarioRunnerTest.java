@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.Cheese;
+import org.drools.CheeseType;
 import org.drools.Cheesery;
 import org.drools.Cheesery.Maturity;
 import org.drools.OuterFact;
@@ -131,7 +132,32 @@ public class ScenarioRunnerTest extends RuleUnit {
                       p.getAge() );
 
     }
+    
+    public void testPopulateEnum() throws Exception {
+        Scenario sc = new Scenario();
+        FieldData fd = new FieldData( "cheeseType", "CheeseType.CHEDDAR");
+        fd.setNature(FieldData.TYPE_ENUM, null);
+        List facts = ls( new FactData( "Cheese",
+                                       "c1",
+                                       ls(fd),
+                                       false ));
 
+        sc.fixtures.addAll( facts );
+        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
+                                                       Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.Cheese" );
+        resolver.addImport( "org.drools.CheeseType" );
+        ScenarioRunner runner = new ScenarioRunner( sc,
+                                                    resolver,
+                                                    new MockWorkingMemory() );
+
+        assertTrue( runner.populatedData.containsKey( "c1" ) );
+
+        Cheese c = (Cheese) runner.populatedData.get( "c1" );
+        assertEquals( CheeseType.CHEDDAR,
+                      c.getCheeseType() );
+    }
+    
     public void testPopulateNested() throws Exception {
         Scenario sc = new Scenario();
         List facts = ls( new FactData( "Cheese",
@@ -323,7 +349,8 @@ public class ScenarioRunnerTest extends RuleUnit {
 
         run.populateFields( fd,
                             run.populatedData,
-                            c );
+                            c,
+                            resolver);
         assertEquals( "whee",
                       c.getType() );
         assertEquals( 42,
@@ -417,6 +444,42 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertEquals( "32",
                       ((VerifyField) vf.fieldValues.get( 1 )).expected );
 
+    }
+
+    public void testVerifyFactsWithEnum() throws Exception {
+        FieldData fd = new FieldData( "cheeseType", "CheeseType.CHEDDAR");
+        fd.setNature(FieldData.TYPE_ENUM, null);
+        List facts = ls( new FactData( "Cheese",
+                                       "c1",
+                                       ls(fd),
+                                       false ));
+
+        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
+                Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.Cheese" );
+        resolver.addImport( "org.drools.CheeseType" );
+        
+        ScenarioRunner runner = new ScenarioRunner( new Scenario(),
+        		                                    resolver,
+                                                    new MockWorkingMemory() );
+        Cheese f1 = new Cheese( "othertype",
+                                42 );
+        f1.setCheeseType(CheeseType.CHEDDAR);
+        runner.populatedData.put( "f1",
+                                  f1 );
+
+
+        VerifyFact vf = new VerifyFact();
+        vf.name = "f1";
+        VerifyField verifyField = new VerifyField( "cheeseType",
+                "CheeseType.CHEDDAR",
+                "==" );
+        verifyField.setNature(VerifyField.TYPE_ENUM);
+        vf.fieldValues = ls( verifyField );
+        runner.verify( vf );
+        for ( int i = 0; i < vf.fieldValues.size(); i++ ) {
+            assertTrue( ((VerifyField) vf.fieldValues.get( i )).successResult );
+        }
     }
 
     public void testVerifyAnonymousFacts() throws Exception {
@@ -672,6 +735,27 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    public void testRuleFiredWithEnum() throws Exception {
+        Map<String, Integer> firingCounts = new HashMap<String, Integer>();
+        firingCounts.put( "foo",
+                          2 );
+        firingCounts.put( "bar",
+                          1 );
+        // and baz, we leave out
+
+        ScenarioRunner runner = new ScenarioRunner( new Scenario(),
+                                                    null,
+                                                    new MockWorkingMemory() );
+        VerifyRuleFired v = new VerifyRuleFired();
+        v.ruleName = "foo";
+        v.expectedFire = true;
+        runner.verify( v,
+                       firingCounts );
+        assertTrue( v.successResult );
+        assertEquals( 2,
+                      v.actualResult.intValue() );
+    }
+    
     public void testTestingEventListener() throws Exception {
         Scenario sc = new Scenario();
         sc.rules.add( "foo" );
@@ -1498,7 +1582,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                                     "listChesse",
                                     lstField,
                                     false );
-        runner.populateFields(lst,runner.populatedData,listChesse);
+        runner.populateFields(lst,runner.populatedData,listChesse, null);
         assertTrue(listChesse.getCheeses().size()==3);
         assertTrue(listChesse.getCheeses().contains(f1));
         assertTrue(listChesse.getCheeses().contains(f3));
