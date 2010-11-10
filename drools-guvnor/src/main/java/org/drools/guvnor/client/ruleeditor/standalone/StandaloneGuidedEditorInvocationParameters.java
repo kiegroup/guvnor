@@ -31,6 +31,8 @@ public class StandaloneGuidedEditorInvocationParameters implements Serializable 
     
     private RuleAsset[] assetsToBeEdited;
     
+    private boolean temporalAssets;
+    
     private boolean hideLHS;
     private boolean hideRHS;
     private boolean hideAttributes;
@@ -66,6 +68,15 @@ public class StandaloneGuidedEditorInvocationParameters implements Serializable 
     public void setHideRHS(boolean hideRHS) {
         this.hideRHS = hideRHS;
     }
+
+    public boolean isTemporalAssets() {
+        return temporalAssets;
+    }
+
+    public void setTemporalAssets(boolean temporalAssets) {
+        this.temporalAssets = temporalAssets;
+    }
+    
     
     
 }

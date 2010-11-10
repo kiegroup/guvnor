@@ -23,7 +23,7 @@ package org.drools.guvnor.client.ruleeditor.toolbar;
 public class StandaloneGuidedEditorIndividualActionToolbarButtonsConfigurationProvider implements ActionToolbarButtonsConfigurationProvider {
 
     public boolean showSaveButton() {
-        return true;
+        return false;
     }
 
     public boolean showSaveAndCloseButton() {

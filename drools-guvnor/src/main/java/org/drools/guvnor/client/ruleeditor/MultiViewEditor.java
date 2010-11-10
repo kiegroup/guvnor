@@ -60,6 +60,8 @@ public class MultiViewEditor extends GuvnorEditor {
     private ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider;
 
     private Map<String, RuleAsset>                    assets          = new HashMap<String, RuleAsset>();
+    
+    private MultiViewEditorMenuBarCreator menuBarCreator;
 
     public MultiViewEditor(MultiViewRow[] rows,
                            EditItemEvent editItemEvent) {
@@ -67,18 +69,42 @@ public class MultiViewEditor extends GuvnorEditor {
               editItemEvent,
               null );
     }
-
-    public MultiViewEditor(RuleAsset[] assets,
+    
+    public MultiViewEditor(MultiViewRow[] rows,
                            EditItemEvent editItemEvent,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
-        this.rows.addAll( createRows( assets ) );
+        this( Arrays.asList( rows ),
+              editItemEvent,
+              individualActionToolbarButtonsConfigurationProvider );
+    }
+    
+    public MultiViewEditor(List<MultiViewRow> rows,
+                           EditItemEvent editItemEvent,
+                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
+        this.rows.addAll( rows );
         this.editItemEvent = editItemEvent;
         this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
 
+        init();
+    }
+    
+    public MultiViewEditor(RuleAsset[] assets,
+                           EditItemEvent editItemEvent,
+                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
+        this(assets, editItemEvent, individualActionToolbarButtonsConfigurationProvider, null);
+    }
+
+    public MultiViewEditor(RuleAsset[] assets,
+                           EditItemEvent editItemEvent,
+                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider, MultiViewEditorMenuBarCreator menuBarCreator) {
+        this.rows.addAll( createRows( assets ) );
+        this.editItemEvent = editItemEvent;
+        this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
+        this.menuBarCreator = menuBarCreator;
         addAssets( assets );
         init();
     }
-
+    
     private void addAssets(RuleAsset[] assets) {
         for ( RuleAsset ruleAsset : assets ) {
             this.assets.put( ruleAsset.uuid,
@@ -96,24 +122,6 @@ public class MultiViewEditor extends GuvnorEditor {
             rows.add( row );
         }
         return rows;
-    }
-
-    public MultiViewEditor(MultiViewRow[] rows,
-                           EditItemEvent editItemEvent,
-                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
-        this( Arrays.asList( rows ),
-              editItemEvent,
-              individualActionToolbarButtonsConfigurationProvider );
-    }
-
-    public MultiViewEditor(List<MultiViewRow> rows,
-                           EditItemEvent editItemEvent,
-                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
-        this.rows.addAll( rows );
-        this.editItemEvent = editItemEvent;
-        this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
-
-        init();
     }
 
     private void init() {
@@ -148,24 +156,14 @@ public class MultiViewEditor extends GuvnorEditor {
     //    toolbar.addItem( constants.Show(),
     //                     layoutMenu );
     private MenuBar createToolbar() {
-        MenuBar toolbar = new MenuBar();
-
-        toolbar.addItem( constants.SaveAllChanges(),
-                         new Command() {
-
-                             public void execute() {
-                                 checkin( false );
-                             }
-                         } );
-        toolbar.addItem( constants.SaveAndCloseAll(),
-                         new Command() {
-
-                             public void execute() {
-                                 checkin( true );
-                             }
-                         } );
-
-        return toolbar;
+        
+        //if no MultiViewEditorMenuBarCreator is set, then use the Default
+        //implementation.
+        if (this.menuBarCreator == null){
+            this.menuBarCreator = new DefaultMultiViewEditorMenuBarCreator();
+        }
+        
+        return this.menuBarCreator.createMenuBar(this);
     }
 
     private void doViews() {
@@ -275,7 +273,7 @@ public class MultiViewEditor extends GuvnorEditor {
                                                           } );
     }
 
-    private void checkin(final boolean closeAfter) {
+    public void checkin(final boolean closeAfter) {
         final CheckinPopup pop = new CheckinPopup( constants.CheckInChanges() );
         pop.setCommand( new Command() {
 
@@ -297,15 +295,18 @@ public class MultiViewEditor extends GuvnorEditor {
         closeCommand.execute();
     }
 
+    @Override
     public boolean isDirty() {
         // TODO Auto-generated method stub
         return false;
     }
 
+    @Override
     public void makeDirty() {
         // TODO Auto-generated method stub
     }
 
+    @Override
     public void resetDirty() {
         // TODO Auto-generated method stub
     }

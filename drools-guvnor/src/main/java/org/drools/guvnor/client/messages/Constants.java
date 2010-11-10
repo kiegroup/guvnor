@@ -2155,4 +2155,6 @@ public interface Constants
     String NewColumn();
     
     String NoRulesFound();
+    
+    String Done();
 }

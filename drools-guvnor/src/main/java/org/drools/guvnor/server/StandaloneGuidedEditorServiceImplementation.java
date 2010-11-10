@@ -79,7 +79,7 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
 
         StandaloneGuidedEditorInvocationParameters parameters = new StandaloneGuidedEditorInvocationParameters();
 
-        parameters.setAssetsToBeEdited( this.loadRuleAssetsFromSession() );
+         this.loadRuleAssetsFromSession(parameters);
 
         parameters.setHideLHS( hideLHSInEditor );
         parameters.setHideRHS( hideRHSInEditor );
@@ -93,12 +93,11 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
      * GuidedEditorServlet first. This servlet put all the POST parameters into
      * session. This method takes those parameters and load the corresponding
      * assets.
-     * If you are passing BRLs to the Guided Editor, this method will create
-     * one asset per BRL with a unique name.
-     * @return
+     * This method will set the assets in parameters 
+     * @param parameters 
      * @throws DetailedSerializationException
      */
-    private RuleAsset[] loadRuleAssetsFromSession() throws DetailedSerializationException {
+    private void loadRuleAssetsFromSession(StandaloneGuidedEditorInvocationParameters parameters) throws DetailedSerializationException {
 
         //Get the parameters from the session
         HttpSession session = this.getThreadLocalRequest().getSession();
@@ -120,16 +119,19 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
             provider = new NewRuleAssetProvider( packageName,
                                                  categoryName,
                                                  ruleName );
+            parameters.setTemporalAssets(false);
         } else if ( assetsUUIDs != null ) {
             provider = new UUIDRuleAssetProvider( assetsUUIDs );
+            parameters.setTemporalAssets(false);
         } else if ( initialBRL != null ) {
             provider = new BRLRuleAssetProvider( packageName,
                                                  initialBRL );
+            parameters.setTemporalAssets(true);
         } else {
             throw new IllegalStateException();
         }
 
-        return provider.getRuleAssets();
+        parameters.setAssetsToBeEdited(provider.getRuleAssets());
 
     }
 
