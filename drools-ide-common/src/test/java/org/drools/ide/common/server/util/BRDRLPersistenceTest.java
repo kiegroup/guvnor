@@ -119,6 +119,28 @@ public class BRDRLPersistenceTest extends TestCase {
 
 	}
 
+	public void testEnum() {
+		String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type = CheeseType.CHEDDAR )\n"
+				+ "\tthen\n\t\tinsert( new Report() );\nend\n";
+		final RuleModel m = new RuleModel();
+		final FactPattern pat = new FactPattern();
+		//pat.boundName = "p1";
+		pat.factType = "Cheese";		
+		m.addLhsItem(pat);
+		final SingleFieldConstraint con = new SingleFieldConstraint();
+		con.setFieldName("type");
+		con.setOperator("=");
+		con.setValue("CheeseType.CHEDDAR");
+		con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
+		pat.addConstraint(con);
+
+		m.addRhsItem(new ActionInsertFact("Report"));
+		m.name = "my rule";
+
+		final String drl = p.marshal(m);
+		assertEquals(expected, drl);
+	}
+	
 	public void testMoreComplexRendering() {
 		final RuleModel m = getComplexModel();
 		String expected = "rule \"Complex Rule\"\n" + "\tno-loop true\n"

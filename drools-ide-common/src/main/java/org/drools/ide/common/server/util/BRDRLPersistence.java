@@ -480,6 +480,9 @@ public class BRDRLPersistence implements BRLPersistence {
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE:
                 	buf.append("@{").append(value).append("}");
                 	break;
+                case BaseSingleFieldConstraint.TYPE_ENUM:
+                	buf.append(value);
+                	break;              	
                 default:
                     buf.append(value);
             }

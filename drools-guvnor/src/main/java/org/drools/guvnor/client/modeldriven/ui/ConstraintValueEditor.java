@@ -89,6 +89,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private String fieldType;
     private boolean readOnly;
     private Command onValueChangeCommand;
+    private boolean isDropDownDataEnum;
 
     public ConstraintValueEditor(FactPattern pattern, String fieldName,
             BaseSingleFieldConstraint con, RuleModeller modeller, String valueType,
@@ -108,8 +109,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
         this.readOnly = readOnly;
         if (SuggestionCompletionEngine.TYPE_BOOLEAN.equals(valueType)) {
             this.dropDownData = DropDownData.create(new String[]{"true", "false"}); //NON-NLS
+            isDropDownDataEnum = false;
         } else {
             this.dropDownData = sce.getEnums(pattern, fieldName);
+            isDropDownDataEnum = true;
         }
 
         refreshEditor();
@@ -131,6 +134,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
         } else {
             switch (constraint.getConstraintValueType()) {
                 case SingleFieldConstraint.TYPE_LITERAL:
+                case SingleFieldConstraint.TYPE_ENUM:
+
 
                     if (this.constraint instanceof SingleFieldConstraint) {
                         final SingleFieldConstraint con = (SingleFieldConstraint) this.constraint;
@@ -344,7 +349,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         lit.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+                con.setConstraintValueType(isDropDownDataEnum?SingleFieldConstraint.TYPE_ENUM:SingleFieldConstraint.TYPE_LITERAL);
                 doTypeChosen(form);
             }
         });
