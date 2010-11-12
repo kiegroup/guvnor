@@ -60,7 +60,7 @@ public class AssetItemIterator
     /**
      * @param i The number of rules to skip.
      */
-    public void skip(int i) {
+    public void skip(long i) {
         it.skip( i );
     }
 

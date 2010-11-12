@@ -20,6 +20,9 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
+
+import org.drools.guvnor.client.rpc.AssetPageRequest;
+import org.drools.guvnor.client.rpc.AssetPageResponse;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 
@@ -187,6 +190,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     }
     public org.drools.guvnor.client.rpc.ValidatedResponse savePackage(org.drools.guvnor.client.rpc.PackageConfigData p0) throws SerializationException {
          return getService().savePackage( p0);
+    }
+    public AssetPageResponse findAssetPage(AssetPageRequest request) throws SerializationException {
+        return getService().findAssetPage(request);
     }
     public org.drools.guvnor.client.rpc.TableDataResult listAssets(java.lang.String p0, java.lang.String[] p1, int p2, int p3, java.lang.String p4) throws SerializationException {
          return getService().listAssets( p0,  p1,  p2,  p3,  p4);

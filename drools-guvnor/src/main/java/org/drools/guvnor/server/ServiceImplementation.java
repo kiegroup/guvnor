@@ -64,6 +64,9 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.rpc.AssetPageRequest;
+import org.drools.guvnor.client.rpc.AssetPageResponse;
+import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
@@ -1073,6 +1076,65 @@ public class ServiceImplementation
         }
 
         return res;
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public AssetPageResponse findAssetPage(AssetPageRequest request) throws SerializationException {
+        log.debug("Finding asset page of packageUuid (" + request.getPackageUuid() + ")");
+        long start = System.currentTimeMillis();
+        PackageItem packageItem = repository.loadPackageByUUID( request.getPackageUuid() );
+        AssetItemIterator it;
+        if (request.getFormatInList() != null) {
+            if (request.getFormatIsRegistered() != null) {
+                throw new IllegalArgumentException(
+                        "Combining formatInList and formatIsRegistered is not yet supported.");
+            } else {
+                it = packageItem.listAssetsByFormat( request.getFormatInList() );
+            }
+        } else {
+            if (request.getFormatIsRegistered() != null) {
+                it = packageItem.listAssetsNotOfFormat( AssetFormatHelper.listRegisteredTypes() );
+            } else {
+                it = packageItem.queryAssets("");
+            }
+        }
+
+        AssetPageResponse response = new AssetPageResponse();
+        long totalRowSize = it.getSize();
+        if (totalRowSize > Integer.MAX_VALUE) {
+            throw new IllegalStateException("The totalRowSize (" + totalRowSize + ") is too big.");
+        }
+        response.setTotalRowSize((int) totalRowSize);
+        it.skip(request.getStartRowIndex());
+        response.setStartRowIndex(request.getStartRowIndex());
+
+        int pageSize = request.getPageSize();
+        List<AssetPageRow> rowList = new ArrayList<AssetPageRow>(request.getPageSize());
+
+        while (it.hasNext() && (pageSize < 0 || rowList.size() <= pageSize)) {
+            AssetItem assetItem = (AssetItem) it.next();
+            AssetPageRow row = new AssetPageRow();
+            row.setUuid(assetItem.getUUID());
+            row.setFormat(assetItem.getFormat());
+            row.setPackageName(assetItem.getPackageName());
+            row.setName(assetItem.getName());
+            row.setDescription(assetItem.getDescription());
+            row.setStateName(assetItem.getStateDescription());
+            row.setCreator(assetItem.getCreator());
+            row.setCreatedDate(assetItem.getCreatedDate().getTime());
+            row.setLastContributor(assetItem.getLastContributor());
+            row.setLastModified(assetItem.getLastModified().getTime());
+            row.setCategorySummary(assetItem.getCategorySummary());
+            row.setExternalSource(assetItem.getExternalSource());
+            rowList.add(row);
+        }
+        response.setAssetPageRowList(rowList);
+        response.setLastPage(!it.hasNext());
+
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug("Found asset page of packageUuid (" + request.getPackageUuid() + ") in " + methodDuration + " ms.");
+        return response;
     }
 
     @WebRemote

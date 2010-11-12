@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.client.rpc;
 
-import java.util.Map;
-
 
 /**
  * 
@@ -63,6 +61,7 @@ public interface RepositoryServiceAsync {
 	void getCustomSelectors(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String[]> arg1);
 	void installSampleRepository(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg1);
 	void listArchivedPackages(com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData[]> arg1);
+    void findAssetPage(org.drools.guvnor.client.rpc.AssetPageRequest request, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.AssetPageResponse> cb);
 	void listAssets(java.lang.String packageUUID, java.lang.String[] formats, int skip, int numRows, java.lang.String tableConfig, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> arg6);
 	void listAvailablePermissionTypes(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String[]> arg1);
 	void listPackages(com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData[]> arg1);
@@ -111,5 +110,5 @@ public interface RepositoryServiceAsync {
 	void unLockAsset(java.lang.String uuid, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
 	void updateUserPermissions(java.lang.String userName, java.util.Map<java.lang.String, java.util.List<java.lang.String>> perms, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg3);
 	void processTemplate(java.lang.String name, java.util.Map<String, Object> data, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String> arg4);
-        void isHostedMode(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg1);
+    void isHostedMode(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Boolean> arg1);
 }

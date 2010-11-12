@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.util;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.drools.guvnor.client.admin.ArchivedAssetManager;
 import org.drools.guvnor.client.admin.BackupManager;
@@ -50,6 +51,7 @@ import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
+import org.drools.guvnor.client.rulelist.AssetTable;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.rulelist.QueryWidget;
 
@@ -497,50 +499,36 @@ public class TabOpener {
     public void openPackageViewAssets(final String packageUuid,
                                       final String packageName,
                                       String key,
-                                      final String[] formats,
+                                      final List<String> formatInList,
                                       final String itemName) {
-        if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
+        if (!explorerViewCenterPanel.showIfOpen(key)) {
 
-            final AssetItemGrid grid = new AssetItemGrid( new EditItemEvent() {
-                                                              public void open(String uuid) {
-                                                                  openAsset( uuid );
-                                                              }
-
-                                                              public void open(MultiViewRow[] rows) {
-                                                                  openAssetsToMultiView( rows );
-                                                              }
-                                                          },
-                                                          AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID,
-                                                          new AssetItemGridDataLoader() {
-                                                              public void loadData(int startRow,
-                                                                                   int numberOfRows,
-                                                                                   GenericCallback<TableDataResult> cb) {
-                                                                  RepositoryServiceFactory.getService().listAssets( packageUuid,
-                                                                                                                    formats,
-                                                                                                                    startRow,
-                                                                                                                    numberOfRows,
-                                                                                                                    AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID,
-                                                                                                                    cb );
-                                                              }
-                                                          },
-                                                          GWT.getModuleBaseURL() + "feed/package?name=" + packageName + "&viewUrl=" + Util.getSelfURL() + "&status=*" );
-            explorerViewCenterPanel.addTab( itemName + " [" + packageName + "]",
-                                            grid,
-                                            key );
+            String feedUrl = GWT.getModuleBaseURL() + "feed/package?name=" + packageName + "&viewUrl=" + Util.getSelfURL() + "&status=*";
+            final AssetTable table = new AssetTable(packageUuid, formatInList, new EditItemEvent() {
+                public void open(String uuid) {
+                    openAsset(uuid);
+                }
+                public void open(MultiViewRow[] rows) {
+                    openAssetsToMultiView(rows);
+                }
+            }, feedUrl);
+            explorerViewCenterPanel.addTab(itemName + " [" + packageName + "]",
+                    table,
+                    key);
 
             final ServerPushNotification sub = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
-                    if ( response.messageType.equals( "packageChange" ) && response.message.equals( packageName ) ) {
-                        grid.refreshGrid();
+                    if (response.messageType.equals("packageChange") && response.message.equals(packageName)) {
+                        table.refresh();
                     }
                 }
             };
-            PushClient.instance().subscribe( sub );
-            grid.addUnloadListener( new Command() {
+            PushClient.instance().subscribe(sub);
+            table.addUnloadListener(new Command() {
                 public void execute() {
-                    PushClient.instance().unsubscribe( sub );
+                    PushClient.instance().unsubscribe(sub);
                 }
-            } );
+            });
         }
     }
 

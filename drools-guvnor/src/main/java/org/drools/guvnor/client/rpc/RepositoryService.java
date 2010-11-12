@@ -201,6 +201,14 @@ public interface RepositoryService
     public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException;
 
     /**
+     * Supports filtering and pagination.
+     * @param request never null, contains filter and pagination values
+     * @return never null, contains the {@link List} of {@link AssetPageRow}
+     * @throws SerializationException
+     */
+    public AssetPageResponse findAssetPage(AssetPageRequest request) throws SerializationException;
+
+    /**
      * Given a format, this will return assets that match.
      * It can also be used for "pagination" by passing in start and
      * finish row numbers.
@@ -208,6 +216,7 @@ public interface RepositoryService
      * @param format The format to filter on. If this is empty - it will look for all non "known" asset types (ie "misc" stuff).
      * @param numRows The number of rows to return. -1 means all.
      * @param startRow The starting row number if paging - if numRows is -1 then this is ignored.
+     * @deprecated by {@link #findAssetPage(AssetPageRequest)}
      */
     public TableDataResult listAssets(String packageUUID,
                                       String formats[],

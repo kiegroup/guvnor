@@ -537,6 +537,10 @@ public class PackageItem extends VersionableItem {
     public AssetItemIterator listArchivedAssets () {
         return queryAssets( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'true'" , true );
     }
+    
+    public AssetItemIterator listAssetsByFormat(List<String> formatInList) {
+        return listAssetsByFormat(formatInList.toArray(new String[formatInList.size()]));
+    }
 
     /**
      * This will load an iterator for assets of the given format type.
@@ -928,4 +932,5 @@ public class PackageItem extends VersionableItem {
     private String getCurrentUserName() {
         return this.rulesRepository.getSession().getUserID();
     }
+
 }

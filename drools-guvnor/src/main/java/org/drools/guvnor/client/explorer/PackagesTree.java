@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.GenericCallback;
@@ -207,7 +208,7 @@ public class PackagesTree extends AbstractTree {
                 opener.openPackageViewAssets( packageConfigData.uuid,
                                               packageConfigData.name,
                                               key,
-                                              formats,
+                                              Arrays.asList(formats),
                                               node.getText() );
             } else {
                 throw new IllegalArgumentException("The userObject (" + userObject + ") is not supported.");
