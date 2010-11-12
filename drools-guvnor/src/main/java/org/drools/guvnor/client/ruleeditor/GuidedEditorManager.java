@@ -36,7 +36,12 @@ public class GuidedEditorManager {
     private RuleAsset[] assets;
 
     public Panel getBaseLayout() {
-
+        
+        String parametersUUID = Window.Location.getParameter("pUUID");
+        if (parametersUUID == null || parametersUUID.trim().equals("")){
+            return null;
+        }
+        
         //init JS hooks
         this.setHooks(this);
 
@@ -48,7 +53,7 @@ public class GuidedEditorManager {
 
         //The package must exist (because we need at least a model to work with)
         //To make things easier (to me), the category must exist too.
-        standaloneGuidedEditorService.getInvocationParameters(new GenericCallback<StandaloneGuidedEditorInvocationParameters>() {
+        standaloneGuidedEditorService.getInvocationParameters(parametersUUID, new GenericCallback<StandaloneGuidedEditorInvocationParameters>() {
 
             public void onSuccess(final StandaloneGuidedEditorInvocationParameters parameters) {
 

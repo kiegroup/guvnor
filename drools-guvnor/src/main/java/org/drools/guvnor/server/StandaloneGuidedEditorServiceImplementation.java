@@ -17,6 +17,7 @@ package org.drools.guvnor.server;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.util.Map;
 import javax.servlet.http.HttpSession;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -54,38 +55,52 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
         return RepositoryServiceServlet.getService();
     }
 
-    public StandaloneGuidedEditorInvocationParameters getInvocationParameters() throws DetailedSerializationException {
+    public StandaloneGuidedEditorInvocationParameters getInvocationParameters(String parametersUUID) throws DetailedSerializationException {
 
-        //Get the parameters from the session
         HttpSession session = this.getThreadLocalRequest().getSession();
+        
+        try{
+            //Get the parameters from the session
+            Map<String, Object> sessionParameters = (Map<String, Object>) session.getAttribute(parametersUUID);
 
-        boolean hideLHSInEditor = false;
-        Object attribute = session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_LHS_PARAMETER_NAME.getParameterName() );
-        if ( attribute != null ) {
-            hideLHSInEditor = Boolean.parseBoolean( attribute.toString() );
+            if (sessionParameters == null || sessionParameters.isEmpty()){
+                throw new DetailedSerializationException("Error initializing Guided Editor", "No initial parameters were supplied");
+            }
+
+            boolean hideLHSInEditor = false;
+            Object attribute =  sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_LHS_PARAMETER_NAME.getParameterName() );
+            if ( attribute != null ) {
+                hideLHSInEditor = Boolean.parseBoolean( attribute.toString() );
+            }
+
+            boolean hideRHSInEditor = false;
+            attribute = sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_RHS_PARAMETER_NAME.getParameterName() );
+            if ( attribute != null ) {
+                hideRHSInEditor = Boolean.parseBoolean( attribute.toString() );
+            }
+
+            boolean hideAttributesInEditor = false;
+            attribute = sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_ATTRIBUTES_PARAMETER_NAME.getParameterName() );
+            if ( attribute != null ) {
+                hideAttributesInEditor = Boolean.parseBoolean( attribute.toString() );
+            }
+
+            StandaloneGuidedEditorInvocationParameters invocationParameters = new StandaloneGuidedEditorInvocationParameters();
+
+            this.loadRuleAssetsFromSessionParameters(sessionParameters, invocationParameters);
+
+            invocationParameters.setHideLHS( hideLHSInEditor );
+            invocationParameters.setHideRHS( hideRHSInEditor );
+            invocationParameters.setHideAttributes( hideAttributesInEditor );
+
+
+
+            return invocationParameters;
+        } finally{
+            //clear session parameters
+            session.removeAttribute(parametersUUID);
         }
-
-        boolean hideRHSInEditor = false;
-        attribute = session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_RHS_PARAMETER_NAME.getParameterName() );
-        if ( attribute != null ) {
-            hideRHSInEditor = Boolean.parseBoolean( attribute.toString() );
-        }
-
-        boolean hideAttributesInEditor = false;
-        attribute = session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_ATTRIBUTES_PARAMETER_NAME.getParameterName() );
-        if ( attribute != null ) {
-            hideAttributesInEditor = Boolean.parseBoolean( attribute.toString() );
-        }
-
-        StandaloneGuidedEditorInvocationParameters parameters = new StandaloneGuidedEditorInvocationParameters();
-
-         this.loadRuleAssetsFromSession(parameters);
-
-        parameters.setHideLHS( hideLHSInEditor );
-        parameters.setHideRHS( hideRHSInEditor );
-        parameters.setHideAttributes( hideAttributesInEditor );
-
-        return parameters;
+        
     }
 
     /**
@@ -97,41 +112,38 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
      * @param parameters 
      * @throws DetailedSerializationException
      */
-    private void loadRuleAssetsFromSession(StandaloneGuidedEditorInvocationParameters parameters) throws DetailedSerializationException {
+    private void loadRuleAssetsFromSessionParameters(Map<String, Object> sessionParameters, StandaloneGuidedEditorInvocationParameters invocationParameters) throws DetailedSerializationException {
 
-        //Get the parameters from the session
-        HttpSession session = this.getThreadLocalRequest().getSession();
-
-        String packageName = (String) session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_PACKAGE_PARAMETER_NAME.getParameterName() );
-        String categoryName = (String) session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CATEGORY_PARAMETER_NAME.getParameterName() );
-        String[] initialBRL = (String[]) session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_BRL_PARAMETER_NAME.getParameterName() );
-        String[] assetsUUIDs = (String[]) session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_ASSETS_UUIDS_PARAMETER_NAME.getParameterName() );
+        String packageName = (String)sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_PACKAGE_PARAMETER_NAME.getParameterName() );
+        String categoryName = (String)sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CATEGORY_PARAMETER_NAME.getParameterName() );
+        String[] initialBRL = (String[])sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_BRL_PARAMETER_NAME.getParameterName() );
+        String[] assetsUUIDs = (String[])sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_ASSETS_UUIDS_PARAMETER_NAME.getParameterName() );
 
         boolean createNewAsset = false;
-        Object attribute = session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CREATE_NEW_ASSET_PARAMETER_NAME.getParameterName() );
+        Object attribute = sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CREATE_NEW_ASSET_PARAMETER_NAME.getParameterName() );
         if ( attribute != null ) {
             createNewAsset = Boolean.parseBoolean( attribute.toString() );
         }
-        String ruleName = (String) session.getAttribute( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_RULE_PARAMETER_NAME.getParameterName() );
+        String ruleName = (String) sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_RULE_PARAMETER_NAME.getParameterName() );
 
         RuleAssetProvider provider;
         if ( createNewAsset ) {
             provider = new NewRuleAssetProvider( packageName,
                                                  categoryName,
                                                  ruleName );
-            parameters.setTemporalAssets(false);
+            invocationParameters.setTemporalAssets(false);
         } else if ( assetsUUIDs != null ) {
             provider = new UUIDRuleAssetProvider( assetsUUIDs );
-            parameters.setTemporalAssets(false);
+            invocationParameters.setTemporalAssets(false);
         } else if ( initialBRL != null ) {
             provider = new BRLRuleAssetProvider( packageName,
                                                  initialBRL );
-            parameters.setTemporalAssets(true);
+            invocationParameters.setTemporalAssets(true);
         } else {
             throw new IllegalStateException();
         }
 
-        parameters.setAssetsToBeEdited(provider.getRuleAssets());
+        invocationParameters.setAssetsToBeEdited(provider.getRuleAssets());
 
     }
 
