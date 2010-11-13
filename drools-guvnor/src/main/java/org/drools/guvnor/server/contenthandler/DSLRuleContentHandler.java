@@ -34,7 +34,6 @@ package org.drools.guvnor.server.contenthandler;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.compiler.DroolsParserException;
@@ -43,6 +42,7 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.lang.ExpanderException;
 import org.drools.lang.dsl.DefaultExpander;
 import org.drools.repository.AssetItem;
@@ -80,22 +80,42 @@ public class DSLRuleContentHandler extends ContentHandler
                                                 asset,
                                                 logger );
 
-        //add the rule keyword if its 'stand alone'
-        String source = asset.getContent();
-        if ( DRLFileContentHandler.isStandAloneRule( source ) ) {
-            String parentName = this.parentNameFromCategory( asset,
-                                                             "" );
-            source = wrapRule( asset.getName(),
-                               parentName,
-                               source );
-        }
+        String source = getRawDRL( asset );
 
         //expand and check for errors
         String drl = expander.expand( source );
+
         if ( expander.hasErrors() ) {
-            List exErrs = expander.getErrors();
-            for ( Iterator iter = exErrs.iterator(); iter.hasNext(); ) {
-                ExpanderException ex = (ExpanderException) iter.next();
+            List<ExpanderException> exErrs = expander.getErrors();
+            for ( ExpanderException ex : exErrs ) {
+                logger.logError( new ContentAssemblyError( asset,
+                                                           ex.getMessage() ) );
+            }
+            return;
+        }
+
+        builder.addPackageFromDrl( new StringReader( drl ) );
+    }
+
+    public void compile(BRMSPackageBuilder builder,
+                        RuleAsset asset,
+                        ErrorLogger logger) throws DroolsParserException,
+                                           IOException {
+        DefaultExpander expander = getExpander( builder,
+                                                asset,
+                                                logger );
+
+        RuleContentText text = (RuleContentText) asset.content;
+        String source = getDRL( text.content,
+                                asset.metaData.name,
+                                null );
+
+        //expand and check for errors
+        String drl = expander.expand( source );
+
+        if ( expander.hasErrors() ) {
+            List<ExpanderException> exErrs = expander.getErrors();
+            for ( ExpanderException ex : exErrs ) {
                 logger.logError( new ContentAssemblyError( asset,
                                                            ex.getMessage() ) );
             }
@@ -107,6 +127,18 @@ public class DSLRuleContentHandler extends ContentHandler
 
     private DefaultExpander getExpander(BRMSPackageBuilder builder,
                                         AssetItem asset,
+                                        ContentPackageAssembler.ErrorLogger logger) {
+
+        if ( !builder.hasDSL() ) {
+            logger.logError( new ContentAssemblyError( asset,
+                                                       "This rule asset requires a DSL, yet none were configured in the package." ) );
+        }
+
+        return builder.getDSLExpander();
+    }
+
+    private DefaultExpander getExpander(BRMSPackageBuilder builder,
+                                        RuleAsset asset,
                                         ContentPackageAssembler.ErrorLogger logger) {
 
         if ( !builder.hasDSL() ) {

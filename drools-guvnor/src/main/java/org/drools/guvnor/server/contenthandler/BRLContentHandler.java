@@ -39,6 +39,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRDRLPersistence;
 import org.drools.ide.common.server.util.BRLPersistence;
@@ -77,6 +78,15 @@ public class BRLContentHandler extends ContentHandler
                                                                    IOException {
         builder.addPackageFromDrl( new StringReader( getSourceDRL( buildModelFromAsset( asset ),
                                                                    builder ) ) );
+    }
+
+    public void compile(BRMSPackageBuilder builder,
+                        RuleAsset asset,
+                        ErrorLogger logger) throws DroolsParserException,
+                                           IOException {
+        builder.addPackageFromDrl( new StringReader( getSourceDRL( (RuleModel) asset.content,
+                                                                   builder ) ) );
+
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
@@ -126,4 +136,5 @@ public class BRLContentHandler extends ContentHandler
     protected BRLPersistence getBrlXmlPersistence() {
         return BRXMLPersistence.getInstance();
     }
+
 }

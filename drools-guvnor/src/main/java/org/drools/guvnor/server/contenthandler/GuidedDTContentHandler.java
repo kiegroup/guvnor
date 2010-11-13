@@ -39,6 +39,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.server.util.GuidedDTDRLPersistence;
 import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
@@ -87,6 +88,19 @@ public class GuidedDTContentHandler extends ContentHandler
         String drl = getRawDRL( asset );
         if ( drl.equals( "" ) ) return;
         builder.addPackageFromDrl( new StringReader( drl ) );
+    }
+
+    public void compile(BRMSPackageBuilder builder,
+                        RuleAsset asset,
+                        ErrorLogger logger) throws DroolsParserException,
+                                           IOException {
+        GuidedDecisionTable model = (GuidedDecisionTable) asset.content;
+
+        String drl = GuidedDTDRLPersistence.getInstance().marshal( model );
+
+        if ( drl.equals( "" ) ) return;
+        builder.addPackageFromDrl( new StringReader( drl ) );
+
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,

@@ -93,6 +93,18 @@ public class DecisionTableXLSHandler extends ContentHandler
 
     }
 
+    public void compile(BRMSPackageBuilder builder,
+                        RuleAsset asset,
+                        ErrorLogger logger) throws DroolsParserException,
+                                           IOException {
+        StringBuffer buf = new StringBuffer();
+
+        assembleDRL( builder,
+                     asset,
+                     buf );
+        builder.addPackageFromDrl( new StringReader( buf.toString() ) );
+    }
+
     public String getRawDRL(AssetItem asset) {
         return getDRL( asset.getBinaryContentAttachment() );
     }

@@ -1,21 +1,3 @@
-/**
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.drools.guvnor.server.contenthandler;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -31,6 +13,8 @@ package org.drools.guvnor.server.contenthandler;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.guvnor.server.contenthandler;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -52,6 +36,16 @@ public class DRLFileContentHandler extends PlainTextContentHandler
                         ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
                                                                    IOException {
         String content = getRawDRL( asset );
+        if ( content != null && !content.trim().equals( "" ) ) {
+            builder.addPackageFromDrl( new StringReader( content ) );
+        }
+    }
+
+    public void compile(BRMSPackageBuilder builder,
+                        RuleAsset asset,
+                        ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
+                                                                   IOException {
+        String content = ((RuleContentText) asset.content).content;
         if ( content != null && !content.trim().equals( "" ) ) {
             builder.addPackageFromDrl( new StringReader( content ) );
         }

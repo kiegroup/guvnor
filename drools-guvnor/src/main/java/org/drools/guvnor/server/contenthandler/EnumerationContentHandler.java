@@ -33,43 +33,68 @@ package org.drools.guvnor.server.contenthandler;
  */
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.ide.common.server.util.DataEnumLoader;
 import org.drools.repository.AssetItem;
 
-
-
-public class EnumerationContentHandler extends PlainTextContentHandler implements IValidating {
+public class EnumerationContentHandler extends PlainTextContentHandler
+    implements
+    IValidating {
 
     public BuilderResult validateAsset(AssetItem asset) {
 
         String content = asset.getContent();
-        DataEnumLoader loader = new DataEnumLoader(content);
-        if (!loader.hasErrors()) {
+        DataEnumLoader loader = new DataEnumLoader( content );
+        if ( !loader.hasErrors() ) {
             return new BuilderResult();
         } else {
             List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
-            List errs = loader.getErrors();
+            List<String> errs = loader.getErrors();
 
-
-            for ( Iterator iter = errs.iterator(); iter.hasNext(); ) {
+            for ( String message : errs ) {
 
                 BuilderResultLine result = new BuilderResultLine();
                 result.assetName = asset.getName();
                 result.assetFormat = asset.getFormat();
                 result.uuid = asset.getUUID();
-                result.message = (String) iter.next();
+                result.message = message;
                 errors.add( result );
             }
 
+            BuilderResult result = new BuilderResult();
+            result.lines = errors.toArray( new BuilderResultLine[errors.size()] );
+
+            return result;
+        }
+    }
+
+    public BuilderResult validateAsset(RuleAsset asset) {
+        String content = ((RuleContentText) asset.content).content;
+        DataEnumLoader loader = new DataEnumLoader( content );
+        if ( !loader.hasErrors() ) {
+            return new BuilderResult();
+        } else {
+            List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
+            List<String> errs = loader.getErrors();
+
+            for ( String message : errs ) {
+
+                BuilderResultLine result = new BuilderResultLine();
+                result.assetName = asset.metaData.name;
+                result.assetFormat = asset.metaData.format;
+                result.uuid = asset.uuid;
+                result.message = message;
+                errors.add( result );
+            }
 
             BuilderResult result = new BuilderResult();
             result.lines = errors.toArray( new BuilderResultLine[errors.size()] );
-            
+
             return result;
         }
     }

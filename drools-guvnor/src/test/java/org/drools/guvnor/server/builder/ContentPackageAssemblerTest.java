@@ -1,21 +1,3 @@
-/**
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.drools.guvnor.server.builder;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -31,6 +13,8 @@ package org.drools.guvnor.server.builder;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.guvnor.server.builder;
 
 import java.io.InputStream;
 import java.io.StringReader;
@@ -128,10 +112,10 @@ public class ContentPackageAssemblerTest extends TestCase {
                                                   pkg );
         assembler = new ContentPackageAssembler( pkg );
         assertTrue( assembler.hasErrors() );
-        assertTrue( assembler.getErrors().get( 0 ).itemInError instanceof AssetItem );
+        assertTrue( assembler.getErrors().get( 0 ).isAssetItem() );
 
         assertEquals( "func1",
-                      assembler.getErrors().get( 0 ).itemInError.getName() );
+                      assembler.getErrors().get( 0 ).getName() );
         try {
             assembler.getBinaryPackage();
             fail( "should not work as is in error." );
@@ -162,11 +146,11 @@ public class ContentPackageAssemblerTest extends TestCase {
         assembler = new ContentPackageAssembler( pkg );
         assertTrue( assembler.hasErrors() );
         assertFalse( assembler.isPackageConfigurationInError() );
-        assertTrue( assembler.getErrors().get( 0 ).itemInError.getName().equals( func.getName() ) );
-        assertNotEmpty( assembler.getErrors().get( 0 ).errorReport );
+        assertTrue( assembler.getErrors().get( 0 ).getName().equals( func.getName() ) );
+        assertNotEmpty( assembler.getErrors().get( 0 ).getErrorReport() );
     }
 
-    public void testLoadConfProperties () throws Exception {
+    public void testLoadConfProperties() throws Exception {
         RulesRepository repo = getRepo();
 
         PackageItem pkg = repo.createPackage( "testLoadConfProperties",
@@ -187,23 +171,25 @@ public class ContentPackageAssemblerTest extends TestCase {
         rule1.updateContent( "rule 'rule1' \n when Board() \n then customer.setAge(42); \n end" );
         rule1.checkin( "" );
 
-        AssetItem props1 = pkg.addAsset("conf1", "");
-        props1.updateFormat("properties");
-        props1.updateContent("drools.accumulate.function.groupCount = org.drools.base.accumulators.MaxAccumulateFunction");
-        props1.checkin("");
+        AssetItem props1 = pkg.addAsset( "conf1",
+                                         "" );
+        props1.updateFormat( "properties" );
+        props1.updateContent( "drools.accumulate.function.groupCount = org.drools.base.accumulators.MaxAccumulateFunction" );
+        props1.checkin( "" );
 
+        AssetItem props2 = pkg.addAsset( "conf2",
+                                         "" );
+        props2.updateFormat( "conf" );
+        props2.updateBinaryContentAttachment( new ByteArrayInputStream( "drools.accumulate.function.groupFun = org.drools.base.accumulators.MinAccumulateFunction".getBytes() ) );
+        props2.checkin( "" );
 
-        AssetItem props2 = pkg.addAsset("conf2", "");
-        props2.updateFormat("conf");
-        props2.updateBinaryContentAttachment(new ByteArrayInputStream("drools.accumulate.function.groupFun = org.drools.base.accumulators.MinAccumulateFunction".getBytes()));
-        props2.checkin("");
-
-        ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
-        assertEquals("org.drools.base.accumulators.MaxAccumulateFunction", asm.builder.getPackageBuilderConfiguration().getAccumulateFunction( "groupCount" ).getClass().getName());
-        assertEquals("org.drools.base.accumulators.MinAccumulateFunction", asm.builder.getPackageBuilderConfiguration().getAccumulateFunction("groupFun").getClass().getName());
+        ContentPackageAssembler asm = new ContentPackageAssembler( pkg );
+        assertEquals( "org.drools.base.accumulators.MaxAccumulateFunction",
+                      asm.builder.getPackageBuilderConfiguration().getAccumulateFunction( "groupCount" ).getClass().getName() );
+        assertEquals( "org.drools.base.accumulators.MinAccumulateFunction",
+                      asm.builder.getPackageBuilderConfiguration().getAccumulateFunction( "groupFun" ).getClass().getName() );
 
     }
-
 
     public void testPackageWithRuleflow() throws Exception {
         RulesRepository repo = getRepo();
@@ -246,7 +232,8 @@ public class ContentPackageAssemblerTest extends TestCase {
 
         //now check we can do some MVEL stuff from the classloader...
         List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
-        PackageBuilder builder = BRMSPackageBuilder.getInstance( jars, new Properties() );
+        PackageBuilder builder = BRMSPackageBuilder.getInstance( jars,
+                                                                 new Properties() );
         ClassLoader newCL = builder.getPackageBuilderConfiguration().getClassLoader();
         ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
 
@@ -278,8 +265,8 @@ public class ContentPackageAssemblerTest extends TestCase {
         rule1.checkin( "" );
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg );
-        assertFalse(asm.getErrors().toString(),  asm.hasErrors() );
-        
+        assertFalse( asm.getErrors().toString(),
+                     asm.hasErrors() );
 
     }
 
@@ -289,7 +276,8 @@ public class ContentPackageAssemblerTest extends TestCase {
         PackageItem pkg = repo.createPackage( "testSimplePackageWithDeclaredTypes2",
                                               "" );
 
-        ServiceImplementation.updateDroolsHeader("import java.util.HashMap", pkg);
+        ServiceImplementation.updateDroolsHeader( "import java.util.HashMap",
+                                                  pkg );
 
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -307,7 +295,8 @@ public class ContentPackageAssemblerTest extends TestCase {
         repo.save();
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg );
-        assertFalse(asm.getErrors().toString(),  asm.hasErrors() );
+        assertFalse( asm.getErrors().toString(),
+                     asm.hasErrors() );
 
         assertNotNull( asm.getBinaryPackage() );
         Package bin = asm.getBinaryPackage();
@@ -465,8 +454,8 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertFalse( asm.isPackageConfigurationInError() );
 
         for ( ContentAssemblyError err : asm.getErrors() ) {
-            assertTrue( err.itemInError.getName().equals( badRule.getName() ) );
-            assertNotEmpty( err.errorReport );
+            assertTrue( err.getName().equals( badRule.getName() ) );
+            assertNotEmpty( err.getErrorReport() );
         }
 
     }
@@ -486,15 +475,16 @@ public class ContentPackageAssemblerTest extends TestCase {
 
         ServiceImplementation.updateDroolsHeader( "import org.drools.examples.eventing.EventRequest\n",
                                                   pkg );
-        AssetItem asset = pkg.addAsset("whee", "");
-        asset.updateFormat(AssetFormats.DRL);
-        asset.updateContent("rule 'zaa'\n  when \n  request: EventRequest( status == EventRequest.Status.ACTIVE )\n   then \n request.setStatus(EventRequest.Status.ACTIVE); \n  end");
-        asset.checkin("");
+        AssetItem asset = pkg.addAsset( "whee",
+                                        "" );
+        asset.updateFormat( AssetFormats.DRL );
+        asset.updateContent( "rule 'zaa'\n  when \n  request: EventRequest( status == EventRequest.Status.ACTIVE )\n   then \n request.setStatus(EventRequest.Status.ACTIVE); \n  end" );
+        asset.checkin( "" );
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg );
-        if (asm.hasErrors()) {
+        if ( asm.hasErrors() ) {
             for ( ContentAssemblyError err : asm.getErrors() ) {
-                System.err.println(err.errorReport);
+                System.err.println( err.getErrorReport() );
             }
             fail();
         }
@@ -608,13 +598,11 @@ public class ContentPackageAssemblerTest extends TestCase {
                                         "" );
         rule3.updateFormat( AssetFormats.DRL_MODEL );
         rule3.updateContent( "garbage" );
-        rule3.updateDisabled(true);
+        rule3.updateDisabled( true );
         rule3.checkin( "" );
 
-
-
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg,
-                                                                   false);
+                                                                   false );
         String drl = asm.getDRL();
 
         assertNotNull( drl );
@@ -632,10 +620,11 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertContains( "rule 'foo' when Goo() then end",
                         drl );
 
-        assertEquals(-1, drl.indexOf("garbage"));
+        assertEquals( -1,
+                      drl.indexOf( "garbage" ) );
 
     }
-    
+
     public void testBuildPackageWithEmptyHeader() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -662,7 +651,6 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
-
     public void testSkipDisabledPackageStuff() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -678,20 +666,15 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertRule1.updateDisabled( true );
         assertRule1.checkin( "" );
 
-
         assertRule1 = pkg.addAsset( "function1",
-                                              "" );
+                                    "" );
         assertRule1.updateFormat( AssetFormats.FUNCTION );
         assertRule1.updateContent( "garbage" );
         assertRule1.updateDisabled( true );
         assertRule1.checkin( "" );
 
-        ContentPackageAssembler asm = new ContentPackageAssembler(pkg);
-        assertFalse(asm.hasErrors());
-
-
-
-
+        ContentPackageAssembler asm = new ContentPackageAssembler( pkg );
+        assertFalse( asm.hasErrors() );
 
     }
 
@@ -724,7 +707,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertRule3.checkin( "" );
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg,
-                                                                   true);
+                                                                   true );
         assertFalse( asm.hasErrors() );
         Package p = asm.builder.getPackage();
 
@@ -774,7 +757,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg );
         if ( asm.hasErrors() ) {
-            System.err.println( asm.getErrors().get( 0 ).errorReport );
+            System.err.println( asm.getErrors().get( 0 ).getErrorReport() );
             System.err.println( asm.getDRL() );
         }
         assertFalse( asm.hasErrors() );
@@ -809,7 +792,7 @@ public class ContentPackageAssemblerTest extends TestCase {
         asm = new ContentPackageAssembler( pkg );
         assertTrue( asm.hasErrors() );
         assertEquals( asset.getName(),
-                      asm.getErrors().get( 0 ).itemInError.getName() );
+                      asm.getErrors().get( 0 ).getName() );
         asm = new ContentPackageAssembler( pkg,
                                            false );
         assertFalse( asm.hasErrors() );
@@ -952,8 +935,16 @@ public class ContentPackageAssemblerTest extends TestCase {
                               }
                           } );
 
-        ContentPackageAssembler asm = new ContentPackageAssembler( pkg, true, 
-                                                                   "customSelector", null, null, false, null, null, false, "testSelect");
+        ContentPackageAssembler asm = new ContentPackageAssembler( pkg,
+                                                                   true,
+                                                                   "customSelector",
+                                                                   null,
+                                                                   null,
+                                                                   false,
+                                                                   null,
+                                                                   null,
+                                                                   false,
+                                                                   "testSelect" );
 
         Package pk = asm.getBinaryPackage();
         assertEquals( 1,
@@ -967,15 +958,34 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertEquals( 2,
                       pk.getRules().length );
 
-        asm = new ContentPackageAssembler( pkg, true, "customSelector", null, null, false, null, null, false,
+        asm = new ContentPackageAssembler( pkg,
+                                           true,
+                                           "customSelector",
+                                           null,
+                                           null,
+                                           false,
+                                           null,
+                                           null,
+                                           false,
                                            "nothing valid" );
         assertTrue( asm.hasErrors() );
         assertEquals( 1,
                       asm.getErrors().size() );
-        assertEquals( pkg,
-                      asm.getErrors().get( 0 ).itemInError );
+        assertEquals( pkg.getName(),
+                      asm.getErrors().get( 0 ).getName() );
+        assertTrue( asm.getErrors().get( 0 ).isPackageItem() );
+        assertEquals( pkg.getUUID(),
+                      asm.getErrors().get( 0 ).getUUID() );
 
-        asm = new ContentPackageAssembler( pkg, true, "customSelector", null, null, false, null, null, false,
+        asm = new ContentPackageAssembler( pkg,
+                                           true,
+                                           "customSelector",
+                                           null,
+                                           null,
+                                           false,
+                                           null,
+                                           null,
+                                           false,
                                            "" );
         pk = asm.getBinaryPackage();
         assertEquals( 2,

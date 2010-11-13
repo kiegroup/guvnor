@@ -53,7 +53,6 @@ import org.drools.compiler.xml.XmlRuleFlowProcessDumper;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-
 public class RuleFlowHandler extends ContentHandler
     implements
     ICompilable,
@@ -184,4 +183,10 @@ public class RuleFlowHandler extends ContentHandler
         }
     }
 
+    public void compile(BRMSPackageBuilder builder,
+                        RuleAsset asset,
+                        ErrorLogger logger) throws DroolsParserException,
+                                           IOException {
+        // Nothing to do here, binary content
+    }
 }

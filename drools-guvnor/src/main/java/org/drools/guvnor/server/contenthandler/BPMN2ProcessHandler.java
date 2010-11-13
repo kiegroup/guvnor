@@ -1,5 +1,5 @@
-/**
- * Copyright 2010 JBoss Inc
+/*
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,6 @@
  */
 
 package org.drools.guvnor.server.contenthandler;
-
-/*
- * Copyright 2005 JBoss Inc
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -61,13 +45,12 @@ import org.drools.ruleflow.core.RuleFlowProcess;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-
 public class BPMN2ProcessHandler extends ContentHandler
     implements
     ICompilable {
 
-    private static final LoggingHelper     log  = LoggingHelper.getLogger(BPMN2ProcessHandler.class);
-    
+    private static final LoggingHelper log = LoggingHelper.getLogger( BPMN2ProcessHandler.class );
+
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
                                      AssetItem item) throws SerializationException {
@@ -76,12 +59,12 @@ public class BPMN2ProcessHandler extends ContentHandler
             RuleFlowContentModel content = RuleFlowContentModelBuilder.createModel( process );
             content.setXml( item.getContent() );
             asset.content = content;
-		} else {
-			// we are very fault tolerant
-			RuleFlowContentModel content = new RuleFlowContentModel();
-			content.setXml(item.getContent());
-			asset.content = content;
-		}
+        } else {
+            // we are very fault tolerant
+            RuleFlowContentModel content = new RuleFlowContentModel();
+            content.setXml( item.getContent() );
+            asset.content = content;
+        }
     }
 
     protected RuleFlowProcess readProcess(InputStream is) {
@@ -109,8 +92,8 @@ public class BPMN2ProcessHandler extends ContentHandler
 
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
-    	RuleFlowContentModel content = (RuleFlowContentModel) asset.content;
-    	System.out.println(content);
+        RuleFlowContentModel content = (RuleFlowContentModel) asset.content;
+        System.out.println( content );
         // 
         // Migrate v4 ruleflows to v5
         // Added guards to check for nulls in the case where the ruleflows
@@ -136,62 +119,67 @@ public class BPMN2ProcessHandler extends ContentHandler
                     repoAsset.updateContent( content.getXml() );
                 }
             }
-            if ( content.getJson() != null) {
-            	try {
-            		String xml = serialize( "http://localhost:8080/designer/bpmn2_0serialization", content.getJson());
-            		System.out.println("xml = " + xml);
-            		repoAsset.updateContent(xml);
-            	} catch (Exception e) {
-            		log.error(e.getMessage(), e);
-            	}
+            if ( content.getJson() != null ) {
+                try {
+                    String xml = serialize( "http://localhost:8080/designer/bpmn2_0serialization",
+                                            content.getJson() );
+                    System.out.println( "xml = " + xml );
+                    repoAsset.updateContent( xml );
+                } catch ( Exception e ) {
+                    log.error( e.getMessage(),
+                               e );
+                }
             }
         }
     }
 
-    public static String serialize(String serializeUrl, String modelJson) throws IOException {
-    	OutputStream out = null;
-		InputStream content = null;
-		ByteArrayOutputStream bos = null;
+    public static String serialize(String serializeUrl,
+                                   String modelJson) throws IOException {
+        OutputStream out = null;
+        InputStream content = null;
+        ByteArrayOutputStream bos = null;
 
-		try {
-			modelJson = "data=" + URLEncoder.encode(modelJson, "UTF-8")	+ "&xml=true";
-			byte[] bytes = modelJson.getBytes("UTF-8");
+        try {
+            modelJson = "data=" + URLEncoder.encode( modelJson,
+                                                     "UTF-8" ) + "&xml=true";
+            byte[] bytes = modelJson.getBytes( "UTF-8" );
 
-			HttpURLConnection connection = (HttpURLConnection) new URL(serializeUrl).openConnection();
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			connection.setFixedLengthStreamingMode(bytes.length);
-			connection.setDoOutput(true);
-			out = connection.getOutputStream();
-			out.write(bytes);
-			out.close();
+            HttpURLConnection connection = (HttpURLConnection) new URL( serializeUrl ).openConnection();
+            connection.setRequestMethod( "POST" );
+            connection.setRequestProperty( "Content-Type",
+                                           "application/x-www-form-urlencoded" );
+            connection.setFixedLengthStreamingMode( bytes.length );
+            connection.setDoOutput( true );
+            out = connection.getOutputStream();
+            out.write( bytes );
+            out.close();
 
-			content = connection.getInputStream();
+            content = connection.getInputStream();
 
-			bos = new ByteArrayOutputStream();
-			int b = 0;
-			while ((b = content.read()) > -1) {
-				bos.write(b);
-			}
-			bytes = bos.toByteArray();
-			content.close();
-			bos.close();
-			return new String(bytes);
-		} finally {
-			try {
-				if (out != null) {
-					out.close();
-				}
-				if (content != null) {
-					content.close();
-				}
-				if (bos != null) {
-					bos.close();
-				}
-			} catch (IOException e) {
-			}
-		}
-	}
+            bos = new ByteArrayOutputStream();
+            int b = 0;
+            while ( (b = content.read()) > -1 ) {
+                bos.write( b );
+            }
+            bytes = bos.toByteArray();
+            content.close();
+            bos.close();
+            return new String( bytes );
+        } finally {
+            try {
+                if ( out != null ) {
+                    out.close();
+                }
+                if ( content != null ) {
+                    content.close();
+                }
+                if ( bos != null ) {
+                    bos.close();
+                }
+            } catch ( IOException e ) {
+            }
+        }
+    }
 
     /**
      * The rule flow can not be built if the package name is not the same as the
@@ -226,5 +214,11 @@ public class BPMN2ProcessHandler extends ContentHandler
         if ( ins != null ) {
             builder.addProcessFromXml( new InputStreamReader( asset.getBinaryContentAttachment() ) );
         }
+    }
+
+    public void compile(BRMSPackageBuilder builder,
+                        RuleAsset asset,
+                        ErrorLogger logger) {
+        // This can not work, no binary data in RuleAsset
     }
 }

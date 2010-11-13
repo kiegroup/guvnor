@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 package org.drools.guvnor.server.contenthandler;
 
 import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.repository.AssetItem;
 
 /**
@@ -27,6 +28,8 @@ import org.drools.repository.AssetItem;
 public interface IValidating {
 
     BuilderResult validateAsset(AssetItem asset);
+
+    BuilderResult validateAsset(RuleAsset asset);
 
 
 }

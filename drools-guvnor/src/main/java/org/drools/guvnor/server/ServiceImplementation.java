@@ -116,7 +116,6 @@ import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.ide.common.server.util.GuidedDTDRLPersistence;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.repository.AssetHistoryIterator;
@@ -1787,10 +1786,10 @@ public class ServiceImplementation
         for ( int i = 0; i < result.length; i++ ) {
             ContentAssemblyError err = asm.getErrors().get( i );
             BuilderResultLine res = new BuilderResultLine();
-            res.assetName = err.itemInError.getName();
-            res.assetFormat = err.itemInError.getFormat();
-            res.message = err.errorReport;
-            res.uuid = err.itemInError.getUUID();
+            res.assetName = err.getName();
+            res.assetFormat = err.getFormat();
+            res.message = err.getErrorReport();
+            res.uuid = err.getUUID();
             result[i] = res;
         }
         return result;
@@ -1837,7 +1836,6 @@ public class ServiceImplementation
             if ( asset.metaData.isBinary() ) {
                 AssetItem item = repository.loadAssetByUUID( asset.uuid );
 
-                // AssetContentFormatHandler();
                 handler.storeAssetContent( asset,
                                            item );
                 ((IRuleAsset) handler).assembleDRL( builder,
@@ -1865,23 +1863,41 @@ public class ServiceImplementation
 
         try {
 
-            AssetItem item = repository.loadAssetByUUID( asset.uuid );
+            ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
 
-            ContentHandler handler = ContentManager.getHandler( item.getFormat() );// new
-            // AssetContentFormatHandler();
-            handler.storeAssetContent( asset,
-                                       item );
+            if ( asset.metaData.isBinary() ) {
+                AssetItem item = repository.loadAssetByUUID( asset.uuid );
 
-            if ( handler instanceof IValidating ) {
-                return ((IValidating) handler).validateAsset( item );
-            } else {
+                handler.storeAssetContent( asset,
+                                           item );
 
-                ContentPackageAssembler asm = new ContentPackageAssembler( item );
-                if ( !asm.hasErrors() ) {
-                    return null;
+                if ( handler instanceof IValidating ) {
+                    return ((IValidating) handler).validateAsset( item );
                 } else {
-                    result.lines = generateBuilderResults( asm );
+
+                    ContentPackageAssembler asm = new ContentPackageAssembler( item );
+                    if ( !asm.hasErrors() ) {
+                        return null;
+                    } else {
+                        result.lines = generateBuilderResults( asm );
+                    }
                 }
+            } else {
+                if ( handler instanceof IValidating ) {
+                    return ((IValidating) handler).validateAsset( asset );
+                } else {
+
+                    PackageItem packageItem = repository.loadPackageByUUID( asset.metaData.packageUUID );
+
+                    ContentPackageAssembler asm = new ContentPackageAssembler( asset,
+                                                                               packageItem );
+                    if ( !asm.hasErrors() ) {
+                        return null;
+                    } else {
+                        result.lines = generateBuilderResults( asm );
+                    }
+                }
+
             }
         } catch ( Exception e ) {
             log.error( "Unable to build asset.",
