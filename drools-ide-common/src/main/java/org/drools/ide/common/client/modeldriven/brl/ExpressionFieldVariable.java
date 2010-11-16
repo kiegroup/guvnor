@@ -24,13 +24,18 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
  * @author esteban
  */
 public class ExpressionFieldVariable extends ExpressionText {
-	
-	public ExpressionFieldVariable(String name) {
-		super(name, "java.lang.String", SuggestionCompletionEngine.TYPE_FINAL_OBJECT);
-	}
 
-	@Override
-	public void accept(ExpressionVisitor visitor) {
-		visitor.visit(this);
-	}
+    protected ExpressionFieldVariable() {
+    }
+
+    public ExpressionFieldVariable(String name) {
+        super( name,
+               "java.lang.String",
+               SuggestionCompletionEngine.TYPE_FINAL_OBJECT );
+    }
+
+    @Override
+    public void accept(ExpressionVisitor visitor) {
+        visitor.visit( this );
+    }
 }
