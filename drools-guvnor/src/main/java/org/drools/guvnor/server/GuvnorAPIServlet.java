@@ -20,18 +20,35 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.drools.bpmn2.legacy.beta1.XmlBPMNProcessDumper;
+import org.drools.bpmn2.xml.BPMNDISemanticModule;
+import org.drools.bpmn2.xml.BPMNSemanticModule;
+import org.drools.compiler.xml.XmlProcessReader;
+import org.drools.definition.process.Connection;
+import org.drools.definition.process.Node;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
+import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.ruleflow.core.RuleFlowProcess;
+import org.drools.workflow.core.Constraint;
+import org.drools.workflow.core.impl.ConstraintImpl;
+import org.drools.workflow.core.node.Split;
+import org.drools.workflow.core.node.StartNode;
+import org.drools.xml.SemanticModules;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -84,8 +101,54 @@ public class GuvnorAPIServlet extends HttpServlet {
                 throw new ServletException(e.getMessage(), e);
             }
             
+        } else if ("extract".equals(action)) {
+        	String json = request.getParameter("json");
+        	try {
+            	Map<String, String[]> result = extract(json);
+            	response.setContentType("application/json");
+            	log.debug("extracting");
+            	String s = "";
+            	int i = 0;
+            	for (Map.Entry<String, String[]> entry: result.entrySet()) {
+            		log.debug(entry.getKey() + " " + entry.getValue()[0] + " " + entry.getValue()[1]);
+            		s += entry.getKey() + "#" + entry.getValue()[0] + "#" + entry.getValue()[1];
+            		if (i++ != result.size() - 1) {
+            			s += "###";
+            		}
+            	}
+                log.debug("End of extracting");
+                response.setContentLength(s.length());
+                response.getOutputStream().write(s.getBytes());
+                response.getOutputStream().close();
+			} catch (Throwable t) {
+				throw new ServletException(t);
+			}
+        } else if ("inject".equals(action)) {
+        	String json = request.getParameter("json");
+        	try {
+        		Map<String, String> constraints = new HashMap<String, String>();
+        		String[] s = request.getParameterValues("constraint");
+        		for (String c: s) {
+        			String nodeId = c.substring(0, c.indexOf(":"));
+        			String rule = c.substring(c.indexOf(":") + 1);
+        			constraints.put(nodeId, rule);
+        		}
+        		String result = inject(json, constraints);
+            	response.setContentType("application/json");
+            	log.debug("injecting");
+            	for (Map.Entry<String, String> entry: constraints.entrySet()) {
+            		log.debug(entry.getKey() + " " + entry.getValue());
+            	}
+            	log.debug(result);
+                log.debug("End of injecting");
+                response.setContentLength(result.length());
+                response.getOutputStream().write(result.getBytes());
+                response.getOutputStream().close();
+			} catch (Throwable t) {
+				throw new ServletException(t);
+			}
         } else {
-            throw  new ServletException(new IllegalArgumentException("The servlet requires a parameter named action"));
+            throw new ServletException(new IllegalArgumentException("The servlet requires a parameter named action"));
         }
     }
 
@@ -134,5 +197,82 @@ public class GuvnorAPIServlet extends HttpServlet {
 			}
 		}
 	}
+    
+    public static Map<String, String[]> extract(String json) throws Exception {
+    	Map<String, String[]> result = null;
+    	String xml = BPMN2ProcessHandler.serialize(
+    			"http://localhost:8080/designer/bpmn2_0serialization", json);
+		Reader isr = new StringReader(xml);
+		SemanticModules semanticModules = new SemanticModules();
+		semanticModules.addSemanticModule(new BPMNSemanticModule());
+		semanticModules.addSemanticModule(new BPMNDISemanticModule());
+		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNSemanticModule());
+		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMN2SemanticModule());
+		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNDISemanticModule());
+		XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
+		RuleFlowProcess process = (RuleFlowProcess) xmlReader.read(isr);
+		if (process == null) {
+			throw new IllegalArgumentException("Could not read process");
+		} else {
+			log.debug("Processing " + process.getId());
+			result = new HashMap<String, String[]>();
+			StartNode start = process.getStart();
+			Node target = start.getTo().getTo();
+			if (target instanceof Split) {
+				Split split = (Split) target;
+				for (Connection connection: split.getDefaultOutgoingConnections()) {
+					Constraint constraint = split.getConstraint(connection);
+					if (constraint != null) {
+						System.out.println("Found constraint to node " + connection.getTo().getName() + " [" + connection.getTo().getId() + "]: " + constraint.getConstraint());
+						result.put(XmlBPMNProcessDumper.getUniqueNodeId(connection.getTo()), new String[] { connection.getTo().getName(), constraint.getConstraint() }); 
+					}
+				}
+			}
+		}
+		if (isr != null) {
+			isr.close();
+		}
+		return result;
+    }
+    
+    public static String inject(String json, Map<String, String> constraints) throws Exception {
+    	String xml = BPMN2ProcessHandler.serialize(
+    			"http://localhost:8080/designer/bpmn2_0serialization", json);
+		Reader isr = new StringReader(xml);
+		SemanticModules semanticModules = new SemanticModules();
+		semanticModules.addSemanticModule(new BPMNSemanticModule());
+		semanticModules.addSemanticModule(new BPMNDISemanticModule());
+		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNSemanticModule());
+		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMN2SemanticModule());
+		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNDISemanticModule());
+		XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
+		RuleFlowProcess process = (RuleFlowProcess) xmlReader.read(isr);
+		isr.close();
+		if (process == null) {
+			throw new IllegalArgumentException("Could not read process");
+		} else {
+			log.debug("Processing " + process.getId());
+			StartNode start = process.getStart();
+			Node target = start.getTo().getTo();
+			if (target instanceof Split) {
+				Split split = (Split) target;
+				for (Connection connection: split.getDefaultOutgoingConnections()) {
+					String s = constraints.get(XmlBPMNProcessDumper.getUniqueNodeId(connection.getTo()));
+					if (s != null) {
+						System.out.println("Found constraint to node " + connection.getTo().getName() + ": " + s);
+						Constraint constraint = split.getConstraint(connection);
+						if (constraint == null) {
+							constraint = new ConstraintImpl();
+							split.setConstraint(connection, constraint);
+						}
+						constraint.setConstraint(s);
+					}
+				}
+			}
+			String newXml = XmlBPMNProcessDumper.INSTANCE.dump(process);
+			System.out.println(newXml);
+			return deserialize("http://localhost:8080/designer/bpmn2_0deserialization", newXml);
+		}
+    }
 
 }
