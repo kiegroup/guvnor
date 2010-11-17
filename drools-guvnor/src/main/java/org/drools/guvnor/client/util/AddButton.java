@@ -22,6 +22,7 @@ public class AddButton extends Composite
         panel.add( textLabel );
 
         initWidget( panel );
+        setStyleName( "guvnor-cursor" );
     }
 
     public void setText(String text) {

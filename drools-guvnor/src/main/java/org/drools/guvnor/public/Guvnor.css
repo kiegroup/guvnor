@@ -613,6 +613,7 @@ div.smallish-progress-text { /* Don't change the following lines. */
 
 .guvnor-LazyStackPanel-row-header-icon {
 	padding: 1px 5px 0px 0px;
+	cursor: pointer;
 }
 
 .guvnor-FormPanel {
@@ -634,4 +635,8 @@ div.smallish-progress-text { /* Don't change the following lines. */
 	border: 1px solid #BBBBBB;
 	border-top: 0px;
 	margin-left: 1px;
+}
+
+.guvnor-cursor {
+	cursor: pointer;
 }

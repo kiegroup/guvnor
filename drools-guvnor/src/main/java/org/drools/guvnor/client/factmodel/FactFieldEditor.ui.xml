@@ -27,8 +27,8 @@
 		</div>
 		<div style="float:right;">
 			<gwt:HorizontalPanel>
-				<gwt:Image ui:field="editFieldIcon" url="images/edit.gif" ></gwt:Image>
-				<gwt:Image ui:field="deleteFieldIcon" url="images/delete_item_small.gif" ></gwt:Image>
+				<gwt:Image ui:field="editFieldIcon" url="images/edit.gif" styleName="guvnor-cursor"></gwt:Image>
+				<gwt:Image ui:field="deleteFieldIcon" url="images/delete_item_small.gif" styleName="guvnor-cursor" ></gwt:Image>
 			</gwt:HorizontalPanel>
 		</div>
 		<div style="clear:both;"></div>

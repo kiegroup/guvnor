@@ -21,23 +21,23 @@
 		<div style="float:left;">
 				<gwt:HorizontalPanel >
 					<gwt:Image ui:field="icon" styleName="guvnor-LazyStackPanel-row-header-icon"></gwt:Image>
-					<gwt:Label ui:field="titleLabel" ></gwt:Label>
+					<gwt:Label ui:field="titleLabel" styleName="guvnor-cursor"></gwt:Label>
 				</gwt:HorizontalPanel>
 			</div>
 			<div style="float:right;">
 	  			<table>
 			  			<tr>
 				  			<td width="17px">			
-								<gwt:Image ui:field="editIcon" url="images/edit.gif"></gwt:Image>
+								<gwt:Image ui:field="editIcon" url="images/edit.gif" styleName="guvnor-cursor"></gwt:Image>
 							</td>
 				  			<td width="17px">			
-				  				<gwt:Image ui:field="moveUpIcon" url="images/shuffle_up.gif"></gwt:Image>
+				  				<gwt:Image ui:field="moveUpIcon" url="images/shuffle_up.gif" styleName="guvnor-cursor"></gwt:Image>
 							</td>
 				  			<td width="17px">
-				  				<gwt:Image ui:field="moveDownIcon" url="images/shuffle_down.gif"></gwt:Image>
+				  				<gwt:Image ui:field="moveDownIcon" url="images/shuffle_down.gif" styleName="guvnor-cursor"></gwt:Image>
 							</td>
 				  			<td width="17px">
-				  				<gwt:Image ui:field="deleteIcon" url="images/delete_item_small.gif"></gwt:Image>
+				  				<gwt:Image ui:field="deleteIcon" url="images/delete_item_small.gif" styleName="guvnor-cursor"></gwt:Image>
 							</td>
 			  			</tr>
 	  			</table>

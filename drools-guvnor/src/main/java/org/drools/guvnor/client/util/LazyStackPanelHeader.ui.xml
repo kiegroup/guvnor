@@ -20,8 +20,8 @@
 	<gwt:HTMLPanel>
 		<div >
 			<gwt:HorizontalPanel >
-					<gwt:Image ui:field="icon" styleName="guvnor-LazyStackPanel-row-header-icon"></gwt:Image>
-					<gwt:Label ui:field="titleLabel" ></gwt:Label>
+					<gwt:Image ui:field="icon"  styleName="guvnor-LazyStackPanel-row-header-icon"></gwt:Image>
+					<gwt:Label ui:field="titleLabel" styleName="guvnor-cursor"></gwt:Label>
 			</gwt:HorizontalPanel>
 		</div>
 	</gwt:HTMLPanel>
