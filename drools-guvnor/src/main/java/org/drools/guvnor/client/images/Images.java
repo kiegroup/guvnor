@@ -133,4 +133,10 @@ public interface Images extends ClientBundle {
 	
 	@Source("close.gif")
 	ImageResource close();	
+	
+	@Source("scrollleft.gif")
+	ImageResource scrollLeft();
+	
+	@Source("scrollright.gif")
+	ImageResource scrollRight();
 }

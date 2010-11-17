@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ExplorerViewCenterPanel extends Composite {
     private static Images              images               = (Images) GWT.create( Images.class );
 
-    private final TabLayoutPanel       tabLayoutPanel;
+    private final ScrollTabLayoutPanel       tabLayoutPanel;
 
     private MultiKeyMap<Panel>         openedTabs           = new MultiKeyMap<Panel>();
     private static int                 id                   = 0;
@@ -60,8 +60,8 @@ public class ExplorerViewCenterPanel extends Composite {
     private Map<Panel, String[]>       itemWidgets          = new HashMap<Panel, String[]>();
 
     public ExplorerViewCenterPanel() {
-        tabLayoutPanel = new TabLayoutPanel( 2,
-                                             Unit.EM );
+        tabLayoutPanel = new ScrollTabLayoutPanel( 2,
+                                             Unit.EM);
         initWidget( tabLayoutPanel );
     }
 
