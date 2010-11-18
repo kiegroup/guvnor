@@ -92,8 +92,8 @@ public class FeedServlet extends RepositoryServlet {
                 request.getServerName() + "/" + packageName + "/" + assetName,
                 request.getParameter(VIEW_URL),
                 request.getRequestURL().toString(), entries, "A list of updated discussion content.");
-        response.setContentType("application/atom+xml");
-        response.getOutputStream().print(feed.getAtom());
+        response.setContentType("application/atom+xml; charset=UTF-8");
+        response.getWriter().print(feed.getAtom());
     }
 
 
@@ -106,8 +106,8 @@ public class FeedServlet extends RepositoryServlet {
         List<AtomFeed.AtomEntry> entries = new ArrayList<AtomFeed.AtomEntry>();
         buildEntries(request, entries, it, status);
         AtomFeed feed = new AtomFeed("Category: " + cat, Calendar.getInstance(), request.getServerName() + cat, request.getParameter(VIEW_URL), request.getRequestURL().toString(), entries, "Guvnor category of items: " + cat);
-        response.setContentType("application/atom+xml");
-        response.getOutputStream().print(feed.getAtom());
+        response.setContentType("application/atom+xml; charset=UTF-8");
+        response.getWriter().print(feed.getAtom());
     }
 
     void checkCategoryPermission(String cat) {
@@ -128,8 +128,8 @@ public class FeedServlet extends RepositoryServlet {
         buildEntries(request, entries, it, request.getParameter("status"));
 
         AtomFeed feed = new AtomFeed("Knowledge package: " + pkg.getName(), pkg.getLastModified(), pkg.getUUID(), request.getParameter(VIEW_URL), request.getRequestURL().toString(), entries, pkg.getDescription());
-        response.setContentType("application/atom+xml");
-        response.getOutputStream().print(feed.getAtom());
+        response.setContentType("application/atom+xml; charset=UTF-8");
+        response.getWriter().print(feed.getAtom());
     }
 
     private void buildEntries(HttpServletRequest request, List<AtomFeed.AtomEntry> entries, Iterator<AssetItem> it, String status) {
