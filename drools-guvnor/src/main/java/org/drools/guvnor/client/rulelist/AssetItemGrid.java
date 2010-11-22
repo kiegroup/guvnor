@@ -67,6 +67,7 @@ import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
  * Uses an awesome grid and does paging for asset lists.
  * It works well, but here be dragons.
  * @author Michael Neale
+ * @deprecated in favor of {@link AssetTable}
  */
 public class AssetItemGrid extends Composite {
 

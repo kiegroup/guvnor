@@ -23,7 +23,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gwt.cell.client.ActionCell;
+import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ImageCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -31,6 +34,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -58,7 +62,7 @@ import org.drools.guvnor.client.table.SortableHeader;
 import org.drools.guvnor.client.table.SortableHeaderGroup;
 
 /**
- * Shows a table of assets.
+ * Widget with a table of assets.
  * @author Geoffrey De Smet
  */
 public class AssetTable extends Composite {
@@ -204,6 +208,18 @@ public class AssetTable extends Composite {
         };
         columnPicker.addColumn(externalSourceColumn, new SortableHeader<AssetPageRow, String>(
                 sortableHeaderGroup, "externalSource TODO", externalSourceColumn), false); // TODO i18n
+
+        Column<AssetPageRow, String> openColumn = new Column<AssetPageRow, String>(new ButtonCell()) {
+            public String getValue(AssetPageRow row) {
+                return "Open"; // TODO i18n
+            }
+        };
+        openColumn.setFieldUpdater(new FieldUpdater<AssetPageRow, String>() {
+            public void update(int index, AssetPageRow row, String value) {
+                editEvent.open(row.getUuid());
+            }
+        });
+        cellTable.addColumn(openColumn, new TextHeader("Open")); // TODO i18n
 
         cellTable.setPageSize(pageSize);
         cellTable.setWidth("100%");
