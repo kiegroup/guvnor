@@ -198,6 +198,27 @@ public class GuidedEditorManager {
             }
         });
     }
+    
+    /**
+     * Returns the uuids of the assets that are being edited in JSON format.
+     * @return 
+     */
+    public String getAssetsUUIDs(){
+        StringBuilder uuids = new StringBuilder("[");
+        String separator = "";
+        for (int i = 0; i < this.assets.length; i++) {
+            uuids.append(separator);
+            uuids.append("'");
+            uuids.append(this.assets[i].uuid);
+            uuids.append("'");
+            if (separator.equals("")){
+                separator = ",";
+            }
+        }
+        uuids.append("]");
+        
+        return uuids.toString();
+    }
 
     /**
      * Creates 2 JS functions in window object: getDRLs() and getBRLs(). These
@@ -233,6 +254,10 @@ public class GuidedEditorManager {
     
     registerAfterCancelButtonCallbackFunction: function (callbackFunction){
     this.afterCancelButtonCallbackFunction = callbackFunction;
+    },
+    
+    getAssetsUUIDs: function(){
+    return app.@org.drools.guvnor.client.ruleeditor.GuidedEditorManager::getAssetsUUIDs()();
     }
     }    
     $wnd.guidedEditorObject = guidedEditorObject;                                                                                                      

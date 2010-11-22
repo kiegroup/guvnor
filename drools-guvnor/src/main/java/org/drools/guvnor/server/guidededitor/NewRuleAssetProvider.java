@@ -30,19 +30,21 @@ public class NewRuleAssetProvider implements RuleAssetProvider {
 
     private String packageName;
     private String categoryName; 
-    private String ruleName;
+    private String assetName;
+    private String assetFormat;
 
-    public NewRuleAssetProvider(String packageName, String categoryName, String ruleName) {
+    public NewRuleAssetProvider(String packageName, String categoryName, String assetName, String assetFormat) {
         this.packageName = packageName;
         this.categoryName = categoryName;
-        this.ruleName = ruleName;
+        this.assetName = assetName;
+        this.assetFormat = assetFormat != null?assetFormat:AssetFormats.BUSINESS_RULE;
     }
     
     public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
         try {
-            //creates a new empty rule with a unique name (this is because
-            //multiple clients could be opening the same rule at the same time)
-            String ruleUUID = this.getService().createNewRule(ruleName, "created by standalone guided editor", categoryName, packageName, AssetFormats.BUSINESS_RULE);
+            //creates a new empty asset with the given name and format in the
+            //given package.
+            String ruleUUID = this.getService().createNewRule(assetName, "created by standalone guided editor", categoryName, packageName, this.assetFormat);
             RuleAsset newRule = this.getService().loadRuleAsset(ruleUUID);
 
             return new RuleAsset[]{newRule};

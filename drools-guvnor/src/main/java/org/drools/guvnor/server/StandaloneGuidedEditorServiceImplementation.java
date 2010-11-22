@@ -127,13 +127,15 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
         if ( attribute != null ) {
             createNewAsset = Boolean.parseBoolean( attribute.toString() );
         }
-        String ruleName = (String) sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_RULE_PARAMETER_NAME.getParameterName() );
+        String assetName = (String) sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_ASSET_NAME_PARAMETER_NAME.getParameterName() );
+        String assetFormat = (String) sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_ASSET_FORMAT_PARAMETER_NAME.getParameterName() );
 
         RuleAssetProvider provider;
         if ( createNewAsset ) {
             provider = new NewRuleAssetProvider( packageName,
                                                  categoryName,
-                                                 ruleName );
+                                                 assetName,
+                                                 assetFormat);
             invocationParameters.setTemporalAssets(false);
         } else if ( assetsUUIDs != null ) {
             provider = new UUIDRuleAssetProvider( assetsUUIDs );

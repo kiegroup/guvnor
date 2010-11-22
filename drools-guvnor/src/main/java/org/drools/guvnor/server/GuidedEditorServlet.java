@@ -37,7 +37,10 @@ public class GuidedEditorServlet extends HttpServlet {
         GE_CREATE_NEW_ASSET_PARAMETER_NAME("createNewAsset", false),
         
         //Only used when creating a new Rule
-        GE_RULE_PARAMETER_NAME("ruleName", false),
+        GE_ASSET_NAME_PARAMETER_NAME("assetName", false),
+        GE_ASSET_FORMAT_PARAMETER_NAME("assetFormat", false),
+        
+        
         GE_HIDE_RULE_LHS_PARAMETER_NAME("hideRuleLHS", false),
         GE_HIDE_RULE_RHS_PARAMETER_NAME("hideRuleRHS", false), 
         GE_HIDE_RULE_ATTRIBUTES_PARAMETER_NAME("hideRuleAttributes", false),
