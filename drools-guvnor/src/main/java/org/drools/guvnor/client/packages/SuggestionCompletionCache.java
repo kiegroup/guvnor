@@ -114,15 +114,10 @@ public class SuggestionCompletionCache {
     public void refreshPackage(String packageName, Command done) {
     	SuggestionCompletionEngine sce = cache.get(packageName);
         if (sce != null) {
-        	sce.setFactTypeFilter(null);
-//        	if (done != null) {
-//        		done.execute();
-//        	}
-            cache.remove( packageName );
-            loadPackage( packageName, done );
-        } else {
-            done.execute();
+        	sce.setFactTypeFilter(null);     	
+            cache.remove( packageName );            
         }
+        loadPackage( packageName, done );
     }
 
     /**

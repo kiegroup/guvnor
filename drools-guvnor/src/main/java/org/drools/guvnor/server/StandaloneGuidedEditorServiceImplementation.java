@@ -61,7 +61,8 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
         
         try{
             //Get the parameters from the session
-            Map<String, Object> sessionParameters = (Map<String, Object>) session.getAttribute(parametersUUID);
+            Map<String, Object> sessionParameters = (Map<String, Object>
+            ) session.getAttribute(parametersUUID);
 
             if (sessionParameters == null || sessionParameters.isEmpty()){
                 throw new DetailedSerializationException("Error initializing Guided Editor", "No initial parameters were supplied");
@@ -84,6 +85,8 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
             if ( attribute != null ) {
                 hideAttributesInEditor = Boolean.parseBoolean( attribute.toString() );
             }
+            
+            String[] validFactTypes = (String[])sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_VALID_FACT_TYPE_PARAMETER_NAME.getParameterName() );
 
             StandaloneGuidedEditorInvocationParameters invocationParameters = new StandaloneGuidedEditorInvocationParameters();
 
@@ -92,7 +95,7 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
             invocationParameters.setHideLHS( hideLHSInEditor );
             invocationParameters.setHideRHS( hideRHSInEditor );
             invocationParameters.setHideAttributes( hideAttributesInEditor );
-
+            invocationParameters.setValidFactTypes(validFactTypes);
 
 
             return invocationParameters;

@@ -30,6 +30,7 @@ public class StandaloneGuidedEditorInvocationParameters implements Serializable 
     static final long serialVersionUID = 520L;
     
     private RuleAsset[] assetsToBeEdited;
+    private String[] validFactTypes;
     
     private boolean temporalAssets;
     
@@ -76,7 +77,13 @@ public class StandaloneGuidedEditorInvocationParameters implements Serializable 
     public void setTemporalAssets(boolean temporalAssets) {
         this.temporalAssets = temporalAssets;
     }
-    
-    
+
+    public String[] getValidFactTypes() {
+        return validFactTypes;
+    }
+
+    public void setValidFactTypes(String[] validFactTypes) {
+        this.validFactTypes = validFactTypes;
+    }
     
 }

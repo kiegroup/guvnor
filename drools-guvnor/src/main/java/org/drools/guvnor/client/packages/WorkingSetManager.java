@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.guvnor.client.packages;
 
 import java.util.Arrays;
@@ -43,7 +42,6 @@ public class WorkingSetManager {
 
     private static WorkingSetManager INSTANCE = new WorkingSetManager();
     private Map<String, Set<RuleAsset>> activeWorkingSets = new HashMap<String, Set<RuleAsset>>();
-
     /**
      * This attribute should be sever side. Maybe in some FactConstraintConfig
      * object.
@@ -93,10 +91,10 @@ public class WorkingSetManager {
             public void execute() {
                 //update the map
                 activeWorkingSets.remove(packageName);
-                if (wss != null && !wss.isEmpty()){
+                if (wss != null && !wss.isEmpty()) {
                     activeWorkingSets.put(packageName, wss);
                 }
-                
+
                 if (done != null) {
                     done.execute();
                 }
@@ -114,14 +112,34 @@ public class WorkingSetManager {
             final Set<String> validFacts = new HashSet<String>();
             for (RuleAsset asset : wss) {
                 WorkingSetConfigData wsConfig = (WorkingSetConfigData) asset.content;
-                if (wsConfig.validFacts != null && wsConfig.validFacts.length > 0){
+                if (wsConfig.validFacts != null && wsConfig.validFacts.length > 0) {
                     validFacts.addAll(Arrays.asList(wsConfig.validFacts));
                 }
             }
 
-            SuggestionCompletionCache.getInstance().applyFactFilter(packageName, 
-            		new SetFactTypeFilter(validFacts), cmd);
+            SuggestionCompletionCache.getInstance().applyFactFilter(packageName,
+                    new SetFactTypeFilter(validFacts), cmd);
         }
+
+    }
+
+    public void applyTemporalWorkingSetForFactTypes(final String packageName, final Set<String> factTypes, final Command done) {
+        
+        Set<RuleAsset> workingSets = null; 
+        if (factTypes != null && !factTypes.isEmpty()) {
+            //create a temporal RuleAsset to hold the fact types.
+            final RuleAsset workingSet = new RuleAsset();
+            workingSet.uuid = "workingSetMock";
+            
+            WorkingSetConfigData wsConfig = new WorkingSetConfigData();
+            wsConfig.validFacts = factTypes.toArray(new String[factTypes.size()]);
+
+            workingSet.content = wsConfig;
+            
+            workingSets = new HashSet<RuleAsset>() {{this.add(workingSet);}};
+        }
+
+        this.applyWorkingSets(packageName, workingSets, done);
 
     }
 
@@ -130,20 +148,20 @@ public class WorkingSetManager {
      * @param packageName the package name
      * @return the active WorkingSets for a package (as RuleAsset), or null if any.
      */
-    public Set<RuleAsset> getActiveAssets(String packageName){
+    public Set<RuleAsset> getActiveAssets(String packageName) {
         return this.activeWorkingSets.get(packageName);
     }
-    
-    public Set<String> getActiveAssetUUIDs(String packageName){
-    	Set<RuleAsset> assets = this.activeWorkingSets.get(packageName);
-    	if (assets == null) {
-    		return null;
-    	}
-    	Set<String> uuids = new HashSet<String>(assets.size());
+
+    public Set<String> getActiveAssetUUIDs(String packageName) {
+        Set<RuleAsset> assets = this.activeWorkingSets.get(packageName);
+        if (assets == null) {
+            return null;
+        }
+        Set<String> uuids = new HashSet<String>(assets.size());
         for (RuleAsset asset : assets) {
-			uuids.add(asset.uuid);
-		}
-		return uuids;
+            uuids.add(asset.uuid);
+        }
+        return uuids;
     }
 
     /**
@@ -151,9 +169,9 @@ public class WorkingSetManager {
      * @param packageName the package name
      * @return the active WorkingSets for a package, or null if any.
      */
-    public Set<WorkingSetConfigData> getActiveWorkingSets(String packageName){
+    public Set<WorkingSetConfigData> getActiveWorkingSets(String packageName) {
         Set<RuleAsset> assets = this.activeWorkingSets.get(packageName);
-        if (assets == null){
+        if (assets == null) {
             return null;
         }
 
@@ -171,7 +189,7 @@ public class WorkingSetManager {
      * @param workingSetAsset the (WorkingSet) RuleSet
      * @return whether the given (WorkingSet) RuleSet is active in a package or not.
      */
-    public boolean isWorkingSetActive(String packageName, RuleAsset workingSetAsset){
+    public boolean isWorkingSetActive(String packageName, RuleAsset workingSetAsset) {
         return this.isWorkingSetActive(packageName, workingSetAsset.uuid);
     }
 
@@ -181,14 +199,14 @@ public class WorkingSetManager {
      * @param workingSetAsset the (WorkingSet) RuleSet
      * @return whether the given (WorkingSet) RuleSet is active in a package or not.
      */
-    public boolean isWorkingSetActive(String packageName, String ruleAssetUUID){
-        if (!this.activeWorkingSets.containsKey(packageName)){
+    public boolean isWorkingSetActive(String packageName, String ruleAssetUUID) {
+        if (!this.activeWorkingSets.containsKey(packageName)) {
             return false;
         }
 
         Set<RuleAsset> wss = this.activeWorkingSets.get(packageName);
         for (RuleAsset asset : wss) {
-            if (asset.uuid.equals(ruleAssetUUID)){
+            if (asset.uuid.equals(ruleAssetUUID)) {
                 return true;
             }
         }
@@ -204,21 +222,21 @@ public class WorkingSetManager {
      * @param fieldName the field name
      * @return a Set of Constraints for a Fact Type's field.
      */
-    public Set<ConstraintConfiguration> getFieldContraints(String packageName, String factType, String fieldName ){
+    public Set<ConstraintConfiguration> getFieldContraints(String packageName, String factType, String fieldName) {
 
         Set<ConstraintConfiguration> result = new HashSet<ConstraintConfiguration>();
 
         //TODO: Change this with a centralized way of Constraint Administration.
         Set<RuleAsset> activeAssets = this.getActiveAssets(packageName);
-        if (activeAssets != null){
+        if (activeAssets != null) {
             for (RuleAsset ruleAsset : activeAssets) {
-                List<ConstraintConfiguration> constraints = ((WorkingSetConfigData)ruleAsset.content).constraints;
+                List<ConstraintConfiguration> constraints = ((WorkingSetConfigData) ruleAsset.content).constraints;
                 if (constraints != null) {
-                	for (ConstraintConfiguration constraint : constraints) {
-                		if (constraint.getFactType().equals(factType) && constraint.getFieldName().equals(fieldName)){
-                			result.add(constraint);
-                		}
-                	}
+                    for (ConstraintConfiguration constraint : constraints) {
+                        if (constraint.getFactType().equals(factType) && constraint.getFieldName().equals(fieldName)) {
+                            result.add(constraint);
+                        }
+                    }
                 }
             }
         }
@@ -255,18 +273,18 @@ public class WorkingSetManager {
      * @return the associated CustomFormConfiguration for the given FactType and
      * FieldName in the active working sets or null if any.
      */
-    public CustomFormConfiguration getCustomFormConfiguration(String packageName, String factType, String fieldName){
+    public CustomFormConfiguration getCustomFormConfiguration(String packageName, String factType, String fieldName) {
         Set<WorkingSetConfigData> packageWorkingSets = this.getActiveWorkingSets(packageName);
-        if (packageWorkingSets != null){
+        if (packageWorkingSets != null) {
             List<CustomFormConfiguration> configs = new ArrayList<CustomFormConfiguration>();
             for (WorkingSetConfigData workingSetConfigData : packageWorkingSets) {
-                if (workingSetConfigData.customForms != null && !workingSetConfigData.customForms.isEmpty()){
+                if (workingSetConfigData.customForms != null && !workingSetConfigData.customForms.isEmpty()) {
                     configs.addAll(workingSetConfigData.customForms);
                 }
             }
             CustomFormsContainer cfc = new CustomFormsContainer(configs);
 
-            if (cfc.containsCustomFormFor(factType, fieldName)){
+            if (cfc.containsCustomFormFor(factType, fieldName)) {
                 return cfc.getCustomForm(factType, fieldName);
             }
         }
@@ -274,6 +292,4 @@ public class WorkingSetManager {
         return null;
 
     }
-
-
 }

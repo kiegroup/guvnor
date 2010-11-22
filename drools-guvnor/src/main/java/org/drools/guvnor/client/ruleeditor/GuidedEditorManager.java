@@ -3,7 +3,6 @@ package org.drools.guvnor.client.ruleeditor;
 import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 
@@ -13,8 +12,12 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.RuleModellerConfiguration;
+import org.drools.guvnor.client.packages.WorkingSetManager;
 import org.drools.guvnor.client.rpc.StandaloneGuidedEditorService;
 import org.drools.guvnor.client.rpc.StandaloneGuidedEditorServiceAsync;
 import org.drools.guvnor.client.ruleeditor.standalone.RealAssetsMultiViewEditorMenuBarCreator;
@@ -36,12 +39,12 @@ public class GuidedEditorManager {
     private RuleAsset[] assets;
 
     public Panel getBaseLayout() {
-        
+
         String parametersUUID = Window.Location.getParameter("pUUID");
-        if (parametersUUID == null || parametersUUID.trim().equals("")){
+        if (parametersUUID == null || parametersUUID.trim().equals("")) {
             return null;
         }
-        
+
         //init JS hooks
         this.setHooks(this);
 
@@ -69,20 +72,17 @@ public class GuidedEditorManager {
                 //Load SCE and create a MultiViewEditor for the assets.
                 //We take the package from the first asset (because all the assets
                 //must belong to the same package)
-                SuggestionCompletionCache.getInstance().loadPackage(parameters.getAssetsToBeEdited()[0].metaData.packageName, new Command() {
+
+
+                Set<String> validFacts = null;
+                if (parameters.getValidFactTypes() != null){
+                    validFacts = new HashSet<String>();
+                    validFacts.addAll(Arrays.asList(parameters.getValidFactTypes()));
+                }
+                
+                WorkingSetManager.getInstance().applyTemporalWorkingSetForFactTypes(assets[0].metaData.packageName, validFacts, new Command() {
 
                     public void execute() {
-
-//                        Set<String> validFacts = new HashSet<String>();
-//                        validFacts.add("LoanApplication");
-//                        
-//                        SuggestionCompletionCache.getInstance().applyFactFilter(assets[0].metaData.packageName, new SetFactTypeFilter(validFacts), new Command() {
-//
-//                            public void execute() {
-//                                throw new UnsupportedOperationException("Not supported yet.");
-//                            }
-//                        });
-
                         LoadingPopup.close();
 
                         //Configure RuleModeller
@@ -96,11 +96,13 @@ public class GuidedEditorManager {
                         if (parameters.isTemporalAssets()) {
                             editorMenuBarCreator = new TemporalAssetsMultiViewEditorMenuBarCreator(new Command() {
                                 //"Done" buton command
+
                                 public void execute() {
                                     afterSaveAndClose();
                                 }
                             }, new Command() {
                                 //"Cancel button command
+
                                 public void execute() {
                                     afterCancelButtonCallbackFunction();
                                 }
@@ -108,6 +110,7 @@ public class GuidedEditorManager {
                         } else {
                             editorMenuBarCreator = new RealAssetsMultiViewEditorMenuBarCreator(new Command() {
                                 //"Cancel" button command
+
                                 public void execute() {
                                     afterCancelButtonCallbackFunction();
                                 }
@@ -205,35 +208,35 @@ public class GuidedEditorManager {
     public native void setHooks(GuidedEditorManager app)/*-{
     
     var guidedEditorObject = {
-    	drlCallbackFunction: null,
-    	brlCallbackFunction: null,
-    	
-    	//close function listener. The function you register here will be called
-    	//after the "Save and Close" button is pressed                                                                                                                 
-    	afterSaveAndCloseButtonCallbackFunction: null,
-    	
-    	afterCancelButtonCallbackFunction: null,
-    	
-    	getDRL: function (callbackFunction){
-    		this.drlCallbackFunction = callbackFunction;
-    		app.@org.drools.guvnor.client.ruleeditor.GuidedEditorManager::getDRLs()();
-    	},
-    	
-    	getBRL: function (callbackFunction){
-    		this.brlCallbackFunction = callbackFunction;
-    		app.@org.drools.guvnor.client.ruleeditor.GuidedEditorManager::getBRLs()();
-    	},
-    	
-    	registerAfterSaveAndCloseButtonCallbackFunction: function (callbackFunction){
-    		this.afterSaveAndCloseButtonCallbackFunction = callbackFunction;
-    	},
-    	
-    	registerAfterCancelButtonCallbackFunction: function (callbackFunction){
-    		this.afterCancelButtonCallbackFunction = callbackFunction;
-    	}
+    drlCallbackFunction: null,
+    brlCallbackFunction: null,
+    
+    //close function listener. The function you register here will be called
+    //after the "Save and Close" button is pressed                                                                                                                 
+    afterSaveAndCloseButtonCallbackFunction: null,
+    
+    afterCancelButtonCallbackFunction: null,
+    
+    getDRL: function (callbackFunction){
+    this.drlCallbackFunction = callbackFunction;
+    app.@org.drools.guvnor.client.ruleeditor.GuidedEditorManager::getDRLs()();
+    },
+    
+    getBRL: function (callbackFunction){
+    this.brlCallbackFunction = callbackFunction;
+    app.@org.drools.guvnor.client.ruleeditor.GuidedEditorManager::getBRLs()();
+    },
+    
+    registerAfterSaveAndCloseButtonCallbackFunction: function (callbackFunction){
+    this.afterSaveAndCloseButtonCallbackFunction = callbackFunction;
+    },
+    
+    registerAfterCancelButtonCallbackFunction: function (callbackFunction){
+    this.afterCancelButtonCallbackFunction = callbackFunction;
+    }
     }    
     $wnd.guidedEditorObject = guidedEditorObject;                                                                                                      
-                                                          
+    
     }-*/;
 
     /**
@@ -241,9 +244,9 @@ public class GuidedEditorManager {
      * @param drl
      */
     public native void returnDRL(String drl)/*-{
-	    if ($wnd.guidedEditorObject.drlCallbackFunction){
-	    	$wnd.guidedEditorObject.drlCallbackFunction(drl);
-	    }
+    if ($wnd.guidedEditorObject.drlCallbackFunction){
+    $wnd.guidedEditorObject.drlCallbackFunction(drl);
+    }
     }-*/;
 
     /**
@@ -251,23 +254,23 @@ public class GuidedEditorManager {
      * @param drl
      */
     public native void returnBRL(String brl)/*-{
-	    if ($wnd.guidedEditorObject.brlCallbackFunction){
-	    	$wnd.guidedEditorObject.brlCallbackFunction(brl);
-	    }
+    if ($wnd.guidedEditorObject.brlCallbackFunction){
+    $wnd.guidedEditorObject.brlCallbackFunction(brl);
+    }
     }-*/;
 
     /**
      * Method invoked after the "Save an Close" button is pressed. 
      */
     public native void afterSaveAndClose()/*-{
-	    if ($wnd.guidedEditorObject.afterSaveAndCloseButtonCallbackFunction){
-	    	$wnd.guidedEditorObject.afterSaveAndCloseButtonCallbackFunction();
-	    }
+    if ($wnd.guidedEditorObject.afterSaveAndCloseButtonCallbackFunction){
+    $wnd.guidedEditorObject.afterSaveAndCloseButtonCallbackFunction();
+    }
     }-*/;
 
     public native void afterCancelButtonCallbackFunction()/*-{
-    	if ($wnd.guidedEditorObject.afterCancelButtonCallbackFunction){
-	    	$wnd.guidedEditorObject.afterCancelButtonCallbackFunction();
-	    }
+    if ($wnd.guidedEditorObject.afterCancelButtonCallbackFunction){
+    $wnd.guidedEditorObject.afterCancelButtonCallbackFunction();
+    }
     }-*/;
 }
