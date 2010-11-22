@@ -16,10 +16,12 @@
 
 package org.drools.guvnor.server.files;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -28,29 +30,48 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+
 public class MockHTTPResponse implements HttpServletResponse {
 
-	ServletOutputStream out;
-	String contentType;
+    private ByteArrayOutputStream byteArrayOut;
+	private ServletOutputStream servletOut;
+	private PrintWriter writer;
+	private String contentType;
 	Map<String, String> headers = new HashMap<String, String>();
 	int errorCode;
-	StringWriter stringWriter = new StringWriter();
-	private PrintWriter writer = new PrintWriter(stringWriter);
 
 
-	public MockHTTPResponse(OutputStream out) {
-		this.out = new MockStream(out);
-
+    public MockHTTPResponse() {
+        byteArrayOut = new ByteArrayOutputStream();
+        servletOut = new MockStream(byteArrayOut);
+        writer = new PrintWriter(new OutputStreamWriter(servletOut));
 	}
 
-	public void addCookie(Cookie arg0) {
+    public String extractContent() {
+        return extractContent("UTF-8");
+    }
+
+    public String extractContent(String encoding) {
+        try {
+            return new String(extractContentBytes(), encoding);
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("Unsupported encoding (" + encoding + ").", e);
+        }
+    }
+
+    public byte[] extractContentBytes() {
+        IOUtils.closeQuietly(writer);
+        return byteArrayOut.toByteArray();
+    }
+
+    public void addCookie(Cookie arg0) {
 		// TODO Auto-generated method stub
 
 	}
 
 	public void addDateHeader(String arg0, long arg1) {
 		// TODO Auto-generated method stub
-
 	}
 
 	public void addHeader(String arg0, String arg1) {
@@ -64,7 +85,6 @@ public class MockHTTPResponse implements HttpServletResponse {
 	}
 
 	public boolean containsHeader(String a) {
-
 		return this.headers.containsKey(a);
 	}
 
@@ -143,23 +163,17 @@ public class MockHTTPResponse implements HttpServletResponse {
 		return null;
 	}
 
-    public String getContentType() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     public Locale getLocale() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public ServletOutputStream getOutputStream() throws IOException {
-
-		return out;
+		return servletOut;
 	}
 
 	public PrintWriter getWriter() throws IOException {
-
-		return writer ;
+		return writer;
 	}
 
     public void setCharacterEncoding(String s) {
@@ -191,9 +205,12 @@ public class MockHTTPResponse implements HttpServletResponse {
 
 	}
 
+    public String getContentType() {
+        return contentType;
+    }
+
 	public void setContentType(String s) {
 		this.contentType = s;
-
 	}
 
 	public void setLocale(Locale arg0) {
@@ -212,6 +229,15 @@ public class MockHTTPResponse implements HttpServletResponse {
 		public void write(int a) throws IOException {
 			out.write(a);
 		}
+
+        public void flush() throws IOException {
+            out.flush();
+        }
+
+        public void close() throws IOException {
+            out.close();
+        }
+
 	}
 
 }

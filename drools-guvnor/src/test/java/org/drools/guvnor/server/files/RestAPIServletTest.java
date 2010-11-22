@@ -70,7 +70,7 @@ public class RestAPIServletTest extends TestCase {
 		String uri = "http://loser/api/packages/testGetRestServlet/asset1.drl";
 		MockHTTPRequest req = new MockHTTPRequest(uri, headers);
 
-		MockHTTPResponse res = new MockHTTPResponse(new ByteArrayOutputStream());
+		MockHTTPResponse res = new MockHTTPResponse();
 
 		//try with no password
 		serv.doGet(req, res);
@@ -85,7 +85,7 @@ public class RestAPIServletTest extends TestCase {
 			}
 		};
 		req = new MockHTTPRequest(uri, headers);
-		res = new MockHTTPResponse(new ByteArrayOutputStream());
+		res = new MockHTTPResponse();
 		serv.doGet(req, res);
 		assertEquals(HttpServletResponse.SC_UNAUTHORIZED, res.errorCode);
 		assertTrue(res.headers.containsKey("WWW-Authenticate"));
@@ -99,27 +99,25 @@ public class RestAPIServletTest extends TestCase {
 			}
 		};
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		req = new MockHTTPRequest(uri, headers);
-		res = new MockHTTPResponse(out);
+		res = new MockHTTPResponse();
 		serv.doGet(req, res);
 
 		assertEquals(0, res.errorCode);
-		String data = out.toString();
+		String data = res.extractContent();
 		assertEquals("some content", data);
 
-		assertEquals("application/x-download", res.contentType);
+		assertEquals("application/x-download", res.getContentType());
 		assertEquals(true, res.containsHeader("Content-Disposition"));
 
 		//now try getting some version listings
-		out = new ByteArrayOutputStream();
 		req = new MockHTTPRequest(uri, headers);
 		req.queryString = "version=all";
-		res = new MockHTTPResponse(out);
+		res = new MockHTTPResponse();
 		serv.doGet(req, res);
 
 		assertEquals(0, res.errorCode);
-		data = out.toString();
+		data = res.extractContent();
 		assertFalse("some content".equals(data));
 		assertNotNull(data);
 
@@ -145,7 +143,7 @@ public class RestAPIServletTest extends TestCase {
         Contexts.getSessionContext().set( "repository", repo );
         
         
-		HashMap<String, String> headers = new HashMap<String, String>() {
+		Map<String, String> headers = new HashMap<String, String>() {
 			{
 				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
 			}
@@ -155,12 +153,12 @@ public class RestAPIServletTest extends TestCase {
 		RestAPIServlet serv = new RestAPIServlet();
 		MockHTTPRequest req = new MockHTTPRequest("http://foo/api/packages/testPostRestServlet/asset1.drl", headers, in);
 
-		MockHTTPResponse res = new MockHTTPResponse(null);
+		MockHTTPResponse res = new MockHTTPResponse();
 		serv.doPost(req, res);
 
-		assertEquals("OK", res.stringWriter.toString());
+		assertEquals("OK", res.extractContent());
 
-		AssetItemIterator it = pkg.listAssetsByFormat(new String[] {"drl"});
+		AssetItemIterator it = pkg.listAssetsByFormat("drl");
 		AssetItem ass = it.next();
 		assertEquals("asset1", ass.getName());
 		assertEquals("drl", ass.getFormat());
@@ -170,9 +168,9 @@ public class RestAPIServletTest extends TestCase {
 
 		in = new ByteArrayInputStream("more content".getBytes());
 		req = new MockHTTPRequest("http://foo/api/packages/testPostRestServlet/asset2.xls", headers, in);
-		res = new MockHTTPResponse(null);
+		res = new MockHTTPResponse();
 		serv.doPost(req, res);
-		assertEquals("OK", res.stringWriter.toString());
+		assertEquals("OK", res.extractContent());
 
 		AssetItem ass2 = pkg.loadAsset("asset2");
 		assertEquals("xls", ass2.getFormat());
@@ -211,7 +209,7 @@ public class RestAPIServletTest extends TestCase {
         Contexts.getSessionContext().set( "repository", repo );
 
         
-		HashMap<String, String> headers = new HashMap<String, String>() {
+		Map<String, String> headers = new HashMap<String, String>() {
 			{
 				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
 				put("Checkin-Comment", "hey ho");
@@ -223,10 +221,10 @@ public class RestAPIServletTest extends TestCase {
 		MockHTTPRequest req = new MockHTTPRequest("http://foo/api/packages/testPutRestServlet/asset1.drl", headers, in);
 
 
-		MockHTTPResponse res = new MockHTTPResponse(null);
+		MockHTTPResponse res = new MockHTTPResponse();
 		serv.doPut(req, res);
 
-		assertEquals("OK", res.stringWriter.toString());
+		assertEquals("OK", res.extractContent());
 
 		ass = pkg.loadAsset("asset1");
 		assertEquals("some new content", ass.getContent());
@@ -261,7 +259,7 @@ public class RestAPIServletTest extends TestCase {
         Contexts.getSessionContext().set( "repository", repo );
         
         
-		HashMap<String, String> headers = new HashMap<String, String>() {
+		Map<String, String> headers = new HashMap<String, String>() {
 			{
 				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
 			}
@@ -271,10 +269,10 @@ public class RestAPIServletTest extends TestCase {
 		RestAPIServlet serv = new RestAPIServlet();
 		MockHTTPRequest req = new MockHTTPRequest("http://foo/api/packages/testDeleteRestServlet/asset1.drl", headers, in);
 
-		MockHTTPResponse res = new MockHTTPResponse(null);
+		MockHTTPResponse res = new MockHTTPResponse();
 		serv.doDelete(req, res);
 
-		assertEquals("OK", res.stringWriter.toString());
+		assertEquals("OK", res.extractContent());
 
 
 

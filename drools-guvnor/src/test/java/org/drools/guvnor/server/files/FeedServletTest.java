@@ -45,7 +45,7 @@ public class FeedServletTest extends TestCase {
         asset.updateFormat("drl");
         asset.checkin("");
         
-       //Mock up SEAM contexts
+        //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
@@ -68,8 +68,7 @@ public class FeedServletTest extends TestCase {
 
         MockHTTPRequest req = new MockHTTPRequest("/org.foo/feed/package?name=...", headers);
         FeedServlet fs = new FeedServlet();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        MockHTTPResponse res = new MockHTTPResponse(out);
+        MockHTTPResponse res = new MockHTTPResponse();
         fs.doGet(req, res);
         assertEquals(HttpServletResponse.SC_UNAUTHORIZED, res.errorCode);
 
@@ -88,12 +87,10 @@ public class FeedServletTest extends TestCase {
             }
         });
         fs = new FeedServlet();
-        out = new ByteArrayOutputStream();
-        res = new MockHTTPResponse(out);
+        res = new MockHTTPResponse();
         fs.doGet(req, res);
 
-
-        String r = new String(out.toByteArray());
+        String r = res.extractContent();
         assertNotNull(r);
 
         assertTrue(r.indexOf("asset1") > -1);
@@ -107,11 +104,10 @@ public class FeedServletTest extends TestCase {
             }
         });
         fs = new FeedServlet();
-        out = new ByteArrayOutputStream();
-        res = new MockHTTPResponse(out);
+        res = new MockHTTPResponse();
         fs.doGet(req, res);
 
-        r = new String(out.toByteArray());
+        r = res.extractContent();
         assertNotNull(r);
 
         assertFalse(r.indexOf("asset1.drl") > -1);
@@ -124,11 +120,10 @@ public class FeedServletTest extends TestCase {
             }
         });
         fs = new FeedServlet();
-        out = new ByteArrayOutputStream();
-        res = new MockHTTPResponse(out);
+        res = new MockHTTPResponse();
         fs.doGet(req, res);
 
-        r = new String(out.toByteArray());
+        r = res.extractContent();
         assertNotNull(r);
         assertTrue(r.indexOf("asset1") > -1);
         
@@ -173,11 +168,10 @@ public class FeedServletTest extends TestCase {
             }
         });
         FeedServlet fs = new FeedServlet();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        MockHTTPResponse res = new MockHTTPResponse(out);
+        MockHTTPResponse res = new MockHTTPResponse();
         fs.doGet(req, res);
 
-        String r = new String(out.toByteArray());
+        String r = res.extractContent();
         assertNotNull(r);
 
         assertTrue(r.indexOf("asset1") > -1);
@@ -192,11 +186,10 @@ public class FeedServletTest extends TestCase {
             }
         });
         fs = new FeedServlet();
-        out = new ByteArrayOutputStream();
-        res = new MockHTTPResponse(out);
+        res = new MockHTTPResponse();
         fs.doGet(req, res);
 
-        r = new String(out.toByteArray());
+        r = res.extractContent();
         assertNotNull(r);
 
         assertTrue(r.indexOf("asset1") > -1);
@@ -205,8 +198,7 @@ public class FeedServletTest extends TestCase {
         
         midentity.setAllowLogin(false);
         fs = new FeedServlet();
-        out = new ByteArrayOutputStream();
-        res = new MockHTTPResponse(out);
+        res = new MockHTTPResponse();
         fs.doGet(req, res);
         assertEquals(HttpServletResponse.SC_UNAUTHORIZED, res.errorCode);
 
@@ -248,8 +240,7 @@ public class FeedServletTest extends TestCase {
 
         MockHTTPRequest req = new MockHTTPRequest("/org.foo/feed/discussion?package=...", headers);
         FeedServlet fs = new FeedServlet();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        MockHTTPResponse res = new MockHTTPResponse(out);
+        MockHTTPResponse res = new MockHTTPResponse();
         fs.doGet(req, res);
         assertEquals(HttpServletResponse.SC_UNAUTHORIZED, res.errorCode);
 
@@ -268,11 +259,10 @@ public class FeedServletTest extends TestCase {
             }
         });
         fs = new FeedServlet();
-        out = new ByteArrayOutputStream();
-        res = new MockHTTPResponse(out);
+        res = new MockHTTPResponse();
         fs.doGet(req, res);
 
-        String r = new String(out.toByteArray());
+        String r = res.extractContent();
         assertNotNull(r);
         assertTrue(r.indexOf("This is a comment") > -1);
         assertTrue(r.indexOf("This is another comment") > r.indexOf("This is a comment"));

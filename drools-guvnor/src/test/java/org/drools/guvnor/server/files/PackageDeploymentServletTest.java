@@ -76,24 +76,22 @@ public class PackageDeploymentServletTest extends TestCase {
 		//check source
 		PackageDeploymentServlet serv = new PackageDeploymentServlet();
 		MockHTTPRequest req = new MockHTTPRequest("/package/testPDSGetPackage/LATEST.drl", null);
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		MockHTTPResponse res = new MockHTTPResponse(out);
+		MockHTTPResponse res = new MockHTTPResponse();
 		serv.doGet(req, res);
 
-		assertNotNull(out.toByteArray());
-		String drl = new String(out.toByteArray());
+		assertNotNull(res.extractContentBytes());
+		String drl = res.extractContent();
 		assertTrue(drl.indexOf("rule") > -1);
 
 
 		//now binary
 		serv = new PackageDeploymentServlet();
 		req = new MockHTTPRequest("/package/testPDSGetPackage/LATEST", null);
-		out = new ByteArrayOutputStream();
-		res = new MockHTTPResponse(out);
+		res = new MockHTTPResponse();
 		serv.doGet(req, res);
 
-		assertNotNull(out.toByteArray());
-		byte[] bin = out.toByteArray();
+		assertNotNull(res.extractContentBytes());
+		byte[] bin = res.extractContentBytes();
 		byte[] bin_ = pkg.getCompiledPackageBytes();
 
         org.drools.rule.Package o = (org.drools.rule.Package) DroolsStreamUtils.streamIn( new ByteArrayInputStream(bin) );
@@ -110,23 +108,21 @@ public class PackageDeploymentServletTest extends TestCase {
 
 		serv = new PackageDeploymentServlet();
 		req = new MockHTTPRequest("/package/testPDSGetPackage/SNAP1.drl", null);
-		out = new ByteArrayOutputStream();
-		res = new MockHTTPResponse(out);
+		res = new MockHTTPResponse();
 		serv.doGet(req, res);
 
-		assertNotNull(out.toByteArray());
-		drl = new String(out.toByteArray());
+		assertNotNull(res.extractContentBytes());
+		drl = new String(res.extractContentBytes());
 		assertTrue(drl.indexOf("rule") > -1);
 
 		//now binary
 		serv = new PackageDeploymentServlet();
 		req = new MockHTTPRequest("/package/testPDSGetPackage/SNAP1", null);
-		out = new ByteArrayOutputStream();
-		res = new MockHTTPResponse(out);
+		res = new MockHTTPResponse();
 		serv.doGet(req, res);
 
-		assertNotNull(out.toByteArray());
-		bin = out.toByteArray();
+		assertNotNull(res.extractContentBytes());
+		bin = res.extractContentBytes();
 		bin_ = pkg.getCompiledPackageBytes();
 		assertEquals(bin_.length, bin.length);
 
@@ -134,12 +130,11 @@ public class PackageDeploymentServletTest extends TestCase {
 		//now get an individual asset source
 		serv = new PackageDeploymentServlet();
 		req = new MockHTTPRequest("/package/testPDSGetPackage/SNAP1/someRule.drl", null);
-		out = new ByteArrayOutputStream();
-		res = new MockHTTPResponse(out);
+		res = new MockHTTPResponse();
 		serv.doGet(req, res);
 
-		assertNotNull(out.toByteArray());
-		drl = new String(out.toByteArray());
+		assertNotNull(res.extractContentBytes());
+		drl = res.extractContent();
 		System.err.println(drl);
 		assertTrue(drl.indexOf("rule") > -1);
 		assertEquals(-1, drl.indexOf("package"));
@@ -149,8 +144,7 @@ public class PackageDeploymentServletTest extends TestCase {
         serv = new PackageDeploymentServlet();
         req = new MockHTTPRequest("/package/testPDSGetPackage/LATEST", null);
         req.method = "HEAD";
-        out = new ByteArrayOutputStream();
-        res = new MockHTTPResponse(out);
+        res = new MockHTTPResponse();
         serv.doHead(req, res);
         assertTrue(res.headers.size() > 0);
         String lm = res.headers.get("Last-Modified");
@@ -159,8 +153,7 @@ public class PackageDeploymentServletTest extends TestCase {
         serv = new PackageDeploymentServlet();
         req = new MockHTTPRequest("/package/testPDSGetPackage/LATEST", null);
         req.method = "HEAD";
-        out = new ByteArrayOutputStream();
-        res = new MockHTTPResponse(out);
+        res = new MockHTTPResponse();
         serv.doHead(req, res);
         assertTrue(res.headers.size() > 0);
 
@@ -169,8 +162,7 @@ public class PackageDeploymentServletTest extends TestCase {
         serv = new PackageDeploymentServlet();
         req = new MockHTTPRequest("/package/testPDSGetPackage/LATEST.drl", null);
         req.method = "HEAD";
-        out = new ByteArrayOutputStream();
-        res = new MockHTTPResponse(out);
+        res = new MockHTTPResponse();
         serv.doHead(req, res);
         assertTrue(res.headers.size() > 0);
 
@@ -301,20 +293,18 @@ public class PackageDeploymentServletTest extends TestCase {
 		//now run the scenarios
 		PackageDeploymentServlet serv = new PackageDeploymentServlet();
 		MockHTTPRequest req = new MockHTTPRequest("/package/testScenariosURL/LATEST/SCENARIOS", headers);
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		MockHTTPResponse res = new MockHTTPResponse(out);
+		MockHTTPResponse res = new MockHTTPResponse();
 		serv.doGet(req, res);
-		String testResult = new String(out.toByteArray());
+		String testResult = res.extractContent();
 		assertNotNull(testResult);
 		assertEquals("No test scenarios found.", testResult);
 
 
 		serv = new PackageDeploymentServlet();
 		req = new MockHTTPRequest("/package/testScenariosURL/SNAP1/SCENARIOS", headers);
-		out = new ByteArrayOutputStream();
-		res = new MockHTTPResponse(out);
+		res = new MockHTTPResponse();
 		serv.doGet(req, res);
-		testResult = new String(out.toByteArray());
+		testResult = res.extractContent();
 		assertNotNull(testResult);
 		assertEquals("No test scenarios found.", testResult);
 
@@ -322,11 +312,10 @@ public class PackageDeploymentServletTest extends TestCase {
         serv = new PackageDeploymentServlet();
         req = new MockHTTPRequest("/package/testScenariosURL/SNAP1/ChangeSet.xml", headers);
         req.url = new StringBuffer("http://foo/ChangeSet.xml");
-        out = new ByteArrayOutputStream();
-        res = new MockHTTPResponse(out);
+        res = new MockHTTPResponse();
 
         serv.doGet(req, res);
-        testResult = new String(out.toByteArray());
+        testResult = res.extractContent();
         assertNotNull(testResult);
         assertTrue(testResult.indexOf("<resource source='http://foo' type='PKG' />") > 0);
 
