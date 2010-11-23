@@ -1,5 +1,5 @@
-/**
- * Copyright 2010 JBoss Inc
+/*
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.rpc;
+package org.drools.guvnor.server.standalonededitor;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.drools.guvnor.client.ruleeditor.standalone.StandaloneGuidedEditorInvocationParameters;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.RuleAsset;
 
 /**
- * 
+ * Interface used by the standalone editor to convert request parameters
+ * to RuleAssets.
  * @author esteban.aliverti
- *
  */
-public interface StandaloneGuidedEditorServiceAsync {
-
-    void getInvocationParameters(String parametersUUID, AsyncCallback<StandaloneGuidedEditorInvocationParameters> asyncCallback);
-    void getAsstesDRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
-    void getAsstesBRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
-
+public interface RuleAssetProvider {
+    
+    RuleAsset[] getRuleAssets() throws DetailedSerializationException ; 
+    
 }

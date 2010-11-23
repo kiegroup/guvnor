@@ -86,43 +86,10 @@ public class WorkingSetManager {
      */
     public void applyWorkingSets(final String packageName, final Set<RuleAsset> wss, final Command done) {
 
-        Command cmd = new Command() {
-
-            public void execute() {
-                //update the map
-                activeWorkingSets.remove(packageName);
-                if (wss != null && !wss.isEmpty()) {
-                    activeWorkingSets.put(packageName, wss);
-                }
-
-                if (done != null) {
-                    done.execute();
-                }
-            }
-        };
-
-        if (wss == null || wss.isEmpty()) {
-            //if no WS, we refresh the SCE (release any filter)
-            SuggestionCompletionCache.getInstance().refreshPackage(packageName, cmd);
-            //update the map
-            this.activeWorkingSets.remove(packageName);
-            return;
-        } else {
-
-            final Set<String> validFacts = new HashSet<String>();
-            for (RuleAsset asset : wss) {
-                WorkingSetConfigData wsConfig = (WorkingSetConfigData) asset.content;
-                if (wsConfig.validFacts != null && wsConfig.validFacts.length > 0) {
-                    validFacts.addAll(Arrays.asList(wsConfig.validFacts));
-                }
-            }
-
-            SuggestionCompletionCache.getInstance().applyFactFilter(packageName,
-                    new SetFactTypeFilter(validFacts), cmd);
-        }
+        this.applyWorkingSets(packageName, wss, false, done);
 
     }
-
+    
     public void applyTemporalWorkingSetForFactTypes(final String packageName, final Set<String> factTypes, final Command done) {
         
         Set<RuleAsset> workingSets = null; 
@@ -139,7 +106,50 @@ public class WorkingSetManager {
             workingSets = new HashSet<RuleAsset>() {{this.add(workingSet);}};
         }
 
-        this.applyWorkingSets(packageName, workingSets, done);
+        this.applyWorkingSets(packageName, workingSets,true, done);
+
+    }
+    
+    private void applyWorkingSets(final String packageName, final Set<RuleAsset> wss, final boolean temporal, final Command done) {
+
+        
+        Command cmd = new Command() {
+
+            public void execute() {
+                if (!temporal){
+                    //update the map
+                    activeWorkingSets.remove(packageName);
+                    if (wss != null && !wss.isEmpty()) {
+                        activeWorkingSets.put(packageName, wss);
+                    }
+                }
+                if (done != null) {
+                    done.execute();
+                }
+            }
+        };
+
+        if (wss == null || wss.isEmpty()) {
+            //if no WS, we refresh the SCE (release any filter)
+            SuggestionCompletionCache.getInstance().refreshPackage(packageName, cmd);
+            if (!temporal){
+                //update the map
+                this.activeWorkingSets.remove(packageName);
+            }
+            return;
+        } else {
+
+            final Set<String> validFacts = new HashSet<String>();
+            for (RuleAsset asset : wss) {
+                WorkingSetConfigData wsConfig = (WorkingSetConfigData) asset.content;
+                if (wsConfig.validFacts != null && wsConfig.validFacts.length > 0) {
+                    validFacts.addAll(Arrays.asList(wsConfig.validFacts));
+                }
+            }
+
+            SuggestionCompletionCache.getInstance().applyFactFilter(packageName,
+                    new SetFactTypeFilter(validFacts), cmd);
+        }
 
     }
 

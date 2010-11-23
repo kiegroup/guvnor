@@ -18,24 +18,24 @@ import java.util.Set;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.packages.WorkingSetManager;
-import org.drools.guvnor.client.rpc.StandaloneGuidedEditorService;
-import org.drools.guvnor.client.rpc.StandaloneGuidedEditorServiceAsync;
+import org.drools.guvnor.client.rpc.StandaloneEditorService;
+import org.drools.guvnor.client.rpc.StandaloneEditorServiceAsync;
 import org.drools.guvnor.client.ruleeditor.standalone.RealAssetsMultiViewEditorMenuBarCreator;
-import org.drools.guvnor.client.ruleeditor.standalone.StandaloneGuidedEditorInvocationParameters;
+import org.drools.guvnor.client.ruleeditor.standalone.StandaloneEditorInvocationParameters;
 import org.drools.guvnor.client.ruleeditor.standalone.TemporalAssetsMultiViewEditorMenuBarCreator;
-import org.drools.guvnor.client.ruleeditor.toolbar.StandaloneGuidedEditorIndividualActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.ruleeditor.toolbar.StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider;
 
 /**
- * Class used to manage the stand-alone version of the Guided Editor (RuleModeller)
+ * Class used to manage the stand-alone version of Guvnor's Editors
  * @author esteban.aliverti@gmail.com
  *
  */
-public class GuidedEditorManager {
+public class StandaloneEditorManager {
 
     private DockLayoutPanel mainLayout;
     private Constants constants = GWT.create(Constants.class);
     private MultiViewEditor editor;
-    private StandaloneGuidedEditorServiceAsync standaloneGuidedEditorService = GWT.create(StandaloneGuidedEditorService.class);
+    private StandaloneEditorServiceAsync standaloneEditorService = GWT.create(StandaloneEditorService.class);
     private RuleAsset[] assets;
 
     public Panel getBaseLayout() {
@@ -56,9 +56,9 @@ public class GuidedEditorManager {
 
         //The package must exist (because we need at least a model to work with)
         //To make things easier (to me), the category must exist too.
-        standaloneGuidedEditorService.getInvocationParameters(parametersUUID, new GenericCallback<StandaloneGuidedEditorInvocationParameters>() {
+        standaloneEditorService.getInvocationParameters(parametersUUID, new GenericCallback<StandaloneEditorInvocationParameters>() {
 
-            public void onSuccess(final StandaloneGuidedEditorInvocationParameters parameters) {
+            public void onSuccess(final StandaloneEditorInvocationParameters parameters) {
 
                 //no assets? This is an error!
                 if (parameters.getAssetsToBeEdited().length == 0) {
@@ -67,7 +67,7 @@ public class GuidedEditorManager {
                 }
 
                 //we need to store the assets.
-                GuidedEditorManager.this.assets = parameters.getAssetsToBeEdited();
+                StandaloneEditorManager.this.assets = parameters.getAssetsToBeEdited();
 
                 //Load SCE and create a MultiViewEditor for the assets.
                 //We take the package from the first asset (because all the assets
@@ -126,7 +126,7 @@ public class GuidedEditorManager {
                             public void open(String key) {
                                 // TODO Auto-generated method stub
                             }
-                        }, new StandaloneGuidedEditorIndividualActionToolbarButtonsConfigurationProvider(),
+                        }, new StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider(),
                                 editorMenuBarCreator);
 
                         editor.setCloseCommand(new Command() {
@@ -158,7 +158,7 @@ public class GuidedEditorManager {
             returnDRL("");
         }
 
-        standaloneGuidedEditorService.getAsstesDRL(assets, new GenericCallback<String[]>() {
+        standaloneEditorService.getAsstesDRL(assets, new GenericCallback<String[]>() {
 
             public void onSuccess(String[] drls) {
                 String result = "";
@@ -184,7 +184,7 @@ public class GuidedEditorManager {
             returnDRL("");
         }
 
-        standaloneGuidedEditorService.getAsstesBRL(assets, new GenericCallback<String[]>() {
+        standaloneEditorService.getAsstesBRL(assets, new GenericCallback<String[]>() {
 
             public void onSuccess(String[] drls) {
                 String result = "";
@@ -226,9 +226,9 @@ public class GuidedEditorManager {
      * is handling.
      * @param app
      */
-    public native void setHooks(GuidedEditorManager app)/*-{
+    public native void setHooks(StandaloneEditorManager app)/*-{
     
-    var guidedEditorObject = {
+    var guvnorEditorObject = {
     drlCallbackFunction: null,
     brlCallbackFunction: null,
     
@@ -240,12 +240,12 @@ public class GuidedEditorManager {
     
     getDRL: function (callbackFunction){
     this.drlCallbackFunction = callbackFunction;
-    app.@org.drools.guvnor.client.ruleeditor.GuidedEditorManager::getDRLs()();
+    app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getDRLs()();
     },
     
     getBRL: function (callbackFunction){
     this.brlCallbackFunction = callbackFunction;
-    app.@org.drools.guvnor.client.ruleeditor.GuidedEditorManager::getBRLs()();
+    app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getBRLs()();
     },
     
     registerAfterSaveAndCloseButtonCallbackFunction: function (callbackFunction){
@@ -257,10 +257,10 @@ public class GuidedEditorManager {
     },
     
     getAssetsUUIDs: function(){
-    return app.@org.drools.guvnor.client.ruleeditor.GuidedEditorManager::getAssetsUUIDs()();
+    return app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getAssetsUUIDs()();
     }
     }    
-    $wnd.guidedEditorObject = guidedEditorObject;                                                                                                      
+    $wnd.guvnorEditorObject = guvnorEditorObject;                                                                                                      
     
     }-*/;
 
@@ -269,8 +269,8 @@ public class GuidedEditorManager {
      * @param drl
      */
     public native void returnDRL(String drl)/*-{
-    if ($wnd.guidedEditorObject.drlCallbackFunction){
-    $wnd.guidedEditorObject.drlCallbackFunction(drl);
+    if ($wnd.guvnorEditorObject.drlCallbackFunction){
+    $wnd.guvnorEditorObject.drlCallbackFunction(drl);
     }
     }-*/;
 
@@ -279,8 +279,8 @@ public class GuidedEditorManager {
      * @param drl
      */
     public native void returnBRL(String brl)/*-{
-    if ($wnd.guidedEditorObject.brlCallbackFunction){
-    $wnd.guidedEditorObject.brlCallbackFunction(brl);
+    if ($wnd.guvnorEditorObject.brlCallbackFunction){
+    $wnd.guvnorEditorObject.brlCallbackFunction(brl);
     }
     }-*/;
 
@@ -288,14 +288,14 @@ public class GuidedEditorManager {
      * Method invoked after the "Save an Close" button is pressed. 
      */
     public native void afterSaveAndClose()/*-{
-    if ($wnd.guidedEditorObject.afterSaveAndCloseButtonCallbackFunction){
-    $wnd.guidedEditorObject.afterSaveAndCloseButtonCallbackFunction();
+    if ($wnd.guvnorEditorObject.afterSaveAndCloseButtonCallbackFunction){
+    $wnd.guvnorEditorObject.afterSaveAndCloseButtonCallbackFunction();
     }
     }-*/;
 
     public native void afterCancelButtonCallbackFunction()/*-{
-    if ($wnd.guidedEditorObject.afterCancelButtonCallbackFunction){
-    $wnd.guidedEditorObject.afterCancelButtonCallbackFunction();
+    if ($wnd.guvnorEditorObject.afterCancelButtonCallbackFunction){
+    $wnd.guvnorEditorObject.afterCancelButtonCallbackFunction();
     }
     }-*/;
 }

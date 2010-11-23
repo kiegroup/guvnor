@@ -21,7 +21,7 @@ import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
-import org.drools.guvnor.client.ruleeditor.GuidedEditorManager;
+import org.drools.guvnor.client.ruleeditor.StandaloneEditorManager;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.CapabilitiesManager;
 
@@ -58,14 +58,14 @@ public class JBRMSEntryPoint implements EntryPoint {
      * Creates the main view of Guvnor.
      * The path used to invoke guvnor is used to identify the 
      * view to show:
-     * If the path contains "GuidedEditor.html" then the GuidedEditorManager is used
+     * If the path contains "StandaloneEditor.html" then the StandaloneGuidedEditorManager is used
      * to render the view.
      * If not, the default view (created by ExplorerLayoutManager) is shown.
      * @return Guvnor's main view.
      */
 	private Panel createMain() {
-		if (Window.Location.getPath().contains("GuidedEditor.html")){
-			return (new GuidedEditorManager().getBaseLayout());
+		if (Window.Location.getPath().contains("StandaloneEditor.html")){
+			return (new StandaloneEditorManager().getBaseLayout());
 		}
 		return (new ExplorerLayoutManager(loggedInUserInfo)).getBaseLayout();
 	}

@@ -26,9 +26,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class GuidedEditorServlet extends HttpServlet {
+public class StandaloneEditorServlet extends HttpServlet {
 
-    public static enum GUIDED_EDITOR_SERVLET_PARAMETERS {
+    public static enum STANDALONE_EDITOR_SERVLET_PARAMETERS {
 
         GE_PACKAGE_PARAMETER_NAME("packageName", false), 
         GE_CATEGORY_PARAMETER_NAME("categoryName", false), 
@@ -50,7 +50,7 @@ public class GuidedEditorServlet extends HttpServlet {
         private String parameterName;
         private boolean multipleValues;
 
-        private GUIDED_EDITOR_SERVLET_PARAMETERS(String parameterName,
+        private STANDALONE_EDITOR_SERVLET_PARAMETERS(String parameterName,
                 boolean multipleValues) {
             this.parameterName = parameterName;
             this.multipleValues = multipleValues;
@@ -74,7 +74,7 @@ public class GuidedEditorServlet extends HttpServlet {
         //from the same cilent)
         Map<String, Object> parameters = new HashMap<String, Object>();
         //copy each registered parameter from request to session
-        for (GUIDED_EDITOR_SERVLET_PARAMETERS parameter : GUIDED_EDITOR_SERVLET_PARAMETERS.values()) {
+        for (STANDALONE_EDITOR_SERVLET_PARAMETERS parameter : STANDALONE_EDITOR_SERVLET_PARAMETERS.values()) {
             if (parameter.isMultipleValues()) {
                 parameters.put(parameter.getParameterName(),
                         req.getParameterValues(parameter.getParameterName()));
@@ -87,6 +87,6 @@ public class GuidedEditorServlet extends HttpServlet {
         String parametersUUID = UUID.randomUUID().toString();
         session.setAttribute(parametersUUID, parameters);
 
-        resp.sendRedirect("GuidedEditor.html?pUUID=" + parametersUUID + "&" + req.getQueryString());
+        resp.sendRedirect("StandaloneEditor.html?pUUID=" + parametersUUID + "&" + req.getQueryString());
     }
 }

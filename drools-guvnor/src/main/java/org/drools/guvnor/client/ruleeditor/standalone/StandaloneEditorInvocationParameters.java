@@ -21,11 +21,11 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 
 /**
  * This class contains all the parameters passed in the invocation of the
- * standalone guided editor. 
+ * standalone editor. 
  * This object is used to pass those parameters from server to client side.
  * @author esteban.aliverti
  */
-public class StandaloneGuidedEditorInvocationParameters implements Serializable {
+public class StandaloneEditorInvocationParameters implements Serializable {
     
     static final long serialVersionUID = 520L;
     

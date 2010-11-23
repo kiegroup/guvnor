@@ -21,12 +21,12 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.StandaloneGuidedEditorService;
-import org.drools.guvnor.client.ruleeditor.standalone.StandaloneGuidedEditorInvocationParameters;
-import org.drools.guvnor.server.guidededitor.BRLRuleAssetProvider;
-import org.drools.guvnor.server.guidededitor.NewRuleAssetProvider;
-import org.drools.guvnor.server.guidededitor.RuleAssetProvider;
-import org.drools.guvnor.server.guidededitor.UUIDRuleAssetProvider;
+import org.drools.guvnor.client.rpc.StandaloneEditorService;
+import org.drools.guvnor.client.ruleeditor.standalone.StandaloneEditorInvocationParameters;
+import org.drools.guvnor.server.standalonededitor.BRLRuleAssetProvider;
+import org.drools.guvnor.server.standalonededitor.NewRuleAssetProvider;
+import org.drools.guvnor.server.standalonededitor.RuleAssetProvider;
+import org.drools.guvnor.server.standalonededitor.UUIDRuleAssetProvider;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.repository.RulesRepository;
@@ -35,13 +35,13 @@ import org.jboss.seam.annotations.In;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 
 /**
- * All the needed Services in order to get the Guided Editor running as standalone
+ * All the needed Services in order to get Guvnor's Editors running as standalone
  * app.
  * @author esteban.aliverti
  */
-public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceServlet
+public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
     implements
-    StandaloneGuidedEditorService {
+    StandaloneEditorService {
 
     @In
     public RulesRepository    repository;
@@ -55,7 +55,7 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
         return RepositoryServiceServlet.getService();
     }
 
-    public StandaloneGuidedEditorInvocationParameters getInvocationParameters(String parametersUUID) throws DetailedSerializationException {
+    public StandaloneEditorInvocationParameters getInvocationParameters(String parametersUUID) throws DetailedSerializationException {
 
         HttpSession session = this.getThreadLocalRequest().getSession();
         
@@ -69,26 +69,26 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
             }
 
             boolean hideLHSInEditor = false;
-            Object attribute =  sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_LHS_PARAMETER_NAME.getParameterName() );
+            Object attribute =  sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_LHS_PARAMETER_NAME.getParameterName() );
             if ( attribute != null ) {
                 hideLHSInEditor = Boolean.parseBoolean( attribute.toString() );
             }
 
             boolean hideRHSInEditor = false;
-            attribute = sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_RHS_PARAMETER_NAME.getParameterName() );
+            attribute = sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_RHS_PARAMETER_NAME.getParameterName() );
             if ( attribute != null ) {
                 hideRHSInEditor = Boolean.parseBoolean( attribute.toString() );
             }
 
             boolean hideAttributesInEditor = false;
-            attribute = sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_ATTRIBUTES_PARAMETER_NAME.getParameterName() );
+            attribute = sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_HIDE_RULE_ATTRIBUTES_PARAMETER_NAME.getParameterName() );
             if ( attribute != null ) {
                 hideAttributesInEditor = Boolean.parseBoolean( attribute.toString() );
             }
             
-            String[] validFactTypes = (String[])sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_VALID_FACT_TYPE_PARAMETER_NAME.getParameterName() );
+            String[] validFactTypes = (String[])sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_VALID_FACT_TYPE_PARAMETER_NAME.getParameterName() );
 
-            StandaloneGuidedEditorInvocationParameters invocationParameters = new StandaloneGuidedEditorInvocationParameters();
+            StandaloneEditorInvocationParameters invocationParameters = new StandaloneEditorInvocationParameters();
 
             this.loadRuleAssetsFromSessionParameters(sessionParameters, invocationParameters);
 
@@ -107,28 +107,28 @@ public class StandaloneGuidedEditorServiceImplementation extends RemoteServiceSe
     }
 
     /**
-     * To open the Guided Editor as standalone, you should be gone through 
-     * GuidedEditorServlet first. This servlet put all the POST parameters into
+     * To open the Standalone Editor, you should be gone through 
+     * StandaloneEditorServlet first. This servlet put all the POST parameters into
      * session. This method takes those parameters and load the corresponding
      * assets.
      * This method will set the assets in parameters 
      * @param parameters 
      * @throws DetailedSerializationException
      */
-    private void loadRuleAssetsFromSessionParameters(Map<String, Object> sessionParameters, StandaloneGuidedEditorInvocationParameters invocationParameters) throws DetailedSerializationException {
+    private void loadRuleAssetsFromSessionParameters(Map<String, Object> sessionParameters, StandaloneEditorInvocationParameters invocationParameters) throws DetailedSerializationException {
 
-        String packageName = (String)sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_PACKAGE_PARAMETER_NAME.getParameterName() );
-        String categoryName = (String)sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CATEGORY_PARAMETER_NAME.getParameterName() );
-        String[] initialBRL = (String[])sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_BRL_PARAMETER_NAME.getParameterName() );
-        String[] assetsUUIDs = (String[])sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_ASSETS_UUIDS_PARAMETER_NAME.getParameterName() );
+        String packageName = (String)sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_PACKAGE_PARAMETER_NAME.getParameterName() );
+        String categoryName = (String)sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_CATEGORY_PARAMETER_NAME.getParameterName() );
+        String[] initialBRL = (String[])sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_BRL_PARAMETER_NAME.getParameterName() );
+        String[] assetsUUIDs = (String[])sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_ASSETS_UUIDS_PARAMETER_NAME.getParameterName() );
 
         boolean createNewAsset = false;
-        Object attribute = sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_CREATE_NEW_ASSET_PARAMETER_NAME.getParameterName() );
+        Object attribute = sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_CREATE_NEW_ASSET_PARAMETER_NAME.getParameterName() );
         if ( attribute != null ) {
             createNewAsset = Boolean.parseBoolean( attribute.toString() );
         }
-        String assetName = (String) sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_ASSET_NAME_PARAMETER_NAME.getParameterName() );
-        String assetFormat = (String) sessionParameters.get( GuidedEditorServlet.GUIDED_EDITOR_SERVLET_PARAMETERS.GE_ASSET_FORMAT_PARAMETER_NAME.getParameterName() );
+        String assetName = (String) sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_ASSET_NAME_PARAMETER_NAME.getParameterName() );
+        String assetFormat = (String) sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_ASSET_FORMAT_PARAMETER_NAME.getParameterName() );
 
         RuleAssetProvider provider;
         if ( createNewAsset ) {
