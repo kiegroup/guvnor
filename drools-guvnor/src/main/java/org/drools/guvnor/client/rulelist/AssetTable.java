@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.cell.client.ActionCell;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -73,7 +72,7 @@ public class AssetTable extends Composite {
     private final String packageUuid;
     private final List<String> formatInList;
     private final EditItemEvent editEvent;
-    private int pageSize = 50; // TODO might need to be configurable, or a constant
+    private int pageSize = 40; // TODO might need to be configurable, or a constant
     private String feedURL;
     private Set<Command> unloadListenerSet = new HashSet<Command>();
 
@@ -117,7 +116,7 @@ public class AssetTable extends Composite {
             }
         };
         columnPicker.addColumn(uuidNumberColumn, new SortableHeader<AssetPageRow, String>(
-                sortableHeaderGroup, "uuid TODO", uuidNumberColumn), false); // TODO i18n
+                sortableHeaderGroup, constants.uuid(), uuidNumberColumn), false);
 
         Column<AssetPageRow, String> formatColumn = new Column<AssetPageRow, String>(new ImageCell()) {
             public String getValue(AssetPageRow row) {
@@ -125,7 +124,7 @@ public class AssetTable extends Composite {
             }
         };
         columnPicker.addColumn(formatColumn, new SortableHeader<AssetPageRow, String>(
-                sortableHeaderGroup, "format TODO", formatColumn), true); // TODO i18n
+                sortableHeaderGroup, constants.Format(), formatColumn), true);
 
         TextColumn<AssetPageRow> packageNameColumn = new TextColumn<AssetPageRow>() {
             public String getValue(AssetPageRow row) {
@@ -133,7 +132,7 @@ public class AssetTable extends Composite {
             }
         };
         columnPicker.addColumn(packageNameColumn, new SortableHeader<AssetPageRow, String>(
-                sortableHeaderGroup, "packageName TODO", packageNameColumn), false);
+                sortableHeaderGroup, constants.PackageName(), packageNameColumn), false);
 
         TextColumn<AssetPageRow> nameColumn = new TextColumn<AssetPageRow>() {
             public String getValue(AssetPageRow row) {
@@ -141,7 +140,7 @@ public class AssetTable extends Composite {
             }
         };
         columnPicker.addColumn(nameColumn, new SortableHeader<AssetPageRow, String>(
-                sortableHeaderGroup, constants.name(), nameColumn), true);
+                sortableHeaderGroup, constants.Name(), nameColumn), true);
 
         TextColumn<AssetPageRow> descriptionColumn = new TextColumn<AssetPageRow>() {
             public String getValue(AssetPageRow row) {
@@ -149,7 +148,7 @@ public class AssetTable extends Composite {
             }
         };
         columnPicker.addColumn(descriptionColumn, new SortableHeader<AssetPageRow, String>(
-                sortableHeaderGroup, "description TODO", descriptionColumn), true);
+                sortableHeaderGroup, constants.Description(), descriptionColumn), true);
 
         TextColumn<AssetPageRow> stateNameColumn = new TextColumn<AssetPageRow>() {
             public String getValue(AssetPageRow row) {
@@ -157,7 +156,7 @@ public class AssetTable extends Composite {
             }
         };
         columnPicker.addColumn(stateNameColumn, new SortableHeader<AssetPageRow, String>(
-                sortableHeaderGroup, "stateName TODO", stateNameColumn), true);
+                sortableHeaderGroup, constants.Status(), stateNameColumn), true);
 
         TextColumn<AssetPageRow> creatorColumn = new TextColumn<AssetPageRow>() {
             public String getValue(AssetPageRow row) {
@@ -165,7 +164,7 @@ public class AssetTable extends Composite {
             }
         };
         columnPicker.addColumn(creatorColumn, new SortableHeader<AssetPageRow, String>(
-                sortableHeaderGroup, "creator TODO", creatorColumn), false); // TODO i18n
+                sortableHeaderGroup, constants.Creator(), creatorColumn), false);
 
         Column<AssetPageRow, Date> createdDateColumn = new Column<AssetPageRow, Date>(new DateCell(
                 DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM))) {
@@ -174,7 +173,7 @@ public class AssetTable extends Composite {
             }
         };
         columnPicker.addColumn(createdDateColumn, new SortableHeader<AssetPageRow, Date>(
-                sortableHeaderGroup, "createdDate TODO", createdDateColumn), false); // TODO i18n
+                sortableHeaderGroup, constants.CreatedDate(), createdDateColumn), false);
 
         TextColumn<AssetPageRow> lastContributorColumn = new TextColumn<AssetPageRow>() {
             public String getValue(AssetPageRow row) {
@@ -182,7 +181,7 @@ public class AssetTable extends Composite {
             }
         };
         columnPicker.addColumn(lastContributorColumn, new SortableHeader<AssetPageRow, String>(
-                sortableHeaderGroup, "lastContributor TODO", lastContributorColumn), false); // TODO i18n
+                sortableHeaderGroup, constants.LastContributor(), lastContributorColumn), false);
 
         Column<AssetPageRow, Date> lastModifiedColumn = new Column<AssetPageRow, Date>(new DateCell(
                 DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM))) {
@@ -191,7 +190,7 @@ public class AssetTable extends Composite {
             }
         };
         columnPicker.addColumn(lastModifiedColumn, new SortableHeader<AssetPageRow, Date>(
-                sortableHeaderGroup, "lastModified TODO", lastModifiedColumn), true); // TODO i18n
+                sortableHeaderGroup, constants.LastModified(), lastModifiedColumn), true);
 
         TextColumn<AssetPageRow> categorySummaryColumn = new TextColumn<AssetPageRow>() {
             public String getValue(AssetPageRow row) {
@@ -199,7 +198,7 @@ public class AssetTable extends Composite {
             }
         };
         columnPicker.addColumn(categorySummaryColumn, new SortableHeader<AssetPageRow, String>(
-                sortableHeaderGroup, "categorySummary TODO", categorySummaryColumn), false); // TODO i18n
+                sortableHeaderGroup, constants.Categories(), categorySummaryColumn), false);
 
         TextColumn<AssetPageRow> externalSourceColumn = new TextColumn<AssetPageRow>() {
             public String getValue(AssetPageRow row) {
@@ -207,11 +206,11 @@ public class AssetTable extends Composite {
             }
         };
         columnPicker.addColumn(externalSourceColumn, new SortableHeader<AssetPageRow, String>(
-                sortableHeaderGroup, "externalSource TODO", externalSourceColumn), false); // TODO i18n
+                sortableHeaderGroup, constants.ExternalSource(), externalSourceColumn), false);
 
         Column<AssetPageRow, String> openColumn = new Column<AssetPageRow, String>(new ButtonCell()) {
             public String getValue(AssetPageRow row) {
-                return "Open"; // TODO i18n
+                return constants.Open();
             }
         };
         openColumn.setFieldUpdater(new FieldUpdater<AssetPageRow, String>() {
@@ -219,7 +218,7 @@ public class AssetTable extends Composite {
                 editEvent.open(row.getUuid());
             }
         });
-        cellTable.addColumn(openColumn, new TextHeader("Open")); // TODO i18n
+        cellTable.addColumn(openColumn, new TextHeader(constants.Open()));
 
         cellTable.setPageSize(pageSize);
         cellTable.setWidth("100%");

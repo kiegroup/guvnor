@@ -330,9 +330,13 @@ public interface Constants
 
     String Categories();
 
+    String ExternalSource();
+
     String LastContributor();
 
-    String Created();
+    String Creator();
+
+    String CreatedDate();
 
     String UnableToRunTests();
 
@@ -700,7 +704,7 @@ public interface Constants
 
     String FactType();
 
-    String name();
+    String name(); // TODO clashes with method Name()
 
     String isEqualTo();
 
@@ -969,6 +973,8 @@ public interface Constants
     String PackageBuiltSuccessfully();
 
     String DownloadBinaryPackage();
+
+    String uuid();
 
     String Format();
 
