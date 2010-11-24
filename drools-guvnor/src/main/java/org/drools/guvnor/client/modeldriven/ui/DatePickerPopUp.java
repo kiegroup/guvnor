@@ -61,6 +61,7 @@ public class DatePickerPopUp extends PopupPanel {
     public DatePickerPopUp(ClickHandler okClickHandler,
                            DateTimeFormat formatter) {
 
+        setGlassEnabled( true );
         HorizontalPanel horizontalPanel = new HorizontalPanel();
 
         // Add years

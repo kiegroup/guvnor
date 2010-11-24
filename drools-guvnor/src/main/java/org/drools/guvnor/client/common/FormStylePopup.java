@@ -36,7 +36,6 @@ public class FormStylePopup extends Popup {
                                     title );
 
         setModal( true );
-        setGlassEnabled( true );
 
         setTitle( title );
 

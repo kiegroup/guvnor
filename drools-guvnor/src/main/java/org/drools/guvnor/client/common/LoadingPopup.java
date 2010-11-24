@@ -34,7 +34,6 @@ public class LoadingPopup extends PopupPanel {
 
         setWidth( "200px" );
         center();
-        setGlassEnabled( true );
     }
 
     /** Convenience method to popup the message. */

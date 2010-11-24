@@ -50,24 +50,24 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DefaultLiteralEditor extends Composite {
 
-    private Constants              constants    = ((Constants) GWT.create( Constants.class ));
+    private Constants                 constants    = ((Constants) GWT.create( Constants.class ));
     private BaseSingleFieldConstraint constraint;
-    private final boolean          numericValue;
+    private final boolean             numericValue;
 
-    private Label                  textWidget   = new Label();
+    private Label                     textWidget   = new Label();
 
-    private final Button           okButton     = new Button( constants.OK() );
-    private final ValueChanged     valueChanged = new ValueChanged() {
-                                                    public void valueChanged(String newValue) {
-                                                        constraint.setValue(newValue);
-                                                        if (onValueChangeCommand != null){
-                                                            onValueChangeCommand.execute();
-                                                        }
-                                                        okButton.click();
-                                                    }
-                                                };
+    private final Button              okButton     = new Button( constants.OK() );
+    private final ValueChanged        valueChanged = new ValueChanged() {
+                                                       public void valueChanged(String newValue) {
+                                                           constraint.setValue( newValue );
+                                                           if ( onValueChangeCommand != null ) {
+                                                               onValueChangeCommand.execute();
+                                                           }
+                                                           okButton.click();
+                                                       }
+                                                   };
 
-    private Command onValueChangeCommand;
+    private Command                   onValueChangeCommand;
 
     public DefaultLiteralEditor(BaseSingleFieldConstraint constraint,
                                 boolean numericValue) {
@@ -75,13 +75,12 @@ public class DefaultLiteralEditor extends Composite {
         this.numericValue = numericValue;
 
         textWidget.setStyleName( "x-form-field" );
-        textWidget.addClickHandler(new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
-				showPopup();
-			}
-		});
+        textWidget.addClickHandler( new ClickHandler() {
 
+            public void onClick(ClickEvent event) {
+                showPopup();
+            }
+        } );
 
         if ( constraint.getValue() != null && !"".equals( constraint.getValue() ) ) {
             textWidget.setText( constraint.getValue() );
@@ -95,16 +94,16 @@ public class DefaultLiteralEditor extends Composite {
     private void showPopup() {
         final PopupPanel popup = new PopupPanel();
         HorizontalPanel horizontalPanel = new HorizontalPanel();
-
+        popup.setGlassEnabled( true );
         popup.setPopupPosition( this.getAbsoluteLeft(),
                                 this.getAbsoluteTop() );
 
-        okButton.addClickHandler(new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
+        okButton.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
 
                 if ( !isValueEmpty( constraint.getValue() ) ) {
-                    if (onValueChangeCommand != null){
+                    if ( onValueChangeCommand != null ) {
                         onValueChangeCommand.execute();
                     }
                     textWidget.setText( constraint.getValue() );
@@ -112,7 +111,7 @@ public class DefaultLiteralEditor extends Composite {
                     popup.hide();
                 }
             }
-		});
+        } );
 
         horizontalPanel.add( getTextBox() );
         horizontalPanel.add( okButton );
@@ -126,7 +125,7 @@ public class DefaultLiteralEditor extends Composite {
     public TextBox getTextBox() {
 
         final TextBox box = new BoundTextBox( constraint );
-         box.addKeyboardListener( new KeyboardListener() {
+        box.addKeyboardListener( new KeyboardListener() {
 
             public void onKeyDown(Widget arg0,
                                   char arg1,
@@ -148,7 +147,7 @@ public class DefaultLiteralEditor extends Composite {
                 if ( '\r' == c || '\n' == c ) {
                     valueChanged.valueChanged( box.getText() );
                 } else {
-                    constraint.setValue(box.getText());
+                    constraint.setValue( box.getText() );
                 }
             }
 
@@ -168,8 +167,8 @@ public class DefaultLiteralEditor extends Composite {
         }
     }
 
-    private void executeOnValueChangeCommand(){
-        if (this.onValueChangeCommand != null){
+    private void executeOnValueChangeCommand() {
+        if ( this.onValueChangeCommand != null ) {
             this.onValueChangeCommand.execute();
         }
     }

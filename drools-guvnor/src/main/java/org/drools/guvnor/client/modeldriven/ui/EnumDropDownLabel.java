@@ -87,6 +87,7 @@ public class EnumDropDownLabel extends Composite {
 
     private void showPopup() {
         final PopupPanel popup = new PopupPanel();
+        popup.setGlassEnabled( true );
         HorizontalPanel horizontalPanel = new HorizontalPanel();
 
         popup.setPopupPosition( this.getAbsoluteLeft(),
