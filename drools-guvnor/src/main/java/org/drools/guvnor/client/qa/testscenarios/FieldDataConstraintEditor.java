@@ -29,6 +29,7 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.modeldriven.ui.EnumDropDown;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
@@ -62,6 +63,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class FieldDataConstraintEditor extends DirtyableComposite {
 
+    private Constants                  constants = GWT.create( Constants.class );
+    private static Images              images    = GWT.create( Images.class );
+
     private String                     factType;
     private FieldData                  field;
     private FactData                   givenFact;
@@ -70,7 +74,6 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
     private ExecutionTrace             executionTrace;
     private SuggestionCompletionEngine sce;
     private ValueChanged               callback;
-    private Constants                  constants = ((Constants) GWT.create( Constants.class ));
 
     public FieldDataConstraintEditor(String factType,
                                      ValueChanged callback,
@@ -126,7 +129,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         } else {
             String[] enums = sce.getDataEnumList( key );
             if ( enums != null ) {
-            	field.nature = FieldData.TYPE_ENUM;
+                field.nature = FieldData.TYPE_ENUM;
                 panel.add( new EnumDropDown( field.value,
                                              new DropDownValueChanged() {
                                                  public void valueChanged(String newText,
@@ -138,7 +141,6 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
             } else {
                 if ( field.value != null && field.value.length() > 0 && field.nature == FieldData.TYPE_UNDEFINED ) {
-                    //  GUVNOR-337
                     if ( field.value.length() > 1 && field.value.charAt( 1 ) == '[' && field.value.charAt( 0 ) == '=' ) {
                         field.nature = FieldData.TYPE_LITERAL;
                     } else if ( field.value.charAt( 0 ) == '=' ) {
@@ -148,7 +150,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                     }
                 }
                 if ( field.nature == FieldData.TYPE_UNDEFINED && (isThereABoundVariableToSet() == true || isItAList() == true) ) {
-                    Image clickme = new Image( "images/edit.gif" ); // NON-NLS
+                    Image clickme = new Image( images.edit() );
                     clickme.addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent w) {
                             showTypeChoice( w,
@@ -173,7 +175,6 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
     private static TextBox editableTextBox(final ValueChanged changed,
                                            String fieldName,
                                            String initialValue) {
-        // Fixme nheron
         final TextBox tb = new TextBox();
         tb.setText( initialValue );
         String m = Format.format( ((Constants) GWT.create( Constants.class )).ValueFor0(),
@@ -190,7 +191,6 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
     }
 
     private Widget variableEditor(final ValueChanged changed) {
-        // sce.
         List<String> vars = this.scenario.getFactNamesInScope( this.executionTrace,
                                                                true );
 
@@ -238,7 +238,6 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
     private Widget listEditor(final ValueChanged changed) {
         Panel panel = new VerticalPanel();
-        //nheron
         int i = 0;
         for ( final FieldData f : this.field.collectionFieldList ) {
 
@@ -259,7 +258,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                                                                     executionTrace );
             hpanel.add( fieldElement );
             final int index = i;
-            Image del = new ImageButton( "images/delete_item_small.gif",
+            Image del = new ImageButton( images.deleteItemSmall(),
                                          Format.format( constants.AElementToDelInCollectionList(),
                                                         "tt" ),
                                          new ClickHandler() {
@@ -272,7 +271,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
             hpanel.add( del );
 
-            Image addPattern = new ImageButton( "images/new_item_below.png" );
+            Image addPattern = new ImageButton( images.newItemBelow() );
             addPattern.setTitle( constants.AddElementBelow() );
 
             addPattern.addClickHandler( new ClickHandler() {
@@ -287,7 +286,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                 }
             } );
             hpanel.add( addPattern );
-            Image moveDown = new ImageButton( "images/shuffle_down.gif" );
+            Image moveDown = new ImageButton( images.shuffleDown() );
             moveDown.setTitle( constants.MoveDownListMove() );
             moveDown.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
@@ -305,7 +304,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             } );
             hpanel.add( moveDown );
 
-            Image moveUp = new ImageButton( "images/shuffle_up.gif" );
+            Image moveUp = new ImageButton( images.shuffleUp() );
             moveUp.setTitle( constants.MoveUpList() );
             moveUp.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
@@ -327,7 +326,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         }
 
         if ( this.field.collectionFieldList.size() == 0 ) {
-            Image add = new ImageButton( "images/new_item.gif",
+            Image add = new ImageButton( images.newItem(),
                                          Format.format( constants.AElementToAddInCollectionList(),
                                                         "tt" ),
                                          new ClickHandler() {
@@ -362,7 +361,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
     private void showTypeChoice(ClickEvent w,
                                 final FieldData con) {
-        final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif",
+        final FormStylePopup form = new FormStylePopup( images.newexWiz(),
                                                         constants.FieldValue() );
 
         Button lit = new Button( constants.LiteralValue() );

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,13 +21,14 @@ import java.util.Date;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -36,8 +37,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DatePickerLabel extends DatePicker {
 
-    protected Label labelWidget = new Label();
-    private Constants constants  = ((Constants) GWT.create( Constants.class ));
+    protected Label   labelWidget = new Label();
+    private Constants constants   = ((Constants) GWT.create( Constants.class ));
 
     public DatePickerLabel(String selectedDate) {
         this( selectedDate,
@@ -50,12 +51,12 @@ public class DatePickerLabel extends DatePicker {
 
         visualFormatFormatter = DateTimeFormat.getFormat( this.visualFormat );
 
-        datePickerPopUp = new DatePickerPopUp( new ClickListener() {
-                                                   public void onClick(Widget arg0) {
+        datePickerPopUp = new DatePickerPopUp( new ClickHandler() {
+                                                   public void onClick(ClickEvent event) {
                                                        try {
-                                                    	   Date date = fillDate();
-                                                    	   
-                                                    	   textWidget.setText( visualFormatFormatter.format( date ) );
+                                                           Date date = fillDate();
+
+                                                           textWidget.setText( visualFormatFormatter.format( date ) );
                                                            labelWidget.setText( textWidget.getText() );
 
                                                            valueChanged();
@@ -63,18 +64,18 @@ public class DatePickerLabel extends DatePicker {
                                                            panel.clear();
                                                            panel.add( labelWidget );
                                                            datePickerPopUp.hide();
-                                                       } catch(Exception e) {
-                                                    	   Window.alert( constants.InvalidDateFormatMessage() );  
+                                                       } catch ( Exception e ) {
+                                                           Window.alert( constants.InvalidDateFormatMessage() );
                                                        }
-                                                       
+
                                                    }
                                                },
                                                visualFormatFormatter );
 
         labelWidget.setStyleName( "x-form-field" );
 
-        labelWidget.addClickListener( new ClickListener() {
-            public void onClick(Widget arg0) {
+        labelWidget.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 panel.clear();
                 panel.add( textWidget );
                 datePickerPopUp.setPopupPosition( textWidget.getAbsoluteLeft(),
@@ -100,12 +101,9 @@ public class DatePickerLabel extends DatePicker {
             labelWidget.setText( selectedDate );
         }
 
-        textWidget.addFocusListener( new FocusListener() {
-            public void onFocus(Widget arg0) {
-            }
-
-            public void onLostFocus(Widget arg0) {
-                TextBox box = (TextBox) arg0;
+        textWidget.addBlurHandler( new BlurHandler() {
+            public void onBlur(BlurEvent event) {
+                TextBox box = (TextBox) event.getSource();
                 textWidget.setText( box.getText() );
                 labelWidget.setText( box.getText() );
                 valueChanged();

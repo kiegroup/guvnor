@@ -15,6 +15,7 @@
  */
 
 package org.drools.guvnor.client.ruleeditor;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -57,127 +58,140 @@ import com.gwtext.client.widgets.grid.ColumnModel;
 import com.gwtext.client.widgets.grid.EditorGridPanel;
 import com.gwtext.client.widgets.grid.GridEditor;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ImageResource;
 
 /**
  * Properties (key/value pairs) editor with a file attachment.
  *
  * @author Anton Arhipov
  */
-public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveEventListener {
+public class PropertiesWidget extends AssetAttachmentFileWidget
+    implements
+    SaveEventListener {
 
-    PropertiesHolder properties;
-    Store store;
-    private Constants constants = ((Constants) GWT.create(Constants.class));
+    PropertiesHolder  properties;
+    Store             store;
+    private Constants constants = ((Constants) GWT.create( Constants.class ));
 
-    public PropertiesWidget(final RuleAsset asset, final RuleViewer viewer) {
-        super(asset, viewer);
+    public PropertiesWidget(final RuleAsset asset,
+                            final RuleViewer viewer) {
+        super( asset,
+               viewer );
 
-        if (asset.content == null) {
+        if ( asset.content == null ) {
             properties = new PropertiesHolder();
         } else {
             properties = (PropertiesHolder) asset.content;
         }
 
         Panel panel = new Panel();
-        panel.setBorder(false);
-        panel.setPaddings(15);
+        panel.setBorder( false );
+        panel.setPaddings( 15 );
 
-        final RecordDef recordDef = new RecordDef(
-                new FieldDef[]{new StringFieldDef("key"), new StringFieldDef("value")}   //NON-NLS
+        final RecordDef recordDef = new RecordDef( new FieldDef[]{new StringFieldDef( "key" ), new StringFieldDef( "value" )} //NON-NLS
         );
 
         String[][] data = new String[properties.list.size()][];
         int dataIndex = 0;
-        for (PropertyHolder holder : properties.list) {
+        for ( PropertyHolder holder : properties.list ) {
             data[dataIndex++] = new String[]{holder.name, holder.value};
         }
 
-        MemoryProxy proxy = new MemoryProxy(data);
-        store = new Store(proxy, new ArrayReader(recordDef));
+        MemoryProxy proxy = new MemoryProxy( data );
+        store = new Store( proxy,
+                           new ArrayReader( recordDef ) );
         store.load();
 
-        ColumnConfig keyCol = new ColumnConfig("Key?", "key", 100, true, null, "key");    //NON-NLS
-        keyCol.setEditor(new GridEditor(new TextField()));
-        keyCol.setFixed(false);
+        ColumnConfig keyCol = new ColumnConfig( "Key?",
+                                                "key",
+                                                100,
+                                                true,
+                                                null,
+                                                "key" ); //NON-NLS
+        keyCol.setEditor( new GridEditor( new TextField() ) );
+        keyCol.setFixed( false );
 
-        ColumnConfig valueCol = new ColumnConfig("Value?", "value", 100, true, null, "value"); //NON-NLS
-        valueCol.setEditor(new GridEditor(new TextField()));
-        valueCol.setFixed(false);
+        ColumnConfig valueCol = new ColumnConfig( "Value?",
+                                                  "value",
+                                                  100,
+                                                  true,
+                                                  null,
+                                                  "value" ); //NON-NLS
+        valueCol.setEditor( new GridEditor( new TextField() ) );
+        valueCol.setFixed( false );
 
         ColumnConfig[] columnConfigs = {keyCol, valueCol};
 
-        ColumnModel columnModel = new ColumnModel(columnConfigs);
-        columnModel.setDefaultSortable(true);
+        ColumnModel columnModel = new ColumnModel( columnConfigs );
+        columnModel.setDefaultSortable( true );
 
         final EditorGridPanel grid = new EditorGridPanel();
 
         Toolbar toolbar = new Toolbar();
-        ToolbarButton add = new ToolbarButton(constants.Add(), new ButtonListenerAdapter() {
-            public void onClick(Button button, EventObject e) {
-                addNewField(recordDef, grid);
-            }
-        });
+        ToolbarButton add = new ToolbarButton( constants.Add(),
+                                               new ButtonListenerAdapter() {
+                                                   public void onClick(Button button,
+                                                                       EventObject e) {
+                                                       addNewField( recordDef,
+                                                                    grid );
+                                                   }
+                                               } );
 
-        toolbar.addButton(add);
+        toolbar.addButton( add );
 
-        /*ToolbarButton delete = new ToolbarButton("Delete", new ButtonListenerAdapter() {
-            public void onClick(Button button, EventObject e) {
-                store.remove(store.getRecordAt(grid.getPosition()[1]));
-                if(store.getTotalCount() == 0){
-                    addNewField(recordDef, grid);
-                }
-            }
-        });
+        ToolbarButton clear = new ToolbarButton( constants.Clear(),
+                                                 new ButtonListenerAdapter() {
+                                                     public void onClick(Button button,
+                                                                         EventObject e) {
+                                                         store.removeAll();
+                                                         addNewField( recordDef,
+                                                                      grid );
+                                                     }
+                                                 } );
 
-        toolbar.addButton(delete);*/
+        toolbar.addButton( clear );
 
-        ToolbarButton clear = new ToolbarButton(constants.Clear(), new ButtonListenerAdapter() {
-            public void onClick(Button button, EventObject e) {
-                store.removeAll();
-                addNewField(recordDef, grid);
-            }
-        });
+        grid.setStore( store );
+        grid.setColumnModel( columnModel );
+        grid.setWidth( 215 );
+        grid.setHeight( 300 );
+        grid.setTitle( constants.Properties() );
+        grid.setFrame( true );
+        grid.setClicksToEdit( 2 );
+        grid.setTopToolbar( toolbar );
 
-        toolbar.addButton(clear);
+        panel.add( grid );
 
-        grid.setStore(store);
-        grid.setColumnModel(columnModel);
-        grid.setWidth(215);
-        grid.setHeight(300);
-        grid.setTitle(constants.Properties());
-        grid.setFrame(true);
-        grid.setClicksToEdit(2);
-        grid.setTopToolbar(toolbar);
-
-        panel.add(grid);
-
-        layout.addRow(grid);
+        layout.addRow( grid );
     }
 
-    private void addNewField(RecordDef recordDef, EditorGridPanel grid) {
-        Record pair = recordDef.createRecord(new Object[]{"", ""});
+    private void addNewField(RecordDef recordDef,
+                             EditorGridPanel grid) {
+        Record pair = recordDef.createRecord( new Object[]{"", ""} );
         grid.stopEditing();
-        store.insert(0, pair);
-        grid.startEditing(0, 0);
+        store.insert( 0,
+                      pair );
+        grid.startEditing( 0,
+                           0 );
     }
 
-
-    public String getIcon() {
-        return "";       //TODO: set correct icon
+    public ImageResource getIcon() {
+        return null; //TODO: set correct icon
     }
 
     public String getOverallStyleName() {
-        return "";       //TODO: set correct style
+        return ""; //TODO: set correct style
     }
 
     public void onSave() {
         final List<PropertyHolder> result = new ArrayList<PropertyHolder>();
 
         Record[] records = store.getRecords();
-        for (Record record : records) {
-            String key = record.getAsString("key"); //NON-NLS
-            if (key != null && !"".equals(key)) {
-                result.add(new PropertyHolder(key, record.getAsString("value")));
+        for ( Record record : records ) {
+            String key = record.getAsString( "key" ); //NON-NLS
+            if ( key != null && !"".equals( key ) ) {
+                result.add( new PropertyHolder( key,
+                                                record.getAsString( "value" ) ) );
             }
         }
 
@@ -190,5 +204,3 @@ public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveE
     }
 
 }
-
-

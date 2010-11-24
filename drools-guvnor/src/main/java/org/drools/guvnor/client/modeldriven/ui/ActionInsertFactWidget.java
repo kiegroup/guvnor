@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-
-
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -25,6 +23,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
@@ -56,50 +55,63 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActionInsertFactWidget extends RuleModellerWidget {
 
-    private final DirtyableFlexTable layout;
-    private final ActionInsertFact model;
-    private final String[] fieldCompletions;
-    private final String factType;
-    private Constants constants = GWT.create(Constants.class);
-    private boolean readOnly;
+    private Constants                constants = GWT.create( Constants.class );
+    private static Images            images    = GWT.create( Images.class );
 
-    public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set) {
-        this(mod, set, null);
+    private final DirtyableFlexTable layout;
+    private final ActionInsertFact   model;
+    private final String[]           fieldCompletions;
+    private final String             factType;
+    private boolean                  readOnly;
+
+    public ActionInsertFactWidget(RuleModeller mod,
+                                  ActionInsertFact set) {
+        this( mod,
+              set,
+              null );
     }
 
-    public ActionInsertFactWidget(RuleModeller mod, ActionInsertFact set,Boolean readOnly) {
-        super(mod);
+    public ActionInsertFactWidget(RuleModeller mod,
+                                  ActionInsertFact set,
+                                  Boolean readOnly) {
+        super( mod );
         this.model = set;
         this.layout = new DirtyableFlexTable();
         this.factType = set.factType;
 
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         this.fieldCompletions = completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
-                                                                      set.factType );
+                                                                 set.factType );
 
-        layout.setStyleName( "model-builderInner-Background" );  //NON-NLS
+        layout.setStyleName( "model-builderInner-Background" ); //NON-NLS
 
-        if (readOnly == null) {
-            this.readOnly = !completions.containsFactType(set.factType);
+        if ( readOnly == null ) {
+            this.readOnly = !completions.containsFactType( set.factType );
         } else {
             this.readOnly = readOnly;
         }
 
-        if (this.readOnly) {
-            layout.addStyleName("editor-disabled-widget");
+        if ( this.readOnly ) {
+            layout.addStyleName( "editor-disabled-widget" );
         }
 
         doLayout();
 
-        initWidget(this.layout);
-    
-	}
+        initWidget( this.layout );
 
-	private void doLayout() {
+    }
+
+    private void doLayout() {
         layout.clear();
-        layout.setWidget( 0, 0, getAssertLabel() );
-        layout.setWidget( 1, 0, new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
-        layout.getFlexCellFormatter().setColSpan(0, 0, 2);
+        layout.setWidget( 0,
+                          0,
+                          getAssertLabel() );
+        layout.setWidget( 1,
+                          0,
+                          new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
+        layout.getFlexCellFormatter().setColSpan( 0,
+                                                  0,
+                                                  2 );
 
         DirtyableFlexTable inner = new DirtyableFlexTable();
         int col = 0;
@@ -107,77 +119,91 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         for ( int i = 0; i < model.fieldValues.length; i++ ) {
             ActionFieldValue val = model.fieldValues[i];
 
-            inner.setWidget( i, 0 + col, fieldSelector(val) );
-            inner.setWidget( i, 1 + col, valueEditor(val) );
+            inner.setWidget( i,
+                             0 + col,
+                             fieldSelector( val ) );
+            inner.setWidget( i,
+                             1 + col,
+                             valueEditor( val ) );
             final int idx = i;
-            Image remove = new ImageButton("images/delete_item_small.gif");
-			remove.addClickHandler(new ClickHandler() {
-				public void onClick(ClickEvent event) {
-					if (Window.confirm(constants.RemoveThisItem())) {
-						model.removeField(idx);
-						setModified(true);
-						getModeller().refreshWidget();
-					}
-				}
-			});
-            if (!this.readOnly) {
-                inner.setWidget( i, 2 + col, remove );
+            Image remove = new ImageButton( images.deleteItemSmall() );
+            remove.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    if ( Window.confirm( constants.RemoveThisItem() ) ) {
+                        model.removeField( idx );
+                        setModified( true );
+                        getModeller().refreshWidget();
+                    }
+                }
+            } );
+            if ( !this.readOnly ) {
+                inner.setWidget( i,
+                                 2 + col,
+                                 remove );
             }
 
         }
 
-        layout.setWidget( 1, 1, inner );
-
+        layout.setWidget( 1,
+                          1,
+                          inner );
 
     }
 
     private Widget valueEditor(final ActionFieldValue val) {
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
-    	DropDownData enums = completions.getEnums(this.factType, this.model.fieldValues, val.field);
+        DropDownData enums = completions.getEnums( this.factType,
+                                                   this.model.fieldValues,
+                                                   val.field );
 
-        ActionValueEditor actionValueEditor = new ActionValueEditor(val, enums,this.getModeller(),val.type,this.readOnly);
-        actionValueEditor.setOnChangeCommand(new Command() {
+        ActionValueEditor actionValueEditor = new ActionValueEditor( val,
+                                                                     enums,
+                                                                     this.getModeller(),
+                                                                     val.type,
+                                                                     this.readOnly );
+        actionValueEditor.setOnChangeCommand( new Command() {
             public void execute() {
-                setModified(true);
+                setModified( true );
             }
-        });
+        } );
 
-    	return actionValueEditor;
+        return actionValueEditor;
     }
 
     private Widget fieldSelector(final ActionFieldValue val) {
-        return new SmallLabel(val.field);
+        return new SmallLabel( val.field );
     }
 
     private Widget getAssertLabel() {
 
+        ClickHandler cl = new ClickHandler() {
 
-        ClickHandler cl = new ClickHandler(
-        		) {
-			
-			public void onClick(ClickEvent event) {
-				Widget w = (Widget)event.getSource();
-				showAddFieldPopup(w);
-				
-			}
-		};
+            public void onClick(ClickEvent event) {
+                Widget w = (Widget) event.getSource();
+                showAddFieldPopup( w );
 
-        String assertType = "assert";  //NON-NLS
-        if (this.model instanceof ActionInsertLogicalFact) {
-            assertType = "assertLogical";  //NON-NLS
+            }
+        };
+
+        String assertType = "assert"; //NON-NLS
+        if ( this.model instanceof ActionInsertLogicalFact ) {
+            assertType = "assertLogical"; //NON-NLS
         }
 
-        String lbl = (model.isBound() == false) ? HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.factType + "</b>" : HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.factType + "</b>" + " <b>[" + model.getBoundName() + "]</b>";
-        if (this.model.fieldValues != null && model.fieldValues.length > 0 ) {
+        String lbl = (model.isBound() == false) ? HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.factType + "</b>" : HumanReadable.getActionDisplayName( assertType ) + " <b>" + this.model.factType + "</b>" + " <b>["
+                                                                                                                                             + model.getBoundName() + "]</b>";
+        if ( this.model.fieldValues != null && model.fieldValues.length > 0 ) {
             lbl = lbl + ":";
         }
-        return new ClickableLabel( lbl, cl, !this.readOnly );
+        return new ClickableLabel( lbl,
+                                   cl,
+                                   !this.readOnly );
 
     }
 
     protected void showAddFieldPopup(Widget w) {
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
-        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
+        final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
                                                          constants.AddAField() );
         final ListBox box = new ListBox();
         box.addItem( "..." );
@@ -190,18 +216,19 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
 
         popup.addAttribute( constants.AddField(),
                             box );
-		box.addChangeHandler(new ChangeHandler() {
-			public void onChange(ChangeEvent event) {
-				String fieldName = box.getItemText(box.getSelectedIndex());
-				String fieldType = completions.getFieldType(model.factType,
-						fieldName);
-				model.addFieldValue(new ActionFieldValue(fieldName, "",
-						fieldType));
-				setModified(true);
-				getModeller().refreshWidget();
-				popup.hide();
-			}
-		});
+        box.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                String fieldName = box.getItemText( box.getSelectedIndex() );
+                String fieldType = completions.getFieldType( model.factType,
+                                                             fieldName );
+                model.addFieldValue( new ActionFieldValue( fieldName,
+                                                           "",
+                                                           fieldType ) );
+                setModified( true );
+                getModeller().refreshWidget();
+                popup.hide();
+            }
+        } );
         /*
          * Propose a textBox to the user
          * to make him set a variable name 
@@ -214,25 +241,21 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
         final Button ok = new Button( constants.Set() );
         vn.add( varName );
         vn.add( ok );
-        ok.addClickHandler(new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
-				String var = varName.getText();
-				if (getModeller().isVariableNameUsed(var)
-						&& ((model.getBoundName() != null && model
-								.getBoundName().equals(var) == false) || model
-								.getBoundName() == null)) {
-					Window.alert(Format.format(
-							constants.TheVariableName0IsAlreadyTaken(), var));
-					return;
-				}
-				model.setBoundName(var);
-				setModified(true);
-				getModeller().refreshWidget();
-				popup.hide();
-			}
-		});
-       
+        ok.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                String var = varName.getText();
+                if ( getModeller().isVariableNameUsed( var ) && ((model.getBoundName() != null && model.getBoundName().equals( var ) == false) || model.getBoundName() == null) ) {
+                    Window.alert( Format.format( constants.TheVariableName0IsAlreadyTaken(),
+                                                 var ) );
+                    return;
+                }
+                model.setBoundName( var );
+                setModified( true );
+                getModeller().refreshWidget();
+                popup.hide();
+            }
+        } );
 
         popup.addAttribute( constants.BoundVariable(),
                             vn );

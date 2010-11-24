@@ -19,6 +19,7 @@ package org.drools.guvnor.client;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.ruleeditor.StandaloneEditorManager;
@@ -35,7 +36,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 
-
 /**
  * This is the main launching/entry point for the JBRMS web console.
  * It essentially sets the initial layout.
@@ -43,14 +43,18 @@ import com.google.gwt.user.client.ui.RootLayoutPanel;
  * If you hadn't noticed, this is using GWT from google. Refer to GWT docs
  * if GWT is new to you (it is quite a different way of building web apps).
  */
-public class JBRMSEntryPoint implements EntryPoint {
+public class JBRMSEntryPoint
+    implements
+    EntryPoint {
 
     private LoggedInUserInfo loggedInUserInfo;
 
-    public void onModuleLoad() {    	
-        //Field.setMsgTarget("side");
+    public void onModuleLoad() {
+
+        GuvnorResources.INSTANCE.headerCss().ensureInjected();
+
         loggedInUserInfo = new LoggedInUserInfo();
-        loggedInUserInfo.setVisible(false);
+        loggedInUserInfo.setVisible( false );
         checkLoggedIn();
     }
 
@@ -63,7 +67,7 @@ public class JBRMSEntryPoint implements EntryPoint {
      * If not, the default view (created by ExplorerLayoutManager) is shown.
      * @return Guvnor's main view.
      */
-	private Panel createMain() {
+  	private Panel createMain() {
 		if (Window.Location.getPath().contains("StandaloneEditor.html")){
 			return (new StandaloneEditorManager().getBaseLayout());
 		}
@@ -78,42 +82,41 @@ public class JBRMSEntryPoint implements EntryPoint {
         RepositoryServiceFactory.getSecurityService().getCurrentUser( new GenericCallback<UserSecurityContext>() {
             public void onSuccess(UserSecurityContext ctx) {
                 if ( ctx.userName != null ) {
-                	showMain();
+                    showMain();
                     loggedInUserInfo.setUserName( ctx.userName );
                     loggedInUserInfo.setVisible( true );
                 } else {
-                	final LoginWidget lw = new LoginWidget();
-                	lw.setLoggedInEvent(new Command() {
+                    final LoginWidget lw = new LoginWidget();
+                    lw.setLoggedInEvent( new Command() {
                         public void execute() {
-                        	showMain();
+                            showMain();
                             loggedInUserInfo.setUserName( lw.getUserName() );
                             loggedInUserInfo.setVisible( true );
                         }
                     } );
-                	lw.show();
+                    lw.show();
                 }
             }
         } );
     }
 
-	private void showMain() {
-		Window.setStatus(((Constants) GWT.create(Constants.class)).LoadingUserPermissions());
-		
-		CapabilitiesManager.getInstance().refreshAllowedCapabilities(new Command() {
-			
-			public void execute() {
-				Window.setStatus(" ");
-				RootLayoutPanel.get().add(createMain());
-			}
-		});
-			
-		
-	    // Setup a history handler to reselect the associate menu item
-	    final ValueChangeHandler<String> historyHandler = new ValueChangeHandler<String>() {
-	      public void onValueChange(ValueChangeEvent<String> event) {
-              //TODO: Handle History
-	      }
-	    };
-	    History.addValueChangeHandler(historyHandler);		
-	}
+    private void showMain() {
+        Window.setStatus( ((Constants) GWT.create( Constants.class )).LoadingUserPermissions() );
+
+        CapabilitiesManager.getInstance().refreshAllowedCapabilities( new Command() {
+
+            public void execute() {
+                Window.setStatus( " " );
+                RootLayoutPanel.get().add( createMain() );
+            }
+        } );
+
+        // Setup a history handler to reselect the associate menu item
+        final ValueChangeHandler<String> historyHandler = new ValueChangeHandler<String>() {
+            public void onValueChange(ValueChangeEvent<String> event) {
+                //TODO: Handle History
+            }
+        };
+        History.addValueChangeHandler( historyHandler );
+    }
 }

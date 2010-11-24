@@ -15,6 +15,7 @@
  */
 
 package org.drools.guvnor.client.ruleeditor;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -31,12 +32,12 @@ package org.drools.guvnor.client.ruleeditor;
  * limitations under the License.
  */
 
-
-
 import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.core.client.GWT;
 
@@ -47,21 +48,22 @@ import com.google.gwt.core.client.GWT;
  */
 public class RuleFlowUploadWidget extends AssetAttachmentFileWidget {
 
-    public RuleFlowUploadWidget(
-                                  RuleAsset asset, RuleViewer viewer) {
+    private Constants     constants = GWT.create( Constants.class );
+    private static Images images    = GWT.create( Images.class );
+
+    public RuleFlowUploadWidget(RuleAsset asset,
+                                RuleViewer viewer) {
         super( asset,
                viewer );
-        super.addDescription(new HTML("<small><i>" + ((Constants) GWT.create(Constants.class)).RuleFlowUploadTip() + "</i></small>")); //NON-NLS
+        super.addDescription( new HTML( "<small><i>" + constants.RuleFlowUploadTip() + "</i></small>" ) ); //NON-NLS
     }
 
-    public String getIcon() {
-        return "images/ruleflow_large.png"; //NON-NLS
+    public ImageResource getIcon() {
+        return images.ruleflowLarge();
     }
 
     public String getOverallStyleName() {
-        return "decision-Table-upload";              //NON-NLS
+        return "decision-Table-upload"; //NON-NLS
     }
-
-
 
 }

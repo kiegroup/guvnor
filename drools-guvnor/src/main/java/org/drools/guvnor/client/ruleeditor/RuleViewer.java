@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
@@ -52,6 +53,9 @@ import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigura
  */
 public class RuleViewer extends GuvnorEditor {
 
+    private Constants                                 constants = GWT.create( Constants.class );
+    private static Images                             images    = GWT.create( Images.class );
+
     private Command                                   closeCommand;
     private Command                                   archiveCommand;
     public Command                                    checkedInCommand;
@@ -70,7 +74,6 @@ public class RuleViewer extends GuvnorEditor {
     private HorizontalPanel                           hsp;
 
     private long                                      lastSaved = System.currentTimeMillis();
-    private Constants                                 constants = ((Constants) GWT.create( Constants.class ));
 
     private final EditItemEvent                       editEvent;
 
@@ -245,8 +248,6 @@ public class RuleViewer extends GuvnorEditor {
                             "100%" );
         hsp.add( vert );
 
-        //hsp.addStyleName("HorizontalSplitPanel");
-
         hsp.add( metaWidget );
 
         hsp.setCellWidth( metaWidget,
@@ -306,19 +307,10 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     private void performCheckIn(String comment) {
-        //layout.clear();
         this.asset.metaData.checkinComment = comment;
         final boolean[] saved = {false};
 
         if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
-
-        //Not sure why we need a delay here.       
-        /*        Timer t = new Timer() {
-                    public void run() {
-                        if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
-                    }
-                };
-                t.schedule( 500 );*/
 
         RepositoryServiceFactory.getService().checkinVersion( this.asset,
                                                               new GenericCallback<String>() {
@@ -435,7 +427,7 @@ public class RuleViewer extends GuvnorEditor {
      * Called when user wants to close, but there is "dirtyness".
      */
     protected void doCloseUnsavedWarning() {
-        final FormStylePopup pop = new FormStylePopup( "images/warning-large.png", //NON-NLS
+        final FormStylePopup pop = new FormStylePopup( images.warningLarge(),
                                                        constants.WARNINGUnCommittedChanges() );
         Button dis = new Button( constants.Discard() );
         Button can = new Button( constants.Cancel() );
@@ -464,7 +456,7 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     private void doCopy() {
-        final FormStylePopup form = new FormStylePopup( "images/rule_asset.gif",
+        final FormStylePopup form = new FormStylePopup( images.ruleAsset(),
                                                         constants.CopyThisItem() );
         final TextBox newName = new TextBox();
         form.addAttribute( constants.NewName(),
@@ -512,7 +504,6 @@ public class RuleViewer extends GuvnorEditor {
         form.addAttribute( "",
                            ok );
 
-        //form.setPopupPosition((DirtyableComposite.getWidth() - form.getOffsetWidth()) / 2, 100);
         form.show();
     }
 

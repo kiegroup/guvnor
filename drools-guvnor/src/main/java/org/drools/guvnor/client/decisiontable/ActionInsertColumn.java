@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,25 +24,26 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
  * This is an editor for columns that are for inserting facts.
@@ -51,12 +52,14 @@ import com.google.gwt.event.dom.client.ClickHandler;
  */
 public class ActionInsertColumn extends FormStylePopup {
 
+    private static Images              images       = (Images) GWT.create( Images.class );
+    private Constants                  constants    = GWT.create( Constants.class );
+
     private GuidedDecisionTable        dt;
     private SuggestionCompletionEngine sce;
     private ActionInsertFactCol        editingCol;
     private SmallLabel                 patternLabel = new SmallLabel();
     private TextBox                    fieldLabel   = getFieldLabel();
-    private Constants                  constants    = GWT.create( Constants.class );
 
     public ActionInsertColumn(SuggestionCompletionEngine sce,
                               final GuidedDecisionTable dt,
@@ -82,20 +85,20 @@ public class ActionInsertColumn extends FormStylePopup {
         pattern.add( patternLabel );
         doPatternLabel();
 
-        Image changePattern = new ImageButton( "images/edit.gif",
+        Image changePattern = new ImageButton( images.edit(),
                                                constants.ChooseAPatternThatThisColumnAddsDataTo(),
                                                new ClickHandler() {
                                                    public void onClick(ClickEvent w) {
                                                        showChangePattern( w );
                                                    }
-                                               } ); //NON-NLS
+                                               } );
         pattern.add( changePattern );
         addAttribute( constants.Pattern(),
                       pattern );
 
         HorizontalPanel field = new HorizontalPanel();
         field.add( fieldLabel );
-        Image editField = new ImageButton( "images/edit.gif",
+        Image editField = new ImageButton( images.edit(),
                                            constants.EditTheFieldThatThisColumnOperatesOn(),
                                            new ClickHandler() {
                                                public void onClick(ClickEvent w) {
@@ -109,8 +112,8 @@ public class ActionInsertColumn extends FormStylePopup {
 
         final TextBox valueList = new TextBox();
         valueList.setText( editingCol.getValueList() );
-        valueList.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
+        valueList.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
                 editingCol.setValueList( valueList.getText() );
             }
         } );
@@ -123,8 +126,8 @@ public class ActionInsertColumn extends FormStylePopup {
 
         final TextBox header = new TextBox();
         header.setText( col.getHeader() );
-        header.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
+        header.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
                 editingCol.setHeader( header.getText() );
             }
         } );
@@ -181,8 +184,8 @@ public class ActionInsertColumn extends FormStylePopup {
 
     private TextBox getFieldLabel() {
         final TextBox box = new TextBox();
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
+        box.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
                 editingCol.setFactField( box.getText() );
             }
         } );
@@ -207,7 +210,7 @@ public class ActionInsertColumn extends FormStylePopup {
             public void onClick(ClickEvent w) {
                 editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
                 editingCol.setType( sce.getFieldType( editingCol.getFactType(),
-                                                    editingCol.getFactField() ) );
+                                                      editingCol.getFactField() ) );
                 doFieldLabel();
                 pop.hide();
             }
@@ -305,7 +308,7 @@ public class ActionInsertColumn extends FormStylePopup {
     }
 
     private ListBox loadPatterns() {
-        Set vars = new HashSet();
+        Set<String> vars = new HashSet<String>();
         ListBox patterns = new ListBox();
 
         for ( Object o : dt.getActionCols() ) {

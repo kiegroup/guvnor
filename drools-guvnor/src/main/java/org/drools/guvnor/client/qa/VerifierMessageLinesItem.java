@@ -17,15 +17,18 @@
 package org.drools.guvnor.client.qa;
 
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.Cause;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.Widget;
+import com.gwtext.client.util.Format;
 
 /**
  * 
@@ -34,6 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 class VerifierMessageLinesItem extends TreeItem {
 
     private Constants     constants = GWT.create( Constants.class );
+    private Images        images    = GWT.create( Images.class );
 
     private EditItemEvent edit;
 
@@ -75,9 +79,10 @@ class VerifierMessageLinesItem extends TreeItem {
         TreeItem impactedRules = new TreeItem( new HTML( "<b>" + constants.ImpactedRules() + ":</b>&nbsp;" ) );
 
         for ( final String ruleAssetGuid : line.impactedRules.keySet() ) {
-            HTML rule = new HTML( "<img src='images/rule_asset.gif'/>" + line.impactedRules.get( ruleAssetGuid ) );
-            rule.addClickListener( new ClickListener() {
-                public void onClick(Widget arg0) {
+            HTML rule = new HTML( Format.format( "<img src='{0}'/>",
+                                                 new Image( images.ruleAsset() ).getUrl() ) + line.impactedRules.get( ruleAssetGuid ) );
+            rule.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent event) {
                     edit.open( ruleAssetGuid );
                 }
             } );

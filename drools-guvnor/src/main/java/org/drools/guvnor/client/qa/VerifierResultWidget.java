@@ -18,16 +18,22 @@ package org.drools.guvnor.client.qa;
 
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.TreeListener;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -37,6 +43,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class VerifierResultWidget extends Composite {
 
     private Constants     constants = GWT.create( Constants.class );
+    private static Images images    = GWT.create( Images.class );
+
     private EditItemEvent edit      = null;
 
     public VerifierResultWidget(AnalysisReport report,
@@ -54,17 +62,17 @@ public class VerifierResultWidget extends Composite {
         Tree tree = new Tree();
 
         TreeItem errors = doMessageLines( constants.Errors(),
-                                          "images/error.gif",
+                                          images.error(),
                                           report.errors );
         tree.addItem( errors );
 
         TreeItem warnings = doMessageLines( constants.Warnings(),
-                                            "images/warning.gif",
+                                            images.warning(),
                                             report.warnings );
         tree.addItem( warnings );
 
         TreeItem notes = doMessageLines( constants.Notes(),
-                                         "images/note.gif",
+                                         images.note(),
                                          report.notes );
         tree.addItem( notes );
 
@@ -72,14 +80,23 @@ public class VerifierResultWidget extends Composite {
             tree.addItem( new FactUsagesItem( report.factUsages ) );
         }
 
-        tree.addTreeListener( swapTitleWithUserObject() );
+        tree.addCloseHandler( new CloseHandler<TreeItem>() {
+            public void onClose(CloseEvent<TreeItem> event) {
+                swapTitleWithUserObject( event.getTarget() );
+            }
+        } );
+        tree.addOpenHandler( new OpenHandler<TreeItem>() {
+            public void onOpen(OpenEvent<TreeItem> event) {
+                swapTitleWithUserObject( event.getTarget() );
+            }
+        } );
         layout.addRow( tree );
 
         initWidget( layout );
     }
 
     private TreeItem doMessageLines(String messageType,
-                                    String icon,
+                                    ImageResource icon,
                                     AnalysisReportLine[] lines) {
 
         TreeItem linesItem;
@@ -89,7 +106,7 @@ public class VerifierResultWidget extends Composite {
                                         "" + lines.length );
 
         String topicHtml = Format.format( "<img src='{0}' /> &nbsp; {1}",
-                                          icon,
+                                          new Image( icon ).getUrl(),
                                           summary );
 
         linesItem = new VerifierMessageLinesItem( topicHtml,
@@ -99,20 +116,12 @@ public class VerifierResultWidget extends Composite {
         return linesItem;
     }
 
-    private TreeListener swapTitleWithUserObject() {
-        return new TreeListener() {
-            public void onTreeItemSelected(TreeItem x) {
-            }
-
-            //swap around with user object to toggle
-            public void onTreeItemStateChanged(TreeItem x) {
-                if ( x.getUserObject() != null ) {
-                    Widget currentW = x.getWidget();
-                    x.setWidget( (Widget) x.getUserObject() );
-                    x.setUserObject( currentW );
-                }
-            }
-        };
+    private void swapTitleWithUserObject(TreeItem x) {
+        if ( x.getUserObject() != null ) {
+            Widget currentW = x.getWidget();
+            x.setWidget( (Widget) x.getUserObject() );
+            x.setUserObject( currentW );
+        }
     }
 
 }

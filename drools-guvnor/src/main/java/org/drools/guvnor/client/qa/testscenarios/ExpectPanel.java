@@ -19,6 +19,7 @@ package org.drools.guvnor.client.qa.testscenarios;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
@@ -35,7 +36,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  */
 public class ExpectPanel extends HorizontalPanel {
 
-    private Constants              constants = ((Constants) GWT.create( Constants.class ));
+    private Constants              constants = GWT.create( Constants.class );
+    private static Images          images    = GWT.create( Images.class );
 
     protected final Scenario       scenario;
     protected final ScenarioWidget parent;
@@ -59,7 +61,7 @@ public class ExpectPanel extends HorizontalPanel {
 
     class DeleteButton extends ImageButton {
         public DeleteButton() {
-            super( "images/delete_item_small.gif",
+            super( images.deleteItemSmall(),
                    constants.DeleteItem() );
             addClickHandler( new ClickHandler() {
 

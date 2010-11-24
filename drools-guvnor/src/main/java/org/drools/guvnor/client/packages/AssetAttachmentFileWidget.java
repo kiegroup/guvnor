@@ -22,19 +22,21 @@ import org.drools.guvnor.client.common.HTMLFileManagerFields;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FormHandler;
 import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
-import com.google.gwt.user.client.ui.FormSubmitEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -49,12 +51,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 public abstract class AssetAttachmentFileWidget extends Composite {
 
+    private Constants         constants = GWT.create( Constants.class );
+    private Images            images    = GWT.create( Images.class );
+
     private FormPanel         form;
     private Button            ok;
     private RuleViewer        viewer;
     protected FormStyleLayout layout;
     protected RuleAsset       asset;
-    private Constants         constants        = GWT.create( Constants.class );
 
     public AssetAttachmentFileWidget(final RuleAsset asset,
                                      final RuleViewer viewer) {
@@ -84,7 +88,6 @@ public abstract class AssetAttachmentFileWidget extends Composite {
         ok = new Button( constants.Upload() );
 
         fields.add( up );
-        //fields.add(new Label("upload:"));
         fields.add( ok );
 
         form.add( fields );
@@ -96,8 +99,8 @@ public abstract class AssetAttachmentFileWidget extends Composite {
                                                            form );
 
         Button dl = new Button( constants.Download() );
-        dl.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        dl.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 Window.open( GWT.getModuleBaseURL() + "asset?" + HTMLFileManagerFields.FORM_FIELD_UUID + "=" + uuid,
                              "downloading",
                              "resizable=no,scrollbars=yes,status=no" );
@@ -106,8 +109,8 @@ public abstract class AssetAttachmentFileWidget extends Composite {
         layout.addAttribute( constants.DownloadCurrentVersion(),
                              dl );
 
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 showUploadingBusy();
                 submitUpload();
             }
@@ -121,7 +124,7 @@ public abstract class AssetAttachmentFileWidget extends Composite {
     /**
      * @return The path to the icon to use.
      */
-    public abstract String getIcon();
+    public abstract ImageResource getIcon();
 
     /**
      * return the overall style name to use.
@@ -129,20 +132,17 @@ public abstract class AssetAttachmentFileWidget extends Composite {
     public abstract String getOverallStyleName();
 
     void initAssetHandlers() {
-        form.addFormHandler( new FormHandler() {
+        form.addSubmitCompleteHandler( new SubmitCompleteHandler() {
 
-            public void onSubmit(FormSubmitEvent ev) {
-            }
-
-            public void onSubmitComplete(FormSubmitCompleteEvent ev) {
+            public void onSubmitComplete(SubmitCompleteEvent event) {
                 LoadingPopup.close();
 
                 if ( viewer.checkedInCommand != null ) {
                     viewer.checkedInCommand.execute();
                 }
 
-                if ( ev.getResults().indexOf( "OK" ) > -1 ) {
-                    viewer.refreshDataAndView( new SmallLabel( "<div style=\"background-color: yellow;\" ><img src='images/tick_green.gif'/><i>" + constants.FileWasUploadedSuccessfully() + "</i></div>" ) );
+                if ( event.getResults().indexOf( "OK" ) > -1 ) {
+                    viewer.refreshDataAndView( new SmallLabel( "<div style=\"background-color: yellow;\" ><img src='" + images.greenTick() + "'/><i>" + constants.FileWasUploadedSuccessfully() + "</i></div>" ) );
                 } else {
                     ErrorPopup.showMessage( constants.UnableToUploadTheFile() );
                 }

@@ -29,12 +29,17 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Format;
-import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -44,10 +49,6 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.SortDir;
 import com.gwtext.client.data.ArrayReader;
@@ -70,9 +71,11 @@ import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
 
 public class PermissionViewer extends Composite {
 
+    private static Images images    = (Images) GWT.create( Images.class );
+    private Constants     constants = ((Constants) GWT.create( Constants.class ));
+
     private VerticalPanel layout;
     private GridPanel     grid;
-    private Constants     constants = ((Constants) GWT.create( Constants.class ));
 
     public PermissionViewer() {
         layout = new VerticalPanel();
@@ -214,7 +217,7 @@ public class PermissionViewer extends Composite {
         create.addListener( new ButtonListenerAdapter() {
             public void onClick(Button button,
                                 EventObject e) {
-                final FormStylePopup form = new FormStylePopup( "images/snapshot.png", //NON-NLS
+                final FormStylePopup form = new FormStylePopup( images.snapshot(),
                                                                 constants.EnterNewUserName() );
                 final TextBox userName = new TextBox();
                 form.addAttribute( constants.NewUserName(),
@@ -227,8 +230,8 @@ public class PermissionViewer extends Composite {
                     public void onClick(ClickEvent w) {
                         if ( userName.getText() != null && userName.getText().length() != 0 ) {
                             RepositoryServiceFactory.getService().createUser( userName.getText(),
-                                                                              new GenericCallback() {
-                                                                                  public void onSuccess(Object a) {
+                                                                              new GenericCallback<java.lang.Void>() {
+                                                                                  public void onSuccess(Void a) {
                                                                                       refresh();
                                                                                       showEditor( userName.getText() );
                                                                                   }
@@ -256,8 +259,8 @@ public class PermissionViewer extends Composite {
                 if ( userName != null && Window.confirm( Format.format( constants.AreYouSureYouWantToDeleteUser0(),
                                                                         userName ) ) ) {
                     RepositoryServiceFactory.getService().deleteUser( userName,
-                                                                      new GenericCallback() {
-                                                                          public void onSuccess(Object a) {
+                                                                      new GenericCallback<java.lang.Void>() {
+                                                                          public void onSuccess(Void a) {
                                                                               refresh();
                                                                           }
                                                                       } );
@@ -273,9 +276,9 @@ public class PermissionViewer extends Composite {
         RepositoryServiceFactory.getService().retrieveUserPermissions( userName,
                                                                        new GenericCallback<Map<String, List<String>>>() {
                                                                            public void onSuccess(final Map<String, List<String>> perms) {
-                                                                               FormStylePopup editor = new FormStylePopup( "images/managment.gif",
+                                                                               FormStylePopup editor = new FormStylePopup( images.management(),
                                                                                                                            Format.format( constants.EditUser0(),
-                                                                                                                                          userName ) ); //NON-NLS
+                                                                                                                                          userName ) ); 
                                                                                editor.addRow( new HTML( "<i>" + constants.UserAuthenticationTip() + "</i>" ) );
                                                                                //now render the actual permissions...
                                                                                VerticalPanel vp = new VerticalPanel();
@@ -290,8 +293,8 @@ public class PermissionViewer extends Composite {
                                                                                        LoadingPopup.showMessage( constants.Updating() );
                                                                                        RepositoryServiceFactory.getService().updateUserPermissions( userName,
                                                                                                                                                     perms,
-                                                                                                                                                    new GenericCallback() {
-                                                                                                                                                        public void onSuccess(Object a) {
+                                                                                                                                                    new GenericCallback<java.lang.Void>() {
+                                                                                                                                                        public void onSuccess(Void a) {
                                                                                                                                                             LoadingPopup.close();
                                                                                                                                                             refresh();
                                                                                                                                                         }
@@ -342,9 +345,9 @@ public class PermissionViewer extends Composite {
 
                 for ( int i = 0; i < permList.size(); i++ ) {
                     final String p = permList.get( i );
-                    ImageButton del = new ImageButton( "images/delete_item_small.gif",
+                    ImageButton del = new ImageButton( images.deleteItemSmall(),
                                                        constants.RemovePermission(),
-                                                       new ClickHandler() { //NON-NLS
+                                                       new ClickHandler() { 
                                                            public void onClick(ClickEvent w) {
                                                                if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemovePermission0(),
                                                                                                    p ) ) ) {
@@ -372,9 +375,9 @@ public class PermissionViewer extends Composite {
         }
 
         //now to be able to add...
-        ImageButton newPermission = new ImageButton( "images/new_item.gif",
+        ImageButton newPermission = new ImageButton( images.newItem(),
                                                      constants.AddANewPermission(),
-                                                     new ClickHandler() { //NON-NLS
+                                                     new ClickHandler() {
                                                          public void onClick(ClickEvent w) {
                                                              final FormStylePopup pop = new FormStylePopup();
                                                              final ListBox permTypeBox = new ListBox();
@@ -397,8 +400,9 @@ public class PermissionViewer extends Composite {
                                                                  }
                                                              } );
 
-                                                             permTypeBox.addChangeListener( new ChangeListener() {
-                                                                 public void onChange(Widget w) {
+                                                             permTypeBox.addChangeHandler( new ChangeHandler() {
+
+                                                                 public void onChange(ChangeEvent event) {
                                                                      pop.clear();
                                                                      final String sel = permTypeBox.getItemText( permTypeBox.getSelectedIndex() );
                                                                      if ( sel.equals( "admin" ) ) { //NON-NLS

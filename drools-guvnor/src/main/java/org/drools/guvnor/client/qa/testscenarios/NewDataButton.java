@@ -19,15 +19,16 @@ package org.drools.guvnor.client.qa.testscenarios;
 import java.util.List;
 
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
-import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.RetractFact;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -42,13 +43,15 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class NewDataButton extends TestScenarioButton {
 
+    private static Images        images = GWT.create( Images.class );
+
     private final ExecutionTrace currentEx;
 
     public NewDataButton(final ExecutionTrace previousEx,
                          final Scenario scenario,
                          final ExecutionTrace currentEx,
                          ScenarioWidget scenarioWidget) {
-        super( "images/new_item.gif",
+        super( images.newItem(),
                constants.AddANewDataInputToThisScenario(),
                previousEx,
                scenario,
@@ -64,7 +67,7 @@ public class NewDataButton extends TestScenarioButton {
 
     class NewInputPopup extends TestScenarioButtonPopup {
         public NewInputPopup() {
-            super( "images/rule_asset.gif",
+            super( images.ruleAsset(),
                    constants.NewInput() );
 
             addAttribute( constants.InsertANewFact1(),
@@ -79,7 +82,6 @@ public class NewDataButton extends TestScenarioButton {
 
                 addAttribute( constants.RetractAnExistingFactScenario(),
                               new ExtractFactPanel( varsInScope ) );
-                
 
             }
 
@@ -99,7 +101,7 @@ public class NewDataButton extends TestScenarioButton {
                 return new ActivateRuleFlowGroup( valueWidget.getText() );
             }
         }
-        
+
         class ExtractFactPanel extends ListBoxBasePanel {
 
             public ExtractFactPanel(List<String> listItems) {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,15 +21,15 @@ import java.util.Date;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -55,10 +55,10 @@ public class DatePickerPopUp extends PopupPanel {
 
     /**
      * 
-     * @param okClickListener What to do when ok, is pressed
+     * @param okClickHandler What to do when ok, is pressed
      * @param showTime Can you select time too.
      */
-    public DatePickerPopUp(ClickListener okClickListener,
+    public DatePickerPopUp(ClickHandler okClickHandler,
                            DateTimeFormat formatter) {
 
         HorizontalPanel horizontalPanel = new HorizontalPanel();
@@ -87,8 +87,8 @@ public class DatePickerPopUp extends PopupPanel {
         months.addItem( constants.November() );
         months.addItem( constants.December() );
 
-        months.addChangeListener( new ChangeListener() {
-            public void onChange(Widget arg0) {
+        months.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
                 fillDates();
             }
         } );
@@ -117,7 +117,7 @@ public class DatePickerPopUp extends PopupPanel {
         }
 
         Button okButton = new Button( constants.OK() );
-        okButton.addClickListener( okClickListener );
+        okButton.addClickHandler( okClickHandler );
         horizontalPanel.add( okButton );
 
         add( horizontalPanel );

@@ -21,9 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.images.Images;
-import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.PackageEditor;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
 
 import com.google.gwt.core.client.GWT;
@@ -38,7 +37,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -48,7 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ExplorerViewCenterPanel extends Composite {
     private static Images              images               = (Images) GWT.create( Images.class );
 
-    private final ScrollTabLayoutPanel       tabLayoutPanel;
+    private final ScrollTabLayoutPanel tabLayoutPanel;
 
     private MultiKeyMap<Panel>         openedTabs           = new MultiKeyMap<Panel>();
     private static int                 id                   = 0;
@@ -61,7 +59,7 @@ public class ExplorerViewCenterPanel extends Composite {
 
     public ExplorerViewCenterPanel() {
         tabLayoutPanel = new ScrollTabLayoutPanel( 2,
-                                             Unit.EM);
+                                                   Unit.EM );
         initWidget( tabLayoutPanel );
     }
 

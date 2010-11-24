@@ -19,6 +19,7 @@ package org.drools.guvnor.client.qa.testscenarios;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
@@ -39,7 +40,8 @@ import com.google.gwt.user.client.ui.ListBox;
  */
 class GlobalButton extends ImageButton {
 
-    private static Constants                 constants = ((Constants) GWT.create( Constants.class ));
+    private static Constants                 constants = GWT.create( Constants.class );
+    private static Images                    images    = GWT.create( Images.class );
 
     private final Scenario                   scenario;
     private final ScenarioWidget             parent;
@@ -48,7 +50,7 @@ class GlobalButton extends ImageButton {
 
     public GlobalButton(final Scenario scenario,
                         final ScenarioWidget parent) {
-        super( "images/new_item.gif",
+        super( images.newItem(),
                constants.AddANewGlobalToThisScenario() );
 
         this.scenario = scenario;
@@ -72,7 +74,7 @@ class GlobalButton extends ImageButton {
         final ListBox factTypes;
 
         public NewGlobalPopup() {
-            super( "images/rule_asset.gif",
+            super( images.ruleAsset(),
                    constants.NewGlobal() );
 
             factTypes = new ListBox();

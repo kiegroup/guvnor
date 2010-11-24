@@ -18,20 +18,13 @@ package org.drools.guvnor.client.qa.testscenarios;
 
 import java.util.List;
 
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.util.Format;
-import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
-import org.drools.ide.common.client.modeldriven.testing.RetractFact;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.core.client.GWT;
 
 /**
  * 
@@ -43,49 +36,54 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class CallMethodOnNewDataButton extends TestScenarioButton {
 
-	private final ExecutionTrace currentEx;
+    private static Images        images = GWT.create( Images.class );
 
-	public CallMethodOnNewDataButton(final ExecutionTrace previousEx,
-			final Scenario scenario, final ExecutionTrace currentEx,
-			ScenarioWidget scenarioWidget) {
-		super("images/new_item.gif",
-				constants.AddANewDataInputToThisScenario(), previousEx,
-				scenario, scenarioWidget);
+    private final ExecutionTrace currentEx;
 
-		this.currentEx = currentEx;
-	}
+    public CallMethodOnNewDataButton(final ExecutionTrace previousEx,
+                                     final Scenario scenario,
+                                     final ExecutionTrace currentEx,
+                                     ScenarioWidget scenarioWidget) {
+        super( images.newItem(),
+               constants.AddANewDataInputToThisScenario(),
+               previousEx,
+               scenario,
+               scenarioWidget );
 
-	@Override
-	protected TestScenarioButtonPopup getPopUp() {
-		return new NewInputPopup();
-	}
+        this.currentEx = currentEx;
+    }
 
-	class NewInputPopup extends TestScenarioButtonPopup {
-		public NewInputPopup() {
-			super("images/rule_asset.gif", constants.NewInput());
-			List<String> varsInScope = scenario.getFactNamesInScope(currentEx,
-					false);
-			// now we do modifies & retracts
-			if (varsInScope.size() > 0) {
-				addAttribute(constants.CallAMethodOnAFactScenario(),
-						new CallMethodFactPanel(varsInScope));
-			}
-		}
+    @Override
+    protected TestScenarioButtonPopup getPopUp() {
+        return new NewInputPopup();
+    }
 
-		class CallMethodFactPanel extends ListBoxBasePanel {
+    class NewInputPopup extends TestScenarioButtonPopup {
+        public NewInputPopup() {
+            super( images.ruleAsset(),
+                   constants.NewInput() );
+            List<String> varsInScope = scenario.getFactNamesInScope( currentEx,
+                                                                     false );
+            // now we do modifies & retracts
+            if ( varsInScope.size() > 0 ) {
+                addAttribute( constants.CallAMethodOnAFactScenario(),
+                              new CallMethodFactPanel( varsInScope ) );
+            }
+        }
 
-			public CallMethodFactPanel(List<String> listItems) {
-				super(listItems);
-			}
+        class CallMethodFactPanel extends ListBoxBasePanel {
 
-			@Override
-			public Fixture getFixture() {
-				String factName = valueWidget.getItemText(valueWidget
-						.getSelectedIndex());
-				return new CallMethod(factName);
-			}
-		}
+            public CallMethodFactPanel(List<String> listItems) {
+                super( listItems );
+            }
 
-	}
+            @Override
+            public Fixture getFixture() {
+                String factName = valueWidget.getItemText( valueWidget.getSelectedIndex() );
+                return new CallMethod( factName );
+            }
+        }
+
+    }
 
 }

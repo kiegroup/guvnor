@@ -18,6 +18,7 @@ package org.drools.guvnor.client.qa.testscenarios;
 
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
@@ -36,7 +37,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  */
 public abstract class FactWidget extends HorizontalPanel {
 
-    protected static Constants     constants = ((Constants) GWT.create( Constants.class ));
+    protected static Constants     constants = GWT.create( Constants.class );
+    private static Images          images    = GWT.create( Images.class );
 
     protected final ScenarioWidget parent;
     protected final Scenario       scenario;
@@ -63,7 +65,7 @@ public abstract class FactWidget extends HorizontalPanel {
 
     protected void onDelete() {
         if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisBlockOfData() ) ) {
-            for (Fixture f : definitionList)
+            for ( Fixture f : definitionList )
                 scenario.removeFixture( f );
             parent.renderEditor();
         }
@@ -71,7 +73,7 @@ public abstract class FactWidget extends HorizontalPanel {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final FixtureList definitionList) {
-            super( "images/delete_item_small.gif",
+            super( images.deleteItemSmall(),
                    constants.RemoveThisBlockOfData() );
 
             addClickHandler( new ClickHandler() {

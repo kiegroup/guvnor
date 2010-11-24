@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
@@ -57,10 +58,12 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActionValueEditor extends DirtyableComposite {
 
+    private Constants        constants    = GWT.create( Constants.class );
+    private Images           images       = GWT.create( Images.class );
+
     private ActionFieldValue value;
     private DropDownData     enums;
     private SimplePanel      root;
-    private Constants        constants    = GWT.create( Constants.class );
     private RuleModeller     model        = null;
     private String           variableType = null;
     private boolean          readOnly;
@@ -287,7 +290,7 @@ public class ActionValueEditor extends DirtyableComposite {
         if ( this.readOnly ) {
             return new HTML();
         } else {
-            Image clickme = new Image( "images/edit.gif" );
+            Image clickme = new Image( images.edit() );
             clickme.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     showTypeChoice( (Widget) event.getSource() );
@@ -298,7 +301,7 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     protected void showTypeChoice(Widget w) {
-        final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif",
+        final FormStylePopup form = new FormStylePopup( images.newexWiz(),
                                                         constants.FieldValue() );
         Button lit = new Button( constants.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {

@@ -16,12 +16,26 @@
 
 package org.drools.guvnor.client.qa;
 
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.common.ValueChanged;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.util.Format;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
+import org.drools.ide.common.client.modeldriven.testing.VerifyField;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Grid;
@@ -33,18 +47,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.common.ValueChanged;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.util.Format;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
-import org.drools.ide.common.client.modeldriven.testing.VerifyField;
-
 /**
  * Created by IntelliJ IDEA.
  * User: nheron
@@ -53,13 +55,16 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyField;
  * To change this template use File | Settings | File Templates.
  */
 public class VerifyFactWidget extends Composite {
+
+    private Constants                  constants = GWT.create( Constants.class );
+    private static Images              images    = GWT.create( Images.class );
+
     private Grid                       outer;
     private boolean                    showResults;
     private String                     type;
     private SuggestionCompletionEngine sce;
     private Scenario                   scenario;
     private ExecutionTrace             executionTrace;
-    private Constants                  constants = ((Constants) GWT.create( Constants.class ));
 
     public VerifyFactWidget(final VerifyFact vf,
                             final Scenario sc,
@@ -92,14 +97,14 @@ public class VerifyFactWidget extends Composite {
         }
         this.showResults = showResults;
 
-        Image add = new ImageButton( "images/add_field_to_fact.gif",
+        Image add = new ImageButton( images.addFieldToFact(),
                                      constants.AddAFieldToThisExpectation(),
-                                     new ClickHandler() { //NON-NLS
+                                     new ClickHandler() {
                                          public void onClick(ClickEvent w) {
 
                                              String[] fields = (String[]) sce.getModelFields( type );
-                                             final FormStylePopup pop = new FormStylePopup( "images/rule_asset.gif",
-                                                                                            constants.ChooseAFieldToAdd() ); //NON-NLS
+                                             final FormStylePopup pop = new FormStylePopup( images.ruleAsset(),
+                                                                                            constants.ChooseAFieldToAdd() );
                                              final ListBox b = new ListBox();
                                              for ( int i = 0; i < fields.length; i++ ) {
                                                  b.addItem( fields[i] );
@@ -159,8 +164,8 @@ public class VerifyFactWidget extends Composite {
             } else {
                 opr.setSelectedIndex( 1 );
             }
-            opr.addChangeListener( new ChangeListener() {
-                public void onChange(Widget w) {
+            opr.addChangeHandler( new ChangeHandler() {
+                public void onChange(ChangeEvent event) {
                     fld.operator = opr.getValue( opr.getSelectedIndex() );
                 }
             } );
@@ -168,7 +173,6 @@ public class VerifyFactWidget extends Composite {
             data.setWidget( i,
                             2,
                             opr );
-            //fix nheron
             Widget cellEditor = new VerifyFieldConstraintEditor( type,
                                                                  new ValueChanged() {
                                                                      public void valueChanged(String newValue) {
@@ -185,7 +189,7 @@ public class VerifyFactWidget extends Composite {
                             3,
                             cellEditor );
 
-            Image del = new ImageButton( "images/delete_item_small.gif",
+            Image del = new ImageButton( images.deleteItemSmall(),
                                          constants.RemoveThisFieldExpectation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
@@ -207,7 +211,7 @@ public class VerifyFactWidget extends Composite {
                 if ( !fld.successResult.booleanValue() ) {
                     data.setWidget( i,
                                     0,
-                                    new Image( "images/warning.gif" ) ); //NON-NLS
+                                    new Image( images.warning() ) );
                     data.setWidget( i,
                                     5,
                                     new HTML( Format.format( constants.ActualResult(),
@@ -220,7 +224,7 @@ public class VerifyFactWidget extends Composite {
                 } else {
                     data.setWidget( i,
                                     0,
-                                    new Image( "images/test_passed.png" ) ); //NON-NLS
+                                    new Image( images.testPassed() ) );
                 }
             }
 

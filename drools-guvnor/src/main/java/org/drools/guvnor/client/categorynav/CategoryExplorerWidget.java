@@ -18,10 +18,12 @@ package org.drools.guvnor.client.categorynav;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -29,11 +31,11 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -49,13 +51,15 @@ public class CategoryExplorerWidget extends Composite
     SelectionHandler<TreeItem>,
     OpenHandler<TreeItem> {
 
+    private static Images          images        = (Images) GWT.create( Images.class );
+    private static Constants       constants     = ((Constants) GWT.create( Constants.class ));
+
     private Tree                   navTreeWidget = new Tree();
     private VerticalPanel          panel         = new VerticalPanel();
     private RepositoryServiceAsync service       = RepositoryServiceFactory.getService();
     private CategorySelectHandler  categorySelectHandler;
     private String                 selectedPath;
     private Panel                  emptyCategories;
-    private static Constants       constants     = ((Constants) GWT.create( Constants.class ));
 
     public void setTreeSize(String width) {
         navTreeWidget.setWidth( width );
@@ -109,7 +113,8 @@ public class CategoryExplorerWidget extends Composite
     /** This will refresh the tree and restore it back to the original state */
     private void loadInitialTree() {
         navTreeWidget.addItem( constants.PleaseWait() );
-        DeferredCommand.addCommand( new Command() {
+        Scheduler scheduler = Scheduler.get();
+        scheduler.scheduleDeferred( new Command() {
             public void execute() {
                 service.loadChildCategories( "/",
                                              new GenericCallback<String[]>() {
@@ -119,7 +124,7 @@ public class CategoryExplorerWidget extends Composite
                                                      navTreeWidget.removeItems();
 
                                                      TreeItem root = new TreeItem();
-                                                     root.setHTML( "<img src=\"images/desc.gif\"/>" );
+                                                     root.setHTML( "<img src='" + new Image( images.desc() ).getUrl() + "'/>" );
                                                      navTreeWidget.addItem( root );
 
                                                      if ( categories.length == 0 ) {
@@ -129,7 +134,7 @@ public class CategoryExplorerWidget extends Composite
                                                      }
                                                      for ( int i = 0; i < categories.length; i++ ) {
                                                          TreeItem it = new TreeItem();
-                                                         it.setHTML( "<img src=\"images/category_small.gif\"/>" + h( categories[i] ) );
+                                                         it.setHTML( "<img src='" + new Image( images.categorySmall() ).getUrl() + "'/>" + h( categories[i] ) );
                                                          it.setUserObject( categories[i] );
                                                          it.addItem( new PendingItem() );
                                                          root.addItem( it );
@@ -185,7 +190,7 @@ public class CategoryExplorerWidget extends Composite
                                              }
                                              for ( int i = 0; i < list.length; i++ ) {
                                                  TreeItem it = new TreeItem();
-                                                 it.setHTML( "<img src=\"images/category_small.gif\"/>" + list[i] );
+                                                 it.setHTML( "<img src='" + images.categorySmall() + "'/>" + list[i] );
                                                  it.setUserObject( list[i] );
                                                  it.addItem( new PendingItem() );
 

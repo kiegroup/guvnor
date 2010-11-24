@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -46,11 +47,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class PopupCreator {
 
+    private Constants                  constants = ((Constants) GWT.create( Constants.class ));
+    private static Images              images    = (Images) GWT.create( Images.class );
+
     private FactPattern                pattern;
     private SuggestionCompletionEngine completions;
     private RuleModeller               modeller;
     private boolean                    bindable;
-    private Constants                  constants = ((Constants) GWT.create( Constants.class ));
 
     /**
      * Returns the pattern.
@@ -162,7 +165,7 @@ public class PopupCreator {
      */
     public void showPatternPopupForComposite(Widget w,
                                              final CompositeFieldConstraint composite) {
-        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif", //NON-NLS
+        final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
                                                          constants.AddFieldsToThisConstraint() );
 
         final ListBox box = new ListBox();
@@ -224,7 +227,7 @@ public class PopupCreator {
 
         String title = (con == null) ? Format.format( constants.ModifyConstraintsFor0(),
                                                       factType ) : constants.AddSubFieldConstraint();
-        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif", //NON-NLS
+        final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
                                                          title );
 
         final ListBox box = new ListBox();

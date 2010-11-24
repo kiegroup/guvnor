@@ -19,22 +19,22 @@ package org.drools.guvnor.client.qa;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReport;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.util.Format;
-import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 
 /**
  * Viewer for, well, analysis !
@@ -43,9 +43,11 @@ import com.google.gwt.core.client.GWT;
  */
 public class AnalysisView extends Composite {
 
+    private Constants     constants = GWT.create( Constants.class );
+    private static Images images    = GWT.create( Images.class );
+
     private VerticalPanel layout;
     private String        packageUUID;
-    private Constants     constants = GWT.create( Constants.class );
     private EditItemEvent edit;
 
     public AnalysisView(String packageUUID,
@@ -62,14 +64,14 @@ public class AnalysisView extends Composite {
                                   new String[]{packageName} );
         vert.add( new HTML( m ) );
         Button run = new Button( constants.RunAnalysis() );
-        run.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        run.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 runAnalysis();
             }
         } );
         vert.add( run );
 
-        pf.addHeader( "images/analyse_large.png",
+        pf.addHeader( images.analyzeLarge(),
                       vert );
         layout.add( pf );
 
@@ -85,9 +87,8 @@ public class AnalysisView extends Composite {
         VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
 
         verificationService.analysePackage( packageUUID,
-                                            new GenericCallback() {
-                                                public void onSuccess(Object data) {
-                                                    AnalysisReport rep = (AnalysisReport) data;
+                                            new GenericCallback<AnalysisReport>() {
+                                                public void onSuccess(AnalysisReport rep) {
                                                     VerifierResultWidget w = new VerifierResultWidget( rep,
                                                                                                        true,
                                                                                                        edit );

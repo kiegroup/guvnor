@@ -20,12 +20,14 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.rulefloweditor.RuleFlowViewer;
 import org.drools.guvnor.client.explorer.Preferences;
 import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -36,131 +38,134 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
-
 /**
  * 
  * 
  * @author Toni Rikkola
  * 
  */
-public class RuleFlowWrapper extends Composite implements SaveEventListener {
+public class RuleFlowWrapper extends Composite
+    implements
+    SaveEventListener {
 
-	private RuleViewer viewer;
-	private RuleAsset asset;
+    private Constants       constants = GWT.create( Constants.class );
+    private static Images   images    = GWT.create( Images.class );
 
-	private RuleFlowViewer ruleFlowViewer;
-	private DisclosurePanel parameterPanel;
-	private Constants constants = ((Constants) GWT.create(Constants.class));
+    private RuleViewer      viewer;
+    private RuleAsset       asset;
 
-	public RuleFlowWrapper(final RuleAsset asset, final RuleViewer viewer) {
-		this.viewer = viewer;
-		this.asset = asset;
-		initWidgets(asset.uuid, asset.metaData.name);
-	}
+    private RuleFlowViewer  ruleFlowViewer;
+    private DisclosurePanel parameterPanel;
 
-	protected void initWidgets(final String uuid, String formName) {
+    public RuleFlowWrapper(final RuleAsset asset,
+                           final RuleViewer viewer) {
+        this.viewer = viewer;
+        this.asset = asset;
+        initWidgets( asset.uuid,
+                     asset.metaData.name );
+    }
 
-		RuleFlowUploadWidget uploadWidget = new RuleFlowUploadWidget(asset,
-				viewer);
+    protected void initWidgets(final String uuid,
+                               String formName) {
 
-		VerticalPanel panel = new VerticalPanel();
-		panel.add(uploadWidget);
+        RuleFlowUploadWidget uploadWidget = new RuleFlowUploadWidget( asset,
+                                                                      viewer );
 
-		if (Preferences.getBooleanPref("visual-ruleflow")) {
-			initRuleflowViewer();
+        VerticalPanel panel = new VerticalPanel();
+        panel.add( uploadWidget );
 
-			if (ruleFlowViewer != null && parameterPanel != null) {
-				Button viewSource = new Button();
-				viewSource.setText(constants.OpenEditorInNewWindow());
-				viewSource.addClickHandler(new ClickHandler() {
-					public void onClick(ClickEvent arg0) {
-						doViewDiagram();
+        if ( Preferences.getBooleanPref( "visual-ruleflow" ) ) {
+            initRuleflowViewer();
 
-						ruleFlowViewer.update();
-					}
-				});
+            if ( ruleFlowViewer != null && parameterPanel != null ) {
+                Button viewSource = new Button();
+                viewSource.setText( constants.OpenEditorInNewWindow() );
+                viewSource.addClickHandler( new ClickHandler() {
+                    public void onClick(ClickEvent arg0) {
+                        doViewDiagram();
 
-				panel.add(viewSource);
-			}
-		}
+                        ruleFlowViewer.update();
+                    }
+                } );
 
-		initWidget(panel);
+                panel.add( viewSource );
+            }
+        }
 
-		this.setStyleName(getOverallStyleName());
-	}
+        initWidget( panel );
 
-	private void doViewDiagram() {
-		LoadingPopup.showMessage(constants.CalculatingSource());
+        this.setStyleName( getOverallStyleName() );
+    }
 
-		try {
-			FormStylePopup pop = new FormStylePopup("images/view_source.gif", // NON-NLS
-					constants.ViewingDiagram(), new Integer(800));
+    private void doViewDiagram() {
+        LoadingPopup.showMessage( constants.CalculatingSource() );
 
-			pop.addRow(new ScrollPanel(ruleFlowViewer));
-			pop.addRow(parameterPanel);
+        try {
+            FormStylePopup pop = new FormStylePopup( images.viewSource(),
+                                                     constants.ViewingDiagram(),
+                                                     new Integer( 800 ) );
 
-			pop.show();
-		} catch (Exception e) {
-			ErrorPopup
-					.showMessage(constants
-							.CouldNotCreateTheRuleflowDiagramItIsPossibleThatTheRuleflowFileIsInvalid());
-		}
+            pop.addRow( new ScrollPanel( ruleFlowViewer ) );
+            pop.addRow( parameterPanel );
 
-		LoadingPopup.close();
-	}
+            pop.show();
+        } catch ( Exception e ) {
+            ErrorPopup.showMessage( constants.CouldNotCreateTheRuleflowDiagramItIsPossibleThatTheRuleflowFileIsInvalid() );
+        }
 
-	private void initRuleflowViewer() {
-		RuleFlowContentModel rfcm = (RuleFlowContentModel) asset.content;
+        LoadingPopup.close();
+    }
 
-		if (rfcm != null && rfcm.getXml() != null && rfcm.getNodes() != null) {
-			try {
-				parameterPanel = new DisclosurePanel(
-						constants.Parameters());
-				parameterPanel.setAnimationEnabled(true);
-				parameterPanel.ensureDebugId("cwDisclosurePanel");
-				parameterPanel.setWidth("100%");
-				parameterPanel.setOpen(false);
+    private void initRuleflowViewer() {
+        RuleFlowContentModel rfcm = (RuleFlowContentModel) asset.content;
 
-				FormStyleLayout parametersForm = new FormStyleLayout();
-				parametersForm.setHeight("120px"); 
-				parameterPanel.setContent(parametersForm);
+        if ( rfcm != null && rfcm.getXml() != null && rfcm.getNodes() != null ) {
+            try {
+                parameterPanel = new DisclosurePanel( constants.Parameters() );
+                parameterPanel.setAnimationEnabled( true );
+                parameterPanel.ensureDebugId( "cwDisclosurePanel" );
+                parameterPanel.setWidth( "100%" );
+                parameterPanel.setOpen( false );
 
-				ruleFlowViewer = new RuleFlowViewer(rfcm, parametersForm);
-			} catch (Exception e) {
-				Window.alert(e.toString());
-			}
-		} else if (rfcm != null && rfcm.getXml() == null) {
+                FormStyleLayout parametersForm = new FormStyleLayout();
+                parametersForm.setHeight( "120px" );
+                parameterPanel.setContent( parametersForm );
 
-			// If the XML is not set there was some problem when the diagram was
-			// created.
-			Window
-					.alert(constants
-							.CouldNotCreateTheRuleflowDiagramItIsPossibleThatTheRuleflowFileIsInvalid());
+                ruleFlowViewer = new RuleFlowViewer( rfcm,
+                                                     parametersForm );
+            } catch ( Exception e ) {
+                Window.alert( e.toString() );
+            }
+        } else if ( rfcm != null && rfcm.getXml() == null ) {
 
-		}
-	}
+            // If the XML is not set there was some problem when the diagram was
+            // created.
+            Window.alert( constants.CouldNotCreateTheRuleflowDiagramItIsPossibleThatTheRuleflowFileIsInvalid() );
 
-	public String getIcon() {
-		return "images/ruleflow_large.png"; // NON-NLS
-	}
+        }
+    }
 
-	public String getOverallStyleName() {
-		return "decision-Table-upload"; // NON-NLS
-	}
+    public ImageResource getIcon() {
+        return images.ruleflowLarge();
+    }
 
-	public void onAfterSave() {
+    public String getOverallStyleName() {
+        return "decision-Table-upload"; // NON-NLS
+    }
 
-	}
+    public void onAfterSave() {
 
-	public void onSave() {
+    }
 
-		RuleFlowContentModel rfcm = (RuleFlowContentModel) asset.content;
+    public void onSave() {
 
-		rfcm.setNodes(ruleFlowViewer.getTransferNodes());
+        RuleFlowContentModel rfcm = (RuleFlowContentModel) asset.content;
 
-	}
+        rfcm.setNodes( ruleFlowViewer.getTransferNodes() );
 
-	public RuleFlowViewer getRuleFlowViewer() {
-		return ruleFlowViewer;
-	}
+    }
+
+    public RuleFlowViewer getRuleFlowViewer() {
+        return ruleFlowViewer;
+    }
 }

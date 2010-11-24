@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.messages.Constants;
@@ -28,6 +29,7 @@ import org.drools.guvnor.client.messages.Constants;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Image;
 
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.core.SortDir;
@@ -54,152 +56,160 @@ import com.gwtext.client.widgets.grid.Renderer;
 
 public class LogViewer extends Composite {
 
-	private VerticalPanel layout;
-    private Constants constants = ((Constants) GWT.create(Constants.class));;
+    private static Images images    = (Images) GWT.create( Images.class );
+    private Constants     constants = ((Constants) GWT.create( Constants.class )); ;
+
+    private VerticalPanel layout;
 
     public LogViewer() {
-		layout = new VerticalPanel();
-		layout.setHeight("100%");
-		layout.setWidth("100%");
+        layout = new VerticalPanel();
+        layout.setHeight( "100%" );
+        layout.setWidth( "100%" );
 
-		refresh();
-		initWidget(layout);
-	}
+        refresh();
+        initWidget( layout );
+    }
 
-	private void refresh() {
-        LoadingPopup.showMessage(constants.LoadingLogMessages());
-		RepositoryServiceFactory.getService().showLog(new GenericCallback<LogEntry[]>() {
-			public void onSuccess(LogEntry[] logs) {
-				showLogs(logs);
-				LoadingPopup.close();
-			}
-		});
-	}
+    private void refresh() {
+        LoadingPopup.showMessage( constants.LoadingLogMessages() );
+        RepositoryServiceFactory.getService().showLog( new GenericCallback<LogEntry[]>() {
+            public void onSuccess(LogEntry[] logs) {
+                showLogs( logs );
+                LoadingPopup.close();
+            }
+        } );
+    }
 
-	private void cleanLog() {
-	    LoadingPopup.showMessage(constants.CleaningLogMessages());
-		RepositoryServiceFactory.getService().cleanLog(new GenericCallback() {
-			public void onSuccess(Object data) {
-				refresh();
-				LoadingPopup.close();
-			}
-		});
-	}
-	
-	private void showLogs(LogEntry[] logs) {
-		List<LogEntry> entries = new ArrayList<LogEntry>();
-		
-		// Drop the null rows
-		for (int i = 0; i < logs.length; i++) {
-		    LogEntry e = logs[i];
-		    if (e != null) {
-		        entries.add( e );
-		    }
-		}
+    private void cleanLog() {
+        LoadingPopup.showMessage( constants.CleaningLogMessages() );
+        RepositoryServiceFactory.getService().cleanLog( new GenericCallback<java.lang.Void>() {
+            public void onSuccess(Void v) {
+                refresh();
+                LoadingPopup.close();
+            }
+        } );
+    }
+
+    private void showLogs(LogEntry[] logs) {
+        List<LogEntry> entries = new ArrayList<LogEntry>();
+
+        // Drop the null rows
+        for ( int i = 0; i < logs.length; i++ ) {
+            LogEntry e = logs[i];
+            if ( e != null ) {
+                entries.add( e );
+            }
+        }
 
         Object[][] data = new Object[entries.size()][3];
-		for (int i = 0; i < entries.size(); i++) {
-			LogEntry e = entries.get(i);
-				data[i][0] = new Integer(e.severity);
-				data[i][1] = e.timestamp;
-				data[i][2] = e.message;
-		}
+        for ( int i = 0; i < entries.size(); i++ ) {
+            LogEntry e = entries.get( i );
+            data[i][0] = new Integer( e.severity );
+            data[i][1] = e.timestamp;
+            data[i][2] = e.message;
+        }
 
-		MemoryProxy proxy = new MemoryProxy(data);
-		RecordDef recordDef = new RecordDef(new FieldDef[] {
-				new IntegerFieldDef("severity"), new DateFieldDef("timestamp"),
-				new StringFieldDef("message"), });
+        MemoryProxy proxy = new MemoryProxy( data );
+        RecordDef recordDef = new RecordDef( new FieldDef[]{new IntegerFieldDef( "severity" ), new DateFieldDef( "timestamp" ), new StringFieldDef( "message" ),} );
 
-		ArrayReader reader = new ArrayReader(recordDef);
-		Store store = new Store(proxy, reader);
-		store.setDefaultSort("timestamp", SortDir.DESC);
-		store.load();
+        ArrayReader reader = new ArrayReader( recordDef );
+        Store store = new Store( proxy,
+                                 reader );
+        store.setDefaultSort( "timestamp",
+                              SortDir.DESC );
+        store.load();
 
-		ColumnModel cm = new ColumnModel(new ColumnConfig[] {
-				new ColumnConfig() {
-					{
-					    setDataIndex("severity");  //NON-NLS
-						setHeader(constants.Severity());
-						setSortable(true);
-						setRenderer(new Renderer() {
-							public String render(Object value,
-									CellMetadata cellMetadata, Record record,
-									int rowIndex, int colNum, Store store) {
-								Integer i = (Integer) value;
-								if (i.intValue() == 0) {
-									return "<img src='images/error.gif'/>";
-								} else if (i.intValue() == 1) {
-									return "<img src='images/information.gif'/>";
-								} else {
-									return "";
-								}
-							}
-						});
-						setWidth(50);
-					}
-				}, new ColumnConfig() {
-					{
-						setHeader(constants.Timestamp());
-						setSortable(true);
-						setDataIndex("timestamp");
-						setWidth(180);
-					}
-				}, new ColumnConfig() {
-					{
-						setHeader(constants.Message());
-						setSortable(true);
-						setDataIndex("message"); //NON-NLS
-						setWidth(580);
+        ColumnModel cm = new ColumnModel( new ColumnConfig[]{new ColumnConfig() {
+            {
+                setDataIndex( "severity" ); //NON-NLS
+                setHeader( constants.Severity() );
+                setSortable( true );
+                setRenderer( new Renderer() {
+                    public String render(Object value,
+                                         CellMetadata cellMetadata,
+                                         Record record,
+                                         int rowIndex,
+                                         int colNum,
+                                         Store store) {
+                        Integer i = (Integer) value;
+                        if ( i.intValue() == 0 ) {
+                            return "<img src='" + new Image( images.error() ).getUrl() + "'/>";
+                        } else if ( i.intValue() == 1 ) {
+                            return "<img src='" + new Image( images.information() ).getUrl() + "'/>";
+                        } else {
+                            return "";
+                        }
+                    }
+                } );
+                setWidth( 50 );
+            }
+        }, new ColumnConfig() {
+            {
+                setHeader( constants.Timestamp() );
+                setSortable( true );
+                setDataIndex( "timestamp" );
+                setWidth( 180 );
+            }
+        }, new ColumnConfig() {
+            {
+                setHeader( constants.Message() );
+                setSortable( true );
+                setDataIndex( "message" ); //NON-NLS
+                setWidth( 580 );
 
-						setRenderer(new Renderer() {
-							public String render(Object value,
-									CellMetadata cellMetadata, Record record,
-									int rowIndex, int colNum, Store store) {
+                setRenderer( new Renderer() {
+                    public String render(Object value,
+                                         CellMetadata cellMetadata,
+                                         Record record,
+                                         int rowIndex,
+                                         int colNum,
+                                         Store store) {
 
-								if (value != null) {
-									cellMetadata
-											.setHtmlAttribute("style=\"overflow:auto;\""); //NON-NLS
-									return value.toString();
-								} else {
-									return "";
-								}
-							}
-						});
-					}
-				} });
+                        if ( value != null ) {
+                            cellMetadata.setHtmlAttribute( "style=\"overflow:auto;\"" ); //NON-NLS
+                            return value.toString();
+                        } else {
+                            return "";
+                        }
+                    }
+                } );
+            }
+        }} );
 
-		final GridPanel g = new GridPanel(store,cm);
-		g.setWidth(800);
-		g.setHeight(600);
+        final GridPanel g = new GridPanel( store,
+                                           cm );
+        g.setWidth( 800 );
+        g.setHeight( 600 );
 
-		Toolbar tb = new Toolbar();
-		g.setTopToolbar(tb);
+        Toolbar tb = new Toolbar();
+        g.setTopToolbar( tb );
 
-		tb.addItem(new ToolbarTextItem(
-                constants.ShowRecentLogTip()));
-		tb.addItem(new ToolbarSeparator());
+        tb.addItem( new ToolbarTextItem( constants.ShowRecentLogTip() ) );
+        tb.addItem( new ToolbarSeparator() );
 
-		layout.add(g);
+        layout.add( g );
 
-		ToolbarButton reload = new ToolbarButton(constants.Reload());
-		reload.addListener(new ButtonListenerAdapter() {
-			public void onClick(Button button, EventObject e) {
-				layout.remove(g);
-				refresh();
-			}
-		});
+        ToolbarButton reload = new ToolbarButton( constants.Reload() );
+        reload.addListener( new ButtonListenerAdapter() {
+            public void onClick(Button button,
+                                EventObject e) {
+                layout.remove( g );
+                refresh();
+            }
+        } );
 
-		tb.addButton(reload);
-		
-		ToolbarButton clean = new ToolbarButton(constants.Clean());
-		clean.addListener(new ButtonListenerAdapter() {
-			public void onClick(Button button, EventObject e) {
-				layout.remove(g);
-				cleanLog();
-			}
-		});
+        tb.addButton( reload );
 
-		tb.addButton(clean);
-	}
+        ToolbarButton clean = new ToolbarButton( constants.Clean() );
+        clean.addListener( new ButtonListenerAdapter() {
+            public void onClick(Button button,
+                                EventObject e) {
+                layout.remove( g );
+                cleanLog();
+            }
+        } );
+
+        tb.addButton( clean );
+    }
 
 }

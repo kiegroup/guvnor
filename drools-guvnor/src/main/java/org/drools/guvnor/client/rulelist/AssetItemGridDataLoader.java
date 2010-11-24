@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,10 +26,12 @@ import org.drools.guvnor.client.rpc.TableDataResult;
  */
 public interface AssetItemGridDataLoader {
 
-	/**
-	 * This will be called by the grid when loading data, needs to know how to skip, and how many rows to load up.
-	 *
-	 * cb will return TableDataResult type.
-	 */
-	void loadData(int startRow, int numberOfRows, GenericCallback<TableDataResult> cb);
+    /**
+     * This will be called by the grid when loading data, needs to know how to skip, and how many rows to load up.
+     *
+     * cb will return TableDataResult type.
+     */
+    void loadData(int startRow,
+                  int numberOfRows,
+                  GenericCallback<TableDataResult> cb);
 }

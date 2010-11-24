@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ package org.drools.guvnor.client.qa.testscenarios;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.qa.VerifyFactWidget;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
@@ -40,7 +41,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class VerifyFactsPanel extends VerticalPanel {
 
-    private Constants            constants = ((Constants) GWT.create( Constants.class ));
+    private Constants            constants = GWT.create( Constants.class );
+    private static Images        images    = GWT.create( Images.class );
 
     private final Scenario       scenario;
 
@@ -77,10 +79,10 @@ public class VerifyFactsPanel extends VerticalPanel {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final VerifyFact verifyFact) {
-            super( "images/delete_item_small.gif",
+            super( images.deleteItemSmall(),
                    constants.DeleteTheExpectationForThisFact() );
 
-            addClickHandler( new ClickHandler() { //NON-NLS
+            addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
                     if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisExpectation() ) ) {

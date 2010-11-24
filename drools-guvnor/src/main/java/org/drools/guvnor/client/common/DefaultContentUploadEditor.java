@@ -1,5 +1,5 @@
-/**
- * Copyright 2010 JBoss Inc
+/*
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,28 +17,32 @@
 package org.drools.guvnor.client.common;
 
 import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.core.client.GWT;
 
 public class DefaultContentUploadEditor extends AssetAttachmentFileWidget {
 
-    public DefaultContentUploadEditor(
-            RuleAsset asset, RuleViewer viewer) {
-		super( asset,
-		viewer );
-		super.addDescription(new HTML(((Constants) GWT.create(Constants.class)).UploadNewVersionDescription()));
+    private static Images images = (Images) GWT.create( Images.class );
+
+    public DefaultContentUploadEditor(RuleAsset asset,
+                                      RuleViewer viewer) {
+        super( asset,
+               viewer );
+        super.addDescription( new HTML( ((Constants) GWT.create( Constants.class )).UploadNewVersionDescription() ) );
     }
 
-    public String getIcon() {
-    	return "images/decision_table.png";       //NON-NLS
+    public ImageResource getIcon() {
+        return images.decisionTable();
     }
 
     public String getOverallStyleName() {
-    	return "decision-Table-upload";           //NON-NLS
+        return "decision-Table-upload"; //NON-NLS
     }
 
 }

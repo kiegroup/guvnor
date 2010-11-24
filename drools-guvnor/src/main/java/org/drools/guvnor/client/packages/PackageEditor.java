@@ -33,6 +33,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.StatusChangePopup;
 import org.drools.guvnor.client.common.ValidationMessageWidget;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
@@ -64,13 +65,16 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Michael Neale
  */
 public class PackageEditor extends PrettyFormLayout {
+
+    private Constants           constants = GWT.create( Constants.class );
+    private static Images       images    = GWT.create( Images.class );
+
     private PackageConfigData   conf;
     private HTML                status;
     protected ValidatedResponse previousResponse;
     private Command             close;
     private Command             refreshPackageList;
     private EditItemEvent       editEvent;
-    private Constants           constants = GWT.create( Constants.class );
 
     public PackageEditor(PackageConfigData data,
                          Command close,
@@ -105,8 +109,8 @@ public class PackageEditor extends PrettyFormLayout {
                                                              2 );
         }
 
-        addHeader( "images/package_large.png",
-                   headerWidgets ); //NON-NLS
+        addHeader( images.packageLarge(),
+                   headerWidgets );
 
         startSection( constants.ConfigurationSection() );
 
@@ -192,7 +196,7 @@ public class PackageEditor extends PrettyFormLayout {
 
         status = new HTML();
         HorizontalPanel statusBar = new HorizontalPanel();
-        Image editState = new ImageButton( "images/edit.gif" ); //NON-NLS
+        Image editState = new ImageButton( images.edit() );
         editState.setTitle( constants.ChangeStatusDot() );
         editState.addClickHandler( new ClickHandler() {
 
@@ -246,7 +250,7 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private Image getRemoveCatRulesIcon(final String rule) {
-        Image remove = new Image( "images/delete_item_small.gif" ); //NON-NLS
+        Image remove = new Image( images.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -260,7 +264,7 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private Widget getAddCatRules() {
-        Image add = new ImageButton( "images/new_item.gif" );
+        Image add = new ImageButton( images.edit() );
         add.setTitle( constants.AddCatRuleToThePackage() );
 
         add.addClickHandler( new ClickHandler() {
@@ -290,8 +294,8 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     protected void showCatRuleSelector(Widget w) {
-        final FormStylePopup pop = new FormStylePopup( "images/config.png",
-                                                       constants.AddACategoryRuleToThePackage() ); //NON-NLS
+        final FormStylePopup pop = new FormStylePopup( images.config(),
+                                                       constants.AddACategoryRuleToThePackage() );
         final Button addbutton = new Button( constants.OK() );
         final TextBox ruleName = new TextBox();
 
@@ -333,7 +337,7 @@ public class PackageEditor extends PrettyFormLayout {
 
     private Widget warnings() {
         if ( this.previousResponse != null && this.previousResponse.hasErrors ) {
-            Image img = new Image( "images/warning.gif" ); //NON-NLS
+            Image img = new Image( images.warning() );
             HorizontalPanel h = new HorizontalPanel();
             h.add( img );
             HTML msg = new HTML( "<b>" + constants.ThereWereErrorsValidatingThisPackageConfiguration() + "</b>" ); //NON-NLS
@@ -449,7 +453,7 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private void showRenameDialog() {
-        final FormStylePopup pop = new FormStylePopup( "images/new_wiz.gif",
+        final FormStylePopup pop = new FormStylePopup( images.newWiz(),
                                                        constants.RenameThePackage() );
         pop.addRow( new HTML( constants.RenamePackageTip() ) );
         final TextBox name = new TextBox();
@@ -483,8 +487,8 @@ public class PackageEditor extends PrettyFormLayout {
      * Will show a copy dialog for copying the whole package.
      */
     private void showCopyDialog() {
-        final FormStylePopup pop = new FormStylePopup( "images/new_wiz.gif",
-                                                       constants.CopyThePackage() ); //NON-NLS
+        final FormStylePopup pop = new FormStylePopup( images.newWiz(),
+                                                       constants.CopyThePackage() );
         pop.addRow( new HTML( constants.CopyThePackageTip() ) );
         final TextBox name = new TextBox();
         pop.addAttribute( constants.NewPackageNameIs(),
@@ -554,19 +558,6 @@ public class PackageEditor extends PrettyFormLayout {
                                                                          refreshWidgets();
                                                                      }
                                                                  } );
-    }
-
-    private Widget externalURI() {
-        final TextBox box = new TextBox();
-        box.setWidth( "100%" );
-        box.setText( this.conf.externalURI );
-        box.addChangeHandler( new ChangeHandler() {
-
-            public void onChange(ChangeEvent event) {
-                conf.externalURI = box.getText();
-            }
-        } );
-        return box;
     }
 
     private Widget header() {

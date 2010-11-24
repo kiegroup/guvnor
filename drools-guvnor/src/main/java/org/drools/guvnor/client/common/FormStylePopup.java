@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.common;
 
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -28,7 +29,7 @@ public class FormStylePopup extends Popup {
 
     private FormStyleLayout form;
 
-    public FormStylePopup(String image,
+    public FormStylePopup(ImageResource image,
                           final String title) {
 
         form = new FormStyleLayout( image,
@@ -45,7 +46,7 @@ public class FormStylePopup extends Popup {
         form = new FormStyleLayout();
     }
 
-    public FormStylePopup(String image,
+    public FormStylePopup(ImageResource image,
                           final String title,
                           Integer width) {
         this( image,

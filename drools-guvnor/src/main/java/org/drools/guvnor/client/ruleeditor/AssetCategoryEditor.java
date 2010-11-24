@@ -15,6 +15,7 @@
  */
 
 package org.drools.guvnor.client.ruleeditor;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -31,8 +32,6 @@ package org.drools.guvnor.client.ruleeditor;
  * limitations under the License.
  */
 
-
-
 import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.DirtyableComposite;
@@ -40,16 +39,17 @@ import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.MetaData;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 
 /**
  * This is a viewer/editor for categories.
@@ -63,27 +63,31 @@ import com.google.gwt.core.client.GWT;
  */
 public class AssetCategoryEditor extends DirtyableComposite {
 
-    private MetaData data;
-    private DirtyableFlexTable layout = new DirtyableFlexTable();
-    private FlexTable list;
-	private boolean readOnly;
-    private Constants constants = GWT.create(Constants.class);
+    private Constants          constants = GWT.create( Constants.class );
+    private static Images      images    = GWT.create( Images.class );
 
+    private MetaData           data;
+    private DirtyableFlexTable layout    = new DirtyableFlexTable();
+    private FlexTable          list;
+    private boolean            readOnly;
 
     /**
      * @param d The meta data.
      * @param readOnly If it is to be non editable.
      */
-    public AssetCategoryEditor(MetaData d, boolean readOnly) {
+    public AssetCategoryEditor(MetaData d,
+                               boolean readOnly) {
         this.data = d;
 
         list = new FlexTable();
         this.readOnly = readOnly;
         loadData( list );
         list.setStyleName( "rule-List" );
-        layout.setWidget( 0, 0, list );
+        layout.setWidget( 0,
+                          0,
+                          list );
 
-        if (!readOnly) {
+        if ( !readOnly ) {
             doActions();
         }
 
@@ -92,18 +96,19 @@ public class AssetCategoryEditor extends DirtyableComposite {
 
     private void doActions() {
         VerticalPanel actions = new VerticalPanel();
-        Image add = new ImageButton("images/new_item.gif");
-        add.setTitle(constants.AddANewCategory());
+        Image add = new ImageButton( images.newItem() );
+        add.setTitle( constants.AddANewCategory() );
 
-        add.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        add.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 doOKClick();
             }
-        });
-
+        } );
 
         actions.add( add );
-        layout.setWidget( 0, 1, actions );
+        layout.setWidget( 0,
+                          1,
+                          actions );
 
     }
 
@@ -116,7 +121,9 @@ public class AssetCategoryEditor extends DirtyableComposite {
     private void resetBox() {
         list = new FlexTable();
         list.setStyleName( "rule-List" );
-        layout.setWidget( 0, 0, list );
+        layout.setWidget( 0,
+                          0,
+                          list );
         loadData( list );
         makeDirty();
     }
@@ -125,23 +132,24 @@ public class AssetCategoryEditor extends DirtyableComposite {
         for ( int i = 0; i < data.categories.length; i++ ) {
             final int idx = i;
 
-            list.setWidget( i, 0, new SmallLabel(data.categories[i]) );
-            if (!readOnly) {
+            list.setWidget( i,
+                            0,
+                            new SmallLabel( data.categories[i] ) );
+            if ( !readOnly ) {
 
-	            Image del = new ImageButton("images/trash.gif");
-	            del.setTitle(constants.RemoveThisCategory());
-	            del.addClickListener( new ClickListener() {
-	                public void onClick(Widget w) {
-	                    removeCategory(idx);
-	                }
-	            } );
-	            list.setWidget( i, 1, del );
+                Image del = new ImageButton( images.trash() );
+                del.setTitle( constants.RemoveThisCategory() );
+                del.addClickHandler( new ClickHandler() {
+                    public void onClick(ClickEvent event) {
+                        removeCategory( idx );
+                    }
+                } );
+                list.setWidget( i,
+                                1,
+                                del );
             }
         }
     }
-
-
-
 
     /** Handles the OK click on the selector popup */
     private void doOKClick() {
@@ -150,58 +158,48 @@ public class AssetCategoryEditor extends DirtyableComposite {
         sel.show();
     }
 
-
-
-
     /**
      * Appy the change (selected path to be added).
      */
     public void addToCategory(String selectedPath) {
 
-
         data.addCategory( selectedPath );
         resetBox();
     }
-
-
-
-
 
     /**
      * This is a popup that allows you to select a category to add to the asset.
      */
     class CategorySelector extends FormStylePopup {
 
-        public Button ok = new Button(constants.OK());
+        public Button                  ok = new Button( constants.OK() );
         private CategoryExplorerWidget selector;
-        public String selectedPath;
+        public String                  selectedPath;
 
         public CategorySelector() {
-        	setTitle(constants.SelectCategoryToAdd());
+            setTitle( constants.SelectCategoryToAdd() );
             VerticalPanel vert = new VerticalPanel();
 
-            selector = new CategoryExplorerWidget(new CategorySelectHandler() {
+            selector = new CategoryExplorerWidget( new CategorySelectHandler() {
                 public void selected(String sel) {
                     selectedPath = sel;
                 }
 
-            });
-
-
+            } );
 
             vert.add( selector );
             vert.add( ok );
 
             addRow( vert );
 
-            ok.addClickListener( new ClickListener() {
-                public void onClick(Widget w) {
-                    if (selectedPath != null &&  !"".equals(selectedPath)) {
-                        addToCategory(selectedPath);
+            ok.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    if ( selectedPath != null && !"".equals( selectedPath ) ) {
+                        addToCategory( selectedPath );
                     }
                     hide();
                 }
-            });
+            } );
 
         }
 

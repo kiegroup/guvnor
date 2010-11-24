@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.common;
 
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 
 import com.google.gwt.core.client.GWT;
@@ -39,8 +40,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ErrorPopup extends Popup {
 
-    public static ErrorPopup instance  = null;
+    private static Images    images    = (Images) GWT.create( Images.class );
     private Constants        constants = ((Constants) GWT.create( Constants.class ));
+
+    public static ErrorPopup instance  = null;
     private VerticalPanel    body;
 
     private ErrorPopup(String message,
@@ -83,7 +86,7 @@ public class ErrorPopup extends Popup {
         final String longDescription = longMessage;
 
         HorizontalPanel hp = new HorizontalPanel();
-        hp.add( new Image( "images/validation_error.gif" ) );
+        hp.add( new Image( images.validationError() ) );
         Label msg = new Label( message );
         msg.setStyleName( "error-title" );
         hp.add( msg );

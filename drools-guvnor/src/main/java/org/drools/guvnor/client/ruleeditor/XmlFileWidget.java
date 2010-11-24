@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,44 +20,48 @@ import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 
-import com.google.gwt.user.client.ui.ChangeListener;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.TextArea;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  *
  */
-public class XmlFileWidget extends AssetAttachmentFileWidget implements SaveEventListener {
+public class XmlFileWidget extends AssetAttachmentFileWidget
+    implements
+    SaveEventListener {
 
-    private TextArea text;
+    private TextArea              text;
     final private RuleContentText data;
 
-
-    public XmlFileWidget(final RuleAsset asset, final RuleViewer viewer) {
-        super(asset, viewer);
+    public XmlFileWidget(final RuleAsset asset,
+                         final RuleViewer viewer) {
+        super( asset,
+               viewer );
         data = (RuleContentText) asset.content;
 
-        if (data.content == null) {
+        if ( data.content == null ) {
             data.content = "";
         }
 
         text = new TextArea();
-        text.setWidth("100%");
-        text.setVisibleLines(16);
-        text.setText(data.content);
+        text.setWidth( "100%" );
+        text.setVisibleLines( 16 );
+        text.setText( data.content );
 
-        text.setStyleName("default-text-Area");
+        text.setStyleName( "default-text-Area" );
 
-        text.addChangeListener(new ChangeListener() {
-            public void onChange(Widget w) {
+        text.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
                 data.content = text.getText();
             }
-        });
+        } );
 
-        layout.addRow(text);
+        layout.addRow( text );
     }
 
-    public String getIcon() {
+    public ImageResource getIcon() {
         return null;
     }
 

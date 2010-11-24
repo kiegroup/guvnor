@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
@@ -58,10 +59,12 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MethodParameterValueEditor extends DirtyableComposite {
 
+    private Constants           constants            = GWT.create( Constants.class );
+    private static Images       images               = GWT.create( Images.class );
+
     private ActionFieldFunction methodParameter;
     private DropDownData        enums;
     private SimplePanel         root;
-    private Constants           constants            = GWT.create( Constants.class );
     private RuleModeller        model                = null;
     private String              parameterType        = null;
     private Command             onValueChangeCommand = null;
@@ -225,7 +228,7 @@ public class MethodParameterValueEditor extends DirtyableComposite {
     }
 
     private Widget choice() {
-        Image clickme = new Image( "images/edit.gif" );
+        Image clickme = new Image( images.edit() );
         clickme.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -236,7 +239,7 @@ public class MethodParameterValueEditor extends DirtyableComposite {
     }
 
     protected void showTypeChoice(Widget w) {
-        final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif",
+        final FormStylePopup form = new FormStylePopup( images.newexWiz(),
                                                         constants.FieldValue() );
         Button lit = new Button( constants.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {

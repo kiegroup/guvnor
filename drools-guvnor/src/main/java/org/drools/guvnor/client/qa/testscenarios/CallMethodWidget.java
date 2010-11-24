@@ -11,11 +11,11 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.MethodInfo;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
-import org.drools.ide.common.client.modeldriven.brl.ActionFieldFunction;
 import org.drools.ide.common.client.modeldriven.testing.CallFieldValue;
 import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -39,257 +39,249 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class CallMethodWidget extends DirtyableComposite {
 
-	protected static Constants constants = ((Constants) GWT
-			.create(Constants.class));
+    protected static Constants               constants   = GWT.create( Constants.class );
+    private static Images                    images      = GWT.create( Images.class );
 
-	protected final ScenarioWidget parent;
-	protected final Scenario scenario;
-	protected final CallMethod mCall;
-	protected final String factName;
-	private final ExecutionTrace executionTrace;
+    protected final ScenarioWidget           parent;
+    protected final Scenario                 scenario;
+    protected final CallMethod               mCall;
+    protected final String                   factName;
+    private final ExecutionTrace             executionTrace;
 
-	final private DirtyableFlexTable layout;
-	private boolean isBoundFact = false;
+    final private DirtyableFlexTable         layout;
+    private boolean                          isBoundFact = false;
 
-	private String[] fieldCompletionTexts;
-	private String[] fieldCompletionValues;
-	private String variableClass;
+    private String[]                         fieldCompletionTexts;
+    private String[]                         fieldCompletionValues;
+    private String                           variableClass;
 
-	private final SuggestionCompletionEngine suggestionCompletionEngine;
+    private final SuggestionCompletionEngine suggestionCompletionEngine;
 
-	public CallMethodWidget(String factName, ScenarioWidget parent,
-			Scenario scenario, CallMethod mCall, ExecutionTrace executionTrace) {
-		super();
-		this.factName = factName;
-		this.parent = parent;
-		this.scenario = scenario;
-		this.mCall = mCall;
-		this.executionTrace = executionTrace;
-		this.suggestionCompletionEngine = parent.suggestionCompletionEngine;
+    public CallMethodWidget(String factName,
+                            ScenarioWidget parent,
+                            Scenario scenario,
+                            CallMethod mCall,
+                            ExecutionTrace executionTrace) {
+        super();
+        this.factName = factName;
+        this.parent = parent;
+        this.scenario = scenario;
+        this.mCall = mCall;
+        this.executionTrace = executionTrace;
+        this.suggestionCompletionEngine = parent.suggestionCompletionEngine;
 
-		this.layout = new DirtyableFlexTable();
+        this.layout = new DirtyableFlexTable();
 
-		layout.setStyleName("model-builderInner-Background"); // NON-NLS
+        layout.setStyleName( "model-builderInner-Background" ); // NON-NLS
 
-		if (suggestionCompletionEngine.isGlobalVariable(mCall.variable)) {
+        if ( suggestionCompletionEngine.isGlobalVariable( mCall.variable ) ) {
 
-			List<MethodInfo> infos = suggestionCompletionEngine
-					.getMethodInfosForGlobalVariable(mCall.variable);
-			this.fieldCompletionTexts = new String[infos.size()];
-			this.fieldCompletionValues = new String[infos.size()];
-			int i = 0;
-			for (MethodInfo info : infos) {
-				this.fieldCompletionTexts[i] = info.getName();
-				this.fieldCompletionValues[i] = info.getNameWithParameters();
-				i++;
-			}
+            List<MethodInfo> infos = suggestionCompletionEngine.getMethodInfosForGlobalVariable( mCall.variable );
+            this.fieldCompletionTexts = new String[infos.size()];
+            this.fieldCompletionValues = new String[infos.size()];
+            int i = 0;
+            for ( MethodInfo info : infos ) {
+                this.fieldCompletionTexts[i] = info.getName();
+                this.fieldCompletionValues[i] = info.getNameWithParameters();
+                i++;
+            }
 
-			this.variableClass = (String) suggestionCompletionEngine
-					.getGlobalVariable(mCall.variable);
-		} else {
-			FactData pattern = (FactData) scenario.getFactTypes().get(mCall.variable);
-			if (pattern != null) {
-				List<String> methodList = suggestionCompletionEngine
-						.getMethodNames(pattern.type);
-				fieldCompletionTexts = new String[methodList.size()];
-				fieldCompletionValues = new String[methodList.size()];
-				int i = 0;
-				for (String methodName : methodList) {
-					fieldCompletionTexts[i] = methodName;
-					fieldCompletionValues[i] = methodName;
-					i++;
-				}
-				this.variableClass = pattern.type;
-				this.isBoundFact = true;
-			}
-		}
+            this.variableClass = (String) suggestionCompletionEngine.getGlobalVariable( mCall.variable );
+        } else {
+            FactData pattern = (FactData) scenario.getFactTypes().get( mCall.variable );
+            if ( pattern != null ) {
+                List<String> methodList = suggestionCompletionEngine.getMethodNames( pattern.type );
+                fieldCompletionTexts = new String[methodList.size()];
+                fieldCompletionValues = new String[methodList.size()];
+                int i = 0;
+                for ( String methodName : methodList ) {
+                    fieldCompletionTexts[i] = methodName;
+                    fieldCompletionValues[i] = methodName;
+                    i++;
+                }
+                this.variableClass = pattern.type;
+                this.isBoundFact = true;
+            }
+        }
 
-		doLayout();
-		initWidget(this.layout);
-	}
+        doLayout();
+        initWidget( this.layout );
+    }
 
-	private void doLayout() {
-		layout.clear();
-		layout.setWidget(0, 0, getSetterLabel());
-		DirtyableFlexTable inner = new DirtyableFlexTable();
-		for (int i = 0; i < mCall.callFieldValues.length; i++) {
-			CallFieldValue val = mCall.callFieldValues[i];
+    private void doLayout() {
+        layout.clear();
+        layout.setWidget( 0,
+                          0,
+                          getSetterLabel() );
+        DirtyableFlexTable inner = new DirtyableFlexTable();
+        for ( int i = 0; i < mCall.callFieldValues.length; i++ ) {
+            CallFieldValue val = mCall.callFieldValues[i];
 
-			inner.setWidget(i, 0, fieldSelector(val));
-			inner.setWidget(i, 1, valueEditor(val));
-			
-		}
-		layout.setWidget(0, 1, inner);
-		layout.setWidget(0, 2, new DeleteButton());
-	}
+            inner.setWidget( i,
+                             0,
+                             fieldSelector( val ) );
+            inner.setWidget( i,
+                             1,
+                             valueEditor( val ) );
 
-	private Widget getSetterLabel() {
-		HorizontalPanel horiz = new HorizontalPanel();
+        }
+        layout.setWidget( 0,
+                          1,
+                          inner );
+        layout.setWidget( 0,
+                          2,
+                          new DeleteButton() );
+    }
 
-		if (mCall.state == ActionCallMethod.TYPE_UNDEFINED) {
-			Image edit = new ImageButton("images/add_field_to_fact.gif"); // NON-
-			// NLS
-			edit.setTitle(constants.AddAnotherFieldToThisSoYouCanSetItsValue());
-			
-			edit.addClickHandler(new ClickHandler() {
-				
-				public void onClick(ClickEvent event) {
-					Image w = (Image)event.getSource();
-					showAddFieldPopup(w);
-					
-				}
-			});
-				
-			horiz.add(new SmallLabel(HumanReadable.getActionDisplayName("call")
-					+ " [" + mCall.variable + "]")); // NON-NLS
-                horiz.add( edit );
-		} else {
-			horiz.add(new SmallLabel(HumanReadable.getActionDisplayName("call")
-					+ " [" + mCall.variable + "." + mCall.methodName + "]")); // NON-NLS
-		}
+    private Widget getSetterLabel() {
+        HorizontalPanel horiz = new HorizontalPanel();
 
-		return horiz;
-	}
+        if ( mCall.state == ActionCallMethod.TYPE_UNDEFINED ) {
+            Image edit = new ImageButton( images.addFieldToFact() );
+            edit.setTitle( constants.AddAnotherFieldToThisSoYouCanSetItsValue() );
 
-	protected void showAddFieldPopup(Widget w) {
+            edit.addClickHandler( new ClickHandler() {
 
-		final FormStylePopup popup = new FormStylePopup("images/newex_wiz.gif",
-				constants.ChooseAMethodToInvoke()); // NON-NLS
-		ListBox box = new ListBox();
-		box.addItem("...");
+                public void onClick(ClickEvent event) {
+                    Image w = (Image) event.getSource();
+                    showAddFieldPopup( w );
 
-		for (int i = 0; i < fieldCompletionTexts.length; i++) {
-			box.addItem(fieldCompletionTexts[i], fieldCompletionValues[i]);
-		}
+                }
+            } );
 
-		box.setSelectedIndex(0);
+            horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + mCall.variable + "]" ) ); // NON-NLS
+            horiz.add( edit );
+        } else {
+            horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + mCall.variable + "." + mCall.methodName + "]" ) ); // NON-NLS
+        }
 
-		popup.addAttribute(constants.ChooseAMethodToInvoke(), box);
-		box.addChangeHandler(new ChangeHandler() {
-			
-			public void onChange(ChangeEvent event) {
-				mCall.state = ActionCallMethod.TYPE_DEFINED;
-				ListBox sourceW = (ListBox)event.getSource();
-				String methodName = sourceW.getItemText(sourceW.getSelectedIndex());
-				String methodNameWithParams = sourceW.getValue(sourceW
-						.getSelectedIndex());
+        return horiz;
+    }
 
-				mCall.methodName = methodName;
-				List<String> fieldList = new ArrayList<String>();
+    protected void showAddFieldPopup(Widget w) {
 
-				fieldList.addAll(suggestionCompletionEngine.getMethodParams(variableClass,
-						methodNameWithParams));
+        final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
+                                                         constants.ChooseAMethodToInvoke() );
+        ListBox box = new ListBox();
+        box.addItem( "..." );
 
-				// String fieldType = completions.getFieldType( variableClass,
-				// fieldName );
-				int i = 0;
-				for (String fieldParameter : fieldList) {
-					mCall.addFieldValue(new CallFieldValue(methodName,
-							String.valueOf(i), fieldParameter));
-					i++;
-				}
+        for ( int i = 0; i < fieldCompletionTexts.length; i++ ) {
+            box.addItem( fieldCompletionTexts[i],
+                         fieldCompletionValues[i] );
+        }
 
-				parent.renderEditor();
-				popup.hide();
-				
-			}
-		});
+        box.setSelectedIndex( 0 );
 
-		popup.setPopupPosition(w.getAbsoluteLeft(), w.getAbsoluteTop());
-		popup.show();
+        popup.addAttribute( constants.ChooseAMethodToInvoke(),
+                            box );
+        box.addChangeHandler( new ChangeHandler() {
 
-	}
+            public void onChange(ChangeEvent event) {
+                mCall.state = ActionCallMethod.TYPE_DEFINED;
+                ListBox sourceW = (ListBox) event.getSource();
+                String methodName = sourceW.getItemText( sourceW.getSelectedIndex() );
+                String methodNameWithParams = sourceW.getValue( sourceW.getSelectedIndex() );
 
-	private Widget valueEditor(final CallFieldValue val) {
+                mCall.methodName = methodName;
+                List<String> fieldList = new ArrayList<String>();
 
+                fieldList.addAll( suggestionCompletionEngine.getMethodParams( variableClass,
+                                                                              methodNameWithParams ) );
 
-		String type = "";
-		if (suggestionCompletionEngine.isGlobalVariable(this.mCall.variable)) {
-			type = suggestionCompletionEngine.getGlobalVariable(this.mCall.variable);
-		} else {
-			Map<String, String> mFactTypes = scenario.getVariableTypes();
-			type	= mFactTypes.get(this.mCall.variable);
-		}
+                // String fieldType = completions.getFieldType( variableClass,
+                // fieldName );
+                int i = 0;
+                for ( String fieldParameter : fieldList ) {
+                    mCall.addFieldValue( new CallFieldValue( methodName,
+                                                             String.valueOf( i ),
+                                                             fieldParameter ) );
+                    i++;
+                }
 
-		DropDownData enums = suggestionCompletionEngine.getEnums(type, this.mCall.callFieldValues,
-				val.field);
-		return new MethodParameterCallValueEditor(val, enums, executionTrace,scenario,
-				val.type, new Command() {
+                parent.renderEditor();
+                popup.hide();
 
-					public void execute() {
-						makeDirty();
-					}
-				});
-	}
+            }
+        } );
 
-	/**
-	 * This will return a keyboard listener for field setters, which will obey
-	 * numeric conventions - it will also allow formulas (a formula is when the
-	 * first value is a "=" which means it is meant to be taken as the user
-	 * typed)
-	 */
-	public static KeyPressHandler getNumericFilter(final TextBox box){
-		return new KeyPressHandler() {
-			
-			public void onKeyPress(KeyPressEvent event) {
-				TextBox w = (TextBox)event.getSource();
-				char c= event.getCharCode();
-				if (Character.isLetter(c) && c != '='
-					&& !(box.getText().startsWith("="))) {
-				((TextBox) w).cancelKey();
-			}
-				
-			}
-		};
-	}
-	
-	private Widget fieldSelector(final CallFieldValue val) {
-		return new SmallLabel(val.type);
-	}
+        popup.setPopupPosition( w.getAbsoluteLeft(),
+                                w.getAbsoluteTop() );
+        popup.show();
 
-	private Widget actionSelector(final ActionFieldFunction val) {
+    }
 
-		final ListBox box = new ListBox();
-		final String fieldType = val.type;
-		final String[] modifiers = suggestionCompletionEngine.getModifiers(fieldType);
+    private Widget valueEditor(final CallFieldValue val) {
 
-		if (modifiers != null) {
-			for (int i = 0; i < modifiers.length; i++) {
-				box.addItem(modifiers[i]);
-			}
-		}
-		box.addChangeHandler(new ChangeHandler() {
-			
-			public void onChange(ChangeEvent event) {
-				String methodName = box.getItemText(box.getSelectedIndex());
-				val.setMethod(methodName);
-			}
-		});
+        String type = "";
+        if ( suggestionCompletionEngine.isGlobalVariable( this.mCall.variable ) ) {
+            type = suggestionCompletionEngine.getGlobalVariable( this.mCall.variable );
+        } else {
+            Map<String, String> mFactTypes = scenario.getVariableTypes();
+            type = mFactTypes.get( this.mCall.variable );
+        }
 
-		return box;
-	}
+        DropDownData enums = suggestionCompletionEngine.getEnums( type,
+                                                                  this.mCall.callFieldValues,
+                                                                  val.field );
+        return new MethodParameterCallValueEditor( val,
+                                                   enums,
+                                                   executionTrace,
+                                                   scenario,
+                                                   val.type,
+                                                   new Command() {
 
-	/**
-	 * This returns true if the values being set are on a fact.
-	 */
-	public boolean isBoundFact() {
-		return isBoundFact;
-	}
+                                                       public void execute() {
+                                                           makeDirty();
+                                                       }
+                                                   } );
+    }
 
-	public boolean isDirty() {
-		return layout.hasDirty();
-	}
+    /**
+     * This will return a keyboard listener for field setters, which will obey
+     * numeric conventions - it will also allow formulas (a formula is when the
+     * first value is a "=" which means it is meant to be taken as the user
+     * typed)
+     */
+    public static KeyPressHandler getNumericFilter(final TextBox box) {
+        return new KeyPressHandler() {
+
+            public void onKeyPress(KeyPressEvent event) {
+                TextBox w = (TextBox) event.getSource();
+                char c = event.getCharCode();
+                if ( Character.isLetter( c ) && c != '=' && !(box.getText().startsWith( "=" )) ) {
+                    ((TextBox) w).cancelKey();
+                }
+
+            }
+        };
+    }
+
+    private Widget fieldSelector(final CallFieldValue val) {
+        return new SmallLabel( val.type );
+    }
+
+    /**
+     * This returns true if the values being set are on a fact.
+     */
+    public boolean isBoundFact() {
+        return isBoundFact;
+    }
+
+    public boolean isDirty() {
+        return layout.hasDirty();
+    }
+
     protected void onDelete() {
         if ( Window.confirm( constants.AreYouSureToRemoveCallMethod() ) ) {
             scenario.removeFixture( mCall );
             parent.renderEditor();
         }
     }
-    
+
     class DeleteButton extends ImageButton {
         public DeleteButton() {
-            super( "images/delete_item_small.gif",
-                   constants.RemoveCallMethod());
+            super( images.deleteItemSmall(),
+                   constants.RemoveCallMethod() );
 
             addClickHandler( new ClickHandler() {
 
@@ -299,5 +291,5 @@ public class CallMethodWidget extends DirtyableComposite {
             } );
         }
     }
-  
+
 }

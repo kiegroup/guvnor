@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +17,8 @@
 package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.images.Images;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
@@ -34,10 +34,8 @@ import com.google.gwt.user.client.ui.TreeItem;
 public class DeploymentTree extends AbstractTree
     implements
     OpenHandler<TreeItem> {
-    private static Constants constants                = GWT.create( Constants.class );
-    private static Images    images                   = (Images) GWT.create( Images.class );
-
-    private boolean          deploymentPackagesLoaded = false;
+    private static Constants constants = GWT.create( Constants.class );
+    private static Images    images    = (Images) GWT.create( Images.class );
 
     public DeploymentTree() {
         this.name = constants.PackageSnapshots();

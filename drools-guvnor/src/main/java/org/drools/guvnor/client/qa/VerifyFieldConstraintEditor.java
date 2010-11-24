@@ -35,6 +35,7 @@ import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.modeldriven.ui.EnumDropDown;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
@@ -66,13 +67,16 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Nicolas Heron
  */
 public class VerifyFieldConstraintEditor extends DirtyableComposite {
+
+    private Constants                  constants = GWT.create( Constants.class );
+    private static Images              images    = GWT.create( Images.class );
+
     private String                     factType;
     private VerifyField                field;
     private final Panel                panel;
     private Scenario                   scenario;
     private SuggestionCompletionEngine sce;
     private ValueChanged               callback;
-    private Constants                  constants = ((Constants) GWT.create( Constants.class ));
     private ExecutionTrace             executionTrace;
 
     public VerifyFieldConstraintEditor(String factType,
@@ -127,7 +131,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         } else {
             String[] enums = sce.getDataEnumList( key );
             if ( enums != null ) {
-            	field.nature = FieldData.TYPE_ENUM;
+                field.nature = FieldData.TYPE_ENUM;
                 panel.add( new EnumDropDown( field.expected,
                                              new DropDownValueChanged() {
                                                  public void valueChanged(String newText,
@@ -139,7 +143,6 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
             } else {
                 if ( field.expected != null && field.expected.length() > 0 && field.nature == FieldData.TYPE_UNDEFINED ) {
-                    //  GUVNOR-337
                     if ( field.expected.charAt( 0 ) == '=' ) {
                         field.nature = FieldData.TYPE_VARIABLE;
                     } else {
@@ -147,7 +150,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                     }
                 }
                 if ( field.nature == FieldData.TYPE_UNDEFINED && isThereABoundVariableToSet() == true ) {
-                    Image clickme = new Image( "images/edit.gif" ); // NON-NLS
+                    Image clickme = new Image( images.edit() );
                     clickme.addClickHandler( new ClickHandler() {
 
                         public void onClick(ClickEvent event) {
@@ -209,7 +212,6 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
     private static TextBox editableTextBox(final ValueChanged changed,
                                            String fieldName,
                                            String initialValue) {
-        // Fixme nheron
         final TextBox tb = new TextBox();
         tb.setText( initialValue );
         String m = Format.format( ((Constants) GWT.create( Constants.class )).ValueFor0(),
@@ -227,7 +229,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
     private void showTypeChoice(Widget w,
                                 final VerifyField con) {
-        final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif",
+        final FormStylePopup form = new FormStylePopup( images.newexWiz(),
                                                         constants.FieldValue() );
 
         Button lit = new Button( constants.LiteralValue() );

@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -56,13 +57,15 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class GuidedDTColumnConfig extends FormStylePopup {
 
+    private Constants                  constants                   = ((Constants) GWT.create( Constants.class ));
+    private static Images              images                      = (Images) GWT.create( Images.class );
+
     private GuidedDecisionTable        dt;
     private SuggestionCompletionEngine sce;
     private ConditionCol               editingCol;
     private SmallLabel                 patternLabel                = new SmallLabel();
     private TextBox                    fieldLabel                  = getFieldLabel();
     private SmallLabel                 operatorLabel               = new SmallLabel();
-    private Constants                  constants                   = ((Constants) GWT.create( Constants.class ));
     private InfoPopup                  fieldLabelInterpolationInfo = getPredicateHint();
 
     private InfoPopup getPredicateHint() {
@@ -99,9 +102,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         pattern.add( patternLabel );
         doPatternLabel();
 
-        Image changePattern = new ImageButton( "images/edit.gif",
+        Image changePattern = new ImageButton( images.edit(),
                                                constants.ChooseAnExistingPatternThatThisColumnAddsTo(),
-                                               new ClickHandler() { //NON-NLS
+                                               new ClickHandler() { 
                                                    public void onClick(ClickEvent w) {
                                                        showChangePattern( w );
                                                    }
@@ -157,9 +160,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         HorizontalPanel field = new HorizontalPanel();
         field.add( fieldLabel );
         field.add( fieldLabelInterpolationInfo );
-        Image editField = new ImageButton( "images/edit.gif",
+        Image editField = new ImageButton( images.edit(),
                                            constants.EditTheFieldThatThisColumnOperatesOn(),
-                                           new ClickHandler() { //NON-NLS
+                                           new ClickHandler() {
                                                public void onClick(ClickEvent w) {
                                                    showFieldChange();
                                                }
@@ -171,9 +174,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         HorizontalPanel operator = new HorizontalPanel();
         operator.add( operatorLabel );
-        Image editOp = new ImageButton( "images/edit.gif",
+        Image editOp = new ImageButton( images.edit(),
                                         constants.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
-                                        new ClickHandler() { //NON-NLS
+                                        new ClickHandler() {
                                             public void onClick(ClickEvent w) {
                                                 showOperatorChange();
                                             }

@@ -1,21 +1,3 @@
-/**
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.drools.guvnor.client.ruleeditor;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -32,6 +14,8 @@ package org.drools.guvnor.client.ruleeditor;
  * limitations under the License.
  */
 
+package org.drools.guvnor.client.ruleeditor;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,15 +29,18 @@ import org.drools.guvnor.client.explorer.Preferences;
 import org.drools.guvnor.client.factmodel.FactModelsWidget;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.modeldriven.ui.RuleModellerWidgetFactory;
+import org.drools.guvnor.client.modeldriven.ui.RuleTemplateEditor;
 import org.drools.guvnor.client.packages.ModelAttachmentFileWidget;
 import org.drools.guvnor.client.processeditor.BusinessProcessEditor;
 import org.drools.guvnor.client.qa.testscenarios.ScenarioWidget;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.modeldriven.ui.RuleTemplateEditor;
 
 /**
  * This launches the appropriate editor for the asset type.
@@ -69,18 +56,20 @@ import org.drools.guvnor.client.modeldriven.ui.RuleTemplateEditor;
  */
 public class EditorLauncher {
 
-    public static final Map<String, String> TYPE_IMAGES = getTypeImages();
-    private static RepositoryServiceAsync SERVICE = RepositoryServiceFactory.getService();
-    public static Boolean HOSTED_MODE = Boolean.FALSE;
-    
+    private static Images                          images      = GWT.create( Images.class );
+
+    public static final Map<String, ImageResource> TYPE_IMAGES = getTypeImages();
+    private static RepositoryServiceAsync          SERVICE     = RepositoryServiceFactory.getService();
+    public static Boolean                          HOSTED_MODE = Boolean.FALSE;
+
     static {
-    	SERVICE.isHostedMode( 
-    			new GenericCallback<Boolean>() {
-    	        	public void onSuccess(Boolean result) {
-    	        		if(result.booleanValue()) {
-    	        			HOSTED_MODE = Boolean.TRUE;
-    	        		}
-    	        }});
+        SERVICE.isHostedMode( new GenericCallback<Boolean>() {
+            public void onSuccess(Boolean result) {
+                if ( result.booleanValue() ) {
+                    HOSTED_MODE = Boolean.TRUE;
+                }
+            }
+        } );
     }
 
     /**
@@ -91,10 +80,10 @@ public class EditorLauncher {
         RulePackageSelector.currentlySelectedPackage = asset.metaData.packageName;
         //depending on the format, load the appropriate editor
         if ( asset.metaData.format.equals( AssetFormats.BUSINESS_RULE ) ) {
-            return new RuleModeller( asset, new RuleModellerWidgetFactory());
+            return new RuleModeller( asset,
+                                     new RuleModellerWidgetFactory() );
         } else if ( asset.metaData.format.equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
-            return new RuleValidatorWrapper( new DSLRuleEditor( asset ),
-                                             asset );
+            return new RuleValidatorWrapper( new DSLRuleEditor( asset ) );
         } else if ( asset.metaData.format.equals( AssetFormats.BPEL_PACKAGE ) && Preferences.getBooleanPref( "flex-bpel-editor" ) ) {
             return new BPELWrapper( asset,
                                     viewer );
@@ -108,9 +97,9 @@ public class EditorLauncher {
         } else if ( asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF ) ) {
             return new RuleFlowWrapper( asset,
                                         viewer );
-        } else if (asset.metaData.format.equals(AssetFormats.BPMN2_PROCESS) && Preferences.getBooleanPref( "oryx-bpmn-editor" ) ) {
-			return new BusinessProcessEditor(asset);
-		} else if ( asset.metaData.format.equals( AssetFormats.DRL ) ) {
+        } else if ( asset.metaData.format.equals( AssetFormats.BPMN2_PROCESS ) && Preferences.getBooleanPref( "oryx-bpmn-editor" ) ) {
+            return new BusinessProcessEditor( asset );
+        } else if ( asset.metaData.format.equals( AssetFormats.DRL ) ) {
             return new DrlEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
             return new DefaultRuleContentWidget( asset );
@@ -131,9 +120,9 @@ public class EditorLauncher {
         } else if ( asset.metaData.format.equals( AssetFormats.FUNCTION ) ) {
             return new FunctionEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.WORKING_SET ) ) {
-            return new WorkingSetEditor(asset);
+            return new WorkingSetEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.RULE_TEMPLATE ) ) {
-            return new RuleTemplateEditor(asset);
+            return new RuleTemplateEditor( asset );
         } else {
             return new DefaultContentUploadEditor( asset,
                                                    viewer );
@@ -141,79 +130,33 @@ public class EditorLauncher {
 
     }
 
-    private static Map<String, String> getTypeImages() {
-        Map<String, String> result = new HashMap<String, String>();
+    private static Map<String, ImageResource> getTypeImages() {
+        Map<String, ImageResource> result = new HashMap<String, ImageResource>();
 
         result.put( AssetFormats.DRL,
-                    "technical_rule_assets.gif" );
+                    images.technicalRuleAssets() );
         result.put( AssetFormats.DSL,
-                    "dsl.gif" );
+                    images.dsl() );
         result.put( AssetFormats.FUNCTION,
-                    "function_assets.gif" );
+                    images.functionAssets() );
         result.put( AssetFormats.MODEL,
-                    "model_asset.gif" );
+                    images.modelAsset() );
         result.put( AssetFormats.DECISION_SPREADSHEET_XLS,
-                    "spreadsheet_small.gif" );
+                    images.spreadsheetSmall() );
         result.put( AssetFormats.BUSINESS_RULE,
-                    "business_rule.gif" );
+                    images.businessRule() );
         result.put( AssetFormats.DSL_TEMPLATE_RULE,
-                    "business_rule.gif" );
+                    images.businessRule() );
         result.put( AssetFormats.RULE_FLOW_RF,
-                    "ruleflow_small.gif" );
+                    images.ruleflowSmall() );
         result.put( AssetFormats.BPMN2_PROCESS,
-                    "ruleflow_small.gif" );
+                    images.ruleflowSmall() );
         result.put( AssetFormats.TEST_SCENARIO,
-                    "test_manager.gif" );
+                    images.testManager() );
         result.put( AssetFormats.ENUMERATION,
-                    "enumeration.gif" );
+                    images.enumeration() );
         result.put( AssetFormats.DECISION_TABLE_GUIDED,
-                    "gdst.gif" );
-
-        return result;
-    }
-
-    /**
-     * Returns a css style for background with the icon that belongs for the format.
-     * @param format
-     * @return
-     */
-    public static String getAssetFormatBGStyle(String format) {
-        String style = getTypeStyles().get( format );
-
-        if ( style == null ) {
-            return "bg_rule_asset";
-        } else {
-            return style;
-        }
-    }
-
-    private static Map<String, String> getTypeStyles() {
-        Map<String, String> result = new HashMap<String, String>();
-
-        result.put( AssetFormats.DRL,
-                    "bg_technical_rule_assets" );
-        result.put( AssetFormats.DSL,
-                    "bg_dsl" );
-        result.put( AssetFormats.FUNCTION,
-                    "bg_function_assets" );
-        result.put( AssetFormats.MODEL,
-                    "bg_model_asset" );
-        result.put( AssetFormats.DECISION_SPREADSHEET_XLS,
-                    "bg_spreadsheet_small" );
-        result.put( AssetFormats.BUSINESS_RULE,
-                    "bg_business_rule" );
-        result.put( AssetFormats.DSL_TEMPLATE_RULE,
-                    "bg_business_rule" );
-        result.put( AssetFormats.RULE_FLOW_RF,
-                    "bg_ruleflow_small" );
-        result.put( AssetFormats.BPMN2_PROCESS,
-                    "bg_ruleflow_small" );
-        result.put( AssetFormats.TEST_SCENARIO,
-                    "bg_test_manager" );
-        result.put( AssetFormats.ENUMERATION,
-                    "bg_enumeration" );
-        result.put( AssetFormats.DECISION_TABLE_GUIDED,
-                    "bg_gdst" );
+                    images.gdst() );
 
         return result;
     }
@@ -222,10 +165,10 @@ public class EditorLauncher {
      * Get the icon name (not the path), including the extension, for the appropriate
      * asset format.
      */
-    public static String getAssetFormatIcon(String format) {
-        String result = (String) TYPE_IMAGES.get( format );
+    public static ImageResource getAssetFormatIcon(String format) {
+        ImageResource result = TYPE_IMAGES.get( format );
         if ( result == null ) {
-            return "rule_asset.gif";
+            return images.ruleAsset();
         } else {
             return result;
         }

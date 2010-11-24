@@ -18,6 +18,7 @@ package org.drools.guvnor.client.qa.testscenarios;
 
 import java.util.ArrayList;
 
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
@@ -25,6 +26,7 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -34,13 +36,15 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ExpectationButton extends TestScenarioButton {
 
-    private final String packageName;
+    private static Images images = GWT.create( Images.class );
+
+    private final String  packageName;
 
     public ExpectationButton(final String packageName,
                              final ExecutionTrace previousEx,
                              final Scenario scenario,
                              ScenarioWidget scenarioWidget) {
-        super( "images/new_item.gif",
+        super( images.newItem(),
                constants.AddANewExpectation(),
                previousEx,
                scenario,
@@ -56,7 +60,7 @@ public class ExpectationButton extends TestScenarioButton {
 
     class NewExpectationPopup extends TestScenarioButtonPopup {
         public NewExpectationPopup() {
-            super( "images/rule_asset.gif",
+            super( images.ruleAsset(),
                    constants.NewExpectation() );
 
             Widget selectRule = parent.getRuleSelectionWidget( packageName,

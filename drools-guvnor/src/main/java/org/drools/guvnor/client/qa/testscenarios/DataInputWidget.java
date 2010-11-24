@@ -27,6 +27,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -56,6 +57,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DataInputWidget extends DirtyableFlexTable {
 
+    protected static Constants               constants = GWT.create( Constants.class );
+    private static Images                    images    = GWT.create( Images.class );
+
     private final Scenario                   scenario;
     private final SuggestionCompletionEngine suggestionCompletionEngine;
     protected final String                   type;
@@ -63,8 +67,6 @@ public class DataInputWidget extends DirtyableFlexTable {
     private final ExecutionTrace             executionTrace;
     private final FixtureList                definitionList;
     private final String                     headerText;
-
-    protected static Constants               constants = ((Constants) GWT.create( Constants.class ));
 
     public DataInputWidget(String factType,
                            FixtureList definitionList,
@@ -280,7 +282,7 @@ public class DataInputWidget extends DirtyableFlexTable {
     class DeleteFactColumnButton extends ImageButton {
 
         public DeleteFactColumnButton(final FactData factData) {
-            super( "images/delete_item_small.gif",
+            super( images.deleteItemSmall(),
                    Format.format( constants.RemoveTheColumnForScenario(),
                                   factData.name ) );
 
@@ -305,7 +307,7 @@ public class DataInputWidget extends DirtyableFlexTable {
     class DeleteFieldRowButton extends ImageButton {
         public DeleteFieldRowButton(final String factName,
                                     final String fieldName) {
-            super( "images/delete_item_small.gif",
+            super( images.deleteItemSmall(),
                    constants.RemoveThisRow() );
 
             addClickHandler( new ClickHandler() {

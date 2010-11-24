@@ -20,6 +20,7 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 import org.drools.guvnor.client.messages.Constants;
@@ -37,16 +38,18 @@ import com.google.gwt.event.dom.client.ClickHandler;
  */
 public class StatusEditor extends FormStylePopup {
 
-    private TextBox name = new TextBox();
-    private Command refresh;
-    private static Constants constants = ((Constants) GWT.create(Constants.class));
+    private static Images    images    = (Images) GWT.create( Images.class );
+    private static Constants constants = ((Constants) GWT.create( Constants.class ));
+
+    private TextBox          name      = new TextBox();
+    private Command          refresh;
 
     public StatusEditor(Command refresh) {
-        super( "images/edit_category.gif",
-                constants.CreateNewStatus());
+        super( images.editCategory(),
+               constants.CreateNewStatus() );
         this.refresh = refresh;
 
-        addAttribute(constants.StatusName(),
+        addAttribute( constants.StatusName(),
                       name );
 
         Button ok = new Button( constants.OK() );
@@ -63,15 +66,15 @@ public class StatusEditor extends FormStylePopup {
     void ok() {
 
         if ( "".equals( this.name.getText() ) ) {
-            ErrorPopup.showMessage(constants.CanTHaveAnEmptyStatusName());
+            ErrorPopup.showMessage( constants.CanTHaveAnEmptyStatusName() );
         } else {
-    		if (!NewAssetWizard.validatePathPerJSR170(this.name.getText())) return;
-    		createStatus( name );
+            if ( !NewAssetWizard.validatePathPerJSR170( this.name.getText() ) ) return;
+            createStatus( name );
         }
     }
 
     private void createStatus(final TextBox box) {
-        LoadingPopup.showMessage(constants.CreatingStatus());
+        LoadingPopup.showMessage( constants.CreatingStatus() );
         RepositoryServiceFactory.getService().createState( box.getText(),
                                                            new GenericCallback<String>() {
                                                                public void onSuccess(String data) {
@@ -84,7 +87,7 @@ public class StatusEditor extends FormStylePopup {
                                                                        }
                                                                    } else {
 
-                                                                       ErrorPopup.showMessage(constants.StatusWasNotSuccessfullyCreated());
+                                                                       ErrorPopup.showMessage( constants.StatusWasNotSuccessfullyCreated() );
 
                                                                    }
                                                                }

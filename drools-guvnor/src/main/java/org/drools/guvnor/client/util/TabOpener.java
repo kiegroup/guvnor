@@ -38,6 +38,7 @@ import org.drools.guvnor.client.packages.SnapshotView;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.qa.AnalysisView;
 import org.drools.guvnor.client.qa.ScenarioPackageView;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PushClient;
 import org.drools.guvnor.client.rpc.PushResponse;
@@ -70,7 +71,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class TabOpener {
 
-    private Constants                     constants             = ((Constants) GWT.create( Constants.class ));
+    private Constants                     constants             = GWT.create( Constants.class );
+    private static Images                 images                = GWT.create( Images.class );
 
     private static final String           REPOCONFIG            = "repoconfig";
     private static final String           RULE_VERIFIER_MANAGER = "ruleVerifierManager";
@@ -187,7 +189,7 @@ public class TabOpener {
         }
 
         if ( blockingAssetName != null ) {
-            FormStylePopup popup = new FormStylePopup( "images/information.gif", //NON-NLS
+            FormStylePopup popup = new FormStylePopup( images.information(),
                                                        Format.format( constants.Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview(),
                                                                       blockingAssetName ) );
             popup.show();
@@ -368,7 +370,7 @@ public class TabOpener {
                 }
                 break;
             case 8 :
-                if ( !explorerViewCenterPanel.showIfOpen( REPOCONFIG ) ) //NON-NLS
+                if ( !explorerViewCenterPanel.showIfOpen( REPOCONFIG ) ) 
                 explorerViewCenterPanel.addTab( constants.RepositoryConfig(),
                                                 new RepoConfigManager(),
                                                 REPOCONFIG );
@@ -501,34 +503,38 @@ public class TabOpener {
                                       String key,
                                       final List<String> formatInList,
                                       final String itemName) {
-        if (!explorerViewCenterPanel.showIfOpen(key)) {
+        if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
 
             String feedUrl = GWT.getModuleBaseURL() + "feed/package?name=" + packageName + "&viewUrl=" + Util.getSelfURL() + "&status=*";
-            final AssetTable table = new AssetTable(packageUuid, formatInList, new EditItemEvent() {
-                public void open(String uuid) {
-                    openAsset(uuid);
-                }
-                public void open(MultiViewRow[] rows) {
-                    openAssetsToMultiView(rows);
-                }
-            }, feedUrl);
-            explorerViewCenterPanel.addTab(itemName + " [" + packageName + "]",
-                    table,
-                    key);
+            final AssetTable table = new AssetTable( packageUuid,
+                                                     formatInList,
+                                                     new EditItemEvent() {
+                                                         public void open(String uuid) {
+                                                             openAsset( uuid );
+                                                         }
+
+                                                         public void open(MultiViewRow[] rows) {
+                                                             openAssetsToMultiView( rows );
+                                                         }
+                                                     },
+                                                     feedUrl );
+            explorerViewCenterPanel.addTab( itemName + " [" + packageName + "]",
+                                            table,
+                                            key );
 
             final ServerPushNotification sub = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
-                    if (response.messageType.equals("packageChange") && response.message.equals(packageName)) {
+                    if ( response.messageType.equals( "packageChange" ) && response.message.equals( packageName ) ) {
                         table.refresh();
                     }
                 }
             };
-            PushClient.instance().subscribe(sub);
-            table.addUnloadListener(new Command() {
+            PushClient.instance().subscribe( sub );
+            table.addUnloadListener( new Command() {
                 public void execute() {
-                    PushClient.instance().unsubscribe(sub);
+                    PushClient.instance().unsubscribe( sub );
                 }
-            });
+            } );
         }
     }
 

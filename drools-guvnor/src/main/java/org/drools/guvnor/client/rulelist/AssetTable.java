@@ -48,6 +48,7 @@ import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageResponse;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
@@ -67,6 +68,8 @@ import org.drools.guvnor.client.table.SortableHeaderGroup;
 public class AssetTable extends Composite {
 
     private static final Constants constants = GWT.create(Constants.class);
+    private static Images                     images            = GWT.create( Images.class );
+
     private RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService(); // TODO use (C)DI
 
     private final String packageUuid;
@@ -120,7 +123,7 @@ public class AssetTable extends Composite {
 
         Column<AssetPageRow, String> formatColumn = new Column<AssetPageRow, String>(new ImageCell()) {
             public String getValue(AssetPageRow row) {
-                return "images/" + EditorLauncher.getAssetFormatIcon(row.getFormat());
+                return EditorLauncher.getAssetFormatIcon(row.getFormat()).getURL();
             }
         };
         columnPicker.addColumn(formatColumn, new SortableHeader<AssetPageRow, String>(
@@ -287,7 +290,7 @@ public class AssetTable extends Composite {
 
         if (feedURL != null) {
             // TODO use image resources to get the feed.png and use image button or something like that
-            HTML feedButton = new HTML("<a href='" + feedURL + "' target='_blank'><img src='images/feed.png'/></a>");
+            HTML feedButton = new HTML("<a href='" + feedURL + "' target='_blank'><img src='"+images.feed().getURL()+"'/></a>");
             tableHeaderPanel.add(feedButton);
         }
         layout.add(tableHeaderPanel);

@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.EnumDropDown;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldNature;
@@ -59,10 +60,12 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MethodParameterCallValueEditor extends DirtyableComposite {
 
+    private Constants      constants            = GWT.create( Constants.class );
+    private static Images  images               = GWT.create( Images.class );
+
     private CallFieldValue methodParameter;
     private DropDownData   enums;
     private SimplePanel    root;
-    private Constants      constants            = GWT.create( Constants.class );
     private Scenario       model                = null;
     private String         parameterType        = null;
     private Command        onValueChangeCommand = null;
@@ -105,9 +108,6 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                                         },
                                         enums ) );
         } else {
-            // FIX nheron il faut ajouter les autres choix pour appeller les
-            // bons editeurs suivant le type
-            // si la valeur vaut 0 il faut mettre un stylo (
 
             if ( methodParameter.nature == FieldNature.TYPE_UNDEFINED ) {
                 // we have a blank slate..
@@ -169,18 +169,6 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                 }
             } );
 
-            //            listVariable.addChangeListener( new ChangeListener() {
-            //                public void onChange(Widget arg0) {
-            //                    ListBox w = (ListBox) arg0;
-            //                    methodParameter.value = w.getValue( w.getSelectedIndex() );
-            //                    if (onValueChangeCommand != null){
-            //                        onValueChangeCommand.execute();
-            //                    }
-            //                    makeDirty();
-            //                    refresh();
-            //                }
-            //
-            //            } );
         }
         return listVariable;
     }
@@ -230,7 +218,7 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
     }
 
     private Widget choice() {
-        Image clickme = new Image( "images/edit.gif" );
+        Image clickme = new Image( images.edit() );
         clickme.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -241,7 +229,7 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
     }
 
     protected void showTypeChoice(Widget w) {
-        final FormStylePopup form = new FormStylePopup( "images/newex_wiz.gif",
+        final FormStylePopup form = new FormStylePopup( images.newexWiz(),
                                                         constants.FieldValue() );
         Button lit = new Button( constants.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {

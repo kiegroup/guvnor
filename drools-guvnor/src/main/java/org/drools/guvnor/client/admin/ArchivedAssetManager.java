@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ package org.drools.guvnor.client.admin;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
@@ -46,6 +47,8 @@ import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 
 public class ArchivedAssetManager extends Composite {
 
+    private static Images images    = (Images) GWT.create( Images.class );
+
     private AssetItemGrid grid;
     private ListBox       packages  = new ListBox( true );
     private Constants     constants = GWT.create( Constants.class );
@@ -57,8 +60,8 @@ public class ArchivedAssetManager extends Composite {
         VerticalPanel header = new VerticalPanel();
         header.add( new HTML( constants.ArchivedItems() ) );
 
-        pf.addHeader( "images/backup_large.png",
-                      header ); //NON-NLS
+        pf.addHeader( images.backupLarge(),
+                      header ); 
 
         final TabOpener tabOpener = TabOpener.getInstance();
 
@@ -78,7 +81,7 @@ public class ArchivedAssetManager extends Composite {
                                   new AssetItemGridDataLoader() {
                                       public void loadData(int startRow,
                                                            int numberOfRows,
-                                                           GenericCallback cb) {
+                                                           GenericCallback<org.drools.guvnor.client.rpc.TableDataResult> cb) {
                                           RepositoryServiceFactory.getService().loadArchivedAssets( startRow,
                                                                                                     numberOfRows,
                                                                                                     cb );
@@ -130,8 +133,8 @@ public class ArchivedAssetManager extends Composite {
                 }
                 RepositoryServiceFactory.getService().archiveAssets( grid.getSelectedRowUUIDs(),
                                                                      false,
-                                                                     new GenericCallback() {
-                                                                         public void onSuccess(Object arg0) {
+                                                                     new GenericCallback<java.lang.Void>() {
+                                                                         public void onSuccess(Void arg0) {
                                                                              Window.alert( constants.ItemRestored() );
                                                                              grid.refreshGrid();
                                                                          }
@@ -154,9 +157,9 @@ public class ArchivedAssetManager extends Composite {
                     return;
                 }
                 RepositoryServiceFactory.getService().removeAssets( grid.getSelectedRowUUIDs(),
-                                                                    new GenericCallback() {
+                                                                    new GenericCallback<java.lang.Void>() {
 
-                                                                        public void onSuccess(Object arg0) {
+                                                                        public void onSuccess(Void arg0) {
                                                                             Window.alert( constants.ItemDeleted() );
                                                                             grid.refreshGrid();
                                                                         }
@@ -176,8 +179,8 @@ public class ArchivedAssetManager extends Composite {
 
     private void deletePackage(final String uuid) {
         RepositoryServiceFactory.getService().removePackage( uuid,
-                                                             new GenericCallback() {
-                                                                 public void onSuccess(Object data) {
+                                                             new GenericCallback<java.lang.Void>() {
+                                                                 public void onSuccess(Void data) {
                                                                      Window.alert( constants.PackageDeleted() );
                                                                      packages.clear();
                                                                      loadPackages();

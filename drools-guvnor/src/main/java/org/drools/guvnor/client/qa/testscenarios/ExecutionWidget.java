@@ -21,6 +21,7 @@ import java.util.Date;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 
@@ -45,7 +46,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class ExecutionWidget extends Composite {
 
-    private Constants            constants = ((Constants) GWT.create( Constants.class ));
+    private Constants            constants = GWT.create( Constants.class );
+    private static Images        images    = GWT.create( Images.class );
 
     private final ExecutionTrace executionTrace;
 
@@ -75,7 +77,7 @@ public class ExecutionWidget extends Composite {
         } );
 
         HorizontalPanel layout = new HorizontalPanel();
-        layout.add( new Image( "images/execution_trace.gif" ) ); //NON-NLS
+        layout.add( new Image( images.executionTrace() ) );
         layout.add( choice );
         layout.add( simulDatePanel );
 

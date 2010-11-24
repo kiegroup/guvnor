@@ -23,6 +23,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
@@ -51,12 +52,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActionSetFieldWidget extends RuleModellerWidget {
 
+    private Constants                constants   = GWT.create( Constants.class );
+    private static Images            images      = GWT.create( Images.class );
+
     final private ActionSetField     model;
     final private DirtyableFlexTable layout;
     private boolean                  isBoundFact = false;
     private String[]                 fieldCompletions;
     private String                   variableClass;
-    private Constants                constants   = GWT.create( Constants.class );
     private boolean                  readOnly;
 
     public ActionSetFieldWidget(RuleModeller mod,
@@ -104,7 +107,6 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         if ( readOnly == null ) {
             this.readOnly = !completions.containsFactType( this.variableClass );
-            //|| !mod.getModel().getBoundFacts().contains(this.variableClass);
         } else {
             this.readOnly = readOnly;
         }
@@ -121,10 +123,6 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
     private void doLayout() {
         layout.clear();
 
-        //layout.setWidget( 0, 0, getSetterLabel() );
-
-        //DirtyableFlexTable inner = new DirtyableFlexTable();
-
         for ( int i = 0; i < model.fieldValues.length; i++ ) {
             ActionFieldValue val = model.fieldValues[i];
 
@@ -138,7 +136,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
                               2,
                               valueEditor( val ) );
             final int idx = i;
-            Image remove = new ImageButton( "images/delete_item_small.gif" ); //NON-NLS
+            Image remove = new ImageButton( images.deleteItemSmall() );
             remove.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -161,7 +159,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             HorizontalPanel h = new HorizontalPanel();
             h.add( getSetterLabel() );
             if ( !this.readOnly ) {
-                h.add( new ImageButton( "images/edit_tiny.gif",
+                h.add( new ImageButton( images.editTiny(),
                                         constants.AddFirstNewField(),
                                         new ClickHandler() {
 
@@ -207,7 +205,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
     protected void showAddFieldPopup(ClickEvent w) {
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
-        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
+        final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
                                                          constants.AddAField() );
 
         final ListBox box = new ListBox();

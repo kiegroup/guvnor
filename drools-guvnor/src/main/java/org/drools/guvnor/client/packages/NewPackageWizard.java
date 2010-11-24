@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Format;
 
@@ -55,19 +56,19 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
  */
 public class NewPackageWizard extends FormStylePopup {
 
+    private static Constants      constants        = GWT.create( Constants.class );
+    private static Images         images           = GWT.create( Images.class );
+
     private TextBox               nameBox;
     private TextBox               descBox;
     private final FormStyleLayout importLayout     = new FormStyleLayout();
     private final FormStyleLayout newPackageLayout = new FormStyleLayout();
-    private static Constants      constants        = ((Constants) GWT.create( Constants.class ));
 
     public NewPackageWizard(final Command afterCreatedEvent) {
-        super( "images/new_wiz.gif",
-               constants.CreateANewPackage() ); //NON-NLS
+        super( images.newexWiz(),
+               constants.CreateANewPackage() );
         nameBox = new TextBox();
         descBox = new TextBox();
-
-        //newPackageLayout.addRow( new HTML(constants.CreateNewPackage()) );
 
         newPackageLayout.addAttribute( constants.NameColon(),
                                        nameBox );
@@ -77,19 +78,19 @@ public class NewPackageWizard extends FormStylePopup {
         nameBox.setTitle( constants.PackageNameTip() );
 
         RadioButton newPackage = new RadioButton( "action",
-                                                  constants.CreateNewPackageRadio() ); //NON-NLS
+                                                  constants.CreateNewPackageRadio() );
         RadioButton importPackage = new RadioButton( "action",
-                                                     constants.ImportFromDrlRadio() ); //NON-NLS
+                                                     constants.ImportFromDrlRadio() );
 
-        newPackage.setValue(true);
+        newPackage.setValue( true );
         newPackageLayout.setVisible( true );
 
-        newPackage.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent arg0) {
+        newPackage.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
                 newPackageLayout.setVisible( true );
-                importLayout.setVisible( false );				
-			}        	
-        });
+                importLayout.setVisible( false );
+            }
+        } );
 
         this.setAfterShow( new Command() {
             public void execute() {
@@ -98,17 +99,18 @@ public class NewPackageWizard extends FormStylePopup {
         } );
 
         importLayout.setVisible( false );
-        importPackage.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent arg0) {
+        importPackage.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
                 newPackageLayout.setVisible( false );
-                importLayout.setVisible( true );				
-			}        	
-        });
-        
+                importLayout.setVisible( true );
+            }
+        } );
+
         VerticalPanel ab = new VerticalPanel();
         ab.add( newPackage );
         ab.add( importPackage );
-        addAttribute( "", ab );
+        addAttribute( "",
+                      ab );
 
         addRow( newPackageLayout );
         addRow( importLayout );
@@ -123,8 +125,8 @@ public class NewPackageWizard extends FormStylePopup {
         importLayout.addRow( new HTML( constants.ImportDRLDesc3() ) );
 
         Button create = new Button( constants.CreatePackage() );
-        create.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent arg0) {
+        create.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
                 if ( PackageNameValidator.validatePackageName( nameBox.getText() ) ) {
                     createPackageAction( nameBox.getText(),
                                          descBox.getText(),
@@ -133,9 +135,9 @@ public class NewPackageWizard extends FormStylePopup {
                 } else {
                     nameBox.setText( "" );
                     Window.alert( constants.PackageNameCorrectHint() );
-                }				
-			}        	
-        });
+                }
+            }
+        } );
 
         newPackageLayout.addAttribute( "",
                                        create );
@@ -148,8 +150,8 @@ public class NewPackageWizard extends FormStylePopup {
         LoadingPopup.showMessage( constants.CreatingPackagePleaseWait() );
         RepositoryServiceFactory.getService().createPackage( name,
                                                              descr,
-                                                             new GenericCallback() {
-                                                                 public void onSuccess(Object data) {
+                                                             new GenericCallback<java.lang.String>() {
+                                                                 public void onSuccess(String uuid) {
                                                                      RulePackageSelector.currentlySelectedPackage = name;
                                                                      LoadingPopup.close();
                                                                      refresh.execute();
@@ -173,21 +175,21 @@ public class NewPackageWizard extends FormStylePopup {
         panel.add( upload );
 
         panel.add( new Label( constants.upload() ) );
-        ImageButton ok = new ImageButton( "images/upload.gif",
-                                          constants.Import() ); //NON-NLS
-        
+        ImageButton ok = new ImageButton( images.upload(),
+                                          constants.Import() );
+
         ClickHandler okClickHandler = new ClickHandler() {
-			public void onClick(ClickEvent arg0) {
+            public void onClick(ClickEvent arg0) {
                 if ( Window.confirm( constants.ImportMergeWarning() ) ) {
                     uploadFormPanel.submit();
-                }			
-            }        	
+                }
+            }
         };
-        ok.addClickHandler(okClickHandler);       
+        ok.addClickHandler( okClickHandler );
 
         panel.add( ok );
 
-        final FormStylePopup packageNamePopup = new FormStylePopup( "images/package_large.png",
+        final FormStylePopup packageNamePopup = new FormStylePopup( images.packageLarge(),
                                                                     constants.PackageName() );
         HorizontalPanel packageNamePanel = new HorizontalPanel();
         packageNamePopup.addRow( new Label( constants.ImportedDRLContainsNoNameForThePackage() ) );
@@ -197,11 +199,11 @@ public class NewPackageWizard extends FormStylePopup {
         packageNamePanel.add( packageName );
         Button uploadWithNameButton = new Button( constants.OK() );
         uploadWithNameButton.addClickHandler( okClickHandler );
-        
+
         packageNamePanel.add( uploadWithNameButton );
         packageNamePopup.addRow( packageNamePanel );
-        uploadFormPanel.addSubmitCompleteHandler(new SubmitCompleteHandler() {
-			public void onSubmitComplete(SubmitCompleteEvent event) {
+        uploadFormPanel.addSubmitCompleteHandler( new SubmitCompleteHandler() {
+            public void onSubmitComplete(SubmitCompleteEvent event) {
                 if ( event.getResults().indexOf( "OK" ) > -1 ) { //NON-NLS
                     Window.alert( constants.PackageWasImportedSuccessfully() );
                     afterCreatedEvent.execute();
@@ -216,26 +218,26 @@ public class NewPackageWizard extends FormStylePopup {
                     ErrorPopup.showMessage( Format.format( constants.UnableToImportIntoThePackage0(),
                                                            event.getResults() ) );
                 }
-                LoadingPopup.close();				
-			}     	
-        });
-        
-        uploadFormPanel.addSubmitHandler(new SubmitHandler() {
-			public void onSubmit(SubmitEvent event) {
+                LoadingPopup.close();
+            }
+        } );
+
+        uploadFormPanel.addSubmitHandler( new SubmitHandler() {
+            public void onSubmit(SubmitEvent event) {
                 if ( upload.getFilename().length() == 0 ) {
-                    LoadingPopup.close();  
+                    LoadingPopup.close();
                     Window.alert( constants.YouDidNotChooseADrlFileToImport() );
                     event.cancel();
                 } else if ( !upload.getFilename().endsWith( ".drl" ) ) { //NON-NLS
-                    LoadingPopup.close();                    
+                    LoadingPopup.close();
                     Window.alert( constants.YouCanOnlyImportDrlFiles() );
                     event.cancel();
                 } else if ( packageName.getText() != null && !packageName.getText().equals( "" ) ) {
                     LoadingPopup.showMessage( constants.ImportingDRLPleaseWait() );
                     uploadFormPanel.setAction( uploadFormPanel.getAction() + "?packageName=" + packageName.getText() );
                 }
-			}        	
-        });
+            }
+        } );
 
         return uploadFormPanel;
     }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,21 +21,23 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
-import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 
 /**
  * This shows a list of scenarios in a package.
@@ -44,77 +46,87 @@ import com.google.gwt.core.client.GWT;
  */
 public class ScenarioPackageView extends Composite {
 
+    private Constants     constants = ((Constants) GWT.create( Constants.class ));
+    private static Images images    = GWT.create( Images.class );
 
-	private EditItemEvent editEvent;
+    private EditItemEvent editEvent;
 
-	private VerticalPanel layout;
+    private VerticalPanel layout;
 
-	private AssetItemGrid grid;
-    private Constants constants = ((Constants) GWT.create(Constants.class));
+    private AssetItemGrid grid;
 
-    public ScenarioPackageView(final String packageUUID, String packageName, EditItemEvent editEvent, ExplorerViewCenterPanel centerPanel) {
-		this.editEvent = editEvent;
+    public ScenarioPackageView(final String packageUUID,
+                               String packageName,
+                               EditItemEvent editEvent,
+                               ExplorerViewCenterPanel centerPanel) {
+        this.editEvent = editEvent;
 
-		grid = new AssetItemGrid(editEvent, AssetItemGrid.RULE_LIST_TABLE_ID, new AssetItemGridDataLoader() {
-			public void loadData(int startRow, int numberOfRows,
-					GenericCallback cb) {
-				RepositoryServiceFactory.getService().listAssets(packageUUID, new String[] {AssetFormats.TEST_SCENARIO},
-						startRow, numberOfRows,AssetItemGrid.RULE_LIST_TABLE_ID, cb);
-			}
-		});
+        grid = new AssetItemGrid( editEvent,
+                                  AssetItemGrid.RULE_LIST_TABLE_ID,
+                                  new AssetItemGridDataLoader() {
+                                      public void loadData(int startRow,
+                                                           int numberOfRows,
+                                                           GenericCallback<TableDataResult> cb) {
+                                          RepositoryServiceFactory.getService().listAssets( packageUUID,
+                                                                                            new String[]{AssetFormats.TEST_SCENARIO},
+                                                                                            startRow,
+                                                                                            numberOfRows,
+                                                                                            AssetItemGrid.RULE_LIST_TABLE_ID,
+                                                                                            cb );
+                                      }
+                                  } );
 
-		layout = new VerticalPanel();
-		layout.setWidth("100%");
-		PrettyFormLayout pf = new PrettyFormLayout();
+        layout = new VerticalPanel();
+        layout.setWidth( "100%" );
+        PrettyFormLayout pf = new PrettyFormLayout();
 
-		VerticalPanel vert = new VerticalPanel();
-		vert.add(new HTML("<b>" + constants.ScenariosForPackage1() + "</b>" + packageName));
-		Button run = new Button(constants.RunAllScenarios());
-		run.addClickListener(new ClickListener() {
-			public void onClick(Widget w) {
-				runAllScenarios(packageUUID);
-			}
-		});
+        VerticalPanel vert = new VerticalPanel();
+        vert.add( new HTML( "<b>" + constants.ScenariosForPackage1() + "</b>" + packageName ) );
+        Button run = new Button( constants.RunAllScenarios() );
+        run.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                runAllScenarios( packageUUID );
+            }
+        } );
 
-		vert.add(run);
+        vert.add( run );
 
+        pf.addHeader( images.scenarioLarge(),
+                      vert );
 
-		pf.addHeader("images/scenario_large.png", vert); //NON-NLS
+        layout.add( pf );
+        layout.add( grid );
 
-		layout.add(pf);
-		layout.add(grid);
+        initWidget( layout );
 
-		initWidget(layout);
+    }
 
+    private void refreshShowGrid() {
+        layout.remove( 1 );
+        layout.add( grid );
+    }
 
+    /**
+     * Run all the scenarios, obviously !
+     */
+    private void runAllScenarios(String uuid) {
+        LoadingPopup.showMessage( constants.BuildingAndRunningScenarios() );
+        RepositoryServiceFactory.getService().runScenariosInPackage( uuid,
+                                                                     new GenericCallback<BulkTestRunResult>() {
+                                                                         public void onSuccess(BulkTestRunResult d) {
+                                                                             BulkRunResultWidget w = new BulkRunResultWidget( d,
+                                                                                                                              editEvent,
+                                                                                                                              new Command() {
+                                                                                                                                  public void execute() {
+                                                                                                                                      refreshShowGrid();
+                                                                                                                                  }
 
-
-	}
-
-	private void refreshShowGrid() {
-		layout.remove(1);
-		layout.add(grid);
-	}
-
-
-	/**
-	 * Run all the scenarios, obviously !
-	 */
-	private void runAllScenarios(String uuid) {
-		LoadingPopup.showMessage(constants.BuildingAndRunningScenarios());
-		RepositoryServiceFactory.getService().runScenariosInPackage(uuid, new GenericCallback<BulkTestRunResult>() {
-			public void onSuccess(BulkTestRunResult d) {
-				BulkRunResultWidget w = new BulkRunResultWidget(d, editEvent, new Command() {
-					public void execute() {
-						refreshShowGrid();
-					}
-
-				});
-				layout.remove(1);
-				layout.add(w);
-				LoadingPopup.close();
-			}
-		});
-	}
+                                                                                                                              } );
+                                                                             layout.remove( 1 );
+                                                                             layout.add( w );
+                                                                             LoadingPopup.close();
+                                                                         }
+                                                                     } );
+    }
 
 }

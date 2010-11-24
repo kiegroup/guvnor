@@ -33,6 +33,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
@@ -112,6 +113,7 @@ public class GuidedDecisionTableWidget extends Composite
     SaveEventListener {
 
     private Constants                   constants      = ((Constants) GWT.create( Constants.class ));
+    private static Images               images         = (Images) GWT.create( Images.class );
 
     private GuidedDecisionTable         guidedDecisionTable;
     private VerticalPanel               layout;
@@ -173,7 +175,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         configureColumnsNote = new PrettyFormLayout();
         configureColumnsNote.startSection();
-        configureColumnsNote.addRow( new HTML( "<img src='images/information.gif'/>&nbsp;" + constants.ConfigureColumnsNote() ) );
+        configureColumnsNote.addRow( new HTML( "<img src='" + new Image( images.information() ).getUrl() + "'/>&nbsp;" + constants.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();
         configureColumnsNote.setVisible( false );
         layout.add( configureColumnsNote );
@@ -215,9 +217,9 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget editAction(final ActionCol c) {
-        return new ImageButton( "images/edit.gif",
+        return new ImageButton( images.edit(),
                                 constants.EditThisActionColumnConfiguration(),
-                                new ClickHandler() { //NON-NLS
+                                new ClickHandler() {
                                     public void onClick(ClickEvent w) {
                                         if ( c instanceof ActionSetFieldCol ) {
                                             ActionSetFieldCol asf = (ActionSetFieldCol) c;
@@ -330,9 +332,9 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeAction(final ActionCol c) {
-        Image del = new ImageButton( "images/delete_item_small.gif",
+        Image del = new ImageButton( images.deleteItemSmall(),
                                      constants.RemoveThisActionColumn(),
-                                     new ClickHandler() { //NON-NLS
+                                     new ClickHandler() { 
                                          public void onClick(ClickEvent w) {
                                              String cm = Format.format( constants.DeleteActionColumnWarning(),
                                                                         c.getHeader() );
@@ -397,9 +399,9 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget editCondition(final ConditionCol c) {
-        return new ImageButton( "images/edit.gif",
+        return new ImageButton( images.edit(),
                                 constants.EditThisColumnsConfiguration(),
-                                new ClickHandler() { //NON-NLS
+                                new ClickHandler() {
                                     public void onClick(ClickEvent w) {
                                         GuidedDTColumnConfig dialog = new GuidedDTColumnConfig( getSCE(),
                                                                                                 guidedDecisionTable,
@@ -425,9 +427,9 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeCondition(final ConditionCol c) {
-        Image del = new ImageButton( "images/delete_item_small.gif",
+        Image del = new ImageButton( images.deleteItemSmall(),
                                      constants.RemoveThisConditionColumn(),
-                                     new ClickHandler() { //NON-NLS
+                                     new ClickHandler() {
                                          public void onClick(ClickEvent w) {
                                              String cm = Format.format( constants.DeleteConditionColumnWarning(),
                                                                         c.getHeader() );
@@ -531,15 +533,15 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget newAttr() {
-        ImageButton but = new ImageButton( "images/new_item.gif",
+        ImageButton but = new ImageButton( images.newItem(),
                                            constants.AddANewAttributeMetadata(),
-                                           new ClickHandler() { //NON-NLS
+                                           new ClickHandler() {
                                                public void onClick(ClickEvent w) {
                                                    //show choice of attributes
-                                                   final FormStylePopup pop = new FormStylePopup( "images/config.png",
-                                                                                                  constants.AddAnOptionToTheRule() ); //NON-NLS
+                                                   final FormStylePopup pop = new FormStylePopup( images.config(),
+                                                                                                  constants.AddAnOptionToTheRule() );
                                                    final ListBox list = RuleAttributeWidget.getAttributeList();
-                                                   final Image addbutton = new ImageButton( "images/new_item.gif" ); //NON-NLS
+                                                   final Image addbutton = new ImageButton( images.newItem() );
                                                    final TextBox box = new TextBox();
                                                    box.setVisibleLength( 15 );
 
@@ -590,9 +592,9 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeAttr(final AttributeCol at) {
-        Image del = new ImageButton( "images/delete_item_small.gif",
+        Image del = new ImageButton( images.deleteItemSmall(),
                                      constants.RemoveThisAttribute(),
-                                     new ClickHandler() { //NON-NLS
+                                     new ClickHandler() {
                                          public void onClick(ClickEvent w) {
                                              String ms = Format.format( constants.DeleteActionColumnWarning(),
                                                                         at.attr );
@@ -610,9 +612,9 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget removeMeta(final MetadataCol md) {
-        Image del = new ImageButton( "images/delete_item_small.gif",
+        Image del = new ImageButton( images.deleteItemSmall(),
                                      constants.RemoveThisMetadata(),
-                                     new ClickHandler() { //NON-NLS
+                                     new ClickHandler() {
                                          public void onClick(ClickEvent w) {
                                              String ms = Format.format( constants.DeleteActionColumnWarning(),
                                                                         md.attr );
@@ -719,7 +721,7 @@ public class GuidedDecisionTableWidget extends Composite
                                          int rowIndex,
                                          int colNum,
                                          Store store) {
-                    	return "<span class='x-grid3-cell-inner x-grid3-td-numberer'>" + (rowIndex + 1) + "</span>"; //NON-NLS
+                        return "<span class='x-grid3-cell-inner x-grid3-td-numberer'>" + (rowIndex + 1) + "</span>"; //NON-NLS
                     }
                 } );
             }

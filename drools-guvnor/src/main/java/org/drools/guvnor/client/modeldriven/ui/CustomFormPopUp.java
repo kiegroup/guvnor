@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +21,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -34,92 +35,88 @@ import org.drools.guvnor.client.messages.Constants;
  *
  * @author esteban
  */
-public class CustomFormPopUp extends FormStylePopup{
+public class CustomFormPopUp extends FormStylePopup {
 
-    private Constants constants = ((Constants) GWT.create(Constants.class));
+    private Constants                     constants = ((Constants) GWT.create( Constants.class ));
 
     private final CustomFormConfiguration configuration;
-    private final Button okButton;
-    private final Button cancelButton;
-    private Frame externalFrame;
+    private final Button                  okButton;
+    private final Button                  cancelButton;
+    private Frame                         externalFrame;
 
-    public CustomFormPopUp(String image, String title, CustomFormConfiguration configuration) {
-        super(image, title);
+    public CustomFormPopUp(ImageResource image,
+                           String title,
+                           CustomFormConfiguration configuration) {
+        super( image,
+               title );
         this.configuration = configuration;
 
-
-
         this.externalFrame = new Frame();
-        this.externalFrame.setWidth(configuration.getCustomFormWidth()+"px");
-        this.externalFrame.setHeight(configuration.getCustomFormHeight()+"px");
-//        this.externalFrame.setWidth("100%");
-//        this.externalFrame.setHeight("100%");
+        this.externalFrame.setWidth( configuration.getCustomFormWidth() + "px" );
+        this.externalFrame.setHeight( configuration.getCustomFormHeight() + "px" );
 
         VerticalPanel vp = new VerticalPanel();
-        vp.setWidth("100%");
-        vp.setHeight("100%");
-        //vp.setHeight(configuration.getCustomFormHeight()+"px");
-        vp.add(this.externalFrame);
+        vp.setWidth( "100%" );
+        vp.setHeight( "100%" );
+        vp.add( this.externalFrame );
 
-        okButton = new Button(constants.OK());
+        okButton = new Button( constants.OK() );
 
         //cancel button with default handler
-        cancelButton = new Button(constants.Cancel(),new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                hide();
-            }
-        });
-        
+        cancelButton = new Button( constants.Cancel(),
+                                   new ClickHandler() {
+                                       public void onClick(ClickEvent event) {
+                                           hide();
+                                       }
+                                   } );
 
         HorizontalPanel hp = new HorizontalPanel();
-        hp.setWidth("100%");
-        hp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        hp.add(okButton);
-        hp.add(cancelButton);
+        hp.setWidth( "100%" );
+        hp.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
+        hp.add( okButton );
+        hp.add( cancelButton );
 
-        vp.add(hp);
+        vp.add( hp );
 
-        this.addRow(vp);
+        this.addRow( vp );
 
-        
     }
 
-    public void addOkButtonHandler(ClickHandler handler){
-        this.okButton.addClickHandler(handler);
+    public void addOkButtonHandler(ClickHandler handler) {
+        this.okButton.addClickHandler( handler );
     }
 
-    public void addCancelButtonHandler(ClickHandler handler){
-        this.cancelButton.addClickHandler(handler);
+    public void addCancelButtonHandler(ClickHandler handler) {
+        this.cancelButton.addClickHandler( handler );
     }
 
-    public void show(String selectedId, String selectedValue){
+    public void show(String selectedId,
+                     String selectedValue) {
 
-        
         String url = configuration.getCustomFormURL();
-        if (url == null || url.trim().equals("")){
+        if ( url == null || url.trim().equals( "" ) ) {
             //TODO: show an error
             return;
-        }else{
-            String parameters = "cf_id="+selectedId+"&cf_value="+selectedValue+"&factType="+this.configuration.getFactType()+"&fieldName="+this.configuration.getFieldName();
+        } else {
+            String parameters = "cf_id=" + selectedId + "&cf_value=" + selectedValue + "&factType=" + this.configuration.getFactType() + "&fieldName=" + this.configuration.getFieldName();
             //advanced url parsing for adding attributes :P
-            url = url +(url.contains("?")?"&":"?")+parameters;
-            this.externalFrame.setUrl(url);
+            url = url + (url.contains( "?" ) ? "&" : "?") + parameters;
+            this.externalFrame.setUrl( url );
             this.show();
         }
     }
 
-    private Element getExternalFrameElement(String id){
-        IFrameElement iframe = IFrameElement.as(this.externalFrame.getElement());
-        return iframe.getContentDocument().getElementById(id);
+    private Element getExternalFrameElement(String id) {
+        IFrameElement iframe = IFrameElement.as( this.externalFrame.getElement() );
+        return iframe.getContentDocument().getElementById( id );
     }
 
-    public String getFormId(){
-        return this.getExternalFrameElement("cf_id").getPropertyString("value");
+    public String getFormId() {
+        return this.getExternalFrameElement( "cf_id" ).getPropertyString( "value" );
     }
 
-    public String getFormValue(){
-        return this.getExternalFrameElement("cf_value").getPropertyString("value");
+    public String getFormValue() {
+        return this.getExternalFrameElement( "cf_value" ).getPropertyString( "value" );
     }
-
 
 }

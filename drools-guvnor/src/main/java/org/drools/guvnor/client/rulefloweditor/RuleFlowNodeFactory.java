@@ -279,7 +279,7 @@ public class RuleFlowNodeFactory {
 
         Image image = new Image();
         image.setStyleName( RuleFlowBaseNode.IMAGE_STYLE );
-        image.setUrl( node.getImagePath() );
+        image.setResource( node.getImagePath() );
 
         HorizontalPanel panel = new HorizontalPanel();
 
@@ -295,7 +295,7 @@ public class RuleFlowNodeFactory {
     protected static void fillIdAndCoordinates(RuleFlowBaseNode node,
                                                TransferNode tn) {
 
-        node.addClickListener( node );
+        node.addClickHandler( node );
 
         node.setId( tn.getId() );
         node.setX( tn.getX() );

@@ -19,9 +19,9 @@ package org.drools.guvnor.client.explorer;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.images.Images;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.NewPackageWizard;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Util;
 

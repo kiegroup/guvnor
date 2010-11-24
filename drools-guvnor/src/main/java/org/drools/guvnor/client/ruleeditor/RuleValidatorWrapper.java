@@ -20,18 +20,20 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.util.Format;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 
 /**
  * This widget wraps a rule asset widget, and provides actions to validate and view source.
@@ -41,15 +43,13 @@ public class RuleValidatorWrapper extends DirtyableComposite
     implements
     SaveEventListener {
 
-    private RuleAsset        asset;
+    private static Constants constants = GWT.create( Constants.class );
+    private static Images    images    = GWT.create( Images.class );
+
     private VerticalPanel    layout    = new VerticalPanel();
     private Widget           editor;
 
-    private static Constants constants = ((Constants) GWT.create( Constants.class ));
-
-    public RuleValidatorWrapper(Widget editor,
-                                RuleAsset asset) {
-        this.asset = asset;
+    public RuleValidatorWrapper(Widget editor) {
         this.editor = editor;
 
         layout.add( editor );
@@ -70,13 +70,15 @@ public class RuleValidatorWrapper extends DirtyableComposite
             pop.setWidth( 200 + "px" );
             pop.setTitle( constants.ValidationResultsDotDot() );
             HorizontalPanel h = new HorizontalPanel();
-            h.add( new SmallLabel( "<img src='images/tick_green.gif'/><i>" + constants.ItemValidatedSuccessfully() + "</i>" ) ); //NON-NLS
+            h.add( new SmallLabel( Format.format( "<img src='{0}'/><i>{1}</i>",
+                                                  new Image( images.greenTick() ).getUrl(),
+                                                  constants.ItemValidatedSuccessfully() ) ) ); //NON-NLS
 
             pop.addRow( h );
             pop.show();
         } else {
-            FormStylePopup pop = new FormStylePopup( "images/package_builder.png",
-                                                     constants.ValidationResults() ); //NON-NLS
+            FormStylePopup pop = new FormStylePopup( images.packageBuilder(),
+                                                     constants.ValidationResults() );
             FlexTable errTable = new FlexTable();
             errTable.setStyleName( "build-Results" ); //NON-NLS
             for ( int i = 0; i < result.lines.length; i++ ) {
@@ -84,7 +86,7 @@ public class RuleValidatorWrapper extends DirtyableComposite
                 final BuilderResultLine res = result.lines[i];
                 errTable.setWidget( row,
                                     0,
-                                    new Image( "images/error.gif" ) ); //NON-NLS
+                                    new Image( images.error() ) );
                 if ( res.assetFormat.equals( "package" ) ) {
                     errTable.setText( row,
                                       1,

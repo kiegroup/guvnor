@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -33,10 +34,10 @@ import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -55,12 +56,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class VersionBrowser extends Composite {
 
-    private Image     refresh;
-    private FlexTable layout;
-    private String    uuid;
-    private MetaData  metaData;
-    private Command   refreshCommand;
-    private Constants constants = ((Constants) GWT.create( Constants.class ));
+    private Constants     constants = GWT.create( Constants.class );
+    private static Images images    = GWT.create( Images.class );
+
+    private Image         refresh;
+    private FlexTable     layout;
+    private String        uuid;
+    private MetaData      metaData;
+    private Command       refreshCommand;
 
     public VersionBrowser(String uuid,
                           MetaData data,
@@ -93,7 +96,7 @@ public class VersionBrowser extends Composite {
                                           0,
                                           HasHorizontalAlignment.ALIGN_LEFT );
 
-        refresh = new ImageButton( "images/refresh.gif" ); //NON-NLS
+        refresh = new ImageButton( images.refresh() );
 
         refresh.addClickHandler( clickHandler );
 
@@ -116,7 +119,8 @@ public class VersionBrowser extends Composite {
 
     protected void clickLoadHistory() {
         showBusyIcon();
-        DeferredCommand.addCommand( new Command() {
+        Scheduler scheduler = Scheduler.get();
+        scheduler.scheduleDeferred( new Command() {
             public void execute() {
                 loadHistoryData();
             }
@@ -125,7 +129,7 @@ public class VersionBrowser extends Composite {
     }
 
     private void showBusyIcon() {
-        refresh.setUrl( "images/searching.gif" );
+        refresh.setResource( images.searching() );
     }
 
     /**
@@ -219,7 +223,7 @@ public class VersionBrowser extends Composite {
                                                                  public void onSuccess(RuleAsset asset) {
                                                                      asset.isreadonly = true;
                                                                      asset.metaData.name = metaData.name;
-                                                                     final FormStylePopup pop = new FormStylePopup( "images/snapshot.png",
+                                                                     final FormStylePopup pop = new FormStylePopup( images.snapshot(),
                                                                                                                     Format.format( constants.VersionNumber0Of1(),
                                                                                                                                    "" + asset.metaData.versionNumber,
                                                                                                                                    asset.metaData.name ),
@@ -273,7 +277,7 @@ public class VersionBrowser extends Composite {
     }
 
     private void showStaticIcon() {
-        refresh.setUrl( "images/refresh.gif" );
+        refresh.setResource( images.refresh() );
     }
 
 }

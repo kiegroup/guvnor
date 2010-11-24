@@ -39,6 +39,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.packages.WorkingSetManager;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -74,6 +75,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -96,27 +98,29 @@ public class RuleModeller extends DirtyableComposite
     implements
     RuleModelEditor {
 
-    private DirtyableFlexTable          layout;
-    private RuleModel                   model;
-    private Constants                   constants               = ((Constants) GWT.create( Constants.class ));
-    private RuleModellerConfiguration   configuration               = RuleModellerConfiguration.getInstance();
-    private boolean                     showingOptions          = false;
-    private int                         currentLayoutRow        = 0;
-    private String                      packageName;
-    private RuleAsset                   asset;
-    private ModellerWidgetFactory       widgetFactory;
+    private Constants                 constants               = GWT.create( Constants.class );
+    private static Images             images                  = GWT.create( Images.class );
 
-    private List<RuleModellerWidget>    lhsWidgets              = new ArrayList<RuleModellerWidget>();
-    private List<RuleModellerWidget>    rhsWidgets              = new ArrayList<RuleModellerWidget>();
+    private DirtyableFlexTable        layout;
+    private RuleModel                 model;
+    private RuleModellerConfiguration configuration           = RuleModellerConfiguration.getInstance();
+    private boolean                   showingOptions          = false;
+    private int                       currentLayoutRow        = 0;
+    private String                    packageName;
+    private RuleAsset                 asset;
+    private ModellerWidgetFactory     widgetFactory;
 
-    private boolean                     hasModifiedWidgets;
+    private List<RuleModellerWidget>  lhsWidgets              = new ArrayList<RuleModellerWidget>();
+    private List<RuleModellerWidget>  rhsWidgets              = new ArrayList<RuleModellerWidget>();
 
-    private final Command               onWidgetModifiedCommand = new Command() {
+    private boolean                   hasModifiedWidgets;
 
-                                                                 public void execute() {
-                                                                     hasModifiedWidgets = true;
-                                                                 }
-                                                             };
+    private final Command             onWidgetModifiedCommand = new Command() {
+
+                                                                  public void execute() {
+                                                                      hasModifiedWidgets = true;
+                                                                  }
+                                                              };
 
     public RuleModeller(RuleAsset asset,
                         RuleViewer viewer,
@@ -150,7 +154,7 @@ public class RuleModeller extends DirtyableComposite
         layout.clear();
         this.currentLayoutRow = 0;
 
-        Image addPattern = new ImageButton( "images/new_item.gif" );
+        Image addPattern = new ImageButton( images.newItem() );
         addPattern.setTitle( constants.AddAConditionToThisRule() );
         addPattern.addClickHandler( new ClickHandler() {
 
@@ -166,8 +170,8 @@ public class RuleModeller extends DirtyableComposite
                                               "87%" );
         layout.getColumnFormatter().setWidth( 2,
                                               "5%" );
-        
-        if (this.showLHS()){                                      
+
+        if ( this.showLHS() ) {
             layout.setWidget( currentLayoutRow,
                               0,
                               new SmallLabel( "<b>" + constants.WHEN() + "</b>" ) );
@@ -181,13 +185,13 @@ public class RuleModeller extends DirtyableComposite
 
             renderLhs( this.model );
         }
-        
-        if (this.showRHS()){
-            layout.setWidget( currentLayoutRow,
-                          0,
-                          new SmallLabel( "<b>" + constants.THEN() + "</b>" ) );
 
-            Image addAction = new ImageButton( "images/new_item.gif" ); //NON-NLS
+        if ( this.showRHS() ) {
+            layout.setWidget( currentLayoutRow,
+                              0,
+                              new SmallLabel( "<b>" + constants.THEN() + "</b>" ) );
+
+            Image addAction = new ImageButton( images.newItem() );
             addAction.setTitle( constants.AddAnActionToThisRule() );
             addAction.addClickHandler( new ClickHandler() {
 
@@ -205,7 +209,7 @@ public class RuleModeller extends DirtyableComposite
 
             renderRhs( this.model );
         }
-        
+
         if ( showAttributes() ) {
 
             final int tmp1 = currentLayoutRow;
@@ -278,29 +282,29 @@ public class RuleModeller extends DirtyableComposite
         return false;
     }
 
-    public boolean showRHS(){
+    public boolean showRHS() {
         return !this.configuration.isHideRHS();
     }
-    
+
     /** return true if we should not allow unfrozen editing of the RHS */
     public boolean lockRHS() {
-        return isLock( RuleAttributeWidget.LOCK_RHS ); //NON-NLS
+        return isLock( RuleAttributeWidget.LOCK_RHS );
     }
-    
-    public boolean showLHS(){
+
+    public boolean showLHS() {
         return !this.configuration.isHideLHS();
     }
 
     /** return true if we should not allow unfrozen editing of the LHS */
     public boolean lockLHS() {
-        return isLock( RuleAttributeWidget.LOCK_LHS ); //NON-NLS
+        return isLock( RuleAttributeWidget.LOCK_LHS );
     }
-    
+
     private boolean showAttributes() {
-        if (!CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW )){
+        if ( !CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
             return false;
         }
-        
+
         return !this.configuration.isHideAttributes();
     }
 
@@ -311,7 +315,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private Widget getAddAttribute() {
-        Image add = new ImageButton( "images/new_item.gif" ); //NON-NLS
+        Image add = new ImageButton( images.newItem() );
         add.setTitle( constants.AddAnOptionToTheRuleToModifyItsBehaviorWhenEvaluatedOrExecuted() );
 
         add.addClickHandler( new ClickHandler() {
@@ -362,7 +366,7 @@ public class RuleModeller extends DirtyableComposite
             horiz.setWidth( "100%" );
             //horiz.setBorderWidth(2);
 
-            Image remove = new ImageButton( "images/delete_item_small.gif" ); //NON-NLS
+            Image remove = new ImageButton( images.deleteItemSmall() );
             remove.setTitle( constants.RemoveThisAction() );
             final int idx = i;
             remove.addClickHandler( new ClickHandler() {
@@ -1111,7 +1115,7 @@ public class RuleModeller extends DirtyableComposite
                                  RuleModellerWidget w) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton( "images/delete_item_small.gif" ); //NON-NLS
+        final Image remove = new ImageButton( images.deleteItemSmall() );
         remove.setTitle( constants.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt() );
         final int idx = i;
         remove.addClickHandler( new ClickHandler() {
@@ -1153,7 +1157,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private void addLineIcon(int row,
-                             String img,
+                             ImageResource img,
                              String title) {
         Widget widget = layout.getWidget( row,
                                           0 );
@@ -1192,15 +1196,15 @@ public class RuleModeller extends DirtyableComposite
 
         final DirtyableHorizontalPane hp = new DirtyableHorizontalPane();
 
-        Image addPattern = new ImageButton( "images/new_item_below.png" );
+        Image addPattern = new ImageButton( images.newItemBelow() );
         addPattern.setTitle( title );
         addPattern.addClickHandler( addBelowListener );
 
-        Image moveDown = new ImageButton( "images/shuffle_down.gif" );
+        Image moveDown = new ImageButton( images.shuffleDown() );
         moveDown.setTitle( constants.MoveDown() );
         moveDown.addClickHandler( moveDownListener );
 
-        Image moveUp = new ImageButton( "images/shuffle_up.gif" );
+        Image moveUp = new ImageButton( images.shuffleUp() );
         moveUp.setTitle( constants.MoveUp() );
         moveUp.addClickHandler( moveUpListener );
 
@@ -1312,7 +1316,7 @@ public class RuleModeller extends DirtyableComposite
             for ( AnalysisReportLine warning : this.warnings ) {
                 if ( warning.patternOrderNumber != null ) {
                     this.addLineIcon( warning.patternOrderNumber + 1,
-                                      "images/warning.gif",
+                                      images.warning(),
                                       warning.description );
                 }
             }
@@ -1321,7 +1325,7 @@ public class RuleModeller extends DirtyableComposite
             for ( AnalysisReportLine error : this.errors ) {
                 if ( error.patternOrderNumber != null ) {
                     this.addLineIcon( error.patternOrderNumber + 1,
-                                      "images/error.gif",
+                                      images.error(),
                                       error.description );
                 }
             }

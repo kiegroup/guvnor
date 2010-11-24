@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.common;
 
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
@@ -41,11 +42,11 @@ public class FormStyleLayout extends Composite {
     /**
      * Create a new layout with a header and and icon.
      */
-    public FormStyleLayout(String image,
+    public FormStyleLayout(ImageResource image,
                            String title) {
         addHeader( image,
                    title );
-        
+
         initWidget( layout );
     }
 
@@ -100,7 +101,7 @@ public class FormStyleLayout extends Composite {
     /**
      * Adds a header at the top.
      */
-    protected void addHeader(String image,
+    protected void addHeader(ImageResource image,
                              String title) {
         HTML name = new HTML( "<div class='x-form-field'><b>" + title + "</b></div>" );
         name.setStyleName( "resource-name-Label" );
@@ -108,7 +109,7 @@ public class FormStyleLayout extends Composite {
                   name );
     }
 
-    private void doHeader(String image,
+    private void doHeader(ImageResource image,
                           Widget title) {
         layout.setWidget( 0,
                           0,
@@ -123,7 +124,7 @@ public class FormStyleLayout extends Composite {
         numInLayout++;
     }
 
-    protected void addHeader(String image,
+    protected void addHeader(ImageResource image,
                              String title,
                              Widget titleIcon) {
         HTML name = new HTML( "<div class='x-form-field'><b>" + title + "</b></div>" );

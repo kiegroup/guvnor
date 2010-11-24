@@ -15,6 +15,7 @@
  */
 
 package org.drools.guvnor.client.common;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -31,20 +32,20 @@ package org.drools.guvnor.client.common;
  * limitations under the License.
  */
 
-
-
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 
 /**
  * Well this one should be pretty obvious what it does.
@@ -56,75 +57,76 @@ import com.google.gwt.core.client.GWT;
  */
 public class StatusChangePopup extends FormStylePopup {
 
-    private boolean isPackage;
-    private String uuid;
-    private String newStatus;
-    private Command changedStatus;
-    private Constants constants = ((Constants) GWT.create(Constants.class));
+    private static Images images    = (Images) GWT.create( Images.class );
+    private Constants     constants = ((Constants) GWT.create( Constants.class ));
 
-    public StatusChangePopup(String uuid, boolean isPackage) {
+    private boolean       isPackage;
+    private String        uuid;
+    private String        newStatus;
+    private Command       changedStatus;
+
+    public StatusChangePopup(String uuid,
+                             boolean isPackage) {
 
         this.uuid = uuid;
         this.isPackage = isPackage;
 
-        super.addRow(new HTML( "<img src='images/status_small.gif'/><b>" + constants.ChangeStatus() + "</b>" ));
+        super.addRow( new HTML( "<img src='" + images.statusSmall() + "'/><b>" + constants.ChangeStatus() + "</b>" ) );
 
         HorizontalPanel horiz = new HorizontalPanel();
         final ListBox box = new ListBox();
 
-        LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
+        LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
         RepositoryServiceFactory.getService().listStates( new GenericCallback<String[]>() {
             public void onSuccess(String[] list) {
-                box.addItem(constants.ChooseOne());
+                box.addItem( constants.ChooseOne() );
                 for ( int i = 0; i < list.length; i++ ) {
                     box.addItem( list[i] );
                 }
                 LoadingPopup.close();
             }
-        });
-
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
+        } );
+        box.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
                 newStatus = box.getItemText( box.getSelectedIndex() );
             }
-        });
+        } );
 
-        horiz.add(box);
-        Button ok = new Button(constants.ChangeStatus());
-        ok.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        horiz.add( box );
+        Button ok = new Button( constants.ChangeStatus() );
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 String newState = box.getItemText( box.getSelectedIndex() );
-                changeState(newState);
+                changeState( newState );
                 hide();
             }
-        });
+        } );
         horiz.add( ok );
 
-
-        Button close = new Button(constants.Cancel());
-        close.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        Button close = new Button( constants.Cancel() );
+        close.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 hide();
             }
-        });
+        } );
         horiz.add( close );
 
-
-        addRow(horiz);
-
-
+        addRow( horiz );
 
     }
 
     /** Apply the state change */
     private void changeState(String newState) {
-        LoadingPopup.showMessage(constants.UpdatingStatus());
-        RepositoryServiceFactory.getService().changeState( uuid, newStatus, isPackage, new GenericCallback() {
-            public void onSuccess(Object data) {
-                changedStatus.execute();
-                LoadingPopup.close();
-            }
-        });
+        LoadingPopup.showMessage( constants.UpdatingStatus() );
+        RepositoryServiceFactory.getService().changeState( uuid,
+                                                           newStatus,
+                                                           isPackage,
+                                                           new GenericCallback<java.lang.Void>() {
+                                                               public void onSuccess(Void v) {
+                                                                   changedStatus.execute();
+                                                                   LoadingPopup.close();
+                                                               }
+                                                           } );
     }
 
     /**

@@ -18,9 +18,15 @@ package org.drools.guvnor.client.ruleeditor;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.common.*;
-import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.common.FormStyleLayout;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.security.Capabilities;
@@ -32,6 +38,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -45,7 +52,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-
 /**
  * This displays the metadata for a versionable asset.
  * It also captures edits, but it does not load or save anything itself.
@@ -53,16 +59,18 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MetaDataWidget extends Composite {
 
+    private Constants       constants = GWT.create( Constants.class );
+    private static Images   images    = GWT.create( Images.class );
+
     private MetaData        data;
     private boolean         readOnly;
     private String          uuid;
     private Command         metaDataRefreshView;
     private Command         fullRefreshView;
-    private VerticalPanel   layout = new VerticalPanel();
+    private VerticalPanel   layout    = new VerticalPanel();
     AssetCategoryEditor     ed;
     private FormStyleLayout currentSection;
     private String          currentSectionName;
-    private Constants       constants = ((Constants) GWT.create( Constants.class ));
 
     public MetaDataWidget(final MetaData d,
                           final boolean readOnly,
@@ -76,23 +84,26 @@ public class MetaDataWidget extends Composite {
         this.metaDataRefreshView = metaDataRefreshView;
         this.fullRefreshView = fullRefreshView;
 
-        if (d.format.equals(AssetFormats.DRL) || d.format.equals(AssetFormats.FUNCTION) || d.format.equals(AssetFormats.ENUMERATION)) {
+        if ( d.format.equals( AssetFormats.DRL ) || d.format.equals( AssetFormats.FUNCTION ) || d.format.equals( AssetFormats.ENUMERATION ) ) {
             render( d,
                     readOnly,
                     uuid );
-            
+
         } else {
             Button show = new Button( constants.showMoreInfo() );
             show.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     layout.clear();
-                    render(d, readOnly, uuid);
+                    render( d,
+                            readOnly,
+                            uuid );
                 }
             } );
 
-            layout.add( new SmallLabel( Format.format( "Title: [<b>{0}</b>]",
+            layout.add( new SmallLabel( Format.format( "{0}: [<b>{1}</b>]",
+                                                       constants.Title(),
                                                        d.name ) ) );
-            
+
             layout.add( show );
 
         }
@@ -103,28 +114,20 @@ public class MetaDataWidget extends Composite {
     private void render(MetaData d,
                         boolean readOnly,
                         String uuid) {
-        //        layout = new Form(new FormConfig() {
-        //        	{
-        //        		setWidth(250);
-        //        		//setHeader(d.name);
-        //        		setLabelWidth(75);
-        //        		setSurroundWithBox(true);
-        //        	}
-        //        });
 
         if ( !readOnly ) {
-            Image edit = new ImageButton( "images/edit.gif", //NON-NLS
+            Image edit = new ImageButton( images.edit(),
                                           constants.RenameThisAsset() );
             edit.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent w) {
                     showRenameAsset( w );
                 }
             } );
-            addHeader( "images/meta_data.png", //NON-NLS
+            addHeader( images.metadata(),
                        d.name,
                        edit );
         } else {
-            addHeader( "images/asset_version.png", //NON-NLS
+            addHeader( images.assetVersion(),
                        d.name,
                        null );
         }
@@ -132,11 +135,11 @@ public class MetaDataWidget extends Composite {
         this.uuid = uuid;
         this.data = d;
         this.readOnly = readOnly;
-        //setWidth("20%");
+
         loadData( d );
     }
 
-    private void addHeader(String img,
+    private void addHeader(ImageResource img,
                            String name,
                            Image edit) {
         startSection( name );
@@ -183,10 +186,10 @@ public class MetaDataWidget extends Composite {
                                            }
                                        },
                                        constants.DisableTip() ) );
-        
+
         addAttribute( "UUID:",
-        		readOnlyText(uuid) );
-        
+                      readOnlyText( uuid ) );
+
         endSection();
 
         startSection( constants.OtherMetaData() );
@@ -271,13 +274,12 @@ public class MetaDataWidget extends Composite {
     }
 
     private void endSection(boolean collapsed) {
-        DisclosurePanel advancedDisclosure = new DisclosurePanel(
-        		currentSectionName);
-        advancedDisclosure.setAnimationEnabled(true);
-        advancedDisclosure.setWidth("100%");
-        advancedDisclosure.setOpen(collapsed);
-        advancedDisclosure.setContent(this.currentSection);
-        layout.add(advancedDisclosure);
+        DisclosurePanel advancedDisclosure = new DisclosurePanel( currentSectionName );
+        advancedDisclosure.setAnimationEnabled( true );
+        advancedDisclosure.setWidth( "100%" );
+        advancedDisclosure.setOpen( collapsed );
+        advancedDisclosure.setContent( this.currentSection );
+        layout.add( advancedDisclosure );
     }
 
     private void startSection(String name) {
@@ -292,7 +294,7 @@ public class MetaDataWidget extends Composite {
             HorizontalPanel horiz = new HorizontalPanel();
             horiz.setStyleName( "metadata-Widget" ); //NON-NLS
             horiz.add( readOnlyText( packageName ) );
-            Image editPackage = new ImageButton( "images/edit.gif" ); //NON-NLS
+            Image editPackage = new ImageButton( images.edit() );
             editPackage.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent w) {
                     showEditPackage( packageName,
@@ -305,7 +307,7 @@ public class MetaDataWidget extends Composite {
     }
 
     private void showRenameAsset(ClickEvent source) {
-        final FormStylePopup pop = new FormStylePopup( "images/package_large.png", 
+        final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
                                                        constants.RenameThisItem() );
         final TextBox box = new TextBox();
         box.setText( data.name );
@@ -318,8 +320,8 @@ public class MetaDataWidget extends Composite {
             public void onClick(ClickEvent w) {
                 RepositoryServiceFactory.getService().renameAsset( uuid,
                                                                    box.getText(),
-                                                                   new GenericCallback() {
-                                                                       public void onSuccess(Object data) {
+                                                                   new GenericCallback<java.lang.String>() {
+                                                                       public void onSuccess(String data) {
                                                                            metaDataRefreshView.execute();
                                                                            Window.alert( constants.ItemHasBeenRenamed() );
                                                                            pop.hide();
@@ -332,8 +334,8 @@ public class MetaDataWidget extends Composite {
     }
 
     private void showEditPackage(final String pkg,
-    		ClickEvent source) {
-        final FormStylePopup pop = new FormStylePopup( "images/package_large.png", //NON-NLS
+                                 ClickEvent source) {
+        final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
                                                        constants.MoveThisItemToAnotherPackage() );
         pop.addAttribute( constants.CurrentPackage(),
                           new Label( pkg ) );
@@ -354,8 +356,8 @@ public class MetaDataWidget extends Composite {
                                                                           sel.getSelectedPackage(),
                                                                           Format.format( constants.MovedFromPackage(),
                                                                                          pkg ),
-                                                                          new GenericCallback() {
-                                                                              public void onSuccess(Object data) {
+                                                                          new GenericCallback<java.lang.Void>() {
+                                                                              public void onSuccess(Void v) {
                                                                                   metaDataRefreshView.execute();
                                                                                   pop.hide();
                                                                               }

@@ -19,8 +19,8 @@ package org.drools.guvnor.client.explorer;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.drools.guvnor.client.images.Images;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.util.TabOpener;
@@ -42,16 +42,16 @@ public class BrowseTree extends AbstractTree
     static {
         TableConfig conf = new TableConfig();
         conf.headers = new String[2];
-        conf.headers[0] = constants.Name();// "Name ";
-        conf.headers[1] = constants.Date();// "Date ";
+        conf.headers[0] = constants.Name();
+        conf.headers[1] = constants.Date();
         conf.headerTypes = new String[2];
         conf.headerTypes[0] = "class java.lang.String";
         conf.headerTypes[1] = "class java.util.Calendar";
         conf.rowsPerPage = 500;
         AssetItemGrid.registerTableConfig( conf,
-                                         ExplorerNodeConfig.RECENT_EDITED_ID );
+                                           ExplorerNodeConfig.RECENT_EDITED_ID );
         AssetItemGrid.registerTableConfig( conf,
-                                         ExplorerNodeConfig.RECENT_VIEWED_ID );
+                                           ExplorerNodeConfig.RECENT_VIEWED_ID );
 
         conf = new TableConfig();
         conf.headers = new String[3];
@@ -65,7 +65,7 @@ public class BrowseTree extends AbstractTree
         conf.rowsPerPage = 500;
 
         AssetItemGrid.registerTableConfig( conf,
-                                         ExplorerNodeConfig.INCOMING_ID );
+                                           ExplorerNodeConfig.INCOMING_ID );
     }
 
     public BrowseTree() {
@@ -98,7 +98,7 @@ public class BrowseTree extends AbstractTree
 
         TabOpener opener = TabOpener.getInstance();
 
-        if (widgetID != null) {
+        if ( widgetID != null ) {
             if ( widgetID.equals( ExplorerNodeConfig.FIND_ID ) ) {
                 opener.openFind();
             } else if ( widgetID.equals( ExplorerNodeConfig.INCOMING_ID ) || widgetID.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) || widgetID.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {

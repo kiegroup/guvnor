@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@ package org.drools.guvnor.client.qa.testscenarios;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.RetractFact;
@@ -39,7 +40,9 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
  * To change this template use File | Settings | File Templates.
  */
 public class RetractWidget extends FlexTable {
-    private Constants              constants = ((Constants) GWT.create( Constants.class ));
+
+    private Constants              constants = GWT.create( Constants.class );
+    private static Images          images    = GWT.create( Images.class );
 
     protected final FixtureList    retractList;
     protected final Scenario       scenario;
@@ -94,7 +97,7 @@ public class RetractWidget extends FlexTable {
 
     class DeleteButton extends ImageButton {
         public DeleteButton(final RetractFact retractFact) {
-            super( "images/delete_item_small.gif",
+            super( images.deleteItemSmall(),
                    constants.RemoveThisRetractStatement() );
 
             addClickHandler( new ClickHandler() {

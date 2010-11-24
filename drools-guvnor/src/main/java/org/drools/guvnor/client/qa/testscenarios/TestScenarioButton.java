@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,6 +30,7 @@ import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -42,14 +43,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 abstract class TestScenarioButton extends ImageButton {
 
-    protected static Constants                 constants = ((Constants) GWT.create( Constants.class ));
+    protected static Constants                 constants = GWT.create( Constants.class );
 
     protected final Scenario                   scenario;
     protected final ScenarioWidget             parent;
     protected final SuggestionCompletionEngine suggestionCompletionEngine;
     protected final ExecutionTrace             previousEx;
 
-    public TestScenarioButton(String img,
+    public TestScenarioButton(ImageResource img,
                               String tooltip,
                               final ExecutionTrace previousEx,
                               final Scenario scenario,
@@ -72,7 +73,7 @@ abstract class TestScenarioButton extends ImageButton {
     protected abstract TestScenarioButtonPopup getPopUp();
 
     protected abstract class TestScenarioButtonPopup extends FormStylePopup {
-        public TestScenarioButtonPopup(String image,
+        public TestScenarioButtonPopup(ImageResource image,
                                        String text) {
             super( image,
                    text );
@@ -100,7 +101,7 @@ abstract class TestScenarioButton extends ImageButton {
 
                     public void onClick(ClickEvent event) {
                         scenario.insertBetween( previousEx,
-                        		getFixture() );
+                                                getFixture() );
                         parent.renderEditor();
                         hide();
                     }

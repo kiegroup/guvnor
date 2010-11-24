@@ -15,6 +15,7 @@
  */
 
 package org.drools.guvnor.client.common;
+
 /*
  * Copyright 2005 JBoss Inc
  * 
@@ -31,12 +32,12 @@ package org.drools.guvnor.client.common;
  * limitations under the License.
  */
 
-
-
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.core.client.GWT;
+
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 
 /**
  * This presents validation error messages to the user, from the server side.
@@ -45,26 +46,28 @@ import org.drools.guvnor.client.messages.Constants;
  * @author Michael Neale
  */
 public class ValidationMessageWidget extends FormStylePopup {
-    private Constants constants = ((Constants) GWT.create(Constants.class));
+
+    private Constants     constants = ((Constants) GWT.create( Constants.class ));
+    private static Images images    = (Images) GWT.create( Images.class );
 
     /**
      * The heading is the short description in bold at the top.
      */
-    public ValidationMessageWidget(String heading, String body) {
+    public ValidationMessageWidget(String heading,
+                                   String body) {
 
-        super("images/attention_needed.png", heading); //NON-NLS
-        addAttribute(constants.Detail(), details(body) );
-        //addRow( close() );
-        
+        super( images.attentionNeeded(),
+               heading );
+        addAttribute( constants.Detail(),
+                      details( body ) );
     }
-
 
     private Widget details(String body) {
         TextArea area = new TextArea();
         area.setStyleName( "editable-Surface" );
         area.setVisibleLines( 12 );
         area.setText( body );
-        area.setWidth( "100%" );       
+        area.setWidth( "100%" );
         return area;
     }
 }

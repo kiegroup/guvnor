@@ -23,6 +23,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
@@ -56,17 +57,18 @@ import com.google.gwt.user.client.ui.Widget;
  * Date: 7 nov. 2009
  * Time: 19:27:09
  * To change this template use File | Settings | File Templates.
+ * 
+ * Runs the test, plus shows a summary view of the results.
  */
-public/**
-* Runs the test, plus shows a summary view of the results.
-*/
-class TestRunnerWidget extends Composite {
+public class TestRunnerWidget extends Composite {
 
-    FlexTable           results   = new FlexTable();
-    VerticalPanel       layout    = new VerticalPanel();
+    private Constants     constants = GWT.create( Constants.class );
+    private static Images images    = GWT.create( Images.class );
 
-    private SimplePanel actions   = new SimplePanel();
-    private Constants   constants = ((Constants) GWT.create( Constants.class ));
+    FlexTable             results   = new FlexTable();
+    VerticalPanel         layout    = new VerticalPanel();
+
+    private SimplePanel   actions   = new SimplePanel();
 
     public TestRunnerWidget(final ScenarioWidget parent,
                             final String packageName) {
@@ -114,7 +116,7 @@ class TestRunnerWidget extends Composite {
             final BuilderResultLine res = rs[i];
             errTable.setWidget( row,
                                 0,
-                                new Image( "images/error.gif" ) );
+                                new Image(images.error() ) );
             if ( res.assetFormat.equals( "package" ) ) {
                 errTable.setText( row,
                                   1,
@@ -156,10 +158,10 @@ class TestRunnerWidget extends Composite {
                 VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
                 HorizontalPanel panel = new HorizontalPanel();
                 if ( !verifyRuleFired.successResult.booleanValue() ) {
-                    panel.add( new Image( "images/warning.gif" ) );
+                    panel.add( new Image( images.warning() ) );
                     failures++;
                 } else {
-                    panel.add( new Image( "images/test_passed.png" ) );
+                    panel.add( new Image( images.testPassed() ) );
                 }
                 panel.add( new SmallLabel( verifyRuleFired.explanation ) );
                 resultsDetail.add( panel );
@@ -171,10 +173,10 @@ class TestRunnerWidget extends Composite {
                     VerifyField verifyField = fieldIterator.next();
                     HorizontalPanel panel = new HorizontalPanel();
                     if ( !verifyField.successResult.booleanValue() ) {
-                        panel.add( new Image( "images/warning.gif" ) );
+                        panel.add( new Image( images.warning() ) );
                         failures++;
                     } else {
-                        panel.add( new Image( "images/test_passed.png" ) );
+                        panel.add( new Image( images.testPassed() ) );
                     }
                     panel.add( new SmallLabel( verifyField.explanation ) );
                     resultsDetail.add( panel );

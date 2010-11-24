@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
@@ -48,12 +49,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ActionSetColumn extends FormStylePopup {
 
+    private Constants                  constants    = GWT.create( Constants.class );
+    private static Images              images       = (Images) GWT.create( Images.class );
+
     private ActionSetFieldCol          editingCol;
     private SmallLabel                 bindingLabel = new SmallLabel();
     private TextBox                    fieldLabel   = getFieldLabel();
     private GuidedDecisionTable        dt;
     private SuggestionCompletionEngine sce;
-    private Constants                  constants    = GWT.create( Constants.class );
 
     public ActionSetColumn(SuggestionCompletionEngine sce,
                            final GuidedDecisionTable dt,
@@ -80,7 +83,7 @@ public class ActionSetColumn extends FormStylePopup {
         pattern.add( bindingLabel );
         doBindingLabel();
 
-        Image changePattern = new ImageButton( "images/edit.gif",
+        Image changePattern = new ImageButton( images.edit(),
                                                constants.ChooseABoundFactThatThisColumnPertainsTo(),
                                                new ClickHandler() {
                                                    public void onClick(ClickEvent w) {
@@ -93,7 +96,7 @@ public class ActionSetColumn extends FormStylePopup {
 
         HorizontalPanel field = new HorizontalPanel();
         field.add( fieldLabel );
-        Image editField = new ImageButton( "images/edit.gif",
+        Image editField = new ImageButton( images.edit(),
                                            constants.EditTheFieldThatThisColumnOperatesOn(),
                                            new ClickHandler() {
                                                public void onClick(ClickEvent w) {

@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.factmodel;
 
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.AbstractLazyStackPanelHeader;
 
 import com.google.gwt.core.client.GWT;
@@ -42,6 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
     private static Constants constants = ((Constants) GWT.create( Constants.class ));
+    private static Images    images    = (Images) GWT.create( Images.class );
 
     interface FactModelEditorBinder
         extends
@@ -152,9 +154,9 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
     private void setIconImage() {
         if ( expanded ) {
-            icon.setUrl( "images/collapse.gif" );
+            icon.setResource( images.collapse() );
         } else {
-            icon.setUrl( "images/expand.gif" );
+            icon.setResource( images.expand() );
         }
 
     }
@@ -174,20 +176,19 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
     public void setDownVisible(boolean visible) {
         moveDownIcon.setVisible( visible );
     }
-    
-    
-    public void expand(){
-        if (!expanded){
+
+    public void expand() {
+        if ( !expanded ) {
             onTitleClicked();
         }
     }
-    
-    public void collapse(){
-        if (expanded){
+
+    public void collapse() {
+        if ( expanded ) {
             onTitleClicked();
         }
     }
-    
+
     private void onTitleClicked() {
         if ( expanded ) {
             CloseEvent.fire( this,

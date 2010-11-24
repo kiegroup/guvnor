@@ -1,6 +1,6 @@
 package org.drools.guvnor.client.explorer;
 
-import org.drools.guvnor.client.images.Images;
+import org.drools.guvnor.client.resources.Images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;

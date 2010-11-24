@@ -15,6 +15,7 @@
  */
 
 package org.drools.guvnor.client.common;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -31,6 +32,9 @@ package org.drools.guvnor.client.common;
  * limitations under the License.
  */
 
+import org.drools.guvnor.client.resources.Images;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
@@ -43,17 +47,21 @@ import com.google.gwt.user.client.ui.Image;
  */
 public class InfoPopup extends Composite {
 
-    public InfoPopup(final String title, final String message) {
-        Image info = new Image("images/information.gif");
-        info.setTitle( message );
-		info.addClickHandler(new ClickHandler() {
+    private static Images images = (Images) GWT.create( Images.class );
 
-			public void onClick(ClickEvent event) {
-				final FormStylePopup pop = new FormStylePopup("images/information.gif", title);
-				pop.addRow(new SmallLabel(message));
-				pop.show();
-			}
-		});
+    public InfoPopup(final String title,
+                     final String message) {
+        Image info = new Image( images.information() );
+        info.setTitle( message );
+        info.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                final FormStylePopup pop = new FormStylePopup( images.information(),
+                                                               title );
+                pop.addRow( new SmallLabel( message ) );
+                pop.show();
+            }
+        } );
         initWidget( info );
     }
 }

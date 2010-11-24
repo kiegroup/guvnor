@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.qa;
 
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisFactUsage;
 import org.drools.guvnor.client.rpc.AnalysisFieldUsage;
 import org.drools.guvnor.client.util.Format;
@@ -23,6 +24,7 @@ import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TreeItem;
 
 /**
@@ -32,14 +34,17 @@ import com.google.gwt.user.client.ui.TreeItem;
 class FactUsagesItem extends TreeItem {
 
     private Constants constants = GWT.create( Constants.class );
+    private Images    images    = GWT.create( Images.class );
 
     public FactUsagesItem(AnalysisFactUsage[] factUsages) {
         setStyleName( "analysis-Report" );
 
-        setHTML( Format.format( "<img src='images/fact_template.gif'/><b>{0}</b>",
+        setHTML( Format.format( "<img src='{0}'/><b>{1}</b>",
+                                new Image( images.factTemplate() ).getUrl(),
                                 constants.ShowFactUsages() ) );
 
-        setUserObject( new HTML( Format.format( "<img src='images/fact_template.gif'/><b>{0}:</b>",
+        setUserObject( new HTML( Format.format( "<img src='{0}'/><b>{1}:</b>",
+                                                new Image( images.factTemplate() ).getUrl(),
                                                 constants.FactUsages() ) ) );
 
         doFacts( factUsages );
@@ -48,7 +53,8 @@ class FactUsagesItem extends TreeItem {
     private void doFacts(AnalysisFactUsage[] factUsages) {
         for ( AnalysisFactUsage factUsage : factUsages ) {
 
-            TreeItem fact = new TreeItem( "<img src='images/fact.gif'/>" + factUsage.name );
+            TreeItem fact = new TreeItem( Format.format( "<img src='{0}'/>",
+                                                         new Image( images.fact() ).getUrl() ) + factUsage.name );
 
             TreeItem fieldList = doFields( factUsage.fields );
             fact.addItem( fieldList );
@@ -63,7 +69,8 @@ class FactUsagesItem extends TreeItem {
         TreeItem fieldList = new TreeItem( constants.FieldsUsed() );
 
         for ( AnalysisFieldUsage fieldUsage : fields ) {
-            TreeItem field = new TreeItem( "<img src='images/field.gif'/>" + fieldUsage.name );
+            TreeItem field = new TreeItem( Format.format( "<img src='{0}'/>",
+                                                          new Image( images.field() ).getUrl() ) + fieldUsage.name );
             fieldList.addItem( field );
             TreeItem ruleList = doAffectedRules( fieldUsage );
             field.addItem( ruleList );
@@ -77,7 +84,8 @@ class FactUsagesItem extends TreeItem {
         TreeItem ruleList = new TreeItem( constants.ShowRulesAffected() );
         ruleList.setUserObject( new HTML( constants.RulesAffected() ) );
         for ( String ruleName : fieldUsage.rules ) {
-            ruleList.addItem( new TreeItem( "<img src='images/rule_asset.gif'/>" + ruleName ) );
+            ruleList.addItem( new TreeItem( Format.format( "<img src='{0}'/>",
+                                                           new Image( images.ruleAsset() ).getUrl() ) + ruleName ) );
         }
         return ruleList;
     }

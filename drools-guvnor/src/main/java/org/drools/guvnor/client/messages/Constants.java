@@ -704,7 +704,7 @@ public interface Constants
 
     String FactType();
 
-    String name(); // TODO clashes with method Name()
+    String name();
 
     String isEqualTo();
 
@@ -2163,4 +2163,10 @@ public interface Constants
     String NoRulesFound();
     
     String Done();
+
+    String RemoveThisRuleFlowActivation();
+
+    String Constraints();
+
+    String ConstraintsParameters();
 }

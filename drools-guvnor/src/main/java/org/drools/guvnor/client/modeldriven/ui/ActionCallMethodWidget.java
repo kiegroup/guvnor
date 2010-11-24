@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- *
- */
 package org.drools.guvnor.client.modeldriven.ui;
 
 import java.util.ArrayList;
@@ -28,6 +25,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.MethodInfo;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -55,6 +53,9 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ActionCallMethodWidget extends RuleModellerWidget {
 
+    private Constants                constants   = GWT.create( Constants.class );
+    private static Images            images      = (Images) GWT.create( Images.class );
+
     final private ActionCallMethod   model;
     final private DirtyableFlexTable layout;
     private boolean                  isBoundFact = false;
@@ -62,7 +63,6 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
     private String[]                 fieldCompletionTexts;
     private String[]                 fieldCompletionValues;
     private String                   variableClass;
-    private Constants                constants   = GWT.create( Constants.class );
 
     private boolean                  readOnly;
 
@@ -171,8 +171,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         HorizontalPanel horiz = new HorizontalPanel();
 
         if ( model.state == ActionCallMethod.TYPE_UNDEFINED ) {
-            Image edit = new ImageButton( "images/add_field_to_fact.gif" ); //NON-
-            // NLS
+            Image edit = new ImageButton( images.addFieldToFact() );
             edit.setTitle( constants.AddAnotherFieldToThisSoYouCanSetItsValue() );
             edit.addClickHandler( new ClickHandler() {
 
@@ -197,8 +196,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
         final SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
 
-        final FormStylePopup popup = new FormStylePopup( "images/newex_wiz.gif",
-                                                         constants.ChooseAMethodToInvoke() ); // NON-NLS
+        final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
+                                                         constants.ChooseAMethodToInvoke() );
         final ListBox box = new ListBox();
         box.addItem( "..." );
 
@@ -225,8 +224,6 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                 fieldList.addAll( completions.getMethodParams( variableClass,
                                                                methodNameWithParams ) );
 
-                // String fieldType = completions.getFieldType( variableClass,
-                // fieldName );
                 int i = 0;
                 for ( String fieldParameter : fieldList ) {
                     model.addFieldValue( new ActionFieldFunction( methodName,

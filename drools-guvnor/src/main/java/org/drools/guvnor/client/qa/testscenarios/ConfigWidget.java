@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,11 +17,16 @@
 package org.drools.guvnor.client.qa.testscenarios;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import java.util.List;
@@ -34,7 +39,9 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class ConfigWidget extends Composite {
-    private final Constants constants = ((Constants) GWT.create( Constants.class ));
+
+    private final Constants constants = GWT.create( Constants.class );
+    private static Images   images    = GWT.create( Images.class );
 
     public ConfigWidget(final Scenario sc,
                         final String packageName,
@@ -47,11 +54,11 @@ public class ConfigWidget extends Composite {
         }
         HorizontalPanel filter = new HorizontalPanel();
 
-        final Image add = new ImageButton( "images/new_item.gif",
+        final Image add = new ImageButton( images.newItem(),
                                            constants.AddANewRule() );
-        add.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
-                showRulePopup( w,
+        add.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                showRulePopup( (Widget) event.getSource(),
                                box,
                                packageName,
                                sc.rules,
@@ -59,10 +66,10 @@ public class ConfigWidget extends Composite {
             }
         } );
 
-        final Image remove = new ImageButton( "images/trash.gif",
+        final Image remove = new ImageButton( images.trash(),
                                               constants.RemoveSelectedRule() );
-        remove.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        remove.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 if ( box.getSelectedIndex() == -1 ) {
                     Window.alert( constants.PleaseChooseARuleToRemove() );
                 } else {
@@ -82,8 +89,8 @@ public class ConfigWidget extends Composite {
         drop.addItem( constants.PreventTheseRulesFromFiring(),
                       "exc" ); //NON-NLS
         drop.addItem( constants.AllRulesMayFire() );
-        drop.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
+        drop.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
                 String s = drop.getValue( drop.getSelectedIndex() );
                 if ( s.equals( "inc" ) ) { //NON-NLS
                     sc.inclusive = true;
@@ -124,10 +131,10 @@ public class ConfigWidget extends Composite {
     private void showRulePopup(Widget w,
                                final ListBox box,
                                String packageName,
-                               final List filterList,
+                               final List<String> filterList,
                                ScenarioWidget scw) {
-        final FormStylePopup pop = new FormStylePopup( "images/rule_asset.gif",
-                                                       constants.SelectRule() ); //NON-NLS
+        final FormStylePopup pop = new FormStylePopup( images.ruleAsset(),
+                                                       constants.SelectRule() );
 
         Widget ruleSelector = scw.getRuleSelectionWidget( packageName,
                                                           new RuleSelectionEvent() {

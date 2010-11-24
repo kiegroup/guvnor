@@ -1,5 +1,5 @@
-/**
- * Copyright 2010 JBoss Inc
+/*
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,40 +16,29 @@
 
 package org.drools.guvnor.client.rulefloweditor;
 
-/*
- * Copyright 2005 JBoss Inc
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import java.util.Map;
 
+import org.drools.guvnor.client.messages.Constants;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.rpc.IsSerializable;
-import com.google.gwt.user.client.ui.FocusListener;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
-import org.drools.guvnor.client.messages.Constants;
 
 public class SplitNode extends RuleFlowBaseNode {
 
     SplitTransferNode.Type                type;
 
     public Map<ConnectionRef, Constraint> constraints;
-    private Constants constants = ((Constants) GWT.create(Constants.class));
+    private Constants                     constants = ((Constants) GWT.create( Constants.class ));
 
     @Override
     public Corners getCorners() {
@@ -57,7 +46,7 @@ public class SplitNode extends RuleFlowBaseNode {
     }
 
     @Override
-    public String getImagePath() {
+    public ImageResource getImagePath() {
         return null;
     }
 
@@ -76,7 +65,7 @@ public class SplitNode extends RuleFlowBaseNode {
             parametersForm.clear();
 
             // Add Type:
-            parametersForm.addAttribute(constants.Type2(),
+            parametersForm.addAttribute( constants.Type2(),
                                          new Label( type.toString() ) );
 
             for ( final ConnectionRef connectionRef : constraints.keySet() ) {
@@ -87,13 +76,13 @@ public class SplitNode extends RuleFlowBaseNode {
                 priorityTextBox.setWidth( "30px" );
                 priorityTextBox.setText( constraint.getPriority() + "" );
 
-                priorityTextBox.addFocusListener( new FocusListener() {
-                    public void onFocus(Widget arg1) {
+                priorityTextBox.addFocusHandler( new FocusHandler() {
+                    public void onFocus(FocusEvent event) {
                         priorityTextBox.selectAll();
                     }
-
-                    public void onLostFocus(Widget arg1) {
-
+                } );
+                priorityTextBox.addBlurHandler( new BlurHandler() {
+                    public void onBlur(BlurEvent event) {
                         final Constraint constraint = constraints.get( connectionRef );
                         constraint.setPriority( Integer.parseInt( priorityTextBox.getText() ) );
                         constraints.put( connectionRef,
@@ -105,13 +94,13 @@ public class SplitNode extends RuleFlowBaseNode {
                 constraintTextBox.setWidth( "300px" );
                 constraintTextBox.setText( constraint.getConstraint() );
 
-                constraintTextBox.addFocusListener( new FocusListener() {
-                    public void onFocus(Widget arg1) {
+                constraintTextBox.addFocusHandler( new FocusHandler() {
+                    public void onFocus(FocusEvent event) {
                         constraintTextBox.selectAll();
                     }
-
-                    public void onLostFocus(Widget arg1) {
-
+                } );
+                constraintTextBox.addBlurHandler( new BlurHandler() {
+                    public void onBlur(BlurEvent event) {
                         final Constraint constraint = constraints.get( connectionRef );
                         constraint.setConstraint( constraintTextBox.getText() );
                         constraints.put( connectionRef,
@@ -120,9 +109,9 @@ public class SplitNode extends RuleFlowBaseNode {
                 } );
 
                 Panel panel = new HorizontalPanel();
-                panel.add( new Label(constants.Priority()) );
+                panel.add( new Label( constants.Priority() ) );
                 panel.add( priorityTextBox );
-                panel.add( new Label(constants.ValueRuleFlow()) );
+                panel.add( new Label( constants.ValueRuleFlow() ) );
                 panel.add( constraintTextBox );
 
                 parametersForm.addAttribute( constraint.getName(),

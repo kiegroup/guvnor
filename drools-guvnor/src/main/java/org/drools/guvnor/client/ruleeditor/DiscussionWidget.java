@@ -22,8 +22,8 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.PushClient;
 import org.drools.guvnor.client.rpc.PushResponse;
@@ -60,7 +60,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DiscussionWidget extends Composite {
 
-    private static Constants       constants        = ((Constants) GWT.create( Constants.class ));
+    private static Constants       constants        = GWT.create( Constants.class );
+    private static Images          images           = GWT.create( Images.class );
 
     private VerticalPanel          commentList      = new VerticalPanel();
     private VerticalPanel          newCommentLayout = new VerticalPanel();
@@ -171,8 +172,8 @@ public class DiscussionWidget extends Composite {
                 public void onClick(ClickEvent sender) {
                     if ( Window.confirm( constants.EraseAllCommentsWarning() ) ) {
                         RepositoryServiceFactory.getService().clearAllDiscussionsForAsset( asset.uuid,
-                                                                                           new GenericCallback() {
-                                                                                               public void onSuccess(Object result) {
+                                                                                           new GenericCallback<java.lang.Void>() {
+                                                                                               public void onSuccess(Void v) {
                                                                                                    updateCommentList( new ArrayList<DiscussionRecord>() );
                                                                                                }
                                                                                            } );
@@ -181,8 +182,14 @@ public class DiscussionWidget extends Composite {
             } );
         }
 
-        String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + asset.metaData.packageName + "&assetName=" + URL.encode( asset.metaData.name ) + "&viewUrl=" + Util.getSelfURL();
-        hp.add( new HTML( "<a href='" + feedURL + "' target='_blank'><img src='images/feed.png'/></a>" ) );
+        String feedURL = Format.format( "{0}feed/discussion?package={1}&assetName={2}&viewUrl={3}",
+                                        GWT.getModuleBaseURL(),
+                                        asset.metaData.packageName,
+                                        URL.encode( asset.metaData.name ),
+                                        Util.getSelfURL() );
+        hp.add( new HTML( Format.format( "<a href='{0}' target='_blank'><img src='{1}'/></a>",
+                                         feedURL,
+                                         new Image( images.feed() ).getUrl() ) ) );
 
         newCommentLayout.add( hp );
 
@@ -227,7 +234,7 @@ public class DiscussionWidget extends Composite {
 
     private void sendNewComment(String text) {
         newCommentLayout.clear();
-        newCommentLayout.add( new Image( "images/spinner.gif" ) );
+        newCommentLayout.add( new Image( images.spinner() ) );
         RepositoryServiceFactory.getService().addToDiscussionForAsset( asset.uuid,
                                                                        text,
                                                                        new GenericCallback<List<DiscussionRecord>>() {

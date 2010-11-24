@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,18 +19,17 @@ package org.drools.guvnor.client.explorer;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
 
 /**
  * To be shown when the user opens repo for the first time.
@@ -41,7 +40,6 @@ public class NewRepoDialog extends FormStylePopup {
     private Constants constants;
 
     public NewRepoDialog() {
-        //super("images/new_wiz.gif", "Welcome to Guvnor !");
         setTitle( ((Constants) GWT.create( Constants.class )).WelcomeToGuvnor() );
         setWidth( 300 + "px" );
 
@@ -59,12 +57,12 @@ public class NewRepoDialog extends FormStylePopup {
 
         addAttribute( "",
                       hp );
-        ins.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        ins.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 if ( !Window.confirm( constants.AboutToInstallSampleRepositoryAreYouSure() ) ) return;
                 LoadingPopup.showMessage( constants.ImportingAndProcessing() );
-                RepositoryServiceFactory.getService().installSampleRepository( new GenericCallback() {
-                    public void onSuccess(Object a) {
+                RepositoryServiceFactory.getService().installSampleRepository( new GenericCallback<java.lang.Void>() {
+                    public void onSuccess(Void v) {
                         Window.alert( constants.RepositoryInstalledSuccessfully() );
                         hide();
                         Window.Location.reload();
@@ -72,8 +70,8 @@ public class NewRepoDialog extends FormStylePopup {
                 } );
             }
         } );
-        no.addClickListener( new ClickListener() {
-            public void onClick(Widget w) {
+        no.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
                 hide();
             }
         } );

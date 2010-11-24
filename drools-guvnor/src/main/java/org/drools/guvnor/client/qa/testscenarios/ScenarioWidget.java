@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.qa.VerifyRulesFiredWidget;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -40,6 +41,7 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -61,6 +63,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ScenarioWidget extends Composite {
 
+    private Constants                          constants = GWT.create( Constants.class );
+    private static Images                      images    = GWT.create( Images.class );
+
     private String[]                           availableRules;
     protected final SuggestionCompletionEngine suggestionCompletionEngine;
     private ChangeHandler                      ruleSelectionCL;
@@ -68,7 +73,6 @@ public class ScenarioWidget extends Composite {
     private final VerticalPanel                layout;
     private boolean                            showResults;
 
-    private Constants                          constants = ((Constants) GWT.create( Constants.class ));
     private HandlerRegistration                availableRulesHandlerRegistration;
 
     public ScenarioWidget(RuleAsset asset,
@@ -309,12 +313,13 @@ public class ScenarioWidget extends Composite {
 
                 public void onClick(ClickEvent event) {
                     horizontalPanel.remove( showList );
-                    final Image busy = new Image( "images/searching.gif" ); //NON-NLS
+                    final Image busy = new Image( images.searching() );
                     final Label loading = new SmallLabel( constants.loadingList1() );
                     horizontalPanel.add( busy );
                     horizontalPanel.add( loading );
 
-                    DeferredCommand.addCommand( new Command() {
+                    Scheduler scheduler = Scheduler.get();
+                    scheduler.scheduleDeferred( new Command() {
 
                         public void execute() {
                             RepositoryServiceFactory.getService().listRulesInPackage( packageName,

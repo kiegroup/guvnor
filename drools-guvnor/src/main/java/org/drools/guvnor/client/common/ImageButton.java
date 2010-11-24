@@ -16,8 +16,8 @@
 
 package org.drools.guvnor.client.common;
 
-
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.ui.Image;
 
@@ -29,19 +29,19 @@ import com.google.gwt.user.client.ui.Image;
 public class ImageButton extends Image {
 
     public @UiConstructor
-    ImageButton(String img) {
+    ImageButton(ImageResource img) {
         super( img );
         setStyleName( "image-Button" );
     }
 
-    public ImageButton(String img,
+    public ImageButton(ImageResource img,
                        String tooltip) {
         super( img );
         setStyleName( "image-Button" );
         setTitle( tooltip );
     }
 
-    public ImageButton(String img,
+    public ImageButton(ImageResource img,
                        String tooltip,
                        ClickHandler action) {
         this( img,

@@ -19,6 +19,8 @@ package org.drools.guvnor.client.ruleeditor;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 import com.google.gwt.core.client.GWT;
@@ -27,12 +29,15 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class FactTypeBrowser extends Composite {
-    private Constants constants = ((Constants) GWT.create( Constants.class ));
+
+    private Constants     constants = GWT.create( Constants.class );
+    private static Images images    = GWT.create( Images.class );
 
     public FactTypeBrowser(SuggestionCompletionEngine sce,
                            final ClickEvent ev) {
@@ -55,7 +60,9 @@ public class FactTypeBrowser extends Composite {
         if ( sce.getFactTypes() != null ) {
             for ( String type : sce.getFactTypes() ) {
                 TreeItem it = new TreeItem();
-                it.setHTML( "<img src=\"images/class.gif\"/><small>" + type + "</small>" );
+                it.setHTML( Format.format( "<img src='{0}'/><small>{1}</small>",
+                                           new Image( images.classImage() ).getUrl(),
+                                           type ) );
                 it.setUserObject( type + "( )" );
                 tree.addItem( it );
 
@@ -63,7 +70,9 @@ public class FactTypeBrowser extends Composite {
                 if ( fields != null ) {
                     for ( String field : fields ) {
                         TreeItem fi = new TreeItem();
-                        fi.setHTML( "<img src=\"images/field.gif\"/><small>" + field + "</small>" );
+                        fi.setHTML( Format.format( "<img src='{0}'/><small>{1}</small>",
+                                                   new Image( images.field() ).getUrl(),
+                                                   field ) );
                         fi.setUserObject( field );
                         it.addItem( fi );
                     }

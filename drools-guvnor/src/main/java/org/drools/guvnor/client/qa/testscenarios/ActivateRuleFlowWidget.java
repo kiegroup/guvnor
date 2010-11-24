@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,13 @@
 
 package org.drools.guvnor.client.qa.testscenarios;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
+import org.drools.ide.common.client.modeldriven.testing.Fixture;
+import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.core.client.GWT;
@@ -42,11 +42,12 @@ import com.google.gwt.user.client.ui.Image;
  * To change this template use File | Settings | File Templates.
  */
 public class ActivateRuleFlowWidget extends Composite {
-    private Constants            constants = ((Constants) GWT.create( Constants.class ));
+    private Constants            constants = GWT.create( Constants.class );
+    private static Images        images    = GWT.create( Images.class );
 
     private final ScenarioWidget parent;
 
-    public ActivateRuleFlowWidget(List retList,
+    public ActivateRuleFlowWidget(FixtureList retList,
                                   Scenario sc,
                                   ScenarioWidget parent) {
         FlexTable outer = new FlexTable();
@@ -59,7 +60,7 @@ public class ActivateRuleFlowWidget extends Composite {
         initWidget( outer );
     }
 
-    private void render(final List retList,
+    private void render(final FixtureList retList,
                         final FlexTable outer,
                         final Scenario sc) {
         outer.clear();
@@ -79,13 +80,13 @@ public class ActivateRuleFlowWidget extends Composite {
                                                  2 );
 
         int row = 1;
-        for ( Iterator iterator = retList.iterator(); iterator.hasNext(); ) {
-            final ActivateRuleFlowGroup acticateRuleFlowGroup = (ActivateRuleFlowGroup) iterator.next();
+        for ( Fixture fixture : retList ) {
+            final ActivateRuleFlowGroup acticateRuleFlowGroup = (ActivateRuleFlowGroup) fixture;
             outer.setWidget( row,
                              0,
                              new SmallLabel( acticateRuleFlowGroup.name ) );
-            Image del = new ImageButton( "images/delete_item_small.gif",
-                                         "Remove this rule flow activation.",
+            Image del = new ImageButton( images.deleteItemSmall(),
+                                         constants.RemoveThisRuleFlowActivation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
                                                  retList.remove( acticateRuleFlowGroup );
