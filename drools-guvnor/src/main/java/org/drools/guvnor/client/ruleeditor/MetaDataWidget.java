@@ -31,7 +31,9 @@ import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.CapabilitiesManager;
+import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.guvnor.client.util.Format;
+import org.drools.guvnor.client.util.LazyStackPanelHeader;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -274,8 +276,7 @@ public class MetaDataWidget extends Composite {
     }
 
     private void endSection(boolean collapsed) {
-        DisclosurePanel advancedDisclosure = new DisclosurePanel( currentSectionName );
-        advancedDisclosure.setAnimationEnabled( true );
+        DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( currentSectionName );
         advancedDisclosure.setWidth( "100%" );
         advancedDisclosure.setOpen( collapsed );
         advancedDisclosure.setContent( this.currentSection );

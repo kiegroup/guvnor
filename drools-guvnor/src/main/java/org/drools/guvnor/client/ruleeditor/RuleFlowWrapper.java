@@ -20,23 +20,23 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.Preferences;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.rulefloweditor.RuleFlowViewer;
-import org.drools.guvnor.client.explorer.Preferences;
-import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
  * 
@@ -48,14 +48,14 @@ public class RuleFlowWrapper extends Composite
     implements
     SaveEventListener {
 
-    private Constants       constants = GWT.create( Constants.class );
-    private static Images   images    = GWT.create( Images.class );
+    private Constants                constants = GWT.create( Constants.class );
+    private static Images            images    = GWT.create( Images.class );
 
-    private RuleViewer      viewer;
-    private RuleAsset       asset;
+    private RuleViewer               viewer;
+    private RuleAsset                asset;
 
-    private RuleFlowViewer  ruleFlowViewer;
-    private DisclosurePanel parameterPanel;
+    private RuleFlowViewer           ruleFlowViewer;
+    private DecoratedDisclosurePanel parameterPanel;
 
     public RuleFlowWrapper(final RuleAsset asset,
                            final RuleViewer viewer) {
@@ -121,8 +121,7 @@ public class RuleFlowWrapper extends Composite
 
         if ( rfcm != null && rfcm.getXml() != null && rfcm.getNodes() != null ) {
             try {
-                parameterPanel = new DisclosurePanel( constants.Parameters() );
-                parameterPanel.setAnimationEnabled( true );
+                parameterPanel = new DecoratedDisclosurePanel( constants.Parameters() );
                 parameterPanel.ensureDebugId( "cwDisclosurePanel" );
                 parameterPanel.setWidth( "100%" );
                 parameterPanel.setOpen( false );

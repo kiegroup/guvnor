@@ -32,6 +32,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ServerPushNotification;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.CapabilitiesManager;
+import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.util.Util;
 
@@ -42,7 +43,6 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -78,8 +78,7 @@ public class DiscussionWidget extends Composite {
     public DiscussionWidget(final RuleAsset asset) {
         this.asset = asset;
 
-        DisclosurePanel discussionPanel = new DisclosurePanel( constants.Discussion() );
-        discussionPanel.setAnimationEnabled( true );
+        DecoratedDisclosurePanel discussionPanel = new DecoratedDisclosurePanel( constants.Discussion() );
         discussionPanel.setWidth( "100%" );
 
         commentList.setWidth( "100%" );

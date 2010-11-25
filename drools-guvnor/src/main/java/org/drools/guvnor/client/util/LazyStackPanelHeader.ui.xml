@@ -17,13 +17,33 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:gwt='urn:import:com.google.gwt.user.client.ui' xmlns:guvnor='urn:import:org.drools.guvnor.client.common'>
 
+	<ui:with field='roundCornersResource' type='org.drools.guvnor.client.resources.RoundedCornersResource'/>
+
 	<gwt:HTMLPanel>
-		<div >
-			<gwt:HorizontalPanel >
-					<gwt:Image ui:field="icon"  styleName="guvnor-LazyStackPanel-row-header-icon"></gwt:Image>
-					<gwt:Label ui:field="titleLabel" styleName="guvnor-cursor"></gwt:Label>
-			</gwt:HorizontalPanel>
-		</div>
+		<table style='width:100%; border-collapse:collapse;'>
+			<tr>
+				<td style='width:4px;'><div class='{roundCornersResource.roundCornersCss.disclosurePanelTopLeftCornerClass}'></div></td>
+				<td><div class='{roundCornersResource.roundCornersCss.disclosurePanelTopClass}'></div></td>
+				<td style='width:4px;'><div class='{roundCornersResource.roundCornersCss.disclosurePanelTopRightCornerClass}'></div></td>
+			</tr>
+		
+			<tr>
+				<td class='{roundCornersResource.roundCornersCss.disclosurePanelSideLeftClass}'></td>
+				<td class='{roundCornersResource.roundCornersCss.disclosurePanelCenterClass}'>
+					<gwt:HorizontalPanel >
+							<gwt:Image ui:field="icon"  styleName="guvnor-LazyStackPanel-row-header-icon"></gwt:Image>
+							<gwt:Label ui:field="titleLabel" styleName="guvnor-cursor"></gwt:Label>
+					</gwt:HorizontalPanel>
+				</td>
+				<td class='{roundCornersResource.roundCornersCss.disclosurePanelSideRightClass}'></td>
+			</tr>
+		
+			<tr>
+				<td style='width:4px;'><div class='{roundCornersResource.roundCornersCss.disclosurePanelBottomLeftCornerClass}'></div></td>
+				<td><div class='{roundCornersResource.roundCornersCss.disclosurePanelBottomClass}'></div></td>
+				<td style='width:4px;'><div class='{roundCornersResource.roundCornersCss.disclosurePanelBottomRightCornerClass}'></div></td>
+			</tr>
+		</table>
 	</gwt:HTMLPanel>
 
 </ui:UiBinder>

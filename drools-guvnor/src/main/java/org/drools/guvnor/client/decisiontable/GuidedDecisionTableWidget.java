@@ -38,6 +38,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 import org.drools.guvnor.client.util.AddButton;
+import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -64,7 +65,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -112,8 +112,8 @@ public class GuidedDecisionTableWidget extends Composite
     implements
     SaveEventListener {
 
-    private Constants                   constants      = ((Constants) GWT.create( Constants.class ));
-    private static Images               images         = (Images) GWT.create( Images.class );
+    private Constants                   constants      = GWT.create( Constants.class );
+    private static Images               images         = GWT.create( Images.class );
 
     private GuidedDecisionTable         guidedDecisionTable;
     private VerticalPanel               layout;
@@ -143,8 +143,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         layout = new VerticalPanel();
 
-        DisclosurePanel disclosurePanel = new DisclosurePanel( constants.DecisionTable() );
-        disclosurePanel.setAnimationEnabled( true );
+        DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( constants.DecisionTable() );
         disclosurePanel.setWidth( "100%" );
         disclosurePanel.setTitle( constants.DecisionTable() );
 
@@ -334,7 +333,7 @@ public class GuidedDecisionTableWidget extends Composite
     private Widget removeAction(final ActionCol c) {
         Image del = new ImageButton( images.deleteItemSmall(),
                                      constants.RemoveThisActionColumn(),
-                                     new ClickHandler() { 
+                                     new ClickHandler() {
                                          public void onClick(ClickEvent w) {
                                              String cm = Format.format( constants.DeleteActionColumnWarning(),
                                                                         c.getHeader() );

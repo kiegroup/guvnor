@@ -18,6 +18,7 @@ package org.drools.guvnor.client.ruleeditor;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -34,10 +35,10 @@ import com.google.gwt.user.client.ui.TextArea;
  */
 public class CommentWidget extends DirtyableComposite {
 
-    private Constants             constants = ((Constants) GWT.create( Constants.class ));
+    private Constants                      constants = GWT.create( Constants.class );
 
-    private final TextArea        text;
-    private final DisclosurePanel disclosurePanel;
+    private final TextArea                 text;
+    private final DecoratedDisclosurePanel disclosurePanel;
 
     public CommentWidget(final MetaData data) {
         text = getTextArea();
@@ -59,9 +60,8 @@ public class CommentWidget extends DirtyableComposite {
 
     }
 
-    private DisclosurePanel getDisclosurePanel() {
-        DisclosurePanel disclosurePanel = new DisclosurePanel( constants.Description() );
-        disclosurePanel.setAnimationEnabled( true );
+    private DecoratedDisclosurePanel getDisclosurePanel() {
+        DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( constants.Description() );
         disclosurePanel.setWidth( "100%" );
         return disclosurePanel;
     }

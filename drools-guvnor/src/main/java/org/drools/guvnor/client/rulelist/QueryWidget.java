@@ -26,20 +26,13 @@ import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.Preferences;
-import org.drools.guvnor.client.rpc.MetaDataQuery;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
+import org.drools.guvnor.client.rpc.MetaDataQuery;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
+import org.drools.guvnor.client.util.Format;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -48,7 +41,13 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class QueryWidget extends Composite {
 
@@ -69,11 +68,9 @@ public class QueryWidget extends Composite {
     }
 
     private void doMetaSearch() {
-        DisclosurePanel advancedDisclosure = new DisclosurePanel(
-        		constants.AttributeSearch());
-        advancedDisclosure.setAnimationEnabled(true);
-        advancedDisclosure.setWidth("100%");
-        advancedDisclosure.setOpen(true);
+        DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( constants.AttributeSearch() );
+        advancedDisclosure.setWidth( "100%" );
+        advancedDisclosure.setOpen( true );
 
         final Map<String, MetaDataQuery> atts = new HashMap<String, MetaDataQuery>() {
             private static final long serialVersionUID = 510l;
@@ -108,10 +105,10 @@ public class QueryWidget extends Composite {
             box.setTitle( constants.WildCardsSearchTip() );
             fm.addAttribute( fieldName + ":",
                              box );
-            box.addChangeHandler(new ChangeHandler() {
-				public void onChange(ChangeEvent arg0) {
-                    q.valueList = box.getText();					
-				}
+            box.addChangeHandler( new ChangeHandler() {
+                public void onChange(ChangeEvent arg0) {
+                    q.valueList = box.getText();
+                }
             } );
         }
 
@@ -147,7 +144,7 @@ public class QueryWidget extends Composite {
         Button search = new Button( constants.Search() );
         fm.addAttribute( "",
                          search );
-        search.addClickHandler(new ClickHandler() {        	
+        search.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 resultsP.clear();
                 AssetItemGrid grid = new AssetItemGrid( openItem,
@@ -192,31 +189,25 @@ public class QueryWidget extends Composite {
             }
         } );
         fm.addRow( resultsP );
-        advancedDisclosure.setContent(fm);
-        
-        layout.add(advancedDisclosure);
+        advancedDisclosure.setContent( fm );
+
+        layout.add( advancedDisclosure );
     }
 
     private void doQuickFind() {
-		DisclosurePanel advancedDisclosure = new DisclosurePanel(
-				constants.NameSearch());
-		advancedDisclosure.setAnimationEnabled(true);
-		advancedDisclosure.ensureDebugId("cwDisclosurePanel");
-        advancedDisclosure.addStyleName("my-DisclosurePanel");
-        advancedDisclosure.setWidth("100%");
-		advancedDisclosure.setContent(new QuickFindWidget(openItem));
-        advancedDisclosure.setOpen(true);
+        DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( constants.NameSearch() );
+        advancedDisclosure.ensureDebugId( "cwDisclosurePanel" );
+        advancedDisclosure.setWidth( "100%" );
+        advancedDisclosure.setContent( new QuickFindWidget( openItem ) );
+        advancedDisclosure.setOpen( true );
 
         layout.add( advancedDisclosure );
     }
 
     private void doTextSearch() {
-		DisclosurePanel advancedDisclosure = new DisclosurePanel(
-				constants.TextSearch());
-		advancedDisclosure.setAnimationEnabled(true);
-        advancedDisclosure.addStyleName("my-DisclosurePanel");
-        advancedDisclosure.setWidth("100%");        
-        advancedDisclosure.setOpen(true);
+        DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( constants.TextSearch() );
+        advancedDisclosure.setWidth( "100%" );
+        advancedDisclosure.setOpen( true );
 
         FormStyleLayout ts = new FormStyleLayout();
         final TextBox tx = new TextBox();
@@ -227,12 +218,11 @@ public class QueryWidget extends Composite {
         ts.addAttribute( "",
                          go );
         ts.setWidth( "100%" );
-        advancedDisclosure.setContent(ts);
-        
+        advancedDisclosure.setContent( ts );
+
         final SimplePanel resultsP = new SimplePanel();
         final ClickHandler cl = new ClickHandler() {
-        	
-        	
+
             public void onClick(ClickEvent arg0) {
                 if ( tx.getText().equals( "" ) ) {
                     Window.alert( constants.PleaseEnterSomeSearchText() );
@@ -257,17 +247,16 @@ public class QueryWidget extends Composite {
 
         };
 
-        go.addClickHandler(cl);
-        tx.addKeyPressHandler(new KeyPressHandler() {
+        go.addClickHandler( cl );
+        tx.addKeyPressHandler( new KeyPressHandler() {
             public void onKeyPress(KeyPressEvent event) {
-                if (event.getCharCode() == KeyCodes.KEY_ENTER) {
+                if ( event.getCharCode() == KeyCodes.KEY_ENTER ) {
                     cl.onClick( null );
                 }
-              }        	
-        });
+            }
+        } );
 
         ts.addRow( resultsP );
         layout.add( advancedDisclosure );
     }
-
 }

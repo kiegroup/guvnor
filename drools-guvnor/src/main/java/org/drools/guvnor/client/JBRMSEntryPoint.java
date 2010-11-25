@@ -20,6 +20,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorResources;
+import org.drools.guvnor.client.resources.RoundedCornersResource;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.ruleeditor.StandaloneEditorManager;
@@ -52,6 +53,7 @@ public class JBRMSEntryPoint
     public void onModuleLoad() {
 
         GuvnorResources.INSTANCE.headerCss().ensureInjected();
+        RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
 
         loggedInUserInfo = new LoggedInUserInfo();
         loggedInUserInfo.setVisible( false );
@@ -67,12 +69,12 @@ public class JBRMSEntryPoint
      * If not, the default view (created by ExplorerLayoutManager) is shown.
      * @return Guvnor's main view.
      */
-  	private Panel createMain() {
-		if (Window.Location.getPath().contains("StandaloneEditor.html")){
-			return (new StandaloneEditorManager().getBaseLayout());
-		}
-		return (new ExplorerLayoutManager(loggedInUserInfo)).getBaseLayout();
-	}
+    private Panel createMain() {
+        if ( Window.Location.getPath().contains( "StandaloneEditor.html" ) ) {
+            return (new StandaloneEditorManager().getBaseLayout());
+        }
+        return (new ExplorerLayoutManager( loggedInUserInfo )).getBaseLayout();
+    }
 
     /**
      * Check if user is logged in, if not, then show prompt.
