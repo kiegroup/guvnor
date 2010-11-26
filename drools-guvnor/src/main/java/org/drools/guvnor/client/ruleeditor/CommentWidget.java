@@ -19,6 +19,7 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
+import org.drools.guvnor.client.util.DecoratedTextArea;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -26,7 +27,6 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * 
@@ -37,7 +37,7 @@ public class CommentWidget extends DirtyableComposite {
 
     private Constants                      constants = GWT.create( Constants.class );
 
-    private final TextArea                 text;
+    private final DecoratedTextArea        text;
     private final DecoratedDisclosurePanel disclosurePanel;
 
     public CommentWidget(final MetaData data) {
@@ -66,11 +66,10 @@ public class CommentWidget extends DirtyableComposite {
         return disclosurePanel;
     }
 
-    private TextArea getTextArea() {
-        TextArea text = new TextArea();
-        text.setWidth( "90%" );
+    private DecoratedTextArea getTextArea() {
+        DecoratedTextArea text = new DecoratedTextArea();
+        text.setWidth( "95%" );
         text.setVisibleLines( 5 );
-        text.setStyleName( "rule-viewer-Documentation" ); //NON-NLS
         text.setTitle( constants.RuleDocHint() );
         return text;
     }

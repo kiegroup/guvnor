@@ -13,56 +13,110 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@sprite .disclosurePanelTopLeftCornerClass {
-	gwt-image: 'disclosurePanelTopLeftCorner';
+@sprite .whiteTopLeftCornerClass {
+	gwt-image: 'whiteTopLeftCorner';
 	height: 4px;
 	width: 4px;
 }
 
-@sprite .disclosurePanelTopRightCornerClass {
-	gwt-image: 'disclosurePanelTopRightCorner';
+@sprite .whiteTopRightCornerClass {
+	gwt-image: 'whiteTopRightCorner';
 	height: 4px;
 	width: 4px;
 }
 
-@sprite .disclosurePanelBottomLeftCornerClass {
-	gwt-image: 'disclosurePanelBottomLeftCorner';
+@sprite .whiteBottomLeftCornerClass {
+	gwt-image: 'whiteBottomLeftCorner';
 	height: 4px;
 	width: 4px;
 }
 
-@sprite .disclosurePanelBottomRightCornerClass {
-	gwt-image: 'disclosurePanelBottomRightCorner';
+@sprite .whiteBottomRightCornerClass {
+	gwt-image: 'whiteBottomRightCorner';
 	height: 4px;
 	width: 4px;
 }
 
-@sprite .disclosurePanelBottomClass {
-	gwt-image: 'disclosurePanelBottom';
+.whiteBottomClass {
+	border-bottom: 1px solid #bbbbbb;
+	height: 3px;
+	width: 100%;
+}
+
+.whiteTopClass {
+	border-top: 1px solid #bbbbbb;
+	height: 3px;
+	width: 100%;
+}
+
+.whiteSideLeftClass {
+	border-left: 1px solid #bbbbbb;
+	height: 100%;
+	width: 3px;
+}
+
+.whiteSideRightClass {
+	border-right: 1px solid #bbbbbb;
+	height: 100%;
+	width: 3px;
+}
+
+.whiteCenterClass {
+	
+}
+
+@sprite .greyTopLeftCornerClass {
+	gwt-image: 'greyTopLeftCorner';
+	height: 4px;
+	width: 4px;
+}
+
+@sprite .greyTopRightCornerClass {
+	gwt-image: 'greyTopRightCorner';
+	height: 4px;
+	width: 4px;
+}
+
+@sprite .greyBottomLeftCornerClass {
+	gwt-image: 'greyBottomLeftCorner';
+	height: 4px;
+	width: 4px;
+}
+
+@sprite .greyBottomRightCornerClass {
+	gwt-image: 'greyBottomRightCorner';
+	height: 4px;
+	width: 4px;
+}
+
+@sprite .greyBottomClass {
+	gwt-image: 'greyBottom';
 	height: 4px;
 	width: 100%;
 }
 
-@sprite .disclosurePanelTopClass {
-	gwt-image: 'disclosurePanelTop';
+@sprite .greyTopClass {
+	gwt-image: 'greyTop';
 	height: 4px;
 	width: 100%;
 }
 
-@sprite .disclosurePanelSideLeftClass {
-	gwt-image: 'disclosurePanelSideLeft';
+@sprite .greySideLeftClass {
+	gwt-image: 'greySideLeft';
 	height: 100%;
 	width: 4px;
-	background-color: red;
 }
 
-@sprite .disclosurePanelSideRightClass {
-	gwt-image: 'disclosurePanelSideRight';
+@sprite .greySideRightClass {
+	gwt-image: 'greySideRight';
 	height: 100%;
 	width: 4px;
-	background-color: red;
 }
 
-.disclosurePanelCenterClass {
+.greyCenterClass {
 	background: #E3E3E3;
+}
+
+.clean-textarea {
+	border: none !important;
 }

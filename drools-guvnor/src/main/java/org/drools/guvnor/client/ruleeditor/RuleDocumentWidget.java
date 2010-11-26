@@ -19,6 +19,7 @@ package org.drools.guvnor.client.ruleeditor;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -49,7 +50,7 @@ public class RuleDocumentWidget extends DirtyableComposite {
 
         layout.add( new CommentWidget( asset.metaData ) );
 
-        DeferredCommand.addCommand( new Command() {
+        Scheduler.get().scheduleDeferred( new Command() {
             public void execute() {
                 layout.add( new DiscussionWidget( asset ) );
             }

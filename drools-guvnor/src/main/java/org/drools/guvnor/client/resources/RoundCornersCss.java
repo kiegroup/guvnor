@@ -26,31 +26,61 @@ public interface RoundCornersCss
     extends
     CssResource {
 
-    @ClassName("disclosurePanelTopLeftCornerClass")
-    String disclosurePanelTopLeftCornerClass();
+    @ClassName("whiteTopLeftCornerClass")
+    String whiteTopLeftCornerClass();
 
-    @ClassName("disclosurePanelTopRightCornerClass")
-    String disclosurePanelTopRightCornerClass();
+    @ClassName("whiteTopRightCornerClass")
+    String whiteTopRightCornerClass();
 
-    @ClassName("disclosurePanelBottomLeftCornerClass")
-    String disclosurePanelBottomLeftCornerClass();
+    @ClassName("whiteBottomLeftCornerClass")
+    String whiteBottomLeftCornerClass();
 
-    @ClassName("disclosurePanelBottomRightCornerClass")
-    String disclosurePanelBottomRightCornerClass();
+    @ClassName("whiteBottomRightCornerClass")
+    String whiteBottomRightCornerClass();
 
-    @ClassName("disclosurePanelBottomClass")
-    String disclosurePanelBottomClass();
+    @ClassName("whiteBottomClass")
+    String whiteBottomClass();
 
-    @ClassName("disclosurePanelTopClass")
-    String disclosurePanelTopClass();
+    @ClassName("whiteTopClass")
+    String whiteTopClass();
 
-    @ClassName("disclosurePanelSideLeftClass")
-    String disclosurePanelSideLeftClass();
+    @ClassName("whiteSideLeftClass")
+    String whiteSideLeftClass();
 
-    @ClassName("disclosurePanelSideRightClass")
-    String disclosurePanelSideRightClass();
+    @ClassName("whiteSideRightClass")
+    String whiteSideRightClass();
 
-    @ClassName("disclosurePanelCenterClass")
-    String disclosurePanelCenterClass();
+    @ClassName("whiteCenterClass")
+    String whiteCenterClass();
+
+    @ClassName("greyTopLeftCornerClass")
+    String greyTopLeftCornerClass();
+
+    @ClassName("greyTopRightCornerClass")
+    String greyTopRightCornerClass();
+
+    @ClassName("greyBottomLeftCornerClass")
+    String greyBottomLeftCornerClass();
+
+    @ClassName("greyBottomRightCornerClass")
+    String greyBottomRightCornerClass();
+
+    @ClassName("greyBottomClass")
+    String greyBottomClass();
+
+    @ClassName("greyTopClass")
+    String greyTopClass();
+
+    @ClassName("greySideLeftClass")
+    String greySideLeftClass();
+
+    @ClassName("greySideRightClass")
+    String greySideRightClass();
+
+    @ClassName("greyCenterClass")
+    String greyCenterClass();
+
+    @ClassName("clean-textarea")
+    String cleanTextArea();
 
 }
