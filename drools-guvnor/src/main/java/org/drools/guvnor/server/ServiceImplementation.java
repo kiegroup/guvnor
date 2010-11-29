@@ -50,6 +50,7 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.jackrabbit.util.ISO8601;
+import org.drools.ClockType;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
@@ -2396,6 +2397,7 @@ public class ServiceImplementation
         ClassTypeResolver res = new ClassTypeResolver( allImps,
                                                        cl );
         SessionConfiguration sessionConfiguration = new SessionConfiguration();
+        sessionConfiguration.setClockType( ClockType.PSEUDO_CLOCK );
         sessionConfiguration.setKeepReference( false );
         InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb.newStatefulSession( sessionConfiguration,
                                                                                              null );
