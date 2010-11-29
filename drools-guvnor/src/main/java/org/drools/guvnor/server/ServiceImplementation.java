@@ -2411,7 +2411,7 @@ public class ServiceImplementation
                                               scenario );
             return r;
         } catch ( ClassNotFoundException e ) {
-            log.error( "Unable to load a required class: " + e.getMessage() );
+            log.error( "Unable to load a required class.", e );
             throw new DetailedSerializationException( "Unable to load a required class.",
                                                       e.getMessage() );
         } catch ( ConsequenceException e ) {
@@ -2421,11 +2421,11 @@ public class ServiceImplementation
                 messageLong += "\nCAUSED BY " + e.getCause().getMessage();
             }
 
-            log.error( messageShort + ": " + messageLong );
+            log.error( messageShort + ": " + messageLong, e );
             throw new DetailedSerializationException( messageShort,
                                                       messageLong );
         } catch ( Exception e ) {
-            log.error( "Unable to run the scenario: " + e.getMessage() );
+            log.error( "Unable to run the scenario.", e );
             throw new DetailedSerializationException( "Unable to run the scenario.",
                                                       e.getMessage() );
         }
