@@ -28,8 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.ClockType;
 import org.drools.FactHandle;
 import org.drools.RuleBase;
+import org.drools.SessionConfiguration;
+import org.drools.StatefulSession;
 import org.drools.base.ClassTypeResolver;
 import org.drools.base.TypeResolver;
 import org.drools.common.InternalRuleBase;
@@ -100,7 +103,11 @@ public class ScenarioRunner {
     public ScenarioRunner(String xml,
                           RuleBase rb) throws ClassNotFoundException {
         this.scenario = ScenarioXMLPersistence.getInstance().unmarshal( xml );
-        this.workingMemory = (InternalWorkingMemory) rb.newStatefulSession();
+        
+        SessionConfiguration conf = new SessionConfiguration();
+        conf.setClockType( ClockType.PSEUDO_CLOCK );
+        
+        this.workingMemory = (InternalWorkingMemory) rb.newStatefulSession( conf, null );
                 Package pk = rb.getPackages()[0];
         ClassLoader cl = ((InternalRuleBase) rb).getRootClassLoader();
         HashSet<String> imports = new HashSet<String>();

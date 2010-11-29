@@ -765,6 +765,12 @@ public class ScenarioRunnerTest extends RuleUnit {
         sc.fixtures.add( ext );
 
         MockWorkingMemory wm = new MockWorkingMemory();
+        PseudoClockScheduler clock = new PseudoClockScheduler();
+        long time = new Date().getTime();
+        clock.setStartupTime( time );
+        clock.setSession( wm );
+        wm.setSessionClock( clock ); 
+        
         ScenarioRunner run = new ScenarioRunner( sc,
                                                  null,
                                                  wm );

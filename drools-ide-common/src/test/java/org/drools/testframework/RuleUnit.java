@@ -18,14 +18,19 @@ package org.drools.testframework;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 
 import junit.framework.TestCase;
 
+import org.drools.ClockType;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
 import org.drools.StatefulSession;
+import org.drools.WorkingMemory;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
+import org.drools.time.impl.PseudoClockScheduler;
 
 /**
  * A class with some utilities for testing rules.
@@ -46,6 +51,11 @@ public abstract class RuleUnit extends TestCase {
 		RuleBase rb = RuleBaseFactory.newRuleBase();
 		rb.addPackage(builder.getPackage());
 
-		return rb.newStatefulSession();
+		SessionConfiguration conf = new SessionConfiguration();
+		conf.setClockType( ClockType.PSEUDO_CLOCK );
+		StatefulSession wm = rb.newStatefulSession( conf, null );
+
+        
+		return wm;
 	}
 }
