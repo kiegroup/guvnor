@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.FactHandle;
 import org.drools.RuleBase;
@@ -48,7 +49,7 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.ide.common.server.util.ScenarioXMLPersistence;
 import org.drools.rule.Package;
-import org.drools.rule.TimeMachine;
+import org.drools.time.impl.PseudoClockScheduler;
 import org.mvel2.MVEL;
 
 /**
@@ -254,19 +255,15 @@ public class ScenarioRunner {
 
     private void applyTimeMachine(final InternalWorkingMemory wm,
                                   ExecutionTrace executionTrace) {
+        long targetTime = 0;
         if ( executionTrace.getScenarioSimulatedDate() != null ) {
-            final Calendar now = Calendar.getInstance();
-            now.setTimeInMillis( executionTrace.getScenarioSimulatedDate().getTime() );
-            wm.setTimeMachine( new TimeMachine() {
-                @Override
-                public Calendar getNow() {
-                    return now;
-                }
-            } );
+            targetTime = executionTrace.getScenarioSimulatedDate().getTime();            
         } else {
-            //normal time.
-            wm.setTimeMachine( new TimeMachine() );
+            targetTime = new Date().getTime();
         }
+        
+        long currentTime = wm.getSessionClock().getCurrentTime();        
+        ((PseudoClockScheduler)wm.getSessionClock()).advanceTime( targetTime - currentTime, TimeUnit.MILLISECONDS );        
     }
 
     void verify(VerifyRuleFired assertion,

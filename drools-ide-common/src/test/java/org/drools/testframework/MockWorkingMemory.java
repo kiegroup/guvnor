@@ -59,7 +59,6 @@ import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
 import org.drools.rule.EntryPoint;
 import org.drools.rule.Rule;
-import org.drools.rule.TimeMachine;
 import org.drools.runtime.Calendars;
 import org.drools.runtime.Channel;
 import org.drools.runtime.Environment;
@@ -76,26 +75,25 @@ import org.drools.spi.GlobalResolver;
 import org.drools.spi.PropagationContext;
 import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
+import org.drools.time.impl.JDKTimerService;
 import org.drools.type.DateFormats;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
                 
 	List<Object> facts = new ArrayList<Object>();
 	AgendaEventListener agendaEventListener;
-	TimeMachine timeMachine = new TimeMachine();
 	Map<String, Object> globals = new HashMap<String, Object>();
+	private SessionClock clock = new JDKTimerService();
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         facts   = (List<Object>)in.readObject();
         agendaEventListener   = (AgendaEventListener)in.readObject();
-        timeMachine   = (TimeMachine)in.readObject();
         globals   = (Map<String, Object>)in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(facts);
-        out.writeObject(agendaEventListener);
-        out.writeObject(timeMachine);
+        out.writeObject(agendaEventListener);        
         out.writeObject(globals);
     }
     
@@ -114,11 +112,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
 	public void addEventListener(AgendaEventListener listener) {
 		this.agendaEventListener = listener;
-	}
-
-	public void setTimeMachine(TimeMachine tm) {
-		this.timeMachine = tm;
-
 	}
 
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
@@ -196,10 +189,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public TimeMachine getTimeMachine() {
-		return this.timeMachine;
-    }
-
     public TimerService getTimerService() {
         // TODO Auto-generated method stub
         return null;
@@ -216,13 +205,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public void queueWorkingMemoryAction(WorkingMemoryAction action) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    public void removeLogicalDependencies(Activation activation,
-                                          PropagationContext context,
-                                          Rule rule) throws FactException {
         // TODO Auto-generated method stub
         
     }
@@ -359,10 +341,13 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public SessionClock getSessionClock() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.clock;
     }
 
+    public void setSessionClock(SessionClock clock) {
+        this.clock = clock;
+    }
+    
     public SignalManager getSignalManager() {
         // TODO Auto-generated method stub
         return null;

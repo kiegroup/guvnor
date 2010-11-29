@@ -50,7 +50,7 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.ide.common.server.util.ScenarioXMLPersistence;
-import org.drools.rule.TimeMachine;
+import org.drools.time.impl.PseudoClockScheduler;
 
 public class ScenarioRunnerTest extends RuleUnit {
 
@@ -862,32 +862,30 @@ public class ScenarioRunnerTest extends RuleUnit {
     public void testSimulatedDate() throws Exception {
         Scenario sc = new Scenario();
         MockWorkingMemory wm = new MockWorkingMemory();
+        PseudoClockScheduler clock = new PseudoClockScheduler();
+        long time = new Date().getTime();
+        clock.setStartupTime( time );
+        clock.setSession( wm );
+        wm.setSessionClock( clock );        
         ScenarioRunner run = new ScenarioRunner( sc,
                                                  null,
                                                  wm );
-        TimeMachine tm = run.workingMemory.getTimeMachine();
 
-        // love you
-        long time = tm.getNow().getTimeInMillis();
-
-        Thread.sleep( 100 );
-        long future = tm.getNow().getTimeInMillis();
-        assertTrue( future > time );
-
+        assertEquals( time, wm.getSessionClock().getCurrentTime() );
+        
         ExecutionTrace ext = new ExecutionTrace();
         ext.setScenarioSimulatedDate( new Date( "10-Jul-1974" ) );
         sc.fixtures.add( ext );
         run = new ScenarioRunner( sc,
                                   null,
                                   wm );
-        tm = run.workingMemory.getTimeMachine();
 
         long expected = ext.getScenarioSimulatedDate().getTime();
         assertEquals( expected,
-                      tm.getNow().getTimeInMillis() );
-        Thread.sleep( 50 );
-        assertEquals( expected,
-                      tm.getNow().getTimeInMillis() );
+                      wm.getSessionClock().getCurrentTime() );
+//        Thread.sleep( 50 );
+//        assertEquals( expected,
+//                      tm.getNow().getTimeInMillis() );
 
     }
 
