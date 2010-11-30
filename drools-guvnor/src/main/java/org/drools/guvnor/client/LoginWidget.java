@@ -24,10 +24,12 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -81,12 +83,18 @@ public class LoginWidget {
 
         pop.addAttribute( "",
                           b );
-
+       
         pop.setAfterShow( new Command() {
             public void execute() {
-                userName.setFocus( true );
+                Scheduler scheduler = Scheduler.get();
+                scheduler.scheduleDeferred( new Command() {
+                    public void execute() {
+                        userName.setFocus( true );                    	
+                    }
+                });
             }
         } );
+
         pop.show();
     }
 
