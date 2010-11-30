@@ -34,12 +34,12 @@ import org.drools.guvnor.client.packages.ModelAttachmentFileWidget;
 import org.drools.guvnor.client.processeditor.BusinessProcessEditor;
 import org.drools.guvnor.client.qa.testscenarios.ScenarioWidget;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -56,11 +56,11 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class EditorLauncher {
 
-    private static Images                          images      = GWT.create( Images.class );
+    private static Images                                    images      = GWT.create( Images.class );
 
-    public static final Map<String, ImageResource> TYPE_IMAGES = getTypeImages();
-    private static RepositoryServiceAsync          SERVICE     = RepositoryServiceFactory.getService();
-    public static Boolean                          HOSTED_MODE = Boolean.FALSE;
+    public static final Map<String, RuleFormatImageResource> TYPE_IMAGES = getTypeImages();
+    private static RepositoryServiceAsync                    SERVICE     = RepositoryServiceFactory.getService();
+    public static Boolean                                    HOSTED_MODE = Boolean.FALSE;
 
     static {
         SERVICE.isHostedMode( new GenericCallback<Boolean>() {
@@ -130,33 +130,45 @@ public class EditorLauncher {
 
     }
 
-    private static Map<String, ImageResource> getTypeImages() {
-        Map<String, ImageResource> result = new HashMap<String, ImageResource>();
+    private static Map<String, RuleFormatImageResource> getTypeImages() {
+        Map<String, RuleFormatImageResource> result = new HashMap<String, RuleFormatImageResource>();
 
         result.put( AssetFormats.DRL,
-                    images.technicalRuleAssets() );
+                    new RuleFormatImageResource( AssetFormats.DRL,
+                                                 images.technicalRuleAssets() ) );
         result.put( AssetFormats.DSL,
-                    images.dsl() );
+                    new RuleFormatImageResource( AssetFormats.DSL,
+                                                 images.dsl() ) );
         result.put( AssetFormats.FUNCTION,
-                    images.functionAssets() );
+                    new RuleFormatImageResource( AssetFormats.FUNCTION,
+                                                 images.functionAssets() ) );
         result.put( AssetFormats.MODEL,
-                    images.modelAsset() );
+                    new RuleFormatImageResource( AssetFormats.MODEL,
+                                                 images.modelAsset() ) );
         result.put( AssetFormats.DECISION_SPREADSHEET_XLS,
-                    images.spreadsheetSmall() );
+                    new RuleFormatImageResource( AssetFormats.DECISION_SPREADSHEET_XLS,
+                                                 images.spreadsheetSmall() ) );
         result.put( AssetFormats.BUSINESS_RULE,
-                    images.businessRule() );
+                    new RuleFormatImageResource( AssetFormats.BUSINESS_RULE,
+                                                 images.businessRule() ) );
         result.put( AssetFormats.DSL_TEMPLATE_RULE,
-                    images.businessRule() );
+                    new RuleFormatImageResource( AssetFormats.DSL_TEMPLATE_RULE,
+                                                 images.businessRule() ) );
         result.put( AssetFormats.RULE_FLOW_RF,
-                    images.ruleflowSmall() );
+                    new RuleFormatImageResource( AssetFormats.RULE_FLOW_RF,
+                                                 images.ruleflowSmall() ) );
         result.put( AssetFormats.BPMN2_PROCESS,
-                    images.ruleflowSmall() );
+                    new RuleFormatImageResource( AssetFormats.BPMN2_PROCESS,
+                                                 images.ruleflowSmall() ) );
         result.put( AssetFormats.TEST_SCENARIO,
-                    images.testManager() );
+                    new RuleFormatImageResource( AssetFormats.TEST_SCENARIO,
+                                                 images.testManager() ) );
         result.put( AssetFormats.ENUMERATION,
-                    images.enumeration() );
+                    new RuleFormatImageResource( AssetFormats.ENUMERATION,
+                                                 images.enumeration() ) );
         result.put( AssetFormats.DECISION_TABLE_GUIDED,
-                    images.gdst() );
+                    new RuleFormatImageResource( AssetFormats.DECISION_TABLE_GUIDED,
+                                                 images.gdst() ) );
 
         return result;
     }
@@ -165,10 +177,11 @@ public class EditorLauncher {
      * Get the icon name (not the path), including the extension, for the appropriate
      * asset format.
      */
-    public static ImageResource getAssetFormatIcon(String format) {
-        ImageResource result = TYPE_IMAGES.get( format );
+    public static RuleFormatImageResource getAssetFormatIcon(String format) {
+        RuleFormatImageResource result = TYPE_IMAGES.get( format );
         if ( result == null ) {
-            return images.ruleAsset();
+            return new RuleFormatImageResource( format,
+                                                images.ruleAsset() );
         } else {
             return result;
         }

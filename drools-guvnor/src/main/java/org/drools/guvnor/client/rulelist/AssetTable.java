@@ -23,10 +23,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.RuleFormatImageResource;
+import org.drools.guvnor.client.rpc.AssetPageRequest;
+import org.drools.guvnor.client.rpc.AssetPageResponse;
+import org.drools.guvnor.client.rpc.AssetPageRow;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.ruleeditor.EditorLauncher;
+import org.drools.guvnor.client.ruleeditor.MultiViewRow;
+import org.drools.guvnor.client.table.ColumnPicker;
+import org.drools.guvnor.client.table.SelectionColumn;
+import org.drools.guvnor.client.table.SortableHeader;
+import org.drools.guvnor.client.table.SortableHeaderGroup;
+
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.ImageCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -46,20 +61,6 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.AssetPageRequest;
-import org.drools.guvnor.client.rpc.AssetPageResponse;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.AssetPageRow;
-import org.drools.guvnor.client.ruleeditor.EditorLauncher;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.table.ColumnPicker;
-import org.drools.guvnor.client.table.SelectionColumn;
-import org.drools.guvnor.client.table.SortableHeader;
-import org.drools.guvnor.client.table.SortableHeaderGroup;
 
 /**
  * Widget with a table of assets.
@@ -121,12 +122,13 @@ public class AssetTable extends Composite {
         columnPicker.addColumn(uuidNumberColumn, new SortableHeader<AssetPageRow, String>(
                 sortableHeaderGroup, constants.uuid(), uuidNumberColumn), false);
 
-        Column<AssetPageRow, String> formatColumn = new Column<AssetPageRow, String>(new ImageCell()) {
-            public String getValue(AssetPageRow row) {
-                return EditorLauncher.getAssetFormatIcon(row.getFormat()).getURL();
+        Column<AssetPageRow, RuleFormatImageResource> formatColumn = new Column<AssetPageRow, RuleFormatImageResource>(new RuleFormatImageResourceCell()) {
+
+            public RuleFormatImageResource getValue(AssetPageRow row) {
+                return EditorLauncher.getAssetFormatIcon(row.getFormat()); 
             }
         };
-        columnPicker.addColumn(formatColumn, new SortableHeader<AssetPageRow, String>(
+        columnPicker.addColumn(formatColumn, new SortableHeader<AssetPageRow, RuleFormatImageResource>(
                 sortableHeaderGroup, constants.Format(), formatColumn), true);
 
         TextColumn<AssetPageRow> packageNameColumn = new TextColumn<AssetPageRow>() {
