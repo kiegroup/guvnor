@@ -28,6 +28,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -49,7 +50,7 @@ public class ColumnPicker<T> {
         this.cellTable = cellTable;
     }
 
-    public void addColumn(Column<T, ?> column, SortableHeader<T, ?> header, boolean visible) {
+    public void addColumn(Column<T, ?> column, Header<String> header, boolean visible) {
         addColumn(new ColumnMeta<T>(column, header, visible));
     }
 
@@ -112,10 +113,10 @@ public class ColumnPicker<T> {
 
     private static class ColumnMeta<T> {
         private Column<T, ?> column;
-        private SortableHeader<T, ?> header;
+        private Header<String> header;
         private boolean visible;
 
-        private ColumnMeta(Column<T, ?> column, SortableHeader<T, ?> header, boolean visible) {
+        private ColumnMeta(Column<T, ?> column, Header<String> header, boolean visible) {
             this.column = column;
             this.header = header;
             this.visible = visible;
@@ -129,11 +130,11 @@ public class ColumnPicker<T> {
             this.column = column;
         }
 
-        public SortableHeader<T, ?> getHeader() {
+        public Header<String> getHeader() {
             return header;
         }
 
-        public void setHeader(SortableHeader<T, ?> header) {
+        public void setHeader(Header<String> header) {
             this.header = header;
         }
 

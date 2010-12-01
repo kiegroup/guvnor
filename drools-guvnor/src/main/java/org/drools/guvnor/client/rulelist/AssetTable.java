@@ -223,7 +223,7 @@ public class AssetTable extends Composite {
                 editEvent.open(row.getUuid());
             }
         });
-        cellTable.addColumn(openColumn, new TextHeader(constants.Open()));
+        columnPicker.addColumn(openColumn, new TextHeader(constants.Open()), true);
 
         cellTable.setPageSize(pageSize);
         cellTable.setWidth("100%");
