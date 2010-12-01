@@ -40,6 +40,7 @@ public class MockHTTPResponse implements HttpServletResponse {
 	private String contentType;
 	Map<String, String> headers = new HashMap<String, String>();
 	int errorCode;
+	int status;
 
 
     public MockHTTPResponse() {
@@ -139,8 +140,7 @@ public class MockHTTPResponse implements HttpServletResponse {
 	}
 
 	public void setStatus(int arg0) {
-		// TODO Auto-generated method stub
-
+		status = arg0;
 	}
 
 	public void setStatus(int arg0, String arg1) {
