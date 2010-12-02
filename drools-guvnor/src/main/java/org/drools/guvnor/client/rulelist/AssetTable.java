@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
@@ -69,7 +70,7 @@ import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 public class AssetTable extends Composite {
 
     private static final Constants constants = GWT.create(Constants.class);
-    private static Images                     images            = GWT.create( Images.class );
+    private static Images images = GWT.create( Images.class );
 
     private RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService(); // TODO use (C)DI
 
@@ -291,8 +292,8 @@ public class AssetTable extends Composite {
         tableHeaderPanel.add(columnPicker.createToggleButton());
 
         if (feedURL != null) {
-            // TODO use image resources to get the feed.png and use image button or something like that
-            HTML feedButton = new HTML("<a href='" + feedURL + "' target='_blank'><img src='"+images.feed().getURL()+"'/></a>");
+            HTML feedButton = new HTML("<a href='" + feedURL + "' target='_blank'>" +
+                    "<img src='" + images.feed().getURL() + "'/></a>");
             tableHeaderPanel.add(feedButton);
         }
         layout.add(tableHeaderPanel);
