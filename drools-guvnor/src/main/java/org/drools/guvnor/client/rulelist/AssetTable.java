@@ -83,6 +83,7 @@ public class AssetTable extends Composite {
 
     private final String packageUuid;
     private final List<String> formatInList;
+    private final Boolean formatIsRegistered;
     private final EditItemEvent editEvent;
     private int pageSize = 25; // TODO might need to be configurable, or a constant
     private String feedURL;
@@ -106,13 +107,15 @@ public class AssetTable extends Composite {
     SimplePager pager;
     private MultiSelectionModel<AssetPageRow> selectionModel;
 
-    public AssetTable(String packageUuid, List<String> formatInList, EditItemEvent event) {
-        this(packageUuid, formatInList, event, null);
+    public AssetTable(String packageUuid, List<String> formatInList, Boolean formatIsRegistered, EditItemEvent event) {
+        this(packageUuid, formatInList, formatIsRegistered, event, null);
     }
 
-    public AssetTable(String packageUuid, List<String> formatInList, final EditItemEvent event, String feedURL) {
+    public AssetTable(String packageUuid, List<String> formatInList, Boolean formatIsRegistered,
+            final EditItemEvent event, String feedURL) {
         this.packageUuid = packageUuid;
         this.formatInList = formatInList;
+        this.formatIsRegistered = formatIsRegistered;
         this.editEvent = event;
         this.feedURL = feedURL;
         doCellTable();
@@ -255,6 +258,7 @@ public class AssetTable extends Composite {
                 AssetPageRequest request = new AssetPageRequest();
                 request.setPackageUuid(packageUuid);
                 request.setFormatInList(formatInList);
+                request.setFormatIsRegistered(formatIsRegistered);
                 request.setStartRowIndex(pager.getPageStart());
                 request.setPageSize(pageSize);
                 repositoryService.findAssetPage(request,

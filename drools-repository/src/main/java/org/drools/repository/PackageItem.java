@@ -502,7 +502,7 @@ public class PackageItem extends VersionableItem {
 
             }
 
-            if ( seekArchived == false ) {
+            if (!seekArchived) {
                 sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
             }
 

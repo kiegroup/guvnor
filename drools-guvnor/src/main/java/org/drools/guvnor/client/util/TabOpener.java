@@ -501,13 +501,13 @@ public class TabOpener {
     public void openPackageViewAssets(final String packageUuid,
                                       final String packageName,
                                       String key,
-                                      final List<String> formatInList,
+                                      final List<String> formatInList, Boolean formatIsRegistered,
                                       final String itemName) {
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
 
             String feedUrl = GWT.getModuleBaseURL() + "feed/package?name=" + packageName + "&viewUrl=" + Util.getSelfURL() + "&status=*";
             final AssetTable table = new AssetTable( packageUuid,
-                                                     formatInList,
+                                                     formatInList, formatIsRegistered,
                                                      new EditItemEvent() {
                                                          public void open(String uuid) {
                                                              openAsset( uuid );

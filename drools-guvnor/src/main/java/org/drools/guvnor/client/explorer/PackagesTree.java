@@ -208,7 +208,8 @@ public class PackagesTree extends AbstractTree {
                 opener.openPackageViewAssets( packageConfigData.uuid,
                                               packageConfigData.name,
                                               key,
-                                              Arrays.asList(formats),
+                                              formats.length == 0 ? null : Arrays.asList(formats),
+                                              formats.length == 0 ? Boolean.TRUE : null,
                                               node.getText() );
             } else {
                 throw new IllegalArgumentException("The userObject (" + userObject + ") is not supported.");
