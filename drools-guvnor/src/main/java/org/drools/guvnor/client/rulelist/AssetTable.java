@@ -23,8 +23,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ToggleButton;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
@@ -53,15 +61,10 @@ import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.widgets.Button;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 
 /**
  * Widget with a table of assets.
@@ -72,19 +75,35 @@ public class AssetTable extends Composite {
     private static final Constants constants = GWT.create(Constants.class);
     private static Images images = GWT.create( Images.class );
 
+    interface AssetTableBinder extends UiBinder<Widget, AssetTable> {}
+
+    private static AssetTableBinder uiBinder = GWT.create(AssetTableBinder.class);
+
     private RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService(); // TODO use (C)DI
 
     private final String packageUuid;
     private final List<String> formatInList;
     private final EditItemEvent editEvent;
-    private int pageSize = 40; // TODO might need to be configurable, or a constant
+    private int pageSize = 25; // TODO might need to be configurable, or a constant
     private String feedURL;
     private Set<Command> unloadListenerSet = new HashSet<Command>();
 
-    private VerticalPanel layout;
-    private CellTable<AssetPageRow> cellTable;
+    @UiField(provided=true)
+    Button refreshButton;
+    @UiField(provided=true)
+    Button openSelectedButton;
+    @UiField(provided=true)
+    Button openSelectedToSingleTabButton;
+    @UiField(provided=true)
+    ToggleButton columnPickerButton;
+    @UiField(provided=true)
+    HTML feedHTML;
+
+    @UiField(provided = true)
+    CellTable<AssetPageRow> cellTable;
     private AsyncDataProvider<AssetPageRow> dataProvider;
-    private SimplePager pager;
+    @UiField(provided=true)
+    SimplePager pager;
     private MultiSelectionModel<AssetPageRow> selectionModel;
 
     public AssetTable(String packageUuid, List<String> formatInList, EditItemEvent event) {
@@ -96,9 +115,8 @@ public class AssetTable extends Composite {
         this.formatInList = formatInList;
         this.editEvent = event;
         this.feedURL = feedURL;
-        this.layout = new VerticalPanel();
         doCellTable();
-        initWidget(layout);
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     private void doCellTable() {
@@ -250,19 +268,15 @@ public class AssetTable extends Composite {
         };
         dataProvider.addDataDisplay(cellTable);
 
-        HorizontalPanel tableHeaderPanel = new HorizontalPanel();
-        Button refreshButton = new Button(constants.refreshList());
-        refreshButton.addListener(new ButtonListenerAdapter() {
-            @Override
-            public void onClick(Button button, EventObject e) {
+        refreshButton = new Button(constants.refreshList());
+        refreshButton.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent e) {
                 refresh();
             }
         });
-        tableHeaderPanel.add(refreshButton);
-        Button openSelectedButton = new Button(constants.openSelected());
-        openSelectedButton.addListener(new ButtonListenerAdapter() {
-            @Override
-            public void onClick(Button button, EventObject e) {
+        openSelectedButton = new Button(constants.openSelected());
+        openSelectedButton.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent e) {
                 Set<AssetPageRow> selectedSet = selectionModel.getSelectedSet();
                 for (AssetPageRow selected : selectedSet) {
                     // TODO directly push the selected AssetPageRow
@@ -270,11 +284,9 @@ public class AssetTable extends Composite {
                 }
             }
         });
-        tableHeaderPanel.add(openSelectedButton);
-        Button openSelectedToSingleTabButton = new Button(constants.openSelectedToSingleTab());
-        openSelectedToSingleTabButton.addListener(new ButtonListenerAdapter() {
-            @Override
-            public void onClick(Button button, EventObject e) {
+        openSelectedToSingleTabButton = new Button(constants.openSelectedToSingleTab());
+        openSelectedToSingleTabButton.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent e) {
                 Set<AssetPageRow> selectedSet = selectionModel.getSelectedSet();
                 // TODO directly push the selected AssetPageRows
                 List<MultiViewRow> multiViewRowList = new ArrayList<MultiViewRow>(selectedSet.size());
@@ -288,17 +300,15 @@ public class AssetTable extends Composite {
                 editEvent.open(multiViewRowList.toArray(new MultiViewRow[multiViewRowList.size()]));
             }
         });
-        tableHeaderPanel.add(openSelectedToSingleTabButton);
-        tableHeaderPanel.add(columnPicker.createToggleButton());
+        columnPickerButton = columnPicker.createToggleButton();
 
         if (feedURL != null) {
-            HTML feedButton = new HTML("<a href='" + feedURL + "' target='_blank'>" +
+            feedHTML = new HTML("<a href='" + feedURL + "' target='_blank'>" +
                     "<img src='" + images.feed().getURL() + "'/></a>");
-            tableHeaderPanel.add(feedButton);
+        } else {
+            feedHTML = new HTML();
+            feedHTML.setVisible(false);
         }
-        layout.add(tableHeaderPanel);
-        layout.add(cellTable);
-        layout.add(pager);
     }
 
     /**
