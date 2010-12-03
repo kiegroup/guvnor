@@ -19,9 +19,11 @@
         <artifactId>gwt-maven-plugin</artifactId>
         <version>2.1-20101001.MGWT219</version>
         <configuration>
-          <module>org.drools.guvnor.Guvnor</module>
+          <!-- The default profile needs to be fast, so we only build 1 permutation { -->
+          <module>org.drools.guvnor.FastCompiledGuvnor</module>
           <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
-          <draftCompile>true</draftCompile><!-- TODO make production profile that sets draft on false -->
+          <draftCompile>true</draftCompile>
+          <!-- } -->
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.drools:drools-factconstraint</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-ide-common</compileSourcesArtifact>
@@ -94,6 +96,23 @@
   </build>
   <profiles>
     <profile>
+      <id>full</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <!-- Build all GWT permutations and optimize them -->
+              <module>org.drools.guvnor.Guvnor</module>
+              <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
+              <draftCompile>false</draftCompile>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
       <id>soa</id>
       <activation>
         <property>
@@ -103,6 +122,16 @@
       <build>
         <finalName>drools-guvnor</finalName>
         <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <!-- Build all GWT permutations and optimize them -->
+              <module>org.drools.guvnor.Guvnor</module>
+              <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
+              <draftCompile>false</draftCompile>
+            </configuration>
+          </plugin>
           <plugin>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
