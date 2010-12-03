@@ -1773,10 +1773,10 @@ public class ServiceImplementation
     private void updateBinaryPackage(PackageItem item,
                                      ContentPackageAssembler asm) throws SerializationException {
         item.updateBinaryUpToDate( true );
-        RuleBaseConfiguration conf = new RuleBaseConfiguration();
-        // setting the MapBackedClassloader that is the parent of the builder classloader as the parent
-        // of the rulebase classloader
-        conf.setClassLoader( asm.getBuilder().getRootClassLoader().getParent() );
+        
+        // adding the MapBackedClassloader that is the classloader from the rulebase classloader
+        Collection<ClassLoader> loaders = asm.getBuilder().getRootClassLoader().getClassLoaders();        
+        RuleBaseConfiguration conf = new RuleBaseConfiguration(loaders.toArray( new ClassLoader[loaders.size()] ));
         RuleBase rb = RuleBaseFactory.newRuleBase( conf );
         rb.addPackage( asm.getBinaryPackage() );
         // this.ruleBaseCache.put(item.getUUID(), rb);
