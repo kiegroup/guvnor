@@ -96,10 +96,15 @@
   </build>
   <profiles>
     <profile>
-      <id>full</id>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
       <build>
         <plugins>
-          <plugin>
+          <plugin><!-- Keep in sync with soa profile -->
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
@@ -113,16 +118,15 @@
       </build>
     </profile>
     <profile>
-      <id>soa</id>
+      <id>soaProfile</id>
       <activation>
         <property>
           <name>soa</name>
         </property>
       </activation>
       <build>
-        <finalName>drools-guvnor</finalName>
         <plugins>
-          <plugin>
+          <plugin><!-- Keep in sync with full profile -->
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
@@ -132,51 +136,11 @@
               <draftCompile>false</draftCompile>
             </configuration>
           </plugin>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>soa_overlay</id>
-                <phase>package</phase>
-                <configuration>
-                  <tasks>
-                    <ant antfile="${basedir}/soa-specific.xml" target="soa_overlay"></ant>
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <configuration>
-              <webResources><!-- TODO verify that it's needed to repeat this from the normal war configuration -->
-                <resource>
-                  <directory>${basedir}/src/main/webapp</directory>
-                </resource>
-                <resource>
-                  <directory>${basedir}/src/main/filtered-webapp</directory>
-                  <filtering>true</filtering>
-                </resource>
-              </webResources>
-            </configuration>
-            <executions>
-              <execution>
-                <id>war-it</id>
-                <phase>pre-integration-test</phase>
-                <goals>
-                  <goal>war</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
         </plugins>
       </build>
     </profile>
   </profiles>
+  
   <dependencies>
     <!-- Internal dependencies -->
     <!-- first the deps for the repo API itself (Jackrabbit based) -->
