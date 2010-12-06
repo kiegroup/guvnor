@@ -154,7 +154,7 @@ public class UserInbox {
     /**
      * Helper method to log the opening. Will remove any inbox items that have the same id.
      */
-    public static void recordOpeningEvent(AssetItem item) {
+    public synchronized static void recordOpeningEvent(AssetItem item) {
 		UserInbox ib = new UserInbox(item.getRulesRepository());
 		ib.addToRecentOpened(item.getUUID(), item.getName());
 		List<InboxEntry> unreadIncoming = ib.removeAnyExisting(item.getUUID(),
@@ -165,7 +165,7 @@ public class UserInbox {
 	}
 
     /** Helper method to note the event */
-    public static void recordUserEditEvent(AssetItem item) {
+    public synchronized static void recordUserEditEvent(AssetItem item) {
 		UserInbox ib = new UserInbox(item.getRulesRepository());
 		ib.addToRecentEdited(item.getUUID(), item.getName());
 		ib.save();
