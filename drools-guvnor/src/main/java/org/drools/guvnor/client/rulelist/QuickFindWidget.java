@@ -138,7 +138,7 @@ public class QuickFindWidget extends Composite {
         listPanel.setWidget( 0,
                              0,
                              new HTML( Format.format( "<img src='{0}'/>&nbsp;{1}",
-                                                      new Image( images.information() ).getUrl(),
+                                                      images.information().getURL(),
                                                       constants.EnterSearchString()
 
                              ) ) ); //NON-NLS

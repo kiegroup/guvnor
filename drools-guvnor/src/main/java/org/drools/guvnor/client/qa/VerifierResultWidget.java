@@ -106,7 +106,7 @@ public class VerifierResultWidget extends Composite {
                                         "" + lines.length );
 
         String topicHtml = Format.format( "<img src='{0}' /> &nbsp; {1}",
-                                          new Image( icon ).getUrl(),
+                                          icon.getURL(),
                                           summary );
 
         linesItem = new VerifierMessageLinesItem( topicHtml,
