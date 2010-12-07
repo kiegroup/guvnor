@@ -51,20 +51,88 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class QueryWidget extends Composite {
 
-    private VerticalPanel layout;
-    private EditItemEvent openItem;
     private Constants     constants = ((Constants) GWT.create( Constants.class ));
 
-    public QueryWidget(EditItemEvent openItem) {
+    private EditItemEvent editEvent;
+
+    private VerticalPanel layout;
+
+    public QueryWidget(EditItemEvent editEvent) {
+        this.editEvent = editEvent;
+
         layout = new VerticalPanel();
-        this.openItem = openItem;
         doQuickFind();
         doTextSearch();
         doMetaSearch();
-
         layout.setWidth( "100%" );
         initWidget( layout );
         setWidth( "100%" );
+    }
+
+    private void doQuickFind() {
+        DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( constants.NameSearch() );
+        advancedDisclosure.ensureDebugId( "cwDisclosurePanel" );
+        advancedDisclosure.setWidth( "100%" );
+        advancedDisclosure.setContent( new QuickFindWidget(editEvent) );
+        advancedDisclosure.setOpen( true );
+
+        layout.add( advancedDisclosure );
+    }
+
+    private void doTextSearch() {
+        DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( constants.TextSearch() );
+        advancedDisclosure.setWidth( "100%" );
+        advancedDisclosure.setOpen( true );
+
+        FormStyleLayout ts = new FormStyleLayout();
+        final TextBox tx = new TextBox();
+        ts.addAttribute( constants.SearchFor(),
+                         tx );
+        Button go = new Button();
+        go.setText( constants.Search1() );
+        ts.addAttribute( "",
+                         go );
+        ts.setWidth( "100%" );
+        advancedDisclosure.setContent( ts );
+
+        final SimplePanel resultsP = new SimplePanel();
+        final ClickHandler cl = new ClickHandler() {
+
+            public void onClick(ClickEvent arg0) {
+                if ( tx.getText().equals( "" ) ) {
+                    Window.alert( constants.PleaseEnterSomeSearchText() );
+                    return;
+                }
+                resultsP.clear();
+                AssetItemGrid grid = new AssetItemGrid(editEvent,
+                                                        "searchresults",
+                                                        new AssetItemGridDataLoader() { //NON-NLS
+                                                            public void loadData(int startRow,
+                                                                                 int numberOfRows,
+                                                                                 GenericCallback cb) {
+                                                                RepositoryServiceFactory.getService().queryFullText( tx.getText(),
+                                                                                                                     false,
+                                                                                                                     startRow,
+                                                                                                                     numberOfRows,
+                                                                                                                     cb );
+                                                            }
+                                                        } );
+                resultsP.add( grid );
+            }
+
+        };
+
+        go.addClickHandler( cl );
+        tx.addKeyPressHandler( new KeyPressHandler() {
+            public void onKeyPress(KeyPressEvent event) {
+                if ( event.getCharCode() == KeyCodes.KEY_ENTER ) {
+                    cl.onClick( null );
+                }
+            }
+        } );
+
+        ts.addRow( resultsP );
+        layout.add( advancedDisclosure );
     }
 
     private void doMetaSearch() {
@@ -147,7 +215,7 @@ public class QueryWidget extends Composite {
         search.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 resultsP.clear();
-                AssetItemGrid grid = new AssetItemGrid( openItem,
+                AssetItemGrid grid = new AssetItemGrid(editEvent,
                                                         "searchresults",
                                                         new AssetItemGridDataLoader() { //NON-NLS
                                                             public void loadData(int startRow,
@@ -194,69 +262,4 @@ public class QueryWidget extends Composite {
         layout.add( advancedDisclosure );
     }
 
-    private void doQuickFind() {
-        DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( constants.NameSearch() );
-        advancedDisclosure.ensureDebugId( "cwDisclosurePanel" );
-        advancedDisclosure.setWidth( "100%" );
-        advancedDisclosure.setContent( new QuickFindWidget( openItem ) );
-        advancedDisclosure.setOpen( true );
-
-        layout.add( advancedDisclosure );
-    }
-
-    private void doTextSearch() {
-        DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( constants.TextSearch() );
-        advancedDisclosure.setWidth( "100%" );
-        advancedDisclosure.setOpen( true );
-
-        FormStyleLayout ts = new FormStyleLayout();
-        final TextBox tx = new TextBox();
-        ts.addAttribute( constants.SearchFor(),
-                         tx );
-        Button go = new Button();
-        go.setText( constants.Search1() );
-        ts.addAttribute( "",
-                         go );
-        ts.setWidth( "100%" );
-        advancedDisclosure.setContent( ts );
-
-        final SimplePanel resultsP = new SimplePanel();
-        final ClickHandler cl = new ClickHandler() {
-
-            public void onClick(ClickEvent arg0) {
-                if ( tx.getText().equals( "" ) ) {
-                    Window.alert( constants.PleaseEnterSomeSearchText() );
-                    return;
-                }
-                resultsP.clear();
-                AssetItemGrid grid = new AssetItemGrid( openItem,
-                                                        "searchresults",
-                                                        new AssetItemGridDataLoader() { //NON-NLS
-                                                            public void loadData(int startRow,
-                                                                                 int numberOfRows,
-                                                                                 GenericCallback cb) {
-                                                                RepositoryServiceFactory.getService().queryFullText( tx.getText(),
-                                                                                                                     false,
-                                                                                                                     startRow,
-                                                                                                                     numberOfRows,
-                                                                                                                     cb );
-                                                            }
-                                                        } );
-                resultsP.add( grid );
-            }
-
-        };
-
-        go.addClickHandler( cl );
-        tx.addKeyPressHandler( new KeyPressHandler() {
-            public void onKeyPress(KeyPressEvent event) {
-                if ( event.getCharCode() == KeyCodes.KEY_ENTER ) {
-                    cl.onClick( null );
-                }
-            }
-        } );
-
-        ts.addRow( resultsP );
-        layout.add( advancedDisclosure );
-    }
 }
