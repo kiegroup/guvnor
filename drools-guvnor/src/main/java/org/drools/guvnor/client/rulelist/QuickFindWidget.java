@@ -23,14 +23,9 @@ import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rpc.TableDataRow;
-import org.drools.guvnor.client.ruleeditor.EditorLauncher;
-import org.drools.guvnor.client.ruleeditor.EditorWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -38,23 +33,17 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.dom.client.ScrollEvent;
-import com.google.gwt.event.dom.client.ScrollHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.util.Format;
 
 /**
@@ -67,15 +56,16 @@ public class QuickFindWidget extends Composite {
     private Constants             constants = GWT.create( Constants.class );
     private static Images         images    = GWT.create( Images.class );
 
-    private final FormStyleLayout layout;
-    private final FlexTable       listPanel;
+    private final EditItemEvent editEvent;
+
     private SuggestBox            searchBox;
     private CheckBox              archiveBox;
-    private final EditItemEvent   openItem;
 
     public QuickFindWidget(EditItemEvent editEvent) {
-        layout = new FormStyleLayout( images.systemSearch(),
-                                      "" );
+        this.editEvent = editEvent;
+
+        FormStyleLayout layout = new FormStyleLayout(images.systemSearch(),
+                "");
 
         searchBox = new SuggestBox( new SuggestOracle() {
             public void requestSuggestions(Request r,
@@ -89,13 +79,11 @@ public class QuickFindWidget extends Composite {
 
         final SimplePanel resultsP = new SimplePanel();
 
-        this.openItem = editEvent;
         HorizontalPanel srch = new HorizontalPanel();
-        Button go = new Button( constants.Search() );
         final ClickHandler cl = new ClickHandler() {
             public void onClick(ClickEvent event) {
                 resultsP.clear();
-                AssetItemGrid grid = new AssetItemGrid( openItem,
+                AssetItemGrid grid = new AssetItemGrid(QuickFindWidget.this.editEvent,
                                                         "searchresults",
                                                         new AssetItemGridDataLoader() { //NON-NLS
                                                             public void loadData(int startRow,
@@ -112,7 +100,6 @@ public class QuickFindWidget extends Composite {
 
             }
         };
-        go.addClickHandler( cl );
 
         searchBox.addKeyUpHandler( new KeyUpHandler() {
             public void onKeyUp(KeyUpEvent event) {
@@ -122,19 +109,20 @@ public class QuickFindWidget extends Composite {
             }
         } );
         srch.add( searchBox );
-
-        archiveBox = new CheckBox();
-
-        archiveBox.setValue( false );
-
         layout.addAttribute( constants.FindItemsWithANameMatching(),
                              srch );
+
+        archiveBox = new CheckBox();
+        archiveBox.setValue( false );
         layout.addAttribute( constants.IncludeArchivedAssetsInResults(),
                              archiveBox );
+
+        Button go = new Button( constants.Search() );
+        go.addClickHandler( cl );
         layout.addAttribute( "",
                              go );
 
-        listPanel = new FlexTable();
+        FlexTable listPanel = new FlexTable();
         listPanel.setWidget( 0,
                              0,
                              new HTML( Format.format( "<img src='{0}'/>&nbsp;{1}",
@@ -145,76 +133,13 @@ public class QuickFindWidget extends Composite {
 
         PrettyFormLayout pfl = new PrettyFormLayout();
         pfl.startSection();
-        pfl.addRow( listPanel );
+        pfl.addRow(listPanel);
         pfl.addRow( resultsP );
 
         pfl.endSection();
         layout.addRow( pfl );
 
-        initWidget( layout );
-    }
-
-    void scrollyRuleLoaderExample() {
-        final VerticalPanel vp = new VerticalPanel();
-        final ScrollPanel panel = new ScrollPanel( vp );
-        panel.setHeight( "10em" );
-
-        String cat = "Home Mortgage/Eligibility rules";
-
-        RepositoryServiceFactory.getService().loadRuleListForCategories( cat,
-                                                                         0,
-                                                                         10,
-                                                                         AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                                         new GenericCallback<TableDataResult>() {
-                                                                             public void onSuccess(TableDataResult result) {
-                                                                                 final List<String> ids = new ArrayList<String>();
-                                                                                 for ( TableDataRow aData : result.data ) {
-                                                                                     ids.add( aData.id );
-                                                                                 }
-
-                                                                                 RepositoryServiceFactory.getService().loadRuleAsset( ids.get( 0 ),
-                                                                                                                                      new GenericCallback<RuleAsset>() {
-                                                                                                                                          public void onSuccess(final RuleAsset result) {
-                                                                                                                                              SuggestionCompletionCache.getInstance().doAction( result.metaData.packageName,
-                                                                                                                                                                                                new Command() {
-                                                                                                                                                                                                    public void execute() {
-                                                                                                                                                                                                        final EditorWidget last = EditorLauncher.getEditorViewer( result,
-                                                                                                                                                                                                                                                                  null );
-                                                                                                                                                                                                        vp.add( last );
-                                                                                                                                                                                                        panel.addScrollHandler( new ScrollHandler() {
-                                                                                                                                                                                                            int          i   = 0;
-                                                                                                                                                                                                            EditorWidget end = last;
-
-                                                                                                                                                                                                            public void onScroll(ScrollEvent event) {
-                                                                                                                                                                                                                int finalPos = end.asWidget().getAbsoluteTop()
-                                                                                                                                                                                                                               + end.asWidget().getOffsetHeight();
-                                                                                                                                                                                                                int panelPos = panel.getAbsoluteTop()
-                                                                                                                                                                                                                               + panel.getOffsetHeight();
-                                                                                                                                                                                                                System.err.println( panelPos + " "
-                                                                                                                                                                                                                                    + finalPos );
-                                                                                                                                                                                                                if ( finalPos == panelPos ) {
-                                                                                                                                                                                                                    i++;
-                                                                                                                                                                                                                    if ( i < ids.size() - 1 ) {
-                                                                                                                                                                                                                        RepositoryServiceFactory.getService().loadRuleAsset( ids.get( i ),
-                                                                                                                                                                                                                                                                             new GenericCallback<RuleAsset>() {
-                                                                                                                                                                                                                                                                                 public void onSuccess(RuleAsset result) {
-                                                                                                                                                                                                                                                                                     end = EditorLauncher.getEditorViewer( result,
-                                                                                                                                                                                                                                                                                                                           null );
-                                                                                                                                                                                                                                                                                     vp.add( end );
-                                                                                                                                                                                                                                                                                 }
-                                                                                                                                                                                                                                                                             } );
-                                                                                                                                                                                                                    }
-                                                                                                                                                                                                                }
-                                                                                                                                                                                                            }
-                                                                                                                                                                                                        } );
-                                                                                                                                                                                                    }
-                                                                                                                                                                                                } );
-
-                                                                                                                                          }
-                                                                                                                                      } );
-
-                                                                             }
-                                                                         } );
+        initWidget(layout);
     }
 
     /**
