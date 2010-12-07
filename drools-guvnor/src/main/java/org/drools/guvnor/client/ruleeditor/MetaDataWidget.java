@@ -33,7 +33,6 @@ import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.CapabilitiesManager;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.guvnor.client.util.Format;
-import org.drools.guvnor.client.util.LazyStackPanelHeader;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -46,7 +45,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -82,23 +80,23 @@ public class MetaDataWidget extends Composite {
 
         super();
 
+        this.uuid = uuid;
+        this.data = d;
+        this.readOnly = readOnly;
+
         layout.setWidth( "100%" );
         this.metaDataRefreshView = metaDataRefreshView;
         this.fullRefreshView = fullRefreshView;
 
         if ( d.format.equals( AssetFormats.DRL ) || d.format.equals( AssetFormats.FUNCTION ) || d.format.equals( AssetFormats.ENUMERATION ) ) {
-            render( d,
-                    readOnly,
-                    uuid );
+            render();
 
         } else {
             Button show = new Button( constants.showMoreInfo() );
             show.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     layout.clear();
-                    render( d,
-                            readOnly,
-                            uuid );
+                    render();
                 }
             } );
 
@@ -113,9 +111,7 @@ public class MetaDataWidget extends Composite {
         initWidget( layout );
     }
 
-    private void render(MetaData d,
-                        boolean readOnly,
-                        String uuid) {
+    private void render() {
 
         if ( !readOnly ) {
             Image edit = new ImageButton( images.edit(),
@@ -126,19 +122,15 @@ public class MetaDataWidget extends Composite {
                 }
             } );
             addHeader( images.metadata(),
-                       d.name,
+                       data.name,
                        edit );
         } else {
             addHeader( images.assetVersion(),
-                       d.name,
+                       data.name,
                        null );
         }
 
-        this.uuid = uuid;
-        this.data = d;
-        this.readOnly = readOnly;
-
-        loadData( d );
+        loadData();
     }
 
     private void addHeader(ImageResource img,
@@ -153,8 +145,7 @@ public class MetaDataWidget extends Composite {
                                      hp );
     }
 
-    private void loadData(MetaData d) {
-        this.data = d;
+    private void loadData() {
         addAttribute( constants.CategoriesMetaData(),
                       categories() );
 
@@ -471,6 +462,10 @@ public class MetaDataWidget extends Composite {
      */
     public MetaData getData() {
         return data;
+    }
+
+    public void refresh() {
+        render();
     }
 
 }

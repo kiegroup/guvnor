@@ -40,7 +40,6 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This launches the appropriate editor for the asset type.
@@ -75,8 +74,8 @@ public class EditorLauncher {
     /**
      * This will return the appropriate viewer for the asset.
      */
-    public static Widget getEditorViewer(RuleAsset asset,
-                                         RuleViewer viewer) {
+    public static EditorWidget getEditorViewer(RuleAsset asset,
+                                               RuleViewer viewer) {
         RulePackageSelector.currentlySelectedPackage = asset.metaData.packageName;
         //depending on the format, load the appropriate editor
         if ( asset.metaData.format.equals( AssetFormats.BUSINESS_RULE ) ) {

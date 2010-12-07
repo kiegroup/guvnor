@@ -2025,11 +2025,11 @@ public interface Constants
     String VerificationReport();
 
     String CanNotSwitchToBasicView();
-    
+
     String CanNotSwitchToBasicViewRules();
-    
+
     String CanNotSwitchToBasicViewFunctions();
-    
+
     String CanNotSwitchToBasicViewDeclaredTypes();
 
     String Causes();
@@ -2159,9 +2159,9 @@ public interface Constants
     String InvalidDateFormatMessage();
 
     String NewColumn();
-    
+
     String NoRulesFound();
-    
+
     String Done();
 
     String RemoveThisRuleFlowActivation();
@@ -2169,4 +2169,8 @@ public interface Constants
     String Constraints();
 
     String ConstraintsParameters();
+
+    String File();
+    
+    String Edit();
 }

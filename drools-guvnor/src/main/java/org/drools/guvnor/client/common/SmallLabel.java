@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,22 +16,36 @@
 
 package org.drools.guvnor.client.common;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.HTML;
 
 public class SmallLabel extends HTML {
 
-	public SmallLabel(String text) {
-		//super("<small>" + text + "</small>");
-		super("<div class='x-form-field'>" + text + "</div>");
-	}
+    interface SmallLabelTemplate
+        extends
+        SafeHtmlTemplates {
 
-	public SmallLabel() {
-		super();
-	}
+        @Template("<div class='x-form-field'>{0}</div>")
+        SafeHtml message(SafeHtml message);
+    }
 
-	public void setText(String t) {
-		//setHTML("<small>" + t + "</small>");
-		setHTML("<div class='x-form-field'>" + t + "</div>");
-	}
+    private static final SmallLabelTemplate TEMPLATE = GWT.create( SmallLabelTemplate.class );
 
+    public SmallLabel() {
+    }
+
+    public SmallLabel(String text) {
+        setText( text );
+    }
+
+    public void setText(final String text) {
+        setHTML( TEMPLATE.message( new SafeHtml() {
+
+            public String asString() {
+                return text;
+            }
+        } ) );
+    }
 }

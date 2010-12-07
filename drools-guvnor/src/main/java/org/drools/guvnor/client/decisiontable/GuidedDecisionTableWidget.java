@@ -35,6 +35,7 @@ import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.EditorWidget;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 import org.drools.guvnor.client.util.AddButton;
@@ -110,7 +111,8 @@ import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
  */
 public class GuidedDecisionTableWidget extends Composite
     implements
-    SaveEventListener {
+    SaveEventListener,
+    EditorWidget {
 
     private Constants                   constants      = GWT.create( Constants.class );
     private static Images               images         = GWT.create( Images.class );

@@ -13,27 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.guvnor.client.ruleeditor;
 
-import org.drools.guvnor.client.rpc.RuleAsset;
+import com.google.gwt.user.client.ui.IsWidget;
 
-import com.google.gwt.user.client.ui.Composite;
-
-public class FunctionEditor extends Composite
-    implements
-    EditorWidget {
-
-    public FunctionEditor(RuleAsset a,
-                          RuleViewer v) {
-        this( a );
-    }
-
-    public FunctionEditor(RuleAsset a) {
-        final DefaultRuleContentWidget ed = new DefaultRuleContentWidget( a );
-
-        initWidget( ed );
-
-    }
+/**
+ * 
+ * @author rikkola
+ *
+ */
+public interface EditorWidget
+    extends
+    IsWidget {
 
 }

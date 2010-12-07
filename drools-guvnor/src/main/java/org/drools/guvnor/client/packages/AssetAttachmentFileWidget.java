@@ -20,10 +20,9 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.EditorWidget;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 
 import com.google.gwt.core.client.GWT;
@@ -49,10 +48,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Fernando Meyer
  */
 
-public abstract class AssetAttachmentFileWidget extends Composite {
+public abstract class AssetAttachmentFileWidget extends Composite
+    implements
+    EditorWidget {
 
     private Constants         constants = GWT.create( Constants.class );
-    private Images            images    = GWT.create( Images.class );
 
     private FormPanel         form;
     private Button            ok;
@@ -142,7 +142,7 @@ public abstract class AssetAttachmentFileWidget extends Composite {
                 }
 
                 if ( event.getResults().indexOf( "OK" ) > -1 ) {
-                    viewer.refreshDataAndView( new SmallLabel( "<div style=\"background-color: yellow;\" ><img src='" + images.greenTick() + "'/><i>" + constants.FileWasUploadedSuccessfully() + "</i></div>" ) );
+                    viewer.showInfoMessage( constants.FileWasUploadedSuccessfully() );
                 } else {
                     ErrorPopup.showMessage( constants.UnableToUploadTheFile() );
                 }

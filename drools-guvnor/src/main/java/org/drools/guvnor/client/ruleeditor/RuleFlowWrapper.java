@@ -46,7 +46,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class RuleFlowWrapper extends Composite
     implements
-    SaveEventListener {
+    SaveEventListener,
+    EditorWidget {
 
     private Constants                constants = GWT.create( Constants.class );
     private static Images            images    = GWT.create( Images.class );

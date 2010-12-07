@@ -23,6 +23,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.ruleeditor.EditorLauncher;
+import org.drools.guvnor.client.ruleeditor.EditorWidget;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
 import com.google.gwt.dom.client.Document;
@@ -34,38 +35,42 @@ import com.google.gwt.user.client.ui.Frame;
  *
  * @author <a href="mailto:atoulme@intalio.com">Antoine Toulme</a>
  */
-public class BusinessProcessEditor extends DirtyableComposite implements SaveEventListener {
+public class BusinessProcessEditor extends DirtyableComposite
+    implements
+    SaveEventListener,
+    EditorWidget {
 
-    private String modelUUID;
+    private String    modelUUID;
     private RuleAsset asset;
-    private Frame frame;
-    
+    private Frame     frame;
+
     public BusinessProcessEditor(RuleAsset asset) {
         this.asset = asset;
         modelUUID = asset.uuid;
         initWidgets();
     }
-    
+
     private void initWidgets() {
-    	String name;
-    	if(EditorLauncher.HOSTED_MODE.booleanValue()) {
-    		// THIS IS A HACK TO GET DESIGNER WORKING ON HOSTED MODE
-    		// I will add ability to input where oryx designer is 
-    		// available in the admin section soon
-    		name = "http://localhost:8080/designer/editor";
-    	} else {
-    		name = "/designer/editor"; 
-    	}
+        String name;
+        if ( EditorLauncher.HOSTED_MODE.booleanValue() ) {
+            // THIS IS A HACK TO GET DESIGNER WORKING ON HOSTED MODE
+            // I will add ability to input where oryx designer is 
+            // available in the admin section soon
+            name = "http://localhost:8080/designer/editor";
+        } else {
+            name = "/designer/editor";
+        }
         name += "?uuid=" + modelUUID;
-        frame = new Frame(name);
-        frame.getElement().setAttribute("domain", Document.get().getDomain());
-        frame.setWidth("100%");
-        frame.setHeight("100%");
-        initWidget(frame);
-        setWidth("100%");
-        setHeight("100%");
+        frame = new Frame( name );
+        frame.getElement().setAttribute( "domain",
+                                         Document.get().getDomain() );
+        frame.setWidth( "100%" );
+        frame.setHeight( "100%" );
+        initWidget( frame );
+        setWidth( "100%" );
+        setHeight( "100%" );
     }
-    
+
     private final native String callSave(Document frameDoc) /*-{
         //console.log(frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON());
         return frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON();
@@ -73,16 +78,14 @@ public class BusinessProcessEditor extends DirtyableComposite implements SaveEve
 
     public void onSave() {
         //we replace the model by the new model:
-        String s = callSave(((IFrameElement) 
-                ((com.google.gwt.dom.client.Element) 
-                        frame.getElement())).getContentDocument());
-        if (asset.content == null) {
+        String s = callSave( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
+        if ( asset.content == null ) {
             asset.content = new RuleFlowContentModel();
         }
-        ((RuleFlowContentModel) asset.content).setXml(null);
-    	((RuleFlowContentModel) asset.content).setJson(s);
+        ((RuleFlowContentModel) asset.content).setXml( null );
+        ((RuleFlowContentModel) asset.content).setJson( s );
     }
-    
+
     public void onAfterSave() {
     }
 

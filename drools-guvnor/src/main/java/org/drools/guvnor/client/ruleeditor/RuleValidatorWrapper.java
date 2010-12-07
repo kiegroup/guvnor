@@ -24,7 +24,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
@@ -41,7 +40,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class RuleValidatorWrapper extends DirtyableComposite
     implements
-    SaveEventListener {
+    SaveEventListener,
+    EditorWidget {
 
     private static Constants constants = GWT.create( Constants.class );
     private static Images    images    = GWT.create( Images.class );

@@ -29,6 +29,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.EditorWidget;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.CallFixtureMap;
@@ -61,7 +62,9 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ScenarioWidget extends Composite {
+public class ScenarioWidget extends Composite
+    implements
+    EditorWidget {
 
     private Constants                          constants = GWT.create( Constants.class );
     private static Images                      images    = GWT.create( Images.class );

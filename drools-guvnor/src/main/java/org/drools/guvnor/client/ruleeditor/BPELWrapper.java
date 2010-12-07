@@ -30,46 +30,48 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+public class BPELWrapper extends Composite
+    implements
+    EditorWidget {
 
-public class BPELWrapper extends Composite {
+    private Constants constants = GWT.create( Constants.class );
 
-	private Constants constants = GWT.create(Constants.class);
+    public BPELWrapper(RuleAsset asset,
+                       RuleViewer viewer) {
 
-	public BPELWrapper(RuleAsset asset, RuleViewer viewer) {
+        final String uuid = asset.uuid;
+        final String fileName = asset.metaData.name;
+        final String dirName = asset.metaData.packageName;
+        final String servletName = "workflowmanager";
+        final String isNew = (asset.content == null ? "true" : "false");
 
-		final String uuid = asset.uuid;
-		final String fileName = asset.metaData.name;
-		final String dirName = asset.metaData.packageName;
-		final String servletName = "workflowmanager";
-		final String isNew = (asset.content == null ? "true" : "false");
+        AssetAttachmentFileWidget uploadWidget = new DefaultContentUploadEditor( asset,
+                                                                                 viewer );
 
-		AssetAttachmentFileWidget uploadWidget = new DefaultContentUploadEditor(
-				asset, viewer);
+        VerticalPanel panel = new VerticalPanel();
+        panel.add( uploadWidget );
 
-		VerticalPanel panel = new VerticalPanel();
-		panel.add(uploadWidget);
+        Button viewSource = new Button();
+        viewSource.setText( constants.OpenEditorInNewWindow() );
 
-		Button viewSource = new Button();
-		viewSource.setText(constants.OpenEditorInNewWindow());
+        final String url = Format.format( "bpeleditor/BPELEditor.html?uuid={0}&fileName={1}&dirName={2}&servletName={3}&isNew={4}",
+                                          new String[]{uuid, fileName, dirName, servletName, isNew} );
+        viewSource.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
+                Window.open( url,
+                             "_" + fileName,
+                             null );
+            }
+        } );
 
-		final String url = Format
-				.format(
-						"bpeleditor/BPELEditor.html?uuid={0}&fileName={1}&dirName={2}&servletName={3}&isNew={4}",
-						new String[] { uuid, fileName, dirName, servletName,
-								isNew });
-		viewSource.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent arg0) {
-				Window.open(url, "_" + fileName, null);			}
-		});
+        panel.add( viewSource );
 
-		panel.add(viewSource);
+        initWidget( panel );
 
-		initWidget(panel);
+        this.setStyleName( getOverallStyleName() );
+    }
 
-		this.setStyleName(getOverallStyleName());
-	}
-
-	public String getOverallStyleName() {
-		return "decision-Table-upload";
-	}
+    public String getOverallStyleName() {
+        return "decision-Table-upload";
+    }
 }

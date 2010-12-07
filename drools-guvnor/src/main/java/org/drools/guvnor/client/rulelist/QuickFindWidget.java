@@ -30,6 +30,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.ruleeditor.EditorLauncher;
+import org.drools.guvnor.client.ruleeditor.EditorWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -54,7 +55,6 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.gwtext.client.util.Format;
 
 /**
@@ -178,16 +178,16 @@ public class QuickFindWidget extends Composite {
                                                                                                                                               SuggestionCompletionCache.getInstance().doAction( result.metaData.packageName,
                                                                                                                                                                                                 new Command() {
                                                                                                                                                                                                     public void execute() {
-                                                                                                                                                                                                        final Widget last = EditorLauncher.getEditorViewer( result,
-                                                                                                                                                                                                                                                            null );
+                                                                                                                                                                                                        final EditorWidget last = EditorLauncher.getEditorViewer( result,
+                                                                                                                                                                                                                                                                  null );
                                                                                                                                                                                                         vp.add( last );
                                                                                                                                                                                                         panel.addScrollHandler( new ScrollHandler() {
-                                                                                                                                                                                                            int    i   = 0;
-                                                                                                                                                                                                            Widget end = last;
+                                                                                                                                                                                                            int          i   = 0;
+                                                                                                                                                                                                            EditorWidget end = last;
 
                                                                                                                                                                                                             public void onScroll(ScrollEvent event) {
-                                                                                                                                                                                                                int finalPos = end.getAbsoluteTop()
-                                                                                                                                                                                                                               + end.getOffsetHeight();
+                                                                                                                                                                                                                int finalPos = end.asWidget().getAbsoluteTop()
+                                                                                                                                                                                                                               + end.asWidget().getOffsetHeight();
                                                                                                                                                                                                                 int panelPos = panel.getAbsoluteTop()
                                                                                                                                                                                                                                + panel.getOffsetHeight();
                                                                                                                                                                                                                 System.err.println( panelPos + " "

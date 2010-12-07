@@ -27,19 +27,22 @@ import static org.drools.guvnor.client.common.AssetFormats.*;
  *
  * @author esteban.aliverti
  */
-public class DefaultActionToolbarButtonsConfigurationProvider implements ActionToolbarButtonsConfigurationProvider {
+public class DefaultActionToolbarButtonsConfigurationProvider
+    implements
+    ActionToolbarButtonsConfigurationProvider {
 
     private static String[] VALIDATING_FORMATS = new String[]{BUSINESS_RULE, DSL_TEMPLATE_RULE, DECISION_SPREADSHEET_XLS, DRL, ENUMERATION, DECISION_TABLE_GUIDED, DRL_MODEL, DSL, FUNCTION, RULE_TEMPLATE};
-    private static String[] VERIFY_FORMATS = new String[]{BUSINESS_RULE, DECISION_SPREADSHEET_XLS, DRL, DECISION_TABLE_GUIDED, DRL_MODEL, RULE_TEMPLATE};
-    
-    private RuleAsset asset;
-    private Widget editor;
+    private static String[] VERIFY_FORMATS     = new String[]{BUSINESS_RULE, DECISION_SPREADSHEET_XLS, DRL, DECISION_TABLE_GUIDED, DRL_MODEL, RULE_TEMPLATE};
 
-    public DefaultActionToolbarButtonsConfigurationProvider(RuleAsset asset,Widget editor) {
+    private RuleAsset       asset;
+    private Widget          editor;
+
+    public DefaultActionToolbarButtonsConfigurationProvider(RuleAsset asset,
+                                                            Widget editor) {
         this.asset = asset;
         this.editor = editor;
     }
-    
+
     public boolean showSaveButton() {
         return true;
     }
@@ -57,11 +60,11 @@ public class DefaultActionToolbarButtonsConfigurationProvider implements ActionT
     }
 
     public boolean showArchiveButton() {
-        return true;
+        return asset.metaData.versionNumber != 0;
     }
 
     public boolean showDeleteButton() {
-        return true;
+        return asset.metaData.versionNumber == 0;
     }
 
     public boolean showChangeStatusButton() {
@@ -83,15 +86,15 @@ public class DefaultActionToolbarButtonsConfigurationProvider implements ActionT
     public boolean showViewSourceButton() {
         return shouldShowViewSource();
     }
-    
+
     public boolean showStateLabel() {
         return true;
     }
-    
+
     private boolean isValidatorTypeAsset() {
         String format = asset.metaData.format;
-        for (String fmt : VALIDATING_FORMATS) {
-            if (fmt.equals(format)) {
+        for ( String fmt : VALIDATING_FORMATS ) {
+            if ( fmt.equals( format ) ) {
                 return true;
             }
         }
@@ -100,17 +103,16 @@ public class DefaultActionToolbarButtonsConfigurationProvider implements ActionT
 
     private boolean isVerificationTypeAsset() {
         String format = asset.metaData.format;
-        for (String fmt : VERIFY_FORMATS) {
-            if (fmt.equals(format)) {
+        for ( String fmt : VERIFY_FORMATS ) {
+            if ( fmt.equals( format ) ) {
                 return true;
             }
         }
         return false;
     }
-    
-    private boolean shouldShowViewSource() {
-        return CapabilitiesManager.getInstance().shouldShow(Capabilities.SHOW_PACKAGE_VIEW);
-    }
 
+    private boolean shouldShowViewSource() {
+        return CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW );
+    }
 
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.factconstraints.client.helper.ConstraintsContainer;
+import org.drools.factconstraints.client.helper.CustomFormsContainer;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.factconstraints.client.helper.CustomFormsContainer;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -42,28 +42,29 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 
+public class WorkingSetEditor extends Composite
+    implements
+    EditorWidget {
 
-public class WorkingSetEditor extends Composite {
-
-    private RuleAsset workingSet;
-    private ListBox availFacts = new ListBox(true);
-    private ListBox validFacts = new ListBox(true);
-    private ConstraintsContainer cc;
-    private CustomFormsContainer cfc;
+    private RuleAsset                   workingSet;
+    private ListBox                     availFacts = new ListBox( true );
+    private ListBox                     validFacts = new ListBox( true );
+    private ConstraintsContainer        cc;
+    private CustomFormsContainer        cfc;
 
     private FactsConstraintsEditorPanel factsConstraintsgEditorPanel;
-    private CustomFormsEditorPanel customFormsEditorPanel;
+    private CustomFormsEditorPanel      customFormsEditorPanel;
 
     public WorkingSetEditor(RuleAsset asset) {
-        if (!AssetFormats.WORKING_SET.equals(asset.metaData.format)) {
-            throw new IllegalArgumentException("asset must a be a workingset not a: " + asset.metaData.format);
+        if ( !AssetFormats.WORKING_SET.equals( asset.metaData.format ) ) {
+            throw new IllegalArgumentException( "asset must a be a workingset not a: " + asset.metaData.format );
         }
         workingSet = asset;
         WorkingSetConfigData wsData = (WorkingSetConfigData) workingSet.content;
-        cc = new ConstraintsContainer(wsData.constraints);
-        cfc = new CustomFormsContainer(wsData.customForms);
+        cc = new ConstraintsContainer( wsData.constraints );
+        cfc = new CustomFormsContainer( wsData.customForms );
         refreshWidgets();
-        setWidth("100%");
+        setWidth( "100%" );
 
     }
 
@@ -73,105 +74,132 @@ public class WorkingSetEditor extends Composite {
         TabPanel tPanel = new TabPanel();
         //tPanel.setWidth(800);
         ScrollPanel pnl = new ScrollPanel();
-//        pnl.setAutoWidth(true);
+        //        pnl.setAutoWidth(true);
         //pnl.setClosable(false);
-        pnl.setTitle("WS Definition"); //TODO {bauna} i18n
-//        pnl.setAutoHeight(true);
-        pnl.add(buildDoubleList(wsData));
-        tPanel.add(pnl, "WS Definition");
+        pnl.setTitle( "WS Definition" ); //TODO {bauna} i18n
+        //        pnl.setAutoHeight(true);
+        pnl.add( buildDoubleList( wsData ) );
+        tPanel.add( pnl,
+                    "WS Definition" );
 
         pnl = new ScrollPanel();
-//        pnl.setAutoWidth(true);
+        //        pnl.setAutoWidth(true);
         //pnl.setClosable(false);
         //pnl.setTitle("WS Constraints"); //TODO {bauna} i18n
-//        pnl.setAutoHeight(true);
-        this.factsConstraintsgEditorPanel = new FactsConstraintsEditorPanel(this);
-        pnl.add(this.factsConstraintsgEditorPanel);
-        tPanel.add(pnl, "WS Constraints");
+        //        pnl.setAutoHeight(true);
+        this.factsConstraintsgEditorPanel = new FactsConstraintsEditorPanel( this );
+        pnl.add( this.factsConstraintsgEditorPanel );
+        tPanel.add( pnl,
+                    "WS Constraints" );
 
         pnl = new ScrollPanel();
-//        pnl.setAutoWidth(true);
+        //        pnl.setAutoWidth(true);
         //pnl.setClosable(false);
-        pnl.setTitle("WS Custom Forms"); //TODO {bauna} i18n
-//        pnl.setAutoHeight(true);
-        this.customFormsEditorPanel = new CustomFormsEditorPanel(this);
-        pnl.add(this.customFormsEditorPanel);
-        tPanel.add(pnl, "WS Custom Forms");
-        tPanel.addBeforeSelectionHandler(new BeforeSelectionHandler<java.lang.Integer>() {
+        pnl.setTitle( "WS Custom Forms" ); //TODO {bauna} i18n
+        //        pnl.setAutoHeight(true);
+        this.customFormsEditorPanel = new CustomFormsEditorPanel( this );
+        pnl.add( this.customFormsEditorPanel );
+        tPanel.add( pnl,
+                    "WS Custom Forms" );
+        tPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<java.lang.Integer>() {
 
-			public void onBeforeSelection(BeforeSelectionEvent<java.lang.Integer> arg0) {
+            public void onBeforeSelection(BeforeSelectionEvent<java.lang.Integer> arg0) {
                 factsConstraintsgEditorPanel.fillSelectedFacts();
                 customFormsEditorPanel.fillSelectedFacts();
             }
-        	
-        });
 
+        } );
 
-        tPanel.selectTab(0);
-        initWidget(tPanel);
+        tPanel.selectTab( 0 );
+        initWidget( tPanel );
     }
 
     private Grid buildDoubleList(WorkingSetConfigData wsData) {
-        Grid grid = new Grid(2, 3);
+        Grid grid = new Grid( 2,
+                              3 );
 
-        SuggestionCompletionEngine sce = SuggestionCompletionCache.getInstance().getEngineFromCache(workingSet.metaData.packageName);
+        SuggestionCompletionEngine sce = SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.metaData.packageName );
         boolean filteringFact = sce.isFilteringFacts();
-        sce.setFilteringFacts(false);
+        sce.setFilteringFacts( false );
 
         try {
             Set<String> elem = new HashSet<String>();
 
-            availFacts.setVisibleItemCount(10);
-            validFacts.setVisibleItemCount(10);
+            availFacts.setVisibleItemCount( 10 );
+            validFacts.setVisibleItemCount( 10 );
 
-            if (wsData.validFacts != null) {
-                elem.addAll(Arrays.asList(wsData.validFacts));
-                for (String factName : wsData.validFacts) {
-                    validFacts.addItem(factName);
+            if ( wsData.validFacts != null ) {
+                elem.addAll( Arrays.asList( wsData.validFacts ) );
+                for ( String factName : wsData.validFacts ) {
+                    validFacts.addItem( factName );
                 }
             }
 
-            for (String factName : sce.getFactTypes()) {
-                if (!elem.contains(factName)) {
-                    availFacts.addItem(factName);
+            for ( String factName : sce.getFactTypes() ) {
+                if ( !elem.contains( factName ) ) {
+                    availFacts.addItem( factName );
                 }
             }
 
-            Grid btnsPanel = new Grid(2, 1);
+            Grid btnsPanel = new Grid( 2,
+                                       1 );
 
-            btnsPanel.setWidget(0, 0, new Button(">", new ClickHandler() {
+            btnsPanel.setWidget( 0,
+                                 0,
+                                 new Button( ">",
+                                             new ClickHandler() {
 
-                public void onClick(ClickEvent sender) {
-                    copySelected(availFacts, validFacts);
-                    updateAsset(validFacts);
-                    factsConstraintsgEditorPanel.fillSelectedFacts();
-                    customFormsEditorPanel.fillSelectedFacts();
-                }
-            }));
+                                                 public void onClick(ClickEvent sender) {
+                                                     copySelected( availFacts,
+                                                                   validFacts );
+                                                     updateAsset( validFacts );
+                                                     factsConstraintsgEditorPanel.fillSelectedFacts();
+                                                     customFormsEditorPanel.fillSelectedFacts();
+                                                 }
+                                             } ) );
 
-            btnsPanel.setWidget(1, 0, new Button("&lt;", new ClickHandler() {
+            btnsPanel.setWidget( 1,
+                                 0,
+                                 new Button( "&lt;",
+                                             new ClickHandler() {
 
-                public void onClick(ClickEvent sender) {
-                    copySelected(validFacts, availFacts);
-                    updateAsset(validFacts);
-                    factsConstraintsgEditorPanel.fillSelectedFacts();
-                    customFormsEditorPanel.fillSelectedFacts();
-                }
-            }));
+                                                 public void onClick(ClickEvent sender) {
+                                                     copySelected( validFacts,
+                                                                   availFacts );
+                                                     updateAsset( validFacts );
+                                                     factsConstraintsgEditorPanel.fillSelectedFacts();
+                                                     customFormsEditorPanel.fillSelectedFacts();
+                                                 }
+                                             } ) );
 
-            grid.setWidget(0, 0, new SmallLabel("Available Facts")); //TODO i18n
-            grid.setWidget(0, 1, new SmallLabel(""));
-            grid.setWidget(0, 2, new SmallLabel("WorkingSet Facts")); //TODO i18n
-            grid.setWidget(1, 0, availFacts);
-            grid.setWidget(1, 1, btnsPanel);
-            grid.setWidget(1, 2, validFacts);
+            grid.setWidget( 0,
+                            0,
+                            new SmallLabel( "Available Facts" ) ); //TODO i18n
+            grid.setWidget( 0,
+                            1,
+                            new SmallLabel( "" ) );
+            grid.setWidget( 0,
+                            2,
+                            new SmallLabel( "WorkingSet Facts" ) ); //TODO i18n
+            grid.setWidget( 1,
+                            0,
+                            availFacts );
+            grid.setWidget( 1,
+                            1,
+                            btnsPanel );
+            grid.setWidget( 1,
+                            2,
+                            validFacts );
 
-            grid.getColumnFormatter().setWidth(0, "45%");
-            grid.getColumnFormatter().setWidth(0, "10%");
-            grid.getColumnFormatter().setWidth(0, "45%");
+            grid.getColumnFormatter().setWidth( 0,
+                                                "45%" );
+            grid.getColumnFormatter().setWidth( 0,
+                                                "10%" );
+            grid.getColumnFormatter().setWidth( 0,
+                                                "45%" );
             return grid;
         } finally {
-            sce.setFilteringFacts(filteringFact);
+            sce.setFilteringFacts( filteringFact );
         }
     }
 
@@ -179,18 +207,19 @@ public class WorkingSetEditor extends Composite {
      * This will get the save widgets.
      */
     private void updateAsset(ListBox availFacts) {
-        List<String> l = new ArrayList<String>(availFacts.getItemCount());
-        for (int i = 0; i < availFacts.getItemCount(); i++) {
-            l.add(availFacts.getItemText(i));
+        List<String> l = new ArrayList<String>( availFacts.getItemCount() );
+        for ( int i = 0; i < availFacts.getItemCount(); i++ ) {
+            l.add( availFacts.getItemText( i ) );
         }
-        ((WorkingSetConfigData) workingSet.content).validFacts = l.toArray(new String[l.size()]);
+        ((WorkingSetConfigData) workingSet.content).validFacts = l.toArray( new String[l.size()] );
     }
 
-    private void copySelected(final ListBox from, final ListBox to) {
+    private void copySelected(final ListBox from,
+                              final ListBox to) {
         int selected;
-        while ((selected = from.getSelectedIndex()) != -1) {
-            to.addItem(from.getItemText(selected));
-            from.removeItem(selected);
+        while ( (selected = from.getSelectedIndex()) != -1 ) {
+            to.addItem( from.getItemText( selected ) );
+            from.removeItem( selected );
             factsConstraintsgEditorPanel.notifyValidFactsChanged();
             customFormsEditorPanel.notifyValidFactsChanged();
         }

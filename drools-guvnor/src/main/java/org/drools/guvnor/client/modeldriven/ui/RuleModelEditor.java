@@ -16,6 +16,10 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-public interface RuleModelEditor {
-	public RuleModeller getRuleModeller();
+import org.drools.guvnor.client.ruleeditor.EditorWidget;
+
+public interface RuleModelEditor
+    extends
+    EditorWidget {
+    public RuleModeller getRuleModeller();
 }

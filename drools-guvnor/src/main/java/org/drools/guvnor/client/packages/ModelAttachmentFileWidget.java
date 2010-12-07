@@ -19,6 +19,7 @@ package org.drools.guvnor.client.packages;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.EditorWidget;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 import org.drools.guvnor.client.messages.Constants;
@@ -37,7 +38,8 @@ import com.google.gwt.core.client.GWT;
 
 public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
     implements
-    SaveEventListener {
+    SaveEventListener,
+    EditorWidget {
 
     private static Images images = GWT.create( Images.class );
 

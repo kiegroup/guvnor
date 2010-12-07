@@ -22,6 +22,7 @@ import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.ruleeditor.DefaultRuleContentWidget;
+import org.drools.guvnor.client.ruleeditor.EditorWidget;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
@@ -37,13 +38,14 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FactModelsWidget extends Composite
     implements
-    SaveEventListener {
+    SaveEventListener,
+    EditorWidget {
 
     private RuleAsset        asset;
     private static Constants constants = ((Constants) GWT.create( Constants.class ));
 
     public FactModelsWidget(RuleAsset asset,
-                           RuleViewer viewer) {
+                            RuleViewer viewer) {
         this( asset );
     }
 

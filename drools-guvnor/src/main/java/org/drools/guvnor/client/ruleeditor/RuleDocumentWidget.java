@@ -21,7 +21,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
