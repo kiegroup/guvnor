@@ -45,6 +45,8 @@
 
     <!-- SECURITY AUTHORIZATION CONFIGURATION -->
     <!-- This is used to enable or disable role-based authorization. By default it is disabled. -->
-    <security:role-based-permission-resolver enable-role-based-authorization="false"/>
+    <component name="org.jboss.seam.security.roleBasedPermissionResolver">
+    	<property name="enableRoleBasedAuthorization">false</property>
+    </component>
 
 </components>

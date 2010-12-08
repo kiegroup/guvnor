@@ -47,11 +47,11 @@ import org.drools.core.util.DateUtils;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.security.permission.RoleBasedPermissionResolver;
 import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Identity;
-import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
 
 /**
  * This implements security related services.

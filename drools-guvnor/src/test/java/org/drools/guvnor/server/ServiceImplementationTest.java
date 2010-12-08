@@ -78,6 +78,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
+import org.drools.guvnor.client.security.permission.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.repository.UserInbox;
@@ -117,7 +118,6 @@ import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
-import org.jboss.seam.security.permission.RoleBasedPermissionResolver;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 

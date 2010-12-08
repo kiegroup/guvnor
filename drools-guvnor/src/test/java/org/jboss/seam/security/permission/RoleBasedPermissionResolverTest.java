@@ -39,6 +39,7 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.drools.guvnor.client.security.permission.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.MockIdentity;
