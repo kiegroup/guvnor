@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectOutput;
 import java.io.StringWriter;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -49,7 +50,6 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.jackrabbit.util.ISO8601;
 import org.drools.ClockType;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -112,6 +112,7 @@ import org.drools.guvnor.server.util.AssetFormatHelper;
 import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.Discussion;
+import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
@@ -184,6 +185,8 @@ public class ServiceImplementation
 
     private MetaDataMapper              metaDataMapper                    = new MetaDataMapper();
 
+    
+    
     /**
      * Used for a simple cache of binary packages to avoid serialization from
      * the database - for test scenarios.
@@ -1270,7 +1273,6 @@ public class ServiceImplementation
         AssetItemIterator it = repository.query( q,
                                                  seekArchived,
                                                  dates );
-
         // Add Filter to check Permission
         List<AssetItem> resultList = new ArrayList<AssetItem>();
 

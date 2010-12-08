@@ -20,6 +20,7 @@ import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.util.Discussion;
+import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -28,7 +29,6 @@ import org.drools.core.util.StringUtils;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.AuthorizationException;
-import org.apache.jackrabbit.util.ISO8601;
 import org.mvel2.templates.TemplateRuntime;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +44,7 @@ import java.util.*;
 public class FeedServlet extends RepositoryServlet {
 
     private static final String VIEW_URL = "viewUrl";
-
+   
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         try {
