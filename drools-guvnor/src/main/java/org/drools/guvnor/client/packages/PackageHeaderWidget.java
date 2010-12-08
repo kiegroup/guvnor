@@ -299,9 +299,21 @@ public class PackageHeaderWidget extends Composite {
                 } );
             }
         };
-        pop.addAttribute( "",
-                          ok );
 
+        Button cancel = new Button( constants.Cancel() ) {
+            {
+                addClickHandler( new ClickHandler() {
+                    public void onClick(ClickEvent event) {
+                        pop.hide();
+                    }
+                } );
+            }
+        };       
+        
+        HorizontalPanel buttonPanel = new HorizontalPanel();
+        buttonPanel.add( ok );
+        buttonPanel.add( cancel );
+        pop.addAttribute( "", buttonPanel );
         pop.show();
     }
 
