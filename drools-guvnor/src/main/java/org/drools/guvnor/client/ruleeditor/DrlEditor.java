@@ -68,7 +68,7 @@ public class DrlEditor extends Composite
                                                 1,
                                                 HasHorizontalAlignment.ALIGN_LEFT,
                                                 HasVerticalAlignment.ALIGN_TOP );
-        layout.setWidth( "100%" );
+        layout.setWidth( "95%" );
 
         initWidget( layout );
 
