@@ -325,14 +325,6 @@ public interface RepositoryService
                                      String newSnapshotName) throws SerializationException;
 
     /**
-     * This will quickly return a list of assets 
-     */
-    public TableDataResult quickFindAsset(String searchText,
-                                          boolean searchArchived,
-                                          int skip,
-                                          int numRows) throws SerializationException;
-
-    /**
      * This will remove a category. A category must have no
      * current assets linked to it, or else it will not be able to be removed.
      * @param categoryPath The full path to the category. Any sub categories will also
@@ -502,6 +494,14 @@ public interface RepositoryService
      */
     public String[] loadDropDownExpression(String[] valuePairs,
                                            String expression);
+
+    /**
+     * This will quickly return a list of assets
+     */
+    public TableDataResult quickFindAsset(String searchText,
+                                          boolean searchArchived,
+                                          int skip,
+                                          int numRows) throws SerializationException;
 
     /**
      * Runs a full text search using JCR.

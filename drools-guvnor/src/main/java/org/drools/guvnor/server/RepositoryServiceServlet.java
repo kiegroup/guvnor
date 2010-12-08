@@ -233,9 +233,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public void copyOrRemoveSnapshot(java.lang.String p0, java.lang.String p1, boolean p2, java.lang.String p3) throws SerializationException {
         getService().copyOrRemoveSnapshot( p0,  p1,  p2,  p3);
     }
-    public org.drools.guvnor.client.rpc.TableDataResult quickFindAsset(java.lang.String p0, boolean p1, int p2, int p3) throws SerializationException {
-         return getService().quickFindAsset( p0,  p1,  p2,  p3);
-    }
     public void removeCategory(java.lang.String p0) throws SerializationException {
         getService().removeCategory( p0);
     }
@@ -315,6 +312,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     }
     public java.lang.String[] loadDropDownExpression(java.lang.String[] p0, java.lang.String p1)  {
          return getService().loadDropDownExpression( p0,  p1);
+    }
+    public org.drools.guvnor.client.rpc.TableDataResult quickFindAsset(java.lang.String p0, boolean p1, int p2, int p3) throws SerializationException {
+         return getService().quickFindAsset( p0,  p1,  p2,  p3);
     }
     public org.drools.guvnor.client.rpc.TableDataResult queryFullText(java.lang.String p0, boolean p1, int p2, int p3) throws SerializationException {
          return getService().queryFullText( p0,  p1,  p2,  p3);

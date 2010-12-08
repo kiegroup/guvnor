@@ -1166,6 +1166,43 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
+    public TableDataResult quickFindAsset(String searchText,
+                                          boolean searchArchived,
+                                          int skip,
+                                          int numRows) throws SerializationException {
+        String search = searchText.replace( '*',
+                                            '%' );
+
+        if ( !search.endsWith( "%" ) ) {
+            search += "%";
+        }
+
+        List<AssetItem> resultList = new ArrayList<AssetItem>();
+
+        long start = System.currentTimeMillis();
+        AssetItemIterator it = repository.findAssetsByName( search,
+                                                            searchArchived ); // search for archived items
+        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+        // Add filter for READONLY permission
+        RepositoryFilter filter = new AssetItemFilter();
+
+        while ( it.hasNext() ) {
+            AssetItem ai = it.next();
+            if ( filter.accept( ai,
+                                RoleTypes.PACKAGE_READONLY ) ) {
+                resultList.add( ai );
+            }
+        }
+
+        TableDisplayHandler handler = new TableDisplayHandler( "searchresults" );
+        return handler.loadRuleListTable( resultList,
+                                          skip,
+                                          numRows );
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public TableDataResult queryFullText(String text,
                                          boolean seekArchived,
                                          int skip,
@@ -1540,45 +1577,6 @@ public class ServiceImplementation
                                             snapshotName,
                                             newSnapshotName );
         }
-
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult quickFindAsset(String searchText,
-                                          boolean searchArchived,
-                                          int skip,
-                                          int numRows) throws SerializationException {
-        String search = searchText.replace( '*',
-                                            '%' );
-
-        if ( !search.endsWith( "%" ) ) {
-            search += "%";
-        }
-
-        List<AssetItem> resultList = new ArrayList<AssetItem>();
-
-        long start = System.currentTimeMillis();
-        AssetItemIterator it = repository.findAssetsByName( search,
-                                                            searchArchived ); // search for archived items
-        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-
-        // Add filter for READONLY permission
-        RepositoryFilter filter = new AssetItemFilter();
-
-        while ( it.hasNext() ) {
-            AssetItem ai = it.next();
-            if ( filter.accept( ai,
-                                RoleTypes.PACKAGE_READONLY ) ) {
-                resultList.add( ai );
-            }
-        }
-
-        TableDisplayHandler handler = new TableDisplayHandler( "searchresults" );
-
-        return handler.loadRuleListTable( resultList,
-                                          skip,
-                                          numRows );
 
     }
 

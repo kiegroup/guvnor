@@ -86,9 +86,9 @@ public interface RepositoryServiceAsync {
 	void loadTableConfig(java.lang.String listName, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableConfig> arg2);
 	void lockAsset(java.lang.String uuid, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
 	void promoteAssetToGlobalArea(java.lang.String assetUUID, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
-	void queryFullText(java.lang.String text, boolean seekArchived, int skip, int numRows, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> arg5);
-	void queryMetaData(org.drools.guvnor.client.rpc.MetaDataQuery[] qr, java.util.Date createdAfter, java.util.Date createdBefore, java.util.Date modifiedAfter, java.util.Date modifiedBefore, boolean seekArchived, int skip, int numRows, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> arg9);
-	void quickFindAsset(java.lang.String searchText, boolean searchArchived, int skip, int numRows, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> arg5);
+    void quickFindAsset(java.lang.String searchText, boolean searchArchived, int skip, int numRows, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> arg5);
+    void queryFullText(java.lang.String text, boolean seekArchived, int skip, int numRows, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> arg5);
+    void queryMetaData(org.drools.guvnor.client.rpc.MetaDataQuery[] qr, java.util.Date createdAfter, java.util.Date createdBefore, java.util.Date modifiedAfter, java.util.Date modifiedBefore, boolean seekArchived, int skip, int numRows, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> arg9);
 	void rebuildPackages(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg1);
 	void rebuildSnapshots(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg1);
 	void removeAsset(java.lang.String uuid, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.Void> arg2);
