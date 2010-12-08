@@ -22,19 +22,13 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.packages.PackageEditor;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
+import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.DOM;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -44,7 +38,6 @@ import com.google.gwt.user.client.ui.Widget;
  * @author Fernando Meyer, Michael Neale
  */
 public class ExplorerViewCenterPanel extends Composite {
-    private static Images              images               = (Images) GWT.create( Images.class );
 
     private final ScrollTabLayoutPanel tabLayoutPanel;
 
@@ -123,14 +116,10 @@ public class ExplorerViewCenterPanel extends Composite {
 
     private Widget newClosableLabel(final Panel panel,
                                     final String title) {
-        final HorizontalPanel hPanel = new HorizontalPanel();
-        final Label label = new Label( title );
-        DOM.setStyleAttribute( label.getElement(),
-                               "whiteSpace",
-                               "nowrap" );
-        Image closeBtn = new Image( images.close() );
-        closeBtn.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
+        ClosableLabel closableLabel = new ClosableLabel( title );
+
+        closableLabel.addCloseHandler( new CloseHandler<ClosableLabel>() {
+            public void onClose(CloseEvent<ClosableLabel> event) {
                 int widgetIndex = tabLayoutPanel.getWidgetIndex( panel );
                 if ( widgetIndex == tabLayoutPanel.getSelectedIndex() ) {
                     if ( isOnlyOneTabLeft() ) {
@@ -149,10 +138,7 @@ public class ExplorerViewCenterPanel extends Composite {
             }
         } );
 
-        hPanel.add( label );
-        hPanel.add( new HTML( "&nbsp&nbsp&nbsp" ) );
-        hPanel.add( closeBtn );
-        return hPanel;
+        return closableLabel;
     }
 
     /**
