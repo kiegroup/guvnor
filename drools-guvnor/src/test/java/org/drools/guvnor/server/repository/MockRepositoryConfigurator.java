@@ -49,7 +49,10 @@ public class MockRepositoryConfigurator extends JCRRepositoryConfigurator {
     
     @Override
     public Repository getJCRRepository(Properties properties) {
-        return new MockRepo();
+    	if (repository==null) {
+    		repository = new MockRepo();
+    	}
+        return repository;
     }
 
     public void setupRulesRepository(Session session) throws RulesRepositoryException {
