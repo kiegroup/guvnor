@@ -149,6 +149,30 @@
       <artifactId>drools-repository</artifactId>
     </dependency>
     <dependency>
+       <artifactId>drools-repository-jcr-ms-impl</artifactId>
+       <groupId>org.drools</groupId>
+       <version>5.1.0.BRMS</version>
+       <scope>runtime</scope>
+       <exclusions>
+           <exclusion>
+                   <groupId>org.modeshape</groupId>
+                   <artifactId>modeshape-jcr</artifactId>
+           </exclusion>
+           <exclusion>
+                   <groupId>org.jboss.security</groupId>
+                   <artifactId>jboss-idtrust</artifactId>
+           </exclusion>
+           <exclusion>
+                   <groupId>org.jboss.security</groupId>
+                   <artifactId>jboss-security-spi-bare</artifactId>
+           </exclusion>
+           <exclusion>
+                   <groupId>org.jboss.security</groupId>
+                   <artifactId>jbosssx-bare</artifactId>
+           </exclusion>
+       </exclusions>
+    </dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
