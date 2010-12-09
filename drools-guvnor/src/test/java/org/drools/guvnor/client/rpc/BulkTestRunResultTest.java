@@ -16,10 +16,14 @@
 
 package org.drools.guvnor.client.rpc;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class BulkTestRunResultTest extends TestCase {
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+public class BulkTestRunResultTest {
+
+	@Test
 	public void testPrinting() {
 		BulkTestRunResult res = new BulkTestRunResult();
 		assertNotNull(res.toString());

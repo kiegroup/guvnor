@@ -55,7 +55,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
     private static final String        ENUM_TAG    = "ENUM";
     private static final String        DATE_TAG    = "DATE";
     private static final String        BOOLEAN_TAG = "BOOLEAN";
-    private final List                 widgets;
+    private final List<Widget>                 widgets;
     private final DSLSentence          sentence;
     private final VerticalPanel        layout;
     private HorizontalPanel            currentRow;
@@ -67,7 +67,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
     public DSLSentenceWidget(RuleModeller modeller, DSLSentence sentence, Boolean readOnly) {
         super (modeller);
-        widgets = new ArrayList();
+        widgets = new ArrayList<Widget>();
         this.sentence = sentence;
 
         if (readOnly == null){
@@ -250,8 +250,8 @@ public class DSLSentenceWidget extends RuleModellerWidget {
      */
     protected void updateSentence() {
         String newSentence = "";
-        for ( Iterator iter = widgets.iterator(); iter.hasNext(); ) {
-            Widget wid = (Widget) iter.next();
+        for ( Iterator<Widget> iter = widgets.iterator(); iter.hasNext(); ) {
+            Widget wid = iter.next();
             if ( wid instanceof Label ) {
                 newSentence = newSentence + ((Label) wid).getText();
             } else if ( wid instanceof FieldEditor ) {

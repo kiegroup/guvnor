@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.jar.JarInputStream;
 
-import junit.framework.TestCase;
-
 import org.acme.insurance.Driver;
 import org.acme.insurance.Policy;
 import org.drools.RuleBase;
@@ -50,18 +48,28 @@ import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.drools.ruleflow.core.RuleFlowProcess;
+import org.junit.After;
+import org.junit.Test;
 import org.mvel2.MVEL;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * This will unit test package assembly into a binary.
  * @author Michael Neale
  */
-public class ContentPackageAssemblerTest extends TestCase {
+public class ContentPackageAssemblerTest {
 
     /**
      * Test package configuration errors,
      * including header, functions, DSL files.
      */
+	@Test
     public void testPackageConfigWithErrors() throws Exception {
         //test the config, no rule assets yet
         RulesRepository repo = getRepo();
@@ -150,7 +158,9 @@ public class ContentPackageAssemblerTest extends TestCase {
         assertNotEmpty( assembler.getErrors().get( 0 ).getErrorReport() );
     }
 
-    public void testLoadConfProperties() throws Exception {
+	@Test
+    public void testLoadConfProperties () throws Exception {
+
         RulesRepository repo = getRepo();
 
         PackageItem pkg = repo.createPackage( "testLoadConfProperties",
@@ -191,6 +201,8 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+
+	@Test
     public void testPackageWithRuleflow() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -221,7 +233,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg );
         assertFalse( asm.hasErrors() );
-        Map flows = asm.getBinaryPackage().getRuleFlows();
+        Map<String, org.drools.definition.process.Process> flows = asm.getBinaryPackage().getRuleFlows();
         assertNotNull( flows );
 
         assertEquals( 1,
@@ -251,9 +263,10 @@ public class ContentPackageAssemblerTest extends TestCase {
         Object o2 = builder.getPackageRegistry( "foo" ).getTypeResolver().resolveType( "Board" );
         assertNotNull( o2 );
         assertEquals( "com.billasurf.Board",
-                      ((Class) o2).getName() );
+                      ((Class<?>) o2).getName() );
     }
 
+	@Test
     public void testWithNoDeclaredTypes() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -270,6 +283,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+	@Test
     public void testSimplePackageWithDeclaredTypes() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -312,6 +326,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+	@Test
     public void testSimplePackageBuildNoErrors() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -376,6 +391,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+	@Test
     public void testIgnoreArchivedItems() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -421,6 +437,7 @@ public class ContentPackageAssemblerTest extends TestCase {
      * This this case we will test errors that occur in rule assets,
      * not in functions or package header.
      */
+	@Test
     public void testErrorsInRuleAsset() throws Exception {
 
         RulesRepository repo = getRepo();
@@ -460,6 +477,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+	@Test
     public void testEventingExample() throws Exception {
 
         RulesRepository repo = getRepo();
@@ -495,6 +513,7 @@ public class ContentPackageAssemblerTest extends TestCase {
      * This time, we mix up stuff a bit
      *
      */
+	@Test
     public void testRuleAndDSLAndFunction() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -559,6 +578,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+	@Test
     public void testShowSource() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -625,6 +645,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+	@Test
     public void testBuildPackageWithEmptyHeader() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -651,6 +672,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+	@Test
     public void testSkipDisabledPackageStuff() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -678,6 +700,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+	@Test
     public void testSkipDisabledAssets() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -734,6 +757,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+	@Test
     public void testXLSDecisionTable() throws Exception {
 
         RulesRepository repo = getRepo();
@@ -803,6 +827,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+	@Test
     public void testSkipDisabledImports() throws Exception {
 
         RulesRepository repo = getRepo();
@@ -831,6 +856,7 @@ public class ContentPackageAssemblerTest extends TestCase {
                                  2 ) == -1 ); //skip a few, make sure we only have one instance of "package "
     }
 
+	@Test
     public void testBRXMLWithDSLMixedIn() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -906,6 +932,7 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     }
 
+	@Test
     public void testCustomSelector() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -1015,6 +1042,11 @@ public class ContentPackageAssemblerTest extends TestCase {
 
     private RulesRepository getRepo() throws Exception {
         return new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+    	TestEnvironmentSessionHelper.shutdown();
     }
 
 }

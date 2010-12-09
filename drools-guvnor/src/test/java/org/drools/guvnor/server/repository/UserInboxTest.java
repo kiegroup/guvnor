@@ -16,20 +16,23 @@
 
 package org.drools.guvnor.server.repository;
 
-import org.drools.repository.RulesRepository;
-import org.drools.repository.AssetItem;
-import org.drools.repository.UserInfo.InboxEntry;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.repository.AssetItem;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.UserInfo.InboxEntry;
+import org.junit.Test;
 
 /**
  * @author Michael Neale
  */
-public class UserInboxTest extends TestCase {
+public class UserInboxTest  {
 
+	@Test
     public void testInboxen() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         UserInbox inb = new UserInbox(repo);
@@ -78,6 +81,7 @@ public class UserInboxTest extends TestCase {
 
     }
 
+	@Test
     public void testRead() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         UserInbox inb = new UserInbox(repo);
@@ -92,6 +96,7 @@ public class UserInboxTest extends TestCase {
 
     }
 
+	@Test
     public void testDupes() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         UserInbox inb = new UserInbox(repo);
@@ -126,6 +131,7 @@ public class UserInboxTest extends TestCase {
 
     }
 
+	@Test
     public void testHelper() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         UserInbox ib = new UserInbox(repo);
@@ -144,7 +150,7 @@ public class UserInboxTest extends TestCase {
         assertEquals(asset.getUUID(), es.get(0).assetUUID);
     }
 
-
+	@Test
     public void testIncoming() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         AssetItem asset = repo.loadDefaultPackage().addAsset("testIncomingMarkedRead", "");

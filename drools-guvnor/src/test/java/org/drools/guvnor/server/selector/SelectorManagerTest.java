@@ -16,10 +16,18 @@
 
 package org.drools.guvnor.server.selector;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class SelectorManagerTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 
+public class SelectorManagerTest {
+
+	@Test
     public void testSelectorMangerConfig() {
     	SelectorManager sm = new SelectorManager("/selectors-test.properties");
         assertNotNull(sm);
@@ -38,7 +46,6 @@ public class SelectorManagerTest extends TestCase {
         assertTrue(sel.evalRules( new Allow() ));
         assertFalse(sel.evalRules( new DummyClass() ));
         assertTrue(sel.evalRules( new Allow() ));
-
 
         assertNull(sm.getSelector( "selector3" ));
 
@@ -60,6 +67,7 @@ public class SelectorManagerTest extends TestCase {
         assertSame( SelectorManager.getInstance(), SelectorManager.getInstance());
     }
 
+	@Test
     public void testGetBuiltInSelector() {
     	SelectorManager sm = new SelectorManager("/selectors-test.properties");
         assertNotNull(sm);
@@ -68,6 +76,7 @@ public class SelectorManagerTest extends TestCase {
         assertTrue(sm.getSelector( "BuiltInSelector" ) instanceof BuiltInSelector);
     }
     
+	@Test
     public void testGetCustomSelectors() {
     	SelectorManager sm = new SelectorManager("/selectors-test.properties");
         assertNotNull(sm);
@@ -76,9 +85,10 @@ public class SelectorManagerTest extends TestCase {
         assertEquals(2, sm.getCustomSelectors().length);
     }
     
+	@Test
     public void testBadConfig() throws Exception {
         SelectorManager sm = new SelectorManager("/badselectors.properties");
-
+        assertNotNull(sm);
     }
 
 }

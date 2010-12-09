@@ -34,15 +34,18 @@ package org.drools.guvnor.server.security;
 
 
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
+import org.junit.Test;
 
-public class RoleBasedPermissionStoreTest extends TestCase {
+public class RoleBasedPermissionStoreTest {
+	
+	@Test
 	public void testGetRoleBasedPermissionsByUserName() throws Exception {
 		RoleBasedPermissionStore store = getStore();
 	

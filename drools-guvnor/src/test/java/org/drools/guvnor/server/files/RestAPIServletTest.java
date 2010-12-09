@@ -171,7 +171,8 @@ public class RestAPIServletTest extends TestCase {
 		res = new MockHTTPResponse();
 		serv.doPost(req, res);
 		assertEquals("OK", res.extractContent());
-
+       
+		pkg.getNode().refresh(false);
 		AssetItem ass2 = pkg.loadAsset("asset2");
 		assertEquals("xls", ass2.getFormat());
 		assertTrue(ass2.isBinary());
@@ -180,6 +181,7 @@ public class RestAPIServletTest extends TestCase {
 		String out = new String(ass2.getBinaryContentAsBytes());
 		assertEquals("more content", out);
 
+		
         repo.logout();
 
         Lifecycle.endApplication();
@@ -227,6 +229,7 @@ public class RestAPIServletTest extends TestCase {
 		assertEquals("OK", res.extractContent());
 
 		ass = pkg.loadAsset("asset1");
+		pkg.getNode().refresh(false);
 		assertEquals("some new content", ass.getContent());
 		assertEquals(ver + 1, ass.getVersionNumber());
 		assertEquals("hey ho", ass.getCheckinComment());

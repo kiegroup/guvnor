@@ -16,10 +16,14 @@
 
 package org.drools.guvnor.client.packages;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class NewPackageWizardTest extends TestCase {
+import org.junit.Test;
 
+public class NewPackageWizardTest {
+
+	@Test
 	public void testPackageNameValidation() {
 		assertTrue(PackageNameValidator.validatePackageName("foo.bar"));
 		assertTrue(PackageNameValidator.validatePackageName("whee.waa2"));

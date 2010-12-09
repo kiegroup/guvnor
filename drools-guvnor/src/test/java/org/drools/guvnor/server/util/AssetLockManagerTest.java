@@ -16,14 +16,20 @@
 
 package org.drools.guvnor.server.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 /**
  * @author Toni Rikkola
  *
  */
-public class AssetLockManagerTest extends TestCase {
+public class AssetLockManagerTest {
 
+	@Test
     public void testLockAndUnlock() throws Exception {
         AssetLockManager alm = new AssetLockManager();
 
@@ -47,6 +53,7 @@ public class AssetLockManagerTest extends TestCase {
 
     }
 
+	@Test
     public void testLockAndOverWritelock() throws Exception {
         AssetLockManager alm = new AssetLockManager();
 

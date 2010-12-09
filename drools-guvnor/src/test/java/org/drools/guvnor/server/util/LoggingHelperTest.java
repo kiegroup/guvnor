@@ -16,13 +16,16 @@
 
 package org.drools.guvnor.server.util;
 
-import junit.framework.TestCase;
-
 import org.drools.guvnor.client.rpc.LogEntry;
+import org.junit.Test;
 
-public class LoggingHelperTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
+public class LoggingHelperTest  {
 
+	@Test
 	public void testMessages() throws Exception {
 		final MessageList ml = new MessageList();
 

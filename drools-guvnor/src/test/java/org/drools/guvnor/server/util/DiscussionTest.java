@@ -16,17 +16,22 @@
 
 package org.drools.guvnor.server.util;
 
-import org.drools.guvnor.client.rpc.DiscussionRecord;
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.junit.Test;
 
 /**
  * @author Michael Neale
  */
-public class DiscussionTest extends TestCase {
+public class DiscussionTest {
 
+	@Test
     public void testPersist() throws InterruptedException {
         DiscussionRecord dr = new DiscussionRecord();
         dr.author = "mic";

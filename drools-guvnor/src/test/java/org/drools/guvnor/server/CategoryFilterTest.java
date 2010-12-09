@@ -16,10 +16,13 @@
 
 package org.drools.guvnor.server;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class CategoryFilterTest extends TestCase {
+import static org.junit.Assert.assertEquals;
 
+public class CategoryFilterTest {
+
+	@Test
 	public void testMakePath() {
 		CategoryFilter filter = new CategoryFilter();
 		assertEquals("HR", filter.makePath("/", "HR"));

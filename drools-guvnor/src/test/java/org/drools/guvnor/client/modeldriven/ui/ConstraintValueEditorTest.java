@@ -17,11 +17,13 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class ConstraintValueEditorTest extends TestCase {
+public class ConstraintValueEditorTest {
 
+	@Test
     public void testSplit() {
         String[] res = ConstraintValueEditorHelper.splitValue( "M=Male" );
         assertEquals( "M",

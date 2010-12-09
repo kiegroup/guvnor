@@ -32,17 +32,22 @@ package org.drools.guvnor.server.util;
  * limitations under the License.
  */
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.io.InputStream;
-
-import junit.framework.TestCase;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.contenthandler.DRLFileContentHandler;
 import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
+import org.junit.Test;
 
-public class ClassicDRLImporterTest extends TestCase {
+public class ClassicDRLImporterTest {
 
+	@Test
     public void testStandardDRL() throws Exception {
 
         ClassicDRLImporter imp = new ClassicDRLImporter( getDrl( "sample_legacy.drl" ) );
@@ -71,6 +76,7 @@ public class ClassicDRLImporterTest extends TestCase {
 
     }
 
+	@Test
     public void testStandardWithQuotes() throws Exception {
         ClassicDRLImporter imp = new ClassicDRLImporter( getDrl( "sample_legacy_quotes.drl" ) );
         assertEquals( "foo",
@@ -80,6 +86,7 @@ public class ClassicDRLImporterTest extends TestCase {
         assertEquals(-1, imp.getAssets().get(0).name.indexOf("'"));
     }
 
+	@Test
     public void testWithFunction() throws Exception {
         //    	Pattern p = Pattern.compile("function\\s+.*\\s+(.*)\\(.*\\).*");
         //    	Matcher m = p.matcher("function void fooBar() {");
@@ -130,6 +137,7 @@ public class ClassicDRLImporterTest extends TestCase {
 
     }
 
+	@Test
     public void testWithDSL() throws Exception {
 
         ClassicDRLImporter imp = new ClassicDRLImporter( getDrl( "sample_legacy_with_dsl.drl" ) );
@@ -155,6 +163,7 @@ public class ClassicDRLImporterTest extends TestCase {
 
     }
 
+	@Test
     public void testComplexExample() throws Exception {
         ClassicDRLImporter imp = new ClassicDRLImporter( getDrl( "sample_complex.drl" ) );
         assertFalse( imp.isDSLEnabled() );
@@ -179,6 +188,7 @@ public class ClassicDRLImporterTest extends TestCase {
                       cleanActual );
     }
 
+	@Test
     public void testMergeHeader() {
         String header = "import foo.bar\nimport wee.waa\n\nglobal goo.ber baz\n";
         String toMerge = "import ninja\nimport foo.bar\nimport slack.bladder\n\nimport wee.waa";

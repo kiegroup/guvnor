@@ -19,27 +19,33 @@ package org.drools.guvnor.server.security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.Map;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 
 import org.drools.guvnor.client.security.Capabilities;
+import org.junit.Test;
 
-public class CapabilityCalculatorTest extends TestCase {
+public class CapabilityCalculatorTest {
 
-
+	@Test
 	public void testAdmin() {
 		CapabilityCalculator loader = new CapabilityCalculator();
 		List<RoleBasedPermission> perms = new ArrayList<RoleBasedPermission>();
 		perms.add(new RoleBasedPermission("s", RoleTypes.ADMIN, null, null  ));
 
-        HashMap hm = new HashMap();
+        Map<String,String> hm = new HashMap<String,String>();
 		Capabilities caps = loader.calcCapabilities(perms, hm);
 		assertEquals(7, caps.list.size());
         assertSame(hm, caps.prefs);
 	}
 
+	@Test
 	public void testCapabilitiesCalculate() {
-        HashMap hm = new HashMap();
+		Map<String,String> hm = new HashMap<String,String>();
 		CapabilityCalculator loader = new CapabilityCalculator();
 		List<RoleBasedPermission> perms = new ArrayList<RoleBasedPermission>();
 		perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_DEVELOPER, null, null));

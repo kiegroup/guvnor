@@ -31,12 +31,13 @@ package org.drools.guvnor.client.packages;
  * limitations under the License.
  */
 
-
-
-import junit.framework.TestCase;
-
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import com.google.gwt.user.client.Command;
 
@@ -44,19 +45,19 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-public class SuggestionCompletionCacheTest extends TestCase {
+public class SuggestionCompletionCacheTest {
 
     private boolean executed;
     private boolean loaded;
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         executed = false;
         loaded = false;
     }
 
+    @Test
     public void testCache() throws Exception {
-
 
         //need to proxy out the constants.
         Constants cs = (Constants) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {Constants.class}, new ConstantsProxy());

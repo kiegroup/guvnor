@@ -16,13 +16,13 @@
 
 package org.drools.guvnor.client.qa.testscenarios;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
-import org.drools.guvnor.client.qa.testscenarios.ScenarioHelper;
 import org.drools.ide.common.client.modeldriven.testing.CallFixtureMap;
 import org.drools.ide.common.client.modeldriven.testing.CallMethod;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
@@ -33,8 +33,9 @@ import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.RetractFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
+import org.junit.Test;
 
-public class ScenarioHelperTest extends TestCase {
+public class ScenarioHelperTest {
 
 
 	//need to get out chunks, so we get data (insert, update, retract)
@@ -45,7 +46,8 @@ public class ScenarioHelperTest extends TestCase {
 	//then execute
 
 	//want it in chunks
-
+    @SuppressWarnings("unchecked")
+	@Test
 	public void testChunks() {
 		List l = new ArrayList();
 		l.add(new FactData("Q", "x", new ArrayList(), false));
@@ -162,7 +164,8 @@ public class ScenarioHelperTest extends TestCase {
 
 
 	}
-
+    @SuppressWarnings("unchecked")
+    @Test
 	public void testGlobals() {
 		List l = new ArrayList();
 		l.add(new FactData("X", "d", new ArrayList(), true));
@@ -183,18 +186,16 @@ public class ScenarioHelperTest extends TestCase {
 		assertEquals("a", ((FactData)fd.get(0)).name);
 		assertEquals("b", ((FactData)fd.get(1)).name);
 
-
-
 	}
-
+    
+    @SuppressWarnings("unchecked")
+    @Test
 	public void testRemoveField() {
 		List fieldData = new ArrayList();
 		fieldData.add(new FieldData("q", "1"));
 		fieldData.add(new FieldData("w", "2"));
 		FactData fd = new FactData("X", "x", fieldData, false);
-
-
-
+		
 		List fieldData2 = new ArrayList();
 		fieldData2.add(new FieldData("q", "3"));
 		fieldData2.add(new FieldData("w", "4"));
@@ -215,7 +216,8 @@ public class ScenarioHelperTest extends TestCase {
 		assertEquals("w", ((FieldData)fieldData2.get(0)).name);
 
 	}
-
+    @SuppressWarnings("unchecked")
+    @Test
 	public void testEmptyMap() {
 		//this should check that there is always a map present to force the GUI to show a "GIVEN" section.
 		List<Fixture> fl = new ArrayList<Fixture>();

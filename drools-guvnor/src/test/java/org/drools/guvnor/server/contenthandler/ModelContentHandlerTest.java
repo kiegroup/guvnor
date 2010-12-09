@@ -16,26 +16,22 @@
 
 package org.drools.guvnor.server.contenthandler;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
-import junit.framework.TestCase;
-
-import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.factmodel.FactMetaModel;
-import org.drools.guvnor.client.factmodel.FactModels;
-import org.drools.guvnor.client.factmodel.FieldMetaModel;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.junit.After;
+import org.junit.Test;
 
-public class ModelContentHandlerTest extends TestCase {
+public class ModelContentHandlerTest {
 
+	@Test
     public void testModelAttached() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
         PackageItem pacakge = repo.createPackage( "testModelAttachedPack",
@@ -53,6 +49,7 @@ public class ModelContentHandlerTest extends TestCase {
         assertTrue( header.indexOf( "package-info.class" ) == -1 );
     }
 
+	@Test
     public void testModelRemoved() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
         PackageItem pkg = repo.createPackage( "testModelRemovedPackage",
@@ -77,6 +74,11 @@ public class ModelContentHandlerTest extends TestCase {
         assertEquals( "import something.Else",
                       header.trim() );
 
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+    	TestEnvironmentSessionHelper.shutdown();
     }
 
 }

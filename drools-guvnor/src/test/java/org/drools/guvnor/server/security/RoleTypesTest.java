@@ -16,10 +16,13 @@
 
 package org.drools.guvnor.server.security;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class RoleTypesTest extends TestCase {
+import org.junit.Test;
 
+public class RoleTypesTest {
+
+	@Test
 	public void testListAllTypes() {
 		String[] t = RoleTypes.listAvailableTypes();
 		assertEquals(6, t.length);

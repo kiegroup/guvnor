@@ -31,16 +31,16 @@ package org.drools.guvnor.server.repository;
  * limitations under the License.
  */
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
+import org.junit.Test;
 
-import junit.framework.TestCase;
+public class RulesRepositoryManagerTest {
 
-public class RulesRepositoryManagerTest extends TestCase {
-	public void test1() {
-		// added this so we don't get a failer for now tests
-	}
-
-    public void IGNORE_testDecorator() {
+	@Test 
+    public void testDecorator() {
         RulesRepositoryManager dec = new RulesRepositoryManager();
         RepositoryStartupService config = new RepositoryStartupService();
         MockRepo repo = new MockRepo();

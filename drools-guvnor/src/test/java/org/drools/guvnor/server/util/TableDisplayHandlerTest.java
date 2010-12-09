@@ -33,12 +33,16 @@ package org.drools.guvnor.server.util;
 
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Method;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class TableDisplayHandlerTest extends TestCase {
+public class TableDisplayHandlerTest {
 
+	@Test
     public void testRowLoaders() throws Exception {
 
         RowLoader loader = new RowLoader("rulelist");

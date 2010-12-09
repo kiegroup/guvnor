@@ -32,32 +32,40 @@ package org.drools.guvnor.server.security;
  * limitations under the License.
  */
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.permission.RoleBasedPermissionResolver;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.AuthorizationException;
+import org.junit.Test;
 
-public class SecurityServiceImplTest extends TestCase {
+public class SecurityServiceImplTest {
 
+	@Test
     public void testLogin() throws Exception {
         SecurityServiceImpl impl = new SecurityServiceImpl();
         assertTrue( impl.login( "XXX",
                                 null ) );
     }
 
+	@Test
     public void testUser() throws Exception {
         SecurityServiceImpl impl = new SecurityServiceImpl();
         assertNotNull( impl.getCurrentUser() );
     }
 
+	@Test
     public void testCapabilities() {
         SecurityServiceImpl impl = new SecurityServiceImpl();
 
@@ -65,6 +73,7 @@ public class SecurityServiceImplTest extends TestCase {
         assertTrue( c.list.size() > 1 );
     }
 
+	@Test
     public void testCapabilitiesWithContext() {
         SecurityServiceImpl impl = new SecurityServiceImpl();
 
@@ -119,6 +128,7 @@ public class SecurityServiceImplTest extends TestCase {
         Lifecycle.endApplication();
     }
 
+	@Test
     public void testCapabilitiesContext() throws Exception {
         SecurityServiceImpl impl = new SecurityServiceImpl();
 
@@ -138,6 +148,7 @@ public class SecurityServiceImplTest extends TestCase {
 
     }
 
+	@Test
     public void testPreferences() throws Exception {
         SecurityServiceImpl impl = new SecurityServiceImpl();
         assertNotNull( SecurityServiceImpl.PREFERENCES );

@@ -46,6 +46,8 @@ import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.permission.PermissionResolver;
 
 public class MockIdentity extends Identity {
+	
+	private static final long serialVersionUID = 3159602570340648366L;
 	private boolean hasRole;
 	private Set<String> roles = new HashSet<String>();
 	private List<PermissionResolver> resolvers = new ArrayList<PermissionResolver>();
@@ -113,7 +115,10 @@ public class MockIdentity extends Identity {
 
 	public Credentials getCredentials() {
 		return new Credentials() {
-			   public String getUsername()
+			 
+			private static final long serialVersionUID = -6746530728283388952L;
+
+			public String getUsername()
 			   {
 			      return "mockedUser";
 			   }

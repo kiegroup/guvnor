@@ -33,11 +33,15 @@ package org.drools.guvnor.client.common;
 
 
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-public class AssetFormatsTest extends TestCase {
+import org.junit.Test;
 
+public class AssetFormatsTest {
 
+	@Test
     public void testGrouping() {
         String[] formats = AssetFormats.BUSINESS_RULE_FORMATS;
         for ( int i = 0; i < formats.length; i++ ) {
@@ -57,6 +61,7 @@ public class AssetFormatsTest extends TestCase {
         }
     }
 
+	@Test
     public void testPackageDependencies() {
         assertFalse(AssetFormats.isPackageDependency(AssetFormats.BUSINESS_RULE));
         assertFalse(AssetFormats.isPackageDependency(AssetFormats.DRL));

@@ -16,13 +16,17 @@
 
 package org.drools.guvnor.client.explorer;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.drools.guvnor.client.explorer.PackageHierarchy.Folder;
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.junit.Test;
 
-public class PackageHierarchyTest extends TestCase {
+public class PackageHierarchyTest {
 
+	@Test
 	public void testSimple() {
 		PackageHierarchy h = new PackageHierarchy();
 		h.addPackage(new PackageConfigData("com.foo"));
@@ -77,6 +81,7 @@ public class PackageHierarchyTest extends TestCase {
 
 	}
 
+	@Test
 	public void testComplex() {
 
 		PackageHierarchy h = new PackageHierarchy();

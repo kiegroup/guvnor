@@ -34,7 +34,10 @@ package org.drools.ide.common.server.rules;
 import java.util.Arrays;
 import java.util.List;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -45,9 +48,13 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.junit.After;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class BRMSSuggestionCompletionLoaderTest extends TestCase {
+public class BRMSSuggestionCompletionLoaderTest {
 
+	@Test
     public void testLoader() throws Exception {
 
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
@@ -64,6 +71,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
 
     }
 
+	@Test
     public void testLoaderWithComplexFields() throws Exception {
 
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
@@ -100,6 +108,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
 
     }
 
+	@Test
     public void testStripUnNeededFields() {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         String[] result = loader.removeIrrelevantFields( Arrays.asList(new String[] {"foo", "toString", "class", "hashCode"} ));
@@ -107,6 +116,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         assertEquals("foo", result[0]);
     }
 
+	@Test
     public void testGetShortNameOfClass() {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
@@ -115,7 +125,8 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         assertEquals("Foo", loader.getShortNameOfClass( "Foo" ));
     }
 
-    public void TODOtestFactTemplates() throws Exception {
+	@Test @Ignore
+    public void testFactTemplates() throws Exception {
 
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         PackageItem item = repo.createPackage( "testLoader2", "to test the loader for fact templates" );
@@ -144,6 +155,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         assertEquals( SuggestionCompletionEngine.TYPE_DATE, fieldType );
     }
 
+	@Test
     public void testDeclaredTypes() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         PackageItem item = repo.createPackage( "testLoaderDeclaredTypes", "to test the loader for declared types" );
@@ -171,6 +183,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         assertEquals("String", engine.getFieldType("Car", "name"));
     }
 
+	@Test
     public void testLoadDSLs() throws Exception {
         String dsl = "[when]The agents rating is {rating}=doNothing()\n[then]Send a notification to manufacturing '{message}'=foo()";
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
@@ -195,6 +208,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
 
     }
 
+	@Test
     public void testLoadEnumerations() throws Exception {
         String enumeration = "'Person.sex' : ['M', 'F']";
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
@@ -222,6 +236,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
 
     }
 
+	@Test
     public void testErrors() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         PackageItem item = repo.createPackage( "testErrorsInPackage", "to test error handling" );
@@ -246,6 +261,7 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
 
     }
 
+	@Test
     /**
      * This shows we need to load up the model without anything attached yet.
      */
@@ -263,6 +279,11 @@ public class BRMSSuggestionCompletionLoaderTest extends TestCase {
         assertFalse(loader.hasErrors());
 
 
+    }
+	
+	@After
+    public void tearDown() throws Exception {
+    	TestEnvironmentSessionHelper.shutdown();
     }
 
 }

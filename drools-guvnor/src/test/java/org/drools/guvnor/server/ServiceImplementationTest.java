@@ -32,6 +32,14 @@ package org.drools.guvnor.server;
  * limitations under the License.
  */
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,19 +53,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.PathNotFoundException;
-
-import junit.framework.TestCase;
-
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.StatelessSession;
 import org.drools.core.util.BinaryRuleBaseLoader;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
@@ -83,14 +87,13 @@ import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.security.MockIdentity;
-import org.drools.guvnor.server.util.IO;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
-import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
@@ -118,6 +121,11 @@ import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -126,9 +134,10 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * This is really a collection of integration tests.
  * @author Michael Neale
  */
-public class ServiceImplementationTest extends TestCase {
+public class ServiceImplementationTest {
 
-    static {
+    @BeforeClass
+	public static void setup() {
 
         try {
             MailboxService.getInstance().init( new RulesRepository( TestEnvironmentSessionHelper.getSession() ) );
@@ -138,6 +147,7 @@ public class ServiceImplementationTest extends TestCase {
         }
     }
 
+    @Test @Ignore //this test fail intermittently
     public void testInboxEvents() throws Exception {
         ServiceImplementation impl = getService();
         assertNotNull( impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
@@ -224,6 +234,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+	@Test
     public void testCategory() throws Exception {
 
         RepositoryService impl = getService();
@@ -255,12 +266,14 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+	@Test
     public void testCleanHTML() {
         ServiceImplementation impl = new ServiceImplementation();
         assertEquals( "&lt;script&gt;",
                       impl.cleanHTML( "<script>" ) );
     }
 
+	@Test
     public void testDeleteUnversionedRule() throws Exception {
         ServiceImplementation impl = getService();
 
@@ -302,6 +315,7 @@ public class ServiceImplementationTest extends TestCase {
         }
     }
 
+	@Test
     public void testAddRuleAndListPackages() throws Exception {
         // ServiceImpl impl = new ServiceImpl(new
         // RulesRepository(SessionHelper.getSession()));
@@ -355,6 +369,7 @@ public class ServiceImplementationTest extends TestCase {
         assertTrue( dtItem.getBinaryContentAttachmentFileName().endsWith( ".xls" ) );
     }
 
+	@Test
     public void testAttemptDupeRule() throws Exception {
         ServiceImplementation impl = getService();
         CategoryItem cat = impl.repository.loadCategory( "/" );
@@ -380,6 +395,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+	@Test
     public void testCreateNewRule() throws Exception {
         ServiceImplementation impl = getService();
         impl.repository.createPackage( "testCreateNewRule",
@@ -400,10 +416,12 @@ public class ServiceImplementationTest extends TestCase {
         assertEquals( dtItem.getDescription(),
                       "an initial desc" );
     }
-
+	
+	@Test
     public void testCreateLinkedAssetItem() throws Exception {
         ServiceImplementation impl = getService();
-        PackageItem testCreateNewRuleAsLinkPackage1 = impl.repository.createPackage( "testCreateNewRuleAsLinkPackage1",
+        @SuppressWarnings("unused")
+		PackageItem testCreateNewRuleAsLinkPackage1 = impl.repository.createPackage( "testCreateNewRuleAsLinkPackage1",
                                                                                      "desc" );
         impl.createCategory( "",
                              "testCreateNewRuleAsLinkCat1",
@@ -485,9 +503,11 @@ public class ServiceImplementationTest extends TestCase {
         assertEquals( 1, size );
     }
 
+	@Test
     public void testLinkedAssetItemHistoryRelated() throws Exception {
         ServiceImplementation impl = getService();
-        PackageItem testCreateNewRuleAsLinkPackage1 = impl.repository.createPackage( "testLinkedAssetItemHistoryRelatedPack",
+        @SuppressWarnings("unused")
+		PackageItem testCreateNewRuleAsLinkPackage1 = impl.repository.createPackage( "testLinkedAssetItemHistoryRelatedPack",
                                                                                      "desc" );
         impl.createCategory( "",
                              "testLinkedAssetItemHistoryRelatedCat",
@@ -520,6 +540,7 @@ public class ServiceImplementationTest extends TestCase {
         //create version head
         RuleAsset assetWrapper3 = impl.loadRuleAsset( uuidLink );
         assetWrapper3.metaData.description = "version head";
+        @SuppressWarnings("unused")
         String uuidLink3 = impl.checkinVersion( assetWrapper3 );
 
         assertEquals( uuidLink,
@@ -581,6 +602,7 @@ public class ServiceImplementationTest extends TestCase {
                       newHead.metaData.checkinComment );
     }
 
+	@Test
     //path name contains Apostrophe is no longer a problem with jackrabbit 2.0
     public void testCreateNewRuleContainsApostrophe() throws Exception {
         ServiceImplementation impl = getService();
@@ -610,6 +632,7 @@ public class ServiceImplementationTest extends TestCase {
     
     }
 
+	@Test
     public void testRuleTableLoad() throws Exception {
         ServiceImplementation impl = getService();
         TableConfig conf = impl.loadTableConfig( AssetItemGrid.RULE_LIST_TABLE_ID );
@@ -649,6 +672,7 @@ public class ServiceImplementationTest extends TestCase {
         assertTrue( result.data[0].values[0].startsWith( "testRuleTableLoad" ) );
     }
 
+	@Test
     public void testDateFormatting() throws Exception {
         Calendar cal = Calendar.getInstance();
         TableDisplayHandler handler = new TableDisplayHandler( AssetItemGrid.RULE_LIST_TABLE_ID );
@@ -658,6 +682,7 @@ public class ServiceImplementationTest extends TestCase {
         assertTrue( fmt.length() > 8 );
     }
 
+	@Test
     public void testLoadRuleAsset() throws Exception {
         ServiceImplementation impl = getService();
         impl.repository.createPackage( "testLoadRuleAsset",
@@ -901,23 +926,39 @@ public class ServiceImplementationTest extends TestCase {
                       ib.loadRecentEdited().size() );
     }
 
+	@Test
     public void testLoadAssetHistoryAndRestore() throws Exception {
+		
         ServiceImplementation impl = getService();
+        long startTime = System.currentTimeMillis();
         impl.repository.createPackage( "testLoadAssetHistory",
                                        "desc" );
+        long nowTime1 = System.currentTimeMillis();
+        System.out.println("CreatePackage: " + (nowTime1 - startTime));
         impl.createCategory( "",
                              "testLoadAssetHistory",
                              "this is a cat" );
 
+        long nowTime2 = System.currentTimeMillis();
+        System.out.println("CreateCategory: " + (nowTime2 - nowTime1));
         String uuid = impl.createNewRule( "testLoadAssetHistory",
                                           "description",
                                           "testLoadAssetHistory",
                                           "testLoadAssetHistory",
                                           AssetFormats.DRL );
+        long nowTime3 = System.currentTimeMillis();
+        System.out.println("CreateNewRule: " + (nowTime3 - nowTime2));
+        
         RuleAsset asset = impl.loadRuleAsset( uuid );
         impl.checkinVersion( asset ); // 1
+        long nowTime4 = System.currentTimeMillis();
+        System.out.println("Checkin 1: " + (nowTime4 - nowTime3));
         asset = impl.loadRuleAsset( uuid );
+        long nowTime5 = System.currentTimeMillis();
+        System.out.println("load ruleasset: " + (nowTime5 - nowTime4));
         impl.checkinVersion( asset ); // 2
+        long nowTime6 = System.currentTimeMillis();
+        System.out.println("Checkin 2: " + (nowTime6 - nowTime5));
         asset = impl.loadRuleAsset( uuid );
         impl.checkinVersion( asset ); // HEAD
 
@@ -949,6 +990,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+	@Test
     public void testCheckin() throws Exception {
         ServiceImplementation serv = getService();
 
@@ -1046,6 +1088,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+	@Test
     public void testArchivePackage() throws Exception {
         ServiceImplementation impl = getService();
 
@@ -1053,6 +1096,7 @@ public class ServiceImplementationTest extends TestCase {
 
         PackageConfigData[] arch = impl.listArchivedPackages();
 
+        @SuppressWarnings("unused")
         String uuid = impl.createPackage( "testCreateArchivedPackage",
                                           "this is a new package" );
 
@@ -1080,6 +1124,7 @@ public class ServiceImplementationTest extends TestCase {
                       arch.length );
     }
 
+	@Test
     public void testCreatePackage() throws Exception {
         ServiceImplementation impl = getService();
         PackageConfigData[] pkgs = impl.listPackages();
@@ -1115,6 +1160,7 @@ public class ServiceImplementationTest extends TestCase {
         }
     }
 
+	@Test
     public void testLoadPackageConfig() throws Exception {
         ServiceImplementation impl = getService();
         PackageItem it = impl.repository.loadDefaultPackage();
@@ -1159,6 +1205,7 @@ public class ServiceImplementationTest extends TestCase {
                       data.checkinComment );
     }
 
+	@Test
     public void testArchiveAndUnarchivePackageAndHeader() throws Exception {
         ServiceImplementation impl = getService();
         String uuid = impl.createPackage( "testArchiveAndUnarchivePackageAndHeader",
@@ -1202,6 +1249,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+	@Test
     public void testPackageConfSave() throws Exception {
         RepositoryService impl = getService();
         String uuid = impl.createPackage( "testPackageConfSave",
@@ -1237,6 +1285,7 @@ public class ServiceImplementationTest extends TestCase {
         assertFalse( res.hasErrors );
     }
 
+	@Test
     public void testListByFormat() throws Exception {
         RepositoryService impl = getService();
         String cat = "testListByFormat";
@@ -1251,6 +1300,7 @@ public class ServiceImplementationTest extends TestCase {
                                           cat,
                                           "testListByFormat",
                                           "testListByFormat" );
+        @SuppressWarnings("unused")
         String uuid2 = impl.createNewRule( "testListByFormat2",
                                            "x",
                                            cat,
@@ -1261,6 +1311,7 @@ public class ServiceImplementationTest extends TestCase {
                                            cat,
                                            "testListByFormat",
                                            "testListByFormat" );
+        @SuppressWarnings("unused")
         String uuid4 = impl.createNewRule( "testListByFormat4",
                                            "x",
                                            cat,
@@ -1355,6 +1406,7 @@ public class ServiceImplementationTest extends TestCase {
                       result.data.length );
     }
 
+	@Test
     public void testListUnregisteredAssetFormats() throws Exception {
         ServiceImplementation impl = getService();
         PackageItem pkg = impl.repository.createPackage( "testListUnregisteredAssetFormats",
@@ -1378,6 +1430,7 @@ public class ServiceImplementationTest extends TestCase {
                       res.data.length );
     }
 
+	@Test
     public void testQuickFind() throws Exception {
         RepositoryService impl = getService();
         String cat = "testQuickFind";
@@ -1429,6 +1482,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+	@Test
     public void testSearchText() throws Exception {
         ServiceImplementation impl = getService();
         String cat = "testTextSearch";
@@ -1437,6 +1491,7 @@ public class ServiceImplementationTest extends TestCase {
                              "qkfnd" );
         impl.createPackage( "testTextSearch",
                             "for testing search." );
+        @SuppressWarnings("unused")
         String uuid = impl.createNewRule( "testTextRule1",
                                           "desc",
                                           cat,
@@ -1450,6 +1505,7 @@ public class ServiceImplementationTest extends TestCase {
                       res.data.length );
     }
 
+	@Test
     public void testSearchMetaData() throws Exception {
         ServiceImplementation impl = getService();
         PackageItem pkg = impl.repository.createPackage( "testMetaDataSearch",
@@ -1486,6 +1542,7 @@ public class ServiceImplementationTest extends TestCase {
         return new String[]{s};
     }
 
+    @Test
     public void testStatus() throws Exception {
         RepositoryService impl = getService();
         String uuid = impl.createState( "testStatus1" );
@@ -1558,6 +1615,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testMovePackage() throws Exception {
         RepositoryService impl = getService();
         String[] cats = impl.loadChildCategories( "/" );
@@ -1610,6 +1668,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testCopyAsset() throws Exception {
         RepositoryService impl = getService();
         impl.createCategory( "/",
@@ -1634,6 +1693,7 @@ public class ServiceImplementationTest extends TestCase {
                       asset.metaData.name );
     }
 
+    @Test
     public void testSnapshot() throws Exception {
         RepositoryService impl = getService();
         impl.createCategory( "/",
@@ -1641,6 +1701,7 @@ public class ServiceImplementationTest extends TestCase {
                              "y" );
         impl.createPackage( "testSnapshot",
                             "d" );
+        @SuppressWarnings("unused")
         String uuid = impl.createNewRule( "testSnapshotRule",
                                           "",
                                           "snapshotTesting",
@@ -1702,13 +1763,14 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testSnapshotRebuild() throws Exception {
 
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
 
         // get rid of other snapshot crap
-        Iterator pkit = repo.listPackages();
+        Iterator<?> pkit = repo.listPackages();
         while ( pkit.hasNext() ) {
             PackageItem pkg = (PackageItem) pkit.next();
             String[] snaps = repo.listPackageSnapshots( pkg.getName() );
@@ -1770,6 +1832,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testPackageRebuild() throws Exception {
 
         ServiceImplementation impl = getService();
@@ -1804,6 +1867,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testRemoveCategory() throws Exception {
 
         RepositoryService impl = getService();
@@ -1819,6 +1883,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testRemoveAsset() throws Exception {
         RepositoryService impl = getService();
         String cat = "testRemoveAsset";
@@ -1827,19 +1892,19 @@ public class ServiceImplementationTest extends TestCase {
                              "ya" );
         String pkgUUID = impl.createPackage( "testRemoveAsset",
                                              "" );
-
+        @SuppressWarnings("unused")
         String uuid = impl.createNewRule( "testRemoveAsset",
                                           "x",
                                           cat,
                                           "testRemoveAsset",
                                           "testRemoveAsset" );
-
+        @SuppressWarnings("unused")
         String uuid2 = impl.createNewRule( "testRemoveAsset2",
                                            "x",
                                            cat,
                                            "testRemoveAsset",
                                            "testRemoveAsset" );
-
+        @SuppressWarnings("unused")
         String uuid3 = impl.createNewRule( "testRemoveAsset3",
                                            "x",
                                            cat,
@@ -1870,6 +1935,7 @@ public class ServiceImplementationTest extends TestCase {
                       res.data.length );
     }
 
+    @Test
     public void testRemovePackage() throws Exception {
         ServiceImplementation impl = getService();
         int n = impl.listPackages().length;
@@ -1935,6 +2001,7 @@ public class ServiceImplementationTest extends TestCase {
 		fos.close();
     }
 
+    @Test
     public void testArchiveAsset() throws Exception {
         RepositoryService impl = getService();
         String cat = "testArchiveAsset";
@@ -1943,19 +2010,19 @@ public class ServiceImplementationTest extends TestCase {
                              "ya" );
         String pkgUUID = impl.createPackage( "testArchiveAsset",
                                              "" );
-
+        @SuppressWarnings("unused")
         String uuid = impl.createNewRule( "testArchiveAsset",
                                           "x",
                                           cat,
                                           "testArchiveAsset",
                                           "testArchiveAsset" );
-
+        @SuppressWarnings("unused")
         String uuid2 = impl.createNewRule( "testArchiveAsset2",
                                            "x",
                                            cat,
                                            "testArchiveAsset",
                                            "testArchiveAsset" );
-
+        @SuppressWarnings("unused")
         String uuid3 = impl.createNewRule( "testArchiveAsset3",
                                            "x",
                                            cat,
@@ -2008,6 +2075,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testArchiveAssetWhenParentPackageArchived() throws Exception {
         ServiceImplementation impl = getService();
         String packageName = "testArchiveAssetWhenParentPackageArchived";
@@ -2017,19 +2085,19 @@ public class ServiceImplementationTest extends TestCase {
                              "ya" );
         String pkgUUID = impl.createPackage( packageName,
                                              "" );
-
+        @SuppressWarnings("unused")
         String uuid = impl.createNewRule( packageName,
                                           "x",
                                           cat,
                                           packageName,
                                           packageName );
-
+        @SuppressWarnings("unused")
         String uuid2 = impl.createNewRule( "testArchiveAssetWhenParentPackageArchived2",
                                            "x",
                                            cat,
                                            packageName,
                                            packageName );
-
+        @SuppressWarnings("unused")
         String uuid3 = impl.createNewRule( "testArchiveAssetWhenParentPackageArchived3",
                                            "x",
                                            cat,
@@ -2089,6 +2157,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testLoadSuggestionCompletionEngine() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -2129,6 +2198,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testDiscussion() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -2193,6 +2263,7 @@ public class ServiceImplementationTest extends TestCase {
                       d_.size() );
     }
 
+    @Test
     /**
      * This will test creating a package, check it compiles, and can exectute
      * rules, then take a snapshot, and check that it reports errors.
@@ -2235,7 +2306,7 @@ public class ServiceImplementationTest extends TestCase {
 
         StatelessSession sess = rb.newStatelessSession();
         sess.setGlobal( "ls",
-                        new ArrayList() );
+                        new ArrayList<String>() );
         sess.execute( p );
 
         assertEquals( 42,
@@ -2270,6 +2341,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     /**
      * This will test creating a package with a BRL rule, check it compiles, and
      * can exectute rules, then take a snapshot, and check that it reports
@@ -2323,13 +2395,16 @@ public class ServiceImplementationTest extends TestCase {
         pkg = repo.loadPackage( "testBinaryPackageCompileBRL" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
-        // Here is where we write it out if needed... UNCOMMENT if needed for
-        // the binary test
-        // FileOutputStream out = new
-        // FileOutputStream("/Users/michaelneale/RepoBinPackage.pkg");
-        // out.write( binPackage );
-        // out.flush();
-        // out.close();
+        // Here is where we write it out is needed... set to true if needed for
+        // the binary test below "testLoadAndExecBinary"
+        boolean saveBinPackage = false;
+        if (saveBinPackage) {
+          FileOutputStream out = new
+          FileOutputStream("RepoBinPackage.pkg");
+          out.write( binPackage );
+          out.flush();
+          out.close();
+        }
 
         assertNotNull( binPackage );
 
@@ -2401,11 +2476,13 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     /**
      * this loads up a precompile binary package. If this fails, then it means
      * it needs to be updated. It gets the package form the BRL example above.
+     * Simply set saveBinPackage to true to save a new version of the RepoBinPackage.pkg.
      */
-    public void IGNORE_testLoadAndExecBinary() throws Exception {
+    public void testLoadAndExecBinary() throws Exception {
         Person p = new Person( "fubar" );
         BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
         loader.addPackage( this.getClass().getResourceAsStream( "/RepoBinPackage.pkg" ) );
@@ -2416,6 +2493,7 @@ public class ServiceImplementationTest extends TestCase {
                       p.getAge() );
     }
 
+    @Test
     public void testSuggestionCompletionLoading() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -2434,6 +2512,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testPackageSource() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -2490,6 +2569,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testAssetSource() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -2551,6 +2631,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testBuildAssetWithError() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -2584,6 +2665,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testBuildAsset() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -2654,6 +2736,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testBuildAssetMultipleFunctionsCallingEachOther() throws Exception {
 
         ServiceImplementation impl = getService();
@@ -2695,6 +2778,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testBuildAssetBRXMLAndCopy() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -2757,7 +2841,7 @@ public class ServiceImplementationTest extends TestCase {
         }
         assertNull( result );
 
-        List assets = iteratorToList( pkg.getAssets() );
+        List<AssetItem> assets = iteratorToList( pkg.getAssets() );
         assertEquals( 3,
                       assets.size() );
         // now lets copy...
@@ -2781,8 +2865,8 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
-    private List iteratorToList(Iterator assets) {
-        List result = new ArrayList();
+    private List<AssetItem> iteratorToList(Iterator<AssetItem> assets) {
+        List<AssetItem> result = new ArrayList<AssetItem>();
         while ( assets.hasNext() ) {
             result.add( assets.next() );
 
@@ -2790,6 +2874,7 @@ public class ServiceImplementationTest extends TestCase {
         return result;
     }
 
+    @Test
     public void testBuildAssetWithPackageConfigError() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -2834,6 +2919,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testRuleNameList() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -2874,6 +2960,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     /**
      * This idea of this is to not compile packages more then we have to.
      */
@@ -2895,8 +2982,8 @@ public class ServiceImplementationTest extends TestCase {
         repo.save();
 
         assertFalse( pkg.isBinaryUpToDate() );
-        assertFalse( impl.ruleBaseCache.containsKey( pkg.getUUID() ) );
-        impl.ruleBaseCache.remove( "XXX" );
+        assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
+        ServiceImplementation.ruleBaseCache.remove( "XXX" );
 
         BuilderResult results = impl.buildPackage( pkg.getUUID(),
                                                    true );
@@ -2909,19 +2996,19 @@ public class ServiceImplementationTest extends TestCase {
 
         assertTrue( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
         assertTrue( pkg.isBinaryUpToDate() );
-        assertFalse( impl.ruleBaseCache.containsKey( pkg.getUUID() ) );
+        assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
 
         RuleAsset asset = impl.loadRuleAsset( rule1.getUUID() );
         impl.checkinVersion( asset );
 
         assertFalse( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
-        assertFalse( impl.ruleBaseCache.containsKey( pkg.getUUID() ) );
+        assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
 
         impl.buildPackage( pkg.getUUID(),
                            false );
 
         assertTrue( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
-        assertFalse( impl.ruleBaseCache.containsKey( pkg.getUUID() ) );
+        assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
 
         PackageConfigData config = impl.loadPackageConfig( pkg.getUUID() );
         impl.savePackage( config );
@@ -2935,10 +3022,12 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testRunScenario() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
 
+        System.out.println("create package");
         PackageItem pkg = repo.createPackage( "testScenarioRun",
                                               "" );
         ServiceImplementation.updateDroolsHeader( "import org.drools.Person\n global org.drools.Cheese cheese\n",
@@ -2985,25 +3074,22 @@ public class ServiceImplementationTest extends TestCase {
 
         ScenarioRunResult res = impl.runScenario( pkg.getName(),
                                                   sc ).result;
-        assertEquals( null,
-                      res.getErrors() );
+        assertNull( res.getErrors());
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
-        assertEquals( null,
-                      res.getErrors() );
+        assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
-        impl.ruleBaseCache.clear();
+        ServiceImplementation.ruleBaseCache.clear();
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
-        assertEquals( null,
-                      res.getErrors() );
+        assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
@@ -3014,7 +3100,7 @@ public class ServiceImplementationTest extends TestCase {
         rule1.updateContent( "Junk" );
         rule1.checkin( "" );
 
-        impl.ruleBaseCache.clear();
+        ServiceImplementation.ruleBaseCache.clear();
         pkg.updateBinaryUpToDate( false );
         repo.save();
         res = impl.runScenario( pkg.getName(),
@@ -3050,6 +3136,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testRunScenarioWithGeneratedBeans() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -3100,14 +3187,15 @@ public class ServiceImplementationTest extends TestCase {
                        logEntry[1] );
 
         ScenarioRunResult res = res_.result;
-        assertEquals( null,
-                      res.getErrors() );
+
+        assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
     }
 
+    @Test
     public void testRunPackageScenariosWithDeclaredFacts() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -3220,6 +3308,7 @@ public class ServiceImplementationTest extends TestCase {
                       s2.scenarioName );
     }
 
+    @Test
     public void testRunScenarioWithJar() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -3267,32 +3356,33 @@ public class ServiceImplementationTest extends TestCase {
 
         ScenarioRunResult res = impl.runScenario( pkg.getName(),
                                                   sc ).result;
-        assertEquals( null,
-                      res.getErrors() );
+        assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
+
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
-        assertEquals( null,
-                      res.getErrors() );
+
+        assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
+
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
-        impl.ruleBaseCache.clear();
+        ServiceImplementation.ruleBaseCache.clear();
 
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
-        assertEquals( null,
-                      res.getErrors() );
+        assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
     }
 
+    @Test
     public void testRunScenarioWithJarThatHasSourceFiles() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -3335,29 +3425,30 @@ public class ServiceImplementationTest extends TestCase {
         } catch ( ClassFormatError e ) {
             fail( "Probably failed when loading a source file instead of class file. " + e );
         }
-        assertEquals( null,
-                      res.getErrors() );
+
+        assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vr.wasSuccessful() );
 
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
-        assertEquals( null,
-                      res.getErrors() );
+
+        assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vr.wasSuccessful() );
 
-        impl.ruleBaseCache.clear();
+        ServiceImplementation.ruleBaseCache.clear();
 
         res = impl.runScenario( pkg.getName(),
                                 sc ).result;
-        assertEquals( null,
-                      res.getErrors() );
+
+        assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vr.wasSuccessful() );
 
     }
 
+    @Test
     public void testRunPackageScenarios() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -3480,6 +3571,7 @@ public class ServiceImplementationTest extends TestCase {
                       s2.scenarioName );
     }
 
+    @Test
     public void testListFactTypesAvailableInPackage() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -3516,6 +3608,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testGuidedDTExecute() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -3593,6 +3686,7 @@ public class ServiceImplementationTest extends TestCase {
                       p.getLikes() );
     }
 
+    @Test
     public void testPackageNameSorting() {
         PackageConfigData c1 = new PackageConfigData( "org.foo" );
         PackageConfigData c2 = new PackageConfigData( "org.foo.bar" );
@@ -3608,6 +3702,7 @@ public class ServiceImplementationTest extends TestCase {
                       ls.get( 1 ) );
     }
 
+    @Test
     public void testLoadDropDown() throws Exception {
         ServiceImplementation serv = new ServiceImplementation();
         String[] pairs = new String[]{"f1=x", "f2=2"};
@@ -3624,6 +3719,7 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testLoadDropDownNoValuePairs() throws Exception {
         ServiceImplementation serv = new ServiceImplementation();
         String[] pairs = new String[]{null};
@@ -3636,12 +3732,14 @@ public class ServiceImplementationTest extends TestCase {
 
     }
 
+    @Test
     public void testListUserPermisisons() throws Exception {
         ServiceImplementation serv = getService();
         Map<String, List<String>> r = serv.listUserPermissions();
         assertNotNull( r );
     }
 
+    @Test
     public void testManageUserPermissions() throws Exception {
         ServiceImplementation serv = getService();
         Map<String, List<String>> perms = new HashMap<String, List<String>>();
@@ -3653,6 +3751,7 @@ public class ServiceImplementationTest extends TestCase {
                       perms_.size() );
     }
 
+    @Test //Ignore
     public void testImportSampleRepository() throws Exception {
         ServiceImplementation serv = getService();
         serv.installSampleRepository();
@@ -3666,6 +3765,7 @@ public class ServiceImplementationTest extends TestCase {
                       res.result );
     }
     
+    @Test @Ignore
     //GUVNOR-296
     public void IGNORE_testHistoryAfterReImportSampleRepository() throws Exception {
         ServiceImplementation impl = getService();
@@ -3717,6 +3817,8 @@ public class ServiceImplementationTest extends TestCase {
 		assertEquals(1, rows.length);
     }
 
+
+    @Test
     public void testAddCategories() throws Exception {
         ServiceImplementation impl = getService();
         impl.repository.createPackage( "testAddCategoriesPackage",
@@ -3753,6 +3855,7 @@ public class ServiceImplementationTest extends TestCase {
         assertTrue( dtItem3.getCategorySummary().contains( "testAddCategoriesCat2" ) );
     }
 
+    @Test
     public void testSnapshotDiff() throws Exception {
         RepositoryService impl = getService();
 
@@ -3786,7 +3889,8 @@ public class ServiceImplementationTest extends TestCase {
                                                       "snapshotDiffTesting",
                                                       "testSnapshotDiff",
                                                       AssetFormats.DRL );
-        String noChangesRuleUuid = impl.createNewRule( "testRuleNoChanges",
+        @SuppressWarnings("unused")
+		String noChangesRuleUuid = impl.createNewRule( "testRuleNoChanges",
                                                        "",
                                                        "snapshotDiffTesting",
                                                        "testSnapshotDiff",
@@ -3813,7 +3917,8 @@ public class ServiceImplementationTest extends TestCase {
 
         impl.archiveAsset( archiveRuleUuid );
 
-        String addedRuleUuid = impl.createNewRule( "testRuleAdded",
+        @SuppressWarnings("unused")
+		String addedRuleUuid = impl.createNewRule( "testRuleAdded",
                                                    "",
                                                    "snapshotDiffTesting",
                                                    "testSnapshotDiff",
@@ -3881,10 +3986,19 @@ public class ServiceImplementationTest extends TestCase {
     /**
      * Set up enough of the Seam environment to test it.
      */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
 
+    	 try {
+    		 RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession());
+             MailboxService.getInstance().init( repo );
+             RepositoryStartupService.registerCheckinListener();
+         } catch ( Exception e ) {
+             fail( "unable to init" );
+             e.printStackTrace();
+         }
+        // setting it to false as most unit tests in this file assume no signing
+        System.setProperty( KeyStoreHelper.PROP_SIGN, "false" );
         Map<String, Object> ap = new HashMap<String, Object>();
         ap.put( "org.drools.guvnor.client.rpc.RepositoryService",
                 getService() );
@@ -3899,21 +4013,22 @@ public class ServiceImplementationTest extends TestCase {
         resolver.setEnableRoleBasedAuthorization( false );
         mi.addPermissionResolver( new RoleBasedPermissionResolver() );
         //mi.addPermissionResolver(new PackageBasedPermissionResolver());
-
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
+    	
         if ( Contexts.isApplicationContextActive() ) {
+        	
             Lifecycle.endApplication();
         }
+        MailboxService.getInstance().stop();
+        TestEnvironmentSessionHelper.shutdown();
     }
 
     private ServiceImplementation getService() throws Exception {
         ServiceImplementation impl = new ServiceImplementation();
         impl.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
-
         return impl;
     }
 

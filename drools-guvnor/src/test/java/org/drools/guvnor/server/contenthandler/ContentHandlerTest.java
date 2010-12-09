@@ -32,9 +32,6 @@ package org.drools.guvnor.server.contenthandler;
  */
 
 
-
-import junit.framework.TestCase;
-
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
@@ -43,9 +40,17 @@ import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.junit.After;
+import org.junit.Test;
 
-public class ContentHandlerTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
+public class ContentHandlerTest {
+
+	@Test
     public void testContentFormat() {
         assertTrue(ContentManager.getHandler( AssetFormats.DRL ) instanceof DRLFileContentHandler);
         assertTrue(ContentManager.getHandler( AssetFormats.DSL ) instanceof DSLDefinitionContentHandler);
@@ -63,6 +68,7 @@ public class ContentHandlerTest extends TestCase {
 
     }
 
+	@Test
     public void testRuleAssetType() {
         assertTrue(ContentManager.getHandler( AssetFormats.DRL ).isRuleAsset());
         assertTrue(ContentManager.getHandler( AssetFormats.DSL_TEMPLATE_RULE ).isRuleAsset());
@@ -76,6 +82,7 @@ public class ContentHandlerTest extends TestCase {
         assertFalse(ContentManager.getHandler( AssetFormats.ENUMERATION ).isRuleAsset());
     }
 
+	@Test
     public void testValidating() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
         PackageItem pkg = repo.loadDefaultPackage();
@@ -98,6 +105,7 @@ public class ContentHandlerTest extends TestCase {
 
     }
 
+	@Test
     public void testEmptyDT() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
         PackageItem pkg = repo.loadDefaultPackage();
@@ -113,10 +121,14 @@ public class ContentHandlerTest extends TestCase {
 
     }
 
-
-
+	@Test
     public void testNameConvertion() {
     	assertEquals("com.foo.Bar", ModelContentHandler.convertPathToName("com/foo/Bar.class"));
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+    	TestEnvironmentSessionHelper.shutdown();
     }
 
 }

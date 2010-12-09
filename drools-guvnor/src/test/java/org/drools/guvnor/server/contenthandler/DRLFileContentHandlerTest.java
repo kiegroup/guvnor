@@ -32,13 +32,16 @@ package org.drools.guvnor.server.contenthandler;
  * limitations under the License.
  */
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 
-public class DRLFileContentHandlerTest extends TestCase {
+import org.junit.Test;
 
+public class DRLFileContentHandlerTest {
+
+	@Test
     public void testSniffDRLType() throws Exception {
-
-        DRLFileContentHandler h = new DRLFileContentHandler();
 
         // in this case we have package, and N rules
         String classic = "package foobar \n rule boo \n when \n then\n end \n rule boo2 \n when \n then\n end";
@@ -59,31 +62,30 @@ public class DRLFileContentHandlerTest extends TestCase {
 
         String complex = "#some comments about the rule \n#here\n when \n #goo \n foo.bar \n then \n #goo \n end.bar";
 
-        assertTrue( h.isStandAloneRule( newRule ) );
-        assertFalse( h.isStandAloneRule( moreRuleClassic ) );
-        assertFalse( h.isStandAloneRule( classic ) );
-        assertFalse( h.isStandAloneRule( moreSingle ) );
-        assertFalse( h.isStandAloneRule( null ) );
-        assertFalse( h.isStandAloneRule( emptyRule ) );
-        assertTrue( h.isStandAloneRule( moreNewRule ) );
-        assertTrue( h.isStandAloneRule( complex ) );
-        assertFalse( h.isStandAloneRule( query ) );
+        assertTrue( DRLFileContentHandler.isStandAloneRule( newRule ) );
+        assertFalse( DRLFileContentHandler.isStandAloneRule( moreRuleClassic ) );
+        assertFalse( DRLFileContentHandler.isStandAloneRule( classic ) );
+        assertFalse( DRLFileContentHandler.isStandAloneRule( moreSingle ) );
+        assertFalse( DRLFileContentHandler.isStandAloneRule( null ) );
+        assertFalse( DRLFileContentHandler.isStandAloneRule( emptyRule ) );
+        assertTrue( DRLFileContentHandler.isStandAloneRule( moreNewRule ) );
+        assertTrue( DRLFileContentHandler.isStandAloneRule( complex ) );
+        assertFalse( DRLFileContentHandler.isStandAloneRule( query ) );
 
     }
 
+	@Test
     public void testRuleWithDialect() {
         String rule = "rule \"DemoRule\" \n " + "    salience 10 \n" + "    dialect \"mvel\" \n " + " when \n" + " Driver( age > 65 ) \n" + " then \n" + " insert(new Rejection(\" too old \"));" + "end ";
-        DRLFileContentHandler h = new DRLFileContentHandler();
-        assertFalse( h.isStandAloneRule( rule ) );
-
-        assertFalse( h.isStandAloneRule( "" ) );
-
+        assertFalse( DRLFileContentHandler.isStandAloneRule( rule ) );
+        assertFalse( DRLFileContentHandler.isStandAloneRule( "" ) );
     }
 
+	@Test
     public void testStandAlone() throws Exception {
         String rule = "when \nFoo()\nthen\n\tbar()";
         DRLFileContentHandler h = new DRLFileContentHandler();
-        assertTrue( h.isStandAloneRule( rule ) );
+        assertTrue( DRLFileContentHandler.isStandAloneRule( rule ) );
 
         String r = h.wrapRuleDeclaration( "whee",
                                           "",
@@ -106,10 +108,11 @@ public class DRLFileContentHandlerTest extends TestCase {
      * Tests a rule that inherits another.
      * @throws Exception 
      */
+	@Test
     public void testStandAloneWithExtends() throws Exception {
         String rule = "when \nFoo()\nthen\n\tbar()";
         DRLFileContentHandler h = new DRLFileContentHandler();
-        assertTrue( h.isStandAloneRule( rule ) );
+        assertTrue( DRLFileContentHandler.isStandAloneRule( rule ) );
 
         String r = h.wrapRuleDeclaration( "whee",
                                           "parentRule",
@@ -124,13 +127,13 @@ public class DRLFileContentHandlerTest extends TestCase {
 
     }
 
+	@Test
     public void testRuleWithRuleFlowGroup() {
         String rule = "rule \"DemoRule\" \n " + "    ruleflow-group \"name-of-ruleflow\"  \n" + "    dialect \"mvel\" \n " + " when \n" + " Driver( age > 65 ) \n" + " then \n" + " insert(new Rejection(\" too old \"));" + "end ";
-        DRLFileContentHandler h = new DRLFileContentHandler();
-        assertFalse( h.isStandAloneRule( rule ) );
+        assertFalse( DRLFileContentHandler.isStandAloneRule( rule ) );
 
         rule = "    ruleflow-group \"name-of-ruleflow\"  \n" + "    dialect \"mvel\" \n " + " when \n" + " Driver( age > 65 ) \n" + " then \n" + " insert(new Rejection(\" too old \"));";
-        assertTrue( h.isStandAloneRule( rule ) );
+        assertTrue( DRLFileContentHandler.isStandAloneRule( rule ) );
     }
 
 }

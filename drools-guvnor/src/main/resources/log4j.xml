@@ -18,7 +18,7 @@
 		</layout>
 	</appender>
 	<logger name="org.drools">
-		<level value="DEBUG"/>
+		<level value="INFO"/>
 	</logger>
 	<root>
 		<priority value="ERROR"/>

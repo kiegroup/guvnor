@@ -33,13 +33,15 @@ package org.drools.guvnor.server;
 
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -50,6 +52,8 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.junit.After;
+import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -66,8 +70,9 @@ import com.google.gwt.user.client.rpc.SerializationException;
  *
  * @author Michael Neale
  */
-public class PopulateDataTest extends TestCase {
+public class PopulateDataTest {
 
+	@Test
     public void testPopulate() throws Exception {
         ServiceImplementation serv = new ServiceImplementation();
         serv.repository = new RulesRepository(TestEnvironmentSessionHelper.getSession());
@@ -86,6 +91,11 @@ public class PopulateDataTest extends TestCase {
 
         serv.buildPackage(pkg.getUUID(), true);
 
+    }
+	
+	@After
+	public void tearDown() throws Exception {
+    	TestEnvironmentSessionHelper.shutdown();
     }
 
     private void createPermissions(ServiceImplementation serv) {

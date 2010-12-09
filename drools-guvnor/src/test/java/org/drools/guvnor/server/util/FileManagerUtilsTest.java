@@ -17,6 +17,11 @@
 package org.drools.guvnor.server.util;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -28,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import junit.framework.TestCase;
+import javax.jcr.Session;
 
 import org.apache.commons.fileupload.FileItem;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -38,17 +43,24 @@ import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import javax.jcr.Session;
-
-public class FileManagerUtilsTest extends TestCase {
+public class FileManagerUtilsTest {
     private Session session;
 
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         session = TestEnvironmentSessionHelper.getSession( true );
     }
+    
+    @After
+    public void tearDown() throws Exception {
+    	TestEnvironmentSessionHelper.shutdown();
+    }
 
+    @Test
     public void testAttachFile() throws Exception {
 
         FileManagerUtils uploadHelper = new FileManagerUtils();
@@ -75,6 +87,7 @@ public class FileManagerUtilsTest extends TestCase {
                       item2.getBinaryContentAttachmentFileName() );
     }
 
+    @Test
     public void testAttachModel() throws Exception {
         RulesRepository repo = new RulesRepository( session );
         PackageItem pkg = repo.createPackage( "testAttachModelImports",
@@ -117,6 +130,7 @@ public class FileManagerUtilsTest extends TestCase {
 
     }
 
+    @Test
     public void testGetFilebyUUID() throws Exception {
         FileManagerUtils uploadHelper = new FileManagerUtils();
         RulesRepository repo = new RulesRepository( session );
@@ -142,6 +156,7 @@ public class FileManagerUtilsTest extends TestCase {
                       filename );
     }
 
+    @Test
     public void testGetPackageBinaryAndSource() throws Exception {
 
         RulesRepository repo = new RulesRepository( session );
@@ -236,6 +251,7 @@ public class FileManagerUtilsTest extends TestCase {
 
     }
 
+    @Test
     /**
      * 
      * Tests importing when an archived package with the same name exists.
@@ -272,6 +288,7 @@ public class FileManagerUtilsTest extends TestCase {
 
     }
 
+    @Test
     public void testClassicDRLImport() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
         fm.setRepository( new RulesRepository( session ) );
@@ -348,6 +365,7 @@ public class FileManagerUtilsTest extends TestCase {
 
     }
 
+    @Test
     public void testDRLImportWithoutPackageName() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
         fm.setRepository( new RulesRepository( session ) );
@@ -399,6 +417,7 @@ public class FileManagerUtilsTest extends TestCase {
 
     }
 
+    @Test
     public void testDRLImportOverrideExistingPackageName() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
         fm.setRepository( new RulesRepository( session ) );
@@ -442,6 +461,7 @@ public class FileManagerUtilsTest extends TestCase {
 
     }
 
+    @Test
     public void testClassicDRLImportWithDSL() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
         fm.setRepository( new RulesRepository( session ) );
@@ -483,7 +503,8 @@ public class FileManagerUtilsTest extends TestCase {
 
     }
 
-    public void XXtestHeadOOME() throws Exception {
+    @Test
+    public void testHeadOOME() throws Exception {
         RulesRepository repo = new RulesRepository( session );
         PackageItem pkg = repo.createPackage( "testHeadOOME",
                                               "" );
@@ -495,7 +516,8 @@ public class FileManagerUtilsTest extends TestCase {
 
         int iterations = 0;
 
-        while ( true ) {
+        int maxIteration = 250; //pick a large number to do a stress test
+        while ( iterations < maxIteration) {
             iterations++;
             FileManagerUtils fm = new FileManagerUtils();
             fm.setRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession() ) );
@@ -504,7 +526,7 @@ public class FileManagerUtilsTest extends TestCase {
                 updatePackage( "testHeadOOME" );
             }
 
-            //fm.repository = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+            //fm.setRepository( new RulesRepository(TestEnvironmentSessionHelper.getSession()));
             fm.getLastModified( "testHeadOOME",
                                 "LATEST" );
             fm.getRepository().logout();
@@ -515,7 +537,7 @@ public class FileManagerUtilsTest extends TestCase {
 
     private void updatePackage(String nm) throws Exception {
         System.err.println( "---> Updating the package " );
-        RulesRepository repo = new RulesRepository( session );
+        RulesRepository repo = new RulesRepository(  TestEnvironmentSessionHelper.getSession() );
         PackageItem pkg = repo.loadPackage( nm );
         pkg.updateDescription( System.currentTimeMillis() + "" );
         pkg.checkin( "a change" );
@@ -523,9 +545,9 @@ public class FileManagerUtilsTest extends TestCase {
 
     }
 
-    private List iteratorToList(Iterator assets) {
+    private List<AssetItem> iteratorToList(Iterator<AssetItem> assets) {
         List<AssetItem> list = new ArrayList<AssetItem>();
-        for ( Iterator iter = assets; iter.hasNext(); ) {
+        for ( Iterator<AssetItem> iter = assets; iter.hasNext(); ) {
             AssetItem rule = (AssetItem) iter.next();
             list.add( rule );
         }

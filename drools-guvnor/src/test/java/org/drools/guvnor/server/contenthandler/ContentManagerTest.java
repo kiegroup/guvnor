@@ -16,12 +16,15 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.junit.Test;
 
-public class ContentManagerTest extends TestCase {
+public class ContentManagerTest {
 
+	@Test
 	public void testConfig() throws Exception {
 		ContentManager mgr = ContentManager.getInstance();
 		ContentManager mgr_ = ContentManager.getInstance();

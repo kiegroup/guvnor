@@ -33,10 +33,13 @@ package org.drools.guvnor.client.rpc;
 
 
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class MetaDataTest extends TestCase {
+import static org.junit.Assert.assertEquals;
 
+public class MetaDataTest {
+
+	@Test
     public void testAddCats() {
         MetaData data = new MetaData();
         data.addCategory( "new cat" );

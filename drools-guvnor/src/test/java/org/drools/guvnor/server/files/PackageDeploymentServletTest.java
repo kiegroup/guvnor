@@ -328,5 +328,11 @@ public class PackageDeploymentServletTest extends TestCase {
 		}
 
 	}
+	
+	@Override
+    protected void tearDown() throws Exception {
+    	TestEnvironmentSessionHelper.shutdown();
+    	super.tearDown();
+    }
 
 }

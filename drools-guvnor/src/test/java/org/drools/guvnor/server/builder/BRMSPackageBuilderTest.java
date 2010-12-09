@@ -40,30 +40,38 @@ import java.util.List;
 import java.util.Properties;
 import java.util.jar.JarInputStream;
 
-import junit.framework.TestCase;
-
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.rule.Package;
 import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.builder.conf.DefaultPackageNameOption;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class BRMSPackageBuilderTest extends TestCase {
+public class BRMSPackageBuilderTest {
 
    // Added this empty test so this class doesn't fail
    public void testEmpty() {
 
    }
 
+   @Before
    public void setUp() {
        System.getProperties().remove( "drools.dialect.java.compiler" );
    }
 
+   @After
    public void tearDown() {
        System.getProperties().remove( "drools.dialect.java.compiler" );
    }
 
     // @FIXME rule "abc" is null and the Packge has no namespace
+    @Test
     public void testPartialPackage() throws Exception {
 
         JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
@@ -122,6 +130,7 @@ public class BRMSPackageBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testGeneratedBeans() throws Exception {
 
             JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
@@ -158,11 +167,13 @@ public class BRMSPackageBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testHasDSL() {
         BRMSPackageBuilder builder = new BRMSPackageBuilder();
         assertFalse(builder.hasDSL());
     }
 
+    @Test
     public void testGetExpander() {
         BRMSPackageBuilder builder = new BRMSPackageBuilder();
         List<DSLTokenizedMappingFile> files = new ArrayList<DSLTokenizedMappingFile>();
@@ -172,7 +183,7 @@ public class BRMSPackageBuilderTest extends TestCase {
         assertNotNull(builder.getDSLExpander());
     }
 
-
+    @Test
     public void testDefaultCompiler() throws Exception {
 
         JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
@@ -194,6 +205,7 @@ public class BRMSPackageBuilderTest extends TestCase {
         assertEquals(JavaDialectConfiguration.ECLIPSE, javaConf.getCompiler());
     }
 
+    @Test
     public void testEclipseCompiler() throws Exception {
 
         System.setProperty( "drools.dialect.java.compiler", "ECLIPSE" );
@@ -213,6 +225,7 @@ public class BRMSPackageBuilderTest extends TestCase {
         assertEquals(JavaDialectConfiguration.ECLIPSE, javaConf.getCompiler());
     }
 
+    @Test
     public void testNamespaceSingle() throws Exception {
 
         System.setProperty( "drools.dialect.java.compiler", "ECLIPSE" );
@@ -224,12 +237,14 @@ public class BRMSPackageBuilderTest extends TestCase {
         assertFalse(builder.getPackageBuilderConfiguration().isAllowMultipleNamespaces());
     }
 
+    @Test
     public void testRuleFlow() throws Exception {
         BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( new ArrayList<JarInputStream>(), new Properties() );
         builder.addProcessFromXml( new InputStreamReader( this.getClass().getResourceAsStream( "evaluation.rf" ) ) );
         assertFalse(builder.hasErrors());
     }
 
+    @Test
     public void testBPMN2Process() throws Exception {
         BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( new ArrayList<JarInputStream>(), new Properties() );
         builder.addProcessFromXml( new InputStreamReader( this.getClass().getResourceAsStream( "Hello.bpmn" ) ) );

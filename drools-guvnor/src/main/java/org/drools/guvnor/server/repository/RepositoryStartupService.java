@@ -33,6 +33,8 @@ package org.drools.guvnor.server.repository;
 
 
 
+import java.util.Properties;
+
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -59,16 +61,27 @@ import org.jboss.seam.annotations.Startup;
 @Name("repositoryConfiguration")
 public class RepositoryStartupService {
 
-    JCRRepositoryConfigurator configurator = new JackrabbitRepositoryConfigurator();
-    String repositoryHomeDirectory = null;
+	private RulesRepositoryConfigurator configurator;
+    Properties properties = new Properties();
 
     Repository repository;
 	private Session sessionForSetup;
     private RulesRepository mailmanSession;
 
+    public Repository getRepositoryInstance() {
+    	try {
+			configurator = RulesRepositoryConfigurator.getInstance(properties);
+			repository = configurator.getJCRRepository();
+		} catch (RepositoryException e) {
+			// TODO Kurt Auto-generated catch block
+			e.printStackTrace();
+		}
+		return repository;
+    }
+    
     @Create
     public void create() {
-        repository = configurator.getJCRRepository( repositoryHomeDirectory );
+    	repository = getRepositoryInstance();
         sessionForSetup = newSession("admin");
         create( sessionForSetup );
         startMailboxService();
@@ -78,6 +91,7 @@ public class RepositoryStartupService {
 
     /** Listen for changes to the repository - for inbox purposes */
     public static void registerCheckinListener() {
+    	System.out.println("Registering check-in listener");
         StorageEventManager.registerCheckinEvent(new CheckinEvent() {
             public void afterCheckin(AssetItem item) {
                 UserInbox.recordUserEditEvent(item);  //to register that she edited...
@@ -85,6 +99,7 @@ public class RepositoryStartupService {
                 MailboxService.getInstance().wakeUp();
             }
         });
+        System.out.println("Check-in listener up");
     }
 
     /** Start up the mailbox, flush out any messages that were left */
@@ -101,7 +116,12 @@ public class RepositoryStartupService {
     	
     	RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(sessionForSetup);
         if (!admin.isRepositoryInitialized()) {
-            configurator.setupRulesRepository( sessionForSetup );
+            try {
+				configurator.setupRepository( sessionForSetup );
+			} catch (RepositoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         
         //
@@ -127,17 +147,22 @@ public class RepositoryStartupService {
     @Destroy
     public void close() {
         sessionForSetup.logout();
+        MailboxService.getInstance().stop();
         mailmanSession.logout();
+        
     }
 
 
     public void setHomeDirectory(String home) {
-        this.repositoryHomeDirectory = home;
+    	if (home!=null) {
+    		properties.setProperty(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, home);
+    	}
     }
 
     public void setRepositoryConfigurator(String clazz) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-            Class cls = Class.forName( clazz );
-            this.configurator = (JCRRepositoryConfigurator) cls.newInstance();
+    	if (clazz!=null) {
+    		properties.setProperty(RulesRepositoryConfigurator.CONFIGURATOR_CLASS, clazz);
+    	}
     }
 
 

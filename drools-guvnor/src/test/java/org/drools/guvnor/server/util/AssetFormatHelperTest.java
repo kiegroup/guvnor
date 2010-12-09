@@ -16,13 +16,15 @@
 
 package org.drools.guvnor.server.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
 
-public class AssetFormatHelperTest extends TestCase {
+import org.junit.Test;
 
+public class AssetFormatHelperTest {
+
+	@Test
 	public void testGetRegisteredAssetFormats() {
-		AssetFormatHelper hlp = new AssetFormatHelper();
-		String[] ls = hlp.listRegisteredTypes();
+		String[] ls = AssetFormatHelper.listRegisteredTypes();
 		assertTrue(ls.length > 1);
 	}
 

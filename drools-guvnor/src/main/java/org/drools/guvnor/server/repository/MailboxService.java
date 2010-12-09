@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
@@ -36,37 +37,56 @@ import org.drools.repository.UserInfo.InboxEntry;
  */
 public class MailboxService {
 
-    private static final LoggingHelper log = LoggingHelper.getLogger( MailboxService.class );
-    public static final String MAILMAN = "mailman";
-    private static ExecutorService executor = Executors.newSingleThreadExecutor();
-
-    private static MailboxService INSTANCE = new MailboxService();
-
-
-    public static MailboxService getInstance() { return INSTANCE; }
-
+    private static final LoggingHelper log  = LoggingHelper.getLogger( MailboxService.class );
+    public static final String MAILMAN      = "mailman";
+    private static ExecutorService executor = null;
+    private static MailboxService INSTANCE  = null;
     /**
      * Should be the for the "mailman" user.
      */
     private RulesRepository repository;
 
-
+    public static MailboxService getInstance() { 
+    	if (INSTANCE==null) {
+	        INSTANCE = new MailboxService();
+	        executor = Executors.newSingleThreadExecutor();
+    	}
+    	return INSTANCE; 
+    }
 
     private MailboxService() {}
 
-    MailboxService(RulesRepository systemRepo) {
-        init(systemRepo);
-    }
-
     public void init(RulesRepository systemRepo) {
         log.info("Starting mailbox service");
-        this.repository = systemRepo;
+	    this.repository = systemRepo;
+	    log.info("mailbox service is up");
+    }
+    
+    public void stop() {
+    	log.info("Shutting down mailbox service");
+    	executor.shutdown();
+    	
+    	try {
+    		System.out.println("IS DOWN: " + executor.isTerminated());
+			if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+				executor.shutdownNow();
+				System.out.println("IS DOWN2: " + executor.isTerminated());
+				if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+					System.err.println("executor did not terminate");
+				}
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			executor.shutdownNow();
+			Thread.currentThread().interrupt();
+		}
+    	INSTANCE=null;
+    	log.info("Mailbox service is shutdown.");
+    	
     }
 
-
-
     public void wakeUp() {
-        log.info("Waking up");
+        log.debug("Waking up");
         executor.execute(new Runnable() {
             public void run() {
                 processOutgoing();
@@ -76,7 +96,7 @@ public class MailboxService {
 
     /** Process any waiting messages */
     void processOutgoing()  {
-             log.info("Processing outgoing messages");
+            //log.info("Processing outgoing messages");
             if (repository != null) {
                 UserInbox mailman = new UserInbox(repository, MAILMAN);
                 final List<UserInfo.InboxEntry> es  = mailman.loadIncoming();
@@ -122,12 +142,14 @@ public class MailboxService {
         final String from = item.getRulesRepository().getSession().getUserID();
         executor.execute(new Runnable() {
             public void run() {
-				// write the message to the admins outbox
-				UserInbox inbox = new UserInbox(repository, MAILMAN);
-				inbox.addToIncoming(id, name, from);
-				processOutgoing();
-
-				repository.save();
+            	if (repository!=null) {
+					// write the message to the admins outbox
+					UserInbox inbox = new UserInbox(repository, MAILMAN);
+					inbox.addToIncoming(id, name, from);
+					processOutgoing();
+	
+					repository.save();
+            	}
 			}
         });
     }

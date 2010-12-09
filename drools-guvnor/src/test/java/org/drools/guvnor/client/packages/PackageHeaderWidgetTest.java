@@ -16,14 +16,17 @@
 
 package org.drools.guvnor.client.packages;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertEquals;
 
 import org.drools.guvnor.client.packages.PackageHeaderWidget.Global;
 import org.drools.guvnor.client.packages.PackageHeaderWidget.Import;
 import org.drools.guvnor.client.packages.PackageHeaderWidget.Types;
+import org.junit.Test;
 
-public class PackageHeaderWidgetTest extends TestCase {
+public class PackageHeaderWidgetTest {
 
+	@Test
 	public void testEmpty() {
 
 		PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(null);
@@ -38,6 +41,7 @@ public class PackageHeaderWidgetTest extends TestCase {
 
 	}
 
+	@Test
 	public void testImports() {
 		String s = "import goo.bar.Whee;\n\nimport wee.waah.Foo\nimport nee.Nah";
 		PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(s);
@@ -58,6 +62,7 @@ public class PackageHeaderWidgetTest extends TestCase {
 
 	}
 
+	@Test
 	public void testGlobals() {
 		String s = "global goo.bar.Whee x;\n\nglobal wee.waah.Foo asd\nglobal nee.Nah d";
 		PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(s);
@@ -82,6 +87,7 @@ public class PackageHeaderWidgetTest extends TestCase {
 
 	}
 
+	@Test
 	public void testGlobalsImports() {
 		String s = "import goo.bar.Whee;\n\nglobal wee.waah.Foo asd";
 		PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(s);
@@ -99,11 +105,14 @@ public class PackageHeaderWidgetTest extends TestCase {
 
 	}
 
+	@Test
 	public void testAdvanced() {
 		String s = "import goo.bar.Whee;\nglobal Wee waa;\n \nsomething else maybe dialect !";
 		assertEquals(null, PackageHeaderHelper.parseHeader(s));
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test
 	public void testRenderTypes() {
 		Types t = new Types();
 		t.imports.add(new Import("foo.bar.Baz"));

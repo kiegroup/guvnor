@@ -19,7 +19,10 @@ package org.drools.guvnor.server.contenthandler;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.factmodel.FactMetaModel;
@@ -31,9 +34,12 @@ import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.junit.After;
+import org.junit.Test;
 
-public class FactModelContentHandlerTest extends TestCase {
+public class FactModelContentHandlerTest {
 
+	@Test
     public void testToDrl() {
 
         List<FieldMetaModel> fields = new ArrayList<FieldMetaModel>();
@@ -49,7 +55,7 @@ public class FactModelContentHandlerTest extends TestCase {
         assertEquals("declare FooBar\n\tf1: int\n\tf2: String\nend", drl);
 
 
-        FactMetaModel mm2 = new FactMetaModel("BooBah", new ArrayList());
+        FactMetaModel mm2 = new FactMetaModel("BooBah", new ArrayList<FieldMetaModel>());
         List<FactMetaModel> models = new ArrayList<FactMetaModel>();
         models.add(mm);
         models.add(mm2);
@@ -60,6 +66,7 @@ public class FactModelContentHandlerTest extends TestCase {
         assertTrue(drl.indexOf("BooBah") > drl.indexOf("FooBar"));
     }
 
+	@Test
     public void testFromDrl()  throws Exception {
     	String drl = "declare FooBar\n\tf1: int\n\tf2: String\nend";
 
@@ -90,13 +97,9 @@ public class FactModelContentHandlerTest extends TestCase {
     		assertNotNull(e.getMessage());
     	}
 
-
-
-
-
-
     }
 
+	@Test
     public void testAdvanced() throws Exception {
 
     	String drl = "#advanced editor \ndeclare FooBar\n\t name: String  \nend";
@@ -109,7 +112,7 @@ public class FactModelContentHandlerTest extends TestCase {
     	}
     }
 
-
+	@Test
     public void testFromEmptyDrl() throws Exception {
     	String drl = "";
 
@@ -120,7 +123,7 @@ public class FactModelContentHandlerTest extends TestCase {
 
     }
 
-
+	@Test
     public void testStore() throws Exception {
     	FactModelContentHandler ch = new FactModelContentHandler();
 
@@ -161,6 +164,11 @@ public class FactModelContentHandlerTest extends TestCase {
 
     	assertEquals("rubbish here", asset.getContent());
 
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+    	TestEnvironmentSessionHelper.shutdown();
     }
 }
 

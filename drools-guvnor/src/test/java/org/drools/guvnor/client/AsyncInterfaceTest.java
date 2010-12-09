@@ -33,14 +33,16 @@ package org.drools.guvnor.client;
 
 
 
-import java.lang.reflect.Method;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
-import junit.framework.TestCase;
+import java.lang.reflect.Method;
 
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.SecurityServiceAsync;
+import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -49,8 +51,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * This will verify that the interfaces are kosher for GWT to use.
  * @author Michael Neale
  */
-public class AsyncInterfaceTest extends TestCase {
+public class AsyncInterfaceTest {
 
+	@Test
     public void testService() throws Exception {
     	try {
 	        checkService( RepositoryService.class, RepositoryServiceAsync.class );
@@ -61,11 +64,11 @@ public class AsyncInterfaceTest extends TestCase {
 
     }
 
-    private void checkService(Class clsInt, Class clsAsync) throws NoSuchMethodException {
+    private void checkService(Class<?> clsInt, Class<?> clsAsync) throws NoSuchMethodException {
         for ( Method m : clsInt.getMethods()) {
 
-            Class[] paramClasses = new Class[m.getParameterTypes().length + 1];
-            Class[] sourceParamClasses = m.getParameterTypes();
+            Class<?>[] paramClasses = new Class[m.getParameterTypes().length + 1];
+            Class<?>[] sourceParamClasses = m.getParameterTypes();
             for ( int i = 0; i < sourceParamClasses.length; i++ ) {
                 paramClasses[i] = sourceParamClasses[i];
             }

@@ -31,30 +31,32 @@ package org.drools.guvnor.server.repository;
  * limitations under the License.
  */
 
+import javax.jcr.Repository;
 
+import org.drools.repository.JCRRepositoryConfigurator;
+import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 
+public class RepositoryStartupServiceTest {
 
-
-import junit.framework.TestCase;
-
-public class RepositoryStartupServiceTest extends TestCase {
-
+	@Test
     public void testConfiguration() throws Exception {
         
         RepositoryStartupService config = new RepositoryStartupService();
         config.setHomeDirectory( "qed" );
-        assertEquals("qed", config.repositoryHomeDirectory);
+        assertEquals("qed", config.properties.getProperty(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY));
         config.setRepositoryConfigurator( MockRepositoryConfigurator.class.getName() );
         
-        assertTrue(config.configurator instanceof MockRepositoryConfigurator);
-        config.repository = new MockRepo();
-
+        Repository repository = config.getRepositoryInstance();
+        
+        assertEquals(MockRepo.class.getSimpleName(),repository.getClass().getSimpleName());
+        
         assertNotNull(config.newSession("foo"));
         assertNotSame(config.newSession("foo"), config.newSession("foo"));
 
-        
-        
     }
 
     

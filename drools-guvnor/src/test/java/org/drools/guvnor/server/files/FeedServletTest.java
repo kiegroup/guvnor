@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.server.files;
 
-import junit.framework.TestCase;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.PackageItem;
 import org.drools.repository.AssetItem;
@@ -26,6 +25,12 @@ import org.drools.guvnor.server.ServiceImplementation;
 import org.apache.util.Base64;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
+import org.junit.After;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 
 import javax.servlet.http.HttpServletResponse;
@@ -36,9 +41,10 @@ import java.util.HashMap;
 /**
  * @author Michael Neale
  */
-public class FeedServletTest extends TestCase {
+public class FeedServletTest {
 
-    public void testPackageFeed() throws Exception {        
+	@Test
+    public void testPackageFeed() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
         PackageItem pkg = repo.createPackage("testPackageFeed", "");
         AssetItem asset = pkg.addAsset("asset1", "desc");
@@ -130,6 +136,7 @@ public class FeedServletTest extends TestCase {
         Lifecycle.endApplication();
     }
 
+	@Test
     public void testCategoryFeed() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
         PackageItem pkg = repo.createPackage("testCategoryFeed", "");
@@ -205,6 +212,8 @@ public class FeedServletTest extends TestCase {
         Lifecycle.endApplication();
     }
 
+
+	@Test
     public void testDiscussionFeed() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
         PackageItem pkg = repo.createPackage("testDiscussionFeed", "");
@@ -269,6 +278,11 @@ public class FeedServletTest extends TestCase {
         System.err.println(r);
 
         Lifecycle.endApplication();
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+    	TestEnvironmentSessionHelper.shutdown();
     }
     
 }

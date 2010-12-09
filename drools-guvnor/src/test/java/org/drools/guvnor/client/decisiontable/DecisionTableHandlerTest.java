@@ -18,16 +18,17 @@ package org.drools.guvnor.client.decisiontable;
 
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.junit.Test;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+public class DecisionTableHandlerTest {
 
-public class DecisionTableHandlerTest extends TestCase {
-
+	@Test
     public void testMoveAttribute() {
 
         GuidedDecisionTable dt = new GuidedDecisionTable();
@@ -97,6 +98,7 @@ public class DecisionTableHandlerTest extends TestCase {
 
     }
 
+	@Test
     public void testMoveCondition() {
         
         GuidedDecisionTable dt = new GuidedDecisionTable();
@@ -168,6 +170,7 @@ public class DecisionTableHandlerTest extends TestCase {
         
     }
 
+	@Test
     public void testMoveAction() {
         
         GuidedDecisionTable dt = new GuidedDecisionTable();

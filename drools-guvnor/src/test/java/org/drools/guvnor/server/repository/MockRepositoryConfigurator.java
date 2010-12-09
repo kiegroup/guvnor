@@ -33,22 +33,39 @@
 
 package org.drools.guvnor.server.repository;
 
+import java.util.Properties;
+
 import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Workspace;
 
 import org.drools.repository.JCRRepositoryConfigurator;
 import org.drools.repository.RulesRepositoryException;
 
-class MockRepositoryConfigurator implements JCRRepositoryConfigurator {
+public class MockRepositoryConfigurator extends JCRRepositoryConfigurator {
 
     
-    
-    public Repository getJCRRepository(String repositoryRootDirectory) {
+    @Override
+    public Repository getJCRRepository(Properties properties) {
         return new MockRepo();
     }
 
     public void setupRulesRepository(Session session) throws RulesRepositoryException {
         
     }
+
+	@Override
+	public void registerNodeTypesFromCndFile(String cndFileName,
+			Session session, Workspace workspace) throws RepositoryException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void shutdown() {
+		// TODO Auto-generated method stub
+		
+	}
     
 }

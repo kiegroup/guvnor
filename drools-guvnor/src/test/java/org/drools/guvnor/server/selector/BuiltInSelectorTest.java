@@ -16,17 +16,19 @@
 
 package org.drools.guvnor.server.selector;
 
-import org.drools.guvnor.client.rpc.RepositoryService;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RulesRepository;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+public class BuiltInSelectorTest {
 
-public class BuiltInSelectorTest extends TestCase {
-
+	@Test
     public void testBuiltInSelector() throws Exception {
 		ServiceImplementation impl = getService();
 		impl.repository.loadDefaultPackage();

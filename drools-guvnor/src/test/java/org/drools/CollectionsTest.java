@@ -24,17 +24,20 @@ import static org.drools.nvbj.println;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
+public class CollectionsTest {
 
-public class CollectionsTest extends TestCase {
-
+	@Test
 	public void testList() {
 		List<String> ls = List("a", "b", "c");
 		assertEquals(3, ls.size());
 		assertEquals("b", ls.get(1));
 	}
 
+	@SuppressWarnings("unchecked")
+	@Test
 	public void testMap() {
 		println("this is less verbose");
 		Map<String, String> mp = Map(
@@ -43,7 +46,6 @@ public class CollectionsTest extends TestCase {
 		assertEquals(2, mp.size());
 		assertEquals("michael", mp.get("name"));
 		assertEquals("42", mp.get("age"));
-
 
 	}
 

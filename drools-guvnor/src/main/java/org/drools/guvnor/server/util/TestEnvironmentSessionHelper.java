@@ -19,6 +19,7 @@ package org.drools.guvnor.server.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.util.Properties;
 
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -26,9 +27,9 @@ import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
 import org.drools.repository.JCRRepositoryConfigurator;
-import org.drools.repository.JackrabbitRepositoryConfigurator;
 import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RulesRepositoryAdministrator;
+import org.drools.repository.RulesRepositoryConfigurator;
 
 /**
  * This is only to be used for testing, eg in hosted mode, or unit tests.
@@ -42,7 +43,7 @@ public class TestEnvironmentSessionHelper {
     public static Repository repository;
 
 
-    public static Session getSession() throws Exception {
+    public static synchronized Session getSession() throws Exception {
         return getSession(true);
     }
 
@@ -57,9 +58,13 @@ public class TestEnvironmentSessionHelper {
 	                System.out.println("TEST repo dir deleted.");
 	            }
 
-	            JCRRepositoryConfigurator config = new JackrabbitRepositoryConfigurator();
+	            RulesRepositoryConfigurator config = RulesRepositoryConfigurator.getInstance(null);
                 String home = System.getProperty("guvnor.repository.dir");
-	            repository = config.getJCRRepository(home);
+                Properties properties = new Properties();
+                if (home!=null) {
+                	properties.setProperty(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, home);
+                }
+	            repository = config.getJCRRepository();
 
 	            Session testSession = repository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
 
@@ -67,7 +72,7 @@ public class TestEnvironmentSessionHelper {
 	            if (erase && admin.isRepositoryInitialized()) {
 	                admin.clearRulesRepository( );
 	            }
-	            config.setupRulesRepository( testSession );
+	            config.setupRepository( testSession );
 	            File file = File.createTempFile( "pete", "txt" );
 	            file.deleteOnExit();
 	            PrintWriter out = new PrintWriter(new FileOutputStream(file));
@@ -123,10 +128,16 @@ public class TestEnvironmentSessionHelper {
     /**
      * Uses the given user name.
      */
-    public static Session getSessionFor(String userName) throws RepositoryException {
+    public static synchronized Session getSessionFor(String userName) throws RepositoryException {
         return repository.login(
                          new SimpleCredentials(userName, "password".toCharArray()));
 
+    }
+    
+    public static synchronized void shutdown() throws RepositoryException {
+    	RulesRepositoryConfigurator.getInstance(null).shutdown();
+    	
+        repository = null;
     }
 
     

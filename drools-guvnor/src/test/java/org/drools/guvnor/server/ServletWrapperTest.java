@@ -16,18 +16,29 @@
 
 package org.drools.guvnor.server;
 
-import junit.framework.TestCase;
+import org.drools.guvnor.server.repository.MailboxService;
+import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.junit.After;
+import org.junit.Test;
 
-public class ServletWrapperTest extends TestCase {
+public class ServletWrapperTest {
 
+	@Test
 	public void testMainService() {
 		RepositoryServiceServlet serv = new RepositoryServiceServlet();
 		serv.listPackages();
 	}
 
+	@Test
 	public void testSecurityService() {
 		SecurityServiceServlet serv = new SecurityServiceServlet();
 		serv.getCurrentUser();
 	}
+	
+	@After
+    public void tearDown() throws Exception {
+		MailboxService.getInstance().stop();
+        TestEnvironmentSessionHelper.shutdown();
+    }
 
 }

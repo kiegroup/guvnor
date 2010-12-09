@@ -31,14 +31,14 @@ package org.drools.guvnor.client.rulelist;
  * limitations under the License.
  */
 
-
-
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.drools.guvnor.client.rpc.TableDataRow;
+import org.junit.Test;
 
-public class TableDataRowTest extends TestCase {
+public class TableDataRowTest {
 
+	@Test
     public void testRow() {
         TableDataRow row = new TableDataRow();
         row.id = "HJKHFKJHFDJS";

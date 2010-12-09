@@ -16,38 +16,43 @@
 
 package org.drools.guvnor.server.util;
 
-import java.util.HashSet;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import junit.framework.TestCase;
+import java.util.HashSet;
 
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
-import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 import org.drools.ide.common.server.util.BRLPersistence;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BRDRTPersistenceTest extends TestCase {
+public class BRDRTPersistenceTest {
 	private static final Logger log = LoggerFactory.getLogger(BRDRTPersistenceTest.class); 
 	private BRLPersistence p;
 
-	@Override
-	protected void setUp() throws Exception {
+	@Before
+	public void setUp() throws Exception {
 		p = BRDRTPersistence.getInstance();
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
+	@After
+	public void tearDown() throws Exception {
 		p = null;
 	}
 	
+	@Test
 	public void testGenerateEmptyDRL() {
 		String expected = 
 				"rule \"null_0\"\n" + 
@@ -94,6 +99,7 @@ public class BRDRTPersistenceTest extends TestCase {
         assertEquals(expected, drl);
 	}
 
+	@Test
 	public void testFreeFormLine() {
 		String expected = 
 			"rule \"with composite_1\"\n" + 
@@ -157,6 +163,7 @@ public class BRDRTPersistenceTest extends TestCase {
 		assertEquals(expected, drl);
 	}
 
+	@Test
 	public void testEmptyDataWithRHS() {
 		String expected = 
 				"rule \"with composite_1\"\n" + 
@@ -213,6 +220,7 @@ public class BRDRTPersistenceTest extends TestCase {
         assertEquals(expected, drl);
 	}
 	
+	@Test
 	public void testWithData() {
 		String expected = 
 				"rule \"with composite_1\"\n" + 
@@ -257,6 +265,7 @@ public class BRDRTPersistenceTest extends TestCase {
 
 	}
 	
+	@Test
 	public void testRemoveWithData() {
 		String expected = 
 				"rule \"with composite_1\"\n" + 
@@ -306,6 +315,7 @@ public class BRDRTPersistenceTest extends TestCase {
 
 	}
 	
+	@Test
 	public void testWithDataAndSync() {
         TemplateModel m = new TemplateModel();
         m.name = "with composite";

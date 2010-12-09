@@ -33,17 +33,19 @@ package org.drools.guvnor.client.ruleeditor;
 
 
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class EditorLauncherTest extends TestCase {
+public class EditorLauncherTest {
 
-	public void testDummy() {
-		
-	}
-	
-    public void FIXMEtestIcons()  {
+
+	@Test @Ignore
+    public void testIcons()  {
+
         assertNotNull(EditorLauncher.TYPE_IMAGES);
         assertNotNull(EditorLauncher.getAssetFormatIcon( "drl" ));
         assertNotNull(EditorLauncher.getAssetFormatIcon( "JKLGFJSLKGJFDLKGJFKLDJGLFKDJGKLFD" ));

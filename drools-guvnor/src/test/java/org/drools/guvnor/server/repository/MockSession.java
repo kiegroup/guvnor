@@ -174,7 +174,7 @@ class MockSession implements Session {
 
     public String getUserID() {
          
-        return null;
+        return "anonymous";
     }
 
     public ValueFactory getValueFactory() throws UnsupportedRepositoryOperationException,

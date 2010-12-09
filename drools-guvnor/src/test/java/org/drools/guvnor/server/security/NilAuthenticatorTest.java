@@ -16,10 +16,13 @@
 
 package org.drools.guvnor.server.security;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
 
-public class NilAuthenticatorTest extends TestCase {
+import org.junit.Test;
 
+public class NilAuthenticatorTest {
+
+	@Test
 	public void testAdmin() {
 		NilAuthenticator ni = new NilAuthenticator();
 

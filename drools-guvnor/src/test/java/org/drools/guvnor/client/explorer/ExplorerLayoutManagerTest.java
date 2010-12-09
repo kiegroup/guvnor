@@ -16,16 +16,22 @@
 
 package org.drools.guvnor.client.explorer;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
+import org.junit.Test;
 
 
 /**
  * @author Michael Neale
  */
 
-@SuppressWarnings({"NonJREEmulationClassesInClientCode"})
-public class ExplorerLayoutManagerTest extends TestCase {
+
+public class ExplorerLayoutManagerTest {
+	
+	@Test
     public void testHistoryToken() {
     	//TODO (JLIU):
 /*        ExplorerLayoutManager.BookmarkInfo bi = ExplorerLayoutManager.handleHistoryToken("");
@@ -44,8 +50,5 @@ public class ExplorerLayoutManagerTest extends TestCase {
         assertFalse(bi.showChrome);
         assertEquals("123", bi.assetId);
 */
-        
-
-
     }
 }

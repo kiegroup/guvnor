@@ -16,24 +16,30 @@
 
 package org.drools.guvnor.server.repository;
 
-import junit.framework.TestCase;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.AssetItem;
-import org.drools.repository.UserInfo.InboxEntry;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.util.List;
+
+import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.repository.AssetItem;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.UserInfo.InboxEntry;
+import org.junit.After;
+import org.junit.Test;
 
 /**
  * 
  * @author Michael Neale
  */
-public class MailboxServiceTest extends TestCase {
+public class MailboxServiceTest {
 
+	@Test
     public void testMailbox() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
 
-        MailboxService service = new MailboxService(repo);
+        MailboxService service = MailboxService.getInstance();
+        service.init(repo);
 
         AssetItem asset = repo.loadDefaultPackage().addAsset("testMailbox", "");
         
@@ -93,10 +99,12 @@ public class MailboxServiceTest extends TestCase {
 
     }
 
+	@Test
     public void testOneToMany() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
 
-        MailboxService service = new MailboxService(repo);
+        MailboxService service = MailboxService.getInstance();
+        service.init(repo);
 
         String sender = repo.getSession().getUserID();
         AssetItem asset = repo.loadDefaultPackage().addAsset("testMailboxOneToMany", "");
@@ -124,6 +132,12 @@ public class MailboxServiceTest extends TestCase {
         assertEquals(1, ib2.loadIncoming().size());
         assertEquals(1, ib3.loadIncoming().size());
 
+    }
+	
+	@After
+    public void tearDown() throws Exception {
+    	MailboxService.getInstance().stop();
+        TestEnvironmentSessionHelper.shutdown();
     }
 
 }

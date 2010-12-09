@@ -31,14 +31,14 @@ package org.drools.guvnor.server.util;
  * limitations under the License.
  */
 
-
-
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.drools.guvnor.client.rpc.MetaData;
+import org.junit.Test;
 
-public class MetaDataMapperTest extends TestCase {
+public class MetaDataMapperTest {
 
+	@Test
     public void testMapping() {
         MetaData data = new MetaData();
         assertEquals("", data.coverage);

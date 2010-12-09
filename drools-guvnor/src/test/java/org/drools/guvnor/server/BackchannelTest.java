@@ -17,18 +17,22 @@
 package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.rpc.PushResponse;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
-
 /**
  * @author Michael Neale
  */
-public class BackchannelTest extends TestCase {
+public class BackchannelTest {
 
-
+	@Test
     public void testPushAll() throws Exception {
 
         final Backchannel bc = new Backchannel();
@@ -78,6 +82,7 @@ public class BackchannelTest extends TestCase {
 
     }
 
+	@Test
     public void testSimple() throws Exception {
 
             final Backchannel bc = new Backchannel();
@@ -97,7 +102,8 @@ public class BackchannelTest extends TestCase {
         Thread t = new Thread(new Runnable() {
             public void run() {
                 try {
-                    List<PushResponse> list = bc.await("mic");
+                    @SuppressWarnings("unused")
+					List<PushResponse> list = bc.await("mic");
                     /*
                     for (PushResponse resp: list) {
                                        System.err.println(resp.messageType + "," + resp.message);
@@ -130,7 +136,7 @@ public class BackchannelTest extends TestCase {
         bc.push("mic", new PushResponse("Q", "A"));
 
 
-        final List<List<PushResponse>> container = new ArrayList();
+        final List<List<PushResponse>> container = new ArrayList<List<PushResponse>>();
 
         t = new Thread(new Runnable() {
             public void run() {
@@ -158,6 +164,7 @@ public class BackchannelTest extends TestCase {
 
     }
 
+	@Test
     public void testManyConcurrent() throws Exception {
         final Backchannel bc = new Backchannel();
         for (int i =0; i < 1000; i++) {

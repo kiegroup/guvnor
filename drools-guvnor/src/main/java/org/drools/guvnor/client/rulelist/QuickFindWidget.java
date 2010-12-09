@@ -45,6 +45,9 @@ import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
 import com.gwtext.client.util.Format;
+import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.core.client.GWT;
 
 /**
  * This is for quickly finding an asset by name. Partial completion is allowed.
@@ -153,6 +156,7 @@ public class QuickFindWidget extends Composite {
                                                               0,
                                                               5,
                                                               new GenericCallback<TableDataResult>() {
+
 
                                                                   public void onSuccess(TableDataResult result) {
                                                                       List<SuggestOracle.Suggestion> items = new ArrayList<SuggestOracle.Suggestion>();

@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
-
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -45,9 +43,15 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.permission.PermissionResolver;
+import org.junit.After;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
-public class ServiceImplSecurityTest extends TestCase {
+public class ServiceImplSecurityTest {
 
+	@Test
 	public void testLoadRuleAssetAnalyst() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
@@ -70,7 +74,7 @@ public class ServiceImplSecurityTest extends TestCase {
 					"testLoadRuleAssetAnalystPack1", AssetFormats.DRL);
 
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -98,6 +102,7 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);	    	
 
 			//now lets see if we can access this asset with the permissions
+			@SuppressWarnings("unused")
 			RuleAsset asset = impl.loadRuleAsset(uuid1);
 			try {				
 				asset = impl.loadRuleAsset(uuid2);
@@ -109,10 +114,12 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testLoadRuleAssetPackageReadonly() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			String package1Name = "testLoadRuleAssetPackageReadonlyPack1"; 
+			@SuppressWarnings("unused")
 			String package1Uuid = impl.createPackage(package1Name, "desc");
 			impl.createCategory("",
 					"testLoadRuleAssetPackageReadonlyCat1",
@@ -132,7 +139,7 @@ public class ServiceImplSecurityTest extends TestCase {
 					"testLoadRuleAssetPackageReadonlyPack2", AssetFormats.DRL);
 
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -159,6 +166,7 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);	    	
 
 			//now lets see if we can access this asset with the permissions
+			@SuppressWarnings("unused")
 			RuleAsset asset = impl.loadRuleAsset(uuid1);
 			try {
 				asset = impl.loadRuleAsset(uuid2);
@@ -170,6 +178,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 
+	@Test
 	// Access an asset that belongs to no category. No role permission defined. RoleBasedAuthorization is not enabled
 	public void testLoadRuleAssetNoCategory() throws Exception {
 		try {
@@ -190,7 +199,7 @@ public class ServiceImplSecurityTest extends TestCase {
 							AssetFormats.DRL);
 
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -221,6 +230,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 
+	@Test
 	//Access an asset that belongs to no category.
 	//The user role is admin
 	public void testLoadRuleAssetNoCategoryPackageAdmin() throws Exception {
@@ -229,6 +239,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			PackageItem packageItem = impl.repository.createPackage(
 					"testLoadRuleAssetNoCategoryPackageAdminPack1", "desc");
 			String packageName = packageItem.getName();
+			@SuppressWarnings("unused")
 			String packageUuid = packageItem.getUUID();
 			impl.createCategory("",
 					"testLoadRuleAssetNoCategoryPackageAdminCat1",
@@ -240,7 +251,7 @@ public class ServiceImplSecurityTest extends TestCase {
 					"testLoadRuleAssetNoCategoryPackageAdminPack1", AssetFormats.DRL);
 
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -274,6 +285,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 
+	@Test
 	//Access an asset that belongs to no category. 
 	//The user role is analyst
 	public void testLoadRuleAssetNoCategoryAnalystNegative() throws Exception {
@@ -281,6 +293,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			ServiceImplementation impl = getService();
 			PackageItem packageItem = impl.repository.createPackage(
 					"testLoadRuleAssetNoCategoryAnalystPack1", "desc");
+			@SuppressWarnings("unused")
 			String packageUuid = packageItem.getUUID();
 			impl.createCategory("",
 					"testLoadRuleAssetNoCategoryAnalystCat1",
@@ -300,7 +313,7 @@ public class ServiceImplSecurityTest extends TestCase {
 
 			
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -327,8 +340,10 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	Contexts.getSessionContext().set("roleBasedPermissionManager", testManager);	    	
 	    	
 			//now lets see if we can access this asset with the permissions
+	    	@SuppressWarnings("unused")
 			RuleAsset asset2 = impl.loadRuleAsset(uuid2);
 			try {
+				@SuppressWarnings("unused")
 				RuleAsset asset1 = impl.loadRuleAsset(uuid1);
 				fail("Did not catch expected exception");
 			} catch (AuthorizationException e) {
@@ -338,6 +353,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 	
+	@Test
 	//Access an asset that belongs to no category. 
 	//The user role is analyst
 	public void testLoadRuleAssetNoCategoryAnalystPositive() throws Exception {
@@ -345,6 +361,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			ServiceImplementation impl = getService();
 			PackageItem packageItem = impl.repository.createPackage(
 					"testLoadRuleAssetNoCategoryAnalystPositivePack1", "desc");
+			@SuppressWarnings("unused")
 			String packageUuid = packageItem.getUUID();
 			impl.createCategory("",
 					"testLoadRuleAssetNoCategoryAnalystPositiveCat1",
@@ -357,6 +374,7 @@ public class ServiceImplSecurityTest extends TestCase {
 					"description",
 					null,
 					"testLoadRuleAssetNoCategoryAnalystPositivePack1", AssetFormats.DRL);
+			@SuppressWarnings("unused")
 			String uuid2 = impl.createNewRule("testLoadRuleAssetNoCategoryAnalystPositiveRule2",
 					"description",
 					"testLoadRuleAssetNoCategoryAnalystPositiveCat2",
@@ -364,7 +382,7 @@ public class ServiceImplSecurityTest extends TestCase {
 
 			
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -392,12 +410,14 @@ public class ServiceImplSecurityTest extends TestCase {
 	    	
 			//now lets see if we can access this asset with the permissions
 			//RuleAsset asset2 = impl.loadRuleAsset(uuid2);
+			@SuppressWarnings("unused")
 			RuleAsset asset1 = impl.loadRuleAsset(uuid1);
 		} finally {
 			Lifecycle.endApplication();
 		}
 	}
 	
+	@Test
 	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategory()
 			throws Exception {
 		try {
@@ -409,6 +429,7 @@ public class ServiceImplSecurityTest extends TestCase {
 					.createPackage(
 							"testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
 							"desc");
+			@SuppressWarnings("unused")
 			String packageUuid = packageItem.getUUID();
 			impl.createCategory("", category1, "this is a cat");
 
@@ -421,7 +442,7 @@ public class ServiceImplSecurityTest extends TestCase {
 							AssetFormats.DRL);
 
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -453,6 +474,7 @@ public class ServiceImplSecurityTest extends TestCase {
 					testManager);
 
 			// now lets see if we can access this asset with the permissions
+			@SuppressWarnings("unused")
 			RuleAsset asset = null;
 			try {
 				asset = impl.loadRuleAsset(uuid);
@@ -465,7 +487,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 	
-
+	@Test
 	//Access an asset that belongs to no category. The user role is analyst and package.admin.
 	//Because the analyst role the user has has no category access to the asset,
 	//the permission can not be granted even though the package.admin role has package access.
@@ -485,7 +507,7 @@ public class ServiceImplSecurityTest extends TestCase {
 					"testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack", AssetFormats.DRL);
 
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -525,12 +547,13 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testCreateNewRule() throws Exception {
 		ServiceImplementation impl = getService();
 		impl.repository.createPackage("testSecurityCreateNewRule", "desc");
 		impl.createCategory("", "testSecurityCreateNewRule", "this is a cat");
 
-		Lifecycle.beginApplication(new HashMap());
+		Lifecycle.beginApplication(new HashMap<String, Object>());
 		Lifecycle.beginCall();
 		MockIdentity mi = new MockIdentity();
 		mi.inject();
@@ -561,6 +584,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		Lifecycle.endApplication();
 	}
 
+	@Test
 	public void testCheckinWithPackageReadonly() throws Exception {
 		ServiceImplementation impl = getService();
 		String packageUuid = impl.createPackage(
@@ -579,7 +603,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		Thread.sleep(100);
 
 		// Mock up SEAM contexts
-		Map application = new HashMap<String, Object>();
+		Map<String, Object> application = new HashMap<String, Object>();
 		Lifecycle.beginApplication(application);
 		Lifecycle.beginCall();
 		MockIdentity midentity = new MockIdentity();
@@ -614,10 +638,12 @@ public class ServiceImplSecurityTest extends TestCase {
 		Lifecycle.endApplication();
 	}
 
+	@Test
 	public void testCheckinPackageDeveloper() throws Exception {
 		//try {
 			ServiceImplementation impl = getService();
 			String packageName = "testCheckinPackageDeveloperPack1";
+			@SuppressWarnings("unused")
 			String packageUuid = impl.createPackage(packageName, "desc");
 			impl.createCategory("/", "testCheckinPackageDeveloperCat1",
 					"this is a description");
@@ -635,7 +661,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			Thread.sleep(100);
 
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -673,15 +699,17 @@ public class ServiceImplSecurityTest extends TestCase {
 		//}
 	}
 
+	@Test
  	public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyFilter() throws Exception {
  		try {
  			ServiceImplementation impl = getService();
  			String package3Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack3";
+ 			@SuppressWarnings("unused")
  			String package3Uuid = impl.createPackage(package3Name, "desc");
  			impl.createCategory("",
  					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat3",
  					"this is a cat");
-
+ 			@SuppressWarnings("unused")
  			String uuid3 = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
  					"ReadonlyFilterDescription",
  					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat3",
@@ -689,14 +717,14 @@ public class ServiceImplSecurityTest extends TestCase {
 
  			String package4Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack4";
  			impl.repository.createPackage(package4Name, "desc");
-
+ 			@SuppressWarnings("unused")
  			String uuid2 = impl.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
  					"ReadonlyFilterDescription",
  					"testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat3",
  					package4Name, AssetFormats.DRL);
 
  			// Mock up SEAM contexts
- 			Map application = new HashMap<String, Object>();
+ 			Map<String, Object> application = new HashMap<String, Object>();
  			Lifecycle.beginApplication(application);
  			Lifecycle.beginCall();
  			MockIdentity midentity = new MockIdentity();
@@ -729,6 +757,7 @@ public class ServiceImplSecurityTest extends TestCase {
  		}
  	}
 
+	@Test
  	public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter() throws Exception {
  		try {
  			ServiceImplementation impl = getService();
@@ -739,22 +768,25 @@ public class ServiceImplSecurityTest extends TestCase {
  			String package7Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack7";
  			String category7Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat7";
  			PackageItem packageItem7 = impl.repository.createPackage(package7Name, "desc");
+ 			@SuppressWarnings("unused")
  			String packageItem7UUID = packageItem7.getUUID();
  			impl.createCategory("", category7Name, "this is a rabbit");
-
+ 			@SuppressWarnings("unused")
  			String uuid7 = impl.createNewRule(rule7Name,
  					"MetaDataFilterDescription7", category7Name, package7Name, AssetFormats.DRL);
 
  			String package8Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack8";
  			String category8Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat8";
  			PackageItem packageItem8 = impl.repository.createPackage(package8Name, "desc");
+ 			@SuppressWarnings("unused")
  			String packageItem8UUID = packageItem8.getUUID();
  			impl.createCategory("", category8Name, "this is a mouse");
+ 			@SuppressWarnings("unused")
  			String uuid8 = impl.createNewRule(rule8Name,
  					"MetaDataFilterDescription8", category8Name, package8Name, AssetFormats.DRL);
 
  			// Mock up SEAM contexts
- 			Map application = new HashMap<String, Object>();
+ 			Map<String, Object> application = new HashMap<String, Object>();
  			Lifecycle.beginApplication(application);
  			Lifecycle.beginCall();
  			MockIdentity midentity = new MockIdentity();
@@ -797,6 +829,7 @@ public class ServiceImplSecurityTest extends TestCase {
  		}
  	}
 
+	@Test
  	public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter2() throws Exception {
  		try {
  			ServiceImplementation impl = getService();
@@ -807,21 +840,25 @@ public class ServiceImplSecurityTest extends TestCase {
  			String package5Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack5";
  			String category5Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat5";
  			PackageItem packageItem5 = impl.repository.createPackage(package5Name, "desc");
+ 			@SuppressWarnings("unused")
  			String packageItem5UUID = packageItem5.getUUID();
  			impl.createCategory("", category5Name, "this is a cat");
+ 			@SuppressWarnings("unused")
  			String uuid7 = impl.createNewRule(rule5Name,
  					"MetaDataFilter2Description5", category5Name, package5Name, AssetFormats.DRL);
 
  			String package6Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack6";
  			String category6Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat6";
  			PackageItem packageItem6 = impl.repository.createPackage(package6Name, "desc");
+ 			@SuppressWarnings("unused")
  			String packageItem6UUID = packageItem6.getUUID();
  			impl.createCategory("", category6Name, "this is a dog");
+ 			@SuppressWarnings("unused")
  			String uuid6 = impl.createNewRule(rule6Name,
  					"MetaDataFilter2Description6", category6Name, package6Name, AssetFormats.DRL);
 
  			// Mock up SEAM contexts
- 			Map application = new HashMap<String, Object>();
+ 			Map<String, Object> application = new HashMap<String, Object>();
  			Lifecycle.beginApplication(application);
  			Lifecycle.beginCall();
  			MockIdentity midentity = new MockIdentity();
@@ -861,6 +898,7 @@ public class ServiceImplSecurityTest extends TestCase {
  		}
  	}
 
+	@Test
  	public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter3() throws Exception {
  		try {
  			ServiceImplementation impl = getService();
@@ -871,21 +909,25 @@ public class ServiceImplSecurityTest extends TestCase {
  			String package9Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack9";
  			String category9Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat9";
  			PackageItem packageItem9 = impl.repository.createPackage(package9Name, "desc");
+ 			@SuppressWarnings("unused")
  			String packageItem9UUID = packageItem9.getUUID();
  			impl.createCategory("", category9Name, "this is a pigeon");
+ 			@SuppressWarnings("unused")
  			String uuid9 = impl.createNewRule(rule9Name,
  					"MetaDataFilter3Description9", category9Name, package9Name, AssetFormats.DRL);
 
  			String package10Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack10";
  			String category10Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat10";
  			PackageItem packageItem10 = impl.repository.createPackage(package10Name, "desc");
+ 			@SuppressWarnings("unused")
  			String packageItem10UUID = packageItem10.getUUID();
  			impl.createCategory("", category10Name, "this is a sparrow");
+ 			@SuppressWarnings("unused")
  			String uuid10 = impl.createNewRule(rule10Name,
  					"MetaDataFilter3Description10", category10Name, package10Name, AssetFormats.DRL);
 
  			// Mock up SEAM contexts
- 			Map application = new HashMap<String, Object>();
+ 			Map<String, Object> application = new HashMap<String, Object>();
  			Lifecycle.beginApplication(application);
  			Lifecycle.beginCall();
  			MockIdentity midentity = new MockIdentity();
@@ -925,6 +967,7 @@ public class ServiceImplSecurityTest extends TestCase {
  		}
  	}
 
+	@Test
  	public void testTableDisplayHandler() throws Exception {
  		try {
  			ServiceImplementation impl = getService();
@@ -935,21 +978,25 @@ public class ServiceImplSecurityTest extends TestCase {
  			String package11Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack11";
  			String category11Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat11";
  			PackageItem packageItem11 = impl.repository.createPackage(package11Name, "desc");
+ 			@SuppressWarnings("unused")
  			String packageItem11UUID = packageItem11.getUUID();
  			impl.createCategory("", category11Name, "this is a dock");
+ 			@SuppressWarnings("unused")
  			String uuid11 = impl.createNewRule(rule11Name,
  					"DisplayHandlerDescription11", category11Name, package11Name, AssetFormats.DRL);
 
  			String package12Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack12";
  			String category12Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat12";
  			PackageItem packageItem12 = impl.repository.createPackage(package12Name, "desc");
+ 			@SuppressWarnings("unused")
  			String packageItem12UUID = packageItem12.getUUID();
  			impl.createCategory("", category12Name, "this is a sparrow");
+ 			@SuppressWarnings("unused")
  			String uuid12 = impl.createNewRule(rule12Name,
  					"DisplayHandlerDescription12", category12Name, package12Name, AssetFormats.DRL);
 
  			// Mock up SEAM contexts
- 			Map application = new HashMap<String, Object>();
+ 			Map<String, Object> application = new HashMap<String, Object>();
  			Lifecycle.beginApplication(application);
  			Lifecycle.beginCall();
  			MockIdentity midentity = new MockIdentity();
@@ -1002,6 +1049,7 @@ public class ServiceImplSecurityTest extends TestCase {
  		}
  	}
 
+	@Test
  	//BRMS-282: listPackages only returns packages that the user has package.readonly permission or higher
 	public void testListPackagesPackageAdminAndAnalyst() throws Exception {
 		try {
@@ -1009,7 +1057,7 @@ public class ServiceImplSecurityTest extends TestCase {
 			String package1Name = "testListPackagesPackageAdminAndAnalystPack1";
 			String package2Name = "testListPackagesPackageAdminAndAnalystPack2";
 			String category1Name = "testListPackagesPackageAdminAndAnalystCat1"; 
-			
+			@SuppressWarnings("unused")
 			String package1UUID = (impl.repository.createPackage(package1Name, "desc")).getUUID();
 			impl.repository.createPackage(package2Name, "desc");
 			impl.createCategory("", category1Name, "this is a cat");
@@ -1024,7 +1072,7 @@ public class ServiceImplSecurityTest extends TestCase {
 					"description", null, package2Name, AssetFormats.DRL);
 
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -1060,6 +1108,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 	
+	@Test
 	public void testLoadChildCategories() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
@@ -1078,7 +1127,7 @@ public class ServiceImplSecurityTest extends TestCase {
 					"description", category2Name, package1Name, AssetFormats.DRL);
 
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -1111,7 +1160,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 
-	
+	@Test
 	public void testloadRuleListForCategoriesPackageReadonly() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
@@ -1137,7 +1186,7 @@ public class ServiceImplSecurityTest extends TestCase {
 					"description", category1Name, package3Name, AssetFormats.DRL);
 
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -1175,6 +1224,7 @@ public class ServiceImplSecurityTest extends TestCase {
 		}
 	}
 
+	@Test
 	public void testloadRuleListForCategoriesPackageReadonlyPositive() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
@@ -1200,7 +1250,7 @@ public class ServiceImplSecurityTest extends TestCase {
 					"description", category1Name, package3Name, AssetFormats.DRL);
 
 			// Mock up SEAM contexts
-			Map application = new HashMap<String, Object>();
+			Map<String, Object> application = new HashMap<String, Object>();
 			Lifecycle.beginApplication(application);
 			Lifecycle.beginCall();
 			MockIdentity midentity = new MockIdentity();
@@ -1248,5 +1298,10 @@ public class ServiceImplSecurityTest extends TestCase {
 				.getSession());
 		return impl;
 	}
+	
+	@After
+    public void tearDown() throws Exception {
+        TestEnvironmentSessionHelper.shutdown();
+    }
 
 }

@@ -32,12 +32,13 @@ package org.jboss.seam.security.permission;
  * limitations under the License.
  */
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import junit.framework.TestCase;
 
 import org.drools.guvnor.client.security.permission.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -53,13 +54,15 @@ import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
+import org.junit.Test;
 
-public class RoleBasedPermissionResolverTest extends TestCase {
+public class RoleBasedPermissionResolverTest {
 
     public void testDummy() throws Exception {
         assertTrue( true );
     }
 
+    @Test
     public void testCategoryBasedPermissionAnalyst() throws Exception {
     	//NOTE: Have to have this call, otherwise this test will fail others tests. Seems to be related to
     	//how Seam context initializes the JCR repository, but dont know the exact cause yet. 
@@ -68,7 +71,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
 				.getSession());
 		
         //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
+        Map<String, Object> application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
@@ -130,9 +133,10 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         Lifecycle.endApplication();
     }
 
+    @Test
     public void testCategoryBasedPermissionAnalystReadOnly() throws Exception {
         // Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
+        Map<String, Object> application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
@@ -193,9 +197,10 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         Lifecycle.endApplication();
     }
 
+    @Test
     public void testCategoryBasedPermissionAnalystReadOnly2() throws Exception {
         // Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
+        Map<String, Object> application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
@@ -230,6 +235,7 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         Lifecycle.endApplication();
     }
 
+    @Test
     public void testIsSubPath() {
         RoleBasedPermissionResolver pr = new RoleBasedPermissionResolver();
         assertTrue( pr.isSubPath( "foo",
@@ -256,12 +262,13 @@ public class RoleBasedPermissionResolverTest extends TestCase {
                                   "foo1" ) );
     }
 
+    @Test
     /**
      * This tests that we can navigate the tree if we have sub path permissions.
      */
     public void testCategoryBasedSubPerms() throws Exception {
         //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
+        Map<String, Object> application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
@@ -330,10 +337,11 @@ public class RoleBasedPermissionResolverTest extends TestCase {
 
     }
 
+    @Test
     //admin: everything
     public void testPackageBasedPermissionAdmin() throws Exception {
         //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
+        Map<String, Object> application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
@@ -372,10 +380,11 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         Lifecycle.endApplication();
     }
 
+    @Test
     //Package.admin: everything for that package, including creating snapshots for that package.
     public void testPackageBasedPermissionPackageAdmin() throws Exception {
         //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
+        Map<String, Object> application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
@@ -415,10 +424,11 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         Lifecycle.endApplication();
     }
 
+    @Test
     //Package.admin: everything for that package, including creating snapshots for that package.
     public void testPackageBasedWebDavPermissionPackageAdmin() throws Exception {
         //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
+        Map<String, Object> application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
@@ -455,10 +465,11 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         Lifecycle.endApplication();
     }
 
+    @Test
     //Package.developer:  everything for that package, NOT snapshots (can view snapshots of that package only)
     public void testPackageBasedPermissionPackageDeveloper() throws Exception {
         //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
+        Map<String, Object> application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
@@ -498,10 +509,11 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         Lifecycle.endApplication();
     }
 
+    @Test
     //Package.readonly: read only as the name suggested
     public void testPackageBasedPermissionPackageReadOnly() throws Exception {
         //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
+        Map<String, Object> application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
@@ -541,9 +553,10 @@ public class RoleBasedPermissionResolverTest extends TestCase {
         Lifecycle.endApplication();
     }
 
+    @Test
     public void testPackageBasedPermissionAnalyst() throws Exception {
         //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
+        Map<String, Object> application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
