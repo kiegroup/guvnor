@@ -33,10 +33,13 @@ package org.drools.guvnor.server.repository;
 
 
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -67,9 +70,12 @@ public class RepositoryStartupService {
 
 	private static final Logger log = LoggerFactory.getLogger(RepositoryStartupService.class);
 	private static final String ADMIN                     = "admin";
+	private static final String ADMIN_USER_PROPERTY       = "org.drools.repository.admin.username";
 	private static final String ADMIN_PASSWORD_PROPERTY   = "org.drools.repository.admin.password";
 	private static final String MAILMAN                   = "mailman";
+	private static final String MAILMAN_USER_PROPERTY     = "org.drools.repository.mailman.username";
 	private static final String MAILMAN_PASSWORD_PROPERTY = "org.drools.repository.mailman.password";
+	private static final String SECURE_PASSWORDS_PROPERTY = "org.drools.repository.secure.passwords";
 	
 	
 	private RulesRepositoryConfigurator configurator;
@@ -94,9 +100,16 @@ public class RepositoryStartupService {
     @Create
     public void create() {
     	repository = getRepositoryInstance();
+    	String username = "admin";
+    	if (properties.containsKey(ADMIN_USER_PROPERTY)) {
+    		username = properties.get(ADMIN_USER_PROPERTY);
+    	}
     	String password = "admin";
     	if (properties.containsKey(ADMIN_PASSWORD_PROPERTY)) {
     		password = properties.get(ADMIN_PASSWORD_PROPERTY);
+    		if ("true".equalsIgnoreCase(properties.get(SECURE_PASSWORDS_PROPERTY))) {
+    			password = decode(password);
+    		}
     	} else {
     		log.debug("Could not find property " + ADMIN_PASSWORD_PROPERTY + " for user " + ADMIN);
     	}
@@ -121,9 +134,16 @@ public class RepositoryStartupService {
 
     /** Start up the mailbox, flush out any messages that were left */
     private void startMailboxService() {
+    	String username = "mailman";
+    	if (properties.containsKey(MAILMAN_USER_PROPERTY)) {
+    		username = properties.get(MAILMAN_USER_PROPERTY);
+    	}
     	String password = "mailman";
     	if (properties.containsKey(MAILMAN_PASSWORD_PROPERTY)) {
     		password = properties.get(MAILMAN_PASSWORD_PROPERTY);
+    		if ("true".equalsIgnoreCase(properties.get(SECURE_PASSWORDS_PROPERTY))) {
+    			password = decode(password);
+    		}
     	} else {
     		log.debug("Could not find property " + MAILMAN_PASSWORD_PROPERTY + " for user " + MAILMAN);
     	}
@@ -198,6 +218,42 @@ public class RepositoryStartupService {
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
+    }
+    
+    
+    
+    private static String decode(String secret)
+    {
+    	String decodedPassword = secret;
+    	try {
+	    	byte[] kbytes = "jaas is the way".getBytes();
+	    	SecretKeySpec key = new SecretKeySpec(kbytes, "Blowfish");
+	
+	    	BigInteger n = new BigInteger(secret, 16);
+	    	byte[] encoding = n.toByteArray();
+	
+	    	//SECURITY-344: fix leading zeros
+	    	if (encoding.length % 8 != 0)
+	    	{
+	    		int length = encoding.length;
+	    		int newLength = ((length / 8) + 1) * 8;
+	    		int pad = newLength - length; //number of leading zeros
+	    		byte[] old = encoding;
+	    		encoding = new byte[newLength];
+	    		for (int i = old.length - 1; i >= 0; i--)
+	    		{
+	    			encoding[i + pad] = old[i];
+	    		}
+	    	}
+	
+	    	Cipher cipher = Cipher.getInstance("Blowfish");
+	    	cipher.init(Cipher.DECRYPT_MODE, key);
+	    	byte[] decode = cipher.doFinal(encoding);
+	    	decodedPassword =  new String(decode);
+    	} catch (Exception e) {
+    		log.error(e.getMessage(),e);
+    	}
+    	return decodedPassword;
     }
 
 }
