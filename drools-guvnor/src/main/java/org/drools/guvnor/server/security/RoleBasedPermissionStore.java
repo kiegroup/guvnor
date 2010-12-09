@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.security.permission.RoleBasedPermissionResolver;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.security.PermissionManager;
 import org.jboss.seam.annotations.AutoCreate;

@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.client.security.permission.RoleBasedPermissionResolver;
+import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.AuthorizationException;
