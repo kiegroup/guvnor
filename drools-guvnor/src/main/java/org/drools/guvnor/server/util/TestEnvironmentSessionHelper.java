@@ -30,6 +30,8 @@ import org.drools.repository.JCRRepositoryConfigurator;
 import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is only to be used for testing, eg in hosted mode, or unit tests.
@@ -40,6 +42,7 @@ import org.drools.repository.RulesRepositoryConfigurator;
 public class TestEnvironmentSessionHelper {
 
 
+	public static final Logger log = LoggerFactory.getLogger(TestEnvironmentSessionHelper.class);
     public static Repository repository;
 
 
@@ -53,9 +56,9 @@ public class TestEnvironmentSessionHelper {
 
 	            if (erase) {
 	                File repoDir = new File("repository");
-	                System.out.println("DELETE test repo dir: " + repoDir.getAbsolutePath());
+	                log.info("DELETE test repo dir: " + repoDir.getAbsolutePath());
 	                RepositorySessionUtil.deleteDir( repoDir );
-	                System.out.println("TEST repo dir deleted.");
+	                log.info("TEST repo dir deleted.");
 	            }
 
 	            RulesRepositoryConfigurator config = RulesRepositoryConfigurator.getInstance(null);
