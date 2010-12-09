@@ -44,7 +44,6 @@ import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
 
 import org.drools.repository.*;
 import org.drools.repository.events.StorageEventManager;
@@ -100,11 +99,11 @@ public class RepositoryStartupService {
     @Create
     public void create() {
     	repository = getRepositoryInstance();
-    	String username = "admin";
+    	String username = ADMIN;
     	if (properties.containsKey(ADMIN_USER_PROPERTY)) {
     		username = properties.get(ADMIN_USER_PROPERTY);
     	}
-    	String password = "admin";
+    	String password = "password";
     	if (properties.containsKey(ADMIN_PASSWORD_PROPERTY)) {
     		password = properties.get(ADMIN_PASSWORD_PROPERTY);
     		if ("true".equalsIgnoreCase(properties.get(SECURE_PASSWORDS_PROPERTY))) {
@@ -113,7 +112,7 @@ public class RepositoryStartupService {
     	} else {
     		log.debug("Could not find property " + ADMIN_PASSWORD_PROPERTY + " for user " + ADMIN);
     	}
-        sessionForSetup = newSession(ADMIN,password);
+        sessionForSetup = newSession(username,password);
         create( sessionForSetup );
         startMailboxService();
         registerCheckinListener();
@@ -134,11 +133,11 @@ public class RepositoryStartupService {
 
     /** Start up the mailbox, flush out any messages that were left */
     private void startMailboxService() {
-    	String username = "mailman";
+    	String username = MAILMAN;
     	if (properties.containsKey(MAILMAN_USER_PROPERTY)) {
     		username = properties.get(MAILMAN_USER_PROPERTY);
     	}
-    	String password = "mailman";
+    	String password = "password";
     	if (properties.containsKey(MAILMAN_PASSWORD_PROPERTY)) {
     		password = properties.get(MAILMAN_PASSWORD_PROPERTY);
     		if ("true".equalsIgnoreCase(properties.get(SECURE_PASSWORDS_PROPERTY))) {
@@ -147,7 +146,7 @@ public class RepositoryStartupService {
     	} else {
     		log.debug("Could not find property " + MAILMAN_PASSWORD_PROPERTY + " for user " + MAILMAN);
     	}
-        mailmanSession = new RulesRepository(newSession(MAILMAN, password));
+        mailmanSession = new RulesRepository(newSession(username, password));
         MailboxService.getInstance().init(mailmanSession);
         MailboxService.getInstance().wakeUp();
     }
@@ -203,6 +202,21 @@ public class RepositoryStartupService {
     		properties.put(RulesRepositoryConfigurator.CONFIGURATOR_CLASS, clazz);
     	}
     }
+    
+    /**
+     * This will create a new Session, based on the current user.
+     * @return
+     */
+    public Session newSession(String userName) {
+
+        try {
+        	return configurator.login(userName);
+        } catch ( LoginException e ) {
+            throw new RulesRepositoryException( "Unable to login to JCR backend." );
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
+    }
 
 
     /**
@@ -212,13 +226,15 @@ public class RepositoryStartupService {
     public Session newSession(String userName, String password) {
 
         try {
-            return repository.login( new SimpleCredentials(userName, password.toCharArray()) );
+        	return configurator.login(userName, password);
         } catch ( LoginException e ) {
-            throw new RulesRepositoryException( "Unable to login to JCR backend." );
+            throw new RulesRepositoryException("UserName: [ " + userName + "] Unable to login to JCR backend." ,e);
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
     }
+    
+   
     
     
     

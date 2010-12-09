@@ -31,8 +31,6 @@ package org.drools.guvnor.server.repository;
  * limitations under the License.
  */
 
-
-
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -44,6 +42,8 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Unwrap;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This enhances the BRMS repository for lifecycle management.
@@ -54,6 +54,7 @@ import org.jboss.seam.security.Identity;
 @Name("repository")
 public class RulesRepositoryManager {
 
+	private static final Logger log = LoggerFactory.getLogger(RulesRepositoryManager.class);
     private static String READ_ONLY_USER = "anonymous";
     
     @In
@@ -71,9 +72,7 @@ public class RulesRepositoryManager {
         if (userName == null) {
             userName = READ_ONLY_USER;
         }
-        //When using JAAS the user is already authenticated, so the password is not looked at.
-        //When not using JAAS JR, will work fine, MS will fail
-        repository = new RulesRepository(repositoryConfiguration.newSession(userName, "password") );
+        repository = new RulesRepository(repositoryConfiguration.newSession(userName) );
     }
     
     @Unwrap

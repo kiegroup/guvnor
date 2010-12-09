@@ -35,6 +35,7 @@ package org.drools.guvnor.server.repository;
 
 import java.util.Properties;
 
+import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -66,6 +67,13 @@ public class MockRepositoryConfigurator extends JCRRepositoryConfigurator {
 	public void shutdown() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public Session login(String userName) throws LoginException,
+			RepositoryException {
+		// TODO Auto-generated method stub
+		return null;
 	}
     
 }
