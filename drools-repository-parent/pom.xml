@@ -16,7 +16,18 @@
     <module>drools-repository</module>
     <module>drools-repository-jcr-connector</module>
     <module>drools-repository-jackrabbit-connector</module>
-    <module>drools-repository-modeshape-connector</module>
   </modules>
-  
+
+  <profiles>
+    <profile>
+      <id>jdk6</id>
+      <activation>
+        <jdk>[1.6,)</jdk>
+      </activation>
+      <modules>
+        <module>drools-repository-modeshape-connector</module>
+      </modules>
+    </profile>
+  </profiles>
+
 </project>

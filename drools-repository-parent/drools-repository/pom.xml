@@ -10,7 +10,7 @@
   </parent>
   <artifactId>drools-repository</artifactId>
   <packaging>jar</packaging>
-  <name>Drools :: Repository</name>
+  <name>Drools :: Repository :: Repository</name>
   
   <build>
     <finalName>drools-repository</finalName>
