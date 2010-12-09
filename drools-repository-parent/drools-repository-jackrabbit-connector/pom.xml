@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>drools</artifactId>
     <groupId>org.drools</groupId>
+    <artifactId>drools-repository-parent</artifactId>
     <version>5.2.0-SNAPSHOT</version>
   </parent>
-  <artifactId>drools-repository-jcr-api</artifactId>
+  <artifactId>drools-repository-jackrabbit-connector</artifactId>
   <packaging>jar</packaging>
-  <name>Drools :: Repository :: JCR API</name>
+  <name>Drools :: Repository :: JackRabbit JCR connector</name>
+
   <dependencies>
+    <!-- Internal dependencies -->
     <dependency>
-      <groupId>javax.jcr</groupId>
-      <artifactId>jcr</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-repository-jcr-connector</artifactId>
     </dependency>
+
+    <!-- External dependencies -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
+      <groupId>org.apache.jackrabbit</groupId>
+      <artifactId>jackrabbit-core</artifactId>
     </dependency>
   </dependencies>
-
 </project>

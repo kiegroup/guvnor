@@ -140,7 +140,7 @@
       </build>
     </profile>
   </profiles>
-  
+
   <dependencies>
     <!-- Internal dependencies -->
     <!-- first the deps for the repo API itself (Jackrabbit based) -->
@@ -149,28 +149,27 @@
       <artifactId>drools-repository</artifactId>
     </dependency>
     <dependency>
-       <artifactId>drools-repository-jcr-ms-impl</artifactId>
-       <groupId>org.drools</groupId>
-       <version>5.2.0-SNAPSHOT</version>
-       <scope>runtime</scope>
-       <exclusions>
-           <exclusion>
-                   <groupId>org.modeshape</groupId>
-                   <artifactId>modeshape-jcr</artifactId>
-           </exclusion>
-           <exclusion>
-                   <groupId>org.jboss.security</groupId>
-                   <artifactId>jboss-idtrust</artifactId>
-           </exclusion>
-           <exclusion>
-                   <groupId>org.jboss.security</groupId>
-                   <artifactId>jboss-security-spi-bare</artifactId>
-           </exclusion>
-           <exclusion>
-                   <groupId>org.jboss.security</groupId>
-                   <artifactId>jbosssx-bare</artifactId>
-           </exclusion>
-       </exclusions>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-repository-modeshape-connector</artifactId>
+      <scope>runtime</scope><!-- TODO should this not be test or this dependency deleted? -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.modeshape</groupId>
+          <artifactId>modeshape-jcr</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.security</groupId>
+          <artifactId>jboss-idtrust</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.security</groupId>
+          <artifactId>jboss-security-spi-bare</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.security</groupId>
+          <artifactId>jbosssx-bare</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>

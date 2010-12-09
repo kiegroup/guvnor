@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.drools</groupId>
@@ -10,6 +11,7 @@
   <artifactId>drools-repository</artifactId>
   <packaging>jar</packaging>
   <name>Drools :: Repository</name>
+  
   <build>
     <finalName>drools-repository</finalName>
     <plugins>
@@ -33,27 +35,24 @@
   </build>
   <dependencies>
     <!-- Internal dependencies -->
-    <!-- External dependencies -->
-    <!-- first the deps for the repo API itself (Jackrabbit based) -->
     <dependency>
-      <artifactId>drools-repository-jcr-api</artifactId>
       <groupId>org.drools</groupId>
-      <version>5.2.0-SNAPSHOT</version>
+      <artifactId>drools-repository-jcr-connector</artifactId>
     </dependency>
     <dependency>
-      <artifactId>drools-repository-jcr-jr-impl</artifactId>
       <groupId>org.drools</groupId>
-      <version>5.2.0-SNAPSHOT</version>
+      <artifactId>drools-repository-jackrabbit-connector</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <!-- use this instead of jackrabbit (jr) above for modeshape
+    <!-- use this instead of jackrabbit (jr) above for ModeShape
      <dependency>
-       <artifactId>drools-repository-jcr-ms-impl</artifactId>
        <groupId>org.drools</groupId>
-       <version>5.2.0-SNAPSHOT</version>
+       <artifactId>drools-repository-modeshape-connector</artifactId>
        <scope>runtime</scope>
      </dependency>
      -->
+
+    <!-- External dependencies -->
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
