@@ -35,6 +35,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
+import javax.jcr.Repository;
+
+import org.drools.repository.RulesRepositoryConfigurator;
 import org.junit.Test;
 
 public class RulesRepositoryManagerTest {
@@ -43,7 +46,8 @@ public class RulesRepositoryManagerTest {
     public void testDecorator() {
         RulesRepositoryManager dec = new RulesRepositoryManager();
         RepositoryStartupService config = new RepositoryStartupService();
-        MockRepo repo = new MockRepo();
+        config.properties.put(RulesRepositoryConfigurator.CONFIGURATOR_CLASS,"org.drools.repository.jackrabbit.JackrabbitRepositoryConfigurator");
+        Repository repo = config.getRepositoryInstance();
         config.repository = repo;
         dec.repositoryConfiguration = config;
 
@@ -52,9 +56,9 @@ public class RulesRepositoryManagerTest {
         assertNotNull(dec.getRepository().getSession());
         
         
-        assertFalse(repo.session.loggedout);
+        assertTrue(dec.getRepository().getSession().isLive());
         dec.close();
-        assertTrue(repo.session.loggedout);
+        assertFalse(dec.getRepository().getSession().isLive());
         
         
     }
