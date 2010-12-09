@@ -33,6 +33,8 @@ package org.drools.guvnor.server.repository;
 
 
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.jcr.LoginException;
@@ -50,6 +52,8 @@ import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -61,8 +65,15 @@ import org.jboss.seam.annotations.Startup;
 @Name("repositoryConfiguration")
 public class RepositoryStartupService {
 
+	private static final Logger log = LoggerFactory.getLogger(RepositoryStartupService.class);
+	private static final String ADMIN                     = "admin";
+	private static final String ADMIN_PASSWORD_PROPERTY   = "org.drools.repository.admin.password";
+	private static final String MAILMAN                   = "mailman";
+	private static final String MAILMAN_PASSWORD_PROPERTY = "org.drools.repository.mailman.password";
+	
+	
 	private RulesRepositoryConfigurator configurator;
-    Properties properties = new Properties();
+    Map<String,String> properties = new HashMap<String,String>();
 
     Repository repository;
 	private Session sessionForSetup;
@@ -70,11 +81,12 @@ public class RepositoryStartupService {
 
     public Repository getRepositoryInstance() {
     	try {
+    		Properties properties = new Properties();
+    		properties.putAll(this.properties);
 			configurator = RulesRepositoryConfigurator.getInstance(properties);
 			repository = configurator.getJCRRepository();
 		} catch (RepositoryException e) {
-			// TODO Kurt Auto-generated catch block
-			e.printStackTrace();
+			log.error(e.getMessage(),e);
 		}
 		return repository;
     }
@@ -82,12 +94,17 @@ public class RepositoryStartupService {
     @Create
     public void create() {
     	repository = getRepositoryInstance();
-        sessionForSetup = newSession("admin");
+    	String password = "admin";
+    	if (properties.containsKey(ADMIN_PASSWORD_PROPERTY)) {
+    		password = properties.get(ADMIN_PASSWORD_PROPERTY);
+    	} else {
+    		log.debug("Could not find property " + ADMIN_PASSWORD_PROPERTY + " for user " + ADMIN);
+    	}
+        sessionForSetup = newSession(ADMIN,password);
         create( sessionForSetup );
         startMailboxService();
         registerCheckinListener();
     }
-
 
     /** Listen for changes to the repository - for inbox purposes */
     public static void registerCheckinListener() {
@@ -104,13 +121,16 @@ public class RepositoryStartupService {
 
     /** Start up the mailbox, flush out any messages that were left */
     private void startMailboxService() {
-        mailmanSession = new RulesRepository(newSession(MailboxService.MAILMAN));
+    	String password = "mailman";
+    	if (properties.containsKey(MAILMAN_PASSWORD_PROPERTY)) {
+    		password = properties.get(MAILMAN_PASSWORD_PROPERTY);
+    	} else {
+    		log.debug("Could not find property " + MAILMAN_PASSWORD_PROPERTY + " for user " + MAILMAN);
+    	}
+        mailmanSession = new RulesRepository(newSession(MAILMAN, password));
         MailboxService.getInstance().init(mailmanSession);
         MailboxService.getInstance().wakeUp();
     }
-
-
-
 
     void create(Session sessionForSetup) {
     	
@@ -151,17 +171,16 @@ public class RepositoryStartupService {
         mailmanSession.logout();
         
     }
-
-
+    
     public void setHomeDirectory(String home) {
     	if (home!=null) {
-    		properties.setProperty(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, home);
+    		properties.put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, home);
     	}
     }
 
     public void setRepositoryConfigurator(String clazz) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
     	if (clazz!=null) {
-    		properties.setProperty(RulesRepositoryConfigurator.CONFIGURATOR_CLASS, clazz);
+    		properties.put(RulesRepositoryConfigurator.CONFIGURATOR_CLASS, clazz);
     	}
     }
 
@@ -170,16 +189,15 @@ public class RepositoryStartupService {
      * This will create a new Session, based on the current user.
      * @return
      */
-    public Session newSession(String userName) {
+    public Session newSession(String userName, String password) {
 
         try {
-            return repository.login( new SimpleCredentials(userName, "password".toCharArray()) );
+            return repository.login( new SimpleCredentials(userName, password.toCharArray()) );
         } catch ( LoginException e ) {
             throw new RulesRepositoryException( "Unable to login to JCR backend." );
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
     }
-
 
 }

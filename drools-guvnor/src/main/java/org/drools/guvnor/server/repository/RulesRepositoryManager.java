@@ -66,12 +66,14 @@ public class RulesRepositoryManager {
     public void create() {
         String userName = READ_ONLY_USER;
         if (Contexts.isApplicationContextActive()) {
-            userName = Identity.instance().getUsername();
+            userName = Identity.instance().getCredentials().getUsername();
         }
         if (userName == null) {
             userName = READ_ONLY_USER;
-        }        
-        repository = new RulesRepository(repositoryConfiguration.newSession(userName) );
+        }
+        //When using JAAS the user is already authenticated, so the password is not looked at.
+        //When not using JAAS JR, will work fine, MS will fail
+        repository = new RulesRepository(repositoryConfiguration.newSession(userName, "password") );
     }
     
     @Unwrap

@@ -47,15 +47,15 @@ public class RepositoryStartupServiceTest {
         
         RepositoryStartupService config = new RepositoryStartupService();
         config.setHomeDirectory( "qed" );
-        assertEquals("qed", config.properties.getProperty(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY));
+        assertEquals("qed", config.properties.get(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY));
         config.setRepositoryConfigurator( MockRepositoryConfigurator.class.getName() );
         
         Repository repository = config.getRepositoryInstance();
         
         assertEquals(MockRepo.class.getSimpleName(),repository.getClass().getSimpleName());
         
-        assertNotNull(config.newSession("foo"));
-        assertNotSame(config.newSession("foo"), config.newSession("foo"));
+        assertNotNull(config.newSession("foo","password"));
+        assertNotSame(config.newSession("foo","password"), config.newSession("foo","password"));
 
     }
 
