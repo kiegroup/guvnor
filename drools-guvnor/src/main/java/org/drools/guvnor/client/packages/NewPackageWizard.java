@@ -21,7 +21,6 @@ import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.messages.Constants;
@@ -124,6 +123,7 @@ public class NewPackageWizard extends FormStylePopup {
         importLayout.addRow( new HTML( constants.ImportDRLDesc2() ) );
         importLayout.addRow( new HTML( constants.ImportDRLDesc3() ) );
 
+        HorizontalPanel hp = new HorizontalPanel();        
         Button create = new Button( constants.CreatePackage() );
         create.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
@@ -138,9 +138,18 @@ public class NewPackageWizard extends FormStylePopup {
                 }
             }
         } );
+        hp.add(create);
 
+        Button cancel = new Button( constants.Cancel() );
+        cancel.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
+            	hide();
+            }
+        } );
+        hp.add(cancel);
+        
         newPackageLayout.addAttribute( "",
-                                       create );
+        		hp );
 
     }
 
@@ -167,17 +176,16 @@ public class NewPackageWizard extends FormStylePopup {
         uploadFormPanel.setEncoding( FormPanel.ENCODING_MULTIPART );
         uploadFormPanel.setMethod( FormPanel.METHOD_POST );
 
-        HorizontalPanel panel = new HorizontalPanel();
+        VerticalPanel panel = new VerticalPanel();
         uploadFormPanel.setWidget( panel );
 
         final FileUpload upload = new FileUpload();
         upload.setName( HTMLFileManagerFields.CLASSIC_DRL_IMPORT );
         panel.add( upload );
 
-        panel.add( new Label( constants.upload() ) );
-        ImageButton ok = new ImageButton( images.upload(),
-                                          constants.Import() );
 
+        HorizontalPanel hp = new HorizontalPanel();        
+        Button create = new Button( constants.Import() );
         ClickHandler okClickHandler = new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 if ( Window.confirm( constants.ImportMergeWarning() ) ) {
@@ -185,9 +193,18 @@ public class NewPackageWizard extends FormStylePopup {
                 }
             }
         };
-        ok.addClickHandler( okClickHandler );
+        create.addClickHandler(okClickHandler);
+        hp.add(create);
 
-        panel.add( ok );
+        Button cancel = new Button( constants.Cancel() );        
+        cancel.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
+            	parent.hide();
+            }
+        } );
+        hp.add(cancel);
+        panel.add( hp );
+
 
         final FormStylePopup packageNamePopup = new FormStylePopup( images.packageLarge(),
                                                                     constants.PackageName() );
