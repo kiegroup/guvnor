@@ -606,13 +606,22 @@ public class RuleModeller extends DirtyableComposite
 
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( choices );
-        Button b = new Button( constants.OK() );
-        hp.add( b );
-        b.addClickHandler( new ClickHandler() {
+        Button ok = new Button( constants.OK() );
+        hp.add( ok );
+        ok.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 selectSomething( choices,
                                  cmds );
+            }
+        } );
+        
+        Button cancel = new Button( constants.Cancel() );
+        hp.add( cancel );
+        cancel.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                popup.hide();
             }
         } );
         popup.addRow( hp );
