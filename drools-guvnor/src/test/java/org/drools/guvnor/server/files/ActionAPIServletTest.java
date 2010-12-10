@@ -17,7 +17,6 @@
 
 package org.drools.guvnor.server.files;
 
-import ch.ethz.ssh2.crypto.Base64;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.UUID;
@@ -25,6 +24,7 @@ import junit.framework.TestCase;
 import org.drools.guvnor.server.rest.Parameters;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
+import org.drools.util.codec.Base64;
 
 /**
  * Some basic unit tests for compilation and snapshot
@@ -48,7 +48,7 @@ public class ActionAPIServletTest extends TestCase {
         repo.createPackage(dynamicPackage, "test-action package for testing");
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
-                put("Authorization", "BASIC " + new String(Base64.encode(
+                put("Authorization", "BASIC " + new String(new Base64().encode(
                         "test:password".getBytes())));
             }
         };
@@ -73,7 +73,7 @@ public class ActionAPIServletTest extends TestCase {
         repo.createPackage(dynamicPackage, "test-snapshot package for testing");
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
-                put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
+                put("Authorization", "BASIC " + new String(new Base64().encode("test:password".getBytes())));
             }
         };
         HashMap<String,String> parameters = new HashMap<String,String>() {

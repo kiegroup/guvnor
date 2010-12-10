@@ -143,33 +143,9 @@
 
   <dependencies>
     <!-- Internal dependencies -->
-    <!-- first the deps for the repo API itself (Jackrabbit based) -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-repository</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-repository-modeshape-connector</artifactId>
-      <scope>runtime</scope><!-- TODO should this not be test or this dependency deleted? -->
-      <exclusions>
-        <exclusion>
-          <groupId>org.modeshape</groupId>
-          <artifactId>modeshape-jcr</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jboss.security</groupId>
-          <artifactId>jboss-idtrust</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jboss.security</groupId>
-          <artifactId>jboss-security-spi-bare</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jboss.security</groupId>
-          <artifactId>jbosssx-bare</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -306,11 +282,6 @@
       <artifactId>hibernate-validator</artifactId>
     </dependency>
     <!-- NOT needed due to licencing -->
-    <dependency>
-      <groupId>org.tmatesoft</groupId>
-      <artifactId>svnkit</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.mortbay.jetty</groupId>
       <artifactId>jetty-embedded</artifactId>

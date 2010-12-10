@@ -20,7 +20,7 @@
 
   <profiles>
     <profile>
-      <id>jdk6</id>
+      <id>jdk6OrHigher</id>
       <activation>
         <jdk>[1.6,)</jdk>
       </activation>

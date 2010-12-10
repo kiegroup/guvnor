@@ -11,7 +11,7 @@
   <artifactId>drools-repository</artifactId>
   <packaging>jar</packaging>
   <name>Drools :: Repository :: Repository</name>
-  
+
   <build>
     <finalName>drools-repository</finalName>
     <plugins>
@@ -43,23 +43,13 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-repository-jackrabbit-connector</artifactId>
       <scope>runtime</scope>
+      <!-- Not optional so guvnor works out of the box, exclude this dependency if you use modeshape -->
     </dependency>
-    <!-- use this instead of jackrabbit (jr) above for ModeShape
-     <dependency>
-       <groupId>org.drools</groupId>
-       <artifactId>drools-repository-modeshape-connector</artifactId>
-       <scope>runtime</scope>
-     </dependency>
-     -->
 
     <!-- External dependencies -->
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.tmatesoft</groupId>
-      <artifactId>svnkit</artifactId>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -79,4 +69,22 @@
       <artifactId>xstream</artifactId>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>jdk6OrHigher</id>
+      <activation>
+        <jdk>[1.6,)</jdk>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-repository-modeshape-connector</artifactId>
+          <scope>runtime</scope>
+          <optional>true</optional>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
 </project>
