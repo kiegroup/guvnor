@@ -24,5 +24,9 @@
       <groupId>org.apache.jackrabbit</groupId>
       <artifactId>jackrabbit-core</artifactId>
     </dependency>
+    <dependency><!-- TODO jackrabbit needs this but apparently doesn't supply it (or it is excluded) -->
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+    </dependency>
   </dependencies>
 </project>
