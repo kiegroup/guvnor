@@ -23,18 +23,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ToggleButton;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageResponse;
@@ -52,15 +42,22 @@ import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ToggleButton;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.MultiSelectionModel;
@@ -73,7 +70,6 @@ import com.google.gwt.view.client.ProvidesKey;
 public class AssetTable extends Composite {
 
     private static final Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create( Images.class );
 
     interface AssetTableBinder extends UiBinder<Widget, AssetTable> {}
 
@@ -90,15 +86,10 @@ public class AssetTable extends Composite {
     private Set<Command> unloadListenerSet = new HashSet<Command>();
 
     @UiField(provided=true)
-    Button refreshButton;
-    @UiField(provided=true)
-    Button openSelectedButton;
-    @UiField(provided=true)
-    Button openSelectedToSingleTabButton;
-    @UiField(provided=true)
     ToggleButton columnPickerButton;
-    @UiField(provided=true)
-    HTML feedHTML;
+
+    @UiField()
+    Image feedImage;
 
     @UiField(provided = true)
     CellTable<AssetPageRow> cellTable;
@@ -120,6 +111,9 @@ public class AssetTable extends Composite {
         this.feedURL = feedURL;
         doCellTable();
         initWidget(uiBinder.createAndBindUi(this));
+        if (feedURL == null) {
+            feedImage.setVisible(false);
+        }
     }
 
     private void doCellTable() {
@@ -272,50 +266,46 @@ public class AssetTable extends Composite {
         };
         dataProvider.addDataDisplay(cellTable);
 
-        refreshButton = new Button(constants.refreshList());
-        refreshButton.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent e) {
-                refresh();
-            }
-        });
-        openSelectedButton = new Button(constants.openSelected());
-        openSelectedButton.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent e) {
-                Set<AssetPageRow> selectedSet = selectionModel.getSelectedSet();
-                for (AssetPageRow selected : selectedSet) {
-                    // TODO directly push the selected AssetPageRow
-                    editEvent.open(selected.getUuid());
-                }
-            }
-        });
-        openSelectedToSingleTabButton = new Button(constants.openSelectedToSingleTab());
-        openSelectedToSingleTabButton.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent e) {
-                Set<AssetPageRow> selectedSet = selectionModel.getSelectedSet();
-                // TODO directly push the selected AssetPageRows
-                List<MultiViewRow> multiViewRowList = new ArrayList<MultiViewRow>(selectedSet.size());
-                for (AssetPageRow selected : selectedSet) {
-                    MultiViewRow row = new MultiViewRow();
-                    row.uuid = selected.getUuid();
-                    row.format = selected.getFormat();
-                    row.name = selected.getName();
-                    multiViewRowList.add(row);
-                }
-                editEvent.open(multiViewRowList.toArray(new MultiViewRow[multiViewRowList.size()]));
-            }
-        });
         columnPickerButton = columnPicker.createToggleButton();
+    }
 
-        if (feedURL != null) {
-            feedHTML = new HTML("<a href='" + feedURL + "' target='_blank'>" +
-                    "<img src='" + images.feed().getURL() + "'/></a>");
-        } else {
-            feedHTML = new HTML();
-            feedHTML.setVisible(false);
+    @UiHandler("feedImage")
+    void openFeed(ClickEvent e) {
+        Window.open( feedURL,
+                     "_blank",
+                     null );
+    }
+
+    @UiHandler("refreshButton")
+    void refresh(ClickEvent e) {
+        refresh();
+    }
+
+    @UiHandler("openSelectedButton")
+    void openSelected(ClickEvent e) {
+        Set<AssetPageRow> selectedSet = selectionModel.getSelectedSet();
+        for ( AssetPageRow selected : selectedSet ) {
+            // TODO directly push the selected AssetPageRow
+            editEvent.open( selected.getUuid() );
         }
     }
 
-    /**
+    @UiHandler("openSelectedToSingleTabButton")
+    public void openSelectedToSingleTab(ClickEvent e) {
+        Set<AssetPageRow> selectedSet = selectionModel.getSelectedSet();
+        // TODO directly push the selected AssetPageRows
+        List<MultiViewRow> multiViewRowList = new ArrayList<MultiViewRow>( selectedSet.size() );
+        for ( AssetPageRow selected : selectedSet ) {
+            MultiViewRow row = new MultiViewRow();
+            row.uuid = selected.getUuid();
+            row.format = selected.getFormat();
+            row.name = selected.getName();
+            multiViewRowList.add( row );
+        }
+        editEvent.open( multiViewRowList.toArray( new MultiViewRow[multiViewRowList.size()] ) );
+    }
+
+     /**
      * Refreshes the data. Does not rebuild the GUI.
      */
     public void refresh() {
