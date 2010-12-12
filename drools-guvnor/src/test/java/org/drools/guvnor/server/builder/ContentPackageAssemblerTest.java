@@ -16,9 +16,9 @@
 
 package org.drools.guvnor.server.builder;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -47,7 +47,7 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
-import org.drools.ruleflow.core.RuleFlowProcess;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.junit.After;
 import org.junit.Test;
 import org.mvel2.MVEL;
