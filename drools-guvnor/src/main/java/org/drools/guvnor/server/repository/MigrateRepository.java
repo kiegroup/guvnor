@@ -24,7 +24,7 @@ import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.drools.repository.RulesRepository;
-import org.drools.compiler.xml.processes.RuleFlowMigrator;
+import org.jbpm.compiler.xml.processes.RuleFlowMigrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

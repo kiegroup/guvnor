@@ -50,10 +50,7 @@ import org.drools.event.AgendaEventSupport;
 import org.drools.event.RuleBaseEventListener;
 import org.drools.event.WorkingMemoryEventListener;
 import org.drools.event.WorkingMemoryEventSupport;
-import org.drools.process.instance.ProcessInstanceManager;
 import org.drools.process.instance.WorkItemManager;
-import org.drools.process.instance.event.SignalManager;
-import org.drools.process.instance.timer.TimerManager;
 import org.drools.reteoo.LIANodePropagation;
 import org.drools.reteoo.ObjectTypeConf;
 import org.drools.reteoo.PartitionTaskManager;
@@ -77,6 +74,9 @@ import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.impl.JDKTimerService;
 import org.drools.type.DateFormats;
+import org.jbpm.process.instance.ProcessInstanceManager;
+import org.jbpm.process.instance.event.SignalManager;
+import org.jbpm.process.instance.timer.TimerManager;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
                 

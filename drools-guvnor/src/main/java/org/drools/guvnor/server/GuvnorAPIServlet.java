@@ -33,22 +33,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.drools.bpmn2.legacy.beta1.XmlBPMNProcessDumper;
-import org.drools.bpmn2.xml.BPMNDISemanticModule;
-import org.drools.bpmn2.xml.BPMNSemanticModule;
-import org.drools.compiler.xml.XmlProcessReader;
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.impl.ConstraintImpl;
-import org.drools.workflow.core.node.Split;
-import org.drools.workflow.core.node.StartNode;
 import org.drools.xml.SemanticModules;
+import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
+import org.jbpm.bpmn2.xml.BPMNSemanticModule;
+import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
+import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.impl.ConstraintImpl;
+import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.StartNode;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -206,9 +206,6 @@ public class GuvnorAPIServlet extends HttpServlet {
 		SemanticModules semanticModules = new SemanticModules();
 		semanticModules.addSemanticModule(new BPMNSemanticModule());
 		semanticModules.addSemanticModule(new BPMNDISemanticModule());
-		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNSemanticModule());
-		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMN2SemanticModule());
-		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNDISemanticModule());
 		XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
 		RuleFlowProcess process = (RuleFlowProcess) xmlReader.read(isr);
 		if (process == null) {
@@ -242,9 +239,6 @@ public class GuvnorAPIServlet extends HttpServlet {
 		SemanticModules semanticModules = new SemanticModules();
 		semanticModules.addSemanticModule(new BPMNSemanticModule());
 		semanticModules.addSemanticModule(new BPMNDISemanticModule());
-		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNSemanticModule());
-		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMN2SemanticModule());
-		semanticModules.addSemanticModule(new org.drools.bpmn2.legacy.beta1.BPMNDISemanticModule());
 		XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
 		RuleFlowProcess process = (RuleFlowProcess) xmlReader.read(isr);
 		isr.close();
