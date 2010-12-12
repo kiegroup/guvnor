@@ -27,14 +27,14 @@ import org.drools.guvnor.client.rulefloweditor.TransferNode;
 import org.drools.guvnor.client.rulefloweditor.WorkItemTransferNode;
 import org.drools.guvnor.client.rulefloweditor.TransferNode.Type;
 import org.drools.process.core.Work;
-import org.drools.ruleflow.core.RuleFlowProcess;
-import org.drools.workflow.core.Constraint;
-import org.drools.workflow.core.impl.ConnectionRef;
-import org.drools.workflow.core.node.CompositeNode;
-import org.drools.workflow.core.node.ForEachNode;
-import org.drools.workflow.core.node.HumanTaskNode;
-import org.drools.workflow.core.node.Split;
-import org.drools.workflow.core.node.WorkItemNode;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.Constraint;
+import org.jbpm.workflow.core.impl.ConnectionRef;
+import org.jbpm.workflow.core.node.CompositeNode;
+import org.jbpm.workflow.core.node.ForEachNode;
+import org.jbpm.workflow.core.node.HumanTaskNode;
+import org.jbpm.workflow.core.node.Split;
+import org.jbpm.workflow.core.node.WorkItemNode;
 
 public class RuleFlowProcessBuilder {
 

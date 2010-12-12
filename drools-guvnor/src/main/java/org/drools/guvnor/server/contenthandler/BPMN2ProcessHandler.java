@@ -26,12 +26,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.drools.bpmn2.xml.BPMNSemanticModule;
-import org.drools.bpmn2.xml.XmlBPMNProcessDumper;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
-import org.drools.compiler.xml.XmlProcessReader;
-import org.drools.compiler.xml.XmlRuleFlowProcessDumper;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
@@ -41,7 +37,11 @@ import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.drools.ruleflow.core.RuleFlowProcess;
+import org.jbpm.bpmn2.xml.BPMNSemanticModule;
+import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
+import org.jbpm.compiler.xml.XmlProcessReader;
+import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
+import org.jbpm.ruleflow.core.RuleFlowProcess;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 

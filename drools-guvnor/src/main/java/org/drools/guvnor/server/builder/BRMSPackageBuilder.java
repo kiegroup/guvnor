@@ -46,7 +46,6 @@ import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-import org.drools.bpmn2.xml.BPMNSemanticModule;
 import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -60,6 +59,7 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.util.ChainedProperties;
+import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 
 /**
  * This decorates the drools-compiler PackageBuilder
