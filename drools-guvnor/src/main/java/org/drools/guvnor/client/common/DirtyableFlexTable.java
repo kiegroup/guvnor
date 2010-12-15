@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.Widget;
 
 public class DirtyableFlexTable extends FlexTable implements DirtyableContainer {
@@ -59,7 +60,10 @@ public class DirtyableFlexTable extends FlexTable implements DirtyableContainer 
 			list.add(length++, new Pair(row, column));
 		}
     }
-
+    
+    public void setHorizontalAlignmentForFlexCellFormatter(int row, int column, HorizontalAlignmentConstant horizontalAlignmentConstant ){
+    	getFlexCellFormatter().setHorizontalAlignment(row, column, horizontalAlignmentConstant);
+    }
 }
 
 class Pair {

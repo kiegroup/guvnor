@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.qa.testscenarios;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableFlexTable;
@@ -49,7 +48,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -88,7 +86,8 @@ public class ScenarioWidget extends Composite
         this.layout = new VerticalPanel();
         this.setShowResults( false );
 
-        this.suggestionCompletionEngine = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.metaData.packageName );
+        this.suggestionCompletionEngine = SuggestionCompletionCache
+                .getInstance().getEngineFromCache( asset.metaData.packageName );
 
         if ( getScenario().fixtures.size() == 0 ) {
             getScenario().fixtures.add( new ExecutionTrace() );
@@ -109,149 +108,235 @@ public class ScenarioWidget extends Composite
 
     }
 
+    private void createWidgetForEditorLayout(DirtyableFlexTable editorLayout,
+                                             int layoutRow,
+                                             int layoutColumn,
+                                             Widget widget) {
+        editorLayout.setWidget( layoutRow,
+                                layoutColumn,
+                                widget );
+    }
+
     void renderEditor() {
 
         if ( this.layout.getWidgetCount() == 2 ) {
             this.layout.remove( 1 );
         }
 
-        DirtyableFlexTable editorLayout = new DirtyableFlexTable();
-        editorLayout.clear();
-        editorLayout.setWidth( "100%" );
-        editorLayout.setStyleName( "model-builder-Background" );
+        DirtyableFlexTable editorLayout = createDirtyableFlexTable();
         this.layout.add( editorLayout );
-
         ScenarioHelper scenarioHelper = new ScenarioHelper();
-        List<Fixture> fixtures = scenarioHelper.lumpyMap( getScenario().fixtures );
-        List<ExecutionTrace> listExecutionTrace = new ArrayList<ExecutionTrace>();
-        for ( int i = 0; i < fixtures.size(); i++ ) {
-            final Object fixture = fixtures.get( i );
-            if ( fixture instanceof ExecutionTrace ) {
-                listExecutionTrace.add( (ExecutionTrace) fixture );
-            }
-        }
+        List<Fixture> fixtures = getScenario().fixtures;
+        List<ExecutionTrace> listExecutionTrace = scenarioHelper
+                .getExecutionTraceFor( fixtures );
+
         int layoutRow = 1;
         int executionTraceLine = 0;
         ExecutionTrace previousExecutionTrace = null;
         for ( final Fixture fixture : fixtures ) {
             if ( fixture instanceof ExecutionTrace ) {
                 ExecutionTrace currentExecutionTrace = (ExecutionTrace) fixture;
-                editorLayout.setWidget( layoutRow,
-                                        0,
-                                        new ExpectPanel( asset.metaData.packageName,
-                                                         currentExecutionTrace,
-                                                         getScenario(),
-                                                         this ) );
+                createWidgetForEditorLayout( editorLayout,
+                                             layoutRow,
+                                             0,
+                                             createExpectPanel( currentExecutionTrace ) );
 
                 executionTraceLine++;
                 if ( executionTraceLine >= listExecutionTrace.size() ) {
                     executionTraceLine = listExecutionTrace.size() - 1;
                 }
-                editorLayout.setWidget( layoutRow,
-                                        1,
-                                        new ExecutionWidget( currentExecutionTrace,
-                                                             isShowResults() ) );
-                editorLayout.getFlexCellFormatter().setHorizontalAlignment( layoutRow,
-                                                                            2,
-                                                                            HasHorizontalAlignment.ALIGN_LEFT );
+                createWidgetForEditorLayout( editorLayout,
+                                             layoutRow,
+                                             1,
+                                             createExecutionWidget( currentExecutionTrace ) );
+                editorLayout.setHorizontalAlignmentForFlexCellFormatter(
+                                                                         layoutRow,
+                                                                         2,
+                                                                         HasHorizontalAlignment.ALIGN_LEFT );
 
                 previousExecutionTrace = currentExecutionTrace;
 
             } else if ( fixture instanceof FixturesMap ) {
-                editorLayout.setWidget( layoutRow,
-                                        0,
-                                        new GivenLabelButton( previousExecutionTrace,
-                                                              getScenario(),
-                                                              listExecutionTrace.get( executionTraceLine ),
-                                                              this ) );
-
+                createWidgetForEditorLayout(
+                                             editorLayout,
+                                             layoutRow,
+                                             0,
+                                             createGivenLabelButton( listExecutionTrace,
+                                                                     executionTraceLine,
+                                                                     previousExecutionTrace ) );
                 layoutRow++;
-
-                if ( fixture instanceof FixturesMap ) {
-                    editorLayout.setWidget( layoutRow,
-                                            1,
-                                            newGivenPanel( listExecutionTrace,
-                                                           executionTraceLine,
-                                                           (FixturesMap) fixture ) );
-                }
+                createWidgetForEditorLayout(
+                                             editorLayout,
+                                             layoutRow,
+                                             1,
+                                             createGivenPanel( listExecutionTrace,
+                                                               executionTraceLine,
+                                                               (FixturesMap) fixture ) );
             } else if ( fixture instanceof CallFixtureMap ) {
-                editorLayout.setWidget( layoutRow,
-                                        0,
-                                        new CallMethodLabelButton( previousExecutionTrace,
-                                                                   getScenario(),
-                                                                   listExecutionTrace.get( executionTraceLine ),
-                                                                   this ) );
-
+                createWidgetForEditorLayout(
+                                             editorLayout,
+                                             layoutRow,
+                                             0,
+                                             createCallMethodLabelButton( listExecutionTrace,
+                                                                          executionTraceLine,
+                                                                          previousExecutionTrace ) );
                 layoutRow++;
-                editorLayout.setWidget( layoutRow,
-                                        1,
-                                        newCallMethodOnGivenPanel( listExecutionTrace,
-                                                                   executionTraceLine,
-                                                                   (CallFixtureMap) fixture ) );
+                createWidgetForEditorLayout(
+                                             editorLayout,
+                                             layoutRow,
+                                             1,
+                                             createCallMethodOnGivenPanel( listExecutionTrace,
+                                                                           executionTraceLine,
+                                                                           (CallFixtureMap) fixture ) );
             } else {
                 FixtureList fixturesList = (FixtureList) fixture;
                 Fixture first = fixturesList.get( 0 );
                 if ( first instanceof VerifyFact ) {
-
-                    editorLayout.setWidget( layoutRow,
-                                            1,
-                                            new VerifyFactsPanel( fixturesList,
-                                                                  listExecutionTrace.get( executionTraceLine ),
-                                                                  getScenario(),
-                                                                  this,
-                                                                  isShowResults() ) );
+                    createWidgetForEditorLayout(
+                                                 editorLayout,
+                                                 layoutRow,
+                                                 1,
+                                                 createVerifyFactsPanel( listExecutionTrace,
+                                                                         executionTraceLine,
+                                                                         fixturesList ) );
                 } else if ( first instanceof VerifyRuleFired ) {
-                    editorLayout.setWidget( layoutRow,
-                                            1,
-                                            new VerifyRulesFiredWidget( fixturesList,
-                                                                        getScenario(),
-                                                                        isShowResults() ) );
+                    createWidgetForEditorLayout( editorLayout,
+                                                 layoutRow,
+                                                 1,
+                                                 createVerifyRulesFiredWidget( fixturesList ) );
                 }
 
             }
             layoutRow++;
         }
 
-        //add more execution sections.
-        editorLayout.setWidget( layoutRow,
-                                0,
-                                new AddExecuteButton( getScenario(),
-                                                      this ) );
+        // add more execution sections.
+        createWidgetForEditorLayout( editorLayout,
+                                     layoutRow,
+                                     0,
+                                     createAddExecuteButton() );
+        layoutRow++;
+        createWidgetForEditorLayout( editorLayout,
+                                     layoutRow,
+                                     0,
+                                     createSmallLabel() );
+
+        // config section
+        createWidgetForEditorLayout( editorLayout,
+                                     layoutRow,
+                                     1,
+                                     createConfigWidget() );
+
         layoutRow++;
 
-        editorLayout.setWidget( layoutRow,
-                                0,
-                                new SmallLabel( constants.configuration() ) );
+        // global section
+        HorizontalPanel horizontalPanel = createHorizontalPanel();
+        createWidgetForEditorLayout( editorLayout,
+                                     layoutRow,
+                                     0,
+                                     horizontalPanel );
 
-        //config section
-        editorLayout.setWidget( layoutRow,
-                                1,
-                                new ConfigWidget( getScenario(),
-                                                  asset.metaData.packageName,
-                                                  this ) );
+        createWidgetForEditorLayout( editorLayout,
+                                     layoutRow,
+                                     1,
+                                     createGlobalPanel( scenarioHelper,
+                                                        previousExecutionTrace ) );
+    }
 
-        layoutRow++;
+    private GlobalPanel createGlobalPanel(ScenarioHelper scenarioHelper,
+                                          ExecutionTrace previousExecutionTrace) {
+        return new GlobalPanel(
+                                scenarioHelper.lumpyMapGlobals( getScenario().globals ),
+                                getScenario(),
+                                previousExecutionTrace,
+                                this );
+    }
 
-        //global section
+    private HorizontalPanel createHorizontalPanel() {
         HorizontalPanel h = new HorizontalPanel();
         h.add( new GlobalButton( getScenario(),
                                  this ) );
         h.add( new SmallLabel( constants.globals() ) );
-        editorLayout.setWidget( layoutRow,
-                                0,
-                                h );
-
-        editorLayout.setWidget( layoutRow,
-                                1,
-                                new GlobalPanel( scenarioHelper.lumpyMapGlobals( getScenario().globals ),
-                                                 getScenario(),
-                                                 previousExecutionTrace,
-                                                 this ) );
+        return h;
     }
 
-    private Widget newGivenPanel(List<ExecutionTrace> listExecutionTrace,
-                                 int executionTraceLine,
-                                 FixturesMap given) {
+    private SmallLabel createSmallLabel() {
+        return new SmallLabel( constants.configuration() );
+    }
+
+    private ConfigWidget createConfigWidget() {
+        return new ConfigWidget( getScenario(),
+                                 asset.metaData.packageName,
+                                 this );
+    }
+
+    private AddExecuteButton createAddExecuteButton() {
+        return new AddExecuteButton( getScenario(),
+                                     this );
+    }
+
+    private VerifyRulesFiredWidget createVerifyRulesFiredWidget(
+                                                                FixtureList fixturesList) {
+        return new VerifyRulesFiredWidget( fixturesList,
+                                           getScenario(),
+                                           isShowResults() );
+    }
+
+    private VerifyFactsPanel createVerifyFactsPanel(
+                                                    List<ExecutionTrace> listExecutionTrace,
+                                                    int executionTraceLine,
+                                                    FixtureList fixturesList) {
+        return new VerifyFactsPanel( fixturesList,
+                                     listExecutionTrace.get( executionTraceLine ),
+                                     getScenario(),
+                                     this,
+                                     isShowResults() );
+    }
+
+    private CallMethodLabelButton createCallMethodLabelButton(
+                                                              List<ExecutionTrace> listExecutionTrace,
+                                                              int executionTraceLine,
+                                                              ExecutionTrace previousExecutionTrace) {
+        return new CallMethodLabelButton( previousExecutionTrace,
+                                          getScenario(),
+                                          listExecutionTrace.get( executionTraceLine ),
+                                          this );
+    }
+
+    private GivenLabelButton createGivenLabelButton(
+                                                    List<ExecutionTrace> listExecutionTrace,
+                                                    int executionTraceLine,
+                                                    ExecutionTrace previousExecutionTrace) {
+        return new GivenLabelButton( previousExecutionTrace,
+                                     getScenario(),
+                                     listExecutionTrace.get( executionTraceLine ),
+                                     this );
+    }
+
+    private ExecutionWidget createExecutionWidget(
+                                                  ExecutionTrace currentExecutionTrace) {
+        return new ExecutionWidget( currentExecutionTrace,
+                                    isShowResults() );
+    }
+
+    private ExpectPanel createExpectPanel(ExecutionTrace currentExecutionTrace) {
+        return new ExpectPanel( asset.metaData.packageName,
+                                currentExecutionTrace,
+                                getScenario(),
+                                this );
+    }
+
+    private DirtyableFlexTable createDirtyableFlexTable() {
+        DirtyableFlexTable editorLayout = new DirtyableFlexTable();
+        editorLayout.clear();
+        editorLayout.setWidth( "100%" );
+        editorLayout.setStyleName( "model-builder-Background" );
+        return editorLayout;
+    }
+
+    private Widget createGivenPanel(List<ExecutionTrace> listExecutionTrace,
+                                    int executionTraceLine,
+                                    FixturesMap given) {
 
         if ( given.size() > 0 ) {
             return new GivenPanel( listExecutionTrace,
@@ -261,13 +346,16 @@ public class ScenarioWidget extends Composite
                                    this );
 
         } else {
-            return new HTML( "<i><small>" + constants.AddInputDataAndExpectationsHere() + "</small></i>" );
+            return new HTML( "<i><small>"
+                             + constants.AddInputDataAndExpectationsHere()
+                             + "</small></i>" );
         }
     }
 
-    private Widget newCallMethodOnGivenPanel(List<ExecutionTrace> listExecutionTrace,
-                                             int executionTraceLine,
-                                             CallFixtureMap given) {
+    private Widget createCallMethodOnGivenPanel(
+                                                List<ExecutionTrace> listExecutionTrace,
+                                                int executionTraceLine,
+                                                CallFixtureMap given) {
 
         if ( given.size() > 0 ) {
             return new CallMethodOnGivenPanel( listExecutionTrace,
@@ -277,7 +365,9 @@ public class ScenarioWidget extends Composite
                                                this );
 
         } else {
-            return new HTML( "<i><small>" + constants.AddInputDataAndExpectationsHere() + "</small></i>" );
+            return new HTML( "<i><small>"
+                             + constants.AddInputDataAndExpectationsHere()
+                             + "</small></i>" );
         }
     }
 
@@ -301,11 +391,13 @@ public class ScenarioWidget extends Composite
             ruleSelectionCL = new ChangeHandler() {
 
                 public void onChange(ChangeEvent event) {
-                    ruleNameTextBox.setText( availableRulesBox.getItemText( availableRulesBox.getSelectedIndex() ) );
+                    ruleNameTextBox.setText( availableRulesBox
+                            .getItemText( availableRulesBox.getSelectedIndex() ) );
                 }
             };
 
-            availableRulesHandlerRegistration = availableRulesBox.addChangeHandler( ruleSelectionCL );
+            availableRulesHandlerRegistration = availableRulesBox
+                    .addChangeHandler( ruleSelectionCL );
             horizontalPanel.add( availableRulesBox );
 
         } else {
@@ -317,7 +409,8 @@ public class ScenarioWidget extends Composite
                 public void onClick(ClickEvent event) {
                     horizontalPanel.remove( showList );
                     final Image busy = new Image( images.searching() );
-                    final Label loading = new SmallLabel( constants.loadingList1() );
+                    final Label loading = new SmallLabel( constants
+                            .loadingList1() );
                     horizontalPanel.add( busy );
                     horizontalPanel.add( loading );
 
@@ -325,28 +418,41 @@ public class ScenarioWidget extends Composite
                     scheduler.scheduleDeferred( new Command() {
 
                         public void execute() {
-                            RepositoryServiceFactory.getService().listRulesInPackage( packageName,
-                                                                                      new GenericCallback<String[]>() {
+                            RepositoryServiceFactory.getService()
+                                    .listRulesInPackage( packageName,
+                                                         new GenericCallback<String[]>() {
 
-                                                                                          public void onSuccess(String[] list) {
-                                                                                              availableRules = (list);
-                                                                                              final ListBox availableRulesBox = new ListBox();
-                                                                                              availableRulesBox.addItem( constants.pleaseChoose1() );
-                                                                                              for ( int i = 0; i < list.length; i++ ) {
-                                                                                                  availableRulesBox.addItem( list[i] );
-                                                                                              }
-                                                                                              ruleSelectionCL = new ChangeHandler() {
-                                                                                                  public void onChange(ChangeEvent event) {
-                                                                                                      ruleNameTextBox.setText( availableRulesBox.getItemText( availableRulesBox.getSelectedIndex() ) );
-                                                                                                  }
-                                                                                              };
-                                                                                              availableRulesHandlerRegistration = availableRulesBox.addChangeHandler( ruleSelectionCL );
-                                                                                              availableRulesBox.setSelectedIndex( 0 );
-                                                                                              horizontalPanel.add( availableRulesBox );
-                                                                                              horizontalPanel.remove( busy );
-                                                                                              horizontalPanel.remove( loading );
-                                                                                          }
-                                                                                      } );
+                                                             public void onSuccess(
+                                                                                   String[] list) {
+                                                                 availableRules = (list);
+                                                                 final ListBox availableRulesBox = new ListBox();
+                                                                 availableRulesBox.addItem( constants
+                                                                         .pleaseChoose1() );
+                                                                 for ( int i = 0; i < list.length; i++ ) {
+                                                                     availableRulesBox
+                                                                             .addItem( list[i] );
+                                                                 }
+                                                                 ruleSelectionCL = new ChangeHandler() {
+                                                                     public void onChange(
+                                                                                          ChangeEvent event) {
+                                                                         ruleNameTextBox
+                                                                                 .setText( availableRulesBox
+                                                                                         .getItemText( availableRulesBox
+                                                                                                 .getSelectedIndex() ) );
+                                                                     }
+                                                                 };
+                                                                 availableRulesHandlerRegistration = availableRulesBox
+                                                                         .addChangeHandler( ruleSelectionCL );
+                                                                 availableRulesBox
+                                                                         .setSelectedIndex( 0 );
+                                                                 horizontalPanel
+                                                                         .add( availableRulesBox );
+                                                                 horizontalPanel
+                                                                         .remove( busy );
+                                                                 horizontalPanel
+                                                                         .remove( loading );
+                                                             }
+                                                         } );
                         }
                     } );
 
@@ -372,8 +478,16 @@ public class ScenarioWidget extends Composite
                                 int width,
                                 float percent) {
         int pixels = (int) (width * (percent / 100));
-        String html = "<div class=\"smallish-progress-wrapper\" style=\"width: " + width + "px\">" + "<div class=\"smallish-progress-bar\" style=\"width: " + pixels + "px; background-color: " + colour + ";\"></div>"
-                      + "<div class=\"smallish-progress-text\" style=\"width: " + width + "px\">" + (int) percent + "%</div></div>"; //NON-NLS
+        String html = "<div class=\"smallish-progress-wrapper\" style=\"width: "
+                      + width
+                      + "px\">"
+                      + "<div class=\"smallish-progress-bar\" style=\"width: "
+                      + pixels
+                      + "px; background-color: "
+                      + colour
+                      + ";\"></div>"
+                      + "<div class=\"smallish-progress-text\" style=\"width: "
+                      + width + "px\">" + (int) percent + "%</div></div>"; // NON-NLS
         return new HTML( html );
 
     }
