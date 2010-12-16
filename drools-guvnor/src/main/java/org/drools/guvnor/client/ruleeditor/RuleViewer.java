@@ -85,7 +85,7 @@ public class RuleViewer extends GuvnorEditor {
     final RuleDocumentWidget                          ruleDocumentWidget;
 
     @UiField(provided = true)
-    final EditorWidget                                editor;
+    final Widget                                      editor;
 
     @UiField(provided = true)
     final ActionToolbar                               toolbar;
