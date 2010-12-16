@@ -84,24 +84,24 @@ public class MetaDataWidget extends Composite {
         this.data = d;
         this.readOnly = readOnly;
 
-        layout.setWidth( "100%" );
         this.metaDataRefreshView = metaDataRefreshView;
         this.fullRefreshView = fullRefreshView;
 
-		Button show = new Button(constants.showMoreInfo());
-		show.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent sender) {
-				layout.clear();
-				render();
-			}
-		});
+        Button show = new Button( constants.showMoreInfo() );
+        show.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent sender) {
+                layout.clear();
+                render();
+            }
+        } );
 
-		layout.add(new SmallLabel(Format.format("{0}: [<b>{1}</b>]",
-				constants.Title(), d.name)));
+        layout.add( new SmallLabel( Format.format( "{0}: [<b>{1}</b>]",
+                                                   constants.Title(),
+                                                   d.name ) ) );
 
-		layout.add(show);
+        layout.add( show );
 
-		initWidget(layout);
+        initWidget( layout );
     }
 
     private void render() {

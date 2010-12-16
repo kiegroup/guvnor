@@ -21,6 +21,10 @@
 		.metadata {
 			vertical-align: top;
 		}
+		
+		.metadata-widget {
+			width: 150px;
+		}
 	</ui:style>
 
 	<gwt:HTMLPanel>
@@ -36,7 +40,7 @@
 						</td>
 						<td class="{style.metadata}">
 							<guvnor-ruleeditor:MetaDataWidget
-								ui:field="metaWidget"></guvnor-ruleeditor:MetaDataWidget>
+								ui:field="metaWidget" styleName="{style.metadata-widget}"></guvnor-ruleeditor:MetaDataWidget>
 						</td>
 					</tr>
 				</table>
