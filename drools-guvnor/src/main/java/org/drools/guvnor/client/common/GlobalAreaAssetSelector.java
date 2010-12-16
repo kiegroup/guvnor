@@ -32,16 +32,16 @@ package org.drools.guvnor.client.common;
  */
 
 
-
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.client.rulelist.AssetItemGrid;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.ChangeListener;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A rule package selector widget.
@@ -53,38 +53,45 @@ public class GlobalAreaAssetSelector extends Composite {
     public static String currentlySelectedAsset;
 
     private ListBox assetList;
+    private String format;
 
-
-    public GlobalAreaAssetSelector() {
+    public GlobalAreaAssetSelector(String formatToImport) {
         assetList = new ListBox();
+        if(formatToImport == null) {
+        	//default format
+            this.format = AssetFormats.BUSINESS_RULE;        	
+        } else {
+        	this.format = formatToImport;
+        }
+       
 
-        DeferredCommand.addCommand(new Command() {
+        Scheduler.get().scheduleDeferred( new Command() {
 			public void execute() {
 		        loadAssetList();
 			}
         });
 
-
         initWidget( assetList );
     }
-
+    
 	private void loadAssetList() {
-		RepositoryServiceFactory.getService().listRulesInPackage("globalArea", new GenericCallback<String[]>() {
+		RepositoryServiceFactory.getService().listAssetsWithPackageName("globalArea", new String[]{format}, 0, -1, AssetItemGrid.RULE_LIST_TABLE_ID, new GenericCallback<TableDataResult>() {
 
-            public void onSuccess(String[] list) {
-                for ( int i = 0; i < list.length; i++ ) {
-                    assetList.addItem( list[i] );
+            public void onSuccess(TableDataResult result) {
+
+				for (int i = 0; i < result.data.length; i++) {
+					assetList.addItem(result.data[i].getDisplayName(), result.data[i].id);
                     if (currentlySelectedAsset != null &&
-                            list[i].equals( currentlySelectedAsset )) {
+                    		result.data[i].equals( currentlySelectedAsset )) {
                         assetList.setSelectedIndex( i );
-                    }
-                }
-                assetList.addChangeListener(new ChangeListener() {
-                    public void onChange(Widget sender) {
+                    }						  
+				}
+
+                assetList.addChangeHandler(new ChangeHandler() {
+                    public void onChange(ChangeEvent sender) {
                          currentlySelectedAsset = getSelectedAsset();                       
                     }
                 });
-
             }
             
 	        public void onFailure(Throwable t) {
@@ -98,13 +105,11 @@ public class GlobalAreaAssetSelector extends Composite {
 
         });
 	}
-
+	
     /**
      * Returns the selected package.
      */
     public String getSelectedAsset() {
         return assetList.getItemText( assetList.getSelectedIndex() );
     }
-
-
 }

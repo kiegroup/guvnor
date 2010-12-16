@@ -63,6 +63,7 @@ public interface RepositoryServiceAsync {
 	void listArchivedPackages(com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData[]> arg1);
     void findAssetPage(org.drools.guvnor.client.rpc.AssetPageRequest request, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.AssetPageResponse> cb);
 	void listAssets(java.lang.String packageUUID, java.lang.String[] formats, int skip, int numRows, java.lang.String tableConfig, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> arg6);
+	void listAssetsWithPackageName(java.lang.String packageName, java.lang.String[] formats, int skip, int numRows, java.lang.String tableConfig, com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> arg6);
 	void listAvailablePermissionTypes(com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String[]> arg1);
 	void listPackages(com.google.gwt.user.client.rpc.AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData[]> arg1);
 	void listRulesInPackage(java.lang.String packageName, com.google.gwt.user.client.rpc.AsyncCallback<java.lang.String[]> arg2);

@@ -70,7 +70,7 @@ public class NewAssetWizard extends FormStylePopup {
 
     private RulePackageSelector     packageSelector         = new RulePackageSelector();
     private RulePackageSelector     importedPackageSelector = new RulePackageSelector();
-    private GlobalAreaAssetSelector globalAreaAssetSelector = new GlobalAreaAssetSelector();
+    private GlobalAreaAssetSelector globalAreaAssetSelector;
     private EditItemEvent           afterCreate;
     private boolean                 showCats;
     private String                  format;
@@ -180,6 +180,7 @@ public class NewAssetWizard extends FormStylePopup {
                                      ok );
 
         //layout for importing share asset from global area.
+        globalAreaAssetSelector = new GlobalAreaAssetSelector(format);
         importAssetLayout.addAttribute( constants.AssetToImport(),
                                         globalAreaAssetSelector );
         importAssetLayout.addAttribute( constants.Package() + ":",
