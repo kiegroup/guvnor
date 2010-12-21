@@ -23,7 +23,6 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
-import org.drools.guvnor.client.qa.VerifyRulesFiredWidget;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -63,18 +62,15 @@ import com.google.gwt.user.client.ui.Widget;
 public class ScenarioWidget extends Composite
     implements
     EditorWidget {
-
     private Constants                          constants = GWT.create( Constants.class );
     private static Images                      images    = GWT.create( Images.class );
 
     private String[]                           availableRules;
     protected final SuggestionCompletionEngine suggestionCompletionEngine;
-    private ChangeHandler                      ruleSelectionCL;
-    private final RuleAsset                    asset;
-    private final VerticalPanel                layout;
-    private boolean                            showResults;
+    private final VerticalPanel                layout    = new VerticalPanel();
 
     private HandlerRegistration                availableRulesHandlerRegistration;
+    private ScenarioWidgetComponentCreator     scenarioWidgetComponentCreator;
 
     public ScenarioWidget(RuleAsset asset,
                           RuleViewer viewer) {
@@ -82,16 +78,13 @@ public class ScenarioWidget extends Composite
     }
 
     public ScenarioWidget(RuleAsset asset) {
-        this.asset = asset;
-        this.layout = new VerticalPanel();
+        this.scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( asset,
+                                                                                  this );
         this.setShowResults( false );
 
-        this.suggestionCompletionEngine = SuggestionCompletionCache
-                .getInstance().getEngineFromCache( asset.metaData.packageName );
+        this.suggestionCompletionEngine = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.metaData.packageName );
 
-        if ( getScenario().fixtures.size() == 0 ) {
-            getScenario().fixtures.add( new ExecutionTrace() );
-        }
+        ifFixturesSizeZeroThenAddExecutionTrace();
 
         if ( !asset.isreadonly ) {
             layout.add( new TestRunnerWidget( this,
@@ -106,6 +99,12 @@ public class ScenarioWidget extends Composite
 
         layout.setWidth( "100%" );
 
+    }
+
+    private void ifFixturesSizeZeroThenAddExecutionTrace() {
+        if ( getScenario().fixtures.size() == 0 ) {
+            getScenario().fixtures.add( new ExecutionTrace() );
+        }
     }
 
     private void createWidgetForEditorLayout(DirtyableFlexTable editorLayout,
@@ -123,12 +122,11 @@ public class ScenarioWidget extends Composite
             this.layout.remove( 1 );
         }
 
-        DirtyableFlexTable editorLayout = createDirtyableFlexTable();
+        DirtyableFlexTable editorLayout = scenarioWidgetComponentCreator.createDirtyableFlexTable();
         this.layout.add( editorLayout );
         ScenarioHelper scenarioHelper = new ScenarioHelper();
         List<Fixture> fixtures = getScenario().fixtures;
-        List<ExecutionTrace> listExecutionTrace = scenarioHelper
-                .getExecutionTraceFor( fixtures );
+        List<ExecutionTrace> listExecutionTrace = scenarioHelper.getExecutionTraceFor( fixtures );
 
         int layoutRow = 1;
         int executionTraceLine = 0;
@@ -139,7 +137,7 @@ public class ScenarioWidget extends Composite
                 createWidgetForEditorLayout( editorLayout,
                                              layoutRow,
                                              0,
-                                             createExpectPanel( currentExecutionTrace ) );
+                                             scenarioWidgetComponentCreator.createExpectPanel( currentExecutionTrace ) );
 
                 executionTraceLine++;
                 if ( executionTraceLine >= listExecutionTrace.size() ) {
@@ -148,7 +146,7 @@ public class ScenarioWidget extends Composite
                 createWidgetForEditorLayout( editorLayout,
                                              layoutRow,
                                              1,
-                                             createExecutionWidget( currentExecutionTrace ) );
+                                             scenarioWidgetComponentCreator.createExecutionWidget( currentExecutionTrace ) );
                 editorLayout.setHorizontalAlignmentForFlexCellFormatter(
                                                                          layoutRow,
                                                                          2,
@@ -161,33 +159,33 @@ public class ScenarioWidget extends Composite
                                              editorLayout,
                                              layoutRow,
                                              0,
-                                             createGivenLabelButton( listExecutionTrace,
-                                                                     executionTraceLine,
-                                                                     previousExecutionTrace ) );
+                                             scenarioWidgetComponentCreator.createGivenLabelButton( listExecutionTrace,
+                                                                                                    executionTraceLine,
+                                                                                                    previousExecutionTrace ) );
                 layoutRow++;
                 createWidgetForEditorLayout(
                                              editorLayout,
                                              layoutRow,
                                              1,
-                                             createGivenPanel( listExecutionTrace,
-                                                               executionTraceLine,
-                                                               (FixturesMap) fixture ) );
+                                             scenarioWidgetComponentCreator.createGivenPanel( listExecutionTrace,
+                                                                                              executionTraceLine,
+                                                                                              (FixturesMap) fixture ) );
             } else if ( fixture instanceof CallFixtureMap ) {
                 createWidgetForEditorLayout(
                                              editorLayout,
                                              layoutRow,
                                              0,
-                                             createCallMethodLabelButton( listExecutionTrace,
-                                                                          executionTraceLine,
-                                                                          previousExecutionTrace ) );
+                                             scenarioWidgetComponentCreator.createCallMethodLabelButton( listExecutionTrace,
+                                                                                                         executionTraceLine,
+                                                                                                         previousExecutionTrace ) );
                 layoutRow++;
                 createWidgetForEditorLayout(
                                              editorLayout,
                                              layoutRow,
                                              1,
-                                             createCallMethodOnGivenPanel( listExecutionTrace,
-                                                                           executionTraceLine,
-                                                                           (CallFixtureMap) fixture ) );
+                                             scenarioWidgetComponentCreator.createCallMethodOnGivenPanel( listExecutionTrace,
+                                                                                                          executionTraceLine,
+                                                                                                          (CallFixtureMap) fixture ) );
             } else {
                 FixtureList fixturesList = (FixtureList) fixture;
                 Fixture first = fixturesList.get( 0 );
@@ -196,14 +194,14 @@ public class ScenarioWidget extends Composite
                                                  editorLayout,
                                                  layoutRow,
                                                  1,
-                                                 createVerifyFactsPanel( listExecutionTrace,
-                                                                         executionTraceLine,
-                                                                         fixturesList ) );
+                                                 scenarioWidgetComponentCreator.createVerifyFactsPanel( listExecutionTrace,
+                                                                                                        executionTraceLine,
+                                                                                                        fixturesList ) );
                 } else if ( first instanceof VerifyRuleFired ) {
                     createWidgetForEditorLayout( editorLayout,
                                                  layoutRow,
                                                  1,
-                                                 createVerifyRulesFiredWidget( fixturesList ) );
+                                                 scenarioWidgetComponentCreator.createVerifyRulesFiredWidget( fixturesList ) );
                 }
 
             }
@@ -214,23 +212,23 @@ public class ScenarioWidget extends Composite
         createWidgetForEditorLayout( editorLayout,
                                      layoutRow,
                                      0,
-                                     createAddExecuteButton() );
+                                     scenarioWidgetComponentCreator.createAddExecuteButton() );
         layoutRow++;
         createWidgetForEditorLayout( editorLayout,
                                      layoutRow,
                                      0,
-                                     createSmallLabel() );
+                                     scenarioWidgetComponentCreator.createSmallLabel() );
 
         // config section
         createWidgetForEditorLayout( editorLayout,
                                      layoutRow,
                                      1,
-                                     createConfigWidget() );
+                                     scenarioWidgetComponentCreator.createConfigWidget() );
 
         layoutRow++;
 
         // global section
-        HorizontalPanel horizontalPanel = createHorizontalPanel();
+        HorizontalPanel horizontalPanel = scenarioWidgetComponentCreator.createHorizontalPanel();
         createWidgetForEditorLayout( editorLayout,
                                      layoutRow,
                                      0,
@@ -239,165 +237,25 @@ public class ScenarioWidget extends Composite
         createWidgetForEditorLayout( editorLayout,
                                      layoutRow,
                                      1,
-                                     createGlobalPanel( scenarioHelper,
-                                                        previousExecutionTrace ) );
-    }
-
-    private GlobalPanel createGlobalPanel(ScenarioHelper scenarioHelper,
-                                          ExecutionTrace previousExecutionTrace) {
-        return new GlobalPanel(
-                                scenarioHelper.lumpyMapGlobals( getScenario().globals ),
-                                getScenario(),
-                                previousExecutionTrace,
-                                this );
-    }
-
-    private HorizontalPanel createHorizontalPanel() {
-        HorizontalPanel h = new HorizontalPanel();
-        h.add( new GlobalButton( getScenario(),
-                                 this ) );
-        h.add( new SmallLabel( constants.globals() ) );
-        return h;
-    }
-
-    private SmallLabel createSmallLabel() {
-        return new SmallLabel( constants.configuration() );
-    }
-
-    private ConfigWidget createConfigWidget() {
-        return new ConfigWidget( getScenario(),
-                                 asset.metaData.packageName,
-                                 this );
-    }
-
-    private AddExecuteButton createAddExecuteButton() {
-        return new AddExecuteButton( getScenario(),
-                                     this );
-    }
-
-    private VerifyRulesFiredWidget createVerifyRulesFiredWidget(
-                                                                FixtureList fixturesList) {
-        return new VerifyRulesFiredWidget( fixturesList,
-                                           getScenario(),
-                                           isShowResults() );
-    }
-
-    private VerifyFactsPanel createVerifyFactsPanel(
-                                                    List<ExecutionTrace> listExecutionTrace,
-                                                    int executionTraceLine,
-                                                    FixtureList fixturesList) {
-        return new VerifyFactsPanel( fixturesList,
-                                     listExecutionTrace.get( executionTraceLine ),
-                                     getScenario(),
-                                     this,
-                                     isShowResults() );
-    }
-
-    private CallMethodLabelButton createCallMethodLabelButton(
-                                                              List<ExecutionTrace> listExecutionTrace,
-                                                              int executionTraceLine,
-                                                              ExecutionTrace previousExecutionTrace) {
-        return new CallMethodLabelButton( previousExecutionTrace,
-                                          getScenario(),
-                                          listExecutionTrace.get( executionTraceLine ),
-                                          this );
-    }
-
-    private GivenLabelButton createGivenLabelButton(
-                                                    List<ExecutionTrace> listExecutionTrace,
-                                                    int executionTraceLine,
-                                                    ExecutionTrace previousExecutionTrace) {
-        return new GivenLabelButton( previousExecutionTrace,
-                                     getScenario(),
-                                     listExecutionTrace.get( executionTraceLine ),
-                                     this );
-    }
-
-    private ExecutionWidget createExecutionWidget(
-                                                  ExecutionTrace currentExecutionTrace) {
-        return new ExecutionWidget( currentExecutionTrace,
-                                    isShowResults() );
-    }
-
-    private ExpectPanel createExpectPanel(ExecutionTrace currentExecutionTrace) {
-        return new ExpectPanel( asset.metaData.packageName,
-                                currentExecutionTrace,
-                                getScenario(),
-                                this );
-    }
-
-    private DirtyableFlexTable createDirtyableFlexTable() {
-        DirtyableFlexTable editorLayout = new DirtyableFlexTable();
-        editorLayout.clear();
-        editorLayout.setWidth( "100%" );
-        editorLayout.setStyleName( "model-builder-Background" );
-        return editorLayout;
-    }
-
-    private Widget createGivenPanel(List<ExecutionTrace> listExecutionTrace,
-                                    int executionTraceLine,
-                                    FixturesMap given) {
-
-        if ( given.size() > 0 ) {
-            return new GivenPanel( listExecutionTrace,
-                                   executionTraceLine,
-                                   given,
-                                   getScenario(),
-                                   this );
-
-        } else {
-            return new HTML( "<i><small>"
-                             + constants.AddInputDataAndExpectationsHere()
-                             + "</small></i>" );
-        }
-    }
-
-    private Widget createCallMethodOnGivenPanel(
-                                                List<ExecutionTrace> listExecutionTrace,
-                                                int executionTraceLine,
-                                                CallFixtureMap given) {
-
-        if ( given.size() > 0 ) {
-            return new CallMethodOnGivenPanel( listExecutionTrace,
-                                               executionTraceLine,
-                                               given,
-                                               getScenario(),
-                                               this );
-
-        } else {
-            return new HTML( "<i><small>"
-                             + constants.AddInputDataAndExpectationsHere()
-                             + "</small></i>" );
-        }
+                                     scenarioWidgetComponentCreator.createGlobalPanel( scenarioHelper,
+                                                                                       previousExecutionTrace ) );
     }
 
     public Widget getRuleSelectionWidget(final String packageName,
                                          final RuleSelectionEvent selected) {
         final HorizontalPanel horizontalPanel = new HorizontalPanel();
-        final TextBox ruleNameTextBox = new TextBox();
-        ruleNameTextBox.setTitle( constants.EnterRuleNameScenario() );
+        final TextBox ruleNameTextBox = scenarioWidgetComponentCreator.createRuleNameTextBox();
         horizontalPanel.add( ruleNameTextBox );
-        if ( !(availableRules == null) ) {
-            final ListBox availableRulesBox = new ListBox();
-
-            availableRulesBox.addItem( constants.pleaseChoose1() );
-            for ( int i = 0; i < availableRules.length; i++ ) {
-                availableRulesBox.addItem( availableRules[i] );
-            }
+        if ( availableRules != null ) {
+            final ListBox availableRulesBox = scenarioWidgetComponentCreator.createAvailableRulesBox( availableRules );
             availableRulesBox.setSelectedIndex( 0 );
             if ( availableRulesHandlerRegistration != null ) {
                 availableRulesHandlerRegistration.removeHandler();
             }
-            ruleSelectionCL = new ChangeHandler() {
+            final ChangeHandler ruleSelectionCL = scenarioWidgetComponentCreator.createRuleChangeHandler( ruleNameTextBox,
+                                                                                                          availableRulesBox );
 
-                public void onChange(ChangeEvent event) {
-                    ruleNameTextBox.setText( availableRulesBox
-                            .getItemText( availableRulesBox.getSelectedIndex() ) );
-                }
-            };
-
-            availableRulesHandlerRegistration = availableRulesBox
-                    .addChangeHandler( ruleSelectionCL );
+            availableRulesHandlerRegistration = availableRulesBox.addChangeHandler( ruleSelectionCL );
             horizontalPanel.add( availableRulesBox );
 
         } else {
@@ -409,50 +267,43 @@ public class ScenarioWidget extends Composite
                 public void onClick(ClickEvent event) {
                     horizontalPanel.remove( showList );
                     final Image busy = new Image( images.searching() );
-                    final Label loading = new SmallLabel( constants
-                            .loadingList1() );
+                    final Label loading = new SmallLabel( constants.loadingList1() );
                     horizontalPanel.add( busy );
                     horizontalPanel.add( loading );
 
                     Scheduler scheduler = Scheduler.get();
                     scheduler.scheduleDeferred( new Command() {
-
                         public void execute() {
-                            RepositoryServiceFactory.getService()
-                                    .listRulesInPackage( packageName,
-                                                         new GenericCallback<String[]>() {
+                            RepositoryServiceFactory.getService().listRulesInPackage( packageName,
+                                                                                      createGenericCallback( horizontalPanel,
+                                                                                                             ruleNameTextBox,
+                                                                                                             busy,
+                                                                                                             loading ) );
+                        }
 
-                                                             public void onSuccess(
-                                                                                   String[] list) {
-                                                                 availableRules = (list);
-                                                                 final ListBox availableRulesBox = new ListBox();
-                                                                 availableRulesBox.addItem( constants
-                                                                         .pleaseChoose1() );
-                                                                 for ( int i = 0; i < list.length; i++ ) {
-                                                                     availableRulesBox
-                                                                             .addItem( list[i] );
-                                                                 }
-                                                                 ruleSelectionCL = new ChangeHandler() {
-                                                                     public void onChange(
-                                                                                          ChangeEvent event) {
-                                                                         ruleNameTextBox
-                                                                                 .setText( availableRulesBox
-                                                                                         .getItemText( availableRulesBox
-                                                                                                 .getSelectedIndex() ) );
-                                                                     }
-                                                                 };
-                                                                 availableRulesHandlerRegistration = availableRulesBox
-                                                                         .addChangeHandler( ruleSelectionCL );
-                                                                 availableRulesBox
-                                                                         .setSelectedIndex( 0 );
-                                                                 horizontalPanel
-                                                                         .add( availableRulesBox );
-                                                                 horizontalPanel
-                                                                         .remove( busy );
-                                                                 horizontalPanel
-                                                                         .remove( loading );
-                                                             }
-                                                         } );
+                        private GenericCallback<String[]> createGenericCallback(final HorizontalPanel horizontalPanel,
+                                                                                final TextBox ruleNameTextBox,
+                                                                                final Image busy,
+                                                                                final Label loading) {
+                            return new GenericCallback<String[]>() {
+
+                                public void onSuccess(String[] list) {
+                                    availableRules = (list);
+                                    final ListBox availableRulesBox = scenarioWidgetComponentCreator.createAvailableRulesBox( list );
+
+                                    final ChangeHandler ruleSelectionCL = new ChangeHandler() {
+                                        public void onChange(ChangeEvent event) {
+                                            ruleNameTextBox.setText( availableRulesBox.getItemText( availableRulesBox.getSelectedIndex() ) );
+                                        }
+                                    };
+                                    availableRulesHandlerRegistration = availableRulesBox.addChangeHandler( ruleSelectionCL );
+                                    availableRulesBox.setSelectedIndex( 0 );
+                                    horizontalPanel.add( availableRulesBox );
+                                    horizontalPanel.remove( busy );
+                                    horizontalPanel.remove( loading );
+                                }
+
+                            };
                         }
                     } );
 
@@ -461,12 +312,8 @@ public class ScenarioWidget extends Composite
 
         }
 
-        Button ok = new Button( constants.OK() );
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                selected.ruleSelected( ruleNameTextBox.getText() );
-            }
-        } );
+        Button ok = scenarioWidgetComponentCreator.createOkButton( selected,
+                                                                   ruleNameTextBox );
         horizontalPanel.add( ok );
         return horizontalPanel;
     }
@@ -507,22 +354,22 @@ public class ScenarioWidget extends Composite
     }
 
     void setShowResults(boolean showResults) {
-        this.showResults = showResults;
+        scenarioWidgetComponentCreator.setShowResults( showResults );
     }
 
     boolean isShowResults() {
-        return showResults;
+        return scenarioWidgetComponentCreator.isShowResults();
     }
 
     public MetaData getMetaData() {
-        return asset.metaData;
+        return scenarioWidgetComponentCreator.getMetaData();
     }
 
     public void setScenario(Scenario scenario) {
-        asset.content = scenario;
+        scenarioWidgetComponentCreator.setScenario( scenario );
     }
 
     public Scenario getScenario() {
-        return (Scenario) asset.content;
+        return scenarioWidgetComponentCreator.getScenario();
     }
 }
