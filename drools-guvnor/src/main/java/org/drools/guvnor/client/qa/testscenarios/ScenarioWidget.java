@@ -127,8 +127,7 @@ public class ScenarioWidget extends Composite
         this.layout.add( editorLayout );
         ScenarioHelper scenarioHelper = new ScenarioHelper();
         List<Fixture> fixtures = getScenario().fixtures;
-        List<ExecutionTrace> listExecutionTrace = scenarioHelper
-                .getExecutionTraceFor( fixtures );
+        List<ExecutionTrace> listExecutionTrace = scenarioHelper.getExecutionTraceFor( fixtures );
 
         int layoutRow = 1;
         int executionTraceLine = 0;
@@ -246,16 +245,16 @@ public class ScenarioWidget extends Composite
     public Widget getRuleSelectionWidget(final String packageName,
                                          final RuleSelectionEvent selected) {
         final HorizontalPanel horizontalPanel = new HorizontalPanel();
-        final TextBox ruleNameTextBox = createRuleNameTextBox();
+        final TextBox ruleNameTextBox = scenarioWidgetComponentCreator.createRuleNameTextBox();
         horizontalPanel.add( ruleNameTextBox );
         if ( availableRules != null ) {
-            final ListBox availableRulesBox = createAvailableRulesBox( availableRules );
+            final ListBox availableRulesBox = scenarioWidgetComponentCreator.createAvailableRulesBox( availableRules );
             availableRulesBox.setSelectedIndex( 0 );
             if ( availableRulesHandlerRegistration != null ) {
                 availableRulesHandlerRegistration.removeHandler();
             }
-            final ChangeHandler ruleSelectionCL = createRuleChangeHandler( ruleNameTextBox,
-                                                                           availableRulesBox );
+            final ChangeHandler ruleSelectionCL = scenarioWidgetComponentCreator.createRuleChangeHandler( ruleNameTextBox,
+                                                                                                          availableRulesBox );
 
             availableRulesHandlerRegistration = availableRulesBox.addChangeHandler( ruleSelectionCL );
             horizontalPanel.add( availableRulesBox );
@@ -269,8 +268,7 @@ public class ScenarioWidget extends Composite
                 public void onClick(ClickEvent event) {
                     horizontalPanel.remove( showList );
                     final Image busy = new Image( images.searching() );
-                    final Label loading = new SmallLabel( constants
-                            .loadingList1() );
+                    final Label loading = new SmallLabel( constants.loadingList1() );
                     horizontalPanel.add( busy );
                     horizontalPanel.add( loading );
 
@@ -292,7 +290,7 @@ public class ScenarioWidget extends Composite
 
                                 public void onSuccess(String[] list) {
                                     availableRules = (list);
-                                    final ListBox availableRulesBox = createAvailableRulesBox( list );
+                                    final ListBox availableRulesBox = scenarioWidgetComponentCreator.createAvailableRulesBox( list );
 
                                     final ChangeHandler ruleSelectionCL = new ChangeHandler() {
                                         public void onChange(ChangeEvent event) {
@@ -315,48 +313,10 @@ public class ScenarioWidget extends Composite
 
         }
 
-        Button ok = createOkButton( selected,
-                                    ruleNameTextBox );
+        Button ok = scenarioWidgetComponentCreator.createOkButton( selected,
+                                                                   ruleNameTextBox );
         horizontalPanel.add( ok );
         return horizontalPanel;
-    }
-
-    private TextBox createRuleNameTextBox() {
-        final TextBox ruleNameTextBox = new TextBox();
-        ruleNameTextBox.setTitle( constants.EnterRuleNameScenario() );
-        return ruleNameTextBox;
-    }
-
-    private Button createOkButton(final RuleSelectionEvent selected,
-                                  final TextBox ruleNameTextBox) {
-        Button ok = new Button( constants.OK() );
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                selected.ruleSelected( ruleNameTextBox.getText() );
-            }
-        } );
-        return ok;
-    }
-
-    private ChangeHandler createRuleChangeHandler(final TextBox ruleNameTextBox,
-                                                  final ListBox availableRulesBox) {
-        final ChangeHandler ruleSelectionCL = new ChangeHandler() {
-
-            public void onChange(ChangeEvent event) {
-                ruleNameTextBox.setText( availableRulesBox
-                        .getItemText( availableRulesBox.getSelectedIndex() ) );
-            }
-        };
-        return ruleSelectionCL;
-    }
-
-    private ListBox createAvailableRulesBox(String[] list) {
-        final ListBox availableRulesBox = new ListBox();
-        availableRulesBox.addItem( constants.pleaseChoose1() );
-        for ( int i = 0; i < list.length; i++ ) {
-            availableRulesBox.addItem( list[i] );
-        }
-        return availableRulesBox;
     }
 
     /**

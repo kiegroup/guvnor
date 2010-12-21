@@ -30,8 +30,15 @@ import org.drools.ide.common.client.modeldriven.testing.FixturesMap;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ScenarioWidgetComponentCreator {
@@ -174,6 +181,44 @@ public class ScenarioWidgetComponentCreator {
                              + constants.AddInputDataAndExpectationsHere()
                              + "</small></i>" );
         }
+    }
+
+    protected TextBox createRuleNameTextBox() {
+        final TextBox ruleNameTextBox = new TextBox();
+        ruleNameTextBox.setTitle( constants.EnterRuleNameScenario() );
+        return ruleNameTextBox;
+    }
+
+    protected Button createOkButton(final RuleSelectionEvent selected,
+                                    final TextBox ruleNameTextBox) {
+        Button ok = new Button( constants.OK() );
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                selected.ruleSelected( ruleNameTextBox.getText() );
+            }
+        } );
+        return ok;
+    }
+
+    protected ChangeHandler createRuleChangeHandler(final TextBox ruleNameTextBox,
+                                                    final ListBox availableRulesBox) {
+        final ChangeHandler ruleSelectionCL = new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
+                ruleNameTextBox.setText( availableRulesBox
+                        .getItemText( availableRulesBox.getSelectedIndex() ) );
+            }
+        };
+        return ruleSelectionCL;
+    }
+
+    protected ListBox createAvailableRulesBox(String[] list) {
+        final ListBox availableRulesBox = new ListBox();
+        availableRulesBox.addItem( constants.pleaseChoose1() );
+        for ( int i = 0; i < list.length; i++ ) {
+            availableRulesBox.addItem( list[i] );
+        }
+        return availableRulesBox;
     }
 
     public MetaData getMetaData() {
