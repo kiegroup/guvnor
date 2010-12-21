@@ -293,39 +293,43 @@ public class ScenarioWidget extends Composite
                         public void execute() {
                             RepositoryServiceFactory.getService()
                                     .listRulesInPackage( packageName,
-                                                         new GenericCallback<String[]>() {
+                                                         createGenericCallback( horizontalPanel,
+                                                                                ruleNameTextBox,
+                                                                                busy,
+                                                                                loading ) );
+                        }
 
-                                                             public void onSuccess(
-                                                                                   String[] list) {
-                                                                 availableRules = (list);
-                                                                 final ListBox availableRulesBox = new ListBox();
-                                                                 availableRulesBox.addItem( constants
-                                                                         .pleaseChoose1() );
-                                                                 for ( int i = 0; i < list.length; i++ ) {
-                                                                     availableRulesBox
-                                                                             .addItem( list[i] );
-                                                                 }
-                                                                 ruleSelectionCL = new ChangeHandler() {
-                                                                     public void onChange(
-                                                                                          ChangeEvent event) {
-                                                                         ruleNameTextBox
-                                                                                 .setText( availableRulesBox
-                                                                                         .getItemText( availableRulesBox
-                                                                                                 .getSelectedIndex() ) );
-                                                                     }
-                                                                 };
-                                                                 availableRulesHandlerRegistration = availableRulesBox
-                                                                         .addChangeHandler( ruleSelectionCL );
-                                                                 availableRulesBox
-                                                                         .setSelectedIndex( 0 );
-                                                                 horizontalPanel
-                                                                         .add( availableRulesBox );
-                                                                 horizontalPanel
-                                                                         .remove( busy );
-                                                                 horizontalPanel
-                                                                         .remove( loading );
-                                                             }
-                                                         } );
+                        private GenericCallback<String[]> createGenericCallback(final HorizontalPanel horizontalPanel,
+                                                                                final TextBox ruleNameTextBox,
+                                                                                final Image busy,
+                                                                                final Label loading) {
+                            return new GenericCallback<String[]>() {
+
+                                public void onSuccess(String[] list) {
+                                    availableRules = (list);
+                                    final ListBox availableRulesBox = new ListBox();
+                                    availableRulesBox.addItem( constants
+                                             .pleaseChoose1() );
+                                    for ( int i = 0; i < list.length; i++ ) {
+                                        availableRulesBox
+                                                 .addItem( list[i] );
+                                    }
+                                    ruleSelectionCL = new ChangeHandler() {
+                                        public void onChange(
+                                                              ChangeEvent event) {
+                                            ruleNameTextBox
+                                                     .setText( availableRulesBox
+                                                             .getItemText( availableRulesBox
+                                                                     .getSelectedIndex() ) );
+                                        }
+                                    };
+                                    availableRulesHandlerRegistration = availableRulesBox.addChangeHandler( ruleSelectionCL );
+                                    availableRulesBox.setSelectedIndex( 0 );
+                                    horizontalPanel.add( availableRulesBox );
+                                    horizontalPanel.remove( busy );
+                                    horizontalPanel.remove( loading );
+                                }
+                            };
                         }
                     } );
 
