@@ -49,93 +49,56 @@ public class ScenarioWidgetComponentCreator {
 
     private boolean              showResults;
 
-    protected ScenarioWidgetComponentCreator(RuleAsset asset,
-                                             ScenarioWidget scenarioWidget) {
+    protected ScenarioWidgetComponentCreator(RuleAsset asset, ScenarioWidget scenarioWidget) {
         this.asset = asset;
         this.scenarioWidget = scenarioWidget;
     }
 
-    protected GlobalPanel createGlobalPanel(ScenarioHelper scenarioHelper,
-                                            ExecutionTrace previousExecutionTrace) {
-        return new GlobalPanel(
-                                scenarioHelper.lumpyMapGlobals( getScenario().globals ),
-                                getScenario(),
-                                previousExecutionTrace,
-                                scenarioWidget );
+    protected GlobalPanel createGlobalPanel(ScenarioHelper scenarioHelper, ExecutionTrace previousExecutionTrace) {
+        return new GlobalPanel( scenarioHelper.lumpyMapGlobals( getScenario().globals ), getScenario(), previousExecutionTrace, this.scenarioWidget );
     }
 
     protected HorizontalPanel createHorizontalPanel() {
         HorizontalPanel h = new HorizontalPanel();
-        h.add( new GlobalButton( getScenario(),
-                                 scenarioWidget ) );
-        h.add( new SmallLabel( constants.globals() ) );
+        h.add( new GlobalButton( getScenario(), this.scenarioWidget ) );
+        h.add( new SmallLabel( this.constants.globals() ) );
         return h;
     }
 
     protected SmallLabel createSmallLabel() {
-        return new SmallLabel( constants.configuration() );
+        return new SmallLabel( this.constants.configuration() );
     }
 
     protected ConfigWidget createConfigWidget() {
-        return new ConfigWidget( getScenario(),
-                                 asset.metaData.packageName,
-                                 scenarioWidget );
+        return new ConfigWidget( getScenario(), this.asset.metaData.packageName, this.scenarioWidget );
     }
 
     protected AddExecuteButton createAddExecuteButton() {
-        return new AddExecuteButton( getScenario(),
-                                     scenarioWidget );
+        return new AddExecuteButton( getScenario(), this.scenarioWidget );
     }
 
-    protected VerifyRulesFiredWidget createVerifyRulesFiredWidget(
-                                                                  FixtureList fixturesList) {
-        return new VerifyRulesFiredWidget( fixturesList,
-                                           getScenario(),
-                                           isShowResults() );
+    protected VerifyRulesFiredWidget createVerifyRulesFiredWidget(FixtureList fixturesList) {
+        return new VerifyRulesFiredWidget( fixturesList, getScenario(), isShowResults() );
     }
 
-    protected VerifyFactsPanel createVerifyFactsPanel(
-                                                      List<ExecutionTrace> listExecutionTrace,
-                                                      int executionTraceLine,
-                                                      FixtureList fixturesList) {
-        return new VerifyFactsPanel( fixturesList,
-                                     listExecutionTrace.get( executionTraceLine ),
-                                     getScenario(),
-                                     scenarioWidget,
-                                     isShowResults() );
+    protected VerifyFactsPanel createVerifyFactsPanel(List<ExecutionTrace> listExecutionTrace, int executionTraceLine, FixtureList fixturesList) {
+        return new VerifyFactsPanel( fixturesList, listExecutionTrace.get( executionTraceLine ), getScenario(), this.scenarioWidget, isShowResults() );
     }
 
-    protected CallMethodLabelButton createCallMethodLabelButton(
-                                                                List<ExecutionTrace> listExecutionTrace,
-                                                                int executionTraceLine,
-                                                                ExecutionTrace previousExecutionTrace) {
-        return new CallMethodLabelButton( previousExecutionTrace,
-                                          getScenario(),
-                                          listExecutionTrace.get( executionTraceLine ),
-                                          scenarioWidget );
+    protected CallMethodLabelButton createCallMethodLabelButton(List<ExecutionTrace> listExecutionTrace, int executionTraceLine, ExecutionTrace previousExecutionTrace) {
+        return new CallMethodLabelButton( previousExecutionTrace, getScenario(), listExecutionTrace.get( executionTraceLine ), this.scenarioWidget );
     }
 
-    protected GivenLabelButton createGivenLabelButton(
-                                                      List<ExecutionTrace> listExecutionTrace,
-                                                      int executionTraceLine,
-                                                      ExecutionTrace previousExecutionTrace) {
-        return new GivenLabelButton( previousExecutionTrace,
-                                     getScenario(),
-                                     listExecutionTrace.get( executionTraceLine ),
-                                     scenarioWidget );
+    protected GivenLabelButton createGivenLabelButton(List<ExecutionTrace> listExecutionTrace, int executionTraceLine, ExecutionTrace previousExecutionTrace) {
+        return new GivenLabelButton( previousExecutionTrace, getScenario(), listExecutionTrace.get( executionTraceLine ), this.scenarioWidget );
     }
 
-    protected ExecutionWidget createExecutionWidget(
-                                                    ExecutionTrace currentExecutionTrace) {
-        return new ExecutionWidget( currentExecutionTrace,
-                                    isShowResults() );
+    protected ExecutionWidget createExecutionWidget(ExecutionTrace currentExecutionTrace) {
+        return new ExecutionWidget( currentExecutionTrace, isShowResults() );
     }
 
     protected ExpectPanel createExpectPanel(ExecutionTrace currentExecutionTrace) {
-        return new ExpectPanel( asset.metaData.packageName,
-                                currentExecutionTrace,
-                                getScenario(),
-                                scenarioWidget );
+        return new ExpectPanel( this.asset.metaData.packageName, currentExecutionTrace, getScenario(), this.scenarioWidget );
     }
 
     protected DirtyableFlexTable createDirtyableFlexTable() {
@@ -146,52 +109,34 @@ public class ScenarioWidgetComponentCreator {
         return editorLayout;
     }
 
-    protected Widget createGivenPanel(List<ExecutionTrace> listExecutionTrace,
-                                      int executionTraceLine,
-                                      FixturesMap given) {
+    protected Widget createGivenPanel(List<ExecutionTrace> listExecutionTrace, int executionTraceLine, FixturesMap given) {
 
         if ( given.size() > 0 ) {
-            return new GivenPanel( listExecutionTrace,
-                                   executionTraceLine,
-                                   given,
-                                   getScenario(),
-                                   scenarioWidget );
+            return new GivenPanel( listExecutionTrace, executionTraceLine, given, getScenario(), this.scenarioWidget );
 
         } else {
-            return new HTML( "<i><small>"
-                             + constants.AddInputDataAndExpectationsHere()
-                             + "</small></i>" );
+            return new HTML( "<i><small>" + this.constants.AddInputDataAndExpectationsHere() + "</small></i>" );
         }
     }
 
-    protected Widget createCallMethodOnGivenPanel(
-                                                  List<ExecutionTrace> listExecutionTrace,
-                                                  int executionTraceLine,
-                                                  CallFixtureMap given) {
+    protected Widget createCallMethodOnGivenPanel(List<ExecutionTrace> listExecutionTrace, int executionTraceLine, CallFixtureMap given) {
 
         if ( given.size() > 0 ) {
-            return new CallMethodOnGivenPanel( listExecutionTrace,
-                                               executionTraceLine,
-                                               given,
-                                               getScenario(),
-                                               scenarioWidget );
+            return new CallMethodOnGivenPanel( listExecutionTrace, executionTraceLine, given, getScenario(), this.scenarioWidget );
 
         } else {
-            return new HTML( "<i><small>"
-                             + constants.AddInputDataAndExpectationsHere()
-                             + "</small></i>" );
+            return new HTML( "<i><small>" + this.constants.AddInputDataAndExpectationsHere() + "</small></i>" );
         }
     }
 
     protected TextBox createRuleNameTextBox() {
         final TextBox ruleNameTextBox = new TextBox();
-        ruleNameTextBox.setTitle( constants.EnterRuleNameScenario() );
+        ruleNameTextBox.setTitle( this.constants.EnterRuleNameScenario() );
         return ruleNameTextBox;
     }
 
-    protected Button createOkButton(final RuleSelectionEvent selected,
-                                    final TextBox ruleNameTextBox) {
-        Button ok = new Button( constants.OK() );
+    protected Button createOkButton(final RuleSelectionEvent selected, final TextBox ruleNameTextBox) {
+        Button ok = new Button( this.constants.OK() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 selected.ruleSelected( ruleNameTextBox.getText() );
@@ -200,13 +145,11 @@ public class ScenarioWidgetComponentCreator {
         return ok;
     }
 
-    protected ChangeHandler createRuleChangeHandler(final TextBox ruleNameTextBox,
-                                                    final ListBox availableRulesBox) {
+    protected ChangeHandler createRuleChangeHandler(final TextBox ruleNameTextBox, final ListBox availableRulesBox) {
         final ChangeHandler ruleSelectionCL = new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                ruleNameTextBox.setText( availableRulesBox
-                        .getItemText( availableRulesBox.getSelectedIndex() ) );
+                ruleNameTextBox.setText( availableRulesBox.getItemText( availableRulesBox.getSelectedIndex() ) );
             }
         };
         return ruleSelectionCL;
@@ -214,7 +157,7 @@ public class ScenarioWidgetComponentCreator {
 
     protected ListBox createAvailableRulesBox(String[] list) {
         final ListBox availableRulesBox = new ListBox();
-        availableRulesBox.addItem( constants.pleaseChoose1() );
+        availableRulesBox.addItem( this.constants.pleaseChoose1() );
         for ( int i = 0; i < list.length; i++ ) {
             availableRulesBox.addItem( list[i] );
         }
@@ -222,7 +165,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     public MetaData getMetaData() {
-        return asset.metaData;
+        return this.asset.metaData;
     }
 
     public void setShowResults(boolean showResults) {
@@ -230,11 +173,11 @@ public class ScenarioWidgetComponentCreator {
     }
 
     public boolean isShowResults() {
-        return showResults;
+        return this.showResults;
     }
 
     public Scenario getScenario() {
-        return (Scenario) asset.content;
+        return (Scenario) this.asset.content;
     }
 
     public void setScenario(Scenario scenario) {

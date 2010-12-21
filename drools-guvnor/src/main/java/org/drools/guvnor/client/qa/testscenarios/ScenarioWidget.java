@@ -59,9 +59,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ScenarioWidget extends Composite
-    implements
-    EditorWidget {
+public class ScenarioWidget extends Composite implements EditorWidget {
     private Constants                          constants = GWT.create( Constants.class );
     private static Images                      images    = GWT.create( Images.class );
 
@@ -72,14 +70,12 @@ public class ScenarioWidget extends Composite
     private HandlerRegistration                availableRulesHandlerRegistration;
     private ScenarioWidgetComponentCreator     scenarioWidgetComponentCreator;
 
-    public ScenarioWidget(RuleAsset asset,
-                          RuleViewer viewer) {
+    public ScenarioWidget(RuleAsset asset, RuleViewer viewer) {
         this( asset );
     }
 
     public ScenarioWidget(RuleAsset asset) {
-        this.scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( asset,
-                                                                                  this );
+        this.scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( asset, this );
         this.setShowResults( false );
 
         this.suggestionCompletionEngine = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.metaData.packageName );
@@ -87,8 +83,7 @@ public class ScenarioWidget extends Composite
         ifFixturesSizeZeroThenAddExecutionTrace();
 
         if ( !asset.isreadonly ) {
-            layout.add( new TestRunnerWidget( this,
-                                              asset.metaData.packageName ) );
+            layout.add( new TestRunnerWidget( this, asset.metaData.packageName ) );
         }
 
         renderEditor();
@@ -107,13 +102,8 @@ public class ScenarioWidget extends Composite
         }
     }
 
-    private void createWidgetForEditorLayout(DirtyableFlexTable editorLayout,
-                                             int layoutRow,
-                                             int layoutColumn,
-                                             Widget widget) {
-        editorLayout.setWidget( layoutRow,
-                                layoutColumn,
-                                widget );
+    private void createWidgetForEditorLayout(DirtyableFlexTable editorLayout, int layoutRow, int layoutColumn, Widget widget) {
+        editorLayout.setWidget( layoutRow, layoutColumn, widget );
     }
 
     void renderEditor() {
@@ -135,75 +125,33 @@ public class ScenarioWidget extends Composite
         for ( final Fixture fixture : fixtures ) {
             if ( fixture instanceof ExecutionTrace ) {
                 ExecutionTrace currentExecutionTrace = (ExecutionTrace) fixture;
-                createWidgetForEditorLayout( editorLayout,
-                                             layoutRow,
-                                             0,
-                                             scenarioWidgetComponentCreator.createExpectPanel( currentExecutionTrace ) );
+                createWidgetForEditorLayout( editorLayout, layoutRow, 0, scenarioWidgetComponentCreator.createExpectPanel( currentExecutionTrace ) );
 
                 executionTraceLine++;
                 if ( executionTraceLine >= listExecutionTrace.size() ) {
                     executionTraceLine = listExecutionTrace.size() - 1;
                 }
-                createWidgetForEditorLayout( editorLayout,
-                                             layoutRow,
-                                             1,
-                                             scenarioWidgetComponentCreator.createExecutionWidget( currentExecutionTrace ) );
-                editorLayout.setHorizontalAlignmentForFlexCellFormatter(
-                                                                         layoutRow,
-                                                                         2,
-                                                                         HasHorizontalAlignment.ALIGN_LEFT );
+                createWidgetForEditorLayout( editorLayout, layoutRow, 1, scenarioWidgetComponentCreator.createExecutionWidget( currentExecutionTrace ) );
+                editorLayout.setHorizontalAlignmentForFlexCellFormatter( layoutRow, 2, HasHorizontalAlignment.ALIGN_LEFT );
 
                 previousExecutionTrace = currentExecutionTrace;
 
             } else if ( fixture instanceof FixturesMap ) {
-                createWidgetForEditorLayout(
-                                             editorLayout,
-                                             layoutRow,
-                                             0,
-                                             scenarioWidgetComponentCreator.createGivenLabelButton( listExecutionTrace,
-                                                                                                    executionTraceLine,
-                                                                                                    previousExecutionTrace ) );
+                createWidgetForEditorLayout( editorLayout, layoutRow, 0, scenarioWidgetComponentCreator.createGivenLabelButton( listExecutionTrace, executionTraceLine, previousExecutionTrace ) );
                 layoutRow++;
-                createWidgetForEditorLayout(
-                                             editorLayout,
-                                             layoutRow,
-                                             1,
-                                             scenarioWidgetComponentCreator.createGivenPanel( listExecutionTrace,
-                                                                                              executionTraceLine,
-                                                                                              (FixturesMap) fixture ) );
+                createWidgetForEditorLayout( editorLayout, layoutRow, 1, scenarioWidgetComponentCreator.createGivenPanel( listExecutionTrace, executionTraceLine, (FixturesMap) fixture ) );
             } else if ( fixture instanceof CallFixtureMap ) {
-                createWidgetForEditorLayout(
-                                             editorLayout,
-                                             layoutRow,
-                                             0,
-                                             scenarioWidgetComponentCreator.createCallMethodLabelButton( listExecutionTrace,
-                                                                                                         executionTraceLine,
-                                                                                                         previousExecutionTrace ) );
+                createWidgetForEditorLayout( editorLayout, layoutRow, 0, scenarioWidgetComponentCreator.createCallMethodLabelButton( listExecutionTrace, executionTraceLine, previousExecutionTrace ) );
                 layoutRow++;
-                createWidgetForEditorLayout(
-                                             editorLayout,
-                                             layoutRow,
-                                             1,
-                                             scenarioWidgetComponentCreator.createCallMethodOnGivenPanel( listExecutionTrace,
-                                                                                                          executionTraceLine,
-                                                                                                          (CallFixtureMap) fixture ) );
+                createWidgetForEditorLayout( editorLayout, layoutRow, 1, scenarioWidgetComponentCreator.createCallMethodOnGivenPanel( listExecutionTrace, executionTraceLine, (CallFixtureMap) fixture ) );
             } else {
                 FixtureList fixturesList = (FixtureList) fixture;
                 Fixture first = fixturesList.get( 0 );
 
                 if ( first instanceof VerifyFact ) {
-                    createWidgetForEditorLayout(
-                                                 editorLayout,
-                                                 layoutRow,
-                                                 1,
-                                                 scenarioWidgetComponentCreator.createVerifyFactsPanel( listExecutionTrace,
-                                                                                                        executionTraceLine,
-                                                                                                        fixturesList ) );
+                    createWidgetForEditorLayout( editorLayout, layoutRow, 1, scenarioWidgetComponentCreator.createVerifyFactsPanel( listExecutionTrace, executionTraceLine, fixturesList ) );
                 } else if ( first instanceof VerifyRuleFired ) {
-                    createWidgetForEditorLayout( editorLayout,
-                                                 layoutRow,
-                                                 1,
-                                                 scenarioWidgetComponentCreator.createVerifyRulesFiredWidget( fixturesList ) );
+                    createWidgetForEditorLayout( editorLayout, layoutRow, 1, scenarioWidgetComponentCreator.createVerifyRulesFiredWidget( fixturesList ) );
                 }
 
             }
@@ -211,40 +159,23 @@ public class ScenarioWidget extends Composite
         }
 
         // add more execution sections.
-        createWidgetForEditorLayout( editorLayout,
-                                     layoutRow,
-                                     0,
-                                     scenarioWidgetComponentCreator.createAddExecuteButton() );
+        createWidgetForEditorLayout( editorLayout, layoutRow, 0, scenarioWidgetComponentCreator.createAddExecuteButton() );
         layoutRow++;
-        createWidgetForEditorLayout( editorLayout,
-                                     layoutRow,
-                                     0,
-                                     scenarioWidgetComponentCreator.createSmallLabel() );
+        createWidgetForEditorLayout( editorLayout, layoutRow, 0, scenarioWidgetComponentCreator.createSmallLabel() );
 
         // config section
-        createWidgetForEditorLayout( editorLayout,
-                                     layoutRow,
-                                     1,
-                                     scenarioWidgetComponentCreator.createConfigWidget() );
+        createWidgetForEditorLayout( editorLayout, layoutRow, 1, scenarioWidgetComponentCreator.createConfigWidget() );
 
         layoutRow++;
 
         // global section
         HorizontalPanel horizontalPanel = scenarioWidgetComponentCreator.createHorizontalPanel();
-        createWidgetForEditorLayout( editorLayout,
-                                     layoutRow,
-                                     0,
-                                     horizontalPanel );
+        createWidgetForEditorLayout( editorLayout, layoutRow, 0, horizontalPanel );
 
-        createWidgetForEditorLayout( editorLayout,
-                                     layoutRow,
-                                     1,
-                                     scenarioWidgetComponentCreator.createGlobalPanel( scenarioHelper,
-                                                                                       previousExecutionTrace ) );
+        createWidgetForEditorLayout( editorLayout, layoutRow, 1, scenarioWidgetComponentCreator.createGlobalPanel( scenarioHelper, previousExecutionTrace ) );
     }
 
-    public Widget getRuleSelectionWidget(final String packageName,
-                                         final RuleSelectionEvent selected) {
+    public Widget getRuleSelectionWidget(final String packageName, final RuleSelectionEvent selected) {
         final HorizontalPanel horizontalPanel = new HorizontalPanel();
         final TextBox ruleNameTextBox = scenarioWidgetComponentCreator.createRuleNameTextBox();
         horizontalPanel.add( ruleNameTextBox );
@@ -254,8 +185,7 @@ public class ScenarioWidget extends Composite
             if ( availableRulesHandlerRegistration != null ) {
                 availableRulesHandlerRegistration.removeHandler();
             }
-            final ChangeHandler ruleSelectionCL = scenarioWidgetComponentCreator.createRuleChangeHandler( ruleNameTextBox,
-                                                                                                          availableRulesBox );
+            final ChangeHandler ruleSelectionCL = scenarioWidgetComponentCreator.createRuleChangeHandler( ruleNameTextBox, availableRulesBox );
 
             availableRulesHandlerRegistration = availableRulesBox.addChangeHandler( ruleSelectionCL );
             horizontalPanel.add( availableRulesBox );
@@ -276,17 +206,10 @@ public class ScenarioWidget extends Composite
                     Scheduler scheduler = Scheduler.get();
                     scheduler.scheduleDeferred( new Command() {
                         public void execute() {
-                            RepositoryServiceFactory.getService().listRulesInPackage( packageName,
-                                                                                      createGenericCallback( horizontalPanel,
-                                                                                                             ruleNameTextBox,
-                                                                                                             busy,
-                                                                                                             loading ) );
+                            RepositoryServiceFactory.getService().listRulesInPackage( packageName, createGenericCallback( horizontalPanel, ruleNameTextBox, busy, loading ) );
                         }
 
-                        private GenericCallback<String[]> createGenericCallback(final HorizontalPanel horizontalPanel,
-                                                                                final TextBox ruleNameTextBox,
-                                                                                final Image busy,
-                                                                                final Label loading) {
+                        private GenericCallback<String[]> createGenericCallback(final HorizontalPanel horizontalPanel, final TextBox ruleNameTextBox, final Image busy, final Label loading) {
                             return new GenericCallback<String[]>() {
 
                                 public void onSuccess(String[] list) {
@@ -314,8 +237,7 @@ public class ScenarioWidget extends Composite
 
         }
 
-        Button ok = scenarioWidgetComponentCreator.createOkButton( selected,
-                                                                   ruleNameTextBox );
+        Button ok = scenarioWidgetComponentCreator.createOkButton( selected, ruleNameTextBox );
         horizontalPanel.add( ok );
         return horizontalPanel;
     }
@@ -323,36 +245,20 @@ public class ScenarioWidget extends Composite
     /**
      * Use some CSS trickery to get a percent bar.
      */
-    public static Widget getBar(String colour,
-                                int width,
-                                float percent) {
+    public static Widget getBar(String colour, int width, float percent) {
         int pixels = (int) (width * (percent / 100));
-        String html = "<div class=\"smallish-progress-wrapper\" style=\"width: "
-                      + width
-                      + "px\">"
-                      + "<div class=\"smallish-progress-bar\" style=\"width: "
-                      + pixels
-                      + "px; background-color: "
-                      + colour
-                      + ";\"></div>"
-                      + "<div class=\"smallish-progress-text\" style=\"width: "
-                      + width + "px\">" + (int) percent + "%</div></div>"; // NON-NLS
+        String html = "<div class=\"smallish-progress-wrapper\" style=\"width: " + width + "px\">" + "<div class=\"smallish-progress-bar\" style=\"width: " + pixels + "px; background-color: " + colour + ";\"></div>" + "<div class=\"smallish-progress-text\" style=\"width: " + width + "px\">" + (int) percent + "%</div></div>"; // NON-NLS
         return new HTML( html );
 
     }
 
-    public static Widget getBar(String colour,
-                                int width,
-                                int numerator,
-                                int denominator) {
+    public static Widget getBar(String colour, int width, int numerator, int denominator) {
         int percent = 0;
 
         if ( denominator != 0 ) {
             percent = (int) ((((float) denominator - (float) numerator) / (float) denominator) * 100);
         }
-        return getBar( colour,
-                       width,
-                       percent );
+        return getBar( colour, width, percent );
     }
 
     void setShowResults(boolean showResults) {
