@@ -246,11 +246,11 @@ public class ScenarioWidget extends Composite
     public Widget getRuleSelectionWidget(final String packageName,
                                          final RuleSelectionEvent selected) {
         final HorizontalPanel horizontalPanel = new HorizontalPanel();
-        final TextBox ruleNameTextBox = new TextBox();
-        ruleNameTextBox.setTitle( constants.EnterRuleNameScenario() );
+        final TextBox ruleNameTextBox = createRuleNameTextBox();
         horizontalPanel.add( ruleNameTextBox );
-        if ( !(availableRules == null) ) {
-            final ListBox availableRulesBox = createAvailableRulesBox();
+        if ( availableRules != null ) {
+            final ListBox availableRulesBox = createAvailableRulesBox( availableRules );
+            availableRulesBox.setSelectedIndex( 0 );
             if ( availableRulesHandlerRegistration != null ) {
                 availableRulesHandlerRegistration.removeHandler();
             }
@@ -292,11 +292,8 @@ public class ScenarioWidget extends Composite
 
                                 public void onSuccess(String[] list) {
                                     availableRules = (list);
-                                    final ListBox availableRulesBox = new ListBox();
-                                    availableRulesBox.addItem( constants.pleaseChoose1() );
-                                    for ( int i = 0; i < list.length; i++ ) {
-                                        availableRulesBox.addItem( list[i] );
-                                    }
+                                    final ListBox availableRulesBox = createAvailableRulesBox( list );
+
                                     final ChangeHandler ruleSelectionCL = new ChangeHandler() {
                                         public void onChange(ChangeEvent event) {
                                             ruleNameTextBox.setText( availableRulesBox.getItemText( availableRulesBox.getSelectedIndex() ) );
@@ -308,6 +305,7 @@ public class ScenarioWidget extends Composite
                                     horizontalPanel.remove( busy );
                                     horizontalPanel.remove( loading );
                                 }
+
                             };
                         }
                     } );
@@ -321,6 +319,12 @@ public class ScenarioWidget extends Composite
                                     ruleNameTextBox );
         horizontalPanel.add( ok );
         return horizontalPanel;
+    }
+
+    private TextBox createRuleNameTextBox() {
+        final TextBox ruleNameTextBox = new TextBox();
+        ruleNameTextBox.setTitle( constants.EnterRuleNameScenario() );
+        return ruleNameTextBox;
     }
 
     private Button createOkButton(final RuleSelectionEvent selected,
@@ -346,14 +350,12 @@ public class ScenarioWidget extends Composite
         return ruleSelectionCL;
     }
 
-    private ListBox createAvailableRulesBox() {
+    private ListBox createAvailableRulesBox(String[] list) {
         final ListBox availableRulesBox = new ListBox();
-
         availableRulesBox.addItem( constants.pleaseChoose1() );
-        for ( int i = 0; i < availableRules.length; i++ ) {
-            availableRulesBox.addItem( availableRules[i] );
+        for ( int i = 0; i < list.length; i++ ) {
+            availableRulesBox.addItem( list[i] );
         }
-        availableRulesBox.setSelectedIndex( 0 );
         return availableRulesBox;
     }
 
