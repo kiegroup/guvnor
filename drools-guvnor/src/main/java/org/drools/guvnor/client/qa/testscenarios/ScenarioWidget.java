@@ -67,9 +67,7 @@ public class ScenarioWidget extends Composite
 
     private String[]                           availableRules;
     protected final SuggestionCompletionEngine suggestionCompletionEngine;
-    private final RuleAsset                    asset;
-    private final VerticalPanel                layout;
-    private boolean                            showResults;
+    private final VerticalPanel                layout    = new VerticalPanel();
 
     private HandlerRegistration                availableRulesHandlerRegistration;
     private ScenarioWidgetComponentCreator     scenarioWidgetComponentCreator;
@@ -82,16 +80,11 @@ public class ScenarioWidget extends Composite
     public ScenarioWidget(RuleAsset asset) {
         this.scenarioWidgetComponentCreator = new ScenarioWidgetComponentCreator( asset,
                                                                                   this );
-        this.asset = asset;
-        this.layout = new VerticalPanel();
         this.setShowResults( false );
 
-        this.suggestionCompletionEngine = SuggestionCompletionCache
-                .getInstance().getEngineFromCache( asset.metaData.packageName );
+        this.suggestionCompletionEngine = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.metaData.packageName );
 
-        if ( getScenario().fixtures.size() == 0 ) {
-            getScenario().fixtures.add( new ExecutionTrace() );
-        }
+        ifFixturesSizeZeroThenAddExecutionTrace();
 
         if ( !asset.isreadonly ) {
             layout.add( new TestRunnerWidget( this,
@@ -106,6 +99,12 @@ public class ScenarioWidget extends Composite
 
         layout.setWidth( "100%" );
 
+    }
+
+    private void ifFixturesSizeZeroThenAddExecutionTrace() {
+        if ( getScenario().fixtures.size() == 0 ) {
+            getScenario().fixtures.add( new ExecutionTrace() );
+        }
     }
 
     private void createWidgetForEditorLayout(DirtyableFlexTable editorLayout,
