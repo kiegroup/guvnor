@@ -136,9 +136,11 @@ public class DefaultLiteralEditor extends Composite {
             public void onKeyPress(Widget w,
                                    char c,
                                    int i) {
-                if ( numericValue && Character.isLetter( c ) ) {
-                    ((TextBox) w).cancelKey();
-                }
+                // all primitives will be "numeric" so this does not make sense for char as it will break the logic
+            	// allow to enter values
+            	//if ( numericValue && Character.isLetter( c ) ) {  	
+                //    ((TextBox) w).cancelKey();
+                //}
             }
 
             public void onKeyUp(Widget arg0,
