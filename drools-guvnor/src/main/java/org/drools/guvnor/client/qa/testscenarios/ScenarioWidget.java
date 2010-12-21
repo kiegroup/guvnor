@@ -67,7 +67,6 @@ public class ScenarioWidget extends Composite
 
     private String[]                           availableRules;
     protected final SuggestionCompletionEngine suggestionCompletionEngine;
-    private ChangeHandler                      ruleSelectionCL;
     private final RuleAsset                    asset;
     private final VerticalPanel                layout;
     private boolean                            showResults;
@@ -261,7 +260,7 @@ public class ScenarioWidget extends Composite
             if ( availableRulesHandlerRegistration != null ) {
                 availableRulesHandlerRegistration.removeHandler();
             }
-            ruleSelectionCL = new ChangeHandler() {
+            final ChangeHandler ruleSelectionCL = new ChangeHandler() {
 
                 public void onChange(ChangeEvent event) {
                     ruleNameTextBox.setText( availableRulesBox
@@ -269,8 +268,7 @@ public class ScenarioWidget extends Composite
                 }
             };
 
-            availableRulesHandlerRegistration = availableRulesBox
-                    .addChangeHandler( ruleSelectionCL );
+            availableRulesHandlerRegistration = availableRulesBox.addChangeHandler( ruleSelectionCL );
             horizontalPanel.add( availableRulesBox );
 
         } else {
@@ -308,19 +306,13 @@ public class ScenarioWidget extends Composite
                                 public void onSuccess(String[] list) {
                                     availableRules = (list);
                                     final ListBox availableRulesBox = new ListBox();
-                                    availableRulesBox.addItem( constants
-                                             .pleaseChoose1() );
+                                    availableRulesBox.addItem( constants.pleaseChoose1() );
                                     for ( int i = 0; i < list.length; i++ ) {
-                                        availableRulesBox
-                                                 .addItem( list[i] );
+                                        availableRulesBox.addItem( list[i] );
                                     }
-                                    ruleSelectionCL = new ChangeHandler() {
-                                        public void onChange(
-                                                              ChangeEvent event) {
-                                            ruleNameTextBox
-                                                     .setText( availableRulesBox
-                                                             .getItemText( availableRulesBox
-                                                                     .getSelectedIndex() ) );
+                                    final ChangeHandler ruleSelectionCL = new ChangeHandler() {
+                                        public void onChange(ChangeEvent event) {
+                                            ruleNameTextBox.setText( availableRulesBox.getItemText( availableRulesBox.getSelectedIndex() ) );
                                         }
                                     };
                                     availableRulesHandlerRegistration = availableRulesBox.addChangeHandler( ruleSelectionCL );
