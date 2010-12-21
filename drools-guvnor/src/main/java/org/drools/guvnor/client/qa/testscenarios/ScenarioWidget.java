@@ -125,7 +125,8 @@ public class ScenarioWidget extends Composite
         DirtyableFlexTable editorLayout = scenarioWidgetComponentCreator.createDirtyableFlexTable();
         this.layout.add( editorLayout );
         ScenarioHelper scenarioHelper = new ScenarioHelper();
-        List<Fixture> fixtures = getScenario().fixtures;
+
+        List<Fixture> fixtures = scenarioHelper.lumpyMap(getScenario().fixtures);
         List<ExecutionTrace> listExecutionTrace = scenarioHelper.getExecutionTraceFor( fixtures );
 
         int layoutRow = 1;
@@ -189,6 +190,7 @@ public class ScenarioWidget extends Composite
             } else {
                 FixtureList fixturesList = (FixtureList) fixture;
                 Fixture first = fixturesList.get( 0 );
+
                 if ( first instanceof VerifyFact ) {
                     createWidgetForEditorLayout(
                                                  editorLayout,
