@@ -63,19 +63,13 @@ public class ScenarioHelper {
         FixtureList verifyFact = new FixtureList();
         FixtureList verifyRule = new FixtureList();
         FixtureList retractFacts = new FixtureList();
-
-        for ( Iterator<Fixture> iterator = fixtures.iterator(); iterator
-                .hasNext(); ) {
-            Fixture fixture = iterator.next();
+        for ( Fixture fixture : fixtures ) {
             if ( fixture instanceof FactData ) {
-                accumulateData( dataInput,
-                                fixture );
+                accumulateDataForFactData( dataInput, (FactData) fixture );
             } else if ( fixture instanceof CallMethod ) {
-                accumulateCallMethode( callOnDataInput,
-                                       fixture );
+                accumulateCallMethode( callOnDataInput, (CallMethod) fixture );
             } else if ( fixture instanceof ActivateRuleFlowGroup ) {
-                accumulateData( dataInput,
-                                fixture );
+                accumulateDataForActivateRuleFlowGroup( dataInput, fixture );
             } else if ( fixture instanceof RetractFact ) {
                 retractFacts.add( (RetractFact) fixture );
             } else if ( fixture instanceof VerifyRuleFired ) {
@@ -83,13 +77,7 @@ public class ScenarioHelper {
             } else if ( fixture instanceof VerifyFact ) {
                 verifyFact.add( (VerifyFact) fixture );
             } else if ( fixture instanceof ExecutionTrace ) {
-                gatherFixtures( output,
-                                dataInput,
-                                callOnDataInput,
-                                verifyFact,
-                                verifyRule,
-                                retractFacts,
-                                false );
+                gatherFixtures( output, dataInput, callOnDataInput, verifyFact, verifyRule, retractFacts, false );
 
                 output.add( fixture );
 
@@ -100,28 +88,15 @@ public class ScenarioHelper {
                 dataInput = new FixturesMap();
             }
         }
-        gatherFixtures( output,
-                        dataInput,
-                        callOnDataInput,
-                        verifyFact,
-                        verifyRule,
-                        retractFacts,
-                        true );
+        gatherFixtures( output, dataInput, callOnDataInput, verifyFact, verifyRule, retractFacts, true );
 
         return output;
     }
 
-    private void gatherFixtures(List<Fixture> output,
-                                FixturesMap dataInput,
-                                CallFixtureMap callOnDataInput,
-                                FixtureList verifyFact,
-                                FixtureList verifyRule,
-                                FixtureList retractFacts,
-                                boolean end) {
+    private void gatherFixtures(List<Fixture> output, FixturesMap dataInput, CallFixtureMap callOnDataInput, FixtureList verifyFact, FixtureList verifyRule, FixtureList retractFacts, boolean end) {
         if ( verifyRule.size() > 0 ) output.add( verifyRule );
         if ( verifyFact.size() > 0 ) output.add( verifyFact );
-        if ( retractFacts.size() > 0 ) dataInput.put( RETRACT_KEY,
-                                                      retractFacts );
+        if ( retractFacts.size() > 0 ) dataInput.put( RETRACT_KEY, retractFacts );
         if ( dataInput.size() > 0 || !end ) output.add( dataInput ); // want to have a place holder for the GUI
         if ( callOnDataInput.size() > 0 || !end ) output.add( callOnDataInput );
     }
@@ -132,10 +107,17 @@ public class ScenarioHelper {
     public Map<String, FixtureList> lumpyMapGlobals(List<FactData> globals) {
         Map<String, FixtureList> map = new HashMap<String, FixtureList>();
         for ( FactData factData : globals ) {
-            accumulateData( map,
-                            factData );
+            accumulateDataForFactData( map, factData );
         }
         return map;
+    }
+
+    private void accumulateDataForFactData(Map<String, FixtureList> dataInput, FactData fd) {
+        if ( !dataInput.containsKey( fd.type ) ) {
+            dataInput.put( fd.type, new FixtureList() );
+        }
+        ((FixtureList) dataInput.get( fd.type )).add( fd );
+
     }
 
     public List<ExecutionTrace> getExecutionTraceFor(List<Fixture> fixtures) {
@@ -151,44 +133,27 @@ public class ScenarioHelper {
         return listExecutionTrace;
     }
 
-    private void accumulateData(Map<String, FixtureList> dataInput,
-                                Fixture f) {
-        if ( f instanceof FactData ) {
-            FactData fd = (FactData) f;
-            if ( !dataInput.containsKey( fd.type ) ) {
-                dataInput.put( fd.type,
-                               new FixtureList() );
-            }
-            ((FixtureList) dataInput.get( fd.type )).add( fd );
-        } else if ( f instanceof ActivateRuleFlowGroup ) {
-            if ( !dataInput.containsKey( ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP ) ) {
-                dataInput.put( ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP,
-                               new FixtureList() );
-            }
-            ((FixtureList) dataInput
-                    .get( ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP )).add( f );
+    private void accumulateDataForActivateRuleFlowGroup(Map<String, FixtureList> dataInput, Fixture f) {
+        if ( !dataInput.containsKey( ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP ) ) {
+            dataInput.put( ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP, new FixtureList() );
         }
+        ((FixtureList) dataInput.get( ScenarioHelper.ACTIVATE_RULE_FLOW_GROUP )).add( f );
+
     }
 
-    private void accumulateCallMethode(Map<String, FixtureList> dataInput,
-                                       Fixture f) {
-        if ( f instanceof CallMethod ) {
-            CallMethod fd = (CallMethod) f;
-            if ( !dataInput.containsKey( fd.variable ) ) {
-                dataInput.put( fd.variable,
-                               new FixtureList() );
-            }
-            ((FixtureList) dataInput.get( fd.variable )).add( fd );
+    private void accumulateCallMethode(Map<String, FixtureList> dataInput, CallMethod fd) {
+        if ( !dataInput.containsKey( fd.variable ) ) {
+            dataInput.put( fd.variable, new FixtureList() );
         }
+        ((FixtureList) dataInput.get( fd.variable )).add( fd );
+
     }
 
-    static void removeFields(List<Fixture> factDatas,
-                             String field) {
+    static void removeFields(List<Fixture> factDatas, String field) {
         for ( Fixture fixture : factDatas ) {
             if ( fixture instanceof FactData ) {
                 FactData factData = (FactData) fixture;
-                for ( Iterator<FieldData> fieldDataIterator = factData.fieldData
-                        .iterator(); fieldDataIterator.hasNext(); ) {
+                for ( Iterator<FieldData> fieldDataIterator = factData.fieldData.iterator(); fieldDataIterator.hasNext(); ) {
                     FieldData fieldData = fieldDataIterator.next();
                     if ( fieldData.name.equals( field ) ) {
                         fieldDataIterator.remove();
