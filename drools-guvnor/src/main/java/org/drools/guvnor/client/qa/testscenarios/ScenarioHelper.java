@@ -67,7 +67,7 @@ public class ScenarioHelper {
             if ( fixture instanceof FactData ) {
                 accumulateDataForFactData( dataInput, (FactData) fixture );
             } else if ( fixture instanceof CallMethod ) {
-                accumulateCallMethode( callOnDataInput, (CallMethod) fixture );
+                accumulateCallMethod( callOnDataInput, (CallMethod) fixture );
             } else if ( fixture instanceof ActivateRuleFlowGroup ) {
                 accumulateDataForActivateRuleFlowGroup( dataInput, fixture );
             } else if ( fixture instanceof RetractFact ) {
@@ -141,7 +141,7 @@ public class ScenarioHelper {
 
     }
 
-    private void accumulateCallMethode(Map<String, FixtureList> dataInput, CallMethod fd) {
+    private void accumulateCallMethod(Map<String, FixtureList> dataInput, CallMethod fd) {
         if ( !dataInput.containsKey( fd.variable ) ) {
             dataInput.put( fd.variable, new FixtureList() );
         }
