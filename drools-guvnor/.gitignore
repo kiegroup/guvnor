@@ -8,3 +8,8 @@
 /*.ipr
 /*.iws
 /*.iml
+
+# Test case generated files (TODO move under target folder)
+/derby*.log
+/repository.xml
+/repository
