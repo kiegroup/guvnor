@@ -23,8 +23,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import junit.framework.TestCase;
-
 import org.apache.util.Base64;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
@@ -34,9 +32,13 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
+import org.junit.Test;
 
-public class RestAPIServletTest extends TestCase {
+import static org.junit.Assert.*;
 
+public class RestAPIServletTest {
+
+    @Test
 	public void testGet() throws Exception {        
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
 		PackageItem pkg = repo.createPackage("testGetRestServlet", "");
@@ -124,6 +126,7 @@ public class RestAPIServletTest extends TestCase {
         Lifecycle.endApplication();
 	}
 
+    @Test
 	public void testPost() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
 		PackageItem pkg = repo.createPackage("testPostRestServlet", "");
@@ -187,6 +190,7 @@ public class RestAPIServletTest extends TestCase {
         Lifecycle.endApplication();
 	}
 
+    @Test
 	public void testPut() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
 		PackageItem pkg = repo.createPackage("testPutRestServlet", "");
@@ -239,7 +243,7 @@ public class RestAPIServletTest extends TestCase {
         Lifecycle.endApplication();        
 	}
 
-
+    @Test
 	public void testDelete() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
 		PackageItem pkg = repo.createPackage("testDeleteRestServlet", "");
@@ -286,4 +290,5 @@ public class RestAPIServletTest extends TestCase {
 
         Lifecycle.endApplication();
 	}
+
 }

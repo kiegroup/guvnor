@@ -23,11 +23,14 @@ import org.apache.util.Base64;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class RepositoryServletTest extends TestCase {
 
+public class RepositoryServletTest {
+
+    @Test
 	public void testAllowUser() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
@@ -47,7 +50,7 @@ public class RepositoryServletTest extends TestCase {
         Lifecycle.endApplication();
 	}
 	
-
+    @Test
 	public void testAllowUserNoBasicAuthticationHeader() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
@@ -65,7 +68,8 @@ public class RepositoryServletTest extends TestCase {
 		
         Lifecycle.endApplication();
 	}
-	
+
+    @Test
 	public void testAllowUserNoBasicAuthticationHeaderNotAllowLogin() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
@@ -83,7 +87,8 @@ public class RepositoryServletTest extends TestCase {
 		
         Lifecycle.endApplication();
 	}
-	
+
+    @Test
 	public void testAllowUserNotBasicAuthticationHeader() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
@@ -102,10 +107,12 @@ public class RepositoryServletTest extends TestCase {
         Lifecycle.endApplication();
 	}
 
+    @Test
 	public void testUnpack() {
 		String b42 = "BASIC " + new String( Base64.encode("user:pass".getBytes()) );
 		String[] d = RepositoryServlet.unpack(b42);
 		assertEquals("user", d[0]);
 		assertEquals("pass", d[1]);
 	}
+
 }

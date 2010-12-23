@@ -20,11 +20,13 @@ package org.drools.guvnor.server.files;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.UUID;
-import junit.framework.TestCase;
 import org.drools.guvnor.server.rest.Parameters;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * Some basic unit tests for compilation and snapshot
@@ -32,15 +34,15 @@ import org.drools.util.codec.Base64;
  *
  * @author andrew.waterman@gmail.com
  */
-public class ActionAPIServletTest extends TestCase {
+public class ActionAPIServletTest {
 
     private final String compilationPath = "http://foo/action/compile";
     private final String snapshotPath = "http://foo/action/snapshot";
 
     /*
      * Modeled after testPost in RestAPIServletTest.
-     * @author andrew.waterman@gmail.com
      */
+    @Test
     public void testCompilation() throws Exception {
         final String dynamicPackage = "test-action" + UUID.randomUUID();
         RulesRepository repo = new RulesRepository(
@@ -66,6 +68,7 @@ public class ActionAPIServletTest extends TestCase {
         repo.logout();
     }
 
+    @Test
     public void testSnapshotCreation () throws Exception {
         final String dynamicPackage = "test-snap" + UUID.randomUUID();
         RulesRepository repo = new RulesRepository(
@@ -93,4 +96,5 @@ public class ActionAPIServletTest extends TestCase {
         assertEquals(200, res.status);
         repo.logout();        
     }
+
 }

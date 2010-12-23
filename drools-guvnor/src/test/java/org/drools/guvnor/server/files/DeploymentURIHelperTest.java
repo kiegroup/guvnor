@@ -32,11 +32,13 @@ package org.drools.guvnor.server.files;
  */
 
 
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class DeploymentURIHelperTest extends TestCase {
+public class DeploymentURIHelperTest {
 
+    @Test
     public void testGetPackageToExport() throws Exception {
         String uri = "/org.drools.guvnor.Guvnor/package/boo/ya+man";
 
@@ -52,6 +54,7 @@ public class DeploymentURIHelperTest extends TestCase {
         assertFalse(helper.isAsset());
     }
 
+    @Test
     public void testGetPackageWithDRL() throws Exception {
     	String uri = "/org.drools.guvnor.Guvnor/package/boo/ya+man.drl";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
@@ -62,9 +65,9 @@ public class DeploymentURIHelperTest extends TestCase {
         assertEquals( "boo", helper.getPackageName() );
         assertFalse(helper.isLatest());
         assertFalse(helper.isAsset());
-
     }
 
+    @Test
     public void testGetAssetDRL() throws Exception {
     	String uri = "/org.drools.guvnor.Guvnor/package/packName/LATEST/assetName.drl";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
@@ -74,10 +77,9 @@ public class DeploymentURIHelperTest extends TestCase {
         assertEquals("packName", helper.getPackageName());
         assertEquals("assetName", helper.getAssetName());
         assertTrue(helper.isAsset());
-
-
     }
 
+    @Test
     public void testGetDocumentation() throws Exception {
         String uri = "/org.drools.guvnor.Guvnor/package/packName/LATEST/documentation.pdf";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
@@ -87,7 +89,6 @@ public class DeploymentURIHelperTest extends TestCase {
         assertEquals("packName", helper.getPackageName());
         assertEquals("documentation", helper.getAssetName());
         assertTrue(helper.isAsset());
-        
     }
 
 }

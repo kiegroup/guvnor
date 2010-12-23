@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
 
 import net.sf.webdav.ITransaction;
 
@@ -32,9 +31,13 @@ import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.junit.Test;
 
-public class WebDAVImplTest extends TestCase {
+import static org.junit.Assert.*;
 
+public class WebDAVImplTest {
+
+    @Test
     public void testPath() {
         WebDAVImpl imp = new WebDAVImpl( new File( "" ) );
         String[] path = imp.getPath( "http://goober/whee/webdav/packages/packagename/resource.drl", true );
@@ -63,6 +66,7 @@ public class WebDAVImplTest extends TestCase {
     }
 
     //GUVNOR-669
+    @Test
     public void testPathContainsWebdav() {
         WebDAVImpl imp = new WebDAVImpl( new File( "" ) );
         String[] path = imp.getPath( "http://goober/whee/webdav/packages/ssswebdavss/resource.drl", true);
@@ -92,6 +96,7 @@ public class WebDAVImplTest extends TestCase {
         assertEquals( "resource.drl", path[2] );
     }
 
+    @Test
     public void testBadCopy() throws Exception {
         //OSX does stupid shit when copying in the same directory
         //for instance, it creates the copy as foobar.x copy - totally hosing
@@ -106,6 +111,7 @@ public class WebDAVImplTest extends TestCase {
 
     }
 
+    @Test
     public void testChildrenNames() throws Exception {
         WebDAVImpl imp = getImpl();
         RulesRepository repo = imp.getRepo();
@@ -156,6 +162,7 @@ public class WebDAVImplTest extends TestCase {
         return new WebDAVImpl( new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) ) );
     }
 
+    @Test
     public void testCreateFolder() throws Exception {
         WebDAVImpl imp = getImpl();
         RulesRepository repo = imp.getRepo();
@@ -189,6 +196,7 @@ public class WebDAVImplTest extends TestCase {
 
     }
 
+    @Test
     public void testDates() throws Exception {
 /*        String uri = "/foo/webdav";
         WebDAVImpl imp = getImpl();
@@ -202,6 +210,7 @@ public class WebDAVImplTest extends TestCase {
 
     }
 
+    @Test
     public void testCreateResourceAndCreatedDate() throws Exception {
         WebDAVImpl imp = getImpl();
         RulesRepository repo = imp.getRepo();
@@ -261,6 +270,7 @@ public class WebDAVImplTest extends TestCase {
 
     }
 
+    @Test
     public void testResourceContent() throws Exception {
         WebDAVImpl imp = getImpl();
         RulesRepository repo = imp.getRepo();
@@ -300,6 +310,7 @@ public class WebDAVImplTest extends TestCase {
 
     }
 
+    @Test
     public void testIsFolder() throws Exception {
         WebDAVImpl imp = getImpl();
         assertTrue( imp.isFolder( "/packages" ) );
@@ -312,6 +323,7 @@ public class WebDAVImplTest extends TestCase {
         assertFalse( imp.isFolder( "/packages/somePackage/SomeFile.drl" ) );
     }
 
+    @Test
     public void testIsResource() throws Exception {
         WebDAVImpl imp = getImpl();
         assertFalse( imp.isResource( "/packages" ) );
@@ -326,6 +338,7 @@ public class WebDAVImplTest extends TestCase {
         assertTrue( imp.isResource( "/packages/testDAVIsResource/SomeFile.drl" ) );
     }
 
+    @Test
     public void testResourceLength() throws Exception {
         WebDAVImpl imp = getImpl();
         assertEquals( 0,
@@ -349,6 +362,7 @@ public class WebDAVImplTest extends TestCase {
 
     }
 
+    @Test
     public void testObjectExists() throws Exception {
         WebDAVImpl imp = getImpl();
         assertTrue( imp.objectExists( "/packages" ) );
@@ -361,6 +375,7 @@ public class WebDAVImplTest extends TestCase {
         assertFalse( imp.objectExists( "/packages/testDavObjectExistsXXXX/foobar.drl" ) );
     }
 
+    @Test
     public void testRemoveObject() throws Exception {
         WebDAVImpl imp = getImpl();
         assertFalse( imp.objectExists( "/packages/testDavRemoveObjectFolder" ) );
@@ -397,6 +412,7 @@ public class WebDAVImplTest extends TestCase {
 
     }
 
+    @Test
     public void testSetContent() throws Exception {
         WebDAVImpl imp = getImpl();
         imp.createFolder( new TransactionMock(),
@@ -448,6 +464,7 @@ public class WebDAVImplTest extends TestCase {
 
     }
 
+    @Test
     public void testNewAsset() throws Exception {
         //simulating a full lifecycle of a new asset from webdav
         WebDAVImpl imp = getImpl();
@@ -478,6 +495,7 @@ public class WebDAVImplTest extends TestCase {
 
     }
 
+    @Test
     public void testSnapshot() throws Exception {
         WebDAVImpl imp = getImpl();
         imp.createFolder( new TransactionMock(),
@@ -642,6 +660,7 @@ public class WebDAVImplTest extends TestCase {
         }
     }
 
+    @Test
     public void testThreadLocal() throws Exception {
         Thread t = new Thread( new Runnable() {
             public void run() {

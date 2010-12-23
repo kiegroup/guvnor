@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.server.repository;
 
-import junit.framework.TestCase;
 import org.drools.repository.events.StorageEventManager;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.PackageItem;
@@ -28,11 +27,14 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
+import org.junit.Test;
 
 /**
  * @author Michael Neale
  */
-public class EventsTest extends TestCase {
+public class EventsTest {
+
+    @Test
     public void testLoadSave() throws Exception {
         System.setProperty("guvnor.saveEventListener", "org.drools.guvnor.server.repository.SampleSaveEvent");
 
@@ -55,12 +57,7 @@ public class EventsTest extends TestCase {
         GuidedDecisionTable gt = new GuidedDecisionTable();
         asset.updateContent(GuidedDTXMLPersistence.getInstance().marshal(gt));
         asset.checkin("");
-
-
-        
-
     }
-
 
     private ServiceImplementation getService() throws Exception {
 		ServiceImplementation impl = new ServiceImplementation();
@@ -69,4 +66,5 @@ public class EventsTest extends TestCase {
 				.getSession());
 		return impl;
 	}
+
 }

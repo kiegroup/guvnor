@@ -25,7 +25,6 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import junit.framework.TestCase;
 
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -45,13 +44,19 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
+import org.junit.After;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
 
-public class PackageDeploymentServletTest extends TestCase {
+import static org.junit.Assert.*;
 
-	public void FIXMEtestLoadingRules() throws Exception {
+public class PackageDeploymentServletTest {
+
+    @Test @Ignore
+	public void testLoadingRules() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
 
 		ServiceImplementation impl = new ServiceImplementation();
@@ -70,7 +75,6 @@ public class PackageDeploymentServletTest extends TestCase {
 		asset.checkin("");
 
 		assertNull(impl.buildPackage(pkg.getUUID(), true));
-
 
 
 		//check source
@@ -176,10 +180,6 @@ public class PackageDeploymentServletTest extends TestCase {
         Server server = new Server(9000);
 
         Context ctx = new Context(server, "/", Context.SESSIONS);
-
-
-
-
         ctx.addServlet(new ServletHolder(new PackageDeploymentServlet()), "/package/*");
         
 
@@ -272,6 +272,7 @@ public class PackageDeploymentServletTest extends TestCase {
 
 	}
 
+    @Test
 	public void testScenariosAndChangeSet() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
 
@@ -318,21 +319,17 @@ public class PackageDeploymentServletTest extends TestCase {
         testResult = res.extractContent();
         assertNotNull(testResult);
         assertTrue(testResult.indexOf("<resource source='http://foo' type='PKG' />") > 0);
-
-
 	}
 
 	private void assertSameArray(byte[] bin_, byte[] bin) {
 		for (int i = 0; i < bin.length; i++) {
 			assertEquals(bin_[i], bin[i]);
 		}
-
 	}
-	
-	@Override
-    protected void tearDown() throws Exception {
+
+    @After
+    public void tearDown() throws Exception {
     	TestEnvironmentSessionHelper.shutdown();
-    	super.tearDown();
     }
 
 }
