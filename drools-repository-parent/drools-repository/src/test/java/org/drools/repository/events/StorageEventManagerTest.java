@@ -59,8 +59,6 @@ public class StorageEventManagerTest extends RepositoryTestCase {
 
         StorageEventManager.le = null;
         assertFalse(StorageEventManager.hasLoadEvent());
-
-
     }
 
     @Test
@@ -129,8 +127,6 @@ public class StorageEventManagerTest extends RepositoryTestCase {
         asset.checkin("");
 
         assertSame(asset, x[0]);
-
-
-
     }
+
 }

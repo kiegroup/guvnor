@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
-import junit.framework.TestCase;
 
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -35,13 +34,16 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.RulesRepositoryTest;
 import org.drools.repository.remoteapi.Response.Binary;
 import org.drools.repository.remoteapi.Response.Text;
+import org.junit.Test;
 
-public class RestAPITest extends TestCase {
+import static org.junit.Assert.*;
+
+public class RestAPITest {
 	//String someAsset = "packages/SomeName/SomeFile.drl";
 	//String getAList = "packages/SomeName"; //will show a list
 	//String getPackageConfig = "packages/SomeName/.package"; //should load package config
 
-	
+    @Test
 	public void testGetWithSpaces() throws Exception {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		PackageItem pkg = repo.createPackage("testRestGetSpaces", "");
@@ -64,9 +66,8 @@ public class RestAPITest extends TestCase {
 		
 	}
 
+    @Test
 	public void testGetBasics() throws Exception {
-
-
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		PackageItem pkg = repo.createPackage("testRestGetBasics", "");
 		pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
@@ -164,6 +165,7 @@ public class RestAPITest extends TestCase {
 
 	}
 
+    @Test
 	public void testGetMisc() throws Exception {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		RestAPI api = new RestAPI(repo);
@@ -172,10 +174,9 @@ public class RestAPITest extends TestCase {
 		api.get("packages");
 		api.get("snapshots");
 		api.get("snapshots/defaultPackage");
-
-
 	}
 
+    @Test
 	public void testGetVersionHistory() throws Exception {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		PackageItem pkg = repo.createPackage("testRestGetVersionHistory", "");
@@ -222,19 +223,15 @@ public class RestAPITest extends TestCase {
 		assertEquals("this is content", d);
 
 
-
-
 		res = api.get("packages");
 		res = api.get("packages?version=all");
 
 		res = api.get("snapshots");
 		res = api.get("snapshots?version=all");
 
-
-
-
 	}
 
+    @Test
 	public void testVersionHistoryAndArchived() throws Exception {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		PackageItem pkg = repo.createPackage("testVersionHistoryAndArchived", "");
@@ -278,10 +275,9 @@ public class RestAPITest extends TestCase {
 		resp.writeData(out);
 		d = new String(out.toByteArray());
 		assertEquals("", d);
-
-
 	}
 
+    @Test
 	public void testPost() throws Exception {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		PackageItem pkg = repo.createPackage("testRestPost", "");
@@ -314,6 +310,7 @@ public class RestAPITest extends TestCase {
 
 	}
 
+    @Test
 	public void testPostNewPackage() throws Exception {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		RestAPI api = new RestAPI(repo);
@@ -323,10 +320,9 @@ public class RestAPITest extends TestCase {
 		assertEquals("qaz", pkg.getStringProperty(PackageItem.HEADER_PROPERTY_NAME));
 
 		assertEquals("This is a new package", pkg.getCheckinComment());
-
-
 	}
 
+    @Test
 	public void testPut() throws Exception {
 		//need to test both asset and .package shite.
 		RulesRepository repo = RepositorySessionUtil.getRepository();
@@ -384,6 +380,7 @@ public class RestAPITest extends TestCase {
 
 	}
 
+    @Test
 	public void testDelete() throws Exception {
 		RulesRepository repo = RepositorySessionUtil.getRepository();
 		PackageItem pkg = repo.createPackage("testRestDelete", "");
@@ -421,10 +418,9 @@ public class RestAPITest extends TestCase {
 			assertNotNull(e.getMessage());
 		}
 
-
-
 	}
 
+    @Test
 	public void testSplit() throws Exception {
 		RestAPI a = new RestAPI(null);
 		String[] x = a.split("packages/foo/bar");

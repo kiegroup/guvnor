@@ -68,10 +68,6 @@ public class MigrateDroolsPackageTest extends RepositoryTestCase {
 		assertTrue(pkg.containsAsset("drools"));
 		as = pkg.loadAsset("drools");
 		assertEquals("some header", as.getContent());
-
-
-
-
 	}
 
 }

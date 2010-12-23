@@ -29,7 +29,7 @@ import org.junit.AfterClass;
 public abstract class RepositoryTestCase {
 
     @After
-    public  void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         RepositorySessionUtil.shutdown();
     }
 

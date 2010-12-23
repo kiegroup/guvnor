@@ -56,10 +56,6 @@ import org.junit.Test;
 
 public class RoleBasedPermissionResolverTest {
 
-    public void testDummy() throws Exception {
-        assertTrue( true );
-    }
-
     @Test
     public void testCategoryBasedPermissionAnalyst() throws Exception {
     	//NOTE: Have to have this call, otherwise this test will fail others tests. Seems to be related to
@@ -260,10 +256,10 @@ public class RoleBasedPermissionResolverTest {
                                   "foo1" ) );
     }
 
-    @Test
     /**
      * This tests that we can navigate the tree if we have sub path permissions.
      */
+    @Test
     public void testCategoryBasedSubPerms() throws Exception {
         //Mock up SEAM contexts
         Map<String, Object> application = new HashMap<String, Object>();
@@ -335,8 +331,8 @@ public class RoleBasedPermissionResolverTest {
 
     }
 
-    @Test
     //admin: everything
+    @Test
     public void testPackageBasedPermissionAdmin() throws Exception {
         //Mock up SEAM contexts
         Map<String, Object> application = new HashMap<String, Object>();
@@ -378,8 +374,8 @@ public class RoleBasedPermissionResolverTest {
         Lifecycle.endApplication();
     }
 
-    @Test
     //Package.admin: everything for that package, including creating snapshots for that package.
+    @Test
     public void testPackageBasedPermissionPackageAdmin() throws Exception {
         //Mock up SEAM contexts
         Map<String, Object> application = new HashMap<String, Object>();
@@ -422,8 +418,8 @@ public class RoleBasedPermissionResolverTest {
         Lifecycle.endApplication();
     }
 
-    @Test
     //Package.admin: everything for that package, including creating snapshots for that package.
+    @Test
     public void testPackageBasedWebDavPermissionPackageAdmin() throws Exception {
         //Mock up SEAM contexts
         Map<String, Object> application = new HashMap<String, Object>();
@@ -463,8 +459,8 @@ public class RoleBasedPermissionResolverTest {
         Lifecycle.endApplication();
     }
 
-    @Test
     //Package.developer:  everything for that package, NOT snapshots (can view snapshots of that package only)
+    @Test
     public void testPackageBasedPermissionPackageDeveloper() throws Exception {
         //Mock up SEAM contexts
         Map<String, Object> application = new HashMap<String, Object>();
@@ -507,8 +503,8 @@ public class RoleBasedPermissionResolverTest {
         Lifecycle.endApplication();
     }
 
-    @Test
     //Package.readonly: read only as the name suggested
+    @Test
     public void testPackageBasedPermissionPackageReadOnly() throws Exception {
         //Mock up SEAM contexts
         Map<String, Object> application = new HashMap<String, Object>();

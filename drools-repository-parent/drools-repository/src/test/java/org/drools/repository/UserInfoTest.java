@@ -16,18 +16,22 @@
 
 package org.drools.repository;
 
-import junit.framework.TestCase;
 import org.drools.repository.security.PermissionManager;
+import org.junit.Test;
 
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 
+import static org.junit.Assert.*;
+
 /**
  * @author Michael Neale
  */
-public class UserInfoTest extends TestCase {
+public class UserInfoTest {
+
+    @Test
     public void testPersistence() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
         PermissionManager pm = new PermissionManager(repo);
@@ -111,6 +115,7 @@ public class UserInfoTest extends TestCase {
         assertEquals("", info.getProperty("inbox", "qanno").value);
     }
 
+    @Test
     public void testIterateOverUsers() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
 

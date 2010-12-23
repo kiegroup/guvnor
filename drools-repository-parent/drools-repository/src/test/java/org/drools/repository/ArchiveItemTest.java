@@ -116,7 +116,7 @@ public class ArchiveItemTest extends RepositoryTestCase {
                       rules1.size() );
     }
 
-    List iteratorToList(Iterator it) {
+    private List iteratorToList(Iterator it) {
         List list = new ArrayList();
         while ( it.hasNext() ) {
             list.add( it.next() );
@@ -227,11 +227,6 @@ public class ArchiveItemTest extends RepositoryTestCase {
                                                       true ) );
         assertEquals( 2,
                       list.size() );
-
-    }
-
-    @Test
-    public void testlistbyformatArchived() {
 
     }
 

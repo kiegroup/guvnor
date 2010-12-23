@@ -22,11 +22,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.repository.RepositorySessionUtil;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class PermissionManagerTest extends TestCase {
 
+public class PermissionManagerTest {
+
+    @Test
 	public void testLoadSave() throws Exception {
 		PermissionManager pm = new PermissionManager(RepositorySessionUtil.getRepository());
 		Map<String, List<String>> perms = new HashMap<String, List<String>>() {{
@@ -79,6 +82,7 @@ public class PermissionManagerTest extends TestCase {
 		assertFalse(pm.listUsers().containsKey("wankle"));
 	}
 
+    @Test
 	public void testUpdatePerms() throws Exception {
 		PermissionManager pm = new PermissionManager(RepositorySessionUtil.getRepository());
 		Map<String, List<String>> perms = new HashMap<String, List<String>>() {{
@@ -97,6 +101,7 @@ public class PermissionManagerTest extends TestCase {
 		assertEquals(3, perms.size());
 	}
 
+    @Test
 	public void testNilUser() throws Exception {
 		PermissionManager pm = new PermissionManager(RepositorySessionUtil.getRepository());
 		Map<String, List<String>> perms_ = pm.retrieveUserPermissions("nobody");
@@ -106,6 +111,7 @@ public class PermissionManagerTest extends TestCase {
 		assertEquals(0, perms_.size());
 	}
 
+    @Test
 	public void testListingUsers() throws Exception {
 		PermissionManager pm = new PermissionManager(RepositorySessionUtil.getRepository());
 		pm.deleteAllUsers();
@@ -153,6 +159,7 @@ public class PermissionManagerTest extends TestCase {
 		assertEquals("analyst", permTypes.get(0));
 	}
 
+    @Test
 	public void testEmptyUserName() throws Exception {
 		PermissionManager pm = new PermissionManager(RepositorySessionUtil.getRepository());
 		Map<String, List<String>> perms_ = pm.retrieveUserPermissions("");
@@ -173,4 +180,5 @@ public class PermissionManagerTest extends TestCase {
 		pm.removeUserPermissions("");
 		pm.removeUserPermissions("  ");		
 	}
+
 }

@@ -20,11 +20,14 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import org.drools.repository.remoteapi.Response.Binary;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
-public class ResponseTest extends TestCase {
 
+public class ResponseTest {
+
+    @Test
 	public void testBinary() throws Exception {
 		Binary b = new Response.Binary();
 		ByteArrayInputStream in = new ByteArrayInputStream("abc".getBytes());

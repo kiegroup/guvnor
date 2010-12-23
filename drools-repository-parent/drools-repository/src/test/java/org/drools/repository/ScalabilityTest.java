@@ -35,7 +35,6 @@ import org.drools.repository.VersionableItem;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import junit.framework.TestCase;
 
 
 /**
@@ -49,13 +48,8 @@ public class ScalabilityTest extends RepositoryTestCase {
     private static final int NUM = 5000;
     private RulesRepository repo;
 
-    @Test
-    public void testDummy() {
-
-    }
-
     @Test @Ignore
-    public void xxtestRun() throws Exception {
+    public void testRun() throws Exception {
     	Properties properties = new Properties();
     	properties.put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, "./scalabilityTestRepo");
         RulesRepositoryConfigurator config = RulesRepositoryConfigurator.getInstance(properties);
@@ -157,10 +151,6 @@ public class ScalabilityTest extends RepositoryTestCase {
             list.add( item );
 
         }
-
-
-
-
     }
 
 

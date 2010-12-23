@@ -269,7 +269,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
         assertEquals(4, iteratorToList(it).size());
     }
 
-    List iteratorToList( Iterator it ) {
+    private List iteratorToList( Iterator it ) {
         List list = new ArrayList();
         while (it.hasNext()) {
             list.add(it.next());

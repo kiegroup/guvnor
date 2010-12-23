@@ -40,8 +40,6 @@ import static org.junit.Assert.fail;
 
 public class CategoryItemTest extends RepositoryTestCase {
 
-	
-	
 	@Test
     public void testTagItem() throws Exception {
 
