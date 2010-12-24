@@ -2173,4 +2173,6 @@ public interface Constants
     String File();
     
     String Edit();
+    
+    String EmptyValue();
 }

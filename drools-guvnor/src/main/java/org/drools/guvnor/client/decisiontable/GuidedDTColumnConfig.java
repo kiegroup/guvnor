@@ -272,10 +272,10 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         final TextBox defaultValue = new TextBox();
         defaultValue.setText( editingCol.getDefaultValue() );
         final CheckBox hide = new CheckBox( ((Constants) GWT.create( Constants.class )).HideThisColumn() );
-        hide.setEnabled( editingCol.isHideColumn() );
+        hide.setValue( editingCol.isHideColumn() );
         hide.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent sender) {
-                editingCol.setHideColumn( hide.isEnabled() );
+                editingCol.setHideColumn( hide.getValue() );
             }
         } );
         defaultValue.addChangeHandler( new ChangeHandler() {

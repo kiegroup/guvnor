@@ -1,0 +1,141 @@
+@CHARSET "UTF-8";
+
+/* CellTable body */
+@def rowHeight 24px;
+@def rowHeaderHeight 24px;
+@def spacerHeight 48px;
+@def spacerWidth 32px;
+	
+.cellTable {
+	cursor: default;
+	table-layout: fixed;
+	padding: 0px;
+	margin: 0px;
+}
+
+.cellTableCell {
+	padding: 0px;
+	margin: 0px;
+	font-size: 8pt;
+	text-align: center;
+	outline: none;
+	border-bottom: 1px solid #C8C8C8;
+}
+
+.cellTableCell:HOVER {
+	padding: 0px;
+	margin: 0px;
+	text-align: center;
+	outline: none;
+	border-bottom: 1px solid #C8C8C8;
+	background-color: #ffff99;
+}
+
+.cellTableCellDiv {
+	overflow: hidden;
+}
+
+.cellTableEvenRow {
+	background: #E0E0E0;
+}
+
+.cellTableOddRow {
+	background: #f0f0f0;
+}
+
+/* Header */
+.headerTable {
+	table-layout: fixed;
+	padding: 0px;
+	margin: 0px;
+}
+
+.headerRow {
+	height: rowHeaderHeight;
+	color: #4B4A4A;
+	text-align: left;
+	text-shadow: 1px 1px 0 #DDDDFF;
+	cursor: default;
+}
+
+.headerCellPrimary {
+	font-size: 8pt;
+	text-align: center;
+	border-bottom: 2px solid grey;
+}
+
+.headerCellSecondary {
+	font-size: 8pt;
+	text-align: center;
+	border-bottom: 1px solid grey;
+}
+
+.headerContainer {
+	overflow: hidden;
+}
+
+.headerText {
+	display: inline;
+	margin-left: 5px;
+}
+
+.headerWidget {
+	display: inline;
+	margin-left: 5px;
+}
+
+.spacer {
+	width: spacerWidth;
+	height: spacerHeight;
+	border-bottom: 2px solid grey;
+	border-right: 1px solid grey;
+}
+
+.selectorAddCell {
+	width: spacerWidth;
+	text-align: center;
+	border-bottom: 1px solid #C8C8C8;
+}
+
+.selectorDeleteCell {
+	width: spacerWidth;
+	text-align: center;
+	border-right: 1px solid grey;
+	border-bottom: 1px solid #C8C8C8;
+}
+
+.selectorControl {
+	display: inline;
+}
+
+@sprite .selectorAddImage {
+	gwt-image: "selectorAdd";
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: default;
+}
+
+@sprite .selectorAddImage:HOVER {
+	gwt-image: "selectorAddHover";
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: default;
+}
+
+@sprite .selectorDeleteImage {
+	gwt-image: "selectorDelete";
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: default;
+}
+
+@sprite .selectorDeleteImage:HOVER {
+	gwt-image: "selectorDeleteHover";
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: default;
+}
+
+.selectorToggle {
+	text-align: center;	
+}
