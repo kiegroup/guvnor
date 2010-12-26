@@ -18,6 +18,10 @@ package org.drools.guvnor.server.util;
 
 import java.io.StringReader;
 
+import org.drools.builder.DecisionTableConfiguration;
+import org.drools.builder.DecisionTableInputType;
+import org.drools.builder.KnowledgeBuilderFactory;
+import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
@@ -110,8 +114,16 @@ public class VerifierRunner {
         while ( assets.hasNext() ) {
             AssetItem asset = assets.next();
             if ( !asset.isArchived() && !asset.getDisabled() ) {
-                verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( asset.getContent() ) ),
+                if(resourceType == ResourceType.DTABLE) {
+                    DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
+                    dtableconfiguration.setInputType( DecisionTableInputType.XLS );
+                     
+                    verifier.addResourcesToVerify( ResourceFactory.newByteArrayResource( asset.getBinaryContentAsBytes() ),
+                            resourceType, (ResourceConfiguration) dtableconfiguration );
+                } else {
+                    verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( asset.getContent() ) ),
                                                resourceType );
+                }
             }
         }
     }
