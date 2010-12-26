@@ -22,8 +22,6 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.Iterator;
 
-import junit.framework.Assert;
-
 import net.sf.webdav.ITransaction;
 
 import org.apache.commons.io.IOUtils;
@@ -32,6 +30,8 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 import static org.junit.Assert.*;
 
@@ -685,7 +685,7 @@ public class WebDAVImplTest {
                 return;
             }
         }
-        Assert.fail( "Array did not contain " + string );
+        fail( "Array did not contain " + string );
     }
 
     static class TransactionMock

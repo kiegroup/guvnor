@@ -47,8 +47,8 @@ public class ScenarioHelperTest {
 
 	//want it in chunks
     @SuppressWarnings("unchecked")
-	@Test
-	public void testChunks() {
+    @Test
+    public void testChunks() {
 		List l = new ArrayList();
 		l.add(new FactData("Q", "x", new ArrayList(), false));
 		l.add(new FactData("Q", "y", new ArrayList(), false));
@@ -166,7 +166,7 @@ public class ScenarioHelperTest {
 	}
     @SuppressWarnings("unchecked")
     @Test
-	public void testGlobals() {
+    public void testGlobals() {
 		List l = new ArrayList();
 		l.add(new FactData("X", "d", new ArrayList(), true));
 		l.add(new FactData("X", "c", new ArrayList(), true));
@@ -190,7 +190,7 @@ public class ScenarioHelperTest {
     
     @SuppressWarnings("unchecked")
     @Test
-	public void testRemoveField() {
+    public void testRemoveField() {
 		List fieldData = new ArrayList();
 		fieldData.add(new FieldData("q", "1"));
 		fieldData.add(new FieldData("w", "2"));
@@ -218,7 +218,7 @@ public class ScenarioHelperTest {
 	}
     @SuppressWarnings("unchecked")
     @Test
-	public void testEmptyMap() {
+    public void testEmptyMap() {
 		//this should check that there is always a map present to force the GUI to show a "GIVEN" section.
 		List<Fixture> fl = new ArrayList<Fixture>();
 		fl.add(new FactData());

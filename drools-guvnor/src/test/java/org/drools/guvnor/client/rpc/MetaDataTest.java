@@ -39,7 +39,7 @@ import static org.junit.Assert.assertEquals;
 
 public class MetaDataTest {
 
-	@Test
+    @Test
     public void testAddCats() {
         MetaData data = new MetaData();
         data.addCategory( "new cat" );
@@ -54,6 +54,7 @@ public class MetaDataTest {
         assertEquals(2, data.categories.length);
     }
     
+    @Test
     public void testRemoveCats() {
         MetaData data = new MetaData();
         data.categories = new String[] {"wa", "la"};

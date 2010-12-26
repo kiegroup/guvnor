@@ -23,19 +23,19 @@ import org.junit.Test;
 
 public class ServletWrapperTest {
 
-	@Test
-	public void testMainService() {
+    @Test
+    public void testMainService() {
 		RepositoryServiceServlet serv = new RepositoryServiceServlet();
 		serv.listPackages();
 	}
 
-	@Test
-	public void testSecurityService() {
+    @Test
+    public void testSecurityService() {
 		SecurityServiceServlet serv = new SecurityServiceServlet();
 		serv.getCurrentUser();
 	}
 	
-	@After
+    @After
     public void tearDown() throws Exception {
 		MailboxService.getInstance().stop();
         TestEnvironmentSessionHelper.shutdown();

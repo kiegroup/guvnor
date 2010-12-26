@@ -251,11 +251,11 @@ public class FileManagerUtilsTest {
 
     }
 
-    @Test
     /**
      * 
      * Tests importing when an archived package with the same name exists.
      */
+    @Test
     public void testImportArchivedPackage() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
         fm.setRepository( new RulesRepository( session ) );

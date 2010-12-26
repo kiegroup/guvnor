@@ -50,7 +50,7 @@ import static org.junit.Assert.assertFalse;
 
 public class ContentHandlerTest {
 
-	@Test
+    @Test
     public void testContentFormat() {
         assertTrue(ContentManager.getHandler( AssetFormats.DRL ) instanceof DRLFileContentHandler);
         assertTrue(ContentManager.getHandler( AssetFormats.DSL ) instanceof DSLDefinitionContentHandler);
@@ -68,7 +68,7 @@ public class ContentHandlerTest {
 
     }
 
-	@Test
+    @Test
     public void testRuleAssetType() {
         assertTrue(ContentManager.getHandler( AssetFormats.DRL ).isRuleAsset());
         assertTrue(ContentManager.getHandler( AssetFormats.DSL_TEMPLATE_RULE ).isRuleAsset());
@@ -82,7 +82,7 @@ public class ContentHandlerTest {
         assertFalse(ContentManager.getHandler( AssetFormats.ENUMERATION ).isRuleAsset());
     }
 
-	@Test
+    @Test
     public void testValidating() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
         PackageItem pkg = repo.loadDefaultPackage();
@@ -105,7 +105,7 @@ public class ContentHandlerTest {
 
     }
 
-	@Test
+    @Test
     public void testEmptyDT() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
         PackageItem pkg = repo.loadDefaultPackage();
@@ -121,7 +121,7 @@ public class ContentHandlerTest {
 
     }
 
-	@Test
+    @Test
     public void testNameConvertion() {
     	assertEquals("com.foo.Bar", ModelContentHandler.convertPathToName("com/foo/Bar.class"));
     }

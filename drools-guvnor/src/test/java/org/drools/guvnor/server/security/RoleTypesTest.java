@@ -22,8 +22,8 @@ import org.junit.Test;
 
 public class RoleTypesTest {
 
-	@Test
-	public void testListAllTypes() {
+    @Test
+    public void testListAllTypes() {
 		String[] t = RoleTypes.listAvailableTypes();
 		assertEquals(6, t.length);
 		assertEquals("admin", t[0]);

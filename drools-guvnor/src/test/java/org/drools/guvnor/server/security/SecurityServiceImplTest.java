@@ -52,20 +52,20 @@ import org.junit.Test;
 
 public class SecurityServiceImplTest {
 
-	@Test
+    @Test
     public void testLogin() throws Exception {
         SecurityServiceImpl impl = new SecurityServiceImpl();
         assertTrue( impl.login( "XXX",
                                 null ) );
     }
 
-	@Test
+    @Test
     public void testUser() throws Exception {
         SecurityServiceImpl impl = new SecurityServiceImpl();
         assertNotNull( impl.getCurrentUser() );
     }
 
-	@Test
+    @Test
     public void testCapabilities() {
         SecurityServiceImpl impl = new SecurityServiceImpl();
 
@@ -73,7 +73,7 @@ public class SecurityServiceImplTest {
         assertTrue( c.list.size() > 1 );
     }
 
-	@Test
+    @Test
     public void testCapabilitiesWithContext() {
         SecurityServiceImpl impl = new SecurityServiceImpl();
 
@@ -128,7 +128,7 @@ public class SecurityServiceImplTest {
         Lifecycle.endApplication();
     }
 
-	@Test
+    @Test
     public void testCapabilitiesContext() throws Exception {
         SecurityServiceImpl impl = new SecurityServiceImpl();
 
@@ -148,7 +148,7 @@ public class SecurityServiceImplTest {
 
     }
 
-	@Test
+    @Test
     public void testPreferences() throws Exception {
         SecurityServiceImpl impl = new SecurityServiceImpl();
         assertNotNull( SecurityServiceImpl.PREFERENCES );

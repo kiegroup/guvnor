@@ -29,16 +29,16 @@ import static org.junit.Assert.assertEquals;
 
 public class CollectionsTest {
 
-	@Test
-	public void testList() {
+    @Test
+    public void testList() {
 		List<String> ls = List("a", "b", "c");
 		assertEquals(3, ls.size());
 		assertEquals("b", ls.get(1));
 	}
 
 	@SuppressWarnings("unchecked")
-	@Test
-	public void testMap() {
+    @Test
+    public void testMap() {
 		println("this is less verbose");
 		Map<String, String> mp = Map(
 				__("name", "michael"),

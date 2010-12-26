@@ -234,7 +234,7 @@ public class ServiceImplementationTest {
 
     }
 
-	@Test
+    @Test
     public void testCategory() throws Exception {
 
         RepositoryService impl = getService();
@@ -266,14 +266,14 @@ public class ServiceImplementationTest {
 
     }
 
-	@Test
+    @Test
     public void testCleanHTML() {
         ServiceImplementation impl = new ServiceImplementation();
         assertEquals( "&lt;script&gt;",
                       impl.cleanHTML( "<script>" ) );
     }
 
-	@Test
+    @Test
     public void testDeleteUnversionedRule() throws Exception {
         ServiceImplementation impl = getService();
 
@@ -315,7 +315,7 @@ public class ServiceImplementationTest {
         }
     }
 
-	@Test
+    @Test
     public void testAddRuleAndListPackages() throws Exception {
         // ServiceImpl impl = new ServiceImpl(new
         // RulesRepository(SessionHelper.getSession()));
@@ -369,7 +369,7 @@ public class ServiceImplementationTest {
         assertTrue( dtItem.getBinaryContentAttachmentFileName().endsWith( ".xls" ) );
     }
 
-	@Test
+    @Test
     public void testAttemptDupeRule() throws Exception {
         ServiceImplementation impl = getService();
         CategoryItem cat = impl.repository.loadCategory( "/" );
@@ -395,7 +395,7 @@ public class ServiceImplementationTest {
 
     }
 
-	@Test
+    @Test
     public void testCreateNewRule() throws Exception {
         ServiceImplementation impl = getService();
         impl.repository.createPackage( "testCreateNewRule",
@@ -417,7 +417,7 @@ public class ServiceImplementationTest {
                       "an initial desc" );
     }
 	
-	@Test
+    @Test
     public void testCreateLinkedAssetItem() throws Exception {
         ServiceImplementation impl = getService();
         @SuppressWarnings("unused")
@@ -503,7 +503,7 @@ public class ServiceImplementationTest {
         assertEquals( 1, size );
     }
 
-	@Test
+    @Test
     public void testLinkedAssetItemHistoryRelated() throws Exception {
         ServiceImplementation impl = getService();
         @SuppressWarnings("unused")
@@ -602,8 +602,8 @@ public class ServiceImplementationTest {
                       newHead.metaData.checkinComment );
     }
 
-	@Test
     //path name contains Apostrophe is no longer a problem with jackrabbit 2.0
+    @Test
     public void testCreateNewRuleContainsApostrophe() throws Exception {
         ServiceImplementation impl = getService();
         impl.repository.createPackage( "testCreateNewRuleContainsApostrophe",
@@ -632,7 +632,7 @@ public class ServiceImplementationTest {
     
     }
 
-	@Test
+    @Test
     public void testRuleTableLoad() throws Exception {
         ServiceImplementation impl = getService();
         TableConfig conf = impl.loadTableConfig( AssetItemGrid.RULE_LIST_TABLE_ID );
@@ -672,7 +672,7 @@ public class ServiceImplementationTest {
         assertTrue( result.data[0].values[0].startsWith( "testRuleTableLoad" ) );
     }
 
-	@Test
+    @Test
     public void testDateFormatting() throws Exception {
         Calendar cal = Calendar.getInstance();
         TableDisplayHandler handler = new TableDisplayHandler( AssetItemGrid.RULE_LIST_TABLE_ID );
@@ -682,7 +682,7 @@ public class ServiceImplementationTest {
         assertTrue( fmt.length() > 8 );
     }
 
-	@Test
+    @Test
     public void testLoadRuleAsset() throws Exception {
         ServiceImplementation impl = getService();
         impl.repository.createPackage( "testLoadRuleAsset",
@@ -765,6 +765,7 @@ public class ServiceImplementationTest {
         assertTrue( asset.content instanceof RuleContentText );
     }
     
+    @Test
     public void testListAssets() throws Exception {
         ServiceImplementation impl = getService();
         PackageItem pacakgeItem = impl.repository.createPackage("testListAssetsPackage",
@@ -818,6 +819,7 @@ public class ServiceImplementationTest {
 		assertTrue(res.hasNext);  
     }
     
+    @Test
     public void testLoadArchivedAssets() throws Exception {
         ServiceImplementation impl = getService();
         impl.repository.createPackage("testLoadArchivedAssetsPackage",
@@ -879,6 +881,7 @@ public class ServiceImplementationTest {
         assertTrue(res.hasNext);
     }
     
+    @Test
     public void testTrackRecentOpenedChanged() throws Exception {
         ServiceImplementation impl = getService();
         UserInbox ib = new UserInbox( impl.repository );
@@ -926,7 +929,7 @@ public class ServiceImplementationTest {
                       ib.loadRecentEdited().size() );
     }
 
-	@Test
+    @Test
     public void testLoadAssetHistoryAndRestore() throws Exception {
 		
         ServiceImplementation impl = getService();
@@ -990,7 +993,7 @@ public class ServiceImplementationTest {
 
     }
 
-	@Test
+    @Test
     public void testCheckin() throws Exception {
         ServiceImplementation serv = getService();
 
@@ -1088,7 +1091,7 @@ public class ServiceImplementationTest {
 
     }
 
-	@Test
+    @Test
     public void testArchivePackage() throws Exception {
         ServiceImplementation impl = getService();
 
@@ -1124,7 +1127,7 @@ public class ServiceImplementationTest {
                       arch.length );
     }
 
-	@Test
+    @Test
     public void testCreatePackage() throws Exception {
         ServiceImplementation impl = getService();
         PackageConfigData[] pkgs = impl.listPackages();
@@ -1160,7 +1163,7 @@ public class ServiceImplementationTest {
         }
     }
 
-	@Test
+    @Test
     public void testLoadPackageConfig() throws Exception {
         ServiceImplementation impl = getService();
         PackageItem it = impl.repository.loadDefaultPackage();
@@ -1205,7 +1208,7 @@ public class ServiceImplementationTest {
                       data.checkinComment );
     }
 
-	@Test
+    @Test
     public void testArchiveAndUnarchivePackageAndHeader() throws Exception {
         ServiceImplementation impl = getService();
         String uuid = impl.createPackage( "testArchiveAndUnarchivePackageAndHeader",
@@ -1249,7 +1252,7 @@ public class ServiceImplementationTest {
 
     }
 
-	@Test
+    @Test
     public void testPackageConfSave() throws Exception {
         RepositoryService impl = getService();
         String uuid = impl.createPackage( "testPackageConfSave",
@@ -1285,7 +1288,7 @@ public class ServiceImplementationTest {
         assertFalse( res.hasErrors );
     }
 
-	@Test
+    @Test
     public void testListByFormat() throws Exception {
         RepositoryService impl = getService();
         String cat = "testListByFormat";
@@ -1406,7 +1409,7 @@ public class ServiceImplementationTest {
                       result.data.length );
     }
 
-	@Test
+    @Test
     public void testListUnregisteredAssetFormats() throws Exception {
         ServiceImplementation impl = getService();
         PackageItem pkg = impl.repository.createPackage( "testListUnregisteredAssetFormats",
@@ -1430,7 +1433,7 @@ public class ServiceImplementationTest {
                       res.data.length );
     }
 
-	@Test
+    @Test
     public void testQuickFind() throws Exception {
         RepositoryService impl = getService();
         String cat = "testQuickFind";
@@ -1482,7 +1485,7 @@ public class ServiceImplementationTest {
 
     }
 
-	@Test
+    @Test
     public void testSearchText() throws Exception {
         ServiceImplementation impl = getService();
         String cat = "testTextSearch";
@@ -1505,7 +1508,7 @@ public class ServiceImplementationTest {
                       res.data.length );
     }
 
-	@Test
+    @Test
     public void testSearchMetaData() throws Exception {
         ServiceImplementation impl = getService();
         PackageItem pkg = impl.repository.createPackage( "testMetaDataSearch",
@@ -2263,11 +2266,11 @@ public class ServiceImplementationTest {
                       d_.size() );
     }
 
-    @Test
     /**
      * This will test creating a package, check it compiles, and can exectute
      * rules, then take a snapshot, and check that it reports errors.
      */
+    @Test
     public void testBinaryPackageCompileAndExecute() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -2341,12 +2344,12 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test
     /**
      * This will test creating a package with a BRL rule, check it compiles, and
      * can exectute rules, then take a snapshot, and check that it reports
      * errors.
      */
+    @Test
     public void testBinaryPackageCompileAndExecuteWithBRXML() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;
@@ -2476,12 +2479,12 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test
     /**
      * this loads up a precompile binary package. If this fails, then it means
      * it needs to be updated. It gets the package form the BRL example above.
      * Simply set saveBinPackage to true to save a new version of the RepoBinPackage.pkg.
      */
+    @Test
     public void testLoadAndExecBinary() throws Exception {
         Person p = new Person( "fubar" );
         BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
@@ -2960,10 +2963,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test
     /**
      * This idea of this is to not compile packages more then we have to.
      */
+    @Test
     public void testBinaryUpToDate() throws Exception {
         ServiceImplementation impl = getService();
         RulesRepository repo = impl.repository;

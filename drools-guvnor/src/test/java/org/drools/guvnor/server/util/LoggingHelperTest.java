@@ -25,8 +25,8 @@ import static org.junit.Assert.assertNotNull;
 
 public class LoggingHelperTest  {
 
-	@Test
-	public void testMessages() throws Exception {
+    @Test
+    public void testMessages() throws Exception {
 		final MessageList ml = new MessageList();
 
 		ml.add("heh",0);

@@ -42,7 +42,7 @@ import org.junit.Test;
 
 public class TableDisplayHandlerTest {
 
-	@Test
+    @Test
     public void testRowLoaders() throws Exception {
 
         RowLoader loader = new RowLoader("rulelist");

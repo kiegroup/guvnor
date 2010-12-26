@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 public class RepositoryServletTest {
 
     @Test
-	public void testAllowUser() throws Exception {
+    public void testAllowUser() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -51,7 +51,7 @@ public class RepositoryServletTest {
 	}
 	
     @Test
-	public void testAllowUserNoBasicAuthticationHeader() throws Exception {
+    public void testAllowUserNoBasicAuthticationHeader() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -70,7 +70,7 @@ public class RepositoryServletTest {
 	}
 
     @Test
-	public void testAllowUserNoBasicAuthticationHeaderNotAllowLogin() throws Exception {
+    public void testAllowUserNoBasicAuthticationHeaderNotAllowLogin() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -89,7 +89,7 @@ public class RepositoryServletTest {
 	}
 
     @Test
-	public void testAllowUserNotBasicAuthticationHeader() throws Exception {
+    public void testAllowUserNotBasicAuthticationHeader() throws Exception {
         //Mock up SEAM contexts
         Map application = new HashMap<String, Object>();
         Lifecycle.beginApplication( application );
@@ -108,7 +108,7 @@ public class RepositoryServletTest {
 	}
 
     @Test
-	public void testUnpack() {
+    public void testUnpack() {
 		String b42 = "BASIC " + new String( Base64.encode("user:pass".getBytes()) );
 		String[] d = RepositoryServlet.unpack(b42);
 		assertEquals("user", d[0]);

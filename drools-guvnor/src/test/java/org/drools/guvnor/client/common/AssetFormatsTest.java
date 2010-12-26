@@ -41,7 +41,7 @@ import org.junit.Test;
 
 public class AssetFormatsTest {
 
-	@Test
+    @Test
     public void testGrouping() {
         String[] formats = AssetFormats.BUSINESS_RULE_FORMATS;
         for ( int i = 0; i < formats.length; i++ ) {
@@ -61,7 +61,7 @@ public class AssetFormatsTest {
         }
     }
 
-	@Test
+    @Test
     public void testPackageDependencies() {
         assertFalse(AssetFormats.isPackageDependency(AssetFormats.BUSINESS_RULE));
         assertFalse(AssetFormats.isPackageDependency(AssetFormats.DRL));

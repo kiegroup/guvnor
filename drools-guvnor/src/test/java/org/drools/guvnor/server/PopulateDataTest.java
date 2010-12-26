@@ -72,7 +72,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class PopulateDataTest {
 
-	@Test
+    @Test
     public void testPopulate() throws Exception {
         ServiceImplementation serv = new ServiceImplementation();
         serv.repository = new RulesRepository(TestEnvironmentSessionHelper.getSession());
@@ -93,8 +93,8 @@ public class PopulateDataTest {
 
     }
 	
-	@After
-	public void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
     	TestEnvironmentSessionHelper.shutdown();
     }
 

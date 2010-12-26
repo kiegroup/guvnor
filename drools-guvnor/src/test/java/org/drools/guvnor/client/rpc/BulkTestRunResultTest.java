@@ -23,8 +23,8 @@ import static org.junit.Assert.assertTrue;
 
 public class BulkTestRunResultTest {
 
-	@Test
-	public void testPrinting() {
+    @Test
+    public void testPrinting() {
 		BulkTestRunResult res = new BulkTestRunResult();
 		assertNotNull(res.toString());
 

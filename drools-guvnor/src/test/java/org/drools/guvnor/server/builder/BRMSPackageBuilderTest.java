@@ -55,18 +55,13 @@ import static org.junit.Assert.assertTrue;
 
 public class BRMSPackageBuilderTest {
 
-   // Added this empty test so this class doesn't fail
-   public void testEmpty() {
-
-   }
-
    @Before
    public void setUp() {
        System.getProperties().remove( "drools.dialect.java.compiler" );
    }
 
-   @After
-   public void tearDown() {
+    @After
+    public void tearDown() {
        System.getProperties().remove( "drools.dialect.java.compiler" );
    }
 

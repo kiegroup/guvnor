@@ -38,7 +38,7 @@ import org.junit.Test;
 
 public class MetaDataMapperTest {
 
-	@Test
+    @Test
     public void testMapping() {
         MetaData data = new MetaData();
         assertEquals("", data.coverage);

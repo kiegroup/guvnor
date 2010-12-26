@@ -56,7 +56,7 @@ import static org.junit.Assert.*;
 public class PackageDeploymentServletTest {
 
     @Test @Ignore
-	public void testLoadingRules() throws Exception {
+    public void testLoadingRules() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
 
 		ServiceImplementation impl = new ServiceImplementation();
@@ -273,7 +273,7 @@ public class PackageDeploymentServletTest {
 	}
 
     @Test
-	public void testScenariosAndChangeSet() throws Exception {
+    public void testScenariosAndChangeSet() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
 
 		ServiceImplementation impl = new ServiceImplementation();

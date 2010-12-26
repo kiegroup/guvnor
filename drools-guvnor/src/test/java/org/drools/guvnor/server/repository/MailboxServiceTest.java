@@ -34,7 +34,7 @@ import org.junit.Test;
  */
 public class MailboxServiceTest {
 
-	@Test
+    @Test
     public void testMailbox() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
 
@@ -99,7 +99,7 @@ public class MailboxServiceTest {
 
     }
 
-	@Test
+    @Test
     public void testOneToMany() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
 
@@ -134,7 +134,7 @@ public class MailboxServiceTest {
 
     }
 	
-	@After
+    @After
     public void tearDown() throws Exception {
     	MailboxService.getInstance().stop();
         TestEnvironmentSessionHelper.shutdown();

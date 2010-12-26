@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
 public class RestAPIServletTest {
 
     @Test
-	public void testGet() throws Exception {        
+    public void testGet() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
 		PackageItem pkg = repo.createPackage("testGetRestServlet", "");
 		AssetItem ass = pkg.addAsset("asset1", "");
@@ -127,7 +127,7 @@ public class RestAPIServletTest {
 	}
 
     @Test
-	public void testPost() throws Exception {
+    public void testPost() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
 		PackageItem pkg = repo.createPackage("testPostRestServlet", "");
 
@@ -191,7 +191,7 @@ public class RestAPIServletTest {
 	}
 
     @Test
-	public void testPut() throws Exception {
+    public void testPut() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
 		PackageItem pkg = repo.createPackage("testPutRestServlet", "");
 		AssetItem ass = pkg.addAsset("asset1", "abc");
@@ -244,7 +244,7 @@ public class RestAPIServletTest {
 	}
 
     @Test
-	public void testDelete() throws Exception {
+    public void testDelete() throws Exception {
 		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
 		PackageItem pkg = repo.createPackage("testDeleteRestServlet", "");
 		AssetItem ass = pkg.addAsset("asset1", "abc");

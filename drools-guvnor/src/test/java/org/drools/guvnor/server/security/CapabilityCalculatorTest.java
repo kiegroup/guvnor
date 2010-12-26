@@ -31,8 +31,8 @@ import org.junit.Test;
 
 public class CapabilityCalculatorTest {
 
-	@Test
-	public void testAdmin() {
+    @Test
+    public void testAdmin() {
 		CapabilityCalculator loader = new CapabilityCalculator();
 		List<RoleBasedPermission> perms = new ArrayList<RoleBasedPermission>();
 		perms.add(new RoleBasedPermission("s", RoleTypes.ADMIN, null, null  ));
@@ -43,8 +43,8 @@ public class CapabilityCalculatorTest {
         assertSame(hm, caps.prefs);
 	}
 
-	@Test
-	public void testCapabilitiesCalculate() {
+    @Test
+    public void testCapabilitiesCalculate() {
 		Map<String,String> hm = new HashMap<String,String>();
 		CapabilityCalculator loader = new CapabilityCalculator();
 		List<RoleBasedPermission> perms = new ArrayList<RoleBasedPermission>();

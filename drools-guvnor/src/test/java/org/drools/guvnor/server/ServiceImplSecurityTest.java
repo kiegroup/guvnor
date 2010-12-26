@@ -51,8 +51,8 @@ import static org.junit.Assert.fail;
 
 public class ServiceImplSecurityTest {
 
-	@Test
-	public void testLoadRuleAssetAnalyst() throws Exception {
+    @Test
+    public void testLoadRuleAssetAnalyst() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			impl.repository.createPackage(
@@ -114,8 +114,8 @@ public class ServiceImplSecurityTest {
 		}
 	}
 
-	@Test
-	public void testLoadRuleAssetPackageReadonly() throws Exception {
+    @Test
+    public void testLoadRuleAssetPackageReadonly() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			String package1Name = "testLoadRuleAssetPackageReadonlyPack1"; 
@@ -178,9 +178,9 @@ public class ServiceImplSecurityTest {
 		}
 	}
 
-	@Test
 	// Access an asset that belongs to no category. No role permission defined. RoleBasedAuthorization is not enabled
-	public void testLoadRuleAssetNoCategory() throws Exception {
+    @Test
+    public void testLoadRuleAssetNoCategory() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			impl.repository.createPackage(
@@ -230,10 +230,10 @@ public class ServiceImplSecurityTest {
 		}
 	}
 
-	@Test
 	//Access an asset that belongs to no category.
 	//The user role is admin
-	public void testLoadRuleAssetNoCategoryPackageAdmin() throws Exception {
+    @Test
+    public void testLoadRuleAssetNoCategoryPackageAdmin() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			PackageItem packageItem = impl.repository.createPackage(
@@ -285,10 +285,10 @@ public class ServiceImplSecurityTest {
 		}
 	}
 
-	@Test
-	//Access an asset that belongs to no category. 
+	//Access an asset that belongs to no category.
 	//The user role is analyst
-	public void testLoadRuleAssetNoCategoryAnalystNegative() throws Exception {
+    @Test
+    public void testLoadRuleAssetNoCategoryAnalystNegative() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			PackageItem packageItem = impl.repository.createPackage(
@@ -353,10 +353,10 @@ public class ServiceImplSecurityTest {
 		}
 	}
 	
-	@Test
-	//Access an asset that belongs to no category. 
+	//Access an asset that belongs to no category.
 	//The user role is analyst
-	public void testLoadRuleAssetNoCategoryAnalystPositive() throws Exception {
+    @Test
+    public void testLoadRuleAssetNoCategoryAnalystPositive() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			PackageItem packageItem = impl.repository.createPackage(
@@ -417,8 +417,8 @@ public class ServiceImplSecurityTest {
 		}
 	}
 	
-	@Test
-	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategory()
+    @Test
+    public void testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategory()
 			throws Exception {
 		try {
 
@@ -487,11 +487,11 @@ public class ServiceImplSecurityTest {
 		}
 	}
 	
-	@Test
 	//Access an asset that belongs to no category. The user role is analyst and package.admin.
 	//Because the analyst role the user has has no category access to the asset,
 	//the permission can not be granted even though the package.admin role has package access.
-	public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixed() throws Exception {
+    @Test
+    public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixed() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			PackageItem packageItem = impl.repository.createPackage(
@@ -547,8 +547,8 @@ public class ServiceImplSecurityTest {
 		}
 	}
 
-	@Test
-	public void testCreateNewRule() throws Exception {
+    @Test
+    public void testCreateNewRule() throws Exception {
 		ServiceImplementation impl = getService();
 		impl.repository.createPackage("testSecurityCreateNewRule", "desc");
 		impl.createCategory("", "testSecurityCreateNewRule", "this is a cat");
@@ -584,8 +584,8 @@ public class ServiceImplSecurityTest {
 		Lifecycle.endApplication();
 	}
 
-	@Test
-	public void testCheckinWithPackageReadonly() throws Exception {
+    @Test
+    public void testCheckinWithPackageReadonly() throws Exception {
 		ServiceImplementation impl = getService();
 		String packageUuid = impl.createPackage(
 				"testCheckinWithPackageReadonlyPack", "desc");
@@ -638,8 +638,8 @@ public class ServiceImplSecurityTest {
 		Lifecycle.endApplication();
 	}
 
-	@Test
-	public void testCheckinPackageDeveloper() throws Exception {
+    @Test
+    public void testCheckinPackageDeveloper() throws Exception {
 		//try {
 			ServiceImplementation impl = getService();
 			String packageName = "testCheckinPackageDeveloperPack1";
@@ -699,8 +699,8 @@ public class ServiceImplSecurityTest {
 		//}
 	}
 
-	@Test
- 	public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyFilter() throws Exception {
+    @Test
+    public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyFilter() throws Exception {
  		try {
  			ServiceImplementation impl = getService();
  			String package3Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack3";
@@ -757,8 +757,8 @@ public class ServiceImplSecurityTest {
  		}
  	}
 
-	@Test
- 	public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter() throws Exception {
+    @Test
+    public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter() throws Exception {
  		try {
  			ServiceImplementation impl = getService();
 
@@ -829,8 +829,8 @@ public class ServiceImplSecurityTest {
  		}
  	}
 
-	@Test
- 	public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter2() throws Exception {
+    @Test
+    public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter2() throws Exception {
  		try {
  			ServiceImplementation impl = getService();
 
@@ -898,8 +898,8 @@ public class ServiceImplSecurityTest {
  		}
  	}
 
-	@Test
- 	public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter3() throws Exception {
+    @Test
+    public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter3() throws Exception {
  		try {
  			ServiceImplementation impl = getService();
 
@@ -967,8 +967,8 @@ public class ServiceImplSecurityTest {
  		}
  	}
 
-	@Test
- 	public void testTableDisplayHandler() throws Exception {
+    @Test
+    public void testTableDisplayHandler() throws Exception {
  		try {
  			ServiceImplementation impl = getService();
 
@@ -1049,9 +1049,9 @@ public class ServiceImplSecurityTest {
  		}
  	}
 
-	@Test
  	//BRMS-282: listPackages only returns packages that the user has package.readonly permission or higher
-	public void testListPackagesPackageAdminAndAnalyst() throws Exception {
+    @Test
+    public void testListPackagesPackageAdminAndAnalyst() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			String package1Name = "testListPackagesPackageAdminAndAnalystPack1";
@@ -1108,8 +1108,8 @@ public class ServiceImplSecurityTest {
 		}
 	}
 	
-	@Test
-	public void testLoadChildCategories() throws Exception {
+    @Test
+    public void testLoadChildCategories() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			String package1Name = "testLoadChildCategoriesPack1";
@@ -1160,8 +1160,8 @@ public class ServiceImplSecurityTest {
 		}
 	}
 
-	@Test
-	public void testloadRuleListForCategoriesPackageReadonly() throws Exception {
+    @Test
+    public void testloadRuleListForCategoriesPackageReadonly() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			String package1Name = "testloadRuleListForCategoriesPackageReadonlyPack1";
@@ -1224,8 +1224,8 @@ public class ServiceImplSecurityTest {
 		}
 	}
 
-	@Test
-	public void testloadRuleListForCategoriesPackageReadonlyPositive() throws Exception {
+    @Test
+    public void testloadRuleListForCategoriesPackageReadonlyPositive() throws Exception {
 		try {
 			ServiceImplementation impl = getService();
 			String package1Name = "testloadRuleListForCategoriesPackageReadonlyPositivePack1";
@@ -1299,7 +1299,7 @@ public class ServiceImplSecurityTest {
 		return impl;
 	}
 	
-	@After
+    @After
     public void tearDown() throws Exception {
         TestEnvironmentSessionHelper.shutdown();
     }

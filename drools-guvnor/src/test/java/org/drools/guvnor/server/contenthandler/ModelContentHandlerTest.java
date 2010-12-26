@@ -31,7 +31,7 @@ import org.junit.Test;
 
 public class ModelContentHandlerTest {
 
-	@Test
+    @Test
     public void testModelAttached() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
         PackageItem pacakge = repo.createPackage( "testModelAttachedPack",
@@ -49,7 +49,7 @@ public class ModelContentHandlerTest {
         assertTrue( header.indexOf( "package-info.class" ) == -1 );
     }
 
-	@Test
+    @Test
     public void testModelRemoved() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
         PackageItem pkg = repo.createPackage( "testModelRemovedPackage",

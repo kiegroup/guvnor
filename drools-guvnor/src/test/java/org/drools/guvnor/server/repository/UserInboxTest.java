@@ -32,7 +32,7 @@ import org.junit.Test;
  */
 public class UserInboxTest  {
 
-	@Test
+    @Test
     public void testInboxen() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         UserInbox inb = new UserInbox(repo);
@@ -81,7 +81,7 @@ public class UserInboxTest  {
 
     }
 
-	@Test
+    @Test
     public void testRead() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         UserInbox inb = new UserInbox(repo);
@@ -96,7 +96,7 @@ public class UserInboxTest  {
 
     }
 
-	@Test
+    @Test
     public void testDupes() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         UserInbox inb = new UserInbox(repo);
@@ -131,7 +131,7 @@ public class UserInboxTest  {
 
     }
 
-	@Test
+    @Test
     public void testHelper() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         UserInbox ib = new UserInbox(repo);
@@ -150,7 +150,7 @@ public class UserInboxTest  {
         assertEquals(asset.getUUID(), es.get(0).assetUUID);
     }
 
-	@Test
+    @Test
     public void testIncoming() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         AssetItem asset = repo.loadDefaultPackage().addAsset("testIncomingMarkedRead", "");

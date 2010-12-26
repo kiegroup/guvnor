@@ -22,8 +22,8 @@ import org.junit.Test;
 
 public class AssetFormatHelperTest {
 
-	@Test
-	public void testGetRegisteredAssetFormats() {
+    @Test
+    public void testGetRegisteredAssetFormats() {
 		String[] ls = AssetFormatHelper.listRegisteredTypes();
 		assertTrue(ls.length > 1);
 	}

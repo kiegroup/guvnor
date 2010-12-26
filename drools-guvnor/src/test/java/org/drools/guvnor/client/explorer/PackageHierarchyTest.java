@@ -26,8 +26,8 @@ import org.junit.Test;
 
 public class PackageHierarchyTest {
 
-	@Test
-	public void testSimple() {
+    @Test
+    public void testSimple() {
 		PackageHierarchy h = new PackageHierarchy();
 		h.addPackage(new PackageConfigData("com.foo"));
 		Folder root = h.root;
@@ -81,8 +81,8 @@ public class PackageHierarchyTest {
 
 	}
 
-	@Test
-	public void testComplex() {
+    @Test
+    public void testComplex() {
 
 		PackageHierarchy h = new PackageHierarchy();
 		h.addPackage(new PackageConfigData("com.bar"));

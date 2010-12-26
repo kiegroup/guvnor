@@ -29,7 +29,7 @@ import org.junit.Test;
  */
 public class AssetLockManagerTest {
 
-	@Test
+    @Test
     public void testLockAndUnlock() throws Exception {
         AssetLockManager alm = new AssetLockManager();
 
@@ -53,7 +53,7 @@ public class AssetLockManagerTest {
 
     }
 
-	@Test
+    @Test
     public void testLockAndOverWritelock() throws Exception {
         AssetLockManager alm = new AssetLockManager();
 

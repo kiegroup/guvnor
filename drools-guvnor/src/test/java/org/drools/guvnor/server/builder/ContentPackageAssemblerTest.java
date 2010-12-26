@@ -69,7 +69,7 @@ public class ContentPackageAssemblerTest {
      * Test package configuration errors,
      * including header, functions, DSL files.
      */
-	@Test
+    @Test
     public void testPackageConfigWithErrors() throws Exception {
         //test the config, no rule assets yet
         RulesRepository repo = getRepo();
@@ -158,7 +158,7 @@ public class ContentPackageAssemblerTest {
         assertNotEmpty( assembler.getErrors().get( 0 ).getErrorReport() );
     }
 
-	@Test
+    @Test
     public void testLoadConfProperties () throws Exception {
 
         RulesRepository repo = getRepo();
@@ -202,7 +202,7 @@ public class ContentPackageAssemblerTest {
     }
 
 
-	@Test
+    @Test
     public void testPackageWithRuleflow() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -266,7 +266,7 @@ public class ContentPackageAssemblerTest {
                       ((Class<?>) o2).getName() );
     }
 
-	@Test
+    @Test
     public void testWithNoDeclaredTypes() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -283,7 +283,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-	@Test
+    @Test
     public void testSimplePackageWithDeclaredTypes() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -326,7 +326,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-	@Test
+    @Test
     public void testSimplePackageBuildNoErrors() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -391,7 +391,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-	@Test
+    @Test
     public void testIgnoreArchivedItems() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -437,7 +437,7 @@ public class ContentPackageAssemblerTest {
      * This this case we will test errors that occur in rule assets,
      * not in functions or package header.
      */
-	@Test
+    @Test
     public void testErrorsInRuleAsset() throws Exception {
 
         RulesRepository repo = getRepo();
@@ -477,7 +477,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-	@Test
+    @Test
     public void testEventingExample() throws Exception {
 
         RulesRepository repo = getRepo();
@@ -513,7 +513,7 @@ public class ContentPackageAssemblerTest {
      * This time, we mix up stuff a bit
      *
      */
-	@Test
+    @Test
     public void testRuleAndDSLAndFunction() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -578,7 +578,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-	@Test
+    @Test
     public void testShowSource() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -645,7 +645,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-	@Test
+    @Test
     public void testBuildPackageWithEmptyHeader() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -672,7 +672,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-	@Test
+    @Test
     public void testSkipDisabledPackageStuff() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -700,7 +700,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-	@Test
+    @Test
     public void testSkipDisabledAssets() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -757,7 +757,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-	@Test
+    @Test
     public void testXLSDecisionTable() throws Exception {
 
         RulesRepository repo = getRepo();
@@ -827,7 +827,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-	@Test
+    @Test
     public void testSkipDisabledImports() throws Exception {
 
         RulesRepository repo = getRepo();
@@ -856,7 +856,7 @@ public class ContentPackageAssemblerTest {
                                  2 ) == -1 ); //skip a few, make sure we only have one instance of "package "
     }
 
-	@Test
+    @Test
     public void testBRXMLWithDSLMixedIn() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -932,7 +932,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-	@Test
+    @Test
     public void testCustomSelector() throws Exception {
         RulesRepository repo = getRepo();
 

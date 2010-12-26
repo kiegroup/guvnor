@@ -40,7 +40,7 @@ import org.junit.Test;
 
 public class DRLFileContentHandlerTest {
 
-	@Test
+    @Test
     public void testSniffDRLType() throws Exception {
 
         // in this case we have package, and N rules
@@ -74,14 +74,14 @@ public class DRLFileContentHandlerTest {
 
     }
 
-	@Test
+    @Test
     public void testRuleWithDialect() {
         String rule = "rule \"DemoRule\" \n " + "    salience 10 \n" + "    dialect \"mvel\" \n " + " when \n" + " Driver( age > 65 ) \n" + " then \n" + " insert(new Rejection(\" too old \"));" + "end ";
         assertFalse( DRLFileContentHandler.isStandAloneRule( rule ) );
         assertFalse( DRLFileContentHandler.isStandAloneRule( "" ) );
     }
 
-	@Test
+    @Test
     public void testStandAlone() throws Exception {
         String rule = "when \nFoo()\nthen\n\tbar()";
         DRLFileContentHandler h = new DRLFileContentHandler();
@@ -108,7 +108,7 @@ public class DRLFileContentHandlerTest {
      * Tests a rule that inherits another.
      * @throws Exception 
      */
-	@Test
+    @Test
     public void testStandAloneWithExtends() throws Exception {
         String rule = "when \nFoo()\nthen\n\tbar()";
         DRLFileContentHandler h = new DRLFileContentHandler();
@@ -127,7 +127,7 @@ public class DRLFileContentHandlerTest {
 
     }
 
-	@Test
+    @Test
     public void testRuleWithRuleFlowGroup() {
         String rule = "rule \"DemoRule\" \n " + "    ruleflow-group \"name-of-ruleflow\"  \n" + "    dialect \"mvel\" \n " + " when \n" + " Driver( age > 65 ) \n" + " then \n" + " insert(new Rejection(\" too old \"));" + "end ";
         assertFalse( DRLFileContentHandler.isStandAloneRule( rule ) );

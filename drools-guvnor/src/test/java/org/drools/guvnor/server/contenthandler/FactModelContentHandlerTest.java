@@ -39,7 +39,7 @@ import org.junit.Test;
 
 public class FactModelContentHandlerTest {
 
-	@Test
+    @Test
     public void testToDrl() {
 
         List<FieldMetaModel> fields = new ArrayList<FieldMetaModel>();
@@ -66,7 +66,7 @@ public class FactModelContentHandlerTest {
         assertTrue(drl.indexOf("BooBah") > drl.indexOf("FooBar"));
     }
 
-	@Test
+    @Test
     public void testFromDrl()  throws Exception {
     	String drl = "declare FooBar\n\tf1: int\n\tf2: String\nend";
 
@@ -99,7 +99,7 @@ public class FactModelContentHandlerTest {
 
     }
 
-	@Test
+    @Test
     public void testAdvanced() throws Exception {
 
     	String drl = "#advanced editor \ndeclare FooBar\n\t name: String  \nend";
@@ -112,7 +112,7 @@ public class FactModelContentHandlerTest {
     	}
     }
 
-	@Test
+    @Test
     public void testFromEmptyDrl() throws Exception {
     	String drl = "";
 
@@ -123,7 +123,7 @@ public class FactModelContentHandlerTest {
 
     }
 
-	@Test
+    @Test
     public void testStore() throws Exception {
     	FactModelContentHandler ch = new FactModelContentHandler();
 

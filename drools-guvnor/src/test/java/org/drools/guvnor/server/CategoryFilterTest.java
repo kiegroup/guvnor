@@ -22,8 +22,8 @@ import static org.junit.Assert.assertEquals;
 
 public class CategoryFilterTest {
 
-	@Test
-	public void testMakePath() {
+    @Test
+    public void testMakePath() {
 		CategoryFilter filter = new CategoryFilter();
 		assertEquals("HR", filter.makePath("/", "HR"));
 		assertEquals("HR", filter.makePath(null, "HR"));

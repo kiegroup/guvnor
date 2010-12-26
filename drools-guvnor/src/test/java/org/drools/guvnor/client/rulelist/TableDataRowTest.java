@@ -38,7 +38,7 @@ import org.junit.Test;
 
 public class TableDataRowTest {
 
-	@Test
+    @Test
     public void testRow() {
         TableDataRow row = new TableDataRow();
         row.id = "HJKHFKJHFDJS";

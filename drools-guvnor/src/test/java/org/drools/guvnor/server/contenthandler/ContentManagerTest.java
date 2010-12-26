@@ -24,8 +24,8 @@ import org.junit.Test;
 
 public class ContentManagerTest {
 
-	@Test
-	public void testConfig() throws Exception {
+    @Test
+    public void testConfig() throws Exception {
 		ContentManager mgr = ContentManager.getInstance();
 		ContentManager mgr_ = ContentManager.getInstance();
 		assertSame(mgr, mgr_);

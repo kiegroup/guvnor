@@ -26,8 +26,8 @@ import org.junit.Test;
 
 public class PackageHeaderWidgetTest {
 
-	@Test
-	public void testEmpty() {
+    @Test
+    public void testEmpty() {
 
 		PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(null);
 		assertNotNull(t);
@@ -41,8 +41,8 @@ public class PackageHeaderWidgetTest {
 
 	}
 
-	@Test
-	public void testImports() {
+    @Test
+    public void testImports() {
 		String s = "import goo.bar.Whee;\n\nimport wee.waah.Foo\nimport nee.Nah";
 		PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(s);
 		assertNotNull(t);
@@ -62,8 +62,8 @@ public class PackageHeaderWidgetTest {
 
 	}
 
-	@Test
-	public void testGlobals() {
+    @Test
+    public void testGlobals() {
 		String s = "global goo.bar.Whee x;\n\nglobal wee.waah.Foo asd\nglobal nee.Nah d";
 		PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(s);
 		assertNotNull(t);
@@ -87,8 +87,8 @@ public class PackageHeaderWidgetTest {
 
 	}
 
-	@Test
-	public void testGlobalsImports() {
+    @Test
+    public void testGlobalsImports() {
 		String s = "import goo.bar.Whee;\n\nglobal wee.waah.Foo asd";
 		PackageHeaderWidget.Types t = PackageHeaderHelper.parseHeader(s);
 		assertNotNull(t);
@@ -105,15 +105,15 @@ public class PackageHeaderWidgetTest {
 
 	}
 
-	@Test
-	public void testAdvanced() {
+    @Test
+    public void testAdvanced() {
 		String s = "import goo.bar.Whee;\nglobal Wee waa;\n \nsomething else maybe dialect !";
 		assertEquals(null, PackageHeaderHelper.parseHeader(s));
 	}
 
 	@SuppressWarnings("unchecked")
-	@Test
-	public void testRenderTypes() {
+    @Test
+    public void testRenderTypes() {
 		Types t = new Types();
 		t.imports.add(new Import("foo.bar.Baz"));
 		String h = PackageHeaderHelper.renderTypes(t);

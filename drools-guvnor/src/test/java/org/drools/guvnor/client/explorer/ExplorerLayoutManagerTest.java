@@ -31,7 +31,7 @@ import org.junit.Test;
 
 public class ExplorerLayoutManagerTest {
 	
-	@Test
+    @Test
     public void testHistoryToken() {
     	//TODO (JLIU):
 /*        ExplorerLayoutManager.BookmarkInfo bi = ExplorerLayoutManager.handleHistoryToken("");

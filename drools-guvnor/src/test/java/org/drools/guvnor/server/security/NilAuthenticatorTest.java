@@ -22,8 +22,8 @@ import org.junit.Test;
 
 public class NilAuthenticatorTest {
 
-	@Test
-	public void testAdmin() {
+    @Test
+    public void testAdmin() {
 		NilAuthenticator ni = new NilAuthenticator();
 
 		assertTrue(ni.authenticate());

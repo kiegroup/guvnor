@@ -28,7 +28,7 @@ import org.junit.Test;
 
 public class BuiltInSelectorTest {
 
-	@Test
+    @Test
     public void testBuiltInSelector() throws Exception {
 		ServiceImplementation impl = getService();
 		impl.repository.loadDefaultPackage();

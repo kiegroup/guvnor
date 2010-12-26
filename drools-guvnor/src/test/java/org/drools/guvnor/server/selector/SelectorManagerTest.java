@@ -27,7 +27,7 @@ import static org.junit.Assert.assertSame;
 
 public class SelectorManagerTest {
 
-	@Test
+    @Test
     public void testSelectorMangerConfig() {
     	SelectorManager sm = new SelectorManager("/selectors-test.properties");
         assertNotNull(sm);
@@ -67,7 +67,7 @@ public class SelectorManagerTest {
         assertSame( SelectorManager.getInstance(), SelectorManager.getInstance());
     }
 
-	@Test
+    @Test
     public void testGetBuiltInSelector() {
     	SelectorManager sm = new SelectorManager("/selectors-test.properties");
         assertNotNull(sm);
@@ -76,7 +76,7 @@ public class SelectorManagerTest {
         assertTrue(sm.getSelector( "BuiltInSelector" ) instanceof BuiltInSelector);
     }
     
-	@Test
+    @Test
     public void testGetCustomSelectors() {
     	SelectorManager sm = new SelectorManager("/selectors-test.properties");
         assertNotNull(sm);
@@ -85,7 +85,7 @@ public class SelectorManagerTest {
         assertEquals(2, sm.getCustomSelectors().length);
     }
     
-	@Test
+    @Test
     public void testBadConfig() throws Exception {
         SelectorManager sm = new SelectorManager("/badselectors.properties");
         assertNotNull(sm);

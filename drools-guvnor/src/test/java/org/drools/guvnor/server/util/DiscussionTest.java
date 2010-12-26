@@ -31,7 +31,7 @@ import org.junit.Test;
  */
 public class DiscussionTest {
 
-	@Test
+    @Test
     public void testPersist() throws InterruptedException {
         DiscussionRecord dr = new DiscussionRecord();
         dr.author = "mic";

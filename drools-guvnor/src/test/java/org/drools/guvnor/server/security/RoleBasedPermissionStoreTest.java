@@ -45,8 +45,8 @@ import org.junit.Test;
 
 public class RoleBasedPermissionStoreTest {
 	
-	@Test
-	public void testGetRoleBasedPermissionsByUserName() throws Exception {
+    @Test
+    public void testGetRoleBasedPermissionsByUserName() throws Exception {
 		RoleBasedPermissionStore store = getStore();
 	
 		store.addRoleBasedPermissionForTesting("jervis", new RoleBasedPermission("jervis", RoleTypes.PACKAGE_ADMIN, "package1Name", null));

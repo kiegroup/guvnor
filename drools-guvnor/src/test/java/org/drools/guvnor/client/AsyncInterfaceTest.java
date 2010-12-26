@@ -53,7 +53,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class AsyncInterfaceTest {
 
-	@Test
+    @Test
     public void testService() throws Exception {
     	try {
 	        checkService( RepositoryService.class, RepositoryServiceAsync.class );

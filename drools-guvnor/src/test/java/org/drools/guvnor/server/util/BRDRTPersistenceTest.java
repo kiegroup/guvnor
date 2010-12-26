@@ -47,13 +47,13 @@ public class BRDRTPersistenceTest {
 		p = BRDRTPersistence.getInstance();
 	}
 
-	@After
-	public void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
 		p = null;
 	}
 	
-	@Test
-	public void testGenerateEmptyDRL() {
+    @Test
+    public void testGenerateEmptyDRL() {
 		String expected = 
 				"rule \"null_0\"\n" + 
 				"	dialect \"mvel\"\n" + 
@@ -68,7 +68,8 @@ public class BRDRTPersistenceTest {
 		assertEquals(expected, drl);
 	}
 
-	public void testEmptyData() {
+    @Test
+    public void testEmptyData() {
 		String expected = 
 				"rule \"with composite_0\"\n" + 
 				"	dialect \"mvel\"\n" + 
@@ -99,8 +100,8 @@ public class BRDRTPersistenceTest {
         assertEquals(expected, drl);
 	}
 
-	@Test
-	public void testFreeFormLine() {
+    @Test
+    public void testFreeFormLine() {
 		String expected = 
 			"rule \"with composite_1\"\n" + 
 			"	dialect \"mvel\"\n" + 
@@ -163,8 +164,8 @@ public class BRDRTPersistenceTest {
 		assertEquals(expected, drl);
 	}
 
-	@Test
-	public void testEmptyDataWithRHS() {
+    @Test
+    public void testEmptyDataWithRHS() {
 		String expected = 
 				"rule \"with composite_1\"\n" + 
 				"	dialect \"mvel\"\n" + 
@@ -220,8 +221,8 @@ public class BRDRTPersistenceTest {
         assertEquals(expected, drl);
 	}
 	
-	@Test
-	public void testWithData() {
+    @Test
+    public void testWithData() {
 		String expected = 
 				"rule \"with composite_1\"\n" + 
 				"	dialect \"mvel\"\n" + 
@@ -265,8 +266,8 @@ public class BRDRTPersistenceTest {
 
 	}
 	
-	@Test
-	public void testRemoveWithData() {
+    @Test
+    public void testRemoveWithData() {
 		String expected = 
 				"rule \"with composite_1\"\n" + 
 				"	dialect \"mvel\"\n" + 
@@ -315,8 +316,8 @@ public class BRDRTPersistenceTest {
 
 	}
 	
-	@Test
-	public void testWithDataAndSync() {
+    @Test
+    public void testWithDataAndSync() {
         TemplateModel m = new TemplateModel();
         m.name = "with composite";
         m.lhs = new IPattern[1];

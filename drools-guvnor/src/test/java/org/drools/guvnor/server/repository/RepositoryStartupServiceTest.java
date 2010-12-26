@@ -42,7 +42,7 @@ import static org.junit.Assert.assertNotSame;
 
 public class RepositoryStartupServiceTest {
 
-	@Test
+    @Test
     public void testConfiguration() throws Exception {
         
         RepositoryStartupService config = new RepositoryStartupService();

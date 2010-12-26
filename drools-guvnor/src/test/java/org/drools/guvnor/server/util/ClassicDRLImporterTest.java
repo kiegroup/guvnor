@@ -47,7 +47,7 @@ import org.junit.Test;
 
 public class ClassicDRLImporterTest {
 
-	@Test
+    @Test
     public void testStandardDRL() throws Exception {
 
         ClassicDRLImporter imp = new ClassicDRLImporter( getDrl( "sample_legacy.drl" ) );
@@ -76,7 +76,7 @@ public class ClassicDRLImporterTest {
 
     }
 
-	@Test
+    @Test
     public void testStandardWithQuotes() throws Exception {
         ClassicDRLImporter imp = new ClassicDRLImporter( getDrl( "sample_legacy_quotes.drl" ) );
         assertEquals( "foo",
@@ -86,7 +86,7 @@ public class ClassicDRLImporterTest {
         assertEquals(-1, imp.getAssets().get(0).name.indexOf("'"));
     }
 
-	@Test
+    @Test
     public void testWithFunction() throws Exception {
         //    	Pattern p = Pattern.compile("function\\s+.*\\s+(.*)\\(.*\\).*");
         //    	Matcher m = p.matcher("function void fooBar() {");
@@ -137,7 +137,7 @@ public class ClassicDRLImporterTest {
 
     }
 
-	@Test
+    @Test
     public void testWithDSL() throws Exception {
 
         ClassicDRLImporter imp = new ClassicDRLImporter( getDrl( "sample_legacy_with_dsl.drl" ) );
@@ -163,7 +163,7 @@ public class ClassicDRLImporterTest {
 
     }
 
-	@Test
+    @Test
     public void testComplexExample() throws Exception {
         ClassicDRLImporter imp = new ClassicDRLImporter( getDrl( "sample_complex.drl" ) );
         assertFalse( imp.isDSLEnabled() );
@@ -188,7 +188,7 @@ public class ClassicDRLImporterTest {
                       cleanActual );
     }
 
-	@Test
+    @Test
     public void testMergeHeader() {
         String header = "import foo.bar\nimport wee.waa\n\nglobal goo.ber baz\n";
         String toMerge = "import ninja\nimport foo.bar\nimport slack.bladder\n\nimport wee.waa";

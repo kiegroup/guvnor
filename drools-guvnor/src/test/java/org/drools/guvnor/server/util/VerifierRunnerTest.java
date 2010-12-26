@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.server.util;
 
-import junit.framework.Assert;
-
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -28,6 +26,8 @@ import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class VerifierRunnerTest {
 
@@ -52,8 +52,8 @@ public class VerifierRunnerTest {
                                                        new ScopesAgendaFilter( true,
                                                                                ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE ) );
 
-        Assert.assertNotNull( report );
-        Assert.assertEquals( 1,
+        assertNotNull( report );
+        assertEquals( 1,
                              report.warnings.length );
 
         System.out.println( report.warnings[0].description );

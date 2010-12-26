@@ -18,17 +18,17 @@ package org.drools.guvnor.client.decisiontable;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class DecisionTableHandlerTest {
 
-	@Test
+    @Test
     public void testMoveAttribute() {
 
         GuidedDecisionTable dt = new GuidedDecisionTable();
@@ -98,7 +98,7 @@ public class DecisionTableHandlerTest {
 
     }
 
-	@Test
+    @Test
     public void testMoveCondition() {
         
         GuidedDecisionTable dt = new GuidedDecisionTable();
@@ -170,7 +170,7 @@ public class DecisionTableHandlerTest {
         
     }
 
-	@Test
+    @Test
     public void testMoveAction() {
         
         GuidedDecisionTable dt = new GuidedDecisionTable();
@@ -283,12 +283,12 @@ class Order {
     static void assertActionOrder(List<ActionCol> cols,
                                   String[] list) {
 
-        Assert.assertEquals( "Needs to be of the same size.",
+        assertEquals( "Needs to be of the same size.",
                              list.length,
                              cols.size() );
 
         for ( int i = 0; i < list.length; i++ ) {
-            Assert.assertEquals( cols.get( i ).getHeader(),
+            assertEquals( cols.get( i ).getHeader(),
                                  list[i] );
         }
     }
@@ -296,7 +296,7 @@ class Order {
     public static void assertDataOrder(String[][] data1,
                                        String[][] data2) {
 
-        Assert.assertEquals( "Needs to be of the same size.",
+        assertEquals( "Needs to be of the same size.",
                              data1.length,
                              data2.length );
 
@@ -304,12 +304,12 @@ class Order {
             String[] row1 = data1[i];
             String[] row2 = data2[i];
 
-            Assert.assertEquals( "Needs to be of the same size.",
+            assertEquals( "Needs to be of the same size.",
                                  row1.length,
                                  row2.length );
 
             for ( int j = 0; j < row1.length; j++ ) {
-                Assert.assertEquals( row2[j],
+                assertEquals( row2[j],
                                      row1[j] );
             }
         }
@@ -319,12 +319,12 @@ class Order {
     static void assertAttributeOrder(List<AttributeCol> cols,
                                      String[] list) {
 
-        Assert.assertEquals( "Needs to be of the same size.",
+        assertEquals( "Needs to be of the same size.",
                              list.length,
                              cols.size() );
 
         for ( int i = 0; i < list.length; i++ ) {
-            Assert.assertEquals( cols.get( i ).attr,
+            assertEquals( cols.get( i ).attr,
                                  list[i] );
         }
     }
@@ -332,12 +332,12 @@ class Order {
     static void assertConditionOrder(List<ConditionCol> cols,
                                      String[] list) {
 
-        Assert.assertEquals( "Needs to be of the same size.",
+        assertEquals( "Needs to be of the same size.",
                              list.length,
                              cols.size() );
 
         for ( int i = 0; i < list.length; i++ ) {
-            Assert.assertEquals( cols.get( i ).getHeader(),
+            assertEquals( cols.get( i ).getHeader(),
                                  list[i] );
         }
     }

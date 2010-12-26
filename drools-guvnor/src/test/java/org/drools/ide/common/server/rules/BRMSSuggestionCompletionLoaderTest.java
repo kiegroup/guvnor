@@ -54,7 +54,7 @@ import org.junit.Test;
 
 public class BRMSSuggestionCompletionLoaderTest {
 
-	@Test
+    @Test
     public void testLoader() throws Exception {
 
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
@@ -71,7 +71,7 @@ public class BRMSSuggestionCompletionLoaderTest {
 
     }
 
-	@Test
+    @Test
     public void testLoaderWithComplexFields() throws Exception {
 
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
@@ -108,7 +108,7 @@ public class BRMSSuggestionCompletionLoaderTest {
 
     }
 
-	@Test
+    @Test
     public void testStripUnNeededFields() {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         String[] result = loader.removeIrrelevantFields( Arrays.asList(new String[] {"foo", "toString", "class", "hashCode"} ));
@@ -116,7 +116,7 @@ public class BRMSSuggestionCompletionLoaderTest {
         assertEquals("foo", result[0]);
     }
 
-	@Test
+    @Test
     public void testGetShortNameOfClass() {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
@@ -155,7 +155,7 @@ public class BRMSSuggestionCompletionLoaderTest {
         assertEquals( SuggestionCompletionEngine.TYPE_DATE, fieldType );
     }
 
-	@Test
+    @Test
     public void testDeclaredTypes() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         PackageItem item = repo.createPackage( "testLoaderDeclaredTypes", "to test the loader for declared types" );
@@ -183,7 +183,7 @@ public class BRMSSuggestionCompletionLoaderTest {
         assertEquals("String", engine.getFieldType("Car", "name"));
     }
 
-	@Test
+    @Test
     public void testLoadDSLs() throws Exception {
         String dsl = "[when]The agents rating is {rating}=doNothing()\n[then]Send a notification to manufacturing '{message}'=foo()";
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
@@ -208,7 +208,7 @@ public class BRMSSuggestionCompletionLoaderTest {
 
     }
 
-	@Test
+    @Test
     public void testLoadEnumerations() throws Exception {
         String enumeration = "'Person.sex' : ['M', 'F']";
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
@@ -236,7 +236,7 @@ public class BRMSSuggestionCompletionLoaderTest {
 
     }
 
-	@Test
+    @Test
     public void testErrors() throws Exception {
         RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession());
         PackageItem item = repo.createPackage( "testErrorsInPackage", "to test error handling" );
@@ -281,7 +281,7 @@ public class BRMSSuggestionCompletionLoaderTest {
 
     }
 	
-	@After
+    @After
     public void tearDown() throws Exception {
     	TestEnvironmentSessionHelper.shutdown();
     }

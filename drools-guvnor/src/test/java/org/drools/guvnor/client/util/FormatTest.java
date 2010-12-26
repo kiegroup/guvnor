@@ -16,9 +16,9 @@
 
 package org.drools.guvnor.client.util;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * �
@@ -34,7 +34,7 @@ public class FormatTest {
         String result = Format.format( test,
                                        "hello" );
 
-        Assert.assertEquals( "test hello",
+        assertEquals( "test hello",
                              result );
     }
 
@@ -45,7 +45,7 @@ public class FormatTest {
         String result = Format.format( test,
                                        new String[]{"hello", "toni"} );
 
-        Assert.assertEquals( "test hello toni",
+        assertEquals( "test hello toni",
                              result );
 
     }
@@ -57,7 +57,7 @@ public class FormatTest {
         String result = Format.format( test,
                                        123456 );
 
-        Assert.assertEquals( "number: 123456 ",
+        assertEquals( "number: 123456 ",
                              result );
 
     }
@@ -72,7 +72,7 @@ public class FormatTest {
                                        42,
                                        44 );
 
-        Assert.assertEquals( "Lotto numbers are: 4, 12, 42, 44 ",
+        assertEquals( "Lotto numbers are: 4, 12, 42, 44 ",
                              result );
 
     }
@@ -86,7 +86,7 @@ public class FormatTest {
                                        "tripleFormat",
                                        "Toni" );
 
-        Assert.assertEquals( "Hello, this test called tripleFormat was created by Toni",
+        assertEquals( "Hello, this test called tripleFormat was created by Toni",
                              result );
     }
 
@@ -97,9 +97,9 @@ public class FormatTest {
         String result = Format.format( test,
                                        new String[]{"Hello", "Toni"} );
 
-        Assert.assertNotNull( result );
+        assertNotNull( result );
 
-        Assert.assertEquals( "Hello, this test called Toni was created by {2}",
+        assertEquals( "Hello, this test called Toni was created by {2}",
                              result );
     }
     @Test
@@ -109,7 +109,7 @@ public class FormatTest {
         String result = Format.format( test,
                                        "tt" );
 
-        Assert.assertEquals( "number:",
+        assertEquals( "number:",
                              result );
 
     }

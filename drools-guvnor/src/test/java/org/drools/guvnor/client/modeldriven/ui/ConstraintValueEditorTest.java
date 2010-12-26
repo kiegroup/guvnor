@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ConstraintValueEditorTest {
 
-	@Test
+    @Test
     public void testSplit() {
         String[] res = ConstraintValueEditorHelper.splitValue( "M=Male" );
         assertEquals( "M",
