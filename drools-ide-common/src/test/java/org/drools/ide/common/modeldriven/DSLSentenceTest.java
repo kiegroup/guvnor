@@ -16,12 +16,16 @@
 
 package org.drools.ide.common.modeldriven;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 
-public class DSLSentenceTest extends TestCase {
+public class DSLSentenceTest {
 
+    @Test
     public void testSentence() {
 
         final DSLSentence sen = new DSLSentence();
@@ -39,18 +43,21 @@ public class DSLSentenceTest extends TestCase {
                       sen.sentence );
     }
 
+    @Test
     public void testEnumSentence(){
         final DSLSentence sen = new DSLSentence();
         sen.sentence = "this is {variable:ENUM:Value.test} here and {here}";
         assertEquals( "this is variable here and here",sen.toString() );
     }
 
+    @Test
     public void testLogColonSentence(){
         final DSLSentence sen = new DSLSentence();
         sen.sentence = "Log : \"{message}\"";
         assertEquals( "Log : \"message\"",sen.toString() );
     }
 
+    @Test
     public void testWithNewLines() {
     	final DSLSentence sen = new DSLSentence();
         sen.sentence = "this is {variable}\\n here and {here}";

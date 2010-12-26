@@ -36,6 +36,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 /**
  *
  * @author esteban.aliverti@gmail.com
@@ -164,8 +166,8 @@ public class RangeConstraintMultipleOperatorsTest {
         System.out.println(warnings);
         System.out.println(errors);
 
-        Assert.assertEquals(warn, warnings.size());
-        Assert.assertEquals(fail, errors.size());
+        assertEquals(warn, warnings.size());
+        assertEquals(fail, errors.size());
     }
 
     @Test
@@ -210,8 +212,8 @@ public class RangeConstraintMultipleOperatorsTest {
         System.out.println(warnings);
         System.out.println(errors);
 
-        Assert.assertEquals(warn, warnings.size());
-        Assert.assertEquals(fail, errors.size());
+        assertEquals(warn, warnings.size());
+        assertEquals(fail, errors.size());
     }
 
 
@@ -237,10 +239,10 @@ public class RangeConstraintMultipleOperatorsTest {
             throw new RuntimeException("Error building verifier");
         }
 
-        Assert.assertFalse(verifier.hasErrors());
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        Assert.assertTrue(noProblems);
+        assertTrue(noProblems);
 
         return verifier.getResult();
 

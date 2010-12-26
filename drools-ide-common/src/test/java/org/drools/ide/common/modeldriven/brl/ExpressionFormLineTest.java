@@ -24,6 +24,8 @@ import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.junit.Assert;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class ExpressionFormLineTest {
 
 	@Test
@@ -34,11 +36,11 @@ public class ExpressionFormLineTest {
 		fact.factType = "String";
 		efl.appendPart(new ExpressionVariable(fact));
 		efl.appendPart(new ExpressionMethod("size", "int", SuggestionCompletionEngine.TYPE_NUMERIC));
-		Assert.assertEquals("$v.size()", efl.getText());
+	    assertEquals("$v.size()", efl.getText());
 		
 		efl.setBinding("$s");
 		
-		Assert.assertEquals("$s: $v.size()", efl.getText(true));
+	    assertEquals("$s: $v.size()", efl.getText(true));
 		
 	}
 }

@@ -36,6 +36,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 /**
  *
  * @author esteban.aliverti@gmail.com
@@ -139,10 +141,10 @@ public class InvalidFieldConstraintTest {
             throw new RuntimeException("Error building verifier");
         }
 
-        Assert.assertFalse(verifier.hasErrors());
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        Assert.assertTrue(noProblems);
+        assertTrue(noProblems);
 
         VerifierReport result = verifier.getResult();
 
@@ -154,7 +156,7 @@ public class InvalidFieldConstraintTest {
             counter++;
         }
 
-        Assert.assertEquals(fail, counter);
+        assertEquals(fail, counter);
 
         verifier.dispose();
     }

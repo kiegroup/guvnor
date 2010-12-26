@@ -16,7 +16,10 @@
 
 package org.drools.ide.common.server.util;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
@@ -40,16 +43,17 @@ import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.server.util.BRDRLPersistence;
 import org.drools.ide.common.server.util.BRLPersistence;
 
-public class BRDRLPersistenceTest extends TestCase {
+public class BRDRLPersistenceTest {
 
 	private BRLPersistence p;
 
-	protected void setUp() throws Exception {
-		super.setUp();
+    @Before
+    public void setUp() throws Exception {
 		p = BRDRLPersistence.getInstance();
 	}
 
-	public void testGenerateEmptyDRL() {
+    @Test
+    public void testGenerateEmptyDRL() {
 		String expected = "rule \"null\"\n\tdialect \"mvel\"\n\twhen\n\tthen\nend\n";
 
 		final String drl = p.marshal(new RuleModel());
@@ -58,7 +62,8 @@ public class BRDRLPersistenceTest extends TestCase {
 		assertEquals(expected, drl);
 	}
 
-	public void testFreeForm() {
+    @Test
+    public void testFreeForm() {
         RuleModel m = new RuleModel();
         m.name = "with composite";
         m.lhs = new IPattern[1];
@@ -78,7 +83,8 @@ public class BRDRLPersistenceTest extends TestCase {
         assertTrue(drl.indexOf("fun()") > drl.indexOf("Person()"));
 	}
 
-	public void testBasics() {
+    @Test
+    public void testBasics() {
 		String expected = "rule \"my rule\"\n\tno-loop true\n\tdialect \"mvel\"\n\twhen\n\t\tPerson( )\n"
 				+ "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\nend\n";
 		final RuleModel m = new RuleModel();
@@ -93,7 +99,8 @@ public class BRDRLPersistenceTest extends TestCase {
 		assertEquals(expected, drl);
 	}
 
-	public void testInsertLogical() {
+    @Test
+    public void testInsertLogical() {
 		String expected = "rule \"my rule\"\n\tno-loop true\n\tdialect \"mvel\"\n\twhen\n\t\tPerson( )\n"
 				+ "\t\tAccident( )\n\tthen\n\t\tinsertLogical( new Report() );\nend\n";
 		final RuleModel m = new RuleModel();
@@ -109,7 +116,8 @@ public class BRDRLPersistenceTest extends TestCase {
 		assertEquals(expected, drl);
 	}
 
-	public void testAttr() {
+    @Test
+    public void testAttr() {
 		RuleModel m = new RuleModel();
 		m.attributes = new RuleAttribute[1];
 		m.attributes[0] = new RuleAttribute("enabled", "true");
@@ -119,7 +127,8 @@ public class BRDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testEnum() {
+    @Test
+    public void testEnum() {
 		String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type = CheeseType.CHEDDAR )\n"
 				+ "\tthen\n\t\tinsert( new Report() );\nend\n";
 		final RuleModel m = new RuleModel();
@@ -141,7 +150,8 @@ public class BRDRLPersistenceTest extends TestCase {
 		assertEquals(expected, drl);
 	}
 	
-	public void testMoreComplexRendering() {
+    @Test
+    public void testMoreComplexRendering() {
 		final RuleModel m = getComplexModel();
 		String expected = "rule \"Complex Rule\"\n" + "\tno-loop true\n"
 				+ "\tsalience -10\n" + "\tagenda-group \"aGroup\"\n"
@@ -158,7 +168,8 @@ public class BRDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testFieldBindingWithNoConstraints() {
+    @Test
+    public void testFieldBindingWithNoConstraints() {
 		// to satisfy JBRULES-850
 		RuleModel m = getModelWithNoConstraints();
 		String s = BRDRLPersistence.getInstance().marshal(m);
@@ -254,7 +265,8 @@ public class BRDRLPersistenceTest extends TestCase {
 		return m;
 	}
 
-	public void testOrComposite() throws Exception {
+    @Test
+    public void testOrComposite() throws Exception {
 		RuleModel m = new RuleModel();
 		m.name = "or";
 		CompositeFactPattern cp = new CompositeFactPattern(
@@ -283,19 +295,22 @@ public class BRDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testExistsMultiPatterns() throws Exception {
+    @Test
+    public void testExistsMultiPatterns() throws Exception {
 		String result = getCompositeFOL(CompositeFactPattern.COMPOSITE_TYPE_EXISTS);
 		assertTrue(result
 				.indexOf("exists (Person( age == 42 ) and Person( age == 43 ))") > 0);
 	}
 
-	public void testNotMultiPatterns() throws Exception {
+    @Test
+    public void testNotMultiPatterns() throws Exception {
 		String result = getCompositeFOL(CompositeFactPattern.COMPOSITE_TYPE_NOT);
 		assertTrue(result
 				.indexOf("not (Person( age == 42 ) and Person( age == 43 ))") > 0);
 	}
 
-	public void testSingleExists() throws Exception {
+    @Test
+    public void testSingleExists() throws Exception {
 		RuleModel m = new RuleModel();
 		m.name = "or";
 		CompositeFactPattern cp = new CompositeFactPattern(
@@ -351,7 +366,8 @@ public class BRDRLPersistenceTest extends TestCase {
 	// assertNotNull( m );
 	// }
 
-	public void testCompositeConstraints() {
+    @Test
+    public void testCompositeConstraints() {
 		RuleModel m = new RuleModel();
 		m.name = "with composite";
 
@@ -426,7 +442,8 @@ public class BRDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testFieldsDeclaredButNoConstraints() {
+    @Test
+    public void testFieldsDeclaredButNoConstraints() {
 		RuleModel m = new RuleModel();
 		m.name = "boo";
 
@@ -457,7 +474,8 @@ public class BRDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testLiteralStrings() {
+    @Test
+    public void testLiteralStrings() {
 
 		RuleModel m = new RuleModel();
 		m.name = "test literal strings";
@@ -488,7 +506,8 @@ public class BRDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testSubConstraints() {
+    @Test
+    public void testSubConstraints() {
 
 		RuleModel m = new RuleModel();
 		m.name = "test sub constraints";
@@ -524,7 +543,8 @@ public class BRDRLPersistenceTest extends TestCase {
 		assertEquals(cleanExpected, cleanActual);
 	}
 
-	public void testReturnValueConstraint() {
+    @Test
+    public void testReturnValueConstraint() {
 		RuleModel m = new RuleModel();
 		m.name = "yeah";
 
@@ -548,7 +568,8 @@ public class BRDRLPersistenceTest extends TestCase {
 		assertEqualsIgnoreWhitespace(expected, actual);
 	}
 
-	public void testPredicateConstraint() {
+    @Test
+    public void testPredicateConstraint() {
 		RuleModel m = new RuleModel();
 		m.name = "yeah";
 
@@ -571,7 +592,8 @@ public class BRDRLPersistenceTest extends TestCase {
 		assertEqualsIgnoreWhitespace(expected, actual);
 	}
 
-	public void testConnective() {
+    @Test
+    public void testConnective() {
 
 		RuleModel m = new RuleModel();
 		m.name = "test literal strings";
@@ -603,7 +625,8 @@ public class BRDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testInvalidComposite() throws Exception {
+    @Test
+    public void testInvalidComposite() throws Exception {
 		RuleModel m = new RuleModel();
 		CompositeFactPattern com = new CompositeFactPattern("not");
 		m.addLhsItem(com);
@@ -617,7 +640,8 @@ public class BRDRLPersistenceTest extends TestCase {
 		assertNotNull(s);
 	}
 
-	public void testAssertWithDSL() throws Exception {
+    @Test
+    public void testAssertWithDSL() throws Exception {
 		RuleModel m = new RuleModel();
 		DSLSentence sen = new DSLSentence();
 		sen.sentence = "I CAN HAS DSL";
@@ -640,7 +664,8 @@ public class BRDRLPersistenceTest extends TestCase {
 		assertTrue(result.indexOf(">insertLogical") > -1);
 	}
 
-	public void testDefaultMVEL() {
+    @Test
+    public void testDefaultMVEL() {
 		RuleModel m = new RuleModel();
 
 		String s = BRDRLPersistence.getInstance().marshal(m);
@@ -653,7 +678,8 @@ public class BRDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testLockOnActive() {
+    @Test
+    public void testLockOnActive() {
 		RuleModel m = new RuleModel();
 
 		m.addAttribute(new RuleAttribute("lock-on-active", "true"));
@@ -669,7 +695,8 @@ public class BRDRLPersistenceTest extends TestCase {
 	}
 
 
-   public void testAddGlobal() {
+    @Test
+    public void testAddGlobal() {
 		String expected = "rule \"my rule\"\n\tno-loop true\n\tdialect \"mvel\"\n\twhen\n\t\tPerson( )\n"
 				+ "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\n\t\tresults.add(f);\nend\n";
 		final RuleModel m = new RuleModel();

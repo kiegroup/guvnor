@@ -16,14 +16,18 @@
 
 package org.drools.ide.common.modeldriven;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
-public class FactPatternTest extends TestCase {
+public class FactPatternTest {
 
+    @Test
     public void testAddConstraint() {
         final FactPattern p = new FactPattern();
         final SingleFieldConstraint x = new SingleFieldConstraint( "x" );
@@ -46,6 +50,7 @@ public class FactPatternTest extends TestCase {
 
     }
     
+    @Test
     public void testWithCompositeNesting() {
         final FactPattern p = new FactPattern();
         final SingleFieldConstraint x = new SingleFieldConstraint( "x" );
@@ -73,6 +78,7 @@ public class FactPatternTest extends TestCase {
         
     }
 
+    @Test
     public void testRemoveConstraint() {
         final FactPattern p = new FactPattern();
         final SingleFieldConstraint x = new SingleFieldConstraint( "x" );
@@ -95,6 +101,7 @@ public class FactPatternTest extends TestCase {
         
     }
     
+    @Test
     public void testIsBound() {
         FactPattern pat = new FactPattern();
         pat.boundName = "x";
@@ -104,6 +111,7 @@ public class FactPatternTest extends TestCase {
         assertFalse(pat.isBound());
     }
     
+    @Test
     public void testGetFieldConstraints() {
         FactPattern pat = new FactPattern();
         assertEquals(0, pat.getFieldConstraints().length);

@@ -19,7 +19,10 @@ package org.drools.ide.common.server.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
@@ -30,9 +33,10 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.ide.common.server.util.ScenarioXMLPersistence;
 
-public class ScenarioXMLPersistenceTest extends TestCase {
+public class ScenarioXMLPersistenceTest {
 
-	public void testToXML() {
+    @Test
+    public void testToXML() {
 		ScenarioXMLPersistence p = ScenarioXMLPersistence.getInstance();
 
 		Scenario sc = new Scenario();
@@ -53,7 +57,8 @@ public class ScenarioXMLPersistenceTest extends TestCase {
 
 	}
 
-	public void testTrimUneededSection() {
+    @Test
+    public void testTrimUneededSection() {
 		Scenario sc = getDemo();
 		Scenario orig = getDemo();
 		sc.fixtures.add(new ExecutionTrace());
@@ -74,7 +79,8 @@ public class ScenarioXMLPersistenceTest extends TestCase {
 	}
 
 
-	public void testNewScenario() {
+    @Test
+    public void testNewScenario() {
         FactData d1 = new FactData("Driver", "d1", ls(new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}), false);
         Scenario sc = new Scenario();
         sc.fixtures.add(d1);

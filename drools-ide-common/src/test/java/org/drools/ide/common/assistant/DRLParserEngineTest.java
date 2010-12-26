@@ -16,8 +16,10 @@
 
 package org.drools.ide.common.assistant;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.assistant.engine.DRLParserEngine;
 import org.drools.ide.common.assistant.info.drl.DRLContentTypeEnum;
@@ -25,14 +27,14 @@ import org.drools.ide.common.assistant.info.drl.DRLRuleRefactorInfo;
 import org.drools.ide.common.assistant.info.drl.RuleBasicContentInfo;
 import org.drools.ide.common.assistant.info.drl.RuleLineContentInfo;
 
-public class DRLParserEngineTest extends TestCase {
+public class DRLParserEngineTest {
 
 	private String rule;
 	private DRLParserEngine engine;
 	private DRLRuleRefactorInfo info;
 
-	@Override
-	protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 		rule = 	"package org.drools.assistant.test;\n\n";
 		rule += "import org.drools.assistant.test.model.Company;\n";
 		rule += "import org.drools.assistant.test.model.Employee;\n\n";
@@ -65,43 +67,50 @@ public class DRLParserEngineTest extends TestCase {
 
 	}
 
-	public void testExecuteEngine() {
+    @Test
+    public void testExecuteEngine() {
 		info = (DRLRuleRefactorInfo) engine.parse();
 		RuleBasicContentInfo content = info.getContentAt(123);
-		Assert.assertEquals(true, content!=null);
+	    assertEquals(true, content!=null);
 	}
 
-	public void testImport() {
+    @Test
+    public void testImport() {
 		info = (DRLRuleRefactorInfo) engine.parse();
 		RuleBasicContentInfo content = info.getContentAt(9);
-		Assert.assertEquals(true, content!=null);
+	    assertEquals(true, content!=null);
 	}
 
-	public void testNothingInteresting() {
+    @Test
+    public void testNothingInteresting() {
 		info = (DRLRuleRefactorInfo) engine.parse();
 		RuleBasicContentInfo content = info.getContentAt(199);
-		Assert.assertEquals(true, content==null);
+	    assertEquals(true, content==null);
 	}
 
-	public void testInsideTheRuleName() {
+    @Test
+    public void testInsideTheRuleName() {
 		info = (DRLRuleRefactorInfo) engine.parse();
 		RuleBasicContentInfo content = info.getContentAt(670);
-		Assert.assertEquals(true, content==null);
+	    assertEquals(true, content==null);
 	}
 
-	public void testInsideLHSRule() {
+    @Test
+    public void testInsideLHSRule() {
 		info = (DRLRuleRefactorInfo) engine.parse();
 		RuleBasicContentInfo content = info.getContentAt(790);
-		Assert.assertEquals(true, content!=null);
+	    assertEquals(true, content!=null);
 	}
 
-	public void testInsideRHSRule() {
+    @Test
+    public void testInsideRHSRule() {
 		info = (DRLRuleRefactorInfo) engine.parse();
 		RuleBasicContentInfo content = info.getContentAt(830);
-		Assert.assertEquals(true, content!=null);
+	    assertEquals(true, content!=null);
 	}
 
-	public void testSampleDRL() {
+    @Test
+    public void testSampleDRL() {
 		rule = "package com.sample\n\n";
 		rule += "import com.sample.DroolsTest.Message;\n";
 		rule += "import com.sample.Prueba;\n\n";
@@ -128,16 +137,16 @@ public class DRLParserEngineTest extends TestCase {
 		info = (DRLRuleRefactorInfo) engine.parse();
 		RuleBasicContentInfo content = info.getContentAt(173);
 
-		Assert.assertEquals(true, content!=null);
-		Assert.assertEquals(DRLContentTypeEnum.RULE_LHS_LINE, content.getType());
-		Assert.assertEquals("rule \"Hello World\"", ((RuleLineContentInfo)content).getRule().getRuleName());
-		Assert.assertEquals("\t\tPrueba()", content.getContent());
+	    assertEquals(true, content!=null);
+	    assertEquals(DRLContentTypeEnum.RULE_LHS_LINE, content.getType());
+	    assertEquals("rule \"Hello World\"", ((RuleLineContentInfo)content).getRule().getRuleName());
+	    assertEquals("\t\tPrueba()", content.getContent());
 
 		content = info.getContentAt(343);
-		Assert.assertEquals(true, content!=null);
-		Assert.assertEquals(DRLContentTypeEnum.RULE_LHS_LINE, content.getType());
-		Assert.assertEquals("rule \"GoodBye World\"", ((RuleLineContentInfo)content).getRule().getRuleName());
-		Assert.assertEquals("\twhen", content.getContent());
+	    assertEquals(true, content!=null);
+	    assertEquals(DRLContentTypeEnum.RULE_LHS_LINE, content.getType());
+	    assertEquals("rule \"GoodBye World\"", ((RuleLineContentInfo)content).getRule().getRuleName());
+	    assertEquals("\twhen", content.getContent());
 	}
 
 }

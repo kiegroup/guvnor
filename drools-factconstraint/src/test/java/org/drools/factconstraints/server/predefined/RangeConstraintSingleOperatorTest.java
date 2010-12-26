@@ -37,6 +37,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 /**
  *
  * @author esteban.aliverti@gmail.com
@@ -106,7 +108,7 @@ public class RangeConstraintSingleOperatorTest {
 
         System.out.println(errors);
 
-        Assert.assertEquals(fail, errors.size());
+        assertEquals(fail, errors.size());
     }
 
     @Test
@@ -149,7 +151,7 @@ public class RangeConstraintSingleOperatorTest {
 
         System.out.println(warnings);
 
-        Assert.assertEquals(warning, warnings.size());
+        assertEquals(warning, warnings.size());
     }
 
     @Test
@@ -193,7 +195,7 @@ public class RangeConstraintSingleOperatorTest {
 
         System.out.println(warnings);
 
-        Assert.assertEquals(warning, warnings.size());
+        assertEquals(warning, warnings.size());
     }
 
     @Test
@@ -237,7 +239,7 @@ public class RangeConstraintSingleOperatorTest {
 
         System.out.println(warnings);
 
-        Assert.assertEquals(warning, warnings.size());
+        assertEquals(warning, warnings.size());
     }
 
     @Test
@@ -281,7 +283,7 @@ public class RangeConstraintSingleOperatorTest {
 
         System.out.println(warnings);
 
-        Assert.assertEquals(warning, warnings.size());
+        assertEquals(warning, warnings.size());
     }
 
     @Test
@@ -325,7 +327,7 @@ public class RangeConstraintSingleOperatorTest {
 
         System.out.println(warnings);
 
-        Assert.assertEquals(warning, warnings.size());
+        assertEquals(warning, warnings.size());
     }
 
     private VerifierReport verify(String rulesToVerify){
@@ -350,7 +352,7 @@ public class RangeConstraintSingleOperatorTest {
             throw new RuntimeException("Error building verifier");
         }
 
-        Assert.assertTrue(noProblems);
+        assertTrue(noProblems);
 
         return verifier.getResult();
 

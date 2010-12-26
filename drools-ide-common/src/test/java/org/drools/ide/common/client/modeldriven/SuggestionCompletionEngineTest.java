@@ -22,7 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.JarInputStream;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.FactTypeFilter;
@@ -35,8 +38,9 @@ import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 
-public class SuggestionCompletionEngineTest extends TestCase {
+public class SuggestionCompletionEngineTest {
 
+    @Test
     public void testNestedImports() {
         String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
 
@@ -50,6 +54,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
                                            "name" ) );
     }
 
+    @Test
     public void testStringNonNumeric() {
         String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.Alert";
 
@@ -64,6 +69,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
 
+    @Test
     public void testDataEnums() {
         String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
 
@@ -110,6 +116,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
     
+    @Test
     public void testDataEnums3() {
         String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
 
@@ -142,6 +149,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
 
+    @Test
     public void testDataEnums2() {
         String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.Fact";
 
@@ -204,6 +212,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
     
+    @Test
     public void testCompletions() {
 
         final SuggestionCompletionEngine com = new SuggestionCompletionEngine();
@@ -348,6 +357,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
 
+    @Test
     public void testAdd() {
         final SuggestionCompletionEngine com = new SuggestionCompletionEngine();
         com.setFactTypes(new String[]{"Foo"});
@@ -372,6 +382,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
 
+    @Test
     public void testSmartEnums() {
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
         sce.setDataEnumLists(new HashMap<String, String[]>());
@@ -444,6 +455,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
 
+    @Test
     public void testSmartEnumsDependingOfSeveralFieldsTwo() {
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
         sce.setDataEnumLists(new HashMap<String, String[]>());
@@ -477,6 +489,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
 
+    @Test
     public void testSmartEnumsDependingOfSeveralFieldsFive() {
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
         sce.setDataEnumLists(new HashMap<String, String[]>());
@@ -524,6 +537,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
                       result2[1] );
     }
 
+    @Test
     public void testSmarterLookupEnums() {
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
         sce.setDataEnumLists(new HashMap<String, String[]>());
@@ -601,6 +615,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
 
+    @Test
     public void testSmarterLookupEnumsDifferentOrder() {
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
         sce.setDataEnumLists(new HashMap<String, String[]>());
@@ -680,6 +695,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
         
     }
 
+    @Test
     public void testSimpleEnums() {
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
         sce.setDataEnumLists(new HashMap<String, String[]>());
@@ -709,6 +725,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
 
+    @Test
     public void testGlobalAndFacts() {
         final SuggestionCompletionEngine com = new SuggestionCompletionEngine();
 
@@ -731,6 +748,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
         assertTrue( com.isGlobalVariable( "y" ) );
     }
 
+    @Test
     public void testDataDropDown() {
         assertNull( DropDownData.create( null ) );
         assertNull( DropDownData.create( null, null ) );
@@ -739,6 +757,7 @@ public class SuggestionCompletionEngineTest extends TestCase {
 
     }
 
+    @Test
     public void testFilter() {
 
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();

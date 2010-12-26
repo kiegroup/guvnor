@@ -38,6 +38,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 /**
  *
  * @author esteban.aliverti@gmail.com
@@ -58,13 +60,13 @@ public class IntegerConstraintTest {
     	Constraint cons = new IntegerConstraint();
     	
         ValidationResult result = cons.validate(12, conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate(new Integer("12"), conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate("12", conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
     }
 
@@ -73,31 +75,31 @@ public class IntegerConstraintTest {
     	Constraint cons = new IntegerConstraint();
     	
         ValidationResult result = cons.validate(new Object(), conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
         result = cons.validate("", conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
         result = cons.validate("ABC", conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
         result = cons.validate(null, conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
         result = cons.validate(new Long("12"), conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
         result = cons.validate(12L, conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
         result = cons.validate(12.8, conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
     }
 
@@ -153,10 +155,10 @@ public class IntegerConstraintTest {
             throw new RuntimeException("Error building verifier");
         }
 
-        Assert.assertFalse(verifier.hasErrors());
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        Assert.assertTrue(noProblems);
+        assertTrue(noProblems);
 
         VerifierReport result = verifier.getResult();
 
@@ -168,7 +170,7 @@ public class IntegerConstraintTest {
             counter++;
         }
 
-        Assert.assertEquals(2, counter);
+        assertEquals(2, counter);
 
         verifier.dispose();
     }

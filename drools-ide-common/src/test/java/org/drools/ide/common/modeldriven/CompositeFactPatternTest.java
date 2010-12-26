@@ -16,13 +16,17 @@
 
 package org.drools.ide.common.modeldriven;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 
-public class CompositeFactPatternTest extends TestCase {
+public class CompositeFactPatternTest {
 
+    @Test
     public void testAddPattern() {
         final CompositeFactPattern pat = new CompositeFactPattern();
         final FactPattern x = new FactPattern();

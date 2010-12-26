@@ -22,15 +22,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.jar.JarInputStream;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 
-public class SuggestionCompletionEngine2Test extends TestCase {
+public class SuggestionCompletionEngine2Test {
 
+    @Test
     public void testAccessorsAndMutatorsDeclaredModel() throws Exception {
         String pkg = "package org.test\n";
         pkg += "declare Test\n";
@@ -56,6 +60,7 @@ public class SuggestionCompletionEngine2Test extends TestCase {
 
     }
     
+    @Test
     public void testAccessorsAndMutatorsJavaClass() throws Exception {
         String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine2Test.Person\n";
         
@@ -78,6 +83,7 @@ public class SuggestionCompletionEngine2Test extends TestCase {
         
     }
 
+    @Test
     public void testArrayList() {
 
         String pkg = "package org.test\n global java.util.ArrayList testList";
@@ -103,6 +109,7 @@ public class SuggestionCompletionEngine2Test extends TestCase {
 
     }
 
+    @Test
     public void testJarFileWithSourceFiles() {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 

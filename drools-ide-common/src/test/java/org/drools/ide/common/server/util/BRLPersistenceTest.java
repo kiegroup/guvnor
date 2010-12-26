@@ -20,7 +20,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
@@ -43,8 +46,9 @@ import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 
-public class BRLPersistenceTest extends TestCase {
+public class BRLPersistenceTest {
 
+    @Test
     public void testGenerateEmptyXML() {
         final BRLPersistence p = BRXMLPersistence.getInstance();
         final String xml = p.marshal( new RuleModel() );
@@ -55,6 +59,7 @@ public class BRLPersistenceTest extends TestCase {
         assertTrue( xml.endsWith( "</rule>" ) );
     }
 
+    @Test
     public void testBasics() {
         final BRLPersistence p = BRXMLPersistence.getInstance();
         final RuleModel m = new RuleModel();
@@ -83,6 +88,7 @@ public class BRLPersistenceTest extends TestCase {
 
     }
 
+    @Test
     public void testMoreComplexRendering() {
         final BRLPersistence p = BRXMLPersistence.getInstance();
         final RuleModel m = getComplexModel();
@@ -94,6 +100,7 @@ public class BRLPersistenceTest extends TestCase {
 
     }
 
+    @Test
     public void testRoundTrip() {
         final RuleModel m = getComplexModel();
 
@@ -122,6 +129,7 @@ public class BRLPersistenceTest extends TestCase {
 
     }
 
+    @Test
     public void testCompositeConstraintsRoundTrip() throws Exception {
         RuleModel m = new RuleModel();
         m.name = "with composite";
@@ -205,6 +213,7 @@ public class BRLPersistenceTest extends TestCase {
 
     }
 
+    @Test
     public void testFreeFormLine() {
         RuleModel m = new RuleModel();
         m.name = "with composite";
@@ -235,6 +244,7 @@ public class BRLPersistenceTest extends TestCase {
      * This will verify that we can load an old BRL change. If this fails,
      * then backwards compatibility is broken.
      */
+    @Test
     public void testBackwardsCompat() throws Exception {
         RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( loadResource( "existing_brl.xml" ) );
 
@@ -303,6 +313,7 @@ public class BRLPersistenceTest extends TestCase {
         return m;
     }
 
+    @Test
     public void testLoadEmpty() {
         RuleModel m = BRXMLPersistence.getInstance().unmarshal( null );
         assertNotNull( m );

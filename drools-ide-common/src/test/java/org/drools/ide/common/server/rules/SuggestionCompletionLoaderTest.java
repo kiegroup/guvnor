@@ -22,7 +22,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.FactTypeFilter;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -30,8 +33,9 @@ import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.descr.ImportDescr;
 
-public class SuggestionCompletionLoaderTest extends TestCase {
+public class SuggestionCompletionLoaderTest {
 
+    @Test
     public void testSuggestionCompLoader() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.Person", new ArrayList(), new ArrayList() );
@@ -39,6 +43,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 
     }
 
+    @Test
     public void testSuggestionCompLoaderWithExtraImportProviders() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         loader.addExternalImportDescrProvider(new SuggestionCompletionLoader.ExternalImportDescrProvider() {
@@ -72,6 +77,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 
     }
 
+    @Test
     public void testSuggestionCompLoaderWithExtraImportProvidersAndFilters() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         loader.addExternalImportDescrProvider(new SuggestionCompletionLoader.ExternalImportDescrProvider() {
@@ -104,6 +110,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 
     }
 
+    @Test
     public void testSuggestionCompLoaderWildcards() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         loader.getSuggestionEngine( "package foo \n import org.drools.*", new ArrayList(), new ArrayList() );
@@ -112,6 +119,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertTrue(err.startsWith("Unable"));
     }
 
+    @Test
     public void testLoadDifferentFieldTypes() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.ide.common.server.rules.SomeFact", new ArrayList(), new ArrayList() );
@@ -133,6 +141,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals("String",eng.getParametricFieldType("SomeFact", "factListString"));
     }
 
+    @Test
     public void testLoadDifferentMethodTypes() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.ide.common.server.rules.SomeFact", new ArrayList(), new ArrayList() );
@@ -142,6 +151,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals("SomeFact", eng.getParametricFieldType("SomeFact", "aMethod(int)"));
     }
 
+    @Test
     public void testGeneratedBeans() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n declare GenBean \n   id: int \n name : String \n end \n declare GenBean2 \n list: java.util.List \n gb: GenBean \n end", new ArrayList(), new ArrayList() );
@@ -158,6 +168,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals("GenBean", eng.getFieldType("GenBean2", "gb"));
     }
 
+    @Test
     public void testGlobal() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n global org.drools.Person p", new ArrayList(), new ArrayList() );
@@ -173,6 +184,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals(0, eng.getGlobalCollections().length);
     }
 
+    @Test
     public void testGlobalCollections() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n global java.util.List ls", new ArrayList(), new ArrayList() );
@@ -188,6 +200,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals("ls", eng.getGlobalCollections()[0]);
     }
 
+    @Test
     public void testSortOrderOfFields() throws Exception {
 
 	    SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
@@ -202,6 +215,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
 	    assertEquals("bigDecimal", fields[3]);
     }
 
+    @Test
     public void testEnumFields() throws Exception {
 	    SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 	    SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.ide.common.server.rules.SomeFact", new ArrayList(), new ArrayList() );
@@ -214,6 +228,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals(a[2],"EnumClass.v3=EnumClass.v3");
     }
 
+    @Test
     public void testSortOrderOfFacts() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n import org.drools.ide.common.server.rules.SomeFact\n import org.drools.Person", new ArrayList(), new ArrayList() );
@@ -225,6 +240,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals("SomeFact", facts[1]);
     }
 
+    @Test
     public void testTypeDeclarations() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
 
@@ -266,6 +282,7 @@ public class SuggestionCompletionLoaderTest extends TestCase {
         assertEquals(FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS, eng.getFieldClassType( "LoanApplication", "applicant" ));
     }
 
+    @Test
     public void testLoaderWithExistingClassloader() throws Exception {
         MockClassLoader mcl = new MockClassLoader();
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader(mcl);

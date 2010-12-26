@@ -38,6 +38,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 /**
  *
  * @author baunax@gmail.com
@@ -63,29 +65,29 @@ public class NotMatchesConstraintTest {
     public void testValidConstraint(){
     	
         ValidationResult result = cons.validate("Bart", conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate("", conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
         result = cons.validate("bart", conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
         result = cons.validate(new Long("12"), conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
         result = cons.validate(12L, conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
 
         result = cons.validate(12.8, conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
     }
 
     @Test @Ignore
     public void testInvalidConstraint(){
 
         ValidationResult result = cons.validate(null, conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: "+result.getMessage());
 
     }
@@ -160,10 +162,10 @@ public class NotMatchesConstraintTest {
             throw new RuntimeException("Error building verifier");
         }
 
-        Assert.assertFalse(verifier.hasErrors());
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        Assert.assertTrue(noProblems);
+        assertTrue(noProblems);
 
         VerifierReport result = verifier.getResult();
 
@@ -171,7 +173,7 @@ public class NotMatchesConstraintTest {
 
         System.out.println(warnings);
 
-        Assert.assertEquals(fails, warnings.size());
+        assertEquals(fails, warnings.size());
 
         verifier.dispose();
     }

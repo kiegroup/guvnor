@@ -23,15 +23,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.server.util.DataEnumLoader;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
-public class DataEnumLoaderTest extends TestCase {
+public class DataEnumLoaderTest {
 
-	public void testEnumGeneration() throws Exception {
+    @Test
+    public void testEnumGeneration() throws Exception {
 
 		Object result = MVEL.eval("[2, 3, 4, ]", new HashMap());
 		assertTrue(result instanceof List);
@@ -70,6 +74,7 @@ public class DataEnumLoaderTest extends TestCase {
 
 
 
+    @Test
     public void testNoOp() {
         DataEnumLoader loader = new DataEnumLoader(" ");
         assertFalse(loader.hasErrors());
@@ -81,6 +86,7 @@ public class DataEnumLoaderTest extends TestCase {
 
     }
 
+    @Test
     public void testLiteralHelperUtilityClass() {
     	//this shows how you can load it up with a class (which should return a map of keys to List.
     	DataEnumLoader loader = new DataEnumLoader("=(new org.drools.ide.common.modeldriven.SampleDataSource2()).loadData()");
@@ -96,11 +102,13 @@ public class DataEnumLoaderTest extends TestCase {
     }
 
 
+    @Test
     public void testNewLines() {
         String s = "yeah yeah, \nyeah \nyeah";
         assertEquals("yeah yeah,\nyeah,\nyeah", DataEnumLoader.addCommasForNewLines( s ));
     }
 
+    @Test
     public void testLazyString() {
     	//in this case we are dealing with an expression which will not be resolved at load time.
     	DataEnumLoader loader = new DataEnumLoader("'Person.type[sex]' : 'something @{sex}'");

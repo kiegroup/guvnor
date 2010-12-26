@@ -22,7 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.server.rules.ClassToGenericClassConverter;
 import org.drools.ide.common.server.util.ClassMethodInspector;
@@ -32,8 +35,9 @@ import org.drools.ide.common.server.util.ClassMethodInspector;
  * @author Toni Rikkola
  * 
  */
-public class ClassMethodInspectorTest extends TestCase {
+public class ClassMethodInspectorTest {
 
+    @Test
     public void testSimpleMethods() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( SimpleMethods.class, new Converter() );
 
@@ -43,6 +47,7 @@ public class ClassMethodInspectorTest extends TestCase {
         }
     }
 
+    @Test
     public void testMoreThanOneMethodWithTheSameName() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( MoreThanOneMethodWithTheSameName.class, new Converter() );
 
@@ -53,6 +58,7 @@ public class ClassMethodInspectorTest extends TestCase {
 
     }
 
+    @Test
     public void testCollection() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( Collection.class, new Converter() );
 
@@ -62,6 +68,7 @@ public class ClassMethodInspectorTest extends TestCase {
         }
     }
 
+    @Test
     public void testArrayList() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( ArrayList.class, new Converter() );
 
@@ -71,6 +78,7 @@ public class ClassMethodInspectorTest extends TestCase {
         }
     }
 
+    @Test
     public void testList() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( List.class, new Converter() );
 
@@ -80,6 +88,7 @@ public class ClassMethodInspectorTest extends TestCase {
         }
     }
 
+    @Test
     public void testSet() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( Set.class, new Converter() );
 
@@ -89,6 +98,7 @@ public class ClassMethodInspectorTest extends TestCase {
         }
     }
 
+    @Test
     public void testMap() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( Map.class, new Converter() );
 
@@ -98,6 +108,7 @@ public class ClassMethodInspectorTest extends TestCase {
         }
     }
 
+    @Test
     public void testMyMap() throws Exception {
         final ClassMethodInspector ext = new ClassMethodInspector( MyMap.class, new Converter() );
 

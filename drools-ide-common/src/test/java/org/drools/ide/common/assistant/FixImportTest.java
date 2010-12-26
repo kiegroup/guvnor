@@ -18,20 +18,23 @@ package org.drools.ide.common.assistant;
 
 import java.util.List;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.assistant.option.AssistantOption;
 import org.drools.ide.common.assistant.option.ReplaceAssistantOption;
 import org.drools.ide.common.assistant.processor.AbstractRuleAssistantProcessor;
 import org.drools.ide.common.assistant.processor.DRLRefactorProcessor;
 
-public class FixImportTest extends TestCase {
+public class FixImportTest {
 
 	private AbstractRuleAssistantProcessor ruleAssistant;
 	private String rule;
 
-	protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 		ruleAssistant = new DRLRefactorProcessor();
 		rule = "package com.sample\n\n" +
 		"import com.sample.DroolsTest.Message;\n" +
@@ -47,11 +50,12 @@ public class FixImportTest extends TestCase {
 		"end";
 	}
 
-	public void testFirstTest() {
+    @Test
+    public void testFirstTest() {
 		List<AssistantOption> options = ruleAssistant.getRuleAssistant(rule, 150);
 		assertEquals(1, options.size());
 		ReplaceAssistantOption assistantOption = (ReplaceAssistantOption) options.get(0);
-		Assert.assertEquals("\t\t$prueba : Prueba()", assistantOption.getContent());
+	    assertEquals("\t\t$prueba : Prueba()", assistantOption.getContent());
 	}
 
 }

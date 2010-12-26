@@ -16,7 +16,10 @@
 
 package org.drools.ide.common.server.util;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
@@ -26,7 +29,7 @@ import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 
-public class GuidedDTXMLPersistenceTest extends TestCase {
+public class GuidedDTXMLPersistenceTest {
 
 //	public void testXML() {
 
@@ -34,12 +37,13 @@ public class GuidedDTXMLPersistenceTest extends TestCase {
 //
 //	}
 
-	@Override
-	protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 		GuidedDTXMLPersistence.getInstance();
 	}
 
-	public void testRoundTrip() {
+    @Test
+    public void testRoundTrip() {
 
 		GuidedDecisionTable dt = new GuidedDecisionTable();
 
@@ -79,7 +83,8 @@ public class GuidedDTXMLPersistenceTest extends TestCase {
 
 	}
 
-	public void testBackwardsCompatability() throws Exception {
+    @Test
+    public void testBackwardsCompatability() throws Exception {
 		String xml = BRLPersistenceTest.loadResource("ExistingDecisionTable.xml");
 		GuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
 		assertNotNull(dt_);

@@ -16,12 +16,16 @@
 
 package org.drools.ide.common.modeldriven;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
-public class ConstraintTest extends TestCase {
+public class ConstraintTest {
 
+    @Test
     public void testAdd() {
         final SingleFieldConstraint con = new SingleFieldConstraint();
         con.addNewConnective();

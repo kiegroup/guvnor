@@ -23,9 +23,16 @@ import java.util.List;
 import org.drools.Cheese;
 import org.drools.StatefulSession;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class TestingEventListenerTest extends RuleUnit {
 
-	public void testInclusive() throws Exception {
+    @Test
+    public void testInclusive() throws Exception {
 		HashSet<String> set = new HashSet<String>();
 		set.add("rule1");
 		set.add("rule2");
@@ -57,7 +64,8 @@ public class TestingEventListenerTest extends RuleUnit {
 	}
 
 
-	public void testExclusive() throws Exception {
+    @Test
+    public void testExclusive() throws Exception {
 		HashSet<String> set = new HashSet<String>();
 		set.add("rule3");
 
@@ -83,7 +91,8 @@ public class TestingEventListenerTest extends RuleUnit {
 
 	}
 
-	public void testNoFilter() throws Exception {
+    @Test
+    public void testNoFilter() throws Exception {
 		HashSet<String> set = new HashSet<String>();
 
 

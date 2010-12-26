@@ -19,7 +19,10 @@ package org.drools.ide.common.server.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
@@ -42,10 +45,11 @@ import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.server.util.BRDRLPersistence;
 import org.drools.ide.common.server.util.GuidedDTDRLPersistence;
 
-public class GuidedDTDRLPersistenceTest extends TestCase {
+public class GuidedDTDRLPersistenceTest {
 
 
-	public void test2Rules() throws Exception {
+    @Test
+    public void test2Rules() throws Exception {
 		GuidedDecisionTable dt = new GuidedDecisionTable();
 		dt.setTableName( "michael" );
 
@@ -137,6 +141,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 	}
 
 
+    @Test
     public void testInterpolate() {
         GuidedDecisionTable dt = new GuidedDecisionTable();
         dt.setTableName( "michael" );
@@ -229,6 +234,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
     }
 
 
+    @Test
     public void testInOperator() {
         GuidedDecisionTable dt = new GuidedDecisionTable();
         dt.setTableName( "michael" );
@@ -315,6 +321,7 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
     }
 
+    @Test
     public void testCellCSV() {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         assertEquals("(\"Michael\", \"Mark\", \"Peter\")", p.makeInList("Michael, Mark, Peter"));
@@ -325,7 +332,8 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
     }
 
 
-	public void testCellVal() {
+    @Test
+    public void testCellVal() {
 		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		assertFalse(p.validCell(null));
 		assertFalse(p.validCell(""));
@@ -333,13 +341,15 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testName() {
+    @Test
+    public void testName() {
 		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		assertEquals("Row 42 XXX", p.getName("XXX", "42"));
 		assertEquals("Row 42 YYY", p.getName("YYY", "42"));
 	}
 
-	public void testAttribs() {
+    @Test
+    public void testAttribs() {
 		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		String[] row = new String[] {"1", "desc", "a", ""};
 
@@ -373,7 +383,8 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testMetaData() {
+    @Test
+    public void testMetaData() {
 		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		String[] row = new String[] {"1", "desc", "bar", ""};
 
@@ -410,7 +421,8 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testLHS() {
+    @Test
+    public void testLHS() {
 		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		String[] row = new String[] {"1", "desc", "a", "mike", "33 + 1", "age > 6", "stilton"};
 
@@ -486,7 +498,8 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 		assertEquals(BaseSingleFieldConstraint.TYPE_LITERAL, cons.getConstraintValueType());
 	}
 
-	public void testRHS() {
+    @Test
+    public void testRHS() {
 		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		String[] row = new String[] {"1", "desc", "a", "a condition", "actionsetfield1", "actionsetfield2", "retract", "actioninsertfact1", "actioninsertfact2"};
 
@@ -562,7 +575,8 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testNoConstraints() {
+    @Test
+    public void testNoConstraints() {
 		GuidedDecisionTable dt = new GuidedDecisionTable();
 		ConditionCol c = new ConditionCol();
 		c.setBoundName( "x" );
@@ -598,7 +612,8 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testUpdateModify() {
+    @Test
+    public void testUpdateModify() {
 		GuidedDecisionTable dt = new GuidedDecisionTable();
 		ConditionCol c = new ConditionCol();
 		c.setBoundName( "x" );
@@ -636,7 +651,8 @@ public class GuidedDTDRLPersistenceTest extends TestCase {
 
 	}
 
-	public void testNoOperator() {
+    @Test
+    public void testNoOperator() {
 		GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
 		String[] row = new String[] {"1", "desc", "a", "> 42", "33 + 1", "age > 6", "stilton"};
 

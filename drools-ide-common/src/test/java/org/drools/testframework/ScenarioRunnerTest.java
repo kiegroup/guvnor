@@ -52,6 +52,12 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 import org.drools.ide.common.server.util.ScenarioXMLPersistence;
 import org.drools.time.impl.PseudoClockScheduler;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 public class ScenarioRunnerTest extends RuleUnit {
 
     static {
@@ -62,11 +68,13 @@ public class ScenarioRunnerTest extends RuleUnit {
         }
     }
 
+    @Before
     public void setUp() {
         //needed when running stand alone to make sure the converters get loaded.
         DroolsMVELFactory d = new DroolsMVELFactory();
     }
 
+    @Test
     public void testPopulateFactsWithInterfaces() throws Exception {
         Scenario sc = new Scenario();
         List facts = ls( new FactData( "List",
@@ -90,6 +98,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testPopulateFacts() throws Exception {
         Scenario sc = new Scenario();
         List facts = ls( new FactData( "Cheese",
@@ -133,6 +142,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
     
+    @Test
     public void testPopulateEnum() throws Exception {
         Scenario sc = new Scenario();
         FieldData fd = new FieldData( "cheeseType", "CheeseType.CHEDDAR");
@@ -158,6 +168,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                       c.getCheeseType() );
     }
     
+    @Test
     public void testPopulateNested() throws Exception {
         Scenario sc = new Scenario();
         List facts = ls( new FactData( "Cheese",
@@ -196,6 +207,7 @@ public class ScenarioRunnerTest extends RuleUnit {
      * to check for re-ordering..
      * @throws Exception
      */
+    @Test
     public void testPopulateNestedWrongOrder() throws Exception {
         Scenario sc = new Scenario();
         List facts = ls( new FactData( "OuterFact",
@@ -230,6 +242,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testPopulateEmpty() throws Exception {
         Scenario sc = new Scenario();
         List facts = ls( new FactData( "Cheese",
@@ -249,6 +262,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue( runner.populatedData.get( "c1" ) instanceof Cheese );
     }
 
+    @Test
     public void testDateField() throws Exception {
         Scenario sc = new Scenario();
         List facts = ls( new FactData( "Cheese",
@@ -283,6 +297,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testPopulateFactsWithExpressions() throws Exception {
         Scenario sc = new Scenario();
         List facts = ls( new FactData( "Cheese",
@@ -322,6 +337,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testPopulateNoData() throws Exception {
         TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
                                                        Thread.currentThread().getContextClassLoader() );
@@ -357,6 +373,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                       c.getPrice() );
     }
 
+    @Test
     public void testVerifyFacts() throws Exception {
 
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
@@ -446,6 +463,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testVerifyFactsWithEnum() throws Exception {
         FieldData fd = new FieldData( "cheeseType", "CheeseType.CHEDDAR");
         fd.setNature(FieldData.TYPE_ENUM, null);
@@ -482,6 +500,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         }
     }
 
+    @Test
     public void testVerifyAnonymousFacts() throws Exception {
         MockWorkingMemory wm = new MockWorkingMemory();
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
@@ -548,6 +567,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testVerifyFactsWithOperator() throws Exception {
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
                                                     null,
@@ -581,6 +601,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testVerifyFactsWithExpression() throws Exception {
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
                                                     null,
@@ -601,6 +622,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue( ((VerifyField) vf.fieldValues.get( 0 )).successResult );
     }
 
+    @Test
     public void testVerifyFactExplanation() throws Exception {
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
                                                     null,
@@ -623,6 +645,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testVerifyFieldAndActualIsNull() throws Exception {
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
                                                     null,
@@ -650,6 +673,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testDummyRunNoRules() throws Exception {
         Scenario sc = new Scenario();
         FactData[] facts = new FactData[]{new FactData( "Cheese",
@@ -692,6 +716,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testCountVerification() throws Exception {
 
         Map<String, Integer> firingCounts = new HashMap<String, Integer>();
@@ -735,6 +760,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testRuleFiredWithEnum() throws Exception {
         Map<String, Integer> firingCounts = new HashMap<String, Integer>();
         firingCounts.put( "foo",
@@ -756,6 +782,7 @@ public class ScenarioRunnerTest extends RuleUnit {
                       v.actualResult.intValue() );
     }
     
+    @Test
     public void testTestingEventListener() throws Exception {
         Scenario sc = new Scenario();
         sc.rules.add( "foo" );
@@ -785,6 +812,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue( sc.rules.contains( "bar" ) );
     }
 
+    @Test
     public void testWithGlobals() throws Exception {
         Scenario sc = new Scenario();
         FactData[] facts = new FactData[]{new FactData( "Cheese",
@@ -828,6 +856,7 @@ public class ScenarioRunnerTest extends RuleUnit {
     /**
      * Check if global list is empty.
      */
+    @Test
     public void testWithGlobalList() throws Exception {
         Scenario sc = new Scenario();
         sc.globals.add( new FactData( "List",
@@ -865,6 +894,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     @SuppressWarnings("deprecation")
     // F**** dates in java. What a mess. Someone should die.
+    @Test
     public void testSimulatedDate() throws Exception {
         Scenario sc = new Scenario();
         MockWorkingMemory wm = new MockWorkingMemory();
@@ -895,6 +925,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testVerifyRuleFired() throws Exception {
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
                                                     null,
@@ -965,6 +996,7 @@ public class ScenarioRunnerTest extends RuleUnit {
     /**
      * Do a kind of end to end test with some real rules.
      */
+    @Test
     public void testIntegrationWithSuccess() throws Exception {
 
         Scenario sc = new Scenario();
@@ -1057,6 +1089,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testIntegrationInfiniteLoop() throws Exception {
 
         Scenario sc = new Scenario();
@@ -1129,6 +1162,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testIntegrationWithDeclaredTypes() throws Exception {
         Scenario sc = new Scenario();
         FactData[] facts = new FactData[]{new FactData( "Coolness",
@@ -1196,6 +1230,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testRuleFlowGroupActivation() throws Exception {
         Scenario sc = new Scenario();
         Fixture[] given = new Fixture[]{new FactData( "Coolness",
@@ -1288,6 +1323,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         Thread.currentThread().setContextClassLoader( cl_ );
     }
 
+    @Test
     public void testIntgerationStateful() throws Exception {
         Scenario sc = new Scenario();
         sc.fixtures.add( new FactData( "Cheese",
@@ -1334,6 +1370,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testIntegrationWithModify() throws Exception {
         Scenario sc = new Scenario();
         sc.fixtures.add( new FactData( "Cheese",
@@ -1378,6 +1415,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue( sc.wasSuccessful() );
     }
 
+    @Test
     public void testIntegrationWithRetract() throws Exception {
         Scenario sc = new Scenario();
         sc.fixtures.add( new FactData( "Cheese",
@@ -1425,6 +1463,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue( sc.wasSuccessful() );
     }
 
+    @Test
     public void testIntegrationWithFailure() throws Exception {
         Scenario sc = new Scenario();
         Expectation[] assertions = populateScenarioForFailure( sc );
@@ -1463,6 +1502,7 @@ public class ScenarioRunnerTest extends RuleUnit {
 
     }
 
+    @Test
     public void testRunAsString() throws Exception {
         Scenario sc = new Scenario();
         populateScenarioForFailure( sc );
@@ -1535,6 +1575,7 @@ public class ScenarioRunnerTest extends RuleUnit {
     private <T> List<T> ls(T... objects) {
         return Arrays.asList( objects );
     }
+    @Test
     public void testCollectionFieldInFacts() throws Exception {
 
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
@@ -1593,6 +1634,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue(listChesse.getCheeses().contains(f3));
   
     }
+    @Test
     public void testCallMethodNoArgumentOnFact() throws Exception {
 
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
@@ -1608,6 +1650,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue(listChesse.getTotalAmount()==0);
     }
     
+    @Test
     public void testCallMethodOnStandardArgumentOnFact() throws Exception {
 
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
@@ -1626,6 +1669,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue(listChesse.getTotalAmount()==1005);
     }
     
+    @Test
     public void testCallMethodOnClassArgumentOnFact() throws Exception {
 
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),
@@ -1647,6 +1691,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         assertTrue(listChesse.getMaturity().equals(m));
         assertTrue(listChesse.getMaturity()==m);
     }
+    @Test
     public void testCallMethodOnClassArgumentAndOnArgumentStandardOnFact() throws Exception {
 
         ScenarioRunner runner = new ScenarioRunner( new Scenario(),

@@ -16,18 +16,23 @@
 
 package org.drools.ide.common.modeldriven;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
-public class CompositeFieldConstraintTest extends TestCase {
+public class CompositeFieldConstraintTest {
 
+    @Test
     public void testCompositeType() {
         CompositeFieldConstraint con = new CompositeFieldConstraint();
         assertEquals(null, con.compositeJunctionType);
     }
     
+    @Test
     public void testAddConstraint() {
         final CompositeFieldConstraint p = new CompositeFieldConstraint();
         final SingleFieldConstraint x = new SingleFieldConstraint( "x" );
@@ -50,6 +55,7 @@ public class CompositeFieldConstraintTest extends TestCase {
 
     }
 
+    @Test
     public void testRemoveConstraint() {
         final CompositeFieldConstraint p = new CompositeFieldConstraint();
         final SingleFieldConstraint x = new SingleFieldConstraint( "x" );

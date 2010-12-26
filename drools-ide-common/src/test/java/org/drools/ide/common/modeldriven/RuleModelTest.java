@@ -18,7 +18,10 @@ package org.drools.ide.common.modeldriven;
 
 import java.util.List;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
@@ -37,9 +40,10 @@ import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.thoughtworks.xstream.XStream;
 
-public class RuleModelTest extends TestCase {
+public class RuleModelTest {
 
-	public void testAddItemLhs() {
+    @Test
+    public void testAddItemLhs() {
 		final RuleModel model = new RuleModel();
 		final FactPattern x = new FactPattern();
 		model.addLhsItem(x);
@@ -54,7 +58,8 @@ public class RuleModelTest extends TestCase {
 
 	}
 
-	public void testAddItemRhs() {
+    @Test
+    public void testAddItemRhs() {
 		final RuleModel model = new RuleModel();
 		final IAction a0 = new ActionSetField();
 		final IAction a1 = new ActionSetField();
@@ -70,7 +75,8 @@ public class RuleModelTest extends TestCase {
 		assertEquals(a1, model.rhs[1]);
 	}
 
-	public void testAllVariableBindings() {
+    @Test
+    public void testAllVariableBindings() {
 		final RuleModel model = new RuleModel();
 		model.lhs = new IPattern[2];
 		final FactPattern x = new FactPattern("Car");
@@ -97,7 +103,8 @@ public class RuleModelTest extends TestCase {
 
 	}
 
-	public void testAttributes() {
+    @Test
+    public void testAttributes() {
 		final RuleModel m = new RuleModel();
 		final RuleAttribute at = new RuleAttribute("salience", "42");
 		m.addAttribute(at);
@@ -114,7 +121,8 @@ public class RuleModelTest extends TestCase {
 		assertEquals(at2, m.attributes[0]);
 	}
 
-	public void testBindingList() {
+    @Test
+    public void testBindingList() {
 		final RuleModel model = new RuleModel();
 
 		model.lhs = new IPattern[3];
@@ -154,7 +162,8 @@ public class RuleModelTest extends TestCase {
 
 	}
 
-	public void testBoundFactFinder() {
+    @Test
+    public void testBoundFactFinder() {
 		final RuleModel model = new RuleModel();
 
 		assertNull(model.getBoundFact("x"));
@@ -204,7 +213,8 @@ public class RuleModelTest extends TestCase {
 		System.out.println(brl);
 	}
 
-	public void testGetVariableNameForRHS() {
+    @Test
+    public void testGetVariableNameForRHS() {
 		RuleModel m = new RuleModel();
 		m.name = "blah";
 
@@ -220,7 +230,8 @@ public class RuleModelTest extends TestCase {
 
 	}
 
-	public void testIsDSLEnhanced() throws Exception {
+    @Test
+    public void testIsDSLEnhanced() throws Exception {
 		RuleModel m = new RuleModel();
 
 		assertFalse(m.hasDSLSentences());
@@ -249,7 +260,8 @@ public class RuleModelTest extends TestCase {
 
 	}
 
-	public void testMetaData() {
+    @Test
+    public void testMetaData() {
 		final RuleModel m = new RuleModel();
 
 		final RuleMetadata rm = new RuleMetadata("foo", "bar");
@@ -293,7 +305,8 @@ public class RuleModelTest extends TestCase {
 
 	}
 
-	public void testRemoveItemLhs() {
+    @Test
+    public void testRemoveItemLhs() {
 		final RuleModel model = new RuleModel();
 
 		model.lhs = new IPattern[3];
@@ -317,7 +330,8 @@ public class RuleModelTest extends TestCase {
 		assertEquals(y, model.lhs[0]);
 	}
 
-	public void testRemoveItemRhs() {
+    @Test
+    public void testRemoveItemRhs() {
 		final RuleModel model = new RuleModel();
 
 		model.rhs = new IAction[3];
@@ -336,7 +350,8 @@ public class RuleModelTest extends TestCase {
 		assertEquals(r2, model.rhs[1]);
 	}
 
-	public void testScopedVariables() {
+    @Test
+    public void testScopedVariables() {
 
 		// setup the data...
 
@@ -392,7 +407,8 @@ public class RuleModelTest extends TestCase {
 		assertEquals("y", vars.get(2));
 	}
 
-	public void testScopedVariablesWithCompositeFact() {
+    @Test
+    public void testScopedVariablesWithCompositeFact() {
 		RuleModel m = new RuleModel();
 		FactPattern p = new FactPattern();
 		CompositeFieldConstraint cf = new CompositeFieldConstraint();
@@ -412,7 +428,8 @@ public class RuleModelTest extends TestCase {
 		assertEquals("abc", vars.get(0));
 	}
 
-	public void testGetFieldConstraint() {
+    @Test
+    public void testGetFieldConstraint() {
 		final RuleModel model = new RuleModel();
 		model.lhs = new IPattern[3];
 		final FactPattern x = new FactPattern("Boat");
@@ -454,7 +471,8 @@ public class RuleModelTest extends TestCase {
 		assertEquals("Car", varTypeCar.factType);
 	}
 
-        public void testAddItemLhsAtSpecificPosition() {
+    @Test
+    public void testAddItemLhsAtSpecificPosition() {
 		final RuleModel model = new RuleModel();
 
                 final FactPattern a = new FactPattern();
@@ -541,7 +559,8 @@ public class RuleModelTest extends TestCase {
 
 	}
 
-        public void testAddItemRhsAtSpecificPosition() {
+    @Test
+    public void testAddItemRhsAtSpecificPosition() {
 		final RuleModel model = new RuleModel();
 
                 final ActionSetField a = new ActionSetField();

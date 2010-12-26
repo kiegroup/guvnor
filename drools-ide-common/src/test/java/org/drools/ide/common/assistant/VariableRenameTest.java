@@ -1,6 +1,9 @@
 package org.drools.ide.common.assistant;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.assistant.engine.DRLParserEngine;
 import org.drools.ide.common.assistant.info.drl.DRLRuleRefactorInfo;
@@ -9,11 +12,12 @@ import org.drools.ide.common.assistant.option.AssistantOption;
 import org.drools.ide.common.assistant.option.RenameAssistantOption;
 import org.drools.ide.common.assistant.refactor.drl.VariableRename;
 
-public class VariableRenameTest extends TestCase {
+public class VariableRenameTest {
 
     private DRLParserEngine engine;
     private DRLRuleRefactorInfo info;
 
+    @Test
     public void test() {
         String rule = "package com.sample\n\n";
         rule += "import com.sample.DroolsTest.Message;\n\n";

@@ -18,21 +18,23 @@ package org.drools.ide.common.assistant;
 
 import java.util.List;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.assistant.option.AssistantOption;
 import org.drools.ide.common.assistant.option.ReplaceAssistantOption;
 import org.drools.ide.common.assistant.processor.AbstractRuleAssistantProcessor;
 import org.drools.ide.common.assistant.processor.DRLRefactorProcessor;
 
-public class DRLAssistantTest extends TestCase {
+public class DRLAssistantTest {
 
 	private AbstractRuleAssistantProcessor ruleAssistant;
 	private String rule;
 
-	@Override
-	protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 		ruleAssistant = new DRLRefactorProcessor();
 		rule = "package org.drools.assistant.test;\n\n";
 		rule += "import org.drools.assistant.test.model.Company;\n";
@@ -70,23 +72,26 @@ public class DRLAssistantTest extends TestCase {
 		rule += "end\n";
 	}
 
-	public void testAssignSalaryFieldToVariable() throws Exception {
+    @Test
+    public void testAssignSalaryFieldToVariable() throws Exception {
 		List<AssistantOption> options = ruleAssistant.getRuleAssistant(rule, 780);
 		assertEquals(options.size(), 1);
 		ReplaceAssistantOption assistantOption = (ReplaceAssistantOption) options.get(0);
-		Assert.assertEquals("\t$employee : Employee($company : company, $company1 : oldcompany, $age : age > 80, salary $ : > 400)", assistantOption.getContent());
+	    assertEquals("\t$employee : Employee($company : company, $company1 : oldcompany, $age : age > 80, salary $ : > 400)", assistantOption.getContent());
 	}
 
-	public void testDontAssignFieldInsideRHS() throws Exception {
+    @Test
+    public void testDontAssignFieldInsideRHS() throws Exception {
 		List<AssistantOption> options = ruleAssistant.getRuleAssistant(rule, 840);
 		assertEquals(options.size(), 0);
 	}
 
-	public void testAssignLicenseFromSecondRule() throws Exception {
+    @Test
+    public void testAssignLicenseFromSecondRule() throws Exception {
 		List<AssistantOption> options = ruleAssistant.getRuleAssistant(rule, 930);
 		assertEquals(options.size(), 1);
 		ReplaceAssistantOption assistantOption = (ReplaceAssistantOption) options.get(0);
-		Assert.assertEquals("\tDriver($licence : licence = 1234, $name : name)", assistantOption.getContent());
+	    assertEquals("\tDriver($licence : licence = 1234, $name : name)", assistantOption.getContent());
 	}
 
 }

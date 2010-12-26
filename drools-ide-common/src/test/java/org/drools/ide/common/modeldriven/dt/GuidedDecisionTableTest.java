@@ -19,7 +19,10 @@ package org.drools.ide.common.modeldriven.dt;
 import java.util.Date;
 import java.util.HashMap;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.ModelField;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -31,7 +34,7 @@ import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 
-public class GuidedDecisionTableTest extends TestCase {
+public class GuidedDecisionTableTest {
 
 //	public void testGetCol() {
 //		GuidedDecisionTable dt = new GuidedDecisionTable();
@@ -90,6 +93,7 @@ public class GuidedDecisionTableTest extends TestCase {
 //
 //
 //	}
+    @Test
     public void testValueLists() {
         GuidedDecisionTable dt = new GuidedDecisionTable();
 
@@ -219,6 +223,7 @@ public class GuidedDecisionTableTest extends TestCase {
 
     }
 
+    @Test
     public void testNumeric() {
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 
@@ -298,6 +303,7 @@ public class GuidedDecisionTableTest extends TestCase {
         assertFalse(dt.isNumeric(c2, sce));
     }
     
+    @Test
     public void testGetType() {
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 
@@ -397,6 +403,7 @@ public class GuidedDecisionTableTest extends TestCase {
         assertEquals(SuggestionCompletionEngine.TYPE_NUMERIC, dt.getType(conditionColAge2, sce));
     }
     
+    @Test
     public void testNoConstraintLists() {
         GuidedDecisionTable dt = new GuidedDecisionTable();
 
@@ -424,6 +431,7 @@ public class GuidedDecisionTableTest extends TestCase {
 
     }
 
+    @Test
     public void testNoConstraintsNumeric() {
         GuidedDecisionTable dt = new GuidedDecisionTable();
 

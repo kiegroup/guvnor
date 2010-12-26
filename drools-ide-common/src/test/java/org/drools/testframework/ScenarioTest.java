@@ -20,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
@@ -30,9 +33,10 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
 import org.drools.ide.common.client.modeldriven.testing.VerifyField;
 import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 
-public class ScenarioTest extends TestCase {
+public class ScenarioTest {
 
-	public void testInsertBetween() {
+    @Test
+    public void testInsertBetween() {
 		Scenario sc = new Scenario();
 		VerifyRuleFired vf = new VerifyRuleFired();
 		sc.insertBetween(null, vf);
@@ -124,7 +128,8 @@ public class ScenarioTest extends TestCase {
 
 
 
-	public void testExecutionTrace() {
+    @Test
+    public void testExecutionTrace() {
         Scenario sc = new Scenario();
 
         sc.globals.add(new FactData("A", "A", new ArrayList(), false));
@@ -158,7 +163,8 @@ public class ScenarioTest extends TestCase {
         assertTrue( sc.isFactNameExisting( "F" ) );
 	}
 
-	public void testRemoveFixture() {
+    @Test
+    public void testRemoveFixture() {
 		Scenario sc = new Scenario();
 
 		VerifyRuleFired vf1 = new VerifyRuleFired();
@@ -188,7 +194,8 @@ public class ScenarioTest extends TestCase {
 
 	}
 
-	public void testMapFactTypes() {
+    @Test
+    public void testMapFactTypes() {
 		Scenario sc = new Scenario();
 		sc.fixtures.add(new FactData("X", "q", null, false));
 		sc.globals.add(new FactData("Q", "x", null, false));
@@ -201,7 +208,8 @@ public class ScenarioTest extends TestCase {
 
 	}
 
-	public void testVariablesInScope() {
+    @Test
+    public void testVariablesInScope() {
 		Scenario sc = new Scenario();
 		sc.globals.add(new FactData("X", "x", new ArrayList(), false));
 
@@ -239,7 +247,8 @@ public class ScenarioTest extends TestCase {
 
 	}
 
-	public void testAllowRemoveFact() {
+    @Test
+    public void testAllowRemoveFact() {
 		Scenario sc = new Scenario();
 
 		FactData fd1 = new FactData("X", "x", new ArrayList(), false);
@@ -263,7 +272,8 @@ public class ScenarioTest extends TestCase {
 		assertFalse(sc.isFactNameUsed(fd4));
 	}
 
-	public void testIsFactNameUsed() {
+    @Test
+    public void testIsFactNameUsed() {
 		Scenario sc = new Scenario();
 		sc.globals.add(new FactData("X", "x", null, false));
 		sc.fixtures.add(new FactData("Q", "q", null, false));
@@ -278,7 +288,8 @@ public class ScenarioTest extends TestCase {
 		assertFalse(sc.isFactNameExisting("w"));
 	}
 
-	public void testCountSuccessFailures() {
+    @Test
+    public void testCountSuccessFailures() {
 		Scenario sc = new Scenario();
 		sc.fixtures.add(new FactData());
 		sc.fixtures.add(new ExecutionTrace());

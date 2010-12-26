@@ -26,8 +26,8 @@ import org.junit.Test;
 
 public class BusinessRuleProviderFactoryTest {
 
-	@Test
-	public void testGetProvider() throws CheckedDroolsException {
+    @Test
+    public void testGetProvider() throws CheckedDroolsException {
 		BusinessRuleProvider provider = BusinessRuleProviderFactory.getInstance().getProvider();
 		assertNotNull(provider);
 		assertTrue(provider instanceof BusinessRuleProviderDefaultImpl);

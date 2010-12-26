@@ -16,17 +16,20 @@
 
 package org.drools.ide.common.assistant;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.assistant.engine.DSLParserEngine;
 
-public class DSLParserEngineTest extends TestCase {
+public class DSLParserEngineTest {
 
 	DSLParserEngine dslParserEngine;
 	private String rule;
 
-	@Override
-	protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 		rule = "#This is a starter DSL to show off some of the features. Make sure you change it to be what you need !.\n" +
 		"[when]There is an Instance with field of \"{value}\"=i: Instance(field==\"{value}\")\n" +
 		"[when]Instance is at least {number} and field is \"{value}\"=i: Instance(number > {number}, location==\"{value}\")\n" +
@@ -40,7 +43,8 @@ public class DSLParserEngineTest extends TestCase {
 		dslParserEngine = new DSLParserEngine(rule);
 	}
 
-	public void testExecute() {
+    @Test
+    public void testExecute() {
 //		dslParserEngine.parse();
 	}
 }

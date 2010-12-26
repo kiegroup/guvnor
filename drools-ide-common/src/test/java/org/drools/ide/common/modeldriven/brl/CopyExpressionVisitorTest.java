@@ -31,8 +31,8 @@ import org.junit.Test;
 
 public class CopyExpressionVisitorTest {
 
-	@Test
-	public void testCopy() {
+    @Test
+    public void testCopy() {
 		ExpressionFormLine efl = new ExpressionFormLine();
 		FactPattern fp = new FactPattern(SuggestionCompletionEngine.TYPE_OBJECT);
 		fp.boundName = "$o";

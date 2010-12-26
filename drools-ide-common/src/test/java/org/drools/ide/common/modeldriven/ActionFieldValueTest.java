@@ -16,14 +16,18 @@
 
 package org.drools.ide.common.modeldriven;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 
-public class ActionFieldValueTest extends TestCase {
+public class ActionFieldValueTest {
 
+    @Test
     public void testFormula() {
         FieldNature val = new ActionFieldValue( "x",
                                                      "y",

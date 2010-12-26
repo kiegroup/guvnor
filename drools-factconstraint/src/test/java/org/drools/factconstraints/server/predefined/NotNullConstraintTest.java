@@ -38,6 +38,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 /**
  *
  * @author esteban.aliverti@gmail.com
@@ -60,29 +62,29 @@ public class NotNullConstraintTest {
     public void testValidConstraint(){
     	
         ValidationResult result = cons.validate(new Object(), conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate("", conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate("ABC", conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate(new Long("12"), conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate(12L, conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate(12.8, conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
     }
 
     @Test
     public void testInvalidConstraint(){
 
         ValidationResult result = cons.validate(null, conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: "+result.getMessage());
 
     }
@@ -137,10 +139,10 @@ public class NotNullConstraintTest {
             throw new RuntimeException("Error building verifier");
         }
 
-        Assert.assertFalse(verifier.hasErrors());
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        Assert.assertTrue(noProblems);
+        assertTrue(noProblems);
 
         VerifierReport result = verifier.getResult();
 
@@ -152,7 +154,7 @@ public class NotNullConstraintTest {
             counter++;
         }
 
-        Assert.assertEquals(1,
+        assertEquals(1,
                 counter);
 
         verifier.dispose();

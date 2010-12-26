@@ -31,8 +31,8 @@ import org.junit.Test;
 
 public class ConstraintsConstrainerTest {
 
-	@Test
-	public void test() {
+    @Test
+    public void test() {
 		LinkedList<ConstraintConfiguration> list = new LinkedList<ConstraintConfiguration>();
 		ConstraintConfiguration conf = new SimpleConstraintConfigurationImpl();
         conf.setFactType("Person");

@@ -18,13 +18,17 @@ package org.drools.testframework;
 
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
 
-public class FactDataTest extends TestCase {
-	public void testAdd() {
+public class FactDataTest {
+    @Test
+    public void testAdd() {
 		FactData fd = new FactData("x", "y", new ArrayList(), false );
 		assertEquals(0, fd.fieldData.size());
 		fd.fieldData.add(new FieldData("x", "y"));

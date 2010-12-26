@@ -16,14 +16,18 @@
 
 package org.drools.ide.common.modeldriven;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 
-public class ActionSetFieldTest extends TestCase {
+public class ActionSetFieldTest {
 
+    @Test
     public void testRemove() {
         final ActionSetField set = new ActionSetField();
         set.fieldValues = new ActionFieldValue[2];
@@ -45,6 +49,7 @@ public class ActionSetFieldTest extends TestCase {
 
     }
 
+    @Test
     public void testAdd() {
         final ActionSetField set = new ActionSetField();
         set.fieldValues = new ActionFieldValue[2];

@@ -18,24 +18,24 @@ package org.drools.ide.common.server.util;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.util.SuggestionCompletionEngineBuilder;
 import org.drools.lang.dsl.DSLMappingEntry;
 
-public class SuggestionCompletionEngineBuilderTest extends TestCase {
+public class SuggestionCompletionEngineBuilderTest {
     SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         this.builder.newCompletionEngine();
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
+    @Test
     public void testAddDSLSentence() {
         final String input = "{This} is a {pattern} considered pretty \\{{easy}\\} by most \\{people\\}. What do you {say}?";
         this.builder.addDSLActionSentence( input );
@@ -47,6 +47,7 @@ public class SuggestionCompletionEngineBuilderTest extends TestCase {
 
     }
 
+    @Test
     public void testAddSentenceMultipleTypes() {
         final DSLMappingEntry mapping1 = mock(DSLMappingEntry.class, "mapping1");
         final DSLMappingEntry mapping2 = mock(DSLMappingEntry.class, "mapping2");

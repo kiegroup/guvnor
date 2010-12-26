@@ -39,6 +39,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 /**
  *
  * @author esteban.aliverti@gmail.com
@@ -57,69 +59,72 @@ public class RangeConstraintTest {
     }
 
     //@Test
+    @Test
     public void testValidConstraint() {
 
         conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "-0.5");
         conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "100");
 
         ValidationResult result = cons.validate(12, conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate(new Integer("12"), conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate("12", conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate(0.6, conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate(new Float("-0.3"), conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
         result = cons.validate("90.76", conf);
-        Assert.assertTrue(result.isSuccess());
+        assertTrue(result.isSuccess());
 
     }
 
     //@Test
+    @Test
     public void testInvalidConstraint() {
 
         conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MIN, "-0.5");
         conf.setArgumentValue(RangeConstraint.RANGE_CONSTRAINT_MAX, "100");
 
         ValidationResult result = cons.validate(new Object(), conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
         result = cons.validate(null, conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
         result = cons.validate("", conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
         result = cons.validate("ABC", conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
         result = cons.validate(new Long("-100"), conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
         result = cons.validate(-0.5, conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
         result = cons.validate(100, conf);
-        Assert.assertFalse(result.isSuccess());
+        assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());
 
 
     }
 
     //@Test
+    @Test
     public void testUsingVerifier() {
 
         //age constraint
@@ -264,10 +269,10 @@ public class RangeConstraintTest {
             throw new RuntimeException("Error building verifier");
         }
 
-        Assert.assertFalse(verifier.hasErrors());
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        Assert.assertTrue(noProblems);
+        assertTrue(noProblems);
 
         VerifierReport result = verifier.getResult();
 
@@ -275,7 +280,7 @@ public class RangeConstraintTest {
 
         System.out.println(warnings);
 
-        Assert.assertEquals(fail, warnings.size());
+        assertEquals(fail, warnings.size());
         verifier.dispose();
     }
 
@@ -351,10 +356,10 @@ public class RangeConstraintTest {
             throw new RuntimeException("Error building verifier");
         }
 
-        Assert.assertFalse(verifier.hasErrors());
+        assertFalse(verifier.hasErrors());
 
         boolean noProblems = verifier.fireAnalysis();
-        Assert.assertTrue(noProblems);
+        assertTrue(noProblems);
 
         VerifierReport result = verifier.getResult();
 
@@ -362,7 +367,7 @@ public class RangeConstraintTest {
 
         System.out.println(errors);
 
-        Assert.assertEquals(fail, errors.size());
+        assertEquals(fail, errors.size());
 
 //        System.out.println("\nOrders:");
 //        for (VerifierMessageBase message : errors) {

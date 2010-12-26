@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
 
-import junit.framework.TestCase;
-
 import org.drools.ClockType;
 import org.drools.RuleBase;
 import org.drools.RuleBaseFactory;
@@ -32,12 +30,18 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilder;
 import org.drools.time.impl.PseudoClockScheduler;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
 /**
  * A class with some utilities for testing rules.
  * @author Michael Neale
  *
  */
-public abstract class RuleUnit extends TestCase {
+public abstract class RuleUnit {
 
 	/**
 	 * Return a wm ready to go based on the rules in a drl at the specified uri (in the classpath).
