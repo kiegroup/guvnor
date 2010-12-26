@@ -1225,7 +1225,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 	}	
 	
 	@Test @Ignore
-	public void xtestImportExportWithShareableNodes() throws Exception {
+	public void testImportExportWithShareableNodes() throws Exception {
 		RulesRepository repo = getRepo();
 		AssetItem item = repo.loadDefaultPackage().addAsset("testImportExportShareableNodeOriginal", "desc");
 		item.updateContent("la");

@@ -80,7 +80,8 @@ public class ScalabilityTest extends RepositoryTestCase {
     }
 
 //    /** This tests it "bare" just setting properties on node types directly. */
-//    public void xxxtestBare() throws Exception {
+//    @Test @Ignore
+//    public void testBare() throws Exception {
 //        hackit();
 //    }
 

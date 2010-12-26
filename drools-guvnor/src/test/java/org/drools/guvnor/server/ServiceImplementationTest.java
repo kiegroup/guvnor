@@ -1950,8 +1950,9 @@ public class ServiceImplementationTest {
         assertEquals( n,
                       impl.listPackages().length );
     }
-    
-    public void xtestImportPackage() throws Exception {
+
+    @Test @Ignore
+    public void testImportPackage() throws Exception {
         ServiceImplementation impl = getService();
         
         try {
@@ -1978,8 +1979,9 @@ public class ServiceImplementationTest {
         assertEquals( "desc",
                       item.getDescription() );
     }
-    
-    public void xtestExportPackage() throws Exception {
+
+    @Test @Ignore
+    public void testExportPackage() throws Exception {
         ServiceImplementation impl = getService();
         int n = impl.listPackages().length;
         impl.createCategory( "/", "testExportPackageCat1", "desc" );
@@ -3768,9 +3770,9 @@ public class ServiceImplementationTest {
                       res.result );
     }
     
-    @Test @Ignore
     //GUVNOR-296
-    public void IGNORE_testHistoryAfterReImportSampleRepository() throws Exception {
+    @Test @Ignore
+    public void testHistoryAfterReImportSampleRepository() throws Exception {
         ServiceImplementation impl = getService();
         
         //Import sample, do a sanity check, make sure sample is installed correctly
