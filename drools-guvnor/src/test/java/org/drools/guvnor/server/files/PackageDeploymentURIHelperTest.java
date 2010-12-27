@@ -36,7 +36,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DeploymentURIHelperTest {
+public class PackageDeploymentURIHelperTest {
 
     @Test
     public void testGetPackageToExport() throws Exception {
@@ -89,6 +89,22 @@ public class DeploymentURIHelperTest {
         assertEquals("packName", helper.getPackageName());
         assertEquals("documentation", helper.getAssetName());
         assertTrue(helper.isAsset());
+    }
+    
+    @Test
+	/*
+	 * Here is the use case: when executing a process with a given process
+	 * definition id, we want to look up an image of that process. The naming
+	 * convention for that image is {processDefinitionId}.png.
+	 */
+    public void testGetPNG() throws Exception {
+        String uri = "/org.drools.guvnor.Guvnor/package/packName/LATEST/process.png";
+        PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
+        assertTrue(helper.isAsset());
+        assertEquals("LATEST", helper.getVersion());
+        assertEquals("packName", helper.getPackageName());
+        assertEquals("process", helper.getAssetName());
+        assertTrue(helper.isPng());
     }
 
 }
