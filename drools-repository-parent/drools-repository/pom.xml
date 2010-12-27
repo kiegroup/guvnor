@@ -68,6 +68,13 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
+
+
+    <dependency><!-- Shadowed in JDK 1.5 (by JDK itself!), but needed in JDK 1.6 to run tests -->
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <profiles>
