@@ -34,6 +34,7 @@ import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.FormData;
+import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
 
@@ -170,6 +171,12 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 
 		            builder.writePDF( out );
 
+		        } else if ( helper.isPng() ) {
+		            PackageItem pkg = fm.getRepository().loadPackage( helper.getPackageName() );
+		            AssetItem asset = pkg.loadAsset(helper.getAssetName());		            
+
+		            fileName = getFileManager().loadFileAttachmentByUUID( asset.getUUID(),
+		                                                                         out );
 		        } else {
 		            if ( req.getRequestURI().endsWith( "SCENARIOS" ) ) {
 		                doRunScenarios( helper,
