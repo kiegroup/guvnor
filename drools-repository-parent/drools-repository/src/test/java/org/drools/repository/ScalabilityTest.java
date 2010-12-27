@@ -79,12 +79,6 @@ public class ScalabilityTest extends RepositoryTestCase {
 
     }
 
-//    /** This tests it "bare" just setting properties on node types directly. */
-//    @Test @Ignore
-//    public void testBare() throws Exception {
-//        hackit();
-//    }
-
     private List listACat(RulesRepository repo) {
         long start = System.currentTimeMillis();
         List results = repo.findAssetsByCategory( "HR/CAT_1", 0, -1  ).assets;
@@ -153,45 +147,5 @@ public class ScalabilityTest extends RepositoryTestCase {
 
         }
     }
-
-
-//    private void hackit() throws Exception {
-//
-//
-//        RulesRepository repo = new RulesRepository(true);
-//        Session session = repo.getSession();
-//
-//
-//        Node folderNode = session.getRootNode().getNode("drools:repository/drools:rule_area");
-//
-//        for (int i=1 ; i <= 50; i++) {
-//
-//            System.out.println("doing: Rule " + i);
-//
-//            //create the node - see section 6.7.22.6 of the spec
-//            Node ruleNode = folderNode.addNode("Rule_" + i, RuleItem.RULE_NODE_TYPE_NAME );
-//
-//            ruleNode.setProperty(RuleItem.TITLE_PROPERTY_NAME, "Rule_" + i);
-//
-//            //TODO: set this property correctly once we've figured out logging in / JAAS
-//            ruleNode.setProperty(RuleItem.CONTRIBUTOR_PROPERTY_NAME, "not yet implemented");
-//
-//            ruleNode.setProperty(RuleItem.DESCRIPTION_PROPERTY_NAME, "");
-//            ruleNode.setProperty(RuleItem.FORMAT_PROPERTY_NAME, RuleItem.RULE_FORMAT);
-//            ruleNode.setProperty(RuleItem.LHS_PROPERTY_NAME, "LHS_" + i);
-//            ruleNode.setProperty(RuleItem.RHS_PROPERTY_NAME, "RHS_" + i);
-//            ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT, "Initial" );
-//
-//
-//            Calendar lastModified = Calendar.getInstance();
-//            ruleNode.setProperty(RuleItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
-//            if (i % 500 == 0) {
-//                System.out.println("saving......");
-//                session.save();
-//                System.out.println("finished.");
-//            }
-//        }
-//
-//    }
 
 }
