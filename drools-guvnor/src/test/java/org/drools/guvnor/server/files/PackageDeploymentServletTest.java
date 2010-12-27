@@ -20,6 +20,7 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.Writer;
 import java.util.HashMap;
@@ -321,6 +322,44 @@ public class PackageDeploymentServletTest {
         assertTrue(testResult.indexOf("<resource source='http://foo' type='PKG' />") > 0);
 	}
 
+    @Test
+    public void testPNG() throws Exception {
+		RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+
+		ServiceImplementation impl = new ServiceImplementation();
+		impl.repository = repo;
+
+		PackageItem pkg = repo.createPackage("testPNGPackage", "");
+		AssetItem asset  = pkg.addAsset("myprocess", "");
+		asset.updateFormat("pgn");
+        File imageFile = new File(getClass().getResource("resources/myprocess.png").toURI());
+		asset.updateBinaryContentAttachment(new FileInputStream(imageFile));
+		asset.updateContent("import org.drools.SampleFact\n global org.drools.SampleFact sf");
+		asset.checkin("");
+		
+		AssetItem assetnew = repo.loadAssetByUUID(asset.getUUID());
+		assertEquals("myprocess", assetnew.getName());
+				
+
+		//check png
+		Base64 enc = new Base64();
+        String userpassword = "test" + ":" + "password";
+        final String encodedAuthorization = enc.encodeToString( userpassword.getBytes() ); 
+        Map<String, String> headers = new HashMap<String, String>() {
+            {
+                put("Authorization", "BASIC " + encodedAuthorization);
+            }
+        };
+		PackageDeploymentServlet serv = new PackageDeploymentServlet();
+		MockHTTPRequest req = new MockHTTPRequest("/package/testPNGPackage/LATEST/myprocess.png", headers);
+		MockHTTPResponse res = new MockHTTPResponse();
+		serv.doGet(req, res);
+
+		assertNotNull(res.extractContentBytes());
+		byte[] bin = res.extractContentBytes();
+		assertTrue(bin.length>0);
+	}
+    
 	private void assertSameArray(byte[] bin_, byte[] bin) {
 		for (int i = 0; i < bin.length; i++) {
 			assertEquals(bin_[i], bin[i]);
