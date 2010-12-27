@@ -54,7 +54,7 @@ public class PackageDeploymentURIHelper {
     private String assetName = null;
 
     private enum FileType {
-        UNKNOWN, SOURCE, DOCUMENTATION
+        UNKNOWN, SOURCE, DOCUMENTATION, PNG
     }
 
     private FileType fileType = FileType.UNKNOWN;
@@ -82,7 +82,11 @@ public class PackageDeploymentURIHelper {
     public boolean isDocumentation() {
         return fileType == FileType.DOCUMENTATION;
     }
-
+    
+    public boolean isPng() {
+        return fileType == FileType.PNG;
+    }
+    
     public String getAssetName() {
         return this.assetName;
     }
@@ -96,6 +100,7 @@ public class PackageDeploymentURIHelper {
         private static final String PDF  = ".pdf";
         private static final String BPMN = ".bpmn";
         private static final String DRL  = ".drl";
+        private static final String PNG  = ".png";
 
         private String              url;
 
@@ -128,6 +133,8 @@ public class PackageDeploymentURIHelper {
                 fileType = FileType.SOURCE;
             } else if ( extension.equals( PDF ) ) {
                 fileType = FileType.DOCUMENTATION;
+            } else if ( extension.equals( PNG ) ) {
+                fileType = FileType.PNG;
             }
         }
 
@@ -146,6 +153,8 @@ public class PackageDeploymentURIHelper {
                 return BPMN;
             } else if ( isFileType( PDF ) ) {
                 return PDF;
+            } else if ( isFileType( PNG ) ) {
+                return PNG;
             }
 
             return "";
