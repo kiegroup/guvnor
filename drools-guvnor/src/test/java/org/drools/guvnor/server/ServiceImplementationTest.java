@@ -126,6 +126,49 @@ public class ServiceImplementationTest {
         RepositoryStartupService.registerCheckinListener();
     }
 
+    /**
+     * Set up enough of the Seam environment to test it.
+     */
+    @Before
+    public void setUp() throws Exception {
+        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession());
+        MailboxService.getInstance().init( repo );
+        RepositoryStartupService.registerCheckinListener();
+        // setting it to false as most unit tests in this file assume no signing
+        System.setProperty( KeyStoreHelper.PROP_SIGN, "false" );
+        Map<String, Object> ap = new HashMap<String, Object>();
+        ap.put( "org.drools.guvnor.client.rpc.RepositoryService",
+                getService() );
+        Lifecycle.beginApplication( ap );
+        Lifecycle.beginCall();
+
+        MockIdentity mi = new MockIdentity();
+        mi.inject();
+        mi.create();
+        //mi.addRole(RoleTypes.ADMIN);
+        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+        resolver.setEnableRoleBasedAuthorization( false );
+        mi.addPermissionResolver( new RoleBasedPermissionResolver() );
+        //mi.addPermissionResolver(new PackageBasedPermissionResolver());
+    }
+
+    private ServiceImplementation getService() throws Exception {
+        ServiceImplementation impl = new ServiceImplementation();
+        impl.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        return impl;
+    }
+
+    @After
+    public void tearDown() throws Exception {
+
+        if ( Contexts.isApplicationContextActive() ) {
+
+            Lifecycle.endApplication();
+        }
+        MailboxService.getInstance().stop();
+        TestEnvironmentSessionHelper.shutdown();
+    }
+
     @Test @Ignore //this test fail intermittently
     public void testInboxEvents() throws Exception {
         ServiceImplementation impl = getService();
@@ -3965,49 +4008,6 @@ public class ServiceImplementationTest {
                 fail( "Diff not expected." );
             }
         }
-    }
-
-    /**
-     * Set up enough of the Seam environment to test it.
-     */
-    @Before
-    public void setUp() throws Exception {
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession());
-        MailboxService.getInstance().init( repo );
-        RepositoryStartupService.registerCheckinListener();
-        // setting it to false as most unit tests in this file assume no signing
-        System.setProperty( KeyStoreHelper.PROP_SIGN, "false" );
-        Map<String, Object> ap = new HashMap<String, Object>();
-        ap.put( "org.drools.guvnor.client.rpc.RepositoryService",
-                getService() );
-        Lifecycle.beginApplication( ap );
-        Lifecycle.beginCall();
-
-        MockIdentity mi = new MockIdentity();
-        mi.inject();
-        mi.create();
-        //mi.addRole(RoleTypes.ADMIN);
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( false );
-        mi.addPermissionResolver( new RoleBasedPermissionResolver() );
-        //mi.addPermissionResolver(new PackageBasedPermissionResolver());
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    	
-        if ( Contexts.isApplicationContextActive() ) {
-        	
-            Lifecycle.endApplication();
-        }
-        MailboxService.getInstance().stop();
-        TestEnvironmentSessionHelper.shutdown();
-    }
-
-    private ServiceImplementation getService() throws Exception {
-        ServiceImplementation impl = new ServiceImplementation();
-        impl.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
-        return impl;
     }
 
 }
