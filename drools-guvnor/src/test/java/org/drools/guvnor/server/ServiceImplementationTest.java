@@ -137,14 +137,9 @@ import com.google.gwt.user.client.rpc.SerializationException;
 public class ServiceImplementationTest {
 
     @BeforeClass
-	public static void setup() {
-
-        try {
-            MailboxService.getInstance().init( new RulesRepository( TestEnvironmentSessionHelper.getSession() ) );
-            RepositoryStartupService.registerCheckinListener();
-        } catch ( Exception e ) {
-            fail( "unable to init" );
-        }
+	public static void setup() throws Exception {
+        MailboxService.getInstance().init( new RulesRepository( TestEnvironmentSessionHelper.getSession() ) );
+        RepositoryStartupService.registerCheckinListener();
     }
 
     @Test @Ignore //this test fail intermittently
@@ -3993,15 +3988,9 @@ public class ServiceImplementationTest {
      */
     @Before
     public void setUp() throws Exception {
-
-    	 try {
-    		 RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession());
-             MailboxService.getInstance().init( repo );
-             RepositoryStartupService.registerCheckinListener();
-         } catch ( Exception e ) {
-             fail( "unable to init" );
-             e.printStackTrace();
-         }
+        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession());
+        MailboxService.getInstance().init( repo );
+        RepositoryStartupService.registerCheckinListener();
         // setting it to false as most unit tests in this file assume no signing
         System.setProperty( KeyStoreHelper.PROP_SIGN, "false" );
         Map<String, Object> ap = new HashMap<String, Object>();
