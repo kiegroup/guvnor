@@ -122,7 +122,8 @@ public class ServiceImplementationTest {
 
     @BeforeClass
 	public static void setup() throws Exception {
-        MailboxService.getInstance().init( new RulesRepository( TestEnvironmentSessionHelper.getSession() ) );
+        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession());
+        MailboxService.getInstance().init( repo );
         RepositoryStartupService.registerCheckinListener();
     }
 
@@ -131,9 +132,6 @@ public class ServiceImplementationTest {
      */
     @Before
     public void setUp() throws Exception {
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession());
-        MailboxService.getInstance().init( repo );
-        RepositoryStartupService.registerCheckinListener();
         // setting it to false as most unit tests in this file assume no signing
         System.setProperty( KeyStoreHelper.PROP_SIGN, "false" );
         Map<String, Object> ap = new HashMap<String, Object>();
