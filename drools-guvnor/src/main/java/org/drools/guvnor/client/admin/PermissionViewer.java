@@ -276,7 +276,7 @@ public class PermissionViewer extends Composite {
         RepositoryServiceFactory.getService().retrieveUserPermissions( userName,
                                                                        new GenericCallback<Map<String, List<String>>>() {
                                                                            public void onSuccess(final Map<String, List<String>> perms) {
-                                                                               FormStylePopup editor = new FormStylePopup( images.management(),
+                                                                               final FormStylePopup editor = new FormStylePopup( images.management(),
                                                                                                                            Format.format( constants.EditUser0(),
                                                                                                                                           userName ) ); 
                                                                                editor.addRow( new HTML( "<i>" + constants.UserAuthenticationTip() + "</i>" ) );
@@ -285,9 +285,12 @@ public class PermissionViewer extends Composite {
                                                                                editor.addAttribute( "",
                                                                                                     doPermsPanel( perms,
                                                                                                                   vp ) );
+                                                                               
+                                                                               HorizontalPanel hp = new HorizontalPanel();
                                                                                com.google.gwt.user.client.ui.Button save = new com.google.gwt.user.client.ui.Button( constants.SaveChanges() );
+                                                                               hp.add(save);
                                                                                editor.addAttribute( "",
-                                                                                                    save );
+                                                                            		   hp );
                                                                                save.addClickHandler( new ClickHandler() {
                                                                                    public void onClick(ClickEvent w) {
                                                                                        LoadingPopup.showMessage( constants.Updating() );
@@ -297,12 +300,21 @@ public class PermissionViewer extends Composite {
                                                                                                                                                         public void onSuccess(Void a) {
                                                                                                                                                             LoadingPopup.close();
                                                                                                                                                             refresh();
+                                                                                                                                                            editor.hide();
                                                                                                                                                         }
                                                                                                                                                     } );
 
                                                                                    }
                                                                                } );
 
+                                                                               com.google.gwt.user.client.ui.Button cancel = new com.google.gwt.user.client.ui.Button( constants.Cancel() );
+                                                                               hp.add( cancel );
+                                                                               cancel.addClickHandler( new ClickHandler() {
+                                                                                   public void onClick(ClickEvent w) {
+                                                                                       editor.hide();
+                                                                                   }
+                                                                               });
+                                                                                   
                                                                                editor.show();
                                                                                LoadingPopup.close();
                                                                            }
@@ -406,6 +418,7 @@ public class PermissionViewer extends Composite {
                                                                      pop.clear();
                                                                      final String sel = permTypeBox.getItemText( permTypeBox.getSelectedIndex() );
                                                                      if ( sel.equals( "admin" ) ) { //NON-NLS
+                                                                    	 HorizontalPanel hp = new HorizontalPanel();
                                                                          com.google.gwt.user.client.ui.Button ok = new com.google.gwt.user.client.ui.Button( constants.OK() );
 
                                                                          pop.addAttribute( constants.MakeThisUserAdmin(),
@@ -417,6 +430,15 @@ public class PermissionViewer extends Composite {
 
                                                                                  doPermsPanel( perms,
                                                                                                vp );
+                                                                                 pop.hide();
+                                                                             }
+                                                                         } );
+                                                                         com.google.gwt.user.client.ui.Button cancel = new com.google.gwt.user.client.ui.Button( constants.Cancel() );
+
+                                                                         pop.addAttribute( "",
+                                                                        		           cancel );
+                                                                         cancel.addClickHandler( new ClickHandler() {
+                                                                             public void onClick(ClickEvent w) {
                                                                                  pop.hide();
                                                                              }
                                                                          } );
