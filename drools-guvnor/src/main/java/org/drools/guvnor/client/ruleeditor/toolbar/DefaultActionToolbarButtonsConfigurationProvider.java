@@ -16,12 +16,22 @@
 
 package org.drools.guvnor.client.ruleeditor.toolbar;
 
+import static org.drools.guvnor.client.common.AssetFormats.BUSINESS_RULE;
+import static org.drools.guvnor.client.common.AssetFormats.DECISION_SPREADSHEET_XLS;
+import static org.drools.guvnor.client.common.AssetFormats.DECISION_TABLE_GUIDED;
+import static org.drools.guvnor.client.common.AssetFormats.DRL;
+import static org.drools.guvnor.client.common.AssetFormats.DRL_MODEL;
+import static org.drools.guvnor.client.common.AssetFormats.DSL;
+import static org.drools.guvnor.client.common.AssetFormats.DSL_TEMPLATE_RULE;
+import static org.drools.guvnor.client.common.AssetFormats.ENUMERATION;
+import static org.drools.guvnor.client.common.AssetFormats.FUNCTION;
+import static org.drools.guvnor.client.common.AssetFormats.RULE_TEMPLATE;
+
+import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.EditorWidget;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.CapabilitiesManager;
-import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
-import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import static org.drools.guvnor.client.common.AssetFormats.*;
 
 /**
  *
@@ -35,10 +45,10 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     private static String[] VERIFY_FORMATS     = new String[]{BUSINESS_RULE, DECISION_SPREADSHEET_XLS, DRL, DECISION_TABLE_GUIDED, DRL_MODEL, RULE_TEMPLATE};
 
     private RuleAsset       asset;
-    private Widget          editor;
+    private EditorWidget    editor;
 
     public DefaultActionToolbarButtonsConfigurationProvider(RuleAsset asset,
-                                                            Widget editor) {
+                                                            EditorWidget editor) {
         this.asset = asset;
         this.editor = editor;
     }

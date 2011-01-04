@@ -194,11 +194,10 @@ public class RuleViewer extends GuvnorEditor {
     private ActionToolbarButtonsConfigurationProvider getConfiguration() {
         if ( actionToolbarButtonsConfigurationProvider == null ) {
             return new DefaultActionToolbarButtonsConfigurationProvider( asset,
-                                                                         this );
+                                                                         (EditorWidget) editor );
         } else {
             return actionToolbarButtonsConfigurationProvider;
         }
-
     }
 
     /**
@@ -227,7 +226,7 @@ public class RuleViewer extends GuvnorEditor {
                     doCopy();
                 }
             } );
-            toolbar.setArciveCommand( new Command() {
+            toolbar.setArchiveCommand( new Command() {
                 public void execute() {
                     doArchive();
                 }

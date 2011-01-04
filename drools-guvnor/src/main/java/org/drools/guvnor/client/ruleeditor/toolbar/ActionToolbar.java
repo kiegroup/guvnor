@@ -155,7 +155,7 @@ public class ActionToolbar extends Composite {
         archive.setVisible( b );
     }
 
-    public void setArciveCommand(final Command archiveCommand) {
+    public void setArchiveCommand(final Command archiveCommand) {
         archive.setCommand( new Command() {
 
             public void execute() {
