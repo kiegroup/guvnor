@@ -83,7 +83,8 @@ public class TestEnvironmentSessionHelper {
                 out.close();
                 return testSession;
             } catch ( Exception e ) {
-                System.err.println("Failed to get the repository session: " + e.getMessage());
+                System.err.println("Failed to get the repository session: ");
+                e.printStackTrace();
                 throw new IllegalStateException( e );
             }
         } else {
