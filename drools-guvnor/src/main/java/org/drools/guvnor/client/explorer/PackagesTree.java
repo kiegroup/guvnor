@@ -29,12 +29,14 @@ import org.drools.guvnor.client.util.TabOpener;
 import org.drools.guvnor.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-public class PackagesTree extends AbstractTree {
+public class PackagesTree extends AbstractTree implements OpenHandler<TreeItem> {
     private static Constants constants      = GWT.create( Constants.class );
     private static Images    images         = (Images) GWT.create( Images.class );
 
@@ -48,6 +50,7 @@ public class PackagesTree extends AbstractTree {
         //lazy loaded to easy startup wait time.
         //setupPackagesTree(this.centertabbedPanel);
         mainTree.addSelectionHandler( this );
+        mainTree.addOpenHandler( (OpenHandler<TreeItem>) this );
 
         //these panels are lazy loaded to easy startup wait time.
         /*        addListener(new PanelListenerAdapter() {
@@ -80,32 +83,18 @@ public class PackagesTree extends AbstractTree {
     }
 
     private void setupPackagesTree() {
-        TreeItem packageRootNode = mainTree.addItem( Util.getHeader( images.chartOrganisation(),
-                                                                     constants.Packages() ) );
-        packageRootNode.setState( true );
-        loadPackages( packageRootNode,
-                      itemWidgets );
-        mainTree.addItem( packageRootNode );
+		TreeItem packageRootNode = new TreeItem(Util.getHeader(
+				images.chartOrganisation(), constants.Packages()));
+		setupPackageNode(packageRootNode);
+		mainTree.addItem(packageRootNode);
 
-        loadGlobal( mainTree,
-                    itemWidgets );
-
-        /*            @Override
-                    public void onCollapseNode(final TreeItem node) {
-                        if (node.getText().equals(constants.Packages())) {
-                            Node[] children = node.getChildNodes();
-                            for (Node child : children) {
-                                node.removeChild(child);
-                            }
-                            loadPackages(node, itemWidgets);
-                        }
-                    }*/
-
-        //return mainTree;
+		setupGlobalNode( mainTree, itemWidgets );
     }
-
-    private void loadPackages(final TreeItem root,
-                              final Map<TreeItem, String> itemWidgets) {
+    
+	private void setupPackageNode(final TreeItem packageRootNode) {
+		packageRootNode.setState(true);
+		packageRootNode.setUserObject(new String("rootNode"));
+		
         RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
             public void onSuccess(PackageConfigData[] value) {
                 PackageHierarchy ph = new PackageHierarchy();
@@ -115,16 +104,15 @@ public class PackagesTree extends AbstractTree {
                 }
 
                 for ( PackageHierarchy.Folder hf : ph.root.children ) {
-                    buildPkgTree( root,
-                                  hf );
+                    buildPkgTree( packageRootNode, hf );
                 }
 
                 //root.expand();
             }
-        } );
-    }
+        } );		
+	}
 
-    private void loadGlobal(final Tree root,
+    private void setupGlobalNode(final Tree root,
                             final Map<TreeItem, String> itemWidgets) {
         RepositoryServiceFactory.getService().loadGlobalPackage( new GenericCallback<PackageConfigData>() {
             public void onSuccess(PackageConfigData value) {
@@ -215,6 +203,15 @@ public class PackagesTree extends AbstractTree {
                 throw new IllegalArgumentException("The userObject (" + userObject + ") is not supported.");
             }
         }
-    }
+    }    
 
+    public void onOpen(OpenEvent<TreeItem> event) {
+        TreeItem node = event.getTarget();
+        Object userObject = node.getUserObject();
+
+        if ( userObject != null && userObject instanceof String && "rootNode".equals((String)userObject)) {
+        	node.removeItems();
+        	setupPackageNode(node);
+        }
+    }
 }
