@@ -86,8 +86,10 @@ public class MetaDataWidget extends Composite {
 
         this.metaDataRefreshView = metaDataRefreshView;
         this.fullRefreshView = fullRefreshView;
-
-        Button show = new Button( constants.showMoreInfo() );
+        layout.add( new SmallLabel( Format.format( "{0}: [<b>{1}</b>]",
+                constants.Title(),
+                d.name ) ) );
+/*        Button show = new Button( constants.showMoreInfo() );
         show.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent sender) {
                 layout.clear();
@@ -99,9 +101,11 @@ public class MetaDataWidget extends Composite {
                                                    constants.Title(),
                                                    d.name ) ) );
 
-        layout.add( show );
+        layout.add( show );*/
 
         initWidget( layout );
+        //layout.clear();
+        render();
     }
 
     private void render() {
@@ -176,7 +180,7 @@ public class MetaDataWidget extends Composite {
         addAttribute( "UUID:",
                       readOnlyText( uuid ) );
 
-        endSection();
+        endSection(false);
 
         startSection( constants.OtherMetaData() );
 
@@ -242,7 +246,7 @@ public class MetaDataWidget extends Composite {
                                         fullRefreshView ) );
         }
 
-        endSection( true );
+        endSection( false );
     }
 
     private void addRow(VersionBrowser versionBrowser) {
