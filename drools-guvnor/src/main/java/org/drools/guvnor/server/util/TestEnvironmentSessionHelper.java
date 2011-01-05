@@ -41,109 +41,72 @@ import org.slf4j.LoggerFactory;
  */
 public class TestEnvironmentSessionHelper {
 
-
-	public static final Logger log = LoggerFactory.getLogger(TestEnvironmentSessionHelper.class);
-    public static Repository repository;
-
+    public static final Logger log = LoggerFactory.getLogger( TestEnvironmentSessionHelper.class );
+    public static Repository   repository;
 
     public static synchronized Session getSession() throws Exception {
-        return getSession(true);
+        return getSession( true );
     }
 
     public static synchronized Session getSession(boolean erase) {
-    	try {
-	        if (repository == null) {
+        if ( repository == null ) {
+            try {
 
-	            if (erase) {
-	                File repoDir = new File("repository");
-	                log.info("DELETE test repo dir: " + repoDir.getAbsolutePath());
-	                RepositorySessionUtil.deleteDir( repoDir );
-	                log.info("TEST repo dir deleted.");
-	            }
-
-	            RulesRepositoryConfigurator config = RulesRepositoryConfigurator.getInstance(null);
-                String home = System.getProperty("guvnor.repository.dir");
-                Properties properties = new Properties();
-                if (home!=null) {
-                	properties.setProperty(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, home);
+                if ( erase ) {
+                    File repoDir = new File( "repository" );
+                    log.info( "DELETE test repo dir: " + repoDir.getAbsolutePath() );
+                    RepositorySessionUtil.deleteDir( repoDir );
+                    log.info( "TEST repo dir deleted." );
                 }
-	            repository = config.getJCRRepository();
 
-	            Session testSession = repository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
+                RulesRepositoryConfigurator config = RulesRepositoryConfigurator.getInstance( null );
+                String home = System.getProperty( "guvnor.repository.dir" );
+                Properties properties = new Properties();
+                if ( home != null ) {
+                    properties.setProperty( JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY,
+                                            home );
+                }
+                repository = config.getJCRRepository();
 
-	            RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(testSession);
-	            if (erase && admin.isRepositoryInitialized()) {
-	                admin.clearRulesRepository( );
-	            }
-	            config.setupRepository( testSession );
-	            File file = File.createTempFile( "pete", "txt" );
-	            file.deleteOnExit();
-	            PrintWriter out = new PrintWriter(new FileOutputStream(file));
-				//dump(testSession.getRootNode(), out);
-//	            OutputStream out = new FileOutputStream("/tmp/pepe.txt");
-//	            testSession.exportSystemView("/", out, true, false);
-				out.close();
-	            return testSession;
-	        } else {
-	            return repository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
-	        }
-    	} catch (Exception e) {
-    		throw new IllegalStateException(e);
-    	}
+                Session testSession = repository.login( new SimpleCredentials( "alan_parsons",
+                                                                               "password".toCharArray() ) );
 
+                RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator( testSession );
+                if ( erase && admin.isRepositoryInitialized() ) {
+                    admin.clearRulesRepository();
+                }
+                config.setupRepository( testSession );
+                File file = File.createTempFile( "pete",
+                                                 "txt" );
+                file.deleteOnExit();
+                PrintWriter out = new PrintWriter( new FileOutputStream( file ) );
+                out.close();
+                return testSession;
+            } catch ( Exception e ) {
+                throw new IllegalStateException( e );
+            }
+        } else {
+            try {
+                return repository.login( new SimpleCredentials( "alan_parsons",
+                                                                "password".toCharArray() ) );
+            } catch ( Exception e ) {
+                throw new IllegalStateException( e );
+            }
+        }
     }
 
-	/** Recursively outputs the contents of the given node. */
-//	private static void dump(Node node, PrintWriter out) throws Exception {
-//		
-//		// First output the node path
-//		out.println(node.getPath());
-//		// Skip the virtual (and large!) jcr:system subtree
-//		if (node.getName().equals("jcr:system")) {
-//			return;
-//		}
-//
-//		// Then output the properties
-//		PropertyIterator properties = node.getProperties();
-//		while (properties.hasNext()) {
-//			Property property = properties.nextProperty();
-//			if (property.getDefinition().isMultiple()) {
-//				// A multi-valued property, print all values
-//				Value[] values = property.getValues();
-//				for (int i = 0; i < values.length; i++) {
-//					out.println(property.getPath() + " = "
-//							+ values[i].getString());
-//				}
-//			} else {
-//				// A single-valued property
-//				out.println(property.getPath() + " = "
-//						+ property.getString());
-//			}
-//		}
-//
-//		// Finally output all the child nodes recursively
-//		NodeIterator nodes = node.getNodes();
-//		while (nodes.hasNext()) {
-//			dump(nodes.nextNode(), out);
-//		}
-//	}
-    
     /**
      * Uses the given user name.
      */
     public static synchronized Session getSessionFor(String userName) throws RepositoryException {
-        return repository.login(
-                         new SimpleCredentials(userName, "password".toCharArray()));
-
+        return repository.login( new SimpleCredentials( userName,
+                                                        "password".toCharArray() ) );
     }
-    
+
     public static synchronized void shutdown() throws RepositoryException {
-    	RulesRepositoryConfigurator.getInstance(null).shutdown();
-    	
+        RulesRepositoryConfigurator.getInstance( null ).shutdown();
+
         repository = null;
     }
-
-    
-
 
 }
