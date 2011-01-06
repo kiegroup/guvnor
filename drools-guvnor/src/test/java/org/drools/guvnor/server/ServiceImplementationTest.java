@@ -120,11 +120,16 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class ServiceImplementationTest {
 
-    @BeforeClass
-	public static void setup() throws Exception {
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession());
-        MailboxService.getInstance().init( repo );
-        RepositoryStartupService.registerCheckinListener();
+    static {
+        RulesRepository repo;
+        try {
+            repo = new RulesRepository( TestEnvironmentSessionHelper.getSession());
+            MailboxService.getInstance().init( repo );
+            RepositoryStartupService.registerCheckinListener();
+        } catch ( Exception e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     /**
