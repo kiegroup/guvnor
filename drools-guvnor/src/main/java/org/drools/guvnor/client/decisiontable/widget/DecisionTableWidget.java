@@ -47,13 +47,14 @@ public abstract class DecisionTableWidget extends Composite implements
 	protected MergableGridWidget gridWidget;
 	protected DecisionTableHeaderWidget headerWidget;
 	protected DecisionTableSidebarWidget sidebarWidget;
-	protected CellFactory cellFactory;
 
 	protected boolean isMerged = false;
 
 	// Decision Table data
 	protected DynamicData data;
 	protected GuidedDecisionTable model;
+
+	protected SuggestionCompletionEngine sce;
 
 	// Resources
 	protected static final DecisionTableResources resource = GWT
@@ -78,7 +79,7 @@ public abstract class DecisionTableWidget extends Composite implements
 	 */
 	public DecisionTableWidget(SuggestionCompletionEngine sce) {
 
-		this.cellFactory = new CellFactory(sce);
+		this.sce = sce;
 
 		mainPanel = getMainPanel();
 		bodyPanel = getBodyPanel();
@@ -576,8 +577,8 @@ public abstract class DecisionTableWidget extends Composite implements
 		assertColumnCoordinates(index);
 
 		// Create new column for grid
-		DynamicColumn column = new DynamicColumn(modelColumn,
-				cellFactory.getCell(modelColumn, this), index);
+		DynamicColumn column = new DynamicColumn(modelColumn, CellFactory
+				.getInstance().getCell(modelColumn, this, sce), index);
 
 		// Partial redraw
 		if (!isMerged) {
@@ -727,23 +728,23 @@ public abstract class DecisionTableWidget extends Composite implements
 			DTColumnConfig colStatic;
 			DynamicColumn columnStatic;
 			colStatic = new RowNumberCol();
-			columnStatic = new DynamicColumn(colStatic,
-					this.cellFactory.getCell(colStatic, this), iCol, true,
+			columnStatic = new DynamicColumn(colStatic, CellFactory
+					.getInstance().getCell(colStatic, this, sce), iCol, true,
 					false);
 			gridWidget.addColumn(columnStatic);
 			iCol++;
 
 			// Static columns, Description
 			colStatic = new DescriptionCol();
-			columnStatic = new DynamicColumn(colStatic,
-					this.cellFactory.getCell(colStatic, this), iCol);
+			columnStatic = new DynamicColumn(colStatic, CellFactory
+					.getInstance().getCell(colStatic, this, sce), iCol);
 			gridWidget.addColumn(columnStatic);
 			iCol++;
 
 			// Initialise CellTable's Metadata columns
 			for (DTColumnConfig col : model.getMetadataCols()) {
-				DynamicColumn column = new DynamicColumn(col,
-						this.cellFactory.getCell(col, this), iCol);
+				DynamicColumn column = new DynamicColumn(col, CellFactory
+						.getInstance().getCell(col, this, sce), iCol);
 				column.setIsVisible(!col.isHideColumn());
 				gridWidget.addColumn(column);
 				iCol++;
@@ -751,8 +752,8 @@ public abstract class DecisionTableWidget extends Composite implements
 
 			// Initialise CellTable's Attribute columns
 			for (DTColumnConfig col : model.getAttributeCols()) {
-				DynamicColumn column = new DynamicColumn(col,
-						this.cellFactory.getCell(col, this), iCol);
+				DynamicColumn column = new DynamicColumn(col, CellFactory
+						.getInstance().getCell(col, this, sce), iCol);
 				column.setIsVisible(!col.isHideColumn());
 				gridWidget.addColumn(column);
 				iCol++;
@@ -760,8 +761,8 @@ public abstract class DecisionTableWidget extends Composite implements
 
 			// Initialise CellTable's Condition columns
 			for (DTColumnConfig col : model.getConditionCols()) {
-				DynamicColumn column = new DynamicColumn(col,
-						this.cellFactory.getCell(col, this), iCol);
+				DynamicColumn column = new DynamicColumn(col, CellFactory
+						.getInstance().getCell(col, this, sce), iCol);
 				column.setIsVisible(!col.isHideColumn());
 				gridWidget.addColumn(column);
 				iCol++;
@@ -769,8 +770,8 @@ public abstract class DecisionTableWidget extends Composite implements
 
 			// Initialise CellTable's Action columns
 			for (DTColumnConfig col : model.getActionCols()) {
-				DynamicColumn column = new DynamicColumn(col,
-						this.cellFactory.getCell(col, this), iCol);
+				DynamicColumn column = new DynamicColumn(col, CellFactory
+						.getInstance().getCell(col, this, sce), iCol);
 				column.setIsVisible(!col.isHideColumn());
 				gridWidget.addColumn(column);
 				iCol++;
@@ -960,6 +961,7 @@ public abstract class DecisionTableWidget extends Composite implements
 	}
 
 	private void updateStaticColumnValues() {
+
 		for (DynamicColumn col : gridWidget.getColumns()) {
 
 			DTColumnConfig modelColumn = col.getModelColumn();
@@ -987,12 +989,13 @@ public abstract class DecisionTableWidget extends Composite implements
 									.setValue(salience);
 						}
 					}
+					// Ensure Salience cells are rendered with the correct Cell
+					col.setCell(CellFactory.getInstance().getCell(attrCol,
+							this, sce));
 					col.setRequiresFullRedraw(attrCol.isUseRowNumber());
 				}
 			}
-
 		}
-
 	}
 
 }

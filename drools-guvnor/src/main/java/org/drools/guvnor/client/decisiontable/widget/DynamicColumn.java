@@ -4,8 +4,6 @@ import org.drools.guvnor.client.decisiontable.cells.DecisionTableCellValueAdapto
 import org.drools.guvnor.client.table.SortDirection;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 
-import com.google.gwt.user.cellview.client.Column;
-
 /**
  * A column that retrieves it's cell value from an indexed position in a List
  * holding the row data. Normally the row type is defined as a statically typed
@@ -15,8 +13,7 @@ import com.google.gwt.user.cellview.client.Column;
  * @author manstis
  * 
  */
-public class DynamicColumn extends
-		Column<DynamicDataRow, CellValue<? extends Comparable<?>>> {
+public class DynamicColumn extends DynamicBaseColumn {
 
 	private int columnIndex = 0;
 	private DTColumnConfig modelColumn;
@@ -40,7 +37,7 @@ public class DynamicColumn extends
 		this.modelColumn = modelColumn;
 		this.columnIndex = columnIndex;
 		this.isSortable = isSortable;
-		this.requiresFullRedraw=requiresFullRedraw;
+		this.requiresFullRedraw = requiresFullRedraw;
 	}
 
 	@Override

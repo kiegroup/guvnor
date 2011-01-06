@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
+import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
@@ -92,10 +93,18 @@ public class CellFactory {
 	// The cache
 	private static Map<String, DecisionTableCellValueAdaptor<? extends Comparable<?>>> cellCache = new HashMap<String, DecisionTableCellValueAdaptor<? extends Comparable<?>>>();
 
-	private SuggestionCompletionEngine sce;
+	// The Singleton
+	private static CellFactory instance;
 
-	public CellFactory(SuggestionCompletionEngine sce) {
-		this.sce = sce;
+	// Singleton constructor
+	public static synchronized CellFactory getInstance() {
+		if (instance == null) {
+			instance = new CellFactory();
+		}
+		return instance;
+	}
+
+	private CellFactory() {
 	}
 
 	/**
@@ -111,7 +120,8 @@ public class CellFactory {
 	 * @return A Cell
 	 */
 	public DecisionTableCellValueAdaptor<? extends Comparable<?>> getCell(
-			DTColumnConfig column, DecisionTableWidget dtable) {
+			DTColumnConfig column, DecisionTableWidget dtable,
+			SuggestionCompletionEngine sce) {
 
 		String[] keys = new String[3];
 		DecisionTableCellValueAdaptor<? extends Comparable<?>> cell;
@@ -132,9 +142,17 @@ public class CellFactory {
 			keys[0] = MetadataCol.class.getName();
 			cell = lookupCell(keys);
 		} else if (column instanceof AttributeCol) {
+			AttributeCol attrCol = (AttributeCol) column;
 			keys[2] = null;
 			keys[1] = AttributeCol.class.getName();
-			keys[0] = keys[1] + "#" + ((AttributeCol) column).attr;
+			keys[0] = keys[1] + "#" + attrCol.attr;
+
+			// Salience columns can be read-only
+			if (attrCol.attr.equals(RuleAttributeWidget.SALIENCE_ATTR)) {
+				if (attrCol.isUseRowNumber()) {
+					keys[0] = keys[0] + "#auto";
+				}
+			}
 			cell = lookupCell(keys);
 		} else if (column instanceof ConditionCol) {
 			keys[2] = AttributeCol.class.getName();

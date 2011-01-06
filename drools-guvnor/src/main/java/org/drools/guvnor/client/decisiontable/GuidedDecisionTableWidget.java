@@ -502,17 +502,22 @@ public class GuidedDecisionTableWidget extends Composite implements
 				hp.add(new HTML("&nbsp;&nbsp;"));
 				final CheckBox useRowNumber = new CheckBox();
 				useRowNumber.setValue(at.isUseRowNumber());
-				useRowNumber.addClickHandler(new ClickHandler() {
-					public void onClick(ClickEvent sender) {
-						at.setUseRowNumber(useRowNumber.getValue());
-						dtable.redrawStaticColumns();
-					}
-				});
+
 				hp.add(useRowNumber);
 				hp.add(new SmallLabel(constants.UseRowNumber()));
 				hp.add(new SmallLabel("("));
 				final CheckBox reverseOrder = new CheckBox();
 				reverseOrder.setValue(at.isReverseOrder());
+				reverseOrder.setEnabled(false);
+
+				useRowNumber.addClickHandler(new ClickHandler() {
+					public void onClick(ClickEvent sender) {
+						at.setUseRowNumber(useRowNumber.getValue());
+						reverseOrder.setEnabled(useRowNumber.getValue());
+						dtable.redrawStaticColumns();
+					}
+				});
+
 				reverseOrder.addClickHandler(new ClickHandler() {
 					public void onClick(ClickEvent sender) {
 						at.setReverseOrder(reverseOrder.getValue());
