@@ -2,20 +2,11 @@ package org.drools.guvnor.client.decisiontable.cells;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.messages.Constants;
-
 import com.google.gwt.cell.client.AbstractEditableCell;
 import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -26,7 +17,6 @@ import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -48,13 +38,9 @@ public class PopupDateEditCell extends AbstractEditableCell<Date, Date> {
 	private final PopupPanel panel;
 	private final DatePicker datePicker;
 	private final DateTimeFormat format;
-	private final CheckBox checkBox;
 	private final VerticalPanel vPanel;
 	private final SafeHtmlRenderer<String> renderer;
 	private ValueUpdater<Date> valueUpdater;
-	private boolean emptyValue = false;
-
-	private Constants constants = GWT.create(Constants.class);
 
 	public PopupDateEditCell(DateTimeFormat format) {
 		this(format, SimpleSafeHtmlRenderer.getInstance());
@@ -62,7 +48,7 @@ public class PopupDateEditCell extends AbstractEditableCell<Date, Date> {
 
 	public PopupDateEditCell(DateTimeFormat format,
 			SafeHtmlRenderer<String> renderer) {
-		super("click", "keydown");
+		super("dblclick", "keydown");
 		if (renderer == null) {
 			throw new IllegalArgumentException("renderer == null");
 		}
@@ -73,7 +59,6 @@ public class PopupDateEditCell extends AbstractEditableCell<Date, Date> {
 		this.format = format;
 		this.renderer = renderer;
 		this.datePicker = new DatePicker();
-		this.checkBox = new CheckBox(constants.EmptyValue());
 		this.vPanel = new VerticalPanel();
 
 		// Pressing ESCAPE dismisses the pop-up loosing any changes
@@ -103,33 +88,6 @@ public class PopupDateEditCell extends AbstractEditableCell<Date, Date> {
 			}
 		});
 
-		// Tabbing forward out of the CheckBox commits changes
-		checkBox.addKeyDownHandler(new KeyDownHandler() {
-
-			public void onKeyDown(KeyDownEvent event) {
-				boolean keyShift = event.isShiftKeyDown();
-				boolean keyTab = event.getNativeKeyCode() == KeyCodes.KEY_TAB;
-				if (keyTab) {
-					if (!keyShift) {
-						commit();
-					} else if (!datePicker.isVisible()) {
-						commit();
-					}
-				}
-			}
-
-		});
-
-		// Enable TextBox if not an empty value
-		checkBox.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				emptyValue = checkBox.getValue();
-				datePicker.setVisible(!emptyValue);
-			}
-
-		});
-
 		// Hide the panel and call valueUpdater.update when a date is selected
 		datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
 			public void onValueChange(ValueChangeEvent<Date> event) {
@@ -150,10 +108,6 @@ public class PopupDateEditCell extends AbstractEditableCell<Date, Date> {
 		});
 
 		vPanel.add(datePicker);
-		vPanel.add(checkBox);
-		vPanel.setCellHeight(this.checkBox, "32px");
-		vPanel.setCellVerticalAlignment(this.checkBox,
-				VerticalPanel.ALIGN_MIDDLE);
 		panel.add(vPanel);
 
 	}
@@ -161,9 +115,6 @@ public class PopupDateEditCell extends AbstractEditableCell<Date, Date> {
 	// Commit the change
 	protected void commit() {
 		Date date = datePicker.getValue();
-		if (emptyValue) {
-			date = null;
-		}
 		commit(date);
 	}
 
@@ -211,7 +162,7 @@ public class PopupDateEditCell extends AbstractEditableCell<Date, Date> {
 
 		super.onBrowserEvent(parent, value, key, event, valueUpdater);
 
-		if (event.getType().equals("click")) {
+		if (event.getType().equals("dblclick")) {
 
 			this.lastKey = key;
 			this.lastParent = parent;
@@ -221,12 +172,8 @@ public class PopupDateEditCell extends AbstractEditableCell<Date, Date> {
 			Date viewData = getViewData(key);
 			Date date = (viewData == null) ? value : viewData;
 
-			emptyValue = (date == null);
-			datePicker.setVisible(!emptyValue);
-			checkBox.setValue(emptyValue);
-
 			// Default date
-			if (emptyValue) {
+			if (date == null) {
 				Date d = new Date();
 				int year = d.getYear();
 				int month = d.getMonth();
@@ -240,17 +187,6 @@ public class PopupDateEditCell extends AbstractEditableCell<Date, Date> {
 				public void setPosition(int offsetWidth, int offsetHeight) {
 					panel.setPopupPosition(parent.getAbsoluteLeft() + offsetX,
 							parent.getAbsoluteTop() + offsetY);
-
-					// Focus the first enabled control
-					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-						public void execute() {
-							if (emptyValue) {
-								// checkBox.setFocus(true);
-							}
-						}
-
-					});
 				}
 			});
 

@@ -318,9 +318,9 @@ public class VerticalDecisionTableSidebarWidget extends
 		selectors.insertBefore(index);
 	}
 
-	@Override
+	//@Override
 	public void setHeight(String height) {
-		super.setHeight(height);
+		//super.setHeight(height);
 		this.scrollPanel.setHeight(height);
 	}
 

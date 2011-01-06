@@ -247,19 +247,20 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			DivElement div = Document.get().createDivElement();
 			tce.setClassName(cellStyle);
 			div.setClassName(divStyle);
-			div.getStyle().setWidth(column.getWidth(), Unit.PX);
 
-			// A dynamic attribute!
+			// Dynamic attributes!
+			div.getStyle().setWidth(column.getWidth(), Unit.PX);
 			tce.getStyle().setHeight(style.rowHeight() * rowSpan, Unit.PX);
 			tce.setRowSpan(rowSpan);
 
 			// Render the cell and set inner HTML
 			SafeHtmlBuilder cellBuilder = new SafeHtmlBuilder();
-			column.render(rowData, keyProvider, cellBuilder);
+			column.render(rowData, null, cellBuilder);
 			div.setInnerHTML(cellBuilder.toSafeHtml().asString());
 
 			// Construct the table
 			tce.appendChild(div);
+			tce.setTabIndex(0);
 		}
 		return tce;
 
@@ -294,7 +295,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 
 		for (int iCol = startColIndex; iCol <= endColIndex; iCol++) {
 
-			//Only redraw visible columns
+			// Only redraw visible columns
 			DynamicColumn column = columns.get(iCol);
 			if (column.getIsVisible()) {
 

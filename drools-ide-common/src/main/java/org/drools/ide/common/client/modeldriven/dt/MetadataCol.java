@@ -16,14 +16,44 @@
 
 package org.drools.ide.common.client.modeldriven.dt;
 
-
 /**
  * This is a rule metadata - eg @foo(bar) etc.
+ * 
  * @author Michael Rhoden
- *
+ * 
  */
 public class MetadataCol extends DTColumnConfig {
 
 	public String attr;
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof MetadataCol)) {
+			return false;
+		}
+		MetadataCol that = (MetadataCol) obj;
+		return nullOrEqual(this.attr, that.attr) && super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + (attr == null ? 0 : attr.hashCode());
+		hash = hash * 31 + super.hashCode();
+		return hash;
+	}
+
+	private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
+		if (thisAttr == null && thatAttr == null) {
+			return true;
+		}
+		if (thisAttr == null && thatAttr != null) {
+			return false;
+		}
+		return thisAttr.equals(thatAttr);
+	}
 
 }

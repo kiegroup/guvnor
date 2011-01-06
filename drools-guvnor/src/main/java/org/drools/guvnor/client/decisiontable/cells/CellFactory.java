@@ -67,6 +67,8 @@ public class CellFactory {
 		cellCache.put(MetadataCol.class.getName(), TEXT_CELL);
 		cellCache.put(AttributeCol.class.getName(), TEXT_CELL);
 		cellCache.put(AttributeCol.class.getName() + "#salience", NUMERIC_CELL);
+		cellCache.put(AttributeCol.class.getName() + "#salience#auto",
+				ROW_NUMBER_CELL);
 		cellCache.put(AttributeCol.class.getName() + "#enabled", BOOLEAN_CELL);
 		cellCache.put(AttributeCol.class.getName() + "#no-loop", BOOLEAN_CELL);
 		cellCache.put(AttributeCol.class.getName() + "#duration", NUMERIC_CELL);

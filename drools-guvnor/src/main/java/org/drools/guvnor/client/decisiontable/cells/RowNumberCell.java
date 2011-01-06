@@ -19,7 +19,7 @@ public class RowNumberCell extends AbstractCell<Integer> {
 
 	@Override
 	public void render(Integer value, Object key, SafeHtmlBuilder sb) {
-		sb.append((Integer) key);
+		sb.append(value);
 	}
 
 }

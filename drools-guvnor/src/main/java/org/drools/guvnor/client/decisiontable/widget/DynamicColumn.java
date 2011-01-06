@@ -121,6 +121,10 @@ public class DynamicColumn extends
 		this.isVisible = isVisible;
 	}
 
+	public void setRequiresFullRedraw(Boolean requiresFullRedraw) {
+		this.requiresFullRedraw = requiresFullRedraw;
+	}
+
 	public void setSortDirection(SortDirection sortDirection) {
 		this.sortDirection = sortDirection;
 	}

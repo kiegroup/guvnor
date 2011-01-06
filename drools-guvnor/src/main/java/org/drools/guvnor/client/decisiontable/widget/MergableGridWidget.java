@@ -16,9 +16,9 @@ import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ProvidesKey;
 
 /**
  * A minimal CellTable replacement that renders merged cells and handles basic
@@ -29,22 +29,11 @@ import com.google.gwt.view.client.ProvidesKey;
  */
 public abstract class MergableGridWidget extends Widget {
 
-	// A simple key provider that returns the row index
-	private class DynamicDataRowKeyProvider implements
-			ProvidesKey<DynamicDataRow> {
-
-		public Object getKey(DynamicDataRow row) {
-			return data.indexOf(row) + 1;
-		}
-
-	}
 	// Data to render
 	protected List<DynamicColumn> columns = new ArrayList<DynamicColumn>();
 
 	protected List<DynamicDataRow> data = new ArrayList<DynamicDataRow>();
 
-	// Key provider (simply the row index)
-	protected ProvidesKey<DynamicDataRow> keyProvider = new DynamicDataRowKeyProvider();
 	// TABLE elements
 	protected TableElement table;
 
@@ -90,9 +79,10 @@ public abstract class MergableGridWidget extends Widget {
 
 		// Events in which we're interested (note, if a Cell<?> appears not to
 		// work I've probably forgotten some events. Might be a better way of
-		// doing this, but I copied CellTable<?, ?>' lead
-		sinkEvents(Event.getTypeInt("click") | Event.getTypeInt("mouseover")
-				| Event.getTypeInt("mouseout") | Event.getTypeInt("change"));
+		// doing this, but I copied CellTable<?, ?>'s lead
+		sinkEvents(Event.getTypeInt("click") | Event.getTypeInt("dblclick")
+				| Event.getTypeInt("mouseover") | Event.getTypeInt("mouseout")
+				| Event.getTypeInt("change") | Event.getTypeInt("keydown") | Event.getTypeInt("keypress"));
 	}
 
 	/**
@@ -210,21 +200,41 @@ public abstract class MergableGridWidget extends Widget {
 		CellValue<? extends Comparable<?>> physicalCell = data.get(c.getRow())
 				.get(c.getCol());
 
+		// Keyboard operation
+		boolean keyDelete = false;
+		if (eventType.equals("keydown") || eventType.equals("keypress")) {
+			keyDelete = (event.getKeyCode() == KeyCodes.KEY_DELETE);
+		}
+
 		// Setup the selected range
-		if (eventType.equals("click")) {
+		boolean click = eventType.equals("click");
+		boolean dblClick = eventType.equals("dblclick");
+		if (click || dblClick) {
+			
+			//TODO This needs to visually select the cell(s) too
 			dtable.startSelecting(c);
 		}
 
-		// Pass event and physical cell to Cell Widget for handling
-		Cell<CellValue<? extends Comparable<?>>> cellWidget = columns.get(
-				c.getCol()).getCell();
+		// Delete clears the current value
+		if (keyDelete) {
+			dtable.update(null);
+		}
 
-		// Implementations of AbstractCell aren't forced to initialise consumed
-		// events
-		Set<String> consumedEvents = cellWidget.getConsumedEvents();
-		if (consumedEvents != null && consumedEvents.contains(eventType)) {
-			Element parent = getCellParent(tableCell);
-			cellWidget.onBrowserEvent(parent, physicalCell, null, event, null);
+		// Double click to edit a "pop-up" cell
+		if (dblClick) {
+
+			// Pass event and physical cell to Cell Widget for handling
+			Cell<CellValue<? extends Comparable<?>>> cellWidget = columns.get(
+					c.getCol()).getCell();
+
+			// Implementations of AbstractCell aren't forced to initialise
+			// consumed events
+			Set<String> consumedEvents = cellWidget.getConsumedEvents();
+			if (consumedEvents != null && consumedEvents.contains(eventType)) {
+				Element parent = getCellParent(tableCell);
+				cellWidget.onBrowserEvent(parent, physicalCell, null, event,
+						null);
+			}
 		}
 	}
 

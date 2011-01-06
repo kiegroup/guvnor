@@ -36,4 +36,24 @@ public class RowNumberCol extends DTColumnConfig {
 		this.rowNumber = rowNumber;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof RowNumberCol)) {
+			return false;
+		}
+		RowNumberCol that = (RowNumberCol) obj;
+		return this.rowNumber == that.rowNumber && super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + rowNumber;
+		hash = hash * 31 + super.hashCode();
+		return hash;
+	}
+
 }

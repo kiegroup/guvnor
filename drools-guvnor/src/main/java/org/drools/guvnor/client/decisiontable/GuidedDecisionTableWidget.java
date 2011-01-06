@@ -30,6 +30,7 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableControlsWidget;
+import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
 import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
@@ -134,7 +135,7 @@ public class GuidedDecisionTableWidget extends Composite implements
 	private GroupingsPanel groupingsPanel = null;
 
 	// TODO MANSTIS
-	private VerticalDecisionTableWidget dtable;
+	private DecisionTableWidget dtable;
 	private DecisionTableControlsWidget dtableCtrls;
 
 	public GuidedDecisionTableWidget(RuleAsset asset, RuleViewer viewer) {
@@ -503,7 +504,8 @@ public class GuidedDecisionTableWidget extends Composite implements
 				useRowNumber.setValue(at.isUseRowNumber());
 				useRowNumber.addClickHandler(new ClickHandler() {
 					public void onClick(ClickEvent sender) {
-						at.setUseRowNumber(useRowNumber.isEnabled());
+						at.setUseRowNumber(useRowNumber.getValue());
+						dtable.redrawStaticColumns();
 					}
 				});
 				hp.add(useRowNumber);
@@ -513,7 +515,8 @@ public class GuidedDecisionTableWidget extends Composite implements
 				reverseOrder.setValue(at.isReverseOrder());
 				reverseOrder.addClickHandler(new ClickHandler() {
 					public void onClick(ClickEvent sender) {
-						at.setReverseOrder(reverseOrder.isEnabled());
+						at.setReverseOrder(reverseOrder.getValue());
+						dtable.redrawStaticColumns();
 					}
 				});
 				hp.add(reverseOrder);
@@ -529,6 +532,11 @@ public class GuidedDecisionTableWidget extends Composite implements
 			hide.addClickHandler(new ClickHandler() {
 				public void onClick(ClickEvent sender) {
 					at.setHideColumn(hide.getValue());
+					if (hide.getValue()) {
+						dtable.hideColumn(at);
+					} else {
+						dtable.showColumn(at);
+					}
 				}
 			});
 			hp.add(hide);
@@ -712,8 +720,7 @@ public class GuidedDecisionTableWidget extends Composite implements
 		// TODO MANSTIS
 		if (dtable == null) {
 			dtable = new VerticalDecisionTableWidget(getSCE());
-			dtable.setHeight("300px");
-			dtable.setWidth("1200px");
+			dtable.setPixelSize(1000, 300);
 		}
 		if (dtableCtrls == null) {
 			dtableCtrls = new DecisionTableControlsWidget(dtable);

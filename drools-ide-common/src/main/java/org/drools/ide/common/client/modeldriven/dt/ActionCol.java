@@ -18,18 +18,48 @@ package org.drools.ide.common.client.modeldriven.dt;
 
 public class ActionCol extends DTColumnConfig {
 
-    private static final long serialVersionUID = 501l;
-    /**
-     * The header to be displayed.
-     */
-    private String            header;
+	private static final long serialVersionUID = 501l;
+	/**
+	 * The header to be displayed.
+	 */
+	private String header;
 
-    public void setHeader(String header) {
-        this.header = header;
-    }
+	public void setHeader(String header) {
+		this.header = header;
+	}
 
-    public String getHeader() {
-        return header;
-    }
+	public String getHeader() {
+		return header;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof ActionCol)) {
+			return false;
+		}
+		ActionCol that = (ActionCol) obj;
+		return nullOrEqual(this.header, that.header) && super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + (header == null ? 0 : header.hashCode());
+		hash = hash * 31 + super.hashCode();
+		return hash;
+	}
+
+	private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
+		if (thisAttr == null && thatAttr == null) {
+			return true;
+		}
+		if (thisAttr == null && thatAttr != null) {
+			return false;
+		}
+		return thisAttr.equals(thatAttr);
+	}
 
 }

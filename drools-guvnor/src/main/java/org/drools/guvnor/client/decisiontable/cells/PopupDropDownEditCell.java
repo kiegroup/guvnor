@@ -1,17 +1,13 @@
 package org.drools.guvnor.client.decisiontable.cells;
 
-import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
 import com.google.gwt.cell.client.AbstractEditableCell;
 import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -22,7 +18,6 @@ import com.google.gwt.text.shared.SafeHtmlRenderer;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
@@ -43,27 +38,22 @@ public class PopupDropDownEditCell extends AbstractEditableCell<String, String> 
 	private String lastValue;
 	private final PopupPanel panel;
 	private final ListBox listBox;
-	private final CheckBox checkBox;
 	private final VerticalPanel vPanel;
 	private final SafeHtmlRenderer<String> renderer;
 	private ValueUpdater<String> valueUpdater;
-	private boolean emptyValue = false;
-
-	private Constants constants = GWT.create(Constants.class);
 
 	public PopupDropDownEditCell() {
 		this(SimpleSafeHtmlRenderer.getInstance());
 	}
 
 	public PopupDropDownEditCell(SafeHtmlRenderer<String> renderer) {
-		super("click", "keydown");
+		super("dblclick", "keydown");
 		if (renderer == null) {
 			throw new IllegalArgumentException("renderer == null");
 		}
 
 		this.renderer = renderer;
 		this.listBox = new ListBox();
-		this.checkBox = new CheckBox(constants.EmptyValue());
 		this.vPanel = new VerticalPanel();
 
 		// Pressing ESCAPE dismisses the pop-up loosing any changes
@@ -93,39 +83,20 @@ public class PopupDropDownEditCell extends AbstractEditableCell<String, String> 
 			}
 		});
 
-		// Tabbing forward out of the CheckBox commits changes
-		checkBox.addKeyDownHandler(new KeyDownHandler() {
+		// Tabbing out of the ListBox commits changes
+		listBox.addKeyDownHandler(new KeyDownHandler() {
 
 			public void onKeyDown(KeyDownEvent event) {
-				boolean keyShift = event.isShiftKeyDown();
 				boolean keyTab = event.getNativeKeyCode() == KeyCodes.KEY_TAB;
-				if (keyTab) {
-					if (!keyShift) {
-						commit();
-					} else if (!listBox.isEnabled()) {
-						commit();
-					}
+				boolean keyEnter = event.getNativeKeyCode() == KeyCodes.KEY_ENTER;
+				if (keyEnter || keyTab) {
+					commit();
 				}
 			}
 
 		});
 
-		// Enable TextBox if not an empty value
-		checkBox.addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				emptyValue = checkBox.getValue();
-				listBox.setEnabled(!emptyValue);
-			}
-
-		});
-
 		vPanel.add(listBox);
-		vPanel.add(checkBox);
-		vPanel.setCellHeight(this.listBox, "24px");
-		vPanel.setCellHeight(this.checkBox, "24px");
-		vPanel.setCellVerticalAlignment(this.checkBox,
-				VerticalPanel.ALIGN_MIDDLE);
 		panel.add(vPanel);
 
 	}
@@ -140,7 +111,7 @@ public class PopupDropDownEditCell extends AbstractEditableCell<String, String> 
 
 		String text = null;
 		int selectedIndex = listBox.getSelectedIndex();
-		if (!emptyValue && selectedIndex >= 0) {
+		if (selectedIndex >= 0) {
 			text = listBox.getValue(selectedIndex);
 		}
 
@@ -179,7 +150,7 @@ public class PopupDropDownEditCell extends AbstractEditableCell<String, String> 
 
 		super.onBrowserEvent(parent, value, key, event, valueUpdater);
 
-		if (event.getType().equals("click")) {
+		if (event.getType().equals("dblclick")) {
 
 			this.lastKey = key;
 			this.lastParent = parent;
@@ -189,9 +160,8 @@ public class PopupDropDownEditCell extends AbstractEditableCell<String, String> 
 			String viewData = getViewData(key);
 			String text = (viewData == null) ? value : viewData;
 
-			emptyValue = (text == null);
-			listBox.setEnabled(!emptyValue);
-			checkBox.setValue(emptyValue);
+			// Select the appropriate item
+			boolean emptyValue = (text == null);
 			if (emptyValue) {
 				listBox.setSelectedIndex(0);
 			} else {
@@ -212,9 +182,7 @@ public class PopupDropDownEditCell extends AbstractEditableCell<String, String> 
 					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
 						public void execute() {
-							if (!emptyValue) {
-								listBox.setFocus(true);
-							}
+							listBox.setFocus(true);
 						}
 
 					});

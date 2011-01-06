@@ -18,8 +18,9 @@ package org.drools.ide.common.client.modeldriven.dt;
 
 /**
  * This is a rule description
+ * 
  * @author manstis
- *
+ * 
  */
 public class DescriptionCol extends DTColumnConfig {
 
@@ -33,6 +34,37 @@ public class DescriptionCol extends DTColumnConfig {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof DescriptionCol)) {
+			return false;
+		}
+		DescriptionCol that = (DescriptionCol) obj;
+		return nullOrEqual(this.description, that.description)
+				&& super.equals(obj);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + (description == null ? 0 : description.hashCode());
+		hash = hash * 31 + super.hashCode();
+		return hash;
+	}
+
+	private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
+		if (thisAttr == null && thatAttr == null) {
+			return true;
+		}
+		if (thisAttr == null && thatAttr != null) {
+			return false;
+		}
+		return thisAttr.equals(thatAttr);
 	}
 
 }

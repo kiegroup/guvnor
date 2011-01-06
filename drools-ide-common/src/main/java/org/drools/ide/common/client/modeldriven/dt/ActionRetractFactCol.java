@@ -23,6 +23,34 @@ public class ActionRetractFactCol extends ActionCol {
 	 */
 	public String boundName;
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof ActionRetractFactCol)) {
+			return false;
+		}
+		ActionRetractFactCol that = (ActionRetractFactCol) obj;
+		return nullOrEqual(this.boundName, that.boundName) && super.equals(obj);
+	}
 
+	@Override
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + (boundName == null ? 0 : boundName.hashCode());
+		hash = hash * 31 + super.hashCode();
+		return hash;
+	}
+
+	private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
+		if (thisAttr == null && thatAttr == null) {
+			return true;
+		}
+		if (thisAttr == null && thatAttr != null) {
+			return false;
+		}
+		return thisAttr.equals(thatAttr);
+	}
 
 }
