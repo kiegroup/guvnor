@@ -86,30 +86,20 @@ public class MetaDataWidget extends Composite {
 
         this.metaDataRefreshView = metaDataRefreshView;
         this.fullRefreshView = fullRefreshView;
-        layout.add( new SmallLabel( Format.format( "{0}: [<b>{1}</b>]",
-                constants.Title(),
-                d.name ) ) );
-/*        Button show = new Button( constants.showMoreInfo() );
-        show.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent sender) {
-                layout.clear();
-                render();
-            }
-        } );
-
-        layout.add( new SmallLabel( Format.format( "{0}: [<b>{1}</b>]",
-                                                   constants.Title(),
-                                                   d.name ) ) );
-
-        layout.add( show );*/
 
         initWidget( layout );
-        //layout.clear();
         render();
     }
 
-    private void render() {
+    public void setMetaData(MetaData data) {
+		this.data = data;
+	}
 
+	private void render() {
+    	layout.clear();
+        layout.add( new SmallLabel( Format.format( "{0}: [<b>{1}</b>]",
+                constants.Title(),
+                data.name ) ) );
         if ( !readOnly ) {
             Image edit = new ImageButton( images.edit(),
                                           constants.RenameThisAsset() );
