@@ -874,9 +874,9 @@ public class ServiceImplementation
                 row.id = archived.getUUID();
                 row.values = new String[5];
 
-                row.values[0] = archived.getFormat();
-                row.values[1] = archived.getPackageName();
-                row.values[2] = archived.getName();
+                row.values[0] = archived.getName();
+                row.values[1] = archived.getFormat();
+                row.values[2] = archived.getPackageName();
                 row.values[3] = archived.getLastContributor();
                 row.values[4] = Long.toString( archived.getLastModified().getTime().getTime() );
 

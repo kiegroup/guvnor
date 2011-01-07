@@ -555,6 +555,7 @@ public class RuleViewer extends GuvnorEditor {
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
                                                                      asset.metaData = asset_.metaData;
+                                                                     metaWidget.setMetaData(asset.metaData);
                                                                      metaWidget.refresh();
                                                                      if ( showBusy ) LoadingPopup.close();
                                                                  }

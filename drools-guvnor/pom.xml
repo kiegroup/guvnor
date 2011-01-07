@@ -69,6 +69,7 @@
               <tasks>
                 <delete dir="repository"/>
                 <delete file="repository.xml"/>
+                <delete file=".lock"/>
               </tasks>
             </configuration>
             <goals>
