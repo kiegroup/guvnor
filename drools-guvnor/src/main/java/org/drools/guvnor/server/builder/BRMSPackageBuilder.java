@@ -59,6 +59,7 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.util.ChainedProperties;
+import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 
 /**
@@ -99,6 +100,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
         
         pkgConf.setAllowMultipleNamespaces(false);
         pkgConf.addSemanticModule(new BPMNSemanticModule());
+        pkgConf.addSemanticModule(new BPMNDISemanticModule());
 
         return new BRMSPackageBuilder( pkgConf );
 

@@ -37,6 +37,7 @@ import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
+import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.compiler.xml.XmlProcessReader;
@@ -74,6 +75,7 @@ public class BPMN2ProcessHandler extends ContentHandler
             PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
             configuration.initSemanticModules();
             configuration.addSemanticModule( new BPMNSemanticModule() );
+            configuration.addSemanticModule( new BPMNDISemanticModule() );
             XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
             try {
                 process = (RuleFlowProcess) xmlReader.read( reader );
