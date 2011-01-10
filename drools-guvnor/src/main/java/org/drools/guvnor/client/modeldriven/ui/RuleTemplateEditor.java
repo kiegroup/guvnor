@@ -65,7 +65,7 @@ public class RuleTemplateEditor extends DirtyableComposite
     private GroupingStore   store     = null;
     private EditorGridPanel grid      = null;
     private RuleModeller    ruleModeller;
-    private Constants       constants = ((Constants) GWT.create( Constants.class ));
+    private Constants       constants = GWT.create( Constants.class );
 
     public RuleTemplateEditor(RuleAsset asset) {
         model = (TemplateModel) asset.content;
