@@ -265,6 +265,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 
 		String cellSelectedStyle = style.cellTableCellSelected();
 		tce.addClassName(cellSelectedStyle);
+		tce.focus();
 	}
 
 	/*

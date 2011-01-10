@@ -30,12 +30,50 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class MergableGridWidget extends Widget {
 
+	/**
+	 * Container for a cell's extents
+	 * 
+	 * @author manstis
+	 * 
+	 */
+	public static class CellExtents {
+		private int offsetX;
+		private int offsetY;
+		private int height;
+		private int width;
+
+		CellExtents(int offsetX, int offsetY, int height, int width) {
+			this.offsetX = offsetX;
+			this.offsetY = offsetY;
+			this.height = height;
+			this.width = width;
+		}
+
+		public int getHeight() {
+			return height;
+		}
+
+		public int getWidth() {
+			return width;
+		}
+
+		public int getOffsetX() {
+			return offsetX;
+		}
+
+		public int getOffsetY() {
+			return offsetY;
+		}
+
+	}
+
 	// Data to render
 	protected List<DynamicColumn> columns = new ArrayList<DynamicColumn>();
-	protected List<DynamicDataRow> data = new ArrayList<DynamicDataRow>();
 
+	protected List<DynamicDataRow> data = new ArrayList<DynamicDataRow>();
 	// TABLE elements
 	protected TableElement table;
+
 	protected TableSectionElement tbody;
 
 	// Resources
@@ -89,75 +127,6 @@ public abstract class MergableGridWidget extends Widget {
 	}
 
 	/**
-	 * Retrieve the extents of a cell
-	 * 
-	 * @param cv
-	 *            The cell for which to retrieve the extents
-	 * @return
-	 */
-	public CellExtents getSelectedCellExtents(
-			CellValue<? extends Comparable<?>> cv) {
-
-		if (cv == null) {
-			throw new IllegalArgumentException("CellValue cannot be null");
-		}
-
-		// Cells in hidden columns do not have extents
-		if (!columns.get(cv.getCoordinate().getCol()).getIsVisible()) {
-			return null;
-		}
-
-		Coordinate hc = cv.getHtmlCoordinate();
-		TableRowElement tre = tbody.getRows().getItem(hc.getRow())
-				.<TableRowElement> cast();
-		TableCellElement tce = tre.getCells().getItem(hc.getCol())
-				.<TableCellElement> cast();
-		int x = tce.getOffsetLeft();
-		int y = tce.getOffsetTop();
-		int w = tce.getOffsetWidth();
-		int h = tce.getOffsetHeight();
-		CellExtents e = new CellExtents(x, y, h, w);
-		return e;
-	}
-
-	/**
-	 * Container for a cell's extents
-	 * 
-	 * @author manstis
-	 * 
-	 */
-	public static class CellExtents {
-		private int x;
-		private int y;
-		private int height;
-		private int width;
-
-		CellExtents(int x, int y, int height, int width) {
-			this.x = x;
-			this.y = y;
-			this.height = height;
-			this.width = width;
-		}
-
-		public int getX() {
-			return x;
-		}
-
-		public int getY() {
-			return y;
-		}
-
-		public int getHeight() {
-			return height;
-		}
-
-		public int getWidth() {
-			return width;
-		}
-
-	}
-
-	/**
 	 * Add a column at the end of the list of columns
 	 * 
 	 * @param column
@@ -187,6 +156,38 @@ public abstract class MergableGridWidget extends Widget {
 	 */
 	public List<DynamicColumn> getColumns() {
 		return this.columns;
+	}
+
+	/**
+	 * Retrieve the extents of a cell
+	 * 
+	 * @param cv
+	 *            The cell for which to retrieve the extents
+	 * @return
+	 */
+	public CellExtents getSelectedCellExtents(
+			CellValue<? extends Comparable<?>> cv) {
+
+		if (cv == null) {
+			throw new IllegalArgumentException("CellValue cannot be null");
+		}
+
+		// Cells in hidden columns do not have extents
+		if (!columns.get(cv.getCoordinate().getCol()).getIsVisible()) {
+			return null;
+		}
+
+		Coordinate hc = cv.getHtmlCoordinate();
+		TableRowElement tre = tbody.getRows().getItem(hc.getRow())
+				.<TableRowElement> cast();
+		TableCellElement tce = tre.getCells().getItem(hc.getCol())
+				.<TableCellElement> cast();
+		int offsetX = tce.getOffsetLeft();
+		int offsetY = tce.getOffsetTop();
+		int w = tce.getOffsetWidth();
+		int h = tce.getOffsetHeight();
+		CellExtents e = new CellExtents(offsetX, offsetY, h, w);
+		return e;
 	}
 
 	/**
@@ -257,7 +258,6 @@ public abstract class MergableGridWidget extends Widget {
 		int htmlRow = tr.getSectionRowIndex();
 
 		// Convert HTML coordinates to physical coordinates
-		Element parent = getCellParent(tableCell);
 		DynamicDataRow htmlRowData = data.get(htmlRow);
 		CellValue<? extends Comparable<?>> htmlCell = htmlRowData.get(htmlCol);
 		Coordinate c = htmlCell.getPhysicalCoordinate();
@@ -291,20 +291,18 @@ public abstract class MergableGridWidget extends Widget {
 				event.preventDefault();
 			}
 		}
-
-		// Enter key is a special case; as the selected cell needs to be sent
-		// events and not the cell that GWT deemed the target for events.
-		if (eventType.equals("keydown") || eventType.equals("keypress")
-				|| eventType.equals("keyup")) {
+		// Enter key is a special case; as the selected cell needs to be
+		// sent events and not the cell that GWT deemed the target for
+		// events.
+		if (eventType.equals("keydown")) {
 			if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
 
 				physicalCell = dtable.getSelections().first();
 				c = physicalCell.getCoordinate();
-				parent = getCellParent(tbody.getRows()
+				tableCell = tbody.getRows()
 						.getItem(physicalCell.getHtmlCoordinate().getRow())
 						.getCells()
-						.getItem(physicalCell.getHtmlCoordinate().getCol()));
-
+						.getItem(physicalCell.getHtmlCoordinate().getCol());
 			}
 		}
 
@@ -316,7 +314,8 @@ public abstract class MergableGridWidget extends Widget {
 		// consumed events
 		Set<String> consumedEvents = cellWidget.getConsumedEvents();
 		if (consumedEvents != null && consumedEvents.contains(eventType)) {
-			cellWidget.onBrowserEvent(parent, physicalCell, null, event, null);
+			cellWidget.onBrowserEvent(tableCell.getFirstChildElement(), physicalCell, null, event,
+					null);
 		}
 	}
 
@@ -406,12 +405,6 @@ public abstract class MergableGridWidget extends Widget {
 			elem = elem.getParentElement();
 		}
 		return null;
-	}
-
-	// Get the parent element that is passed to the {@link Cell} from the table
-	// cell element.
-	private Element getCellParent(TableCellElement td) {
-		return td.getFirstChildElement();
 	}
 
 }

@@ -330,8 +330,8 @@ public abstract class DecisionTableWidget extends Composite implements
 
 					// Ensure cell is visible
 					ce = gridWidget.getSelectedCellExtents(selections.first());
-					if (ce.getX() < scrollPanel.getHorizontalScrollPosition()) {
-						scrollPanel.setHorizontalScrollPosition(ce.getX());
+					if (ce.getOffsetX() < scrollPanel.getHorizontalScrollPosition()) {
+						scrollPanel.setHorizontalScrollPosition(ce.getOffsetX());
 					}
 				}
 				break;
@@ -353,9 +353,9 @@ public abstract class DecisionTableWidget extends Composite implements
 					// Ensure cell is visible
 					ce = gridWidget.getSelectedCellExtents(selections.first());
 					int scrollWidth = scrollPanel.getElement().getClientWidth();
-					if (ce.getX() + ce.getWidth() > scrollWidth
+					if (ce.getOffsetX() + ce.getWidth() > scrollWidth
 							+ scrollPanel.getHorizontalScrollPosition()) {
-						int delta = ce.getX() + ce.getWidth()
+						int delta = ce.getOffsetX() + ce.getWidth()
 								- scrollPanel.getHorizontalScrollPosition()
 								- scrollWidth;
 						scrollPanel.setHorizontalScrollPosition(scrollPanel
@@ -373,8 +373,8 @@ public abstract class DecisionTableWidget extends Composite implements
 
 					// Ensure cell is visible
 					ce = gridWidget.getSelectedCellExtents(selections.first());
-					if (ce.getY() < scrollPanel.getScrollPosition()) {
-						scrollPanel.setScrollPosition(ce.getY());
+					if (ce.getOffsetY() < scrollPanel.getScrollPosition()) {
+						scrollPanel.setScrollPosition(ce.getOffsetY());
 					}
 				}
 				break;
@@ -390,9 +390,9 @@ public abstract class DecisionTableWidget extends Composite implements
 					ce = gridWidget.getSelectedCellExtents(selections.first());
 					int scrollHeight = scrollPanel.getElement()
 							.getClientHeight();
-					if (ce.getY() + ce.getHeight() > scrollHeight
+					if (ce.getOffsetY() + ce.getHeight() > scrollHeight
 							+ scrollPanel.getScrollPosition()) {
-						int delta = ce.getY() + ce.getHeight()
+						int delta = ce.getOffsetY() + ce.getHeight()
 								- scrollPanel.getScrollPosition()
 								- scrollHeight;
 						scrollPanel.setScrollPosition(scrollPanel
@@ -681,6 +681,7 @@ public abstract class DecisionTableWidget extends Composite implements
 					.getRow();
 		}
 		gridWidget.redrawRows(minRedrawRow, maxRedrawRow);
+		gridWidget.selectCell(selections.first());
 	}
 
 	/**
