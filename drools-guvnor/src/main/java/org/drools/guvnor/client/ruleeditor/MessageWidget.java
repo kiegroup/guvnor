@@ -22,9 +22,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -38,9 +36,8 @@ public class MessageWidget extends Composite {
         extends
         SafeHtmlTemplates {
 
-        @Template("<div style=\"background-color: yellow;\" ><img src='{0}'/><i>{1}</i></div>")
-        SafeHtml message(SafeHtml image,
-                         String message);
+        @Template("<div style=\"background-color: yellow;\" >{0}</div>")
+        SafeHtml message(String message);
     }
 
     private Images                       images   = GWT.create( Images.class );
@@ -65,8 +62,7 @@ public class MessageWidget extends Composite {
                             String message) {
 
         label.setVisible( true );
-        label.setHTML( TEMPLATE.message( SafeHtmlUtils.fromTrustedString( AbstractImagePrototype.create( image ).getHTML() ),
-                                         message ) );
+        label.setHTML( TEMPLATE.message( message ) );
 
         Timer timer = new Timer() {
             public void run() {
