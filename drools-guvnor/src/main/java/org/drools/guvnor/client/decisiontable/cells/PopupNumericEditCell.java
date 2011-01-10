@@ -163,27 +163,6 @@ public class PopupNumericEditCell extends
 
 	}
 
-	// Commit the change
-	protected void commit() {
-		// Hide pop-up
-		Element cellParent = lastParent;
-		Integer oldValue = lastValue;
-		Object key = lastKey;
-		panel.hide();
-
-		// Update values
-		String text = textBox.getValue();
-		Integer number = null;
-		if (text.length() > 0) {
-			number = Integer.parseInt(text);
-		}
-		setViewData(key, number);
-		setValue(cellParent, oldValue, key);
-		if (valueUpdater != null) {
-			valueUpdater.update(number);
-		}
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -206,41 +185,14 @@ public class PopupNumericEditCell extends
 	 * com.google.gwt.cell.client.ValueUpdater)
 	 */
 	@Override
-	public void onBrowserEvent(final Element parent, Integer value, Object key,
+	public void onBrowserEvent(Element parent, Integer value, Object key,
 			NativeEvent event, ValueUpdater<Integer> valueUpdater) {
 
+		// KeyDown and "Enter" key-press is handled here
 		super.onBrowserEvent(parent, value, key, event, valueUpdater);
 
 		if (event.getType().equals("dblclick")) {
-
-			this.lastKey = key;
-			this.lastParent = parent;
-			this.lastValue = value;
-			this.valueUpdater = valueUpdater;
-
-			Integer viewData = getViewData(key);
-			Integer number = (viewData == null) ? value : viewData;
-			textBox.setValue((number == null ? "" : Integer.toString(number)));
-
-			panel.setPopupPositionAndShow(new PositionCallback() {
-				public void setPosition(int offsetWidth, int offsetHeight) {
-					panel.setPopupPosition(parent.getAbsoluteLeft() + offsetX,
-							parent.getAbsoluteTop() + offsetY);
-
-					// Focus the first enabled control
-					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-						public void execute() {
-							String text = textBox.getValue();
-							textBox.setFocus(true);
-							textBox.setCursorPos(text.length());
-							textBox.setSelectionRange(0, text.length());
-						}
-
-					});
-				}
-			});
-
+			startEditing(parent, value, key, event, valueUpdater);
 		}
 	}
 
@@ -268,6 +220,75 @@ public class PopupNumericEditCell extends
 		if (i != null) {
 			sb.append(renderer.render(i));
 		}
+	}
+
+	// Commit the change
+	private void commit() {
+		// Hide pop-up
+		Element cellParent = lastParent;
+		Integer oldValue = lastValue;
+		Object key = lastKey;
+		panel.hide();
+
+		// Update values
+		String text = textBox.getValue();
+		Integer number = null;
+		if (text.length() > 0) {
+			number = Integer.parseInt(text);
+		}
+		setViewData(key, number);
+		setValue(cellParent, oldValue, key);
+		if (valueUpdater != null) {
+			valueUpdater.update(number);
+		}
+	}
+
+	// Start editing the cell
+	private void startEditing(final Element parent, Integer value, Object key,
+			NativeEvent event, ValueUpdater<Integer> valueUpdater) {
+		this.lastKey = key;
+		this.lastParent = parent;
+		this.lastValue = value;
+		this.valueUpdater = valueUpdater;
+
+		Integer viewData = getViewData(key);
+		Integer number = (viewData == null) ? value : viewData;
+		textBox.setValue((number == null ? "" : Integer.toString(number)));
+
+		panel.setPopupPositionAndShow(new PositionCallback() {
+			public void setPosition(int offsetWidth, int offsetHeight) {
+				panel.setPopupPosition(parent.getAbsoluteLeft() + offsetX,
+						parent.getAbsoluteTop() + offsetY);
+
+				// Focus the first enabled control
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+					public void execute() {
+						String text = textBox.getValue();
+						textBox.setFocus(true);
+						textBox.setCursorPos(text.length());
+						textBox.setSelectionRange(0, text.length());
+					}
+
+				});
+			}
+		});
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.google.gwt.cell.client.AbstractCell#onEnterKeyDown(com.google.gwt
+	 * .dom.client.Element, java.lang.Object, java.lang.Object,
+	 * com.google.gwt.dom.client.NativeEvent,
+	 * com.google.gwt.cell.client.ValueUpdater)
+	 */
+	@Override
+	protected void onEnterKeyDown(Element parent, Integer value, Object key,
+			NativeEvent event, ValueUpdater<Integer> valueUpdater) {
+		startEditing(parent, value, key, event, valueUpdater);
 	}
 
 }

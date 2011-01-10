@@ -112,28 +112,6 @@ public class PopupDateEditCell extends AbstractEditableCell<Date, Date> {
 
 	}
 
-	// Commit the change
-	protected void commit() {
-		Date date = datePicker.getValue();
-		commit(date);
-	}
-
-	// Commit the change
-	protected void commit(Date date) {
-		// Hide pop-up
-		Element cellParent = lastParent;
-		Date oldValue = lastValue;
-		Object key = lastKey;
-		panel.hide();
-
-		// Update values
-		setViewData(key, date);
-		setValue(cellParent, oldValue, key);
-		if (valueUpdater != null) {
-			valueUpdater.update(date);
-		}
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -156,40 +134,14 @@ public class PopupDateEditCell extends AbstractEditableCell<Date, Date> {
 	 * com.google.gwt.cell.client.ValueUpdater)
 	 */
 	@Override
-	@SuppressWarnings("deprecation")
-	public void onBrowserEvent(final Element parent, Date value, Object key,
+	public void onBrowserEvent(Element parent, Date value, Object key,
 			NativeEvent event, ValueUpdater<Date> valueUpdater) {
 
+		// KeyDown and "Enter" key-press is handled here
 		super.onBrowserEvent(parent, value, key, event, valueUpdater);
 
 		if (event.getType().equals("dblclick")) {
-
-			this.lastKey = key;
-			this.lastParent = parent;
-			this.lastValue = value;
-			this.valueUpdater = valueUpdater;
-
-			Date viewData = getViewData(key);
-			Date date = (viewData == null) ? value : viewData;
-
-			// Default date
-			if (date == null) {
-				Date d = new Date();
-				int year = d.getYear();
-				int month = d.getMonth();
-				int dom = d.getDate();
-				date = new Date(year, month, dom);
-			}
-			datePicker.setCurrentMonth(date);
-			datePicker.setValue(date);
-
-			panel.setPopupPositionAndShow(new PositionCallback() {
-				public void setPosition(int offsetWidth, int offsetHeight) {
-					panel.setPopupPosition(parent.getAbsoluteLeft() + offsetX,
-							parent.getAbsoluteTop() + offsetY);
-				}
-			});
-
+			startEditing(parent, value, key, event, valueUpdater);
 		}
 	}
 
@@ -217,6 +169,75 @@ public class PopupDateEditCell extends AbstractEditableCell<Date, Date> {
 		if (s != null) {
 			sb.append(renderer.render(s));
 		}
+	}
+
+	// Commit the change
+	private void commit() {
+		Date date = datePicker.getValue();
+		commit(date);
+	}
+
+	// Commit the change
+	private void commit(Date date) {
+		// Hide pop-up
+		Element cellParent = lastParent;
+		Date oldValue = lastValue;
+		Object key = lastKey;
+		panel.hide();
+
+		// Update values
+		setViewData(key, date);
+		setValue(cellParent, oldValue, key);
+		if (valueUpdater != null) {
+			valueUpdater.update(date);
+		}
+	}
+
+	// Start editing the cell
+	@SuppressWarnings("deprecation")
+	private void startEditing(final Element parent, Date value, Object key,
+			NativeEvent event, ValueUpdater<Date> valueUpdater) {
+		this.lastKey = key;
+		this.lastParent = parent;
+		this.lastValue = value;
+		this.valueUpdater = valueUpdater;
+
+		Date viewData = getViewData(key);
+		Date date = (viewData == null) ? value : viewData;
+
+		// Default date
+		if (date == null) {
+			Date d = new Date();
+			int year = d.getYear();
+			int month = d.getMonth();
+			int dom = d.getDate();
+			date = new Date(year, month, dom);
+		}
+		datePicker.setCurrentMonth(date);
+		datePicker.setValue(date);
+
+		panel.setPopupPositionAndShow(new PositionCallback() {
+			public void setPosition(int offsetWidth, int offsetHeight) {
+				panel.setPopupPosition(parent.getAbsoluteLeft() + offsetX,
+						parent.getAbsoluteTop() + offsetY);
+			}
+		});
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.google.gwt.cell.client.AbstractCell#onEnterKeyDown(com.google.gwt
+	 * .dom.client.Element, java.lang.Object, java.lang.Object,
+	 * com.google.gwt.dom.client.NativeEvent,
+	 * com.google.gwt.cell.client.ValueUpdater)
+	 */
+	@Override
+	protected void onEnterKeyDown(Element parent, Date value, Object key,
+			NativeEvent event, ValueUpdater<Date> valueUpdater) {
+		startEditing(parent, value, key, event, valueUpdater);
 	}
 
 }

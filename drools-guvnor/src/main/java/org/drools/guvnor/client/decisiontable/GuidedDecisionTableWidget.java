@@ -233,7 +233,7 @@ public class GuidedDecisionTableWidget extends Composite implements
 						if (c instanceof ActionSetFieldCol) {
 							ActionSetFieldCol asf = (ActionSetFieldCol) c;
 							ActionSetColumn ed = new ActionSetColumn(getSCE(),
-									guidedDecisionTable, new Command() {
+									dtable, new Command() {
 										public void execute() {
 											scrapeData(-1);
 											refreshGrid();
@@ -245,8 +245,7 @@ public class GuidedDecisionTableWidget extends Composite implements
 						} else if (c instanceof ActionInsertFactCol) {
 							ActionInsertFactCol asf = (ActionInsertFactCol) c;
 							ActionInsertColumn ed = new ActionInsertColumn(
-									getSCE(), guidedDecisionTable,
-									new Command() {
+									getSCE(), dtable, new Command() {
 										public void execute() {
 											scrapeData(-1);
 											refreshGrid();
@@ -292,8 +291,7 @@ public class GuidedDecisionTableWidget extends Composite implements
 
 							private void showInsert() {
 								ActionInsertColumn ins = new ActionInsertColumn(
-										getSCE(), guidedDecisionTable,
-										new Command() {
+										getSCE(), dtable, new Command() {
 											public void execute() {
 												newActionAdded();
 											}
@@ -303,8 +301,7 @@ public class GuidedDecisionTableWidget extends Composite implements
 
 							private void showSet() {
 								ActionSetColumn set = new ActionSetColumn(
-										getSCE(), guidedDecisionTable,
-										new Command() {
+										getSCE(), dtable, new Command() {
 											public void execute() {
 												newActionAdded();
 											}
@@ -313,18 +310,8 @@ public class GuidedDecisionTableWidget extends Composite implements
 							}
 
 							private void newActionAdded() {
-								// want to add in a blank row into the data
-								scrapeData(guidedDecisionTable
-										.getMetadataCols().size()
-										+ guidedDecisionTable
-												.getAttributeCols().size()
-										+ guidedDecisionTable
-												.getConditionCols().size()
-										+ guidedDecisionTable.getActionCols()
-												.size() + 1);
-								refreshGrid();
+								scrapeData(-1);
 								refreshActionsWidget();
-
 							}
 						});
 						pop.addAttribute(constants.TypeOfActionColumn(), choice);
@@ -386,19 +373,9 @@ public class GuidedDecisionTableWidget extends Composite implements
 		addButton.addClickHandler(new ClickHandler() { // NON-NLS
 					public void onClick(ClickEvent w) {
 						GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(
-								getSCE(), guidedDecisionTable, new Command() {
+								getSCE(), dtable, new Command() {
 									public void execute() {
-										// want to add in a blank row into the
-										// data
-										scrapeData(guidedDecisionTable
-												.getMetadataCols().size()
-												+ guidedDecisionTable
-														.getAttributeCols()
-														.size()
-												+ guidedDecisionTable
-														.getConditionCols()
-														.size() + 1);
-										refreshGrid();
+										scrapeData(-1);
 										refreshConditionsWidget();
 										refreshGroupingsPanel();
 									}
@@ -414,7 +391,7 @@ public class GuidedDecisionTableWidget extends Composite implements
 				constants.EditThisColumnsConfiguration(), new ClickHandler() {
 					public void onClick(ClickEvent w) {
 						GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(
-								getSCE(), guidedDecisionTable, new Command() {
+								getSCE(), dtable, new Command() {
 									public void execute() {
 										scrapeData(-1);
 										refreshGrid();
@@ -514,6 +491,7 @@ public class GuidedDecisionTableWidget extends Composite implements
 					public void onClick(ClickEvent sender) {
 						at.setUseRowNumber(useRowNumber.getValue());
 						reverseOrder.setEnabled(useRowNumber.getValue());
+						dtable.updateStaticColumnValues();
 						dtable.redrawStaticColumns();
 					}
 				});
@@ -521,6 +499,7 @@ public class GuidedDecisionTableWidget extends Composite implements
 				reverseOrder.addClickHandler(new ClickHandler() {
 					public void onClick(ClickEvent sender) {
 						at.setReverseOrder(reverseOrder.getValue());
+						dtable.updateStaticColumnValues();
 						dtable.redrawStaticColumns();
 					}
 				});
@@ -574,13 +553,11 @@ public class GuidedDecisionTableWidget extends Composite implements
 								attr.attr = list.getItemText(list
 										.getSelectedIndex());
 
+								dtable.addColumn(attr);
 								guidedDecisionTable.getAttributeCols()
 										.add(attr);
-								scrapeData(guidedDecisionTable
-										.getMetadataCols().size()
-										+ guidedDecisionTable
-												.getAttributeCols().size() + 1);
-								refreshGrid();
+								scrapeData(-1);
+
 								refreshAttributeWidget();
 								pop.hide();
 							}
@@ -592,10 +569,11 @@ public class GuidedDecisionTableWidget extends Composite implements
 							public void onClick(ClickEvent w) {
 								MetadataCol met = new MetadataCol();
 								met.attr = box.getText();
+
+								dtable.addColumn(met);
 								guidedDecisionTable.getMetadataCols().add(met);
-								scrapeData(guidedDecisionTable
-										.getMetadataCols().size() + 1);
-								refreshGrid();
+								scrapeData(-1);
+
 								refreshAttributeWidget();
 								pop.hide();
 							}
@@ -660,28 +638,31 @@ public class GuidedDecisionTableWidget extends Composite implements
 	 * that row position.
 	 */
 	private void scrapeData(int insertCol) {
-		Record[] recs = grid.getStore().getRecords();
-		guidedDecisionTable.setData(new String[recs.length][]);
-		for (int i = 0; i < recs.length; i++) {
-			Record r = recs[i];
-			if (insertCol == -1) {
-				String[] row = new String[fds.length];
-				guidedDecisionTable.getData()[i] = row;
-				for (int j = 0; j < fds.length; j++) {
-					row[j] = r.getAsString(fds[j].getName());
-				}
-			} else {
-				String[] row = new String[fds.length + 1];
-				guidedDecisionTable.getData()[i] = row;
-				for (int j = 0; j < fds.length; j++) {
-					if (j < insertCol) {
-						row[j] = r.getAsString(fds[j].getName());
-					} else if (j >= insertCol) {
-						row[j + 1] = r.getAsString(fds[j].getName());
-					}
-				}
-			}
-		}
+
+		dtable.updateModel();
+
+		// Record[] recs = grid.getStore().getRecords();
+		// guidedDecisionTable.setData(new String[recs.length][]);
+		// for (int i = 0; i < recs.length; i++) {
+		// Record r = recs[i];
+		// if (insertCol == -1) {
+		// String[] row = new String[fds.length];
+		// guidedDecisionTable.getData()[i] = row;
+		// for (int j = 0; j < fds.length; j++) {
+		// row[j] = r.getAsString(fds[j].getName());
+		// }
+		// } else {
+		// String[] row = new String[fds.length + 1];
+		// guidedDecisionTable.getData()[i] = row;
+		// for (int j = 0; j < fds.length; j++) {
+		// if (j < insertCol) {
+		// row[j] = r.getAsString(fds[j].getName());
+		// } else if (j >= insertCol) {
+		// row[j + 1] = r.getAsString(fds[j].getName());
+		// }
+		// }
+		// }
+		// }
 	}
 
 	/**

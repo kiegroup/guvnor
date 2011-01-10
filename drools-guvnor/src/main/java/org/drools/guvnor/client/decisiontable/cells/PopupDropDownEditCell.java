@@ -101,28 +101,6 @@ public class PopupDropDownEditCell extends AbstractEditableCell<String, String> 
 
 	}
 
-	// Commit the change
-	protected void commit() {
-		// Hide pop-up
-		Element cellParent = lastParent;
-		String oldValue = lastValue;
-		Object key = lastKey;
-		panel.hide();
-
-		String text = null;
-		int selectedIndex = listBox.getSelectedIndex();
-		if (selectedIndex >= 0) {
-			text = listBox.getValue(selectedIndex);
-		}
-
-		// Update values
-		setViewData(key, text);
-		setValue(cellParent, oldValue, key);
-		if (valueUpdater != null) {
-			valueUpdater.update(text);
-		}
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -145,49 +123,14 @@ public class PopupDropDownEditCell extends AbstractEditableCell<String, String> 
 	 * com.google.gwt.cell.client.ValueUpdater)
 	 */
 	@Override
-	public void onBrowserEvent(final Element parent, String value, Object key,
+	public void onBrowserEvent(Element parent, String value, Object key,
 			NativeEvent event, ValueUpdater<String> valueUpdater) {
 
+		// KeyDown and "Enter" key-press is handled here
 		super.onBrowserEvent(parent, value, key, event, valueUpdater);
 
 		if (event.getType().equals("dblclick")) {
-
-			this.lastKey = key;
-			this.lastParent = parent;
-			this.lastValue = value;
-			this.valueUpdater = valueUpdater;
-
-			String viewData = getViewData(key);
-			String text = (viewData == null) ? value : viewData;
-
-			// Select the appropriate item
-			boolean emptyValue = (text == null);
-			if (emptyValue) {
-				listBox.setSelectedIndex(0);
-			} else {
-				for (int i = 0; i < listBox.getItemCount(); i++) {
-					if (listBox.getValue(i).equals(text)) {
-						listBox.setSelectedIndex(i);
-						break;
-					}
-				}
-			}
-
-			panel.setPopupPositionAndShow(new PositionCallback() {
-				public void setPosition(int offsetWidth, int offsetHeight) {
-					panel.setPopupPosition(parent.getAbsoluteLeft() + offsetX,
-							parent.getAbsoluteTop() + offsetY);
-
-					// Focus the first enabled control
-					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-						public void execute() {
-							listBox.setFocus(true);
-						}
-
-					});
-				}
-			});
+			startEditing(parent, value, key, event, valueUpdater);
 
 		}
 	}
@@ -228,6 +171,86 @@ public class PopupDropDownEditCell extends AbstractEditableCell<String, String> 
 				this.listBox.addItem(item, item);
 			}
 		}
+	}
+
+	// Commit the change
+	private void commit() {
+		// Hide pop-up
+		Element cellParent = lastParent;
+		String oldValue = lastValue;
+		Object key = lastKey;
+		panel.hide();
+
+		String text = null;
+		int selectedIndex = listBox.getSelectedIndex();
+		if (selectedIndex >= 0) {
+			text = listBox.getValue(selectedIndex);
+		}
+
+		// Update values
+		setViewData(key, text);
+		setValue(cellParent, oldValue, key);
+		if (valueUpdater != null) {
+			valueUpdater.update(text);
+		}
+	}
+
+	// Start editing the cell
+	private void startEditing(final Element parent, String value, Object key,
+			NativeEvent event, ValueUpdater<String> valueUpdater) {
+
+		this.lastKey = key;
+		this.lastParent = parent;
+		this.lastValue = value;
+		this.valueUpdater = valueUpdater;
+
+		String viewData = getViewData(key);
+		String text = (viewData == null) ? value : viewData;
+
+		// Select the appropriate item
+		boolean emptyValue = (text == null);
+		if (emptyValue) {
+			listBox.setSelectedIndex(0);
+		} else {
+			for (int i = 0; i < listBox.getItemCount(); i++) {
+				if (listBox.getValue(i).equals(text)) {
+					listBox.setSelectedIndex(i);
+					break;
+				}
+			}
+		}
+
+		panel.setPopupPositionAndShow(new PositionCallback() {
+			public void setPosition(int offsetWidth, int offsetHeight) {
+				panel.setPopupPosition(parent.getAbsoluteLeft() + offsetX,
+						parent.getAbsoluteTop() + offsetY);
+
+				// Focus the first enabled control
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+					public void execute() {
+						listBox.setFocus(true);
+					}
+
+				});
+			}
+		});
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.google.gwt.cell.client.AbstractCell#onEnterKeyDown(com.google.gwt
+	 * .dom.client.Element, java.lang.Object, java.lang.Object,
+	 * com.google.gwt.dom.client.NativeEvent,
+	 * com.google.gwt.cell.client.ValueUpdater)
+	 */
+	@Override
+	protected void onEnterKeyDown(Element parent, String value, Object key,
+			NativeEvent event, ValueUpdater<String> valueUpdater) {
+		startEditing(parent, value, key, event, valueUpdater);
 	}
 
 }

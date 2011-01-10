@@ -26,8 +26,8 @@ public class CellValueFactory {
 		STRING() {
 			@Override
 			public CellValue<String> getNewCellValue(int iRow, int iCol,
-					String defaultValue) {
-				CellValue<String> cv = new CellValue<String>(defaultValue,
+					String initialValue) {
+				CellValue<String> cv = new CellValue<String>(initialValue,
 						iRow, iCol);
 				return cv;
 			}
@@ -36,10 +36,10 @@ public class CellValueFactory {
 		NUMERIC() {
 			@Override
 			public CellValue<Integer> getNewCellValue(int iRow, int iCol,
-					String defaultValue) {
+					String initialValue) {
 				CellValue<Integer> cv = new CellValue<Integer>(null, iRow, iCol);
-				if (defaultValue != null) {
-					cv.setValue(Integer.valueOf(defaultValue));
+				if (initialValue != null) {
+					cv.setValue(Integer.valueOf(initialValue));
 				}
 				return cv;
 			}
@@ -48,9 +48,10 @@ public class CellValueFactory {
 		ROW_NUMBER() {
 			@Override
 			public CellValue<Integer> getNewCellValue(int iRow, int iCol,
-					String defaultValue) {
-				//Rows are 0-based internally but 1-based in the UI
-				CellValue<Integer> cv = new CellValue<Integer>(iRow+1, iRow, iCol);
+					String initialValue) {
+				// Rows are 0-based internally but 1-based in the UI
+				CellValue<Integer> cv = new CellValue<Integer>(iRow + 1, iRow,
+						iCol);
 				return cv;
 			}
 
@@ -59,10 +60,10 @@ public class CellValueFactory {
 			@Override
 			@SuppressWarnings("deprecation")
 			public CellValue<Date> getNewCellValue(int iRow, int iCol,
-					String defaultValue) {
+					String initialValue) {
 				CellValue<Date> cv = new CellValue<Date>(null, iRow, iCol);
 
-				if (defaultValue != null) {
+				if (initialValue != null) {
 					// TODO Need to parse String into Date
 					Date d = new Date();
 					int year = d.getYear();
@@ -78,11 +79,11 @@ public class CellValueFactory {
 		BOOLEAN() {
 			@Override
 			public CellValue<Boolean> getNewCellValue(int iRow, int iCol,
-					String defaultValue) {
+					String initialValue) {
 				CellValue<Boolean> cv = new CellValue<Boolean>(Boolean.FALSE,
 						iRow, iCol);
-				if (defaultValue != null) {
-					cv.setValue(Boolean.valueOf(defaultValue));
+				if (initialValue != null) {
+					cv.setValue(Boolean.valueOf(initialValue));
 				}
 				return cv;
 			}
@@ -91,17 +92,17 @@ public class CellValueFactory {
 		DIALECT() {
 			@Override
 			public CellValue<String> getNewCellValue(int iRow, int iCol,
-					String defaultValue) {
+					String initialValue) {
 				CellValue<String> cv = new CellValue<String>("java", iRow, iCol);
-				if (defaultValue != null) {
-					cv.setValue(defaultValue);
+				if (initialValue != null) {
+					cv.setValue(initialValue);
 				}
 				return cv;
 			}
 
 		};
 		public abstract CellValue<?> getNewCellValue(int iRow, int iCol,
-				String defaultValue);
+				String initialValue);
 	}
 
 	// Setup the cache
@@ -158,13 +159,15 @@ public class CellValueFactory {
 	 *            Row coordinate for initialisation
 	 * @param iCol
 	 *            Column coordinate for initialisation
+	 * @param initialValue
+	 *            The initial value of the cell
 	 * @return A CellValue
 	 */
-	public CellValue<? extends Comparable<?>> makeCellValue(
-			DTColumnConfig column, int iRow, int iCol, String defaultValue) {
+	public CellValue<? extends Comparable<?>> getCellValue(
+			DTColumnConfig column, int iRow, int iCol, String initialValue) {
 		DATA_TYPES dataType = getDataType(column);
 		CellValue<? extends Comparable<?>> cell = dataType.getNewCellValue(
-				iRow, iCol, defaultValue);
+				iRow, iCol, initialValue);
 		return cell;
 	}
 

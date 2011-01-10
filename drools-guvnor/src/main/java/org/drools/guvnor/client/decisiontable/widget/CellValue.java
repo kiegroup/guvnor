@@ -32,6 +32,7 @@ public class CellValue<T extends Comparable<T>> implements
 	private Coordinate coordinate;
 	private Coordinate mapHtmlToData;
 	private Coordinate mapDataToHtml;
+	private boolean isSelected;
 
 	public CellValue(T value, int row, int col) {
 		this.value = value;
@@ -97,6 +98,14 @@ public class CellValue<T extends Comparable<T>> implements
 
 	void setRowSpan(int rowSpan) {
 		this.rowSpan = rowSpan;
+	}
+
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
 	}
 
 }

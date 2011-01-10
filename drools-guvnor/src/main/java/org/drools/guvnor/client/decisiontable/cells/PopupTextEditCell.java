@@ -98,27 +98,6 @@ public class PopupTextEditCell extends AbstractEditableCell<String, String> {
 
 	}
 
-	// Commit the change
-	protected void commit() {
-		// Hide pop-up
-		Element cellParent = lastParent;
-		String oldValue = lastValue;
-		Object key = lastKey;
-		panel.hide();
-
-		// Update values
-		String text = textBox.getValue();
-		if (text.length() == 0) {
-			text = null;
-		}
-		setViewData(key, text);
-		setValue(cellParent, oldValue, key);
-		if (valueUpdater != null) {
-			valueUpdater.update(text);
-		}
-
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -141,41 +120,14 @@ public class PopupTextEditCell extends AbstractEditableCell<String, String> {
 	 * com.google.gwt.cell.client.ValueUpdater)
 	 */
 	@Override
-	public void onBrowserEvent(final Element parent, String value, Object key,
+	public void onBrowserEvent(Element parent, String value, Object key,
 			NativeEvent event, ValueUpdater<String> valueUpdater) {
 
+		// KeyDown and "Enter" key-press is handled here
 		super.onBrowserEvent(parent, value, key, event, valueUpdater);
 
 		if (event.getType().equals("dblclick")) {
-
-			this.lastKey = key;
-			this.lastParent = parent;
-			this.lastValue = value;
-			this.valueUpdater = valueUpdater;
-
-			String viewData = getViewData(key);
-			String text = (viewData == null) ? value : viewData;
-			textBox.setValue(text);
-
-			panel.setPopupPositionAndShow(new PositionCallback() {
-				public void setPosition(int offsetWidth, int offsetHeight) {
-					panel.setPopupPosition(parent.getAbsoluteLeft() + offsetX,
-							parent.getAbsoluteTop() + offsetY);
-
-					// Focus the first enabled control
-					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-						public void execute() {
-							String text = textBox.getValue();
-							textBox.setFocus(true);
-							textBox.setCursorPos(text.length());
-							textBox.setSelectionRange(0, text.length());
-						}
-
-					});
-				}
-			});
-
+			startEditing(parent, value, key, event, valueUpdater);
 		}
 	}
 
@@ -207,6 +159,75 @@ public class PopupTextEditCell extends AbstractEditableCell<String, String> {
 				sb.append(renderer.render(s));
 			}
 		}
+	}
+
+	// Commit the change
+	private void commit() {
+		// Hide pop-up
+		Element cellParent = lastParent;
+		String oldValue = lastValue;
+		Object key = lastKey;
+		panel.hide();
+
+		// Update values
+		String text = textBox.getValue();
+		if (text.length() == 0) {
+			text = null;
+		}
+		setViewData(key, text);
+		setValue(cellParent, oldValue, key);
+		if (valueUpdater != null) {
+			valueUpdater.update(text);
+		}
+
+	}
+
+	// Start editing the cell
+	private void startEditing(final Element parent, String value, Object key,
+			NativeEvent event, ValueUpdater<String> valueUpdater) {
+		this.lastKey = key;
+		this.lastParent = parent;
+		this.lastValue = value;
+		this.valueUpdater = valueUpdater;
+
+		String viewData = getViewData(key);
+		String text = (viewData == null) ? value : viewData;
+		textBox.setValue(text);
+
+		panel.setPopupPositionAndShow(new PositionCallback() {
+			public void setPosition(int offsetWidth, int offsetHeight) {
+				panel.setPopupPosition(parent.getAbsoluteLeft() + offsetX,
+						parent.getAbsoluteTop() + offsetY);
+
+				// Focus the first enabled control
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+					public void execute() {
+						String text = textBox.getValue();
+						textBox.setFocus(true);
+						textBox.setCursorPos(text.length());
+						textBox.setSelectionRange(0, text.length());
+					}
+
+				});
+			}
+		});
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.google.gwt.cell.client.AbstractCell#onEnterKeyDown(com.google.gwt
+	 * .dom.client.Element, java.lang.Object, java.lang.Object,
+	 * com.google.gwt.dom.client.NativeEvent,
+	 * com.google.gwt.cell.client.ValueUpdater)
+	 */
+	@Override
+	protected void onEnterKeyDown(Element parent, String value, Object key,
+			NativeEvent event, ValueUpdater<String> valueUpdater) {
+		startEditing(parent, value, key, event, valueUpdater);
 	}
 
 }

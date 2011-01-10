@@ -29,6 +29,8 @@ public interface DecisionTableResources extends ClientBundle {
 		String cellTableOddRow();
 
 		String cellTableCell();
+		
+		String cellTableCellSelected();
 
 		String cellTableCellDiv();
 

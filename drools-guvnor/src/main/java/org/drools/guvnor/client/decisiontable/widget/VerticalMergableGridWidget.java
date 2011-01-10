@@ -48,6 +48,47 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see
+	 * org.drools.guvnor.client.decisiontable.widget.MergableGridWidget#deselectCell
+	 * (org.drools.guvnor.client.decisiontable.widget.CellValue)
+	 */
+	@Override
+	public void deselectCell(CellValue<? extends Comparable<?>> cell) {
+		Coordinate hc = cell.getHtmlCoordinate();
+		TableRowElement tre = tbody.getRows().getItem(hc.getRow())
+				.<TableRowElement> cast();
+		TableCellElement tce = tre.getCells().getItem(hc.getCol())
+				.<TableCellElement> cast();
+
+		String cellSelectedStyle = style.cellTableCellSelected();
+		tce.removeClassName(cellSelectedStyle);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.drools.guvnor.client.decisiontable.widget.MergableGridWidget#hideColumn
+	 * (int)
+	 */
+	@Override
+	public void hideColumn(int index) {
+		for (int iRow = 0; iRow < data.size(); iRow++) {
+			DynamicDataRow rowData = data.get(iRow);
+			CellValue<? extends Comparable<?>> cell = rowData.get(index);
+
+			if (cell.getRowSpan() > 0) {
+				Coordinate hc = cell.getHtmlCoordinate();
+				TableRowElement tre = tbody.getRows().getItem(hc.getRow());
+				TableCellElement tce = tre.getCells().getItem(hc.getCol());
+				tre.removeChild(tce);
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.drools.guvnor.decisiontable.client.widget.MergableGridWidget#
 	 * insertRowBefore(int)
 	 */
@@ -207,6 +248,49 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 		fixRowStyles(startRedrawIndex);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.drools.guvnor.client.decisiontable.widget.MergableGridWidget#selectCell
+	 * (org.drools.guvnor.client.decisiontable.widget.CellValue)
+	 */
+	@Override
+	public void selectCell(CellValue<? extends Comparable<?>> cell) {
+		Coordinate hc = cell.getHtmlCoordinate();
+		TableRowElement tre = tbody.getRows().getItem(hc.getRow())
+				.<TableRowElement> cast();
+		TableCellElement tce = tre.getCells().getItem(hc.getCol())
+				.<TableCellElement> cast();
+
+		String cellSelectedStyle = style.cellTableCellSelected();
+		tce.addClassName(cellSelectedStyle);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.drools.guvnor.client.decisiontable.widget.MergableGridWidget#showColumn
+	 * (int)
+	 */
+	@Override
+	public void showColumn(int index) {
+		for (int iRow = 0; iRow < data.size(); iRow++) {
+			DynamicDataRow rowData = data.get(iRow);
+			TableCellElement tce = makeTableCellElement(index, rowData);
+			if (tce != null) {
+
+				CellValue<? extends Comparable<?>> cell = rowData.get(index);
+				Coordinate hc = cell.getHtmlCoordinate();
+
+				TableRowElement tre = tbody.getRows().getItem(hc.getRow());
+				TableCellElement ntce = tre.insertCell(hc.getCol());
+				tre.replaceChild(tce, ntce);
+			}
+		}
+	}
+
 	// Row styles need to be re-applied after inserting and deleting rows
 	private void fixRowStyles(int iRow) {
 		while (iRow < tbody.getChildCount()) {
@@ -232,6 +316,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 
 		String cellStyle = style.cellTableCell();
 		String divStyle = style.cellTableCellDiv();
+		String cellSelectedStyle = style.cellTableCellSelected();
 		TableCellElement tce = null;
 
 		// Column to render the column
@@ -245,7 +330,10 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			// attributes that need to be dynamic
 			tce = Document.get().createTDElement();
 			DivElement div = Document.get().createDivElement();
-			tce.setClassName(cellStyle);
+			if (cellData.isSelected()) {
+				tce.addClassName(cellSelectedStyle);
+			}
+			tce.addClassName(cellStyle);
 			div.setClassName(divStyle);
 
 			// Dynamic attributes!

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget.MOVE_DIRECTION;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 
@@ -31,22 +32,23 @@ public abstract class MergableGridWidget extends Widget {
 
 	// Data to render
 	protected List<DynamicColumn> columns = new ArrayList<DynamicColumn>();
-
 	protected List<DynamicDataRow> data = new ArrayList<DynamicDataRow>();
 
 	// TABLE elements
 	protected TableElement table;
-
 	protected TableSectionElement tbody;
+
 	// Resources
 	protected static final DecisionTableResources resource = GWT
 			.create(DecisionTableResources.class);
 
 	protected static final DecisionTableStyle style = resource.cellTableStyle();
+
 	// The DecisionTable to which this grid belongs. This is used solely
 	// to record when a cell has been clicked as the DecisionTable manages
 	// writing values back to merged cells...
 	protected DecisionTableWidget dtable;
+
 	protected DecisionTableHeaderWidget headerWidget;
 
 	protected DecisionTableSidebarWidget sideBarWidget;
@@ -82,7 +84,77 @@ public abstract class MergableGridWidget extends Widget {
 		// doing this, but I copied CellTable<?, ?>'s lead
 		sinkEvents(Event.getTypeInt("click") | Event.getTypeInt("dblclick")
 				| Event.getTypeInt("mouseover") | Event.getTypeInt("mouseout")
-				| Event.getTypeInt("change") | Event.getTypeInt("keydown") | Event.getTypeInt("keypress"));
+				| Event.getTypeInt("change") | Event.getTypeInt("keypress")
+				| Event.getTypeInt("keydown"));
+	}
+
+	/**
+	 * Retrieve the extents of a cell
+	 * 
+	 * @param cv
+	 *            The cell for which to retrieve the extents
+	 * @return
+	 */
+	public CellExtents getSelectedCellExtents(
+			CellValue<? extends Comparable<?>> cv) {
+
+		if (cv == null) {
+			throw new IllegalArgumentException("CellValue cannot be null");
+		}
+
+		// Cells in hidden columns do not have extents
+		if (!columns.get(cv.getCoordinate().getCol()).getIsVisible()) {
+			return null;
+		}
+
+		Coordinate hc = cv.getHtmlCoordinate();
+		TableRowElement tre = tbody.getRows().getItem(hc.getRow())
+				.<TableRowElement> cast();
+		TableCellElement tce = tre.getCells().getItem(hc.getCol())
+				.<TableCellElement> cast();
+		int x = tce.getOffsetLeft();
+		int y = tce.getOffsetTop();
+		int w = tce.getOffsetWidth();
+		int h = tce.getOffsetHeight();
+		CellExtents e = new CellExtents(x, y, h, w);
+		return e;
+	}
+
+	/**
+	 * Container for a cell's extents
+	 * 
+	 * @author manstis
+	 * 
+	 */
+	public static class CellExtents {
+		private int x;
+		private int y;
+		private int height;
+		private int width;
+
+		CellExtents(int x, int y, int height, int width) {
+			this.x = x;
+			this.y = y;
+			this.height = height;
+			this.width = width;
+		}
+
+		public int getX() {
+			return x;
+		}
+
+		public int getY() {
+			return y;
+		}
+
+		public int getHeight() {
+			return height;
+		}
+
+		public int getWidth() {
+			return width;
+		}
+
 	}
 
 	/**
@@ -101,25 +173,12 @@ public abstract class MergableGridWidget extends Widget {
 	 */
 	public abstract void deleteRow(int index);
 
-	// Find the cell that contains the element. Note that the TD element is not
-	// the parent. The parent is the div inside the TD cell.
-	private TableCellElement findNearestParentCell(Element elem) {
-		while ((elem != null) && (elem != table)) {
-			String tagName = elem.getTagName();
-			if ("td".equalsIgnoreCase(tagName)
-					|| "th".equalsIgnoreCase(tagName)) {
-				return elem.cast();
-			}
-			elem = elem.getParentElement();
-		}
-		return null;
-	}
-
-	// Get the parent element that is passed to the {@link Cell} from the table
-	// cell element.
-	private Element getCellParent(TableCellElement td) {
-		return td.getFirstChildElement();
-	}
+	/**
+	 * Remove styling indicating a selected state
+	 * 
+	 * @param cell
+	 */
+	public abstract void deselectCell(CellValue<? extends Comparable<?>> cell);
 
 	/**
 	 * Get a list of columns (Woot, CellTable lacks this!)
@@ -129,6 +188,11 @@ public abstract class MergableGridWidget extends Widget {
 	public List<DynamicColumn> getColumns() {
 		return this.columns;
 	}
+
+	/**
+	 * Hide a column
+	 */
+	public abstract void hideColumn(int index);
 
 	/**
 	 * Add a column at a specific index
@@ -169,6 +233,8 @@ public abstract class MergableGridWidget extends Widget {
 	@Override
 	public void onBrowserEvent(Event event) {
 
+		String eventType = event.getType();
+
 		// Get the event target.
 		EventTarget eventTarget = event.getEventTarget();
 		if (!Element.is(eventTarget)) {
@@ -181,60 +247,76 @@ public abstract class MergableGridWidget extends Widget {
 		if (tableCell == null) {
 			return;
 		}
+		int htmlCol = tableCell.getCellIndex();
 
 		Element trElem = tableCell.getParentElement();
 		if (trElem == null) {
 			return;
 		}
 		TableRowElement tr = TableRowElement.as(trElem);
-
-		// Forward the event to the associated header, footer, or column.
-		int iCol = tableCell.getCellIndex();
-		int iRow = tr.getSectionRowIndex();
-		String eventType = event.getType();
+		int htmlRow = tr.getSectionRowIndex();
 
 		// Convert HTML coordinates to physical coordinates
-		DynamicDataRow htmlRow = data.get(iRow);
-		CellValue<? extends Comparable<?>> htmlCell = htmlRow.get(iCol);
+		Element parent = getCellParent(tableCell);
+		DynamicDataRow htmlRowData = data.get(htmlRow);
+		CellValue<? extends Comparable<?>> htmlCell = htmlRowData.get(htmlCol);
 		Coordinate c = htmlCell.getPhysicalCoordinate();
 		CellValue<? extends Comparable<?>> physicalCell = data.get(c.getRow())
 				.get(c.getCol());
 
-		// Keyboard operation
-		boolean keyDelete = false;
-		if (eventType.equals("keydown") || eventType.equals("keypress")) {
-			keyDelete = (event.getKeyCode() == KeyCodes.KEY_DELETE);
-		}
-
-		// Setup the selected range
-		boolean click = eventType.equals("click");
-		boolean dblClick = eventType.equals("dblclick");
-		if (click || dblClick) {
-			
-			//TODO This needs to visually select the cell(s) too
+		// Select range
+		if (eventType.equals("click")) {
 			dtable.startSelecting(c);
 		}
 
-		// Delete clears the current value
-		if (keyDelete) {
-			dtable.update(null);
+		// Keyboard navigation
+		if (eventType.equals("keypress")) {
+			if (event.getKeyCode() == KeyCodes.KEY_DELETE) {
+				dtable.update(null);
+			} else if (event.getKeyCode() == KeyCodes.KEY_RIGHT
+					|| (event.getKeyCode() == KeyCodes.KEY_TAB && !event
+							.getShiftKey())) {
+				dtable.moveSelection(MOVE_DIRECTION.RIGHT);
+				event.preventDefault();
+			} else if (event.getKeyCode() == KeyCodes.KEY_LEFT
+					|| (event.getKeyCode() == KeyCodes.KEY_TAB && event
+							.getShiftKey())) {
+				dtable.moveSelection(MOVE_DIRECTION.LEFT);
+				event.preventDefault();
+			} else if (event.getKeyCode() == KeyCodes.KEY_UP) {
+				dtable.moveSelection(MOVE_DIRECTION.UP);
+				event.preventDefault();
+			} else if (event.getKeyCode() == KeyCodes.KEY_DOWN) {
+				dtable.moveSelection(MOVE_DIRECTION.DOWN);
+				event.preventDefault();
+			}
 		}
 
-		// Double click to edit a "pop-up" cell
-		if (dblClick) {
+		// Enter key is a special case; as the selected cell needs to be sent
+		// events and not the cell that GWT deemed the target for events.
+		if (eventType.equals("keydown") || eventType.equals("keypress")
+				|| eventType.equals("keyup")) {
+			if (event.getKeyCode() == KeyCodes.KEY_ENTER) {
 
-			// Pass event and physical cell to Cell Widget for handling
-			Cell<CellValue<? extends Comparable<?>>> cellWidget = columns.get(
-					c.getCol()).getCell();
+				physicalCell = dtable.getSelections().first();
+				c = physicalCell.getCoordinate();
+				parent = getCellParent(tbody.getRows()
+						.getItem(physicalCell.getHtmlCoordinate().getRow())
+						.getCells()
+						.getItem(physicalCell.getHtmlCoordinate().getCol()));
 
-			// Implementations of AbstractCell aren't forced to initialise
-			// consumed events
-			Set<String> consumedEvents = cellWidget.getConsumedEvents();
-			if (consumedEvents != null && consumedEvents.contains(eventType)) {
-				Element parent = getCellParent(tableCell);
-				cellWidget.onBrowserEvent(parent, physicalCell, null, event,
-						null);
 			}
+		}
+
+		// Pass event and physical cell to Cell Widget for handling
+		Cell<CellValue<? extends Comparable<?>>> cellWidget = columns.get(
+				c.getCol()).getCell();
+
+		// Implementations of AbstractCell aren't forced to initialise
+		// consumed events
+		Set<String> consumedEvents = cellWidget.getConsumedEvents();
+		if (consumedEvents != null && consumedEvents.contains(eventType)) {
+			cellWidget.onBrowserEvent(parent, physicalCell, null, event, null);
 		}
 	}
 
@@ -287,6 +369,13 @@ public abstract class MergableGridWidget extends Widget {
 		columns.remove(index);
 	}
 
+	/**
+	 * Add styling to cell to indicate a selected state
+	 * 
+	 * @param cell
+	 */
+	public abstract void selectCell(CellValue<? extends Comparable<?>> cell);
+
 	public void setColumnVisibility(int index, boolean isVisible) {
 		this.columns.get(index).setIsVisible(isVisible);
 	}
@@ -298,6 +387,31 @@ public abstract class MergableGridWidget extends Widget {
 	 */
 	public void setRowData(List<DynamicDataRow> data) {
 		this.data = data;
+	}
+
+	/**
+	 * Show a column
+	 */
+	public abstract void showColumn(int index);
+
+	// Find the cell that contains the element. Note that the TD element is not
+	// the parent. The parent is the div inside the TD cell.
+	private TableCellElement findNearestParentCell(Element elem) {
+		while ((elem != null) && (elem != table)) {
+			String tagName = elem.getTagName();
+			if ("td".equalsIgnoreCase(tagName)
+					|| "th".equalsIgnoreCase(tagName)) {
+				return elem.cast();
+			}
+			elem = elem.getParentElement();
+		}
+		return null;
+	}
+
+	// Get the parent element that is passed to the {@link Cell} from the table
+	// cell element.
+	private Element getCellParent(TableCellElement td) {
+		return td.getFirstChildElement();
 	}
 
 }

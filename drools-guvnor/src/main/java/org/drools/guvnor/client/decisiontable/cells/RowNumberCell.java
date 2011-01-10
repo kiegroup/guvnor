@@ -19,6 +19,9 @@ public class RowNumberCell extends AbstractCell<Integer> {
 
 	@Override
 	public void render(Integer value, Object key, SafeHtmlBuilder sb) {
+		if(value==null) {
+			value=-1;
+		}
 		sb.append(value);
 	}
 
