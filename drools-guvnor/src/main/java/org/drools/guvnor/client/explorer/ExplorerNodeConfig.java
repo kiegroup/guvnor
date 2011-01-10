@@ -176,7 +176,7 @@ public class ExplorerNodeConfig {
                 for ( PackageConfigData val : values ) {
                     ph.addPackage( val );
                 }
-                for ( PackageHierarchy.Folder hf : ph.root.children ) {
+                for ( PackageHierarchy.Folder hf : ph.getRoot().getChildren() ) {
                     buildDeploymentTree( root,
                                          hf );
                 }
@@ -186,17 +186,17 @@ public class ExplorerNodeConfig {
 
     private static void buildDeploymentTree(TreeItem root,
                                             PackageHierarchy.Folder fldr) {
-        if ( fldr.conf != null ) {
+        if ( fldr.getConfig() != null ) {
             TreeItem pkg = new TreeItem( Util.getHeader( images.snapshotSmall(),
-                                                         fldr.conf.name ) );
-            pkg.setUserObject( fldr.conf );
+                                                         fldr.getConfig().name ) );
+            pkg.setUserObject( fldr.getConfig() );
             pkg.addItem( new TreeItem( constants.PleaseWaitDotDotDot() ) );
             root.addItem( pkg );
         } else {
             TreeItem tn = new TreeItem( Util.getHeader( images.emptyPackage(),
-                                                        fldr.name ) );
+                                                        fldr.getName() ) );
             root.addItem( tn );
-            for ( PackageHierarchy.Folder c : fldr.children ) {
+            for ( PackageHierarchy.Folder c : fldr.getChildren() ) {
                 buildDeploymentTree( tn,
                                      c );
             }

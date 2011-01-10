@@ -36,9 +36,12 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-public class PackagesTree extends AbstractTree implements OpenHandler<TreeItem> {
+public class PackagesTree extends AbstractTree
+    implements
+    OpenHandler<TreeItem> {
+
     private static Constants constants      = GWT.create( Constants.class );
-    private static Images    images         = (Images) GWT.create( Images.class );
+    private static Images    images         = GWT.create( Images.class );
 
     private boolean          packagesLoaded = false;
 
@@ -47,20 +50,8 @@ public class PackagesTree extends AbstractTree implements OpenHandler<TreeItem> 
         this.image = images.packages();
 
         mainTree.setAnimationEnabled( true );
-        //lazy loaded to easy startup wait time.
-        //setupPackagesTree(this.centertabbedPanel);
         mainTree.addSelectionHandler( this );
         mainTree.addOpenHandler( (OpenHandler<TreeItem>) this );
-
-        //these panels are lazy loaded to easy startup wait time.
-        /*        addListener(new PanelListenerAdapter() {
-                	public void onExpand(Panel panel) {
-                        loadPackageList();
-                    }
-                });
-
-                add(packagesPanel);
-                */
     }
 
     @Override
@@ -83,37 +74,37 @@ public class PackagesTree extends AbstractTree implements OpenHandler<TreeItem> 
     }
 
     private void setupPackagesTree() {
-		TreeItem packageRootNode = new TreeItem(Util.getHeader(
-				images.chartOrganisation(), constants.Packages()));
-		setupPackageNode(packageRootNode);
-		mainTree.addItem(packageRootNode);
+        TreeItem packageRootNode = new TreeItem( Util.getHeader( images.chartOrganisation(),
+                                                                 constants.Packages() ) );
+        setupPackageNode( packageRootNode );
+        mainTree.addItem( packageRootNode );
 
-		setupGlobalNode( mainTree, itemWidgets );
+        setupGlobalNode( mainTree,
+                         itemWidgets );
     }
-    
-	private void setupPackageNode(final TreeItem packageRootNode) {
-		packageRootNode.setState(true);
-		packageRootNode.setUserObject(new String("rootNode"));
-		
+
+    private void setupPackageNode(final TreeItem packageRootNode) {
+        packageRootNode.setState( true );
+        packageRootNode.setUserObject( new String( "rootNode" ) );
+
         RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
-            public void onSuccess(PackageConfigData[] value) {
-                PackageHierarchy ph = new PackageHierarchy();
+            public void onSuccess(PackageConfigData[] packageConfigDatas) {
+                PackageHierarchy packageHierarchy = new PackageHierarchy();
 
-                for ( PackageConfigData val : value ) {
-                    ph.addPackage( val );
+                for ( PackageConfigData packageConfigData : packageConfigDatas ) {
+                    packageHierarchy.addPackage( packageConfigData );
                 }
 
-                for ( PackageHierarchy.Folder hf : ph.root.children ) {
-                    buildPkgTree( packageRootNode, hf );
+                for ( PackageHierarchy.Folder folder : packageHierarchy.getRoot().getChildren() ) {
+                    buildPkgTree( packageRootNode,
+                                  folder );
                 }
-
-                //root.expand();
             }
-        } );		
-	}
+        } );
+    }
 
     private void setupGlobalNode(final Tree root,
-                            final Map<TreeItem, String> itemWidgets) {
+                                 final Map<TreeItem, String> itemWidgets) {
         RepositoryServiceFactory.getService().loadGlobalPackage( new GenericCallback<PackageConfigData>() {
             public void onSuccess(PackageConfigData value) {
                 TreeItem globalRootNode = ExplorerNodeConfig.getPackageItemStructure( constants.GlobalArea(),
@@ -129,39 +120,38 @@ public class PackagesTree extends AbstractTree implements OpenHandler<TreeItem> 
     }
 
     private void buildPkgTree(TreeItem root,
-                              PackageHierarchy.Folder fldr) {
-        if ( fldr.conf != null ) {
-            root.addItem( loadPackage( fldr.name,
-                                       fldr.conf ) );
+                              PackageHierarchy.Folder folder) {
+        if ( folder.getConfig() != null ) {
+            root.addItem( loadPackage( folder.getName(),
+                                       folder.getConfig() ) );
         } else {
-            TreeItem tn = new TreeItem( Util.getHeader( images.emptyPackage(),
-                                                        fldr.name ) );
-            //itemWidgets.put(item, AssetFormats.BUSINESS_RULE_FORMATS[0]);
-            root.addItem( tn );
+            TreeItem treeItem = new TreeItem( Util.getHeader( images.emptyPackage(),
+                                                              folder.getName() ) );
+            root.addItem( treeItem );
 
-            for ( PackageHierarchy.Folder c : fldr.children ) {
-                buildPkgTree( tn,
-                              c );
+            for ( PackageHierarchy.Folder childFolder : folder.getChildren() ) {
+                buildPkgTree( treeItem,
+                              childFolder );
             }
         }
     }
 
     private TreeItem loadPackage(String name,
-                                 PackageConfigData conf) {
-        TreeItem pn = ExplorerNodeConfig.getPackageItemStructure( name,
-                                                                  conf.uuid,
-                                                                  itemWidgets );
-        pn.setUserObject( conf );
-        return pn;
+                                 PackageConfigData config) {
+        TreeItem treeItem = ExplorerNodeConfig.getPackageItemStructure( name,
+                                                                        config.uuid,
+                                                                        itemWidgets );
+        treeItem.setUserObject( config );
+        return treeItem;
     }
 
-    public static String key(String[] fmts,
+    public static String key(String[] formats,
                              PackageConfigData userObject) {
         String key = userObject.uuid;
-        for ( String fmt : fmts ) {
-            key = key + fmt;
+        for ( String format : formats ) {
+            key = key + format;
         }
-        if ( fmts.length == 0 ) {
+        if ( formats.length == 0 ) {
             key = key + "[0]";
         }
         return key;
@@ -174,7 +164,7 @@ public class PackagesTree extends AbstractTree implements OpenHandler<TreeItem> 
 
         TabOpener opener = TabOpener.getInstance();
 
-        if ( userObject != null) {
+        if ( userObject != null ) {
             if ( userObject instanceof PackageConfigData && !((PackageConfigData) userObject).isGlobal() ) {
                 PackageConfigData pc = (PackageConfigData) userObject;
                 RulePackageSelector.currentlySelectedPackage = pc.name;
@@ -196,22 +186,24 @@ public class PackagesTree extends AbstractTree implements OpenHandler<TreeItem> 
                 opener.openPackageViewAssets( packageConfigData.uuid,
                                               packageConfigData.name,
                                               key,
-                                              formats.length == 0 ? null : Arrays.asList(formats),
+                                              formats.length == 0 ? null : Arrays.asList( formats ),
                                               formats.length == 0 ? Boolean.TRUE : null,
                                               node.getText() );
+            } else if ( userObject instanceof String ) {
+                // Ignore, there is no click event for this.
             } else {
-                throw new IllegalArgumentException("The userObject (" + userObject + ") is not supported.");
+                throw new IllegalArgumentException( "The userObject (" + userObject + ") is not supported." );
             }
         }
-    }    
+    }
 
     public void onOpen(OpenEvent<TreeItem> event) {
         TreeItem node = event.getTarget();
         Object userObject = node.getUserObject();
 
-        if ( userObject != null && userObject instanceof String && "rootNode".equals((String)userObject)) {
-        	node.removeItems();
-        	setupPackageNode(node);
+        if ( userObject != null && userObject instanceof String && "rootNode".equals( (String) userObject ) ) {
+            node.removeItems();
+            setupPackageNode( node );
         }
     }
 }
