@@ -958,9 +958,9 @@ public abstract class DecisionTableWidget extends Composite implements
 
 		if (startCell.getRowSpan() > 1) {
 			endCell = data
-					.get(endCell.getCoordinate().getRow()
-							+ endCell.getRowSpan() - 1).get(
-							endCell.getCoordinate().getCol());
+					.get(startCell.getCoordinate().getRow()
+							+ startCell.getRowSpan() - 1).get(
+							startCell.getCoordinate().getCol());
 		}
 		selectRange(startCell, endCell);
 	}
