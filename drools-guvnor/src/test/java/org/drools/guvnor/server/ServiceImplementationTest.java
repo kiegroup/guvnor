@@ -121,36 +121,36 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class ServiceImplementationTest {
 
-    @BeforeClass
-    public static void setup() {
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
-        MailboxService.getInstance().init( repo );
-        RepositoryStartupService.registerCheckinListener();
-    }
-
-    /**
-     * Set up enough of the Seam environment to test it.
-     */
-    @Before
-    public void setUp() {
-        // setting it to false as most unit tests in this file assume no signing
-        System.setProperty( KeyStoreHelper.PROP_SIGN,
-                            "false" );
-        Map<String, Object> ap = new HashMap<String, Object>();
-        ap.put( "org.drools.guvnor.client.rpc.RepositoryService",
-                getService() );
-        Lifecycle.beginApplication( ap );
-        Lifecycle.beginCall();
-
-        MockIdentity mi = new MockIdentity();
-        mi.inject();
-        mi.create();
-        //mi.addRole(RoleTypes.ADMIN);
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( false );
-        mi.addPermissionResolver( new RoleBasedPermissionResolver() );
-        //mi.addPermissionResolver(new PackageBasedPermissionResolver());
-    }
+//    @BeforeClass
+//    public static void setup() {
+//        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+//        MailboxService.getInstance().init( repo );
+//        RepositoryStartupService.registerCheckinListener();
+//    }
+//
+//    /**
+//     * Set up enough of the Seam environment to test it.
+//     */
+//    @Before
+//    public void setUp() {
+//        // setting it to false as most unit tests in this file assume no signing
+//        System.setProperty( KeyStoreHelper.PROP_SIGN,
+//                            "false" );
+//        Map<String, Object> ap = new HashMap<String, Object>();
+//        ap.put( "org.drools.guvnor.client.rpc.RepositoryService",
+//                getService() );
+//        Lifecycle.beginApplication( ap );
+//        Lifecycle.beginCall();
+//
+//        MockIdentity mi = new MockIdentity();
+//        mi.inject();
+//        mi.create();
+//        //mi.addRole(RoleTypes.ADMIN);
+//        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+//        resolver.setEnableRoleBasedAuthorization( false );
+//        mi.addPermissionResolver( new RoleBasedPermissionResolver() );
+//        //mi.addPermissionResolver(new PackageBasedPermissionResolver());
+//    }
 
     private ServiceImplementation getService() {
         ServiceImplementation impl = new ServiceImplementation();
@@ -163,16 +163,16 @@ public class ServiceImplementationTest {
         return impl;
     }
 
-    @After
-    public void tearDown() {
-
-        if ( Contexts.isApplicationContextActive() ) {
-
-            Lifecycle.endApplication();
-        }
-        MailboxService.getInstance().stop();
-        TestEnvironmentSessionHelper.shutdown();
-    }
+//    @After
+//    public void tearDown() {
+//
+//        if ( Contexts.isApplicationContextActive() ) {
+//
+//            Lifecycle.endApplication();
+//        }
+//        MailboxService.getInstance().stop();
+//        TestEnvironmentSessionHelper.shutdown();
+//    }
 
     @Test
     @Ignore
