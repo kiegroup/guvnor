@@ -44,7 +44,7 @@ public class TestEnvironmentSessionHelper {
     public static final Logger log = LoggerFactory.getLogger( TestEnvironmentSessionHelper.class );
     public static Repository   repository;
 
-    public static synchronized Session getSession() throws Exception {
+    public static synchronized Session getSession() {
         return getSession( true );
     }
 
@@ -83,7 +83,7 @@ public class TestEnvironmentSessionHelper {
                 out.close();
                 return testSession;
             } catch ( Exception e ) {
-                System.err.println("Failed to get the repository session: ");
+                System.err.println( "Failed to get the repository session: " );
                 e.printStackTrace();
                 throw new IllegalStateException( e );
             }
