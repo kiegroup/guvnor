@@ -25,10 +25,12 @@ import javax.jcr.Repository;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepositoryConfigurator;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class RulesRepositoryManagerTest {
 
+    @Ignore
     @Test
     public void testDecorator() {
         RulesRepositoryManager dec = new RulesRepositoryManager();
