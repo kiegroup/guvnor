@@ -171,12 +171,7 @@ public class ServiceImplementationTest {
             Lifecycle.endApplication();
         }
         MailboxService.getInstance().stop();
-        try {
-            TestEnvironmentSessionHelper.shutdown();
-        } catch ( RepositoryException exception ) {
-            exception.printStackTrace();
-            fail();
-        }
+        TestEnvironmentSessionHelper.shutdown();
     }
 
     @Test
