@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,7 +44,7 @@ public class TestEnvironmentSessionHelper {
     public static final Logger log = LoggerFactory.getLogger( TestEnvironmentSessionHelper.class );
     public static Repository   repository;
 
-    public static synchronized Session getSession() throws Exception {
+    public static synchronized Session getSession() {
         return getSession( true );
     }
 
@@ -83,7 +83,7 @@ public class TestEnvironmentSessionHelper {
                 out.close();
                 return testSession;
             } catch ( Exception e ) {
-                System.err.println("Failed to get the repository session: ");
+                System.err.println( "Failed to get the repository session: " );
                 e.printStackTrace();
                 throw new IllegalStateException( e );
             }
@@ -105,9 +105,13 @@ public class TestEnvironmentSessionHelper {
                                                         "password".toCharArray() ) );
     }
 
-    public static synchronized void shutdown() throws RepositoryException {
-        RulesRepositoryConfigurator.getInstance( null ).shutdown();
-
+    public static synchronized void shutdown() {
+        try {
+            RulesRepositoryConfigurator.getInstance( null ).shutdown();
+        } catch ( Exception exception ) {
+            System.err.println( "Could not shut down repository." );
+            exception.printStackTrace();
+        }
         repository = null;
     }
 
