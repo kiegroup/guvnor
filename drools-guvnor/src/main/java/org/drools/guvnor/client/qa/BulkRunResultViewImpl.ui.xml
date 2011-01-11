@@ -13,6 +13,11 @@
 
 	<ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
 
+	<ui:style>
+		.bold {
+			font-weight: bold;
+		}
+	</ui:style>
 	<gwt:VerticalPanel>
 		<gwt:HTMLPanel>
 			<table>
@@ -21,7 +26,7 @@
 						<gwt:Label text='{i18n.OverallResult}'></gwt:Label>
 					</td>
 					<td>
-						<gwt:Label ui:field="overAll"></gwt:Label>
+						<gwt:Label ui:field="overAll" styleName='{style.bold}'></gwt:Label>
 					</td>
 				</tr>
 				<tr>

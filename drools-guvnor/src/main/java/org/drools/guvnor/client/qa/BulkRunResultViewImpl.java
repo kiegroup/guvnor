@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.qa;
 
-import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
@@ -55,11 +54,9 @@ public class BulkRunResultViewImpl extends Composite
         UiBinder<Widget, BulkRunResultViewImpl> {
     }
 
-    private static BulkRunResultViewImplBinder uiBinder     = GWT.create( BulkRunResultViewImplBinder.class );
+    private static BulkRunResultViewImplBinder uiBinder  = GWT.create( BulkRunResultViewImplBinder.class );
 
-    private Constants                          constants    = GWT.create( Constants.class );
-
-    private FlexTable                          summaryTable = new FlexTable();
+    private Constants                          constants = GWT.create( Constants.class );
 
     private Presenter                          presenter;
 
@@ -81,25 +78,28 @@ public class BulkRunResultViewImpl extends Composite
     @UiField
     ListBox                                    uncoveredRules;
 
+    @UiField
+    FlexTable                                  summaryTable;
+
     public BulkRunResultViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     public void showResult(int percentCovered) {
-
-        PrettyFormLayout layout = new PrettyFormLayout();
-        //add the summary to the layout
-        summaryTable.setWidth( "100%" );
-
-        layout.addAttribute( "",
-                             summaryTable );
-
-        layout.endSection();
+        //
+        //        PrettyFormLayout layout = new PrettyFormLayout();
+        //        //add the summary to the layout
+        //        summaryTable.setWidth( "100%" );
+        //
+        //        layout.addAttribute( "",
+        //                             summaryTable );
+        //
+        //        layout.endSection();
 
     }
 
     @UiHandler("closeButton")
-    void close() {
+    void close(ClickEvent clickEvent) {
         presenter.onClose();
     }
 
