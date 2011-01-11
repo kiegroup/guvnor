@@ -85,21 +85,17 @@ public class ContentHandlerTest extends GuvnorTestBase {
         asset.updateContent( "'Person.age' : [1, 2, 3]" );
 
         EnumerationContentHandler ch = new EnumerationContentHandler();
-        BuilderResult result = ch.validateAsset( asset );
-        assertNotNull( result );
-        assertEquals( 0,
-                      result.lines.length );
+        BuilderResult result =  ch.validateAsset( asset );
+        assertNotNull(result);
+        assertEquals(0, result.getLines().length);
 
         asset.updateContent( "goober boy" );
         result = ch.validateAsset( asset );
-        assertFalse( result.lines.length == 0 );
-        assertEquals( asset.getName(),
-                      result.lines[0].assetName );
-        assertEquals( asset.getFormat(),
-                      result.lines[0].assetFormat );
-        assertNotNull( result.lines[0].message );
-        assertEquals( asset.getUUID(),
-                      result.lines[0].uuid );
+        assertFalse(result.getLines().length == 0);
+        assertEquals(asset.getName(), result.getLines()[0].assetName);
+        assertEquals(asset.getFormat(), result.getLines()[0].assetFormat);
+        assertNotNull(result.getLines()[0].message);
+        assertEquals(asset.getUUID(), result.getLines()[0].uuid);
 
     }
 

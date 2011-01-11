@@ -41,7 +41,6 @@ public class HeaderHTML extends Composite {
 
     public HeaderHTML() {
         initWidget( uiBinder.createAndBindUi( this ) );
-
     }
 
     public void setText(String text) {

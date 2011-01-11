@@ -2377,14 +2377,14 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                     true );
         assertNotNull( result );
         assertEquals( 1,
-                      result.lines.length );
+                      result.getLines().length );
         assertEquals( rule1.getName(),
-                      result.lines[0].assetName );
+                      result.getLines()[0].assetName );
         assertEquals( AssetFormats.DRL,
-                      result.lines[0].assetFormat );
-        assertNotNull( result.lines[0].message );
+                      result.getLines()[0].assetFormat );
+        assertNotNull( result.getLines()[0].message );
         assertEquals( rule1.getUUID(),
-                      result.lines[0].uuid );
+                      result.getLines()[0].uuid );
 
         pkg = repo.loadPackageSnapshot( "testBinaryPackageCompile",
                                         "SNAP1" );
@@ -2441,8 +2441,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         BuilderResult result = impl.buildPackage( pkg.getUUID(),
                                                   true );
         if ( result != null ) {
-            for ( int i = 0; i < result.lines.length; i++ ) {
-                System.err.println( result.lines[i].message );
+            for ( int i = 0; i < result.getLines().length; i++ ) {
+                System.err.println( result.getLines()[i].message );
             }
         }
         assertNull( result );
@@ -2491,15 +2491,15 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         result = impl.buildPackage( pkg.getUUID(),
                                     true );
         assertNotNull( result );
-        assertTrue( result.lines.length > 0 );
+        assertTrue( result.getLines().length > 0 );
         // assertEquals(2, results.length);
         assertEquals( rule2.getName(),
-                      result.lines[0].assetName );
+                      result.getLines()[0].assetName );
         assertEquals( AssetFormats.BUSINESS_RULE,
-                      result.lines[0].assetFormat );
-        assertNotNull( result.lines[0].message );
+                      result.getLines()[0].assetFormat );
+        assertNotNull( result.getLines()[0].message );
         assertEquals( rule2.getUUID(),
-                      result.lines[0].uuid );
+                      result.getLines()[0].uuid );
 
         pkg = repo.loadPackageSnapshot( "testBinaryPackageCompileBRL",
                                         "SNAP1" );
@@ -2720,8 +2720,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         BuilderResult result = impl.buildAsset( rule );
         assertNotNull( result );
         assertEquals( -1,
-                      result.lines[0].message.indexOf( "Check log for" ) );
-        assertTrue( result.lines[0].message.indexOf( "Unable to resolve" ) > -1 );
+                      result.getLines()[0].message.indexOf( "Check log for" ) );
+        assertTrue( result.getLines()[0].message.indexOf( "Unable to resolve" ) > -1 );
 
     }
 
@@ -2765,9 +2765,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         result = impl.buildAsset( rule );
         assertNotNull( result );
-        assertNotNull( result.lines[0].message );
+        assertNotNull( result.getLines()[0].message );
         assertEquals( AssetFormats.DRL,
-                      result.lines[0].assetFormat );
+                      result.getLines()[0].assetFormat );
 
         // now mix in a DSL
         AssetItem dsl = pkg.addAsset( "MyDSL",
@@ -2793,7 +2793,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         asset.updateContent( "goober boy" );
         asset.checkin( "" );
         result = impl.buildAsset( impl.loadRuleAsset( asset.getUUID() ) );
-        assertFalse( result.lines.length == 0 );
+        assertFalse( result.getLines().length == 0 );
 
     }
 
@@ -2898,8 +2898,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         // check its all OK
         BuilderResult result = impl.buildAsset( rule );
         if ( result != null ) {
-            for ( int i = 0; i < result.lines.length; i++ ) {
-                System.err.println( result.lines[i].message );
+            for ( int i = 0; i < result.getLines().length; i++ ) {
+                System.err.println( result.getLines()[i].message );
             }
         }
         assertNull( result );
@@ -2965,7 +2965,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         // check its all OK
         BuilderResult result = impl.buildAsset( rule );
         if ( !(result == null) ) {
-            System.err.println( result.lines[0].assetName + " " + result.lines[0].message );
+            System.err.println( result.getLines()[0].assetName + " " + result.getLines()[0].message );
         }
         assertNull( result );
 
@@ -2976,10 +2976,10 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertNotNull( result );
 
         assertEquals( 1,
-                      result.lines.length );
+                      result.getLines().length );
         assertEquals( "package",
-                      result.lines[0].assetFormat );
-        assertNotNull( result.lines[0].message );
+                      result.getLines()[0].assetFormat );
+        assertNotNull( result.getLines()[0].message );
 
     }
 
@@ -3345,37 +3345,37 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         scenario2.checkin( "" );
 
         BulkTestRunResult result = impl.runScenariosInPackage( pkg.getUUID() );
-        assertNull( result.result );
+        assertNull( result.getResult() );
 
         assertEquals( 50,
-                      result.percentCovered );
+                      result.getPercentCovered() );
         assertEquals( 1,
-                      result.rulesNotCovered.length );
+                      result.getRulesNotCovered().length );
         assertEquals( "rule2",
-                      result.rulesNotCovered[0] );
+                      result.getRulesNotCovered()[0] );
 
         assertEquals( 2,
-                      result.results.length );
+                      result.getResults().length );
 
-        ScenarioResultSummary s1 = result.results[0];
+        ScenarioResultSummary s1 = result.getResults()[0];
         assertEquals( 0,
-                      s1.failures );
+                      s1.getFailures() );
         assertEquals( 3,
-                      s1.total );
+                      s1.getTotal() );
         assertEquals( scenario1.getUUID(),
-                      s1.uuid );
+                      s1.getUuid() );
         assertEquals( scenario1.getName(),
-                      s1.scenarioName );
+                      s1.getScenarioName() );
 
-        ScenarioResultSummary s2 = result.results[1];
+        ScenarioResultSummary s2 = result.getResults()[1];
         assertEquals( 1,
-                      s2.failures );
+                      s2.getFailures() );
         assertEquals( 1,
-                      s2.total );
+                      s2.getTotal() );
         assertEquals( scenario2.getUUID(),
-                      s2.uuid );
+                      s2.getUuid() );
         assertEquals( scenario2.getName(),
-                      s2.scenarioName );
+                      s2.getScenarioName() );
     }
 
     @Test
@@ -3611,37 +3611,37 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         long time = System.currentTimeMillis();
         BulkTestRunResult result = impl.runScenariosInPackage( pkg.getUUID() );
         System.err.println( "Time taken for runScenariosInPackage " + (System.currentTimeMillis() - time) );
-        assertNull( result.result );
+        assertNull( result.getResult() );
 
         assertEquals( 50,
-                      result.percentCovered );
+                      result.getPercentCovered() );
         assertEquals( 1,
-                      result.rulesNotCovered.length );
+                      result.getRulesNotCovered().length );
         assertEquals( "rule2",
-                      result.rulesNotCovered[0] );
+                      result.getRulesNotCovered()[0] );
 
         assertEquals( 2,
-                      result.results.length );
+                      result.getResults().length );
 
-        ScenarioResultSummary s1 = result.results[0];
+        ScenarioResultSummary s1 = result.getResults()[0];
         assertEquals( 0,
-                      s1.failures );
+                      s1.getFailures() );
         assertEquals( 3,
-                      s1.total );
+                      s1.getTotal() );
         assertEquals( scenario1.getUUID(),
-                      s1.uuid );
+                      s1.getUuid() );
         assertEquals( scenario1.getName(),
-                      s1.scenarioName );
+                      s1.getScenarioName() );
 
-        ScenarioResultSummary s2 = result.results[1];
+        ScenarioResultSummary s2 = result.getResults()[1];
         assertEquals( 1,
-                      s2.failures );
+                      s2.getFailures() );
         assertEquals( 1,
-                      s2.total );
+                      s2.getTotal() );
         assertEquals( scenario2.getUUID(),
-                      s2.uuid );
+                      s2.getUuid() );
         assertEquals( scenario2.getName(),
-                      s2.scenarioName );
+                      s2.getScenarioName() );
     }
 
     @Test
@@ -3844,7 +3844,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         String puuid = (cfgs[0].name.equals( "mortgages" )) ? cfgs[0].uuid : cfgs[1].uuid;
         BulkTestRunResult res = serv.runScenariosInPackage( puuid );
         assertEquals( null,
-                      res.result );
+                      res.getResult() );
     }
 
     //GUVNOR-296

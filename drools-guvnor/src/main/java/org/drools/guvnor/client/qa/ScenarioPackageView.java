@@ -114,16 +114,18 @@ public class ScenarioPackageView extends Composite {
         RepositoryServiceFactory.getService().runScenariosInPackage( uuid,
                                                                      new GenericCallback<BulkTestRunResult>() {
                                                                          public void onSuccess(BulkTestRunResult d) {
-                                                                             BulkRunResultWidget w = new BulkRunResultWidget( d,
-                                                                                                                              editEvent,
-                                                                                                                              new Command() {
-                                                                                                                                  public void execute() {
-                                                                                                                                      refreshShowGrid();
-                                                                                                                                  }
+                                                                             BulkRunResultViewImpl view = new BulkRunResultViewImpl();
+                                                                             BulkRunResult w = new BulkRunResult( d,
+                                                                                                                  editEvent,
+                                                                                                                  new Command() {
+                                                                                                                      public void execute() {
+                                                                                                                          refreshShowGrid();
+                                                                                                                      }
 
-                                                                                                                              } );
+                                                                                                                  },
+                                                                                                                  view );
                                                                              layout.remove( 1 );
-                                                                             layout.add( w );
+                                                                             layout.add( view );
                                                                              LoadingPopup.close();
                                                                          }
                                                                      } );

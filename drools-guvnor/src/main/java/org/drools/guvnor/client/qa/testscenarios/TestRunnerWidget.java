@@ -29,6 +29,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
 import org.drools.guvnor.client.util.Format;
+import org.drools.guvnor.client.util.PercentageBar;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.VerifyFact;
@@ -116,7 +117,7 @@ public class TestRunnerWidget extends Composite {
             final BuilderResultLine res = rs[i];
             errTable.setWidget( row,
                                 0,
-                                new Image(images.error() ) );
+                                new Image( images.error() ) );
             if ( res.assetFormat.equals( "package" ) ) {
                 errTable.setText( row,
                                   1,
@@ -201,17 +202,17 @@ public class TestRunnerWidget extends Composite {
         if ( failures > 0 ) {
             results.setWidget( 0,
                                1,
-                               ScenarioWidget.getBar( "#CC0000",
-                                                      150,
-                                                      failures,
-                                                      total ) );
+                               new PercentageBar( "#CC0000",
+                                                  150,
+                                                  failures,
+                                                  total ) );
         } else {
             results.setWidget( 0,
                                1,
-                               ScenarioWidget.getBar( "GREEN",
-                                                      150,
-                                                      failures,
-                                                      total ) );
+                               new PercentageBar( "GREEN",
+                                                  150,
+                                                  failures,
+                                                  total ) );
         }
 
         results.setWidget( 1,

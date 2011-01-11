@@ -51,7 +51,7 @@ public class EnumerationContentHandler extends PlainTextContentHandler
             }
 
             BuilderResult result = new BuilderResult();
-            result.lines = errors.toArray( new BuilderResultLine[errors.size()] );
+            result.setLines( errors.toArray( new BuilderResultLine[errors.size()] ) );
 
             return result;
         }
@@ -77,7 +77,7 @@ public class EnumerationContentHandler extends PlainTextContentHandler
             }
 
             BuilderResult result = new BuilderResult();
-            result.lines = errors.toArray( new BuilderResultLine[errors.size()] );
+            result.setLines( errors.toArray( new BuilderResultLine[errors.size()] ) );
 
             return result;
         }

@@ -1504,8 +1504,6 @@ public class ServiceImplementation implements RepositoryService {
         return SelectorManager.getInstance().getCustomSelectors();
     }
 
-    private BuilderResult buildPackage(PackageItem item, boolean force) throws DetailedSerializationException {
-        return buildPackage( item, force, null, null, null, false, null, null, false, null );
     }
 
     private BuilderResult buildPackage(PackageItem item, boolean force, String buildMode, String statusOperator, String statusDescriptionValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String selectorConfigName) throws DetailedSerializationException {
@@ -1516,7 +1514,7 @@ public class ServiceImplementation implements RepositoryService {
         ContentPackageAssembler asm = new ContentPackageAssembler( item, true, buildMode, statusOperator, statusDescriptionValue, enableStatusSelector, categoryOperator, category, enableCategorySelector, selectorConfigName );
         if ( asm.hasErrors() ) {
             BuilderResult result = new BuilderResult();
-            result.lines = generateBuilderResults( asm );
+            result.setLines( generateBuilderResults( asm ) );
             return result;
         }
         try {
@@ -1626,9 +1624,12 @@ public class ServiceImplementation implements RepositoryService {
                     return ((IValidating) handler).validateAsset( item );
                 }
 
-                ContentPackageAssembler asm = new ContentPackageAssembler( item );
-                if ( !asm.hasErrors() ) {
-                    return null;
+                    ContentPackageAssembler asm = new ContentPackageAssembler( item );
+                    if ( !asm.hasErrors() ) {
+                        return null;
+                    } else {
+                        result.setLines( generateBuilderResults( asm ) );
+                    }
                 }
                 result.lines = generateBuilderResults( asm );
 
@@ -1654,8 +1655,8 @@ public class ServiceImplementation implements RepositoryService {
             res.assetFormat = asset.metaData.format;
             res.message = "Unable to validate this asset. (Check log for detailed messages).";
             res.uuid = asset.uuid;
-            result.lines = new BuilderResultLine[1];
-            result.lines[0] = res;
+            result.setLines( new BuilderResultLine[1] );
+            result.getLines()[0] = res;
 
             return result;
 
@@ -1846,8 +1847,8 @@ public class ServiceImplementation implements RepositoryService {
                 BuilderResult res = this.buildPackage( snap.getUUID(), true );
                 if ( res != null ) {
                     StringBuffer buf = new StringBuffer();
-                    for ( int i = 0; i < res.lines.length; i++ ) {
-                        buf.append( res.lines[i].toString() );
+                    for ( int i = 0; i < res.getLines().length; i++ ) {
+                        buf.append( res.getLines()[i].toString() );
                         buf.append( '\n' );
                     }
                     throw new DetailedSerializationException( "Unable to rebuild snapshot [" + snapName, buf.toString() + "]" );
@@ -1964,11 +1965,15 @@ public class ServiceImplementation implements RepositoryService {
                 rb = loadRuleBase( item, buildCl );
                 ServiceImplementation.ruleBaseCache.put( item.getUUID(), rb );
             } else {
-                BuilderResult result = this.buildPackage( item, false );
-                if ( result == null || result.lines.length == 0 ) {
-                    rb = loadRuleBase( item, buildCl );
-                    ServiceImplementation.ruleBaseCache.put( item.getUUID(), rb );
-                } else throw new DetailedSerializationException( "Build error", result.lines );
+                BuilderResult result = this.buildPackage( item,
+                                                          false );
+                if ( result == null || result.getLines().length == 0 ) {
+                    rb = loadRuleBase( item,
+                                       buildCl );
+                    this.ruleBaseCache.put( item.getUUID(),
+                                            rb );
+                } else throw new DetailedSerializationException( "Build error",
+                                                                 result.getLines() );
             }
 
         }
@@ -1985,8 +1990,9 @@ public class ServiceImplementation implements RepositoryService {
             log.error( "Unable to load rule base.", e );
             log.info( "...but trying to rebuild binaries..." );
             try {
-                BuilderResult res = this.buildPackage( item, true );
-                if ( res != null && res.lines.length > 0 ) {
+                BuilderResult res = this.buildPackage( item,
+                                                       true );
+                if ( res != null && res.getLines().length > 0 ) {
                     log.error( "There were errors when rebuilding the knowledgebase." );
                     throw new DetailedSerializationException( "There were errors when rebuilding the knowledgebase.", "" );
                 }
@@ -2285,8 +2291,8 @@ public class ServiceImplementation implements RepositoryService {
                 if ( res != null ) {
                     errs.append( "Unable to build package name [" + pkg.getName() + "]\n" );
                     StringBuffer buf = new StringBuffer();
-                    for ( int i = 0; i < res.lines.length; i++ ) {
-                        buf.append( res.lines[i].toString() );
+                    for ( int i = 0; i < res.getLines().length; i++ ) {
+                        buf.append( res.getLines()[i].toString() );
                         buf.append( '\n' );
                     }
                     log.warn( buf.toString() );

@@ -486,9 +486,9 @@ public class PackageBuilderWidget extends Composite {
                                          final EditItemEvent editEvent) {
         buildResults.clear();
 
-        Object[][] data = new Object[results.lines.length][4];
-        for ( int i = 0; i < results.lines.length; i++ ) {
-            BuilderResultLine res = results.lines[i];
+        Object[][] data = new Object[results.getLines().length][4];
+        for ( int i = 0; i < results.getLines().length; i++ ) {
+            BuilderResultLine res = results.getLines()[i];
             data[i][0] = res.uuid;
             data[i][1] = res.assetName;
             data[i][2] = res.assetFormat;

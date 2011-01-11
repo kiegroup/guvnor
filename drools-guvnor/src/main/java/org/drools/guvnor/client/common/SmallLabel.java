@@ -43,6 +43,8 @@ public class SmallLabel extends HTML {
     public void setText(final String text) {
         setHTML( TEMPLATE.message( new SafeHtml() {
 
+            private static final long serialVersionUID = 510L;
+
             public String asString() {
                 return text;
             }

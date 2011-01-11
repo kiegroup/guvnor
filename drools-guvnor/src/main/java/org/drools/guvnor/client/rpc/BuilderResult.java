@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.client.rpc;
 
-
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -28,8 +26,24 @@ public class BuilderResult
     implements
     IsSerializable {
 
-    public BuilderResultLine[] lines = new BuilderResultLine[0];
-    
-    public AnalysisReport verifierReport;
+    private BuilderResultLine[] lines = new BuilderResultLine[0];
+
+    private AnalysisReport      verifierReport;
+
+    public void setLines(BuilderResultLine[] lines) {
+        this.lines = lines;
+    }
+
+    public BuilderResultLine[] getLines() {
+        return lines;
+    }
+
+    public void setVerifierReport(AnalysisReport verifierReport) {
+        this.verifierReport = verifierReport;
+    }
+
+    public AnalysisReport getVerifierReport() {
+        return verifierReport;
+    }
 
 }
