@@ -2559,29 +2559,9 @@ public class ServiceImplementation
                 AssetItem asset = (AssetItem) it.next();
                 if ( !asset.isArchived() ) {
                     if ( asset.getFormat().equals( AssetFormats.MODEL ) ) {
-                        jis = new JarInputStream( asset.getBinaryContentAttachment() );
-                        JarEntry entry = null;
-                        while ( (entry = jis.getNextJarEntry()) != null ) {
-                            if ( !entry.isDirectory() ) {
-                                if ( entry.getName().endsWith( ".class" ) ) {
-                                    res.add( ModelContentHandler.convertPathToName( entry.getName() ) );
-                                }
-                            }
-                        }
+                        jis = typesForModel( res, asset );
                     } else {
-                        // its delcared model
-                        DrlParser parser = new DrlParser();
-                        try {
-                            PackageDescr desc = parser.parse( asset.getContent() );
-                            List<TypeDeclarationDescr> types = desc.getTypeDeclarations();
-                            for ( TypeDeclarationDescr typeDeclarationDescr : types ) {
-                                res.add( typeDeclarationDescr.getTypeName() );
-                            }
-                        } catch ( DroolsParserException e ) {
-                            log.error( "An error occurred parsing rule: " + e.getMessage() );
-
-                        }
-
+                        typesForOthers( res, asset );
                     }
 
                 }
@@ -2595,6 +2575,35 @@ public class ServiceImplementation
             IOUtils.closeQuietly( jis );
         }
 
+    }
+
+    private void typesForOthers(List<String> res, AssetItem asset) {
+        // its delcared model
+        DrlParser parser = new DrlParser();
+        try {
+            PackageDescr desc = parser.parse( asset.getContent() );
+            List<TypeDeclarationDescr> types = desc.getTypeDeclarations();
+            for ( TypeDeclarationDescr typeDeclarationDescr : types ) {
+                res.add( typeDeclarationDescr.getTypeName() );
+            }
+        } catch ( DroolsParserException e ) {
+            log.error( "An error occurred parsing rule: " + e.getMessage() );
+
+        }
+    }
+
+    private JarInputStream typesForModel(List<String> res, AssetItem asset) throws IOException {
+        JarInputStream jis;
+        jis = new JarInputStream( asset.getBinaryContentAttachment() );
+        JarEntry entry = null;
+        while ( (entry = jis.getNextJarEntry()) != null ) {
+            if ( !entry.isDirectory() ) {
+                if ( entry.getName().endsWith( ".class" ) ) {
+                    res.add( ModelContentHandler.convertPathToName( entry.getName() ) );
+                }
+            }
+        }
+        return jis;
     }
 
     @WebRemote
