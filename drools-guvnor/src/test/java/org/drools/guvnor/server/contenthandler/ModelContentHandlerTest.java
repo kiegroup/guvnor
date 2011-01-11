@@ -27,10 +27,12 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ModelContentHandlerTest {
 
+    @Ignore
     @Test
     public void testModelAttached() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
@@ -49,6 +51,7 @@ public class ModelContentHandlerTest {
         assertTrue( header.indexOf( "package-info.class" ) == -1 );
     }
 
+    @Ignore
     @Test
     public void testModelRemoved() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
@@ -75,10 +78,10 @@ public class ModelContentHandlerTest {
                       header.trim() );
 
     }
-    
+
     @After
     public void tearDown() throws Exception {
-    	TestEnvironmentSessionHelper.shutdown();
+        TestEnvironmentSessionHelper.shutdown();
     }
 
 }

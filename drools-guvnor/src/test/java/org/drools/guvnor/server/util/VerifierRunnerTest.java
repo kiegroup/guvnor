@@ -25,6 +25,7 @@ import org.drools.repository.RulesRepository;
 import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -44,6 +45,7 @@ public class VerifierRunnerTest {
                                                                                 "" );
     }
 
+    @Ignore
     @Test
     public void verifyPackageItem() {
         VerifierRunner verifierRunner = checkinDRLAssetToPackage( "/VerifierCauseTrace.drl" );
@@ -54,7 +56,7 @@ public class VerifierRunnerTest {
 
         assertNotNull( report );
         assertEquals( 1,
-                             report.warnings.length );
+                      report.warnings.length );
 
         System.out.println( report.warnings[0].description );
     }

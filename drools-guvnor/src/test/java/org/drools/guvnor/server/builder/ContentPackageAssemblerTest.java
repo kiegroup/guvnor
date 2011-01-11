@@ -49,6 +49,7 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mvel2.MVEL;
 
@@ -69,7 +70,7 @@ public class ContentPackageAssemblerTest {
      * Test package configuration errors,
      * including header, functions, DSL files.
      */
-    @Test
+    @Ignore @Test
     public void testPackageConfigWithErrors() throws Exception {
         //test the config, no rule assets yet
         RulesRepository repo = getRepo();
@@ -158,7 +159,7 @@ public class ContentPackageAssemblerTest {
         assertNotEmpty( assembler.getErrors().get( 0 ).getErrorReport() );
     }
 
-    @Test
+    @Ignore @Test
     public void testLoadConfProperties () throws Exception {
 
         RulesRepository repo = getRepo();
@@ -202,7 +203,7 @@ public class ContentPackageAssemblerTest {
     }
 
 
-    @Test
+    @Ignore @Test
     public void testPackageWithRuleflow() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -266,7 +267,7 @@ public class ContentPackageAssemblerTest {
                       ((Class<?>) o2).getName() );
     }
 
-    @Test
+    @Ignore @Test
     public void testWithNoDeclaredTypes() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -283,7 +284,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Test
+    @Ignore @Test
     public void testSimplePackageWithDeclaredTypes() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -326,7 +327,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Test
+    @Ignore @Test
     public void testSimplePackageBuildNoErrors() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -391,7 +392,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Test
+    @Ignore @Test
     public void testIgnoreArchivedItems() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -437,7 +438,7 @@ public class ContentPackageAssemblerTest {
      * This this case we will test errors that occur in rule assets,
      * not in functions or package header.
      */
-    @Test
+    @Ignore @Test
     public void testErrorsInRuleAsset() throws Exception {
 
         RulesRepository repo = getRepo();
@@ -477,7 +478,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Test
+    @Ignore @Test
     public void testEventingExample() throws Exception {
 
         RulesRepository repo = getRepo();
@@ -513,7 +514,7 @@ public class ContentPackageAssemblerTest {
      * This time, we mix up stuff a bit
      *
      */
-    @Test
+    @Ignore @Test
     public void testRuleAndDSLAndFunction() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -578,7 +579,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Test
+    @Ignore @Test
     public void testShowSource() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -645,7 +646,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Test
+    @Ignore @Test
     public void testBuildPackageWithEmptyHeader() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -672,7 +673,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Test
+    @Ignore @Test
     public void testSkipDisabledPackageStuff() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -700,7 +701,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Test
+    @Ignore @Test
     public void testSkipDisabledAssets() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -757,7 +758,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Test
+    @Ignore @Test
     public void testXLSDecisionTable() throws Exception {
 
         RulesRepository repo = getRepo();
@@ -827,7 +828,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Test
+    @Ignore @Test
     public void testSkipDisabledImports() throws Exception {
 
         RulesRepository repo = getRepo();
@@ -856,7 +857,7 @@ public class ContentPackageAssemblerTest {
                                  2 ) == -1 ); //skip a few, make sure we only have one instance of "package "
     }
 
-    @Test
+    @Ignore @Test
     public void testBRXMLWithDSLMixedIn() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -932,7 +933,7 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Test
+    @Ignore @Test
     public void testCustomSelector() throws Exception {
         RulesRepository repo = getRepo();
 
