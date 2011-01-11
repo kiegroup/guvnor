@@ -26,6 +26,7 @@ import org.apache.util.Base64;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -43,7 +44,7 @@ import java.util.HashMap;
  */
 public class FeedServletTest {
 
-    @Test
+    @Ignore @Test
     public void testPackageFeed() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
         PackageItem pkg = repo.createPackage("testPackageFeed", "");
@@ -136,7 +137,7 @@ public class FeedServletTest {
         Lifecycle.endApplication();
     }
 
-    @Test
+    @Ignore @Test
     public void testCategoryFeed() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
         PackageItem pkg = repo.createPackage("testCategoryFeed", "");
@@ -213,7 +214,7 @@ public class FeedServletTest {
     }
 
 
-    @Test
+    @Ignore @Test
     public void testDiscussionFeed() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
         PackageItem pkg = repo.createPackage("testDiscussionFeed", "");
