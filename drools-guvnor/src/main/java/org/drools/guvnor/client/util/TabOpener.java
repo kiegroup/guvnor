@@ -121,55 +121,62 @@ public class TabOpener {
             };
             t.schedule( 200 );
 
-            RepositoryServiceFactory.getService().loadRuleAsset( uuid,
-                                                                 new GenericCallback<RuleAsset>() {
-                                                                     public void onSuccess(final RuleAsset a) {
-                                                                         SuggestionCompletionCache.getInstance().doAction( a.metaData.packageName,
-                                                                                                                           new Command() {
-                                                                                                                               public void execute() {
-                                                                                                                                   loading[0] = false;
-                                                                                                                                   EditItemEvent edit = new EditItemEvent() {
-                                                                                                                                       public void open(String key) {
-                                                                                                                                           openAsset( key );
-                                                                                                                                       }
-
-                                                                                                                                       public void open(MultiViewRow[] rows) {
-                                                                                                                                           for ( MultiViewRow row : rows ) {
-                                                                                                                                               openAsset( row.uuid );
-                                                                                                                                           }
-                                                                                                                                       }
-                                                                                                                                   };
-                                                                                                                                   RuleViewer rv = new RuleViewer( a,
-                                                                                                                                                                   edit );
-                                                                                                                                   explorerViewCenterPanel.addTab( a.metaData.name,
-                                                                                                                                                                   rv,
-                                                                                                                                                                   uuid );
-                                                                                                                                   rv.setCloseCommand( new Command() {
-                                                                                                                                       public void execute() {
-                                                                                                                                           explorerViewCenterPanel.close( uuid );
-                                                                                                                                       }
-                                                                                                                                   } );
-
-                                                                                                                                   // When model is saved update the package view if it is opened.
-                                                                                                                                   if ( a.metaData.format.equals( AssetFormats.MODEL ) ) {
-                                                                                                                                       Command command = new Command() {
-                                                                                                                                           public void execute() {
-                                                                                                                                               PackageEditor packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( a.metaData.packageName );
-                                                                                                                                               if ( packageEditor != null ) {
-                                                                                                                                                   packageEditor.reload();
-                                                                                                                                               }
-                                                                                                                                           }
-                                                                                                                                       };
-                                                                                                                                       rv.setCheckedInCommand( command );
-                                                                                                                                       rv.setArchiveCommand( command );
-                                                                                                                                   }
-
-                                                                                                                                   LoadingPopup.close();
-                                                                                                                               }
-                                                                                                                           } );
-                                                                     }
-                                                                 } );
+            loadRuleAsset( uuid, loading );
         }
+    }
+
+    private void loadRuleAsset(final String uuid, final boolean[] loading) {
+        RepositoryServiceFactory.getService().loadRuleAsset( uuid, createGenericCallback( uuid, loading ) );
+    }
+
+    private GenericCallback<RuleAsset> createGenericCallback(final String uuid, final boolean[] loading) {
+        return new GenericCallback<RuleAsset>() {
+            public void onSuccess(final RuleAsset a) {
+                SuggestionCompletionCache.getInstance().doAction( a.metaData.packageName, createCommandForSuggestCompletionCache( uuid, loading, a ) );
+            }
+
+            private Command createCommandForSuggestCompletionCache(final String uuid, final boolean[] loading, final RuleAsset a) {
+                return new Command() {
+                    public void execute() {
+                        loading[0] = false;
+                        EditItemEvent edit = new EditItemEvent() {
+                            public void open(String key) {
+                                openAsset( key );
+                            }
+
+                            public void open(MultiViewRow[] rows) {
+                                for ( MultiViewRow row : rows ) {
+                                    openAsset( row.uuid );
+                                }
+                            }
+                        };
+                        RuleViewer rv = new RuleViewer( a, edit );
+                        explorerViewCenterPanel.addTab( a.metaData.name, rv, uuid );
+                        rv.setCloseCommand( new Command() {
+                            public void execute() {
+                                explorerViewCenterPanel.close( uuid );
+                            }
+                        } );
+
+                        // When model is saved update the package view if it is opened.
+                        if ( a.metaData.format.equals( AssetFormats.MODEL ) ) {
+                            Command command = new Command() {
+                                public void execute() {
+                                    PackageEditor packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( a.metaData.packageName );
+                                    if ( packageEditor != null ) {
+                                        packageEditor.reload();
+                                    }
+                                }
+                            };
+                            rv.setCheckedInCommand( command );
+                            rv.setArchiveCommand( command );
+                        }
+
+                        LoadingPopup.close();
+                    }
+                };
+            }
+        };
     }
 
     public void openAssetsToMultiView(MultiViewRow[] rows) {
@@ -189,25 +196,22 @@ public class TabOpener {
         }
 
         if ( blockingAssetName != null ) {
-            FormStylePopup popup = new FormStylePopup( images.information(),
-                                                       Format.format( constants.Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview(),
-                                                                      blockingAssetName ) );
+            FormStylePopup popup = new FormStylePopup( images.information(), Format.format( constants.Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview(), blockingAssetName ) );
             popup.show();
             return;
         }
 
-        MultiViewEditor multiview = new MultiViewEditor( rows,
-                                                         new EditItemEvent() {
-                                                             public void open(String key) {
-                                                                 openAsset( key );
-                                                             }
+        MultiViewEditor multiview = new MultiViewEditor( rows, new EditItemEvent() {
+            public void open(String key) {
+                openAsset( key );
+            }
 
-                                                             public void open(MultiViewRow[] rows) {
-                                                                 for ( MultiViewRow row : rows ) {
-                                                                     openAsset( row.uuid );
-                                                                 }
-                                                             }
-                                                         } );
+            public void open(MultiViewRow[] rows) {
+                for ( MultiViewRow row : rows ) {
+                    openAsset( row.uuid );
+                }
+            }
+        } );
 
         multiview.setCloseCommand( new Command() {
             public void execute() {
@@ -215,65 +219,54 @@ public class TabOpener {
             }
         } );
 
-        explorerViewCenterPanel.addTab( Arrays.toString( names ),
-                                        multiview,
-                                        uuids );
+        explorerViewCenterPanel.addTab( Arrays.toString( names ), multiview, uuids );
 
     }
 
     /**
      * Open a package editor if it is not already open.
      */
-    public void openPackageEditor(final String uuid,
-                                  final Command refPackageList) {
+    public void openPackageEditor(final String uuid, final Command refPackageList) {
 
         if ( !explorerViewCenterPanel.showIfOpen( uuid ) ) {
             LoadingPopup.showMessage( constants.LoadingPackageInformation() );
-            RepositoryServiceFactory.getService().loadPackageConfig( uuid,
-                                                                     new GenericCallback<PackageConfigData>() {
-                                                                         public void onSuccess(PackageConfigData conf) {
-                                                                             PackageEditor ed = new PackageEditor( conf,
-                                                                                                                   new Command() {
-                                                                                                                       public void execute() {
-                                                                                                                           explorerViewCenterPanel.close( uuid );
-                                                                                                                       }
-                                                                                                                   },
-                                                                                                                   refPackageList,
-                                                                                                                   new EditItemEvent() {
-                                                                                                                       public void open(String uuid) {
-                                                                                                                           openAsset( uuid );
-                                                                                                                       }
+            RepositoryServiceFactory.getService().loadPackageConfig( uuid, new GenericCallback<PackageConfigData>() {
+                public void onSuccess(PackageConfigData conf) {
+                    PackageEditor ed = new PackageEditor( conf, new Command() {
+                        public void execute() {
+                            explorerViewCenterPanel.close( uuid );
+                        }
+                    }, refPackageList, new EditItemEvent() {
+                        public void open(String uuid) {
+                            openAsset( uuid );
+                        }
 
-                                                                                                                       public void open(MultiViewRow[] rows) {
-                                                                                                                           for ( MultiViewRow row : rows ) {
-                                                                                                                               openAsset( row.uuid );
-                                                                                                                           }
-                                                                                                                       }
-                                                                                                                   } );
-                                                                             explorerViewCenterPanel.addTab( conf.name,
-                                                                                                             ed,
-                                                                                                             conf.uuid );
-                                                                             LoadingPopup.close();
-                                                                         }
-                                                                     } );
+                        public void open(MultiViewRow[] rows) {
+                            for ( MultiViewRow row : rows ) {
+                                openAsset( row.uuid );
+                            }
+                        }
+                    } );
+                    explorerViewCenterPanel.addTab( conf.name, ed, conf.uuid );
+                    LoadingPopup.close();
+                }
+            } );
         }
     }
 
     public void openFind() {
         if ( !explorerViewCenterPanel.showIfOpen( "FIND" ) ) { //NON-NLS
-            explorerViewCenterPanel.addTab( constants.Find(),
-                                            new QueryWidget( new EditItemEvent() {
-                                                public void open(String uuid) {
-                                                    openAsset( uuid );
-                                                }
+            explorerViewCenterPanel.addTab( constants.Find(), new QueryWidget( new EditItemEvent() {
+                public void open(String uuid) {
+                    openAsset( uuid );
+                }
 
-                                                public void open(MultiViewRow[] rows) {
-                                                    for ( MultiViewRow row : rows ) {
-                                                        openAsset( row.uuid );
-                                                    }
-                                                }
-                                            } ),
-                                            "FIND" ); //NON-NLS
+                public void open(MultiViewRow[] rows) {
+                    for ( MultiViewRow row : rows ) {
+                        openAsset( row.uuid );
+                    }
+                }
+            } ), "FIND" ); //NON-NLS
 
         }
     }
@@ -281,22 +274,16 @@ public class TabOpener {
     public void openSnapshot(final SnapshotInfo snap) {
         if ( !explorerViewCenterPanel.showIfOpen( snap.name + snap.uuid ) ) {
             LoadingPopup.showMessage( constants.LoadingSnapshot() );
-            RepositoryServiceFactory.getService().loadPackageConfig( snap.uuid,
-                                                                     new GenericCallback<PackageConfigData>() {
-                                                                         public void onSuccess(PackageConfigData conf) {
-                                                                             explorerViewCenterPanel.addTab( Format.format( constants.SnapshotLabel(),
-                                                                                                                            snap.name ),
-                                                                                                             new SnapshotView( snap,
-                                                                                                                               conf,
-                                                                                                                               new Command() {
-                                                                                                                                   public void execute() {
-                                                                                                                                       explorerViewCenterPanel.close( snap.name + snap.uuid );
-                                                                                                                                   }
-                                                                                                                               } ),
-                                                                                                             snap.name + snap.uuid );
-                                                                             LoadingPopup.close();
-                                                                         }
-                                                                     } );
+            RepositoryServiceFactory.getService().loadPackageConfig( snap.uuid, new GenericCallback<PackageConfigData>() {
+                public void onSuccess(PackageConfigData conf) {
+                    explorerViewCenterPanel.addTab( Format.format( constants.SnapshotLabel(), snap.name ), new SnapshotView( snap, conf, new Command() {
+                        public void execute() {
+                            explorerViewCenterPanel.close( snap.name + snap.uuid );
+                        }
+                    } ), snap.name + snap.uuid );
+                    LoadingPopup.close();
+                }
+            } );
 
         }
     }
@@ -306,46 +293,34 @@ public class TabOpener {
         switch ( id ) {
             case 0 :
                 if ( !explorerViewCenterPanel.showIfOpen( CATMAN ) ) {
-                    explorerViewCenterPanel.addTab( constants.CategoryManager(),
-                                                    new CategoryManager(),
-                                                    CATMAN );
+                    explorerViewCenterPanel.addTab( constants.CategoryManager(), new CategoryManager(), CATMAN );
                 }
                 break;
             case 1 :
                 if ( !explorerViewCenterPanel.showIfOpen( ARCHMAN ) ) {
-                    explorerViewCenterPanel.addTab( constants.ArchivedManager(),
-                                                    new ArchivedAssetManager(),
-                                                    ARCHMAN );
+                    explorerViewCenterPanel.addTab( constants.ArchivedManager(), new ArchivedAssetManager(), ARCHMAN );
                 }
                 break;
 
             case 2 :
                 if ( !explorerViewCenterPanel.showIfOpen( STATEMAN ) ) {
-                    explorerViewCenterPanel.addTab( constants.StateManager(),
-                                                    new StateManager(),
-                                                    STATEMAN );
+                    explorerViewCenterPanel.addTab( constants.StateManager(), new StateManager(), STATEMAN );
                 }
                 break;
             case 3 :
                 if ( !explorerViewCenterPanel.showIfOpen( BAKMAN ) ) {
-                    explorerViewCenterPanel.addTab( constants.ImportExport(),
-                                                    new BackupManager(),
-                                                    BAKMAN );
+                    explorerViewCenterPanel.addTab( constants.ImportExport(), new BackupManager(), BAKMAN );
                 }
                 break;
 
             case 4 :
                 if ( !explorerViewCenterPanel.showIfOpen( ERROR_LOG ) ) {
-                    explorerViewCenterPanel.addTab( constants.EventLog(),
-                                                    new LogViewer(),
-                                                    ERROR_LOG );
+                    explorerViewCenterPanel.addTab( constants.EventLog(), new LogViewer(), ERROR_LOG );
                 }
                 break;
             case 5 :
                 if ( !explorerViewCenterPanel.showIfOpen( SECURITY_PERMISSIONS ) ) {
-                    explorerViewCenterPanel.addTab( constants.UserPermissionMappings(),
-                                                    new PermissionViewer(),
-                                                    SECURITY_PERMISSIONS );
+                    explorerViewCenterPanel.addTab( constants.UserPermissionMappings(), new PermissionViewer(), SECURITY_PERMISSIONS );
                 }
                 break;
             case 6 :
@@ -355,25 +330,18 @@ public class TabOpener {
                 aboutPop.setWidth( 600 + "px" );
                 aboutPop.setTitle( constants.About() );
                 String hhurl = GWT.getModuleBaseURL() + "webdav";
-                aboutPop.addAttribute( constants.WebDAVURL() + ":",
-                                       new SmallLabel( "<b>" + hhurl + "</b>" ) );
-                aboutPop.addAttribute( constants.Version() + ":",
-                                       aboutInfoFrame );
+                aboutPop.addAttribute( constants.WebDAVURL() + ":", new SmallLabel( "<b>" + hhurl + "</b>" ) );
+                aboutPop.addAttribute( constants.Version() + ":", aboutInfoFrame );
                 aboutPop.show();
                 break;
 
             case 7 :
                 if ( !explorerViewCenterPanel.showIfOpen( RULE_VERIFIER_MANAGER ) ) {
-                    explorerViewCenterPanel.addTab( constants.RulesVerificationManager(),
-                                                    new RuleVerifierManager(),
-                                                    RULE_VERIFIER_MANAGER );
+                    explorerViewCenterPanel.addTab( constants.RulesVerificationManager(), new RuleVerifierManager(), RULE_VERIFIER_MANAGER );
                 }
                 break;
             case 8 :
-                if ( !explorerViewCenterPanel.showIfOpen( REPOCONFIG ) ) 
-                explorerViewCenterPanel.addTab( constants.RepositoryConfig(),
-                                                new RepoConfigManager(),
-                                                REPOCONFIG );
+                if ( !explorerViewCenterPanel.showIfOpen( REPOCONFIG ) ) explorerViewCenterPanel.addTab( constants.RepositoryConfig(), new RepoConfigManager(), REPOCONFIG );
                 break;
         }
 
@@ -382,47 +350,29 @@ public class TabOpener {
     /**
      * Show the inbox of the given name.
      */
-    public void openInbox(String title,
-                          final String widgetID) {
+    public void openInbox(String title, final String widgetID) {
         if ( !explorerViewCenterPanel.showIfOpen( widgetID ) ) {
-            AssetItemGrid g = new AssetItemGrid( createEditEvent(),
-                                                 widgetID,
-                                                 new AssetItemGridDataLoader() {
-                                                     public void loadData(int startRow,
-                                                                          int numberOfRows,
-                                                                          GenericCallback<TableDataResult> cb) {
-                                                         RepositoryServiceFactory.getService().loadInbox( widgetID,
-                                                                                                          cb );
-                                                     }
-                                                 } );
-            explorerViewCenterPanel.addTab( title,
-                                            g,
-                                            widgetID );
+            AssetItemGrid g = new AssetItemGrid( createEditEvent(), widgetID, new AssetItemGridDataLoader() {
+                public void loadData(int startRow, int numberOfRows, GenericCallback<TableDataResult> cb) {
+                    RepositoryServiceFactory.getService().loadInbox( widgetID, cb );
+                }
+            } );
+            explorerViewCenterPanel.addTab( title, g, widgetID );
         }
     }
 
     /**
      * open a state or category !
      */
-    public void openState(String title,
-                          String widgetID) {
+    public void openState(String title, String widgetID) {
         if ( !explorerViewCenterPanel.showIfOpen( widgetID ) ) {
             final String stateName = widgetID.substring( widgetID.indexOf( "-" ) + 1 );
-            final AssetItemGrid grid = new AssetItemGrid( createEditEvent(),
-                                                          AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                          new AssetItemGridDataLoader() {
-                                                              public void loadData(int skip,
-                                                                                   int numberOfRows,
-                                                                                   GenericCallback<TableDataResult> cb) {
-                                                                  RepositoryServiceFactory.getService().loadRuleListForState( stateName,
-                                                                                                                              skip,
-                                                                                                                              numberOfRows,
-                                                                                                                              AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                                                                                              cb );
+            final AssetItemGrid grid = new AssetItemGrid( createEditEvent(), AssetItemGrid.RULE_LIST_TABLE_ID, new AssetItemGridDataLoader() {
+                public void loadData(int skip, int numberOfRows, GenericCallback<TableDataResult> cb) {
+                    RepositoryServiceFactory.getService().loadRuleListForState( stateName, skip, numberOfRows, AssetItemGrid.RULE_LIST_TABLE_ID, cb );
 
-                                                              }
-                                                          },
-                                                          null );
+                }
+            }, null );
             final ServerPushNotification push = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
                     if ( response.messageType.equals( "statusChange" ) && (response.message).equals( stateName ) ) {
@@ -437,33 +387,21 @@ public class TabOpener {
                 }
             } );
 
-            explorerViewCenterPanel.addTab( constants.Status() + title,
-                                            grid,
-                                            widgetID );
+            explorerViewCenterPanel.addTab( constants.Status() + title, grid, widgetID );
         }
     }
 
     /**
      * open a category 
      */
-    public void openCategory(String title,
-                             String widgetID) {
+    public void openCategory(String title, String widgetID) {
         if ( !explorerViewCenterPanel.showIfOpen( widgetID ) ) {
             final String categoryName = widgetID.substring( widgetID.indexOf( "-" ) + 1 );
-            final AssetItemGrid grid = new AssetItemGrid( createEditEvent(),
-                                                          AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                          new AssetItemGridDataLoader() {
-                                                              public void loadData(int skip,
-                                                                                   int numberOfRows,
-                                                                                   GenericCallback<TableDataResult> cb) {
-                                                                  RepositoryServiceFactory.getService().loadRuleListForCategories( categoryName,
-                                                                                                                                   skip,
-                                                                                                                                   numberOfRows,
-                                                                                                                                   AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                                                                                                   cb );
-                                                              }
-                                                          },
-                                                          GWT.getModuleBaseURL() + "feed/category?name=" + categoryName + "&viewUrl=" + Util.getSelfURL() );
+            final AssetItemGrid grid = new AssetItemGrid( createEditEvent(), AssetItemGrid.RULE_LIST_TABLE_ID, new AssetItemGridDataLoader() {
+                public void loadData(int skip, int numberOfRows, GenericCallback<TableDataResult> cb) {
+                    RepositoryServiceFactory.getService().loadRuleListForCategories( categoryName, skip, numberOfRows, AssetItemGrid.RULE_LIST_TABLE_ID, cb );
+                }
+            }, GWT.getModuleBaseURL() + "feed/category?name=" + categoryName + "&viewUrl=" + Util.getSelfURL() );
             final ServerPushNotification push = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
                     if ( response.messageType.equals( "categoryChange" ) && response.message.equals( categoryName ) ) {
@@ -478,9 +416,7 @@ public class TabOpener {
                 }
             } );
 
-            explorerViewCenterPanel.addTab( (constants.CategoryColon()) + title,
-                                            grid,
-                                            widgetID );
+            explorerViewCenterPanel.addTab( (constants.CategoryColon()) + title, grid, widgetID );
         }
     }
 
@@ -498,29 +434,20 @@ public class TabOpener {
         };
     }
 
-    public void openPackageViewAssets(final String packageUuid,
-                                      final String packageName,
-                                      String key,
-                                      final List<String> formatInList, Boolean formatIsRegistered,
-                                      final String itemName) {
+    public void openPackageViewAssets(final String packageUuid, final String packageName, String key, final List<String> formatInList, Boolean formatIsRegistered, final String itemName) {
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
 
             String feedUrl = GWT.getModuleBaseURL() + "feed/package?name=" + packageName + "&viewUrl=" + Util.getSelfURL() + "&status=*";
-            final AssetTable table = new AssetTable( packageUuid,
-                                                     formatInList, formatIsRegistered,
-                                                     new EditItemEvent() {
-                                                         public void open(String uuid) {
-                                                             openAsset( uuid );
-                                                         }
+            final AssetTable table = new AssetTable( packageUuid, formatInList, formatIsRegistered, new EditItemEvent() {
+                public void open(String uuid) {
+                    openAsset( uuid );
+                }
 
-                                                         public void open(MultiViewRow[] rows) {
-                                                             openAssetsToMultiView( rows );
-                                                         }
-                                                     },
-                                                     feedUrl );
-            explorerViewCenterPanel.addTab( itemName + " [" + packageName + "]",
-                                            table,
-                                            key );
+                public void open(MultiViewRow[] rows) {
+                    openAssetsToMultiView( rows );
+                }
+            }, feedUrl );
+            explorerViewCenterPanel.addTab( itemName + " [" + packageName + "]", table, key );
 
             final ServerPushNotification sub = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
@@ -538,8 +465,7 @@ public class TabOpener {
         }
     }
 
-    public void openTestScenario(String packageUuid,
-                                 String packageName) {
+    public void openTestScenario(String packageUuid, String packageName) {
 
         if ( !explorerViewCenterPanel.showIfOpen( "scenarios" + packageUuid ) ) {
             final EditItemEvent edit = new EditItemEvent() {
@@ -554,19 +480,12 @@ public class TabOpener {
                 }
             };
 
-            String m = Format.format( constants.ScenariosForPackage(),
-                                      packageName );
-            explorerViewCenterPanel.addTab( m,
-                                            new ScenarioPackageView( packageUuid,
-                                                                     packageName,
-                                                                     edit,
-                                                                     explorerViewCenterPanel ),
-                                            "scenarios" + packageUuid );
+            String m = Format.format( constants.ScenariosForPackage(), packageName );
+            explorerViewCenterPanel.addTab( m, new ScenarioPackageView( packageUuid, packageName, edit, explorerViewCenterPanel ), "scenarios" + packageUuid );
         }
     }
 
-    public void openVerifierView(String packageUuid,
-                                 String packageName) {
+    public void openVerifierView(String packageUuid, String packageName) {
         if ( !explorerViewCenterPanel.showIfOpen( "analysis" + packageUuid ) ) { //NON-NLS
             final EditItemEvent edit = new EditItemEvent() {
                 public void open(String key) {
@@ -580,52 +499,33 @@ public class TabOpener {
                 }
             };
 
-            String m = Format.format( constants.AnalysisForPackage(),
-                                      packageName );
-            explorerViewCenterPanel.addTab( m,
-                                            new AnalysisView( packageUuid,
-                                                              packageName,
-                                                              edit ),
-                                            "analysis" + packageUuid );
+            String m = Format.format( constants.AnalysisForPackage(), packageName );
+            explorerViewCenterPanel.addTab( m, new AnalysisView( packageUuid, packageName, edit ), "analysis" + packageUuid );
         }
     }
 
-    public void openSnapshotAssetList(final String name,
-                                      final String uuid,
-                                      final String[] assetTypes,
-                                      String key) {
+    public void openSnapshotAssetList(final String name, final String uuid, final String[] assetTypes, String key) {
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
             AssetItemGrid grid = new AssetItemGrid( new EditItemEvent() {
-                                                        public void open(String key) {
-                                                            openAsset( key );
-                                                        }
+                public void open(String key) {
+                    openAsset( key );
+                }
 
-                                                        public void open(MultiViewRow[] rows) {
-                                                            for ( MultiViewRow row : rows ) {
-                                                                openAsset( row.uuid );
-                                                            }
-                                                        }
-                                                    },
-                                                    AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                    new AssetItemGridDataLoader() {
-                                                        public void loadData(int startRow,
-                                                                             int numberOfRows,
-                                                                             GenericCallback<TableDataResult> cb) {
-                                                            RepositoryServiceFactory.getService().listAssets( uuid,
-                                                                                                              assetTypes,
-                                                                                                              startRow,
-                                                                                                              numberOfRows,
-                                                                                                              AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                                                                              cb );
-                                                        }
-                                                    } );
+                public void open(MultiViewRow[] rows) {
+                    for ( MultiViewRow row : rows ) {
+                        openAsset( row.uuid );
+                    }
+                }
+            }, AssetItemGrid.RULE_LIST_TABLE_ID, new AssetItemGridDataLoader() {
+                public void loadData(int startRow, int numberOfRows, GenericCallback<TableDataResult> cb) {
+                    RepositoryServiceFactory.getService().listAssets( uuid, assetTypes, startRow, numberOfRows, AssetItemGrid.RULE_LIST_TABLE_ID, cb );
+                }
+            } );
 
             VerticalPanel vp = new VerticalPanel();
             vp.add( new HTML( "<i><small>" + constants.SnapshotListingFor() + name + "</small></i>" ) );
             vp.add( grid );
-            explorerViewCenterPanel.addTab( constants.SnapshotItems(),
-                                            vp,
-                                            key );
+            explorerViewCenterPanel.addTab( constants.SnapshotItems(), vp, key );
         }
     }
 
