@@ -243,31 +243,43 @@ public class ExplorerNodeConfig {
         return new GenericCallback<String[]>() {
             public void onSuccess(String[] value) {
                 if ( value.length == 0 ) {
-                    if ( path.equals( "/" ) && CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_ADMIN ) ) {
-                        RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
-                            public void onSuccess(PackageConfigData[] result) {
-                                if ( result.length == 1 ) {
-                                    doNewRepoDialog();
-                                }
-                            }
-                        } );
-                    }
+                    newRepoDialogIfShowAdminAndPathMatches( path );
                     infanticide( treeItem );
                 } else {
-                    for ( int i = 0; i < value.length; i++ ) {
-
-                        final String current = value[i];
-                        final TreeItem childNode = new TreeItem( Util.getHeader( images.categorySmall(), current ) );
-
-                        //ID for category tabs. 
-                        String widgetId = CATEGORY_ID + "-" + ((path.equals( "/" )) ? current : path + "/" + current);
-                        itemWidgets.put( childNode, widgetId );
-                        treeItem.addItem( childNode );
-
-                        childNode.addItem( new TreeItem( Util.getHeader( images.categorySmall(), constants.PleaseWaitDotDotDot() ) ) );
-                        childNode.getTree().addOpenHandler( createOpenHandlerForTree( itemWidgets, childNode ) );
-                    }
+                    createChildNodes( treeItem, path, itemWidgets, value );
                 }
+            }
+
+            private void createChildNodes(final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets, String[] value) {
+                for ( int i = 0; i < value.length; i++ ) {
+
+                    final String current = value[i];
+                    final TreeItem childNode = new TreeItem( Util.getHeader( images.categorySmall(), current ) );
+
+                    //ID for category tabs. 
+                    String widgetId = CATEGORY_ID + "-" + ((path.equals( "/" )) ? current : path + "/" + current);
+                    itemWidgets.put( childNode, widgetId );
+                    treeItem.addItem( childNode );
+
+                    childNode.addItem( new TreeItem( Util.getHeader( images.categorySmall(), constants.PleaseWaitDotDotDot() ) ) );
+                    childNode.getTree().addOpenHandler( createOpenHandlerForTree( itemWidgets, childNode ) );
+                }
+            }
+
+            private void newRepoDialogIfShowAdminAndPathMatches(final String path) {
+                if ( path.equals( "/" ) && CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_ADMIN ) ) {
+                    RepositoryServiceFactory.getService().listPackages( createGenericCallbackForListPackages() );
+                }
+            }
+
+            private GenericCallback<PackageConfigData[]> createGenericCallbackForListPackages() {
+                return new GenericCallback<PackageConfigData[]>() {
+                    public void onSuccess(PackageConfigData[] result) {
+                        if ( result.length == 1 ) {
+                            doNewRepoDialog();
+                        }
+                    }
+                };
             }
 
             private OpenHandler<TreeItem> createOpenHandlerForTree(final Map<TreeItem, String> itemWidgets, final TreeItem childNode) {
