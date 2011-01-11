@@ -56,16 +56,11 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
     private FactPatternWidget          factPatternWidget;
     private ExpressionBuilder          expressionBuilder;
 
-    public FromCompositeFactPatternWidget(RuleModeller modeller,
-                                          FromCompositeFactPattern pattern) {
-        this( modeller,
-              pattern,
-              null );
+    public FromCompositeFactPatternWidget(RuleModeller modeller, FromCompositeFactPattern pattern) {
+        this( modeller, pattern, null );
     }
 
-    public FromCompositeFactPatternWidget(RuleModeller modeller,
-                                          FromCompositeFactPattern pattern,
-                                          Boolean readOnly) {
+    public FromCompositeFactPatternWidget(RuleModeller modeller, FromCompositeFactPattern pattern, Boolean readOnly) {
         super( modeller );
         this.pattern = pattern;
 
@@ -88,54 +83,45 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected void doLayout() {
 
-        int r = 0;
-
         if ( pattern.getFactPattern() != null ) {
             FactPattern fact = pattern.getFactPattern();
             if ( fact != null ) {
-
-                if ( this.readOnly ) {
-                    //creates a new read-only FactPatternWidget
-                    this.factPatternWidget = new FactPatternWidget( this.getModeller(),
-                                                                    fact,
-                                                                    false,
-                                                                    true );
-                    this.layout.setWidget( r,
-                                           0,
-                                           factPatternWidget );
-                } else {
-                    this.factPatternWidget = new FactPatternWidget( this.getModeller(),
-                                                                    fact,
-                                                                    true,
-                                                                    false );
-                    this.factPatternWidget.addOnModifiedCommand( new Command() {
-                        public void execute() {
-                            setModified( true );
-                        }
-                    } );
-                    this.layout.setWidget( r,
-                                           0,
-                                           addRemoveButton( factPatternWidget,
-                                                            new ClickHandler() {
-
-                                                                public void onClick(ClickEvent event) {
-                                                                    if ( Window.confirm( constants.RemoveThisEntireConditionQ() ) ) {
-                                                                        setModified( true );
-                                                                        pattern.setFactPattern( null );
-                                                                        getModeller().refreshWidget();
-                                                                    }
-
-                                                                }
-                                                            } ) );
-                }
-                r++;
+                createFactPatternWidget( fact );
             }
         }
 
-        this.layout.setWidget( r,
-                               0,
-                               getCompositeLabel() );
+        this.layout.setWidget( 0, 0, getCompositeLabel() );
 
+    }
+
+    private void createFactPatternWidget(FactPattern fact) {
+        if ( this.readOnly ) {
+            //creates a new read-only FactPatternWidget
+            this.factPatternWidget = new FactPatternWidget( this.getModeller(), fact, false, true );
+            this.layout.setWidget( 0, 0, factPatternWidget );
+        } else {
+            this.factPatternWidget = new FactPatternWidget( this.getModeller(), fact, true, false );
+            this.factPatternWidget.addOnModifiedCommand( new Command() {
+                public void execute() {
+                    setModified( true );
+                }
+            } );
+            this.layout.setWidget( 0, 0, addRemoveButton( factPatternWidget, createClickHandlerForAddRemoveButton() ) );
+        }
+    }
+
+    private ClickHandler createClickHandlerForAddRemoveButton() {
+        return new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                if ( Window.confirm( constants.RemoveThisEntireConditionQ() ) ) {
+                    setModified( true );
+                    pattern.setFactPattern( null );
+                    getModeller().refreshWidget();
+                }
+
+            }
+        };
     }
 
     protected Widget getCompositeLabel() {
@@ -155,28 +141,18 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         int r = 0;
 
         if ( pattern.getFactPattern() == null ) {
-            panel.setWidget( r,
-                             0,
-                             new ClickableLabel( "<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>",
-                                                 click,
-                                                 !this.readOnly ) );
+            panel.setWidget( r, 0, new ClickableLabel( "<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>", click, !this.readOnly ) );
             r++;
         }
 
-        panel.setWidget( r,
-                         0,
-                         new HTML( lbl ) );
-        this.expressionBuilder = new ExpressionBuilder( this.getModeller(),
-                                                        this.pattern.getExpression(),
-                                                        this.readOnly );
+        panel.setWidget( r, 0, new HTML( lbl ) );
+        this.expressionBuilder = new ExpressionBuilder( this.getModeller(), this.pattern.getExpression(), this.readOnly );
         this.expressionBuilder.addOnModifiedCommand( new Command() {
             public void execute() {
                 setModified( true );
             }
         } );
-        panel.setWidget( r,
-                         1,
-                         this.expressionBuilder );
+        panel.setWidget( r, 1, this.expressionBuilder );
 
         return panel;
     }
@@ -198,8 +174,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
         final FormStylePopup popup = new FormStylePopup();
         popup.setTitle( constants.NewFactPattern() );
-        popup.addAttribute( constants.chooseFactType(),
-                            box );
+        popup.addAttribute( constants.chooseFactType(), box );
         box.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
@@ -213,8 +188,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         popup.show();
     }
 
-    protected Widget addRemoveButton(Widget w,
-                                     ClickHandler listener) {
+    protected Widget addRemoveButton(Widget w, ClickHandler listener) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
         final Image remove = new ImageButton( images.deleteItemSmall() );
