@@ -29,6 +29,7 @@ import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -660,6 +661,7 @@ public class WebDAVImplTest {
         }
     }
 
+    @Ignore
     @Test
     public void testThreadLocal() throws Exception {
         Thread t = new Thread( new Runnable() {
