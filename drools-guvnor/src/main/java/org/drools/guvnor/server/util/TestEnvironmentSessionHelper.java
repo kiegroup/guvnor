@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -105,9 +105,13 @@ public class TestEnvironmentSessionHelper {
                                                         "password".toCharArray() ) );
     }
 
-    public static synchronized void shutdown() throws RepositoryException {
-        RulesRepositoryConfigurator.getInstance( null ).shutdown();
-
+    public static synchronized void shutdown() {
+        try {
+            RulesRepositoryConfigurator.getInstance( null ).shutdown();
+        } catch ( Exception exception ) {
+            System.err.println( "Could not shut down repository." );
+            exception.printStackTrace();
+        }
         repository = null;
     }
 
