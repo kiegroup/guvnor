@@ -384,76 +384,91 @@ public class PermissionViewer extends Composite {
                     }
                 } );
 
-                permTypeBox.addChangeHandler( new ChangeHandler() {
+                permTypeBox.addChangeHandler( createChangeHandlerForPermTypeBox( perms, vp, pop, permTypeBox ) );
 
+                pop.show();
+            }
+
+            private ChangeHandler createChangeHandlerForPermTypeBox(final Map<String, List<String>> perms, final Panel vp, final FormStylePopup pop, final ListBox permTypeBox) {
+                return new ChangeHandler() {
                     public void onChange(ChangeEvent event) {
                         pop.clear();
                         final String sel = permTypeBox.getItemText( permTypeBox.getSelectedIndex() );
                         if ( sel.equals( "admin" ) ) { //NON-NLS
-                            HorizontalPanel hp = new HorizontalPanel();
-                            com.google.gwt.user.client.ui.Button ok = new com.google.gwt.user.client.ui.Button( constants.OK() );
-
-                            pop.addAttribute( constants.MakeThisUserAdmin(), ok );
-                            ok.addClickHandler( new ClickHandler() {
-                                public void onClick(ClickEvent w) {
-                                    perms.put( "admin", new ArrayList<String>() ); //NON-NLS
-
-                                    doPermsPanel( perms, vp );
-                                    pop.hide();
-                                }
-                            } );
-                            com.google.gwt.user.client.ui.Button cancel = new com.google.gwt.user.client.ui.Button( constants.Cancel() );
-
-                            pop.addAttribute( "", cancel );
-                            cancel.addClickHandler( new ClickHandler() {
-                                public void onClick(ClickEvent w) {
-                                    pop.hide();
-                                }
-                            } );
+                            createButtonsAndHandlersForAdmin( perms, vp, pop );
                         } else if ( sel.startsWith( "analyst" ) ) { //NON-NLS
-                            CategoryExplorerWidget cat = new CategoryExplorerWidget( new CategorySelectHandler() {
-                                public void selected(String selectedPath) {
-                                    if ( perms.containsKey( sel ) ) {
-                                        perms.get( sel ).add( "category=" + selectedPath ); //NON-NLS
-                                    } else {
-                                        List<String> ls = new ArrayList<String>();
-                                        ls.add( "category=" + selectedPath ); //NON-NLS
-                                        perms.put( sel, ls );
-                                    }
-                                    doPermsPanel( perms, vp );
-                                    pop.hide();
-                                }
-                            } );
+                            CategoryExplorerWidget cat = createCategoryExplorerWidget( perms, vp, pop, sel );
                             pop.addAttribute( constants.SelectCategoryToProvidePermissionFor(), cat );
                         } else if ( sel.startsWith( "package" ) ) {
-                            final RulePackageSelector rps = new RulePackageSelector( true );
-                            com.google.gwt.user.client.ui.Button ok = new com.google.gwt.user.client.ui.Button( constants.OK() );
-                            ok.addClickHandler( new ClickHandler() {
-                                public void onClick(ClickEvent w) {
-                                    String pkName = rps.getSelectedPackage();
-                                    if ( perms.containsKey( sel ) ) {
-                                        perms.get( sel ).add( "package=" + pkName ); //NON-NLS
-                                    } else {
-                                        List<String> ls = new ArrayList<String>();
-                                        ls.add( "package=" + pkName ); //NON-NLS
-                                        perms.put( sel, ls );
-                                    }
-
-                                    doPermsPanel( perms, vp );
-                                    pop.hide();
-
-                                }
-                            } );
-
-                            HorizontalPanel hp = new HorizontalPanel();
-                            hp.add( rps );
-                            hp.add( ok );
-                            pop.addAttribute( constants.SelectPackageToApplyPermissionTo(), hp );
+                            createButtonsPanelsAndHandlersForPackage( perms, vp, pop, sel );
                         }
                     }
-                } );
 
-                pop.show();
+                    private void createButtonsPanelsAndHandlersForPackage(final Map<String, List<String>> perms, final Panel vp, final FormStylePopup pop, final String sel) {
+                        final RulePackageSelector rps = new RulePackageSelector( true );
+                        com.google.gwt.user.client.ui.Button ok = new com.google.gwt.user.client.ui.Button( constants.OK() );
+                        ok.addClickHandler( new ClickHandler() {
+                            public void onClick(ClickEvent w) {
+                                String pkName = rps.getSelectedPackage();
+                                if ( perms.containsKey( sel ) ) {
+                                    perms.get( sel ).add( "package=" + pkName ); //NON-NLS
+                                } else {
+                                    List<String> ls = new ArrayList<String>();
+                                    ls.add( "package=" + pkName ); //NON-NLS
+                                    perms.put( sel, ls );
+                                }
+
+                                doPermsPanel( perms, vp );
+                                pop.hide();
+
+                            }
+                        } );
+
+                        HorizontalPanel hp = new HorizontalPanel();
+                        hp.add( rps );
+                        hp.add( ok );
+                        pop.addAttribute( constants.SelectPackageToApplyPermissionTo(), hp );
+                    }
+
+                    private CategoryExplorerWidget createCategoryExplorerWidget(final Map<String, List<String>> perms, final Panel vp, final FormStylePopup pop, final String sel) {
+                        CategoryExplorerWidget cat = new CategoryExplorerWidget( new CategorySelectHandler() {
+                            public void selected(String selectedPath) {
+                                if ( perms.containsKey( sel ) ) {
+                                    perms.get( sel ).add( "category=" + selectedPath ); //NON-NLS
+                                } else {
+                                    List<String> ls = new ArrayList<String>();
+                                    ls.add( "category=" + selectedPath ); //NON-NLS
+                                    perms.put( sel, ls );
+                                }
+                                doPermsPanel( perms, vp );
+                                pop.hide();
+                            }
+                        } );
+                        return cat;
+                    }
+
+                    private void createButtonsAndHandlersForAdmin(final Map<String, List<String>> perms, final Panel vp, final FormStylePopup pop) {
+                        com.google.gwt.user.client.ui.Button ok = new com.google.gwt.user.client.ui.Button( constants.OK() );
+
+                        pop.addAttribute( constants.MakeThisUserAdmin(), ok );
+                        ok.addClickHandler( new ClickHandler() {
+                            public void onClick(ClickEvent w) {
+                                perms.put( "admin", new ArrayList<String>() ); //NON-NLS
+
+                                doPermsPanel( perms, vp );
+                                pop.hide();
+                            }
+                        } );
+                        com.google.gwt.user.client.ui.Button cancel = new com.google.gwt.user.client.ui.Button( constants.Cancel() );
+
+                        pop.addAttribute( "", cancel );
+                        cancel.addClickHandler( new ClickHandler() {
+                            public void onClick(ClickEvent w) {
+                                pop.hide();
+                            }
+                        } );
+                    }
+                };
             }
         };
     }
