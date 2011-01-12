@@ -25,9 +25,9 @@
 	</ui:style>
 	<gwt:VerticalPanel>
 		<gwt:HTMLPanel>
-			<table styleName='{style.alignTop}'>
+			<table>
 				<tr>
-					<td>
+					<td align="right" style="vertical-align: top;">
 						<gwt:Label text='{i18n.OverallResult}'></gwt:Label>
 					</td>
 					<td>
@@ -35,7 +35,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td align="right" style="vertical-align: top;">
 						<gwt:Label text='{i18n.Results}'></gwt:Label>
 					</td>
 					<td>
@@ -47,7 +47,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td align="right" style="vertical-align: top;">
 						<gwt:Label text='{i18n.RulesCovered}'></gwt:Label>
 					</td>
 					<td>
@@ -59,7 +59,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>
+					<td align="right" style="vertical-align: top;">
 						<gwt:Label text='{i18n.UncoveredRules}'></gwt:Label>
 					</td>
 					<td>
