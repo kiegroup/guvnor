@@ -37,8 +37,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.RepositoryException;
-
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.StatelessSession;
@@ -68,11 +66,10 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.repository.MailboxService;
-import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.security.MockIdentity;
+import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -109,7 +106,6 @@ import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -152,18 +148,6 @@ public class ServiceImplementationTest {
         return serviceImplementation;
     }
 
-    //
-    //    private ServiceImplementation getService() {
-    //        ServiceImplementation impl = new ServiceImplementation();
-    //        try {
-    //            impl.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
-    //        } catch ( Exception exception ) {
-    //            exception.printStackTrace();
-    //            fail();
-    //        }
-    //        return impl;
-    //    }
-
     @After
     public void tearDown() {
 
@@ -175,15 +159,8 @@ public class ServiceImplementationTest {
         TestEnvironmentSessionHelper.shutdown();
     }
 
-    //    @Test
-    //    public void dummy() {
-    //        RulesRepository repo1 = getService().repository;
-    //        
-    //    }
-
     @Test
-    @Ignore
-    //this test fail intermittently
+    @Ignore("this test fail intermittently")
     public void testInboxEvents() throws Exception {
         ServiceImplementation impl = getService();
         assertNotNull( impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
@@ -299,7 +276,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testCleanHTML() {
         ServiceImplementation impl = new ServiceImplementation();
@@ -307,7 +283,6 @@ public class ServiceImplementationTest {
                       impl.cleanHTML( "<script>" ) );
     }
 
-    @Ignore
     @Test
     public void testDeleteUnversionedRule() throws Exception {
         ServiceImplementation impl = getService();
@@ -350,7 +325,6 @@ public class ServiceImplementationTest {
         }
     }
 
-    @Ignore
     @Test
     public void testAddRuleAndListPackages() throws Exception {
         // ServiceImpl impl = new ServiceImpl(new
@@ -405,7 +379,6 @@ public class ServiceImplementationTest {
         assertTrue( dtItem.getBinaryContentAttachmentFileName().endsWith( ".xls" ) );
     }
 
-    @Ignore
     @Test
     public void testAttemptDupeRule() throws Exception {
         ServiceImplementation impl = getService();
@@ -432,7 +405,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testCreateNewRule() throws Exception {
         ServiceImplementation impl = getService();
@@ -455,7 +427,6 @@ public class ServiceImplementationTest {
                       "an initial desc" );
     }
 
-    @Ignore
     @Test
     public void testCreateLinkedAssetItem() throws Exception {
         ServiceImplementation impl = getService();
@@ -543,7 +514,6 @@ public class ServiceImplementationTest {
                       size );
     }
 
-    @Ignore
     @Test
     public void testLinkedAssetItemHistoryRelated() throws Exception {
         ServiceImplementation impl = getService();
@@ -644,7 +614,7 @@ public class ServiceImplementationTest {
     }
 
     //path name contains Apostrophe is no longer a problem with jackrabbit 2.0
-    @Ignore
+
     @Test
     public void testCreateNewRuleContainsApostrophe() throws Exception {
         ServiceImplementation impl = getService();
@@ -674,7 +644,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testRuleTableLoad() throws Exception {
         ServiceImplementation impl = getService();
@@ -715,7 +684,6 @@ public class ServiceImplementationTest {
         assertTrue( result.data[0].values[0].startsWith( "testRuleTableLoad" ) );
     }
 
-    @Ignore
     @Test
     public void testDateFormatting() throws Exception {
         Calendar cal = Calendar.getInstance();
@@ -726,7 +694,6 @@ public class ServiceImplementationTest {
         assertTrue( fmt.length() > 8 );
     }
 
-    @Ignore
     @Test
     public void testLoadRuleAsset() throws Exception {
         ServiceImplementation impl = getService();
@@ -810,7 +777,6 @@ public class ServiceImplementationTest {
         assertTrue( asset.content instanceof RuleContentText );
     }
 
-    @Ignore
     @Test
     public void testListAssets() throws Exception {
         ServiceImplementation impl = getService();
@@ -874,7 +840,6 @@ public class ServiceImplementationTest {
         assertTrue( res.hasNext );
     }
 
-    @Ignore
     @Test
     public void testLoadArchivedAssets() throws Exception {
         ServiceImplementation impl = getService();
@@ -942,7 +907,6 @@ public class ServiceImplementationTest {
         assertTrue( res.hasNext );
     }
 
-    @Ignore
     @Test
     public void testTrackRecentOpenedChanged() throws Exception {
         ServiceImplementation impl = getService();
@@ -991,7 +955,6 @@ public class ServiceImplementationTest {
                       ib.loadRecentEdited().size() );
     }
 
-    @Ignore
     @Test
     public void testLoadAssetHistoryAndRestore() throws Exception {
 
@@ -1056,7 +1019,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testCheckin() throws Exception {
         ServiceImplementation serv = getService();
@@ -1155,7 +1117,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testArchivePackage() throws Exception {
         ServiceImplementation impl = getService();
@@ -1192,7 +1153,6 @@ public class ServiceImplementationTest {
                       arch.length );
     }
 
-    @Ignore
     @Test
     public void testCreatePackage() throws Exception {
         ServiceImplementation impl = getService();
@@ -1229,7 +1189,6 @@ public class ServiceImplementationTest {
         }
     }
 
-    @Ignore
     @Test
     public void testLoadPackageConfig() throws Exception {
         ServiceImplementation impl = getService();
@@ -1275,7 +1234,6 @@ public class ServiceImplementationTest {
                       data.checkinComment );
     }
 
-    @Ignore
     @Test
     public void testArchiveAndUnarchivePackageAndHeader() throws Exception {
         ServiceImplementation impl = getService();
@@ -1320,7 +1278,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testPackageConfSave() throws Exception {
         RepositoryService impl = getService();
@@ -1357,7 +1314,6 @@ public class ServiceImplementationTest {
         assertFalse( res.hasErrors );
     }
 
-    @Ignore
     @Test
     public void testListByFormat() throws Exception {
         RepositoryService impl = getService();
@@ -1479,7 +1435,6 @@ public class ServiceImplementationTest {
                       result.data.length );
     }
 
-    @Ignore
     @Test
     public void testListUnregisteredAssetFormats() throws Exception {
         ServiceImplementation impl = getService();
@@ -1504,7 +1459,6 @@ public class ServiceImplementationTest {
                       res.data.length );
     }
 
-    @Ignore
     @Test
     public void testQuickFind() throws Exception {
         RepositoryService impl = getService();
@@ -1557,7 +1511,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testSearchText() throws Exception {
         ServiceImplementation impl = getService();
@@ -1581,7 +1534,6 @@ public class ServiceImplementationTest {
                       res.data.length );
     }
 
-    @Ignore
     @Test
     public void testSearchMetaData() throws Exception {
         ServiceImplementation impl = getService();
@@ -1619,7 +1571,6 @@ public class ServiceImplementationTest {
         return new String[]{s};
     }
 
-    @Ignore
     @Test
     public void testStatus() throws Exception {
         RepositoryService impl = getService();
@@ -1693,7 +1644,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testMovePackage() throws Exception {
         RepositoryService impl = getService();
@@ -1747,7 +1697,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testCopyAsset() throws Exception {
         RepositoryService impl = getService();
@@ -1773,7 +1722,6 @@ public class ServiceImplementationTest {
                       asset.metaData.name );
     }
 
-    @Ignore
     @Test
     public void testSnapshot() throws Exception {
         RepositoryService impl = getService();
@@ -1844,7 +1792,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testSnapshotRebuild() throws Exception {
 
@@ -1914,7 +1861,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testPackageRebuild() throws Exception {
 
@@ -1950,7 +1896,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testRemoveCategory() throws Exception {
 
@@ -1967,7 +1912,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testRemoveAsset() throws Exception {
         RepositoryService impl = getService();
@@ -2020,7 +1964,6 @@ public class ServiceImplementationTest {
                       res.data.length );
     }
 
-    @Ignore
     @Test
     public void testRemovePackage() throws Exception {
         ServiceImplementation impl = getService();
@@ -2065,8 +2008,8 @@ public class ServiceImplementationTest {
                       item.getDescription() );
     }
 
-    @Test
     @Ignore
+    @Test
     public void testExportPackage() throws Exception {
         ServiceImplementation impl = getService();
         int n = impl.listPackages().length;
@@ -2103,7 +2046,6 @@ public class ServiceImplementationTest {
         fos.close();
     }
 
-    @Ignore
     @Test
     public void testArchiveAsset() throws Exception {
         RepositoryService impl = getService();
@@ -2178,7 +2120,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testArchiveAssetWhenParentPackageArchived() throws Exception {
         ServiceImplementation impl = getService();
@@ -2261,7 +2202,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testLoadSuggestionCompletionEngine() throws Exception {
         ServiceImplementation impl = getService();
@@ -2303,7 +2243,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testDiscussion() throws Exception {
         ServiceImplementation impl = getService();
@@ -2373,7 +2312,7 @@ public class ServiceImplementationTest {
      * This will test creating a package, check it compiles, and can exectute
      * rules, then take a snapshot, and check that it reports errors.
      */
-    @Ignore
+
     @Test
     public void testBinaryPackageCompileAndExecute() throws Exception {
         ServiceImplementation impl = getService();
@@ -2453,7 +2392,7 @@ public class ServiceImplementationTest {
      * can exectute rules, then take a snapshot, and check that it reports
      * errors.
      */
-    @Ignore
+
     @Test
     public void testBinaryPackageCompileAndExecuteWithBRXML() throws Exception {
         ServiceImplementation impl = getService();
@@ -2588,7 +2527,7 @@ public class ServiceImplementationTest {
      * it needs to be updated. It gets the package form the BRL example above.
      * Simply set saveBinPackage to true to save a new version of the RepoBinPackage.pkg.
      */
-    @Ignore
+
     @Test
     public void testLoadAndExecBinary() throws Exception {
         Person p = new Person( "fubar" );
@@ -2601,7 +2540,6 @@ public class ServiceImplementationTest {
                       p.getAge() );
     }
 
-    @Ignore
     @Test
     public void testSuggestionCompletionLoading() throws Exception {
         ServiceImplementation impl = getService();
@@ -2621,7 +2559,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testPackageSource() throws Exception {
         ServiceImplementation impl = getService();
@@ -2679,7 +2616,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testAssetSource() throws Exception {
         ServiceImplementation impl = getService();
@@ -2742,7 +2678,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testBuildAssetWithError() throws Exception {
         ServiceImplementation impl = getService();
@@ -2777,7 +2712,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testBuildAsset() throws Exception {
         ServiceImplementation impl = getService();
@@ -2849,7 +2783,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testBuildAssetMultipleFunctionsCallingEachOther() throws Exception {
 
@@ -2892,7 +2825,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testBuildAssetBRXMLAndCopy() throws Exception {
         ServiceImplementation impl = getService();
@@ -2989,7 +2921,6 @@ public class ServiceImplementationTest {
         return result;
     }
 
-    @Ignore
     @Test
     public void testBuildAssetWithPackageConfigError() throws Exception {
         ServiceImplementation impl = getService();
@@ -3035,7 +2966,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testRuleNameList() throws Exception {
         ServiceImplementation impl = getService();
@@ -3080,7 +3010,7 @@ public class ServiceImplementationTest {
     /**
      * This idea of this is to not compile packages more then we have to.
      */
-    @Ignore
+
     @Test
     public void testBinaryUpToDate() throws Exception {
         ServiceImplementation impl = getService();
@@ -3140,7 +3070,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testRunScenario() throws Exception {
         ServiceImplementation impl = getService();
@@ -3255,7 +3184,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testRunScenarioWithGeneratedBeans() throws Exception {
         ServiceImplementation impl = getService();
@@ -3315,7 +3243,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testRunPackageScenariosWithDeclaredFacts() throws Exception {
         ServiceImplementation impl = getService();
@@ -3429,7 +3356,6 @@ public class ServiceImplementationTest {
                       s2.scenarioName );
     }
 
-    @Ignore
     @Test
     public void testRunScenarioWithJar() throws Exception {
         ServiceImplementation impl = getService();
@@ -3504,7 +3430,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testRunScenarioWithJarThatHasSourceFiles() throws Exception {
         ServiceImplementation impl = getService();
@@ -3571,7 +3496,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testRunPackageScenarios() throws Exception {
         ServiceImplementation impl = getService();
@@ -3695,7 +3619,6 @@ public class ServiceImplementationTest {
                       s2.scenarioName );
     }
 
-    @Ignore
     @Test
     public void testListFactTypesAvailableInPackage() throws Exception {
         ServiceImplementation impl = getService();
@@ -3733,7 +3656,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testGuidedDTExecute() throws Exception {
         ServiceImplementation impl = getService();
@@ -3812,7 +3734,6 @@ public class ServiceImplementationTest {
                       p.getLikes() );
     }
 
-    @Ignore
     @Test
     public void testPackageNameSorting() {
         PackageConfigData c1 = new PackageConfigData( "org.foo" );
@@ -3829,7 +3750,6 @@ public class ServiceImplementationTest {
                       ls.get( 1 ) );
     }
 
-    @Ignore
     @Test
     public void testLoadDropDown() throws Exception {
         ServiceImplementation serv = new ServiceImplementation();
@@ -3847,7 +3767,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testLoadDropDownNoValuePairs() throws Exception {
         ServiceImplementation serv = new ServiceImplementation();
@@ -3861,7 +3780,6 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testListUserPermisisons() throws Exception {
         ServiceImplementation serv = getService();
@@ -3869,7 +3787,6 @@ public class ServiceImplementationTest {
         assertNotNull( r );
     }
 
-    @Ignore
     @Test
     public void testManageUserPermissions() throws Exception {
         ServiceImplementation serv = getService();
@@ -3882,7 +3799,6 @@ public class ServiceImplementationTest {
                       perms_.size() );
     }
 
-    @Ignore
     @Test
     //Ignore
     public void testImportSampleRepository() throws Exception {
@@ -3899,8 +3815,8 @@ public class ServiceImplementationTest {
     }
 
     //GUVNOR-296
-    @Test
     @Ignore
+    @Test
     public void testHistoryAfterReImportSampleRepository() throws Exception {
         ServiceImplementation impl = getService();
 
@@ -3962,7 +3878,6 @@ public class ServiceImplementationTest {
                       rows.length );
     }
 
-    @Ignore
     @Test
     public void testAddCategories() throws Exception {
         ServiceImplementation impl = getService();
@@ -4000,7 +3915,6 @@ public class ServiceImplementationTest {
         assertTrue( dtItem3.getCategorySummary().contains( "testAddCategoriesCat2" ) );
     }
 
-    @Ignore
     @Test
     public void testSnapshotDiff() throws Exception {
         RepositoryService impl = getService();
