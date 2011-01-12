@@ -344,39 +344,46 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             if ( ebContainer != null && ebContainer.getWidgetCount() > 0 ) {
                 if ( ebContainer.getWidget( 0 ) instanceof ExpressionBuilder ) {
-                    ExpressionBuilder eb = (ExpressionBuilder) ebContainer.getWidget( 0 );
-                    eb.addExpressionTypeChangeHandler( new ExpressionTypeChangeHandler() {
-
-                        public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {
-                            try {
-                                constraint.setFieldType( event.getNewType() );
-                                inner.setWidget( row, 1 + col, operatorDropDown( constraint, event.getNewType() ) );
-                            } catch ( Exception e ) {
-                                e.printStackTrace();
-                            }
-                        }
-                    } );
+                    associateExpressionWithChangeHandler( inner, row, constraint, col, ebContainer );
                 }
             }
 
-            Image addConnective = new ImageButton( images.addConnective() );
-            addConnective.setTitle( constants.AddMoreOptionsToThisFieldsValues() );
-            addConnective.addClickHandler( new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    setModified( true );
-                    constraint.addNewConnective();
-                    modeller.refreshWidget();
-                }
-            } );
-
             if ( !this.readOnly ) {
-                inner.setWidget( row, 4 + col, addConnective );
+                inner.setWidget( row, 4 + col, createaAddConnectiveImageButton( modeller, constraint ) );
             }
         } else if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_PREDICATE ) {
             inner.setWidget( row, 1, predicateEditor( constraint ) );
             inner.getFlexCellFormatter().setColSpan( row, 1, 5 );
         }
+    }
+
+    private Image createaAddConnectiveImageButton(final RuleModeller modeller, final SingleFieldConstraint constraint) {
+        Image addConnective = new ImageButton( images.addConnective() );
+        addConnective.setTitle( constants.AddMoreOptionsToThisFieldsValues() );
+        addConnective.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                setModified( true );
+                constraint.addNewConnective();
+                modeller.refreshWidget();
+            }
+        } );
+        return addConnective;
+    }
+
+    private void associateExpressionWithChangeHandler(final DirtyableFlexTable inner, final int row, final SingleFieldConstraint constraint, final int col, HorizontalPanel ebContainer) {
+        ExpressionBuilder eb = (ExpressionBuilder) ebContainer.getWidget( 0 );
+        eb.addExpressionTypeChangeHandler( new ExpressionTypeChangeHandler() {
+
+            public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {
+                try {
+                    constraint.setFieldType( event.getNewType() );
+                    inner.setWidget( row, 1 + col, operatorDropDown( constraint, event.getNewType() ) );
+                } catch ( Exception e ) {
+                    e.printStackTrace();
+                }
+            }
+        } );
     }
 
     /**
