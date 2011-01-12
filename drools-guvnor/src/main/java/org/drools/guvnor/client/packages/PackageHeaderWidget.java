@@ -93,10 +93,7 @@ public class PackageHeaderWidget extends Composite {
             {
                 addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent event) {
-                        showTypeQuestion( (Widget) event.getSource(),
-                                          t,
-                                          false,
-                                          constants.FactTypesJarTip() );
+                        showTypeQuestion( (Widget) event.getSource(), t, false, constants.FactTypesJarTip() );
                     }
                 } );
             }
@@ -130,10 +127,7 @@ public class PackageHeaderWidget extends Composite {
             {
                 addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent event) {
-                        showTypeQuestion( (Widget) event.getSource(),
-                                          t,
-                                          true,
-                                          constants.GlobalTypesAreClassesFromJarFilesThatHaveBeenUploadedToTheCurrentPackage() );
+                        showTypeQuestion( (Widget) event.getSource(), t, true, constants.GlobalTypesAreClassesFromJarFilesThatHaveBeenUploadedToTheCurrentPackage() );
                     }
                 } );
             }
@@ -197,84 +191,71 @@ public class PackageHeaderWidget extends Composite {
 
         main.add( area );
 
-        Button basicMode = new Button() {
-            {
-                setText( constants.BasicView() );
-                setTitle( constants.SwitchToGuidedModeEditing() );
-                addClickHandler( new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        conf.header = area.getText();
-                        final Types t = PackageHeaderHelper.parseHeader( conf.header );
-                        if ( t == null ) {
-                            Window.alert( constants.CanNotSwitchToBasicView() );
-                        } else {
-                            if ( t.hasDeclaredTypes ) {
-                                Window.alert( constants.CanNotSwitchToBasicViewDeclaredTypes() );
-                            } else if ( t.hasFunctions ) {
-                                Window.alert( constants.CanNotSwitchToBasicViewFunctions() );
-                            } else if ( t.hasRules ) {
-                                Window.alert( constants.CanNotSwitchToBasicViewRules() );
-                            } else {
-                                if ( Window.confirm( constants.SwitchToGuidedModeForPackageEditing() ) ) {
-                                    basicEditorVersion( t );
-                                }
-                            }
-                        }
-                    }
-                } );
-            }
-        };
+        Button basicMode = createBasicModeButton( area );
         main.add( basicMode );
 
         layout.add( main );
     }
 
-    private void showTypeQuestion(Widget w,
-                                  final Types t,
-                                  final boolean global,
-                                  String headerMessage) {
-        final FormStylePopup pop = new FormStylePopup( images.homeIcon(),
-                                                       constants.ChooseAFactType() );
+    private Button createBasicModeButton(final TextArea area) {
+        Button basicMode = new Button() {
+            {
+                setText( constants.BasicView() );
+                setTitle( constants.SwitchToGuidedModeEditing() );
+                addClickHandler( createClickHanderForBasicModeButton( area ) );
+            }
+
+        };
+        return basicMode;
+    }
+
+    private ClickHandler createClickHanderForBasicModeButton(final TextArea area) {
+        return new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                conf.header = area.getText();
+                handleCasesForBasicModeButton();
+            }
+
+        };
+    }
+
+    private void handleCasesForBasicModeButton() {
+        final Types types = PackageHeaderHelper.parseHeader( conf.header );
+        if ( types == null ) {
+            Window.alert( constants.CanNotSwitchToBasicView() );
+        } else {
+            if ( types.hasDeclaredTypes ) {
+                Window.alert( constants.CanNotSwitchToBasicViewDeclaredTypes() );
+            } else if ( types.hasFunctions ) {
+                Window.alert( constants.CanNotSwitchToBasicViewFunctions() );
+            } else if ( types.hasRules ) {
+                Window.alert( constants.CanNotSwitchToBasicViewRules() );
+            } else {
+                if ( Window.confirm( constants.SwitchToGuidedModeForPackageEditing() ) ) {
+                    basicEditorVersion( types );
+                }
+            }
+        }
+    }
+
+    private void showTypeQuestion(Widget w, final Types t, final boolean global, String headerMessage) {
+        final FormStylePopup pop = new FormStylePopup( images.homeIcon(), constants.ChooseAFactType() );
         pop.addRow( new HTML( "<small><i>" + headerMessage + " </i></small>" ) ); //NON-NLS
         final ListBox factList = new ListBox();
         factList.addItem( constants.loadingList() );
 
-        RepositoryServiceFactory.getService().listTypesInPackage( this.conf.uuid,
-                                                                  new GenericCallback<String[]>() {
-                                                                      public void onSuccess(String[] list) {
-                                                                          factList.clear();
-                                                                          for ( int i = 0; i < list.length; i++ ) {
-                                                                              if ( global ) {
-                                                                                  factList.addItem( list[i] );
-                                                                              } else {
-                                                                                  if ( list[i].indexOf( '.' ) > -1 ) {
-                                                                                      factList.addItem( list[i] );
-                                                                                  }
-                                                                              }
-                                                                          }
-                                                                      }
-                                                                  } );
+        RepositoryServiceFactory.getService().listTypesInPackage( this.conf.uuid, createGenericCallbackForListTypesInPackage( global, factList ) );
 
-        InfoPopup info = new InfoPopup( constants.TypesInThePackage(),
-                                        constants.IfNoTypesTip() );
-        HorizontalPanel h = new HorizontalPanel();
-        h.add( factList );
-        h.add( info );
-        pop.addAttribute( constants.ChooseClassType(),
-                          h );
+        InfoPopup info = new InfoPopup( constants.TypesInThePackage(), constants.IfNoTypesTip() );
+
+        pop.addAttribute( constants.ChooseClassType(), createHorizontalPanel( factList, info ) );
         final TextBox globalName = new TextBox();
         if ( global ) {
-            pop.addAttribute( constants.GlobalName(),
-                              globalName );
+            pop.addAttribute( constants.GlobalName(), globalName );
         }
         final TextBox className = new TextBox();
-        InfoPopup infoClass = new InfoPopup( constants.EnteringATypeClassName(),
-                                             constants.EnterTypeNameTip() );
-        h = new HorizontalPanel();
-        h.add( className );
-        h.add( infoClass );
-        pop.addAttribute( constants.advancedClassName(),
-                          h );
+        InfoPopup infoClass = new InfoPopup( constants.EnteringATypeClassName(), constants.EnterTypeNameTip() );
+        pop.addAttribute( constants.advancedClassName(), createHorizontalPanel( className, infoClass ) );
 
         Button ok = new Button( constants.OK() ) {
             {
@@ -289,8 +270,7 @@ public class PackageHeaderWidget extends Composite {
                                 Window.alert( constants.YouMustEnterAGlobalVariableName() );
                                 return;
                             }
-                            t.globals.add( new Global( type,
-                                                       globalName.getText() ) );
+                            t.globals.add( new Global( type, globalName.getText() ) );
                             doGlobals( t );
                         }
                         updateHeader( t );
@@ -308,13 +288,39 @@ public class PackageHeaderWidget extends Composite {
                     }
                 } );
             }
-        };       
-        
+        };
+
         HorizontalPanel buttonPanel = new HorizontalPanel();
         buttonPanel.add( ok );
         buttonPanel.add( cancel );
         pop.addAttribute( "", buttonPanel );
         pop.show();
+    }
+
+    private HorizontalPanel createHorizontalPanel(final Widget... wigets) {
+        HorizontalPanel horizontalPanel = new HorizontalPanel();
+        for ( Widget widget : wigets ) {
+            horizontalPanel.add( widget );
+        }
+
+        return horizontalPanel;
+    }
+
+    private GenericCallback<String[]> createGenericCallbackForListTypesInPackage(final boolean global, final ListBox factList) {
+        return new GenericCallback<String[]>() {
+            public void onSuccess(String[] list) {
+                factList.clear();
+                for ( int i = 0; i < list.length; i++ ) {
+                    if ( global ) {
+                        factList.addItem( list[i] );
+                    } else {
+                        if ( list[i].indexOf( '.' ) > -1 ) {
+                            factList.addItem( list[i] );
+                        }
+                    }
+                }
+            }
+        };
     }
 
     private void updateHeader(Types t) {
@@ -355,8 +361,7 @@ public class PackageHeaderWidget extends Composite {
         String type;
         String name;
 
-        Global(String type,
-               String name) {
+        Global(String type, String name) {
             this.type = type;
             this.name = name;
         }
