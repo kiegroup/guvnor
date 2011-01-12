@@ -269,35 +269,32 @@ public class ServiceImplementationTest {
 
     }
 
-    @Ignore
     @Test
     public void testCategory() throws Exception {
 
-        RepositoryService impl = getService();
+        String[] originalCats = serviceImplementation.loadChildCategories( "/" );
 
-        String[] originalCats = impl.loadChildCategories( "/" );
-
-        Boolean result = impl.createCategory( "/",
-                                              "TopLevel1",
-                                              "a description" );
+        Boolean result = serviceImplementation.createCategory( "/",
+                                                               "TopLevel1",
+                                                               "a description" );
         assertTrue( result.booleanValue() );
 
-        result = impl.createCategory( "/",
-                                      "TopLevel2",
-                                      "a description" );
+        result = serviceImplementation.createCategory( "/",
+                                                       "TopLevel2",
+                                                       "a description" );
         assertTrue( result.booleanValue() );
 
-        String[] cats = impl.loadChildCategories( "/" );
+        String[] cats = serviceImplementation.loadChildCategories( "/" );
         assertTrue( cats.length == originalCats.length + 2 );
 
-        result = impl.createCategory( "",
-                                      "Top3",
-                                      "description" );
+        result = serviceImplementation.createCategory( "",
+                                                       "Top3",
+                                                       "description" );
         assertTrue( result.booleanValue() );
 
-        result = impl.createCategory( null,
-                                      "Top4",
-                                      "description" );
+        result = serviceImplementation.createCategory( null,
+                                                       "Top4",
+                                                       "description" );
         assertTrue( result.booleanValue() );
 
     }
