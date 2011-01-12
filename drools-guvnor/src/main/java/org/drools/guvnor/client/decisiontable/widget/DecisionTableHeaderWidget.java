@@ -1,8 +1,5 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 
@@ -24,7 +21,6 @@ public abstract class DecisionTableHeaderWidget extends Composite {
 
 	protected Panel panel;
 	protected DecisionTableWidget dtable;
-	protected List<DynamicColumn> columns = new ArrayList<DynamicColumn>();
 
 	// Resources
 	protected static final DecisionTableResources resource = GWT
@@ -53,21 +49,6 @@ public abstract class DecisionTableHeaderWidget extends Composite {
 	public DecisionTableHeaderWidget(DecisionTableWidget dtable) {
 		this.dtable = dtable;
 	}
-
-	/**
-	 * Initialise the Header, this normally involves clearing any content and
-	 * setting up any formatting requirements before calls to addColumn are
-	 * made. I.E. ensure the Header is empty before items are added to it.
-	 */
-	public abstract void removeAllColumns();
-
-	/**
-	 * Insert a Column before the given index.
-	 * 
-	 * @param index
-	 * @param column
-	 */
-	public abstract void insertColumnBefore(int index, DynamicColumn column);
 
 	/**
 	 * Redraw entire header

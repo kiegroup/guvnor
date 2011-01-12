@@ -3,6 +3,7 @@
 /* CellTable body */
 @def rowHeight 24px;
 @def rowHeaderHeight 24px;
+@def rowHeaderSplitterHeight 8px;
 @def spacerHeight 48px;
 @def spacerWidth 32px;
 	
@@ -45,32 +46,22 @@
 }
 
 .cellTableEvenRow {
-	background: #E0E0E0;
+	background: #f8f8f8;
 }
 
 .cellTableOddRow {
-	background: #f0f0f0;
+	background: #fcfcfc;
 }
 
 /* Header */
 .headerTable {
-	table-layout: fixed;
-	padding: 0px;
-	margin: 0px;
+	border-bottom: 2px solid grey;
 }
 
 .headerRow {
-	height: rowHeaderHeight;
-	color: #4B4A4A;
-	text-align: left;
-	text-shadow: 1px 1px 0 #DDDDFF;
-	cursor: default;
 }
 
 .headerCellPrimary {
-	font-size: 8pt;
-	text-align: center;
-	border-bottom: 2px solid grey;
 }
 
 .headerCellSecondary {
@@ -84,8 +75,10 @@
 }
 
 .headerText {
-	display: inline;
-	margin-left: 5px;
+	font-size: 8pt;
+	text-align: center;
+	color: #4B4A4A;
+	text-shadow: 1px 1px 0 #DDDDFF;
 }
 
 .headerWidget {

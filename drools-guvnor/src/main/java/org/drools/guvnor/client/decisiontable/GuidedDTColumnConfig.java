@@ -248,12 +248,12 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 							.getConstraintValueType());
 					col.setFactField(editingCol.getFactField());
 					col.setFactType(editingCol.getFactType());
-
 					col.setHeader(editingCol.getHeader());
 					col.setOperator(editingCol.getOperator());
 					col.setValueList(editingCol.getValueList());
 					col.setDefaultValue(editingCol.getDefaultValue());
 					col.setHideColumn(editingCol.isHideColumn());
+					dtable.setColumnVisibility(col, !col.isHideColumn());
 				}
 				refreshGrid.execute();
 				hide();

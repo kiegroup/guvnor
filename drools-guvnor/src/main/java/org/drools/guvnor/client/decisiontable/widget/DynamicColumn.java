@@ -18,7 +18,7 @@ public class DynamicColumn extends DynamicBaseColumn {
 	private int columnIndex = 0;
 	private DTColumnConfig modelColumn;
 	private Boolean isVisible = new Boolean(true);
-	private Boolean requiresFullRedraw = false;
+	private Boolean isSystemControlled = new Boolean(false);
 	private SortDirection sortDirection = SortDirection.NONE;
 	private Boolean isSortable = true;
 	private int sortIndex = -1;
@@ -32,12 +32,12 @@ public class DynamicColumn extends DynamicBaseColumn {
 
 	public DynamicColumn(DTColumnConfig modelColumn,
 			DecisionTableCellValueAdaptor<? extends Comparable<?>> cell,
-			int columnIndex, boolean requiresFullRedraw, boolean isSortable) {
+			int columnIndex, boolean isSystemControlled, boolean isSortable) {
 		super(cell);
 		this.modelColumn = modelColumn;
 		this.columnIndex = columnIndex;
 		this.isSortable = isSortable;
-		this.requiresFullRedraw = requiresFullRedraw;
+		this.isSystemControlled = isSystemControlled;
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class DynamicColumn extends DynamicBaseColumn {
 		return c.columnIndex == this.columnIndex
 				&& c.modelColumn == this.modelColumn
 				&& c.isVisible == this.isVisible
-				&& c.requiresFullRedraw == this.requiresFullRedraw
+				&& c.isSystemControlled == this.isSystemControlled
 				&& c.sortDirection == this.sortDirection
 				&& c.isSortable == this.isSortable
 				&& c.sortIndex == this.sortIndex && c.width == this.width;
@@ -59,20 +59,8 @@ public class DynamicColumn extends DynamicBaseColumn {
 		return this.columnIndex;
 	}
 
-	public boolean getIsSortable() {
-		return isSortable;
-	}
-
-	public Boolean getIsVisible() {
-		return isVisible;
-	}
-
 	public DTColumnConfig getModelColumn() {
 		return this.modelColumn;
-	}
-
-	public boolean getRequiresFullRedraw() {
-		return requiresFullRedraw;
 	}
 
 	public SortDirection getSortDirection() {
@@ -98,7 +86,7 @@ public class DynamicColumn extends DynamicBaseColumn {
 		hash = 31 * hash + columnIndex;
 		hash = 31 * hash + modelColumn.hashCode();
 		hash = 31 * hash + isVisible.hashCode();
-		hash = 31 * hash + requiresFullRedraw.hashCode();
+		hash = 31 * hash + isSystemControlled.hashCode();
 		hash = 31 * hash + sortDirection.hashCode();
 		hash = 31 * hash + isSortable.hashCode();
 		hash = 31 * hash + sortIndex;
@@ -106,20 +94,24 @@ public class DynamicColumn extends DynamicBaseColumn {
 		return hash;
 	}
 
+	public boolean isSortable() {
+		return isSortable;
+	}
+
+	public boolean isSystemControlled() {
+		return isSystemControlled;
+	}
+
+	public boolean isVisible() {
+		return isVisible;
+	}
+
 	public void setColumnIndex(int columnIndex) {
 		this.columnIndex = columnIndex;
 	}
 
-	public void setIsSortable(boolean isSortable) {
+	public void setSortable(boolean isSortable) {
 		this.isSortable = isSortable;
-	}
-
-	public void setIsVisible(boolean isVisible) {
-		this.isVisible = isVisible;
-	}
-
-	public void setRequiresFullRedraw(Boolean requiresFullRedraw) {
-		this.requiresFullRedraw = requiresFullRedraw;
 	}
 
 	public void setSortDirection(SortDirection sortDirection) {
@@ -128,6 +120,14 @@ public class DynamicColumn extends DynamicBaseColumn {
 
 	public void setSortIndex(int sortIndex) {
 		this.sortIndex = sortIndex;
+	}
+
+	public void setSystemControlled(boolean isSystemControlled) {
+		this.isSystemControlled = isSystemControlled;
+	}
+
+	public void setVisible(boolean isVisible) {
+		this.isVisible = isVisible;
 	}
 
 	public void setWidth(int width) {

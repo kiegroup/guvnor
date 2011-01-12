@@ -35,12 +35,12 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			throw new IllegalArgumentException(
 					"Index cannot be less than zero.");
 		}
-		if (index > data.size()) {
+		if (index > dtable.getData().size()) {
 			throw new IllegalArgumentException(
 					"Index cannot be greater than the number of rows.");
 		}
 
-		sideBarWidget.deleteSelector(index);
+		dtable.getSidebarWidget().deleteSelector(index);
 		tbody.deleteRow(index);
 		fixRowStyles(index);
 	}
@@ -73,8 +73,8 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 	 */
 	@Override
 	public void hideColumn(int index) {
-		for (int iRow = 0; iRow < data.size(); iRow++) {
-			DynamicDataRow rowData = data.get(iRow);
+		for (int iRow = 0; iRow < dtable.getData().size(); iRow++) {
+			DynamicDataRow rowData = dtable.getData().get(iRow);
 			CellValue<? extends Comparable<?>> cell = rowData.get(index);
 
 			if (cell.getRowSpan() > 0) {
@@ -98,7 +98,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			throw new IllegalArgumentException(
 					"Index cannot be less than zero.");
 		}
-		if (index > data.size()) {
+		if (index > dtable.getData().size()) {
 			throw new IllegalArgumentException(
 					"Index cannot be greater than the number of rows.");
 		}
@@ -106,7 +106,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			throw new IllegalArgumentException("Row data cannot be null");
 		}
 
-		sideBarWidget.insertSelectorBefore(index);
+		dtable.getSidebarWidget().insertSelectorBefore(index);
 		TableRowElement newRow = tbody.insertRow(index);
 		populateTableRowElement(newRow, rowData);
 		fixRowStyles(index);
@@ -122,19 +122,19 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 	public void redraw() {
 
 		// Prepare sidebar
-		sideBarWidget.initialise();
+		dtable.getSidebarWidget().initialise();
 
 		TableSectionElement nbody = Document.get().createTBodyElement();
 
-		for (int iRow = 0; iRow < data.size(); iRow++) {
+		for (int iRow = 0; iRow < dtable.getData().size(); iRow++) {
 
 			// Add a selector for each row
-			sideBarWidget.addSelector();
+			dtable.getSidebarWidget().addSelector();
 
 			TableRowElement tre = Document.get().createTRElement();
 			tre.setClassName(getRowStyle(iRow));
 
-			DynamicDataRow rowData = data.get(iRow);
+			DynamicDataRow rowData = dtable.getData().get(iRow);
 			populateTableRowElement(tre, rowData);
 			nbody.appendChild(tre);
 
@@ -159,14 +159,14 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			throw new IllegalArgumentException(
 					"Column index cannot be less than zero.");
 		}
-		if (index > columns.size() - 1) {
+		if (index > dtable.getColumns().size() - 1) {
 			throw new IllegalArgumentException(
 					"Column index cannot be greater than the number of defined columns.");
 		}
 
-		for (int iRow = 0; iRow < data.size(); iRow++) {
+		for (int iRow = 0; iRow < dtable.getData().size(); iRow++) {
 			TableRowElement tre = tbody.getRows().getItem(iRow);
-			DynamicDataRow rowData = data.get(iRow);
+			DynamicDataRow rowData = dtable.getData().get(iRow);
 			redrawTableRowElement(rowData, tre, index, index);
 		}
 
@@ -184,7 +184,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			throw new IllegalArgumentException(
 					"Start Column index cannot be less than zero.");
 		}
-		if (startRedrawIndex > columns.size() - 1) {
+		if (startRedrawIndex > dtable.getColumns().size() - 1) {
 			throw new IllegalArgumentException(
 					"Start Column index cannot be greater than the number of defined columns.");
 		}
@@ -192,7 +192,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			throw new IllegalArgumentException(
 					"End Column index cannot be less than zero.");
 		}
-		if (endRedrawIndex > columns.size() - 1) {
+		if (endRedrawIndex > dtable.getColumns().size() - 1) {
 			throw new IllegalArgumentException(
 					"End Column index cannot be greater than the number of defined columns.");
 		}
@@ -201,9 +201,9 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 					"Start Column index cannot be greater than End Column index.");
 		}
 
-		for (int iRow = 0; iRow < data.size(); iRow++) {
+		for (int iRow = 0; iRow < dtable.getData().size(); iRow++) {
 			TableRowElement tre = tbody.getRows().getItem(iRow);
-			DynamicDataRow rowData = data.get(iRow);
+			DynamicDataRow rowData = dtable.getData().get(iRow);
 			redrawTableRowElement(rowData, tre, startRedrawIndex,
 					endRedrawIndex);
 		}
@@ -222,7 +222,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			throw new IllegalArgumentException(
 					"Start Row index cannot be less than zero.");
 		}
-		if (startRedrawIndex > data.size() - 1) {
+		if (startRedrawIndex > dtable.getData().size() - 1) {
 			throw new IllegalArgumentException(
 					"Start Row index cannot be greater than the number of rows in the table.");
 		}
@@ -230,7 +230,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			throw new IllegalArgumentException(
 					"End Row index cannot be less than zero.");
 		}
-		if (endRedrawIndex > data.size() - 1) {
+		if (endRedrawIndex > dtable.getData().size() - 1) {
 			throw new IllegalArgumentException(
 					"End Row index cannot be greater than the number of rows in the table.");
 		}
@@ -241,7 +241,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 
 		for (int iRow = startRedrawIndex; iRow <= endRedrawIndex; iRow++) {
 			TableRowElement newRow = Document.get().createTRElement();
-			DynamicDataRow rowData = data.get(iRow);
+			DynamicDataRow rowData = dtable.getData().get(iRow);
 			populateTableRowElement(newRow, rowData);
 			tbody.replaceChild(newRow, tbody.getChild(iRow));
 		}
@@ -277,8 +277,8 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 	 */
 	@Override
 	public void showColumn(int index) {
-		for (int iRow = 0; iRow < data.size(); iRow++) {
-			DynamicDataRow rowData = data.get(iRow);
+		for (int iRow = 0; iRow < dtable.getData().size(); iRow++) {
+			DynamicDataRow rowData = dtable.getData().get(iRow);
 			TableCellElement tce = makeTableCellElement(index, rowData);
 			if (tce != null) {
 
@@ -321,7 +321,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 		TableCellElement tce = null;
 
 		// Column to render the column
-		DynamicColumn column = columns.get(iCol);
+		DynamicColumn column = dtable.getColumns().get(iCol);
 
 		CellValue<? extends Comparable<?>> cellData = rowData.get(iCol);
 		int rowSpan = cellData.getRowSpan();
@@ -361,8 +361,8 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 	private TableRowElement populateTableRowElement(TableRowElement tre,
 			DynamicDataRow rowData) {
 
-		for (int iCol = 0; iCol < columns.size(); iCol++) {
-			if (columns.get(iCol).getIsVisible()) {
+		for (int iCol = 0; iCol < dtable.getColumns().size(); iCol++) {
+			if (dtable.getColumns().get(iCol).isVisible()) {
 				TableCellElement tce = makeTableCellElement(iCol, rowData);
 				if (tce != null) {
 					tre.appendChild(tce);
@@ -385,8 +385,8 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 		for (int iCol = startColIndex; iCol <= endColIndex; iCol++) {
 
 			// Only redraw visible columns
-			DynamicColumn column = columns.get(iCol);
-			if (column.getIsVisible()) {
+			DynamicColumn column = dtable.getColumns().get(iCol);
+			if (column.isVisible()) {
 
 				int maxColumnIndex = tre.getCells().getLength() - 1;
 				int requiredColumnIndex = rowData.get(iCol).getHtmlCoordinate()

@@ -1,7 +1,5 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget.MOVE_DIRECTION;
@@ -53,10 +51,6 @@ public abstract class MergableGridWidget extends Widget {
 			return height;
 		}
 
-		public int getWidth() {
-			return width;
-		}
-
 		public int getOffsetX() {
 			return offsetX;
 		}
@@ -65,15 +59,14 @@ public abstract class MergableGridWidget extends Widget {
 			return offsetY;
 		}
 
+		public int getWidth() {
+			return width;
+		}
+
 	}
 
-	// Data to render
-	protected List<DynamicColumn> columns = new ArrayList<DynamicColumn>();
-
-	protected List<DynamicDataRow> data = new ArrayList<DynamicDataRow>();
 	// TABLE elements
 	protected TableElement table;
-
 	protected TableSectionElement tbody;
 
 	// Resources
@@ -82,14 +75,8 @@ public abstract class MergableGridWidget extends Widget {
 
 	protected static final DecisionTableStyle style = resource.cellTableStyle();
 
-	// The DecisionTable to which this grid belongs. This is used solely
-	// to record when a cell has been clicked as the DecisionTable manages
-	// writing values back to merged cells...
+	// The DecisionTable to which this grid belongs
 	protected DecisionTableWidget dtable;
-
-	protected DecisionTableHeaderWidget headerWidget;
-
-	protected DecisionTableSidebarWidget sideBarWidget;
 
 	/**
 	 * A grid of possibly merged cells.
@@ -102,8 +89,6 @@ public abstract class MergableGridWidget extends Widget {
 	public MergableGridWidget(DecisionTableWidget dtable) {
 
 		this.dtable = dtable;
-		this.sideBarWidget = dtable.getSidebarWidget();
-		this.headerWidget = dtable.getHeaderWidget();
 
 		style.ensureInjected();
 
@@ -127,15 +112,6 @@ public abstract class MergableGridWidget extends Widget {
 	}
 
 	/**
-	 * Add a column at the end of the list of columns
-	 * 
-	 * @param column
-	 */
-	public void addColumn(DynamicColumn column) {
-		insertColumnBefore(columns.size(), column);
-	}
-
-	/**
 	 * Delete the row at the given index. Partial redraw.
 	 * 
 	 * @param index
@@ -148,15 +124,6 @@ public abstract class MergableGridWidget extends Widget {
 	 * @param cell
 	 */
 	public abstract void deselectCell(CellValue<? extends Comparable<?>> cell);
-
-	/**
-	 * Get a list of columns (Woot, CellTable lacks this!)
-	 * 
-	 * @return
-	 */
-	public List<DynamicColumn> getColumns() {
-		return this.columns;
-	}
 
 	/**
 	 * Retrieve the extents of a cell
@@ -173,7 +140,8 @@ public abstract class MergableGridWidget extends Widget {
 		}
 
 		// Cells in hidden columns do not have extents
-		if (!columns.get(cv.getCoordinate().getCol()).getIsVisible()) {
+		if (!dtable.getColumns().get(cv.getCoordinate().getCol())
+				.isVisible()) {
 			return null;
 		}
 
@@ -194,24 +162,6 @@ public abstract class MergableGridWidget extends Widget {
 	 * Hide a column
 	 */
 	public abstract void hideColumn(int index);
-
-	/**
-	 * Add a column at a specific index
-	 * 
-	 * @param index
-	 * @param column
-	 */
-	public void insertColumnBefore(int index, DynamicColumn column) {
-		columns.add(index, column);
-
-		// Re-index columns
-		for (int iCol = 0; iCol < columns.size(); iCol++) {
-			DynamicColumn col = columns.get(iCol);
-			col.setColumnIndex(iCol);
-		}
-
-		headerWidget.insertColumnBefore(index, column);
-	}
 
 	/**
 	 * Insert the given row before the provided index. Partial redraw.
@@ -258,11 +208,11 @@ public abstract class MergableGridWidget extends Widget {
 		int htmlRow = tr.getSectionRowIndex();
 
 		// Convert HTML coordinates to physical coordinates
-		DynamicDataRow htmlRowData = data.get(htmlRow);
+		DynamicDataRow htmlRowData = dtable.getData().get(htmlRow);
 		CellValue<? extends Comparable<?>> htmlCell = htmlRowData.get(htmlCol);
 		Coordinate c = htmlCell.getPhysicalCoordinate();
-		CellValue<? extends Comparable<?>> physicalCell = data.get(c.getRow())
-				.get(c.getCol());
+		CellValue<? extends Comparable<?>> physicalCell = dtable.getData()
+				.get(c.getRow()).get(c.getCol());
 
 		// Select range
 		if (eventType.equals("click")) {
@@ -307,15 +257,15 @@ public abstract class MergableGridWidget extends Widget {
 		}
 
 		// Pass event and physical cell to Cell Widget for handling
-		Cell<CellValue<? extends Comparable<?>>> cellWidget = columns.get(
-				c.getCol()).getCell();
+		Cell<CellValue<? extends Comparable<?>>> cellWidget = dtable
+				.getColumns().get(c.getCol()).getCell();
 
 		// Implementations of AbstractCell aren't forced to initialise
 		// consumed events
 		Set<String> consumedEvents = cellWidget.getConsumedEvents();
 		if (consumedEvents != null && consumedEvents.contains(eventType)) {
-			cellWidget.onBrowserEvent(tableCell.getFirstChildElement(), physicalCell, null, event,
-					null);
+			cellWidget.onBrowserEvent(tableCell.getFirstChildElement(),
+					physicalCell, null, event, null);
 		}
 	}
 
@@ -353,40 +303,11 @@ public abstract class MergableGridWidget extends Widget {
 	public abstract void redrawRows(int startRedrawIndex, int endRedrawIndex);
 
 	/**
-	 * Delete all columns
-	 */
-	public void removeAllColumns() {
-		columns.clear();
-	}
-
-	/**
-	 * Remove a column at a specific index
-	 * 
-	 * @param index
-	 */
-	public void removeColumn(int index) {
-		columns.remove(index);
-	}
-
-	/**
 	 * Add styling to cell to indicate a selected state
 	 * 
 	 * @param cell
 	 */
 	public abstract void selectCell(CellValue<? extends Comparable<?>> cell);
-
-	public void setColumnVisibility(int index, boolean isVisible) {
-		this.columns.get(index).setIsVisible(isVisible);
-	}
-
-	/**
-	 * Set the data to be rendered.
-	 * 
-	 * @param data
-	 */
-	public void setRowData(List<DynamicDataRow> data) {
-		this.data = data;
-	}
 
 	/**
 	 * Show a column

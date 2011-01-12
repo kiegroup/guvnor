@@ -166,6 +166,7 @@ public class ActionInsertColumn extends FormStylePopup {
 					col.setValueList(editingCol.getValueList());
 					col.setDefaultValue(editingCol.getDefaultValue());
 					col.setHideColumn(editingCol.isHideColumn());
+					dtable.setColumnVisibility(col, !col.isHideColumn());
 				}
 				refreshGrid.execute();
 				hide();

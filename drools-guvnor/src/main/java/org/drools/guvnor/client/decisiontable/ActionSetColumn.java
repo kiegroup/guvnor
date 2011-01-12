@@ -166,6 +166,7 @@ public class ActionSetColumn extends FormStylePopup {
 					col.setUpdate(editingCol.isUpdate());
 					col.setDefaultValue(editingCol.getDefaultValue());
 					col.setHideColumn(editingCol.isHideColumn());
+					dtable.setColumnVisibility(col, !col.isHideColumn());
 				}
 				refreshGrid.execute();
 				hide();
@@ -262,7 +263,7 @@ public class ActionSetColumn extends FormStylePopup {
 				.getConditionCols().iterator(); iterator.hasNext();) {
 			ConditionCol col = (ConditionCol) iterator.next();
 			if (col.getBoundName().equals(boundName)) {
-				return col.getFactField();
+				return col.getFactType();
 			}
 		}
 		return "";

@@ -18,6 +18,8 @@ public interface DecisionTableResources extends ClientBundle {
 
 		int rowHeaderHeight();
 		
+		int rowHeaderSplitterHeight();
+		
 		int spacerHeight();
 		
 		int spacerWidth();
