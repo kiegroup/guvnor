@@ -131,14 +131,49 @@ public class TabOpener {
 
     private GenericCallback<RuleAsset> createGenericCallback(final String uuid, final boolean[] loading) {
         return new GenericCallback<RuleAsset>() {
-            public void onSuccess(final RuleAsset a) {
-                SuggestionCompletionCache.getInstance().doAction( a.metaData.packageName, createCommandForSuggestCompletionCache( uuid, loading, a ) );
+            public void onSuccess(final RuleAsset ruleAsset) {
+                SuggestionCompletionCache.getInstance().doAction( ruleAsset.metaData.packageName, createCommandForSuggestCompletionCache( uuid, loading, ruleAsset ) );
             }
 
-            private Command createCommandForSuggestCompletionCache(final String uuid, final boolean[] loading, final RuleAsset a) {
+            private Command createCommandForSuggestCompletionCache(final String uuid, final boolean[] loading, final RuleAsset ruleAsset) {
                 return new Command() {
                     public void execute() {
                         loading[0] = false;
+                        RuleViewer ruleViewer = new RuleViewer( ruleAsset, createEditItemEvent() );
+                        explorerViewCenterPanel.addTab( ruleAsset.metaData.name, ruleViewer, uuid );
+                        ruleViewer.setCloseCommand( createCloseCommandForRuleViewer( uuid ) );
+
+                        // When model is saved update the package view if it is opened.
+                        if ( ruleAsset.metaData.format.equals( AssetFormats.MODEL ) ) {
+                            Command command = createCheckInAndArchiveCommandForRuleViewer( ruleAsset );
+                            ruleViewer.setCheckedInCommand( command );
+                            ruleViewer.setArchiveCommand( command );
+                        }
+
+                        LoadingPopup.close();
+                    }
+
+                    private Command createCheckInAndArchiveCommandForRuleViewer(final RuleAsset ruleAsset) {
+                        Command command = new Command() {
+                            public void execute() {
+                                PackageEditor packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( ruleAsset.metaData.packageName );
+                                if ( packageEditor != null ) {
+                                    packageEditor.reload();
+                                }
+                            }
+                        };
+                        return command;
+                    }
+
+                    private Command createCloseCommandForRuleViewer(final String uuid) {
+                        return new Command() {
+                            public void execute() {
+                                explorerViewCenterPanel.close( uuid );
+                            }
+                        };
+                    }
+
+                    private EditItemEvent createEditItemEvent() {
                         EditItemEvent edit = new EditItemEvent() {
                             public void open(String key) {
                                 openAsset( key );
@@ -150,29 +185,7 @@ public class TabOpener {
                                 }
                             }
                         };
-                        RuleViewer rv = new RuleViewer( a, edit );
-                        explorerViewCenterPanel.addTab( a.metaData.name, rv, uuid );
-                        rv.setCloseCommand( new Command() {
-                            public void execute() {
-                                explorerViewCenterPanel.close( uuid );
-                            }
-                        } );
-
-                        // When model is saved update the package view if it is opened.
-                        if ( a.metaData.format.equals( AssetFormats.MODEL ) ) {
-                            Command command = new Command() {
-                                public void execute() {
-                                    PackageEditor packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( a.metaData.packageName );
-                                    if ( packageEditor != null ) {
-                                        packageEditor.reload();
-                                    }
-                                }
-                            };
-                            rv.setCheckedInCommand( command );
-                            rv.setArchiveCommand( command );
-                        }
-
-                        LoadingPopup.close();
+                        return edit;
                     }
                 };
             }
