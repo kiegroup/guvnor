@@ -1888,27 +1888,30 @@ public class ServiceImplementation implements RepositoryService {
             if ( drl == null || "".equals( drl ) ) {
                 return new String[0];
             } else {
-                int count = 0;
-
-                StringTokenizer stringTokenizer = new StringTokenizer( asm.getDRL(), "\n\r" );
-                while ( stringTokenizer.hasMoreTokens() ) {
-                    String line = stringTokenizer.nextToken().trim();
-                    if ( line.startsWith( "rule " ) ) {
-                        String name = getRuleName( line );
-                        result.add( name );
-                        count++;
-                        if ( count == MAX_RULES_TO_SHOW_IN_PACKAGE_LIST ) {
-                            result.add( "More then " + MAX_RULES_TO_SHOW_IN_PACKAGE_LIST + " rules." );
-                            break;
-                        }
-                    }
-                }
+                parseRulesToPackageList( asm, result );
             }
 
             return result.toArray( new String[result.size()] );
         } catch ( DroolsParserException e ) {
             log.error( "Unable to list rules in package", e );
             return new String[0];
+        }
+    }
+
+    private void parseRulesToPackageList(ContentPackageAssembler asm, List<String> result) throws DroolsParserException {
+        int count = 0;
+        StringTokenizer stringTokenizer = new StringTokenizer( asm.getDRL(), "\n\r" );
+        while ( stringTokenizer.hasMoreTokens() ) {
+            String line = stringTokenizer.nextToken().trim();
+            if ( line.startsWith( "rule " ) ) {
+                String name = getRuleName( line );
+                result.add( name );
+                count++;
+                if ( count == MAX_RULES_TO_SHOW_IN_PACKAGE_LIST ) {
+                    result.add( "More then " + MAX_RULES_TO_SHOW_IN_PACKAGE_LIST + " rules." );
+                    break;
+                }
+            }
         }
     }
 
