@@ -1890,9 +1890,9 @@ public class ServiceImplementation implements RepositoryService {
             } else {
                 int count = 0;
 
-                StringTokenizer st = new StringTokenizer( asm.getDRL(), "\n\r" );
-                while ( st.hasMoreTokens() ) {
-                    String line = st.nextToken().trim();
+                StringTokenizer stringTokenizer = new StringTokenizer( asm.getDRL(), "\n\r" );
+                while ( stringTokenizer.hasMoreTokens() ) {
+                    String line = stringTokenizer.nextToken().trim();
                     if ( line.startsWith( "rule " ) ) {
                         String name = getRuleName( line );
                         result.add( name );
