@@ -102,48 +102,34 @@ public class AssetItemGrid extends Composite {
      * Call this to set up a table config instead of loading it from the server. You then pass in the config name for later use.
      * Can save a round trip.
      */
-    public static void registerTableConfig(TableConfig tableConfig,
-                                           String tableConfigKey) {
+    public static void registerTableConfig(TableConfig tableConfig, String tableConfigKey) {
         if ( columnConfigs.containsKey( tableConfigKey ) ) {
             return;
         }
         ColumnModel cm = createColumnModel( tableConfig );
-        columnConfigs.put( tableConfigKey,
-                           cm );
+        columnConfigs.put( tableConfigKey, cm );
         RecordDef rd = createRecordDef( tableConfig );
-        recordDefs.put( tableConfigKey,
-                        rd );
-        rowsPerPage.put( tableConfigKey,
-                         new Integer( tableConfig.rowsPerPage ) );
+        recordDefs.put( tableConfigKey, rd );
+        rowsPerPage.put( tableConfigKey, new Integer( tableConfig.rowsPerPage ) );
     }
 
     /**
      * Create a grid using the given config - config will be loaded from the server if it is not already cached.
      * You can use registerTableConfig to register it to avoid a server hit.
      */
-    public AssetItemGrid(final EditItemEvent event,
-                         final String tableConfigKey,
-                         final AssetItemGridDataLoader source) {
+    public AssetItemGrid(final EditItemEvent event, final String tableConfigKey, final AssetItemGridDataLoader source) {
 
         this.editEvent = event;
         this.layout = new SimplePanel();
         if ( !columnConfigs.containsKey( tableConfigKey ) ) {
-            RepositoryServiceFactory.getService().loadTableConfig( tableConfigKey,
-                                                                   new GenericCallback<TableConfig>() {
-                                                                       public void onSuccess(TableConfig tableConfig) {
-                                                                           registerTableConfig( tableConfig,
-                                                                                                tableConfigKey );
-                                                                           doGrid( source,
-                                                                                   columnConfigs.get( tableConfigKey ),
-                                                                                   recordDefs.get( tableConfigKey ),
-                                                                                   tableConfig.rowsPerPage );
-                                                                       }
-                                                                   } );
+            RepositoryServiceFactory.getService().loadTableConfig( tableConfigKey, new GenericCallback<TableConfig>() {
+                public void onSuccess(TableConfig tableConfig) {
+                    registerTableConfig( tableConfig, tableConfigKey );
+                    doGrid( source, columnConfigs.get( tableConfigKey ), recordDefs.get( tableConfigKey ), tableConfig.rowsPerPage );
+                }
+            } );
         } else {
-            doGrid( source,
-                    columnConfigs.get( tableConfigKey ),
-                    recordDefs.get( tableConfigKey ),
-                    (rowsPerPage.get( tableConfigKey )).intValue() );
+            doGrid( source, columnConfigs.get( tableConfigKey ), recordDefs.get( tableConfigKey ), (rowsPerPage.get( tableConfigKey )).intValue() );
         }
 
         initWidget( layout );
@@ -152,13 +138,8 @@ public class AssetItemGrid extends Composite {
     /**
      * Similar to the other constructor, but takes an optional feedURL to show with an atom icon in the top right.
      */
-    public AssetItemGrid(final EditItemEvent event,
-                         final String tableConfig,
-                         final AssetItemGridDataLoader source,
-                         String feedURL) {
-        this( event,
-              tableConfig,
-              source );
+    public AssetItemGrid(final EditItemEvent event, final String tableConfig, final AssetItemGridDataLoader source, String feedURL) {
+        this( event, tableConfig, source );
         this.feedURL = feedURL;
     }
 
@@ -171,10 +152,7 @@ public class AssetItemGrid extends Composite {
     /**
      * Actually build the grid.
      */
-    private void doGrid(final AssetItemGridDataLoader source,
-                        final ColumnModel cm,
-                        final RecordDef rd,
-                        final int pageSize) {
+    private void doGrid(final AssetItemGridDataLoader source, final ColumnModel cm, final RecordDef rd, final int pageSize) {
         final int numFlds = rd.getFields().length;
 
         final boolean[] loaded = {false};
@@ -186,158 +164,128 @@ public class AssetItemGrid extends Composite {
 
         t.schedule( 90 );
 
-        source.loadData( cursorPositions.peek(),
-                         pageSize,
-                         new GenericCallback<TableDataResult>() {
-                             public void onSuccess(TableDataResult result) {
-                                 Object[][] gridData = new Object[result.data.length][];
-                                 for ( int i = 0; i < result.data.length; i++ ) {
-                                     TableDataRow row = result.data[i];
-                                     Object[] rowData = new Object[numFlds];
-                                     rowData[0] = row.id;
-                                     rowData[1] = row.format;
-                                     for ( int j = 2; j < numFlds; j++ ) {
-                                         if ( rd.getFields()[j] instanceof DateFieldDef ) {
-                                             Date dt = new Date( Long.parseLong( row.values[j - 2] ) );
-                                             //NOTE, GWTEXT only understands certain date formats, for example "yyyy/MM/dd"
-                                             //works but other formats such as "yyyy/MM/dd" or localized formats  is not recognizable 
-                                             //by GWTEXT. See http://code.google.com/p/gwt-ext/issues/detail?id=459&start=100.
-                                             DateTimeFormat format = DateTimeFormat.getFormat( "yyyy/MM/dd HH:mm" );
-                                             //DateTimeFormat format = DateTimeFormat.getFullDateFormat();
-                                             rowData[j] = format.format( dt );
-                                         } else {
-                                             rowData[j] = row.values[j - 2];
-                                         }
-                                     }
-                                     gridData[i] = rowData;
-                                 }
-                                 MemoryProxy proxy = new MemoryProxy( gridData );
-                                 ArrayReader reader = new ArrayReader( rd );
-                                 store = new Store( proxy,
-                                                    reader );
-                                 //currentGrid = new Grid(Ext.generateId(), "600px", "600px", store, cm);
-                                 currentGrid = new GridPanel( store,
-                                                              cm );
-                                 currentGrid.setWidth( 600 );
-                                 currentGrid.setHeight( 600 );
+        source.loadData( cursorPositions.peek(), pageSize, new GenericCallback<TableDataResult>() {
+            public void onSuccess(TableDataResult result) {
+                Object[][] gridData = new Object[result.data.length][];
+                for ( int i = 0; i < result.data.length; i++ ) {
+                    TableDataRow row = result.data[i];
+                    Object[] rowData = new Object[numFlds];
+                    rowData[0] = row.id;
+                    rowData[1] = row.format;
+                    for ( int j = 2; j < numFlds; j++ ) {
+                        if ( rd.getFields()[j] instanceof DateFieldDef ) {
+                            Date dt = new Date( Long.parseLong( row.values[j - 2] ) );
+                            //NOTE, GWTEXT only understands certain date formats, for example "yyyy/MM/dd"
+                            //works but other formats such as "yyyy/MM/dd" or localized formats  is not recognizable 
+                            //by GWTEXT. See http://code.google.com/p/gwt-ext/issues/detail?id=459&start=100.
+                            DateTimeFormat format = DateTimeFormat.getFormat( "yyyy/MM/dd HH:mm" );
+                            //DateTimeFormat format = DateTimeFormat.getFullDateFormat();
+                            rowData[j] = format.format( dt );
+                        } else {
+                            rowData[j] = row.values[j - 2];
+                        }
+                    }
+                    gridData[i] = rowData;
+                }
+                MemoryProxy proxy = new MemoryProxy( gridData );
+                ArrayReader reader = new ArrayReader( rd );
+                store = new Store( proxy, reader );
+                //currentGrid = new Grid(Ext.generateId(), "600px", "600px", store, cm);
+                currentGrid = new GridPanel( store, cm );
+                currentGrid.setWidth( 600 );
+                currentGrid.setHeight( 600 );
 
-                                 Toolbar tb = new Toolbar();
-                                 currentGrid.setTopToolbar( tb );
-                                 if ( result.total > -1 ) {
-                                     tb.addItem( new ToolbarTextItem( Format.format( constants.ShowingNofXItems().replace( "X",
-                                                                                                                           "{0}" ).replace( "Y",
-                                                                                                                                            "{1}" ), //NON-NLS
-                                                                                     new String[]{"" + result.data.length, "" + result.total} ) ) );
-                                 } else {
-                                     tb.addItem( new ToolbarTextItem( Format.format( constants.NItems().replace( "X",
-                                                                                                                 "{0}" ),
-                                                                                     new String[]{"" + result.data.length} ) ) );
+                Toolbar tb = new Toolbar();
+                currentGrid.setTopToolbar( tb );
+                if ( result.total > -1 ) {
+                    tb.addItem( new ToolbarTextItem( Format.format( constants.ShowingNofXItems().replace( "X", "{0}" ).replace( "Y", "{1}" ), //NON-NLS
+                                                                    new String[]{"" + result.data.length, "" + result.total} ) ) );
+                } else {
+                    tb.addItem( new ToolbarTextItem( Format.format( constants.NItems().replace( "X", "{0}" ), new String[]{"" + result.data.length} ) ) );
 
-                                 }
+                }
 
-                                 if ( cursorPositions.peek() > 0 ) {
-                                     navButton( source,
-                                                cm,
-                                                rd,
-                                                pageSize,
-                                                currentGrid,
-                                                false,
-                                                tb );
-                                 }
-                                 if ( result.hasNext ) {
-                                     navButton( source,
-                                                cm,
-                                                rd,
-                                                pageSize,
-                                                currentGrid,
-                                                true,
-                                                tb );
-                                 }
+                if ( cursorPositions.peek() > 0 ) {
+                    navButton( source, cm, rd, pageSize, currentGrid, false, tb );
+                }
+                if ( result.hasNext ) {
+                    navButton( source, cm, rd, pageSize, currentGrid, true, tb );
+                }
 
-                                 refresh = new Command() {
-                                     public void execute() {
-                                         layout.clear();
-                                         currentGrid.destroy();
-                                         doGrid( source,
-                                                 cm,
-                                                 rd,
-                                                 pageSize );
-                                     }
-                                 };
+                refresh = new Command() {
+                    public void execute() {
+                        layout.clear();
+                        currentGrid.destroy();
+                        doGrid( source, cm, rd, pageSize );
+                    }
+                };
 
-                                 ToolbarButton refreshB = new ToolbarButton();
-                                 refreshB.setText( constants.refreshList() );
-                                 refreshB.addListener( new ButtonListenerAdapter() {
-                                     public void onClick(Button button,
-                                                         EventObject e) {
-                                         refresh.execute();
-                                     }
-                                 } );
+                ToolbarButton refreshB = new ToolbarButton();
+                refreshB.setText( constants.refreshList() );
+                refreshB.addListener( new ButtonListenerAdapter() {
+                    public void onClick(Button button, EventObject e) {
+                        refresh.execute();
+                    }
+                } );
 
-                                 tb.addButton( refreshB );
+                tb.addButton( refreshB );
 
-                                 ToolbarButton openSelected = new ToolbarButton();
-                                 openSelected.setText( constants.openSelected() );
-                                 openSelected.addListener( new ButtonListenerAdapter() {
-                                     public void onClick(Button button,
-                                                         EventObject e) {
-                                         Record[] selections = currentGrid.getSelectionModel().getSelections();
-                                         for ( Record record : selections ) {
-                                             String uuid = record.getAsString( "uuid" );
-                                             editEvent.open( uuid );
-                                         }
-                                     }
-                                 } );
-                                 tb.addButton( openSelected );
-                                 ToolbarButton openSelectedToSingleTab = new ToolbarButton();
-                                 openSelectedToSingleTab.setText( constants.openSelectedToSingleTab() );
-                                 openSelectedToSingleTab.addListener( new ButtonListenerAdapter() {
-                                     public void onClick(Button button,
-                                                         EventObject e) {
-                                         Record[] selections = currentGrid.getSelectionModel().getSelections();
-                                         MultiViewRow[] rows = new MultiViewRow[selections.length];
-                                         for ( int i = 0; i < selections.length; i++ ) {
-                                             MultiViewRow row = new MultiViewRow();
-                                             row.uuid = selections[i].getAsString( "uuid" );
-                                             row.name = selections[i].getAsString( "Name" );
-                                             row.format = selections[i].getAsString( "format" );
-                                             rows[i] = row;
-                                         }
-                                         editEvent.open( rows );
-                                     }
-                                 } );
-                                 tb.addButton( openSelectedToSingleTab );
+                ToolbarButton openSelected = new ToolbarButton();
+                openSelected.setText( constants.openSelected() );
+                openSelected.addListener( new ButtonListenerAdapter() {
+                    public void onClick(Button button, EventObject e) {
+                        Record[] selections = currentGrid.getSelectionModel().getSelections();
+                        for ( Record record : selections ) {
+                            String uuid = record.getAsString( "uuid" );
+                            editEvent.open( uuid );
+                        }
+                    }
+                } );
+                tb.addButton( openSelected );
+                ToolbarButton openSelectedToSingleTab = new ToolbarButton();
+                openSelectedToSingleTab.setText( constants.openSelectedToSingleTab() );
+                openSelectedToSingleTab.addListener( new ButtonListenerAdapter() {
+                    public void onClick(Button button, EventObject e) {
+                        Record[] selections = currentGrid.getSelectionModel().getSelections();
+                        MultiViewRow[] rows = new MultiViewRow[selections.length];
+                        for ( int i = 0; i < selections.length; i++ ) {
+                            MultiViewRow row = new MultiViewRow();
+                            row.uuid = selections[i].getAsString( "uuid" );
+                            row.name = selections[i].getAsString( "Name" );
+                            row.format = selections[i].getAsString( "format" );
+                            rows[i] = row;
+                        }
+                        editEvent.open( rows );
+                    }
+                } );
+                tb.addButton( openSelectedToSingleTab );
 
-                                 if ( feedURL != null ) {
-                                     tb.addFill();
-                                     //System.err.println("Base: " + GWT.getModuleBaseURL());
-                                     //System.err.println("URL: " + com.google.gwt.user.client.Window.Location.getHref());
+                if ( feedURL != null ) {
+                    tb.addFill();
+                    //System.err.println("Base: " + GWT.getModuleBaseURL());
+                    //System.err.println("URL: " + com.google.gwt.user.client.Window.Location.getHref());
 
-                                     ToolbarItem item = new ToolbarItem( new HTML(
+                    ToolbarItem item = new ToolbarItem( new HTML(
 
-                                     Format.format( "<a href='{0}' target='_blank'><img src='{1}'/></a>",
-                                                    feedURL,
-                                                    new Image( images.feed() ).getUrl() ) ).getElement() );
-                                     tb.addItem( item );
-                                 }
+                    Format.format( "<a href='{0}' target='_blank'><img src='{1}'/></a>", feedURL, new Image( images.feed() ).getUrl() ) ).getElement() );
+                    tb.addItem( item );
+                }
 
-                                 currentGrid.addGridRowListener( new GridRowListenerAdapter() {
-                                     public void onRowDblClick(GridPanel grid,
-                                                               int rowIndex,
-                                                               EventObject e) {
-                                         String uuid = grid.getSelectionModel().getSelected().getAsString( "uuid" );
-                                         editEvent.open( uuid );
-                                     }
-                                 } );
-                                 store.load();
-                                 layout.add( currentGrid );
-                                 //store the end position
-                                 currentCursorPosition = (int) result.currentPosition;
-                                 loaded[0] = true;
-                                 LoadingPopup.close();
-                             }
+                currentGrid.addGridRowListener( new GridRowListenerAdapter() {
+                    public void onRowDblClick(GridPanel grid, int rowIndex, EventObject e) {
+                        String uuid = grid.getSelectionModel().getSelected().getAsString( "uuid" );
+                        editEvent.open( uuid );
+                    }
+                } );
+                store.load();
+                layout.add( currentGrid );
+                //store the end position
+                currentCursorPosition = (int) result.currentPosition;
+                loaded[0] = true;
+                LoadingPopup.close();
+            }
 
-                         } );
+        } );
     }
 
     public String getSelectedRowUUID() {
@@ -362,13 +310,7 @@ public class AssetItemGrid extends Composite {
         }
     }
 
-    private void navButton(final AssetItemGridDataLoader source,
-                           final ColumnModel cm,
-                           final RecordDef rd,
-                           final int pageSize,
-                           final GridPanel g,
-                           final boolean forward,
-                           Toolbar tb) {
+    private void navButton(final AssetItemGridDataLoader source, final ColumnModel cm, final RecordDef rd, final int pageSize, final GridPanel g, final boolean forward, Toolbar tb) {
 
         ToolbarButton b = new ToolbarButton();
         b.setText( (forward) ? constants.Next() : constants.Previous() );
@@ -376,8 +318,7 @@ public class AssetItemGrid extends Composite {
         tb.addButton( b );
 
         b.addListener( new ButtonListenerAdapter() {
-            public void onClick(Button button,
-                                EventObject e) {
+            public void onClick(Button button, EventObject e) {
                 if ( forward ) {
                     //int newPos = currentCursorPosition - 2;
                     int newPos = currentCursorPosition;
@@ -389,10 +330,7 @@ public class AssetItemGrid extends Composite {
                 }
                 layout.clear();
                 g.destroy();
-                doGrid( source,
-                        cm,
-                        rd,
-                        pageSize );
+                doGrid( source, cm, rd, pageSize );
             }
         } );
 
@@ -401,16 +339,12 @@ public class AssetItemGrid extends Composite {
             tb.addButton( first );
             first.addListener( new ButtonListenerAdapter() {
                 @Override
-                public void onClick(Button button,
-                                    EventObject e) {
+                public void onClick(Button button, EventObject e) {
                     cursorPositions.clear();
                     cursorPositions.push( 0 );
                     layout.clear();
                     g.destroy();
-                    doGrid( source,
-                            cm,
-                            rd,
-                            pageSize );
+                    doGrid( source, cm, rd, pageSize );
                 }
             } );
 
@@ -456,42 +390,41 @@ public class AssetItemGrid extends Composite {
                     setSortable( true );
                     setDataIndex( header );
                     if ( header.equals( "Name" ) ) { //name is special !
-                        setWidth( 220 );
-                        setRenderer( new Renderer() {
-                            public String render(Object value,
-                                                 CellMetadata cellMetadata,
-                                                 Record record,
-                                                 int rowIndex,
-                                                 int colNum,
-                                                 Store store) {
-                                String fmtIcon = new Image( EditorLauncher.getAssetFormatIcon( record.getAsString( "format" ) ) ).getUrl();
-                                String desc = record.getAsString( "Description" );
-                                if ( desc == null ) {
-                                    desc = "";
-                                }
-                                return Format.format( "<img src='{0}'/>&nbsp;<b>{1}</b><br/><small>{2}</small>",
-                                                      new String[]{fmtIcon, (String) value, desc} );
-                            }
-                        } );
+                        handleName();
                     } else if ( headerType.equals( "class java.util.Calendar" ) ) {
-                        setWidth( 120 );
-                        setRenderer( new Renderer() {
-                            public String render(Object value,
-                                                 CellMetadata cellMetadata,
-                                                 Record record,
-                                                 int rowIndex,
-                                                 int colNum,
-                                                 Store store) {
-                                //DateTimeFormat format = DateTimeFormat.getMediumDateFormat();
-                                DateTimeFormat format = DateTimeFormat.getFormat( "yyyy/MM/dd HH:mm" );
-                                //System.out.println("----format.format( (Date) value  )" + format.format( (Date) value  ));
-                                return format.format( (Date) value );
-                            }
-                        } );
+                        handleCalendar();
                     } else if ( header.equals( "Description" ) ) {
-                        setHidden( true ); //don't want to show a separate description
+                        handleDescription();
                     }
 
+                }
+
+                private void handleDescription() {
+                    setHidden( true ); //don't want to show a separate description
+                }
+
+                private void handleCalendar() {
+                    setWidth( 120 );
+                    setRenderer( new Renderer() {
+                        public String render(Object value, CellMetadata cellMetadata, Record record, int rowIndex, int colNum, Store store) {
+                            DateTimeFormat format = DateTimeFormat.getFormat( "yyyy/MM/dd HH:mm" );
+                            return format.format( (Date) value );
+                        }
+                    } );
+                }
+
+                private void handleName() {
+                    setWidth( 220 );
+                    setRenderer( new Renderer() {
+                        public String render(Object value, CellMetadata cellMetadata, Record record, int rowIndex, int colNum, Store store) {
+                            String fmtIcon = new Image( EditorLauncher.getAssetFormatIcon( record.getAsString( "format" ) ) ).getUrl();
+                            String desc = record.getAsString( "Description" );
+                            if ( desc == null ) {
+                                desc = "";
+                            }
+                            return Format.format( "<img src='{0}'/>&nbsp;<b>{1}</b><br/><small>{2}</small>", new String[]{fmtIcon, (String) value, desc} );
+                        }
+                    } );
                 }
 
                 /**
