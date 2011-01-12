@@ -17,10 +17,15 @@
 		.bold {
 			font-weight: bold;
 		}
+		
+		.alignTop {
+			vertical-align: top;
+			text-align: left;
+		}
 	</ui:style>
 	<gwt:VerticalPanel>
 		<gwt:HTMLPanel>
-			<table>
+			<table styleName='{style.alignTop}'>
 				<tr>
 					<td>
 						<gwt:Label text='{i18n.OverallResult}'></gwt:Label>
@@ -63,14 +68,7 @@
 				</tr>
 			</table>
 		</gwt:HTMLPanel>
-		<gwt:HTMLPanel>
-			<table>
-				<tr>
-					<td></td>
-					<td></td>
-				</tr>
-			</table>
-		</gwt:HTMLPanel>
+		<gwt:FlexTable ui:field="summaryTable"></gwt:FlexTable>
 		<gwt:Button ui:field="closeButton" text='{i18n.Close}'></gwt:Button>
 	</gwt:VerticalPanel>
 </ui:UiBinder>

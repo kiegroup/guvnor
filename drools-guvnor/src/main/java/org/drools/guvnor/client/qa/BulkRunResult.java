@@ -45,6 +45,8 @@ public class BulkRunResult
         this.result = result;
         this.editEvent = editEvent;
 
+        display.setPresenter( this );
+
         bind();
     }
 
@@ -61,8 +63,6 @@ public class BulkRunResult
         ScenarioResultSummary[] summaries = result.getResults();
         int percentCovered = result.getPercentCovered();
         String[] rulesNotCovered = result.getRulesNotCovered();
-
-        display.showResult( percentCovered );
 
         int grandTotal = 0;
         int totalFailures = 0;
@@ -94,7 +94,7 @@ public class BulkRunResult
         close.execute();
     }
 
-    public void onOpen(String uuid) {
+    public void onOpenTestScenario(String uuid) {
         editEvent.open( uuid );
     }
 

@@ -9,13 +9,11 @@ interface BulkRunResultView {
     interface Presenter {
         void onClose();
 
-        void onOpen(String uuid);
+        void onOpenTestScenario(String uuid);
     }
 
     void showErrors(BuilderResult errors,
                     EditItemEvent editEvent);
-
-    void showResult(int percentCovered);
 
     void setPresenter(Presenter presenter);
 

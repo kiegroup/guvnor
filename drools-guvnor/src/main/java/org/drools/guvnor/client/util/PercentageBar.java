@@ -56,11 +56,13 @@ public class PercentageBar extends HTML {
 
     public void render() {
         int pixels = (int) (width * (percent / 100));
+        String p = Float.toString( percent );
+
         setHTML( TEMPLATE.mainHtml( width,
                                     TEMPLATE.barHtml( pixels,
                                                       colour ),
                                     TEMPLATE.textHtml( width,
-                                                       Float.toString( percent ) ) ) );
+                                                       p ) ) );
     }
 
     private static int calculatePercent(int numerator,
@@ -77,6 +79,10 @@ public class PercentageBar extends HTML {
     public void setColour(String colour) {
         this.colour = colour;
         render();
+    }
+
+    public void setWidth(String width) {
+        setWidth( Integer.parseInt( width ) );
     }
 
     public void setWidth(int width) {

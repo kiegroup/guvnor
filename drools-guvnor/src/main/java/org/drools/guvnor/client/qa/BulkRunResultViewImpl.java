@@ -85,19 +85,6 @@ public class BulkRunResultViewImpl extends Composite
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public void showResult(int percentCovered) {
-        //
-        //        PrettyFormLayout layout = new PrettyFormLayout();
-        //        //add the summary to the layout
-        //        summaryTable.setWidth( "100%" );
-        //
-        //        layout.addAttribute( "",
-        //                             summaryTable );
-        //
-        //        layout.endSection();
-
-    }
-
     @UiHandler("closeButton")
     void close(ClickEvent clickEvent) {
         presenter.onClose();
@@ -144,6 +131,8 @@ public class BulkRunResultViewImpl extends Composite
             coveredPercentBar.setPercent( 100 );
         }
 
+        coveredPercentBar.render();
+
         ruleCoveragePercent.setText( Format.format( constants.RuleCoveragePercent(),
                                                     percentCovered ) );
     }
@@ -164,7 +153,7 @@ public class BulkRunResultViewImpl extends Composite
                                     1,
                                     new PercentageBar( "#CC0000",
                                                        150,
-                                                       summary.getTotal() - summary.getFailures(),
+                                                       summary.getFailures(),
                                                        summary.getTotal() ) );
         } else {
             summaryTable.setWidget( i,
@@ -182,7 +171,7 @@ public class BulkRunResultViewImpl extends Composite
         Button open = new Button( constants.Open() );
         open.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                presenter.onOpen( summary.getUuid() );
+                presenter.onOpenTestScenario( summary.getUuid() );
             }
         } );
         summaryTable.setWidget( i,
@@ -198,11 +187,6 @@ public class BulkRunResultViewImpl extends Composite
         PackageBuilderWidget.showBuilderErrors( errors,
                                                 err,
                                                 editEvent );
-        //        layout.startSection( constants.BuildErrorsUnableToRunScenarios() );
-        //
-        //        layout.addRow( err );
-        //
-        //        layout.endSection();
     }
 
     public void setPresenter(Presenter presenter) {
