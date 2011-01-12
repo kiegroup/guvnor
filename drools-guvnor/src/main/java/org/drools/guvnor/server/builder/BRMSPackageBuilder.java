@@ -15,6 +15,7 @@
  */
 
 package org.drools.guvnor.server.builder;
+
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -30,8 +31,6 @@ package org.drools.guvnor.server.builder;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -72,8 +71,8 @@ import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 public class BRMSPackageBuilder extends PackageBuilder {
 
     private List<DSLTokenizedMappingFile> dslFiles;
-    private DefaultExpander expander;
-    
+    private DefaultExpander               expander;
+
     /**
      * This will give you a fresh new PackageBuilder
      * using the given classpath.
@@ -81,26 +80,23 @@ public class BRMSPackageBuilder extends PackageBuilder {
      * @param buildProps Properties to pass into the package builder configuration.
      */
     public static BRMSPackageBuilder getInstance(List<JarInputStream> classpath, Properties buildProps) {
-        MapBackedClassLoader loader = createClassLoader(classpath);
-
+        MapBackedClassLoader loader = createClassLoader( classpath );
 
         // See if we can find a packagebuilder.conf
         // We do this manually here, as we cannot rely on PackageBuilder doing this correctly
         // note this chainedProperties already checks System properties too
-        ChainedProperties chainedProperties = new ChainedProperties( "packagebuilder.conf",
-        		BRMSPackageBuilder.class.getClassLoader(), // pass this as it searches currentThread anyway
-        		false ); // false means it ignores any default values
+        ChainedProperties chainedProperties = new ChainedProperties( "packagebuilder.conf", BRMSPackageBuilder.class.getClassLoader(), // pass this as it searches currentThread anyway
+                                                                     false ); // false means it ignores any default values
 
         // the default compiler. This is nominally JANINO but can be overridden by setting drools.dialect.java.compiler to ECLIPSE
         Properties properties = new Properties();
-        properties.setProperty( "drools.dialect.java.compiler",
-                                chainedProperties.getProperty( "drools.dialect.java.compiler", "ECLIPSE" ) );
-        properties.putAll(buildProps);
-        PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration( properties,  loader);
-        
-        pkgConf.setAllowMultipleNamespaces(false);
-        pkgConf.addSemanticModule(new BPMNSemanticModule());
-        pkgConf.addSemanticModule(new BPMNDISemanticModule());
+        properties.setProperty( "drools.dialect.java.compiler", chainedProperties.getProperty( "drools.dialect.java.compiler", "ECLIPSE" ) );
+        properties.putAll( buildProps );
+        PackageBuilderConfiguration pkgConf = new PackageBuilderConfiguration( properties, loader );
+
+        pkgConf.setAllowMultipleNamespaces( false );
+        pkgConf.addSemanticModule( new BPMNSemanticModule() );
+        pkgConf.addSemanticModule( new BPMNDISemanticModule() );
 
         return new BRMSPackageBuilder( pkgConf );
 
@@ -109,14 +105,11 @@ public class BRMSPackageBuilder extends PackageBuilder {
     /**
      * For a given list of Jars, create a class loader.
      */
-	public static MapBackedClassLoader createClassLoader(
-			List<JarInputStream> classpath) {
-		ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
+    public static MapBackedClassLoader createClassLoader(List<JarInputStream> classpath) {
+        ClassLoader parentClassLoader = Thread.currentThread().getContextClassLoader();
         if ( parentClassLoader == null ) {
             parentClassLoader = BRMSPackageBuilder.class.getClassLoader();
         }
-
-
 
         final ClassLoader p = parentClassLoader;
 
@@ -124,8 +117,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
             public MapBackedClassLoader run() {
                 return new MapBackedClassLoader( p );
             }
-        });
-
+        } );
 
         try {
             for ( JarInputStream jis : classpath ) {
@@ -139,7 +131,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
                             out.write( buf, 0, len );
                         }
 
-                        loader.addResource( entry.getName() , out.toByteArray() );
+                        loader.addResource( entry.getName(), out.toByteArray() );
                     }
                 }
 
@@ -147,21 +139,19 @@ public class BRMSPackageBuilder extends PackageBuilder {
         } catch ( IOException e ) {
             throw new RulesRepositoryException( e );
         }
-		return loader;
-	}
-
+        return loader;
+    }
 
     /**
      * In the BRMS you should not need to use this, use the getInstance factory method instead.
      * @param config
      */
-    private BRMSPackageBuilder(
-                              PackageBuilderConfiguration config) {
+    private BRMSPackageBuilder(PackageBuilderConfiguration config) {
         super( config );
     }
 
     public BRMSPackageBuilder() {
-        super(new PackageBuilderConfiguration());
+        super( new PackageBuilderConfiguration() );
     }
 
     /**
@@ -187,22 +177,21 @@ public class BRMSPackageBuilder extends PackageBuilder {
         AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DSL} );
         while ( it.hasNext() ) {
             AssetItem item = it.next();
-            if (!item.getDisabled()) {
+            if ( !item.getDisabled() ) {
                 String dslData = item.getContent();
                 DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
                 try {
                     if ( file.parseAndLoad( new StringReader( dslData ) ) ) {
                         result.add( file );
                     } else {
-                        List errs = file.getErrors();
-                        for ( Iterator iter = errs.iterator(); iter.hasNext(); ) {
+                        for ( Iterator iter = file.getErrors().iterator(); iter.hasNext(); ) {
                             DSLMappingParseException e = (DSLMappingParseException) iter.next();
                             err.recordError( item, "Line " + e.getLine() + " : " + e.getMessage() );
                         }
                     }
 
                 } catch ( IOException e ) {
-                    throw new RulesRepositoryException(e);
+                    throw new RulesRepositoryException( e );
                 }
             }
 
@@ -221,10 +210,9 @@ public class BRMSPackageBuilder extends PackageBuilder {
             AssetItem item = (AssetItem) ait.next();
             if ( item.getBinaryContentAttachment() != null ) {
                 try {
-                    result.add( new JarInputStream( item.getBinaryContentAttachment(),
-                                                    false ) );
+                    result.add( new JarInputStream( item.getBinaryContentAttachment(), false ) );
                 } catch ( IOException e ) {
-                    throw new RulesRepositoryException(e);
+                    throw new RulesRepositoryException( e );
                 }
             }
         }
@@ -249,7 +237,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
      * Returns an expander for DSLs (only if there is a DSL configured for this package).
      */
     public DefaultExpander getDSLExpander() {
-        if (this.expander == null) {
+        if ( this.expander == null ) {
             expander = new DefaultExpander();
             for ( DSLMappingFile file : this.dslFiles ) {
                 expander.addDSLMapping( file.getMapping() );
