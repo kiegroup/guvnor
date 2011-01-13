@@ -68,8 +68,6 @@ public class TestEnvironmentSessionHelper {
                 }
                 repository = config.getJCRRepository();
 
-                Thread.sleep( 2000 );
-
                 Session testSession = repository.login( new SimpleCredentials( "alan_parsons",
                                                                                "password".toCharArray() ) );
 
@@ -91,7 +89,6 @@ public class TestEnvironmentSessionHelper {
             }
         } else {
             try {
-                Thread.sleep( 2000 );
                 return repository.login( new SimpleCredentials( "alan_parsons",
                                                                 "password".toCharArray() ) );
             } catch ( Exception e ) {

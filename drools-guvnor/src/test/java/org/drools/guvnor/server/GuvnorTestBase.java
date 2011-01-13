@@ -34,17 +34,15 @@ import org.jboss.seam.contexts.Lifecycle;
  */
 public class GuvnorTestBase {
 
+    private RulesRepository repository;
+
     protected ServiceImplementation getServiceImplementation() {
         return (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
     }
 
     protected RulesRepository getRulesRepository() {
-        RulesRepository repository = (RulesRepository) Component.getInstance( "repository" );
-
         if ( repository == null ) {
             repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
-            Contexts.getEventContext().set( "repository",
-                                            repository );
         }
 
         return repository;
@@ -77,6 +75,7 @@ public class GuvnorTestBase {
     }
 
     protected void tearAllDown() {
+        repository = null;
         Contexts.removeFromAllContexts( "repository" );
         Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.RepositoryService" );
         Contexts.getApplicationContext().flush();
