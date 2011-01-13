@@ -38,23 +38,29 @@ public class GuvnorTestBase {
         return (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
     }
 
-    protected void setUpSeam() {
+    protected RulesRepository getRulesRepository() {
+        RulesRepository repository = (RulesRepository) Component.getInstance( "repository" );
 
-        RulesRepository repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
-        ServiceImplementation serviceImplementation = new ServiceImplementation();
-        serviceImplementation.repository = repository;
+        if ( repository == null ) {
+            repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+            Contexts.getEventContext().set( "repository",
+                                            repository );
+        }
+
+        return repository;
+    }
+
+    protected void setUpSeam() {
 
         // setting it to false as most unit tests in this file assume no signing
         System.setProperty( KeyStoreHelper.PROP_SIGN,
                             "false" );
         Map<String, Object> application = new HashMap<String, Object>();
-        //        application.put( "repository",
-        //                         repository );
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
 
-        //        Contexts.getEventContext().set( "repository",
-        //                                        repository );
+        ServiceImplementation serviceImplementation = new ServiceImplementation();
+        serviceImplementation.repository = getRulesRepository();
 
         Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
                                           serviceImplementation );
@@ -73,6 +79,11 @@ public class GuvnorTestBase {
     protected void tearAllDown() {
         Contexts.removeFromAllContexts( "repository" );
         Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.RepositoryService" );
+        Contexts.getApplicationContext().flush();
+        Contexts.getEventContext().flush();
+        Contexts.getSessionContext().flush();
+        Contexts.getBusinessProcessContext().flush();
+        Contexts.getConversationContext().flush();
 
         if ( Contexts.isApplicationContextActive() ) {
 

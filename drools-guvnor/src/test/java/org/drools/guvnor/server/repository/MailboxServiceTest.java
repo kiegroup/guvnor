@@ -21,23 +21,34 @@ import static org.junit.Assert.assertSame;
 
 import java.util.List;
 
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.junit.After;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * 
  * @author Michael Neale
  */
-public class MailboxServiceTest {
+public class MailboxServiceTest extends GuvnorTestBase {
+
+    @Before
+    public void setUp() {
+        setUpSeam();
+        setUpMockIdentity();
+    }
+
+    @After
+    public void tearDown() {
+        tearAllDown();
+    }
 
     @Test
     public void testMailbox() throws Exception {
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        RulesRepository repo = getRulesRepository();
 
         MailboxService service = MailboxService.getInstance();
         service.init( repo );
@@ -123,7 +134,7 @@ public class MailboxServiceTest {
 
     @Test
     public void testOneToMany() throws Exception {
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        RulesRepository repo = getRulesRepository();
 
         MailboxService service = MailboxService.getInstance();
         service.init( repo );
@@ -168,11 +179,4 @@ public class MailboxServiceTest {
                       ib3.loadIncoming().size() );
 
     }
-
-    @After
-    public void tearDown() throws Exception {
-        MailboxService.getInstance().stop();
-        TestEnvironmentSessionHelper.shutdown();
-    }
-
 }
