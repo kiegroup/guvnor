@@ -58,7 +58,6 @@ public class GuvnorTestBase {
 
         Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
                                           serviceImplementation );
-
     }
 
     protected void setUpMockIdentity() {

@@ -61,10 +61,10 @@ public class PopulateDataTest extends GuvnorTestBase {
         setUpMockIdentity();
     }
 
-    @After
-    public void tearDown() {
-        tearAllDown();
-    }
+//    @After
+//    public void tearDown() {
+//        tearAllDown();
+//    }
 
     @Test
     public void testPopulate() throws Exception {
