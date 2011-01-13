@@ -50,15 +50,15 @@ import org.junit.Test;
 public class FileManagerUtilsTest {
     private Session session;
 
-    @Before
-    public void setUp() throws Exception {
-        session = TestEnvironmentSessionHelper.getSession( true );
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        TestEnvironmentSessionHelper.shutdown();
-    }
+//    @Before
+//    public void setUp() throws Exception {
+//        session = TestEnvironmentSessionHelper.getSession( true );
+//    }
+//
+//    @After
+//    public void tearDown() throws Exception {
+//        TestEnvironmentSessionHelper.shutdown();
+//    }
 
     @Ignore
     @Test
