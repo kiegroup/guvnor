@@ -78,11 +78,11 @@ public class GuvnorTestBase {
         repository = null;
         Contexts.removeFromAllContexts( "repository" );
         Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.RepositoryService" );
-        Contexts.getApplicationContext().flush();
-        Contexts.getEventContext().flush();
-        Contexts.getSessionContext().flush();
-        Contexts.getBusinessProcessContext().flush();
-        Contexts.getConversationContext().flush();
+        if ( Contexts.getApplicationContext() != null ) Contexts.getApplicationContext().flush();
+        if ( Contexts.getEventContext() != null ) Contexts.getEventContext().flush();
+        if ( Contexts.getSessionContext() != null ) Contexts.getSessionContext().flush();
+        if ( Contexts.isApplicationContextActive() && Contexts.getBusinessProcessContext() != null ) Contexts.getBusinessProcessContext().flush();
+        if ( Contexts.getConversationContext() != null ) Contexts.getConversationContext().flush();
 
         if ( Contexts.isApplicationContextActive() ) {
 
