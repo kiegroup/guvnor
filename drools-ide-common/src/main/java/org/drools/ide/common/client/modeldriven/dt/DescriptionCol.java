@@ -26,16 +26,6 @@ public class DescriptionCol extends DTColumnConfig {
 
 	private static final long serialVersionUID = -306736594255777798L;
 
-	private String description;
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -44,27 +34,14 @@ public class DescriptionCol extends DTColumnConfig {
 		if (!(obj instanceof DescriptionCol)) {
 			return false;
 		}
-		DescriptionCol that = (DescriptionCol) obj;
-		return nullOrEqual(this.description, that.description)
-				&& super.equals(obj);
+		return super.equals(obj);
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 1;
-		hash = hash * 31 + (description == null ? 0 : description.hashCode());
 		hash = hash * 31 + super.hashCode();
 		return hash;
-	}
-
-	private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
-		if (thisAttr == null && thatAttr == null) {
-			return true;
-		}
-		if (thisAttr == null && thatAttr != null) {
-			return false;
-		}
-		return thisAttr.equals(thatAttr);
 	}
 
 }

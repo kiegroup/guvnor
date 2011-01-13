@@ -26,16 +26,6 @@ public class RowNumberCol extends DTColumnConfig {
 
 	private static final long serialVersionUID = -2272148755430209968L;
 
-	private int rowNumber;
-
-	public int getRowNumber() {
-		return rowNumber;
-	}
-
-	public void setRowNumber(int rowNumber) {
-		this.rowNumber = rowNumber;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -44,14 +34,12 @@ public class RowNumberCol extends DTColumnConfig {
 		if (!(obj instanceof RowNumberCol)) {
 			return false;
 		}
-		RowNumberCol that = (RowNumberCol) obj;
-		return this.rowNumber == that.rowNumber && super.equals(obj);
+		return super.equals(obj);
 	}
 
 	@Override
 	public int hashCode() {
 		int hash = 1;
-		hash = hash * 31 + rowNumber;
 		hash = hash * 31 + super.hashCode();
 		return hash;
 	}
