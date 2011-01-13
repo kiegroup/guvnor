@@ -111,16 +111,16 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class ServiceImplementationTest extends GuvnorTestBase {
 
-    @Before
-    public void setUp() {
-        setUpSeam();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() {
-        tearAllDown();
-    }
+//    @Before
+//    public void setUp() {
+//        setUpSeam();
+//        setUpMockIdentity();
+//    }
+//
+//    @After
+//    public void tearDown() {
+//        tearAllDown();
+//    }
 
     @Test
     @Ignore("this test fail intermittently")
@@ -211,28 +211,31 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testCategory() throws Exception {
+        RulesRepository repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
+        ServiceImplementation serviceImplementation = new ServiceImplementation();
+        serviceImplementation.repository = repository;
 
-        String[] originalCats = getServiceImplementation().loadChildCategories( "/" );
+        String[] originalCats = serviceImplementation.loadChildCategories( "/" );
 
-        Boolean result = getServiceImplementation().createCategory( "/",
+        Boolean result = serviceImplementation.createCategory( "/",
                                                                     "TopLevel1",
                                                                     "a description" );
         assertTrue( result.booleanValue() );
 
-        result = getServiceImplementation().createCategory( "/",
+        result = serviceImplementation.createCategory( "/",
                                                             "TopLevel2",
                                                             "a description" );
         assertTrue( result.booleanValue() );
 
-        String[] cats = getServiceImplementation().loadChildCategories( "/" );
+        String[] cats = serviceImplementation.loadChildCategories( "/" );
         assertTrue( cats.length == originalCats.length + 2 );
 
-        result = getServiceImplementation().createCategory( "",
+        result = serviceImplementation.createCategory( "",
                                                             "Top3",
                                                             "description" );
         assertTrue( result.booleanValue() );
 
-        result = getServiceImplementation().createCategory( null,
+        result = serviceImplementation.createCategory( null,
                                                             "Top4",
                                                             "description" );
         assertTrue( result.booleanValue() );
