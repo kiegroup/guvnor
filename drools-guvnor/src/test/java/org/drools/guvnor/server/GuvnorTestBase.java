@@ -23,6 +23,8 @@ import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.repository.RulesRepository;
+import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 
@@ -33,22 +35,35 @@ import org.jboss.seam.contexts.Lifecycle;
 public class GuvnorTestBase {
 
     protected ServiceImplementation getServiceImplementation() {
-        return RepositoryServiceServlet.getService();
+        return (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
     }
 
     protected void setUpSeam() {
+
+        RulesRepository repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
+        ServiceImplementation serviceImplementation = new ServiceImplementation();
+        serviceImplementation.repository = repository;
+
         // setting it to false as most unit tests in this file assume no signing
         System.setProperty( KeyStoreHelper.PROP_SIGN,
                             "false" );
         Map<String, Object> application = new HashMap<String, Object>();
-        application.put( "org.drools.guvnor.client.rpc.RepositoryService",
-                         getServiceImplementation() );
+        //        application.put( "repository",
+        //                         repository );
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
+
+        //        Contexts.getEventContext().set( "repository",
+        //                                        repository );
+
+        Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
+                                          serviceImplementation );
+
     }
 
     protected void setUpMockIdentity() {
         MockIdentity mockIdentity = new MockIdentity();
+        mockIdentity.setIsLoggedIn( true );
         mockIdentity.inject();
         mockIdentity.create();
         RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
