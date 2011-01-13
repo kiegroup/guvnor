@@ -25,7 +25,7 @@
 	</ui:style>
 	<gwt:VerticalPanel>
 		<gwt:HTMLPanel>
-			<table>
+			<table class="guvnor-FormPanel">
 				<tr>
 					<td align="right" style="vertical-align: top;">
 						<gwt:Label text='{i18n.OverallResult}'></gwt:Label>
@@ -42,6 +42,7 @@
 						<gwt:HorizontalPanel>
 							<guvnor-util:PercentageBar ui:field="resultsBar"
 								width="300"></guvnor-util:PercentageBar>
+							<gwt:HTML>&nbsp;</gwt:HTML>
 							<guvnor-common:SmallLabel ui:field="failuresOutOfExpectations"></guvnor-common:SmallLabel>
 						</gwt:HorizontalPanel>
 					</td>
@@ -54,6 +55,7 @@
 						<gwt:HorizontalPanel>
 							<guvnor-util:PercentageBar ui:field="coveredPercentBar"
 								width="300"></guvnor-util:PercentageBar>
+							<gwt:HTML>&nbsp;</gwt:HTML>
 							<guvnor-common:SmallLabel ui:field="ruleCoveragePercent"></guvnor-common:SmallLabel>
 						</gwt:HorizontalPanel>
 					</td>
@@ -68,7 +70,11 @@
 				</tr>
 			</table>
 		</gwt:HTMLPanel>
-		<gwt:FlexTable ui:field="summaryTable"></gwt:FlexTable>
-		<gwt:Button ui:field="closeButton" text='{i18n.Close}'></gwt:Button>
+		<gwt:HTMLPanel>
+			<div class="guvnor-FormPanel">
+				<gwt:FlexTable ui:field="summaryTable"></gwt:FlexTable>
+				<gwt:Button ui:field="closeButton" text='{i18n.Close}'></gwt:Button>
+			</div>
+		</gwt:HTMLPanel>
 	</gwt:VerticalPanel>
 </ui:UiBinder>

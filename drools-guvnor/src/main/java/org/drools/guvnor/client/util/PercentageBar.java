@@ -1,42 +1,31 @@
 package org.drools.guvnor.client.util;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 
-public class PercentageBar extends HTML {
+public class PercentageBar extends Composite {
 
-    interface PercentageBarTemplate
+    interface PercentageBarBinder
         extends
-        SafeHtmlTemplates {
-
-        @Template("<div class=\"smallish-progress-bar\" style=\"width: {0}px; background-color: {1};\"></div>")
-        SafeHtml barHtml(int pixels,
-                         String colour);
-
-        @Template("<div class=\"smallish-progress-text\" style=\"width: {0}px\">{1} %</div>")
-        SafeHtml textHtml(int width,
-                          String percent);
-
-        @Template("<div class=\"smallish-progress-wrapper\" style=\"width: {0}px\">{1}{2}</div>")
-        SafeHtml mainHtml(int width,
-                          SafeHtml bar,
-                          SafeHtml text);
+        UiBinder<Widget, PercentageBar> {
     }
 
-    private static final PercentageBarTemplate TEMPLATE = GWT.create( PercentageBarTemplate.class );
+    private static PercentageBarBinder uiBinder = GWT.create( PercentageBarBinder.class );
 
-    private String                             colour   = "GREEN";
-    private int                                width    = 100;
-    private float                              percent  = 100;
+    private String                     colour   = "GREEN";
+    private int                        width    = 100;
+    private float                      percent  = 100;
 
     public PercentageBar() {
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     public PercentageBar(String colour,
                          int width,
                          float percent) {
+        initWidget( uiBinder.createAndBindUi( this ) );
         this.colour = colour;
         this.width = width;
         this.percent = percent;
@@ -55,14 +44,16 @@ public class PercentageBar extends HTML {
     }
 
     public void render() {
-        int pixels = (int) (width * (percent / 100));
-        String p = Float.toString( percent );
-
-        setHTML( TEMPLATE.mainHtml( width,
-                                    TEMPLATE.barHtml( pixels,
-                                                      colour ),
-                                    TEMPLATE.textHtml( width,
-                                                       p ) ) );
+        //        int pixels = (int) (width * (percent / 100));
+        //        String p = Float.toString( percent );
+        //
+        //        setHTML( TEMPLATE.mainHtml( width,
+        //                                    TEMPLATE.barHtml( pixels,
+        //                                                      colour,
+        //                                                      p )
+        //                                    TEMPLATE.textHtml( width,
+        //                                                       p ) ) 
+        //        ) );
     }
 
     private static int calculatePercent(int numerator,

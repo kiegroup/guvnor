@@ -15,31 +15,24 @@
  */
 package org.drools.guvnor.client.resources;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ImageResource.ImageOptions;
-import com.google.gwt.resources.client.ImageResource.RepeatStyle;
+import com.google.gwt.resources.client.CssResource;
 
 /**
  * 
  * @author rikkola
  *
  */
-public interface GuvnorResources
+public interface PercentageBarCss
     extends
-    ClientBundle {
+    CssResource {
 
-    GuvnorResources INSTANCE = GWT.create( GuvnorResources.class );
+    @ClassName("smallish-progress-wrapper")
+    String smallishProgressWrapper();
 
-    @ImageOptions(repeatStyle = RepeatStyle.Horizontal)
-    @Source("images/jbossrulesBlue.gif")
-    ImageResource jbossrulesBlue();
+    @ClassName("smallish-progress-bar")
+    String smallishProgressBar();
 
-    @Source("css/Header.css")
-    HeaderCss headerCss();
-
-    @Source("css/PercentageBar.css")
-    PercentageBarCss percentageBarCss();
+    @ClassName("smallish-progress-text")
+    String smallishProgressText();
 
 }
