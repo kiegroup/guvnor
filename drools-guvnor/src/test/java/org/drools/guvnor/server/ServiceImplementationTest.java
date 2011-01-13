@@ -111,16 +111,16 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class ServiceImplementationTest extends GuvnorTestBase {
 
-    @Before
-    public void setUp() {
-        setUpSeam();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() {
-        tearAllDown();
-    }
+    //    @Before
+    //    public void setUp() {
+    //        setUpSeam();
+    //        setUpMockIdentity();
+    //    }
+    //
+    //    @After
+    //    public void tearDown() {
+    //        tearAllDown();
+    //    }
 
     @Test
     @Ignore("this test fail intermittently")
@@ -253,13 +253,16 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testDeleteUnversionedRule() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
+        //        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+        ServiceImplementation impl = new ServiceImplementation();
+        impl.repository = repository;
 
-        impl.repository.loadDefaultPackage();
-        impl.repository.createPackage( "anotherPackage",
-                                       "woot" );
+        impl.getRulesRepository().loadDefaultPackage();
+        impl.getRulesRepository().createPackage( "anotherPackage",
+                                                 "woot" );
 
-        CategoryItem cat = impl.repository.loadCategory( "/" );
+        CategoryItem cat = impl.getRulesRepository().loadCategory( "/" );
         cat.addCategory( "testDeleteUnversioned",
                          "yeah" );
 
@@ -271,7 +274,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertNotNull( uuid );
         assertFalse( "".equals( uuid ) );
 
-        AssetItem localItem = impl.repository.loadAssetByUUID( uuid );
+        AssetItem localItem = impl.getRulesRepository().loadAssetByUUID( uuid );
 
         // String drl = "package org.drools.repository\n\ndialect 'mvel'\n\n" +
         // "rule Rule1 \n when \n AssetItem(description != null) \n then \n
@@ -284,12 +287,13 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       localItem.getName() );
 
         localItem.remove();
-        impl.repository.save();
+        impl.getRulesRepository().save();
 
         try {
-            localItem = impl.repository.loadAssetByUUID( uuid );
+            localItem = impl.getRulesRepository().loadAssetByUUID( uuid );
             fail();
         } catch ( Exception e ) {
+            e.printStackTrace();
         }
     }
 
