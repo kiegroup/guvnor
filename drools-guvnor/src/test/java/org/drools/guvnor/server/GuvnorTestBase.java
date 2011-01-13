@@ -40,7 +40,7 @@ public class GuvnorTestBase {
 
     protected void setUpSeam() {
 
-        RulesRepository repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
+        RulesRepository repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
         ServiceImplementation serviceImplementation = new ServiceImplementation();
         serviceImplementation.repository = repository;
 
