@@ -49,6 +49,10 @@ public class TestEnvironmentSessionHelper {
     }
 
     public static synchronized Session getSession(boolean erase) {
+
+        // XXX: Force erase -Toni-
+        erase = true;
+
         if ( repository == null ) {
             try {
 
