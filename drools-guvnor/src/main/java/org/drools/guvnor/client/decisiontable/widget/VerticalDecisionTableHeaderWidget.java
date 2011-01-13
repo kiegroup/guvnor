@@ -12,18 +12,30 @@ import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
 
+import com.google.gwt.animation.client.Animation;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Overflow;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCellElement;
+import com.google.gwt.dom.client.TableElement;
+import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.HasResizeHandlers;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * @author manstis
@@ -38,172 +50,293 @@ public class VerticalDecisionTableHeaderWidget extends
 	 * @author manstis
 	 * 
 	 */
-	private class HeaderWidget extends Composite {
+	private class HeaderWidget extends CellPanel implements HasResizeHandlers {
 
-		private HorizontalPanel hp = new HorizontalPanel();
-		private DynamicColumn visibleRowNumberCol = null;
-		private DynamicColumn visibleDescriptionCol = null;
-		private List<DynamicColumn> visibleMetadataCols = new ArrayList<DynamicColumn>();
-		private List<DynamicColumn> visibleAttributeCols = new ArrayList<DynamicColumn>();
+		private int rowSpan = 4;
+		private boolean collapsed = false;
+		private Element[] rowHeaders = new Element[5];
 		private List<DynamicColumn> visibleConditionCols = new ArrayList<DynamicColumn>();
-		private List<DynamicColumn> visibleActionCols = new ArrayList<DynamicColumn>();
-
-		private int rowsVisible = 3;
 
 		private HeaderWidget() {
-			initWidget(hp);
+			for (int iRow = 0; iRow < rowHeaders.length; iRow++) {
+				rowHeaders[iRow] = DOM.createTR();
+				getBody().appendChild(rowHeaders[iRow]);
+				getBody().getParentElement().<TableElement> cast()
+						.setCellSpacing(0);
+				getBody().getParentElement().<TableElement> cast()
+						.setCellPadding(0);
+			}
+		}
+
+		public HandlerRegistration addResizeHandler(ResizeHandler handler) {
+			return this.addHandler(handler, ResizeEvent.getType());
+		}
+
+		private class HeaderRowAnimation extends Animation {
+
+			private TableRowElement tre;
+			private int startHeight;
+			private int endHeight;
+
+			private HeaderRowAnimation(TableRowElement tre, int startHeight,
+					int endHeight) {
+				this.tre = tre;
+				this.startHeight = startHeight;
+				this.endHeight = endHeight;
+			}
+
+			@Override
+			protected void onUpdate(double progress) {
+				int height = (int) (startHeight + (progress * (endHeight - startHeight)));
+				setHeight(height);
+			}
+
+			@Override
+			protected void onComplete() {
+				super.onComplete();
+				setHeight(endHeight);
+			}
+
+			private void setHeight(int height) {
+				for (int i = 0; i < tre.getChildCount(); i++) {
+					tre.getChild(i).getFirstChild().<DivElement> cast()
+							.getStyle().setHeight(height, Unit.PX);
+				}
+				ResizeEvent.fire(HeaderWidget.this, getBody().getClientWidth(),
+						getBody().getClientHeight());
+			}
+
+		}
+
+		private void hideRow(int iRow) {
+			TableRowElement tre = rowHeaders[iRow].<TableRowElement> cast();
+			HeaderRowAnimation anim = new HeaderRowAnimation(tre,
+					style.rowHeaderHeight(), 0);
+			anim.run(250);
+		}
+
+		private void showRow(int iRow) {
+			TableRowElement tre = rowHeaders[iRow].<TableRowElement> cast();
+			HeaderRowAnimation anim = new HeaderRowAnimation(tre, 0,
+					style.rowHeaderHeight());
+			anim.run(250);
+		}
+
+		private void redrawHeaderRow(int iRow) {
+			Element tce = null;
+			Element tre = DOM.createTR();
+			switch (iRow) {
+			case 0:
+				for (DynamicColumn col : dtable.getColumns()) {
+					if (col.isVisible()) {
+						tce = DOM.createTD();
+						tce.getStyle().setWidth(col.getWidth(), Unit.PX);
+						tce.addClassName(style.headerText());
+						tre.appendChild(tce);
+						populateTableCellElement(col, tce);
+					}
+				}
+				break;
+			case 1:
+				HeaderSplitter splitter = new HeaderSplitter();
+				splitter.addClickHandler(new ClickHandler() {
+
+					public void onClick(ClickEvent event) {
+						if (!collapsed) {
+							hideRow(2);
+							hideRow(3);
+						} else {
+							showRow(2);
+							showRow(3);
+						}
+						collapsed = !collapsed;
+					}
+
+				});
+				tce = DOM.createTD();
+				tce.<TableCellElement> cast().setColSpan(
+						visibleConditionCols.size());
+				tce.addClassName(style.headerSplitter());
+				tre.appendChild(tce);
+				add(splitter, tce);
+				break;
+			case 2:
+				for (int iCol = 0; iCol < visibleConditionCols.size(); iCol++) {
+					tce = DOM.createTD();
+					tce.addClassName(style.headerText());
+					tre.appendChild(tce);
+
+					DynamicColumn col = visibleConditionCols.get(iCol);
+					ConditionCol cc = (ConditionCol) col.getModelColumn();
+
+					int colSpan = 1;
+					int width = col.getWidth();
+					while (iCol + colSpan < visibleConditionCols.size()) {
+						DynamicColumn mergeCol = visibleConditionCols.get(iCol
+								+ colSpan);
+						ConditionCol mergeCondCol = (ConditionCol) mergeCol
+								.getModelColumn();
+
+						if (mergeCondCol.getFactType().equals(cc.getFactType())
+								&& mergeCondCol.getBoundName().equals(
+										cc.getBoundName())) {
+							width = width + mergeCol.getWidth();
+							colSpan++;
+						} else {
+							break;
+						}
+					}
+					iCol = iCol + colSpan - 1;
+					tce.getStyle().setWidth(width, Unit.PX);
+					tce.addClassName(style.headerRowIntermediate());
+					tce.appendChild(makeLabel(cc.getFactType(), width));
+					tce.<TableCellElement> cast().setColSpan(colSpan);
+
+				}
+				break;
+			case 3:
+				for (DynamicColumn col : visibleConditionCols) {
+					tce = DOM.createTD();
+					tce.getStyle().setWidth(col.getWidth(), Unit.PX);
+					tce.addClassName(style.headerText());
+					tce.addClassName(style.headerRowIntermediate());
+					tre.appendChild(tce);
+					ConditionCol cc = (ConditionCol) col.getModelColumn();
+					tce.appendChild(makeLabel(cc.getFactField(), col.getWidth()));
+				}
+				break;
+			case 4:
+				for (DynamicColumn col : dtable.getColumns()) {
+					if (col.isVisible()) {
+						final HeaderSorter shp = new HeaderSorter(col);
+						final DynamicColumn sortableColumn = col;
+						if (col.isSortable()) {
+							shp.addClickHandler(new ClickHandler() {
+
+								public void onClick(ClickEvent event) {
+									updateSortOrder(sortableColumn);
+									redrawHeaderRow(4);
+									dtable.sort();
+								}
+
+							});
+
+						}
+						tce = DOM.createTD();
+						tce.getStyle().setWidth(col.getWidth(), Unit.PX);
+						tce.addClassName(style.headerRowBottom());
+						tre.appendChild(tce);
+						add(shp, tce);
+					}
+				}
+				break;
+			}
+
+			getBody().replaceChild(tre, rowHeaders[iRow]);
+			rowHeaders[iRow] = tre;
+		}
+
+		private Element makeLabel(String text, int width) {
+			Element div = DOM.createDiv();
+			div.getStyle().setWidth(width, Unit.PX);
+			div.getStyle().setHeight(style.rowHeaderHeight(), Unit.PX);
+			div.getStyle().setOverflow(Overflow.HIDDEN);
+			Label caption = new Label(text);
+			div.appendChild(caption.getElement());
+			return div;
+		}
+
+		private void populateTableCellElement(DynamicColumn col, Element tce) {
+
+			DTColumnConfig modelCol = col.getModelColumn();
+			if (modelCol instanceof RowNumberCol) {
+				tce.appendChild(makeLabel("#", col.getWidth()));
+				tce.<TableCellElement> cast().setRowSpan(rowSpan);
+				tce.addClassName(style.headerRowIntermediate());
+			} else if (modelCol instanceof DescriptionCol) {
+				tce.appendChild(makeLabel("Description", col.getWidth()));
+				tce.<TableCellElement> cast().setRowSpan(rowSpan);
+				tce.addClassName(style.headerRowIntermediate());
+			} else if (modelCol instanceof MetadataCol) {
+				tce.appendChild(makeLabel(((MetadataCol) modelCol).attr,
+						col.getWidth()));
+				tce.<TableCellElement> cast().setRowSpan(rowSpan);
+				tce.addClassName(style.headerRowIntermediate());
+			} else if (modelCol instanceof AttributeCol) {
+				tce.appendChild(makeLabel(((AttributeCol) modelCol).attr,
+						col.getWidth()));
+				tce.<TableCellElement> cast().setRowSpan(rowSpan);
+				tce.addClassName(style.headerRowIntermediate());
+			} else if (modelCol instanceof ConditionCol) {
+				tce.appendChild(makeLabel(
+						((ConditionCol) modelCol).getHeader(), col.getWidth()));
+			} else if (modelCol instanceof ActionCol) {
+				tce.appendChild(makeLabel(((ActionCol) modelCol).getHeader(),
+						col.getWidth()));
+				tce.<TableCellElement> cast().setRowSpan(rowSpan);
+				tce.addClassName(style.headerRowIntermediate());
+			}
+
 		}
 
 		// Redraw entire header
 		private void redraw() {
-			hp.clear();
-			visibleRowNumberCol = null;
-			visibleDescriptionCol = null;
-			visibleMetadataCols.clear();
-			visibleAttributeCols.clear();
+
+			// Extracting visible Condition columns makes life easier
 			visibleConditionCols.clear();
-			visibleActionCols.clear();
 			for (int iCol = 0; iCol < dtable.getColumns().size(); iCol++) {
 				DynamicColumn col = dtable.getColumns().get(iCol);
 				if (col.isVisible()) {
 					DTColumnConfig modelCol = col.getModelColumn();
-					if (modelCol instanceof RowNumberCol) {
-						visibleRowNumberCol = col;
-					} else if (modelCol instanceof DescriptionCol) {
-						visibleDescriptionCol = col;
-					} else if (modelCol instanceof MetadataCol) {
-						visibleMetadataCols.add(col);
-					} else if (modelCol instanceof AttributeCol) {
-						visibleAttributeCols.add(col);
-					} else if (modelCol instanceof ConditionCol) {
+					if (modelCol instanceof ConditionCol) {
 						visibleConditionCols.add(col);
-					} else if (modelCol instanceof ActionCol) {
-						visibleActionCols.add(col);
 					}
 				}
 			}
 
-			if (visibleRowNumberCol != null) {
-				hp.add(makeSimpleColumnHeader(visibleRowNumberCol, "#"));
+			// Draw rows
+			for (int iRow = 0; iRow < rowHeaders.length; iRow++) {
+				redrawHeaderRow(iRow);
 			}
-			if (visibleDescriptionCol != null) {
-				hp.add(makeSimpleColumnHeader(visibleDescriptionCol,
-						"Description"));
-			}
-			for (DynamicColumn col : visibleMetadataCols) {
-				MetadataCol mdc = (MetadataCol) col.getModelColumn();
-				hp.add(makeSimpleColumnHeader(col, mdc.attr));
-			}
-			for (DynamicColumn col : visibleAttributeCols) {
-				AttributeCol ac = (AttributeCol) col.getModelColumn();
-				hp.add(makeSimpleColumnHeader(col, ac.attr));
-			}
-			if (visibleConditionCols.size() > 0) {
-				int width = 0;
-				VerticalPanel cvp = new VerticalPanel();
-				cvp.addStyleName(style.headerCellPrimary());
-				HorizontalPanel chp1 = new HorizontalPanel();
-				HorizontalPanel chp2 = new HorizontalPanel();
-				HorizontalPanel chp3 = new HorizontalPanel();
-				HorizontalPanel chp4 = new HorizontalPanel();
-				chp1.setWidth("100%");
-				chp2.setWidth("100%");
-				chp3.setWidth("100%");
-				chp4.setWidth("100%");
 
-				chp2.setHeight(style.rowHeaderSplitterHeight() + "px");
-				chp2.getElement().getStyle().setBackgroundColor("#5599ff");
-
-				for (DynamicColumn col : visibleConditionCols) {
-					width = width + col.getWidth();
-					ConditionCol cc = (ConditionCol) col.getModelColumn();
-
-					VerticalPanel hp1 = new VerticalPanel();
-					hp1.add(new SortHeaderPanel(col));
-					hp1.add(makeTextHeader(col, cc.getHeader(),
-							style.headerCellSecondary()));
-					chp1.add(hp1);
-
-					Panel hp4 = makeTextHeader(col, cc.getFactField(),
-							style.headerCellSecondary());
-					chp4.add(hp4);
+			// Schedule resize event after header has been drawn
+			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+				public void execute() {
+					ResizeEvent.fire(HeaderWidget.this, getBody()
+							.getClientWidth(), getBody().getClientHeight());
 				}
-				HorizontalPanel hp3 = makeConditionFieldTypePanel(visibleConditionCols);
-				chp3.add(hp3);
+			});
 
-				cvp.add(chp1);
-				cvp.add(chp2);
-				cvp.add(chp3);
-				cvp.add(chp4);
-				cvp.setWidth(width + "px");
-				hp.add(cvp);
-			}
-			for (DynamicColumn col : visibleActionCols) {
-				ActionCol ac = (ActionCol) col.getModelColumn();
-				hp.add(makeSimpleColumnHeader(col, ac.getHeader()));
+		}
+
+		private class HeaderSplitter extends FocusPanel {
+
+			private final HorizontalPanel hp = new HorizontalPanel();
+
+			private HeaderSplitter() {
+				hp.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+				hp.add(new Image(resource.downArrow()));
+				hp.setWidth("100%");
+				add(hp);
 			}
 
 		}
 
-		private HorizontalPanel makeConditionFieldTypePanel(
-				List<DynamicColumn> columns) {
-			HorizontalPanel hp = new HorizontalPanel();
-			for (int iCol = 0; iCol < columns.size(); iCol++) {
-				DynamicColumn col = columns.get(iCol);
-				ConditionCol condCol = (ConditionCol) col.getModelColumn();
-				Panel htc = makeTextHeader(col, condCol.getFactType() + " ["
-						+ condCol.getBoundName() + "]",
-						style.headerCellSecondary());
-				int width = col.getWidth();
+		private class HeaderSorter extends FocusPanel {
 
-				int iMergeCol = iCol + 1;
-				while (iMergeCol < columns.size()) {
-					DynamicColumn mergeCol = columns.get(iMergeCol);
-					ConditionCol mergeCondCol = (ConditionCol) mergeCol
-							.getModelColumn();
-
-					if (mergeCondCol.getFactType()
-							.equals(condCol.getFactType())
-							&& mergeCondCol.getBoundName().equals(
-									condCol.getBoundName())) {
-						width = width + mergeCol.getWidth();
-						iCol++;
-						iMergeCol++;
-					} else {
-						break;
-					}
-				}
-				htc.setWidth(width + "px");
-				hp.add(htc);
-			}
-			return hp;
-		}
-
-		private class SortHeaderPanel extends FocusPanel {
-
-			private final HorizontalPanel sortPanel = new HorizontalPanel();
+			private final HorizontalPanel hp = new HorizontalPanel();
 			private final DynamicColumn col;
 
-			SortHeaderPanel(final DynamicColumn col) {
+			private HeaderSorter(final DynamicColumn col) {
 				this.col = col;
-				sortPanel.setHeight("16px");
-				add(sortPanel);
-
-				if (col.isSortable()) {
-					setSortIcon();
-					addClickHandler(new ClickHandler() {
-
-						public void onClick(ClickEvent event) {
-							updateSortOrder(col);
-							setSortIcon();
-							dtable.sort();
-						}
-
-					});
-				}
+				hp.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+				hp.setHeight(style.rowHeaderSorterHeight() + "px");
+				hp.setWidth("100%");
+				setSortIcon();
+				add(hp);
 			}
 
-			void setSortIcon() {
+			private void setSortIcon() {
 
 				ImageResource ir = null;
 				switch (col.getSortDirection()) {
@@ -230,39 +363,11 @@ public class VerticalDecisionTableHeaderWidget extends
 				}
 				if (ir != null) {
 					Image img = new Image(ir);
-					sortPanel.clear();
-					sortPanel.add(img);
+					hp.clear();
+					hp.add(img);
 				}
 			}
 
-		}
-
-		private Panel makeSimpleColumnHeader(DynamicColumn col, String caption) {
-			VerticalPanel vp = new VerticalPanel();
-			vp.addStyleName(style.headerTable());
-			vp.add(new SortHeaderPanel(col));
-			vp.add(makeTextHeader(col, caption));
-			return vp;
-		}
-
-		private Panel makeTextHeader(DynamicColumn col, String caption) {
-			VerticalPanel vp = new VerticalPanel();
-			vp.setWidth(col.getWidth() + "px");
-			Label label = new Label(caption);
-			label.addStyleName(style.headerText());
-			label.setWidth(col.getWidth() + "px");
-			label.setHeight((style.rowHeaderHeight() * rowsVisible)
-					+ style.rowHeaderSplitterHeight() + "px");
-			label.getElement().getStyle().setOverflow(Overflow.HIDDEN);
-			vp.add(label);
-			return vp;
-		}
-
-		private Panel makeTextHeader(DynamicColumn col, String caption,
-				String styleName) {
-			Panel hp = makeTextHeader(col, caption);
-			hp.addStyleName(styleName);
-			return hp;
 		}
 
 		// Update sort order. The column clicked becomes the primary sort column
@@ -334,6 +439,10 @@ public class VerticalDecisionTableHeaderWidget extends
 	@Override
 	public void setScrollPosition(int position) {
 		((ScrollPanel) this.panel).setHorizontalScrollPosition(position);
+	}
+
+	public HandlerRegistration addResizeHandler(ResizeHandler handler) {
+		return widget.addResizeHandler(handler);
 	}
 
 }

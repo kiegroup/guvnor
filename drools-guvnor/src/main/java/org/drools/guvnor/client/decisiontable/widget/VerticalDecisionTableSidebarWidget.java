@@ -10,6 +10,8 @@ import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -268,11 +270,11 @@ public class VerticalDecisionTableSidebarWidget extends
 
 	}
 
+	// UI Elements
 	private ScrollPanel scrollPanel;
-
 	private VerticalPanel container;
-
 	private VerticalSelectorWidget selectors;
+	private final VerticalSideBarSpacerWidget spacer = new VerticalSideBarSpacerWidget();
 
 	/**
 	 * Construct a "Sidebar" for the provided DecisionTable
@@ -287,12 +289,21 @@ public class VerticalDecisionTableSidebarWidget extends
 		container = new VerticalPanel();
 		selectors = new VerticalSelectorWidget();
 
-		container.add(new VerticalSideBarSpacerWidget());
+		container.add(spacer);
 		container.add(scrollPanel);
 		scrollPanel.add(selectors);
 
 		// We don't want scroll bars on the Sidebar
 		scrollPanel.getElement().getStyle().setOverflow(Overflow.HIDDEN);
+
+		// Resize spacer to match Header height
+		dtable.headerWidget.addResizeHandler(new ResizeHandler() {
+
+			public void onResize(ResizeEvent event) {
+				spacer.setHeight(event.getHeight() + "px");
+			}
+
+		});
 
 		initWidget(container);
 

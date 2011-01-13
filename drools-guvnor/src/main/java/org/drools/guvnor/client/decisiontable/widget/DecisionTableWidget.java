@@ -27,6 +27,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -63,6 +65,8 @@ public abstract class DecisionTableWidget extends Composite implements
 	protected DynamicData data = new DynamicData();
 	protected List<DynamicColumn> columns = new ArrayList<DynamicColumn>();
 
+	private int height;
+
 	// Resources
 	protected static final DecisionTableResources resource = GWT
 			.create(DecisionTableResources.class);
@@ -94,6 +98,13 @@ public abstract class DecisionTableWidget extends Composite implements
 		bodyPanel = getBodyPanel();
 		gridWidget = getGridWidget();
 		headerWidget = getHeaderWidget();
+		headerWidget.addResizeHandler(new ResizeHandler() {
+
+			public void onResize(ResizeEvent event) {
+				scrollPanel.setHeight((height - event.getHeight()) + "px");
+				assertDimensions();
+			}
+		});
 		sidebarWidget = getSidebarWidget();
 
 		scrollPanel = new ScrollPanel();
@@ -565,9 +576,18 @@ public abstract class DecisionTableWidget extends Composite implements
 				this.data.add(cellRow);
 			}
 		}
-		gridWidget.redraw();
+
+		// Draw header first as the size of child Elements depends upon it
 		headerWidget.redraw();
 
+		// Schedule redraw of grid after sizes of child Elements have been set
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+
+			public void execute() {
+				gridWidget.redraw();
+			}
+
+		});
 	}
 
 	/**
@@ -578,6 +598,7 @@ public abstract class DecisionTableWidget extends Composite implements
 	@Override
 	public void setPixelSize(int width, int height) {
 		super.setPixelSize(width, height);
+		this.height = height;
 		setHeight(height);
 		setWidth(width);
 	}
@@ -1175,9 +1196,8 @@ public abstract class DecisionTableWidget extends Composite implements
 	}
 
 	// Set height of outer most Widget and related children
-	private void setHeight(int height) {
+	private void setHeight(final int height) {
 		mainPanel.setHeight(height + "px");
-		scrollPanel.setHeight((height - style.spacerHeight()) + "px");
 		mainFocusPanel.setHeight(height + "px");
 
 		// The Sidebar and Header sizes are derived from the ScrollPanel

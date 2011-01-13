@@ -17,11 +17,13 @@ public interface DecisionTableResources extends ClientBundle {
 		int rowHeight();
 
 		int rowHeaderHeight();
-		
+
 		int rowHeaderSplitterHeight();
-		
+
+		int rowHeaderSorterHeight();
+
 		int spacerHeight();
-		
+
 		int spacerWidth();
 
 		String cellTable();
@@ -31,24 +33,18 @@ public interface DecisionTableResources extends ClientBundle {
 		String cellTableOddRow();
 
 		String cellTableCell();
-		
+
 		String cellTableCellSelected();
 
 		String cellTableCellDiv();
 
-		String headerTable();
+		String headerRowBottom();
 
-		String headerRow();
-
-		String headerCellPrimary();
-
-		String headerCellSecondary();
-
-		String headerContainer();
+		String headerRowIntermediate();
 
 		String headerText();
 
-		String headerWidget();
+		String headerSplitter();
 
 		String spacer();
 
@@ -89,7 +85,7 @@ public interface DecisionTableResources extends ClientBundle {
 
 	@Source("../resources/images/selectorAddHover.png")
 	ImageResource selectorAddHover();
-	
+
 	@Source("../resources/images/selectorDelete.png")
 	ImageResource selectorDelete();
 
