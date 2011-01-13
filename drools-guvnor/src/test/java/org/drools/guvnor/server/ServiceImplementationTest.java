@@ -209,6 +209,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     }
 
+    @Ignore
     @Test
     public void testCategory() throws Exception {
         ServiceImplementation serviceImplementation = getServiceImplementation();

@@ -30,7 +30,6 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.guvnor.server.security.RoleTypes;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -61,10 +60,10 @@ public class PopulateDataTest extends GuvnorTestBase {
         setUpMockIdentity();
     }
 
-//    @After
-//    public void tearDown() {
-//        tearAllDown();
-//    }
+    @After
+    public void tearDown() {
+        tearAllDown();
+    }
 
     @Test
     public void testPopulate() throws Exception {

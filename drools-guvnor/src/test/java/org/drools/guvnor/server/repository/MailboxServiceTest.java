@@ -35,7 +35,6 @@ import org.junit.Test;
  */
 public class MailboxServiceTest {
 
-    @Ignore
     @Test
     public void testMailbox() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
@@ -122,7 +121,6 @@ public class MailboxServiceTest {
 
     }
 
-    @Ignore
     @Test
     public void testOneToMany() throws Exception {
         RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
