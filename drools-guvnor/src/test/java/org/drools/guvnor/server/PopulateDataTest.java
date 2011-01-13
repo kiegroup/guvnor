@@ -36,6 +36,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -54,6 +55,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class PopulateDataTest {
 
+    @Ignore
     @Test
     public void testPopulate() throws Exception {
         ServiceImplementation serv = new ServiceImplementation();
