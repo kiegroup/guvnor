@@ -72,10 +72,14 @@ public class GuvnorTestBase {
     }
 
     protected void tearAllDown() {
+        Contexts.removeFromAllContexts( "repository" );
+        Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.RepositoryService" );
+
         if ( Contexts.isApplicationContextActive() ) {
 
             Lifecycle.endApplication();
         }
+
         MailboxService.getInstance().stop();
         TestEnvironmentSessionHelper.shutdown();
     }
