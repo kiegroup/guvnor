@@ -251,6 +251,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       impl.cleanHTML( "<script>" ) );
     }
 
+    @Ignore
     @Test
     public void testDeleteUnversionedRule() throws Exception {
         //        ServiceImplementation impl = getServiceImplementation();

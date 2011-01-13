@@ -36,7 +36,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.After;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -53,13 +53,22 @@ import com.google.gwt.user.client.rpc.SerializationException;
  *
  * @author Michael Neale
  */
-public class PopulateDataTest {
+public class PopulateDataTest extends GuvnorTestBase {
 
-    @Ignore
+    @Before
+    public void setUp() {
+        setUpSeam();
+        setUpMockIdentity();
+    }
+
+    @After
+    public void tearDown() {
+        tearAllDown();
+    }
+
     @Test
     public void testPopulate() throws Exception {
-        ServiceImplementation serv = new ServiceImplementation();
-        serv.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        ServiceImplementation serv = getServiceImplementation();
 
         createCategories( serv );
         createStates( serv );
@@ -76,12 +85,6 @@ public class PopulateDataTest {
         serv.buildPackage( pkg.getUUID(),
                            true );
 
-    }
-
-    @After
-    public void tearDown() {
-        TestEnvironmentSessionHelper.shutdown();
-        System.out.println( "Shutdown succeeded." );
     }
 
     private void createPermissions(ServiceImplementation serv) {
