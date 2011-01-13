@@ -43,7 +43,6 @@ import org.drools.StatelessSession;
 import org.drools.core.util.BinaryRuleBaseLoader;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.BuilderResult;
@@ -66,10 +65,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.UserInbox;
-import org.drools.guvnor.server.security.MockIdentity;
-import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -102,8 +98,6 @@ import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.contexts.Lifecycle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -115,54 +109,23 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * This is really a collection of integration tests.
  * @author Michael Neale
  */
-public class ServiceImplementationTest {
+public class ServiceImplementationTest extends GuvnorTestBase {
 
-    private ServiceImplementation serviceImplementation;
-
-    /**
-     * Set up enough of the Seam environment to test it.
-     */
     @Before
     public void setUp() {
-
-        serviceImplementation = RepositoryServiceServlet.getService();
-
-        // setting it to false as most unit tests in this file assume no signing
-        System.setProperty( KeyStoreHelper.PROP_SIGN,
-                            "false" );
-        Map<String, Object> application = new HashMap<String, Object>();
-        application.put( "org.drools.guvnor.client.rpc.RepositoryService",
-                         serviceImplementation );
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-
-        MockIdentity mockIdentity = new MockIdentity();
-        mockIdentity.inject();
-        mockIdentity.create();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( false );
-        mockIdentity.addPermissionResolver( new RoleBasedPermissionResolver() );
-    }
-
-    private ServiceImplementation getService() {
-        return serviceImplementation;
+        setUpSeam();
+        setUpMockIdentity();
     }
 
     @After
     public void tearDown() {
-
-        if ( Contexts.isApplicationContextActive() ) {
-
-            Lifecycle.endApplication();
-        }
-        MailboxService.getInstance().stop();
-        TestEnvironmentSessionHelper.shutdown();
+        tearAllDown();
     }
 
     @Test
     @Ignore("this test fail intermittently")
     public void testInboxEvents() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         assertNotNull( impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
         //this should trigger the fact that the original user edited something
@@ -249,43 +212,45 @@ public class ServiceImplementationTest {
     @Test
     public void testCategory() throws Exception {
 
-        String[] originalCats = serviceImplementation.loadChildCategories( "/" );
+        String[] originalCats = getServiceImplementation().loadChildCategories( "/" );
 
-        Boolean result = serviceImplementation.createCategory( "/",
-                                                               "TopLevel1",
-                                                               "a description" );
+        Boolean result = getServiceImplementation().createCategory( "/",
+                                                                    "TopLevel1",
+                                                                    "a description" );
         assertTrue( result.booleanValue() );
 
-        result = serviceImplementation.createCategory( "/",
-                                                       "TopLevel2",
-                                                       "a description" );
+        result = getServiceImplementation().createCategory( "/",
+                                                            "TopLevel2",
+                                                            "a description" );
         assertTrue( result.booleanValue() );
 
-        String[] cats = serviceImplementation.loadChildCategories( "/" );
+        String[] cats = getServiceImplementation().loadChildCategories( "/" );
         assertTrue( cats.length == originalCats.length + 2 );
 
-        result = serviceImplementation.createCategory( "",
-                                                       "Top3",
-                                                       "description" );
+        result = getServiceImplementation().createCategory( "",
+                                                            "Top3",
+                                                            "description" );
         assertTrue( result.booleanValue() );
 
-        result = serviceImplementation.createCategory( null,
-                                                       "Top4",
-                                                       "description" );
+        result = getServiceImplementation().createCategory( null,
+                                                            "Top4",
+                                                            "description" );
         assertTrue( result.booleanValue() );
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testCleanHTML() {
         ServiceImplementation impl = new ServiceImplementation();
         assertEquals( "&lt;script&gt;",
                       impl.cleanHTML( "<script>" ) );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testDeleteUnversionedRule() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
 
         impl.repository.loadDefaultPackage();
         impl.repository.createPackage( "anotherPackage",
@@ -325,12 +290,13 @@ public class ServiceImplementationTest {
         }
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testAddRuleAndListPackages() throws Exception {
         // ServiceImpl impl = new ServiceImpl(new
         // RulesRepository(SessionHelper.getSession()));
 
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
 
         impl.repository.loadDefaultPackage();
         impl.repository.createPackage( "another",
@@ -379,9 +345,10 @@ public class ServiceImplementationTest {
         assertTrue( dtItem.getBinaryContentAttachmentFileName().endsWith( ".xls" ) );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testAttemptDupeRule() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         CategoryItem cat = impl.repository.loadCategory( "/" );
         cat.addCategory( "testAttemptDupeRule",
                          "yeah" );
@@ -405,9 +372,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testCreateNewRule() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         impl.repository.createPackage( "testCreateNewRule",
                                        "desc" );
         impl.createCategory( "",
@@ -427,9 +395,10 @@ public class ServiceImplementationTest {
                       "an initial desc" );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testCreateLinkedAssetItem() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         @SuppressWarnings("unused")
         PackageItem testCreateNewRuleAsLinkPackage1 = impl.repository.createPackage( "testCreateNewRuleAsLinkPackage1",
                                                                                      "desc" );
@@ -514,9 +483,10 @@ public class ServiceImplementationTest {
                       size );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testLinkedAssetItemHistoryRelated() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         @SuppressWarnings("unused")
         PackageItem testCreateNewRuleAsLinkPackage1 = impl.repository.createPackage( "testLinkedAssetItemHistoryRelatedPack",
                                                                                      "desc" );
@@ -615,9 +585,10 @@ public class ServiceImplementationTest {
 
     //path name contains Apostrophe is no longer a problem with jackrabbit 2.0
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testCreateNewRuleContainsApostrophe() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         impl.repository.createPackage( "testCreateNewRuleContainsApostrophe",
                                        "desc" );
         impl.createCategory( "",
@@ -644,9 +615,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testRuleTableLoad() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         TableConfig conf = impl.loadTableConfig( AssetItemGrid.RULE_LIST_TABLE_ID );
         assertNotNull( conf.headers );
         assertNotNull( conf.headerTypes );
@@ -684,7 +656,8 @@ public class ServiceImplementationTest {
         assertTrue( result.data[0].values[0].startsWith( "testRuleTableLoad" ) );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testDateFormatting() throws Exception {
         Calendar cal = Calendar.getInstance();
         TableDisplayHandler handler = new TableDisplayHandler( AssetItemGrid.RULE_LIST_TABLE_ID );
@@ -694,9 +667,10 @@ public class ServiceImplementationTest {
         assertTrue( fmt.length() > 8 );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testLoadRuleAsset() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         impl.repository.createPackage( "testLoadRuleAsset",
                                        "desc" );
         impl.createCategory( "",
@@ -777,9 +751,10 @@ public class ServiceImplementationTest {
         assertTrue( asset.content instanceof RuleContentText );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testListAssets() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         PackageItem pacakgeItem = impl.repository.createPackage( "testListAssetsPackage",
                                                                  "desc" );
         impl.createCategory( "",
@@ -840,9 +815,10 @@ public class ServiceImplementationTest {
         assertTrue( res.hasNext );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testLoadArchivedAssets() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         impl.repository.createPackage( "testLoadArchivedAssetsPackage",
                                        "desc" );
         impl.createCategory( "",
@@ -907,9 +883,10 @@ public class ServiceImplementationTest {
         assertTrue( res.hasNext );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testTrackRecentOpenedChanged() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         UserInbox ib = new UserInbox( impl.repository );
         ib.clearAll();
         impl.repository.createPackage( "testTrackRecentOpenedChanged",
@@ -955,10 +932,11 @@ public class ServiceImplementationTest {
                       ib.loadRecentEdited().size() );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testLoadAssetHistoryAndRestore() throws Exception {
 
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         long startTime = System.currentTimeMillis();
         impl.repository.createPackage( "testLoadAssetHistory",
                                        "desc" );
@@ -1019,9 +997,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testCheckin() throws Exception {
-        ServiceImplementation serv = getService();
+        ServiceImplementation serv = getServiceImplementation();
 
         UserInbox ib = new UserInbox( serv.repository );
         List<InboxEntry> inbox = ib.loadRecentEdited();
@@ -1117,9 +1096,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testArchivePackage() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
 
         PackageConfigData[] pkgs = impl.listPackages();
 
@@ -1153,9 +1133,10 @@ public class ServiceImplementationTest {
                       arch.length );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testCreatePackage() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         PackageConfigData[] pkgs = impl.listPackages();
         String uuid = impl.createPackage( "testCreatePackage",
                                           "this is a new package" );
@@ -1189,9 +1170,10 @@ public class ServiceImplementationTest {
         }
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testLoadPackageConfig() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         PackageItem it = impl.repository.loadDefaultPackage();
         String uuid = it.getUUID();
         it.updateCoverage( "xyz" );
@@ -1234,9 +1216,10 @@ public class ServiceImplementationTest {
                       data.checkinComment );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testArchiveAndUnarchivePackageAndHeader() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         String uuid = impl.createPackage( "testArchiveAndUnarchivePackageAndHeader",
                                           "a desc" );
         PackageConfigData data = impl.loadPackageConfig( uuid );
@@ -1278,9 +1261,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testPackageConfSave() throws Exception {
-        RepositoryService impl = getService();
+        RepositoryService impl = getServiceImplementation();
         String uuid = impl.createPackage( "testPackageConfSave",
                                           "a desc" );
         PackageConfigData data = impl.loadPackageConfig( uuid );
@@ -1314,9 +1298,10 @@ public class ServiceImplementationTest {
         assertFalse( res.hasErrors );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testListByFormat() throws Exception {
-        RepositoryService impl = getService();
+        RepositoryService impl = getServiceImplementation();
         String cat = "testListByFormat";
         impl.createCategory( "/",
                              cat,
@@ -1435,9 +1420,10 @@ public class ServiceImplementationTest {
                       result.data.length );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testListUnregisteredAssetFormats() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         PackageItem pkg = impl.repository.createPackage( "testListUnregisteredAssetFormats",
                                                          "" );
         AssetItem as = pkg.addAsset( "whee",
@@ -1459,9 +1445,10 @@ public class ServiceImplementationTest {
                       res.data.length );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testQuickFind() throws Exception {
-        RepositoryService impl = getService();
+        RepositoryService impl = getServiceImplementation();
         String cat = "testQuickFind";
         impl.createCategory( "/",
                              cat,
@@ -1511,9 +1498,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testSearchText() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         String cat = "testTextSearch";
         impl.createCategory( "/",
                              cat,
@@ -1534,9 +1522,10 @@ public class ServiceImplementationTest {
                       res.data.length );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testSearchMetaData() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         PackageItem pkg = impl.repository.createPackage( "testMetaDataSearch",
                                                          "" );
 
@@ -1571,9 +1560,10 @@ public class ServiceImplementationTest {
         return new String[]{s};
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testStatus() throws Exception {
-        RepositoryService impl = getService();
+        RepositoryService impl = getServiceImplementation();
         String uuid = impl.createState( "testStatus1" );
         assertNotNull( uuid );
 
@@ -1644,9 +1634,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testMovePackage() throws Exception {
-        RepositoryService impl = getService();
+        RepositoryService impl = getServiceImplementation();
         String[] cats = impl.loadChildCategories( "/" );
         if ( cats.length == 0 ) {
             impl.createCategory( "/",
@@ -1697,9 +1688,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testCopyAsset() throws Exception {
-        RepositoryService impl = getService();
+        RepositoryService impl = getServiceImplementation();
         impl.createCategory( "/",
                              "templates",
                              "ya" );
@@ -1722,9 +1714,10 @@ public class ServiceImplementationTest {
                       asset.metaData.name );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testSnapshot() throws Exception {
-        RepositoryService impl = getService();
+        RepositoryService impl = getServiceImplementation();
         impl.createCategory( "/",
                              "snapshotTesting",
                              "y" );
@@ -1792,10 +1785,11 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testSnapshotRebuild() throws Exception {
 
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // get rid of other snapshot crap
@@ -1861,10 +1855,11 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testPackageRebuild() throws Exception {
 
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
 
         RulesRepository repo = impl.repository;
 
@@ -1896,10 +1891,11 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testRemoveCategory() throws Exception {
 
-        RepositoryService impl = getService();
+        RepositoryService impl = getServiceImplementation();
         String[] children = impl.loadChildCategories( "/" );
         impl.createCategory( "/",
                              "testRemoveCategory",
@@ -1912,9 +1908,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testRemoveAsset() throws Exception {
-        RepositoryService impl = getService();
+        RepositoryService impl = getServiceImplementation();
         String cat = "testRemoveAsset";
         impl.createCategory( "/",
                              cat,
@@ -1964,9 +1961,10 @@ public class ServiceImplementationTest {
                       res.data.length );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testRemovePackage() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         int n = impl.listPackages().length;
         PackageItem p = impl.repository.createPackage( "testRemovePackage",
                                                        "" );
@@ -1977,10 +1975,10 @@ public class ServiceImplementationTest {
                       impl.listPackages().length );
     }
 
-    @Test @Ignore
-    
+    @Test
+    @Ignore
     public void testImportPackage() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
 
         try {
             PackageItem item = impl.repository.loadPackage( "testExportPackage" );
@@ -2011,7 +2009,7 @@ public class ServiceImplementationTest {
     @Ignore
     @Test
     public void testExportPackage() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         int n = impl.listPackages().length;
         impl.createCategory( "/",
                              "testExportPackageCat1",
@@ -2046,9 +2044,10 @@ public class ServiceImplementationTest {
         fos.close();
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testArchiveAsset() throws Exception {
-        RepositoryService impl = getService();
+        RepositoryService impl = getServiceImplementation();
         String cat = "testArchiveAsset";
         impl.createCategory( "/",
                              cat,
@@ -2120,9 +2119,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testArchiveAssetWhenParentPackageArchived() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         String packageName = "testArchiveAssetWhenParentPackageArchived";
         String cat = packageName;
         impl.createCategory( "/",
@@ -2202,9 +2202,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testLoadSuggestionCompletionEngine() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -2243,9 +2244,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testDiscussion() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         PackageItem pkg = repo.createPackage( "testDiscussionFeature",
@@ -2313,9 +2315,10 @@ public class ServiceImplementationTest {
      * rules, then take a snapshot, and check that it reports errors.
      */
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testBinaryPackageCompileAndExecute() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -2393,9 +2396,10 @@ public class ServiceImplementationTest {
      * errors.
      */
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testBinaryPackageCompileAndExecuteWithBRXML() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -2528,7 +2532,8 @@ public class ServiceImplementationTest {
      * Simply set saveBinPackage to true to save a new version of the RepoBinPackage.pkg.
      */
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testLoadAndExecBinary() throws Exception {
         Person p = new Person( "fubar" );
         BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
@@ -2540,9 +2545,10 @@ public class ServiceImplementationTest {
                       p.getAge() );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testSuggestionCompletionLoading() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -2559,9 +2565,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testPackageSource() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -2616,9 +2623,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testAssetSource() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -2678,9 +2686,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testBuildAssetWithError() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -2712,9 +2721,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testBuildAsset() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -2783,10 +2793,11 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testBuildAssetMultipleFunctionsCallingEachOther() throws Exception {
 
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         impl.createPackage( "testBuildAssetMultipleFunctionsCallingEachOther",
                             "" );
         impl.createCategory( "/",
@@ -2825,9 +2836,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testBuildAssetBRXMLAndCopy() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -2921,9 +2933,10 @@ public class ServiceImplementationTest {
         return result;
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testBuildAssetWithPackageConfigError() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         PackageItem pkg = repo.createPackage( "testBuildAssetWithPackageConfigError",
@@ -2966,9 +2979,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testRuleNameList() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -3011,9 +3025,10 @@ public class ServiceImplementationTest {
      * This idea of this is to not compile packages more then we have to.
      */
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testBinaryUpToDate() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -3070,9 +3085,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testRunScenario() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         System.out.println( "create package" );
@@ -3184,9 +3200,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testRunScenarioWithGeneratedBeans() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         PackageItem pkg = repo.createPackage( "testScenarioRunWithGeneratedBeans",
@@ -3243,9 +3260,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testRunPackageScenariosWithDeclaredFacts() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         PackageItem pkg = repo.createPackage( "testScenarioRunBulkWithDeclaredFacts",
@@ -3356,9 +3374,10 @@ public class ServiceImplementationTest {
                       s2.scenarioName );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testRunScenarioWithJar() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -3430,9 +3449,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testRunScenarioWithJarThatHasSourceFiles() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         // create our package
@@ -3496,9 +3516,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testRunPackageScenarios() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         PackageItem pkg = repo.createPackage( "testScenarioRunBulk",
@@ -3619,9 +3640,10 @@ public class ServiceImplementationTest {
                       s2.scenarioName );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testListFactTypesAvailableInPackage() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
 
         PackageItem pkg = repo.createPackage( "testAvailableTypes",
@@ -3656,9 +3678,10 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testGuidedDTExecute() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.repository;
         impl.createCategory( "/",
                              "decisiontables",
@@ -3734,7 +3757,8 @@ public class ServiceImplementationTest {
                       p.getLikes() );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testPackageNameSorting() {
         PackageConfigData c1 = new PackageConfigData( "org.foo" );
         PackageConfigData c2 = new PackageConfigData( "org.foo.bar" );
@@ -3750,7 +3774,8 @@ public class ServiceImplementationTest {
                       ls.get( 1 ) );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testLoadDropDown() throws Exception {
         ServiceImplementation serv = new ServiceImplementation();
         String[] pairs = new String[]{"f1=x", "f2=2"};
@@ -3767,7 +3792,8 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testLoadDropDownNoValuePairs() throws Exception {
         ServiceImplementation serv = new ServiceImplementation();
         String[] pairs = new String[]{null};
@@ -3780,16 +3806,18 @@ public class ServiceImplementationTest {
 
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testListUserPermisisons() throws Exception {
-        ServiceImplementation serv = getService();
+        ServiceImplementation serv = getServiceImplementation();
         Map<String, List<String>> r = serv.listUserPermissions();
         assertNotNull( r );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testManageUserPermissions() throws Exception {
-        ServiceImplementation serv = getService();
+        ServiceImplementation serv = getServiceImplementation();
         Map<String, List<String>> perms = new HashMap<String, List<String>>();
         serv.updateUserPermissions( "googoo",
                                     perms );
@@ -3799,10 +3827,11 @@ public class ServiceImplementationTest {
                       perms_.size() );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     //Ignore
     public void testImportSampleRepository() throws Exception {
-        ServiceImplementation serv = getService();
+        ServiceImplementation serv = getServiceImplementation();
         serv.installSampleRepository();
         PackageConfigData[] cfgs = serv.listPackages();
         assertEquals( 2,
@@ -3818,7 +3847,7 @@ public class ServiceImplementationTest {
     @Ignore
     @Test
     public void testHistoryAfterReImportSampleRepository() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
 
         //Import sample, do a sanity check, make sure sample is installed correctly
         impl.installSampleRepository();
@@ -3878,9 +3907,10 @@ public class ServiceImplementationTest {
                       rows.length );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testAddCategories() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         impl.repository.createPackage( "testAddCategoriesPackage",
                                        "desc" );
         impl.createCategory( "",
@@ -3915,9 +3945,10 @@ public class ServiceImplementationTest {
         assertTrue( dtItem3.getCategorySummary().contains( "testAddCategoriesCat2" ) );
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testSnapshotDiff() throws Exception {
-        RepositoryService impl = getService();
+        RepositoryService impl = getServiceImplementation();
 
         // Lets make a package and a rule into tit.
         impl.createCategory( "/",
