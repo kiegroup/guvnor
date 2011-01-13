@@ -211,9 +211,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testCategory() throws Exception {
-        RulesRepository repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
-        ServiceImplementation serviceImplementation = new ServiceImplementation();
-        serviceImplementation.repository = repository;
+        ServiceImplementation serviceImplementation = getServiceImplementation();
 
         String[] originalCats = serviceImplementation.loadChildCategories( "/" );
 
