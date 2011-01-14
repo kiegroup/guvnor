@@ -36,283 +36,308 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * 
  * @author Michael Neale
  */
-public class GuidedDecisionTable
-    implements
-    PortableObject {
+public class GuidedDecisionTable implements PortableObject {
 
-    private static final long  serialVersionUID  = 510l;
+	private static final long serialVersionUID = 510l;
 
-    /**
-     * Number of internal elements before ( used for offsets in serialization )
-     */
-    public static final int    INTERNAL_ELEMENTS = 2;
+	/**
+	 * Number of internal elements before ( used for offsets in serialization )
+	 */
+	public static final int INTERNAL_ELEMENTS = 2;
 
-    /**
-     * The name - obviously.
-     */
-    private String             tableName;
+	/**
+	 * The name - obviously.
+	 */
+	private String tableName;
 
-    private String             parentName;
+	private String parentName;
 
-    // metadata defined for table ( will be represented as a column per table
-    // row of DATA
-    private List<MetadataCol>  metadataCols;
+	// metadata defined for table ( will be represented as a column per table
+	// row of DATA
+	private RowNumberCol rowNumberCol;
 
-    private List<AttributeCol> attributeCols     = new ArrayList<AttributeCol>();
+	private DescriptionCol descriptionCol;
 
-    private List<ConditionCol> conditionCols     = new ArrayList<ConditionCol>();
+	private List<MetadataCol> metadataCols;
 
-    private List<ActionCol>    actionCols        = new ArrayList<ActionCol>();
+	private List<AttributeCol> attributeCols = new ArrayList<AttributeCol>();
 
-    /**
-     * First column is always row number. Second column is description.
-     * Subsequent ones follow the above column definitions: attributeCols, then
-     * conditionCols, then actionCols, in that order, left to right.
-     */
-    private String[][]         data              = new String[0][0];
+	private List<ConditionCol> conditionCols = new ArrayList<ConditionCol>();
 
-    /**
-     * The width to display the description column.
-     */
-    private int                descriptionWidth  = -1;
+	private List<ActionCol> actionCols = new ArrayList<ActionCol>();
 
-    private String             groupField;
+	/**
+	 * First column is always row number. Second column is description.
+	 * Subsequent ones follow the above column definitions: attributeCols, then
+	 * conditionCols, then actionCols, in that order, left to right.
+	 */
+	private String[][] data = new String[0][0];
 
-    public GuidedDecisionTable() {
-    }
+	/**
+	 * The width to display the description column.
+	 */
+	private int descriptionWidth = -1;
 
-    /**
-     * This will return a list of valid values. if there is no such
-     * "enumeration" of values, then it will return an empty array.
-     */
-    public String[] getValueList(DTColumnConfig col,
-                                 SuggestionCompletionEngine sce) {
-        if ( col instanceof AttributeCol ) {
-            AttributeCol at = (AttributeCol) col;
-            if ( "no-loop".equals( at.attr ) || "enabled".equals( at.attr ) ) {
-                return new String[]{"true", "false"};
-            }
-        } else if ( col instanceof ConditionCol ) {
-            // conditions: if its a formula etc, just return String[0],
-            // otherwise check with the sce
-            ConditionCol c = (ConditionCol) col;
-            if ( c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_RET_VALUE || c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-                return new String[0];
-            } else {
-                if ( c.getValueList() != null && !"".equals( c.getValueList() ) ) {
-                    return c.getValueList().split( "," );
-                } else {
-                    String[] r = sce.getEnumValues( c.getFactType(),
-                                                    c.getFactField() );
-                    return (r != null) ? r : new String[0];
-                }
-            }
-        } else if ( col instanceof ActionSetFieldCol ) {
-            ActionSetFieldCol c = (ActionSetFieldCol) col;
-            if ( c.getValueList() != null && !"".equals( c.getValueList() ) ) {
-                return c.getValueList().split( "," );
-            } else {
-                String[] r = sce.getEnumValues( getBoundFactType( c.getBoundName() ),
-                                                c.getFactField() );
-                return (r != null) ? r : new String[0];
-            }
-        } else if ( col instanceof ActionInsertFactCol ) {
-            ActionInsertFactCol c = (ActionInsertFactCol) col;
-            if ( c.getValueList() != null && !"".equals( c.getValueList() ) ) {
-                return c.getValueList().split( "," );
-            } else {
-                String[] r = sce.getEnumValues( c.getFactType(),
-                                                c.getFactField() );
-                return (r != null) ? r : new String[0];
-            }
-        }
+	private String groupField;
 
-        return new String[0];
-    }
+	public GuidedDecisionTable() {
+	}
 
-    public String getType(DTColumnConfig col,
-                          SuggestionCompletionEngine sce) {
-        String type = null;
-        if ( col instanceof AttributeCol ) {
-            AttributeCol at = (AttributeCol) col;
-            type = at.attr;
-        } else if ( col instanceof ConditionCol ) {
-            ConditionCol c = (ConditionCol) col;
-            type = sce.getFieldType( c.getFactType(),
-                                     c.getFactField() );
-        } else if ( col instanceof ActionSetFieldCol ) {
-            ActionSetFieldCol c = (ActionSetFieldCol) col;
-            type = sce.getFieldType( getBoundFactType( c.getBoundName() ),
-                                     c.getFactField() );
-        } else if ( col instanceof ActionInsertFactCol ) {
-            ActionInsertFactCol c = (ActionInsertFactCol) col;
-            type = sce.getFieldType( c.getFactType(),
-                                     c.getFactField() );
-        }
+	/**
+	 * This will return a list of valid values. if there is no such
+	 * "enumeration" of values, then it will return an empty array.
+	 */
+	public String[] getValueList(DTColumnConfig col,
+			SuggestionCompletionEngine sce) {
+		if (col instanceof AttributeCol) {
+			AttributeCol at = (AttributeCol) col;
+			if ("no-loop".equals(at.attr) || "enabled".equals(at.attr)) {
+				return new String[] { "true", "false" };
+			}
+		} else if (col instanceof ConditionCol) {
+			// conditions: if its a formula etc, just return String[0],
+			// otherwise check with the sce
+			ConditionCol c = (ConditionCol) col;
+			if (c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_RET_VALUE
+					|| c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE) {
+				return new String[0];
+			} else {
+				if (c.getValueList() != null && !"".equals(c.getValueList())) {
+					return c.getValueList().split(",");
+				} else {
+					String[] r = sce.getEnumValues(c.getFactType(),
+							c.getFactField());
+					return (r != null) ? r : new String[0];
+				}
+			}
+		} else if (col instanceof ActionSetFieldCol) {
+			ActionSetFieldCol c = (ActionSetFieldCol) col;
+			if (c.getValueList() != null && !"".equals(c.getValueList())) {
+				return c.getValueList().split(",");
+			} else {
+				String[] r = sce.getEnumValues(
+						getBoundFactType(c.getBoundName()), c.getFactField());
+				return (r != null) ? r : new String[0];
+			}
+		} else if (col instanceof ActionInsertFactCol) {
+			ActionInsertFactCol c = (ActionInsertFactCol) col;
+			if (c.getValueList() != null && !"".equals(c.getValueList())) {
+				return c.getValueList().split(",");
+			} else {
+				String[] r = sce.getEnumValues(c.getFactType(),
+						c.getFactField());
+				return (r != null) ? r : new String[0];
+			}
+		}
 
-        return type;
-    }
+		return new String[0];
+	}
 
-    private String getBoundFactType(String boundName) {
-        for ( Iterator<ConditionCol> iterator = getConditionCols().iterator(); iterator.hasNext(); ) {
-            ConditionCol c = iterator.next();
-            if ( c.getBoundName().equals( boundName ) ) {
-                return c.getFactType();
-            }
-        }
-        return null;
-    }
+	public String getType(DTColumnConfig col, SuggestionCompletionEngine sce) {
+		String type = null;
+		if (col instanceof AttributeCol) {
+			AttributeCol at = (AttributeCol) col;
+			type = at.attr;
+		} else if (col instanceof ConditionCol) {
+			ConditionCol c = (ConditionCol) col;
+			type = sce.getFieldType(c.getFactType(), c.getFactField());
+		} else if (col instanceof ActionSetFieldCol) {
+			ActionSetFieldCol c = (ActionSetFieldCol) col;
+			type = sce.getFieldType(getBoundFactType(c.getBoundName()),
+					c.getFactField());
+		} else if (col instanceof ActionInsertFactCol) {
+			ActionInsertFactCol c = (ActionInsertFactCol) col;
+			type = sce.getFieldType(c.getFactType(), c.getFactField());
+		}
 
-    public boolean isNumeric(DTColumnConfig col,
-                             SuggestionCompletionEngine sce) {
-        if ( col instanceof AttributeCol ) {
-            AttributeCol at = (AttributeCol) col;
-            return "salience".equals( at.attr );
-        } else if ( col instanceof ConditionCol ) {
-            ConditionCol c = (ConditionCol) col;
-            if ( c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
-                if ( c.getOperator() == null || "".equals( c.getOperator() ) ) {
-                    return false;
-                }
-                String ft = sce.getFieldType( c.getFactType(),
-                                              c.getFactField() );
-                if ( ft != null && ft.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                    return true;
-                }
-            }
-        } else if ( col instanceof ActionSetFieldCol ) {
-            ActionSetFieldCol c = (ActionSetFieldCol) col;
-            String ft = sce.getFieldType( getBoundFactType( c.getBoundName() ),
-                                          c.getFactField() );
-            if ( ft != null && ft.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                return true;
-            }
-        } else if ( col instanceof ActionInsertFactCol ) {
-            ActionInsertFactCol c = (ActionInsertFactCol) col;
-            String ft = sce.getFieldType( c.getFactType(),
-                                          c.getFactField() );
-            if ( ft != null && ft.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                return true;
-            }
-        }
-        // we can reuse text filter from guided editor to enforce this for data
-        // entry.
-        return false;
-    }
+		return type;
+	}
 
-    public void setMetadataCols(List<MetadataCol> metadataCols) {
-        this.metadataCols = metadataCols;
-    }
+	private String getBoundFactType(String boundName) {
+		for (Iterator<ConditionCol> iterator = getConditionCols().iterator(); iterator
+				.hasNext();) {
+			ConditionCol c = iterator.next();
+			if (c.getBoundName().equals(boundName)) {
+				return c.getFactType();
+			}
+		}
+		return null;
+	}
 
-    public List<MetadataCol> getMetadataCols() {
-        if ( null == metadataCols ) {
-            metadataCols = new ArrayList<MetadataCol>();
-        }
-        return metadataCols;
-    }
+	public boolean isNumeric(DTColumnConfig col, SuggestionCompletionEngine sce) {
+		if (col instanceof AttributeCol) {
+			AttributeCol at = (AttributeCol) col;
+			return "salience".equals(at.attr);
+		} else if (col instanceof ConditionCol) {
+			ConditionCol c = (ConditionCol) col;
+			if (c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL) {
+				if (c.getOperator() == null || "".equals(c.getOperator())) {
+					return false;
+				}
+				String ft = sce.getFieldType(c.getFactType(), c.getFactField());
+				if (ft != null
+						&& ft.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+					return true;
+				}
+			}
+		} else if (col instanceof ActionSetFieldCol) {
+			ActionSetFieldCol c = (ActionSetFieldCol) col;
+			String ft = sce.getFieldType(getBoundFactType(c.getBoundName()),
+					c.getFactField());
+			if (ft != null
+					&& ft.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+				return true;
+			}
+		} else if (col instanceof ActionInsertFactCol) {
+			ActionInsertFactCol c = (ActionInsertFactCol) col;
+			String ft = sce.getFieldType(c.getFactType(), c.getFactField());
+			if (ft != null
+					&& ft.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+				return true;
+			}
+		}
+		// we can reuse text filter from guided editor to enforce this for data
+		// entry.
+		return false;
+	}
 
-    /**
-     * Locate index of attribute name if it exists
-     * 
-     * @param attributeName
-     *            Name of metadata we are looking for
-     * @return index of attribute name or -1 if not found
-     */
-    public int getMetadataColIndex(String attributeName) {
+	public RowNumberCol getRowNumberCol() {
+		// De-serialising old models sets this field to null
+		if (this.rowNumberCol == null) {
+			this.rowNumberCol = new RowNumberCol();
+		}
+		return this.rowNumberCol;
+	}
 
-        for ( int i = 0; metadataCols != null && i < metadataCols.size(); i++ ) {
-            if ( attributeName.equals( metadataCols.get( i ).attr ) ) {
-                return i;
-            }
-        }
-        return -1;
-    }
+	public void setRowNumberCol(RowNumberCol rowNumberCol) {
+		this.rowNumberCol = rowNumberCol;
+	}
 
-    /**
-     * Update all rows of metadata with value it attribute is present
-     * 
-     * @param attributeName
-     *            Name of metadata we are looking for
-     * @return true if values update, false if not
-     */
-    public boolean updateMetadata(String attributeName,
-                                  String newValue) {
+	public DescriptionCol getDescriptionCol() {
+		// De-serialising old models sets this field to null
+		if (this.descriptionCol == null) {
+			this.descriptionCol = new DescriptionCol();
+		}
+		return this.descriptionCol;
+	}
 
-        // see if metaData exists for
-        int metaIndex = getMetadataColIndex( attributeName );
-        if ( metaIndex < 0 ) return false;
+	public void setDescriptionCol(DescriptionCol descriptionCol) {
+		this.descriptionCol = descriptionCol;
+	}
 
-        for ( int i = 0; i < getData().length; i++ ) {
+	public void setMetadataCols(List<MetadataCol> metadataCols) {
+		this.metadataCols = metadataCols;
+	}
 
-            String[] row = getData()[i];
+	public List<MetadataCol> getMetadataCols() {
+		if (null == metadataCols) {
+			metadataCols = new ArrayList<MetadataCol>();
+		}
+		return metadataCols;
+	}
 
-            row[GuidedDecisionTable.INTERNAL_ELEMENTS + metaIndex] = newValue;
-        }
-        return true;
-    }
+	/**
+	 * Locate index of attribute name if it exists
+	 * 
+	 * @param attributeName
+	 *            Name of metadata we are looking for
+	 * @return index of attribute name or -1 if not found
+	 */
+	public int getMetadataColIndex(String attributeName) {
 
-    public void setGroupField(String groupField) {
-        this.groupField = groupField;
-    }
+		for (int i = 0; metadataCols != null && i < metadataCols.size(); i++) {
+			if (attributeName.equals(metadataCols.get(i).attr)) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
-    public String getGroupField() {
-        return groupField;
-    }
+	/**
+	 * Update all rows of metadata with value it attribute is present
+	 * 
+	 * @param attributeName
+	 *            Name of metadata we are looking for
+	 * @return true if values update, false if not
+	 */
+	public boolean updateMetadata(String attributeName, String newValue) {
 
-    public void setTableName(String tableName) {
-        this.tableName = tableName;
-    }
+		// see if metaData exists for
+		int metaIndex = getMetadataColIndex(attributeName);
+		if (metaIndex < 0)
+			return false;
 
-    public String getTableName() {
-        return tableName;
-    }
+		for (int i = 0; i < getData().length; i++) {
 
-    public void setParentName(String parentName) {
-        this.parentName = parentName;
-    }
+			String[] row = getData()[i];
 
-    public String getParentName() {
-        return parentName;
-    }
+			row[GuidedDecisionTable.INTERNAL_ELEMENTS + metaIndex] = newValue;
+		}
+		return true;
+	}
 
-    public void setAttributeCols(List<AttributeCol> attributeCols) {
-        this.attributeCols = attributeCols;
-    }
+	public void setGroupField(String groupField) {
+		this.groupField = groupField;
+	}
 
-    public List<AttributeCol> getAttributeCols() {
-        return attributeCols;
-    }
+	public String getGroupField() {
+		return groupField;
+	}
 
-    public void setConditionCols(List<ConditionCol> conditionCols) {
-        this.conditionCols = conditionCols;
-    }
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
 
-    public List<ConditionCol> getConditionCols() {
-        return conditionCols;
-    }
+	public String getTableName() {
+		return tableName;
+	}
 
-    public void setActionCols(List<ActionCol> actionCols) {
-        this.actionCols = actionCols;
-    }
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
 
-    public List<ActionCol> getActionCols() {
-        return actionCols;
-    }
+	public String getParentName() {
+		return parentName;
+	}
 
-    public void setData(String[][] data) {
-        this.data = data;
-    }
+	public void setAttributeCols(List<AttributeCol> attributeCols) {
+		this.attributeCols = attributeCols;
+	}
 
-    public String[][] getData() {
-        return data;
-    }
+	public List<AttributeCol> getAttributeCols() {
+		return attributeCols;
+	}
 
-    public void setDescriptionWidth(int descriptionWidth) {
-        this.descriptionWidth = descriptionWidth;
-    }
+	public void setConditionCols(List<ConditionCol> conditionCols) {
+		this.conditionCols = conditionCols;
+	}
 
-    public int getDescriptionWidth() {
-        return descriptionWidth;
-    }
+	public List<ConditionCol> getConditionCols() {
+		return conditionCols;
+	}
+
+	public void setActionCols(List<ActionCol> actionCols) {
+		this.actionCols = actionCols;
+	}
+
+	public List<ActionCol> getActionCols() {
+		return actionCols;
+	}
+
+	public void setData(String[][] data) {
+		this.data = data;
+	}
+
+	public String[][] getData() {
+		return data;
+	}
+
+	public void setDescriptionWidth(int descriptionWidth) {
+		this.descriptionWidth = descriptionWidth;
+	}
+
+	public int getDescriptionWidth() {
+		return descriptionWidth;
+	}
 
 }
