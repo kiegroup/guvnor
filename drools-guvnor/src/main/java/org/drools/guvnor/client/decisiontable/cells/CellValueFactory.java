@@ -7,8 +7,9 @@ import java.util.Map;
 import org.drools.guvnor.client.decisiontable.widget.CellValue;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
+import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
+import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
@@ -214,24 +215,14 @@ public class CellValueFactory {
 			dataType = lookupDataType(keys);
 
 		} else if (column instanceof ConditionCol) {
-			ConditionCol condCol = (ConditionCol) column;
-			keys[2] = null;
-			keys[1] = ConditionCol.class.getName();
-			keys[0] = keys[1] + "#" + condCol.getFactType() + "#"
-					+ condCol.getFactField() + "#"
-					+ condCol.getConstraintValueType();
+			dataType = makeNewCellDataType(column, dtable);
 
-			dataType = lookupDataType(keys);
-			if (dataType == null) {
-				dataType = makeNewConditionCellDataType((ConditionCol) column,
-						dtable);
-				datatypeCache.put(keys[0], dataType);
-			}
+		} else if (column instanceof ActionSetFieldCol) {
+			dataType = makeNewCellDataType(column, dtable);
 
-		} else if (column instanceof ActionCol) {
-			keys[2] = null;
-			keys[1] = null;
-			keys[0] = ActionCol.class.getName();
+		} else if (column instanceof ActionInsertFactCol) {
+			dataType = makeNewCellDataType(column, dtable);
+
 		}
 
 		return dataType;
@@ -253,25 +244,19 @@ public class CellValueFactory {
 
 	}
 
-	// Make a new Data Type cache entry for the ConditionCol
-	private DATA_TYPES makeNewConditionCellDataType(ConditionCol col,
+	// Make a new Data Type cache entry for the DTColumnConfig
+	private DATA_TYPES makeNewCellDataType(DTColumnConfig col,
 			DecisionTableWidget dtable) {
 
 		GuidedDecisionTable model = dtable.getModel();
 		SuggestionCompletionEngine sce = dtable.getSCE();
 		DATA_TYPES dataType = DATA_TYPES.STRING;
-
 		if (model.isNumeric(col, sce)) {
 			dataType = DATA_TYPES.NUMERIC;
-		} else {
-			if (col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL) {
-				String type = model.getType(col, sce);
-				if (type.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
-					dataType = DATA_TYPES.BOOLEAN;
-				} else if (type.equals(SuggestionCompletionEngine.TYPE_DATE)) {
-					dataType = DATA_TYPES.DATE;
-				}
-			}
+		} else if (model.isBoolean(col, sce)) {
+			dataType = DATA_TYPES.BOOLEAN;
+		} else if (model.isDate(col, sce)) {
+			dataType = DATA_TYPES.DATE;
 		}
 		return dataType;
 	}

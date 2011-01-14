@@ -127,13 +127,13 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
 		switch (editingCol.getConstraintValueType()) {
 		case BaseSingleFieldConstraint.TYPE_LITERAL:
-			literal.setEnabled(true);
+			literal.setValue(true);
 			break;
 		case BaseSingleFieldConstraint.TYPE_RET_VALUE:
-			formula.setEnabled(true);
+			formula.setValue(true);
 			break;
 		case BaseSingleFieldConstraint.TYPE_PREDICATE:
-			predicate.setEnabled(true);
+			predicate.setValue(true);
 		}
 
 		literal.addClickHandler(new ClickHandler() {

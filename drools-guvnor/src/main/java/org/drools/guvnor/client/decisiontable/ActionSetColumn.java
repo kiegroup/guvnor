@@ -189,7 +189,7 @@ public class ActionSetColumn extends FormStylePopup {
 		HorizontalPanel hp = new HorizontalPanel();
 
 		final CheckBox cb = new CheckBox();
-		cb.setEnabled(editingCol.isUpdate());
+		cb.setValue(editingCol.isUpdate());
 		cb.setText("");
 		cb.addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent arg0) {

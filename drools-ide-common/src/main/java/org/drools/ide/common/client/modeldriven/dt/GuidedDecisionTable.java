@@ -167,16 +167,59 @@ public class GuidedDecisionTable implements PortableObject {
 	public boolean isNumeric(DTColumnConfig col, SuggestionCompletionEngine sce) {
 		if (col instanceof AttributeCol) {
 			AttributeCol at = (AttributeCol) col;
-			return "salience".equals(at.attr);
-		} else if (col instanceof ConditionCol) {
+			return "salience".equals(at.attr) || "duration".equals(at.attr);
+		} else {
+			return isDataType(col, sce, SuggestionCompletionEngine.TYPE_NUMERIC);
+		}
+	}
+
+	public boolean isBoolean(DTColumnConfig col, SuggestionCompletionEngine sce) {
+		if (col instanceof AttributeCol) {
+			AttributeCol at = (AttributeCol) col;
+			return "enabled".equals(at.attr) || "no-loop".equals(at.attr)
+					|| "auto-focus".equals(at.attr)
+					|| "lock-on-active".equals(at.attr);
+		} else {
+			return isDataType(col, sce, SuggestionCompletionEngine.TYPE_BOOLEAN);
+		}
+	}
+
+	public boolean isDate(DTColumnConfig col, SuggestionCompletionEngine sce) {
+		if (col instanceof AttributeCol) {
+			AttributeCol at = (AttributeCol) col;
+			return "date-effective".equals(at.attr)
+					|| "date-expires".equals(at.attr);
+		} else {
+			return isDataType(col, sce, SuggestionCompletionEngine.TYPE_DATE);
+		}
+	}
+
+	private boolean isDataType(DTColumnConfig col,
+			SuggestionCompletionEngine sce, String dataType) {
+		if (col instanceof RowNumberCol) {
+			throw new IllegalArgumentException(
+					"Only ConditionCol and Actions permitted. Consider using one of the public is<DataType> methods.");
+		}
+		if (col instanceof DescriptionCol) {
+			throw new IllegalArgumentException(
+					"Only ConditionCol and Actions permitted. Consider using one of the public is<DataType> methods.");
+		}
+		if (col instanceof MetadataCol) {
+			throw new IllegalArgumentException(
+					"Only ConditionCol and Actions permitted. Consider using one of the public is<DataType> methods.");
+		}
+		if (col instanceof AttributeCol) {
+			throw new IllegalArgumentException(
+					"Only ConditionCol and Actions permitted. Consider using one of the public is<DataType> methods.");
+		}
+		if (col instanceof ConditionCol) {
 			ConditionCol c = (ConditionCol) col;
 			if (c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL) {
 				if (c.getOperator() == null || "".equals(c.getOperator())) {
 					return false;
 				}
 				String ft = sce.getFieldType(c.getFactType(), c.getFactField());
-				if (ft != null
-						&& ft.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+				if (ft != null && ft.equals(dataType)) {
 					return true;
 				}
 			}
@@ -184,20 +227,16 @@ public class GuidedDecisionTable implements PortableObject {
 			ActionSetFieldCol c = (ActionSetFieldCol) col;
 			String ft = sce.getFieldType(getBoundFactType(c.getBoundName()),
 					c.getFactField());
-			if (ft != null
-					&& ft.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+			if (ft != null && ft.equals(dataType)) {
 				return true;
 			}
 		} else if (col instanceof ActionInsertFactCol) {
 			ActionInsertFactCol c = (ActionInsertFactCol) col;
 			String ft = sce.getFieldType(c.getFactType(), c.getFactField());
-			if (ft != null
-					&& ft.equals(SuggestionCompletionEngine.TYPE_NUMERIC)) {
+			if (ft != null && ft.equals(dataType)) {
 				return true;
 			}
 		}
-		// we can reuse text filter from guided editor to enforce this for data
-		// entry.
 		return false;
 	}
 

@@ -8,8 +8,9 @@ import java.util.Map;
 
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
+import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
+import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
@@ -152,24 +153,14 @@ public class CellFactory {
 			cell = lookupCell(keys);
 
 		} else if (column instanceof ConditionCol) {
-			ConditionCol condCol = (ConditionCol) column;
-			keys[2] = null;
-			keys[1] = ConditionCol.class.getName();
-			keys[0] = keys[1] + "#" + condCol.getFactType() + "#"
-					+ condCol.getFactField() + "#"
-					+ condCol.getConstraintValueType();
+			cell = makeNewCell(column, dtable);
 
-			cell = lookupCell(keys);
-			if (cell == null) {
-				cell = makeNewConditionCell((ConditionCol) column, dtable);
-				cellCache.put(keys[0], cell);
-			}
+		} else if (column instanceof ActionSetFieldCol) {
+			cell = makeNewCell(column, dtable);
 
-		} else if (column instanceof ActionCol) {
-			keys[2] = null;
-			keys[1] = null;
-			keys[0] = ActionCol.class.getName();
-			cell = lookupCell(keys);
+		} else if (column instanceof ActionInsertFactCol) {
+			cell = makeNewCell(column, dtable);
+
 		}
 
 		cell.setDecisionTableWidget(dtable);
@@ -193,9 +184,9 @@ public class CellFactory {
 
 	}
 
-	// Make a new Cell cache entry for the ConditionCol
-	private DecisionTableCellValueAdaptor<? extends Comparable<?>> makeNewConditionCell(
-			ConditionCol col, DecisionTableWidget dtable) {
+	// Make a new Cell cache entry for the DTColumnConfig
+	private DecisionTableCellValueAdaptor<? extends Comparable<?>> makeNewCell(
+			DTColumnConfig col, DecisionTableWidget dtable) {
 
 		GuidedDecisionTable model = dtable.getModel();
 		SuggestionCompletionEngine sce = dtable.getSCE();
@@ -205,16 +196,10 @@ public class CellFactory {
 		if (vals.length == 0) {
 			if (model.isNumeric(col, sce)) {
 				cell = NUMERIC_CELL;
-			} else {
-				if (col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL) {
-					String type = model.getType(col, sce);
-					if (type.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
-						cell = BOOLEAN_CELL;
-					} else if (type
-							.equals(SuggestionCompletionEngine.TYPE_DATE)) {
-						cell = DATE_CELL;
-					}
-				}
+			} else if (model.isBoolean(col, sce)) {
+				cell = BOOLEAN_CELL;
+			} else if (model.isDate(col, sce)) {
+				cell = DATE_CELL;
 			}
 		} else {
 			PopupDropDownEditCell pudd = new PopupDropDownEditCell();
