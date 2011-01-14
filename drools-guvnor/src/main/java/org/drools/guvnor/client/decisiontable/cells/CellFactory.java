@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
-import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
@@ -31,25 +31,30 @@ import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
  */
 public class CellFactory {
 
+	// Row number
+	private static DecisionTableCellValueAdaptor<Integer> ROW_NUMBER_CELL = new DecisionTableCellValueAdaptor<Integer>(
+			new RowNumberCell());
+
+	// Text editor
+	private static DecisionTableCellValueAdaptor<String> TEXT_CELL = new DecisionTableCellValueAdaptor<String>(
+			new PopupTextEditCell());
+
+	// Numeric editor
+	private static DecisionTableCellValueAdaptor<Integer> NUMERIC_CELL = new DecisionTableCellValueAdaptor<Integer>(
+			new PopupNumericEditCell());
+
+	// Date editor (DatePickerCell)
+	private static DecisionTableCellValueAdaptor<Date> DATE_CELL = new DecisionTableCellValueAdaptor<Date>(
+			new PopupDateEditCell(
+					DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT)));
+
+	// Boolean editor
+	private static DecisionTableCellValueAdaptor<Boolean> BOOLEAN_CELL = new DecisionTableCellValueAdaptor<Boolean>(
+			new CheckboxCell());
+
 	// Setup the cache. GWT's Cells are wrapped with an adaptor which
 	// casts the value of the CellValue to the type required for the GWT Cell
 	{
-		// Row number
-		DecisionTableCellValueAdaptor<Integer> ROW_NUMBER_CELL = new DecisionTableCellValueAdaptor<Integer>(
-				new RowNumberCell());
-
-		// Text editor
-		DecisionTableCellValueAdaptor<String> TEXT_CELL = new DecisionTableCellValueAdaptor<String>(
-				new PopupTextEditCell());
-
-		// Numeric editor
-		DecisionTableCellValueAdaptor<Integer> NUMERIC_CELL = new DecisionTableCellValueAdaptor<Integer>(
-				new PopupNumericEditCell());
-
-		// Date editor (DatePickerCell)
-		DecisionTableCellValueAdaptor<Date> DATE_CELL = new DecisionTableCellValueAdaptor<Date>(
-				new PopupDateEditCell(
-						DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT)));
 
 		// Dialect editor
 		List<String> dialectOptions = new ArrayList<String>();
@@ -59,17 +64,14 @@ public class CellFactory {
 		DecisionTableCellValueAdaptor<String> DIALECT_CELL = new DecisionTableCellValueAdaptor<String>(
 				sc);
 
-		// Boolean editor
-		DecisionTableCellValueAdaptor<Boolean> BOOLEAN_CELL = new DecisionTableCellValueAdaptor<Boolean>(
-				new CheckboxCell());
-
 		cellCache.put(RowNumberCol.class.getName(), ROW_NUMBER_CELL);
 		cellCache.put(DescriptionCol.class.getName(), TEXT_CELL);
 		cellCache.put(MetadataCol.class.getName(), TEXT_CELL);
 		cellCache.put(AttributeCol.class.getName(), TEXT_CELL);
-		cellCache.put(AttributeCol.class.getName() + "#salience", NUMERIC_CELL);
-		cellCache.put(AttributeCol.class.getName() + "#salience#auto",
+		cellCache.put(AttributeCol.class.getName() + "#salience#true",
 				ROW_NUMBER_CELL);
+		cellCache.put(AttributeCol.class.getName() + "#salience#false",
+				NUMERIC_CELL);
 		cellCache.put(AttributeCol.class.getName() + "#enabled", BOOLEAN_CELL);
 		cellCache.put(AttributeCol.class.getName() + "#no-loop", BOOLEAN_CELL);
 		cellCache.put(AttributeCol.class.getName() + "#duration", NUMERIC_CELL);
@@ -82,7 +84,6 @@ public class CellFactory {
 		cellCache
 				.put(AttributeCol.class.getName() + "#date-expires", DATE_CELL);
 		cellCache.put(AttributeCol.class.getName() + "#dialect", DIALECT_CELL);
-		cellCache.put(ConditionCol.class.getName(), TEXT_CELL);
 		cellCache.put(ActionCol.class.getName(), TEXT_CELL);
 	}
 
@@ -115,61 +116,53 @@ public class CellFactory {
 	 * 
 	 * @param column
 	 *            The Decision Table model column
-	 * @param manager
-	 *            The SelectionManager used to update cells' content
+	 * @param dtable
+	 *            The Decision Table
 	 * @return A Cell
 	 */
 	public DecisionTableCellValueAdaptor<? extends Comparable<?>> getCell(
-			DTColumnConfig column, DecisionTableWidget dtable,
-			SuggestionCompletionEngine sce) {
+			DTColumnConfig column, DecisionTableWidget dtable) {
 
 		String[] keys = new String[3];
-		DecisionTableCellValueAdaptor<? extends Comparable<?>> cell;
+		DecisionTableCellValueAdaptor<? extends Comparable<?>> cell = DEFAULT_CELL;
 
 		if (column instanceof RowNumberCol) {
 			keys[2] = null;
 			keys[1] = null;
 			keys[0] = RowNumberCol.class.getName();
 			cell = lookupCell(keys);
+
 		} else if (column instanceof DescriptionCol) {
 			keys[2] = null;
 			keys[1] = null;
 			keys[0] = DescriptionCol.class.getName();
 			cell = lookupCell(keys);
+
 		} else if (column instanceof MetadataCol) {
 			keys[2] = null;
 			keys[1] = null;
 			keys[0] = MetadataCol.class.getName();
 			cell = lookupCell(keys);
+
 		} else if (column instanceof AttributeCol) {
 			AttributeCol attrCol = (AttributeCol) column;
-			keys[2] = null;
-			keys[1] = AttributeCol.class.getName();
-			keys[0] = keys[1] + "#" + attrCol.attr;
-
-			// Salience columns can be read-only
-			if (attrCol.attr.equals(RuleAttributeWidget.SALIENCE_ATTR)) {
-				if (attrCol.isUseRowNumber()) {
-					keys[0] = keys[0] + "#auto";
-				}
-			}
-			cell = lookupCell(keys);
-		} else if (column instanceof ConditionCol) {
 			keys[2] = AttributeCol.class.getName();
-			keys[1] = keys[2] + "#" + ((ConditionCol) column).getFactType();
-			keys[0] = keys[1] + "#" + ((ConditionCol) column).getFactField();
+			keys[1] = keys[2] + "#" + attrCol.attr;
+			keys[0] = keys[1] + "#" + attrCol.isUseRowNumber();
+			cell = lookupCell(keys);
 
-			GuidedDecisionTable model = dtable.getModel();
-			String[] vals = model.getValueList(column, sce);
+		} else if (column instanceof ConditionCol) {
+			ConditionCol condCol = (ConditionCol) column;
+			keys[2] = null;
+			keys[1] = ConditionCol.class.getName();
+			keys[0] = keys[1] + "#" + condCol.getFactType() + "#"
+					+ condCol.getFactField() + "#"
+					+ condCol.getConstraintValueType();
 
-			if (vals.length == 0) {
-				cell = new DecisionTableCellValueAdaptor<String>(
-						new PopupTextEditCell());
-			} else {
-
-				PopupDropDownEditCell pudd = new PopupDropDownEditCell();
-				pudd.setItems(vals);
-				cell = new DecisionTableCellValueAdaptor<String>(pudd);
+			cell = lookupCell(keys);
+			if (cell == null) {
+				cell = makeNewConditionCell((ConditionCol) column, dtable);
+				cellCache.put(keys[0], cell);
 			}
 
 		} else if (column instanceof ActionCol) {
@@ -177,9 +170,8 @@ public class CellFactory {
 			keys[1] = null;
 			keys[0] = ActionCol.class.getName();
 			cell = lookupCell(keys);
-		} else {
-			cell = DEFAULT_CELL;
 		}
+
 		cell.setDecisionTableWidget(dtable);
 		return cell;
 
@@ -188,7 +180,7 @@ public class CellFactory {
 	// Try the keys to find a renderer in the cache
 	private DecisionTableCellValueAdaptor<? extends Comparable<?>> lookupCell(
 			String[] keys) {
-		DecisionTableCellValueAdaptor<? extends Comparable<?>> cell = DEFAULT_CELL;
+		DecisionTableCellValueAdaptor<? extends Comparable<?>> cell = null;
 		for (String key : keys) {
 			if (key != null) {
 				if (cellCache.containsKey(key)) {
@@ -199,6 +191,37 @@ public class CellFactory {
 		}
 		return cell;
 
+	}
+
+	// Make a new Cell cache entry for the ConditionCol
+	private DecisionTableCellValueAdaptor<? extends Comparable<?>> makeNewConditionCell(
+			ConditionCol col, DecisionTableWidget dtable) {
+
+		GuidedDecisionTable model = dtable.getModel();
+		SuggestionCompletionEngine sce = dtable.getSCE();
+		DecisionTableCellValueAdaptor<? extends Comparable<?>> cell = DEFAULT_CELL;
+		String[] vals = model.getValueList(col, sce);
+
+		if (vals.length == 0) {
+			if (model.isNumeric(col, sce)) {
+				cell = NUMERIC_CELL;
+			} else {
+				if (col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL) {
+					String type = model.getType(col, sce);
+					if (type.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
+						cell = BOOLEAN_CELL;
+					} else if (type
+							.equals(SuggestionCompletionEngine.TYPE_DATE)) {
+						cell = DATE_CELL;
+					}
+				}
+			}
+		} else {
+			PopupDropDownEditCell pudd = new PopupDropDownEditCell();
+			pudd.setItems(vals);
+			cell = new DecisionTableCellValueAdaptor<String>(pudd);
+		}
+		return cell;
 	}
 
 }

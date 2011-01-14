@@ -5,11 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.guvnor.client.decisiontable.widget.CellValue;
+import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
 
@@ -111,7 +115,9 @@ public class CellValueFactory {
 		datatypeCache.put(DescriptionCol.class.getName(), DATA_TYPES.STRING);
 		datatypeCache.put(MetadataCol.class.getName(), DATA_TYPES.STRING);
 		datatypeCache.put(AttributeCol.class.getName(), DATA_TYPES.STRING);
-		datatypeCache.put(AttributeCol.class.getName() + "#salience",
+		datatypeCache.put(AttributeCol.class.getName() + "#salience#true",
+				DATA_TYPES.NUMERIC);
+		datatypeCache.put(AttributeCol.class.getName() + "#salience#false",
 				DATA_TYPES.NUMERIC);
 		datatypeCache.put(AttributeCol.class.getName() + "#enabled",
 				DATA_TYPES.BOOLEAN);
@@ -129,7 +135,6 @@ public class CellValueFactory {
 				DATA_TYPES.DATE);
 		datatypeCache.put(AttributeCol.class.getName() + "#dialect",
 				DATA_TYPES.DIALECT);
-		datatypeCache.put(ConditionCol.class.getName(), DATA_TYPES.STRING);
 		datatypeCache.put(ActionCol.class.getName(), DATA_TYPES.STRING);
 	}
 
@@ -161,11 +166,14 @@ public class CellValueFactory {
 	 *            Column coordinate for initialisation
 	 * @param initialValue
 	 *            The initial value of the cell
+	 * @param dtable
+	 *            The Decision Table
 	 * @return A CellValue
 	 */
 	public CellValue<? extends Comparable<?>> getCellValue(
-			DTColumnConfig column, int iRow, int iCol, String initialValue) {
-		DATA_TYPES dataType = getDataType(column);
+			DTColumnConfig column, int iRow, int iCol, String initialValue,
+			DecisionTableWidget dtable) {
+		DATA_TYPES dataType = getDataType(column, dtable);
 		CellValue<? extends Comparable<?>> cell = dataType.getNewCellValue(
 				iRow, iCol, initialValue);
 		return cell;
@@ -174,43 +182,65 @@ public class CellValueFactory {
 	// DataTypes are cached at different levels of precedence; key[0]
 	// contains the most specific through to key[2] which contains
 	// the most generic. Should no match be found the default is provided
-	private DATA_TYPES getDataType(DTColumnConfig column) {
+	private DATA_TYPES getDataType(DTColumnConfig column,
+			DecisionTableWidget dtable) {
 
 		String[] keys = new String[3];
+		DATA_TYPES dataType = DATA_TYPES.STRING;
 
 		if (column instanceof RowNumberCol) {
 			keys[2] = null;
 			keys[1] = null;
 			keys[0] = RowNumberCol.class.getName();
+			dataType = lookupDataType(keys);
+
 		} else if (column instanceof DescriptionCol) {
 			keys[2] = null;
 			keys[1] = null;
 			keys[0] = DescriptionCol.class.getName();
+			dataType = lookupDataType(keys);
+
 		} else if (column instanceof MetadataCol) {
 			keys[2] = null;
 			keys[1] = null;
 			keys[0] = MetadataCol.class.getName();
+			dataType = lookupDataType(keys);
+
 		} else if (column instanceof AttributeCol) {
-			keys[2] = null;
-			keys[1] = AttributeCol.class.getName();
-			keys[0] = keys[1] + "#" + ((AttributeCol) column).attr;
+			AttributeCol attrCol = (AttributeCol) column;
+			keys[2] = AttributeCol.class.getName();
+			keys[1] = keys[2] + "#" + attrCol.attr;
+			keys[0] = keys[1] + "#" + attrCol.isUseRowNumber();
+			dataType = lookupDataType(keys);
+
 		} else if (column instanceof ConditionCol) {
-			keys[2] = ConditionCol.class.getName();
-			keys[1] = keys[2] + "#" + ((ConditionCol) column).getFactType();
-			keys[0] = keys[1] + "#" + ((ConditionCol) column).getFactField();
+			ConditionCol condCol = (ConditionCol) column;
+			keys[2] = null;
+			keys[1] = ConditionCol.class.getName();
+			keys[0] = keys[1] + "#" + condCol.getFactType() + "#"
+					+ condCol.getFactField() + "#"
+					+ condCol.getConstraintValueType();
+
+			dataType = lookupDataType(keys);
+			if (dataType == null) {
+				dataType = makeNewConditionCellDataType((ConditionCol) column,
+						dtable);
+				datatypeCache.put(keys[0], dataType);
+			}
+
 		} else if (column instanceof ActionCol) {
 			keys[2] = null;
 			keys[1] = null;
 			keys[0] = ActionCol.class.getName();
 		}
 
-		return lookupDataType(keys);
+		return dataType;
 
 	}
 
 	// Try the keys to find a data-type in the cache
 	private DATA_TYPES lookupDataType(String[] keys) {
-		DATA_TYPES dataType = DATA_TYPES.STRING;
+		DATA_TYPES dataType = null;
 		for (String key : keys) {
 			if (key != null) {
 				if (datatypeCache.containsKey(key)) {
@@ -221,6 +251,29 @@ public class CellValueFactory {
 		}
 		return dataType;
 
+	}
+
+	// Make a new Data Type cache entry for the ConditionCol
+	private DATA_TYPES makeNewConditionCellDataType(ConditionCol col,
+			DecisionTableWidget dtable) {
+
+		GuidedDecisionTable model = dtable.getModel();
+		SuggestionCompletionEngine sce = dtable.getSCE();
+		DATA_TYPES dataType = DATA_TYPES.STRING;
+
+		if (model.isNumeric(col, sce)) {
+			dataType = DATA_TYPES.NUMERIC;
+		} else {
+			if (col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL) {
+				String type = model.getType(col, sce);
+				if (type.equals(SuggestionCompletionEngine.TYPE_BOOLEAN)) {
+					dataType = DATA_TYPES.BOOLEAN;
+				} else if (type.equals(SuggestionCompletionEngine.TYPE_DATE)) {
+					dataType = DATA_TYPES.DATE;
+				}
+			}
+		}
+		return dataType;
 	}
 
 }

@@ -12,6 +12,7 @@ import org.drools.guvnor.client.decisiontable.widget.MergableGridWidget.CellExte
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
+import org.drools.guvnor.client.table.SortDirection;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
@@ -267,6 +268,15 @@ public abstract class DecisionTableWidget extends Composite implements
 	}
 
 	/**
+	 * Return the SCE associated with this Decision Table
+	 * 
+	 * @return
+	 */
+	public SuggestionCompletionEngine getSCE() {
+		return this.sce;
+	}
+
+	/**
 	 * Retrieve the selected cells
 	 * 
 	 * @return The selected cells
@@ -305,7 +315,7 @@ public abstract class DecisionTableWidget extends Composite implements
 			DTColumnConfig column = columns.get(iCol).getModelColumn();
 			CellValue<? extends Comparable<?>> data = CellValueFactory
 					.getInstance().getCellValue(column, index, iCol,
-							column.getDefaultValue());
+							column.getDefaultValue(), this);
 			row.add(data);
 		}
 		data.add(index, row);
@@ -510,23 +520,23 @@ public abstract class DecisionTableWidget extends Composite implements
 		int iCol = 0;
 		DTColumnConfig colStatic;
 		DynamicColumn columnStatic;
-		colStatic = new RowNumberCol();
+		colStatic = model.getRowNumberCol();
 		columnStatic = new DynamicColumn(colStatic, CellFactory.getInstance()
-				.getCell(colStatic, this, sce), iCol, true, false);
+				.getCell(colStatic, this), iCol, true, false);
 		addColumn(columnStatic);
 		iCol++;
 
 		// Static columns, Description
-		colStatic = new DescriptionCol();
+		colStatic = model.getDescriptionCol();
 		columnStatic = new DynamicColumn(colStatic, CellFactory.getInstance()
-				.getCell(colStatic, this, sce), iCol);
+				.getCell(colStatic, this), iCol);
 		addColumn(columnStatic);
 		iCol++;
 
 		// Initialise CellTable's Metadata columns
 		for (DTColumnConfig col : model.getMetadataCols()) {
 			DynamicColumn column = new DynamicColumn(col, CellFactory
-					.getInstance().getCell(col, this, sce), iCol);
+					.getInstance().getCell(col, this), iCol);
 			column.setVisible(!col.isHideColumn());
 			addColumn(column);
 			iCol++;
@@ -535,9 +545,10 @@ public abstract class DecisionTableWidget extends Composite implements
 		// Initialise CellTable's Attribute columns
 		for (DTColumnConfig col : model.getAttributeCols()) {
 			DynamicColumn column = new DynamicColumn(col, CellFactory
-					.getInstance().getCell(col, this, sce), iCol);
+					.getInstance().getCell(col, this), iCol);
 			column.setVisible(!col.isHideColumn());
 			column.setSystemControlled(col.isUseRowNumber());
+			column.setSortable(!col.isUseRowNumber());
 			addColumn(column);
 			iCol++;
 		}
@@ -545,7 +556,7 @@ public abstract class DecisionTableWidget extends Composite implements
 		// Initialise CellTable's Condition columns
 		for (DTColumnConfig col : model.getConditionCols()) {
 			DynamicColumn column = new DynamicColumn(col, CellFactory
-					.getInstance().getCell(col, this, sce), iCol);
+					.getInstance().getCell(col, this), iCol);
 			column.setVisible(!col.isHideColumn());
 			addColumn(column);
 			iCol++;
@@ -554,7 +565,7 @@ public abstract class DecisionTableWidget extends Composite implements
 		// Initialise CellTable's Action columns
 		for (DTColumnConfig col : model.getActionCols()) {
 			DynamicColumn column = new DynamicColumn(col, CellFactory
-					.getInstance().getCell(col, this, sce), iCol);
+					.getInstance().getCell(col, this), iCol);
 			column.setVisible(!col.isHideColumn());
 			addColumn(column);
 			iCol++;
@@ -570,7 +581,7 @@ public abstract class DecisionTableWidget extends Composite implements
 					DTColumnConfig column = columns.get(iCol).getModelColumn();
 					CellValue<? extends Comparable<?>> cv = CellValueFactory
 							.getInstance().getCellValue(column, iRow, iCol,
-									row[iCol]);
+									row[iCol], this);
 					cellRow.add(cv);
 				}
 				this.data.add(cellRow);
@@ -740,7 +751,6 @@ public abstract class DecisionTableWidget extends Composite implements
 		model.getConditionCols().clear();
 		model.getActionCols().clear();
 
-		// TODO Move into GuidedDecisionTable model
 		RowNumberCol rnCol = null;
 		DescriptionCol descCol = null;
 
@@ -749,9 +759,11 @@ public abstract class DecisionTableWidget extends Composite implements
 			DTColumnConfig modelCol = column.getModelColumn();
 			if (modelCol instanceof RowNumberCol) {
 				rnCol = (RowNumberCol) modelCol;
+				model.setRowNumberCol(rnCol);
 
 			} else if (modelCol instanceof DescriptionCol) {
 				descCol = (DescriptionCol) modelCol;
+				model.setDescriptionCol(descCol);
 
 			} else if (modelCol instanceof MetadataCol) {
 				MetadataCol tc = (MetadataCol) modelCol;
@@ -809,6 +821,7 @@ public abstract class DecisionTableWidget extends Composite implements
 				AttributeCol attrCol = (AttributeCol) modelColumn;
 				if (attrCol.attr.equals(RuleAttributeWidget.SALIENCE_ATTR)) {
 					if (attrCol.isUseRowNumber()) {
+						col.setSortDirection(SortDirection.NONE);
 						final int MAX_ROWS = data.size();
 						for (int iRow = 0; iRow < data.size(); iRow++) {
 							int salience = iRow + 1;
@@ -820,9 +833,10 @@ public abstract class DecisionTableWidget extends Composite implements
 						}
 					}
 					// Ensure Salience cells are rendered with the correct Cell
-					col.setCell(CellFactory.getInstance().getCell(attrCol,
-							this, sce));
+					col.setCell(CellFactory.getInstance()
+							.getCell(attrCol, this));
 					col.setSystemControlled(attrCol.isUseRowNumber());
+					col.setSortable(!attrCol.isUseRowNumber());
 				}
 			}
 		}
@@ -1133,13 +1147,14 @@ public abstract class DecisionTableWidget extends Composite implements
 		// Add column to data
 		for (int iRow = 0; iRow < data.size(); iRow++) {
 			CellValue<?> cell = CellValueFactory.getInstance().getCellValue(
-					modelColumn, iRow, index, modelColumn.getDefaultValue());
+					modelColumn, iRow, index, modelColumn.getDefaultValue(),
+					this);
 			data.get(iRow).add(index, cell);
 		}
 
 		// Create new column for grid
 		DynamicColumn column = new DynamicColumn(modelColumn, CellFactory
-				.getInstance().getCell(modelColumn, this, sce), index);
+				.getInstance().getCell(modelColumn, this), index);
 		column.setVisible(!modelColumn.isHideColumn());
 
 		insertColumnBefore(column, index);

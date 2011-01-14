@@ -10,9 +10,14 @@ import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -193,83 +198,44 @@ public class VerticalDecisionTableSidebarWidget extends
 	}
 
 	/**
-	 * Simple spacer to ensure scrollable part of sidebar aligns with grid. This
-	 * might be a good place to put the "toggle merging" button.
+	 * Simple spacer to ensure scrollable part of sidebar aligns with grid.
 	 * 
 	 * @author manstis
 	 * 
 	 */
-	private class VerticalSideBarSpacerWidget extends Widget {
+	private class VerticalSideBarSpacerWidget extends FocusPanel {
 
-		// Use a TABLE to ensure alignment with header and grid
-		private TableElement table = Document.get().createTableElement();
+		private final HorizontalPanel hp = new HorizontalPanel();
+		private Image icon = new Image();
 
 		private VerticalSideBarSpacerWidget() {
+			hp.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+			hp.setVerticalAlignment(VerticalPanel.ALIGN_MIDDLE);
+			hp.addStyleName(style.spacer());
+			setIconImage(dtable.isMerged);
+			hp.add(icon);
+			hp.setWidth("100%");
+			hp.setHeight("100%");
+			add(hp);
 
-			table.setClassName(style.spacer());
-			table.setCellPadding(0);
-			table.setCellSpacing(0);
+			addClickHandler(new ClickHandler() {
 
-			TableSectionElement tbody = Document.get().createTBodyElement();
-			TableRowElement tre = Document.get().createTRElement();
-			TableCellElement tce = Document.get().createTDElement();
-			DivElement div = Document.get().createDivElement();
-			div.setInnerHTML(getImageHtml(dtable.isMerged));
-			div.setClassName(style.selectorToggle());
+				public void onClick(ClickEvent event) {
+					setIconImage(dtable.toggleMerging());
+				}
 
-			tce.appendChild(div);
-			tre.appendChild(tce);
-			tbody.appendChild(tre);
-			table.appendChild(tbody);
-
-			setElement(table);
-			sinkEvents(Event.getTypeInt("click"));
-
+			});
 		}
 
-		@Override
-		public void onBrowserEvent(Event event) {
-			String eventType = event.getType();
-			if (eventType.equals("click")) {
-				EventTarget eventTarget = event.getEventTarget();
-				if (!Element.is(eventTarget)) {
-					return;
-				}
-				Element target = event.getEventTarget().cast();
-				if (target == null) {
-					return;
-				}
-				DivElement div = findNearestParentDivElement(target);
-				if (div == null) {
-					return;
-				}
-				div.setInnerHTML(getImageHtml(dtable.toggleMerging()));
-			}
-		}
-
-		// Find the DIV containing the image
-		private DivElement findNearestParentDivElement(Element elem) {
-			while ((elem != null) && (elem != table)) {
-				String tagName = elem.getTagName();
-				if ("div".equalsIgnoreCase(tagName)) {
-					return elem.cast();
-				}
-				elem = elem.getParentElement();
-			}
-			return null;
-		}
-
-		// Get the image for the current state
-		private String getImageHtml(boolean isMerged) {
+		private void setIconImage(boolean isMerged) {
 			if (isMerged) {
-				return TOGGLE_SELECTED;
+				icon.setResource(resource.toggleSelected());
 			} else {
-				return TOGGLE_DESELECTED;
+				icon.setResource(resource.toggleDeselected());
 			}
 		}
-
 	}
-
+	
 	// UI Elements
 	private ScrollPanel scrollPanel;
 	private VerticalPanel container;
