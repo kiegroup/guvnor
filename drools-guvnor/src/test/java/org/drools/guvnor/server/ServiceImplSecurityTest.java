@@ -130,7 +130,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         }
     }
 
-    @Ignore
     @Test
     public void testLoadRuleAssetPackageReadonly() throws Exception {
         try {
@@ -202,7 +201,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     }
 
     // Access an asset that belongs to no category. No role permission defined. RoleBasedAuthorization is not enabled
-    @Ignore
+
     @Test
     public void testLoadRuleAssetNoCategory() throws Exception {
         try {
@@ -255,7 +254,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     //Access an asset that belongs to no category.
     //The user role is admin
-    @Ignore
+
     @Test
     public void testLoadRuleAssetNoCategoryPackageAdmin() throws Exception {
         try {
@@ -315,7 +314,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     //Access an asset that belongs to no category.
     //The user role is analyst
-    @Ignore
+
     @Test
     public void testLoadRuleAssetNoCategoryAnalystNegative() throws Exception {
         try {
@@ -388,7 +387,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     //Access an asset that belongs to no category.
     //The user role is analyst
-    @Ignore
+
     @Test
     public void testLoadRuleAssetNoCategoryAnalystPositive() throws Exception {
         try {
@@ -455,7 +454,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         }
     }
 
-    @Ignore
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategory() throws Exception {
         try {
@@ -524,7 +522,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     //Access an asset that belongs to no category. The user role is analyst and package.admin.
     //Because the analyst role the user has has no category access to the asset,
     //the permission can not be granted even though the package.admin role has package access.
-    @Ignore
+
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixed() throws Exception {
         try {
@@ -587,7 +585,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         }
     }
 
-    @Ignore
     @Test
     public void testCreateNewRule() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -634,7 +631,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         Lifecycle.endApplication();
     }
 
-    @Ignore
     @Test
     public void testCheckinWithPackageReadonly() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -697,7 +693,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         Lifecycle.endApplication();
     }
 
-    @Ignore
     @Test
     public void testCheckinPackageDeveloper() throws Exception {
         //try {
@@ -762,7 +757,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         //}
     }
 
-    @Ignore
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyFilter() throws Exception {
         try {
@@ -832,7 +826,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         }
     }
 
-    @Ignore
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter() throws Exception {
         try {
@@ -930,7 +923,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         }
     }
 
-    @Ignore
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter2() throws Exception {
         try {
@@ -1024,7 +1016,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         }
     }
 
-    @Ignore
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter3() throws Exception {
         try {
@@ -1118,7 +1109,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         }
     }
 
-    @Ignore
     @Test
     public void testTableDisplayHandler() throws Exception {
         try {
@@ -1258,7 +1248,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     }
 
     //BRMS-282: listPackages only returns packages that the user has package.readonly permission or higher
-    @Ignore
+
     @Test
     public void testListPackagesPackageAdminAndAnalyst() throws Exception {
         try {
@@ -1335,7 +1325,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         }
     }
 
-    @Ignore
     @Test
     public void testLoadChildCategories() throws Exception {
         try {
@@ -1403,7 +1392,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         }
     }
 
-    @Ignore
     @Test
     public void testloadRuleListForCategoriesPackageReadonly() throws Exception {
         try {
@@ -1488,7 +1476,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         }
     }
 
-    @Ignore
     @Test
     public void testloadRuleListForCategoriesPackageReadonlyPositive() throws Exception {
         try {
