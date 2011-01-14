@@ -7,7 +7,6 @@ import java.util.Map;
 import org.drools.guvnor.client.decisiontable.widget.CellValue;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
@@ -136,7 +135,6 @@ public class CellValueFactory {
 				DATA_TYPES.DATE);
 		datatypeCache.put(AttributeCol.class.getName() + "#dialect",
 				DATA_TYPES.DIALECT);
-		datatypeCache.put(ActionCol.class.getName(), DATA_TYPES.STRING);
 	}
 
 	// The cache
@@ -251,12 +249,17 @@ public class CellValueFactory {
 		GuidedDecisionTable model = dtable.getModel();
 		SuggestionCompletionEngine sce = dtable.getSCE();
 		DATA_TYPES dataType = DATA_TYPES.STRING;
-		if (model.isNumeric(col, sce)) {
-			dataType = DATA_TYPES.NUMERIC;
-		} else if (model.isBoolean(col, sce)) {
-			dataType = DATA_TYPES.BOOLEAN;
-		} else if (model.isDate(col, sce)) {
-			dataType = DATA_TYPES.DATE;
+
+		// Columns with lists of values, enums etc are always Text (for now)
+		String[] vals = model.getValueList(col, sce);
+		if (vals.length == 0) {
+			if (model.isNumeric(col, sce)) {
+				dataType = DATA_TYPES.NUMERIC;
+			} else if (model.isBoolean(col, sce)) {
+				dataType = DATA_TYPES.BOOLEAN;
+			} else if (model.isDate(col, sce)) {
+				dataType = DATA_TYPES.DATE;
+			}
 		}
 		return dataType;
 	}

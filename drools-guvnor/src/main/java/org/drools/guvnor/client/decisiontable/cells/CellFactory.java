@@ -191,8 +191,9 @@ public class CellFactory {
 		GuidedDecisionTable model = dtable.getModel();
 		SuggestionCompletionEngine sce = dtable.getSCE();
 		DecisionTableCellValueAdaptor<? extends Comparable<?>> cell = DEFAULT_CELL;
-		String[] vals = model.getValueList(col, sce);
 
+		// Columns with lists of values, enums etc are always Text (for now)
+		String[] vals = model.getValueList(col, sce);
 		if (vals.length == 0) {
 			if (model.isNumeric(col, sce)) {
 				cell = NUMERIC_CELL;

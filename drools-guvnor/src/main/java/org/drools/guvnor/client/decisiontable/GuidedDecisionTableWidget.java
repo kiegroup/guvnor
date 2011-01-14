@@ -62,13 +62,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.widgets.ToolbarMenuButton;
-import com.gwtext.client.widgets.menu.BaseItem;
-import com.gwtext.client.widgets.menu.Item;
-import com.gwtext.client.widgets.menu.Menu;
-import com.gwtext.client.widgets.menu.event.BaseItemListenerAdapter;
-
 /**
  * This is the new guided decision table editor for the web.
  * 
@@ -146,11 +139,6 @@ public class GuidedDecisionTableWidget extends Composite implements
 		config.add(grouping);
 
 		layout.add(disclosurePanel);
-
-		VerticalPanel buttonPanel = new VerticalPanel();
-		buttonPanel.add(getToolbarMenuButton());
-		layout.add(buttonPanel);
-
 		layout.add(configureColumnsNote);
 
 		setupDecisionTable();
@@ -589,25 +577,14 @@ public class GuidedDecisionTableWidget extends Composite implements
 	private void setupDecisionTable() {
 		if (dtable == null) {
 			dtable = new VerticalDecisionTableWidget(getSCE());
-			dtable.setPixelSize(1000, 500);
+			dtable.setPixelSize(1000, 400);
+			dtable.setModel(guidedDecisionTable);
 		}
 		if (dtableCtrls == null) {
 			dtableCtrls = new DecisionTableControlsWidget(dtable);
 		}
-		dtable.setModel(guidedDecisionTable);
 		layout.add(dtable);
 		layout.add(dtableCtrls);
-	}
-
-	private ToolbarMenuButton getToolbarMenuButton() {
-		Menu menu = new Menu();
-		menu.addItem(new Item(constants.CopySelectedRowS(),
-				new BaseItemListenerAdapter() {
-					public void onClick(BaseItem item, EventObject e) {
-					}
-				}));
-		ToolbarMenuButton tbb = new ToolbarMenuButton(constants.Modify(), menu);
-		return tbb;
 	}
 
 	/**

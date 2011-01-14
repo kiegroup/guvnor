@@ -336,13 +336,15 @@ public class VerticalDecisionTableHeaderWidget extends
 
 			case 1:
 				// Splitter between "general" and "technical" condition details
-				HeaderSplitter splitter = new HeaderSplitter(rowHeaders);
-				tce = DOM.createTD();
-				tce.<TableCellElement> cast().setColSpan(
-						visibleConditionCols.size());
-				tce.addClassName(style.headerSplitter());
-				tre.appendChild(tce);
-				add(splitter, tce);
+				if (visibleConditionCols.size() > 0) {
+					HeaderSplitter splitter = new HeaderSplitter(rowHeaders);
+					tce = DOM.createTD();
+					tce.<TableCellElement> cast().setColSpan(
+							visibleConditionCols.size());
+					tce.addClassName(style.headerSplitter());
+					tre.appendChild(tce);
+					add(splitter, tce);
+				}
 				break;
 
 			case 2:

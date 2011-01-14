@@ -215,9 +215,6 @@ public class GuidedDecisionTable implements PortableObject {
 		if (col instanceof ConditionCol) {
 			ConditionCol c = (ConditionCol) col;
 			if (c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL) {
-				if (c.getOperator() == null || "".equals(c.getOperator())) {
-					return false;
-				}
 				String ft = sce.getFieldType(c.getFactType(), c.getFactField());
 				if (ft != null && ft.equals(dataType)) {
 					return true;

@@ -134,7 +134,7 @@ public abstract class DecisionTableWidget extends Composite implements
 		} else if (modelColumn instanceof AttributeCol) {
 			index = findAttributeColumnIndex();
 		} else if (modelColumn instanceof ConditionCol) {
-			index = findConditionColumnIndex();
+			index = findConditionColumnIndex((ConditionCol) modelColumn);
 		} else if (modelColumn instanceof ActionCol) {
 			index = findActionColumnIndex();
 		}
@@ -1064,8 +1064,9 @@ public abstract class DecisionTableWidget extends Composite implements
 	}
 
 	// Find the right-most index for a Condition column
-	private int findConditionColumnIndex() {
+	private int findConditionColumnIndex(ConditionCol col) {
 		int index = 0;
+		boolean bMatched = false;
 		for (int iCol = 0; iCol < columns.size(); iCol++) {
 			DynamicColumn column = columns.get(iCol);
 			DTColumnConfig modelColumn = column.getModelColumn();
@@ -1078,10 +1079,32 @@ public abstract class DecisionTableWidget extends Composite implements
 			} else if (modelColumn instanceof AttributeCol) {
 				index = iCol;
 			} else if (modelColumn instanceof ConditionCol) {
-				index = iCol;
+				if (isEquivalentConditionColumn((ConditionCol) modelColumn, col)) {
+					index = iCol;
+					bMatched = true;
+				} else if (!bMatched) {
+					index = iCol;
+				}
 			}
 		}
 		return index;
+	}
+
+	private boolean isEquivalentConditionColumn(ConditionCol c1, ConditionCol c2) {
+		if (isEqualOrNull(c1.getFactType(), c2.getFactType())
+				&& isEqualOrNull(c1.getBoundName(), c2.getBoundName())) {
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isEqualOrNull(String s1, String s2) {
+		if (s1 == null && s2 == null) {
+			return true;
+		} else if (s1 != null && s2 != null && s1.equals(s2)) {
+			return true;
+		}
+		return false;
 	}
 
 	// Given a base row find the maximum row that needs to be re-rendered based
