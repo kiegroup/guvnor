@@ -5,8 +5,7 @@
 @def rowHeaderHeight 24px;
 @def rowHeaderSorterHeight 16px;
 @def rowHeaderSplitterHeight 8px;
-@def spacerHeight 48px;
-@def spacerWidth 32px;
+@def sidebarWidth 48px;
 	
 .cellTable {
 	cursor: default;
@@ -75,58 +74,15 @@
 	background-color: #ffff99;
 }
 
-.spacer {
-	width: spacerWidth;
-	height: spacerHeight;
+.selectorSpacer {
+	width: sidebarWidth;
 	border-bottom: 2px solid grey;
 	border-right: 1px solid grey;
 }
 
-.selectorAddCell {
-	width: spacerWidth;
-	text-align: center;
-	border-bottom: 1px solid #C8C8C8;
-}
-
-.selectorDeleteCell {
-	width: spacerWidth;
+.selectorCell {
+	width: sidebarWidth;
 	text-align: center;
 	border-right: 1px solid grey;
 	border-bottom: 1px solid #C8C8C8;
-}
-
-.selectorControl {
-	display: inline;
-}
-
-@sprite .selectorAddImage {
-	gwt-image: "selectorAdd";
-	background-repeat: no-repeat;
-	background-position: center;
-	cursor: default;
-}
-
-@sprite .selectorAddImage:HOVER {
-	gwt-image: "selectorAddHover";
-	background-repeat: no-repeat;
-	background-position: center;
-	cursor: default;
-}
-
-@sprite .selectorDeleteImage {
-	gwt-image: "selectorDelete";
-	background-repeat: no-repeat;
-	background-position: center;
-	cursor: default;
-}
-
-@sprite .selectorDeleteImage:HOVER {
-	gwt-image: "selectorDeleteHover";
-	background-repeat: no-repeat;
-	background-position: center;
-	cursor: default;
-}
-
-.selectorToggle {
-	text-align: center;
 }

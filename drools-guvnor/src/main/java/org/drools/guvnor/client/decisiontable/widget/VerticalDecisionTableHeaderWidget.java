@@ -223,11 +223,11 @@ public class VerticalDecisionTableHeaderWidget extends
 			for (int iRow = 0; iRow < rowHeaders.length; iRow++) {
 				rowHeaders[iRow] = DOM.createTR();
 				getBody().appendChild(rowHeaders[iRow]);
-				getBody().getParentElement().<TableElement> cast()
-						.setCellSpacing(0);
-				getBody().getParentElement().<TableElement> cast()
-						.setCellPadding(0);
 			}
+			getBody().getParentElement().<TableElement> cast()
+					.setCellSpacing(0);
+			getBody().getParentElement().<TableElement> cast()
+					.setCellPadding(0);
 		}
 
 		/*
@@ -481,6 +481,13 @@ public class VerticalDecisionTableHeaderWidget extends
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler
+	 * (com.google.gwt.event.logical.shared.ResizeHandler)
+	 */
 	public HandlerRegistration addResizeHandler(ResizeHandler handler) {
 		return widget.addResizeHandler(handler);
 	}

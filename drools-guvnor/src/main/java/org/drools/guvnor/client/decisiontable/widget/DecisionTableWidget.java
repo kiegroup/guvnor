@@ -142,11 +142,11 @@ public abstract class DecisionTableWidget extends Composite implements
 	}
 
 	/**
-	 * Add a new row to the bottom of the table
+	 * Append a new row to the bottom of the table
 	 */
-	public void addRow() {
+	public void appendRow() {
 		clearSelection();
-		insertRowBefore(data.size());
+		insertRowBefore(null);
 	}
 
 	/**
@@ -197,28 +197,27 @@ public abstract class DecisionTableWidget extends Composite implements
 	}
 
 	/**
-	 * Delete a row at the specified index.
+	 * Delete a row
 	 * 
-	 * @param index
+	 * @param row
+	 *            The row to delete
 	 */
-	public void deleteRow(int index) {
-		if (index < 0) {
+	public void deleteRow(DynamicDataRow row) {
+		int index = data.indexOf(row);
+		if (index == -1) {
 			throw new IllegalArgumentException(
-					"Row number cannot be less than zero.");
+					"DynamicDataRow does not exist in table data.");
 		}
-		if (index > data.size() - 1) {
-			throw new IllegalArgumentException(
-					"Row number cannot be greater than the number of rows.");
-		}
+		clearSelection();
 
 		data.remove(index);
-		assertModelIndexes();
 		updateSystemControlledColumnValues();
 
 		// Partial redraw
 		if (!isMerged) {
 			// Single row when not merged
 			gridWidget.deleteRow(index);
+			assertModelIndexes();
 		} else {
 			// Affected rows when merged
 			gridWidget.deleteRow(index);
@@ -286,52 +285,59 @@ public abstract class DecisionTableWidget extends Composite implements
 	}
 
 	/**
-	 * Insert a new row at the specified index.
+	 * Insert a new row before the specified row.
 	 * 
-	 * @param index
-	 *            The (zero-based) index of the row
+	 * @param row
+	 *            The row before which the new row should be added. A
+	 *            <code>null</code> value appends the row to the end of the
+	 *            existing collection
 	 */
-	public void insertRowBefore(int index) {
-		if (index < 0) {
-			throw new IllegalArgumentException(
-					"Row index cannot be less than zero.");
-		}
-		if (index > data.size()) {
-			throw new IllegalArgumentException(
-					"Row index cannot exceed size of table.");
+	public void insertRowBefore(DynamicDataRow row) {
+		int index = data.size();
+		if (row != null) {
+			index = data.indexOf(row);
+			if (index == -1) {
+				throw new IllegalArgumentException(
+						"DynamicDataRow does not exist in table data.");
+			}
 		}
 
 		// Find rows that need to be (re)drawn
 		int minRedrawRow = index;
 		int maxRedrawRow = index;
-		if (index < data.size()) {
-			minRedrawRow = findMinRedrawRow(index);
-			maxRedrawRow = findMaxRedrawRow(index) + 1;
+		if (isMerged) {
+			if (index < data.size()) {
+				minRedrawRow = findMinRedrawRow(index);
+				maxRedrawRow = findMaxRedrawRow(index) + 1;
+			} else {
+				minRedrawRow = findMinRedrawRow((index > 0 ? index - 1 : index));
+				maxRedrawRow = index;
+			}
 		}
 
 		// Add row to data
-		DynamicDataRow row = new DynamicDataRow();
+		DynamicDataRow newRow = new DynamicDataRow();
 		for (int iCol = 0; iCol < columns.size(); iCol++) {
 			DTColumnConfig column = columns.get(iCol).getModelColumn();
 			CellValue<? extends Comparable<?>> data = CellValueFactory
 					.getInstance().getCellValue(column, index, iCol,
 							column.getDefaultValue(), this);
-			row.add(data);
+			newRow.add(data);
 		}
-		data.add(index, row);
-		assertModelIndexes();
+		data.add(index, newRow);
 		updateSystemControlledColumnValues();
 
 		// Partial redraw
 		if (!isMerged) {
 			// Only new row when not merged
-			gridWidget.insertRowBefore(index, row);
+			assertModelIndexes();
+			gridWidget.insertRowBefore(index, newRow);
 		} else {
 			// Affected rows when merged
 			assertModelMerging();
 
 			// This row is overwritten by the call to redrawRows()
-			gridWidget.insertRowBefore(index, row);
+			gridWidget.insertRowBefore(index, newRow);
 			gridWidget.redrawRows(minRedrawRow, maxRedrawRow);
 		}
 
@@ -523,14 +529,14 @@ public abstract class DecisionTableWidget extends Composite implements
 		colStatic = model.getRowNumberCol();
 		columnStatic = new DynamicColumn(colStatic, CellFactory.getInstance()
 				.getCell(colStatic, this), iCol, true, false);
-		addColumn(columnStatic);
+		appendColumn(columnStatic);
 		iCol++;
 
 		// Static columns, Description
 		colStatic = model.getDescriptionCol();
 		columnStatic = new DynamicColumn(colStatic, CellFactory.getInstance()
 				.getCell(colStatic, this), iCol);
-		addColumn(columnStatic);
+		appendColumn(columnStatic);
 		iCol++;
 
 		// Initialise CellTable's Metadata columns
@@ -538,7 +544,7 @@ public abstract class DecisionTableWidget extends Composite implements
 			DynamicColumn column = new DynamicColumn(col, CellFactory
 					.getInstance().getCell(col, this), iCol);
 			column.setVisible(!col.isHideColumn());
-			addColumn(column);
+			appendColumn(column);
 			iCol++;
 		}
 
@@ -549,7 +555,7 @@ public abstract class DecisionTableWidget extends Composite implements
 			column.setVisible(!col.isHideColumn());
 			column.setSystemControlled(col.isUseRowNumber());
 			column.setSortable(!col.isUseRowNumber());
-			addColumn(column);
+			appendColumn(column);
 			iCol++;
 		}
 
@@ -558,7 +564,7 @@ public abstract class DecisionTableWidget extends Composite implements
 			DynamicColumn column = new DynamicColumn(col, CellFactory
 					.getInstance().getCell(col, this), iCol);
 			column.setVisible(!col.isHideColumn());
-			addColumn(column);
+			appendColumn(column);
 			iCol++;
 		}
 
@@ -567,7 +573,7 @@ public abstract class DecisionTableWidget extends Composite implements
 			DynamicColumn column = new DynamicColumn(col, CellFactory
 					.getInstance().getCell(col, this), iCol);
 			column.setVisible(!col.isHideColumn());
-			addColumn(column);
+			appendColumn(column);
 			iCol++;
 		}
 
@@ -842,7 +848,8 @@ public abstract class DecisionTableWidget extends Composite implements
 		}
 	}
 
-	private void addColumn(DynamicColumn column) {
+	// Append a column to the end of the table
+	private void appendColumn(DynamicColumn column) {
 		insertColumnBefore(column, columns.size());
 	}
 
@@ -940,7 +947,6 @@ public abstract class DecisionTableWidget extends Composite implements
 
 		// Set indexes after merging has been corrected
 		assertModelIndexes();
-
 	}
 
 	// Clear and selection.
@@ -953,72 +959,6 @@ public abstract class DecisionTableWidget extends Composite implements
 
 		// Clear collection
 		selections.clear();
-	}
-
-	// ************** DEBUG
-	@SuppressWarnings("unused")
-	private void dumpIndexes() {
-		System.out.println("coordinates");
-		System.out.println("-----------");
-		for (int iRow = 0; iRow < data.size(); iRow++) {
-			DynamicDataRow row = data.get(iRow);
-			for (int iCol = 0; iCol < row.size(); iCol++) {
-				CellValue<? extends Comparable<?>> cell = row.get(iCol);
-
-				Coordinate c = cell.getCoordinate();
-				int rowSpan = cell.getRowSpan();
-
-				System.out.print(c.toString());
-				System.out.print("-S" + rowSpan + " ");
-			}
-			System.out.print("\n");
-		}
-
-		System.out.println();
-		System.out.println("htmlToDataMap");
-		System.out.println("-------------");
-		for (int iRow = 0; iRow < data.size(); iRow++) {
-			DynamicDataRow row = data.get(iRow);
-			for (int iCol = 0; iCol < row.size(); iCol++) {
-				CellValue<? extends Comparable<?>> cell = row.get(iCol);
-
-				Coordinate c = cell.getPhysicalCoordinate();
-				int rowSpan = cell.getRowSpan();
-
-				System.out.print(c.toString());
-				System.out.print("-S" + rowSpan + " ");
-			}
-			System.out.print("\n");
-		}
-
-		System.out.println();
-		System.out.println("dataToHtmlMap");
-		System.out.println("-------------");
-		for (int iRow = 0; iRow < data.size(); iRow++) {
-			DynamicDataRow row = data.get(iRow);
-			for (int iCol = 0; iCol < row.size(); iCol++) {
-				CellValue<? extends Comparable<?>> cell = row.get(iCol);
-
-				Coordinate c = cell.getHtmlCoordinate();
-				int rowSpan = cell.getRowSpan();
-
-				System.out.print(c.toString());
-				System.out.print("-S" + rowSpan + " ");
-			}
-			System.out.print("\n");
-		}
-
-	}
-
-	// ************** DEBUG
-	@SuppressWarnings("unused")
-	private void dumpSelections(String title) {
-		System.out.println(title);
-		System.out.println();
-		for (CellValue<? extends Comparable<?>> cell : selections) {
-			System.out.println(cell.getCoordinate().toString());
-		}
-		System.out.println();
 	}
 
 	// Ensure Coordinates are the extents of merged cell
@@ -1090,27 +1030,21 @@ public abstract class DecisionTableWidget extends Composite implements
 		return index;
 	}
 
-	private boolean isEquivalentConditionColumn(ConditionCol c1, ConditionCol c2) {
-		if (isEqualOrNull(c1.getFactType(), c2.getFactType())
-				&& isEqualOrNull(c1.getBoundName(), c2.getBoundName())) {
-			return true;
-		}
-		return false;
-	}
-
-	private boolean isEqualOrNull(String s1, String s2) {
-		if (s1 == null && s2 == null) {
-			return true;
-		} else if (s1 != null && s2 != null && s1.equals(s2)) {
-			return true;
-		}
-		return false;
-	}
-
 	// Given a base row find the maximum row that needs to be re-rendered based
 	// upon each columns merged cells; where each merged cell passes through the
 	// base row
 	private int findMaxRedrawRow(int baseRowIndex) {
+		if (data.size() == 0) {
+			return 0;
+		}
+
+		// These should never happen, but it's a safe-guard
+		if (baseRowIndex < 0) {
+			baseRowIndex = 0;
+		}
+		if (baseRowIndex > data.size() - 1) {
+			baseRowIndex = data.size() - 1;
+		}
 
 		int maxRedrawRow = baseRowIndex;
 		DynamicDataRow baseRow = data.get(baseRowIndex);
@@ -1148,6 +1082,17 @@ public abstract class DecisionTableWidget extends Composite implements
 	// upon each columns merged cells; where each merged cell passes through the
 	// base row
 	private int findMinRedrawRow(int baseRowIndex) {
+		if (data.size() == 0) {
+			return 0;
+		}
+
+		// These should never happen, but it's a safe-guard
+		if (baseRowIndex < 0) {
+			baseRowIndex = 0;
+		}
+		if (baseRowIndex > data.size() - 1) {
+			baseRowIndex = data.size() - 1;
+		}
 
 		int minRedrawRow = baseRowIndex;
 		DynamicDataRow baseRow = data.get(baseRowIndex);
@@ -1201,6 +1146,25 @@ public abstract class DecisionTableWidget extends Composite implements
 		}
 	}
 
+	// Check whether two Strings are equal or both null
+	private boolean isEqualOrNull(String s1, String s2) {
+		if (s1 == null && s2 == null) {
+			return true;
+		} else if (s1 != null && s2 != null && s1.equals(s2)) {
+			return true;
+		}
+		return false;
+	}
+
+	// Check whether two ConditionCols are equivalent
+	private boolean isEquivalentConditionColumn(ConditionCol c1, ConditionCol c2) {
+		if (isEqualOrNull(c1.getFactType(), c2.getFactType())
+				&& isEqualOrNull(c1.getBoundName(), c2.getBoundName())) {
+			return true;
+		}
+		return false;
+	}
+
 	// Remove merging from model
 	private void removeModelMerging() {
 
@@ -1251,7 +1215,7 @@ public abstract class DecisionTableWidget extends Composite implements
 	// Set width of outer most Widget and related children
 	private void setWidth(int width) {
 		mainPanel.setWidth(width + "px");
-		scrollPanel.setWidth((width - style.spacerWidth()) + "px");
+		scrollPanel.setWidth((width - style.sidebarWidth()) + "px");
 		mainFocusPanel.setWidth(width + "px");
 
 		// The Sidebar and Header sizes are derived from the ScrollPanel

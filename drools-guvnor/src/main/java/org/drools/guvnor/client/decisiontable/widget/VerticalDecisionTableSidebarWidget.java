@@ -1,12 +1,9 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.EventTarget;
+import java.util.ArrayList;
+
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
@@ -14,7 +11,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -35,119 +35,39 @@ public class VerticalDecisionTableSidebarWidget extends
 	/**
 	 * Widget to render selectors beside rows. Two selectors are provided per
 	 * row: (1) A "add new row (above selected)" and (2) "delete row".
-	 * 
-	 * @author manstis
-	 * 
 	 */
-	private class VerticalSelectorWidget extends Widget {
+	private class VerticalSelectorWidget extends CellPanel {
 
-		private TableElement table;
-		private TableSectionElement tbody;
-		private int rows;
+		// Widgets (selectors) created (so they can be removed later)
+		private ArrayList<Widget> widgets = new ArrayList<Widget>();
 
 		private VerticalSelectorWidget() {
-			this.table = Document.get().createTableElement();
-			this.table.setCellPadding(0);
-			this.table.setCellSpacing(0);
-			this.tbody = Document.get().createTBodyElement();
-			this.table.appendChild(tbody);
-			setElement(table);
-			rows = 0;
-
-			// Mouseover and Mouseevents are not sunk to handle the image
-			// rollover because Mouseout events are not fired when the mouse
-			// moves quickly from the Element. Rollover is therefore handled
-			// by CSS. See
-			// https://groups.google.com/group/google-web-toolkit/browse_thread/thread/3bd429624341035e?hl=en
+			getBody().getParentElement().<TableElement> cast()
+					.setCellSpacing(0);
+			getBody().getParentElement().<TableElement> cast()
+					.setCellPadding(0);
 			sinkEvents(Event.getTypeInt("click"));
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.google.gwt.user.client.ui.Widget#onBrowserEvent(com.google.gwt
-		 * .user.client.Event)
-		 */
-		@Override
-		public void onBrowserEvent(Event event) {
-			// Get the event target
-			String eventType = event.getType();
-			EventTarget eventTarget = event.getEventTarget();
-			if (!Element.is(eventTarget)) {
-				return;
-			}
-			Element target = event.getEventTarget().cast();
-
-			// Find the cell where the event occurred
-			TableCellElement tdElement = findNearestParentTableCellElement(target);
-			if (tdElement == null) {
-				return;
-			}
-			int iCol = tdElement.getCellIndex();
-
-			Element element = tdElement.getParentElement();
-			if (element == null) {
-				return;
-			}
-			TableRowElement trElement = TableRowElement.as(element);
-			int iRow = trElement.getSectionRowIndex();
-
-			// Perform action
-			boolean isClick = eventType.equals("click");
-			if (isClick) {
-				switch (iCol) {
-				case 0:
-					dtable.insertRowBefore(iRow);
-					break;
-				case 1:
-					dtable.deleteRow(iRow);
-				}
-			}
-
-		}
-
 		// Add a new row
-		private void add() {
-			TableRowElement tre = Document.get().createTRElement();
-			tre.setClassName(getRowStyle(rows));
-			tre.getStyle().setHeight(style.rowHeight(), Unit.PX);
-			populateTableRowElement(tre);
-			tbody.appendChild(tre);
-			rows++;
-		}
-
-		// Reset the widget to an empty TBODY
-		private void clear() {
-			this.table.removeChild(table.getFirstChild());
-			this.tbody = Document.get().createTBodyElement();
-			this.table.appendChild(tbody);
-			rows = 0;
+		private void appendSelector(DynamicDataRow row) {
+			insertSelectorBefore(row, widgets.size());
 		}
 
 		// Delete a row at the given index
 		private void deleteSelector(int index) {
-			tbody.deleteRow(index);
+			Widget widget = widgets.get(index);
+			remove(widget);
+			getBody().<TableSectionElement> cast().deleteRow(index);
+			widgets.remove(index);
 			fixStyles(index);
-		}
-
-		// Find the TD that contains the element
-		private TableCellElement findNearestParentTableCellElement(Element elem) {
-			while ((elem != null) && (elem != table)) {
-				String tagName = elem.getTagName();
-				if ("td".equalsIgnoreCase(tagName)) {
-					return elem.cast();
-				}
-				elem = elem.getParentElement();
-			}
-			return null;
 		}
 
 		// Row styles need to be re-applied after inserting and deleting rows
 		private void fixStyles(int iRow) {
-			while (iRow < tbody.getChildCount()) {
-				Element e = Element.as(tbody.getChild(iRow));
-				TableRowElement tre = TableRowElement.as(e);
+			while (iRow < getBody().getChildCount()) {
+				TableRowElement tre = getBody().getChild(iRow)
+						.<TableRowElement> cast();
 				tre.setClassName(getRowStyle(iRow));
 				iRow++;
 			}
@@ -161,38 +81,66 @@ public class VerticalDecisionTableSidebarWidget extends
 			return trClasses;
 		}
 
-		// Insert a new row before the given index
-		private void insertBefore(int iRow) {
-			TableRowElement newRow = tbody.insertRow(iRow);
-			newRow.setClassName(getRowStyle(iRow));
-			newRow.getStyle().setHeight(style.rowHeight(), Unit.PX);
-			populateTableRowElement(newRow);
-			fixStyles(iRow);
+		// Initialise for a complete redraw
+		private void initialise() {
+			int totalRows = widgets.size();
+			for (int iRow = 0; iRow < totalRows; iRow++) {
+				deleteSelector(0);
+			}
 		}
 
-		// Create a row for the sidebar
-		private void populateTableRowElement(TableRowElement tre) {
+		// Insert a new row before the given index
+		private void insertSelectorBefore(DynamicDataRow row, int index) {
+			Element tre = DOM.createTR();
+			Element tce = DOM.createTD();
+			tre.setClassName(getRowStyle(widgets.size()));
+			tre.getStyle().setHeight(style.rowHeight(), Unit.PX);
+			tce.addClassName(style.selectorCell());
+			DOM.insertChild(getBody(), tre, index);
+			tre.appendChild(tce);
 
-			String tdAddClasses = style.selectorAddCell();
-			String tdDeleteClasses = style.selectorDeleteCell();
+			Widget widget = makeRowWidget(row);
+			add(widget, tce);
 
-			TableCellElement tce1 = Document.get().createTDElement();
-			tce1.setClassName(tdAddClasses);
-			DivElement divAdd = Document.get().createDivElement();
-			divAdd.setClassName(style.selectorAddImage());
-			divAdd.setInnerHTML("&nbsp");
-			tce1.appendChild(divAdd);
+			widgets.add(index, widget);
+			fixStyles(index);
+		}
 
-			TableCellElement tce2 = Document.get().createTDElement();
-			tce2.setClassName(tdDeleteClasses);
-			DivElement divDelete = Document.get().createDivElement();
-			divDelete.setClassName(style.selectorDeleteImage());
-			divDelete.setInnerHTML("&nbsp;");
-			tce2.appendChild(divDelete);
+		// Make the selector Widget
+		private Widget makeRowWidget(final DynamicDataRow row) {
 
-			tre.appendChild(tce1);
-			tre.appendChild(tce2);
+			HorizontalPanel hp = new HorizontalPanel();
+			hp.setVerticalAlignment(VerticalPanel.ALIGN_MIDDLE);
+			hp.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
+			hp.setWidth("100%");
 
+			FocusPanel fp;
+			fp = new FocusPanel();
+			fp.setHeight("100%");
+			fp.setWidth("50%");
+			fp.add(new Image(resource.selectorAdd()));
+			fp.addClickHandler(new ClickHandler() {
+
+				public void onClick(ClickEvent event) {
+					dtable.insertRowBefore(row);
+				}
+
+			});
+			hp.add(fp);
+
+			fp = new FocusPanel();
+			fp.setHeight("100%");
+			fp.setWidth("50%");
+			fp.add(new Image(resource.selectorDelete()));
+			fp.addClickHandler(new ClickHandler() {
+
+				public void onClick(ClickEvent event) {
+					dtable.deleteRow(row);
+				}
+
+			});
+			hp.add(fp);
+			return hp;
 		}
 
 	}
@@ -211,7 +159,7 @@ public class VerticalDecisionTableSidebarWidget extends
 		private VerticalSideBarSpacerWidget() {
 			hp.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
 			hp.setVerticalAlignment(VerticalPanel.ALIGN_MIDDLE);
-			hp.addStyleName(style.spacer());
+			hp.addStyleName(style.selectorSpacer());
 			setIconImage(dtable.isMerged);
 			hp.add(icon);
 			hp.setWidth("100%");
@@ -227,6 +175,7 @@ public class VerticalDecisionTableSidebarWidget extends
 			});
 		}
 
+		// Set the icon's image accordingly
 		private void setIconImage(boolean isMerged) {
 			if (isMerged) {
 				icon.setResource(resource.toggleSelected());
@@ -235,7 +184,7 @@ public class VerticalDecisionTableSidebarWidget extends
 			}
 		}
 	}
-	
+
 	// UI Elements
 	private ScrollPanel scrollPanel;
 	private VerticalPanel container;
@@ -275,31 +224,73 @@ public class VerticalDecisionTableSidebarWidget extends
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.drools.guvnor.client.decisiontable.widget.DecisionTableSidebarWidget
+	 * #appendSelector
+	 * (org.drools.guvnor.client.decisiontable.widget.DynamicDataRow)
+	 */
 	@Override
-	public void addSelector() {
-		selectors.add();
+	public void appendSelector(DynamicDataRow row) {
+		selectors.appendSelector(row);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.drools.guvnor.client.decisiontable.widget.DecisionTableSidebarWidget
+	 * #deleteSelector(int)
+	 */
 	@Override
 	public void deleteSelector(int index) {
 		selectors.deleteSelector(index);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.drools.guvnor.client.decisiontable.widget.DecisionTableSidebarWidget
+	 * #initialise()
+	 */
 	@Override
 	public void initialise() {
-		selectors.clear();
+		selectors.initialise();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.drools.guvnor.client.decisiontable.widget.DecisionTableSidebarWidget
+	 * #insertSelectorBefore
+	 * (org.drools.guvnor.client.decisiontable.widget.DynamicDataRow, int)
+	 */
 	@Override
-	public void insertSelectorBefore(int index) {
-		selectors.insertBefore(index);
+	public void insertSelectorBefore(DynamicDataRow row, int index) {
+		selectors.insertSelectorBefore(row, index);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.google.gwt.user.client.ui.UIObject#setHeight(java.lang.String)
+	 */
 	@Override
 	public void setHeight(String height) {
 		this.scrollPanel.setHeight(height);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.drools.guvnor.client.decisiontable.widget.DecisionTableSidebarWidget
+	 * #setScrollPosition(int)
+	 */
 	@Override
 	public void setScrollPosition(int position) {
 		this.scrollPanel.setScrollPosition(position);

@@ -106,7 +106,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			throw new IllegalArgumentException("Row data cannot be null");
 		}
 
-		dtable.getSidebarWidget().insertSelectorBefore(index);
+		dtable.getSidebarWidget().insertSelectorBefore(rowData, index);
 		TableRowElement newRow = tbody.insertRow(index);
 		populateTableRowElement(newRow, rowData);
 		fixRowStyles(index);
@@ -129,12 +129,12 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 		for (int iRow = 0; iRow < dtable.getData().size(); iRow++) {
 
 			// Add a selector for each row
-			dtable.getSidebarWidget().addSelector();
+			DynamicDataRow rowData = dtable.getData().get(iRow);
+			dtable.getSidebarWidget().appendSelector(rowData);
 
 			TableRowElement tre = Document.get().createTRElement();
 			tre.setClassName(getRowStyle(iRow));
 
-			DynamicDataRow rowData = dtable.getData().get(iRow);
 			populateTableRowElement(tre, rowData);
 			nbody.appendChild(tre);
 

@@ -4,14 +4,12 @@ import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
  * A widget used to display the DecisionTable's "sidebar". A
  * VerticalDecisionTable would display this to the left of the table of data
- * whereas a HorizontalDecisionTable would display this above the data. *
+ * whereas a HorizontalDecisionTable would display this above the data. 
  * 
  * @author manstis
  * 
@@ -25,18 +23,6 @@ public abstract class DecisionTableSidebarWidget extends Composite {
 			.create(DecisionTableResources.class);
 	protected static final DecisionTableStyle style = resource.cellTableStyle();
 
-	// Image resources
-	protected static final String TOGGLE_SELECTED = makeImage(resource
-			.toggleSelected());
-	protected static final String TOGGLE_DESELECTED = makeImage(resource
-			.toggleDeselected());
-
-	private static String makeImage(ImageResource resource) {
-		AbstractImagePrototype prototype = AbstractImagePrototype
-				.create(resource);
-		return prototype.getHTML();
-	}
-
 	/**
 	 * Construct a "Sidebar" for the provided DecisionTable
 	 * 
@@ -48,12 +34,15 @@ public abstract class DecisionTableSidebarWidget extends Composite {
 	}
 
 	/**
-	 * Add a selector widget to the Sidebar. A selector widget can implement any
+	 * Append a selector widget to the Sidebar. A selector widget can implement any
 	 * row-level operation, such as selecting, inserting new (positional) etc.
 	 * It is intended that this is called as each row to MergableGridWidget is
 	 * added.
+	 * 
+	 * @param row
+	 *            The row for which the selector will be added
 	 */
-	public abstract void addSelector();
+	public abstract void appendSelector(DynamicDataRow row);
 
 	/**
 	 * Delete a Selector at the given index.
@@ -72,9 +61,11 @@ public abstract class DecisionTableSidebarWidget extends Composite {
 	/**
 	 * Insert a Selector before the given index.
 	 * 
+	 * @param row
+	 *            The row for which the selector will be added
 	 * @param index
 	 */
-	public abstract void insertSelectorBefore(int index);
+	public abstract void insertSelectorBefore(DynamicDataRow row, int index);
 
 	/**
 	 * Set scroll position to enable some degree of synchronisation between

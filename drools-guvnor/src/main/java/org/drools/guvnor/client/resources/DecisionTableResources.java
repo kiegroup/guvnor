@@ -22,10 +22,8 @@ public interface DecisionTableResources extends ClientBundle {
 
 		int rowHeaderSorterHeight();
 
-		int spacerHeight();
-
-		int spacerWidth();
-
+		int sidebarWidth();
+		
 		String cellTable();
 
 		String cellTableEvenRow();
@@ -46,19 +44,9 @@ public interface DecisionTableResources extends ClientBundle {
 
 		String headerSplitter();
 
-		String spacer();
+		String selectorSpacer();
 
-		String selectorAddCell();
-
-		String selectorDeleteCell();
-
-		String selectorControl();
-
-		String selectorAddImage();
-
-		String selectorDeleteImage();
-
-		String selectorToggle();
+		String selectorCell();
 
 	};
 
@@ -80,17 +68,11 @@ public interface DecisionTableResources extends ClientBundle {
 	@Source("../resources/images/toggleDeselected.png")
 	ImageResource toggleDeselected();
 
-	@Source("../resources/images/selectorAdd.png")
+	@Source("../resources/images/new_item.gif")
 	ImageResource selectorAdd();
 
-	@Source("../resources/images/selectorAddHover.png")
-	ImageResource selectorAddHover();
-
-	@Source("../resources/images/selectorDelete.png")
+	@Source("../resources/images/delete_item_small.gif")
 	ImageResource selectorDelete();
-
-	@Source("../resources/images/selectorDeleteHover.png")
-	ImageResource selectorDeleteHover();
 
 	@Source({ "css/DecisionTable.css" })
 	DecisionTableStyle cellTableStyle();

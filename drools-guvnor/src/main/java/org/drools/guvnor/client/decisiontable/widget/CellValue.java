@@ -1,9 +1,9 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
 /**
- * This is a wrapper around a value (generics yet to be implemented). The
- * wrapper provides additional information required to use the vanilla value in
- * a Decision Table with merge capabilities.
+ * This is a wrapper around a value. The wrapper provides additional information
+ * required to use the vanilla value in a Decision Table with merge
+ * capabilities.
  * 
  * One coordinate is maintained and two indexes to map to and from HTML table
  * coordinates. The indexes used to be maintained in SelectionManager however it
@@ -41,6 +41,7 @@ public class CellValue<T extends Comparable<T>> implements
 		this.mapDataToHtml = new Coordinate(row, col);
 	}
 
+	// Used for sorting
 	public int compareTo(CellValue<T> cv) {
 		if (this.value == null) {
 			if (cv.value == null) {
@@ -106,6 +107,50 @@ public class CellValue<T extends Comparable<T>> implements
 
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
+	}
+
+	@Override
+	@SuppressWarnings("rawtypes")
+	// Used by calls to DynamicDataRow.equals()
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof CellValue)) {
+			return false;
+		}
+		CellValue that = (CellValue) obj;
+		return nullOrEqual(this.value, that.value)
+				&& this.rowSpan == that.rowSpan
+				&& nullOrEqual(this.coordinate, that.coordinate)
+				&& nullOrEqual(this.mapHtmlToData, that.mapHtmlToData)
+				&& nullOrEqual(this.mapDataToHtml, that.mapDataToHtml)
+				&& this.isSelected == that.isSelected;
+	}
+
+	@Override
+	// Good citizen as overriding equals
+	public int hashCode() {
+		int hash = 1;
+		hash = hash * 31 + (value == null ? 0 : value.hashCode());
+		hash = hash * 31 + rowSpan;
+		hash = hash * 31 + (coordinate == null ? 0 : coordinate.hashCode());
+		hash = hash * 31
+				+ (mapHtmlToData == null ? 0 : mapHtmlToData.hashCode());
+		hash = hash * 31
+				+ (mapDataToHtml == null ? 0 : mapDataToHtml.hashCode());
+		hash = hash * 31 + ((Boolean) isSelected).hashCode();
+		return hash;
+	}
+
+	private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
+		if (thisAttr == null && thatAttr == null) {
+			return true;
+		}
+		if (thisAttr == null && thatAttr != null) {
+			return false;
+		}
+		return thisAttr.equals(thatAttr);
 	}
 
 }

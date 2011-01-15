@@ -23,7 +23,7 @@ public class DecisionTableControlsWidget extends Composite {
 		Button btnAddRow = new Button("Add Row", new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				dtable.addRow();
+				dtable.appendRow();
 			}
 		});
 
