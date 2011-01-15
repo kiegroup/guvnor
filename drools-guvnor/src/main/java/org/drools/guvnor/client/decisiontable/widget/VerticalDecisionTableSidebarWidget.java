@@ -151,28 +151,44 @@ public class VerticalDecisionTableSidebarWidget extends
 	 * @author manstis
 	 * 
 	 */
-	private class VerticalSideBarSpacerWidget extends FocusPanel {
+	private class VerticalSideBarSpacerWidget extends CellPanel {
 
-		private final HorizontalPanel hp = new HorizontalPanel();
 		private Image icon = new Image();
 
 		private VerticalSideBarSpacerWidget() {
+			// Widget stuff
+			FocusPanel fp = new FocusPanel();
+			HorizontalPanel hp = new HorizontalPanel();
 			hp.setHorizontalAlignment(HorizontalPanel.ALIGN_CENTER);
 			hp.setVerticalAlignment(VerticalPanel.ALIGN_MIDDLE);
-			hp.addStyleName(style.selectorSpacer());
 			setIconImage(dtable.isMerged);
 			hp.add(icon);
 			hp.setWidth("100%");
 			hp.setHeight("100%");
-			add(hp);
+			fp.add(hp);
 
-			addClickHandler(new ClickHandler() {
+			// DOM stuff (put Widget in HTML cell so we can fix the width)
+			getBody().getParentElement().<TableElement> cast()
+					.setCellSpacing(0);
+			getBody().getParentElement().<TableElement> cast()
+					.setCellPadding(0);
+			Element tre = DOM.createTR();
+			Element tce = DOM.createTD();
+			tre.appendChild(tce);
+			getBody().appendChild(tre);
+			tce.addClassName(style.selectorSpacer());
+			add(fp, tce);
+
+			// Setup event handling
+			fp.addClickHandler(new ClickHandler() {
 
 				public void onClick(ClickEvent event) {
 					setIconImage(dtable.toggleMerging());
 				}
 
 			});
+
+			sinkEvents(Event.getTypeInt("click"));
 		}
 
 		// Set the icon's image accordingly
