@@ -70,12 +70,12 @@ public class WebDAVImpl implements IWebdavStore {
         return tlRepo.get();
     }
 
-    public ITransaction begin(final Principal pr) {
+    public ITransaction begin(final Principal principal) {
         tlRepo.set( RestAPIServlet.getRepository() );
 
         return new ITransaction() {
             public Principal getPrincipal() {
-                return pr;
+                return principal;
             }
         };
     }
@@ -84,14 +84,14 @@ public class WebDAVImpl implements IWebdavStore {
         //already done
     }
 
-    public void commit(ITransaction arg0) {
+    public void commit(ITransaction iTransaction) {
         getRepo().save();
         tlRepo.set( null );
     }
 
-    public void createFolder(ITransaction arg0, String uri) {
+    public void createFolder(ITransaction iTransaction, String uri) {
         String[] path = getPath( uri );
-        if ( path[0].equals( PACKAGES ) && isAdmin() ) {
+        if ( isPackages( path ) && isAdmin() ) {
             if ( path.length > 2 ) {
                 throw new UnsupportedOperationException( "Can't nest packages." );
             }
@@ -108,11 +108,11 @@ public class WebDAVImpl implements IWebdavStore {
         }
     }
 
-    public void createResource(ITransaction arg0, String uri) {
+    public void createResource(ITransaction iTransaction, String uri) {
         //for mac OSX, ignore these annoying things
         if ( uri.endsWith( ".DS_Store" ) ) return;
         String[] path = getPath( uri );
-        if ( path[0].equals( PACKAGES ) && checkPackagePermission( path[1], RoleTypes.PACKAGE_ADMIN ) ) {
+        if ( isPackages( path ) && checkPackagePermission( path[1], RoleTypes.PACKAGE_ADMIN ) ) {
             if ( path.length > 3 ) {
                 throw new UnsupportedOperationException( "Can't do nested packages." );
             }
@@ -125,7 +125,6 @@ public class WebDAVImpl implements IWebdavStore {
                 return;
             }
             if ( packageItem.containsAsset( resource[0] ) ) {
-
                 AssetItem lazarus = packageItem.loadAsset( resource[0] );
                 lazarus.archiveItem( false );
             } else {
@@ -138,7 +137,7 @@ public class WebDAVImpl implements IWebdavStore {
         }
     }
 
-    public String[] getChildrenNames(ITransaction arg0, String uri) {
+    public String[] getChildrenNames(ITransaction iTransaction, String uri) {
 
         RulesRepository repository = getRepo();
         String[] path = getPath( uri );
@@ -146,7 +145,7 @@ public class WebDAVImpl implements IWebdavStore {
         if ( path.length == 0 ) {
             return new String[]{PACKAGES, SNAPSHOTS};
         }
-        if ( path[0].equals( PACKAGES ) ) {
+        if ( isPackages( path ) ) {
             if ( path.length > 2 ) {
                 return null;
             }
@@ -156,7 +155,7 @@ public class WebDAVImpl implements IWebdavStore {
                 handleReadOnlyPackages( repository, path, result );
             }
 
-        } else if ( path[0].equals( SNAPSHOTS ) ) {
+        } else if ( isSnaphosts( path ) ) {
             if ( path.length > 3 ) {
                 return null;
             }
@@ -216,14 +215,18 @@ public class WebDAVImpl implements IWebdavStore {
 
         RulesRepository repository = getRepo();
         String[] path = getPath( uri );
-        if ( path.length < 2 ) return new Date();
-        if ( path[0].equals( PACKAGES ) && checkPackagePermissionIfReadOnly( path ) ) {
-            return getCreationDateForPackage( repository, path );
-        } else if ( path[0].equals( SNAPSHOTS ) && checkPackagePermissionIfReadOnly( path ) ) {
-            return getCreationTimeForSnapshotPackage( repository, path );
-        } else {
-            throw new UnsupportedOperationException();
+        if ( path.length < 2 ) {
+            return new Date();
         }
+
+        if ( isPackages( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+            return getCreationDateForPackage( repository, path );
+        }
+
+        if ( isSnaphosts( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+            return getCreationTimeForSnapshotPackage( repository, path );
+        }
+        throw new UnsupportedOperationException();
     }
 
     private Date getCreationTimeForSnapshotPackage(RulesRepository repository, String[] path) {
@@ -232,35 +235,33 @@ public class WebDAVImpl implements IWebdavStore {
         } else if ( path.length == 3 ) {
             return loadPackageSnapshotFromRepository( repository, path ).getCreatedDate().getTime();
         } else if ( path.length == 4 ) {
-
-            AssetItem asset = loadAssetItemFromPackageItem( loadPackageSnapshotFromRepository( repository, path ), path[3] );
-            return asset.getCreatedDate().getTime();
-        } else {
-            throw new UnsupportedOperationException();
+            return loadAssetItemFromPackageItem( loadPackageSnapshotFromRepository( repository, path ), path[3] ).getCreatedDate().getTime();
         }
+        throw new UnsupportedOperationException();
     }
 
     private Date getCreationDateForPackage(RulesRepository repository, String[] path) {
-        PackageItem pkg = loadPackageFromRepository( repository, path[1] );
+        PackageItem packageItem = loadPackageFromRepository( repository, path[1] );
         if ( path.length == 2 ) {
-            return pkg.getCreatedDate().getTime();
-        } else {
-            AssetItem asset = loadAssetItemFromPackageItem( pkg, path[2] );
-            return asset.getCreatedDate().getTime();
+            return packageItem.getCreatedDate().getTime();
         }
+        return loadAssetItemFromPackageItem( packageItem, path[2] ).getCreatedDate().getTime();
     }
 
     public Date getLastModified(String uri) {
         RulesRepository repository = getRepo();
         String[] path = getPath( uri );
-        if ( path.length < 2 ) return new Date();
-        if ( path[0].equals( PACKAGES ) && checkPackagePermissionIfReadOnly( path ) ) {
-            return getLastModifiedForPackage( repository, path );
-        } else if ( path[0].equals( SNAPSHOTS ) && checkPackagePermissionIfReadOnly( path ) ) {
-            return getLastModifiedForSnaphotPackage( repository, path );
-        } else {
-            throw new UnsupportedOperationException();
+        if ( path.length < 2 ) {
+            return new Date();
         }
+        if ( isPackages( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+            return getLastModifiedForPackage( repository, path );
+        }
+
+        if ( isSnaphosts( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+            return getLastModifiedForSnaphotPackage( repository, path );
+        }
+        throw new UnsupportedOperationException();
     }
 
     private Date getLastModifiedForSnaphotPackage(RulesRepository repository, String[] path) {
@@ -271,42 +272,43 @@ public class WebDAVImpl implements IWebdavStore {
         } else if ( path.length == 4 ) {
             PackageItem pkg = loadPackageSnapshotFromRepository( repository, path );
             return getLastModifiedFromPackageAssetItem( pkg, path[3] );
-        } else {
-            throw new UnsupportedOperationException();
         }
+        throw new UnsupportedOperationException();
     }
 
     private Date getLastModifiedForPackage(RulesRepository repository, String[] path) {
         PackageItem pkg = loadPackageFromRepository( repository, path[1] );
         if ( path.length == 2 ) {
-            //dealing with package
             return pkg.getLastModified().getTime();
-        } else {
-            return getLastModifiedFromPackageAssetItem( pkg, path[2] );
         }
+        return getLastModifiedFromPackageAssetItem( pkg, path[2] );
+
     }
 
     private Date getLastModifiedFromPackageAssetItem(PackageItem packageItem, String path) {
         return loadAssetItemFromPackageItem( packageItem, path ).getLastModified().getTime();
     }
 
-    public InputStream getResourceContent(ITransaction arg0, String uri) {
+    public InputStream getResourceContent(ITransaction iTransaction, String uri) {
         return getContent( uri );
     }
 
-    public StoredObject getStoredObject(ITransaction arg0, String uri) {
+    public StoredObject getStoredObject(ITransaction iTransaction, String uri) {
         RulesRepository repository = getRepo();
         String[] path = getPath( uri );
         if ( path.length < 2 ) {
             return createStoredObject( uri );
         }
-        if ( path[0].equals( PACKAGES ) && checkPackagePermissionIfReadOnly( path ) ) {
+
+        if ( isPackages( path ) && checkPackagePermissionIfReadOnly( path ) ) {
             return getStoredObjectForReadOnlyPackages( uri, repository, path );
-        } else if ( path[0].equals( SNAPSHOTS ) && checkPackagePermissionIfReadOnly( path ) ) {
-            return getStoredObjectForReadOnlySnapshots( uri, repository, path );
-        } else {
-            throw new UnsupportedOperationException();
         }
+
+        if ( isSnaphosts( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+            return getStoredObjectForReadOnlySnapshots( uri, repository, path );
+        }
+        throw new UnsupportedOperationException();
+
     }
 
     private StoredObject createStoredObject(String uri) {
@@ -334,33 +336,31 @@ public class WebDAVImpl implements IWebdavStore {
                 return null;
             }
             return createStoredObject( uri, asset, asset.getContentLength() );
-        } else {
-            throw new UnsupportedOperationException();
         }
+        throw new UnsupportedOperationException();
+
     }
 
     private StoredObject getStoredObjectForReadOnlyPackages(String uri, RulesRepository repository, String[] path) {
         PackageItem packageItem = loadPackageFromRepository( repository, path[1] );
         if ( path.length == 2 ) {
-            //dealing with package
             return createStoredObject( uri, packageItem, 0 );
-
-        } else {
-            AssetItem asset;
-            try {
-                asset = loadAssetItemFromPackageItem( packageItem, path[2] );
-            } catch ( Exception e ) {
-                return null;
-            }
-            return createStoredObject( uri, asset, asset.getContentLength() );
         }
+
+        AssetItem asset;
+        try {
+            asset = loadAssetItemFromPackageItem( packageItem, path[2] );
+        } catch ( Exception e ) {
+            return null;
+        }
+        return createStoredObject( uri, asset, asset.getContentLength() );
     }
 
-    private StoredObject createStoredObject(String uri, VersionableItem pi, long resourceLength) {
+    private StoredObject createStoredObject(String uri, VersionableItem vernionableItem, long resourceLength) {
         StoredObject so = new StoredObject();
-        so.setCreationDate( pi.getCreatedDate().getTime() );
+        so.setCreationDate( vernionableItem.getCreatedDate().getTime() );
         so.setFolder( isFolder( uri ) );
-        so.setLastModified( pi.getLastModified().getTime() );
+        so.setLastModified( vernionableItem.getLastModified().getTime() );
         so.setResourceLength( resourceLength );
 
         return so;
@@ -369,37 +369,37 @@ public class WebDAVImpl implements IWebdavStore {
     private InputStream getContent(String uri) {
         RulesRepository repository = getRepo();
         String[] path = getPath( uri );
-        if ( path[0].equals( PACKAGES ) && checkPackagePermissionIfReadOnly( path ) ) {
+        if ( isPackages( path ) && checkPackagePermissionIfReadOnly( path ) ) {
             return getAssetData( loadAssetItemFromPackage( repository, path ) );
-        } else if ( path[0].equals( SNAPSHOTS ) && checkPackagePermissionIfReadOnly( path ) ) {
-            return getAssetData( loadAssetItemFromPackageSnaphot( repository, path ) );
-
-        } else {
-            throw new UnsupportedOperationException();
         }
+
+        if ( isSnaphosts( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+            return getAssetData( loadAssetItemFromPackageSnaphot( repository, path ) );
+        }
+        throw new UnsupportedOperationException();
+
     }
 
     private InputStream getAssetData(AssetItem assetItem) {
         if ( assetItem.isBinary() ) {
             return assetItem.getBinaryContentAttachment();
-        } else {
-            return new ByteArrayInputStream( assetItem.getContent().getBytes() );
         }
+        return new ByteArrayInputStream( assetItem.getContent().getBytes() );
     }
 
-    public long getResourceLength(ITransaction arg0, String uri) {
+    public long getResourceLength(ITransaction iTransaction, String uri) {
         String[] path = getPath( uri );
         try {
             RulesRepository repository = getRepo();
-            if ( path.length == 3 && path[0].equals( PACKAGES ) && checkPackagePermissionIfReadOnly( path ) ) {
-                AssetItem asset = loadAssetItemFromPackage( repository, path );
-                return asset.getContentLength();
-            } else if ( path.length == 4 && path[0].equals( SNAPSHOTS ) && checkPackagePermissionIfReadOnly( path ) ) {
-                AssetItem asset = loadAssetItemFromPackageSnaphot( repository, path );
-                return asset.getContentLength();
-            } else {
-                return 0;
+            if ( path.length == 3 && isPackages( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+                return loadAssetItemFromPackage( repository, path ).getContentLength();
             }
+
+            if ( path.length == 4 && isSnaphosts( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+                return loadAssetItemFromPackageSnaphot( repository, path ).getContentLength();
+            }
+
+            return 0;
         } catch ( Exception e ) {
             System.err.println( "Not able to get content length" );
             return 0;
@@ -410,41 +410,49 @@ public class WebDAVImpl implements IWebdavStore {
     boolean isFolder(String uri) {
         RulesRepository repository = getRepo();
         String[] path = getPath( uri );
-        if ( path.length == 0 ) return true;
-        if ( path.length == 1 && (path[0].equals( PACKAGES ) || path[0].equals( SNAPSHOTS )) ) {
+        if ( path.length == 0 ) {
             return true;
-        } else if ( path.length == 2 ) {
-            return repository.containsPackage( path[1] );
-        } else if ( path.length == 3 && path[0].equals( SNAPSHOTS ) ) {
-            return repository.containsPackage( path[1] );
-        } else {
-
-            return false;
         }
+        if ( path.length == 1 && (isPackages( path ) || isSnaphosts( path )) ) {
+            return true;
+        }
+
+        if ( path.length == 2 ) {
+            return repository.containsPackage( path[1] );
+        }
+
+        if ( path.length == 3 && isSnaphosts( path ) ) {
+            return repository.containsPackage( path[1] );
+        }
+        return false;
     }
 
     boolean isResource(String uri) {
         RulesRepository repository = getRepo();
         String[] path = getPath( uri );
-        if ( path.length < 3 ) return false;
-        if ( !(path[0].equals( PACKAGES ) || path[0].equals( SNAPSHOTS )) ) return false;
+
+        if ( path.length < 3 ) {
+            return false;
+        }
+        if ( !(isPackages( path ) || isSnaphosts( path )) ) {
+            return false;
+        }
+
         if ( repository.containsPackage( path[1] ) ) {
-            if ( path[0].equals( PACKAGES ) ) {
+            if ( isPackages( path ) ) {
                 PackageItem pkg = loadPackageFromRepository( repository, path[1] );
                 if ( path[2].startsWith( "._" ) ) {
                     return osxDoubleData.containsKey( uri );
                 }
                 return pkg.containsAsset( AssetItem.getAssetNameFromFileName( path[2] )[0] );
-            } else {
-                if ( path.length == 4 ) {
-                    return isAssetItemInPackage( repository, path );
-                } else {
-                    return false;
-                }
             }
-        } else {
+
+            if ( path.length == 4 ) {
+                return isAssetItemInPackage( repository, path );
+            }
             return false;
         }
+        return false;
     }
 
     boolean objectExists(String uri) {
@@ -455,54 +463,67 @@ public class WebDAVImpl implements IWebdavStore {
     }
 
     private boolean internalObjectExists(String uri) {
-
         RulesRepository repository = getRepo();
-        if ( uri.endsWith( ".DS_Store" ) ) return false;
-        String[] path = getPath( uri );
-        if ( path.length == 0 ) return true;
-        if ( path.length == 1 && (path[0].equals( PACKAGES ) || path[0].equals( SNAPSHOTS )) ) {
-            return true;
-        } else {
-            if ( path.length == 1 ) return false;
-            if ( !repository.containsPackage( path[1] ) ) {
-                return false;
-            }
-
-            if ( path[0].equals( PACKAGES ) ) {
-                if ( path.length == 2 ) {
-                    PackageItem pkg = loadPackageFromRepository( repository, path[1] );
-                    return !pkg.isArchived();
-                } else {
-                    PackageItem pkg = loadPackageFromRepository( repository, path[1] );
-                    if ( path[2].startsWith( "._" ) ) {
-                        return WebDAVImpl.osxDoubleData.containsKey( uri );
-                    }
-                    String assetName = AssetItem.getAssetNameFromFileName( path[2] )[0];
-                    return pkg.containsAsset( assetName ) && !pkg.loadAsset( assetName ).isArchived();
-                }
-            } else if ( path[0].equals( SNAPSHOTS ) ) {
-                if ( path.length == 2 ) {
-                    return repository.containsPackage( path[1] );
-                } else if ( path.length == 3 ) {
-                    return repository.containsSnapshot( path[1], path[2] );
-                } else if ( path.length == 4 ) {
-                    return isAssetItemInPackage( repository, path );
-                } else {
-                    return false;
-                }
-            } else {
-                throw new IllegalStateException();
-            }
+        if ( uri.endsWith( ".DS_Store" ) ) {
+            return false;
         }
+        String[] path = getPath( uri );
+
+        if ( path.length == 0 || (path.length == 1 && (isPackages( path ) || isSnaphosts( path ))) ) {
+            return true;
+        }
+
+        if ( path.length == 1 || !repository.containsPackage( path[1] ) ) {
+            return false;
+        }
+
+        if ( isPackages( path ) ) {
+            return handlePackagesInternalObjectExists( uri, repository, path );
+        }
+
+        if ( isSnaphosts( path ) ) {
+            return handleSnapshotsInternalObjectExists( repository, path );
+        }
+
+        throw new IllegalStateException();
     }
 
-    public void removeObject(ITransaction arg0, String uri) {
+    private boolean handleSnapshotsInternalObjectExists(RulesRepository repository, String[] path) {
+        if ( path.length == 2 ) {
+            return repository.containsPackage( path[1] );
+        }
+
+        if ( path.length == 3 ) {
+            return repository.containsSnapshot( path[1], path[2] );
+        }
+
+        if ( path.length == 4 ) {
+            return isAssetItemInPackage( repository, path );
+        }
+        return false;
+
+    }
+
+    private boolean handlePackagesInternalObjectExists(String uri, RulesRepository repository, String[] path) {
+        if ( path.length == 2 ) {
+            PackageItem pkg = loadPackageFromRepository( repository, path[1] );
+            return !pkg.isArchived();
+        }
+        PackageItem pkg = loadPackageFromRepository( repository, path[1] );
+        if ( path[2].startsWith( "._" ) ) {
+            return WebDAVImpl.osxDoubleData.containsKey( uri );
+        }
+        String assetName = AssetItem.getAssetNameFromFileName( path[2] )[0];
+        return pkg.containsAsset( assetName ) && !pkg.loadAsset( assetName ).isArchived();
+    }
+
+    public void removeObject(ITransaction iTransaction, String uri) {
         RulesRepository repository = getRepo();
         String[] path = getPath( uri );
         if ( path.length == 0 || path.length == 1 ) {
             throw new IllegalArgumentException();
         }
-        if ( path[0].equals( PACKAGES ) && checkPackagePermissionIfDeveloper( path ) ) {
+        if ( isPackages( path ) && checkPackagePermissionIfDeveloper( path ) ) {
             PackageItem packageItem = loadPackageFromRepository( repository, path[1] );
             if ( path.length == 3 ) {
                 //delete asset
@@ -524,16 +545,18 @@ public class WebDAVImpl implements IWebdavStore {
 
     }
 
-    public void rollback(ITransaction arg0) {
+    public void rollback(ITransaction iTransaction) {
         RulesRepository repository = getRepo();
         repository.getSession().logout();
     }
 
-    public long setResourceContent(ITransaction arg0, String uri, InputStream content, String contentType, String characterEncoding) {
+    public long setResourceContent(ITransaction iTransaction, String uri, InputStream content, String contentType, String characterEncoding) {
         RulesRepository repository = getRepo();
-        if ( uri.endsWith( ".DS_Store" ) ) return 0;
+        if ( uri.endsWith( ".DS_Store" ) ) {
+            return 0;
+        }
         String[] path = getPath( uri );
-        if ( path[0].equals( PACKAGES ) && checkPackagePermissionIfDeveloper( path ) ) {
+        if ( isPackages( path ) && checkPackagePermissionIfDeveloper( path ) ) {
             if ( path.length != 3 ) {
                 throw new IllegalArgumentException( "Not a valid resource path " + uri );
             }
@@ -644,6 +667,14 @@ public class WebDAVImpl implements IWebdavStore {
 
     private boolean checkPackagePermissionIfDeveloper(String[] path) {
         return checkPackagePermission( path[1], RoleTypes.PACKAGE_DEVELOPER );
+    }
+
+    private boolean isPackages(String[] path) {
+        return path[0].equals( PACKAGES );
+    }
+
+    private boolean isSnaphosts(String[] path) {
+        return path[0].equals( SNAPSHOTS );
     }
 
 }
