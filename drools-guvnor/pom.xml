@@ -180,11 +180,6 @@
       <artifactId>wsdl4j</artifactId>
     </dependency>
 
-    <!--REVISIT: This lib is needed by org.apache.util.Base64 in org.drools.guvnor.server.files.RepositoryServlet-->
-    <dependency>
-      <groupId>apache-slide</groupId>
-      <artifactId>webdavlib</artifactId>
-    </dependency>
     <dependency>
       <groupId>net.sf.webdav-servlet</groupId>
       <artifactId>webdav-servlet</artifactId>

@@ -22,7 +22,7 @@ import org.drools.repository.AssetItem;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.apache.util.Base64;
+import org.drools.util.codec.Base64;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.junit.After;
@@ -84,7 +84,7 @@ public class FeedServletTest {
 
         headers = new HashMap<String, String>() {
             {
-                put("Authorization", "BASIC " + new String(Base64.encode("testuser:password".getBytes())));
+                put("Authorization", "BASIC " + new String(Base64.encodeBase64("testuser:password".getBytes())));
             }
         };
         req = new MockHTTPRequest("/org.foo/feed/package", headers, new HashMap<String, String>() {
@@ -166,7 +166,7 @@ public class FeedServletTest {
         //try with valid password
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
-                put("Authorization", "BASIC " + new String(Base64.encode("testuser:password".getBytes())));
+                put("Authorization", "BASIC " + new String(Base64.encodeBase64("testuser:password".getBytes())));
             }
         };
         MockHTTPRequest req = new MockHTTPRequest("/org.foo/feed/category", headers, new HashMap<String, String>() {
@@ -256,7 +256,7 @@ public class FeedServletTest {
 
         headers = new HashMap<String, String>() {
             {
-                put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
+                put("Authorization", "BASIC " + new String(Base64.encodeBase64("test:password".getBytes())));
             }
         };
 

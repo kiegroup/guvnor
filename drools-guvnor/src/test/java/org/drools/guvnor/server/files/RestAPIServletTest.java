@@ -23,7 +23,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.util.Base64;
+import org.drools.util.codec.Base64;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
@@ -83,7 +83,7 @@ public class RestAPIServletTest {
 		//try again with bad password
 		headers = new HashMap<String, String>() {
 			{
-				put("Authorization", new String(Base64.encode("foo:bar".getBytes())));
+				put("Authorization", new String(Base64.encodeBase64("foo:bar".getBytes())));
 			}
 		};
 		req = new MockHTTPRequest(uri, headers);
@@ -97,7 +97,7 @@ public class RestAPIServletTest {
 
 		headers = new HashMap<String, String>() {
 			{
-				put("Authorization", "BASIC " + new String(Base64.encode("testuser:password".getBytes())));
+				put("Authorization", "BASIC " + new String(Base64.encodeBase64("testuser:password".getBytes())));
 			}
 		};
 
@@ -148,7 +148,7 @@ public class RestAPIServletTest {
         
 		Map<String, String> headers = new HashMap<String, String>() {
 			{
-				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
+				put("Authorization", "BASIC " + new String(Base64.encodeBase64("test:password".getBytes())));
 			}
 		};		
 
@@ -217,7 +217,7 @@ public class RestAPIServletTest {
         
 		Map<String, String> headers = new HashMap<String, String>() {
 			{
-				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
+				put("Authorization", "BASIC " + new String(Base64.encodeBase64("test:password".getBytes())));
 				put("Checkin-Comment", "hey ho");
 			}
 		};
@@ -268,7 +268,7 @@ public class RestAPIServletTest {
         
 		Map<String, String> headers = new HashMap<String, String>() {
 			{
-				put("Authorization", "BASIC " + new String(Base64.encode("test:password".getBytes())));
+				put("Authorization", "BASIC " + new String(Base64.encodeBase64("test:password".getBytes())));
 			}
 		};
 

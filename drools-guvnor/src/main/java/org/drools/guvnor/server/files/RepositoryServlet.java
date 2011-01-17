@@ -25,7 +25,7 @@ import javax.security.auth.login.LoginException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.util.Base64;
+import org.drools.util.codec.Base64;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.Component;
@@ -161,7 +161,7 @@ public class RepositoryServlet extends HttpServlet {
 
         // Get encoded user and password, comes after "BASIC "
         String userpassEncoded = auth.substring(6);
-        String userpassDecoded = new String(Base64.decode(userpassEncoded.getBytes()));
+        String userpassDecoded = new String(Base64.decodeBase64(userpassEncoded.getBytes()));
 
         String[] a = userpassDecoded.split(":");
         a[0] = a[0].trim();

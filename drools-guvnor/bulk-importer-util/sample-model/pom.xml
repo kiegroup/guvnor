@@ -29,16 +29,21 @@
     </pluginManagement>
   </build>
   
-  
   <repositories>
-  <repository>
-    <id>jboss-std</id>
-    <url>http://repository.jboss.com/maven2</url>
-  </repository>
-  <!--repository>
-    <id>gwt-ext</id>
-    <url>http://gwt-maven.googlecode.com/svn/trunk/mavenrepo/</url>
-  </repository-->
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Repository Group</name>
+      <url>http://repository.jboss.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
   </repositories>
   
   <dependencies>

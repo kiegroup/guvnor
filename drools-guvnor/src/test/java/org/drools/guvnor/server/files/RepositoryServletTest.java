@@ -19,7 +19,7 @@ package org.drools.guvnor.server.files;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.util.Base64;
+import org.drools.util.codec.Base64;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
@@ -43,7 +43,7 @@ public class RepositoryServletTest {
                                           midentity );
 
 		String authToken = "usr:pwd";
-		String encodedAuthToken = "BASIC " + new String(Base64.encode(authToken.getBytes()));
+		String encodedAuthToken = "BASIC " + new String(Base64.encodeBase64(authToken.getBytes()));
 		boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
 		assertTrue(allowed);
 		
@@ -109,7 +109,7 @@ public class RepositoryServletTest {
 
     @Test
     public void testUnpack() {
-		String b42 = "BASIC " + new String( Base64.encode("user:pass".getBytes()) );
+		String b42 = "BASIC " + new String( Base64.encodeBase64("user:pass".getBytes()) );
 		String[] d = RepositoryServlet.unpack(b42);
 		assertEquals("user", d[0]);
 		assertEquals("pass", d[1]);
