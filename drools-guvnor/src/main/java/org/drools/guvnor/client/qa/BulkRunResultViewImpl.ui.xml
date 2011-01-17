@@ -23,6 +23,7 @@
 			text-align: left;
 		}
 	</ui:style>
+
 	<gwt:VerticalPanel>
 		<gwt:HTMLPanel>
 			<table class="guvnor-FormPanel">
@@ -31,7 +32,9 @@
 						<gwt:Label text='{i18n.OverallResult}'></gwt:Label>
 					</td>
 					<td>
-						<gwt:Label ui:field="overAll" styleName='{style.bold}'></gwt:Label>
+						<guvnor-util:ToggleLabel ui:field="overAll"
+							styleName='{style.bold}' successText='{i18n.SuccessOverall}'
+							failureText='{i18n.FailureOverall}'></guvnor-util:ToggleLabel>
 					</td>
 				</tr>
 				<tr>
@@ -54,7 +57,7 @@
 					<td>
 						<gwt:HorizontalPanel>
 							<guvnor-util:PercentageBar ui:field="coveredPercentBar"
-								width="300"></guvnor-util:PercentageBar>
+								inCompleteBarColor="YELLOW" width="300"></guvnor-util:PercentageBar>
 							<gwt:HTML>&nbsp;</gwt:HTML>
 							<guvnor-common:SmallLabel ui:field="ruleCoveragePercent"></guvnor-common:SmallLabel>
 						</gwt:HorizontalPanel>
@@ -65,7 +68,8 @@
 						<gwt:Label text='{i18n.UncoveredRules}'></gwt:Label>
 					</td>
 					<td>
-						<gwt:ListBox ui:field="uncoveredRules"></gwt:ListBox>
+						<guvnor-util:ValueList ui:field="uncoveredRules"
+							maxVisibleItemCount="20"></guvnor-util:ValueList>
 					</td>
 				</tr>
 			</table>

@@ -32,18 +32,14 @@ public class BulkRunResult
 
     private BulkTestRunResult result;
     private EditItemEvent     editEvent;
-    private Command           close;
+    private Command           closeCommand;
 
     private BulkRunResultView display;
 
     public BulkRunResult(BulkTestRunResult result,
-                         EditItemEvent editEvent,
-                         Command close,
                          BulkRunResultView display) {
-        this.display = display;
-        this.close = close;
         this.result = result;
-        this.editEvent = editEvent;
+        this.display = display;
 
         display.setPresenter( this );
 
@@ -66,24 +62,40 @@ public class BulkRunResult
 
         int grandTotal = 0;
         int totalFailures = 0;
-        for ( int i = 0; i < summaries.length; i++ ) {
-            grandTotal = grandTotal + summaries[i].getTotal();
-            totalFailures = totalFailures + summaries[i].getFailures();
+        for ( ScenarioResultSummary scenarioResultSummary : summaries ) {
 
-            display.addSummary( i,
-                                summaries[i] );
+            grandTotal = grandTotal + scenarioResultSummary.getTotal();
+            totalFailures = totalFailures + scenarioResultSummary.getFailures();
+
+            display.addSummary( scenarioResultSummary );
         }
+
+        display.getTotalFailuresPercent().setValue( calculatePercent( totalFailures,
+                                                                      grandTotal ) );
 
         display.setTotalFailures( totalFailures,
                                   grandTotal );
 
-        display.setCoveredPercent( percentCovered );
+        display.setCoveredPercentText( Integer.toString( percentCovered ) );
 
-        display.setOverAllStatus( (totalFailures == 0) );
+        display.getCoveredPercent().setValue( percentCovered );
+
+        display.getOverAllStatus().setValue( totalFailures == 0 );
 
         if ( percentCovered < 100 ) {
-            display.setUncoveredRules( rulesNotCovered );
+            display.getUncoveredRules().setValue( rulesNotCovered );
         }
+    }
+
+    private static int calculatePercent(int numerator,
+                                        int denominator) {
+        int percent = 0;
+
+        if ( denominator != 0 ) {
+            percent = (int) ((((float) denominator - (float) numerator) / (float) denominator) * 100);
+        }
+
+        return percent;
     }
 
     private boolean hasErrors(BulkTestRunResult result) {
@@ -91,11 +103,19 @@ public class BulkRunResult
     }
 
     public void onClose() {
-        close.execute();
+        closeCommand.execute();
     }
 
     public void onOpenTestScenario(String uuid) {
         editEvent.open( uuid );
+    }
+
+    public void setEditItemEvent(EditItemEvent editEvent) {
+        this.editEvent = editEvent;
+    }
+
+    public void setCloseCommand(Command closeCommand) {
+        this.closeCommand = closeCommand;
     }
 
 }

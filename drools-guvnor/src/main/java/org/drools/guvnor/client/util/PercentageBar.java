@@ -1,59 +1,69 @@
 package org.drools.guvnor.client.util;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PercentageBar extends Composite {
+public class PercentageBar extends Composite
+    implements
+    HasValue<Integer> {
+
+    public static final String FAILURE          = "#CC0000";
+    public static final String COMPLETE_SUCCESS = "GREEN";
+    public static final String INCOMPLETE       = "YELLOW";
 
     interface PercentageBarBinder
         extends
         UiBinder<Widget, PercentageBar> {
     }
 
-    private static PercentageBarBinder uiBinder = GWT.create( PercentageBarBinder.class );
+    private static PercentageBarBinder uiBinder           = GWT.create( PercentageBarBinder.class );
 
-    private String                     colour   = "GREEN";
-    private int                        width    = 100;
-    private float                      percent  = 100;
+    @UiField
+    Label                              percentage;
+
+    @UiField
+    DivElement                         wrapper;
+
+    @UiField
+    DivElement                         text;
+
+    @UiField
+    DivElement                         bar;
+
+    private int                        percent            = 0;
+    private String                     inCompleteBarColor = FAILURE;
 
     public PercentageBar() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public PercentageBar(String colour,
+    public PercentageBar(String color,
                          int width,
                          float percent) {
-        initWidget( uiBinder.createAndBindUi( this ) );
-        this.colour = colour;
-        this.width = width;
-        this.percent = percent;
-
-        render();
+        this();
+        setColor( color );
+        setWidth( width );
+        setPercent( (int) percent );
     }
 
-    public PercentageBar(String colour,
+    public PercentageBar(String color,
                          int width,
                          int numerator,
                          int denominator) {
-        this( colour,
+        this( color,
               width,
               calculatePercent( numerator,
                                 denominator ) );
-    }
-
-    public void render() {
-        //        int pixels = (int) (width * (percent / 100));
-        //        String p = Float.toString( percent );
-        //
-        //        setHTML( TEMPLATE.mainHtml( width,
-        //                                    TEMPLATE.barHtml( pixels,
-        //                                                      colour,
-        //                                                      p )
-        //                                    TEMPLATE.textHtml( width,
-        //                                                       p ) ) 
-        //        ) );
     }
 
     private static int calculatePercent(int numerator,
@@ -67,9 +77,8 @@ public class PercentageBar extends Composite {
         return percent;
     }
 
-    public void setColour(String colour) {
-        this.colour = colour;
-        render();
+    private void setColor(String color) {
+        bar.getStyle().setBackgroundColor( color );
     }
 
     public void setWidth(String width) {
@@ -77,19 +86,64 @@ public class PercentageBar extends Composite {
     }
 
     public void setWidth(int width) {
-        this.width = width;
-        render();
+        text.getStyle().setWidth( width,
+                                  Unit.PX );
+        wrapper.getStyle().setWidth( width,
+                                     Unit.PX );
     }
 
-    public void setPercent(float percent) {
-        this.percent = percent;
-        render();
+    public void setPercent(int percent) {
+        setValue( percent );
     }
 
     public void setPercent(int numerator,
                            int denominator) {
-        this.percent = calculatePercent( numerator,
-                                         denominator );
-        render();
+        setPercent( calculatePercent( numerator,
+                                      denominator ) );
+    }
+
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Integer> handler) {
+        return addHandler( handler,
+                           ValueChangeEvent.getType() );
+    }
+
+    public Integer getValue() {
+        return percent;
+    }
+
+    public void setValue(Integer value) {
+        setValue( value,
+                  false );
+    }
+
+    public void setValue(Integer value,
+                         boolean fireEvents) {
+
+        percent = value;
+
+        setColor();
+
+        percentage.setText( Format.format( "{0} %",
+                                           Integer.toString( value ) ) );
+        bar.getStyle().setWidth( value,
+                                 Unit.PCT );
+
+        if ( fireEvents ) {
+            ValueChangeEvent.fire( this,
+                                   value );
+        }
+
+    }
+
+    private void setColor() {
+        if ( percent < 100 ) {
+            setColor( inCompleteBarColor );
+        } else {
+            setColor( COMPLETE_SUCCESS );
+        }
+    }
+
+    public void setInCompleteBarColor(String color) {
+        this.inCompleteBarColor = color;
     }
 }

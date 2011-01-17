@@ -10,19 +10,27 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
 
-	<ui:with field='resources'
-		type='org.drools.guvnor.client.resources.GuvnorResources' />
-
+	<ui:style>
+		.wrapper {
+			background-color: white;
+			border: 1px solid black;
+		}
+		
+		.text {
+			position: absolute;
+			text-align: center;
+		}
+	</ui:style>
 
 	<gwt:HTMLPanel>
-		<gwt:AbsolutePanel
-			styleName='{resources.percentageBarCss.smallishProgressWrapper}'
-			width="300px">
-			<gwt:AbsolutePanel styleName='{resources.percentageBarCss.smallishProgressBar}'></gwt:AbsolutePanel>
-			<!-- div class="smallish-progress-bar" style="width: 300px; background-color: 
-				{1};"></div> <div class="smallish-progress-text" style="width: 300px">100 
-				%</div -->
-		</gwt:AbsolutePanel>
+		<div ui:field="wrapper" class='{style.wrapper}'>
+			<div ui:field="text" class='{style.text}'>
+				<gwt:Label ui:field="percentage"></gwt:Label>
+			</div>
+			<div ui:field="bar">
+				<gwt:HTML>&nbsp;</gwt:HTML>
+			</div>
+		</div>
 	</gwt:HTMLPanel>
 
 </ui:UiBinder>

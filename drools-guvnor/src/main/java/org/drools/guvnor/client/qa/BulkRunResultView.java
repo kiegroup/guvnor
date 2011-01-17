@@ -4,6 +4,8 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 
+import com.google.gwt.user.client.ui.HasValue;
+
 interface BulkRunResultView {
 
     interface Presenter {
@@ -15,17 +17,20 @@ interface BulkRunResultView {
     void showErrors(BuilderResult errors,
                     EditItemEvent editEvent);
 
-    void setPresenter(Presenter presenter);
+    HasValue<String[]> getUncoveredRules();
 
-    void setUncoveredRules(String[] rulesNotCovered);
+    HasValue<Integer> getCoveredPercent();
 
-    void setCoveredPercent(int percentCovered);
+    HasValue<Integer> getTotalFailuresPercent();
 
-    void addSummary(int i,
-                    ScenarioResultSummary scenarioResultSummary);
+    void addSummary(ScenarioResultSummary scenarioResultSummary);
 
     void setTotalFailures(int totalFailures,
                           int grandTotal);
 
-    void setOverAllStatus(boolean success);
+    void setCoveredPercentText(String percentCovered);
+
+    HasValue<Boolean> getOverAllStatus();
+
+    void setPresenter(Presenter presenter);
 }

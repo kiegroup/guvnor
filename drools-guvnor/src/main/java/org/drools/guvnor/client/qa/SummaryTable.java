@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.resources;
-
-import com.google.gwt.resources.client.CssResource;
+package org.drools.guvnor.client.qa;
 
 /**
- * 
  * @author rikkola
  *
  */
-public interface PercentageBarCss
-    extends
-    CssResource {
+public class SummaryTable {
 
-    @ClassName("smallish-progress-wrapper")
-    String smallishProgressWrapper();
-
-    @ClassName("smallish-progress-bar")
-    String smallishProgressBar();
-
-    @ClassName("smallish-progress-text")
-    String smallishProgressText();
+    public SummaryTable(SummaryTableView summaryTableView) {
+        // TODO Auto-generated constructor stub
+    }
 
 }

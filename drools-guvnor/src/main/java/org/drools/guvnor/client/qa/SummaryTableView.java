@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-.smallish-progress-wrapper {
-	position: relative;
-	border: 1px solid black;
-}
+package org.drools.guvnor.client.qa;
 
-.smallish-progress-bar {
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 100%;
-}
+/**
+ * @author rikkola
+ *
+ */
+public interface SummaryTableView {
 
-.smallish-progress-text {
-	text-align: center;
-	position: relative;
+    void addRow(Object any);
+
 }

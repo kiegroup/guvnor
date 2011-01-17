@@ -24,6 +24,8 @@ import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rulelist.EditItemEvent;
 import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.util.PercentageBar;
+import org.drools.guvnor.client.util.ToggleLabel;
+import org.drools.guvnor.client.util.ValueList;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -35,8 +37,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -54,14 +55,14 @@ public class BulkRunResultViewImpl extends Composite
         UiBinder<Widget, BulkRunResultViewImpl> {
     }
 
-    private static BulkRunResultViewImplBinder uiBinder  = GWT.create( BulkRunResultViewImplBinder.class );
+    private static BulkRunResultViewImplBinder uiBinder          = GWT.create( BulkRunResultViewImplBinder.class );
 
-    private Constants                          constants = GWT.create( Constants.class );
+    private Constants                          constants         = GWT.create( Constants.class );
 
     private Presenter                          presenter;
 
     @UiField
-    Label                                      overAll;
+    ToggleLabel                                overAll;
 
     @UiField
     PercentageBar                              resultsBar;
@@ -76,10 +77,12 @@ public class BulkRunResultViewImpl extends Composite
     SmallLabel                                 ruleCoveragePercent;
 
     @UiField
-    ListBox                                    uncoveredRules;
+    ValueList                                  uncoveredRules;
 
     @UiField
     FlexTable                                  summaryTable;
+
+    private int                                summaryTableIndex = 0;
 
     public BulkRunResultViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -90,93 +93,55 @@ public class BulkRunResultViewImpl extends Composite
         presenter.onClose();
     }
 
-    public void setOverAllStatus(boolean success) {
-        overAll.setText( success ? constants.SuccessOverall() : constants.FailureOverall() );
+    public HasValue<Boolean> getOverAllStatus() {
+        return overAll;
+    }
+
+    public HasValue<Integer> getTotalFailuresPercent() {
+        return resultsBar;
     }
 
     public void setTotalFailures(int totalFailures,
                                  int grandTotal) {
-
-        if ( totalFailures > 0 ) {
-            resultsBar.setColour( "#CC0000" );
-            resultsBar.setPercent( totalFailures,
-                                   grandTotal );
-        } else {
-            resultsBar.setColour( "GREEN" );
-            resultsBar.setPercent( 100 );
-        }
 
         failuresOutOfExpectations.setText( Format.format( constants.failuresOutOFExpectations(),
                                                           totalFailures,
                                                           grandTotal ) );
     }
 
-    public void setUncoveredRules(String[] rulesNotCovered) {
-        for ( int i = 0; i < rulesNotCovered.length; i++ ) {
-            uncoveredRules.addItem( rulesNotCovered[i] );
-        }
-        if ( rulesNotCovered.length > 20 ) {
-            uncoveredRules.setVisibleItemCount( 20 );
-        } else {
-            uncoveredRules.setVisibleItemCount( rulesNotCovered.length );
-        }
+    public HasValue<String[]> getUncoveredRules() {
+        return uncoveredRules;
     }
 
-    public void setCoveredPercent(int percentCovered) {
-        if ( percentCovered < 100 ) {
-            coveredPercentBar.setColour( "YELLOW" );
-            coveredPercentBar.setPercent( percentCovered );
-        } else {
-            coveredPercentBar.setColour( "GREEN" );
-            coveredPercentBar.setPercent( 100 );
-        }
+    public HasValue<Integer> getCoveredPercent() {
+        return coveredPercentBar;
+    }
 
-        coveredPercentBar.render();
-
+    public void setCoveredPercentText(String percentCovered) {
         ruleCoveragePercent.setText( Format.format( constants.RuleCoveragePercent(),
                                                     percentCovered ) );
     }
 
-    public void addSummary(int i,
-                           final ScenarioResultSummary summary) {
+    public void addSummary(ScenarioResultSummary summary) {
 
-        //now render this summary
-        summaryTable.setWidget( i,
-                                0,
-                                new SmallLabel( summary.getScenarioName() + ":" ) );
-        summaryTable.getFlexCellFormatter().setHorizontalAlignment( i,
-                                                                    0,
-                                                                    HasHorizontalAlignment.ALIGN_RIGHT );
+        SummaryTableRow row = new SummaryTableRow( summary.getUuid() );
 
+        row.setName( summary.getScenarioName() );
+
+        PercentageBar percentageBar = new PercentageBar();
+        percentageBar.setWidth( SummaryTableRow.BAR_WIDTH );
         if ( summary.getFailures() > 0 ) {
-            summaryTable.setWidget( i,
-                                    1,
-                                    new PercentageBar( "#CC0000",
-                                                       150,
-                                                       summary.getFailures(),
-                                                       summary.getTotal() ) );
+            percentageBar.setPercent( summary.getFailures(),
+                                      summary.getTotal() );
         } else {
-            summaryTable.setWidget( i,
-                                    1,
-                                    new PercentageBar( "GREEN",
-                                                       150,
-                                                       100 ) );
+            percentageBar.setPercent( 100 );
         }
+        row.setPercentageBar( percentageBar );
 
-        summaryTable.setWidget( i,
-                                2,
-                                new SmallLabel( Format.format( constants.TestFailureBulkFailures(),
-                                                               summary.getFailures(),
-                                                               summary.getTotal() ) ) );
-        Button open = new Button( constants.Open() );
-        open.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                presenter.onOpenTestScenario( summary.getUuid() );
-            }
-        } );
-        summaryTable.setWidget( i,
-                                3,
-                                open );
+        row.setFailuresOutOfTotalInfo( summary.getFailures(),
+                                       summary.getTotal() );
+
+        summaryTableIndex = summaryTableIndex + 1;
     }
 
     public void showErrors(BuilderResult errors,
@@ -191,5 +156,57 @@ public class BulkRunResultViewImpl extends Composite
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    class SummaryTableRow {
+
+        final static int BAR_WIDTH = 150;
+
+        public SummaryTableRow(String uuid) {
+            addOpenButton( uuid );
+        }
+
+        void setName(String scenarioName) {
+            summaryTable.setWidget( summaryTableIndex,
+                                    0,
+                                    new SmallLabel( scenarioName + ":" ) );
+            summaryTable.getFlexCellFormatter().setHorizontalAlignment( summaryTableIndex,
+                                                                        0,
+                                                                        HasHorizontalAlignment.ALIGN_RIGHT );
+
+        }
+
+        void setPercentageBar(PercentageBar percentageBar) {
+            summaryTable.setWidget( summaryTableIndex,
+                                    1,
+                                    percentageBar );
+        }
+
+        void setFailuresOutOfTotalInfo(int failures,
+                                       int total) {
+            summaryTable.setWidget( summaryTableIndex,
+                                    2,
+                                    new SmallLabel( Format.format( constants.TestFailureBulkFailures(),
+                                                                   failures,
+                                                                   total ) ) );
+        }
+
+        private void addOpenButton(String uuid) {
+            summaryTable.setWidget( summaryTableIndex,
+                                    3,
+                                    createOpenButton( uuid ) );
+        }
+
+        private Button createOpenButton(final String uuid) {
+            Button open = new Button( constants.Open() );
+
+            open.addClickHandler( new ClickHandler() {
+                public void onClick(ClickEvent event) {
+                    presenter.onOpenTestScenario( uuid );
+                }
+            } );
+
+            return open;
+        }
     }
 }

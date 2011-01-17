@@ -116,14 +116,15 @@ public class ScenarioPackageView extends Composite {
                                                                          public void onSuccess(BulkTestRunResult d) {
                                                                              BulkRunResultViewImpl view = new BulkRunResultViewImpl();
                                                                              BulkRunResult w = new BulkRunResult( d,
-                                                                                                                  editEvent,
-                                                                                                                  new Command() {
-                                                                                                                      public void execute() {
-                                                                                                                          refreshShowGrid();
-                                                                                                                      }
-
-                                                                                                                  },
                                                                                                                   view );
+
+                                                                             w.setEditItemEvent( editEvent );
+                                                                             w.setCloseCommand( new Command() {
+                                                                                 public void execute() {
+                                                                                     refreshShowGrid();
+                                                                                 }
+
+                                                                             } );
                                                                              layout.remove( 1 );
                                                                              layout.add( view );
                                                                              LoadingPopup.close();
