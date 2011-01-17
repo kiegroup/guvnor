@@ -855,7 +855,7 @@ public abstract class DecisionTableWidget extends Composite implements
 
 	// The DecisionTableHeaderWidget and DecisionTableSidebarWidget need to be
 	// resized when MergableGridWidget has scrollbars
-	private void assertDimensions() {
+	protected void assertDimensions() {
 		headerWidget.setWidth(scrollPanel.getElement().getClientWidth() + "px");
 		sidebarWidget.setHeight(scrollPanel.getElement().getClientHeight()
 				+ "px");

@@ -21,6 +21,7 @@
 	text-align: center;
 	outline: none;
 	border-bottom: 1px solid #C8C8C8;
+	border-right: 1px dotted grey;
 }
 
 .cellTableCellSelected {
@@ -56,10 +57,12 @@
 /* Header */
 .headerRowBottom {
 	border-bottom: 2px solid grey;
+	border-right: 1px dotted grey;
 }
 
 .headerRowIntermediate {
 	border-bottom: 1px solid grey;
+	border-right: 1px dotted grey;
 }
 
 .headerText {
@@ -67,11 +70,24 @@
 	text-align: center;
 	color: #4B4A4A;
 	text-shadow: 1px 1px 0 #DDDDFF;
+	border-right: 1px dotted grey;
 }
 
 .headerSplitter {
 	height: 8px;
-	background-color: #ffff99;
+	background-color: #a0a0a0;
+	border-right: 1px dotted grey;
+}
+
+.headerResizer {
+	top: 0px;
+	left: 0px;
+	z-index: 100000;
+	width: 2px;
+	background-color: #a0a0a0;
+	visibility: hidden;
+	position: absolute;
+	cursor: col-resize;
 }
 
 .selectorSpacer {
@@ -86,3 +102,4 @@
 	border-right: 1px solid grey;
 	border-bottom: 1px solid #C8C8C8;
 }
+

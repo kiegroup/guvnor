@@ -61,11 +61,7 @@ public class PopupTextEditCell extends AbstractPopupEditCell<String, String> {
 			s = value;
 		}
 		if (s != null) {
-			if (s.length() > 8) {
-				sb.append(renderer.render(s.substring(0, 8) + "..."));
-			} else {
-				sb.append(renderer.render(s));
-			}
+			sb.append(renderer.render(s));
 		}
 	}
 

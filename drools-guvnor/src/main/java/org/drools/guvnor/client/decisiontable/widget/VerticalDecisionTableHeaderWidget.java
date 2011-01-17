@@ -34,7 +34,6 @@ import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -46,7 +45,6 @@ import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -62,7 +60,7 @@ public class VerticalDecisionTableHeaderWidget extends
 	/**
 	 * This is the guts of the widget.
 	 */
-	private class HeaderWidget extends CellPanel implements HasResizeHandlers {
+	private class HeaderWidget extends CellPanel {
 
 		/**
 		 * A Widget to display sort order
@@ -148,8 +146,9 @@ public class VerticalDecisionTableHeaderWidget extends
 					}
 
 					// Decision Table and Sidebar need to know of new height
-					ResizeEvent.fire(HeaderWidget.this, getBody()
-							.getClientWidth(), getBody().getClientHeight());
+					ResizeEvent.fire(VerticalDecisionTableHeaderWidget.this,
+							getBody().getClientWidth(), getBody()
+									.getClientHeight());
 				}
 
 				@Override
@@ -232,6 +231,7 @@ public class VerticalDecisionTableHeaderWidget extends
 		// UI Components
 		private Element[] rowHeaders = new Element[5];
 
+		private List<DynamicColumn> visibleCols = new ArrayList<DynamicColumn>();
 		private List<DynamicColumn> visibleConditionCols = new ArrayList<DynamicColumn>();
 
 		// Constructor
@@ -246,17 +246,6 @@ public class VerticalDecisionTableHeaderWidget extends
 					.setCellPadding(0);
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler
-		 * (com.google.gwt.event.logical.shared.ResizeHandler)
-		 */
-		public HandlerRegistration addResizeHandler(ResizeHandler handler) {
-			return this.addHandler(handler, ResizeEvent.getType());
-		}
-
 		// Make default header label
 		private Element makeLabel(String text, int width) {
 			Element div = DOM.createDiv();
@@ -264,33 +253,7 @@ public class VerticalDecisionTableHeaderWidget extends
 			div.getStyle().setHeight(style.rowHeaderHeight(), Unit.PX);
 			div.getStyle().setOverflow(Overflow.HIDDEN);
 			div.setInnerText(text);
-			Label caption = new Label(text);
-			div.appendChild(caption.getElement());
 			return div;
-		}
-
-		// Update sort order. The column clicked becomes the primary sort column
-		// and the other, previously sorted, columns degrade in priority
-		private void updateSortOrder(DynamicColumn column) {
-			if (column.getSortIndex() == 0) {
-				if (column.getSortDirection() != SortDirection.ASCENDING) {
-					column.setSortDirection(SortDirection.ASCENDING);
-				} else {
-					column.setSortDirection(SortDirection.DESCENDING);
-				}
-			} else {
-				column.setSortIndex(0);
-				column.setSortDirection(SortDirection.ASCENDING);
-				int sortIndex = 1;
-				for (DynamicColumn sortableColumn : dtable.getColumns()) {
-					if (!sortableColumn.equals(column)) {
-						if (sortableColumn.getSortDirection() != SortDirection.NONE) {
-							sortableColumn.setSortIndex(sortIndex);
-							sortIndex++;
-						}
-					}
-				}
-			}
 		}
 
 		// Populate a default header element
@@ -340,11 +303,13 @@ public class VerticalDecisionTableHeaderWidget extends
 			}
 			sorters.clear();
 
-			// Extracting visible Condition columns makes life easier
+			// Extracting visible columns makes life easier
+			visibleCols.clear();
 			visibleConditionCols.clear();
 			for (int iCol = 0; iCol < dtable.getColumns().size(); iCol++) {
 				DynamicColumn col = dtable.getColumns().get(iCol);
 				if (col.isVisible()) {
+					visibleCols.add(col);
 					DTColumnConfig modelCol = col.getModelColumn();
 					if (modelCol instanceof ConditionCol) {
 						visibleConditionCols.add(col);
@@ -360,8 +325,9 @@ public class VerticalDecisionTableHeaderWidget extends
 			// Schedule resize event after header has been drawn
 			Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 				public void execute() {
-					ResizeEvent.fire(HeaderWidget.this, getBody()
-							.getClientWidth(), getBody().getClientHeight());
+					ResizeEvent.fire(VerticalDecisionTableHeaderWidget.this,
+							getBody().getClientWidth(), getBody()
+									.getClientHeight());
 				}
 			});
 
@@ -377,7 +343,6 @@ public class VerticalDecisionTableHeaderWidget extends
 				for (DynamicColumn col : dtable.getColumns()) {
 					if (col.isVisible()) {
 						tce = DOM.createTD();
-						// tce.getStyle().setWidth(col.getWidth(), Unit.PX);
 						tce.addClassName(style.headerText());
 						tre.appendChild(tce);
 						populateTableCellElement(col, tce);
@@ -429,7 +394,6 @@ public class VerticalDecisionTableHeaderWidget extends
 
 					// Make cell
 					iCol = iCol + colSpan - 1;
-					// tce.getStyle().setWidth(width, Unit.PX);
 					tce.addClassName(style.headerRowIntermediate());
 					tce.appendChild(makeLabel(
 							cc.getFactType() + " [" + cc.getBoundName() + "]",
@@ -443,7 +407,6 @@ public class VerticalDecisionTableHeaderWidget extends
 				// Condition FactField
 				for (DynamicColumn col : visibleConditionCols) {
 					tce = DOM.createTD();
-					// tce.getStyle().setWidth(col.getWidth(), Unit.PX);
 					tce.addClassName(style.headerText());
 					tce.addClassName(style.headerRowIntermediate());
 					tre.appendChild(tce);
@@ -463,7 +426,6 @@ public class VerticalDecisionTableHeaderWidget extends
 							public void onClick(ClickEvent event) {
 								if (sortableColumn.isSortable()) {
 									updateSortOrder(sortableColumn);
-									// redrawHeaderRow(4);
 									dtable.sort();
 								}
 							}
@@ -472,7 +434,6 @@ public class VerticalDecisionTableHeaderWidget extends
 						sorters.add(shp);
 
 						tce = DOM.createTD();
-						// tce.getStyle().setWidth(col.getWidth(), Unit.PX);
 						tce.addClassName(style.headerRowBottom());
 						tre.appendChild(tce);
 						add(shp, tce);
@@ -483,6 +444,30 @@ public class VerticalDecisionTableHeaderWidget extends
 
 			getBody().replaceChild(tre, rowHeaders[iRow]);
 			rowHeaders[iRow] = tre;
+		}
+
+		// Update sort order. The column clicked becomes the primary sort column
+		// and the other, previously sorted, columns degrade in priority
+		private void updateSortOrder(DynamicColumn column) {
+			if (column.getSortIndex() == 0) {
+				if (column.getSortDirection() != SortDirection.ASCENDING) {
+					column.setSortDirection(SortDirection.ASCENDING);
+				} else {
+					column.setSortDirection(SortDirection.DESCENDING);
+				}
+			} else {
+				column.setSortIndex(0);
+				column.setSortDirection(SortDirection.ASCENDING);
+				int sortIndex = 1;
+				for (DynamicColumn sortableColumn : dtable.getColumns()) {
+					if (!sortableColumn.equals(column)) {
+						if (sortableColumn.getSortDirection() != SortDirection.NONE) {
+							sortableColumn.setSortIndex(sortIndex);
+							sortIndex++;
+						}
+					}
+				}
+			}
 		}
 
 	}
@@ -524,14 +509,7 @@ public class VerticalDecisionTableHeaderWidget extends
 
 		// Column resizing
 		resizer = DOM.createDiv().<DivElement> cast();
-		resizer.getStyle().setTop(0, Unit.PX);
-		resizer.getStyle().setLeft(0, Unit.PX);
-		resizer.getStyle().setZIndex(Integer.MAX_VALUE);
-		resizer.getStyle().setWidth(4, Unit.PX);
-		resizer.getStyle().setBackgroundColor("red");
-		resizer.getStyle().setVisibility(Visibility.VISIBLE);
-		resizer.getStyle().setPosition(Position.ABSOLUTE);
-		resizer.getStyle().setCursor(Cursor.COL_RESIZE);
+		resizer.addClassName(style.headerResizer());
 
 		// Add the resizer to the outer most container, otherwise it gets
 		// truncated by the ScrollPanel as it hides any overflow
@@ -539,32 +517,23 @@ public class VerticalDecisionTableHeaderWidget extends
 
 		addDomHandler(new MouseMoveHandler() {
 
-			// Resize the inner DIV in TD's on row 0 and 4. These rows are
-			// guaranteed to have one cell per Decision Table column and
-			// therefore control the overall width of a column
-			private void resizeColumn(int resizeColumnIndex,
-					int resizeColumnWidth) {
-				DivElement div;
-				TableCellElement tce;
-				tce = widget.rowHeaders[0].getChild(resizeColumnIndex)
-						.<TableCellElement> cast();
-				div = tce.getFirstChild().<DivElement> cast();
-				div.getStyle().setWidth(resizeColumnWidth, Unit.PX);
-				tce = widget.rowHeaders[4].getChild(resizeColumnIndex)
-						.<TableCellElement> cast();
-				div = tce.getFirstChild().<DivElement> cast();
-				div.getStyle().setWidth(resizeColumnWidth, Unit.PX);
-			}
-
 			public void onMouseMove(MouseMoveEvent event) {
 				int mx = event.getClientX();
 				if (bResizing) {
 					if (mx - resizeColumnLeft < 10) {
 						return;
 					}
+					setResizerDimensions(event.getX());
 					resizeColumnWidth = mx - resizeColumnLeft;
-					resizer.getStyle().setLeft(event.getX(), Unit.PX);
 					resizeColumn(resizeColumnIndex, resizeColumnWidth);
+
+					// Second call to set dimensions as a column resize can add
+					// (or remove) a scroll bar to (or from) the Decision Table
+					// and our resizer needs to be redrawn accordingly. Just
+					// having the call to set dimensions after the column has
+					// been resized added excess flicker to movement of the
+					// resizer.
+					setResizerDimensions(event.getX());
 					event.preventDefault();
 				} else {
 					bResizePrimed = false;
@@ -611,19 +580,8 @@ public class VerticalDecisionTableHeaderWidget extends
 				}
 				bResizing = true;
 				int mx = event.getX();
-
-				// Bit of a hack to ensure the resizer is the correct size. The
-				// Decision Table itself could be contained in an outer most DIV
-				// that hides any overflow however the horizontal scrollbar
-				// would be rendered inside the DIV and hence still be covered
-				// by the resizer.
-				resizer.getStyle().setHeight(
-						dtable.getSidebarWidget().getOffsetHeight(), Unit.PX);
-				resizer.getStyle().setTop(widget.rowHeaders[0].getOffsetTop(),
-						Unit.PX);
-
+				setResizerDimensions(mx);
 				resizer.getStyle().setVisibility(Visibility.VISIBLE);
-				resizer.getStyle().setLeft(mx, Unit.PX);
 				resizeColumnWidth = mx - resizeColumnLeft;
 				event.preventDefault();
 			}
@@ -664,11 +622,24 @@ public class VerticalDecisionTableHeaderWidget extends
 	 * (non-Javadoc)
 	 * 
 	 * @see
+	 * org.drools.guvnor.client.decisiontable.widget.HasColumnResizeHandlers
+	 * #addColumnResizeHandler
+	 * (org.drools.guvnor.client.decisiontable.widget.ColumnResizeHandler)
+	 */
+	public HandlerRegistration addColumnResizeHandler(
+			ColumnResizeHandler handler) {
+		return addHandler(handler, ColumnResizeEvent.getType());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
 	 * com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler
 	 * (com.google.gwt.event.logical.shared.ResizeHandler)
 	 */
 	public HandlerRegistration addResizeHandler(ResizeHandler handler) {
-		return widget.addResizeHandler(handler);
+		return addHandler(handler, ResizeEvent.getType());
 	}
 
 	/*
@@ -701,7 +672,97 @@ public class VerticalDecisionTableHeaderWidget extends
 		// DIV from extending it's width to accommodate the increase in size
 		super.setWidth(width);
 		panel.setWidth(width);
+	}
 
+	// Resize the inner DIV in each table cell
+	private void resizeColumn(int resizeColumnIndex, int resizeColumnWidth) {
+		DivElement div;
+		TableCellElement tce;
+		int conditionColsWidth = 0;
+
+		// This is also set in the ColumnResizeEvent handler, however it makes
+		// resizing columns in the header more simple too
+		widget.visibleCols.get(resizeColumnIndex).setWidth(resizeColumnWidth);
+
+		// Row 0 (General\Fact Type)
+		tce = widget.rowHeaders[0].getChild(resizeColumnIndex)
+				.<TableCellElement> cast();
+		div = tce.getFirstChild().<DivElement> cast();
+		div.getStyle().setWidth(resizeColumnWidth, Unit.PX);
+
+		// Row 3 (Fact Fields). This column is resized before row 1
+		// as it depends on the total width of all Condition Columns
+		for (int iCol = 0; iCol < widget.visibleConditionCols.size(); iCol++) {
+			DynamicColumn col = widget.visibleConditionCols.get(iCol);
+			int colWidth = col.getWidth();
+			conditionColsWidth = conditionColsWidth + colWidth;
+			tce = widget.rowHeaders[3].getChild(iCol).<TableCellElement> cast();
+			div = tce.getFirstChild().<DivElement> cast();
+			div.getStyle().setWidth(colWidth, Unit.PX);
+		}
+
+		// Row 1 (Splitter)
+		if (widget.visibleConditionCols.size() > 0) {
+			tce = widget.rowHeaders[1].getChild(0).<TableCellElement> cast();
+			div = tce.getFirstChild().<DivElement> cast();
+			div.getStyle().setWidth(conditionColsWidth, Unit.PX);
+		}
+
+		// Row 2 (Fact Types)
+		int iColColumn = 0;
+		for (int iCol = 0; iCol < widget.visibleConditionCols.size(); iCol++) {
+			DynamicColumn col = widget.visibleConditionCols.get(iCol);
+			ConditionCol cc = (ConditionCol) col.getModelColumn();
+
+			// Merging
+			int colSpan = 1;
+			int width = col.getWidth();
+			while (iCol + colSpan < widget.visibleConditionCols.size()) {
+				DynamicColumn mergeCol = widget.visibleConditionCols.get(iCol
+						+ colSpan);
+				ConditionCol mergeCondCol = (ConditionCol) mergeCol
+						.getModelColumn();
+
+				if (mergeCondCol.getFactType().equals(cc.getFactType())
+						&& mergeCondCol.getBoundName()
+								.equals(cc.getBoundName())) {
+					width = width + mergeCol.getWidth();
+					colSpan++;
+				} else {
+					break;
+				}
+			}
+
+			// Make cell
+			iCol = iCol + colSpan - 1;
+			tce = widget.rowHeaders[2].getChild(iColColumn)
+					.<TableCellElement> cast();
+			div = tce.getFirstChild().<DivElement> cast();
+			div.getStyle().setWidth(width, Unit.PX);
+			iColColumn++;
+		}
+
+		// Row 4 (Sorters)
+		tce = widget.rowHeaders[4].getChild(resizeColumnIndex)
+				.<TableCellElement> cast();
+		div = tce.getFirstChild().<DivElement> cast();
+		div.getStyle().setWidth(resizeColumnWidth, Unit.PX);
+
+		// Fire event to any interested consumers
+		ColumnResizeEvent.fire(this, widget.visibleCols.get(resizeColumnIndex),
+				resizeColumnWidth);
+	}
+
+	private void setResizerDimensions(int position) {
+		// Bit of a hack to ensure the resizer is the correct size. The
+		// Decision Table itself could be contained in an outer most DIV
+		// that hides any overflow however the horizontal scrollbar
+		// would be rendered inside the DIV and hence still be covered
+		// by the resizer.
+		resizer.getStyle().setTop(widget.rowHeaders[0].getOffsetTop(), Unit.PX);
+		resizer.getStyle().setHeight(
+				dtable.getSidebarWidget().getOffsetHeight(), Unit.PX);
+		resizer.getStyle().setLeft(position, Unit.PX);
 	}
 
 }

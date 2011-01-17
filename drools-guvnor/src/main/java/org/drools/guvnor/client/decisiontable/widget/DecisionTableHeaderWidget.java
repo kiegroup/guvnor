@@ -18,7 +18,8 @@ import com.google.gwt.user.client.ui.Panel;
  * @author manstis
  * 
  */
-public abstract class DecisionTableHeaderWidget extends CellPanel implements HasResizeHandlers {
+public abstract class DecisionTableHeaderWidget extends CellPanel implements
+		HasResizeHandlers, HasColumnResizeHandlers {
 
 	protected Panel panel;
 	protected DecisionTableWidget dtable;

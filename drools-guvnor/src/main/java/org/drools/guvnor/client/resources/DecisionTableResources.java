@@ -43,6 +43,8 @@ public interface DecisionTableResources extends ClientBundle {
 		String headerText();
 
 		String headerSplitter();
+		
+		String headerResizer();
 
 		String selectorSpacer();
 

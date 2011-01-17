@@ -18,8 +18,35 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  */
 public class VerticalMergableGridWidget extends MergableGridWidget {
 
-	public VerticalMergableGridWidget(DecisionTableWidget dtable) {
+	public VerticalMergableGridWidget(final DecisionTableWidget dtable) {
 		super(dtable);
+
+		// Resize columns when header signals the need
+		dtable.getHeaderWidget().addColumnResizeHandler(
+				new ColumnResizeHandler() {
+
+					public void onColumnResize(ColumnResizeEvent event) {
+						DynamicColumn col = event.getColumn();
+						int iCol = col.getColumnIndex();
+						int width = event.getWidth();
+						col.setWidth(width);
+						for (DynamicDataRow row : dtable.getData()) {
+							CellValue<? extends Comparable<?>> cell = row
+									.get(iCol);
+							Coordinate c = cell.getHtmlCoordinate();
+							TableRowElement tre = tbody.getRows().getItem(
+									c.getRow());
+							TableCellElement tce = tre.getCells().getItem(
+									c.getCol());
+							tce.getFirstChild().<DivElement> cast().getStyle()
+									.setWidth(width, Unit.PX);
+						}
+
+						// Resizing columns can cause the scrollbar to appear
+						dtable.assertDimensions();
+					}
+
+				});
 	}
 
 	/*
