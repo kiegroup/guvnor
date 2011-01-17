@@ -356,11 +356,11 @@ public class WebDAVImpl implements IWebdavStore {
         return createStoredObject( uri, asset, asset.getContentLength() );
     }
 
-    private StoredObject createStoredObject(String uri, VersionableItem vernionableItem, long resourceLength) {
+    private StoredObject createStoredObject(String uri, VersionableItem versionableItem, long resourceLength) {
         StoredObject so = new StoredObject();
-        so.setCreationDate( vernionableItem.getCreatedDate().getTime() );
+        so.setCreationDate( versionableItem.getCreatedDate().getTime() );
         so.setFolder( isFolder( uri ) );
-        so.setLastModified( vernionableItem.getLastModified().getTime() );
+        so.setLastModified( versionableItem.getLastModified().getTime() );
         so.setResourceLength( resourceLength );
 
         return so;
