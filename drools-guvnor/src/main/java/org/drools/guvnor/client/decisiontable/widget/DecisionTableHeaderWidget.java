@@ -7,7 +7,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
@@ -18,7 +18,7 @@ import com.google.gwt.user.client.ui.Panel;
  * @author manstis
  * 
  */
-public abstract class DecisionTableHeaderWidget extends Composite implements HasResizeHandlers {
+public abstract class DecisionTableHeaderWidget extends CellPanel implements HasResizeHandlers {
 
 	protected Panel panel;
 	protected DecisionTableWidget dtable;
