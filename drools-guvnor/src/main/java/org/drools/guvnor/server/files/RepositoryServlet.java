@@ -152,10 +152,12 @@ public class RepositoryServlet extends HttpServlet {
     /**
      * For closures. Damn you java when will you catch up with the 70s.
      */
-    static interface A { public void a() throws Exception; }
+    static interface A {
+        public void a() throws Exception;
+    }
 
 
-    	static String[] unpack(String auth) {
+    static String[] unpack(String auth) {
 
         // Get encoded user and password, comes after "BASIC "
         String userpassEncoded = auth.substring(6);
