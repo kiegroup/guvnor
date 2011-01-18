@@ -16,6 +16,13 @@
 
 package org.drools.guvnor.server.builder;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
@@ -31,10 +38,10 @@ import org.drools.RuleBaseFactory;
 import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.selector.AssetSelector;
 import org.drools.guvnor.server.selector.SelectorManager;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
@@ -49,31 +56,35 @@ import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.junit.After;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.mvel2.MVEL;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * This will unit test package assembly into a binary.
  * @author Michael Neale
  */
-public class ContentPackageAssemblerTest {
+public class ContentPackageAssemblerTest extends GuvnorTestBase {
+
+    @Before
+    public void setUp() {
+        setUpSeam();
+        setUpMockIdentity();
+    }
+
+    @After
+    public void tearDown() {
+        tearAllDown();
+    }
 
     /**
      * Test package configuration errors,
      * including header, functions, DSL files.
      */
-    @Ignore @Test
+    @Test
     public void testPackageConfigWithErrors() throws Exception {
         //test the config, no rule assets yet
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
         PackageItem pkg = repo.createPackage( "testBuilderPackageConfig",
                                               "x" );
         ServiceImplementation.updateDroolsHeader( "import java.util.List",
@@ -159,10 +170,10 @@ public class ContentPackageAssemblerTest {
         assertNotEmpty( assembler.getErrors().get( 0 ).getErrorReport() );
     }
 
-    @Ignore @Test
-    public void testLoadConfProperties () throws Exception {
+    @Test
+    public void testLoadConfProperties() throws Exception {
 
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testLoadConfProperties",
                                               "" );
@@ -202,10 +213,9 @@ public class ContentPackageAssemblerTest {
 
     }
 
-
-    @Ignore @Test
+    @Test
     public void testPackageWithRuleflow() throws Exception {
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testPackageWithRuleFlow",
                                               "" );
@@ -264,12 +274,12 @@ public class ContentPackageAssemblerTest {
         Object o2 = builder.getPackageRegistry( "foo" ).getTypeResolver().resolveType( "Board" );
         assertNotNull( o2 );
         assertEquals( "com.billasurf.Board",
-                      ((Class<?>) o2).getName() );
+                      ((Class< ? >) o2).getName() );
     }
 
-    @Ignore @Test
+    @Test
     public void testWithNoDeclaredTypes() throws Exception {
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testSimplePackageWithDeclaredTypes1",
                                               "" );
@@ -284,9 +294,9 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Ignore @Test
+    @Test
     public void testSimplePackageWithDeclaredTypes() throws Exception {
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testSimplePackageWithDeclaredTypes2",
                                               "" );
@@ -327,9 +337,9 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Ignore @Test
+    @Test
     public void testSimplePackageBuildNoErrors() throws Exception {
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testSimplePackageBuildNoErrors",
                                               "" );
@@ -392,9 +402,9 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Ignore @Test
+    @Test
     public void testIgnoreArchivedItems() throws Exception {
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testIgnoreArchivedItems",
                                               "" );
@@ -438,10 +448,10 @@ public class ContentPackageAssemblerTest {
      * This this case we will test errors that occur in rule assets,
      * not in functions or package header.
      */
-    @Ignore @Test
+    @Test
     public void testErrorsInRuleAsset() throws Exception {
 
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         //first, setup the package correctly:
         PackageItem pkg = repo.createPackage( "testErrorsInRuleAsset",
@@ -478,10 +488,10 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Ignore @Test
+    @Test
     public void testEventingExample() throws Exception {
 
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testEventingExample",
                                               "" );
@@ -514,9 +524,9 @@ public class ContentPackageAssemblerTest {
      * This time, we mix up stuff a bit
      *
      */
-    @Ignore @Test
+    @Test
     public void testRuleAndDSLAndFunction() throws Exception {
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         //first, setup the package correctly:
         PackageItem pkg = repo.createPackage( "testRuleAndDSLAndFunction",
@@ -579,9 +589,9 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Ignore @Test
+    @Test
     public void testShowSource() throws Exception {
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         //first, setup the package correctly:
         PackageItem pkg = repo.createPackage( "testShowSource",
@@ -646,9 +656,9 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Ignore @Test
+    @Test
     public void testBuildPackageWithEmptyHeader() throws Exception {
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         //first, setup the package correctly:
         PackageItem pkg = repo.createPackage( "testBuildPackageWithEmptyHeader",
@@ -673,9 +683,9 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Ignore @Test
+    @Test
     public void testSkipDisabledPackageStuff() throws Exception {
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         //first, setup the package correctly:
         PackageItem pkg = repo.createPackage( "testSkipDisabledPackageStuff",
@@ -701,9 +711,9 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Ignore @Test
+    @Test
     public void testSkipDisabledAssets() throws Exception {
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         //first, setup the package correctly:
         PackageItem pkg = repo.createPackage( "testSkipDisabledAssets",
@@ -758,10 +768,10 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Ignore @Test
+    @Test
     public void testXLSDecisionTable() throws Exception {
 
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         //first, setup the package correctly:
         PackageItem pkg = repo.createPackage( "testXLSDecisionTable",
@@ -828,10 +838,10 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Ignore @Test
+    @Test
     public void testSkipDisabledImports() throws Exception {
 
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         //first, setup the package correctly:
         PackageItem pkg = repo.createPackage( "testXLSDecisionTableIgnoreImports",
@@ -857,9 +867,9 @@ public class ContentPackageAssemblerTest {
                                  2 ) == -1 ); //skip a few, make sure we only have one instance of "package "
     }
 
-    @Ignore @Test
+    @Test
     public void testBRXMLWithDSLMixedIn() throws Exception {
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         //create our package
         PackageItem pkg = repo.createPackage( "testBRLWithDSLMixedIn",
@@ -933,9 +943,9 @@ public class ContentPackageAssemblerTest {
 
     }
 
-    @Ignore @Test
+    @Test
     public void testCustomSelector() throws Exception {
-        RulesRepository repo = getRepo();
+        RulesRepository repo = getRulesRepository();
 
         //create our package
         PackageItem pkg = repo.createPackage( "testCustomSelector",
@@ -1039,15 +1049,6 @@ public class ContentPackageAssemblerTest {
     private void assertNotEmpty(String s) {
         if ( s == null ) fail( "should not be null" );
         if ( s.trim().equals( "" ) ) fail( "should not be empty string" );
-    }
-
-    private RulesRepository getRepo() throws Exception {
-        return new RulesRepository( TestEnvironmentSessionHelper.getSession() );
-    }
-    
-    @After
-    public void tearDown() throws Exception {
-    	TestEnvironmentSessionHelper.shutdown();
     }
 
 }

@@ -16,17 +16,18 @@
 
 package org.drools.guvnor.server.files;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.UUID;
+
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.rest.Parameters;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
-import org.junit.Ignore;
+import org.junit.After;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Some basic unit tests for compilation and snapshot
@@ -34,19 +35,23 @@ import static org.junit.Assert.*;
  *
  * @author andrew.waterman@gmail.com
  */
-public class ActionAPIServletTest {
+public class ActionAPIServletTest extends GuvnorTestBase {
 
     private final String compilationPath = "http://foo/action/compile";
     private final String snapshotPath    = "http://foo/action/snapshot";
 
+    @After
+    public void tearDown() {
+        tearAllDown();
+    }
+
     /*
      * Modeled after testPost in RestAPIServletTest.
      */
-    @Ignore
     @Test
     public void testCompilation() throws Exception {
         final String dynamicPackage = "test-action" + UUID.randomUUID();
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        RulesRepository repo = getRulesRepository();
         repo.createPackage( dynamicPackage,
                             "test-action package for testing" );
         HashMap<String, String> headers = new HashMap<String, String>() {
@@ -73,11 +78,10 @@ public class ActionAPIServletTest {
         repo.logout();
     }
 
-    @Ignore
     @Test
     public void testSnapshotCreation() throws Exception {
         final String dynamicPackage = "test-snap" + UUID.randomUUID();
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        RulesRepository repo = getRulesRepository();
         repo.createPackage( dynamicPackage,
                             "test-snapshot package for testing" );
         HashMap<String, String> headers = new HashMap<String, String>() {
