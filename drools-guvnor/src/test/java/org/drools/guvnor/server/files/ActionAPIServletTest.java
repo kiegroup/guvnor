@@ -36,7 +36,6 @@ import org.junit.Test;
  *
  * @author andrew.waterman@gmail.com
  */
-@Ignore
 public class ActionAPIServletTest extends GuvnorTestBase {
 
     private final String compilationPath = "http://foo/action/compile";

@@ -30,7 +30,6 @@ import org.junit.Test;
 
 public class RulesRepositoryManagerTest {
 
-    @Ignore
     @Test
     public void testDecorator() {
         RulesRepositoryManager dec = new RulesRepositoryManager();

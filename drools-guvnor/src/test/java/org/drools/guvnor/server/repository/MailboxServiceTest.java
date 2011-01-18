@@ -36,18 +36,17 @@ import org.junit.Test;
  */
 public class MailboxServiceTest extends GuvnorTestBase {
 
-    //    @Before
-    //    public void setUp() {
-    //        setUpSeam();
-    //        setUpMockIdentity();
-    //    }
-    //
-    //    @After
-    //    public void tearDown() {
-    //        tearAllDown();
-    //    }
+    @Before
+    public void setUp() {
+        setUpSeam();
+        setUpMockIdentity();
+    }
 
-    @Ignore
+    @After
+    public void tearDown() {
+        tearAllDown();
+    }
+
     @Test
     public void testMailbox() throws Exception {
         RulesRepository repo = getRulesRepository();
@@ -134,7 +133,6 @@ public class MailboxServiceTest extends GuvnorTestBase {
 
     }
 
-    @Ignore
     @Test
     public void testOneToMany() throws Exception {
         RulesRepository repo = getRulesRepository();

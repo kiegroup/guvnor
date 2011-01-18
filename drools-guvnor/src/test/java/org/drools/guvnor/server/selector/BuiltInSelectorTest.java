@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,20 +19,30 @@ package org.drools.guvnor.server.selector;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
-import org.drools.repository.RulesRepository;
-import org.junit.Ignore;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class BuiltInSelectorTest {
+public class BuiltInSelectorTest extends GuvnorTestBase {
 
-    @Ignore
+    @Before
+    public void setup() {
+        setUpSeam();
+        setUpMockIdentity();
+    }
+
+    @After
+    public void teardown() {
+        tearAllDown();
+    }
+
     @Test
     public void testBuiltInSelector() throws Exception {
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
         impl.repository.loadDefaultPackage();
         impl.repository.createPackage( "testBuiltInSelectorPackage",
                                        "woot" );
@@ -171,13 +181,6 @@ public class BuiltInSelectorTest {
         assertTrue( selector6.isAssetAllowed( item2 ) );
         assertTrue( selector6.isAssetAllowed( item3 ) );
         assertTrue( selector6.isAssetAllowed( item4 ) );
-    }
-
-    private ServiceImplementation getService() throws Exception {
-        ServiceImplementation impl = new ServiceImplementation();
-        impl.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
-
-        return impl;
     }
 
 }

@@ -1,21 +1,3 @@
-/**
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.drools.guvnor.server.security;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -32,19 +14,37 @@ package org.drools.guvnor.server.security;
  * limitations under the License.
  */
 
+package org.drools.guvnor.server.security;
+
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
-import org.drools.repository.RulesRepository;
-import org.junit.Ignore;
+import org.drools.guvnor.server.GuvnorTestBase;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class RoleBasedPermissionStoreTest {
+public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
 
-    @Ignore
+    @Before
+    public void setup() {
+        setUpSeam();
+    }
+
+    @After
+    public void tearDown() {
+        tearAllDown();
+    }
+
+    private RoleBasedPermissionStore getStore() throws Exception {
+        RoleBasedPermissionStore store = new RoleBasedPermissionStore();
+
+        store.repository = getRulesRepository();
+        return store;
+    }
+
     @Test
     public void testGetRoleBasedPermissionsByUserName() throws Exception {
         RoleBasedPermissionStore store = getStore();
@@ -121,13 +121,6 @@ public class RoleBasedPermissionStoreTest {
         assertTrue( perms.size() == 1 );
         assertTrue( perms.get( 0 ).getRole().equals( RoleTypes.ADMIN ) );
         assertTrue( perms.get( 0 ).getUserName().equals( "johnson" ) );
-    }
-
-    private RoleBasedPermissionStore getStore() throws Exception {
-        RoleBasedPermissionStore store = new RoleBasedPermissionStore();
-
-        store.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
-        return store;
     }
 
 }

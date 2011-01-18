@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,6 +37,7 @@ import javax.jcr.Session;
 import org.apache.commons.fileupload.FileItem;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.Snapshot;
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.repository.AssetItem;
@@ -44,23 +45,22 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
-public class FileManagerUtilsTest {
+public class FileManagerUtilsTest extends GuvnorTestBase {
+
     private Session session;
 
-//    @Before
-//    public void setUp() throws Exception {
-//        session = TestEnvironmentSessionHelper.getSession( true );
-//    }
-//
-//    @After
-//    public void tearDown() throws Exception {
-//        TestEnvironmentSessionHelper.shutdown();
-//    }
+    @Before
+    public void setUp() throws Exception {
+        session = getSession();
+    }
 
-    @Ignore
+    @After
+    public void tearDown() throws Exception {
+        tearAllDown();
+    }
+
     @Test
     public void testAttachFile() throws Exception {
 
@@ -88,7 +88,6 @@ public class FileManagerUtilsTest {
                       item2.getBinaryContentAttachmentFileName() );
     }
 
-    @Ignore
     @Test
     public void testAttachModel() throws Exception {
         RulesRepository repo = new RulesRepository( session );
@@ -132,7 +131,6 @@ public class FileManagerUtilsTest {
 
     }
 
-    @Ignore
     @Test
     public void testGetFilebyUUID() throws Exception {
         FileManagerUtils uploadHelper = new FileManagerUtils();
@@ -159,7 +157,6 @@ public class FileManagerUtilsTest {
                       filename );
     }
 
-    @Ignore
     @Test
     public void testGetPackageBinaryAndSource() throws Exception {
 
@@ -259,7 +256,7 @@ public class FileManagerUtilsTest {
      * 
      * Tests importing when an archived package with the same name exists.
      */
-    @Ignore
+
     @Test
     public void testImportArchivedPackage() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
@@ -293,7 +290,6 @@ public class FileManagerUtilsTest {
 
     }
 
-    @Ignore
     @Test
     public void testClassicDRLImport() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
@@ -371,7 +367,6 @@ public class FileManagerUtilsTest {
 
     }
 
-    @Ignore
     @Test
     public void testDRLImportWithoutPackageName() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
@@ -424,7 +419,6 @@ public class FileManagerUtilsTest {
 
     }
 
-    @Ignore
     @Test
     public void testDRLImportOverrideExistingPackageName() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
@@ -469,7 +463,6 @@ public class FileManagerUtilsTest {
 
     }
 
-    @Ignore
     @Test
     public void testClassicDRLImportWithDSL() throws Exception {
         FileManagerUtils fm = new FileManagerUtils();
@@ -512,7 +505,6 @@ public class FileManagerUtilsTest {
 
     }
 
-    @Ignore
     @Test
     public void testHeadOOME() throws Exception {
         RulesRepository repo = new RulesRepository( session );

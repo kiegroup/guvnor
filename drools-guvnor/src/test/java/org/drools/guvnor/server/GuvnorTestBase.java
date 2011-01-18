@@ -18,6 +18,8 @@ package org.drools.guvnor.server;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.jcr.Session;
+
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.guvnor.server.files.WebDAVImpl;
@@ -44,10 +46,14 @@ public class GuvnorTestBase {
 
     protected RulesRepository getRulesRepository() {
         if ( repository == null ) {
-            repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+            repository = new RulesRepository( getSession() );
         }
 
         return repository;
+    }
+
+    protected Session getSession() {
+        return TestEnvironmentSessionHelper.getSession( true );
     }
 
     protected void setUpSeam() {
