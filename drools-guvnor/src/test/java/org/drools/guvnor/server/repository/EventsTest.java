@@ -16,55 +16,59 @@
 
 package org.drools.guvnor.server.repository;
 
-import org.drools.repository.events.StorageEventManager;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.PackageItem;
-import org.drools.repository.AssetItem;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
+import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @author Michael Neale
  */
-public class EventsTest {
+public class EventsTest extends GuvnorTestBase {
+
+    @Before
+    public void setup() {
+        setUpSeam();
+    }
+
+    @After
+    public void teardown() {
+        tearAllDown();
+    }
 
     @Test
     public void testLoadSave() throws Exception {
-        System.setProperty("guvnor.saveEventListener", "org.drools.guvnor.server.repository.SampleSaveEvent");
+        System.setProperty( "guvnor.saveEventListener",
+                            "org.drools.guvnor.server.repository.SampleSaveEvent" );
 
-        ServiceImplementation impl = getService();
+        ServiceImplementation impl = getServiceImplementation();
 
-        PackageItem pkg = impl.getRulesRepository().createPackage("testLoadSaveEvents", "");
-        AssetItem asset = pkg.addAsset("testLoadSaveEvent", "");
-        asset.updateFormat(AssetFormats.BUSINESS_RULE);
+        PackageItem pkg = impl.getRulesRepository().createPackage( "testLoadSaveEvents",
+                                                                   "" );
+        AssetItem asset = pkg.addAsset( "testLoadSaveEvent",
+                                        "" );
+        asset.updateFormat( AssetFormats.BUSINESS_RULE );
 
         RuleModel m = new RuleModel();
         m.name = "mrhoden";
 
+        asset.updateContent( BRXMLPersistence.getInstance().marshal( m ) );
+        asset.checkin( "" );
 
-        asset.updateContent(BRXMLPersistence.getInstance().marshal(m));
-        asset.checkin("");
-
-
-        asset = pkg.addAsset("testLoadSaveEventDT", "");
-        asset.updateFormat(AssetFormats.DECISION_TABLE_GUIDED);
+        asset = pkg.addAsset( "testLoadSaveEventDT",
+                              "" );
+        asset.updateFormat( AssetFormats.DECISION_TABLE_GUIDED );
         GuidedDecisionTable gt = new GuidedDecisionTable();
-        asset.updateContent(GuidedDTXMLPersistence.getInstance().marshal(gt));
-        asset.checkin("");
+        asset.updateContent( GuidedDTXMLPersistence.getInstance().marshal( gt ) );
+        asset.checkin( "" );
     }
-
-    private ServiceImplementation getService() throws Exception {
-		ServiceImplementation impl = new ServiceImplementation();
-
-		impl.repository = new RulesRepository(TestEnvironmentSessionHelper
-				.getSession());
-		return impl;
-	}
 
 }

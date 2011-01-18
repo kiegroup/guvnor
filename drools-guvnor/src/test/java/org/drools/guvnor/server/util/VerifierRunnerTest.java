@@ -37,12 +37,12 @@ public class VerifierRunnerTest {
 
     @Before
     public void setUp() throws Exception {
-        serviceImplementation = new ServiceImplementation();
-
-        serviceImplementation.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
-
-        packageItem = serviceImplementation.getRulesRepository().createPackage( "VerifierRunnerTest",
-                                                                                "" );
+        //        serviceImplementation = new ServiceImplementation();
+        //
+        //        serviceImplementation.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        //
+        //        packageItem = serviceImplementation.getRulesRepository().createPackage( "VerifierRunnerTest",
+        //                                                                                "" );
     }
 
     @Ignore

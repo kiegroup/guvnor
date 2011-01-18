@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.util.KeyStoreHelper;
+import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.guvnor.server.files.WebDAVImpl;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.security.MockIdentity;
@@ -61,8 +62,17 @@ public class GuvnorTestBase {
         ServiceImplementation serviceImplementation = new ServiceImplementation();
         serviceImplementation.repository = getRulesRepository();
 
+        Contexts.getSessionContext().set( "repository",
+                                          repository );
         Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
                                           serviceImplementation );
+    }
+
+    protected void setUpFileManager() {
+        FileManagerUtils fileManager = new FileManagerUtils();
+        fileManager.setRepository( getRulesRepository() );
+        Contexts.getSessionContext().set( "fileManager",
+                                          fileManager );
     }
 
     protected void setUpMockIdentity() {
@@ -83,6 +93,7 @@ public class GuvnorTestBase {
         repository = null;
         Contexts.removeFromAllContexts( "repository" );
         Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.RepositoryService" );
+        Contexts.removeFromAllContexts( "fileManager" );
         if ( Contexts.getApplicationContext() != null ) Contexts.getApplicationContext().flush();
         if ( Contexts.getEventContext() != null ) Contexts.getEventContext().flush();
         if ( Contexts.getSessionContext() != null ) Contexts.getSessionContext().flush();
