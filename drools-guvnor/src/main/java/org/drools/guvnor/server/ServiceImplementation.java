@@ -227,8 +227,7 @@ public class ServiceImplementation implements RepositoryService {
         }
         path = cleanHTML( path );
 
-        CategoryItem item = repository.loadCategory( path );
-        item.addCategory( name, description );
+        repository.loadCategory( path ).addCategory( name, description );
         repository.save();
         return Boolean.TRUE;
     }
@@ -532,13 +531,8 @@ public class ServiceImplementation implements RepositoryService {
             }
         }
 
-        // get package header
-
-        //      PackageItem pkgItem = repository
-        //              .loadPackage(asset.metaData.packageName);
         PackageItem pkgItem = item.getPackage();
 
-        // load the content
         ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
         handler.retrieveAssetContent( asset, pkgItem, item );
 
@@ -577,13 +571,9 @@ public class ServiceImplementation implements RepositoryService {
 
         RuleAsset asset = new RuleAsset();
         asset.uuid = item.getUUID();
-        // load standard meta data
         asset.metaData = populateMetaData( item );
-        // get package header
-        PackageItem pkgItem = item.getPackage();
-        // load the content
         ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
-        handler.retrieveAssetContent( asset, pkgItem, item );
+        handler.retrieveAssetContent( asset, item.getPackage(), item );
 
         return asset;
     }
@@ -617,15 +607,19 @@ public class ServiceImplementation implements RepositoryService {
         meta.setBinary( item.isBinary() );
 
         List categories = item.getCategories();
+        fillMetaCategories( meta, categories );
+        meta.dateEffective = calendarToDate( item.getDateEffective() );
+        meta.dateExpired = calendarToDate( item.getDateExpired() );
+        return meta;
+
+    }
+
+    private void fillMetaCategories(MetaData meta, List categories) {
         meta.categories = new String[categories.size()];
         for ( int i = 0; i < meta.categories.length; i++ ) {
             CategoryItem cat = (CategoryItem) categories.get( i );
             meta.categories[i] = cat.getFullPath();
         }
-        meta.dateEffective = calendarToDate( item.getDateEffective() );
-        meta.dateExpired = calendarToDate( item.getDateExpired() );
-        return meta;
-
     }
 
     private Date calendarToDate(Calendar createdDate) {
@@ -698,22 +692,28 @@ public class ServiceImplementation implements RepositoryService {
 
         metaDataMapper.copyFromMetaData( meta, repoAsset );
 
-        repoAsset.updateDateEffective( dateToCalendar( meta.dateEffective ) );
-        repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );
+        updateEffectiveAndExpiredDate( repoAsset, meta );
 
         repoAsset.updateCategoryList( meta.categories );
-        ContentHandler handler = ContentManager.getHandler( repoAsset.getFormat() );
-        handler.storeAssetContent( asset, repoAsset );
+        getContentHandler( repoAsset ).storeAssetContent( asset, repoAsset );
 
         if ( !(asset.metaData.format.equals( AssetFormats.TEST_SCENARIO )) || asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
             PackageItem pkg = repoAsset.getPackage();
             pkg.updateBinaryUpToDate( false );
             ServiceImplementation.ruleBaseCache.remove( pkg.getUUID() );
-
         }
         repoAsset.checkin( meta.checkinComment );
 
         return repoAsset.getUUID();
+    }
+
+    private ContentHandler getContentHandler(AssetItem repoAsset) {
+        return ContentManager.getHandler( repoAsset.getFormat() );
+    }
+
+    private void updateEffectiveAndExpiredDate(AssetItem repoAsset, MetaData meta) {
+        repoAsset.updateDateEffective( dateToCalendar( meta.dateEffective ) );
+        repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );
     }
 
     private boolean isAssetUpdatedInRepository(RuleAsset asset, AssetItem repoAsset) {
@@ -750,19 +750,10 @@ public class ServiceImplementation implements RepositoryService {
         // So if there are performance problems with looking at lots of
         // historical versions, look at this nasty bit of code.
         while ( it.hasNext() ) {
-            AssetItem historical = (AssetItem) it.next();// new
-            // AssetItem(repo,
-            // element);
+            AssetItem historical = (AssetItem) it.next();
             long versionNumber = historical.getVersionNumber();
-            if ( !(versionNumber == 0) && !(versionNumber == item.getVersionNumber()) ) {
-                TableDataRow row = new TableDataRow();
-                row.id = historical.getVersionSnapshotUUID();
-                row.values = new String[4];
-                row.values[0] = Long.toString( historical.getVersionNumber() );
-                row.values[1] = historical.getCheckinComment();
-                row.values[2] = dateFormatter.format( historical.getLastModified().getTime() );
-                row.values[3] = historical.getStateDescription();
-                result.add( row );
+            if ( isHistory( item, versionNumber ) ) {
+                result.add( createHistoricalRow( result, historical ) );
             }
         }
 
@@ -773,6 +764,21 @@ public class ServiceImplementation implements RepositoryService {
         table.data = result.toArray( new TableDataRow[result.size()] );
 
         return table;
+    }
+
+    private TableDataRow createHistoricalRow(List<TableDataRow> result, AssetItem historical) {
+        TableDataRow tableDataRow = new TableDataRow();
+        tableDataRow.id = historical.getVersionSnapshotUUID();
+        tableDataRow.values = new String[4];
+        tableDataRow.values[0] = Long.toString( historical.getVersionNumber() );
+        tableDataRow.values[1] = historical.getCheckinComment();
+        tableDataRow.values[2] = dateFormatter.format( historical.getLastModified().getTime() );
+        tableDataRow.values[3] = historical.getStateDescription();
+        return tableDataRow;
+    }
+
+    private boolean isHistory(AssetItem item, long versionNumber) {
+        return versionNumber != 0 && versionNumber != item.getVersionNumber();
     }
 
     @WebRemote
@@ -789,17 +795,7 @@ public class ServiceImplementation implements RepositoryService {
             AssetItem archived = (AssetItem) it.next();
 
             if ( filter.accept( archived, "read" ) ) {
-                TableDataRow row = new TableDataRow();
-                row.id = archived.getUUID();
-                row.values = new String[5];
-
-                row.values[0] = archived.getName();
-                row.values[1] = archived.getFormat();
-                row.values[2] = archived.getPackageName();
-                row.values[3] = archived.getLastContributor();
-                row.values[4] = Long.toString( archived.getLastModified().getTime().getTime() );
-
-                result.add( row );
+                result.add( createArchivedRow( archived ) );
                 count++;
             }
             if ( count == numRows ) {
@@ -807,13 +803,28 @@ public class ServiceImplementation implements RepositoryService {
             }
         }
 
+        return createArchivedTable( result, it );
+    }
+
+    private TableDataResult createArchivedTable(List<TableDataRow> result, AssetItemIterator it) {
         TableDataResult table = new TableDataResult();
         table.data = result.toArray( new TableDataRow[result.size()] );
         table.currentPosition = it.getPosition();
         table.total = it.getSize();
         table.hasNext = it.hasNext();
-
         return table;
+    }
+
+    private TableDataRow createArchivedRow(AssetItem archived) {
+        TableDataRow row = new TableDataRow();
+        row.id = archived.getUUID();
+        row.values = new String[5];
+        row.values[0] = archived.getName();
+        row.values[1] = archived.getFormat();
+        row.values[2] = archived.getPackageName();
+        row.values[3] = archived.getLastContributor();
+        row.values[4] = Long.toString( archived.getLastModified().getTime().getTime() );
+        return row;
     }
 
     @WebRemote
@@ -856,12 +867,19 @@ public class ServiceImplementation implements RepositoryService {
         // we have to figure out the package name.
         checkSecurityNameTypePackageReadOnly( item );
 
+        PackageConfigData data = createPackageConfigData( item );
+        if ( data.isSnapshot ) {
+            data.snapshotName = item.getSnapshotName();
+        }
+        return data;
+    }
+
+    private PackageConfigData createPackageConfigData(PackageItem item) {
         PackageConfigData data = new PackageConfigData();
         data.uuid = item.getUUID();
         data.header = getDroolsHeader( item );
         data.externalURI = item.getExternalURI();
         data.catRules = item.getCategoryRules();
-        //System.out.println("Cat Rules: " + data.catRules.toString());
         data.description = item.getDescription();
         data.archived = item.isArchived();
         data.name = item.getName();
@@ -871,9 +889,6 @@ public class ServiceImplementation implements RepositoryService {
         data.lasContributor = item.getLastContributor();
         data.state = item.getStateDescription();
         data.isSnapshot = item.isSnapshot();
-        if ( data.isSnapshot ) {
-            data.snapshotName = item.getSnapshotName();
-        }
         return data;
     }
 
@@ -899,33 +914,23 @@ public class ServiceImplementation implements RepositoryService {
         item.updateDescription( data.description );
         item.archiveItem( data.archived );
         item.updateBinaryUpToDate( false );
-        this.ruleBaseCache.remove( data.uuid );
+        ServiceImplementation.ruleBaseCache.remove( data.uuid );
         item.checkin( data.description );
 
         // If package is archived, archive all the assets under it
         if ( data.archived ) {
-            for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
-                AssetItem assetItem = iter.next();
-                if ( !assetItem.isArchived() ) {
-                    assetItem.archiveItem( true );
-                    assetItem.checkin( data.description );
-                }
-            }
+            handleArchivedForSavePackage( data, item );
         } else if ( unarchived ) {
-            for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
-                AssetItem assetItem = iter.next();
-                // Unarchive the assets archived after the package 
-                // ( == at the same time that the package was archived)
-                if ( assetItem.getLastModified().compareTo( packageLastModified ) >= 0 ) {
-                    assetItem.archiveItem( false );
-                    assetItem.checkin( data.description );
-                }
-            }
+            handleUnarchivedForSavePackage( data, item, packageLastModified );
         }
 
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item );
 
+        return validateBRMSSuggestionCompletionLoaderResponse( loader );
+    }
+
+    private ValidatedResponse validateBRMSSuggestionCompletionLoaderResponse(BRMSSuggestionCompletionLoader loader) {
         ValidatedResponse res = new ValidatedResponse();
         if ( loader.hasErrors() ) {
             res.hasErrors = true;
@@ -937,8 +942,29 @@ public class ServiceImplementation implements RepositoryService {
             res.errorHeader = "Package validation errors";
             res.errorMessage = err;
         }
-
         return res;
+    }
+
+    private void handleUnarchivedForSavePackage(PackageConfigData data, PackageItem item, Calendar packageLastModified) {
+        for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
+            AssetItem assetItem = iter.next();
+            // Unarchive the assets archived after the package 
+            // ( == at the same time that the package was archived)
+            if ( assetItem.getLastModified().compareTo( packageLastModified ) >= 0 ) {
+                assetItem.archiveItem( false );
+                assetItem.checkin( data.description );
+            }
+        }
+    }
+
+    private void handleArchivedForSavePackage(PackageConfigData data, PackageItem item) {
+        for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
+            AssetItem assetItem = iter.next();
+            if ( !assetItem.isArchived() ) {
+                assetItem.archiveItem( true );
+                assetItem.checkin( data.description );
+            }
+        }
     }
 
     private void updateCategoryRules(PackageConfigData data, PackageItem item) {
@@ -946,7 +972,7 @@ public class ServiceImplementation implements RepositoryService {
         item.updateCategoryRules( keyValueTO.getKeys(), keyValueTO.getValues() );
     }
 
-    // HashMap DOES NOT quarantee order in different interations!
+    // HashMap DOES NOT guarantee order in different iterations!
     private static KeyValueTO convertMapToCsv(final Map map) {
         String keys = "";
         String values = "";
@@ -1014,6 +1040,16 @@ public class ServiceImplementation implements RepositoryService {
         it.skip( request.getStartRowIndex() );
         response.setStartRowIndex( request.getStartRowIndex() );
 
+        List<AssetPageRow> rowList = fillAssetPageRowsForFindAssetPage( request, it );
+        response.setAssetPageRowList( rowList );
+        response.setLastPage( !it.hasNext() );
+
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Found asset page of packageUuid (" + request.getPackageUuid() + ") in " + methodDuration + " ms." );
+        return response;
+    }
+
+    private List<AssetPageRow> fillAssetPageRowsForFindAssetPage(AssetPageRequest request, AssetItemIterator it) {
         int pageSize = request.getPageSize();
         List<AssetPageRow> rowList = new ArrayList<AssetPageRow>( request.getPageSize() );
 
@@ -1034,12 +1070,7 @@ public class ServiceImplementation implements RepositoryService {
             row.setExternalSource( assetItem.getExternalSource() );
             rowList.add( row );
         }
-        response.setAssetPageRowList( rowList );
-        response.setLastPage( !it.hasNext() );
-
-        long methodDuration = System.currentTimeMillis() - start;
-        log.debug( "Found asset page of packageUuid (" + request.getPackageUuid() + ") in " + methodDuration + " ms." );
-        return response;
+        return rowList;
     }
 
     @WebRemote
@@ -1081,10 +1112,9 @@ public class ServiceImplementation implements RepositoryService {
         List<AssetItem> resultList = new ArrayList<AssetItem>();
 
         long start = System.currentTimeMillis();
-        AssetItemIterator it = repository.findAssetsByName( search, searchArchived ); // search for archived items
+        AssetItemIterator it = repository.findAssetsByName( search, searchArchived );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        // Add filter for READONLY permission
         RepositoryFilter filter = new AssetItemFilter();
 
         while ( it.hasNext() ) {
@@ -1127,6 +1157,7 @@ public class ServiceImplementation implements RepositoryService {
         if ( numRows == 0 ) {
             throw new DetailedSerializationException( "Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh..." );
         }
+
         Map<String, String[]> q = new HashMap<String, String[]>() {
             {
                 for ( int i = 0; i < qr.length; i++ ) {
@@ -1156,8 +1187,7 @@ public class ServiceImplementation implements RepositoryService {
             }
         }
 
-        TableDisplayHandler handler = new TableDisplayHandler( "searchresults" );
-        return handler.loadRuleListTable( resultList, skip, numRows );
+        return new TableDisplayHandler( "searchresults" ).loadRuleListTable( resultList, skip, numRows );
     }
 
     private boolean checkPackagePermissionHelper(RepositoryFilter filter, AssetItem item, String roleType) {
@@ -1518,7 +1548,6 @@ public class ServiceImplementation implements RepositoryService {
         RuleBaseConfiguration conf = new RuleBaseConfiguration( loaders.toArray( new ClassLoader[loaders.size()] ) );
         RuleBase rb = RuleBaseFactory.newRuleBase( conf );
         rb.addPackage( asm.getBinaryPackage() );
-        // this.ruleBaseCache.put(item.getUUID(), rb);
     }
 
     private BuilderResultLine[] generateBuilderResults(ContentPackageAssembler asm) {
@@ -1694,7 +1723,7 @@ public class ServiceImplementation implements RepositoryService {
             log.info( "USER:" + getCurrentUserName() + " ARCHIVING asset: [" + item.getName() + "] UUID: [" + item.getUUID() + "] " );
 
             try {
-                ContentHandler handler = ContentManager.getHandler( item.getFormat() );
+                ContentHandler handler = getContentHandler( item );
                 if ( handler instanceof ICanHasAttachment ) {
                     ((ICanHasAttachment) handler).onAttachmentRemoved( item );
                 }
@@ -1923,8 +1952,8 @@ public class ServiceImplementation implements RepositoryService {
      */
     private RuleBase loadCacheRuleBase(PackageItem item) throws DetailedSerializationException {
         RuleBase rb = null;
-        if ( item.isBinaryUpToDate() && this.ruleBaseCache.containsKey( item.getUUID() ) ) {
-            rb = this.ruleBaseCache.get( item.getUUID() );
+        if ( item.isBinaryUpToDate() && ServiceImplementation.ruleBaseCache.containsKey( item.getUUID() ) ) {
+            rb = ServiceImplementation.ruleBaseCache.get( item.getUUID() );
         } else {
             // load up the classloader we are going to use
             List<JarInputStream> jars = BRMSPackageBuilder.getJars( item );
@@ -1933,12 +1962,12 @@ public class ServiceImplementation implements RepositoryService {
             // we have to build the package, and try again.
             if ( item.isBinaryUpToDate() ) {
                 rb = loadRuleBase( item, buildCl );
-                this.ruleBaseCache.put( item.getUUID(), rb );
+                ServiceImplementation.ruleBaseCache.put( item.getUUID(), rb );
             } else {
                 BuilderResult result = this.buildPackage( item, false );
                 if ( result == null || result.lines.length == 0 ) {
                     rb = loadRuleBase( item, buildCl );
-                    this.ruleBaseCache.put( item.getUUID(), rb );
+                    ServiceImplementation.ruleBaseCache.put( item.getUUID(), rb );
                 } else throw new DetailedSerializationException( "Build error", result.lines );
             }
 
