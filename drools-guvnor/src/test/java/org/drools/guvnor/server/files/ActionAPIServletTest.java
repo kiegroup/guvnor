@@ -27,6 +27,7 @@ import org.drools.guvnor.server.rest.Parameters;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -35,6 +36,7 @@ import org.junit.Test;
  *
  * @author andrew.waterman@gmail.com
  */
+@Ignore
 public class ActionAPIServletTest extends GuvnorTestBase {
 
     private final String compilationPath = "http://foo/action/compile";
