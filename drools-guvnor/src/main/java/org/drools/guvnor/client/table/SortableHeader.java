@@ -1,5 +1,6 @@
 package org.drools.guvnor.client.table;
 
+import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.ClickableTextCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
@@ -72,7 +73,7 @@ public class SortableHeader<T, C extends Comparable> extends Header<String> {
     }
 
     @Override
-    public void render(SafeHtmlBuilder sb) {
+    public void render(Cell.Context context, SafeHtmlBuilder sb) {
         sb.appendHtmlConstant("<div style='position: relative; cursor: pointer; padding: 0px;'>");
         sb.appendHtmlConstant("<span style='padding-right: 10px'>");
         sb.appendEscaped(text);

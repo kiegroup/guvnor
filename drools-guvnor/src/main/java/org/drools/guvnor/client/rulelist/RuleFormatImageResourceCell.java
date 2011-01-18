@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.rulelist;
 
+import com.google.gwt.cell.client.Cell;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -26,14 +27,11 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 /**
  * 
  * @author rikkola
- *
  */
 public class RuleFormatImageResourceCell extends AbstractCell<RuleFormatImageResource> {
 
     @Override
-    public void render(RuleFormatImageResource value,
-                       Object key,
-                       SafeHtmlBuilder sb) {
+    public void render(Context context, RuleFormatImageResource value, SafeHtmlBuilder sb) {
         SafeHtml html = SafeHtmlUtils.fromTrustedString( AbstractImagePrototype.create( value ).getHTML() );
         sb.append( html );
     }
