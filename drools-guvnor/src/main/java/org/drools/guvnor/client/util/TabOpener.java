@@ -53,7 +53,7 @@ import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.AssetTable;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.rulelist.QueryWidget;
 
 import com.google.gwt.core.client.GWT;
@@ -214,10 +214,11 @@ public class TabOpener {
             return;
         }
 
-        MultiViewEditor multiview = new MultiViewEditor( rows, new EditItemEvent() {
-            public void open(String key) {
-                openAsset( key );
-            }
+        MultiViewEditor multiview = new MultiViewEditor( rows,
+                                                         new OpenItemCommand() {
+                                                             public void open(String key) {
+                                                                 openAsset( key );
+                                                             }
 
             public void open(MultiViewRow[] rows) {
                 for ( MultiViewRow row : rows ) {
@@ -243,16 +244,20 @@ public class TabOpener {
 
         if ( !explorerViewCenterPanel.showIfOpen( uuid ) ) {
             LoadingPopup.showMessage( constants.LoadingPackageInformation() );
-            RepositoryServiceFactory.getService().loadPackageConfig( uuid, new GenericCallback<PackageConfigData>() {
-                public void onSuccess(PackageConfigData conf) {
-                    PackageEditor ed = new PackageEditor( conf, new Command() {
-                        public void execute() {
-                            explorerViewCenterPanel.close( uuid );
-                        }
-                    }, refPackageList, new EditItemEvent() {
-                        public void open(String uuid) {
-                            openAsset( uuid );
-                        }
+            RepositoryServiceFactory.getService().loadPackageConfig( uuid,
+                                                                     new GenericCallback<PackageConfigData>() {
+                                                                         public void onSuccess(PackageConfigData conf) {
+                                                                             PackageEditor ed = new PackageEditor( conf,
+                                                                                                                   new Command() {
+                                                                                                                       public void execute() {
+                                                                                                                           explorerViewCenterPanel.close( uuid );
+                                                                                                                       }
+                                                                                                                   },
+                                                                                                                   refPackageList,
+                                                                                                                   new OpenItemCommand() {
+                                                                                                                       public void open(String uuid) {
+                                                                                                                           openAsset( uuid );
+                                                                                                                       }
 
                         public void open(MultiViewRow[] rows) {
                             for ( MultiViewRow row : rows ) {
@@ -269,10 +274,11 @@ public class TabOpener {
 
     public void openFind() {
         if ( !explorerViewCenterPanel.showIfOpen( "FIND" ) ) { //NON-NLS
-            explorerViewCenterPanel.addTab( constants.Find(), new QueryWidget( new EditItemEvent() {
-                public void open(String uuid) {
-                    openAsset( uuid );
-                }
+            explorerViewCenterPanel.addTab( constants.Find(),
+                                            new QueryWidget( new OpenItemCommand() {
+                                                public void open(String uuid) {
+                                                    openAsset( uuid );
+                                                }
 
                 public void open(MultiViewRow[] rows) {
                     for ( MultiViewRow row : rows ) {
@@ -433,8 +439,8 @@ public class TabOpener {
         }
     }
 
-    private EditItemEvent createEditEvent() {
-        return new EditItemEvent() {
+    private OpenItemCommand createEditEvent() {
+        return new OpenItemCommand() {
             public void open(String uuid) {
                 openAsset( uuid );
             }
@@ -451,10 +457,12 @@ public class TabOpener {
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
 
             String feedUrl = GWT.getModuleBaseURL() + "feed/package?name=" + packageName + "&viewUrl=" + Util.getSelfURL() + "&status=*";
-            final AssetTable table = new AssetTable( packageUuid, formatInList, formatIsRegistered, new EditItemEvent() {
-                public void open(String uuid) {
-                    openAsset( uuid );
-                }
+            final AssetTable table = new AssetTable( packageUuid,
+                                                     formatInList, formatIsRegistered,
+                                                     new OpenItemCommand() {
+                                                         public void open(String uuid) {
+                                                             openAsset( uuid );
+                                                         }
 
                 public void open(MultiViewRow[] rows) {
                     openAssetsToMultiView( rows );
@@ -481,7 +489,7 @@ public class TabOpener {
     public void openTestScenario(String packageUuid, String packageName) {
 
         if ( !explorerViewCenterPanel.showIfOpen( "scenarios" + packageUuid ) ) {
-            final EditItemEvent edit = new EditItemEvent() {
+            final OpenItemCommand edit = new OpenItemCommand() {
                 public void open(String key) {
                     openAsset( key );
                 }
@@ -500,7 +508,7 @@ public class TabOpener {
 
     public void openVerifierView(String packageUuid, String packageName) {
         if ( !explorerViewCenterPanel.showIfOpen( "analysis" + packageUuid ) ) { //NON-NLS
-            final EditItemEvent edit = new EditItemEvent() {
+            final OpenItemCommand edit = new OpenItemCommand() {
                 public void open(String key) {
                     openAsset( key );
                 }
@@ -519,10 +527,10 @@ public class TabOpener {
 
     public void openSnapshotAssetList(final String name, final String uuid, final String[] assetTypes, String key) {
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
-            AssetItemGrid grid = new AssetItemGrid( new EditItemEvent() {
-                public void open(String key) {
-                    openAsset( key );
-                }
+            AssetItemGrid grid = new AssetItemGrid( new OpenItemCommand() {
+                                                        public void open(String key) {
+                                                            openAsset( key );
+                                                        }
 
                 public void open(MultiViewRow[] rows) {
                     for ( MultiViewRow row : rows ) {

@@ -81,7 +81,7 @@ public class AssetItemGrid extends Composite {
     private static final Map<String, RecordDef>   recordDefs                  = new HashMap<String, RecordDef>();
     private static final Map<String, Integer>     rowsPerPage                 = new HashMap<String, Integer>();
 
-    private final EditItemEvent                   editEvent;
+    private final OpenItemCommand                   editEvent;
     private SimplePanel                           layout;
     private Command                               refresh;
 
@@ -117,7 +117,9 @@ public class AssetItemGrid extends Composite {
      * Create a grid using the given config - config will be loaded from the server if it is not already cached.
      * You can use registerTableConfig to register it to avoid a server hit.
      */
-    public AssetItemGrid(final EditItemEvent event, final String tableConfigKey, final AssetItemGridDataLoader source) {
+    public AssetItemGrid(final OpenItemCommand event,
+                         final String tableConfigKey,
+                         final AssetItemGridDataLoader source) {
 
         this.editEvent = event;
         this.layout = new SimplePanel();
@@ -138,8 +140,13 @@ public class AssetItemGrid extends Composite {
     /**
      * Similar to the other constructor, but takes an optional feedURL to show with an atom icon in the top right.
      */
-    public AssetItemGrid(final EditItemEvent event, final String tableConfig, final AssetItemGridDataLoader source, String feedURL) {
-        this( event, tableConfig, source );
+    public AssetItemGrid(final OpenItemCommand event,
+                         final String tableConfig,
+                         final AssetItemGridDataLoader source,
+                         String feedURL) {
+        this( event,
+              tableConfig,
+              source );
         this.feedURL = feedURL;
     }
 

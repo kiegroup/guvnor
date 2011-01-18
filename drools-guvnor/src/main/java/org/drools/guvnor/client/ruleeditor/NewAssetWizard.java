@@ -28,7 +28,7 @@ import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
@@ -71,7 +71,7 @@ public class NewAssetWizard extends FormStylePopup {
     private RulePackageSelector     packageSelector         = new RulePackageSelector();
     private RulePackageSelector     importedPackageSelector = new RulePackageSelector();
     private GlobalAreaAssetSelector globalAreaAssetSelector;
-    private EditItemEvent           afterCreate;
+    private OpenItemCommand           afterCreate;
     private boolean                 showCats;
     private String                  format;
 
@@ -79,7 +79,7 @@ public class NewAssetWizard extends FormStylePopup {
     private final FormStyleLayout   importAssetLayout       = new FormStyleLayout();
 
     /** This is used when creating a new rule. */
-    public NewAssetWizard(EditItemEvent afterCreate,
+    public NewAssetWizard(OpenItemCommand afterCreate,
                           boolean showCats,
                           String format,
                           String title) {

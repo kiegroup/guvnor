@@ -53,11 +53,11 @@ public class QueryWidget extends Composite {
 
     private Constants     constants = ((Constants) GWT.create( Constants.class ));
 
-    private EditItemEvent editEvent;
+    private OpenItemCommand editEvent;
 
     private VerticalPanel layout;
 
-    public QueryWidget(EditItemEvent editEvent) {
+    public QueryWidget(OpenItemCommand editEvent) {
         this.editEvent = editEvent;
 
         layout = new VerticalPanel();

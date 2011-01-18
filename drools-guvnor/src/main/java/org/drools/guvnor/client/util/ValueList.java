@@ -15,20 +15,14 @@
  */
 package org.drools.guvnor.client.util;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.ListBox;
 
 /**
  * @author rikkola
  *
  */
-public class ValueList extends Composite
-    implements
-    HasValue<String[]> {
+public class ValueList extends Composite {
 
     private final ListBox layout              = new ListBox();
     private int           maxVisibleItemCount = -1;
@@ -37,39 +31,10 @@ public class ValueList extends Composite
         initWidget( layout );
     }
 
-    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String[]> handler) {
-        return addHandler( handler,
-                           ValueChangeEvent.getType() );
-    }
+    public void addItem(String item) {
 
-    public String[] getValue() {
-        String[] value = new String[layout.getItemCount()];
-
-        for ( int i = 0; i < layout.getItemCount(); i++ ) {
-            value[i] = layout.getItemText( i );
-        }
-
-        return value;
-    }
-
-    public void setValue(String[] value) {
-        setValue( value,
-                  false );
-    }
-
-    public void setValue(String[] value,
-                         boolean fireEvents) {
-
-        for ( String string : value ) {
-            layout.addItem( string );
-        }
-
+        layout.addItem( item );
         setVisibleItems();
-
-        if ( fireEvents ) {
-            ValueChangeEvent.fire( this,
-                                   value );
-        }
     }
 
     private void setVisibleItems() {

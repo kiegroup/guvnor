@@ -30,7 +30,7 @@ import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.LazyStackPanel;
 import org.drools.guvnor.client.util.LoadContentCommand;
 
@@ -56,7 +56,7 @@ public class MultiViewEditor extends GuvnorEditor {
     private Command                                   closeCommand;
     private final Set<MultiViewRow>                   rows            = new HashSet<MultiViewRow>();
     private Map<String, RuleViewer>                   ruleViews       = new HashMap<String, RuleViewer>();
-    private final EditItemEvent                       editItemEvent;
+    private final OpenItemCommand                       editItemEvent;
     private ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider;
 
     private Map<String, RuleAsset>                    assets          = new HashMap<String, RuleAsset>();
@@ -64,14 +64,14 @@ public class MultiViewEditor extends GuvnorEditor {
     private MultiViewEditorMenuBarCreator             menuBarCreator;
 
     public MultiViewEditor(MultiViewRow[] rows,
-                           EditItemEvent editItemEvent) {
+                           OpenItemCommand editItemEvent) {
         this( rows,
               editItemEvent,
               null );
     }
 
     public MultiViewEditor(MultiViewRow[] rows,
-                           EditItemEvent editItemEvent,
+                           OpenItemCommand editItemEvent,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
         this( Arrays.asList( rows ),
               editItemEvent,
@@ -79,7 +79,7 @@ public class MultiViewEditor extends GuvnorEditor {
     }
 
     public MultiViewEditor(List<MultiViewRow> rows,
-                           EditItemEvent editItemEvent,
+                           OpenItemCommand editItemEvent,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
         this.rows.addAll( rows );
         this.editItemEvent = editItemEvent;
@@ -89,7 +89,7 @@ public class MultiViewEditor extends GuvnorEditor {
     }
 
     public MultiViewEditor(RuleAsset[] assets,
-                           EditItemEvent editItemEvent,
+                           OpenItemCommand editItemEvent,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
         this( assets,
               editItemEvent,
@@ -98,7 +98,7 @@ public class MultiViewEditor extends GuvnorEditor {
     }
 
     public MultiViewEditor(RuleAsset[] assets,
-                           EditItemEvent editItemEvent,
+                           OpenItemCommand editItemEvent,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider,
                            MultiViewEditorMenuBarCreator menuBarCreator) {
         this.rows.addAll( createRows( assets ) );

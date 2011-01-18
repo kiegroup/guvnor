@@ -15,15 +15,17 @@
  */
 package org.drools.guvnor.client.qa;
 
-import java.util.List;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
-import org.drools.guvnor.client.qa.BulkRunResultViewImpl.SummaryTableRow;
+import org.drools.guvnor.client.qa.SummaryTableView.Presenter;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * @author rikkola
@@ -33,28 +35,112 @@ public class SummaryTableTest {
 
     private SummaryTable     summaryTable;
     private SummaryTableView summaryTableView;
+    private OpenItemCommand  openItemCommand;
 
     @Before
     public void setUp() {
         summaryTableView = mock( SummaryTableView.class );
         summaryTable = new SummaryTable( summaryTableView );
+        openItemCommand = mock( OpenItemCommand.class );
+
+        summaryTable.setOpenCommand( openItemCommand );
+
     }
 
     @Test
     public void emptyTable() throws Exception {
         verify( summaryTableView,
-                never() ).addRow( any() );
+                never() ).addRow( anyInt(),
+                                  anyInt(),
+                                  anyString(),
+                                  anyString() );
     }
 
     @Test
     public void singleRow() throws Exception {
-        ScenarioResultSummary scenarioResultSummary = new ScenarioResultSummary( 0,
-                                                                                 1,
-                                                                                 "Test",
-                                                                                 "No Description",
-                                                                                 "uuid" );
-        summaryTable.addRow( scenarioResultSummary );
 
-        verify( summaryTableView ).addRow( sc )
+        addTableRow( 0,
+                     1,
+                     "Test",
+                     "No Description",
+                     "uuid" );
+
+        verifyRowWasAdded( 0,
+                           1,
+                           "Test",
+                           "uuid" );
     }
+
+    @Test
+    public void severalRows() throws Exception {
+
+        addTableRow( 0,
+                     1,
+                     "Test1",
+                     "No Description",
+                     "uuid1" );
+        addTableRow( 2,
+                     5,
+                     "Test2",
+                     "No Description",
+                     "uuid2" );
+        addTableRow( 6,
+                     10,
+                     "Test3",
+                     "No Description",
+                     "uuid3" );
+
+        verifyRowWasAdded( 0,
+                           1,
+                           "Test1",
+                           "uuid1" );
+        verifyRowWasAdded( 2,
+                           5,
+                           "Test2",
+                           "uuid2" );
+        verifyRowWasAdded( 6,
+                           10,
+                           "Test3",
+                           "uuid3" );
+    }
+
+    @Test
+    public void presenterIsSet() throws Exception {
+        verify( summaryTableView ).setPresenter( getPresenter() );
+    }
+
+    @Test
+    public void openTestScenario() throws Exception {
+        Presenter presenter = getPresenter();
+        presenter.openTestScenario( "uuid" );
+
+        verify( openItemCommand ).open( "uuid" );
+    }
+
+    private Presenter getPresenter() {
+        return summaryTable;
+    }
+
+    private void addTableRow(int failures,
+                             int total,
+                             String scenarioName,
+                             String description,
+                             String uuid) {
+        summaryTable.addRow( new ScenarioResultSummary( failures,
+                                                        total,
+                                                        scenarioName,
+                                                        description,
+                                                        uuid ) );
+    }
+
+    private void verifyRowWasAdded(int failures,
+                                   int total,
+                                   String scenarioName,
+                                   String uuid) {
+        verify( summaryTableView ).addRow( failures,
+                                           total,
+                                           scenarioName,
+                                           uuid );
+    }
+
 }

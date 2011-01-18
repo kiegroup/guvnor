@@ -15,14 +15,14 @@
  */
 package org.drools.guvnor.client.qa;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.google.gwt.user.client.Command;
 
 /**
  * @author rikkola
@@ -31,25 +31,143 @@ import com.google.gwt.user.client.Command;
 public class BulkRunResultTest {
 
     private BulkRunResult     bulkRunResult;
-    private BulkRunResultView displayMock;
-    private BulkTestRunResult bulkTestRunResult;
-    private EditItemEvent     editItemEvent;
-    private Command           closeCommand;
+    private BulkRunResultView mockView;
 
     @Before
     public void setUp() {
+        mockView = mock( BulkRunResultView.class );
 
-        bulkTestRunResult = new BulkTestRunResult();
-
-        displayMock = mock( BulkRunResultView.class );
-
-        bulkRunResult = new BulkRunResult( bulkTestRunResult,
-                                           displayMock );
-        bulkRunResult.setEditItemEvent( editItemEvent );
-        bulkRunResult.setCloseCommand( closeCommand );
+        bulkRunResult = new BulkRunResult( mockView );
     }
 
     @Test
-    public void first() {
+    public void emptyScenarioTestSummary() throws Exception {
+        BulkTestRunResult bulkTestRunResult = new BulkTestRunResult();
+        bulkRunResult.setBulkTestRunResult( bulkTestRunResult );
+
+        verifyBulkTestSucceeded();
+        verify( mockView ).setFailuresOutOfExpectation( 0,
+                                                        0 );
+        verify( mockView ).setResultsPercent( 0 );
+        verify( mockView ).setRulesCoveredPercent( 0 );
+        verifyNoUncoveredRules();
+
+        verify( mockView,
+                never() ).addSummary( eq( new ScenarioResultSummary() ) );
     }
+
+    @Test
+    public void singleTestWithoutFailures() throws Exception {
+
+        ScenarioResultSummary scenarioResultSummary = getScenarioResultSummary( 0,
+                                                                                1 );
+        ScenarioResultSummary[] scenarioResultSummaries = new ScenarioResultSummary[1];
+        scenarioResultSummaries[0] = scenarioResultSummary;
+        BulkTestRunResult bulkTestRunResult = getBulkRunResult( 100,
+                                                                scenarioResultSummaries );
+
+        bulkRunResult.setBulkTestRunResult( bulkTestRunResult );
+
+        verifyBulkTestSucceeded();
+        verify( mockView ).setFailuresOutOfExpectation( 0,
+                                                        1 );
+        verify( mockView ).setResultsPercent( 100 );
+        verify( mockView ).setRulesCoveredPercent( 100 );
+        verifyNoUncoveredRules();
+
+        verifyThatResultSummaryWasAdded( scenarioResultSummary );
+    }
+
+    @Test
+    public void singleTestWithAFailure() throws Exception {
+
+        ScenarioResultSummary scenarioResultSummary = getScenarioResultSummary( 1,
+                                                                                1 );
+        ScenarioResultSummary[] scenarioResultSummaries = new ScenarioResultSummary[1];
+        scenarioResultSummaries[0] = scenarioResultSummary;
+        BulkTestRunResult bulkTestRunResult = getBulkRunResult( 100,
+                                                                scenarioResultSummaries );
+
+        bulkRunResult.setBulkTestRunResult( bulkTestRunResult );
+
+        verifyBulkTestFailed();
+        verify( mockView ).setFailuresOutOfExpectation( 1,
+                                                        1 );
+        verify( mockView ).setResultsPercent( 0 );
+        verify( mockView ).setRulesCoveredPercent( 100 );
+        verifyNoUncoveredRules();
+
+        verifyThatResultSummaryWasAdded( scenarioResultSummary );
+    }
+
+    @Test
+    public void threeTestsOneFailingTwoUncoveredRules() throws Exception {
+        ScenarioResultSummary scenarioResultSummary1 = getScenarioResultSummary( 1,
+                                                                                 2 );
+        ScenarioResultSummary scenarioResultSummary2 = getScenarioResultSummary( 0,
+                                                                                 1 );
+        ScenarioResultSummary[] scenarioResultSummaries = new ScenarioResultSummary[2];
+        scenarioResultSummaries[0] = scenarioResultSummary1;
+        scenarioResultSummaries[1] = scenarioResultSummary2;
+        BulkTestRunResult bulkTestRunResult = getBulkRunResult( 100,
+                                                                scenarioResultSummaries );
+        String[] uncoveredRules = new String[2];
+        uncoveredRules[0] = "I'm not covered 1";
+        uncoveredRules[1] = "I'm not covered 2";
+        bulkTestRunResult.setRulesNotCovered( uncoveredRules );
+
+        bulkRunResult.setBulkTestRunResult( bulkTestRunResult );
+
+        verifyBulkTestFailed();
+        verify( mockView ).setFailuresOutOfExpectation( 1,
+                                                        3 );
+        verify( mockView ).setResultsPercent( 66 );
+        verify( mockView ).setRulesCoveredPercent( 100 );
+        verify( mockView ).addUncoveredRules( "I'm not covered 1" );
+        verify( mockView ).addUncoveredRules( "I'm not covered 2" );
+
+        verifyThatResultSummaryWasAdded( scenarioResultSummary1,
+                                         scenarioResultSummary2 );
+
+    }
+
+    private void verifyBulkTestSucceeded() {
+        verify( mockView,
+                never() ).setFailed();
+        verify( mockView ).setSuccess();
+    }
+
+    private void verifyBulkTestFailed() {
+        verify( mockView ).setFailed();
+        verify( mockView,
+                never() ).setSuccess();
+    }
+
+    private void verifyNoUncoveredRules() {
+        verify( mockView,
+                never() ).addUncoveredRules( anyString() );
+    }
+
+    private void verifyThatResultSummaryWasAdded(ScenarioResultSummary... scenarioResultSummaries) {
+        for ( ScenarioResultSummary scenarioResultSummary : scenarioResultSummaries ) {
+            verify( mockView ).addSummary( scenarioResultSummary );
+        }
+    }
+
+    private ScenarioResultSummary getScenarioResultSummary(int failures,
+                                                           int total) {
+        ScenarioResultSummary scenarioResultSummary = new ScenarioResultSummary();
+        scenarioResultSummary.setFailures( failures );
+        scenarioResultSummary.setTotal( total );
+        return scenarioResultSummary;
+    }
+
+    private BulkTestRunResult getBulkRunResult(int percentCovered,
+                                               ScenarioResultSummary[] scenarioResultSummaries) {
+        BulkTestRunResult bulkTestRunResult = new BulkTestRunResult();
+        bulkTestRunResult.setPercentCovered( percentCovered );
+        bulkTestRunResult.setResults( scenarioResultSummaries );
+        return bulkTestRunResult;
+    }
+
 }

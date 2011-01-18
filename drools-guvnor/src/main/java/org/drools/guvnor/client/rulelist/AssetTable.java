@@ -80,7 +80,7 @@ public class AssetTable extends Composite {
     private final String packageUuid;
     private final List<String> formatInList;
     private final Boolean formatIsRegistered;
-    private final EditItemEvent editEvent;
+    private final OpenItemCommand editEvent;
     private int pageSize = 25; // TODO might need to be configurable, or a constant
     private String feedURL;
     private Set<Command> unloadListenerSet = new HashSet<Command>();
@@ -98,12 +98,12 @@ public class AssetTable extends Composite {
     SimplePager pager;
     private MultiSelectionModel<AssetPageRow> selectionModel;
 
-    public AssetTable(String packageUuid, List<String> formatInList, Boolean formatIsRegistered, EditItemEvent event) {
+    public AssetTable(String packageUuid, List<String> formatInList, Boolean formatIsRegistered, OpenItemCommand event) {
         this(packageUuid, formatInList, formatIsRegistered, event, null);
     }
 
     public AssetTable(String packageUuid, List<String> formatInList, Boolean formatIsRegistered,
-            final EditItemEvent event, String feedURL) {
+            final OpenItemCommand event, String feedURL) {
         this.packageUuid = packageUuid;
         this.formatInList = formatInList;
         this.formatIsRegistered = formatIsRegistered;

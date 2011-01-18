@@ -15,14 +15,40 @@
  */
 package org.drools.guvnor.client.qa;
 
+import org.drools.guvnor.client.qa.SummaryTableView.Presenter;
+import org.drools.guvnor.client.rpc.ScenarioResultSummary;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
+
 /**
  * @author rikkola
  *
  */
-public class SummaryTable {
+public class SummaryTable
+    implements
+    Presenter {
+
+    private SummaryTableView summaryTableView;
+    private OpenItemCommand  openCommand;
 
     public SummaryTable(SummaryTableView summaryTableView) {
-        // TODO Auto-generated constructor stub
+        this.summaryTableView = summaryTableView;
+
+        summaryTableView.setPresenter( this );
+    }
+
+    public void addRow(ScenarioResultSummary scenarioResultSummary) {
+        summaryTableView.addRow( scenarioResultSummary.getFailures(),
+                                 scenarioResultSummary.getTotal(),
+                                 scenarioResultSummary.getScenarioName(),
+                                 scenarioResultSummary.getUuid() );
+    }
+
+    public void openTestScenario(String uuid) {
+        openCommand.open( uuid );
+    }
+
+    public void setOpenCommand(OpenItemCommand openCommand) {
+        this.openCommand = openCommand;
     }
 
 }

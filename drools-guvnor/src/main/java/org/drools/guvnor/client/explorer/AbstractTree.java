@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.TreeItem;
 
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.TabOpener;
 import org.drools.guvnor.client.util.Util;
 
@@ -58,7 +58,7 @@ public abstract class AbstractTree extends Composite
                                 boolean showCats) {
         final TabOpener tabOpener = TabOpener.getInstance();
 
-        NewAssetWizard pop = new NewAssetWizard( new EditItemEvent() {
+        NewAssetWizard pop = new NewAssetWizard( new OpenItemCommand() {
                                                      public void open(String key) {
                                                          tabOpener.openAsset( key );
                                                      }

@@ -9,7 +9,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:gwt='urn:import:com.google.gwt.user.client.ui' xmlns:guvnor-util='urn:import:org.drools.guvnor.client.util'
-	xmlns:guvnor-common='urn:import:org.drools.guvnor.client.common'>
+	xmlns:guvnor-common='urn:import:org.drools.guvnor.client.common'
+	xmlns:guvnor-qa='urn:import:org.drools.guvnor.client.qa'>
 
 	<ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
 
@@ -76,7 +77,7 @@
 		</gwt:HTMLPanel>
 		<gwt:HTMLPanel>
 			<div class="guvnor-FormPanel">
-				<gwt:FlexTable ui:field="summaryTable"></gwt:FlexTable>
+				<guvnor-qa:SummaryTableView ui:field="summaryTableView"></guvnor-qa:SummaryTableView>
 				<gwt:Button ui:field="closeButton" text='{i18n.Close}'></gwt:Button>
 			</div>
 		</gwt:HTMLPanel>

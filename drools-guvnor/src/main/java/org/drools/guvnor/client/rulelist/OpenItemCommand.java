@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,29 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.qa;
 
-import com.google.gwt.user.client.ui.IsWidget;
+package org.drools.guvnor.client.rulelist;
+
+import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 
 /**
- * @author rikkola
- *
+ * This is used by the list view to "open" an item.
+ * @author Michael Neale
  */
-public interface SummaryTableView
-    extends
-    IsWidget {
+public interface OpenItemCommand {
 
-    interface Presenter {
+    /**
+     * @param key - the UUID to open.
+     * @param type - the resource type.
+     */
+    public void open(String key);
 
-        void openTestScenario(String string);
-
-    }
-
-    void addRow(int failures,
-                int total,
-                String scenarioName,
-                String uuid);
-
-    void setPresenter(Presenter presenter);
-
+    /**
+     * Open several assets into the same tab.
+     * 
+     * @param keys - the UUIDs to open.
+     */
+    public void open(MultiViewRow[] rows);
 }

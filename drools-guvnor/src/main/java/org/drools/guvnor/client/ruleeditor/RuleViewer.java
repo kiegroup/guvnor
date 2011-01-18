@@ -43,7 +43,7 @@ import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.ruleeditor.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
@@ -105,7 +105,7 @@ public class RuleViewer extends GuvnorEditor {
 
     private long                                      lastSaved = System.currentTimeMillis();
 
-    private final EditItemEvent                       editEvent;
+    private final OpenItemCommand                       editEvent;
 
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
@@ -113,7 +113,7 @@ public class RuleViewer extends GuvnorEditor {
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
-                      final EditItemEvent event) {
+                      final OpenItemCommand event) {
         this( asset,
               event,
               false,
@@ -125,7 +125,7 @@ public class RuleViewer extends GuvnorEditor {
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
-                      final EditItemEvent event,
+                      final OpenItemCommand event,
                       boolean historicalReadOnly) {
         this( asset,
               event,
@@ -140,7 +140,7 @@ public class RuleViewer extends GuvnorEditor {
      * button configuration provider.
      */
     public RuleViewer(RuleAsset asset,
-                      final EditItemEvent event,
+                      final OpenItemCommand event,
                       boolean historicalReadOnly,
                       ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
                       RuleViewerSettings ruleViewerSettings) {

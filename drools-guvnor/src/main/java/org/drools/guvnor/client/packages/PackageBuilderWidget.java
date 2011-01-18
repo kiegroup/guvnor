@@ -33,7 +33,7 @@ import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
@@ -85,7 +85,7 @@ public class PackageBuilderWidget extends Composite {
 
     public FormStyleLayout        layout;
     private PackageConfigData     conf;
-    private EditItemEvent         editEvent;
+    private OpenItemCommand         editEvent;
 
     private final FormStyleLayout buildWholePackageLayout = new FormStyleLayout();
     private final FormStyleLayout builtInSelectorLayout   = new FormStyleLayout();
@@ -93,7 +93,7 @@ public class PackageBuilderWidget extends Composite {
     private String                buildMode               = "buildWholePackage";
 
     public PackageBuilderWidget(final PackageConfigData conf,
-                                EditItemEvent editEvent) {
+                                OpenItemCommand editEvent) {
         layout = new FormStyleLayout();
         this.conf = conf;
         this.editEvent = editEvent;
@@ -483,7 +483,7 @@ public class PackageBuilderWidget extends Composite {
      */
     public static void showBuilderErrors(BuilderResult results,
                                          Panel buildResults,
-                                         final EditItemEvent editEvent) {
+                                         final OpenItemCommand editEvent) {
         buildResults.clear();
 
         Object[][] data = new Object[results.getLines().length][4];

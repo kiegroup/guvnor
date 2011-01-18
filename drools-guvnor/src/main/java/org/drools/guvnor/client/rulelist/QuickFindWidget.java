@@ -59,12 +59,12 @@ public class QuickFindWidget extends Composite {
     private Constants             constants = GWT.create( Constants.class );
     private static Images         images    = GWT.create( Images.class );
 
-    private final EditItemEvent editEvent;
+    private final OpenItemCommand editEvent;
 
     private SuggestBox            searchBox;
     private CheckBox              archiveBox;
 
-    public QuickFindWidget(EditItemEvent editEvent) {
+    public QuickFindWidget(OpenItemCommand editEvent) {
         this.editEvent = editEvent;
 
         FormStyleLayout layout = new FormStyleLayout(images.systemSearch(),
