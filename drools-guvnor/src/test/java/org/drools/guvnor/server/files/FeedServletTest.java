@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,274 +16,321 @@
 
 package org.drools.guvnor.server.files;
 
-import org.drools.repository.RulesRepository;
-import org.drools.repository.PackageItem;
-import org.drools.repository.AssetItem;
-import org.drools.guvnor.server.security.MockIdentity;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.security.MockIdentity;
+import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
+import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.junit.After;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.util.Map;
-import java.util.HashMap;
 
 /**
  * @author Michael Neale
  */
-public class FeedServletTest {
+public class FeedServletTest extends GuvnorTestBase {
 
-    @Ignore @Test
+    @Before
+    public void setUp() {
+        setUpSeam();
+    }
+
+    @After
+    public void tearDown() {
+        tearAllDown();
+    }
+
+    @Test
     public void testPackageFeed() throws Exception {
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
-        PackageItem pkg = repo.createPackage("testPackageFeed", "");
-        AssetItem asset = pkg.addAsset("asset1", "desc");
-        asset.updateFormat("drl");
-        asset.checkin("");
-        
-        //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn(false);
-        midentity.setAllowLogin(false);
-        midentity.setCheckPermission(true);
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );        
-        FileManagerUtils manager = new FileManagerUtils();
-        manager.setRepository(repo);
-        Contexts.getSessionContext().set( "fileManager", manager );
+        RulesRepository repo = getRulesRepository();
+        PackageItem pkg = repo.createPackage( "testPackageFeed",
+                                              "" );
+        AssetItem asset = pkg.addAsset( "asset1",
+                                        "desc" );
+        asset.updateFormat( "drl" );
+        asset.checkin( "" );
 
- 
+        //Mock up SEAM contexts
+        MockIdentity midentity = new MockIdentity();
+        midentity.setIsLoggedIn( false );
+        midentity.setAllowLogin( false );
+        midentity.setCheckPermission( true );
+        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+                                          midentity );
+        FileManagerUtils manager = new FileManagerUtils();
+        manager.setRepository( repo );
+        Contexts.getSessionContext().set( "fileManager",
+                                          manager );
+
         Map<String, String> headers = new HashMap<String, String>() {
             {
-                put("Irrelevant", "garbage");
+                put( "Irrelevant",
+                     "garbage" );
             }
         };
 
-        MockHTTPRequest req = new MockHTTPRequest("/org.foo/feed/package?name=...", headers);
+        MockHTTPRequest req = new MockHTTPRequest( "/org.foo/feed/package?name=...",
+                                                   headers );
         FeedServlet fs = new FeedServlet();
         MockHTTPResponse res = new MockHTTPResponse();
-        fs.doGet(req, res);
-        assertEquals(HttpServletResponse.SC_UNAUTHORIZED, res.errorCode);
+        fs.doGet( req,
+                  res );
+        assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
+                      res.errorCode );
 
         //try again with valid user and password
-        midentity.setAllowLogin(true);
+        midentity.setAllowLogin( true );
 
         headers = new HashMap<String, String>() {
             {
-                put("Authorization", "BASIC " + new String(Base64.encodeBase64("testuser:password".getBytes())));
+                put( "Authorization",
+                     "BASIC " + new String( Base64.encodeBase64( "testuser:password".getBytes() ) ) );
             }
         };
-        req = new MockHTTPRequest("/org.foo/feed/package", headers, new HashMap<String, String>() {
-            {
-                put("name", "testPackageFeed");
-                put("viewUrl", "http://foo.bar");
-            }
-        });
+        req = new MockHTTPRequest( "/org.foo/feed/package",
+                                   headers,
+                                   new HashMap<String, String>() {
+                                       {
+                                           put( "name",
+                                                "testPackageFeed" );
+                                           put( "viewUrl",
+                                                "http://foo.bar" );
+                                       }
+                                   } );
         fs = new FeedServlet();
         res = new MockHTTPResponse();
-        fs.doGet(req, res);
+        fs.doGet( req,
+                  res );
 
         String r = res.extractContent();
-        assertNotNull(r);
+        assertNotNull( r );
 
-        assertTrue(r.indexOf("asset1") > -1);
+        assertTrue( r.indexOf( "asset1" ) > -1 );
 
-
-        req = new MockHTTPRequest("/org.foo/feed/package", headers, new HashMap<String, String>() {
-            {
-                put("name", "testPackageFeed");
-                put("viewUrl", "http://foo.bar");
-                put("status", "Foo");
-            }
-        });
+        req = new MockHTTPRequest( "/org.foo/feed/package",
+                                   headers,
+                                   new HashMap<String, String>() {
+                                       {
+                                           put( "name",
+                                                "testPackageFeed" );
+                                           put( "viewUrl",
+                                                "http://foo.bar" );
+                                           put( "status",
+                                                "Foo" );
+                                       }
+                                   } );
         fs = new FeedServlet();
         res = new MockHTTPResponse();
-        fs.doGet(req, res);
+        fs.doGet( req,
+                  res );
 
         r = res.extractContent();
-        assertNotNull(r);
+        assertNotNull( r );
 
-        assertFalse(r.indexOf("asset1.drl") > -1);
+        assertFalse( r.indexOf( "asset1.drl" ) > -1 );
 
-        req = new MockHTTPRequest("/org.foo/feed/package", headers, new HashMap<String, String>() {
-            {
-                put("name", "testPackageFeed");
-                put("viewUrl", "http://foo.bar");
-                put("status", "Draft");
-            }
-        });
+        req = new MockHTTPRequest( "/org.foo/feed/package",
+                                   headers,
+                                   new HashMap<String, String>() {
+                                       {
+                                           put( "name",
+                                                "testPackageFeed" );
+                                           put( "viewUrl",
+                                                "http://foo.bar" );
+                                           put( "status",
+                                                "Draft" );
+                                       }
+                                   } );
         fs = new FeedServlet();
         res = new MockHTTPResponse();
-        fs.doGet(req, res);
+        fs.doGet( req,
+                  res );
 
         r = res.extractContent();
-        assertNotNull(r);
-        assertTrue(r.indexOf("asset1") > -1);
-        
+        assertNotNull( r );
+        assertTrue( r.indexOf( "asset1" ) > -1 );
+
         Lifecycle.endApplication();
     }
 
-    @Ignore @Test
+    @Test
     public void testCategoryFeed() throws Exception {
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
-        PackageItem pkg = repo.createPackage("testCategoryFeed", "");
-        repo.loadCategory("/").addCategory("testCategoryFeedCat", "");
-        AssetItem asset = pkg.addAsset("asset1", "desc");
-        asset.updateFormat("drl");
-        asset.updateCategoryList(new String[] {"testCategoryFeedCat"});
-        asset.checkin("");
+        RulesRepository repo = getRulesRepository();
+        PackageItem pkg = repo.createPackage( "testCategoryFeed",
+                                              "" );
+        repo.loadCategory( "/" ).addCategory( "testCategoryFeedCat",
+                                              "" );
+        AssetItem asset = pkg.addAsset( "asset1",
+                                        "desc" );
+        asset.updateFormat( "drl" );
+        asset.updateCategoryList( new String[]{"testCategoryFeedCat"} );
+        asset.checkin( "" );
 
         //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn(false);
-        midentity.setAllowLogin(true);
-        midentity.setCheckPermission(true);
+        midentity.setIsLoggedIn( false );
+        midentity.setAllowLogin( true );
+        midentity.setCheckPermission( true );
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
-        
-        FileManagerUtils manager = new FileManagerUtils();
-        manager.setRepository(repo);
-        Contexts.getSessionContext().set( "fileManager", manager );
 
+        FileManagerUtils manager = new FileManagerUtils();
+        manager.setRepository( repo );
+        Contexts.getSessionContext().set( "fileManager",
+                                          manager );
 
         //try with valid password
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
-                put("Authorization", "BASIC " + new String(Base64.encodeBase64("testuser:password".getBytes())));
+                put( "Authorization",
+                     "BASIC " + new String( Base64.encodeBase64( "testuser:password".getBytes() ) ) );
             }
         };
-        MockHTTPRequest req = new MockHTTPRequest("/org.foo/feed/category", headers, new HashMap<String, String>() {
-            {
-                put("name", "testCategoryFeedCat");
-                put("viewUrl", "http://foo.bar");
-            }
-        });
+        MockHTTPRequest req = new MockHTTPRequest( "/org.foo/feed/category",
+                                                   headers,
+                                                   new HashMap<String, String>() {
+                                                       {
+                                                           put( "name",
+                                                                "testCategoryFeedCat" );
+                                                           put( "viewUrl",
+                                                                "http://foo.bar" );
+                                                       }
+                                                   } );
         FeedServlet fs = new FeedServlet();
         MockHTTPResponse res = new MockHTTPResponse();
-        fs.doGet(req, res);
+        fs.doGet( req,
+                  res );
 
         String r = res.extractContent();
-        assertNotNull(r);
+        assertNotNull( r );
 
-        assertTrue(r.indexOf("asset1") > -1);
-        assertTrue(r.indexOf("http://foo.bar") > -1);
+        assertTrue( r.indexOf( "asset1" ) > -1 );
+        assertTrue( r.indexOf( "http://foo.bar" ) > -1 );
 
-
-        req = new MockHTTPRequest("/org.foo/feed/category", headers, new HashMap<String, String>() {
-            {
-                put("name", "testCategoryFeedCat");
-                put("viewUrl", "http://foo.bar");
-                put("status", "*");
-            }
-        });
+        req = new MockHTTPRequest( "/org.foo/feed/category",
+                                   headers,
+                                   new HashMap<String, String>() {
+                                       {
+                                           put( "name",
+                                                "testCategoryFeedCat" );
+                                           put( "viewUrl",
+                                                "http://foo.bar" );
+                                           put( "status",
+                                                "*" );
+                                       }
+                                   } );
         fs = new FeedServlet();
         res = new MockHTTPResponse();
-        fs.doGet(req, res);
+        fs.doGet( req,
+                  res );
 
         r = res.extractContent();
-        assertNotNull(r);
+        assertNotNull( r );
 
-        assertTrue(r.indexOf("asset1") > -1);
-        assertTrue(r.indexOf("http://foo.bar") > -1);
+        assertTrue( r.indexOf( "asset1" ) > -1 );
+        assertTrue( r.indexOf( "http://foo.bar" ) > -1 );
 
-        
-        midentity.setAllowLogin(false);
+        midentity.setAllowLogin( false );
         fs = new FeedServlet();
         res = new MockHTTPResponse();
-        fs.doGet(req, res);
-        assertEquals(HttpServletResponse.SC_UNAUTHORIZED, res.errorCode);
+        fs.doGet( req,
+                  res );
+        assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
+                      res.errorCode );
 
         Lifecycle.endApplication();
     }
 
-
-    @Ignore @Test
+    @Test
     public void testDiscussionFeed() throws Exception {
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
-        PackageItem pkg = repo.createPackage("testDiscussionFeed", "");
-        AssetItem asset = pkg.addAsset("asset1", "desc");
-        asset.updateFormat("drl");
-        asset.checkin("");
-        
+        RulesRepository repo = getRulesRepository();
+        PackageItem pkg = repo.createPackage( "testDiscussionFeed",
+                                              "" );
+        AssetItem asset = pkg.addAsset( "asset1",
+                                        "desc" );
+        asset.updateFormat( "drl" );
+        asset.checkin( "" );
+
         //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn(false);
-        midentity.setAllowLogin(false);
-        midentity.setCheckPermission(true);
+        midentity.setIsLoggedIn( false );
+        midentity.setAllowLogin( false );
+        midentity.setCheckPermission( true );
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
-        
+
         FileManagerUtils manager = new FileManagerUtils();
-        manager.setRepository(repo);
-        Contexts.getSessionContext().set( "fileManager", manager );
+        manager.setRepository( repo );
+        Contexts.getSessionContext().set( "fileManager",
+                                          manager );
 
         ServiceImplementation impl = new ServiceImplementation();
         impl.repository = repo;
-        impl.addToDiscussionForAsset(asset.getUUID(), "This is a comment");
-        impl.addToDiscussionForAsset(asset.getUUID(), "This is another comment");
+        impl.addToDiscussionForAsset( asset.getUUID(),
+                                      "This is a comment" );
+        impl.addToDiscussionForAsset( asset.getUUID(),
+                                      "This is another comment" );
 
         Map<String, String> headers = new HashMap<String, String>() {
             {
-                put("Irrelevant", "garbage");
+                put( "Irrelevant",
+                     "garbage" );
             }
         };
 
-        MockHTTPRequest req = new MockHTTPRequest("/org.foo/feed/discussion?package=...", headers);
+        MockHTTPRequest req = new MockHTTPRequest( "/org.foo/feed/discussion?package=...",
+                                                   headers );
         FeedServlet fs = new FeedServlet();
         MockHTTPResponse res = new MockHTTPResponse();
-        fs.doGet(req, res);
-        assertEquals(HttpServletResponse.SC_UNAUTHORIZED, res.errorCode);
+        fs.doGet( req,
+                  res );
+        assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
+                      res.errorCode );
 
         headers = new HashMap<String, String>() {
             {
-                put("Authorization", "BASIC " + new String(Base64.encodeBase64("test:password".getBytes())));
+                put( "Authorization",
+                     "BASIC " + new String( Base64.encodeBase64( "test:password".getBytes() ) ) );
             }
         };
 
-
-        midentity.setAllowLogin(true);
-        req = new MockHTTPRequest("/org.foo/feed/discussion", headers, new HashMap<String, String>() {
-            {
-                put("package", "testDiscussionFeed");
-                put("assetName", "asset1");
-            }
-        });
+        midentity.setAllowLogin( true );
+        req = new MockHTTPRequest( "/org.foo/feed/discussion",
+                                   headers,
+                                   new HashMap<String, String>() {
+                                       {
+                                           put( "package",
+                                                "testDiscussionFeed" );
+                                           put( "assetName",
+                                                "asset1" );
+                                       }
+                                   } );
         fs = new FeedServlet();
         res = new MockHTTPResponse();
-        fs.doGet(req, res);
+        fs.doGet( req,
+                  res );
 
         String r = res.extractContent();
-        assertNotNull(r);
-        assertTrue(r.indexOf("This is a comment") > -1);
-        assertTrue(r.indexOf("This is another comment") > r.indexOf("This is a comment"));
-        System.err.println(r);
+        assertNotNull( r );
+        assertTrue( r.indexOf( "This is a comment" ) > -1 );
+        assertTrue( r.indexOf( "This is another comment" ) > r.indexOf( "This is a comment" ) );
+        System.err.println( r );
 
         Lifecycle.endApplication();
     }
-    
-    @After
-    public void tearDown() throws Exception {
-    	TestEnvironmentSessionHelper.shutdown();
-    }
-    
+
 }

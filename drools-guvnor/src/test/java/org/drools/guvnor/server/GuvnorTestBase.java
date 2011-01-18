@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.util.KeyStoreHelper;
+import org.drools.guvnor.server.files.WebDAVImpl;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
@@ -72,6 +73,10 @@ public class GuvnorTestBase {
         RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
         resolver.setEnableRoleBasedAuthorization( false );
         mockIdentity.addPermissionResolver( new RoleBasedPermissionResolver() );
+    }
+
+    public WebDAVImpl getWebDAVImpl() throws Exception {
+        return new WebDAVImpl( getRulesRepository() );
     }
 
     protected void tearAllDown() {
