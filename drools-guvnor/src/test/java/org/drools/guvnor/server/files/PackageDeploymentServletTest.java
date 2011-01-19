@@ -60,7 +60,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
     @Before
     public void setup() {
         setUpSeam();
-        setUpFileManager();
+        setUpFileManagerUtils();
         setUpMockIdentity();
     }
 

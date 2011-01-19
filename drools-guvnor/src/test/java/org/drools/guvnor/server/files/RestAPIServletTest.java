@@ -46,7 +46,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
     @Before
     public void setup() {
         setUpSeam();
-        setUpFileManager();
+        setUpFileManagerUtils();
     }
 
     @After
@@ -274,7 +274,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Test
     public void testDelete() throws Exception {
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        RulesRepository repo = getRulesRepository();
         PackageItem pkg = repo.createPackage( "testDeleteRestServlet",
                                               "" );
         AssetItem ass = pkg.addAsset( "asset1",

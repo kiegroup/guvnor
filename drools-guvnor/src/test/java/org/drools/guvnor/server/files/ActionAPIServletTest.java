@@ -27,6 +27,7 @@ import org.drools.guvnor.server.rest.Parameters;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -40,6 +41,12 @@ public class ActionAPIServletTest extends GuvnorTestBase {
 
     private final String compilationPath = "http://foo/action/compile";
     private final String snapshotPath    = "http://foo/action/snapshot";
+
+    @Before
+    public void setUp() {
+        setUpSeam();
+        setUpMockIdentity();
+    }
 
     @After
     public void tearDown() {

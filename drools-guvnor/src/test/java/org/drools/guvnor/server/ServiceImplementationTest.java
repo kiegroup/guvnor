@@ -111,16 +111,16 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class ServiceImplementationTest extends GuvnorTestBase {
 
-//    @Before
-//    public void setUp() {
-//        setUpSeam();
-//        setUpMockIdentity();
-//    }
-//
-//    @After
-//    public void tearDown() {
-//        tearAllDown();
-//    }
+    //    @Before
+    //    public void setUp() {
+    //        setUpSeam();
+    //        setUpMockIdentity();
+    //    }
+    //
+    //    @After
+    //    public void tearDown() {
+    //        tearAllDown();
+    //    }
 
     @Test
     @Ignore("this test fail intermittently")
@@ -252,10 +252,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Ignore
     @Test
     public void testDeleteUnversionedRule() throws Exception {
-        //        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
-        ServiceImplementation impl = new ServiceImplementation();
-        impl.repository = repository;
+        RulesRepository repository = getRulesRepository();
+        ServiceImplementation impl = getServiceImplementation();
 
         impl.getRulesRepository().loadDefaultPackage();
         impl.getRulesRepository().createPackage( "anotherPackage",

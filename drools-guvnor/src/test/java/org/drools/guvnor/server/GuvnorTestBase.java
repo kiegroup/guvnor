@@ -74,11 +74,15 @@ public class GuvnorTestBase {
                                           serviceImplementation );
     }
 
-    protected void setUpFileManager() {
+    protected void setUpFileManagerUtils() {
+        Contexts.getSessionContext().set( "fileManager",
+                                          getFileManagerUtils() );
+    }
+
+    protected FileManagerUtils getFileManagerUtils() {
         FileManagerUtils fileManager = new FileManagerUtils();
         fileManager.setRepository( getRulesRepository() );
-        Contexts.getSessionContext().set( "fileManager",
-                                          fileManager );
+        return fileManager;
     }
 
     protected void setUpMockIdentity() {
