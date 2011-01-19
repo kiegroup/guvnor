@@ -1626,11 +1626,20 @@ public class ServiceImplementation implements RepositoryService {
                     return ((IValidating) handler).validateAsset( item );
                 }
 
+<<<<<<< HEAD
                 ContentPackageAssembler asm = new ContentPackageAssembler( item );
                 if ( !asm.hasErrors() ) {
                     return null;
+=======
+                    ContentPackageAssembler asm = new ContentPackageAssembler( item );
+                    if ( !asm.hasErrors() ) {
+                        return null;
+                    } else {
+                        result.setLines( generateBuilderResults( asm ) );
+                    }
+>>>>>>> GUVNOR-1140 : Run All Test Scenarios - Scenario Breakdown Results Bars Inconsistent
                 }
-                result.setLines( generateBuilderResults( asm ) );
+                result.lines = generateBuilderResults( asm );
 
             } else {
                 if ( handler instanceof IValidating ) {
@@ -1639,11 +1648,21 @@ public class ServiceImplementation implements RepositoryService {
 
                 PackageItem packageItem = repository.loadPackageByUUID( asset.metaData.packageUUID );
 
+<<<<<<< HEAD
                 ContentPackageAssembler asm = new ContentPackageAssembler( asset, packageItem );
                 if ( !asm.hasErrors() ) {
                     return null;
+=======
+                    ContentPackageAssembler asm = new ContentPackageAssembler( asset,
+                                                                               packageItem );
+                    if ( !asm.hasErrors() ) {
+                        return null;
+                    } else {
+                        result.setLines( generateBuilderResults( asm ) );
+                    }
+>>>>>>> GUVNOR-1140 : Run All Test Scenarios - Scenario Breakdown Results Bars Inconsistent
                 }
-                result.setLines( generateBuilderResults( asm ) );
+                result.lines = generateBuilderResults( asm );
             }
         } catch ( Exception e ) {
             log.error( "Unable to build asset.", e );
@@ -1654,6 +1673,7 @@ public class ServiceImplementation implements RepositoryService {
             res.assetFormat = asset.metaData.format;
             res.message = "Unable to validate this asset. (Check log for detailed messages).";
             res.uuid = asset.uuid;
+            result.setLines( new BuilderResultLine[1] );
             result.getLines()[0] = res;
 
             return result;
@@ -1963,11 +1983,23 @@ public class ServiceImplementation implements RepositoryService {
                 rb = loadRuleBase( item, buildCl );
                 ServiceImplementation.ruleBaseCache.put( item.getUUID(), rb );
             } else {
+<<<<<<< HEAD
                 BuilderResult result = this.buildPackage( item, false );
-                if ( result == null || result.getLines().length == 0 ) {
+                if ( result == null || result.lines.length == 0 ) {
                     rb = loadRuleBase( item, buildCl );
                     ServiceImplementation.ruleBaseCache.put( item.getUUID(), rb );
-                } else throw new DetailedSerializationException( "Build error", result.getLines() );
+                } else throw new DetailedSerializationException( "Build error", result.lines );
+=======
+                BuilderResult result = this.buildPackage( item,
+                                                          false );
+                if ( result == null || result.getLines().length == 0 ) {
+                    rb = loadRuleBase( item,
+                                       buildCl );
+                    this.ruleBaseCache.put( item.getUUID(),
+                                            rb );
+                } else throw new DetailedSerializationException( "Build error",
+                                                                 result.getLines() );
+>>>>>>> GUVNOR-1140 : Run All Test Scenarios - Scenario Breakdown Results Bars Inconsistent
             }
 
         }
@@ -1984,8 +2016,14 @@ public class ServiceImplementation implements RepositoryService {
             log.error( "Unable to load rule base.", e );
             log.info( "...but trying to rebuild binaries..." );
             try {
+<<<<<<< HEAD
                 BuilderResult res = this.buildPackage( item, true );
+                if ( res != null && res.lines.length > 0 ) {
+=======
+                BuilderResult res = this.buildPackage( item,
+                                                       true );
                 if ( res != null && res.getLines().length > 0 ) {
+>>>>>>> GUVNOR-1140 : Run All Test Scenarios - Scenario Breakdown Results Bars Inconsistent
                     log.error( "There were errors when rebuilding the knowledgebase." );
                     throw new DetailedSerializationException( "There were errors when rebuilding the knowledgebase.", "" );
                 }
@@ -2085,9 +2123,18 @@ public class ServiceImplementation implements RepositoryService {
                 if ( item.isBinaryUpToDate() ) {
                     ServiceImplementation.ruleBaseCache.put( item.getUUID(), loadRuleBase( item, cl ) );
                 } else {
+<<<<<<< HEAD
                     BuilderResult result = this.buildPackage( item, false );
-                    if ( result == null || result.getLines().length == 0 ) {
+                    if ( result == null || result.lines.length == 0 ) {
                         ServiceImplementation.ruleBaseCache.put( item.getUUID(), loadRuleBase( item, cl ) );
+=======
+                    BuilderResult result = this.buildPackage( item,
+                                                              false );
+                    if ( result == null || result.getLines().length == 0 ) {
+                        this.ruleBaseCache.put( item.getUUID(),
+                                                loadRuleBase( item,
+                                                              cl ) );
+>>>>>>> GUVNOR-1140 : Run All Test Scenarios - Scenario Breakdown Results Bars Inconsistent
                     } else {
                         return new BulkTestRunResult( result, null, 0, null );
                     }
