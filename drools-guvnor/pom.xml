@@ -10,6 +10,9 @@
   <artifactId>drools-guvnor</artifactId>
   <packaging>war</packaging>
   <name>Drools :: Guvnor</name>
+  <properties><!-- Overwritten in the full profile -->
+    <guvnorHtmlRedirect>org.drools.guvnor.Guvnor/FastCompiledGuvnor.html</guvnorHtmlRedirect>
+  </properties>
   <build>
     <finalName>drools-guvnor</finalName>
     <plugins>
@@ -102,6 +105,9 @@
           <name>full</name>
         </property>
       </activation>
+      <properties>
+        <guvnorHtmlRedirect>org.drools.guvnor.Guvnor/Guvnor.html</guvnorHtmlRedirect>
+      </properties>
       <build>
         <plugins>
           <plugin><!-- Keep in sync with soa profile -->
