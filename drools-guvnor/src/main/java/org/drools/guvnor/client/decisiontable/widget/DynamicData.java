@@ -16,7 +16,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
 		return this.get(c.getRow()).get(c.getCol());
 	}
 
-	public void set(Coordinate c, Object value) {
+	public void set(Coordinate c, Comparable<?> value) {
 		this.get(c.getRow()).get(c.getCol()).setValue(value);
 	}
 

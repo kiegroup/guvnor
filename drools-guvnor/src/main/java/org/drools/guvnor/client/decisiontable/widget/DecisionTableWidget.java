@@ -18,6 +18,8 @@ import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableSt
 import org.drools.guvnor.client.table.SortDirection;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
+import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
+import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
@@ -44,9 +46,13 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  * @author manstis
  * 
  */
+/**
+ * @author manstis
+ * 
+ */
 public abstract class DecisionTableWidget extends Composite
     implements
-        ValueUpdater<Object> {
+        ValueUpdater<Comparable< ? >> {
 
     public enum MOVE_DIRECTION {
         LEFT, RIGHT, UP, DOWN
@@ -105,7 +111,8 @@ public abstract class DecisionTableWidget extends Composite
         headerWidget.addResizeHandler( new ResizeHandler() {
 
             public void onResize(ResizeEvent event) {
-                scrollPanel.setHeight( (height - event.getHeight()) + "px" );
+                scrollPanel.setHeight( (height - event.getHeight())
+                                       + "px" );
                 assertDimensions();
             }
         } );
@@ -177,10 +184,14 @@ public abstract class DecisionTableWidget extends Composite
      *            The index of the column to delete
      */
     public void deleteColumn(int index) {
-        if ( index < 0 || index > columns.size() - 1 ) {
+        if ( index < 0
+             || index > columns.size() - 1 ) {
             throw new IllegalArgumentException(
                                                 "Column index must be greater than zero and less than then number of declared columns." );
         }
+
+        // Clear any selections
+        clearSelection();
 
         // Delete column data
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
@@ -376,13 +387,15 @@ public abstract class DecisionTableWidget extends Composite
                     step = c.getCol() > 0 ? 1 : 0;
                     if ( step > 0 ) {
                         nc = new Coordinate( c.getRow(),
-                                             c.getCol() - step );
+                                             c.getCol()
+                                                     - step );
 
                         // Skip hidden columns
                         while ( nc.getCol() > 0
                                 && !columns.get( nc.getCol() ).isVisible() ) {
                             nc = new Coordinate( c.getRow(),
-                                                 nc.getCol() - step );
+                                                 nc.getCol()
+                                                         - step );
                         }
                         startSelecting( nc );
 
@@ -401,26 +414,31 @@ public abstract class DecisionTableWidget extends Composite
                     step = c.getCol() < columns.size() - 1 ? 1 : 0;
                     if ( step > 0 ) {
                         nc = new Coordinate( c.getRow(),
-                                             c.getCol() + step );
+                                             c.getCol()
+                                                     + step );
 
                         // Skip hidden columns
                         while ( nc.getCol() < columns.size() - 2
                                 && !columns.get( nc.getCol() ).isVisible() ) {
                             nc = new Coordinate( c.getRow(),
-                                                 nc.getCol() + step );
+                                                 nc.getCol()
+                                                         + step );
                         }
                         startSelecting( nc );
 
                         // Ensure cell is visible
                         ce = gridWidget.getSelectedCellExtents( selections.first() );
                         int scrollWidth = scrollPanel.getElement().getClientWidth();
-                        if ( ce.getOffsetX() + ce.getWidth() > scrollWidth
+                        if ( ce.getOffsetX()
+                             + ce.getWidth() > scrollWidth
                                                                + scrollPanel.getHorizontalScrollPosition() ) {
-                            int delta = ce.getOffsetX() + ce.getWidth()
+                            int delta = ce.getOffsetX()
+                                        + ce.getWidth()
                                         - scrollPanel.getHorizontalScrollPosition()
                                         - scrollWidth;
                             scrollPanel.setHorizontalScrollPosition( scrollPanel
-                                    .getHorizontalScrollPosition() + delta );
+                                    .getHorizontalScrollPosition()
+                                                                     + delta );
                         }
                     }
                     break;
@@ -429,7 +447,8 @@ public abstract class DecisionTableWidget extends Composite
                     // Move up
                     step = c.getRow() > 0 ? 1 : 0;
                     if ( step > 0 ) {
-                        nc = new Coordinate( c.getRow() - step,
+                        nc = new Coordinate( c.getRow()
+                                                     - step,
                                              c.getCol() );
                         startSelecting( nc );
 
@@ -445,7 +464,8 @@ public abstract class DecisionTableWidget extends Composite
                     // Move down
                     step = c.getRow() < data.size() - 1 ? 1 : 0;
                     if ( step > 0 ) {
-                        nc = new Coordinate( c.getRow() + step,
+                        nc = new Coordinate( c.getRow()
+                                                     + step,
                                              c.getCol() );
                         startSelecting( nc );
 
@@ -453,13 +473,16 @@ public abstract class DecisionTableWidget extends Composite
                         ce = gridWidget.getSelectedCellExtents( selections.first() );
                         int scrollHeight = scrollPanel.getElement()
                                 .getClientHeight();
-                        if ( ce.getOffsetY() + ce.getHeight() > scrollHeight
+                        if ( ce.getOffsetY()
+                             + ce.getHeight() > scrollHeight
                                                                 + scrollPanel.getScrollPosition() ) {
-                            int delta = ce.getOffsetY() + ce.getHeight()
+                            int delta = ce.getOffsetY()
+                                        + ce.getHeight()
                                         - scrollPanel.getScrollPosition()
                                         - scrollHeight;
                             scrollPanel.setScrollPosition( scrollPanel
-                                    .getScrollPosition() + delta );
+                                    .getScrollPosition()
+                                                           + delta );
                         }
                     }
             }
@@ -585,17 +608,20 @@ public abstract class DecisionTableWidget extends Composite
      */
     public void setColumnVisibility(int index,
                                     boolean isVisible) {
-        if ( index < 0 || index > columns.size() - 1 ) {
+        if ( index < 0
+             || index > columns.size() - 1 ) {
             throw new IllegalArgumentException(
                                                 "Column index must be greater than zero and less than then number of declared columns." );
         }
 
-        if ( isVisible && !columns.get( index ).isVisible() ) {
+        if ( isVisible
+             && !columns.get( index ).isVisible() ) {
             columns.get( index ).setVisible( isVisible );
             assertModelIndexes();
             gridWidget.showColumn( index );
             headerWidget.redraw();
-        } else if ( !isVisible && columns.get( index ).isVisible() ) {
+        } else if ( !isVisible
+                    && columns.get( index ).isVisible() ) {
             columns.get( index ).setVisible( isVisible );
             assertModelIndexes();
             gridWidget.hideColumn( index );
@@ -627,6 +653,7 @@ public abstract class DecisionTableWidget extends Composite
                                           iCol,
                                           true,
                                           false );
+        columnStatic.setWidth( 24 );
         columns.add( columnStatic );
         iCol++;
 
@@ -691,9 +718,6 @@ public abstract class DecisionTableWidget extends Composite
             iCol++;
         }
 
-        // Ensure columns are correctly indexed
-        reindexColumns();
-
         // Setup data
         int dataSize = model.getData().length;
         if ( dataSize > 0 ) {
@@ -713,6 +737,10 @@ public abstract class DecisionTableWidget extends Composite
                 this.data.add( cellRow );
             }
         }
+
+        // Ensure cells are indexed correctly for start-up data
+        reindexColumns();
+        assertModelIndexes();
 
         // Draw header first as the size of child Elements depends upon it
         headerWidget.redraw();
@@ -841,7 +869,7 @@ public abstract class DecisionTableWidget extends Composite
      * 
      * @see com.google.gwt.cell.client.ValueUpdater#update(java.lang.Object)
      */
-    public void update(Object value) {
+    public void update(Comparable< ? > value) {
 
         // Update underlying data
         for ( CellValue< ? extends Comparable< ? >> cell : this.selections ) {
@@ -873,30 +901,192 @@ public abstract class DecisionTableWidget extends Composite
     }
 
     /**
-     * Update a column
+     * Update an ActionSetFieldCol column
      * 
-     * @param col
+     * @param origCol
+     *            The existing column in the grid
+     * @param editColumn
+     *            A copy (not clone) of the original column containing the
+     *            modified values
      */
-    public void updateColumn(DTColumnConfig col) {
+    public void updateColumn(final ActionInsertFactCol origColumn,
+                             final ActionInsertFactCol editColumn) {
 
-        int iCol = getDynamicColumnIndex( col );
-        columns.get( iCol ).setCell( CellFactory.getInstance().getCell( col,
-                                                                        this ) );
+        boolean bRedrawColumn = false;
+        boolean bRedrawHeader = false;
+        DynamicColumn column = getDynamicColumn( origColumn );
 
-        boolean redraw = false;
-        List<String> vals = Arrays.asList( model.getValueList( col,
-                                                               sce ) );
-        if ( vals.size() > 0 ) {
-            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-                DynamicDataRow row = data.get( iRow );
-                if ( !vals.contains( row.get( iCol ).getValue() ) ) {
-                    row.get( iCol ).setValue( null );
-                    redraw = true;
-                }
-            }
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            setColumnVisibility( origColumn,
+                                 !editColumn.isHideColumn() );
         }
-        if ( redraw ) {
-            gridWidget.redrawColumn( iCol );
+
+        // Update column's Cell type
+        if ( !isEqualOrNull( origColumn.getBoundName(),
+                             editColumn.getBoundName() )
+             || !isEqualOrNull( origColumn.getFactType(),
+                                editColumn.getFactType() )
+             || !isEqualOrNull( origColumn.getFactField(),
+                                editColumn.getFactField() ) ) {
+            bRedrawColumn = true;
+            updateCellsForDataType( editColumn,
+                                    column );
+        }
+
+        // Update column's cell content if the Optional Value list has changed
+        if ( !isEqualOrNull( origColumn.getValueList(),
+                             editColumn.getValueList() ) ) {
+            bRedrawColumn = updateCellsForOptionValueList( editColumn,
+                                                           column );
+        }
+
+        // Update column header in Header Widget
+        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Copy new values into original column definition
+        populateModelColumn( origColumn,
+                             editColumn );
+
+        if ( bRedrawColumn ) {
+            gridWidget.redrawColumn( column.getColumnIndex() );
+        }
+        if ( bRedrawHeader ) {
+            // Schedule redraw event after column has been redrawn
+            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+                public void execute() {
+                    headerWidget.redraw();
+                }
+            } );
+        }
+
+    }
+
+    /**
+     * Update an ActionSetFieldCol column
+     * 
+     * @param origCol
+     *            The existing column in the grid
+     * @param editColumn
+     *            A copy (not clone) of the original column containing the
+     *            modified values
+     */
+    public void updateColumn(final ActionSetFieldCol origColumn,
+                             final ActionSetFieldCol editColumn) {
+
+        boolean bRedrawColumn = false;
+        boolean bRedrawHeader = false;
+        DynamicColumn column = getDynamicColumn( origColumn );
+
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            setColumnVisibility( origColumn,
+                                 !editColumn.isHideColumn() );
+        }
+
+        // Update column's Cell type
+        if ( !isEqualOrNull( origColumn.getBoundName(),
+                             editColumn.getBoundName() )
+             || !isEqualOrNull( origColumn.getFactField(),
+                                editColumn.getFactField() ) ) {
+            bRedrawColumn = true;
+            updateCellsForDataType( editColumn,
+                                    column );
+        }
+
+        // Update column's cell content if the Optional Value list has changed
+        if ( !isEqualOrNull( origColumn.getValueList(),
+                             editColumn.getValueList() ) ) {
+            bRedrawColumn = updateCellsForOptionValueList( editColumn,
+                                                           column );
+        }
+
+        // Update column header in Header Widget
+        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Copy new values into original column definition
+        populateModelColumn( origColumn,
+                             editColumn );
+
+        if ( bRedrawColumn ) {
+            gridWidget.redrawColumn( column.getColumnIndex() );
+        }
+        if ( bRedrawHeader ) {
+            // Schedule redraw event after column has been redrawn
+            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+                public void execute() {
+                    headerWidget.redraw();
+                }
+            } );
+        }
+
+    }
+
+    /**
+     * Update a Condition column
+     * 
+     * @param origCol
+     *            The existing column in the grid
+     * @param editColumn
+     *            A copy (not clone) of the original column containing the
+     *            modified values
+     */
+    public void updateColumn(final ConditionCol origColumn,
+                             final ConditionCol editColumn) {
+
+        boolean bRedrawColumn = false;
+        boolean bRedrawHeader = false;
+        DynamicColumn column = getDynamicColumn( origColumn );
+
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            setColumnVisibility( origColumn,
+                                 !editColumn.isHideColumn() );
+        }
+
+        // Update column's Cell type
+        if ( !isEqualOrNull( origColumn.getBoundName(),
+                             editColumn.getBoundName() )
+             || !isEqualOrNull( origColumn.getFactType(),
+                                editColumn.getFactType() )
+             || !isEqualOrNull( origColumn.getFactField(),
+                                editColumn.getFactField() )
+             || origColumn.getConstraintValueType() != editColumn.getConstraintValueType() ) {
+            bRedrawColumn = true;
+            updateCellsForDataType( editColumn,
+                                    column );
+        }
+
+        // Update column's cell content if the Optional Value list has changed
+        if ( !isEqualOrNull( origColumn.getValueList(),
+                             editColumn.getValueList() ) ) {
+            bRedrawColumn = updateCellsForOptionValueList( editColumn,
+                                                           column );
+        }
+
+        // Update column header in Header Widget
+        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Copy new values into original column definition
+        populateModelColumn( origColumn,
+                             editColumn );
+
+        if ( bRedrawColumn ) {
+            gridWidget.redrawColumn( column.getColumnIndex() );
+        }
+        if ( bRedrawHeader ) {
+            // Schedule redraw event after column has been redrawn
+            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+                public void execute() {
+                    headerWidget.redraw();
+                }
+            } );
         }
 
     }
@@ -928,7 +1118,8 @@ public abstract class DecisionTableWidget extends Composite
                         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
                             int salience = iRow + 1;
                             if ( attrCol.isReverseOrder() ) {
-                                salience = Math.abs( iRow - MAX_ROWS );
+                                salience = Math.abs( iRow
+                                                     - MAX_ROWS );
                             }
                             data.get( iRow ).get( col.getColumnIndex() )
                                     .setValue( salience );
@@ -958,7 +1149,9 @@ public abstract class DecisionTableWidget extends Composite
         }
 
         // Offset into Model's data array
-        final int DATA_COLUMN_OFFSET = model.getMetadataCols().size() + model.getAttributeCols().size() + 2;
+        final int DATA_COLUMN_OFFSET = model.getMetadataCols().size()
+                                       + model.getAttributeCols().size()
+                                       + 2;
         Map<String, List<ConditionColData>> groups = new HashMap<String, List<ConditionColData>>();
         final int DATA_ROWS = model.getData().length;
 
@@ -976,7 +1169,8 @@ public abstract class DecisionTableWidget extends Composite
 
             // Make a ConditionColData object
             ConditionColData ccd = new ConditionColData();
-            int colIndex = DATA_COLUMN_OFFSET + iCol;
+            int colIndex = DATA_COLUMN_OFFSET
+                           + iCol;
             ccd.data = new String[DATA_ROWS];
             for ( int iRow = 0; iRow < DATA_ROWS; iRow++ ) {
                 ccd.data[iRow] = model.getData()[iRow][colIndex];
@@ -992,7 +1186,8 @@ public abstract class DecisionTableWidget extends Composite
         for ( Map.Entry<String, List<ConditionColData>> me : groups.entrySet() ) {
             for ( ConditionColData ccd : me.getValue() ) {
                 model.getConditionCols().add( ccd.col );
-                int colIndex = DATA_COLUMN_OFFSET + iCol;
+                int colIndex = DATA_COLUMN_OFFSET
+                               + iCol;
                 for ( int iRow = 0; iRow < DATA_ROWS; iRow++ ) {
                     model.getData()[iRow][colIndex] = ccd.data[iRow];
                 }
@@ -1064,17 +1259,23 @@ public abstract class DecisionTableWidget extends Composite
 
                 int rowSpan = 1;
                 CellValue< ? > cell1 = data.get( iRow ).get( iCol );
-                if ( iRow + rowSpan < data.size() ) {
+                if ( iRow
+                     + rowSpan < data.size() ) {
 
-                    CellValue< ? > cell2 = data.get( iRow + rowSpan ).get( iCol );
+                    CellValue< ? > cell2 = data.get( iRow
+                                                     + rowSpan ).get( iCol );
 
                     // Don't merge empty cells
-                    if ( isMerged && !cell1.isEmpty() && !cell2.isEmpty() ) {
+                    if ( isMerged
+                         && !cell1.isEmpty()
+                         && !cell2.isEmpty() ) {
                         while ( cell1.getValue().equals( cell2.getValue() )
-                                && iRow + rowSpan < maxRowIndex ) {
+                                && iRow
+                                   + rowSpan < maxRowIndex ) {
                             cell2.setRowSpan( 0 );
                             rowSpan++;
-                            cell2 = data.get( iRow + rowSpan ).get( iCol );
+                            cell2 = data.get( iRow
+                                              + rowSpan ).get( iCol );
                         }
                         if ( cell1.getValue().equals( cell2.getValue() ) ) {
                             cell2.setRowSpan( 0 );
@@ -1082,7 +1283,9 @@ public abstract class DecisionTableWidget extends Composite
                         }
                     }
                     cell1.setRowSpan( rowSpan );
-                    iRow = iRow + rowSpan - 1;
+                    iRow = iRow
+                           + rowSpan
+                           - 1;
                 } else {
                     cell1.setRowSpan( rowSpan );
                 }
@@ -1116,7 +1319,8 @@ public abstract class DecisionTableWidget extends Composite
 
         if ( startCell.getRowSpan() > 1 ) {
             endCell = data.get(
-                                startCell.getCoordinate().getRow() + startCell.getRowSpan()
+                                startCell.getCoordinate().getRow()
+                                        + startCell.getRowSpan()
                                         - 1 ).get( startCell.getCoordinate().getCol() );
         }
         selectRange( startCell,
@@ -1197,7 +1401,8 @@ public abstract class DecisionTableWidget extends Composite
         for ( int iCol = 0; iCol < baseRow.size(); iCol++ ) {
             int iRow = baseRowIndex;
             CellValue< ? extends Comparable< ? >> cell = baseRow.get( iCol );
-            while ( cell.getRowSpan() != 1 && iRow < data.size() - 1 ) {
+            while ( cell.getRowSpan() != 1
+                    && iRow < data.size() - 1 ) {
                 iRow++;
                 DynamicDataRow row = data.get( iRow );
                 cell = row.get( iCol );
@@ -1245,7 +1450,8 @@ public abstract class DecisionTableWidget extends Composite
         for ( int iCol = 0; iCol < baseRow.size(); iCol++ ) {
             int iRow = baseRowIndex;
             CellValue< ? extends Comparable< ? >> cell = baseRow.get( iCol );
-            while ( cell.getRowSpan() != 1 && iRow > 0 ) {
+            while ( cell.getRowSpan() != 1
+                    && iRow > 0 ) {
                 iRow--;
                 DynamicDataRow row = data.get( iRow );
                 cell = row.get( iCol );
@@ -1255,16 +1461,17 @@ public abstract class DecisionTableWidget extends Composite
         return minRedrawRow;
     }
 
-    // Retrieves the index of a DynamicColumn or -1 if it cannot be found
-    private int getDynamicColumnIndex(DTColumnConfig col) {
-        int index = -1;
-        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            if ( columns.get( iCol ).getModelColumn().equals( col ) ) {
-                index = iCol;
+    // Retrieves the DynamicColumn relating to the Model column or null if it
+    // cannot be found
+    private DynamicColumn getDynamicColumn(DTColumnConfig modelCol) {
+        DynamicColumn column = null;
+        for ( DynamicColumn dc : columns ) {
+            if ( dc.getModelColumn().equals( modelCol ) ) {
+                column = dc;
                 break;
             }
         }
-        return index;
+        return column;
     }
 
     // Insert a new model column at the specified index
@@ -1306,9 +1513,12 @@ public abstract class DecisionTableWidget extends Composite
     // Check whether two Strings are equal or both null
     private boolean isEqualOrNull(String s1,
                                   String s2) {
-        if ( s1 == null && s2 == null ) {
+        if ( s1 == null
+             && s2 == null ) {
             return true;
-        } else if ( s1 != null && s2 != null && s1.equals( s2 ) ) {
+        } else if ( s1 != null
+                    && s2 != null
+                    && s1.equals( s2 ) ) {
             return true;
         }
         return false;
@@ -1324,6 +1534,49 @@ public abstract class DecisionTableWidget extends Composite
             return true;
         }
         return false;
+    }
+
+    // Copy values from one (transient) model column into another
+    private void populateModelColumn(final ActionInsertFactCol col,
+                                     final ActionInsertFactCol editingCol) {
+        col.setBoundName( editingCol.getBoundName() );
+        col.setType( editingCol.getType() );
+        col.setFactField( editingCol.getFactField() );
+        col.setHeader( editingCol.getHeader() );
+        col.setValueList( editingCol.getValueList() );
+        col.setDefaultValue( editingCol.getDefaultValue() );
+        col.setHideColumn( editingCol.isHideColumn() );
+
+        col.setFactType( editingCol.getFactType() );
+    }
+
+    // Copy values from one (transient) model column into another
+    private void populateModelColumn(final ActionSetFieldCol col,
+                                     final ActionSetFieldCol editingCol) {
+        col.setBoundName( editingCol.getBoundName() );
+        col.setType( editingCol.getType() );
+        col.setFactField( editingCol.getFactField() );
+        col.setHeader( editingCol.getHeader() );
+        col.setValueList( editingCol.getValueList() );
+        col.setDefaultValue( editingCol.getDefaultValue() );
+        col.setHideColumn( editingCol.isHideColumn() );
+
+        col.setUpdate( editingCol.isUpdate() );
+    }
+
+    // Copy values from one (transient) model column into another
+    private void populateModelColumn(final ConditionCol col,
+                                     final ConditionCol editingCol) {
+        col.setBoundName( editingCol.getBoundName() );
+        col.setConstraintValueType( editingCol
+                .getConstraintValueType() );
+        col.setFactField( editingCol.getFactField() );
+        col.setFactType( editingCol.getFactType() );
+        col.setHeader( editingCol.getHeader() );
+        col.setOperator( editingCol.getOperator() );
+        col.setValueList( editingCol.getValueList() );
+        col.setDefaultValue( editingCol.getDefaultValue() );
+        col.setHideColumn( editingCol.isHideColumn() );
     }
 
     // Re-index columns
@@ -1370,8 +1623,10 @@ public abstract class DecisionTableWidget extends Composite
 
     // Set height of outer most Widget and related children
     private void setHeight(final int height) {
-        mainPanel.setHeight( height + "px" );
-        mainFocusPanel.setHeight( height + "px" );
+        mainPanel.setHeight( height
+                             + "px" );
+        mainFocusPanel.setHeight( height
+                                  + "px" );
 
         // The Sidebar and Header sizes are derived from the ScrollPanel
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
@@ -1385,9 +1640,12 @@ public abstract class DecisionTableWidget extends Composite
 
     // Set width of outer most Widget and related children
     private void setWidth(int width) {
-        mainPanel.setWidth( width + "px" );
-        scrollPanel.setWidth( (width - style.sidebarWidth()) + "px" );
-        mainFocusPanel.setWidth( width + "px" );
+        mainPanel.setWidth( width
+                            + "px" );
+        scrollPanel.setWidth( (width - style.sidebarWidth())
+                              + "px" );
+        mainFocusPanel.setWidth( width
+                                 + "px" );
 
         // The Sidebar and Header sizes are derived from the ScrollPanel
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
@@ -1399,10 +1657,49 @@ public abstract class DecisionTableWidget extends Composite
         } );
     }
 
+    // Ensure the Column cell type and corresponding values are correct
+    private void updateCellsForDataType(final DTColumnConfig editColumn,
+                                        final DynamicColumn column) {
+        column.setCell( CellFactory.getInstance().getCell( editColumn,
+                                                           this ) );
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            row.set( column.getColumnIndex(),
+                     CellValueFactory.getInstance().getCellValue( editColumn,
+                                                                  iRow,
+                                                                  column.getColumnIndex(),
+                                                                  null,
+                                                                  this ) );
+        }
+
+        // Setting CellValues mashes the indexes
+        assertModelIndexes();
+    }
+
+    // Ensure the values in a column are within the Value List
+    private boolean updateCellsForOptionValueList(final DTColumnConfig editColumn,
+                                                  final DynamicColumn column) {
+        boolean bRedrawRequired = false;
+        List<String> vals = Arrays.asList( model.getValueList( editColumn,
+                                                               sce ) );
+        column.setCell( CellFactory.getInstance().getCell( editColumn,
+                                                                        this ) );
+        int iCol = column.getColumnIndex();
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            if ( !vals.contains( row.get( iCol ).getValue() ) ) {
+                row.get( iCol ).setValue( null );
+                bRedrawRequired = true;
+            }
+        }
+        return bRedrawRequired;
+    }
+
     // The DecisionTableHeaderWidget and DecisionTableSidebarWidget need to be
     // resized when MergableGridWidget has scrollbars
     protected void assertDimensions() {
-        headerWidget.setWidth( scrollPanel.getElement().getClientWidth() + "px" );
+        headerWidget.setWidth( scrollPanel.getElement().getClientWidth()
+                               + "px" );
         sidebarWidget.setHeight( scrollPanel.getElement().getClientHeight()
                                  + "px" );
     }

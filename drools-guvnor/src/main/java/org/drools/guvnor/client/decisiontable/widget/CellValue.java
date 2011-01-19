@@ -25,132 +25,143 @@ package org.drools.guvnor.client.decisiontable.widget;
  * @author manstis
  * 
  */
-public class CellValue<T extends Comparable<T>> implements
-		Comparable<CellValue<T>> {
-	private T value;
-	private int rowSpan = 1;
-	private Coordinate coordinate;
-	private Coordinate mapHtmlToData;
-	private Coordinate mapDataToHtml;
-	private boolean isSelected;
+public class CellValue<T extends Comparable<T>>
+    implements
+        Comparable<CellValue<T>> {
+    private T          value;
+    private int        rowSpan = 1;
+    private Coordinate coordinate;
+    private Coordinate mapHtmlToData;
+    private Coordinate mapDataToHtml;
+    private boolean    isSelected;
 
-	public CellValue(T value, int row, int col) {
-		this.value = value;
-		this.coordinate = new Coordinate(row, col);
-		this.mapHtmlToData = new Coordinate(row, col);
-		this.mapDataToHtml = new Coordinate(row, col);
-	}
+    public CellValue(T value,
+                     int row,
+                     int col) {
+        this.value = value;
+        this.coordinate = new Coordinate( row,
+                                          col );
+        this.mapHtmlToData = new Coordinate( row,
+                                             col );
+        this.mapDataToHtml = new Coordinate( row,
+                                             col );
+    }
 
-	// Used for sorting
-	public int compareTo(CellValue<T> cv) {
-		if (this.value == null) {
-			if (cv.value == null) {
-				return 0;
-			}
-			return 1;
-		} else {
-			if (cv.value == null) {
-				return -1;
-			}
-		}
-		return this.value.compareTo(cv.value);
-	}
+    // Used for sorting
+    public int compareTo(CellValue<T> cv) {
+        if ( this.value == null ) {
+            if ( cv.value == null ) {
+                return 0;
+            }
+            return 1;
+        } else {
+            if ( cv.value == null ) {
+                return -1;
+            }
+        }
+        return this.value.compareTo( cv.value );
+    }
 
-	public T getValue() {
-		return this.value;
-	}
+    public T getValue() {
+        return this.value;
+    }
 
-	public void setHtmlCoordinate(Coordinate c) {
-		this.mapDataToHtml = c;
-	}
+    public void setHtmlCoordinate(Coordinate c) {
+        this.mapDataToHtml = c;
+    }
 
-	@SuppressWarnings("unchecked")
-	public void setValue(Object value) {
-		this.value = (T) value;
-	}
+    @SuppressWarnings("unchecked")
+    public void setValue(Comparable<?> value) {
+        this.value = (T) value;
+    }
 
-	Coordinate getCoordinate() {
-		return this.coordinate;
-	}
+    public Coordinate getCoordinate() {
+        return this.coordinate;
+    }
 
-	Coordinate getHtmlCoordinate() {
-		return new Coordinate(this.mapDataToHtml);
-	}
+    public Coordinate getHtmlCoordinate() {
+        return new Coordinate( this.mapDataToHtml );
+    }
 
-	Coordinate getPhysicalCoordinate() {
-		return new Coordinate(this.mapHtmlToData);
-	}
+    public Coordinate getPhysicalCoordinate() {
+        return new Coordinate( this.mapHtmlToData );
+    }
 
-	int getRowSpan() {
-		return this.rowSpan;
-	}
+    public int getRowSpan() {
+        return this.rowSpan;
+    }
 
-	boolean isEmpty() {
-		return this.value == null;
-	}
+    public boolean isEmpty() {
+        return this.value == null;
+    }
 
-	void setCoordinate(Coordinate coordinate) {
-		this.coordinate = coordinate;
-	}
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
+    }
 
-	void setPhysicalCoordinate(Coordinate c) {
-		this.mapHtmlToData = c;
-	}
+    public void setPhysicalCoordinate(Coordinate c) {
+        this.mapHtmlToData = c;
+    }
 
-	void setRowSpan(int rowSpan) {
-		this.rowSpan = rowSpan;
-	}
+    public void setRowSpan(int rowSpan) {
+        this.rowSpan = rowSpan;
+    }
 
-	public boolean isSelected() {
-		return isSelected;
-	}
+    public boolean isSelected() {
+        return isSelected;
+    }
 
-	public void setSelected(boolean isSelected) {
-		this.isSelected = isSelected;
-	}
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
 
-	@Override
-	@SuppressWarnings("rawtypes")
-	// Used by calls to DynamicDataRow.equals()
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof CellValue)) {
-			return false;
-		}
-		CellValue that = (CellValue) obj;
-		return nullOrEqual(this.value, that.value)
-				&& this.rowSpan == that.rowSpan
-				&& nullOrEqual(this.coordinate, that.coordinate)
-				&& nullOrEqual(this.mapHtmlToData, that.mapHtmlToData)
-				&& nullOrEqual(this.mapDataToHtml, that.mapDataToHtml)
-				&& this.isSelected == that.isSelected;
-	}
+    @Override
+    @SuppressWarnings("rawtypes")
+    // Used by calls to DynamicDataRow.equals()
+    public boolean equals(Object obj) {
+        if ( obj == null ) {
+            return false;
+        }
+        if ( !(obj instanceof CellValue) ) {
+            return false;
+        }
+        CellValue that = (CellValue) obj;
+        return nullOrEqual( this.value,
+                            that.value )
+                && this.rowSpan == that.rowSpan
+                && nullOrEqual( this.coordinate,
+                                that.coordinate )
+                && nullOrEqual( this.mapHtmlToData,
+                                that.mapHtmlToData )
+                && nullOrEqual( this.mapDataToHtml,
+                                that.mapDataToHtml )
+                && this.isSelected == that.isSelected;
+    }
 
-	@Override
-	// Good citizen as overriding equals
-	public int hashCode() {
-		int hash = 1;
-		hash = hash * 31 + (value == null ? 0 : value.hashCode());
-		hash = hash * 31 + rowSpan;
-		hash = hash * 31 + (coordinate == null ? 0 : coordinate.hashCode());
-		hash = hash * 31
-				+ (mapHtmlToData == null ? 0 : mapHtmlToData.hashCode());
-		hash = hash * 31
-				+ (mapDataToHtml == null ? 0 : mapDataToHtml.hashCode());
-		hash = hash * 31 + ((Boolean) isSelected).hashCode();
-		return hash;
-	}
+    @Override
+    // Good citizen as overriding equals
+    public int hashCode() {
+        int hash = 1;
+        hash = hash * 31 + (value == null ? 0 : value.hashCode());
+        hash = hash * 31 + rowSpan;
+        hash = hash * 31 + (coordinate == null ? 0 : coordinate.hashCode());
+        hash = hash * 31
+                + (mapHtmlToData == null ? 0 : mapHtmlToData.hashCode());
+        hash = hash * 31
+                + (mapDataToHtml == null ? 0 : mapDataToHtml.hashCode());
+        hash = hash * 31 + ((Boolean) isSelected).hashCode();
+        return hash;
+    }
 
-	private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
-		if (thisAttr == null && thatAttr == null) {
-			return true;
-		}
-		if (thisAttr == null && thatAttr != null) {
-			return false;
-		}
-		return thisAttr.equals(thatAttr);
-	}
+    private boolean nullOrEqual(Object thisAttr,
+                                Object thatAttr) {
+        if ( thisAttr == null && thatAttr == null ) {
+            return true;
+        }
+        if ( thisAttr == null && thatAttr != null ) {
+            return false;
+        }
+        return thisAttr.equals( thatAttr );
+    }
 
 }

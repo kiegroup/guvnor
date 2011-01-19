@@ -1,17 +1,17 @@
 /*
  * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.drools.guvnor.client.decisiontable;
@@ -36,7 +36,6 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
@@ -64,7 +63,7 @@ public class ActionInsertColumn extends FormStylePopup {
 
     public ActionInsertColumn(SuggestionCompletionEngine sce,
                               final DecisionTableWidget dtable,
-                              final Command refreshGrid,
+                              final ColumnCentricCommand refreshGrid,
                               final ActionInsertFactCol col,
                               final boolean isNew) {
         this.setModal( false );
@@ -164,8 +163,9 @@ public class ActionInsertColumn extends FormStylePopup {
                         }
                     }
                 }
-                populateModelColumn( col );
-                refreshGrid.execute();
+
+                // Pass new\modified column back for handling
+                refreshGrid.execute( editingCol );
                 hide();
             }
         } );
@@ -224,17 +224,6 @@ public class ActionInsertColumn extends FormStylePopup {
 
     private boolean nil(String s) {
         return s == null || s.equals( "" );
-    }
-
-    private void populateModelColumn(ActionInsertFactCol col) {
-        col.setBoundName( editingCol.getBoundName() );
-        col.setType( editingCol.getType() );
-        col.setFactField( editingCol.getFactField() );
-        col.setFactType( editingCol.getFactType() );
-        col.setHeader( editingCol.getHeader() );
-        col.setValueList( editingCol.getValueList() );
-        col.setDefaultValue( editingCol.getDefaultValue() );
-        col.setHideColumn( editingCol.isHideColumn() );
     }
 
     private void showFieldChange() {

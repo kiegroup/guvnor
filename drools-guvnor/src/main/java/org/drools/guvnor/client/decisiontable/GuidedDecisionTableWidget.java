@@ -42,6 +42,7 @@ import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 
@@ -50,7 +51,6 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -173,11 +173,10 @@ public class GuidedDecisionTableWidget extends Composite
                                             final ActionSetFieldCol asf = (ActionSetFieldCol) c;
                                             ActionSetColumn ed = new ActionSetColumn( getSCE(),
                                                                                       dtable,
-                                                                                      new Command() {
-                                                                                          public void execute() {
-                                                                                              dtable.updateColumn( asf );
-                                                                                              dtable.setColumnVisibility( asf,
-                                                                                                                          !asf.isHideColumn() );
+                                                                                      new ColumnCentricCommand() {
+                                                                                          public void execute(DTColumnConfig column) {
+                                                                                              dtable.updateColumn( asf,
+                                                                                                                   (ActionSetFieldCol) column );
                                                                                               refreshActionsWidget();
                                                                                           }
                                                                                       },
@@ -189,11 +188,10 @@ public class GuidedDecisionTableWidget extends Composite
                                             ActionInsertColumn ed = new ActionInsertColumn(
                                                                                             getSCE(),
                                                                                             dtable,
-                                                                                            new Command() {
-                                                                                                public void execute() {
-                                                                                                    dtable.updateColumn( asf );
-                                                                                                    dtable.setColumnVisibility( asf,
-                                                                                                                                !asf.isHideColumn() );
+                                                                                            new ColumnCentricCommand() {
+                                                                                                public void execute(DTColumnConfig column) {
+                                                                                                    dtable.updateColumn( asf,
+                                                                                                                         (ActionInsertFactCol) column );
                                                                                                     refreshActionsWidget();
                                                                                                 }
                                                                                             },
@@ -239,9 +237,9 @@ public class GuidedDecisionTableWidget extends Composite
                         ActionInsertColumn ins = new ActionInsertColumn(
                                                                          getSCE(),
                                                                          dtable,
-                                                                         new Command() {
-                                                                             public void execute() {
-                                                                                 newActionAdded( afc );
+                                                                         new ColumnCentricCommand() {
+                                                                             public void execute(DTColumnConfig column) {
+                                                                                 newActionAdded( (ActionCol) column );
                                                                              }
                                                                          },
                                                                          afc,
@@ -253,9 +251,9 @@ public class GuidedDecisionTableWidget extends Composite
                         final ActionSetFieldCol afc = new ActionSetFieldCol();
                         ActionSetColumn set = new ActionSetColumn( getSCE(),
                                                                    dtable,
-                                                                   new Command() {
-                                                                       public void execute() {
-                                                                           newActionAdded( afc );
+                                                                   new ColumnCentricCommand() {
+                                                                       public void execute(DTColumnConfig column) {
+                                                                           newActionAdded( (ActionCol) column );
                                                                        }
                                                                    },
                                                                    afc,
@@ -263,8 +261,8 @@ public class GuidedDecisionTableWidget extends Composite
                         set.show();
                     }
 
-                    private void newActionAdded(ActionCol afc) {
-                        dtable.addColumn( afc );
+                    private void newActionAdded(ActionCol column) {
+                        dtable.addColumn( column );
                         dtable.scrapeColumns();
                         refreshActionsWidget();
                     }
@@ -331,9 +329,9 @@ public class GuidedDecisionTableWidget extends Composite
                 GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(
                                                                         getSCE(),
                                                                         dtable,
-                                                                        new Command() {
-                                                                            public void execute() {
-                                                                                dtable.addColumn( newCol );
+                                                                        new ColumnCentricCommand() {
+                                                                            public void execute(DTColumnConfig column) {
+                                                                                dtable.addColumn( column );
                                                                                 dtable.scrapeColumns();
                                                                                 refreshConditionsWidget();
                                                                             }
@@ -354,11 +352,10 @@ public class GuidedDecisionTableWidget extends Composite
                                         GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(
                                                                                                 getSCE(),
                                                                                                 dtable,
-                                                                                                new Command() {
-                                                                                                    public void execute() {
-                                                                                                        dtable.updateColumn( c );
-                                                                                                        dtable.setColumnVisibility( c,
-                                                                                                                                    !c.isHideColumn() );
+                                                                                                new ColumnCentricCommand() {
+                                                                                                    public void execute(DTColumnConfig column) {
+                                                                                                        dtable.updateColumn( c,
+                                                                                                                             (ConditionCol) column );
                                                                                                         refreshConditionsWidget();
                                                                                                     }
                                                                                                 },
@@ -516,7 +513,7 @@ public class GuidedDecisionTableWidget extends Composite
                                            constants.AddANewAttributeMetadata(),
                                            new ClickHandler() {
                                                public void onClick(ClickEvent w) {
-                                                   
+
                                                    // show choice of attributes
                                                    final FormStylePopup pop = new FormStylePopup( images
                                                                                                           .config(),
