@@ -33,8 +33,8 @@ import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.Format;
+import org.drools.guvnor.client.util.TabOpener;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -85,18 +85,15 @@ public class PackageBuilderWidget extends Composite {
 
     public FormStyleLayout        layout;
     private PackageConfigData     conf;
-    private OpenItemCommand         editEvent;
 
     private final FormStyleLayout buildWholePackageLayout = new FormStyleLayout();
     private final FormStyleLayout builtInSelectorLayout   = new FormStyleLayout();
     private final FormStyleLayout customSelectorLayout    = new FormStyleLayout();
     private String                buildMode               = "buildWholePackage";
 
-    public PackageBuilderWidget(final PackageConfigData conf,
-                                OpenItemCommand editEvent) {
+    public PackageBuilderWidget(final PackageConfigData conf) {
         layout = new FormStyleLayout();
         this.conf = conf;
-        this.editEvent = editEvent;
 
         final SimplePanel buildResults = new SimplePanel();
 
@@ -309,8 +306,7 @@ public class PackageBuilderWidget extends Composite {
                                                                                 showSuccessfulBuild( buildResults );
                                                                             } else {
                                                                                 showBuilderErrors( result,
-                                                                                                   buildResults,
-                                                                                                   editEvent );
+                                                                                                   buildResults );
                                                                             }
                                                                         }
 
@@ -482,8 +478,7 @@ public class PackageBuilderWidget extends Composite {
      * This is called in the unhappy event of there being errors.
      */
     public static void showBuilderErrors(BuilderResult results,
-                                         Panel buildResults,
-                                         final OpenItemCommand editEvent) {
+                                         Panel buildResults) {
         buildResults.clear();
 
         Object[][] data = new Object[results.getLines().length][4];
@@ -556,7 +551,7 @@ public class PackageBuilderWidget extends Composite {
                                       EventObject e) {
                 if ( !grid.getSelectionModel().getSelected().getAsString( "assetFormat" ).equals( "Package" ) ) { //NON-NLS
                     String uuid = grid.getSelectionModel().getSelected().getAsString( "uuid" ); //NON-NLS
-                    editEvent.open( uuid );
+                    TabOpener.getInstance().openAsset( uuid );
                 }
             }
         } );

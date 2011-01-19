@@ -75,11 +75,9 @@
 				</tr>
 			</table>
 		</gwt:HTMLPanel>
-		<gwt:HTMLPanel>
-			<div class="guvnor-FormPanel">
-				<guvnor-qa:SummaryTableView ui:field="summaryTableView"></guvnor-qa:SummaryTableView>
-				<gwt:Button ui:field="closeButton" text='{i18n.Close}'></gwt:Button>
-			</div>
-		</gwt:HTMLPanel>
+		<gwt:VerticalPanel width="100%" styleName="guvnor-FormPanel">
+			<guvnor-qa:SummaryTableView ui:field="summaryTableView"></guvnor-qa:SummaryTableView>
+			<gwt:Button ui:field="closeButton" text='{i18n.Close}'></gwt:Button>
+		</gwt:VerticalPanel>
 	</gwt:VerticalPanel>
 </ui:UiBinder>

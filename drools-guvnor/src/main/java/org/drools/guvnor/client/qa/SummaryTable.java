@@ -17,7 +17,7 @@ package org.drools.guvnor.client.qa;
 
 import org.drools.guvnor.client.qa.SummaryTableView.Presenter;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
+import org.drools.guvnor.client.util.TabOpener;
 
 /**
  * @author rikkola
@@ -28,7 +28,6 @@ public class SummaryTable
     Presenter {
 
     private SummaryTableView summaryTableView;
-    private OpenItemCommand  openCommand;
 
     public SummaryTable(SummaryTableView summaryTableView) {
         this.summaryTableView = summaryTableView;
@@ -44,11 +43,7 @@ public class SummaryTable
     }
 
     public void openTestScenario(String uuid) {
-        openCommand.open( uuid );
-    }
-
-    public void setOpenCommand(OpenItemCommand openCommand) {
-        this.openCommand = openCommand;
+        TabOpener.getInstance().openAsset( uuid );
     }
 
 }

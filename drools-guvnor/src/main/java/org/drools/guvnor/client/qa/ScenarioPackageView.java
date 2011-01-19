@@ -46,20 +46,17 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class ScenarioPackageView extends Composite {
 
-    private Constants       constants = ((Constants) GWT.create( Constants.class ));
-    private static Images   images    = GWT.create( Images.class );
+    private Constants     constants = ((Constants) GWT.create( Constants.class ));
+    private static Images images    = GWT.create( Images.class );
 
-    private OpenItemCommand editEvent;
+    private VerticalPanel layout;
 
-    private VerticalPanel   layout;
-
-    private AssetItemGrid   grid;
+    private AssetItemGrid grid;
 
     public ScenarioPackageView(final String packageUUID,
                                String packageName,
                                OpenItemCommand editEvent,
                                ExplorerViewCenterPanel centerPanel) {
-        this.editEvent = editEvent;
 
         grid = new AssetItemGrid( editEvent,
                                   AssetItemGrid.RULE_LIST_TABLE_ID,
@@ -118,7 +115,6 @@ public class ScenarioPackageView extends Composite {
                                                                              BulkRunResult w = new BulkRunResult( view );
 
                                                                              w.setBulkTestRunResult( d );
-                                                                             w.setEditItemEvent( editEvent );
                                                                              w.setCloseCommand( new Command() {
                                                                                  public void execute() {
                                                                                      refreshShowGrid();

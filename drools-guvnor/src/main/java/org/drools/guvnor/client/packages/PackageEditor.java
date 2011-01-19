@@ -37,7 +37,6 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
@@ -74,16 +73,13 @@ public class PackageEditor extends PrettyFormLayout {
     protected ValidatedResponse previousResponse;
     private Command             close;
     private Command             refreshPackageList;
-    private OpenItemCommand       editEvent;
 
     public PackageEditor(PackageConfigData data,
                          Command close,
-                         Command refreshPackageList,
-                         OpenItemCommand editEvent) {
+                         Command refreshPackageList) {
         this.conf = data;
         this.close = close;
         this.refreshPackageList = refreshPackageList;
-        this.editEvent = editEvent;
 
         setWidth( "100%" );
         refreshWidgets();
@@ -140,8 +136,7 @@ public class PackageEditor extends PrettyFormLayout {
 
         if ( !conf.isSnapshot ) {
             startSection( constants.BuildAndValidate() );
-            addRow( new PackageBuilderWidget( this.conf,
-                                              editEvent ) );
+            addRow( new PackageBuilderWidget( this.conf ) );
             endSection();
         }
 

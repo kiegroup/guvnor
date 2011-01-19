@@ -94,14 +94,12 @@ public class BulkRunResultViewImpl extends Composite
         summaryTable.addRow( summary );
     }
 
-    public void showErrors(BuilderResult errors,
-                           OpenItemCommand editEvent) {
+    public void showErrors(BuilderResult errors) {
 
         Panel err = new SimplePanel();
 
         PackageBuilderWidget.showBuilderErrors( errors,
-                                                err,
-                                                editEvent );
+                                                err );
     }
 
     public void setPresenter(Presenter presenter) {

@@ -23,7 +23,6 @@ import static org.mockito.Mockito.verify;
 
 import org.drools.guvnor.client.qa.SummaryTableView.Presenter;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,16 +34,11 @@ public class SummaryTableTest {
 
     private SummaryTable     summaryTable;
     private SummaryTableView summaryTableView;
-    private OpenItemCommand  openItemCommand;
 
     @Before
     public void setUp() {
         summaryTableView = mock( SummaryTableView.class );
         summaryTable = new SummaryTable( summaryTableView );
-        openItemCommand = mock( OpenItemCommand.class );
-
-        summaryTable.setOpenCommand( openItemCommand );
-
     }
 
     @Test
@@ -107,14 +101,6 @@ public class SummaryTableTest {
     @Test
     public void presenterIsSet() throws Exception {
         verify( summaryTableView ).setPresenter( getPresenter() );
-    }
-
-    @Test
-    public void openTestScenario() throws Exception {
-        Presenter presenter = getPresenter();
-        presenter.openTestScenario( "uuid" );
-
-        verify( openItemCommand ).open( "uuid" );
     }
 
     private Presenter getPresenter() {

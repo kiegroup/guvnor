@@ -18,7 +18,6 @@ package org.drools.guvnor.client.qa;
 
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.user.client.Command;
 
@@ -31,7 +30,6 @@ public class BulkRunResult
     BulkRunResultView.Presenter {
 
     private BulkTestRunResult result;
-    private OpenItemCommand   editEvent;
     private Command           closeCommand;
 
     private BulkRunResultView display;
@@ -54,8 +52,7 @@ public class BulkRunResult
     }
 
     private void showErrors() {
-        display.showErrors( result.getResult(),
-                            editEvent );
+        display.showErrors( result.getResult() );
     }
 
     private void showResult() {
@@ -137,14 +134,6 @@ public class BulkRunResult
 
     public void onClose() {
         closeCommand.execute();
-    }
-
-    public void onOpenTestScenario(String uuid) {
-        editEvent.open( uuid );
-    }
-
-    public void setEditItemEvent(OpenItemCommand editEvent) {
-        this.editEvent = editEvent;
     }
 
     public void setCloseCommand(Command closeCommand) {
