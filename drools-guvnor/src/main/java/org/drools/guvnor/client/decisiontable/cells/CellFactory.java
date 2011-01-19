@@ -1,10 +1,9 @@
 package org.drools.guvnor.client.decisiontable.cells;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
+import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
@@ -15,7 +14,6 @@ import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
 
 import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.cell.client.SelectionCell;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 
@@ -26,6 +24,8 @@ import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
  * 
  */
 public class CellFactory {
+
+	private static String[] DIALECTS = { "java", "mvel" };
 
 	// The Singleton
 	private static CellFactory instance;
@@ -61,27 +61,27 @@ public class CellFactory {
 		} else if (column instanceof AttributeCol) {
 			AttributeCol attrCol = (AttributeCol) column;
 			String attrName = attrCol.attr;
-			if (attrName.equals("salience")) {
+			if (attrName.equals(RuleAttributeWidget.SALIENCE_ATTR)) {
 				if (attrCol.isUseRowNumber()) {
 					cell = makeRowNumberCell();
 				} else {
 					cell = makeNumericCell();
 				}
-			} else if (attrName.equals("enabled")) {
+			} else if (attrName.equals(RuleAttributeWidget.ENABLED_ATTR)) {
 				cell = makeBooleanCell();
-			} else if (attrName.equals("no-loop")) {
+			} else if (attrName.equals(RuleAttributeWidget.NO_LOOP_ATTR)) {
 				cell = makeBooleanCell();
-			} else if (attrName.equals("duration")) {
+			} else if (attrName.equals(RuleAttributeWidget.DURATION_ATTR)) {
 				cell = makeNumericCell();
-			} else if (attrName.equals("auto-focus")) {
+			} else if (attrName.equals(RuleAttributeWidget.AUTO_FOCUS_ATTR)) {
 				cell = makeBooleanCell();
-			} else if (attrName.equals("lock-on-active")) {
+			} else if (attrName.equals(RuleAttributeWidget.LOCK_ON_ACTIVE_ATTR)) {
 				cell = makeBooleanCell();
-			} else if (attrName.equals("date-effective")) {
+			} else if (attrName.equals(RuleAttributeWidget.DATE_EFFECTIVE_ATTR)) {
 				cell = makeDateCell();
-			} else if (attrName.equals("date-expires")) {
+			} else if (attrName.equals(RuleAttributeWidget.DATE_EXPIRES_ATTR)) {
 				cell = makeDateCell();
-			} else if (attrName.equals("dialect")) {
+			} else if (attrName.equals(RuleAttributeWidget.DIALECT_ATTR)) {
 				cell = makeDialectCell();
 			}
 
@@ -114,11 +114,9 @@ public class CellFactory {
 
 	// Make a new Cell for Dialect columns
 	private DecisionTableCellValueAdaptor<? extends Comparable<?>> makeDialectCell() {
-		List<String> dialectOptions = new ArrayList<String>();
-		dialectOptions.add("java");
-		dialectOptions.add("mvel");
-		SelectionCell sc = new SelectionCell(dialectOptions);
-		return new DecisionTableCellValueAdaptor<String>(sc);
+		PopupDropDownEditCell pudd = new PopupDropDownEditCell();
+		pudd.setItems(DIALECTS);
+		return new DecisionTableCellValueAdaptor<String>(pudd);
 	}
 
 	// Make a new Cell for Condition and Actions columns

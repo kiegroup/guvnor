@@ -265,7 +265,8 @@ public class VerticalDecisionTableHeaderWidget extends
 				tce.<TableCellElement> cast().setRowSpan(4);
 				tce.addClassName(style.headerRowIntermediate());
 			} else if (modelCol instanceof DescriptionCol) {
-				tce.appendChild(makeLabel("Description", col.getWidth()));
+				tce.appendChild(makeLabel(constants.Description(),
+						col.getWidth()));
 				tce.<TableCellElement> cast().setRowSpan(4);
 				tce.addClassName(style.headerRowIntermediate());
 			} else if (modelCol instanceof MetadataCol) {

@@ -364,9 +364,10 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			tce.addClassName(cellStyle);
 			div.setClassName(divStyle);
 
-			// Dynamic attributes!
+			// Dynamic attributes! 
 			div.getStyle().setWidth(column.getWidth(), Unit.PX);
-			tce.getStyle().setHeight(style.rowHeight() * rowSpan, Unit.PX);
+            div.getStyle().setHeight(Math.floor(style.rowHeight() * 0.95), Unit.PX);
+            tce.getStyle().setHeight(style.rowHeight() * rowSpan, Unit.PX);
 			tce.setRowSpan(rowSpan);
 
 			// Render the cell and set inner HTML
@@ -377,7 +378,7 @@ public class VerticalMergableGridWidget extends MergableGridWidget {
 			// Construct the table
 			tce.appendChild(div);
 			tce.setTabIndex(0);
-		}
+			}
 		return tce;
 
 	}

@@ -1,12 +1,11 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.Panel;
 
@@ -28,20 +27,7 @@ public abstract class DecisionTableHeaderWidget extends CellPanel implements
 	protected static final DecisionTableResources resource = GWT
 			.create(DecisionTableResources.class);
 	protected static final DecisionTableStyle style = resource.cellTableStyle();
-
-	// Image resources
-	protected static final String DOWN_ARROW = makeImage(resource.downArrow());
-	protected static final String SMALL_DOWN_ARROW = makeImage(resource
-			.smallDownArrow());
-	protected static final String UP_ARROW = makeImage(resource.upArrow());
-	protected static final String SMALL_UP_ARROW = makeImage(resource
-			.smallUpArrow());
-
-	private static String makeImage(ImageResource resource) {
-		AbstractImagePrototype prototype = AbstractImagePrototype
-				.create(resource);
-		return prototype.getHTML();
-	}
+	protected static final Constants constants = GWT.create(Constants.class);
 
 	/**
 	 * Construct a "Header" for the provided DecisionTable

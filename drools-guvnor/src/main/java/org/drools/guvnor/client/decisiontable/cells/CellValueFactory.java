@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.drools.guvnor.client.decisiontable.widget.CellValue;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
+import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
@@ -155,27 +156,27 @@ public class CellValueFactory {
 		} else if (column instanceof AttributeCol) {
 			AttributeCol attrCol = (AttributeCol) column;
 			String attrName = attrCol.attr;
-			if (attrName.equals("salience")) {
+			if (attrName.equals(RuleAttributeWidget.SALIENCE_ATTR)) {
 				if (attrCol.isUseRowNumber()) {
 					dataType = DATA_TYPES.ROW_NUMBER;
 				} else {
 					dataType = DATA_TYPES.NUMERIC;
 				}
-			} else if (attrName.equals("enabled")) {
+			} else if (attrName.equals(RuleAttributeWidget.ENABLED_ATTR)) {
 				dataType = DATA_TYPES.BOOLEAN;
-			} else if (attrName.equals("no-loop")) {
+			} else if (attrName.equals(RuleAttributeWidget.NO_LOOP_ATTR)) {
 				dataType = DATA_TYPES.BOOLEAN;
-			} else if (attrName.equals("duration")) {
+			} else if (attrName.equals(RuleAttributeWidget.DURATION_ATTR)) {
 				dataType = DATA_TYPES.NUMERIC;
-			} else if (attrName.equals("auto-focus")) {
+			} else if (attrName.equals(RuleAttributeWidget.AUTO_FOCUS_ATTR)) {
 				dataType = DATA_TYPES.BOOLEAN;
-			} else if (attrName.equals("lock-on-active")) {
+			} else if (attrName.equals(RuleAttributeWidget.LOCK_ON_ACTIVE_ATTR)) {
 				dataType = DATA_TYPES.BOOLEAN;
-			} else if (attrName.equals("date-effective")) {
+			} else if (attrName.equals(RuleAttributeWidget.DATE_EFFECTIVE_ATTR)) {
 				dataType = DATA_TYPES.DATE;
-			} else if (attrName.equals("date-expires")) {
+			} else if (attrName.equals(RuleAttributeWidget.DATE_EXPIRES_ATTR)) {
 				dataType = DATA_TYPES.DATE;
-			} else if (attrName.equals("dialect")) {
+			} else if (attrName.equals(RuleAttributeWidget.DIALECT_ATTR)) {
 				dataType = DATA_TYPES.DIALECT;
 			}
 

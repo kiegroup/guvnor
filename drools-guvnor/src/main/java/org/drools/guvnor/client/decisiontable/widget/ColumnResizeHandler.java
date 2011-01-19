@@ -7,13 +7,15 @@ import com.google.gwt.event.shared.EventHandler;
  * 
  * @author manstis
  */
-public interface ColumnResizeHandler extends EventHandler {
+public interface ColumnResizeHandler
+    extends
+    EventHandler {
 
-	/**
-	 * Called when {@link ColumnResizeEvent} is fired.
-	 * 
-	 * @param event
-	 *            the {@link ColumnResizeEvent} that was fired
-	 */
-	void onColumnResize(ColumnResizeEvent event);
+    /**
+     * Called when {@link ColumnResizeEvent} is fired.
+     * 
+     * @param event
+     *            the {@link ColumnResizeEvent} that was fired
+     */
+    void onColumnResize(ColumnResizeEvent event);
 }

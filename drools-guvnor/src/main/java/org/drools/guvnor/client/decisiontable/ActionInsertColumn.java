@@ -53,277 +53,294 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class ActionInsertColumn extends FormStylePopup {
 
-	private static Images images = (Images) GWT.create(Images.class);
-	private Constants constants = GWT.create(Constants.class);
+    private static Images              images       = (Images) GWT.create( Images.class );
+    private Constants                  constants    = GWT.create( Constants.class );
 
-	private DecisionTableWidget dtable;
-	private SuggestionCompletionEngine sce;
-	private ActionInsertFactCol editingCol;
-	private SmallLabel patternLabel = new SmallLabel();
-	private TextBox fieldLabel = getFieldLabel();
+    private DecisionTableWidget        dtable;
+    private SuggestionCompletionEngine sce;
+    private ActionInsertFactCol        editingCol;
+    private SmallLabel                 patternLabel = new SmallLabel();
+    private TextBox                    fieldLabel   = getFieldLabel();
 
-	public ActionInsertColumn(SuggestionCompletionEngine sce,
-			final DecisionTableWidget dtable, final Command refreshGrid,
-			final ActionInsertFactCol col, final boolean isNew) {
-		this.setModal(false);
-		this.dtable = dtable;
-		this.sce = sce;
-		this.editingCol = new ActionInsertFactCol();
-		editingCol.setBoundName(col.getBoundName());
-		editingCol.setType(col.getType());
-		editingCol.setFactField(col.getFactField());
-		editingCol.setFactType(col.getFactType());
-		editingCol.setHeader(col.getHeader());
-		editingCol.setValueList(col.getValueList());
-		editingCol.setDefaultValue(col.getDefaultValue());
-		editingCol.setHideColumn(col.isHideColumn());
+    public ActionInsertColumn(SuggestionCompletionEngine sce,
+                              final DecisionTableWidget dtable,
+                              final Command refreshGrid,
+                              final ActionInsertFactCol col,
+                              final boolean isNew) {
+        this.setModal( false );
+        this.dtable = dtable;
+        this.sce = sce;
+        this.editingCol = new ActionInsertFactCol();
+        editingCol.setBoundName( col.getBoundName() );
+        editingCol.setType( col.getType() );
+        editingCol.setFactField( col.getFactField() );
+        editingCol.setFactType( col.getFactType() );
+        editingCol.setHeader( col.getHeader() );
+        editingCol.setValueList( col.getValueList() );
+        editingCol.setDefaultValue( col.getDefaultValue() );
+        editingCol.setHideColumn( col.isHideColumn() );
 
-		setTitle(constants.ActionColumnConfigurationInsertingANewFact());
+        setTitle( constants.ActionColumnConfigurationInsertingANewFact() );
 
-		HorizontalPanel pattern = new HorizontalPanel();
-		pattern.add(patternLabel);
-		doPatternLabel();
+        HorizontalPanel pattern = new HorizontalPanel();
+        pattern.add( patternLabel );
+        doPatternLabel();
 
-		Image changePattern = new ImageButton(images.edit(),
-				constants.ChooseAPatternThatThisColumnAddsDataTo(),
-				new ClickHandler() {
-					public void onClick(ClickEvent w) {
-						showChangePattern(w);
-					}
-				});
-		pattern.add(changePattern);
-		addAttribute(constants.Pattern(), pattern);
+        Image changePattern = new ImageButton( images.edit(),
+                                               constants.ChooseAPatternThatThisColumnAddsDataTo(),
+                                               new ClickHandler() {
+                                                   public void onClick(ClickEvent w) {
+                                                       showChangePattern( w );
+                                                   }
+                                               } );
+        pattern.add( changePattern );
+        addAttribute( constants.Pattern(),
+                      pattern );
 
-		HorizontalPanel field = new HorizontalPanel();
-		field.add(fieldLabel);
-		Image editField = new ImageButton(images.edit(),
-				constants.EditTheFieldThatThisColumnOperatesOn(),
-				new ClickHandler() {
-					public void onClick(ClickEvent w) {
-						showFieldChange();
-					}
-				}); // NON-NLS
-		field.add(editField);
-		addAttribute(constants.Field(), field);
-		doFieldLabel();
+        HorizontalPanel field = new HorizontalPanel();
+        field.add( fieldLabel );
+        Image editField = new ImageButton( images.edit(),
+                                           constants.EditTheFieldThatThisColumnOperatesOn(),
+                                           new ClickHandler() {
+                                               public void onClick(ClickEvent w) {
+                                                   showFieldChange();
+                                               }
+                                           } );
+        field.add( editField );
+        addAttribute( constants.Field(),
+                      field );
+        doFieldLabel();
 
-		final TextBox valueList = new TextBox();
-		valueList.setText(editingCol.getValueList());
-		valueList.addChangeHandler(new ChangeHandler() {
-			public void onChange(ChangeEvent event) {
-				editingCol.setValueList(valueList.getText());
-			}
-		});
-		HorizontalPanel vl = new HorizontalPanel();
-		vl.add(valueList);
-		vl.add(new InfoPopup(constants.ValueList(), constants
-				.ValueListsExplanation()));
-		addAttribute(constants.optionalValueList(), vl);
+        final TextBox valueList = new TextBox();
+        valueList.setText( editingCol.getValueList() );
+        valueList.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                editingCol.setValueList( valueList.getText() );
+            }
+        } );
+        HorizontalPanel vl = new HorizontalPanel();
+        vl.add( valueList );
+        vl.add( new InfoPopup( constants.ValueList(),
+                               constants
+                                       .ValueListsExplanation() ) );
+        addAttribute( constants.optionalValueList(),
+                      vl );
 
-		final TextBox header = new TextBox();
-		header.setText(col.getHeader());
-		header.addChangeHandler(new ChangeHandler() {
-			public void onChange(ChangeEvent event) {
-				editingCol.setHeader(header.getText());
-			}
-		});
-		addAttribute(constants.ColumnHeaderDescription(), header);
+        final TextBox header = new TextBox();
+        header.setText( col.getHeader() );
+        header.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                editingCol.setHeader( header.getText() );
+            }
+        } );
+        addAttribute( constants.ColumnHeaderDescription(),
+                      header );
 
-		addAttribute(constants.DefaultValue(),
-				GuidedDTColumnConfig.getDefaultEditor(editingCol));
+        addAttribute( constants.DefaultValue(),
+                      GuidedDTColumnConfig.getDefaultEditor( editingCol ) );
 
-		Button apply = new Button(constants.ApplyChanges());
-		apply.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent w) {
-				if (null == editingCol.getHeader()
-						|| "".equals(editingCol.getHeader())) {
-					Window.alert(constants
-							.YouMustEnterAColumnHeaderValueDescription());
-					return;
-				}
-				if (isNew) {
-					if (!unique(editingCol.getHeader())) {
-						Window.alert(constants
-								.ThatColumnNameIsAlreadyInUsePleasePickAnother());
-						return;
-					}
-					dtable.addColumn(editingCol);
-					dtable.getModel().getActionCols().add(editingCol);
+        Button apply = new Button( constants.ApplyChanges() );
+        apply.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                if ( null == editingCol.getHeader()
+                        || "".equals( editingCol.getHeader() ) ) {
+                    Window.alert( constants
+                            .YouMustEnterAColumnHeaderValueDescription() );
+                    return;
+                }
+                if ( isNew ) {
+                    if ( !unique( editingCol.getHeader() ) ) {
+                        Window.alert( constants
+                                .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        return;
+                    }
 
-				} else {
-					if (!col.getHeader().equals(editingCol.getHeader())) {
-						if (!unique(editingCol.getHeader())) {
-							Window.alert(constants
-									.ThatColumnNameIsAlreadyInUsePleasePickAnother());
-							return;
-						}
-					}
-					col.setBoundName(editingCol.getBoundName());
-					col.setType(editingCol.getType());
-					col.setFactField(editingCol.getFactField());
-					col.setFactType(editingCol.getFactType());
-					col.setHeader(editingCol.getHeader());
-					col.setValueList(editingCol.getValueList());
-					col.setDefaultValue(editingCol.getDefaultValue());
-					col.setHideColumn(editingCol.isHideColumn());
-					dtable.setColumnVisibility(col, !col.isHideColumn());
-				}
-				refreshGrid.execute();
-				hide();
-			}
-		});
-		addAttribute("", apply);
+                } else {
+                    if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
+                        if ( !unique( editingCol.getHeader() ) ) {
+                            Window.alert( constants
+                                    .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            return;
+                        }
+                    }
+                }
+                populateModelColumn( col );
+                refreshGrid.execute();
+                hide();
+            }
+        } );
+        addAttribute( "",
+                      apply );
 
-	}
+    }
 
-	private boolean unique(String header) {
-		for (ActionCol o : dtable.getModel().getActionCols()) {
-			if (o.getHeader().equals(header))
-				return false;
-		}
-		return true;
-	}
+    private void doFieldLabel() {
+        if ( nil( this.editingCol.getFactField() ) ) {
+            fieldLabel.setText( constants.pleaseChooseFactType() );
+        } else {
+            fieldLabel.setText( editingCol.getFactField() );
+        }
 
-	private TextBox getFieldLabel() {
-		final TextBox box = new TextBox();
-		box.addChangeHandler(new ChangeHandler() {
-			public void onChange(ChangeEvent event) {
-				editingCol.setFactField(box.getText());
-			}
-		});
-		return box;
-	}
+    }
 
-	private void showFieldChange() {
-		final FormStylePopup pop = new FormStylePopup();
-		pop.setModal(false);
-		String[] fields = this.sce.getFieldCompletions(
-				FieldAccessorsAndMutators.MUTATOR,
-				this.editingCol.getFactType());
-		final ListBox box = new ListBox();
-		for (int i = 0; i < fields.length; i++) {
-			box.addItem(fields[i]);
-		}
-		pop.addAttribute(constants.Field(), box);
-		Button b = new Button(constants.OK());
-		pop.addAttribute("", b);
-		b.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent w) {
-				editingCol.setFactField(box.getItemText(box.getSelectedIndex()));
-				editingCol.setType(sce.getFieldType(editingCol.getFactType(),
-						editingCol.getFactField()));
-				doFieldLabel();
-				pop.hide();
-			}
-		});
-		pop.show();
+    private void doPatternLabel() {
+        if ( this.editingCol.getFactType() != null ) {
+            this.patternLabel.setText( this.editingCol.getFactType() + " ["
+                                       + editingCol.getBoundName() + "]" );
+        }
+    }
 
-	}
+    private TextBox getFieldLabel() {
+        final TextBox box = new TextBox();
+        box.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                editingCol.setFactField( box.getText() );
+            }
+        } );
+        return box;
+    }
 
-	private void doFieldLabel() {
-		if (nil(this.editingCol.getFactField())) {
-			fieldLabel.setText(constants.pleaseChooseFactType());
-		} else {
-			fieldLabel.setText(editingCol.getFactField());
-		}
+    private ListBox loadPatterns() {
+        Set<String> vars = new HashSet<String>();
+        ListBox patterns = new ListBox();
 
-	}
+        for ( Object o : dtable.getModel().getActionCols() ) {
+            ActionCol col = (ActionCol) o;
+            if ( col instanceof ActionInsertFactCol ) {
+                ActionInsertFactCol c = (ActionInsertFactCol) col;
+                if ( !vars.contains( c.getBoundName() ) ) {
+                    patterns.addItem( c.getFactType() + " [" + c.getBoundName()
+                                              + "]",
+                                      c.getFactType() + " " + c.getBoundName() );
+                    vars.add( c.getBoundName() );
+                }
+            }
 
-	private boolean nil(String s) {
-		return s == null || s.equals("");
-	}
+        }
 
-	private void doPatternLabel() {
-		if (this.editingCol.getFactType() != null) {
-			this.patternLabel.setText(this.editingCol.getFactType() + " ["
-					+ editingCol.getBoundName() + "]");
-		}
-	}
+        return patterns;
 
-	protected void showChangePattern(ClickEvent w) {
+    }
 
-		final ListBox pats = this.loadPatterns();
-		if (pats.getItemCount() == 0) {
-			showNewPatternDialog();
-			return;
-		}
-		final FormStylePopup pop = new FormStylePopup();
-		Button ok = new Button("OK");
-		HorizontalPanel hp = new HorizontalPanel();
-		hp.add(pats);
-		hp.add(ok);
+    private boolean nil(String s) {
+        return s == null || s.equals( "" );
+    }
 
-		pop.addAttribute(constants.ChooseExistingPatternToAddColumnTo(), hp);
-		pop.addAttribute("", new HTML(constants.ORwithEmphasis()));
+    private void populateModelColumn(ActionInsertFactCol col) {
+        col.setBoundName( editingCol.getBoundName() );
+        col.setType( editingCol.getType() );
+        col.setFactField( editingCol.getFactField() );
+        col.setFactType( editingCol.getFactType() );
+        col.setHeader( editingCol.getHeader() );
+        col.setValueList( editingCol.getValueList() );
+        col.setDefaultValue( editingCol.getDefaultValue() );
+        col.setHideColumn( editingCol.isHideColumn() );
+    }
 
-		Button createPattern = new Button(constants.CreateNewFactPattern());
-		createPattern.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent w) {
-				pop.hide();
-				showNewPatternDialog();
-			}
-		});
-		pop.addAttribute("", createPattern);
+    private void showFieldChange() {
+        final FormStylePopup pop = new FormStylePopup();
+        pop.setModal( false );
+        String[] fields = this.sce.getFieldCompletions(
+                                                        FieldAccessorsAndMutators.MUTATOR,
+                                                        this.editingCol.getFactType() );
+        final ListBox box = new ListBox();
+        for ( int i = 0; i < fields.length; i++ ) {
+            box.addItem( fields[i] );
+        }
+        pop.addAttribute( constants.Field(),
+                          box );
+        Button b = new Button( constants.OK() );
+        pop.addAttribute( "",
+                          b );
+        b.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
+                editingCol.setType( sce.getFieldType( editingCol.getFactType(),
+                                                      editingCol.getFactField() ) );
+                doFieldLabel();
+                pop.hide();
+            }
+        } );
+        pop.show();
 
-		ok.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent w) {
-				String[] val = pats.getValue(pats.getSelectedIndex()).split(
-						"\\s"); // NON-NLS
-				editingCol.setFactType(val[0]);
-				editingCol.setBoundName(val[1]);
-				doPatternLabel();
-				pop.hide();
-			}
-		});
+    }
 
-		pop.show();
-	}
+    private boolean unique(String header) {
+        for ( ActionCol o : dtable.getModel().getActionCols() ) {
+            if ( o.getHeader().equals( header ) ) return false;
+        }
+        return true;
+    }
 
-	protected void showNewPatternDialog() {
-		final FormStylePopup pop = new FormStylePopup();
-		pop.setTitle(constants.NewFactSelectTheType());
-		final ListBox types = new ListBox();
-		for (int i = 0; i < sce.getFactTypes().length; i++) {
-			types.addItem(sce.getFactTypes()[i]);
-		}
-		pop.addAttribute(constants.FactType(), types);
-		final TextBox binding = new TextBox();
-		pop.addAttribute(constants.name(), binding);
+    protected void showChangePattern(ClickEvent w) {
 
-		Button ok = new Button(constants.OK());
-		ok.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent w) {
-				editingCol.setBoundName(binding.getText());
-				editingCol.setFactType(types.getItemText(types
-						.getSelectedIndex()));
-				doPatternLabel();
-				pop.hide();
-			}
-		});
-		pop.addAttribute("", ok);
+        final ListBox pats = this.loadPatterns();
+        if ( pats.getItemCount() == 0 ) {
+            showNewPatternDialog();
+            return;
+        }
+        final FormStylePopup pop = new FormStylePopup();
+        Button ok = new Button( "OK" );
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add( pats );
+        hp.add( ok );
 
-		pop.show();
-	}
+        pop.addAttribute( constants.ChooseExistingPatternToAddColumnTo(),
+                          hp );
+        pop.addAttribute( "",
+                          new HTML( constants.ORwithEmphasis() ) );
 
-	private ListBox loadPatterns() {
-		Set<String> vars = new HashSet<String>();
-		ListBox patterns = new ListBox();
+        Button createPattern = new Button( constants.CreateNewFactPattern() );
+        createPattern.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                pop.hide();
+                showNewPatternDialog();
+            }
+        } );
+        pop.addAttribute( "",
+                          createPattern );
 
-		for (Object o : dtable.getModel().getActionCols()) {
-			ActionCol col = (ActionCol) o;
-			if (col instanceof ActionInsertFactCol) {
-				ActionInsertFactCol c = (ActionInsertFactCol) col;
-				if (!vars.contains(c.getBoundName())) {
-					patterns.addItem(c.getFactType() + " [" + c.getBoundName()
-							+ "]", c.getFactType() + " " + c.getBoundName());
-					vars.add(c.getBoundName());
-				}
-			}
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                String[] val = pats.getValue( pats.getSelectedIndex() ).split(
+                                                                               "\\s" ); // NON-NLS
+                editingCol.setFactType( val[0] );
+                editingCol.setBoundName( val[1] );
+                doPatternLabel();
+                pop.hide();
+            }
+        } );
 
-		}
+        pop.show();
+    }
 
-		return patterns;
+    protected void showNewPatternDialog() {
+        final FormStylePopup pop = new FormStylePopup();
+        pop.setTitle( constants.NewFactSelectTheType() );
+        final ListBox types = new ListBox();
+        for ( int i = 0; i < sce.getFactTypes().length; i++ ) {
+            types.addItem( sce.getFactTypes()[i] );
+        }
+        pop.addAttribute( constants.FactType(),
+                          types );
+        final TextBox binding = new TextBox();
+        pop.addAttribute( constants.name(),
+                          binding );
 
-	}
+        Button ok = new Button( constants.OK() );
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                editingCol.setBoundName( binding.getText() );
+                editingCol.setFactType( types.getItemText( types
+                        .getSelectedIndex() ) );
+                doPatternLabel();
+                pop.hide();
+            }
+        } );
+        pop.addAttribute( "",
+                          ok );
+
+        pop.show();
+    }
 
 }
