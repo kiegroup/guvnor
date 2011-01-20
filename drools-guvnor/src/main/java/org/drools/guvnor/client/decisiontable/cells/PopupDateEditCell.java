@@ -18,115 +18,138 @@ import com.google.gwt.user.datepicker.client.DatePicker;
  */
 public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
 
-	private final DatePicker datePicker;
-	private final DateTimeFormat format;
+    private final DatePicker     datePicker;
+    private final DateTimeFormat format;
 
-	public PopupDateEditCell(DateTimeFormat format) {
-		super();
-		if (format == null) {
-			throw new IllegalArgumentException("format == null");
-		}
+    public PopupDateEditCell(DateTimeFormat format) {
+        super();
+        if ( format == null ) {
+            throw new IllegalArgumentException( "format == null" );
+        }
 
-		this.format = format;
-		this.datePicker = new DatePicker();
+        this.format = format;
+        this.datePicker = new DatePicker();
 
-		// Hide the panel and call valueUpdater.update when a date is selected
-		datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
-			public void onValueChange(ValueChangeEvent<Date> event) {
-				// Remember the values before hiding the popup.
-				Element cellParent = lastParent;
-				Date oldValue = lastValue;
-				Object key = lastKey;
-				panel.hide();
+        // Hide the panel and call valueUpdater.update when a date is selected
+        datePicker.addValueChangeHandler( new ValueChangeHandler<Date>() {
 
-				// Update the cell and value updater.
-				Date date = event.getValue();
-				setViewData(key, date);
-				setValue(cellParent, oldValue, key);
-				if (valueUpdater != null) {
-					valueUpdater.update(date);
-				}
-			}
-		});
+            public void onValueChange(ValueChangeEvent<Date> event) {
+                // Remember the values before hiding the popup.
+                Element cellParent = lastParent;
+                Date oldValue = lastValue;
+                Context context = lastContext;
+                Object key = context.getKey();
+                panel.hide();
 
-		vPanel.add(datePicker);
-	}
+                // Update the cell and value updater.
+                Date date = event.getValue();
+                setViewData( key,
+                             date );
+                setValue( context,
+                          cellParent,
+                          oldValue );
+                if ( valueUpdater != null ) {
+                    valueUpdater.update( date );
+                }
+            }
+        } );
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.google.gwt.cell.client.AbstractCell#render(java.lang.Object,
-	 * java.lang.Object, com.google.gwt.safehtml.shared.SafeHtmlBuilder)
-	 */
-	@Override
-	public void render(Date value, Object key, SafeHtmlBuilder sb) {
-		// Get the view data.
-		Date viewData = getViewData(key);
-		if (viewData != null && viewData.equals(value)) {
-			clearViewData(key);
-			viewData = null;
-		}
+        vPanel.add( datePicker );
+    }
 
-		String s = null;
-		if (viewData != null) {
-			s = format.format(viewData);
-		} else if (value != null) {
-			s = format.format(value);
-		}
-		if (s != null) {
-			sb.append(renderer.render(s));
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.google.gwt.cell.client.AbstractCell#render(com.google.gwt.cell.client
+     * .Cell.Context, java.lang.Object,
+     * com.google.gwt.safehtml.shared.SafeHtmlBuilder)
+     */
+    @Override
+    public void render(Context context,
+                       Date value,
+                       SafeHtmlBuilder sb) {
+        // Get the view data.
+        Object key = context.getKey();
+        Date viewData = getViewData( key );
+        if ( viewData != null
+             && viewData.equals( value ) ) {
+            clearViewData( key );
+            viewData = null;
+        }
 
-	// Commit the change
-	private void commit(Date date) {
-		// Hide pop-up
-		Element cellParent = lastParent;
-		Date oldValue = lastValue;
-		Object key = lastKey;
-		panel.hide();
+        String s = null;
+        if ( viewData != null ) {
+            s = format.format( viewData );
+        } else if ( value != null ) {
+            s = format.format( value );
+        }
+        if ( s != null ) {
+            sb.append( renderer.render( s ) );
+        }
+    }
 
-		// Update values
-		setViewData(key, date);
-		setValue(cellParent, oldValue, key);
-		if (valueUpdater != null) {
-			valueUpdater.update(date);
-		}
-	}
+    // Commit the change
+    private void commit(Date date) {
+        // Hide pop-up
+        Element cellParent = lastParent;
+        Date oldValue = lastValue;
+        Context context = lastContext;
+        Object key = context.getKey();
+        panel.hide();
 
-	// Commit the change
-	@Override
-	protected void commit() {
-		Date date = datePicker.getValue();
-		commit(date);
-	}
+        // Update values
+        setViewData( key,
+                     date );
+        setValue( context,
+                  cellParent,
+                  oldValue );
+        if ( valueUpdater != null ) {
+            valueUpdater.update( date );
+        }
+    }
 
-	// Start editing the cell
-	@Override
-	@SuppressWarnings("deprecation")
-	protected void startEditing(final Element parent, Date value, Object key) {
+    // Commit the change
+    @Override
+    protected void commit() {
+        Date date = datePicker.getValue();
+        commit( date );
+    }
 
-		Date viewData = getViewData(key);
-		Date date = (viewData == null) ? value : viewData;
+    // Start editing the cell
+    @Override
+    @SuppressWarnings("deprecation")
+    protected void startEditing(final Element parent,
+                                Date value,
+                                Context context) {
 
-		// Default date
-		if (date == null) {
-			Date d = new Date();
-			int year = d.getYear();
-			int month = d.getMonth();
-			int dom = d.getDate();
-			date = new Date(year, month, dom);
-		}
-		datePicker.setCurrentMonth(date);
-		datePicker.setValue(date);
+        Object key = context.getKey();
+        Date viewData = getViewData( key );
+        Date date = (viewData == null) ? value : viewData;
 
-		panel.setPopupPositionAndShow(new PositionCallback() {
-			public void setPosition(int offsetWidth, int offsetHeight) {
-				panel.setPopupPosition(parent.getAbsoluteLeft() + offsetX,
-						parent.getAbsoluteTop() + offsetY);
-			}
-		});
+        // Default date
+        if ( date == null ) {
+            Date d = new Date();
+            int year = d.getYear();
+            int month = d.getMonth();
+            int dom = d.getDate();
+            date = new Date( year,
+                             month,
+                             dom );
+        }
+        datePicker.setCurrentMonth( date );
+        datePicker.setValue( date );
 
-	}
+        panel.setPopupPositionAndShow( new PositionCallback() {
+            public void setPosition(int offsetWidth,
+                                    int offsetHeight) {
+                panel.setPopupPosition( parent.getAbsoluteLeft()
+                                                + offsetX,
+                                        parent.getAbsoluteTop()
+                                                + offsetY );
+            }
+        } );
+
+    }
 
 }

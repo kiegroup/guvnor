@@ -11,18 +11,25 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  */
 public class RowNumberCell extends AbstractCell<Integer> {
 
-	public RowNumberCell() {
-		// Good citizen: AbstractCell does not initialise an empty set of
-		// consumed events
-		super("");
-	}
+    public RowNumberCell() {
+        // Good citizen: AbstractCell does not initialise an empty set of
+        // consumed events
+        super( "" );
+    }
 
-	@Override
-	public void render(Integer value, Object key, SafeHtmlBuilder sb) {
-		if(value==null) {
-			value=-1;
-		}
-		sb.append(value);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * com.google.gwt.cell.client.AbstractCell#render(com.google.gwt.cell.client
+     * .Cell.Context, java.lang.Object,
+     * com.google.gwt.safehtml.shared.SafeHtmlBuilder)
+     */
+    @Override
+    public void render(Context context,
+                       Integer value,
+                       SafeHtmlBuilder sb) {
+        sb.append( value );
+    }
 
 }

@@ -35,15 +35,6 @@ public class DecisionTableCellValueAdaptor<T extends Comparable<T>> extends
         this.cell = cell;
     }
 
-    /**
-     * Inject a DecisionTableWidget to handle value updates
-     * 
-     * @param manager
-     */
-    public void setDecisionTableWidget(DecisionTableWidget dtable) {
-        this.dtable = dtable;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -78,17 +69,18 @@ public class DecisionTableCellValueAdaptor<T extends Comparable<T>> extends
      * (non-Javadoc)
      * 
      * @see
-     * com.google.gwt.cell.client.AbstractCell#isEditing(com.google.gwt.dom.
-     * client.Element, java.lang.Object, java.lang.Object)
+     * com.google.gwt.cell.client.AbstractCell#isEditing(com.google.gwt.cell
+     * .client.Cell.Context, com.google.gwt.dom.client.Element,
+     * java.lang.Object)
      */
     @Override
     @SuppressWarnings("unchecked")
-    public boolean isEditing(Element parent,
-                             CellValue< ? extends Comparable< ? >> value,
-                             Object key) {
-        return cell.isEditing( parent,
-                               (T) value.getValue(),
-                               key );
+    public boolean isEditing(Context context,
+                             Element parent,
+                             CellValue< ? extends Comparable< ? >> value) {
+        return cell.isEditing( context,
+                               parent,
+                               (T) value.getValue() );
     }
 
     /*
@@ -96,15 +88,15 @@ public class DecisionTableCellValueAdaptor<T extends Comparable<T>> extends
      * 
      * @see
      * com.google.gwt.cell.client.AbstractCell#onBrowserEvent(com.google.gwt
-     * .dom.client.Element, java.lang.Object, java.lang.Object,
-     * com.google.gwt.dom.client.NativeEvent,
+     * .cell.client.Cell.Context, com.google.gwt.dom.client.Element,
+     * java.lang.Object, com.google.gwt.dom.client.NativeEvent,
      * com.google.gwt.cell.client.ValueUpdater)
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void onBrowserEvent(Element parent,
+    public void onBrowserEvent(Context context,
+                               Element parent,
                                CellValue< ? extends Comparable< ? >> value,
-                               Object key,
                                NativeEvent event,
                                ValueUpdater<CellValue< ? extends Comparable< ? >>> valueUpdater) {
 
@@ -112,9 +104,9 @@ public class DecisionTableCellValueAdaptor<T extends Comparable<T>> extends
         // are also updated. Override the Column's FieldUpdater because
         // a Horizontal Decision Table will potentially have a different
         // data-type per row.
-        cell.onBrowserEvent( parent,
+        cell.onBrowserEvent( context,
+                             parent,
                              (T) value.getValue(),
-                             key,
                              event,
                              new ValueUpdater<T>() {
 
@@ -128,16 +120,18 @@ public class DecisionTableCellValueAdaptor<T extends Comparable<T>> extends
     /*
      * (non-Javadoc)
      * 
-     * @see com.google.gwt.cell.client.AbstractCell#render(java.lang.Object,
-     * java.lang.Object, com.google.gwt.safehtml.shared.SafeHtmlBuilder)
+     * @see
+     * com.google.gwt.cell.client.AbstractCell#render(com.google.gwt.cell.client
+     * .Cell.Context, java.lang.Object,
+     * com.google.gwt.safehtml.shared.SafeHtmlBuilder)
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void render(CellValue< ? extends Comparable< ? >> value,
-                       Object key,
+    public void render(Context context,
+                       CellValue< ? extends Comparable< ? >> value,
                        SafeHtmlBuilder sb) {
-        cell.render( (T) value.getValue(),
-                     key,
+        cell.render( context,
+                     (T) value.getValue(),
                      sb );
     }
 
@@ -145,34 +139,44 @@ public class DecisionTableCellValueAdaptor<T extends Comparable<T>> extends
      * (non-Javadoc)
      * 
      * @see
-     * com.google.gwt.cell.client.AbstractCell#resetFocus(com.google.gwt.dom
-     * .client.Element, java.lang.Object, java.lang.Object)
+     * com.google.gwt.cell.client.AbstractCell#resetFocus(com.google.gwt.cell
+     * .client.Cell.Context, com.google.gwt.dom.client.Element,
+     * java.lang.Object)
      */
     @Override
     @SuppressWarnings("unchecked")
-    public boolean resetFocus(Element parent,
-                              CellValue< ? extends Comparable< ? >> value,
-                              Object key) {
-        return cell.resetFocus( parent,
-                                (T) value.getValue(),
-                                key );
+    public boolean resetFocus(Context context,
+                              Element parent,
+                              CellValue< ? extends Comparable< ? >> value) {
+        return cell.resetFocus( context,
+                                parent,
+                                (T) value.getValue() );
+    }
+
+    /**
+     * Inject a DecisionTableWidget to handle value updates
+     * 
+     * @param manager
+     */
+    public void setDecisionTableWidget(DecisionTableWidget dtable) {
+        this.dtable = dtable;
     }
 
     /*
      * (non-Javadoc)
      * 
      * @see
-     * com.google.gwt.cell.client.AbstractCell#setValue(com.google.gwt.dom.client
-     * .Element, java.lang.Object, java.lang.Object)
+     * com.google.gwt.cell.client.AbstractCell#setValue(com.google.gwt.cell.
+     * client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void setValue(Element parent,
-                         CellValue< ? extends Comparable< ? >> value,
-                         Object key) {
-        cell.setValue( parent,
-                       (T) value.getValue(),
-                       key );
+    public void setValue(Context context,
+                         Element parent,
+                         CellValue< ? extends Comparable< ? >> value) {
+        cell.setValue( context,
+                       parent,
+                       (T) value.getValue() );
     }
 
 }
