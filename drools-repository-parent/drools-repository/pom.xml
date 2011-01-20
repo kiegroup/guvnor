@@ -33,6 +33,15 @@
        </configuration>
      </plugin>
    </plugins>
+   <testResources>
+     <testResource>
+       <directory>${basedir}/src/test/resources</directory>
+     </testResource>
+     <testResource>
+       <directory>${basedir}/src/test/filtered-resources</directory>
+       <filtering>true</filtering>
+     </testResource>
+   </testResources>
  </build>
  <dependencies>
    <!-- Internal dependencies -->
@@ -72,60 +81,17 @@
    </dependency>
  </dependencies>
 
-
  <profiles>
-   <!-- build with ModeShape. this requires JDK1.6. Due to http://jira.codehaus.org/browse/MNG-3328, who actives ms profile must make manually check JDK1.6 is in use. -->
-   <profile>
-     <properties>
-       <RepositoryConfigurator>org.drools.repository.modeshape.ModeShapeRepositoryConfiguratorWithJAAS</RepositoryConfigurator>
-     </properties> 
-          
-     <id>ms</id>
+   <profile><!-- Default profile -->
+     <id>jackrabbitProfile</id>
      <activation>
        <property>
-         <name>ms</name>
+         <name>!modeshape</name>
        </property>
      </activation>
-     <dependencies>
-       <dependency>
-         <groupId>org.drools</groupId>
-         <artifactId>drools-repository-modeshape-connector</artifactId>
-         <scope>runtime</scope>
-       </dependency>
-     </dependencies>
-     
-     <build>
-       <testResources>
-         <testResource>
-           <directory>src/test/resources</directory>
-           <filtering>true</filtering>
-           <includes>
-             <include>drools_repository.properties</include>
-           </includes>
-         </testResource>
-         <testResource>
-           <directory>src/test/resources</directory>
-           <filtering>false</filtering>
-           <excludes>
-             <exclude>drools_repository.properties</exclude>
-           </excludes>
-         </testResource>
-       </testResources>
-     </build>
-   </profile>
-   
-   <!-- default profile - build with JackRabbit -->
-   <profile>
      <properties>
        <RepositoryConfigurator>org.drools.repository.jackrabbit.JackrabbitRepositoryConfigurator</RepositoryConfigurator>
-     </properties> 
-     
-     <id>jr</id>
-     <activation>
-       <property>
-         <name>!ms</name>
-       </property>
-     </activation>
+     </properties>
      <dependencies>
        <dependency>
          <groupId>org.drools</groupId>
@@ -134,25 +100,27 @@
          <!-- Not optional so guvnor works out of the box, exclude this dependency if you use modeshape -->
        </dependency>
      </dependencies>
-     
-     <build>
-       <testResources>
-         <testResource>
-           <directory>src/test/resources</directory>
-           <filtering>true</filtering>
-           <includes>
-             <include>drools_repository.properties</include>
-           </includes>
-         </testResource>
-         <testResource>
-           <directory>src/test/resources</directory>
-           <filtering>false</filtering>
-           <excludes>
-             <exclude>drools_repository.properties</exclude>
-           </excludes>
-         </testResource>
-       </testResources>
-     </build>     
+   </profile>
+   
+   
+   <profile><!-- Activated with -Dmodeshape. Requires JDK 1.6 -->
+     <!-- TODO use enforcer plugin to enforce JDK 1.6. Currently, who actives ms profile must make manually check JDK1.6 is in use. -->
+     <id>modeshapeProfile</id>
+     <activation>
+       <property>
+         <name>modeshape</name>
+       </property>
+     </activation>
+     <properties>
+       <RepositoryConfigurator>org.drools.repository.modeshape.ModeShapeRepositoryConfiguratorWithJAAS</RepositoryConfigurator>
+     </properties> 
+     <dependencies>
+       <dependency>
+         <groupId>org.drools</groupId>
+         <artifactId>drools-repository-modeshape-connector</artifactId>
+         <scope>runtime</scope>
+       </dependency>
+     </dependencies>
    </profile>
  </profiles>
 
