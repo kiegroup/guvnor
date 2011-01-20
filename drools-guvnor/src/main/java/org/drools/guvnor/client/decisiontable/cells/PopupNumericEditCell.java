@@ -109,47 +109,26 @@ public class PopupNumericEditCell extends
     public void render(Context context,
                        Integer value,
                        SafeHtmlBuilder sb) {
-        // Get the view data.
-        Object key = context.getKey();
-        Integer viewData = getViewData( key );
-        if ( viewData != null
-             && viewData.equals( value ) ) {
-            clearViewData( key );
-            viewData = null;
-        }
-
-        Integer i = null;
-        if ( viewData != null ) {
-            i = viewData;
-        } else if ( value != null ) {
-            i = value;
-        }
-        if ( i != null ) {
-            sb.append( renderer.render( Integer.toString( i ) ) );
+        if ( value != null ) {
+            sb.append( renderer.render( Integer.toString( value ) ) );
         }
     }
 
     // Commit the change
     @Override
     protected void commit() {
-        // Hide pop-up
-        Element cellParent = lastParent;
-        Integer oldValue = lastValue;
-        Context context = lastContext;
-        Object key = context.getKey();
+        
         panel.hide();
 
-        // Update values
+        // Update value
         String text = textBox.getValue();
         Integer number = null;
         if ( text.length() > 0 ) {
             number = Integer.parseInt( text );
         }
-        setViewData( key,
-                     number );
-        setValue( context,
-                  cellParent,
-                  oldValue );
+        setValue( lastContext,
+                  lastParent,
+                  number );
         if ( valueUpdater != null ) {
             valueUpdater.update( number );
         }
@@ -157,14 +136,10 @@ public class PopupNumericEditCell extends
 
     // Start editing the cell
     @Override
-    protected void startEditing(final Element parent,
-                                Integer value,
-                                Context context) {
+    protected void startEditing(final Context context, final Element parent,
+                                final Integer value) {
 
-        Object key = context.getKey();
-        Integer viewData = getViewData( key );
-        Integer number = (viewData == null) ? value : viewData;
-        textBox.setValue( (number == null ? "" : Integer.toString( number )) );
+        textBox.setValue( (value == null ? "" : Integer.toString( value )) );
 
         panel.setPopupPositionAndShow( new PositionCallback() {
             public void setPosition(int offsetWidth,

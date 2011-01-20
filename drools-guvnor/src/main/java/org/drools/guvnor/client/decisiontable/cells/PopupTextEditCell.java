@@ -1,17 +1,17 @@
 /*
  * Copyright 2011 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.drools.guvnor.client.decisiontable.cells;
 
@@ -67,34 +67,15 @@ public class PopupTextEditCell extends AbstractPopupEditCell<String, String> {
     public void render(Context context,
                        String value,
                        SafeHtmlBuilder sb) {
-        // Get the view data.
-        Object key = context.getKey();
-        String viewData = getViewData( key );
-        if ( viewData != null
-             && viewData.equals( value ) ) {
-            clearViewData( key );
-            viewData = null;
-        }
-
-        String s = null;
-        if ( viewData != null ) {
-            s = viewData;
-        } else if ( value != null ) {
-            s = value;
-        }
-        if ( s != null ) {
-            sb.append( renderer.render( s ) );
+        if ( value != null ) {
+            sb.append( renderer.render( value ) );
         }
     }
 
     // Commit the change
     @Override
     protected void commit() {
-        // Hide pop-up
-        Element cellParent = lastParent;
-        String oldValue = lastValue;
-        Context context = lastContext;
-        Object key = context.getKey();
+
         panel.hide();
 
         // Update values
@@ -102,11 +83,9 @@ public class PopupTextEditCell extends AbstractPopupEditCell<String, String> {
         if ( text.length() == 0 ) {
             text = null;
         }
-        setViewData( key,
-                     text );
-        setValue( context,
-                  cellParent,
-                  oldValue );
+        setValue( lastContext,
+                  lastParent,
+                  text );
         if ( valueUpdater != null ) {
             valueUpdater.update( text );
         }
@@ -115,14 +94,11 @@ public class PopupTextEditCell extends AbstractPopupEditCell<String, String> {
 
     // Start editing the cell
     @Override
-    protected void startEditing(final Element parent,
-                                String value,
-                                Context context) {
+    protected void startEditing(final Context context,
+                                final Element parent,
+                                String value) {
 
-        Object key = context.getKey();
-        String viewData = getViewData( key );
-        String text = (viewData == null) ? value : viewData;
-        textBox.setValue( text );
+        textBox.setValue( value );
 
         panel.setPopupPositionAndShow( new PositionCallback() {
             public void setPosition(int offsetWidth,
