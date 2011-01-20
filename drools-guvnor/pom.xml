@@ -10,9 +10,6 @@
   <artifactId>drools-guvnor</artifactId>
   <packaging>war</packaging>
   <name>Drools :: Guvnor</name>
-  <properties><!-- Overwritten in the full profile -->
-    <guvnorHtmlRedirect>org.drools.guvnor.Guvnor/FastCompiledGuvnor.html</guvnorHtmlRedirect>
-  </properties>
   <build>
     <finalName>drools-guvnor</finalName>
     <plugins>
@@ -24,9 +21,9 @@
         <configuration>
           <!-- The default profile needs to be fast, so we only build 1 permutation { -->
           <module>org.drools.guvnor.FastCompiledGuvnor</module>
-          <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
           <draftCompile>true</draftCompile>
           <!-- } -->
+          <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.drools:drools-factconstraint</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-ide-common</compileSourcesArtifact>
@@ -105,9 +102,6 @@
           <name>full</name>
         </property>
       </activation>
-      <properties>
-        <guvnorHtmlRedirect>org.drools.guvnor.Guvnor/Guvnor.html</guvnorHtmlRedirect>
-      </properties>
       <build>
         <plugins>
           <plugin><!-- Keep in sync with soa profile -->
@@ -116,7 +110,6 @@
             <configuration>
               <!-- Build all GWT permutations and optimize them -->
               <module>org.drools.guvnor.Guvnor</module>
-              <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
               <draftCompile>false</draftCompile>
             </configuration>
           </plugin>
@@ -138,7 +131,6 @@
             <configuration>
               <!-- Build all GWT permutations and optimize them -->
               <module>org.drools.guvnor.Guvnor</module>
-              <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
               <draftCompile>false</draftCompile>
             </configuration>
           </plugin>
