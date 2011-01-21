@@ -99,8 +99,6 @@ public class PopupDropDownEditCell extends
     @Override
     protected void commit() {
 
-        panel.hide();
-
         // Update value
         String text = null;
         int selectedIndex = listBox.getSelectedIndex();
@@ -113,6 +111,8 @@ public class PopupDropDownEditCell extends
         if ( valueUpdater != null ) {
             valueUpdater.update( text );
         }
+        panel.hide();
+
     }
 
     // Start editing the cell

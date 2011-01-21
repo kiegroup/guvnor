@@ -50,8 +50,6 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
 
             public void onValueChange(ValueChangeEvent<Date> event) {
 
-                panel.hide();
-
                 // Update value
                 Date date = event.getValue();
                 setValue( lastContext,
@@ -60,6 +58,8 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
                 if ( valueUpdater != null ) {
                     valueUpdater.update( date );
                 }
+                
+                panel.hide();
             }
         } );
 
@@ -87,8 +87,6 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
     @Override
     protected void commit() {
 
-        panel.hide();
-
         // Update value
         Date date = datePicker.getValue();
         setValue( lastContext,
@@ -97,6 +95,7 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
         if ( valueUpdater != null ) {
             valueUpdater.update( date );
         }
+        panel.hide();
     }
 
     // Start editing the cell

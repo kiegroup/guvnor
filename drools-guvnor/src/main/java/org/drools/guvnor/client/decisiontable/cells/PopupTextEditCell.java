@@ -76,8 +76,6 @@ public class PopupTextEditCell extends AbstractPopupEditCell<String, String> {
     @Override
     protected void commit() {
 
-        panel.hide();
-
         // Update values
         String text = textBox.getValue();
         if ( text.length() == 0 ) {
@@ -89,7 +87,7 @@ public class PopupTextEditCell extends AbstractPopupEditCell<String, String> {
         if ( valueUpdater != null ) {
             valueUpdater.update( text );
         }
-
+        panel.hide();
     }
 
     // Start editing the cell

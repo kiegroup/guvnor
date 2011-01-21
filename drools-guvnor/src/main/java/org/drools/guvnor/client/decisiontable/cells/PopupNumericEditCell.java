@@ -118,8 +118,6 @@ public class PopupNumericEditCell extends
     @Override
     protected void commit() {
         
-        panel.hide();
-
         // Update value
         String text = textBox.getValue();
         Integer number = null;
@@ -132,6 +130,7 @@ public class PopupNumericEditCell extends
         if ( valueUpdater != null ) {
             valueUpdater.update( number );
         }
+        panel.hide();
     }
 
     // Start editing the cell
