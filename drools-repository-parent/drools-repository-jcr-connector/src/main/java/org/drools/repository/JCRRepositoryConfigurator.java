@@ -33,7 +33,7 @@ import org.drools.repository.util.ClassUtil;
 /**
  * This abstract class is required so different JCR implementations can provide their own configuration mechanism.
  * 
- * This contains code to initialise the repository using the {@link javax.jcr.RepositoryFactory} interface defined by the JCR 2.0
+ * This contains code to initialize the repository using the {@link javax.jcr.RepositoryFactory} interface defined by the JCR 2.0
  * specification. This configurator loads the properties from the {@link PROPERTIES_FILE "/drools_repository.properties"}
  * resource, and passes these to the {@link javax.jcr.RepositoryFactory#getRepository(java.util.Map)}.
  * 
@@ -41,12 +41,13 @@ import org.drools.repository.util.ClassUtil;
  */
 public abstract class JCRRepositoryConfigurator {
 
+    public static final String JCR_IMPL_CLASS            = "org.drools.repository.jcr.impl";
+    public static final String REPOSITORY_ROOT_DIRECTORY = "repository.root.directory";
+
+    protected static String defaultJCRImplClass = null;
+
     protected RepositoryFactory factory;
     protected Repository repository;
-
-    public static final String JCR_IMPL_CLASS            = "org.drools.repository.jcr.impl";
-    protected static String defaultJCRImplClass = null;
-    public static final String REPOSITORY_ROOT_DIRECTORY = "repository.root.directory";
 
     /**
      * @return a new Repository instance. There should only be one instance of this in an application. Generally, one repository
