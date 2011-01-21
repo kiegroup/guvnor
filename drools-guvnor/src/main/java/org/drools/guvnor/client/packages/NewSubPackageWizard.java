@@ -212,6 +212,7 @@ public class NewSubPackageWizard extends FormStylePopup {
         uploadFormPanel.addSubmitCompleteHandler( new SubmitCompleteHandler() {
             public void onSubmitComplete(SubmitCompleteEvent event) {
                 if ( event.getResults().indexOf( "OK" ) > -1 ) { //NON-NLS
+		    LoadingPopup.close();
                     Window.alert( constants.PackageWasImportedSuccessfully() );
                     afterCreatedEvent.execute();
                     parent.hide();
@@ -238,6 +239,8 @@ public class NewSubPackageWizard extends FormStylePopup {
                     event.cancel();
                 } else if ( packageName.getText() != null && !packageName.getText().equals( "" ) ) {
                     uploadFormPanel.setAction( uploadFormPanel.getAction() + "?packageName=" + packageName.getText() );
+                } else {
+                    LoadingPopup.showMessage( constants.CreatingPackagePleaseWait() );
                 }
             }
         } );
