@@ -22,10 +22,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A single row of a page of an assets table. This is an asset summary/header.
+ *
  * @author Geoffrey De Smet
  */
 public class AssetPageRow
-    implements IsSerializable, Comparable<AssetPageRow> {
+        implements IsSerializable, Comparable<AssetPageRow> {
 
     private String uuid;
     private String format; // TODO should be an enum
@@ -39,6 +40,7 @@ public class AssetPageRow
     private Date lastModified;
     private String categorySummary;
     private String externalSource;
+    private String abbreviatedDescription;
 
     public int compareTo(AssetPageRow other) {
         return uuid.compareTo(other.uuid);
@@ -144,4 +146,11 @@ public class AssetPageRow
         this.externalSource = externalSource;
     }
 
+    public void setDescriptionAbbreviated(String abbreviatedDescription) {
+        this.abbreviatedDescription = abbreviatedDescription;
+    }
+
+    public String getAbbreviatedDescription() {
+        return abbreviatedDescription;
+    }
 }
