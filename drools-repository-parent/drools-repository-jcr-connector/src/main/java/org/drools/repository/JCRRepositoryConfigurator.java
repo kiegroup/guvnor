@@ -41,65 +41,66 @@ import org.drools.repository.util.ClassUtil;
  */
 public abstract class JCRRepositoryConfigurator {
 
-	protected RepositoryFactory factory;
-	protected Repository repository;
+    protected RepositoryFactory factory;
+    protected Repository repository;
 
-	public static final String JCR_IMPL_CLASS            = "org.drools.repository.jcr.impl";
-	protected static String defaultJCRImplClass = null;
-	public static final String REPOSITORY_ROOT_DIRECTORY = "repository.root.directory";
+    public static final String JCR_IMPL_CLASS            = "org.drools.repository.jcr.impl";
+    protected static String defaultJCRImplClass = null;
+    public static final String REPOSITORY_ROOT_DIRECTORY = "repository.root.directory";
 
-	/**
-	 * @return a new Repository instance. There should only be one instance of this in an application. Generally, one repository
-	 *         (which may be binded to JNDI) can spawn multiple sessions for each user as needed. Typically this would be created
-	 *         on application startup.
-	 * @param repositoryRootDirectory The directory where the data is stored. If empty, the repository will be generated there the
-	 *        first time it is used. If it is null, then a default location will be used (it won't fail).
-	 */
-	public Repository getJCRRepository( Properties properties ) throws RepositoryException {
-		try {
+    /**
+     * @return a new Repository instance. There should only be one instance of this in an application. Generally, one repository
+     *         (which may be binded to JNDI) can spawn multiple sessions for each user as needed. Typically this would be created
+     *         on application startup.
+     * @param repositoryRootDirectory The directory where the data is stored. If empty, the repository will be generated there the
+     *        first time it is used. If it is null, then a default location will be used (it won't fail).
+     */
+    public Repository getJCRRepository( Properties properties ) throws RepositoryException {
+        try {
 
-			String jcrImplementationClass = properties.getProperty(JCR_IMPL_CLASS);
-			//Instantiate real repo.
+            String jcrImplementationClass = properties.getProperty(JCR_IMPL_CLASS);
+            //Instantiate real repo.
 
-			if (jcrImplementationClass==null) {
-				jcrImplementationClass = defaultJCRImplClass;
-			}
-			
-				// Use the JCR 2.0 RepositoryFactory to get a repository using the properties as input ...
+            if (jcrImplementationClass==null) {
+                jcrImplementationClass = defaultJCRImplClass;
+            }
+
+                // Use the JCR 2.0 RepositoryFactory to get a repository using the properties as input ...
 // We're not yet supporting JSE 1.6, so until then this needs to stay commented out
-//				for (RepositoryFactory factory : ServiceLoader.load(RepositoryFactory.class)) {
-//					Repository repo = factory.getRepository(properties);
-//					if (repo != null) {
-//						this.factory = factory;
-//						return repo;
-//					}
-//				}
-			 
-			Class<?> jcrFactory = ClassUtil.forName(jcrImplementationClass, this.getClass());
-			RepositoryFactory factory = (RepositoryFactory) jcrFactory.newInstance();
-			repository = factory.getRepository(properties);
-			this.factory = factory;
-			return repository;
-				
-		} catch (Exception re) {
-			throw new RepositoryException(re);
-		}
-		// If here, then we couldn't find a repository factory ...
-//		String msg = "Unable to find an appropriate JCR 2.0 RepositoryFactory; check the 'drools_repository.properties' configuration file.";
-//		throw new RepositoryException(msg);
-	}
-	
-	public abstract Session login(String userName) throws LoginException,RepositoryException;
-	
-	public Session login (String userName, String password) throws RepositoryException {
-		Credentials credentials = new SimpleCredentials(userName, password.toCharArray());
+//                for (RepositoryFactory factory : ServiceLoader.load(RepositoryFactory.class)) {
+//                    Repository repo = factory.getRepository(properties);
+//                    if (repo != null) {
+//                        this.factory = factory;
+//                        return repo;
+//                    }
+//                }
+
+            Class<?> jcrFactory = ClassUtil.forName(jcrImplementationClass, this.getClass());
+            RepositoryFactory factory = (RepositoryFactory) jcrFactory.newInstance();
+            repository = factory.getRepository(properties);
+            this.factory = factory;
+            return repository;
+
+        } catch (Exception re) {
+            throw new RepositoryException(re);
+        }
+        // If here, then we couldn't find a repository factory ...
+//        String msg = "Unable to find an appropriate JCR 2.0 RepositoryFactory; check the 'drools_repository.properties' configuration file.";
+//        throw new RepositoryException(msg);
+    }
+
+    public abstract Session login(String userName) throws LoginException,RepositoryException;
+
+    public Session login (String userName, String password) throws RepositoryException {
+        Credentials credentials = new SimpleCredentials(userName, password.toCharArray());
         return repository.login( credentials );
-	}
+    }
 
-	public abstract void registerNodeTypesFromCndFile(String cndFileName, Session session, Workspace workspace) throws RepositoryException;
+    public abstract void registerNodeTypesFromCndFile(String cndFileName, Session session, Workspace workspace) throws RepositoryException;
 
-	/**
-	 * Method called when the JCR implementation is no longer needed.
-	 */
-	public abstract void shutdown();
+    /**
+     * Method called when the JCR implementation is no longer needed.
+     */
+    public abstract void shutdown();
+
 }
