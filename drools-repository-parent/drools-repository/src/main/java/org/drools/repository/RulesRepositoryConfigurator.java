@@ -46,7 +46,7 @@ public class RulesRepositoryConfigurator {
 			log.info("Creating an instance of the RulesRepositoryConfigurator.");
 			rulesRepositoryConfigurator = new RulesRepositoryConfigurator();
 			
-			if (properties==null) { //load from file only when the properties passed in are null
+			if (properties == null) { //load from file only when the properties passed in are null
 				properties = new Properties();
 				// Load the properties file ...
 				InputStream propStream = ClassUtil.getResourceAsStream(PROPERTIES_FILE, rulesRepositoryConfigurator.getClass());
@@ -69,7 +69,7 @@ public class RulesRepositoryConfigurator {
 				
 			try {
 				String configuratorClazz = properties.getProperty(CONFIGURATOR_CLASS);
-				if (configuratorClazz==null) throw new RepositoryException("User must define a '" + 
+				if (configuratorClazz == null) throw new RepositoryException("User must define a '" +
 						CONFIGURATOR_CLASS + "' property.");
 				Class<?> clazz = ClassUtil.forName(configuratorClazz, rulesRepositoryConfigurator.getClass());
 				jcrRepositoryConfigurator = (JCRRepositoryConfigurator) clazz.newInstance();
