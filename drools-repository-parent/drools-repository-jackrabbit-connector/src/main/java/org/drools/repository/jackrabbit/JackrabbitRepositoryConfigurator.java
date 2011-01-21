@@ -71,11 +71,9 @@ public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator 
         try {
             //Read in the CND file
             Reader in = new InputStreamReader(this.getClass().getResourceAsStream( cndFileName ));
-            CndImporter.registerNodeTypes(in, session);            
-
-        } catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RepositoryException(e);
+            CndImporter.registerNodeTypes(in, session);
+        } catch (Exception e) {
+            throw new RepositoryException("Registering node types for repository failed.", e);
         }
     } 
     

@@ -18,7 +18,6 @@ import org.modeshape.jcr.JcrRepositoryFactory;
  */
 public class ModeShapeRepositoryConfigurator extends JCRRepositoryConfigurator {
 
-
     public ModeShapeRepositoryConfigurator() {
         defaultJCRImplClass = JcrRepositoryFactory.class.getName();
     }
@@ -30,7 +29,7 @@ public class ModeShapeRepositoryConfigurator extends JCRRepositoryConfigurator {
             reader.read(cndFileName);
             workspace.getNodeTypeManager().registerNodeTypes(reader.getNodeTypeDefinitions(), false);
         } catch (Exception e) {
-            throw new RepositoryException(e);
+            throw new RepositoryException("Registering node types for repository failed.", e);
         }
     }
 
