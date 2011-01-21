@@ -37,6 +37,7 @@ public class PopupDropDownEditCell extends
         AbstractPopupEditCell<String, String> {
 
     private final ListBox listBox;
+    private String[][] items;
 
     public PopupDropDownEditCell() {
         super();
@@ -72,7 +73,8 @@ public class PopupDropDownEditCell extends
                        String value,
                        SafeHtmlBuilder sb) {
         if ( value != null ) {
-            sb.append( renderer.render( value ) );
+            String label = getLabel(value);
+            sb.append( renderer.render( label ) );
         }
     }
 
@@ -82,17 +84,33 @@ public class PopupDropDownEditCell extends
      * @param items
      */
     public void setItems(String[] items) {
+        this.items=new String[items.length][2];
         for ( int i = 0; i < items.length; i++ ) {
             String item = items[i].trim();
             if ( item.indexOf( '=' ) > 0 ) {
                 String[] splut = ConstraintValueEditorHelper.splitValue( item );
+                this.items[i][0]=splut[0];
+                this.items[i][1]=splut[1];
                 this.listBox.addItem( splut[1],
                                       splut[0] );
             } else {
+                this.items[i][0]=item;
+                this.items[i][1]=item;
                 this.listBox.addItem( item,
                                       item );
             }
         }
+    }
+    
+    
+    //Lookup the display text based on the value
+    private String getLabel(String value) {
+        for(int i=0;i<this.items.length;i++) {
+            if(this.items[i][0].equals( value )) {
+                return items[i][1];
+            }
+        }
+        return "";
     }
 
     // Commit the change
@@ -100,16 +118,16 @@ public class PopupDropDownEditCell extends
     protected void commit() {
 
         // Update value
-        String text = null;
+        String value = null;
         int selectedIndex = listBox.getSelectedIndex();
         if ( selectedIndex >= 0 ) {
-            text = listBox.getValue( selectedIndex );
+            value = listBox.getValue( selectedIndex );
         }
         setValue( lastContext,
                   lastParent,
-                  text );
+                  value );
         if ( valueUpdater != null ) {
-            valueUpdater.update( text );
+            valueUpdater.update( value );
         }
         panel.hide();
 
