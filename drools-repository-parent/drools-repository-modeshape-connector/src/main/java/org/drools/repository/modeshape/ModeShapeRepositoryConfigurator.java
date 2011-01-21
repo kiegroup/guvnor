@@ -11,6 +11,7 @@ import javax.jcr.Workspace;
 
 import org.drools.repository.JCRRepositoryConfigurator;
 import org.modeshape.jcr.CndNodeTypeReader;
+import org.modeshape.jcr.JcrRepositoryFactory;
 
 /**
  * This specialized {@link JCRRepositoryConfigurator} 
@@ -19,7 +20,7 @@ public class ModeShapeRepositoryConfigurator extends JCRRepositoryConfigurator {
 
 	
     public ModeShapeRepositoryConfigurator() {
-    	defaultJCRImplClass = "org.modeshape.jcr.JcrRepositoryFactory";
+    	defaultJCRImplClass = JcrRepositoryFactory.class.getName();
     }
     
 	public void registerNodeTypesFromCndFile(String cndFileName, Session session, Workspace workspace)
@@ -31,7 +32,6 @@ public class ModeShapeRepositoryConfigurator extends JCRRepositoryConfigurator {
 		} catch (Exception e) {
 			throw new RepositoryException(e);
 		}
-		
 	}
 
 	public Session login(String userName) throws LoginException,RepositoryException {

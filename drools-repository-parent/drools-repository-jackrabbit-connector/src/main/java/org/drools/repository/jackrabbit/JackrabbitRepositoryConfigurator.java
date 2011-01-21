@@ -29,6 +29,7 @@ import javax.jcr.SimpleCredentials;
 import javax.jcr.Workspace;
 
 import org.apache.jackrabbit.commons.cnd.CndImporter;
+import org.apache.jackrabbit.core.RepositoryFactoryImpl;
 import org.apache.jackrabbit.core.TransientRepository;
 import org.drools.repository.JCRRepositoryConfigurator;
 import org.slf4j.Logger;
@@ -45,8 +46,7 @@ public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator 
     private static final Logger log = LoggerFactory.getLogger(JackrabbitRepositoryConfigurator.class);
     
     public JackrabbitRepositoryConfigurator() {
-		super();
-		defaultJCRImplClass = "org.apache.jackrabbit.core.RepositoryFactoryImpl";
+		defaultJCRImplClass = RepositoryFactoryImpl.class.getName();
 	}
 
 	@Override
