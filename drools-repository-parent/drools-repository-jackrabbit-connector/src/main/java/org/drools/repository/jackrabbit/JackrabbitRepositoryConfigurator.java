@@ -42,30 +42,30 @@ import org.slf4j.LoggerFactory;
  */
 public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator {
 
-	
+
     private static final Logger log = LoggerFactory.getLogger(JackrabbitRepositoryConfigurator.class);
     
     public JackrabbitRepositoryConfigurator() {
-		defaultJCRImplClass = RepositoryFactoryImpl.class.getName();
-	}
+        defaultJCRImplClass = RepositoryFactoryImpl.class.getName();
+    }
 
-	@Override
+    @Override
     public Repository getJCRRepository(Properties properties) throws RepositoryException {
 
-    	String repoRootDir = properties.getProperty(REPOSITORY_ROOT_DIRECTORY);
+        String repoRootDir = properties.getProperty(REPOSITORY_ROOT_DIRECTORY);
         if (repoRootDir == null) {
-        	repository = new TransientRepository();
+            repository = new TransientRepository();
         } else { 
-        	repository =  new TransientRepository(repoRootDir + "/repository.xml", repoRootDir);
+            repository =  new TransientRepository(repoRootDir + "/repository.xml", repoRootDir);
         }
         return repository;
 
     }
-	
-	public Session login (String userName) throws LoginException,RepositoryException {
-		Credentials credentials = new SimpleCredentials(userName, "password".toCharArray());
+
+    public Session login (String userName) throws LoginException,RepositoryException {
+        Credentials credentials = new SimpleCredentials(userName, "password".toCharArray());
         return repository.login( credentials );
-	}
+    }
     
     public void registerNodeTypesFromCndFile(String cndFileName, Session session, Workspace workspace) throws RepositoryException {
         try {
@@ -85,7 +85,7 @@ public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator 
      * @see org.drools.repository.JCRRepositoryConfigurator#shutdown()
      */
     public void shutdown() {
-    	if (repository instanceof TransientRepository) {
+        if (repository instanceof TransientRepository) {
             ((TransientRepository)repository).shutdown();
         }
     }
