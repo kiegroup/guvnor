@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +53,6 @@ import org.jbpm.workflow.core.node.StartNode;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-
 /**
  * A servlet opening an API into the Guvnor services.
  *
@@ -60,213 +60,218 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class GuvnorAPIServlet extends HttpServlet {
 
-    private static final LoggingHelper     log  = LoggingHelper.getLogger(GuvnorAPIServlet.class);
-    
-    public void service(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        log.debug("Incoming request for Guvnor API:" + request.getRequestURL());
-        String action = request.getParameter("action");
-        if ("load".equals(action)) {
-            String uuid = request.getParameter("uuid");
-            if (uuid == null) {
-                throw new ServletException(new IllegalArgumentException("The load action requires the parameter uuid"));
+    private static final String        INJECT  = "inject";
+    private static final String        EXTRACT = "extract";
+    private static final String        LOAD    = "load";
+    private static final LoggingHelper log     = LoggingHelper.getLogger( GuvnorAPIServlet.class );
+
+    public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        log.debug( "Incoming request for Guvnor API:" + request.getRequestURL() );
+        String action = request.getParameter( "action" );
+        if ( LOAD.equals( action ) ) {
+            String uuid = request.getParameter( "uuid" );
+            if ( uuid == null ) {
+                throw new ServletException( new IllegalArgumentException( "The load action requires the parameter uuid" ) );
             }
-            try { 
-                RuleAsset asset = RepositoryServiceServlet.getService().loadRuleAsset(uuid);
-                if (asset.content != null) {
-                    response.setContentType("application/json");
+            ServletOutputStream outputStream = response.getOutputStream();
+            
+            try {
+                RuleAsset asset = RepositoryServiceServlet.getService().loadRuleAsset( uuid );
+                if ( asset.content != null ) {
+                    response.setContentType( "application/json" );
                     String content = null;
-                    if (asset.content instanceof RuleFlowContentModel) {
+                    if ( asset.content instanceof RuleFlowContentModel ) {
                         content = ((RuleFlowContentModel) asset.content).getXml();
                     } else {
                         content = asset.content.toString();
                     }
                     try {
-                    	// TODO fix for non-localhost
-                    	content = deserialize(
-                			"http://localhost:8080/designer/bpmn2_0deserialization", content);
-                    } catch (IOException e) {
-                    	log.error(e.getMessage(), e);
-                        throw new ServletException(e.getMessage(), e);
+                        // TODO fix for non-localhost <---- Can someone please describe what is problem so it can be fixed? 
+                        content = deserialize( "http://localhost:8080/designer/bpmn2_0deserialization", content );
+                    } catch ( IOException e ) {
+                        log.error( e.getMessage(), e );
+                        throw new ServletException( e.getMessage(), e );
                     }
-                    log.debug("Sending model");
-                    log.debug(content);
-                    log.debug("End of sending model");
-                    response.setContentLength(content.getBytes().length);
-                    response.getOutputStream().write(content.getBytes());
-                    response.getOutputStream().close();
+                    log.debug( "Sending model" );
+                    log.debug( content );
+                    log.debug( "End of sending model" );
+                    response.setContentLength( content.getBytes().length );
+                    outputStream.write( content.getBytes() );
                 }
-            } catch (SerializationException e) {
-                log.error(e.getMessage(), e);
-                throw new ServletException(e.getMessage(), e);
+            } catch ( SerializationException e ) {
+                log.error( e.getMessage(), e );
+                throw new ServletException( e.getMessage(), e );
+            } finally {
+                outputStream.close();
             }
-            
-        } else if ("extract".equals(action)) {
-        	String json = request.getParameter("json");
-        	try {
-            	Map<String, String[]> result = extract(json);
-            	response.setContentType("application/json");
-            	log.debug("extracting");
-            	String s = "";
-            	int i = 0;
-            	for (Map.Entry<String, String[]> entry: result.entrySet()) {
-            		log.debug(entry.getKey() + " " + entry.getValue()[0] + " " + entry.getValue()[1]);
-            		s += entry.getKey() + "#" + entry.getValue()[0] + "#" + entry.getValue()[1];
-            		if (i++ != result.size() - 1) {
-            			s += "###";
-            		}
-            	}
-                log.debug("End of extracting");
-                response.setContentLength(s.length());
-                response.getOutputStream().write(s.getBytes());
-                response.getOutputStream().close();
-			} catch (Throwable t) {
-				throw new ServletException(t);
-			}
-        } else if ("inject".equals(action)) {
-        	String json = request.getParameter("json");
-        	try {
-        		Map<String, String> constraints = new HashMap<String, String>();
-        		String[] s = request.getParameterValues("constraint");
-        		for (String c: s) {
-        			String nodeId = c.substring(0, c.indexOf(":"));
-        			String rule = c.substring(c.indexOf(":") + 1);
-        			constraints.put(nodeId, rule);
-        		}
-        		String result = inject(json, constraints);
-            	response.setContentType("application/json");
-            	log.debug("injecting");
-            	for (Map.Entry<String, String> entry: constraints.entrySet()) {
-            		log.debug(entry.getKey() + " " + entry.getValue());
-            	}
-            	log.debug(result);
-                log.debug("End of injecting");
-                response.setContentLength(result.length());
-                response.getOutputStream().write(result.getBytes());
-                response.getOutputStream().close();
-			} catch (Throwable t) {
-				throw new ServletException(t);
-			}
+        } else if ( EXTRACT.equals( action ) ) {
+            String json = request.getParameter( "json" );
+            ServletOutputStream outputStream = response.getOutputStream();
+            try {
+                Map<String, String[]> result = extract( json );
+                response.setContentType( "application/json" );
+                log.debug( "extracting" );
+                String s = "";
+                int i = 0;
+                for ( Map.Entry<String, String[]> entry : result.entrySet() ) {
+                    log.debug( entry.getKey() + " " + entry.getValue()[0] + " " + entry.getValue()[1] );
+                    s += entry.getKey() + "#" + entry.getValue()[0] + "#" + entry.getValue()[1];
+                    if ( i++ != result.size() - 1 ) {
+                        s += "###";
+                    }
+                }
+                log.debug( "End of extracting" );
+                response.setContentLength( s.getBytes().length );
+                outputStream.write( s.getBytes() );
+            } catch ( Throwable t ) {
+                throw new ServletException( t );
+            } finally {
+                outputStream.close();
+            }
+        } else if ( INJECT.equals( action ) ) {
+            String json = request.getParameter( "json" );
+            ServletOutputStream outputStream = response.getOutputStream();
+            try {
+                Map<String, String> constraints = new HashMap<String, String>();
+                String[] constraint = request.getParameterValues( "constraint" );
+                for ( String c : constraint ) {
+                    String nodeId = c.substring( 0, c.indexOf( ":" ) );
+                    String rule = c.substring( c.indexOf( ":" ) + 1 );
+                    constraints.put( nodeId, rule );
+                }
+                String result = inject( json, constraints );
+                response.setContentType( "application/json" );
+                log.debug( "injecting" );
+                for ( Map.Entry<String, String> entry : constraints.entrySet() ) {
+                    log.debug( entry.getKey() + " " + entry.getValue() );
+                }
+                log.debug( result );
+                log.debug( "End of injecting" );
+                response.setContentLength( result.getBytes().length );
+                outputStream.write( result.getBytes() );
+            } catch ( Throwable t ) {
+                throw new ServletException( t );
+            } finally {
+                outputStream.close();
+            }
         } else {
-            throw new ServletException(new IllegalArgumentException("The servlet requires a parameter named action"));
+            throw new ServletException( new IllegalArgumentException( "The servlet requires a parameter named action" ) );
         }
     }
 
     public static String deserialize(String deserializeUrl, String modelXml) throws IOException {
-		OutputStream out = null;
-		InputStream content = null;
-		ByteArrayOutputStream bos = null;
+        OutputStream out = null;
+        InputStream content = null;
+        ByteArrayOutputStream bos = null;
 
-		try {
-			URL bpmn2_0SerializationURL = new URL(deserializeUrl);
-			modelXml = "data=" + URLEncoder.encode(modelXml, "UTF-8");
-			byte[] bytes = modelXml.getBytes("UTF-8");
+        try {
+            URL bpmn2_0SerializationURL = new URL( deserializeUrl );
+            modelXml = "data=" + URLEncoder.encode( modelXml, "UTF-8" );
+            byte[] bytes = modelXml.getBytes( "UTF-8" );
 
-			HttpURLConnection connection = (HttpURLConnection) bpmn2_0SerializationURL.openConnection();
-			connection.setRequestMethod("POST");
-			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-			connection.setFixedLengthStreamingMode(bytes.length);
-			connection.setDoOutput(true);
-			out = connection.getOutputStream();
-			out.write(bytes);
-			out.close();
+            HttpURLConnection connection = (HttpURLConnection) bpmn2_0SerializationURL.openConnection();
+            connection.setRequestMethod( "POST" );
+            connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded" );
+            connection.setFixedLengthStreamingMode( bytes.length );
+            connection.setDoOutput( true );
+            out = connection.getOutputStream();
+            out.write( bytes );
+            out.close();
 
-			content = connection.getInputStream();
+            content = connection.getInputStream();
 
-			bos = new ByteArrayOutputStream();
-			int b = 0;
-			while ((b = content.read()) > -1) {
-				bos.write(b);
-			}
-			bytes = bos.toByteArray();
-			content.close();
-			bos.close();
-			return new String(bytes);
-		} finally {
-			try {
-				if (out != null) {
-					out.close();
-				}
-				if (content != null) {
-					content.close();
-				}
-				if (bos != null) {
-					bos.close();
-				}
-			} catch (IOException e) {
-			}
-		}
-	}
-    
-    public static Map<String, String[]> extract(String json) throws Exception {
-    	Map<String, String[]> result = null;
-    	String xml = BPMN2ProcessHandler.serialize(
-    			"http://localhost:8080/designer/bpmn2_0serialization", json);
-		Reader isr = new StringReader(xml);
-		SemanticModules semanticModules = new SemanticModules();
-		semanticModules.addSemanticModule(new BPMNSemanticModule());
-		semanticModules.addSemanticModule(new BPMNDISemanticModule());
-		XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
-		RuleFlowProcess process = (RuleFlowProcess) xmlReader.read(isr);
-		if (process == null) {
-			throw new IllegalArgumentException("Could not read process");
-		} else {
-			log.debug("Processing " + process.getId());
-			result = new HashMap<String, String[]>();
-			StartNode start = process.getStart();
-			Node target = start.getTo().getTo();
-			if (target instanceof Split) {
-				Split split = (Split) target;
-				for (Connection connection: split.getDefaultOutgoingConnections()) {
-					Constraint constraint = split.getConstraint(connection);
-					if (constraint != null) {
-						System.out.println("Found constraint to node " + connection.getTo().getName() + " [" + connection.getTo().getId() + "]: " + constraint.getConstraint());
-						result.put(XmlBPMNProcessDumper.getUniqueNodeId(connection.getTo()), new String[] { connection.getTo().getName(), constraint.getConstraint() }); 
-					}
-				}
-			}
-		}
-		if (isr != null) {
-			isr.close();
-		}
-		return result;
+            bos = new ByteArrayOutputStream();
+            int b = 0;
+            while ( (b = content.read()) > -1 ) {
+                bos.write( b );
+            }
+            bytes = bos.toByteArray();
+            content.close();
+            bos.close();
+            return new String( bytes );
+        } finally {
+            try {
+                if ( out != null ) {
+                    out.close();
+                }
+                if ( content != null ) {
+                    content.close();
+                }
+                if ( bos != null ) {
+                    bos.close();
+                }
+            } catch ( IOException e ) {
+            }
+        }
     }
-    
+
+    public static Map<String, String[]> extract(String json) throws Exception {
+        Map<String, String[]> result = null;
+        String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/bpmn2_0serialization", json );
+        Reader isr = new StringReader( xml );
+        SemanticModules semanticModules = new SemanticModules();
+        semanticModules.addSemanticModule( new BPMNSemanticModule() );
+        semanticModules.addSemanticModule( new BPMNDISemanticModule() );
+        XmlProcessReader xmlReader = new XmlProcessReader( semanticModules );
+        RuleFlowProcess process = (RuleFlowProcess) xmlReader.read( isr );
+        if ( process == null ) {
+            throw new IllegalArgumentException( "Could not read process" );
+        }
+        log.debug( "Processing " + process.getId() );
+        result = new HashMap<String, String[]>();
+        StartNode start = process.getStart();
+        Node target = start.getTo().getTo();
+        if ( target instanceof Split ) {
+            Split split = (Split) target;
+            for ( Connection connection : split.getDefaultOutgoingConnections() ) {
+                Constraint constraint = split.getConstraint( connection );
+                if ( constraint != null ) {
+                    System.out.println( "Found constraint to node " + connection.getTo().getName() + " [" + connection.getTo().getId() + "]: " + constraint.getConstraint() );
+                    result.put( XmlBPMNProcessDumper.getUniqueNodeId( connection.getTo() ), new String[]{connection.getTo().getName(), constraint.getConstraint()} );
+                }
+            }
+        }
+
+        if ( isr != null ) {
+            isr.close();
+        }
+        return result;
+    }
+
     public static String inject(String json, Map<String, String> constraints) throws Exception {
-    	String xml = BPMN2ProcessHandler.serialize(
-    			"http://localhost:8080/designer/bpmn2_0serialization", json);
-		Reader isr = new StringReader(xml);
-		SemanticModules semanticModules = new SemanticModules();
-		semanticModules.addSemanticModule(new BPMNSemanticModule());
-		semanticModules.addSemanticModule(new BPMNDISemanticModule());
-		XmlProcessReader xmlReader = new XmlProcessReader(semanticModules);
-		RuleFlowProcess process = (RuleFlowProcess) xmlReader.read(isr);
-		isr.close();
-		if (process == null) {
-			throw new IllegalArgumentException("Could not read process");
-		} else {
-			log.debug("Processing " + process.getId());
-			StartNode start = process.getStart();
-			Node target = start.getTo().getTo();
-			if (target instanceof Split) {
-				Split split = (Split) target;
-				for (Connection connection: split.getDefaultOutgoingConnections()) {
-					String s = constraints.get(XmlBPMNProcessDumper.getUniqueNodeId(connection.getTo()));
-					if (s != null) {
-						System.out.println("Found constraint to node " + connection.getTo().getName() + ": " + s);
-						Constraint constraint = split.getConstraint(connection);
-						if (constraint == null) {
-							constraint = new ConstraintImpl();
-							split.setConstraint(connection, constraint);
-						}
-						constraint.setConstraint(s);
-					}
-				}
-			}
-			String newXml = XmlBPMNProcessDumper.INSTANCE.dump(process);
-			System.out.println(newXml);
-			return deserialize("http://localhost:8080/designer/bpmn2_0deserialization", newXml);
-		}
+        String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/bpmn2_0serialization", json );
+        Reader isr = new StringReader( xml );
+        SemanticModules semanticModules = new SemanticModules();
+        semanticModules.addSemanticModule( new BPMNSemanticModule() );
+        semanticModules.addSemanticModule( new BPMNDISemanticModule() );
+        XmlProcessReader xmlReader = new XmlProcessReader( semanticModules );
+        RuleFlowProcess process = (RuleFlowProcess) xmlReader.read( isr );
+        isr.close();
+        if ( process == null ) {
+            throw new IllegalArgumentException( "Could not read process" );
+        } else {
+            log.debug( "Processing " + process.getId() );
+            StartNode start = process.getStart();
+            Node target = start.getTo().getTo();
+            if ( target instanceof Split ) {
+                Split split = (Split) target;
+                for ( Connection connection : split.getDefaultOutgoingConnections() ) {
+                    String s = constraints.get( XmlBPMNProcessDumper.getUniqueNodeId( connection.getTo() ) );
+                    if ( s != null ) {
+                        System.out.println( "Found constraint to node " + connection.getTo().getName() + ": " + s );
+                        Constraint constraint = split.getConstraint( connection );
+                        if ( constraint == null ) {
+                            constraint = new ConstraintImpl();
+                            split.setConstraint( connection, constraint );
+                        }
+                        constraint.setConstraint( s );
+                    }
+                }
+            }
+            String newXml = XmlBPMNProcessDumper.INSTANCE.dump( process );
+            System.out.println( newXml );
+            return deserialize( "http://localhost:8080/designer/bpmn2_0deserialization", newXml );
+        }
     }
 
 }
