@@ -34,7 +34,7 @@ public class ModeShapeRepositoryConfigurator extends JCRRepositoryConfigurator {
         }
     }
 
-    public Session login(String userName) throws LoginException,RepositoryException {
+    public Session login(String userName) throws RepositoryException {
         Session session = null;
         try {
             session = AccessController.doPrivileged( new PrivilegedExceptionAction<Session>() {

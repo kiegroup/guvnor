@@ -90,9 +90,9 @@ public abstract class JCRRepositoryConfigurator {
 //        throw new RepositoryException(msg);
     }
 
-    public abstract Session login(String userName) throws LoginException,RepositoryException;
+    public abstract Session login(String userName) throws RepositoryException;
 
-    public Session login (String userName, String password) throws RepositoryException {
+    public Session login(String userName, String password) throws RepositoryException {
         Credentials credentials = new SimpleCredentials(userName, password.toCharArray());
         return repository.login( credentials );
     }

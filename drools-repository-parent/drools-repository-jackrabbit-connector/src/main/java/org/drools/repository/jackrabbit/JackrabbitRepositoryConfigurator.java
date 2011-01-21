@@ -62,7 +62,7 @@ public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator 
 
     }
 
-    public Session login (String userName) throws LoginException,RepositoryException {
+    public Session login (String userName) throws RepositoryException {
         Credentials credentials = new SimpleCredentials(userName, "password".toCharArray());
         return repository.login( credentials );
     }

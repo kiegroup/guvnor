@@ -73,8 +73,7 @@ public class MockRepositoryConfigurator extends JCRRepositoryConfigurator {
 	}
 
 	@Override
-	public Session login(String userName) throws LoginException,
-			RepositoryException {
+	public Session login(String userName) throws RepositoryException {
 		// TODO Auto-generated method stub
 		return null;
 	}
