@@ -454,6 +454,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                                                                                "\\s" );
                 editingCol.setFactType( val[0] );
                 editingCol.setBoundName( val[1] );
+                editingCol.setFactField( null );
                 doPatternLabel();
                 pop.hide();
             }
@@ -530,6 +531,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                 }
                 editingCol.setBoundName( fn );
                 editingCol.setFactType( ft );
+                editingCol.setFactField( null );
                 doPatternLabel();
                 pop.hide();
             }
