@@ -16,7 +16,7 @@ public class ModeShapeRepositoryConfiguratorWithJAAS extends ModeShapeRepository
         try {
             idtrustConfig.config(configFile);
         } catch (Exception ex) {
-            throw new IllegalStateException(ex);
+            throw new IllegalStateException("IDTrustConfiguration for modeshape with JAAS failed.", ex);
         }
     }
 }

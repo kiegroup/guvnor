@@ -29,6 +29,7 @@ import javax.jcr.SimpleCredentials;
 import javax.jcr.Workspace;
 
 import org.apache.jackrabbit.commons.cnd.CndImporter;
+import org.apache.jackrabbit.core.RepositoryFactoryImpl;
 import org.apache.jackrabbit.core.TransientRepository;
 import org.drools.repository.JCRRepositoryConfigurator;
 import org.slf4j.Logger;
@@ -41,41 +42,38 @@ import org.slf4j.LoggerFactory;
  */
 public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator {
 
-	
+
     private static final Logger log = LoggerFactory.getLogger(JackrabbitRepositoryConfigurator.class);
     
     public JackrabbitRepositoryConfigurator() {
-		super();
-		defaultJCRImplClass = "org.apache.jackrabbit.core.RepositoryFactoryImpl";
-	}
+        defaultJCRImplClass = RepositoryFactoryImpl.class.getName();
+    }
 
-	@Override
+    @Override
     public Repository getJCRRepository(Properties properties) throws RepositoryException {
 
-    	String repoRootDir = properties.getProperty(REPOSITORY_ROOT_DIRECTORY);
+        String repoRootDir = properties.getProperty(REPOSITORY_ROOT_DIRECTORY);
         if (repoRootDir == null) {
-        	repository = new TransientRepository();
+            repository = new TransientRepository();
         } else { 
-        	repository =  new TransientRepository(repoRootDir + "/repository.xml", repoRootDir);
+            repository =  new TransientRepository(repoRootDir + "/repository.xml", repoRootDir);
         }
         return repository;
 
     }
-	
-	public Session login (String userName) throws LoginException,RepositoryException {
-		Credentials credentials = new SimpleCredentials(userName, "password".toCharArray());
+
+    public Session login (String userName) throws RepositoryException {
+        Credentials credentials = new SimpleCredentials(userName, "password".toCharArray());
         return repository.login( credentials );
-	}
+    }
     
     public void registerNodeTypesFromCndFile(String cndFileName, Session session, Workspace workspace) throws RepositoryException {
         try {
             //Read in the CND file
             Reader in = new InputStreamReader(this.getClass().getResourceAsStream( cndFileName ));
-            CndImporter.registerNodeTypes(in, session);            
-
-        } catch(Exception e) {
-            log.error("Caught Exception", e);
-            throw new RepositoryException(e);
+            CndImporter.registerNodeTypes(in, session);
+        } catch (Exception e) {
+            throw new RepositoryException("Registering node types for repository failed.", e);
         }
     } 
     
@@ -85,7 +83,7 @@ public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator 
      * @see org.drools.repository.JCRRepositoryConfigurator#shutdown()
      */
     public void shutdown() {
-    	if (repository instanceof TransientRepository) {
+        if (repository instanceof TransientRepository) {
             ((TransientRepository)repository).shutdown();
         }
     }

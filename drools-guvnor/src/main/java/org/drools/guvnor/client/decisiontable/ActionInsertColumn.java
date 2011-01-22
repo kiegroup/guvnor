@@ -294,7 +294,9 @@ public class ActionInsertColumn extends FormStylePopup {
                                                                                "\\s" ); // NON-NLS
                 editingCol.setFactType( val[0] );
                 editingCol.setBoundName( val[1] );
+                editingCol.setFactField( null );
                 doPatternLabel();
+                doFieldLabel();
                 pop.hide();
             }
         } );
@@ -321,7 +323,9 @@ public class ActionInsertColumn extends FormStylePopup {
                 editingCol.setBoundName( binding.getText() );
                 editingCol.setFactType( types.getItemText( types
                         .getSelectedIndex() ) );
+                editingCol.setFactField( null );
                 doPatternLabel();
+                doFieldLabel();
                 pop.hide();
             }
         } );

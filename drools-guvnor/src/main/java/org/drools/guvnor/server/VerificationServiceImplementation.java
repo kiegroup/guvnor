@@ -55,9 +55,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @author rikkola
  *
  */
-public class VerificationServiceImplementation extends RemoteServiceServlet
-    implements
-    VerificationService {
+public class VerificationServiceImplementation extends RemoteServiceServlet implements VerificationService {
 
     private static final long          serialVersionUID = 510l;
 
@@ -73,17 +71,14 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
     @Restrict("#{identity.loggedIn}")
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
+            Identity.instance().checkPermission( new PackageUUIDType( packageUUID ), RoleTypes.PACKAGE_DEVELOPER );
         }
 
         PackageItem packageItem = getService().getRulesRepository().loadPackageByUUID( packageUUID );
 
         VerifierRunner runner = new VerifierRunner( defaultVerifier );
 
-        AnalysisReport report = runner.verify( packageItem,
-                                               new ScopesAgendaFilter( true,
-                                                                       ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE ) );
+        AnalysisReport report = runner.verify( packageItem, new ScopesAgendaFilter( true, ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE ) );
 
         defaultVerifier.flushKnowledgeSession();
 
@@ -92,47 +87,26 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public AnalysisReport verifyAsset(RuleAsset asset,
-                                      Set<String> activeWorkingSets) throws SerializationException {
-        return this.performAssetVerification( asset,
-                                              true,
-                                              activeWorkingSets );
+    public AnalysisReport verifyAsset(RuleAsset asset, Set<String> activeWorkingSets) throws SerializationException {
+        return this.performAssetVerification( asset, true, activeWorkingSets );
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
-                                                           Set<String> activeWorkingSets) throws SerializationException {
-        return this.performAssetVerification( asset,
-                                              false,
-                                              activeWorkingSets );
+    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset, Set<String> activeWorkingSets) throws SerializationException {
+        return this.performAssetVerification( asset, false, activeWorkingSets );
     }
 
-    private AnalysisReport performAssetVerification(RuleAsset asset,
-                                                    boolean useVerifierDefaultConfig,
-                                                    Set<String> activeWorkingSets) throws SerializationException {
+    private AnalysisReport performAssetVerification(RuleAsset asset, boolean useVerifierDefaultConfig, Set<String> activeWorkingSets) throws SerializationException {
         long startTime = System.currentTimeMillis();
 
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
+            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ), RoleTypes.PACKAGE_DEVELOPER );
         }
 
         PackageItem packageItem = getService().getRulesRepository().loadPackage( asset.metaData.packageName );
 
-        ScopesAgendaFilter verificationScope;
-
-        if ( isAssetDecisionTable( asset ) ) {
-            verificationScope = new ScopesAgendaFilter( true,
-                                                        ScopesAgendaFilter.VERIFYING_SCOPE_DECISION_TABLE );
-        } else {
-            verificationScope = new ScopesAgendaFilter( true,
-                                                        ScopesAgendaFilter.VERIFYING_SCOPE_SINGLE_RULE );
-        }
-
         List<String> constraintRules = applyWorkingSets( activeWorkingSets );
-
-        VerifierRunner runner;
 
         Verifier verifierToBeUsed = null;
         if ( useVerifierDefaultConfig ) {
@@ -140,13 +114,13 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
         } else {
             verifierToBeUsed = getWorkingSetVerifier( constraintRules );
         }
-        runner = new VerifierRunner( verifierToBeUsed );
+        
 
         log.debug( "constraints rules: " + constraintRules );
 
         try {
-            AnalysisReport report = runner.verify( packageItem,
-                                                   verificationScope );
+            VerifierRunner runner = new VerifierRunner( verifierToBeUsed );
+            AnalysisReport report = runner.verify( packageItem, chooseScopesAgendaFilterFor( asset ) );
 
             verifierToBeUsed.flushKnowledgeSession();
 
@@ -157,6 +131,14 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
         } catch ( Throwable t ) {
             throw new SerializationException( t.getMessage() );
         }
+    }
+
+    private ScopesAgendaFilter chooseScopesAgendaFilterFor(RuleAsset asset) {
+        if ( isAssetDecisionTable( asset ) ) {
+            return new ScopesAgendaFilter( true, ScopesAgendaFilter.VERIFYING_SCOPE_DECISION_TABLE );
+        }
+        return new ScopesAgendaFilter( true, ScopesAgendaFilter.VERIFYING_SCOPE_SINGLE_RULE );
+
     }
 
     private boolean isAssetDecisionTable(RuleAsset asset) {
@@ -189,8 +171,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet
 
         if ( additionalVerifierRules != null ) {
             for ( String rule : additionalVerifierRules ) {
-                configuration.getVerifyingResources().put( ResourceFactory.newByteArrayResource( rule.getBytes() ),
-                                                           ResourceType.DRL );
+                configuration.getVerifyingResources().put( ResourceFactory.newByteArrayResource( rule.getBytes() ), ResourceType.DRL );
             }
         }
 

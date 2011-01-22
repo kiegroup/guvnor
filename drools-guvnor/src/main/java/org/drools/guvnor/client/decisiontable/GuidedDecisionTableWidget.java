@@ -355,6 +355,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                     public void execute(DTColumnConfig column) {
                                                                                                         dtable.updateColumn( c,
                                                                                                                              (ConditionCol) column );
+                                                                                                        dtable.scrapeColumns();
                                                                                                         refreshConditionsWidget();
                                                                                                     }
                                                                                                 },

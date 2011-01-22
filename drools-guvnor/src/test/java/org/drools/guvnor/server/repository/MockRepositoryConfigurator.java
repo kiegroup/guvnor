@@ -45,37 +45,29 @@ import org.drools.repository.JCRRepositoryConfigurator;
 import org.drools.repository.RulesRepositoryException;
 
 public class MockRepositoryConfigurator extends JCRRepositoryConfigurator {
-
     
     @Override
     public Repository getJCRRepository(Properties properties) {
-    	if (repository==null) {
+    	if (repository == null) {
     		repository = new MockRepo();
     	}
         return repository;
     }
 
-    public void setupRulesRepository(Session session) throws RulesRepositoryException {
-        
-    }
-
 	@Override
-	public void registerNodeTypesFromCndFile(String cndFileName,
-			Session session, Workspace workspace) throws RepositoryException {
-		// TODO Auto-generated method stub
-		
+	public void registerNodeTypesFromCndFile(String cndFileName, Session session, Workspace workspace)
+            throws RepositoryException {
+		// Do nothing
 	}
 
 	@Override
 	public void shutdown() {
-		// TODO Auto-generated method stub
-		
+		// Do nothing
 	}
 
 	@Override
-	public Session login(String userName) throws LoginException,
-			RepositoryException {
-		// TODO Auto-generated method stub
+	public Session login(String userName) throws RepositoryException {
+		// Do nothing
 		return null;
 	}
     

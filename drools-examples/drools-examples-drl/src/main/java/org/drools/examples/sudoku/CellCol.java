@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.examples.sudoku;
 
-package org.drools.guvnor.server.util;
-
-import org.apache.commons.fileupload.FileItem;
-
-public class FormData {
-    private FileItem file;
-    private String   uuid;
-
-    public FileItem getFile() {
-        return file;
+/**
+ * Represents a column of Sudoku grid cells.
+ *
+ * @author Wolfgang Laun
+ */
+public class CellCol extends CellFile {
+    
+    /**
+     * Constructor.
+     * 
+     * @param number the column number.
+     */
+    public CellCol(int number){
+        super( number );
     }
-
-    public void setFile(FileItem file) {
-        this.file = file;
+    
+    /*
+     * (non-Javadoc)
+     * @see sudoku.CellFile#toString()
+     */
+    @Override
+    public String toString(){
+        return "Column " + getNumber() + ": " + super.toString();
     }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public void closeFile() {
-    }
-
 }

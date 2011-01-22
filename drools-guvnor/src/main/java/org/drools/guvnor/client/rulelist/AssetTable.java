@@ -165,7 +165,7 @@ public class AssetTable extends Composite {
 
         TextColumn<AssetPageRow> descriptionColumn = new TextColumn<AssetPageRow>() {
             public String getValue(AssetPageRow row) {
-                return row.getDescription();
+                return row.getAbbreviatedDescription();
             }
         };
         columnPicker.addColumn(descriptionColumn, new SortableHeader<AssetPageRow, String>(

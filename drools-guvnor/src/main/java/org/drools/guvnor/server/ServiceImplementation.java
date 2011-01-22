@@ -49,6 +49,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.drools.ClockType;
 import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
@@ -1061,6 +1062,7 @@ public class ServiceImplementation implements RepositoryService {
             row.setPackageName( assetItem.getPackageName() );
             row.setName( assetItem.getName() );
             row.setDescription( assetItem.getDescription() );
+            row.setDescriptionAbbreviated(StringUtils.abbreviate(assetItem.getDescription(),80));
             row.setStateName( assetItem.getStateDescription() );
             row.setCreator( assetItem.getCreator() );
             row.setCreatedDate( assetItem.getCreatedDate().getTime() );

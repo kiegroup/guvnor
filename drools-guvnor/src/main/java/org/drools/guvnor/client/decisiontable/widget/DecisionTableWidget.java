@@ -1,17 +1,17 @@
 /*
  * Copyright 2011 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
@@ -155,18 +155,12 @@ public abstract class DecisionTableWidget extends Composite
      *            The Model column to add
      */
     public void addColumn(DTColumnConfig modelColumn) {
-        int index = 0;
-        if ( modelColumn instanceof MetadataCol ) {
-            index = findMetadataColumnIndex();
-        } else if ( modelColumn instanceof AttributeCol ) {
-            index = findAttributeColumnIndex();
-        } else if ( modelColumn instanceof ConditionCol ) {
-            index = findConditionColumnIndex( (ConditionCol) modelColumn );
-        } else if ( modelColumn instanceof ActionCol ) {
-            index = findActionColumnIndex();
+        if ( modelColumn == null ) {
+            throw new IllegalArgumentException(
+                                                "Column cannot be null." );
         }
-        insertColumnBefore( modelColumn,
-                            index + 1 );
+        addColumn( modelColumn,
+                   true );
     }
 
     /**
@@ -183,46 +177,13 @@ public abstract class DecisionTableWidget extends Composite
      * @param column
      *            The Model column to delete
      */
-    public void deleteColumn(DTColumnConfig column) {
-        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            if ( columns.get( iCol ).getModelColumn().equals( column ) ) {
-                deleteColumn( iCol );
-                break;
-            }
-        }
-    }
-
-    /**
-     * Delete a column
-     * 
-     * @param index
-     *            The index of the column to delete
-     */
-    public void deleteColumn(int index) {
-        if ( index < 0
-             || index > columns.size() - 1 ) {
+    public void deleteColumn(DTColumnConfig modelColumn) {
+        if ( modelColumn == null ) {
             throw new IllegalArgumentException(
-                                                "Column index must be greater than zero and less than then number of declared columns." );
+                                                "Column cannot be null." );
         }
-
-        // Clear any selections
-        clearSelection();
-
-        // Delete column data
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DynamicDataRow row = data.get( iRow );
-            row.remove( index );
-        }
-
-        // Delete column from grid
-        columns.remove( index );
-        reindexColumns();
-
-        // Redraw
-        assertModelIndexes();
-        gridWidget.redraw();
-        headerWidget.redraw();
-
+        deleteColumn( modelColumn,
+                      true );
     }
 
     /**
@@ -937,13 +898,24 @@ public abstract class DecisionTableWidget extends Composite
                                  !editColumn.isHideColumn() );
         }
 
-        // Update column's Cell type
+        // Change in column's binding forces an update and redraw if FactType or
+        // FactField are different; otherwise only need to update and redraw if
+        // the FactType or FieldType have changed
         if ( !isEqualOrNull( origColumn.getBoundName(),
-                             editColumn.getBoundName() )
-             || !isEqualOrNull( origColumn.getFactType(),
-                                editColumn.getFactType() )
-             || !isEqualOrNull( origColumn.getFactField(),
-                                editColumn.getFactField() ) ) {
+                             editColumn.getBoundName() ) ) {
+            if ( !isEqualOrNull( origColumn.getFactType(),
+                                 editColumn.getFactType() )
+                 || !isEqualOrNull( origColumn.getFactField(),
+                                    editColumn.getFactField() ) ) {
+                bRedrawColumn = true;
+                updateCellsForDataType( editColumn,
+                                        column );
+            }
+
+        } else if ( !isEqualOrNull( origColumn.getFactType(),
+                                    editColumn.getFactType() )
+                    || !isEqualOrNull( origColumn.getFactField(),
+                                       editColumn.getFactField() ) ) {
             bRedrawColumn = true;
             updateCellsForDataType( editColumn,
                                     column );
@@ -1001,11 +973,20 @@ public abstract class DecisionTableWidget extends Composite
                                  !editColumn.isHideColumn() );
         }
 
-        // Update column's Cell type
+        // Change in column's binding forces an update and redraw if FactField
+        // is different; otherwise only need to update and redraw if the
+        // FieldType has changed
         if ( !isEqualOrNull( origColumn.getBoundName(),
-                             editColumn.getBoundName() )
-             || !isEqualOrNull( origColumn.getFactField(),
-                                editColumn.getFactField() ) ) {
+                             editColumn.getBoundName() ) ) {
+            if ( !isEqualOrNull( origColumn.getFactField(),
+                                   editColumn.getFactField() ) ) {
+                bRedrawColumn = true;
+                updateCellsForDataType( editColumn,
+                                        column );
+            }
+
+        } else if ( !isEqualOrNull( origColumn.getFactField(),
+                                       editColumn.getFactField() ) ) {
             bRedrawColumn = true;
             updateCellsForDataType( editColumn,
                                     column );
@@ -1063,14 +1044,56 @@ public abstract class DecisionTableWidget extends Composite
                                  !editColumn.isHideColumn() );
         }
 
-        // Update column's Cell type
+        // Change in operator
+        if ( !isEqualOrNull( origColumn.getOperator(),
+                             editColumn.getOperator() ) ) {
+            bRedrawHeader = true;
+        }
+
         if ( !isEqualOrNull( origColumn.getBoundName(),
-                             editColumn.getBoundName() )
-             || !isEqualOrNull( origColumn.getFactType(),
+                             editColumn.getBoundName() ) ) {
+            // Change in bound name requires column to be repositioned
+            bRedrawHeader = true;
+            addColumn( editColumn,
+                       false );
+            int origColIndex = columns.indexOf( getDynamicColumn( origColumn ) );
+            int editColIndex = columns.indexOf( getDynamicColumn( editColumn ) );
+
+            // If the FactType, FieldType and ConstraintValueType are unchanged
+            // we can copy cell values from the old column into the new
+            if ( isEqualOrNull( origColumn.getFactType(),
                                 editColumn.getFactType() )
-             || !isEqualOrNull( origColumn.getFactField(),
-                                editColumn.getFactField() )
-             || origColumn.getConstraintValueType() != editColumn.getConstraintValueType() ) {
+                 && isEqualOrNull( origColumn.getFactField(),
+                                   editColumn.getFactField() )
+                 && origColumn.getConstraintValueType() == editColumn.getConstraintValueType() ) {
+
+                for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                    DynamicDataRow row = data.get( iRow );
+                    CellValue< ? > oldCell = row.get( origColIndex );
+                    CellValue< ? > newCell = row.get( editColIndex );
+                    newCell.setValue( oldCell.getValue() );
+                }
+            }
+
+            // Delete old column and redraw
+            deleteColumn( origColumn,
+                          false );
+            if ( editColIndex > origColIndex ) {
+                int temp = origColIndex;
+                origColIndex = editColIndex;
+                editColIndex = temp;
+            }
+            assertModelIndexes();
+            gridWidget.redrawColumns( editColIndex,
+                                      origColIndex );
+
+        } else if ( !isEqualOrNull( origColumn.getFactType(),
+                                    editColumn.getFactType() )
+                    || !isEqualOrNull( origColumn.getFactField(),
+                                       editColumn.getFactField() )
+                    || origColumn.getConstraintValueType() != editColumn.getConstraintValueType() ) {
+
+            // Update column's Cell type
             bRedrawColumn = true;
             updateCellsForDataType( editColumn,
                                     column );
@@ -1149,6 +1172,24 @@ public abstract class DecisionTableWidget extends Composite
                 }
             }
         }
+    }
+
+    // Add column to table with optional redraw
+    private void addColumn(DTColumnConfig modelColumn,
+                           boolean bRedraw) {
+        int index = 0;
+        if ( modelColumn instanceof MetadataCol ) {
+            index = findMetadataColumnIndex();
+        } else if ( modelColumn instanceof AttributeCol ) {
+            index = findAttributeColumnIndex();
+        } else if ( modelColumn instanceof ConditionCol ) {
+            index = findConditionColumnIndex( (ConditionCol) modelColumn );
+        } else if ( modelColumn instanceof ActionCol ) {
+            index = findActionColumnIndex();
+        }
+        insertColumnBefore( modelColumn,
+                            index + 1,
+                            bRedraw );
     }
 
     // Ensure Condition columns are grouped by pattern (as we merge equal
@@ -1323,6 +1364,40 @@ public abstract class DecisionTableWidget extends Composite
         selections.clear();
     }
 
+    // Delete column from table with optional redraw
+    private void deleteColumn(DTColumnConfig modelColumn,
+                              boolean bRedraw) {
+
+        // Lookup UI column
+        DynamicColumn col = getDynamicColumn( modelColumn );
+        int index = columns.indexOf( col );
+        if ( index == -1 ) {
+            throw new IllegalArgumentException(
+                                                "Column not found in declared columns." );
+        }
+
+        // Clear any selections
+        clearSelection();
+
+        // Delete column data
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            row.remove( index );
+        }
+
+        // Delete column from grid
+        columns.remove( index );
+        reindexColumns();
+
+        // Redraw
+        if ( bRedraw ) {
+            assertModelIndexes();
+            gridWidget.redraw();
+            headerWidget.redraw();
+        }
+
+    }
+
     // Ensure Coordinates are the extents of merged cell
     private void extendSelection(Coordinate coordinate) {
         CellValue< ? > startCell = data.get( coordinate );
@@ -1491,7 +1566,8 @@ public abstract class DecisionTableWidget extends Composite
 
     // Insert a new model column at the specified index
     private void insertColumnBefore(DTColumnConfig modelColumn,
-                                    int index) {
+                                    int index,
+                                    boolean bRedraw) {
 
         // Add column to data
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
@@ -1515,13 +1591,15 @@ public abstract class DecisionTableWidget extends Composite
         columns.add( index,
                      column );
         reindexColumns();
+        assertModelIndexes();
 
         // Redraw
-        assertModelIndexes();
-        gridWidget.redrawColumns( index,
-                                  columns.size() - 1 );
-        headerWidget.redraw();
-        assertDimensions();
+        if ( bRedraw ) {
+            gridWidget.redrawColumns( index,
+                                      columns.size() - 1 );
+            headerWidget.redraw();
+            assertDimensions();
+        }
 
     }
 

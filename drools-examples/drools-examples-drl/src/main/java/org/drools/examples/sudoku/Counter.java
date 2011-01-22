@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,32 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.examples.sudoku;
 
-package org.drools.guvnor.server.util;
+/**
+ * A counter bean.
+ */
+public class Counter {
 
-import org.apache.commons.fileupload.FileItem;
-
-public class FormData {
-    private FileItem file;
-    private String   uuid;
-
-    public FileItem getFile() {
-        return file;
+    private int count;
+    public Counter( int init ){
+        this.count = init;
     }
-
-    public void setFile(FileItem file) {
-        this.file = file;
+    public int getCount() {
+        return count;
     }
-
-    public String getUuid() {
-        return uuid;
+    public void setCount(int count) {
+        this.count = count;
     }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
-    public void closeFile() {
-    }
-
 }

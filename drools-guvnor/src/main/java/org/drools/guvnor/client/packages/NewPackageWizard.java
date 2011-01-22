@@ -222,7 +222,8 @@ public class NewPackageWizard extends FormStylePopup {
         uploadFormPanel.addSubmitCompleteHandler( new SubmitCompleteHandler() {
             public void onSubmitComplete(SubmitCompleteEvent event) {
                 if ( event.getResults().indexOf( "OK" ) > -1 ) { //NON-NLS
-                    Window.alert( constants.PackageWasImportedSuccessfully() );
+                    LoadingPopup.close();
+		    Window.alert( constants.PackageWasImportedSuccessfully() );
                     afterCreatedEvent.execute();
                     parent.hide();
                     if ( packageNamePopup != null ) {
@@ -252,6 +253,8 @@ public class NewPackageWizard extends FormStylePopup {
                 } else if ( packageName.getText() != null && !packageName.getText().equals( "" ) ) {
                     LoadingPopup.showMessage( constants.ImportingDRLPleaseWait() );
                     uploadFormPanel.setAction( uploadFormPanel.getAction() + "?packageName=" + packageName.getText() );
+                } else {
+                    LoadingPopup.showMessage( constants.CreatingPackagePleaseWait() );
                 }
             }
         } );

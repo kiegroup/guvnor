@@ -1,17 +1,17 @@
 /*
  * Copyright 2011 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.drools.guvnor.client.decisiontable.cells;
 
@@ -37,6 +37,7 @@ public class PopupDropDownEditCell extends
         AbstractPopupEditCell<String, String> {
 
     private final ListBox listBox;
+    private String[][] items;
 
     public PopupDropDownEditCell() {
         super();
@@ -71,84 +72,80 @@ public class PopupDropDownEditCell extends
     public void render(Context context,
                        String value,
                        SafeHtmlBuilder sb) {
-        // Get the view data.
-        Object key = context.getKey();
-        String viewData = getViewData( key );
-        if ( viewData != null
-             && viewData.equals( value ) ) {
-            clearViewData( key );
-            viewData = null;
-        }
-
-        String s = null;
-        if ( viewData != null ) {
-            s = viewData;
-        } else if ( value != null ) {
-            s = value;
-        }
-        if ( s != null ) {
-            sb.append( renderer.render( s ) );
+        if ( value != null ) {
+            String label = getLabel(value);
+            sb.append( renderer.render( label ) );
         }
     }
 
+    /**
+     * Set content of drop-down
+     * 
+     * @param items
+     */
     public void setItems(String[] items) {
+        this.items=new String[items.length][2];
         for ( int i = 0; i < items.length; i++ ) {
             String item = items[i].trim();
             if ( item.indexOf( '=' ) > 0 ) {
                 String[] splut = ConstraintValueEditorHelper.splitValue( item );
+                this.items[i][0]=splut[0];
+                this.items[i][1]=splut[1];
                 this.listBox.addItem( splut[1],
                                       splut[0] );
             } else {
+                this.items[i][0]=item;
+                this.items[i][1]=item;
                 this.listBox.addItem( item,
                                       item );
             }
         }
     }
+    
+    
+    //Lookup the display text based on the value
+    private String getLabel(String value) {
+        for(int i=0;i<this.items.length;i++) {
+            if(this.items[i][0].equals( value )) {
+                return items[i][1];
+            }
+        }
+        return "";
+    }
 
     // Commit the change
     @Override
     protected void commit() {
-        // Hide pop-up
-        Element cellParent = lastParent;
-        String oldValue = lastValue;
-        Context context = lastContext;
-        Object key = context.getKey();
-        panel.hide();
 
-        String text = null;
+        // Update value
+        String value = null;
         int selectedIndex = listBox.getSelectedIndex();
         if ( selectedIndex >= 0 ) {
-            text = listBox.getValue( selectedIndex );
+            value = listBox.getValue( selectedIndex );
         }
-
-        // Update values
-        setViewData( key,
-                     text );
-        setValue( context,
-                  cellParent,
-                  oldValue );
+        setValue( lastContext,
+                  lastParent,
+                  value );
         if ( valueUpdater != null ) {
-            valueUpdater.update( text );
+            valueUpdater.update( value );
         }
+        panel.hide();
+
     }
 
     // Start editing the cell
     @Override
-    protected void startEditing(final Element parent,
-                                String value,
-                                Context context) {
-
-        Object key = context.getKey();
-        String viewData = getViewData( key );
-        String text = (viewData == null) ? value : viewData;
+    protected void startEditing(final Context context,
+                                final Element parent,
+                                final String value) {
 
         // Select the appropriate item
-        boolean emptyValue = (text == null);
+        boolean emptyValue = (value == null);
         if ( emptyValue ) {
             listBox.setSelectedIndex( 0 );
         } else {
             for ( int i = 0; i < listBox.getItemCount(); i++ ) {
-                if ( listBox.getValue( i ).equals( text ) ) {
+                if ( listBox.getValue( i ).equals( value ) ) {
                     listBox.setSelectedIndex( i );
                     break;
                 }

@@ -277,7 +277,9 @@ public class ActionSetColumn extends FormStylePopup {
             public void onClick(ClickEvent w) {
                 String val = pats.getValue( pats.getSelectedIndex() );
                 editingCol.setBoundName( val );
+                editingCol.setFactField( null );
                 doBindingLabel();
+                doFieldLabel();
                 pop.hide();
             }
         } );
