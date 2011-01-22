@@ -24,7 +24,9 @@ import org.jboss.seam.security.Identity;
 public class CategoryFilter implements RepositoryFilter {
 
     public boolean accept(Object artifact, String action) {
-        if ( !(artifact instanceof String) ) return false;
+        if ( !(artifact instanceof String) ){
+            return false;
+        }
         // for GWT hosted mode - debug only
         if ( !Contexts.isSessionContextActive() ) {
             return true;
