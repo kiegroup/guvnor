@@ -142,8 +142,10 @@ public class GuvnorAPIServlet extends HttpServlet {
                 String result = inject( json, constraints );
                 response.setContentType( "application/json" );
                 log.debug( "injecting" );
-                for ( Map.Entry<String, String> entry : constraints.entrySet() ) {
-                    log.debug( entry.getKey() + " " + entry.getValue() );
+                if(log.isDebugEnabled()){ 
+                    for ( Map.Entry<String, String> entry : constraints.entrySet() ) {
+                        log.debug( entry.getKey() + " " + entry.getValue() );
+                    }
                 }
                 log.debug( result );
                 log.debug( "End of injecting" );
