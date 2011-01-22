@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.server;
 
-
-
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.repository.RepositoryFilter;
 import org.jboss.seam.contexts.Contexts;
@@ -25,29 +23,27 @@ import org.jboss.seam.security.Identity;
 
 public class CategoryFilter implements RepositoryFilter {
 
-	public boolean accept(Object artifact, String action) {
-		if (!(artifact instanceof String))
-			return false;
-		// for GWT hosted mode - debug only
-		if (!Contexts.isSessionContextActive()) {
-			return true;
-		} else {
-			return Identity.instance().hasPermission(new CategoryPathType((String)artifact), action);
-		}
-	}
+    public boolean accept(Object artifact, String action) {
+        if ( !(artifact instanceof String) ) return false;
+        // for GWT hosted mode - debug only
+        if ( !Contexts.isSessionContextActive() ) {
+            return true;
+        }
+        return Identity.instance().hasPermission( new CategoryPathType( (String) artifact ), action );
 
-	public boolean acceptNavigate(String parentPath, String child) {
-		// for GWT hosted mode - debug only
-		if (!Contexts.isSessionContextActive()) {
-			return true;
-		} else {
-			return Identity.instance().hasPermission(new CategoryPathType(makePath(parentPath, child)), "navigate");
-		}
-	}
+    }
 
-	String makePath(String parentPath, String child) {
-		return (parentPath == null || parentPath.equals("/") || parentPath.equals("")) ?
-				child : parentPath + "/" + child;
-	}
+    public boolean acceptNavigate(String parentPath, String child) {
+        // for GWT hosted mode - debug only
+        if ( !Contexts.isSessionContextActive() ) {
+            return true;
+        }
+        return Identity.instance().hasPermission( new CategoryPathType( makePath( parentPath, child ) ), "navigate" );
+
+    }
+
+    String makePath(String parentPath, String child) {
+        return (parentPath == null || parentPath.equals( "/" ) || parentPath.equals( "" )) ? child : parentPath + "/" + child;
+    }
 
 }
