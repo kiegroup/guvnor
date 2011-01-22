@@ -75,8 +75,8 @@ public class LoggingHelper {
         log.warn( message );
     }
     
-    public void isDebugEnabled(){
-        log.isDebugEnabled();
+    public boolean isDebugEnabled(){
+        return log.isDebugEnabled();
     }
 
 }
