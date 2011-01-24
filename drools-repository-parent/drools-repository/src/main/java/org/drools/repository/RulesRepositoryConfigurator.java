@@ -153,7 +153,6 @@ public class RulesRepositoryConfigurator {
 			session.save();                        
 		} catch (Exception e) {
 			log.error("Caught Exception", e);
-			System.err.println(e.getMessage());
 			throw new RepositoryException(e);
 		}
 	}
