@@ -1149,7 +1149,7 @@ public abstract class DecisionTableWidget extends Composite
 
                 // Update Salience values
                 AttributeCol attrCol = (AttributeCol) modelColumn;
-                if ( attrCol.attr.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
+                if ( attrCol.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                     if ( attrCol.isUseRowNumber() ) {
                         col.setSortDirection( SortDirection.NONE );
                         final int MAX_ROWS = data.size();

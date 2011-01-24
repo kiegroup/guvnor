@@ -311,13 +311,13 @@ public class VerticalDecisionTableHeaderWidget extends
                 tce.<TableCellElement> cast().setRowSpan( 4 );
                 tce.addClassName( style.headerRowIntermediate() );
             } else if ( modelCol instanceof MetadataCol ) {
-                tce.appendChild( makeLabel( ((MetadataCol) modelCol).attr,
+                tce.appendChild( makeLabel( ((MetadataCol) modelCol).getMetadata(),
                                             col.getWidth(),
                                             style.rowHeaderHeight() ) );
                 tce.<TableCellElement> cast().setRowSpan( 4 );
                 tce.addClassName( style.headerRowIntermediate() );
             } else if ( modelCol instanceof AttributeCol ) {
-                tce.appendChild( makeLabel( ((AttributeCol) modelCol).attr,
+                tce.appendChild( makeLabel( ((AttributeCol) modelCol).getAttribute(),
                                             col.getWidth(),
                                             style.rowHeaderHeight() ) );
                 tce.<TableCellElement> cast().setRowSpan( 4 );
@@ -469,7 +469,10 @@ public class VerticalDecisionTableHeaderWidget extends
                         tce.addClassName( style.headerRowIntermediate() );
                         tre.appendChild( tce );
                         ConditionCol cc = (ConditionCol) col.getModelColumn();
-                        tce.appendChild( makeLabel( cc.getFactField() + " ["+cc.getOperator()+"]",
+                        tce.appendChild( makeLabel( cc.getFactField()
+                                                            + " ["
+                                                            + cc.getOperator()
+                                                            + "]",
                                                     col.getWidth(),
                                                     (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
                     }

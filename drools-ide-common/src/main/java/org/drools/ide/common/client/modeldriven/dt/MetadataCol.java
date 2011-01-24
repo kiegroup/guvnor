@@ -23,7 +23,7 @@ package org.drools.ide.common.client.modeldriven.dt;
  */
 public class MetadataCol extends DTColumnConfig {
 
-	public String attr;
+	private String metadata;
 
 	@Override
 	public boolean equals(Object obj) {
@@ -34,16 +34,24 @@ public class MetadataCol extends DTColumnConfig {
 			return false;
 		}
 		MetadataCol that = (MetadataCol) obj;
-		return nullOrEqual(this.attr, that.attr) && super.equals(obj);
+		return nullOrEqual(this.metadata, that.metadata) && super.equals(obj);
 	}
 
-	@Override
+    public String getMetadata() {
+        return metadata;
+    }
+
+    @Override
 	public int hashCode() {
 		int hash = 1;
-		hash = hash * 31 + (attr == null ? 0 : attr.hashCode());
+		hash = hash * 31 + (metadata == null ? 0 : metadata.hashCode());
 		hash = hash * 31 + super.hashCode();
 		return hash;
 	}
+
+	public void setMetadata(String metadata) {
+        this.metadata = metadata;
+    }
 
 	private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
 		if (thisAttr == null && thatAttr == null) {
