@@ -22,6 +22,7 @@ public class RulesRepositoryConfigurator {
 	 */
 	public static final String PROPERTIES_FILE = "/drools_repository.properties";
 	public static final String CONFIGURATOR_CLASS = "org.drools.repository.configurator";
+    
 	private static JCRRepositoryConfigurator jcrRepositoryConfigurator = null;
 	private static Repository jcrRepository = null;
 	private static RulesRepositoryConfigurator rulesRepositoryConfigurator = null;

@@ -51,7 +51,7 @@ public abstract class JCRRepositoryConfigurator {
 
     /**
      * @return a new Repository instance. There should only be one instance of this in an application. Generally, one repository
-     *         (which may be binded to JNDI) can spawn multiple sessions for each user as needed. Typically this would be created
+     *         (which may be bound to JNDI) can spawn multiple sessions for each user as needed. Typically this would be created
      *         on application startup.
      * @param repositoryRootDirectory The directory where the data is stored. If empty, the repository will be generated there the
      *        first time it is used. If it is null, then a default location will be used (it won't fail).
@@ -62,7 +62,7 @@ public abstract class JCRRepositoryConfigurator {
             String jcrImplementationClass = properties.getProperty(JCR_IMPL_CLASS);
             //Instantiate real repo.
 
-            if (jcrImplementationClass==null) {
+            if (jcrImplementationClass == null) {
                 jcrImplementationClass = defaultJCRImplClass;
             }
 
