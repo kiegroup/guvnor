@@ -18,7 +18,7 @@ public class RulesRepositoryConfigurator {
 
 	private static final Logger log = LoggerFactory.getLogger(RulesRepositoryConfigurator.class);
 	/**
-	 * The classpath resource from which the RepositoryFactory properties are loaded. Currently, this is {@value} .
+	 * The classpath resource from which the RepositoryFactory properties are loaded. This is currently {@value}.
 	 */
 	public static final String PROPERTIES_FILE = "/drools_repository.properties";
 	public static final String CONFIGURATOR_CLASS = "org.drools.repository.configurator";
@@ -29,8 +29,7 @@ public class RulesRepositoryConfigurator {
 
 	private RulesRepositoryConfigurator() {}
 
-	public Repository getJCRRepository() throws RepositoryException 
-	{
+	public Repository getJCRRepository() throws RepositoryException {
 		return jcrRepository;
 	}
 
@@ -41,8 +40,7 @@ public class RulesRepositoryConfigurator {
 	 * @return RulesRepositoryConfigurator
 	 * @throws RepositoryException
 	 */
-	public synchronized static RulesRepositoryConfigurator getInstance(Properties properties) throws RepositoryException 
-	{
+	public synchronized static RulesRepositoryConfigurator getInstance(Properties properties) throws RepositoryException {
 		if (rulesRepositoryConfigurator == null ) {
 			log.info("Creating an instance of the RulesRepositoryConfigurator.");
 			rulesRepositoryConfigurator = new RulesRepositoryConfigurator();
@@ -129,7 +127,7 @@ public class RulesRepositoryConfigurator {
 			Node packageAreaNode = RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.RULE_PACKAGE_AREA, "nt:folder");
 	
 			// Setup the global area        
-			if(!packageAreaNode.hasNode(RulesRepository.RULE_GLOBAL_AREA)){
+			if (!packageAreaNode.hasNode(RulesRepository.RULE_GLOBAL_AREA)){
 				Node globalAreaNode = RulesRepository.addNodeIfNew(packageAreaNode, RulesRepository.RULE_GLOBAL_AREA, PackageItem.RULE_PACKAGE_TYPE_NAME);
 				globalAreaNode.addNode( PackageItem.ASSET_FOLDER_NAME,  "drools:versionableAssetFolder" );
 				globalAreaNode.setProperty( PackageItem.TITLE_PROPERTY_NAME,  RulesRepository.RULE_GLOBAL_AREA);
@@ -153,8 +151,7 @@ public class RulesRepositoryConfigurator {
 			RulesRepository.addNodeIfNew( repositoryNode.getNode( RulesRepository.STATE_AREA ), StateItem.DRAFT_STATE_NAME, StateItem.STATE_NODE_TYPE_NAME );
 	
 			session.save();                        
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			log.error("Caught Exception", e);
 			System.err.println(e.getMessage());
 			throw new RepositoryException(e);
