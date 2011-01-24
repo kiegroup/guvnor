@@ -83,22 +83,24 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected void doLayout() {
 
+    	int row = 0;
         if ( pattern.getFactPattern() != null ) {
             FactPattern fact = pattern.getFactPattern();
             if ( fact != null ) {
-                createFactPatternWidget( fact );
+            	this.layout.setWidget( row++, 0, createFactPatternWidget( fact ) );
             }
         }
 
-        this.layout.setWidget( 0, 0, getCompositeLabel() );
+        this.layout.setWidget( row++, 0, getCompositeLabel() );
 
     }
 
-    private void createFactPatternWidget(FactPattern fact) {
+    private Widget createFactPatternWidget(FactPattern fact) {
         if ( this.readOnly ) {
             //creates a new read-only FactPatternWidget
             this.factPatternWidget = new FactPatternWidget( this.getModeller(), fact, false, true );
-            this.layout.setWidget( 0, 0, factPatternWidget );
+            //this.layout.setWidget( 0, 0, factPatternWidget );
+            return this.factPatternWidget;
         } else {
             this.factPatternWidget = new FactPatternWidget( this.getModeller(), fact, true, false );
             this.factPatternWidget.addOnModifiedCommand( new Command() {
@@ -106,7 +108,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
                     setModified( true );
                 }
             } );
-            this.layout.setWidget( 0, 0, addRemoveButton( factPatternWidget, createClickHandlerForAddRemoveButton() ) );
+            //this.layout.setWidget( 0, 0, addRemoveButton( factPatternWidget, createClickHandlerForAddRemoveButton() ) );
+            return addRemoveButton( factPatternWidget, createClickHandlerForAddRemoveButton() );
         }
     }
 
