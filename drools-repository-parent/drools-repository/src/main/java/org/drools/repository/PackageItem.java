@@ -77,6 +77,7 @@ public class PackageItem extends VersionableItem {
     public static final String EXTERNAL_URI_PROPERTY_NAME             = "drools:externalURI";
     public static final String CATEGORY_RULE_KEYS_PROPERTY_NAME       = "categoryRuleKeys";
     public static final String CATEGORY_RULE_VALUES_PROPERTY_NAME     = "categoryRuleValues";
+    public static final String WORKSPACE_PROPERTY_NAME     = "workspace";
 
     private static final String COMPILED_PACKAGE_PROPERTY_NAME = "drools:compiledPackage";
 
@@ -176,6 +177,22 @@ public class PackageItem extends VersionableItem {
             return super.getName();
     }
 
+    /**
+     * @return the workspace this package belongs to.
+     * @throws RulesRepositoryException
+     */
+    public String getWorkspace() throws RulesRepositoryException {
+            return getStringProperty( WORKSPACE_PROPERTY_NAME );
+    }
+    
+    /**
+     * This sets the Workspace 
+     *
+     * @param workspace
+     */
+    public void updateWorkspace(String workspace) {
+        this.updateStringProperty( workspace, WORKSPACE_PROPERTY_NAME );
+    }    
     /**
      * Adds a rule to the current package with no category (not recommended !).
      * Without categories, its going to be hard to find rules later on

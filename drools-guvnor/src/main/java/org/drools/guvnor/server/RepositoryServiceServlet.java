@@ -172,6 +172,14 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
         return getService().listPackages();
     }
 
+    public org.drools.guvnor.client.rpc.PackageConfigData[] listPackages(String workspace) {
+        return getService().listPackages(workspace);
+    }
+    
+    public String[] listWorkspaces() {
+        return getService().listWorkspaces();
+    }
+    
     public org.drools.guvnor.client.rpc.PackageConfigData loadGlobalPackage() {
         return getService().loadGlobalPackage();
     }

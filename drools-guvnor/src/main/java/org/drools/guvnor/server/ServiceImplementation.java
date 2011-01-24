@@ -336,6 +336,22 @@ public class ServiceImplementation implements RepositoryService {
         }
     }
 
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String[] listWorkspaces() {
+        List<String> result = new ArrayList<String>();
+
+    	PackageConfigData[] pacakges = listPackages( null);
+    	
+    	for(PackageConfigData p : pacakges) {
+    		if(!result.contains(p.workspace)) {    			
+    		    result.add(p.workspace);   		
+    		} 
+    	}
+    	
+    	return result.toArray(new String[result.size()]);
+    }
+    
     /**
      * Role-based Authorization check: This method only returns packages that the user has
      * permission to access. User has permission to access the particular package when:
@@ -345,15 +361,27 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public PackageConfigData[] listPackages() {
-        RepositoryFilter pf = new PackageFilter();
-        return listPackages( false, pf );
+        return listPackages( null);
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public PackageConfigData[] listArchivedPackages() {
+    public PackageConfigData[] listPackages(String workspace) {
         RepositoryFilter pf = new PackageFilter();
-        return listPackages( true, pf );
+        return listPackages( false, workspace, pf );
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PackageConfigData[] listArchivedPackages() {
+        return listArchivedPackages( null );
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PackageConfigData[] listArchivedPackages(String workspace) {
+        RepositoryFilter pf = new PackageFilter();
+        return listPackages( true, workspace, pf );
     }
 
     public PackageConfigData loadGlobalPackage() {
@@ -381,26 +409,26 @@ public class ServiceImplementation implements RepositoryService {
         return data;
     }
 
-    private PackageConfigData[] listPackages(boolean archive, RepositoryFilter filter) {
+    private PackageConfigData[] listPackages(boolean archive, String workspace, RepositoryFilter filter) {
         List<PackageConfigData> result = new ArrayList<PackageConfigData>();
         PackageIterator pkgs = repository.listPackages();
-        handleIteratePackages( archive, filter, result, pkgs );
+        handleIteratePackages( archive, workspace, filter, result, pkgs );
 
         sortPackages( result );
         return result.toArray( new PackageConfigData[result.size()] );
     }
 
-    private PackageConfigData[] listSubPackages(PackageItem parentPkg, boolean archive, RepositoryFilter filter) {
+    private PackageConfigData[] listSubPackages(PackageItem parentPkg, boolean archive, String workspace, RepositoryFilter filter) {
         List<PackageConfigData> children = new LinkedList<PackageConfigData>();
 
         PackageIterator pkgs = parentPkg.listSubPackages();
-        handleIteratePackages( archive, filter, children, pkgs );
+        handleIteratePackages( archive, workspace, filter, children, pkgs );
 
         sortPackages( children );
         return children.toArray( new PackageConfigData[children.size()] );
     }
 
-    private void handleIteratePackages(boolean archive, RepositoryFilter filter, List<PackageConfigData> result, PackageIterator pkgs) {
+    private void handleIteratePackages(boolean archive, String workspace, RepositoryFilter filter, List<PackageConfigData> result, PackageIterator pkgs) {
         pkgs.setArchivedIterator( archive );
         while ( pkgs.hasNext() ) {
             PackageItem pkg = pkgs.next();
@@ -409,16 +437,21 @@ public class ServiceImplementation implements RepositoryService {
             data.uuid = pkg.getUUID();
             data.name = pkg.getName();
             data.archived = pkg.isArchived();
-            handleIsPackagesListed( archive, filter, result, data );
+            data.workspace = pkg.getWorkspace();
+            handleIsPackagesListed( archive, workspace, filter, result, data );
 
-            data.subPackages = listSubPackages( pkg, archive, filter );
+            data.subPackages = listSubPackages( pkg, archive, null, filter );
         }
     }
 
-    private void handleIsPackagesListed(boolean archive, RepositoryFilter filter, List<PackageConfigData> result, PackageConfigData data) {
-        if ( !archive && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) ) {
+    private void handleIsPackagesListed(boolean archive, String workspace, RepositoryFilter filter, 
+    		List<PackageConfigData> result, 
+    		PackageConfigData data) {
+        if ( !archive && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) 
+        		&& (workspace == null || workspace.equals(data.workspace)) ) {
             result.add( data );
-        } else if ( archive && data.archived && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) ) {
+        } else if ( archive && data.archived && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY ))
+        		&& (workspace == null || workspace.equals(data.workspace)) ) {
             result.add( data );
         }
     }
@@ -841,13 +874,18 @@ public class ServiceImplementation implements RepositoryService {
     }
 
     @WebRemote
-    public String createPackage(String name, String description) throws RulesRepositoryException {
+    public String createPackage(String name, String description, String workspace) throws RulesRepositoryException {
         checkSecurityIsAdmin();
 
         log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
-        PackageItem item = repository.createPackage( name, description );
+        PackageItem item = repository.createPackage( name, description, workspace );
 
         return item.getUUID();
+    }
+    
+    @WebRemote
+    public String createPackage(String name, String description) throws RulesRepositoryException {
+    	return createPackage(name, description, RulesRepository.DEFAULT_WORKSPACE);
     }
 
     @WebRemote

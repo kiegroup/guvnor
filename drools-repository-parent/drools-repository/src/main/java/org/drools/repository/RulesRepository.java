@@ -83,6 +83,7 @@ import org.slf4j.LoggerFactory;
 public class RulesRepository {
 
     public static final String  DEFAULT_PACKAGE       = "defaultPackage";
+    public static final String  DEFAULT_WORKSPACE     = "defaultWorkspace";
 
     public static final String  DROOLS_URI            = "http://www.jboss.org/drools-repository/1.0";
 
@@ -674,7 +675,7 @@ public class RulesRepository {
         }
 
     }
-
+    
     /**
      * Adds a package to the repository.
      *
@@ -687,6 +688,22 @@ public class RulesRepository {
      */	
     public PackageItem createPackage(String name,
                                      String description) throws RulesRepositoryException {
+    	return createPackage(name, description, null);
+    }
+    
+    /**
+     * Adds a package to the repository.
+     *
+     * @param name
+     *            what to name the node added
+     * @param description
+     *            what description to use for the node
+     * @return a PackageItem, encapsulating the created node
+     * @throws RulesRepositoryException
+     */	
+    public PackageItem createPackage(String name,
+                                     String description,
+                                     String workspace) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
 
         try {
@@ -706,6 +723,8 @@ public class RulesRepository {
                                          PackageItem.PACKAGE_FORMAT );
             rulePackageNode.setProperty( PackageItem.CREATOR_PROPERTY_NAME,
                                          this.session.getUserID() );
+            rulePackageNode.setProperty( PackageItem.WORKSPACE_PROPERTY_NAME,
+                    workspace );
 
             Calendar lastModified = Calendar.getInstance();
             rulePackageNode.setProperty( PackageItem.LAST_MODIFIED_PROPERTY_NAME,
@@ -731,6 +750,7 @@ public class RulesRepository {
 
     }
 
+    
     /**
      * Adds a Sub package to the repository.
      *
