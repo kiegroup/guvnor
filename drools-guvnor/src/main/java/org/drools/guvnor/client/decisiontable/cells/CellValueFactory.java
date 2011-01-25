@@ -15,10 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable.cells;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.util.Date;
-import java.util.Locale;
 
 import org.drools.guvnor.client.decisiontable.widget.CellValue;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
@@ -32,6 +29,8 @@ import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
+
 /**
  * A Factory to create CellValues applicable to given columns.
  * 
@@ -40,9 +39,8 @@ import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
  */
 public class CellValueFactory {
 
-    // Dates are serialised and de-serialised to English locale format (for now)
-    private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance( DateFormat.SHORT,
-                                                                              Locale.ENGLISH );
+    // Dates are serialised and de-serialised to this fixed (locale-independent) format (for now)
+    private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat( "dd-MMM-yyyy" );
 
     // Recognised data-types
     private enum DATA_TYPES {
@@ -118,7 +116,7 @@ public class CellValueFactory {
                     Date d;
                     try {
                         d = DATE_FORMAT.parse( initialValue );
-                    } catch ( ParseException pe ) {
+                    } catch ( IllegalArgumentException iae ) {
                         Date nd = new Date();
                         int year = nd.getYear();
                         int month = nd.getMonth();
