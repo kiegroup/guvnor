@@ -15,7 +15,10 @@
  */
 package org.drools.guvnor.client.decisiontable.cells;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.Locale;
 
 import org.drools.guvnor.client.decisiontable.widget.CellValue;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
@@ -37,6 +40,10 @@ import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
  */
 public class CellValueFactory {
 
+    // Dates are serialised and de-serialised to English locale format (for now)
+    private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance( DateFormat.SHORT,
+                                                                              Locale.ENGLISH );
+
     // Recognised data-types
     private enum DATA_TYPES {
         STRING() {
@@ -48,6 +55,11 @@ public class CellValueFactory {
                                                               iRow,
                                                               iCol );
                 return cv;
+            }
+
+            @Override
+            public String serialiseValue(CellValue< ? > value) {
+                return (value.getValue() == null ? "" : (String) value.getValue());
             }
 
         },
@@ -68,6 +80,11 @@ public class CellValueFactory {
                 return cv;
             }
 
+            @Override
+            public String serialiseValue(CellValue< ? > value) {
+                return (value.getValue() == null ? "" : ((Integer) value.getValue()).toString());
+            }
+
         },
         ROW_NUMBER() {
             @Override
@@ -79,6 +96,11 @@ public class CellValueFactory {
                                                                 iRow,
                                                                 iCol );
                 return cv;
+            }
+
+            @Override
+            public String serialiseValue(CellValue< ? > value) {
+                return (value.getValue() == null ? "" : ((Integer) value.getValue()).toString());
             }
 
         },
@@ -93,17 +115,30 @@ public class CellValueFactory {
                                                           iCol );
 
                 if ( initialValue != null ) {
-                    // TODO Need to parse String into Date
-                    Date d = new Date();
-                    int year = d.getYear();
-                    int month = d.getMonth();
-                    int date = d.getDate();
-                    Date nd = new Date( year,
+                    Date d;
+                    try {
+                        d = DATE_FORMAT.parse( initialValue );
+                    } catch ( ParseException pe ) {
+                        Date nd = new Date();
+                        int year = nd.getYear();
+                        int month = nd.getMonth();
+                        int date = nd.getDate();
+                        d = new Date( year,
                                         month,
                                         date );
-                    cv.setValue( nd );
+                    }
+                    cv.setValue( d );
                 }
                 return cv;
+            }
+
+            @Override
+            public String serialiseValue(CellValue< ? > value) {
+                String result = "";
+                if ( value.getValue() != null ) {
+                    result = DATE_FORMAT.format( (Date) value.getValue() );
+                }
+                return result;
             }
 
         },
@@ -124,6 +159,11 @@ public class CellValueFactory {
                 return cv;
             }
 
+            @Override
+            public String serialiseValue(CellValue< ? > value) {
+                return (value.getValue() == null ? "" : ((Boolean) value.getValue()).toString());
+            }
+
         },
         DIALECT() {
             @Override
@@ -139,10 +179,17 @@ public class CellValueFactory {
                 return cv;
             }
 
+            @Override
+            public String serialiseValue(CellValue< ? > value) {
+                return (value.getValue() == null ? "" : (String) value.getValue());
+            }
+
         };
         public abstract CellValue< ? > getNewCellValue(int iRow,
                                                        int iCol,
                                                        String initialValue);
+
+        public abstract String serialiseValue(CellValue< ? > value);
 
     }
 
@@ -155,6 +202,26 @@ public class CellValueFactory {
             instance = new CellValueFactory();
         }
         return instance;
+    }
+
+    /**
+     * Serialise value to a String
+     * 
+     * @param dtable
+     *            The Decision Table with which an SCE is associated
+     * @param column
+     *            The model column
+     * @param cv
+     *            CellValue for which value will be serialised
+     * @return String representation of value
+     */
+    public String serialiseValue(DecisionTableWidget dtable,
+                                 DTColumnConfig column,
+                                 CellValue< ? > cv) {
+        DATA_TYPES dataType = getDataType( column,
+                                           dtable );
+        return dataType.serialiseValue( cv );
+
     }
 
     private CellValueFactory() {

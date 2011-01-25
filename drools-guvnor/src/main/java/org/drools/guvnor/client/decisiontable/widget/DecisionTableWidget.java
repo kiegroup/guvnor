@@ -542,9 +542,12 @@ public abstract class DecisionTableWidget extends Composite
         for ( int iRow = 0; iRow < GRID_ROWS; iRow++ ) {
             DynamicDataRow dataRow = data.get( iRow );
             String[] row = new String[dataRow.size()];
-            for ( int iCol = 0; iCol < dataRow.size(); iCol++ ) {
-                Object value = dataRow.get( iCol ).getValue();
-                row[iCol] = (value == null ? null : value.toString());
+            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+                CellValue< ? > cv = dataRow.get( iCol );
+                DynamicColumn column = columns.get( iCol );
+                String serialisedValue = CellValueFactory.getInstance().serialiseValue( this, column.getModelColumn(),
+                                                                                        cv );
+                row[iCol] = serialisedValue;
             }
             grid[iRow] = row;
         }
