@@ -116,7 +116,6 @@ public class PackageItem extends VersionableItem {
      */
     public String getName() {
         try {
-
             if (isSnapshot()) {
                 return this.node.getParent().getName();
             } else {
@@ -137,7 +136,6 @@ public class PackageItem extends VersionableItem {
             throw new IllegalStateException(e);
         }
     }
-
 
 
     /**
@@ -550,15 +548,15 @@ public class PackageItem extends VersionableItem {
         if (formats.length == 1) {
             return queryAssets( FORMAT_PROPERTY_NAME + "='" + formats[0] + "'" );
         } else {
-            String predicate = " ( ";
+            StringBuilder predicateBuilder = new StringBuilder(" ( ");
             for ( int i = 0; i < formats.length; i++ ) {
-                predicate = predicate + FORMAT_PROPERTY_NAME + "='" + formats[i] + "'";
+                predicateBuilder.append(FORMAT_PROPERTY_NAME).append("='").append(formats[i]).append("'");
                 if (i != formats.length -1) { 
-                	predicate =  predicate + " OR "; 
+                	predicateBuilder.append(" OR ");
                 }
             }
-            predicate = predicate + " ) ";
-            return queryAssets( predicate );
+            predicateBuilder.append(" ) ");
+            return queryAssets( predicateBuilder.toString() );
         }
     }
 
@@ -566,22 +564,22 @@ public class PackageItem extends VersionableItem {
         if (formats.length == 1) {
             return queryAssets( "not drools:format='" + formats[0] + "'" );
         } else {
-            String predicate = "not ( ";
+            StringBuilder predicateBuilder = new StringBuilder("not ( ");
             for ( int i = 0; i < formats.length; i++ ) {
-                predicate = predicate + "drools:format='" + formats[i] + "'";
-                if (!(i == formats.length -1 )) { predicate =  predicate + " OR "; }
+                predicateBuilder.append("drools:format='").append(formats[i]).append("'");
+                if (!(i == formats.length -1 )) {
+                    predicateBuilder.append(" OR ");
+                }
             }
-            predicate = predicate + " ) ";
-            return queryAssets( predicate );
+            predicateBuilder.append(" ) ");
+            return queryAssets( predicateBuilder.toString() );
         }
-
     }
 
     /**
      * Load a specific rule asset by name.
      */
     public AssetItem loadAsset(String name) {
-
         try {
             Node content = getVersionContentNode();
             return new AssetItem(
@@ -612,15 +610,12 @@ public class PackageItem extends VersionableItem {
      */
     public String toString() {
         try {
-            StringBuffer returnString = new StringBuffer();
-            returnString.append( "Content of the rule package named " + this.node.getName() + ":" );
-            returnString.append( "Description: " + this.getDescription() + "\n" );
-            returnString.append( "Format: " + this.getFormat() + "\n" );
-            returnString.append( "Last modified: " + this.getLastModified() + "\n" );
-            returnString.append( "Title: " + this.getTitle() + "\n" );
-            returnString.append( "----\n" );
-
-            return returnString.toString();
+            return "Content of the rule package named " + this.node.getName() + ":"
+                    + "Description: " + this.getDescription() + "\n"
+                    + "Format: " + this.getFormat() + "\n"
+                    + "Last modified: " + this.getLastModified() + "\n"
+                    + "Title: " + this.getTitle() + "\n"
+                    + "----\n";
         } catch ( Exception e ) {
             log.error( "Caught Exception",
                        e );
@@ -683,8 +678,7 @@ public class PackageItem extends VersionableItem {
                 result.add( head );
             } else if (head.sameState( ignoreState )) {
                 //ignore this one
-            }
-            else {
+            } else {
                 List<AssetItem> fullHistory = new LinkedList<AssetItem>();
                 for ( Iterator<AssetItem> iter = head.getHistory(); iter.hasNext(); ) {
                     AssetItem element = iter.next();

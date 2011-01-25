@@ -1407,47 +1407,49 @@ public class RulesRepository {
                                    DateQuery[] dates) {
         try {
 
-            String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME + ", " + AssetItem.DESCRIPTION_PROPERTY_NAME + ", " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
-            sql += " WHERE jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
+            StringBuilder sql = new StringBuilder("SELECT ").append(AssetItem.TITLE_PROPERTY_NAME).append(", ")
+                    .append(AssetItem.DESCRIPTION_PROPERTY_NAME).append(", ")
+                    .append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG)
+                    .append(" FROM ").append(AssetItem.RULE_NODE_TYPE_NAME);
+            sql.append(" WHERE jcr:path LIKE '/").append(RULES_REPOSITORY_NAME).append("/").append(RULE_PACKAGE_AREA).append("/%'");
             for ( Iterator<Map.Entry<String, String[]>> iterator = params.entrySet().iterator(); iterator.hasNext(); ) {
                 Map.Entry<String, String[]> en = iterator.next();
                 String fld = en.getKey();
                 String[] options = en.getValue();
                 if ( options != null && options.length > 0 ) {
                     if ( options.length > 1 ) {
-                        sql += " AND (";
+                        sql.append(" AND (");
                         for ( int i = 0; i < options.length; i++ ) {
-                            sql += fld + " LIKE '" + options[i].replace( "*",
-                                                                         "%" ) + "'";
+                            sql.append(fld).append(" LIKE '").append(options[i].replace( "*", "%" )).append("'");
                             if ( i < options.length - 1 ) {
-                                sql += " OR ";
+                                sql.append(" OR ");
                             }
                         }
-                        sql += ")";
+                        sql.append(")");
                     } else {
-                        sql += " AND " + fld + " LIKE '" + options[0].replace( "*",
-                                                                               "%" ) + "'";
+                        sql.append(" AND ").append(fld)
+                                .append(" LIKE '").append(options[0].replace( "*", "%" )).append("'");
                     }
                 }
             }
-            if ( seekArchived == false ) {
-                sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
+            if (!seekArchived) {
+                sql.append(" AND ").append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).append(" = 'false'");
             }
 
             if ( dates != null ) {
                 for ( int i = 0; i < dates.length; i++ ) {
                     DateQuery d = dates[i];
                     if ( d.after != null ) {
-                        sql += " AND " + d.field + " > TIMESTAMP '" + d.after + "'";
+                        sql.append(" AND ").append(d.field).append(" > TIMESTAMP '").append(d.after).append("'");
                     }
                     if ( d.before != null ) {
-                        sql += " AND " + d.field + " < TIMESTAMP '" + d.before + "'";
+                        sql.append(" AND ").append(d.field).append(" < TIMESTAMP '").append(d.before).append("'");
                     }
                 }
             }
 
 
-            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql,
+            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql.toString(),
                                                                                  Query.SQL );
 
             QueryResult res = q.execute();
