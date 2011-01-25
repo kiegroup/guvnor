@@ -93,7 +93,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         this.model = modeller.getModel();
         this.modeller = modeller;
 
-        valueType = sce.getFieldType( pattern.factType,
+        valueType = sce.getFieldType( pattern.getFactType(),
                                       fieldName );
         this.fieldType = valueType;
         this.numericValue = SuggestionCompletionEngine.TYPE_NUMERIC.equals( valueType );
@@ -133,7 +133,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                     if ( this.constraint instanceof SingleFieldConstraint ) {
                         final SingleFieldConstraint con = (SingleFieldConstraint) this.constraint;
                         CustomFormConfiguration customFormConfiguration = WorkingSetManager.getInstance().getCustomFormConfiguration( modeller.getAsset().metaData.packageName,
-                                                                                                                                      pattern.factType,
+                                                                                                                                      pattern.getFactType(),
                                                                                                                                       fieldName );
                         if ( customFormConfiguration != null ) {
                             constraintWidget = new Button( con.getValue(),
@@ -232,7 +232,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         for ( String var : vars ) {
             FactPattern f = model.getBoundFact( var );
             String fv = model.getBindingType( var );
-            if ( (f != null && f.factType.equals( this.fieldType )) || (fv != null && fv.equals( this.fieldType )) ) {
+            if ( (f != null && f.getFactType().equals( this.fieldType )) || (fv != null && fv.equals( this.fieldType )) ) {
                 box.addItem( var );
                 if ( this.constraint.getValue() != null && this.constraint.getValue().equals( var ) ) {
                     box.setSelectedIndex( j );
@@ -240,9 +240,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 j++;
             } else {
                 // for collection, present the list of possible bound variable
-                String factCollectionType = sce.getParametricFieldType( pattern.factType,
+                String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
                                                                         this.fieldName );
-                if ( (f != null && factCollectionType != null && f.factType.equals( factCollectionType )) || (factCollectionType != null && factCollectionType.equals( fv )) ) {
+                if ( (f != null && factCollectionType != null && f.getFactType().equals( factCollectionType )) || (factCollectionType != null && factCollectionType.equals( fv )) ) {
                     box.addItem( var );
                     if ( this.constraint.getValue() != null && this.constraint.getValue().equals( var ) ) {
                         box.setSelectedIndex( j );
@@ -313,7 +313,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                 final BaseSingleFieldConstraint con) {
 
         CustomFormConfiguration customFormConfiguration = WorkingSetManager.getInstance().getCustomFormConfiguration( modeller.getAsset().metaData.packageName,
-                                                                                                                      pattern.factType,
+                                                                                                                      pattern.getFactType(),
                                                                                                                       fieldName );
 
         if ( customFormConfiguration != null ) {
@@ -386,14 +386,14 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 FactPattern f = model.getBoundFact( var );
                 String fieldConstraint = model.getBindingType( var );
 
-                if ( (f != null && f.factType != null && f.factType.equals( this.fieldType )) || (this.fieldType != null && this.fieldType.equals( fieldConstraint )) ) {
+                if ( (f != null && f.getFactType() != null && f.getFactType().equals( this.fieldType )) || (this.fieldType != null && this.fieldType.equals( fieldConstraint )) ) {
                     foundABouncVariableThatMatches = true;
                     break;
                 } else {
                     // for collection, present the list of possible bound variable
-                    String factCollectionType = sce.getParametricFieldType( pattern.factType,
+                    String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
                                                                             this.fieldName );
-                    if ( (f != null && factCollectionType != null && f.factType.equals( factCollectionType )) || (factCollectionType != null && factCollectionType.equals( fieldConstraint )) ) {
+                    if ( (f != null && factCollectionType != null && f.getFactType().equals( factCollectionType )) || (factCollectionType != null && factCollectionType.equals( fieldConstraint )) ) {
                         foundABouncVariableThatMatches = true;
                         break;
                     }

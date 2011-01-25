@@ -19,8 +19,6 @@ package org.drools.ide.common.server.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -42,8 +40,6 @@ import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.server.util.BRDRLPersistence;
-import org.drools.ide.common.server.util.GuidedDTDRLPersistence;
 
 public class GuidedDTDRLPersistenceTest {
 
@@ -490,12 +486,12 @@ public class GuidedDTDRLPersistenceTest {
                       rm.lhs.length );
 
         assertEquals( "Person",
-                      ((FactPattern) rm.lhs[0]).factType );
+                      ((FactPattern) rm.lhs[0]).getFactType() );
         assertEquals( "p1",
                       ((FactPattern) rm.lhs[0]).boundName );
 
         assertEquals( "Cheese",
-                      ((FactPattern) rm.lhs[1]).factType );
+                      ((FactPattern) rm.lhs[1]).getFactType() );
         assertEquals( "c",
                       ((FactPattern) rm.lhs[1]).boundName );
 

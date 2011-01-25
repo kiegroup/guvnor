@@ -30,11 +30,17 @@ import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import java.util.ArrayList;
 import java.util.List;
+import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.IFactPattern;
 
 /**
  * This represents a top level CE, like an OR, NOT, EXIST etc...
@@ -51,7 +57,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
     protected Constants constants = ((Constants) GWT.create(Constants.class));
     protected boolean readOnly;
 
-    private List<FactPatternWidget> childWidgets;
+    private List<RuleModellerWidget> childWidgets;
 
     public CompositeFactPatternWidget(RuleModeller modeller,
                                       CompositeFactPattern pattern) {
@@ -67,15 +73,22 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
 
         this.layout = new DirtyableFlexTable();
         this.layout.setStyleName( "model-builderInner-Background" );
-
+        
         if (readOnly != null){
             this.readOnly = readOnly;
         }else{
             this.readOnly = false;
-            if (this.pattern != null && this.pattern.patterns != null){
-                for (int i = 0; i < this.pattern.patterns.length; i++) {
-                    FactPattern factPattern = this.pattern.patterns[i];
-                    if (!completions.containsFactType(factPattern.factType)){
+            if (this.pattern != null && this.pattern.getPatterns() != null){
+                IFactPattern[] patterns = this.pattern.getPatterns();
+                for (int i = 0; i < patterns.length; i++) {
+                    IFactPattern p = patterns[i];
+                    
+                    //for empty FROM / ACCUMULATE / COLLECT patterns
+                    if (p.getFactType() == null){
+                        continue;
+                    }
+                    
+                    if (!completions.containsFactType(p.getFactType())){
                         this.readOnly = true;
                         break;
                     }
@@ -93,7 +106,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
 
     protected void doLayout() {
 
-        this.childWidgets = new ArrayList<FactPatternWidget>();
+        this.childWidgets = new ArrayList<RuleModellerWidget>();
 
         this.layout.setWidget( 0,
                                0,
@@ -104,18 +117,18 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
         this.layout.setWidget(1, 0, new HTML("&nbsp;&nbsp;&nbsp;&nbsp;"));
 
 
-        if ( pattern.patterns != null ) {
+        if ( this.pattern.getPatterns() != null ) {
             DirtyableVerticalPane vert = new DirtyableVerticalPane();
-            FactPattern[] facts = pattern.patterns;
+            IFactPattern[] facts = pattern.getPatterns();
             for ( int i = 0; i < facts.length; i++ ) {
-                FactPatternWidget factPatternWidget = new FactPatternWidget(this.getModeller(), facts[i], false, this.readOnly);
-                factPatternWidget.addOnModifiedCommand(new Command() {
+                RuleModellerWidget widget = this.getModeller().getWidgetFactory().getWidget(this.getModeller(), facts[i], this.readOnly);
+                widget.addOnModifiedCommand(new Command() {
                     public void execute() {
                         setModified(true);
                     }
                 });
-                childWidgets.add(factPatternWidget);
-                vert.add(factPatternWidget);
+                childWidgets.add(widget);
+                vert.add(widget);
             }
             this.layout.setWidget( 1,
                                    1,
@@ -133,7 +146,7 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
 		};
         String lbl = HumanReadable.getCEDisplayName( pattern.type );
 
-        if (pattern.patterns == null || pattern.patterns.length ==0) {
+        if (pattern.getPatterns() == null || pattern.getPatterns().length ==0) {
             lbl += " <font color='red'>" + constants.clickToAddPatterns() + "</font>";
         }
 
@@ -145,27 +158,62 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
      */
     protected void showFactTypeSelector(final Widget w) {
         final ListBox box = new ListBox();
+        SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         String[] facts = completions.getFactTypes();
 
         box.addItem(constants.Choose());
-        for ( int i = 0; i < facts.length; i++ ) {
-            box.addItem( facts[i] );
+        for (int i = 0; i < facts.length; i++) {
+            box.addItem(facts[i]);
         }
-        box.setSelectedIndex( 0 );
+        box.setSelectedIndex(0);
 
         final FormStylePopup popup = new FormStylePopup();
         popup.setTitle(constants.NewFactPattern());
         popup.addAttribute(constants.chooseFactType(),
-                            box );
-
-        box.addChangeListener( new ChangeListener() {
-            public void onChange(Widget w) {
+                box);
+        box.addChangeHandler(new ChangeHandler() {
+			
+			public void onChange(ChangeEvent event) {
                 pattern.addFactPattern( new FactPattern( box.getItemText( box.getSelectedIndex() ) ) );
                 setModified(true);
                 getModeller().refreshWidget();
-                popup.hide();
-            }
-        } );
+                popup.hide();			}
+		});
+
+        final Button fromBtn = new Button(constants.From());
+        final Button fromAccumulateBtn = new Button(constants.FromAccumulate());
+        final Button fromCollectBtn = new Button(constants.FromCollect());
+		ClickHandler btnsClickHandler = new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				Widget sender = (Widget) event.getSource();
+				if (sender == fromBtn) {
+					pattern.addFactPattern( 
+							new FromCompositeFactPattern());
+				} else if (sender == fromAccumulateBtn) {
+					pattern.addFactPattern(
+							new FromAccumulateCompositeFactPattern());
+				} else if (sender == fromCollectBtn) {
+					pattern.addFactPattern(
+							new FromCollectCompositeFactPattern());
+				} else {
+					throw new IllegalArgumentException("Unknown sender: "
+							+ sender);
+				}
+
+				setModified(true);
+				getModeller().refreshWidget();
+				popup.hide();
+
+			}
+		};
+
+        fromBtn.addClickHandler(btnsClickHandler);
+        fromAccumulateBtn.addClickHandler(btnsClickHandler);
+        fromCollectBtn.addClickHandler(btnsClickHandler);
+        popup.addAttribute("", fromBtn);
+        popup.addAttribute("", fromAccumulateBtn);
+        popup.addAttribute("", fromCollectBtn);
 
         popup.show();
     }

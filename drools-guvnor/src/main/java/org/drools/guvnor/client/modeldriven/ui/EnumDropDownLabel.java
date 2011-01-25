@@ -117,7 +117,7 @@ public class EnumDropDownLabel extends Composite {
                                          SuggestionCompletionEngine sce,
                                          FactPattern pattern,
                                          String fieldName) {
-        String valueType = sce.getFieldType( pattern.factType,
+        String valueType = sce.getFieldType( pattern.getFactType(),
                                              fieldName );
 
         final DropDownData dropDownData;

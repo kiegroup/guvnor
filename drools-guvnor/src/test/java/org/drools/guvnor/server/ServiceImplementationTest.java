@@ -98,8 +98,6 @@ import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -2484,7 +2482,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                     false,
                                     "" );
 
-        pattern.factType = "PersonX";
+        pattern.setFactType("PersonX");
         rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
         rule2.checkin( "" );
 

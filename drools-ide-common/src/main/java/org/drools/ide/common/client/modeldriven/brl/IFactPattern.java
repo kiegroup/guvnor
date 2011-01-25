@@ -1,5 +1,5 @@
-/**
- * Copyright 2010 JBoss Inc
+/*
+ * Copyright 2011 JBoss Inc..
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,27 +16,10 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-
-public class ExpressionVariable extends ExpressionPart {
-	private FactPattern fact;
-	
-	@SuppressWarnings("unused")
-	private ExpressionVariable() {}
-
-	public ExpressionVariable(FactPattern fact) {
-		super(fact.boundName, fact.getFactType(), fact.getFactType());
-		if (!fact.isBound()) {
-			throw new RuntimeException("the fact is not bounded: " + fact);
-		}
-		this.fact = fact;
-	}
-
-	public FactPattern getFact() {
-		return fact;
-	}
-	
-	@Override
-	public void accept(ExpressionVisitor visitor) {
-		visitor.visit(this);
-	}
+/**
+ * Interface for Patterns that contains a Fact Type
+ * @author esteban.aliverti@gmail.com
+ */
+public interface IFactPattern extends IPattern {
+    public String getFactType();
 }

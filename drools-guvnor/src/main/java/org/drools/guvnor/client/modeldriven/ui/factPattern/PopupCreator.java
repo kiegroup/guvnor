@@ -170,7 +170,7 @@ public class PopupCreator {
 
         final ListBox box = new ListBox();
         box.addItem( "..." );
-        String[] fields = this.completions.getFieldCompletions( this.pattern.factType );
+        String[] fields = this.completions.getFieldCompletions( this.pattern.getFactType() );
         for ( int i = 0; i < fields.length; i++ ) {
             box.addItem( fields[i] );
         }

@@ -114,7 +114,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         //if readOnly == null, the RO attribute is calculated.
         if ( readOnly == null ) {
-            this.readOnly = !connectives.getCompletions().containsFactType( this.pattern.factType );
+            this.readOnly = !connectives.getCompletions().containsFactType( this.pattern.getFactType() );
         } else {
             this.readOnly = readOnly;
         }
@@ -429,12 +429,12 @@ public class FactPatternWidget extends RuleModellerWidget {
         ClickHandler click = new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                String factTypeShortName = (pattern.factType.contains( "." ) ? pattern.factType.substring( pattern.factType.lastIndexOf( "." ) + 1 ) : pattern.factType);
+                String factTypeShortName = (pattern.getFactType().contains( "." ) ? pattern.getFactType().substring( pattern.getFactType().lastIndexOf( "." ) + 1 ) : pattern.getFactType());
                 popupCreator.showPatternPopup( (Widget) event.getSource(), factTypeShortName, null );
             }
         };
 
-        String patternName = (pattern.boundName != null) ? pattern.factType + " <b>[" + pattern.boundName + "]</b>" : pattern.factType;
+        String patternName = (pattern.boundName != null) ? pattern.getFactType() + " <b>[" + pattern.boundName + "]</b>" : pattern.getFactType();
 
         String desc = this.getCustomLabel();
         if ( desc == null ) {
@@ -477,7 +477,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private Widget operatorDropDown(final SingleFieldConstraint c) {
-        return operatorDropDown( c, connectives.getCompletions().getFieldType( pattern.factType, c.getFieldName() ) );
+        return operatorDropDown( c, connectives.getCompletions().getFieldType( pattern.getFactType(), c.getFieldName() ) );
     }
 
     private Widget operatorDropDown(final SingleFieldConstraint c, String type) {

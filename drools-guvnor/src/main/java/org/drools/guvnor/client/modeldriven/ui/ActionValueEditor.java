@@ -167,7 +167,7 @@ public class ActionValueEditor extends DirtyableComposite {
             FactPattern factPattern = model.getModel().getBoundFact( v );
             String fv = model.getModel().getBindingType( v );
 
-            if ( (factPattern != null && factPattern.factType.equals( this.variableType )) || (fv != null) ) {
+            if ( (factPattern != null && factPattern.getFactType().equals( this.variableType )) || (fv != null) ) {
                 // First selection is empty
                 if ( listVariable.getItemCount() == 0 ) {
                     listVariable.addItem( "..." );
@@ -367,7 +367,7 @@ public class ActionValueEditor extends DirtyableComposite {
             Button variable = new Button( constants.BoundVariable() );
             if ( !vars2.contains( v ) ) {
                 FactPattern factPattern = model.getModel().getBoundFact( v );
-                if ( factPattern != null && factPattern.factType.equals( this.variableType ) ) {
+                if ( factPattern != null && factPattern.getFactType().equals( this.variableType ) ) {
                     createButton = true;
                 }
             } else {

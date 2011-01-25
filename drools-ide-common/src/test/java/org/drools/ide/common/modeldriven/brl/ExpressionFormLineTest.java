@@ -21,7 +21,6 @@ import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionMethod;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionVariable;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -31,9 +30,8 @@ public class ExpressionFormLineTest {
 	@Test
 	public void toStringText() {
 		ExpressionFormLine efl = new ExpressionFormLine();
-		FactPattern fact = new FactPattern();
+		FactPattern fact = new FactPattern("String");
 		fact.boundName = "$v";
-		fact.factType = "String";
 		efl.appendPart(new ExpressionVariable(fact));
 		efl.appendPart(new ExpressionMethod("size", "int", SuggestionCompletionEngine.TYPE_NUMERIC));
 	    assertEquals("$v.size()", efl.getText());

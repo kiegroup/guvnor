@@ -20,8 +20,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -43,8 +41,6 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.ide.common.server.util.BRLPersistence;
-import org.drools.ide.common.server.util.BRXMLPersistence;
 
 public class BRLPersistenceTest {
 
@@ -280,9 +276,8 @@ public class BRLPersistenceTest {
         m.addAttribute( new RuleAttribute( "no-loop",
                                            "true" ) );
 
-        final FactPattern pat = new FactPattern();
+        final FactPattern pat = new FactPattern("Person");
         pat.boundName = "p1";
-        pat.factType = "Person";
         final SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldBinding("f1");
         con.setFieldName("age");

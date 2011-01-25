@@ -99,7 +99,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         } else {
             FactPattern pattern = mod.getModel().getBoundFact( set.variable );
             if ( pattern != null ) {
-                List<String> methodList = completions.getMethodNames( pattern.factType );
+                List<String> methodList = completions.getMethodNames( pattern.getFactType() );
                 fieldCompletionTexts = new String[methodList.size()];
                 fieldCompletionValues = new String[methodList.size()];
                 int i = 0;
@@ -108,7 +108,7 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                     fieldCompletionValues[i] = methodName;
                     i++;
                 }
-                this.variableClass = pattern.factType;
+                this.variableClass = pattern.getFactType();
                 this.isBoundFact = true;
             } else {
                 /*

@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
-import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
@@ -273,13 +272,13 @@ public class SuggestionCompletionEngine implements PortableObject {
 
         if ( pat.constraintList != null && pat.constraintList.constraints != null ) {
             // we may need to check for data dependent enums
-            Object _typeFields = dataEnumLookupFields.get( pat.factType + "." + field );
+            Object _typeFields = dataEnumLookupFields.get( pat.getFactType() + "." + field );
 
             if ( _typeFields instanceof String ) {
                 String typeFields = (String) _typeFields;
                 FieldConstraint[] cons = pat.constraintList.constraints;
 
-                String key = pat.factType + "." + field;
+                String key = pat.getFactType() + "." + field;
 
                 boolean addOpeninColumn = true;
                 String[] splitTypeFields = typeFields.split( "," );
@@ -318,7 +317,7 @@ public class SuggestionCompletionEngine implements PortableObject {
                 // these enums are calculated on demand, server side...
                 String[] fieldsNeeded = (String[]) _typeFields;
 
-                String queryString = getQueryString( pat.factType,
+                String queryString = getQueryString( pat.getFactType(),
                                                      field,
                                                      fieldsNeeded,
                                                      this.dataEnumLists );
@@ -345,7 +344,7 @@ public class SuggestionCompletionEngine implements PortableObject {
                 }
             }
         }
-        return DropDownData.create( getEnumValues( pat.factType,
+        return DropDownData.create( getEnumValues( pat.getFactType(),
                                                    field ) );
     }
 

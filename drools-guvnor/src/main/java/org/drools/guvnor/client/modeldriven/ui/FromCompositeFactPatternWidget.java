@@ -214,7 +214,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected void calculateReadOnly() {
         if ( this.pattern.factPattern != null ) {
-            this.readOnly = !this.getModeller().getSuggestionCompletions().containsFactType( this.pattern.factPattern.factType );
+            this.readOnly = !this.getModeller().getSuggestionCompletions().containsFactType( this.pattern.factPattern.getFactType() );
         }
     }
 
