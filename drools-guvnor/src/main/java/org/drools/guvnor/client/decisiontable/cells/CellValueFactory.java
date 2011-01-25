@@ -39,7 +39,8 @@ import com.google.gwt.i18n.client.DateTimeFormat;
  */
 public class CellValueFactory {
 
-    // Dates are serialised and de-serialised to this fixed (locale-independent) format (for now)
+    // Dates are serialised and de-serialised to this fixed (locale-independent)
+    // format (for now)
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat( "dd-MMM-yyyy" );
 
     // Recognised data-types
@@ -57,7 +58,7 @@ public class CellValueFactory {
 
             @Override
             public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? "" : (String) value.getValue());
+                return (value.getValue() == null ? null : (String) value.getValue());
             }
 
         },
@@ -80,7 +81,7 @@ public class CellValueFactory {
 
             @Override
             public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? "" : ((Integer) value.getValue()).toString());
+                return (value.getValue() == null ? null : ((Integer) value.getValue()).toString());
             }
 
         },
@@ -98,7 +99,7 @@ public class CellValueFactory {
 
             @Override
             public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? "" : ((Integer) value.getValue()).toString());
+                return (value.getValue() == null ? null : ((Integer) value.getValue()).toString());
             }
 
         },
@@ -132,7 +133,7 @@ public class CellValueFactory {
 
             @Override
             public String serialiseValue(CellValue< ? > value) {
-                String result = "";
+                String result = null;
                 if ( value.getValue() != null ) {
                     result = DATE_FORMAT.format( (Date) value.getValue() );
                 }
@@ -159,7 +160,7 @@ public class CellValueFactory {
 
             @Override
             public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? "" : ((Boolean) value.getValue()).toString());
+                return (value.getValue() == null ? null : ((Boolean) value.getValue()).toString());
             }
 
         },
@@ -179,7 +180,7 @@ public class CellValueFactory {
 
             @Override
             public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? "" : (String) value.getValue());
+                return (value.getValue() == null ? null : (String) value.getValue());
             }
 
         };

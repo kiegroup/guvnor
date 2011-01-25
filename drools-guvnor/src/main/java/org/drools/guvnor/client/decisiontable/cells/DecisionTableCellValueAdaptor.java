@@ -34,7 +34,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  * @param <T>
  *            The data-type required by the wrapped cell
  */
-public class DecisionTableCellValueAdaptor<T extends Comparable<T>> extends
+public class DecisionTableCellValueAdaptor<T> extends
         AbstractCell<CellValue< ? extends Comparable< ? >>> {
 
     // Really we want AbstractCell<?> but that leads to generics hell

@@ -67,7 +67,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  */
 public abstract class DecisionTableWidget extends Composite
     implements
-        ValueUpdater<Comparable< ? >> {
+        ValueUpdater<Object> {
 
     public enum MOVE_DIRECTION {
         LEFT, RIGHT, UP, DOWN
@@ -848,7 +848,7 @@ public abstract class DecisionTableWidget extends Composite
      * 
      * @see com.google.gwt.cell.client.ValueUpdater#update(java.lang.Object)
      */
-    public void update(Comparable< ? > value) {
+    public void update(Object value) {
 
         // Update underlying data
         for ( CellValue< ? extends Comparable< ? >> cell : this.selections ) {

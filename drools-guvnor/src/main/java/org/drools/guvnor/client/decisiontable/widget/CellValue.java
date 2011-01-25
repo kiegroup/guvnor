@@ -86,7 +86,7 @@ public class CellValue<T extends Comparable<T>>
     }
 
     @SuppressWarnings("unchecked")
-    public void setValue(Comparable<?> value) {
+    public void setValue(Object value) {
         this.value = (T) value;
     }
 
