@@ -5,8 +5,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class ISO8601 {
-
-	private final static SimpleDateFormat ISO8601Format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ");
 	
 	/**
 	 * This turns a Date into a String following the ISO8601 specification.
@@ -15,6 +13,7 @@ public class ISO8601 {
 	 * @return
 	 */
 	public static String format( Calendar cal ) {
+	    SimpleDateFormat ISO8601Format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ");
 		String text = null;
 		if (cal!=null) {
 			Date date = cal.getTime();

@@ -1,21 +1,3 @@
-/**
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.drools.guvnor.server.security;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -32,45 +14,40 @@ package org.drools.guvnor.server.security;
  * limitations under the License.
  */
 
+package org.drools.guvnor.server.security;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.security.CategoryPathType;
-import org.drools.guvnor.server.security.PackageNameType;
-import org.drools.guvnor.server.security.RoleBasedPermission;
-import org.drools.guvnor.server.security.RoleBasedPermissionManager;
-import org.drools.guvnor.server.security.RoleTypes;
-import org.drools.guvnor.server.security.WebDavPackageNameType;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
-import org.drools.repository.RulesRepository;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.contexts.Lifecycle;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class RoleBasedPermissionResolverTest {
+public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
+
+    @Before
+    public void setup() {
+        setUpSeam();
+        setUpMockIdentity();
+    }
+
+    @After
+    public void teardown() {
+        tearAllDown();
+    }
 
     @Test
     public void testCategoryBasedPermissionAnalyst() throws Exception {
-    	//NOTE: Have to have this call, otherwise this test will fail others tests. Seems to be related to
-    	//how Seam context initializes the JCR repository, but dont know the exact cause yet. 
-    	ServiceImplementation impl = new ServiceImplementation();
-		impl.repository = new RulesRepository(TestEnvironmentSessionHelper
-				.getSession());
-		
-        //Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
+        //NOTE: Have to have this call, otherwise this test will fail others tests. Seems to be related to
+        //how Seam context initializes the JCR repository, but dont know the exact cause yet. 
+        ServiceImplementation impl = getServiceImplementation();
+
         String package1Name = "testCategoryBasedPermissionAnalystPackageName1";
         String package2Name = "testCategoryBasedPermissionAnalystPackageName2";
 
@@ -123,19 +100,10 @@ public class RoleBasedPermissionResolverTest {
         assertFalse( resolver.hasPermission( new CategoryPathType( "category3/category3" ),
                                              RoleTypes.ANALYST_READ ) );
 
-        //Lifecycle.endCall();
-        Lifecycle.endApplication();
     }
 
     @Test
     public void testCategoryBasedPermissionAnalystReadOnly() throws Exception {
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
         String package1Name = "testCategoryBasedPermissionAnalystPackageName1";
         String package2Name = "testCategoryBasedPermissionAnalystPackageName2";
 
@@ -188,18 +156,10 @@ public class RoleBasedPermissionResolverTest {
         assertTrue( resolver.hasPermission( new CategoryPathType( categoryPath2 ),
                                             RoleTypes.ANALYST_READ ) );
 
-        Lifecycle.endApplication();
     }
 
     @Test
     public void testCategoryBasedPermissionAnalystReadOnly2() throws Exception {
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
 
         String categoryPath = "category1";
 
@@ -226,7 +186,6 @@ public class RoleBasedPermissionResolverTest {
         assertFalse( resolver.hasPermission( new CategoryPathType( categoryPath ),
                                              RoleTypes.ANALYST ) );
 
-        Lifecycle.endApplication();
     }
 
     @Test
@@ -261,13 +220,6 @@ public class RoleBasedPermissionResolverTest {
      */
     @Test
     public void testCategoryBasedSubPerms() throws Exception {
-        //Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
@@ -327,20 +279,12 @@ public class RoleBasedPermissionResolverTest {
                                             "navigate" ) );
         assertFalse( resolver.hasPermission( new CategoryPathType( "category3" ),
                                              "navigate" ) );
-        Lifecycle.endApplication();
 
     }
 
     //admin: everything
     @Test
     public void testPackageBasedPermissionAdmin() throws Exception {
-        //Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
         String package1Name = "testPackageBasedPermissionAdminPackageName1";
         String package2Name = "testPackageBasedPermissionAdminPackageName2";
 
@@ -371,20 +315,11 @@ public class RoleBasedPermissionResolverTest {
         assertTrue( resolver.hasPermission( new PackageNameType( package2Name ),
                                             RoleTypes.ADMIN ) );
 
-        Lifecycle.endApplication();
     }
 
     //Package.admin: everything for that package, including creating snapshots for that package.
     @Test
     public void testPackageBasedPermissionPackageAdmin() throws Exception {
-        //Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
         String packageName = "testPackageBasedPermissionPackageAdminPackageName";
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
@@ -415,20 +350,11 @@ public class RoleBasedPermissionResolverTest {
         assertFalse( resolver.hasPermission( "47982482-7912-4881-97ec-e852494383d7",
                                              RoleTypes.PACKAGE_READONLY ) );
 
-        Lifecycle.endApplication();
     }
 
     //Package.admin: everything for that package, including creating snapshots for that package.
     @Test
     public void testPackageBasedWebDavPermissionPackageAdmin() throws Exception {
-        //Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
         String packageName = "testPackageBasedWebDavPermissionPackageAdmin";
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
@@ -456,19 +382,11 @@ public class RoleBasedPermissionResolverTest {
         assertFalse( resolver.hasPermission( "47982482-7912-4881-97ec-e852494383d7",
                                              RoleTypes.PACKAGE_READONLY ) );
 
-        Lifecycle.endApplication();
     }
 
     //Package.developer:  everything for that package, NOT snapshots (can view snapshots of that package only)
     @Test
     public void testPackageBasedPermissionPackageDeveloper() throws Exception {
-        //Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
         String package1Name = "testPackageBasedPermissionPackageDeveloperPackageName1";
         String package2Name = "testPackageBasedPermissionPackageDeveloperPackageName2";
 
@@ -500,19 +418,11 @@ public class RoleBasedPermissionResolverTest {
         assertFalse( resolver.hasPermission( package2Name,
                                              RoleTypes.PACKAGE_READONLY ) );
 
-        Lifecycle.endApplication();
     }
 
     //Package.readonly: read only as the name suggested
     @Test
     public void testPackageBasedPermissionPackageReadOnly() throws Exception {
-        //Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
         String package1Name = "testPackageBasedPermissionPackageReadOnlyPackageName1";
         String package2Name = "testPackageBasedPermissionPackageReadOnlyPackageName2";
 
@@ -544,18 +454,10 @@ public class RoleBasedPermissionResolverTest {
         assertFalse( resolver.hasPermission( package2Name,
                                              RoleTypes.PACKAGE_READONLY ) );
 
-        Lifecycle.endApplication();
     }
 
     @Test
     public void testPackageBasedPermissionAnalyst() throws Exception {
-        //Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
         String package1Name = "testPackageBasedPermissionAnalystPackageName1";
         String package2Name = "testPackageBasedPermissionAnalystPackageName2";
 
@@ -588,7 +490,6 @@ public class RoleBasedPermissionResolverTest {
         assertTrue( resolver.hasPermission( new CategoryPathType( "category1" ),
                                             RoleTypes.ANALYST ) );
 
-        Lifecycle.endApplication();
     }
 
 }

@@ -4,7 +4,7 @@ import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
@@ -117,7 +117,7 @@ public class StandaloneEditorManager {
                             });
                         }
 
-                        editor = new MultiViewEditor(parameters.getAssetsToBeEdited(), new EditItemEvent() {
+                        editor = new MultiViewEditor(parameters.getAssetsToBeEdited(), new OpenItemCommand() {
 
                             public void open(MultiViewRow[] rows) {
                                 // TODO Auto-generated method stub

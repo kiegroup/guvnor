@@ -21,7 +21,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
@@ -45,11 +45,11 @@ public class VerifierResultWidget extends Composite {
     private Constants     constants = GWT.create( Constants.class );
     private static Images images    = GWT.create( Images.class );
 
-    private EditItemEvent edit      = null;
+    private OpenItemCommand edit      = null;
 
     public VerifierResultWidget(AnalysisReport report,
                                 boolean showFactUsage,
-                                EditItemEvent edit) {
+                                OpenItemCommand edit) {
         this( report,
               showFactUsage );
         this.edit = edit;

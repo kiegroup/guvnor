@@ -31,157 +31,166 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This contains the widgets used to action a rule asset
  * (ie checkin, change state, close window)
- * 
+ *
  * @author Michael Neale
  */
 public class ActionToolbar extends Composite {
 
-    private Constants constants = GWT.create( Constants.class );
+    private Constants constants = GWT.create(Constants.class);
 
     interface ActionToolbarBinder
-        extends
-        UiBinder<Widget, ActionToolbar> {
+            extends
+            UiBinder<Widget, ActionToolbar> {
     }
 
-    private static ActionToolbarBinder                uiBinder = GWT.create( ActionToolbarBinder.class );
+    private static ActionToolbarBinder uiBinder = GWT.create(ActionToolbarBinder.class);
 
     @UiField
-    MenuItem                                          saveChanges;
+    MenuItem saveChanges;
 
     @UiField
-    MenuItem                                          saveChangesAndClose;
+    MenuItem saveChangesAndClose;
 
     @UiField
-    MenuItem                                          archive;
+    MenuItem archive;
 
     @UiField
-    MenuItem                                          delete;
+    MenuItem delete;
 
     @UiField
-    MenuItem                                          copy;
+    MenuItem copy;
 
     @UiField
-    MenuItem                                          promoteToGlobal;
+    MenuItem promoteToGlobal;
 
     @UiField
-    MenuItem                                          selectWorkingSets;
+    MenuItem selectWorkingSets;
 
     @UiField
-    MenuItem                                          validate;
+    MenuItem validate;
 
     @UiField
-    MenuItem                                          verify;
+    MenuItem verify;
 
     @UiField
-    MenuItem                                          viewSource;
+    MenuItem viewSource;
 
     @UiField
-    MenuItem                                          changeStatus;
+    MenuItem changeStatus;
 
     @UiField
-    Label                                             status;
+    Label status;
+
+    @UiField
+    MenuItem sourceMenu;
 
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
     public ActionToolbar(ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
                          String status) {
 
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
 
         this.actionToolbarButtonsConfigurationProvider = actionToolbarButtonsConfigurationProvider;
 
-        setState( status );
+        setState(status);
 
         applyToolBarConfiguration();
 
-        this.status.setVisible( this.actionToolbarButtonsConfigurationProvider.showStateLabel() );
+        this.status.setVisible(this.actionToolbarButtonsConfigurationProvider.showStateLabel());
     }
 
     /**
      * Sets the visible status display.
      */
     public void setState(String newStatus) {
-        status.setText( Format.format( constants.statusIs(),
-                                       newStatus ) );
+        status.setText(Format.format(constants.statusIs(),
+                newStatus));
     }
 
     private void applyToolBarConfiguration() {
-        saveChanges.setVisible( actionToolbarButtonsConfigurationProvider.showSaveButton() );
-        saveChangesAndClose.setVisible( actionToolbarButtonsConfigurationProvider.showSaveAndCloseButton() );
-        validate.setVisible( actionToolbarButtonsConfigurationProvider.showValidateButton() );
-        verify.setVisible( actionToolbarButtonsConfigurationProvider.showValidateButton() );
-        viewSource.setVisible( actionToolbarButtonsConfigurationProvider.showViewSourceButton() );
-        copy.setVisible( actionToolbarButtonsConfigurationProvider.showCopyButton() );
-        promoteToGlobal.setVisible( actionToolbarButtonsConfigurationProvider.showPromoteToGlobalButton() );
-        archive.setVisible( actionToolbarButtonsConfigurationProvider.showArchiveButton() );
-        delete.setVisible( actionToolbarButtonsConfigurationProvider.showDeleteButton() );
-        changeStatus.setVisible( actionToolbarButtonsConfigurationProvider.showChangeStatusButton() );
-        selectWorkingSets.setVisible( actionToolbarButtonsConfigurationProvider.showSelectWorkingSetsButton() );
+        saveChanges.setVisible(actionToolbarButtonsConfigurationProvider.showSaveButton());
+        saveChangesAndClose.setVisible(actionToolbarButtonsConfigurationProvider.showSaveAndCloseButton());
+        validate.setVisible(actionToolbarButtonsConfigurationProvider.showValidateButton());
+        verify.setVisible(actionToolbarButtonsConfigurationProvider.showVerifyButton());
+        viewSource.setVisible(actionToolbarButtonsConfigurationProvider.showViewSourceButton());
+        copy.setVisible(actionToolbarButtonsConfigurationProvider.showCopyButton());
+        promoteToGlobal.setVisible(actionToolbarButtonsConfigurationProvider.showPromoteToGlobalButton());
+        archive.setVisible(actionToolbarButtonsConfigurationProvider.showArchiveButton());
+        delete.setVisible(actionToolbarButtonsConfigurationProvider.showDeleteButton());
+        changeStatus.setVisible(actionToolbarButtonsConfigurationProvider.showChangeStatusButton());
+        selectWorkingSets.setVisible(actionToolbarButtonsConfigurationProvider.showSelectWorkingSetsButton());
+
+        sourceMenu.setVisible(areSourceMenuChildrenVisible());
+    }
+
+    private boolean areSourceMenuChildrenVisible() {
+        return validate.isVisible() || verify.isVisible() || verify.isVisible();
     }
 
     public void setSelectWorkingSetsCommand(Command command) {
-        selectWorkingSets.setCommand( command );
+        selectWorkingSets.setCommand(command);
     }
 
     public void setViewSourceCommand(Command command) {
-        viewSource.setCommand( command );
+        viewSource.setCommand(command);
     }
 
     public void setVerifyCommand(Command command) {
-        verify.setCommand( command );
+        verify.setCommand(command);
     }
 
     public void setValidateCommand(Command command) {
-        validate.setCommand( command );
+        validate.setCommand(command);
     }
 
     public void setSaveChangesCommand(Command command) {
-        saveChanges.setCommand( command );
+        saveChanges.setCommand(command);
     }
 
     public void setSaveChangesAndCloseCommand(Command command) {
-        saveChangesAndClose.setCommand( command );
+        saveChangesAndClose.setCommand(command);
     }
 
     public void setChangeStatusCommand(Command command) {
-        changeStatus.setCommand( command );
+        changeStatus.setCommand(command);
     }
 
     public void setDeleteVisible(boolean b) {
-        delete.setVisible( b );
+        delete.setVisible(b);
     }
 
     public void setArchiveVisible(boolean b) {
-        archive.setVisible( b );
+        archive.setVisible(b);
     }
 
     public void setArchiveCommand(final Command archiveCommand) {
-        archive.setCommand( new Command() {
+        archive.setCommand(new Command() {
 
             public void execute() {
-                if ( Window.confirm( constants.AreYouSureYouWantToArchiveThisItem() + "\n" + constants.ArchiveThisAssetThisWillNotPermanentlyDeleteIt() ) ) {
+                if (Window.confirm(constants.AreYouSureYouWantToArchiveThisItem() + "\n" + constants.ArchiveThisAssetThisWillNotPermanentlyDeleteIt())) {
                     archiveCommand.execute();
                 }
             }
-        } );
+        });
     }
 
     public void setCopyCommand(Command command) {
-        copy.setCommand( command );
+        copy.setCommand(command);
     }
 
     public void setDeleteCommand(final Command deleteCommand) {
-        delete.setCommand( new Command() {
+        delete.setCommand(new Command() {
 
             public void execute() {
-                if ( Window.confirm( constants.DeleteAreYouSure() ) ) {
+                if (Window.confirm(constants.DeleteAreYouSure())) {
                     deleteCommand.execute();
                 }
             }
-        } );
+        });
     }
 
     public void setPromtToGlobalCommand(Command command) {
-        promoteToGlobal.setCommand( command );
+        promoteToGlobal.setCommand(command);
     }
 }

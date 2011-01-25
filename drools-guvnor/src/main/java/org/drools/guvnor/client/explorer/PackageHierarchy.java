@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,57 +23,88 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 
 public class PackageHierarchy {
 
+    private Folder root = new Folder();
 
-	public Folder root = new Folder();
+    public void addPackage(PackageConfigData config) {
+        Folder folder = getRoot();
+        String[] folders = config.name.split( "\\." );
+        for ( int i = 0; i < folders.length; i++ ) {
+            String folderName = folders[i];
+            Folder existing = folder.contains( folderName );
+            if ( existing == null || existing.getChildren().size() == 0 ) {
+                if ( i == folders.length - 1 ) {
+                    //leaf
+                    folder = folder.add( folderName,
+                                         config );
+                } else {
+                    folder = folder.add( folderName,
+                                         null );
+                }
 
-	public void addPackage(PackageConfigData conf) {
-		Folder folder = root;
-		String[] folders = conf.name.split("\\.");
-		for (int i = 0; i < folders.length; i++) {
-			String f = folders[i];
-			Folder existing = folder.contains(f);
-			if (existing == null || existing.children.size() == 0) {
-				if (i == folders.length - 1) {
-					//leaf
-					folder = folder.add(f, conf);
-				} else {
-					folder = folder.add(f, null);
-				}
+            } else {
+                folder = existing;
+            }
+        }
+    }
 
-			} else {
-				folder = existing;
-			}
-		}
-	}
+    public void setRoot(Folder root) {
+        this.root = root;
+    }
 
+    public Folder getRoot() {
+        return root;
+    }
 
+    public static class Folder {
+        private String            name;
+        private PackageConfigData config;
+        private List<Folder>      children = new ArrayList<Folder>();
 
-	public static class Folder {
-		public String name;
-		public PackageConfigData conf;
+        public Folder add(String folderName,
+                          PackageConfigData config) {
+            Folder folder = new Folder();
+            folder.setName( folderName );
+            folder.setConfig( config );
+            getChildren().add( folder );
+            return folder;
+        }
 
-		public Folder add(String f, PackageConfigData conf) {
-			Folder n = new Folder();
-			n.name = f;
-			n.conf = conf;
-			children.add(n);
-			return n;
-		}
+        public String toString() {
+            return getName();
+        }
 
-		public String toString() {
-			return name;
-		}
-
-		public Folder contains(String f) {
-            for (Folder fld : children) {
-                if (fld.name.equals(f)) {
-                    return fld;
+        public Folder contains(String folderName) {
+            for ( Folder folder : getChildren() ) {
+                if ( folder.getName().equals( folderName ) ) {
+                    return folder;
                 }
             }
-			return null;
-		}
+            return null;
+        }
 
-		public List<Folder> children = new ArrayList<Folder>();
-	}
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setConfig(PackageConfigData config) {
+            this.config = config;
+        }
+
+        public PackageConfigData getConfig() {
+            return config;
+        }
+
+        public void setChildren(List<Folder> children) {
+            this.children = children;
+        }
+
+        public List<Folder> getChildren() {
+            return children;
+        }
+    }
 
 }

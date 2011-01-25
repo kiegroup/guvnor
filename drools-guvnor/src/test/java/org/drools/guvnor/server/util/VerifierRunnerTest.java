@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,32 +16,39 @@
 
 package org.drools.guvnor.server.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.drools.repository.RulesRepository;
 import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.builder.VerifierBuilderFactory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-public class VerifierRunnerTest {
+public class VerifierRunnerTest extends GuvnorTestBase {
 
     private ServiceImplementation serviceImplementation;
     private PackageItem           packageItem;
 
     @Before
     public void setUp() throws Exception {
-        serviceImplementation = new ServiceImplementation();
+        setUpSeam();
 
-        serviceImplementation.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        serviceImplementation = getServiceImplementation();
 
         packageItem = serviceImplementation.getRulesRepository().createPackage( "VerifierRunnerTest",
                                                                                 "" );
+    }
+
+    @After
+    public void tearDown() {
+        tearAllDown();
     }
 
     @Test
@@ -54,9 +61,8 @@ public class VerifierRunnerTest {
 
         assertNotNull( report );
         assertEquals( 1,
-                             report.warnings.length );
+                      report.warnings.length );
 
-        System.out.println( report.warnings[0].description );
     }
 
     private VerifierRunner checkinDRLAssetToPackage(String assetName) {

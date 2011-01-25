@@ -35,37 +35,37 @@ import org.drools.guvnor.client.security.Capabilities;
  */
 public class CapabilityCalculator {
 
-	public Capabilities calcCapabilities(List<RoleBasedPermission> permissions, Map<String, String> features) {
-		if (permissions.size() == 0) {
-			return Capabilities.all(features);
-		} else {
-			Capabilities caps = new Capabilities();
-			for (RoleBasedPermission p : permissions) {
-				String r = p.getRole();
-				if (r.equals(RoleTypes.ADMIN)) {
-					return all(features);
-				} else if (r.equals(RoleTypes.PACKAGE_ADMIN)) {
-					addCap(caps, SHOW_PACKAGE_VIEW);
-					addCap(caps, SHOW_CREATE_NEW_ASSET);
-					addCap(caps, SHOW_CREATE_NEW_PACKAGE);
-					addCap(caps, SHOW_DEPLOYMENT);
-					addCap(caps, SHOW_DEPLOYMENT_NEW);
-					addCap(caps, SHOW_QA);
-				} else if (r.equals(RoleTypes.PACKAGE_DEVELOPER)) {
-					addCap(caps, SHOW_PACKAGE_VIEW);
-					addCap(caps, SHOW_CREATE_NEW_ASSET);
-					addCap(caps, SHOW_QA);
-				} else if (r.equals(RoleTypes.PACKAGE_READONLY)) {
-					addCap(caps, SHOW_PACKAGE_VIEW);
-				}
-			}
-            caps.prefs = features;
-			return caps;
-		}
-	}
+    public Capabilities calcCapabilities(List<RoleBasedPermission> permissions, Map<String, String> features) {
+        if ( permissions.size() == 0 ) {
+            return Capabilities.all( features );
+        }
+        Capabilities caps = new Capabilities();
+        for ( RoleBasedPermission roleBasedPermission : permissions ) {
+            String role = roleBasedPermission.getRole();
+            if ( role.equals( RoleTypes.ADMIN ) ) {
+                return all( features );
+            } else if ( role.equals( RoleTypes.PACKAGE_ADMIN ) ) {
+                addCap( caps, SHOW_PACKAGE_VIEW );
+                addCap( caps, SHOW_CREATE_NEW_ASSET );
+                addCap( caps, SHOW_CREATE_NEW_PACKAGE );
+                addCap( caps, SHOW_DEPLOYMENT );
+                addCap( caps, SHOW_DEPLOYMENT_NEW );
+                addCap( caps, SHOW_QA );
+            } else if ( role.equals( RoleTypes.PACKAGE_DEVELOPER ) ) {
+                addCap( caps, SHOW_PACKAGE_VIEW );
+                addCap( caps, SHOW_CREATE_NEW_ASSET );
+                addCap( caps, SHOW_QA );
+            } else if ( role.equals( RoleTypes.PACKAGE_READONLY ) ) {
+                addCap( caps, SHOW_PACKAGE_VIEW );
+            }
+        }
+        caps.prefs = features;
+        return caps;
 
-	private void addCap(Capabilities caps, Integer cap) {
-		if (!caps.list.contains(cap)) caps.list.add(cap);
-	}
+    }
+
+    private void addCap(Capabilities caps, Integer cap) {
+        if ( !caps.list.contains( cap ) ) caps.list.add( cap );
+    }
 
 }

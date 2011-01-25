@@ -1,19 +1,18 @@
 /*
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright 2011 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-
 package org.drools.guvnor.client.decisiontable;
 
 import java.util.HashSet;
@@ -23,20 +22,19 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
@@ -47,27 +45,28 @@ import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * This is an editor for columns that are for inserting facts.
+ * 
  * @author Michael Neale
- *
+ * 
  */
 public class ActionInsertColumn extends FormStylePopup {
 
     private static Images              images       = (Images) GWT.create( Images.class );
     private Constants                  constants    = GWT.create( Constants.class );
 
-    private GuidedDecisionTable        dt;
+    private DecisionTableWidget        dtable;
     private SuggestionCompletionEngine sce;
     private ActionInsertFactCol        editingCol;
     private SmallLabel                 patternLabel = new SmallLabel();
     private TextBox                    fieldLabel   = getFieldLabel();
 
     public ActionInsertColumn(SuggestionCompletionEngine sce,
-                              final GuidedDecisionTable dt,
-                              final Command refreshGrid,
+                              final DecisionTableWidget dtable,
+                              final ColumnCentricCommand refreshGrid,
                               final ActionInsertFactCol col,
                               final boolean isNew) {
         this.setModal( false );
-        this.dt = dt;
+        this.dtable = dtable;
         this.sce = sce;
         this.editingCol = new ActionInsertFactCol();
         editingCol.setBoundName( col.getBoundName() );
@@ -104,7 +103,7 @@ public class ActionInsertColumn extends FormStylePopup {
                                                public void onClick(ClickEvent w) {
                                                    showFieldChange();
                                                }
-                                           } ); //NON-NLS
+                                           } );
         field.add( editField );
         addAttribute( constants.Field(),
                       field );
@@ -120,7 +119,8 @@ public class ActionInsertColumn extends FormStylePopup {
         HorizontalPanel vl = new HorizontalPanel();
         vl.add( valueList );
         vl.add( new InfoPopup( constants.ValueList(),
-                               constants.ValueListsExplanation() ) );
+                               constants
+                                       .ValueListsExplanation() ) );
         addAttribute( constants.optionalValueList(),
                       vl );
 
@@ -140,33 +140,31 @@ public class ActionInsertColumn extends FormStylePopup {
         Button apply = new Button( constants.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
+                if ( null == editingCol.getHeader()
+                        || "".equals( editingCol.getHeader() ) ) {
+                    Window.alert( constants
+                            .YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( constants
+                                .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
-                    dt.getActionCols().add( editingCol );
+
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( constants
+                                    .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
-                    col.setBoundName( editingCol.getBoundName() );
-                    col.setType( editingCol.getType() );
-                    col.setFactField( editingCol.getFactField() );
-                    col.setFactType( editingCol.getFactType() );
-                    col.setHeader( editingCol.getHeader() );
-                    col.setValueList( editingCol.getValueList() );
-                    col.setDefaultValue( editingCol.getDefaultValue() );
-                    col.setHideColumn( editingCol.isHideColumn() );
                 }
-                refreshGrid.execute();
+
+                // Pass new\modified column back for handling
+                refreshGrid.execute( editingCol );
                 hide();
             }
         } );
@@ -175,11 +173,20 @@ public class ActionInsertColumn extends FormStylePopup {
 
     }
 
-    private boolean unique(String header) {
-        for ( ActionCol o : dt.getActionCols() ) {
-            if ( o.getHeader().equals( header ) ) return false;
+    private void doFieldLabel() {
+        if ( nil( this.editingCol.getFactField() ) ) {
+            fieldLabel.setText( constants.pleaseChooseFactType() );
+        } else {
+            fieldLabel.setText( editingCol.getFactField() );
         }
-        return true;
+
+    }
+
+    private void doPatternLabel() {
+        if ( this.editingCol.getFactType() != null ) {
+            this.patternLabel.setText( this.editingCol.getFactType() + " ["
+                                       + editingCol.getBoundName() + "]" );
+        }
     }
 
     private TextBox getFieldLabel() {
@@ -192,10 +199,37 @@ public class ActionInsertColumn extends FormStylePopup {
         return box;
     }
 
+    private ListBox loadPatterns() {
+        Set<String> vars = new HashSet<String>();
+        ListBox patterns = new ListBox();
+
+        for ( Object o : dtable.getModel().getActionCols() ) {
+            ActionCol col = (ActionCol) o;
+            if ( col instanceof ActionInsertFactCol ) {
+                ActionInsertFactCol c = (ActionInsertFactCol) col;
+                if ( !vars.contains( c.getBoundName() ) ) {
+                    patterns.addItem( c.getFactType() + " [" + c.getBoundName()
+                                              + "]",
+                                      c.getFactType() + " " + c.getBoundName() );
+                    vars.add( c.getBoundName() );
+                }
+            }
+
+        }
+
+        return patterns;
+
+    }
+
+    private boolean nil(String s) {
+        return s == null || s.equals( "" );
+    }
+
     private void showFieldChange() {
         final FormStylePopup pop = new FormStylePopup();
         pop.setModal( false );
-        String[] fields = this.sce.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
+        String[] fields = this.sce.getFieldCompletions(
+                                                        FieldAccessorsAndMutators.MUTATOR,
                                                         this.editingCol.getFactType() );
         final ListBox box = new ListBox();
         for ( int i = 0; i < fields.length; i++ ) {
@@ -219,23 +253,11 @@ public class ActionInsertColumn extends FormStylePopup {
 
     }
 
-    private void doFieldLabel() {
-        if ( nil( this.editingCol.getFactField() ) ) {
-            fieldLabel.setText( constants.pleaseChooseFactType() );
-        } else {
-            fieldLabel.setText( editingCol.getFactField() );
+    private boolean unique(String header) {
+        for ( ActionCol o : dtable.getModel().getActionCols() ) {
+            if ( o.getHeader().equals( header ) ) return false;
         }
-
-    }
-
-    private boolean nil(String s) {
-        return s == null || s.equals( "" );
-    }
-
-    private void doPatternLabel() {
-        if ( this.editingCol.getFactType() != null ) {
-            this.patternLabel.setText( this.editingCol.getFactType() + " [" + editingCol.getBoundName() + "]" );
-        }
+        return true;
     }
 
     protected void showChangePattern(ClickEvent w) {
@@ -268,10 +290,13 @@ public class ActionInsertColumn extends FormStylePopup {
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" ); //NON-NLS
+                String[] val = pats.getValue( pats.getSelectedIndex() ).split(
+                                                                               "\\s" ); // NON-NLS
                 editingCol.setFactType( val[0] );
                 editingCol.setBoundName( val[1] );
+                editingCol.setFactField( null );
                 doPatternLabel();
+                doFieldLabel();
                 pop.hide();
             }
         } );
@@ -296,8 +321,11 @@ public class ActionInsertColumn extends FormStylePopup {
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 editingCol.setBoundName( binding.getText() );
-                editingCol.setFactType( types.getItemText( types.getSelectedIndex() ) );
+                editingCol.setFactType( types.getItemText( types
+                        .getSelectedIndex() ) );
+                editingCol.setFactField( null );
                 doPatternLabel();
+                doFieldLabel();
                 pop.hide();
             }
         } );
@@ -305,27 +333,6 @@ public class ActionInsertColumn extends FormStylePopup {
                           ok );
 
         pop.show();
-    }
-
-    private ListBox loadPatterns() {
-        Set<String> vars = new HashSet<String>();
-        ListBox patterns = new ListBox();
-
-        for ( Object o : dt.getActionCols() ) {
-            ActionCol col = (ActionCol) o;
-            if ( col instanceof ActionInsertFactCol ) {
-                ActionInsertFactCol c = (ActionInsertFactCol) col;
-                if ( !vars.contains( c.getBoundName() ) ) {
-                    patterns.addItem( c.getFactType() + " [" + c.getBoundName() + "]",
-                                      c.getFactType() + " " + c.getBoundName() );
-                    vars.add( c.getBoundName() );
-                }
-            }
-
-        }
-
-        return patterns;
-
     }
 
 }

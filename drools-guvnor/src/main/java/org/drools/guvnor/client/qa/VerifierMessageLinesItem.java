@@ -20,7 +20,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.Cause;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -39,11 +39,11 @@ class VerifierMessageLinesItem extends TreeItem {
     private Constants     constants = GWT.create( Constants.class );
     private Images        images    = GWT.create( Images.class );
 
-    private EditItemEvent edit;
+    private OpenItemCommand edit;
 
     public VerifierMessageLinesItem(String topicHtml,
                                     AnalysisReportLine[] lines,
-                                    EditItemEvent edit) {
+                                    OpenItemCommand edit) {
 
         this.edit = edit;
 

@@ -28,7 +28,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -49,17 +49,14 @@ public class ScenarioPackageView extends Composite {
     private Constants     constants = ((Constants) GWT.create( Constants.class ));
     private static Images images    = GWT.create( Images.class );
 
-    private EditItemEvent editEvent;
-
     private VerticalPanel layout;
 
     private AssetItemGrid grid;
 
     public ScenarioPackageView(final String packageUUID,
                                String packageName,
-                               EditItemEvent editEvent,
+                               OpenItemCommand editEvent,
                                ExplorerViewCenterPanel centerPanel) {
-        this.editEvent = editEvent;
 
         grid = new AssetItemGrid( editEvent,
                                   AssetItemGrid.RULE_LIST_TABLE_ID,
@@ -114,16 +111,18 @@ public class ScenarioPackageView extends Composite {
         RepositoryServiceFactory.getService().runScenariosInPackage( uuid,
                                                                      new GenericCallback<BulkTestRunResult>() {
                                                                          public void onSuccess(BulkTestRunResult d) {
-                                                                             BulkRunResultWidget w = new BulkRunResultWidget( d,
-                                                                                                                              editEvent,
-                                                                                                                              new Command() {
-                                                                                                                                  public void execute() {
-                                                                                                                                      refreshShowGrid();
-                                                                                                                                  }
+                                                                             BulkRunResultViewImpl view = new BulkRunResultViewImpl();
+                                                                             BulkRunResult w = new BulkRunResult( view );
 
-                                                                                                                              } );
+                                                                             w.setBulkTestRunResult( d );
+                                                                             w.setCloseCommand( new Command() {
+                                                                                 public void execute() {
+                                                                                     refreshShowGrid();
+                                                                                 }
+
+                                                                             } );
                                                                              layout.remove( 1 );
-                                                                             layout.add( w );
+                                                                             layout.add( view );
                                                                              LoadingPopup.close();
                                                                          }
                                                                      } );

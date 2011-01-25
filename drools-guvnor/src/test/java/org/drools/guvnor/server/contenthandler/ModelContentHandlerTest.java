@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,19 +21,31 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.InputStream;
 
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class ModelContentHandlerTest {
+public class ModelContentHandlerTest extends GuvnorTestBase {
+
+    @Before
+    public void setUp() {
+        setUpSeam();
+        setUpMockIdentity();
+    }
+
+    @After
+    public void tearDown() {
+        tearAllDown();
+    }
 
     @Test
     public void testModelAttached() throws Exception {
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        RulesRepository repo = getRulesRepository();
         PackageItem pacakge = repo.createPackage( "testModelAttachedPack",
                                                   "for test" );
         AssetItem asset = pacakge.addAsset( "testModelAttachedAsset",
@@ -51,7 +63,7 @@ public class ModelContentHandlerTest {
 
     @Test
     public void testModelRemoved() throws Exception {
-        RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession() );
+        RulesRepository repo = getRulesRepository();
         PackageItem pkg = repo.createPackage( "testModelRemovedPackage",
                                               "for test" );
         AssetItem asset = pkg.addAsset( "testModelRemovedAsset",
@@ -74,11 +86,6 @@ public class ModelContentHandlerTest {
         assertEquals( "import something.Else",
                       header.trim() );
 
-    }
-    
-    @After
-    public void tearDown() throws Exception {
-    	TestEnvironmentSessionHelper.shutdown();
     }
 
 }

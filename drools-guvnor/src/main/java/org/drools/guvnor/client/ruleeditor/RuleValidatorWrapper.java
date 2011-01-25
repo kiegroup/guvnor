@@ -65,7 +65,7 @@ public class RuleValidatorWrapper extends DirtyableComposite
      */
     public static void showBuilderErrors(BuilderResult result) {
 
-        if ( result == null || result.lines == null || result.lines.length == 0 ) {
+        if ( result == null || result.getLines() == null || result.getLines().length == 0 ) {
             FormStylePopup pop = new FormStylePopup();
             pop.setWidth( 200 + "px" );
             pop.setTitle( constants.ValidationResultsDotDot() );
@@ -81,9 +81,9 @@ public class RuleValidatorWrapper extends DirtyableComposite
                                                      constants.ValidationResults() );
             FlexTable errTable = new FlexTable();
             errTable.setStyleName( "build-Results" ); //NON-NLS
-            for ( int i = 0; i < result.lines.length; i++ ) {
+            for ( int i = 0; i < result.getLines().length; i++ ) {
                 int row = i;
-                final BuilderResultLine res = result.lines[i];
+                final BuilderResultLine res = result.getLines()[i];
                 errTable.setWidget( row,
                                     0,
                                     new Image( images.error() ) );

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,28 +23,75 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * To get more detail, need to drill in and run it.
  * @author Michael Neale
  */
-public class ScenarioResultSummary implements IsSerializable {
+public class ScenarioResultSummary
+    implements
+    IsSerializable {
 
-	public int failures;
-	public int total;
-	public String scenarioName;
-	public String scenarioDescription;
-	public String uuid;
+    private int    failures;
+    private int    total;
+    private String scenarioName;
+    private String scenarioDescription;
+    private String uuid;
 
-	public ScenarioResultSummary() {}
-	public ScenarioResultSummary(int failures, int total, String scenarioName,
-			String scenarioDescription, String uuid) {
-		super();
-		this.failures = failures;
-		this.total = total;
-		this.scenarioName = scenarioName;
-		this.scenarioDescription = scenarioDescription;
-		this.uuid = uuid;
-	}
+    public ScenarioResultSummary() {
+    }
 
-	public String toString() {
-		if (failures == 0) return "SUCCESS " + scenarioName;
-		return "FAILURE " + scenarioName + " (" + failures + " failures out of " + total + ")";
-	}
+    public ScenarioResultSummary(int failures,
+                                 int total,
+                                 String scenarioName,
+                                 String scenarioDescription,
+                                 String uuid) {
+        super();
+        this.setFailures( failures );
+        this.setTotal( total );
+        this.setScenarioName( scenarioName );
+        this.setScenarioDescription( scenarioDescription );
+        this.setUuid( uuid );
+    }
+
+    public String toString() {
+        if ( getFailures() == 0 ) return "SUCCESS " + getScenarioName();
+        return "FAILURE " + getScenarioName() + " (" + getFailures() + " failures out of " + getTotal() + ")";
+    }
+
+    public void setFailures(int failures) {
+        this.failures = failures;
+    }
+
+    public int getFailures() {
+        return failures;
+    }
+
+    public void setTotal(int total) {
+        this.total = total;
+    }
+
+    public int getTotal() {
+        return total;
+    }
+
+    public void setScenarioName(String scenarioName) {
+        this.scenarioName = scenarioName;
+    }
+
+    public String getScenarioName() {
+        return scenarioName;
+    }
+
+    public void setScenarioDescription(String scenarioDescription) {
+        this.scenarioDescription = scenarioDescription;
+    }
+
+    public String getScenarioDescription() {
+        return scenarioDescription;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
 
 }

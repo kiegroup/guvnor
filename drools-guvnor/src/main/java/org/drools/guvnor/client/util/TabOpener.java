@@ -53,7 +53,7 @@ import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.AssetTable;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.rulelist.QueryWidget;
 
 import com.google.gwt.core.client.GWT;
@@ -121,55 +121,88 @@ public class TabOpener {
             };
             t.schedule( 200 );
 
-            RepositoryServiceFactory.getService().loadRuleAsset( uuid,
-                                                                 new GenericCallback<RuleAsset>() {
-                                                                     public void onSuccess(final RuleAsset a) {
-                                                                         SuggestionCompletionCache.getInstance().doAction( a.metaData.packageName,
-                                                                                                                           new Command() {
-                                                                                                                               public void execute() {
-                                                                                                                                   loading[0] = false;
-                                                                                                                                   EditItemEvent edit = new EditItemEvent() {
-                                                                                                                                       public void open(String key) {
-                                                                                                                                           openAsset( key );
-                                                                                                                                       }
-
-                                                                                                                                       public void open(MultiViewRow[] rows) {
-                                                                                                                                           for ( MultiViewRow row : rows ) {
-                                                                                                                                               openAsset( row.uuid );
-                                                                                                                                           }
-                                                                                                                                       }
-                                                                                                                                   };
-                                                                                                                                   RuleViewer rv = new RuleViewer( a,
-                                                                                                                                                                   edit );
-                                                                                                                                   explorerViewCenterPanel.addTab( a.metaData.name,
-                                                                                                                                                                   rv,
-                                                                                                                                                                   uuid );
-                                                                                                                                   rv.setCloseCommand( new Command() {
-                                                                                                                                       public void execute() {
-                                                                                                                                           explorerViewCenterPanel.close( uuid );
-                                                                                                                                       }
-                                                                                                                                   } );
-
-                                                                                                                                   // When model is saved update the package view if it is opened.
-                                                                                                                                   if ( a.metaData.format.equals( AssetFormats.MODEL ) ) {
-                                                                                                                                       Command command = new Command() {
-                                                                                                                                           public void execute() {
-                                                                                                                                               PackageEditor packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( a.metaData.packageName );
-                                                                                                                                               if ( packageEditor != null ) {
-                                                                                                                                                   packageEditor.reload();
-                                                                                                                                               }
-                                                                                                                                           }
-                                                                                                                                       };
-                                                                                                                                       rv.setCheckedInCommand( command );
-                                                                                                                                       rv.setArchiveCommand( command );
-                                                                                                                                   }
-
-                                                                                                                                   LoadingPopup.close();
-                                                                                                                               }
-                                                                                                                           } );
-                                                                     }
-                                                                 } );
+            loadRuleAsset( uuid,
+                           loading );
         }
+    }
+
+    private void loadRuleAsset(final String uuid,
+                               final boolean[] loading) {
+        RepositoryServiceFactory.getService().loadRuleAsset( uuid,
+                                                             createGenericCallback( uuid,
+                                                                                    loading ) );
+    }
+
+    private GenericCallback<RuleAsset> createGenericCallback(final String uuid,
+                                                             final boolean[] loading) {
+        return new GenericCallback<RuleAsset>() {
+            public void onSuccess(final RuleAsset ruleAsset) {
+                SuggestionCompletionCache.getInstance().doAction( ruleAsset.metaData.packageName,
+                                                                  createCommandForSuggestCompletionCache( uuid,
+                                                                                                          loading,
+                                                                                                          ruleAsset ) );
+            }
+
+            private Command createCommandForSuggestCompletionCache(final String uuid,
+                                                                   final boolean[] loading,
+                                                                   final RuleAsset ruleAsset) {
+                return new Command() {
+                    public void execute() {
+                        loading[0] = false;
+                        RuleViewer ruleViewer = new RuleViewer( ruleAsset,
+                                                                createEditItemEvent() );
+                        explorerViewCenterPanel.addTab( ruleAsset.metaData.name,
+                                                        ruleViewer,
+                                                        uuid );
+                        ruleViewer.setCloseCommand( createCloseCommandForRuleViewer( uuid ) );
+
+                        // When model is saved update the package view if it is opened.
+                        if ( ruleAsset.metaData.format.equals( AssetFormats.MODEL ) ) {
+                            Command command = createCheckInAndArchiveCommandForRuleViewer( ruleAsset );
+                            ruleViewer.setCheckedInCommand( command );
+                            ruleViewer.setArchiveCommand( command );
+                        }
+
+                        LoadingPopup.close();
+                    }
+
+                    private Command createCheckInAndArchiveCommandForRuleViewer(final RuleAsset ruleAsset) {
+                        Command command = new Command() {
+                            public void execute() {
+                                PackageEditor packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( ruleAsset.metaData.packageName );
+                                if ( packageEditor != null ) {
+                                    packageEditor.reload();
+                                }
+                            }
+                        };
+                        return command;
+                    }
+
+                    private Command createCloseCommandForRuleViewer(final String uuid) {
+                        return new Command() {
+                            public void execute() {
+                                explorerViewCenterPanel.close( uuid );
+                            }
+                        };
+                    }
+
+                    private OpenItemCommand createEditItemEvent() {
+                        OpenItemCommand edit = new OpenItemCommand() {
+                            public void open(String key) {
+                                openAsset( key );
+                            }
+
+                            public void open(MultiViewRow[] rows) {
+                                for ( MultiViewRow row : rows ) {
+                                    openAsset( row.uuid );
+                                }
+                            }
+                        };
+                        return edit;
+                    }
+                };
+            }
+        };
     }
 
     public void openAssetsToMultiView(MultiViewRow[] rows) {
@@ -197,7 +230,7 @@ public class TabOpener {
         }
 
         MultiViewEditor multiview = new MultiViewEditor( rows,
-                                                         new EditItemEvent() {
+                                                         new OpenItemCommand() {
                                                              public void open(String key) {
                                                                  openAsset( key );
                                                              }
@@ -238,18 +271,7 @@ public class TabOpener {
                                                                                                                            explorerViewCenterPanel.close( uuid );
                                                                                                                        }
                                                                                                                    },
-                                                                                                                   refPackageList,
-                                                                                                                   new EditItemEvent() {
-                                                                                                                       public void open(String uuid) {
-                                                                                                                           openAsset( uuid );
-                                                                                                                       }
-
-                                                                                                                       public void open(MultiViewRow[] rows) {
-                                                                                                                           for ( MultiViewRow row : rows ) {
-                                                                                                                               openAsset( row.uuid );
-                                                                                                                           }
-                                                                                                                       }
-                                                                                                                   } );
+                                                                                                                   refPackageList );
                                                                              explorerViewCenterPanel.addTab( conf.name,
                                                                                                              ed,
                                                                                                              conf.uuid );
@@ -262,7 +284,7 @@ public class TabOpener {
     public void openFind() {
         if ( !explorerViewCenterPanel.showIfOpen( "FIND" ) ) { //NON-NLS
             explorerViewCenterPanel.addTab( constants.Find(),
-                                            new QueryWidget( new EditItemEvent() {
+                                            new QueryWidget( new OpenItemCommand() {
                                                 public void open(String uuid) {
                                                     openAsset( uuid );
                                                 }
@@ -370,10 +392,9 @@ public class TabOpener {
                 }
                 break;
             case 8 :
-                if ( !explorerViewCenterPanel.showIfOpen( REPOCONFIG ) ) 
-                explorerViewCenterPanel.addTab( constants.RepositoryConfig(),
-                                                new RepoConfigManager(),
-                                                REPOCONFIG );
+                if ( !explorerViewCenterPanel.showIfOpen( REPOCONFIG ) ) explorerViewCenterPanel.addTab( constants.RepositoryConfig(),
+                                                                                                         new RepoConfigManager(),
+                                                                                                         REPOCONFIG );
                 break;
         }
 
@@ -484,8 +505,8 @@ public class TabOpener {
         }
     }
 
-    private EditItemEvent createEditEvent() {
-        return new EditItemEvent() {
+    private OpenItemCommand createEditEvent() {
+        return new OpenItemCommand() {
             public void open(String uuid) {
                 openAsset( uuid );
             }
@@ -501,14 +522,16 @@ public class TabOpener {
     public void openPackageViewAssets(final String packageUuid,
                                       final String packageName,
                                       String key,
-                                      final List<String> formatInList, Boolean formatIsRegistered,
+                                      final List<String> formatInList,
+                                      Boolean formatIsRegistered,
                                       final String itemName) {
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
 
             String feedUrl = GWT.getModuleBaseURL() + "feed/package?name=" + packageName + "&viewUrl=" + Util.getSelfURL() + "&status=*";
             final AssetTable table = new AssetTable( packageUuid,
-                                                     formatInList, formatIsRegistered,
-                                                     new EditItemEvent() {
+                                                     formatInList,
+                                                     formatIsRegistered,
+                                                     new OpenItemCommand() {
                                                          public void open(String uuid) {
                                                              openAsset( uuid );
                                                          }
@@ -542,7 +565,7 @@ public class TabOpener {
                                  String packageName) {
 
         if ( !explorerViewCenterPanel.showIfOpen( "scenarios" + packageUuid ) ) {
-            final EditItemEvent edit = new EditItemEvent() {
+            final OpenItemCommand edit = new OpenItemCommand() {
                 public void open(String key) {
                     openAsset( key );
                 }
@@ -568,7 +591,7 @@ public class TabOpener {
     public void openVerifierView(String packageUuid,
                                  String packageName) {
         if ( !explorerViewCenterPanel.showIfOpen( "analysis" + packageUuid ) ) { //NON-NLS
-            final EditItemEvent edit = new EditItemEvent() {
+            final OpenItemCommand edit = new OpenItemCommand() {
                 public void open(String key) {
                     openAsset( key );
                 }
@@ -595,7 +618,7 @@ public class TabOpener {
                                       final String[] assetTypes,
                                       String key) {
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
-            AssetItemGrid grid = new AssetItemGrid( new EditItemEvent() {
+            AssetItemGrid grid = new AssetItemGrid( new OpenItemCommand() {
                                                         public void open(String key) {
                                                             openAsset( key );
                                                         }

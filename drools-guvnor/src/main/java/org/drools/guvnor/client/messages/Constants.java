@@ -580,13 +580,7 @@ public interface Constants
 
     String ActionColumns();
 
-    String options();
-
-    String none();
-
-    String GroupByColumn();
-
-    String Apply();
+    String Options();
 
     String EditThisActionColumnConfiguration();
 
@@ -2173,4 +2167,6 @@ public interface Constants
     String File();
     
     String Edit();
+    
+    String EmptyValue();
 }

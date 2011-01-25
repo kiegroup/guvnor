@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,34 +21,74 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * This is returned when running a suite of tests.
  */
-public class BulkTestRunResult implements IsSerializable {
+public class BulkTestRunResult
+    implements
+    IsSerializable {
 
-	public BulkTestRunResult()  {}
-	public BulkTestRunResult(BuilderResult errs, ScenarioResultSummary[] res, int percentCovered, String[] rulesNotCovered) {
-		this.result = errs;
-		this.results = res;
-		this.percentCovered = percentCovered;
-		this.rulesNotCovered = rulesNotCovered;
-	}
-	/**
-	 * Will be either errors, or results.
-	 */
-	public BuilderResult result;
-	public ScenarioResultSummary[] results;
+    /**
+     * Will be either errors, or results.
+     */
+    private BuilderResult           result;
+    private ScenarioResultSummary[] results;
 
-	public int percentCovered;
-	public String[] rulesNotCovered;
+    private int                     percentCovered;
+    private String[]                rulesNotCovered;
 
-	public String toString() {
-		if (result != null && result.lines.length > 0) return "Unable to run tests";  //NON-NLS
-		if (results == null || results.length == 0) return "No test scenarios found.";   //NON-NLS
-		String res = "";
-		if (results != null) {
-			for (int i = 0; i < results.length; i++) {
-				res  = res + "\n" + results[i].toString();
-			}
-		}
-		return res.trim();
-	}
+    public BulkTestRunResult() {
+    }
+
+    public BulkTestRunResult(BuilderResult errs,
+                             ScenarioResultSummary[] res,
+                             int percentCovered,
+                             String[] rulesNotCovered) {
+        this.setResult( errs );
+        this.setResults( res );
+        this.setPercentCovered( percentCovered );
+        this.setRulesNotCovered( rulesNotCovered );
+    }
+
+    public String toString() {
+        if ( getResult() != null && getResult().getLines().length > 0 ) return "Unable to run tests"; //NON-NLS
+        if ( getResults() == null || getResults().length == 0 ) return "No test scenarios found."; //NON-NLS
+        String res = "";
+        if ( getResults() != null ) {
+            for ( int i = 0; i < getResults().length; i++ ) {
+                res = res + "\n" + getResults()[i].toString();
+            }
+        }
+        return res.trim();
+    }
+
+    public void setResult(BuilderResult result) {
+        this.result = result;
+    }
+
+    public BuilderResult getResult() {
+        return result;
+    }
+
+    public void setResults(ScenarioResultSummary[] results) {
+        this.results = results;
+    }
+
+    public ScenarioResultSummary[] getResults() {
+        return results;
+    }
+
+    public void setPercentCovered(int percentCovered) {
+        this.percentCovered = percentCovered;
+    }
+
+    public int getPercentCovered() {
+        return percentCovered;
+    }
+
+    public void setRulesNotCovered(String[] rulesNotCovered) {
+        this.rulesNotCovered = rulesNotCovered;
+    }
+
+    public String[] getRulesNotCovered() {
+        return rulesNotCovered;
+    }
 
 }

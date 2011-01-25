@@ -62,7 +62,6 @@ public class GuidedDTXMLPersistenceTest {
 				new String[] {"hola"}
 		} );
 		dt.setTableName( "blah" );
-		dt.setDescriptionWidth( 42 );
 
 
 		String xml = GuidedDTXMLPersistence.getInstance().marshal(dt);
@@ -74,7 +73,6 @@ public class GuidedDTXMLPersistenceTest {
 
 		GuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
 		assertNotNull(dt_);
-		assertEquals(42, dt_.getDescriptionWidth());
 		assertEquals("blah", dt_.getTableName());
 		assertEquals(1, dt_.getMetadataCols().size());
 		assertEquals(1, dt_.getAttributeCols().size());
@@ -88,7 +86,6 @@ public class GuidedDTXMLPersistenceTest {
 		String xml = BRLPersistenceTest.loadResource("ExistingDecisionTable.xml");
 		GuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
 		assertNotNull(dt_);
-		assertEquals(42, dt_.getDescriptionWidth());
 		assertEquals("blah", dt_.getTableName());
 		assertEquals(1, dt_.getMetadataCols().size());
 		assertEquals(1, dt_.getAttributeCols().size());

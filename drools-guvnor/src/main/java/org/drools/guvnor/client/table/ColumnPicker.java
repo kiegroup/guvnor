@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 public class ColumnPicker<T> {
 
     private static final TableImageResources TABLE_IMAGE_RESOURCES = GWT.create(TableImageResources.class);
-    private static final Image COLUMN_PICKER_IMAGE = new Image(TABLE_IMAGE_RESOURCES.columnPicker());
+    private final Image COLUMN_PICKER_IMAGE = new Image(TABLE_IMAGE_RESOURCES.columnPicker());
     
     private final CellTable<T> cellTable;
     private List<ColumnMeta<T>> columnMetaList = new ArrayList<ColumnMeta<T>>();

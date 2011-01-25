@@ -58,17 +58,17 @@ public class RuleAttributeWidget extends Composite {
      * These are the names of all of the rule attributes for this widget
      */
     public static final String  SALIENCE_ATTR         = "salience";                   // needs to be public
-    private static final String ENABLED_ATTR          = "enabled";
-    private static final String DATE_EFFECTIVE_ATTR   = "date-effective";
-    private static final String DATE_EXPIRES_ATTR     = "date-expires";
-    private static final String NO_LOOP_ATTR          = "no-loop";
-    private static final String AGENDA_GROUP_ATTR     = "agenda-group";
-    private static final String ACTIVATION_GROUP_ATTR = "activation-group";
-    private static final String DURATION_ATTR         = "duration";
-    private static final String AUTO_FOCUS_ATTR       = "auto-focus";
-    private static final String LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
-    private static final String RULEFLOW_GROUP_ATTR   = "ruleflow-group";
-    private static final String DIALECT_ATTR          = "dialect";
+    public static final String ENABLED_ATTR          = "enabled";
+    public static final String DATE_EFFECTIVE_ATTR   = "date-effective";
+    public static final String DATE_EXPIRES_ATTR     = "date-expires";
+    public static final String NO_LOOP_ATTR          = "no-loop";
+    public static final String AGENDA_GROUP_ATTR     = "agenda-group";
+    public static final String ACTIVATION_GROUP_ATTR = "activation-group";
+    public static final String DURATION_ATTR         = "duration";
+    public static final String AUTO_FOCUS_ATTR       = "auto-focus";
+    public static final String LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
+    public static final String RULEFLOW_GROUP_ATTR   = "ruleflow-group";
+    public static final String DIALECT_ATTR          = "dialect";
     public static final String  LOCK_LHS              = "freeze_conditions";
     public static final String  LOCK_RHS              = "freeze_actions";
 

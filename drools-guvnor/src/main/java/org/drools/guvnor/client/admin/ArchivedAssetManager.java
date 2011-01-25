@@ -26,7 +26,7 @@ import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.TabOpener;
 
 import com.google.gwt.core.client.GWT;
@@ -65,7 +65,7 @@ public class ArchivedAssetManager extends Composite {
 
         final TabOpener tabOpener = TabOpener.getInstance();
 
-        EditItemEvent edit = new EditItemEvent() {
+        OpenItemCommand edit = new OpenItemCommand() {
             public void open(String key) {
                 tabOpener.openAsset( key );
             }

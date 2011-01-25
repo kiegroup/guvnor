@@ -1,21 +1,3 @@
-/**
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package org.drools.guvnor.server.util;
-
 /*
  * Copyright 2005 JBoss Inc
  *
@@ -31,6 +13,8 @@ package org.drools.guvnor.server.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.guvnor.server.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -58,22 +42,19 @@ import org.drools.lang.descr.RuleDescr;
  */
 public class ClassicDRLImporter {
 
-    private String         source;
+    private String        source;
 
-    private String         packageName;
+    private String        packageName;
 
-    private List<Asset>    assets          = new ArrayList<Asset>();
+    private List<Asset>   assets = new ArrayList<Asset>();
 
-    private StringBuffer   header;
+    private StringBuilder header;
 
-    private boolean        usesDSL;
+    private boolean       usesDSL;
 
-    private static Pattern functionPattern = Pattern.compile( "function\\s+.*\\s+(.*)\\(.*\\).*" );
-
-    public ClassicDRLImporter(InputStream in) throws IOException,
-                                             DroolsParserException {
+    public ClassicDRLImporter(InputStream in) throws IOException, DroolsParserException {
         String line = "";
-        StringBuffer drl = new StringBuffer();
+        StringBuilder drl = new StringBuilder();
         BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
         while ( (line = reader.readLine()) != null ) {
             drl.append( "\n" + line );
@@ -84,52 +65,40 @@ public class ClassicDRLImporter {
     }
 
     private void parse() throws DroolsParserException {
-        StringTokenizer lines = new StringTokenizer( source,
-                                                     "\r\n" );
+        StringTokenizer lines = new StringTokenizer( source, "\r\n" );
 
-        header = new StringBuffer();
-
+        header = new StringBuilder();
+        Pattern functionPattern = Pattern.compile( "function\\s+.*\\s+(.*)\\(.*\\).*" );
         while ( lines.hasMoreTokens() ) {
             String line = lines.nextToken().trim();
             if ( line.startsWith( "package" ) ) {
                 packageName = getPackage( line );
             } else if ( line.startsWith( "rule" ) ) {
                 String ruleName = getRuleName( line );
-                StringBuffer currentRule = new StringBuffer();
-                laConsumeToEnd( lines,
-                                currentRule,
-                                "end",
-                                false );
-                addRule( ruleName,
-                         currentRule );
+                StringBuilder currentRule = new StringBuilder();
+                laConsumeToEnd( lines, currentRule, "end", false );
+                addRule( ruleName, currentRule );
 
             } else if ( line.startsWith( "function" ) ) {
-                String functionName = getFuncName( line );
-                StringBuffer currentFunc = new StringBuffer();
+                String functionName = getFuncName( functionPattern, line );
+                StringBuilder currentFunc = new StringBuilder();
 
                 int counter = 0;
 
                 currentFunc.append( line + "\n" );
 
-                counter = countBrackets( counter,
-                                         line );
+                counter = countBrackets( counter, line );
 
                 if ( counter > 0 ) {
-                    laConsumeBracketsToEnd( counter,
-                                            lines,
-                                            currentFunc );
+                    laConsumeBracketsToEnd( counter, lines, currentFunc );
                 }
-                addFunction( functionName,
-                             currentFunc );
+                addFunction( functionName, currentFunc );
 
             } else if ( line.startsWith( "/*" ) ) {
 
-                StringBuffer comment = new StringBuffer();
-                comment.append( line + "\n");
-                laConsumeToEnd( lines,
-                                comment,
-                                "*/",
-                                true );
+                StringBuilder comment = new StringBuilder();
+                comment.append( line + "\n" );
+                laConsumeToEnd( lines, comment, "*/", true );
 
                 header.append( comment );
 
@@ -144,14 +113,12 @@ public class ClassicDRLImporter {
         }
     }
 
-    private void addFunction(String functionName,
-                             StringBuffer currentFunc) {
-        this.assets.add( new Asset( functionName,
-                                    currentFunc.toString(),
-                                    AssetFormats.FUNCTION ) );
+    private void addFunction(String functionName, StringBuilder currentFunc) {
+        this.assets.add( new Asset( functionName, currentFunc.toString(), AssetFormats.FUNCTION ) );
     }
 
-    private String getFuncName(String line) {
+    private String getFuncName(Pattern functionPattern, String line) {
+
         Matcher m = functionPattern.matcher( line );
         m.matches();
         return m.group( 1 );
@@ -163,9 +130,7 @@ public class ClassicDRLImporter {
      * @param lines
      * @param currentFunc
      */
-    private void laConsumeBracketsToEnd(int counter,
-                                        StringTokenizer lines,
-                                        StringBuffer currentFunc) {
+    private void laConsumeBracketsToEnd(int counter, StringTokenizer lines, StringBuilder currentFunc) {
         /*
          * Check if the first line contains matching amount of brackets.
          */
@@ -190,8 +155,7 @@ public class ClassicDRLImporter {
             }
 
             if ( !multilineIsOpen ) {
-                counter = countBrackets( counter,
-                                         line );
+                counter = countBrackets( counter, line );
             }
 
             if ( counter == 0 ) {
@@ -212,13 +176,12 @@ public class ClassicDRLImporter {
 
         if ( commentMultiLineStart != -1 && commentMultiLineEnd == -1 ) {
             return true;
-        } else {
-            return false;
         }
+        return false;
+
     }
 
-    private int countBrackets(int counter,
-                              String line) {
+    private int countBrackets(int counter, String line) {
         char[] chars = line.toCharArray();
         for ( int i = 0; i < chars.length; i++ ) {
             if ( chars[i] == '{' ) {
@@ -240,15 +203,13 @@ public class ClassicDRLImporter {
         // Case: some code // /* */
         // Another case: some code // No comments
         if ( commentSingleLine != -1 && commentMultiLineStart > commentSingleLine ) {
-            return line.substring( 0,
-                                   commentSingleLine );
+            return line.substring( 0, commentSingleLine );
         }
 
         // There is only a start for the multiline comment.
         // Case: some code here /* commented out
         if ( commentMultiLineStart != -1 && commentMultiLineEnd == -1 ) {
-            return line.substring( 0,
-                                   commentMultiLineStart );
+            return line.substring( 0, commentMultiLineStart );
         }
 
         // Two ends are on the same line
@@ -256,8 +217,7 @@ public class ClassicDRLImporter {
         if ( commentMultiLineStart != -1 && commentMultiLineEnd != -1 ) {
 
             line = line.substring( commentMultiLineEnd );
-            line = line.substring( 0,
-                                   commentMultiLineStart );
+            line = line.substring( 0, commentMultiLineStart );
 
             return line;
         }
@@ -265,9 +225,7 @@ public class ClassicDRLImporter {
         return line;
     }
 
-    private void laConsumeToEnd(StringTokenizer lines,
-                                StringBuffer currentRule,
-                                String end, boolean addLastLine) {
+    private void laConsumeToEnd(StringTokenizer lines, StringBuilder currentRule, String end, boolean addLastLine) {
         String line;
         while ( lines.hasMoreTokens() ) {
             line = lines.nextToken();
@@ -282,17 +240,12 @@ public class ClassicDRLImporter {
         }
     }
 
-    private void addRule(String ruleName,
-                         StringBuffer currentRule) {
-    	ruleName = ruleName.replace('\'', ' ');
+    private void addRule(String ruleName, StringBuilder currentRule) {
+        ruleName = ruleName.replace( '\'', ' ' );
         if ( this.isDSLEnabled() ) {
-            this.assets.add( new Asset( ruleName,
-                                        currentRule.toString(),
-                                        AssetFormats.DSL_TEMPLATE_RULE ) );
+            this.assets.add( new Asset( ruleName, currentRule.toString(), AssetFormats.DSL_TEMPLATE_RULE ) );
         } else {
-            this.assets.add( new Asset( ruleName,
-                                        currentRule.toString(),
-                                        AssetFormats.DRL ) );
+            this.assets.add( new Asset( ruleName, currentRule.toString(), AssetFormats.DRL ) );
         }
     }
 
@@ -333,9 +286,7 @@ public class ClassicDRLImporter {
      */
     public static class Asset {
 
-        public Asset(String name,
-                     String content,
-                     String format) {
+        public Asset(String name, String content, String format) {
             this.name = name;
             this.content = content;
             this.format = format;
@@ -349,8 +300,7 @@ public class ClassicDRLImporter {
     /**
      * This merges the toMerge new schtuff into the existing. Line by line, simple stuff.
      */
-    public static String mergeLines(String existing,
-                                    String toMerge) {
+    public static String mergeLines(String existing, String toMerge) {
 
         if ( toMerge == null || toMerge.equals( "" ) ) {
             return existing;

@@ -47,317 +47,317 @@ import org.slf4j.LoggerFactory;
  */
 public class ClassUtil
 {
-	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ClassUtil.class);
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ClassUtil.class);
 
-	/**
-	 * Load the specified class.
-	 * @param className The name of the class to load.
-	 * @param caller The class of the caller.
-	 * @return The specified class.
-	 * @throws ClassNotFoundException If the class cannot be found.
-	 */
-	public static Class forName(final String className, final Class caller)
-	throws ClassNotFoundException
-	{
-		final ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader() ;
-		if (threadClassLoader != null)
-		{
-			try
-			{
-				return Class.forName(className, true, threadClassLoader) ;
-			}
-			catch (final ClassNotFoundException cnfe)
-			{
-				if (cnfe.getException() != null)
-				{
-					throw cnfe ;
-				}
-			}
-		}
-
-
-		final ClassLoader classLoader = caller.getClassLoader() ;
-		if (classLoader != null)
-		{
-			try
-			{
-				return Class.forName(className, true, classLoader) ;
-			}
-			catch (final ClassNotFoundException cnfe)
-			{
-				if (cnfe.getException() != null)
-				{
-					throw cnfe ;
-				}
-			}
-		}
-
-		return Class.forName(className, true, ClassLoader.getSystemClassLoader()) ;
-	}
-
-	/**
-	 * Resolve a proxy for the specified interfaces.
-	 * @param interfaces The interfaces associated with the proxy.
-	 * @param caller The class of the caller.
-	 * @return The specified proxy class.
-	 * @throws ClassNotFoundException If the class cannot be found.
-	 */
-	public static Class resolveProxy(final String[] interfaces, final Class caller)
-	throws ClassNotFoundException
-	{
-		final int numInterfaces = (interfaces == null ? 0 : interfaces.length) ;
-		if (numInterfaces == 0)
-		{
-			throw new ClassNotFoundException("Cannot generate proxy with no interfaces") ;
-		}
-
-		final Class[] interfaceClasses = new Class[numInterfaces] ;
-		for(int count = 0 ; count < numInterfaces ; count++)
-		{
-			interfaceClasses[count] = forName(interfaces[count], caller) ;
-		}
-
-		final ClassLoader proxyClassLoader ;
-		final ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader() ;
-		if (threadClassLoader != null)
-		{
-			proxyClassLoader = threadClassLoader ;
-		}
-		else
-		{
-			final ClassLoader classLoader = caller.getClassLoader() ;
-			if (classLoader != null)
-			{
-				proxyClassLoader = classLoader ;
-			}
-			else
-			{
-				proxyClassLoader = ClassLoader.getSystemClassLoader() ;
-			}
-		}
-
-		return Proxy.getProxyClass(proxyClassLoader, interfaceClasses) ;
-	}
-
-	/**
-	 * Get the specified resource as a stream.
-	 * @param resourceName The name of the class to load.
-	 * @param caller The class of the caller.
-	 * @return The input stream for the resource or null if not found.
-	 */
-	public static InputStream getResourceAsStream(final String resourceName, final Class caller)
-	{
-		final String resource ;
-		if (resourceName.startsWith("/"))
-		{
-			resource = resourceName.substring(1) ;
-		}
-		else
-		{
-			final Package callerPackage = caller.getPackage() ;
-			if (callerPackage != null)
-			{
-				resource = callerPackage.getName().replace('.', '/') + '/' + resourceName ;
-			}
-			else
-			{
-				resource = resourceName ;
-			}
-		}
-		final ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader() ;
-		if (threadClassLoader != null)
-		{
-			final InputStream is = threadClassLoader.getResourceAsStream(resource) ;
-			if (is != null)
-			{
-				return is ;
-			}
-		}
-
-		final ClassLoader classLoader = caller.getClassLoader() ;
-		if (classLoader != null)
-		{
-			final InputStream is = classLoader.getResourceAsStream(resource) ;
-			if (is != null)
-			{
-				return is ;
-			}
-		}
-
-		return ClassLoader.getSystemResourceAsStream(resource) ;
-	}
-
-	public static URL getResource(final String resourceName, final Class<?> caller)
-	{
-		final String resource ;
-		if (resourceName.startsWith("/"))
-		{
-			resource = resourceName.substring(1) ;
-		}
-		else
-		{
-			final Package callerPackage = caller.getPackage() ;
-			if (callerPackage != null)
-			{
-				resource = callerPackage.getName().replace('.', '/') + '/' + resourceName ;
-			}
-			else
-			{
-				resource = resourceName ;
-			}
-		}
-		final ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader() ;
-		if (threadClassLoader != null)
-		{
-			final URL url = threadClassLoader.getResource(resource) ;
-			if (url != null)
-			{
-				return url ;
-			}
-		}
-
-		final ClassLoader classLoader = caller.getClassLoader() ;
-		if (classLoader != null)
-		{
-			final URL url = classLoader.getResource(resource) ;
-			if (url != null)
-			{
-				return url ;
-			}
-		}
-
-		return ClassLoader.getSystemResource(resource) ;
-	}
+    /**
+     * Load the specified class.
+     * @param className The name of the class to load.
+     * @param caller The class of the caller.
+     * @return The specified class.
+     * @throws ClassNotFoundException If the class cannot be found.
+     */
+    public static Class forName(final String className, final Class caller)
+    throws ClassNotFoundException
+    {
+        final ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader() ;
+        if (threadClassLoader != null)
+        {
+            try
+            {
+                return Class.forName(className, true, threadClassLoader) ;
+            }
+            catch (final ClassNotFoundException cnfe)
+            {
+                if (cnfe.getException() != null)
+                {
+                    throw cnfe ;
+                }
+            }
+        }
 
 
-	public static List<URL> getResources(String resourcePath, Class<?> caller) throws IOException {
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        final ClassLoader classLoader = caller.getClassLoader() ;
+        if (classLoader != null)
+        {
+            try
+            {
+                return Class.forName(className, true, classLoader) ;
+            }
+            catch (final ClassNotFoundException cnfe)
+            {
+                if (cnfe.getException() != null)
+                {
+                    throw cnfe ;
+                }
+            }
+        }
 
-		if(resourcePath.startsWith("/")) {
-			resourcePath = resourcePath.substring(1);
-		}
+        return Class.forName(className, true, ClassLoader.getSystemClassLoader()) ;
+    }
 
-		if (classLoader != null) {
-			return toList(classLoader.getResources(resourcePath));
-		}
+    /**
+     * Resolve a proxy for the specified interfaces.
+     * @param interfaces The interfaces associated with the proxy.
+     * @param caller The class of the caller.
+     * @return The specified proxy class.
+     * @throws ClassNotFoundException If the class cannot be found.
+     */
+    public static Class resolveProxy(final String[] interfaces, final Class caller)
+    throws ClassNotFoundException
+    {
+        final int numInterfaces = (interfaces == null ? 0 : interfaces.length) ;
+        if (numInterfaces == 0)
+        {
+            throw new ClassNotFoundException("Cannot generate proxy with no interfaces") ;
+        }
 
-		classLoader = caller.getClassLoader();
-		if (classLoader != null) {
-			return toList(classLoader.getResources(resourcePath));
-		}
+        final Class[] interfaceClasses = new Class[numInterfaces] ;
+        for(int count = 0 ; count < numInterfaces ; count++)
+        {
+            interfaceClasses[count] = forName(interfaces[count], caller) ;
+        }
 
-		return new ArrayList<URL>();
-	}
+        final ClassLoader proxyClassLoader ;
+        final ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader() ;
+        if (threadClassLoader != null)
+        {
+            proxyClassLoader = threadClassLoader ;
+        }
+        else
+        {
+            final ClassLoader classLoader = caller.getClassLoader() ;
+            if (classLoader != null)
+            {
+                proxyClassLoader = classLoader ;
+            }
+            else
+            {
+                proxyClassLoader = ClassLoader.getSystemClassLoader() ;
+            }
+        }
 
-	private static <T> List<T> toList(Enumeration<T> objects) {
-		List<T> theList = new ArrayList<T>();
-		while(objects.hasMoreElements()) {
-			theList.add(objects.nextElement());
-		}        
-		return theList;
-	}
+        return Proxy.getProxyClass(proxyClassLoader, interfaceClasses) ;
+    }
 
-	/**
-	 * Get a package name and convert it to a path value, so it can be used
-	 * in calls to methods like {@link #getResourceAsStream}.
-	 * <p/>
-	 * Adds a '/' prefix and converts all '." characters to '/'.  Doesn't add a
-	 * trailing slash.
-	 *
-	 * @param packageObj The package.
-	 * @return The package path.
-	 */
-	public static String getPath(Package packageObj) {
-		return "/" + packageObj.getName().replace('.', '/');
-	}
+    /**
+     * Get the specified resource as a stream.
+     * @param resourceName The name of the class to load.
+     * @param caller The class of the caller.
+     * @return The input stream for the resource or null if not found.
+     */
+    public static InputStream getResourceAsStream(final String resourceName, final Class caller)
+    {
+        final String resource ;
+        if (resourceName.startsWith("/"))
+        {
+            resource = resourceName.substring(1) ;
+        }
+        else
+        {
+            final Package callerPackage = caller.getPackage() ;
+            if (callerPackage != null)
+            {
+                resource = callerPackage.getName().replace('.', '/') + '/' + resourceName ;
+            }
+            else
+            {
+                resource = resourceName ;
+            }
+        }
+        final ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader() ;
+        if (threadClassLoader != null)
+        {
+            final InputStream is = threadClassLoader.getResourceAsStream(resource) ;
+            if (is != null)
+            {
+                return is ;
+            }
+        }
 
-	public static List<String> getResourceList(String regex, Class caller) {
-		ClasspathResourceFilter filter = new ClasspathResourceFilter(regex);
-		ClassLoader classLoader;
+        final ClassLoader classLoader = caller.getClassLoader() ;
+        if (classLoader != null)
+        {
+            final InputStream is = classLoader.getResourceAsStream(resource) ;
+            if (is != null)
+            {
+                return is ;
+            }
+        }
 
-		classLoader = Thread.currentThread().getContextClassLoader();
-		if(classLoader instanceof URLClassLoader) {
-			filter.filter((URLClassLoader) classLoader);
-		}
-		classLoader = caller.getClassLoader();
-		if(classLoader instanceof URLClassLoader) {
-			filter.filter((URLClassLoader) classLoader);
-		}
+        return ClassLoader.getSystemResourceAsStream(resource) ;
+    }
 
-		return filter.getResourceList();
-	}
+    public static URL getResource(final String resourceName, final Class<?> caller)
+    {
+        final String resource ;
+        if (resourceName.startsWith("/"))
+        {
+            resource = resourceName.substring(1) ;
+        }
+        else
+        {
+            final Package callerPackage = caller.getPackage() ;
+            if (callerPackage != null)
+            {
+                resource = callerPackage.getName().replace('.', '/') + '/' + resourceName ;
+            }
+            else
+            {
+                resource = resourceName ;
+            }
+        }
+        final ClassLoader threadClassLoader = Thread.currentThread().getContextClassLoader() ;
+        if (threadClassLoader != null)
+        {
+            final URL url = threadClassLoader.getResource(resource) ;
+            if (url != null)
+            {
+                return url ;
+            }
+        }
 
-	private static class ClasspathResourceFilter {
+        final ClassLoader classLoader = caller.getClassLoader() ;
+        if (classLoader != null)
+        {
+            final URL url = classLoader.getResource(resource) ;
+            if (url != null)
+            {
+                return url ;
+            }
+        }
 
-		private List<String> resourceList = new ArrayList<String>();
-		private Pattern pattern;
+        return ClassLoader.getSystemResource(resource) ;
+    }
 
-		private ClasspathResourceFilter(String regex) {
-			pattern = Pattern.compile(regex);
-		}
 
-		private void filter(URLClassLoader classLoader) {
-			URL[] cpUrls = classLoader.getURLs();
+    public static List<URL> getResources(String resourcePath, Class<?> caller) throws IOException {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-			for (int i = 0; i < cpUrls.length; i++) {
-				try {
-					File file = new File(cpUrls[i].toURI());
-					if(file.isDirectory()) {
-						searchClasspathDirTree(file, "");
-					} else {
-						searchArchive(file);
-					}
-				} catch (URISyntaxException e) {
-					logger.warn("Error searching classpath resource URL '" + cpUrls[i] + "' for resource '" + pattern.pattern() + "': " + e.getMessage());
-				} catch (IOException e) {
-					logger.warn("Error searching classpath resource URL '" + cpUrls[i] + "' for resource '" + pattern.pattern() + "': " + e.getMessage());
-				}
-			}
-		}
+        if(resourcePath.startsWith("/")) {
+            resourcePath = resourcePath.substring(1);
+        }
 
-		private void searchClasspathDirTree(File rootDir, String subDir) {
-			File currentDir = new File(rootDir, subDir);
-			File[] contents = currentDir.listFiles();
+        if (classLoader != null) {
+            return toList(classLoader.getResources(resourcePath));
+        }
 
-			for(File file: contents) {
-				if(file.isDirectory()) {
-					String subSubDir = subDir + "/" + file.getName();
-					searchClasspathDirTree(rootDir, subSubDir);
-				} else {
-					String resClasspathPath = file.toURI().toString().substring(rootDir.toURI().toString().length() - 1);
-					if(isToBeAdded(resClasspathPath)) {
-						resourceList.add(resClasspathPath);
-					}
-				}
-			}
-		}
+        classLoader = caller.getClassLoader();
+        if (classLoader != null) {
+            return toList(classLoader.getResources(resourcePath));
+        }
 
-		private void searchArchive(File archiveFile) throws IOException {
-			ZipFile zip = new ZipFile(archiveFile);
-			Enumeration<? extends ZipEntry> entries = zip.entries();
+        return new ArrayList<URL>();
+    }
 
-			while (entries.hasMoreElements()) {
-				ZipEntry entry = entries.nextElement();
-				String resClasspathPath = "/" + entry.getName();
-				if(isToBeAdded(resClasspathPath)) {
-					resourceList.add(resClasspathPath);
-				}
-			}
-		}
+    private static <T> List<T> toList(Enumeration<T> objects) {
+        List<T> theList = new ArrayList<T>();
+        while(objects.hasMoreElements()) {
+            theList.add(objects.nextElement());
+        }
+        return theList;
+    }
 
-		private boolean isToBeAdded(String resClasspathPath) {
-			if(resourceList.contains(resClasspathPath)) {
-				// Already in the list e.g. same resource in different archives...
-				return false;
-			}
+    /**
+     * Get a package name and convert it to a path value, so it can be used
+     * in calls to methods like {@link #getResourceAsStream}.
+     * <p/>
+     * Adds a '/' prefix and converts all '." characters to '/'.  Doesn't add a
+     * trailing slash.
+     *
+     * @param packageObj The package.
+     * @return The package path.
+     */
+    public static String getPath(Package packageObj) {
+        return "/" + packageObj.getName().replace('.', '/');
+    }
 
-			Matcher matcher = pattern.matcher(resClasspathPath);
-			return matcher.matches();
-		}
+    public static List<String> getResourceList(String regex, Class caller) {
+        ClasspathResourceFilter filter = new ClasspathResourceFilter(regex);
+        ClassLoader classLoader;
 
-		private List<String> getResourceList() {
-			return resourceList;
-		}
-	}
+        classLoader = Thread.currentThread().getContextClassLoader();
+        if(classLoader instanceof URLClassLoader) {
+            filter.filter((URLClassLoader) classLoader);
+        }
+        classLoader = caller.getClassLoader();
+        if(classLoader instanceof URLClassLoader) {
+            filter.filter((URLClassLoader) classLoader);
+        }
+
+        return filter.getResourceList();
+    }
+
+    private static class ClasspathResourceFilter {
+
+        private List<String> resourceList = new ArrayList<String>();
+        private Pattern pattern;
+
+        private ClasspathResourceFilter(String regex) {
+            pattern = Pattern.compile(regex);
+        }
+
+        private void filter(URLClassLoader classLoader) {
+            URL[] cpUrls = classLoader.getURLs();
+
+            for (int i = 0; i < cpUrls.length; i++) {
+                try {
+                    File file = new File(cpUrls[i].toURI());
+                    if(file.isDirectory()) {
+                        searchClasspathDirTree(file, "");
+                    } else {
+                        searchArchive(file);
+                    }
+                } catch (URISyntaxException e) {
+                    logger.warn("Error searching classpath resource URL '" + cpUrls[i] + "' for resource '" + pattern.pattern() + "': " + e.getMessage());
+                } catch (IOException e) {
+                    logger.warn("Error searching classpath resource URL '" + cpUrls[i] + "' for resource '" + pattern.pattern() + "': " + e.getMessage());
+                }
+            }
+        }
+
+        private void searchClasspathDirTree(File rootDir, String subDir) {
+            File currentDir = new File(rootDir, subDir);
+            File[] contents = currentDir.listFiles();
+
+            for(File file: contents) {
+                if(file.isDirectory()) {
+                    String subSubDir = subDir + "/" + file.getName();
+                    searchClasspathDirTree(rootDir, subSubDir);
+                } else {
+                    String resClasspathPath = file.toURI().toString().substring(rootDir.toURI().toString().length() - 1);
+                    if(isToBeAdded(resClasspathPath)) {
+                        resourceList.add(resClasspathPath);
+                    }
+                }
+            }
+        }
+
+        private void searchArchive(File archiveFile) throws IOException {
+            ZipFile zip = new ZipFile(archiveFile);
+            Enumeration<? extends ZipEntry> entries = zip.entries();
+
+            while (entries.hasMoreElements()) {
+                ZipEntry entry = entries.nextElement();
+                String resClasspathPath = "/" + entry.getName();
+                if(isToBeAdded(resClasspathPath)) {
+                    resourceList.add(resClasspathPath);
+                }
+            }
+        }
+
+        private boolean isToBeAdded(String resClasspathPath) {
+            if(resourceList.contains(resClasspathPath)) {
+                // Already in the list e.g. same resource in different archives...
+                return false;
+            }
+
+            Matcher matcher = pattern.matcher(resClasspathPath);
+            return matcher.matches();
+        }
+
+        private List<String> getResourceList() {
+            return resourceList;
+        }
+    }
 }
 

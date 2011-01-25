@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.server;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -31,16 +30,15 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.guvnor.server.security.RoleTypes;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-
 
 /**
  * This class will setup the data in a test state, which is
@@ -54,12 +52,22 @@ import com.google.gwt.user.client.rpc.SerializationException;
  *
  * @author Michael Neale
  */
-public class PopulateDataTest {
+public class PopulateDataTest extends GuvnorTestBase {
+
+    @Before
+    public void setUp() {
+        setUpSeam();
+        setUpMockIdentity();
+    }
+
+    @After
+    public void tearDown() {
+        tearAllDown();
+    }
 
     @Test
     public void testPopulate() throws Exception {
-        ServiceImplementation serv = new ServiceImplementation();
-        serv.repository = new RulesRepository(TestEnvironmentSessionHelper.getSession());
+        ServiceImplementation serv = getServiceImplementation();
 
         createCategories( serv );
         createStates( serv );
@@ -71,102 +79,145 @@ public class PopulateDataTest {
 
         createPermissions( serv );
 
-        PackageItem pkg = serv.repository.loadPackage("com.billasurf.manufacturing.plant");
+        PackageItem pkg = serv.repository.loadPackage( "com.billasurf.manufacturing.plant" );
 
-        serv.buildPackage(pkg.getUUID(), true);
+        serv.buildPackage( pkg.getUUID(),
+                           true );
 
-    }
-	
-    @After
-    public void tearDown() throws Exception {
-    	TestEnvironmentSessionHelper.shutdown();
     }
 
     private void createPermissions(ServiceImplementation serv) {
-    	Map<String, List<String>> perms = new HashMap<String, List<String>>();
-    	perms.put(RoleTypes.ADMIN, new ArrayList<String>());
-		serv.updateUserPermissions("woozle1", perms);
+        Map<String, List<String>> perms = new HashMap<String, List<String>>();
+        perms.put( RoleTypes.ADMIN,
+                   new ArrayList<String>() );
+        serv.updateUserPermissions( "woozle1",
+                                    perms );
 
-		perms = new HashMap<String, List<String>>();
-		List<String> targets = new ArrayList<String>();
-		targets.add("category=/foo/bar");
-		targets.add("category=/whee");
-		perms.put(RoleTypes.ANALYST, targets);
-		serv.updateUserPermissions("woozle2", perms);
+        perms = new HashMap<String, List<String>>();
+        List<String> targets = new ArrayList<String>();
+        targets.add( "category=/foo/bar" );
+        targets.add( "category=/whee" );
+        perms.put( RoleTypes.ANALYST,
+                   targets );
+        serv.updateUserPermissions( "woozle2",
+                                    perms );
 
-	}
+    }
 
-	private void createModel(ServiceImplementation serv) throws Exception {
+    private void createModel(ServiceImplementation serv) throws Exception {
         RulesRepository repo = serv.repository;
-        String uuid = serv.createNewRule( "DomainModel", "This is the business object model", null, "com.billasurf.manufacturing.plant", AssetFormats.MODEL );
+        String uuid = serv.createNewRule( "DomainModel",
+                                          "This is the business object model",
+                                          null,
+                                          "com.billasurf.manufacturing.plant",
+                                          AssetFormats.MODEL );
         InputStream file = this.getClass().getResourceAsStream( "/billasurf.jar" );
-        assertNotNull(file);
+        assertNotNull( file );
 
         FileManagerUtils fm = new FileManagerUtils();
-        fm.setRepository(repo);
+        fm.setRepository( repo );
 
-        fm.attachFileToAsset( uuid, file, "billasurf.jar" );
+        fm.attachFileToAsset( uuid,
+                              file,
+                              "billasurf.jar" );
 
         AssetItem item = repo.loadAssetByUUID( uuid );
-        assertNotNull(item.getBinaryContentAsBytes());
-        assertEquals( item.getBinaryContentAttachmentFileName(), "billasurf.jar" );
-
+        assertNotNull( item.getBinaryContentAsBytes() );
+        assertEquals( item.getBinaryContentAttachmentFileName(),
+                      "billasurf.jar" );
 
         PackageItem pkg = repo.loadPackage( "com.billasurf.manufacturing.plant" );
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board\nimport com.billasurf.Person" +
-                "\n\nglobal com.billasurf.Person prs", pkg );
+        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board\nimport com.billasurf.Person" + "\n\nglobal com.billasurf.Person prs",
+                                                  pkg );
         pkg.checkin( "added imports" );
 
         SuggestionCompletionEngine eng = serv.loadSuggestionCompletionEngine( "com.billasurf.manufacturing.plant" );
-        assertNotNull(eng);
+        assertNotNull( eng );
 
         //The loader could define extra imports
-        assertTrue( eng.getFactTypes().length >= 2);
+        assertTrue( eng.getFactTypes().length >= 2 );
         String[] fields = (String[]) eng.getModelFields( "Board" );
-        assertTrue(fields.length >= 3);
+        assertTrue( fields.length >= 3 );
 
         String[] globalVars = eng.getGlobalVariables();
-        assertEquals(1, globalVars.length);
-        assertEquals("prs", globalVars[0]);
-        assertTrue(eng.getFieldCompletionsForGlobalVariable( "prs" ).length >= 2);
+        assertEquals( 1,
+                      globalVars.length );
+        assertEquals( "prs",
+                      globalVars[0] );
+        assertTrue( eng.getFieldCompletionsForGlobalVariable( "prs" ).length >= 2 );
 
         fields = (String[]) eng.getModelFields( "Person" );
 
-        assertTrue(fields.length >= 2);
-
-
-
+        assertTrue( fields.length >= 2 );
 
     }
 
     private void createPackageSnapshots(ServiceImplementation serv) {
-        serv.createPackageSnapshot( "com.billasurf.manufacturing", "TEST", false, "The testing region." );
-        serv.createPackageSnapshot( "com.billasurf.manufacturing", "PRODUCTION", false, "The testing region." );
-        serv.createPackageSnapshot( "com.billasurf.manufacturing", "PRODUCTION ROLLBACK", false, "The testing region." );
+        serv.createPackageSnapshot( "com.billasurf.manufacturing",
+                                    "TEST",
+                                    false,
+                                    "The testing region." );
+        serv.createPackageSnapshot( "com.billasurf.manufacturing",
+                                    "PRODUCTION",
+                                    false,
+                                    "The testing region." );
+        serv.createPackageSnapshot( "com.billasurf.manufacturing",
+                                    "PRODUCTION ROLLBACK",
+                                    false,
+                                    "The testing region." );
 
     }
 
     private void createSomeRules(ServiceImplementation serv) throws SerializationException {
-        String uuid = serv.createNewRule( "Surfboard_Colour_Combination", "allowable combinations for basic boards.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
-        serv.changeState( uuid, "Pending", false );
-        uuid = serv.createNewRule( "Premium_Colour_Combinations", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
-        serv.changeState( uuid, "Approved", false );
-        uuid = serv.createNewRule( "Fibreglass supplier selection", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
-        uuid = serv.createNewRule( "Recommended wax", "This defines XXX.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.BUSINESS_RULE );
-        uuid = serv.createNewRule( "SomeDSL", "Ignore me.", "Manufacturing/Boards", "com.billasurf.manufacturing", AssetFormats.DSL );
+        String uuid = serv.createNewRule( "Surfboard_Colour_Combination",
+                                          "allowable combinations for basic boards.",
+                                          "Manufacturing/Boards",
+                                          "com.billasurf.manufacturing",
+                                          AssetFormats.BUSINESS_RULE );
+        serv.changeState( uuid,
+                          "Pending",
+                          false );
+        uuid = serv.createNewRule( "Premium_Colour_Combinations",
+                                   "This defines XXX.",
+                                   "Manufacturing/Boards",
+                                   "com.billasurf.manufacturing",
+                                   AssetFormats.BUSINESS_RULE );
+        serv.changeState( uuid,
+                          "Approved",
+                          false );
+        uuid = serv.createNewRule( "Fibreglass supplier selection",
+                                   "This defines XXX.",
+                                   "Manufacturing/Boards",
+                                   "com.billasurf.manufacturing",
+                                   AssetFormats.BUSINESS_RULE );
+        uuid = serv.createNewRule( "Recommended wax",
+                                   "This defines XXX.",
+                                   "Manufacturing/Boards",
+                                   "com.billasurf.manufacturing",
+                                   AssetFormats.BUSINESS_RULE );
+        uuid = serv.createNewRule( "SomeDSL",
+                                   "Ignore me.",
+                                   "Manufacturing/Boards",
+                                   "com.billasurf.manufacturing",
+                                   AssetFormats.DSL );
     }
 
     private void createPackages(ServiceImplementation serv) throws SerializationException {
-        String uuid = serv.createPackage( "com.billasurf.manufacturing", "Rules for manufacturing." );
+        String uuid = serv.createPackage( "com.billasurf.manufacturing",
+                                          "Rules for manufacturing." );
 
         PackageConfigData conf = serv.loadPackageConfig( uuid );
         conf.header = "import com.billasurf.manuf.materials.*";
         serv.savePackage( conf );
 
-        serv.createPackage( "com.billasurf.manufacturing.plant", "Rules for manufacturing plants." );
-        serv.createPackage( "com.billasurf.finance", "All financial rules." );
-        serv.createPackage( "com.billasurf.hrman", "Rules for in house HR application." );
-        serv.createPackage( "com.billasurf.sales", "Rules exposed as a service for pricing, and discounting." );
+        serv.createPackage( "com.billasurf.manufacturing.plant",
+                            "Rules for manufacturing plants." );
+        serv.createPackage( "com.billasurf.finance",
+                            "All financial rules." );
+        serv.createPackage( "com.billasurf.hrman",
+                            "Rules for in house HR application." );
+        serv.createPackage( "com.billasurf.sales",
+                            "Rules exposed as a service for pricing, and discounting." );
 
     }
 
@@ -176,23 +227,55 @@ public class PopulateDataTest {
     }
 
     private void createCategories(ServiceImplementation serv) {
-        serv.createCategory( "/", "HR", "" );
-        serv.createCategory( "/", "Sales", "" );
-        serv.createCategory( "/", "Manufacturing", "" );
-        serv.createCategory( "/", "Finance", "" );
+        serv.createCategory( "/",
+                             "HR",
+                             "" );
+        serv.createCategory( "/",
+                             "Sales",
+                             "" );
+        serv.createCategory( "/",
+                             "Manufacturing",
+                             "" );
+        serv.createCategory( "/",
+                             "Finance",
+                             "" );
 
-        serv.createCategory( "HR", "Leave", "" );
-        serv.createCategory( "HR", "Training", "" );
-        serv.createCategory( "Sales", "Promotions", "" );
-        serv.createCategory( "Sales", "Old promotions", "" );
-        serv.createCategory( "Sales", "Boogie boards", "" );
-        serv.createCategory( "Sales", "Surf boards", "" );
-        serv.createCategory( "Sales", "Surf wear", "" );
-        serv.createCategory( "Manufacturing", "Surf wear", "" );
-        serv.createCategory( "Manufacturing", "Boards", "" );
-        serv.createCategory( "Finance", "Employees", "" );
-        serv.createCategory( "Finance", "Payables", "" );
-        serv.createCategory( "Finance", "Receivables", "" );
+        serv.createCategory( "HR",
+                             "Leave",
+                             "" );
+        serv.createCategory( "HR",
+                             "Training",
+                             "" );
+        serv.createCategory( "Sales",
+                             "Promotions",
+                             "" );
+        serv.createCategory( "Sales",
+                             "Old promotions",
+                             "" );
+        serv.createCategory( "Sales",
+                             "Boogie boards",
+                             "" );
+        serv.createCategory( "Sales",
+                             "Surf boards",
+                             "" );
+        serv.createCategory( "Sales",
+                             "Surf wear",
+                             "" );
+        serv.createCategory( "Manufacturing",
+                             "Surf wear",
+                             "" );
+        serv.createCategory( "Manufacturing",
+                             "Boards",
+                             "" );
+        serv.createCategory( "Finance",
+                             "Employees",
+                             "" );
+        serv.createCategory( "Finance",
+                             "Payables",
+                             "" );
+        serv.createCategory( "Finance",
+                             "Receivables",
+                             "" );
     }
 
 }

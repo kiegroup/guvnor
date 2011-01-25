@@ -38,7 +38,9 @@ public class Discussion {
     }
 
     public List<DiscussionRecord> fromString(String data) {
-        if (data == null || data.equals("")) return new ArrayList<DiscussionRecord>();
+        if (data == null || data.equals("")){
+            return new ArrayList<DiscussionRecord>();
+        }
         return (List<DiscussionRecord>) xs.fromXML(data);
     }
 

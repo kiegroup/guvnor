@@ -21,9 +21,9 @@
         <configuration>
           <!-- The default profile needs to be fast, so we only build 1 permutation { -->
           <module>org.drools.guvnor.FastCompiledGuvnor</module>
-          <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
           <draftCompile>true</draftCompile>
           <!-- } -->
+          <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
           <compileSourcesArtifacts>
             <compileSourcesArtifact>org.drools:drools-factconstraint</compileSourcesArtifact>
             <compileSourcesArtifact>org.drools:drools-ide-common</compileSourcesArtifact>
@@ -69,7 +69,6 @@
               <tasks>
                 <delete dir="repository"/>
                 <delete file="repository.xml"/>
-                <delete file=".lock"/>
               </tasks>
             </configuration>
             <goals>
@@ -111,7 +110,6 @@
             <configuration>
               <!-- Build all GWT permutations and optimize them -->
               <module>org.drools.guvnor.Guvnor</module>
-              <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
               <draftCompile>false</draftCompile>
             </configuration>
           </plugin>
@@ -133,7 +131,6 @@
             <configuration>
               <!-- Build all GWT permutations and optimize them -->
               <module>org.drools.guvnor.Guvnor</module>
-              <runTarget>org.drools.guvnor.Guvnor/Guvnor.html</runTarget>
               <draftCompile>false</draftCompile>
             </configuration>
           </plugin>
@@ -181,11 +178,6 @@
       <artifactId>wsdl4j</artifactId>
     </dependency>
 
-    <!--REVISIT: This lib is needed by org.apache.util.Base64 in org.drools.guvnor.server.files.RepositoryServlet-->
-    <dependency>
-      <groupId>apache-slide</groupId>
-      <artifactId>webdavlib</artifactId>
-    </dependency>
     <dependency>
       <groupId>net.sf.webdav-servlet</groupId>
       <artifactId>webdav-servlet</artifactId>

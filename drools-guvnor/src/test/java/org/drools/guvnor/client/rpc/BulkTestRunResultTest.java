@@ -28,14 +28,14 @@ public class BulkTestRunResultTest {
 		BulkTestRunResult res = new BulkTestRunResult();
 		assertNotNull(res.toString());
 
-		res.results = new ScenarioResultSummary[2];
-		res.results[0] = new ScenarioResultSummary(0, 2, "A", "", "");
-		res.results[1] = new ScenarioResultSummary(0, 2, "A", "", "");
+		res.setResults( new ScenarioResultSummary[2] );
+		res.getResults()[0] = new ScenarioResultSummary(0, 2, "A", "", "");
+		res.getResults()[1] = new ScenarioResultSummary(0, 2, "A", "", "");
 		assertNotNull(res.toString());
 		//System.out.println(res.toString());
 		assertTrue(res.toString().startsWith("SUCCESS"));
 
-		res.results[1] = new ScenarioResultSummary(1, 2, "A", "", "");
+		res.getResults()[1] = new ScenarioResultSummary(1, 2, "A", "", "");
 		System.out.println(res.toString());
 		assertTrue(res.toString().indexOf("FAILURE") > -1);
 

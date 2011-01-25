@@ -8,19 +8,19 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface TableImageResources extends ClientBundle {
 
-    @Source("downArrow.png")
+    @Source("../resources/images/downArrow.png")
     ImageResource downArrow();
 
-    @Source("smallDownArrow.png")
+    @Source("../resources/images/smallDownArrow.png")
     ImageResource smallDownArrow();
 
-    @Source("upArrow.png")
+    @Source("../resources/images/upArrow.png")
     ImageResource upArrow();
 
-    @Source("smallUpArrow.png")
+    @Source("../resources/images/smallUpArrow.png")
     ImageResource smallUpArrow();
 
-    @Source("columnPicker.png")
+    @Source("../resources/images/columnPicker.png")
     ImageResource columnPicker();
 
 }

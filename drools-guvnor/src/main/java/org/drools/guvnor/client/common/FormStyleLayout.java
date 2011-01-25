@@ -109,11 +109,17 @@ public class FormStyleLayout extends Composite {
                   name );
     }
 
-    private void doHeader(ImageResource image,
+    private void doHeader(ImageResource imageResource,
                           Widget title) {
+        Image image;
+        if ( imageResource == null ) {
+            image = new Image();
+        } else {
+            image = new Image( imageResource );
+        }
         layout.setWidget( 0,
                           0,
-                          new Image( image ) );
+                          image );
         formatter.setAlignment( 0,
                                 0,
                                 HasHorizontalAlignment.ALIGN_LEFT,

@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.guvnor.client.decisiontable;
 
 import java.util.HashSet;
@@ -24,6 +23,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.resources.Images;
@@ -32,14 +32,12 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -52,38 +50,62 @@ import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * This is a configuration editor for a column in a the guided decision table.
+ * 
  * @author Michael Neale
- *
+ * 
  */
 public class GuidedDTColumnConfig extends FormStylePopup {
 
-    private Constants                  constants                   = ((Constants) GWT.create( Constants.class ));
-    private static Images              images                      = (Images) GWT.create( Images.class );
+    /**
+     * An editor for setting the default value.
+     */
+    public static HorizontalPanel getDefaultEditor(
+                                                   final DTColumnConfig editingCol) {
+        final TextBox defaultValue = new TextBox();
+        defaultValue.setText( editingCol.getDefaultValue() );
+        final CheckBox hide = new CheckBox(
+                                            ((Constants) GWT.create( Constants.class )).HideThisColumn() );
+        hide.setValue( editingCol.isHideColumn() );
+        hide.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent sender) {
+                editingCol.setHideColumn( hide.getValue() );
+            }
+        } );
+        defaultValue.addChangeHandler( new ChangeHandler() {
 
-    private GuidedDecisionTable        dt;
+            public void onChange(ChangeEvent event) {
+                editingCol.setDefaultValue( defaultValue.getText() );
+            }
+        } );
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add( defaultValue );
+        hp.add( hide );
+        return hp;
+    }
+
+    private Constants                  constants                   = ((Constants) GWT.create( Constants.class ));
+
+    private static Images              images                      = (Images) GWT.create( Images.class );
+    private DecisionTableWidget        dtable;
     private SuggestionCompletionEngine sce;
     private ConditionCol               editingCol;
     private SmallLabel                 patternLabel                = new SmallLabel();
     private TextBox                    fieldLabel                  = getFieldLabel();
     private SmallLabel                 operatorLabel               = new SmallLabel();
-    private InfoPopup                  fieldLabelInterpolationInfo = getPredicateHint();
 
-    private InfoPopup getPredicateHint() {
-        return new InfoPopup( constants.Predicates(),
-                              constants.PredicatesInfo() );
-    }
+    private InfoPopup                  fieldLabelInterpolationInfo = getPredicateHint();
 
     /**
      * Pass in a null col and it will create a new one.
      */
     public GuidedDTColumnConfig(SuggestionCompletionEngine sce,
-                                final GuidedDecisionTable dt,
-                                final Command refreshGrid,
+                                final DecisionTableWidget dtable,
+                                final ColumnCentricCommand refreshGrid,
                                 final ConditionCol col,
                                 final boolean isNew) {
         super();
         this.setModal( false );
-        this.dt = dt;
+        this.dtable = dtable;
         this.sce = sce;
         this.editingCol = new ConditionCol();
         editingCol.setBoundName( col.getBoundName() );
@@ -104,7 +126,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         Image changePattern = new ImageButton( images.edit(),
                                                constants.ChooseAnExistingPatternThatThisColumnAddsTo(),
-                                               new ClickHandler() { 
+                                               new ClickHandler() {
                                                    public void onClick(ClickEvent w) {
                                                        showChangePattern( w );
                                                    }
@@ -114,13 +136,13 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         addAttribute( constants.Pattern(),
                       pattern );
 
-        //now a radio button with the type
+        // now a radio button with the type
         RadioButton literal = new RadioButton( "constraintValueType",
-                                               constants.LiteralValue() );//NON-NLS
+                                               constants.LiteralValue() );// NON-NLS
         RadioButton formula = new RadioButton( "constraintValueType",
-                                               constants.Formula() ); //NON-NLS
+                                               constants.Formula() ); // NON-NLS
         RadioButton predicate = new RadioButton( "constraintValueType",
-                                                 constants.Predicate() ); //NON-NLS
+                                                 constants.Predicate() ); // NON-NLS
 
         HorizontalPanel valueTypes = new HorizontalPanel();
         valueTypes.add( literal );
@@ -131,13 +153,13 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         switch ( editingCol.getConstraintValueType() ) {
             case BaseSingleFieldConstraint.TYPE_LITERAL :
-                literal.setEnabled( true );
+                literal.setValue( true );
                 break;
             case BaseSingleFieldConstraint.TYPE_RET_VALUE :
-                formula.setEnabled( true );
+                formula.setValue( true );
                 break;
             case BaseSingleFieldConstraint.TYPE_PREDICATE :
-                predicate.setEnabled( true );
+                predicate.setValue( true );
         }
 
         literal.addClickHandler( new ClickHandler() {
@@ -174,7 +196,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         HorizontalPanel operator = new HorizontalPanel();
         operator.add( operatorLabel );
-        Image editOp = new ImageButton( images.edit(),
+        Image editOp = new ImageButton(
+                                        images.edit(),
                                         constants.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
                                         new ClickHandler() {
                                             public void onClick(ClickEvent w) {
@@ -196,7 +219,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         HorizontalPanel vl = new HorizontalPanel();
         vl.add( valueList );
         vl.add( new InfoPopup( constants.ValueList(),
-                               constants.ValueListsExplanation() ) );
+                               constants
+                                       .ValueListsExplanation() ) );
         addAttribute( constants.optionalValueList(),
                       vl );
 
@@ -216,16 +240,20 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         Button apply = new Button( constants.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
+                if ( null == editingCol.getHeader()
+                        || "".equals( editingCol.getHeader() ) ) {
+                    Window.alert( constants
+                            .YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( editingCol.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-                    if ( null == editingCol.getFactField() || "".equals( editingCol.getFactField() ) ) {
+                    if ( null == editingCol.getFactField()
+                            || "".equals( editingCol.getFactField() ) ) {
                         Window.alert( constants.PleaseSelectOrEnterField() );
                         return;
                     }
-                    if ( null == editingCol.getOperator() || "".equals( editingCol.getOperator() ) ) {
+                    if ( null == editingCol.getOperator()
+                            || "".equals( editingCol.getOperator() ) ) {
                         // Operator field optional
                         Window.alert( constants.NotifyNoSelectedOperator() );
                     }
@@ -233,29 +261,22 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                 }
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( constants
+                                .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
-                    dt.getConditionCols().add( editingCol );
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( constants
+                                    .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
-                    col.setBoundName( editingCol.getBoundName() );
-                    col.setConstraintValueType( editingCol.getConstraintValueType() );
-                    col.setFactField( editingCol.getFactField() );
-                    col.setFactType( editingCol.getFactType() );
-
-                    col.setHeader( editingCol.getHeader() );
-                    col.setOperator( editingCol.getOperator() );
-                    col.setValueList( editingCol.getValueList() );
-                    col.setDefaultValue( editingCol.getDefaultValue() );
-                    col.setHideColumn( editingCol.isHideColumn() );
                 }
-                refreshGrid.execute();
+
+                // Pass new\modified column back for handling
+                refreshGrid.execute( editingCol );
                 hide();
 
             }
@@ -265,52 +286,33 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
     }
 
-    /**
-     * An editor for setting the default value.
-     */
-    public static HorizontalPanel getDefaultEditor(final DTColumnConfig editingCol) {
-        final TextBox defaultValue = new TextBox();
-        defaultValue.setText( editingCol.getDefaultValue() );
-        final CheckBox hide = new CheckBox( ((Constants) GWT.create( Constants.class )).HideThisColumn() );
-        hide.setEnabled( editingCol.isHideColumn() );
-        hide.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent sender) {
-                editingCol.setHideColumn( hide.isEnabled() );
-            }
-        } );
-        defaultValue.addChangeHandler( new ChangeHandler() {
-
-            public void onChange(ChangeEvent event) {
-                editingCol.setDefaultValue( defaultValue.getText() );
-            }
-        } );
-        HorizontalPanel hp = new HorizontalPanel();
-        hp.add( defaultValue );
-        hp.add( hide );
-        return hp;
-    }
-
-    private boolean unique(String header) {
-        for ( ConditionCol o : dt.getConditionCols() ) {
-            if ( o.getHeader().equals( header ) ) return false;
-        }
-        return true;
-    }
-
-    private TextBox getFieldLabel() {
-        final TextBox box = new TextBox();
-        box.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                editingCol.setFactField( box.getText() );
-            }
-        } );
-        return box;
-    }
-
     private void applyConsTypeChange(int newType) {
         editingCol.setConstraintValueType( newType );
         doFieldLabel();
         doOperatorLabel();
+    }
+
+    private boolean checkUnique(String fn,
+                                List<ConditionCol> conditionCols) {
+        for ( ConditionCol c : conditionCols ) {
+            if ( c.getBoundName().equals( fn ) ) return false;
+        }
+        return true;
+    }
+
+    private void doFieldLabel() {
+        if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
+            fieldLabel.setText( constants.notNeededForPredicate() );
+            fieldLabelInterpolationInfo.setVisible( true );
+        } else if ( nil( editingCol.getFactType() ) ) {
+            fieldLabel.setText( constants.pleaseSelectAPatternFirst() );
+            fieldLabelInterpolationInfo.setVisible( false );
+        } else if ( nil( editingCol.getFactField() ) ) {
+            fieldLabel.setText( constants.pleaseSelectAField() );
+            fieldLabelInterpolationInfo.setVisible( false );
+        } else {
+            fieldLabel.setText( this.editingCol.getFactField() );
+        }
     }
 
     private void doOperatorLabel() {
@@ -323,15 +325,63 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         } else if ( nil( editingCol.getOperator() ) ) {
             operatorLabel.setText( constants.pleaseSelectAField() );
         } else {
-            operatorLabel.setText( HumanReadable.getOperatorDisplayName( editingCol.getOperator() ) );
+            operatorLabel.setText( HumanReadable
+                    .getOperatorDisplayName( editingCol.getOperator() ) );
         }
+    }
+
+    private void doPatternLabel() {
+        if ( this.editingCol.getFactType() != null ) {
+            this.patternLabel.setText( this.editingCol.getFactType() + " ["
+                                       + editingCol.getBoundName() + "]" );
+        }
+        doFieldLabel();
+        doOperatorLabel();
+
+    }
+
+    private TextBox getFieldLabel() {
+        final TextBox box = new TextBox();
+        box.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                editingCol.setFactField( box.getText() );
+            }
+        } );
+        return box;
+    }
+
+    private InfoPopup getPredicateHint() {
+        return new InfoPopup( constants.Predicates(),
+                              constants.PredicatesInfo() );
+    }
+
+    private ListBox loadPatterns() {
+        Set<String> vars = new HashSet<String>();
+        ListBox patterns = new ListBox();
+        for ( int i = 0; i < dtable.getModel().getConditionCols().size(); i++ ) {
+            ConditionCol c = dtable.getModel().getConditionCols().get( i );
+            if ( !vars.contains( c.getBoundName() ) ) {
+                patterns.addItem( c.getFactType() + " [" + c.getBoundName()
+                                          + "]",
+                                  c.getFactType() + " " + c.getBoundName() );
+                vars.add( c.getBoundName() );
+            }
+        }
+
+        return patterns;
+
+    }
+
+    private boolean nil(String s) {
+        return s == null || s.equals( "" );
     }
 
     private void showOperatorChange() {
         final FormStylePopup pop = new FormStylePopup();
         pop.setTitle( constants.SetTheOperator() );
         pop.setModal( false );
-        String[] ops = this.sce.getOperatorCompletions( editingCol.getFactType(),
+        String[] ops = this.sce.getOperatorCompletions(
+                                                        editingCol.getFactType(),
                                                         editingCol.getFactField() );
         final ListBox box = new ListBox();
         for ( int i = 0; i < ops.length; i++ ) {
@@ -339,7 +389,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                          ops[i] );
         }
 
-        if ( BaseSingleFieldConstraint.TYPE_LITERAL == this.editingCol.getConstraintValueType() ) {
+        if ( BaseSingleFieldConstraint.TYPE_LITERAL == this.editingCol
+                .getConstraintValueType() ) {
             box.addItem( HumanReadable.getOperatorDisplayName( "in" ),
                          "in" );
         }
@@ -362,58 +413,11 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
     }
 
-    private void doFieldLabel() {
-        if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-            fieldLabel.setText( constants.notNeededForPredicate() );
-            fieldLabelInterpolationInfo.setVisible( true );
-        } else if ( nil( editingCol.getFactType() ) ) {
-            fieldLabel.setText( constants.pleaseSelectAPatternFirst() );
-            fieldLabelInterpolationInfo.setVisible( false );
-        } else if ( nil( editingCol.getFactField() ) ) {
-            fieldLabel.setText( constants.pleaseSelectAField() );
-            fieldLabelInterpolationInfo.setVisible( false );
-        } else {
-            fieldLabel.setText( this.editingCol.getFactField() );
+    private boolean unique(String header) {
+        for ( ConditionCol o : dtable.getModel().getConditionCols() ) {
+            if ( o.getHeader().equals( header ) ) return false;
         }
-    }
-
-    private boolean nil(String s) {
-        return s == null || s.equals( "" );
-    }
-
-    protected void showFieldChange() {
-        final FormStylePopup pop = new FormStylePopup();
-        pop.setModal( false );
-        String[] fields = this.sce.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
-                                                        this.editingCol.getFactType() );
-
-        final ListBox box = new ListBox();
-        for ( int i = 0; i < fields.length; i++ ) {
-            box.addItem( fields[i] );
-        }
-        pop.addAttribute( constants.Field(),
-                          box );
-        Button b = new Button( constants.OK() );
-        pop.addAttribute( "",
-                          b );
-        b.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent w) {
-                editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
-                doFieldLabel();
-                doOperatorLabel();
-                pop.hide();
-            }
-        } );
-        pop.show();
-    }
-
-    private void doPatternLabel() {
-        if ( this.editingCol.getFactType() != null ) {
-            this.patternLabel.setText( this.editingCol.getFactType() + " [" + editingCol.getBoundName() + "]" );
-        }
-        doFieldLabel();
-        doOperatorLabel();
-
+        return true;
     }
 
     protected void showChangePattern(ClickEvent w) {
@@ -446,14 +450,43 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" );
+                String[] val = pats.getValue( pats.getSelectedIndex() ).split(
+                                                                               "\\s" );
                 editingCol.setFactType( val[0] );
                 editingCol.setBoundName( val[1] );
+                editingCol.setFactField( null );
                 doPatternLabel();
                 pop.hide();
             }
         } );
 
+        pop.show();
+    }
+
+    protected void showFieldChange() {
+        final FormStylePopup pop = new FormStylePopup();
+        pop.setModal( false );
+        String[] fields = this.sce.getFieldCompletions(
+                                                        FieldAccessorsAndMutators.ACCESSOR,
+                                                        this.editingCol.getFactType() );
+
+        final ListBox box = new ListBox();
+        for ( int i = 0; i < fields.length; i++ ) {
+            box.addItem( fields[i] );
+        }
+        pop.addAttribute( constants.Field(),
+                          box );
+        Button b = new Button( constants.OK() );
+        pop.addAttribute( "",
+                          b );
+        b.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
+                doFieldLabel();
+                doOperatorLabel();
+                pop.hide();
+            }
+        } );
         pop.show();
     }
 
@@ -486,15 +519,19 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                     Window.alert( constants.PleaseEnterANameForFact() );
                     return;
                 } else if ( fn.equals( ft ) ) {
-                    Window.alert( constants.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
+                    Window.alert( constants
+                            .PleaseEnterANameThatIsNotTheSameAsTheFactType() );
                     return;
                 } else if ( !checkUnique( fn,
-                                          dt.getConditionCols() ) ) {
-                    Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                                          dtable.getModel()
+                                                  .getConditionCols() ) ) {
+                    Window.alert( constants
+                            .PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                     return;
                 }
                 editingCol.setBoundName( fn );
                 editingCol.setFactType( ft );
+                editingCol.setFactField( null );
                 doPatternLabel();
                 pop.hide();
             }
@@ -503,30 +540,6 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                           ok );
 
         pop.show();
-
-    }
-
-    private boolean checkUnique(String fn,
-                                List<ConditionCol> conditionCols) {
-        for ( ConditionCol c : conditionCols ) {
-            if ( c.getBoundName().equals( fn ) ) return false;
-        }
-        return true;
-    }
-
-    private ListBox loadPatterns() {
-        Set<String> vars = new HashSet<String>();
-        ListBox patterns = new ListBox();
-        for ( int i = 0; i < dt.getConditionCols().size(); i++ ) {
-            ConditionCol c = dt.getConditionCols().get( i );
-            if ( !vars.contains( c.getBoundName() ) ) {
-                patterns.addItem( c.getFactType() + " [" + c.getBoundName() + "]",
-                                  c.getFactType() + " " + c.getBoundName() );
-                vars.add( c.getBoundName() );
-            }
-        }
-
-        return patterns;
 
     }
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,29 +16,33 @@
 
 package org.drools.guvnor.server;
 
-import org.drools.guvnor.server.repository.MailboxService;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-public class ServletWrapperTest {
+public class ServletWrapperTest extends GuvnorTestBase {
+
+    @Before
+    public void setUp() {
+        setUpSeam();
+        setUpMockIdentity();
+    }
+
+    @After
+    public void tearDown() {
+        tearAllDown();
+    }
 
     @Test
     public void testMainService() {
-		RepositoryServiceServlet serv = new RepositoryServiceServlet();
-		serv.listPackages();
-	}
+        RepositoryServiceServlet serv = new RepositoryServiceServlet();
+        serv.listPackages();
+    }
 
     @Test
     public void testSecurityService() {
-		SecurityServiceServlet serv = new SecurityServiceServlet();
-		serv.getCurrentUser();
-	}
-	
-    @After
-    public void tearDown() throws Exception {
-		MailboxService.getInstance().stop();
-        TestEnvironmentSessionHelper.shutdown();
+        SecurityServiceServlet serv = new SecurityServiceServlet();
+        serv.getCurrentUser();
     }
 
 }

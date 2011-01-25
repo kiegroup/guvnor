@@ -24,7 +24,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
-import org.drools.guvnor.client.rulelist.EditItemEvent;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
@@ -48,11 +48,11 @@ public class AnalysisView extends Composite {
 
     private VerticalPanel layout;
     private String        packageUUID;
-    private EditItemEvent edit;
+    private OpenItemCommand edit;
 
     public AnalysisView(String packageUUID,
                         String packageName,
-                        EditItemEvent edit) {
+                        OpenItemCommand edit) {
         this.layout = new VerticalPanel();
         this.packageUUID = packageUUID;
         this.edit = edit;
