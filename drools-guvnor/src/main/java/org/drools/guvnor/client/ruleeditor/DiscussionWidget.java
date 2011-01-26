@@ -136,14 +136,14 @@ public class DiscussionWidget extends Composite {
         String[] parts = r.note.split( "\n" );
 
         if ( parts.length > 0 ) {
-            String txt = "";
+            StringBuilder txtBuilder = new StringBuilder();
             for ( int i = 0; i < parts.length; i++ ) {
-                txt += parts[i];
+                txtBuilder.append(parts[i]);
                 if ( i != parts.length - 1 ) {
-                    txt += "<br/>";
+                    txtBuilder.append("<br/>");
                 }
             }
-            HTML hth = new HTML( txt );
+            HTML hth = new HTML( txtBuilder.toString() );
             hth.setStyleName( "x-form-field" );
             commentList.add( hth );
         } else {
