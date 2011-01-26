@@ -153,7 +153,7 @@ public class BRDRLPersistenceTest {
 				+ "\tsalience -10\n" + "\tagenda-group \"aGroup\"\n"
 				+ "\tdialect \"mvel\"\n" + "\twhen\n"
 				+ "\t\t>p1 : Person( f1 : age < 42 )\n"
-				+ "\t\t>not Cancel( )\n" + "\tthen\n"
+				+ "\t\t>not (Cancel( )) \n" + "\tthen\n"
 				+ "\t\t>p1.setStatus( \"rejected\" );\n"
 				+ "\t\t>update( p1 );\n" + "\t\t>retract( p1 );\n"
 				+ "\t\tSend an email to administrator\n" + "end\n";
@@ -321,7 +321,7 @@ public class BRDRLPersistenceTest {
 
 		String result = BRDRLPersistence.getInstance().marshal(m);
 
-		assertTrue(result.indexOf("exists Person( age == 42 )") > 0);
+		assertTrue(result.indexOf("exists (Person( age == 42 )) ") > 0);
 
 	}
 
