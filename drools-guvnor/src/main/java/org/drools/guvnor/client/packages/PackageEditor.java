@@ -38,6 +38,11 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.util.Format;
+import org.drools.guvnor.server.RepositoryServiceServlet;
+import org.drools.guvnor.server.files.PackageDeploymentServlet;
+import org.drools.repository.AssetItemIterator;
+import org.drools.repository.PackageItem;
+import org.drools.repository.RulesRepository;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -189,6 +194,13 @@ public class PackageEditor extends PrettyFormLayout {
                       h( html4,
                          constants.URLToChangeSetForDeploymentAgents() ) );
 
+        HTML html5 = new HTML( "<a href='" + getModelDownload( this.conf ) + "' target='_blank'>" + getModelDownload( this.conf ) + "</a>" );
+
+        addAttribute( constants.ModelSet(),
+                      h( html5,
+                         constants.URLToDownloadModelSet()) );
+
+        
         status = new HTML();
         HorizontalPanel statusBar = new HorizontalPanel();
         Image editState = new ImageButton( images.edit() );
@@ -373,6 +385,10 @@ public class PackageEditor extends PrettyFormLayout {
         return makeLink( conf ) + "/ChangeSet.xml"; //NON-NLS
     }
 
+    static String getModelDownload(PackageConfigData conf) {
+        return makeLink( conf ) + "/MODEL"; //NON-NLS
+    }
+    
     /**
      * Get a download link for the binary package.
      */

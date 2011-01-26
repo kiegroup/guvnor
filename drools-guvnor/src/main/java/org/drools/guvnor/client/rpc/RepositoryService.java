@@ -477,6 +477,11 @@ public interface RepositoryService
                                       String customSelectorName) throws SerializationException;
 
     /**
+    * This method will ZIP the jars that compose the Model of our Domain in the Package
+    */
+   
+   
+    /**
      * return custom selector names
      */
     public String[] getCustomSelectors() throws SerializationException;

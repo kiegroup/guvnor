@@ -123,6 +123,8 @@ public class EditorLauncher {
             return new WorkingSetEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.RULE_TEMPLATE ) ) {
             return new RuleTemplateEditor( asset );
+        } else if ( asset.metaData.format.equals( AssetFormats.SPRING_CONTEXT ) ) {
+            return new SpringContextEditor( asset);
         } else {
             return new DefaultContentUploadEditor( asset,
                                                    viewer );
@@ -173,6 +175,11 @@ public class EditorLauncher {
                     new RuleFormatImageResource( AssetFormats.DECISION_TABLE_GUIDED,
                                                  images.gdst() ) );
 
+        result.put( AssetFormats.SPRING_CONTEXT,
+                new RuleFormatImageResource( AssetFormats.SPRING_CONTEXT,
+                                             images.newEnumeration() ) );
+
+        
         return result;
     }
 

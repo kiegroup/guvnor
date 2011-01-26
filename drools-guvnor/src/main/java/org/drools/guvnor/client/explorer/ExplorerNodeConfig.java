@@ -128,6 +128,13 @@ public class ExplorerNodeConfig {
         item.setUserObject( new String[]{AssetFormats.WORKING_SET} );
         pkg.addItem( item );
 
+        item = new TreeItem( Util.getHeader( images.enumeration(),
+                constants.SpringContext() ) );
+        itemWidgets.put( item,
+        				 AssetFormats.SPRING_CONTEXT );
+        item.setUserObject( new String[]{AssetFormats.SPRING_CONTEXT} );
+        pkg.addItem( item );
+        
         return pkg;
     }
 

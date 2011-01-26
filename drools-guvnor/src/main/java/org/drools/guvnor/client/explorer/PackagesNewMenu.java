@@ -52,6 +52,14 @@ public class PackagesNewMenu {
                 });
                 wiz.show();            }
         });
+    	
+    	createNewMenu.addItem(Util.getHeader(images.newEnumeration(), constants.NewSpringContext()),
+        		true,
+        		new Command() {
+            public void execute() {
+                manager.launchWizard(AssetFormats.SPRING_CONTEXT, constants.NewSpringContext(), false);
+            }
+        });
 
     	createNewMenu.addItem(Util.getHeader(images.newPackage(), constants.NewWorkingSet()),
         		true,

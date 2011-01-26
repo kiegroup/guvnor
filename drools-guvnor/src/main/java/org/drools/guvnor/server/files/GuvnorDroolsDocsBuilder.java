@@ -49,6 +49,9 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
     static {
         formats.add( AssetFormats.DRL );
         formats.add( AssetFormats.BUSINESS_RULE );
+        formats.add( AssetFormats.DECISION_SPREADSHEET_XLS );
+        formats.add( AssetFormats.RULE_TEMPLATE );
+        formats.add( AssetFormats.DECISION_TABLE_GUIDED );
     }
 
     private GuvnorDroolsDocsBuilder(PackageItem packageItem) throws DroolsParserException {
@@ -62,24 +65,28 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
         // Get And Fill Rule Data
         Iterator<AssetItem> assets = packageItem.getAssets();
         while ( assets.hasNext() ) {
-            AssetItem assetItem = (AssetItem) assets.next();
+        	
+            AssetItem assetItem = assets.next();
 
             if ( formats.contains( assetItem.getFormat() ) && !assetItem.getDisabled() && !assetItem.isArchived() ) {
+            	
                 String drl = getDRL( assetItem );
+                
                 if ( drl != null ) {
-                    DrlRuleParser ruleData = DrlRuleParser.findRulesDataFromDrl( drl ).get( 0 );
-
-                    // Add info about categories
+                	
                     List<String> categories = new ArrayList<String>();
-                    for ( CategoryItem ci : assetItem.getCategories() ) {
-                        categories.add( ci.getName() );
+                    
+                    for ( CategoryItem categoryItem : assetItem.getCategories() ) {
+                        categories.add( categoryItem.getName() );
                     }
-
-                    ruleData.getOtherInformation().put( "Categories",
-                                                   categories );
-                    ruleData.getMetadata().addAll( createMetaData( assetItem ) );
-
-                    rules.add( ruleData );
+                    
+                    List<DrlRuleParser> ruleDataList = DrlRuleParser.findRulesDataFromDrl( drl );
+                    
+                    for ( DrlRuleParser ruleData : ruleDataList ) {
+                    	ruleData.getOtherInformation().put( "Categories", categories );
+                    	ruleData.getMetadata().addAll( createMetaData( assetItem ) );
+                    	rules.add( ruleData );
+                    }
                 }
             }
         }
@@ -117,25 +124,23 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
 
     private static String getDRL(AssetItem item) {
         ContentHandler handler = ContentManager.getHandler( item.getFormat() );
-        StringBuffer buf = new StringBuffer();
-        if ( handler.isRuleAsset() ) {
 
-            BRMSPackageBuilder builder = new BRMSPackageBuilder();
-            // now we load up the DSL files
-            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(),
-                                                                        new BRMSPackageBuilder.DSLErrorEvent() {
-                                                                            public void recordError(AssetItem asset,
-                                                                                                    String message) {
-                                                                                // ignore at this point...
-                                                                            }
-                                                                        } ) );
-            ((IRuleAsset) handler).assembleDRL( builder,
-                                                item,
-                                                buf );
-        } else {
+        if ( ! handler.isRuleAsset() ) {
             return null;
         }
+ 
+        StringBuffer buffer = new StringBuffer();
+        BRMSPackageBuilder builder = new BRMSPackageBuilder();
+        // now we load up the DSL files
+        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(),
+                                                                    new BRMSPackageBuilder.DSLErrorEvent() {
+                                                                        public void recordError(AssetItem asset,
+                                                                                                String message) {
+                                                                            // ignore at this point...
+                                                                        }
+                                                                    } ) );
+        ((IRuleAsset) handler).assembleDRL( builder, item, buffer );
 
-        return buf.toString();
+        return buffer.toString();
     }
 }

@@ -151,6 +151,9 @@ public class NewAssetWizard extends FormStylePopup {
                 description.setText( constants.DSLMappingTip() );
             } else if ( AssetFormats.ENUMERATION.equals(format) ) {
                 description.setText( constants.NewEnumDoco() );
+            } else if ( format == AssetFormats.SPRING_CONTEXT ) {
+                description.setText( constants.DescSpringContext());
+            }
             }
         }
 
@@ -171,7 +174,8 @@ public class NewAssetWizard extends FormStylePopup {
             return hp;
         }
 
-    }
+    
+
 
     private void handleLayoutForFormat(String format) {
         if ( format == null ) {

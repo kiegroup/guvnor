@@ -108,6 +108,7 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
+import org.drools.guvnor.server.files.AssetZipper;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.security.AdminType;

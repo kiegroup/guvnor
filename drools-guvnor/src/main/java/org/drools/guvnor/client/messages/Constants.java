@@ -1851,8 +1851,12 @@ public interface Constants
     String Actions();
 
     String ChangeSet();
-
+    
+    String ModelSet();
+    
     String URLToChangeSetForDeploymentAgents();
+
+    String URLToDownloadModelSet();
 
     String FrozenAreas();
 
@@ -2053,9 +2057,15 @@ public interface Constants
     String MoveUpList();
 
     String MoveDownListMove();
+    
+    String DescSpringContext();
 
     String WorkingSets();
 
+    String SpringContext();
+    
+    String NewSpringContext();
+    
     String NewWorkingSet();
 
     String CreateWorkingSet();

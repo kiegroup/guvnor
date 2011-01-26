@@ -232,6 +232,8 @@ public class PackageBuilderWidget extends Composite {
                          catChooser.getSelectedPath(),
                          enableCategoryCheckBox.getValue(),
                          customSelector.getSelectedIndex() != -1 ? customSelector.getValue( customSelector.getSelectedIndex() ) : null );
+                        
+                //doModel(conf);
             }
         } );
 
@@ -659,4 +661,21 @@ public class PackageBuilderWidget extends Composite {
 
     }
 
+  /* public void doModel(PackageConfigData conf){
+    	 RepositoryServiceFactory.getService().zipModel(conf.uuid,new GenericCallback<String>() {
+																		
+																		public void onSuccess(String result) {
+																			if(result.contentEquals("Model")){
+																				//Window.alert("Model  Done!  " );	   
+																			}
+																		}
+																		
+																		public void onFailure() {
+																				//Window.alert("Model  Failed!  " );	   
+																		}
+																		
+																		
+																   });
+	}*/
+    
 }

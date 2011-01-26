@@ -17,11 +17,17 @@
 package org.drools.guvnor.server.files;
 
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -29,12 +35,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.compiler.DroolsParserException;
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
 
@@ -195,12 +203,60 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 		                xml += "    </add>\n";
 		                xml += "</change-set>";
 		                out.write( xml.getBytes() );
-		            } else {
-		                fileName = fm.loadBinaryPackage( helper.getPackageName(),
-		                                                 helper.getVersion(),
-		                                                 helper.isLatest(),
-		                                                 out );
+		            } else if(req.getRequestURI().endsWith( "MODEL")) {
+		                 PackageItem pkg = fm.getRepository().loadPackage(helper.getPackageName());
+		                 AssetItemIterator it = pkg.listAssetsByFormat(AssetFormats.MODEL);
+		                 BufferedInputStream inputFile = null;
+		                 byte[] data = new byte[1000];
+		                 int count = 0;
+		                 int cantAssets = 0;
+		                 	while(it.hasNext()){
+		                 		it.next();		                 		
+		                 		cantAssets++;
+		                 	}
+		                 	
+		                 	if (cantAssets==0){
+		                 		res.setContentType( "text/html" );
+		                 		PrintWriter outEM = res.getWriter();
+		                 	    outEM.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 " +
+		                 	                                        "Transitional//EN\">\n" +
+		                 	                "<HTML>\n" +
+		                 	                "<HEAD><TITLE>Empty Model</TITLE></HEAD>\n" +
+		                 	                "<BODY>\n" +
+		                 	                "<H1>EMPTY MODEL</H1>\n" +
+		                 	                "</BODY></HTML>");
+		                 	    return;
+		                 	}
+		                 	
+		                 	if(cantAssets>1){
+		                 		fileName="Model.zip";
+		                 		inputFile = new BufferedInputStream(zipModel(pkg));
+		                 		while((count = inputFile.read(data,0,1000)) != -1)
+								{      
+		                 			out.write(data, 0, count);
+								}
+								
+		                 		inputFile.close();	                 		
+		                 	}else{ 
+		                 		fileName="ModelJar.jar";		                 		
+		                 		inputFile = new BufferedInputStream(zipModel(pkg));
+		                 		while((count = inputFile.read(data,0,1000)) != -1)
+								{      
+		                 			out.write(data, 0, count);
+								}							       			                 		
+		                 			
+		                 		inputFile.close();
+		                 		
+		                 	}
+		                    	                    	
+		                    
+		            	}else{
+		            		fileName = fm.loadBinaryPackage( helper.getPackageName(),
+                                    helper.getVersion(),
+                                    helper.isLatest(),
+                                    out );
 		            }
+		            
 		        }
 
 		        res.setContentType( "application/x-download" );
@@ -235,4 +291,28 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         }
     }
 
+    /**
+	  *  Zip Model 
+	  */
+   public InputStream zipModel(PackageItem pkg){
+		
+   	LinkedList<AssetItem> jarAssets = new LinkedList<AssetItem>();
+   	AssetZipper assetZipper = null;
+   	byte[] data = new byte[1000];
+	
+     	
+   	Iterator<AssetItem> it = pkg.getAssets();
+   		while (it.hasNext()){
+   			AssetItem asset = it.next();
+   			if(asset.getFormat().contentEquals("jar")) jarAssets.add(asset);
+   		}
+   		if(jarAssets.size() != 0){
+   			assetZipper = new AssetZipper(jarAssets,pkg);
+   			
+   			return assetZipper.zipAssets();
+   		}
+   		    		    		
+   		return null;    	    	
+   }
+    
 }

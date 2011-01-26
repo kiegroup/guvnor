@@ -80,6 +80,11 @@ public class AssetFormats {
     
     public static final String RULE_TEMPLATE = "template";
     
+    public static final String DOCUMENTATION = "pdf";
+    
+    public static final String ZIP = "zip";
+    
+    public static final String SPRING_CONTEXT = "springContext";
     /**
      * The following group the assets together for lists, helpers etc...
      */
