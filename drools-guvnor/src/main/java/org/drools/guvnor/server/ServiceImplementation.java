@@ -1991,15 +1991,15 @@ public class ServiceImplementation implements RepositoryService {
                     log.error( "There were errors when rebuilding the knowledgebase." );
                     throw new DetailedSerializationException( "There were errors when rebuilding the knowledgebase.", "" );
                 }
-                try {
-                    return deserKnowledgebase( item, cl );
-                } catch ( Exception e2 ) {
-                    log.error( "Unable to reload knowledgebase: " + e.getMessage() );
-                    throw new DetailedSerializationException( "Unable to reload knowledgebase.", e.getMessage() );
-                }
             } catch ( Exception e1 ) {
                 log.error( "Unable to rebuild the rulebase: " + e.getMessage() );
-                throw new DetailedSerializationException( "Unable to rebuild the rulebase.", "" );
+                throw new DetailedSerializationException( "Unable to rebuild the rulebase.", e.getMessage() );
+            }
+            try {
+                return deserKnowledgebase( item, cl );
+            } catch ( Exception e2 ) {
+                log.error( "Unable to reload knowledgebase: " + e.getMessage() );
+                throw new DetailedSerializationException( "Unable to reload knowledgebase.", e.getMessage() );
             }
 
         }
