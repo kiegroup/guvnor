@@ -147,14 +147,15 @@ public class PackagesTree extends AbstractTree
 
     public static String key(String[] formats,
                              PackageConfigData userObject) {
-        String key = userObject.uuid;
-        for ( String format : formats ) {
-            key = key + format;
-        }
+        StringBuilder keyBuilder = new StringBuilder(userObject.uuid);
         if ( formats.length == 0 ) {
-            key = key + "[0]";
+            keyBuilder.append("[0]");
+        } else {
+            for ( String format : formats ) {
+                keyBuilder.append(format);
+            }
         }
-        return key;
+        return keyBuilder.toString();
     }
 
     // Show the associated widget in the deck panel
