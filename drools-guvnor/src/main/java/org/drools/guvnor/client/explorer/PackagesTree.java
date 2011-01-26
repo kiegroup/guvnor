@@ -85,7 +85,7 @@ public class PackagesTree extends AbstractTree
 
     private void setupPackageNode(final TreeItem packageRootNode) {
         packageRootNode.setState( true );
-        packageRootNode.setUserObject( new String( "rootNode" ) );
+        packageRootNode.setUserObject( "rootNode" );
 
         RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
             public void onSuccess(PackageConfigData[] packageConfigDatas) {
