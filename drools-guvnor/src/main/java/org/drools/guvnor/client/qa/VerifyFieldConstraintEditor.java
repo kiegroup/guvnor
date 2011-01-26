@@ -100,13 +100,13 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         String key = factType + "." + field.fieldName;
         String flType = sce.getFieldType( key );
         panel.clear();
-        if ( flType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+        if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             final TextBox box = editableTextBox( callback,
                                                  field.fieldName,
                                                  field.expected );
             box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
             panel.add( box );
-        } else if ( flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+        } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             String[] c = new String[]{"true", "false"};
             panel.add( new EnumDropDown( field.expected,
                                          new DropDownValueChanged() {
