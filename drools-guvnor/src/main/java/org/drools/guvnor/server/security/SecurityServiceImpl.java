@@ -17,6 +17,7 @@
 package org.drools.guvnor.server.security;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,7 @@ import java.util.Properties;
 
 import javax.security.auth.login.LoginException;
 
+import org.drools.repository.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.drools.core.util.DateUtils;
@@ -166,8 +168,10 @@ public class SecurityServiceImpl implements SecurityService {
 
     private static Map<String, String> loadPrefs() {
         Properties ps = new Properties();
+        InputStream in = null;
         try {
-            ps.load( SecurityServiceImpl.class.getResourceAsStream( "/preferences.properties" ) );
+            in = SecurityServiceImpl.class.getResourceAsStream("/preferences.properties");
+            ps.load(in);
             Map<String, String> prefs = new HashMap<String, String>();
             for ( Object o : ps.keySet() ) {
                 String feature = (String) o;
@@ -181,6 +185,8 @@ public class SecurityServiceImpl implements SecurityService {
         } catch ( IOException e ) {
             log.info( "Couldn't find preferences.properties - using defaults" );
             return new HashMap<String, String>();
+        } finally {
+            IOUtils.closeQuietly(in);
         }
     }
 
