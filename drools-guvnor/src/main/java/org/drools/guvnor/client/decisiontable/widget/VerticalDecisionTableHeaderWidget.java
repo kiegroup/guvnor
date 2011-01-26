@@ -19,6 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.table.SortDirection;
+import org.drools.guvnor.client.widgets.decoratedgrid.ColumnResizeEvent;
+import org.drools.guvnor.client.widgets.decoratedgrid.ColumnResizeHandler;
+import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
+import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
+import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
+import org.drools.guvnor.client.widgets.decoratedgrid.SortConfiguration;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
@@ -70,7 +76,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * 
  */
 public class VerticalDecisionTableHeaderWidget extends
-        DecisionTableHeaderWidget {
+        DecoratedGridHeaderWidget<DTColumnConfig> {
 
     /**
      * This is the guts of the widget.
@@ -82,10 +88,10 @@ public class VerticalDecisionTableHeaderWidget extends
          */
         private class HeaderSorter extends FocusPanel {
 
-            private final HorizontalPanel hp = new HorizontalPanel();
-            private final DynamicColumn   col;
+            private final HorizontalPanel               hp = new HorizontalPanel();
+            private final DynamicColumn<DTColumnConfig> col;
 
-            private HeaderSorter(final DynamicColumn col) {
+            private HeaderSorter(final DynamicColumn<DTColumnConfig> col) {
                 this.col = col;
                 hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
                 hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
@@ -258,14 +264,14 @@ public class VerticalDecisionTableHeaderWidget extends
         }
 
         // Child Widgets used in this Widget
-        private List<HeaderSorter>  sorters              = new ArrayList<HeaderSorter>();
-        private HeaderSplitter      splitter             = new HeaderSplitter();
+        private List<HeaderSorter>                  sorters              = new ArrayList<HeaderSorter>();
+        private HeaderSplitter                      splitter             = new HeaderSplitter();
 
         // UI Components
-        private Element[]           rowHeaders           = new Element[5];
+        private Element[]                           rowHeaders           = new Element[5];
 
-        private List<DynamicColumn> visibleCols          = new ArrayList<DynamicColumn>();
-        private List<DynamicColumn> visibleConditionCols = new ArrayList<DynamicColumn>();
+        private List<DynamicColumn<DTColumnConfig>> visibleCols          = new ArrayList<DynamicColumn<DTColumnConfig>>();
+        private List<DynamicColumn<DTColumnConfig>> visibleConditionCols = new ArrayList<DynamicColumn<DTColumnConfig>>();
 
         // Constructor
         private HeaderWidget() {
@@ -294,7 +300,7 @@ public class VerticalDecisionTableHeaderWidget extends
         }
 
         // Populate a default header element
-        private void populateTableCellElement(DynamicColumn col,
+        private void populateTableCellElement(DynamicColumn<DTColumnConfig> col,
                                               Element tce) {
 
             DTColumnConfig modelCol = col.getModelColumn();
@@ -352,8 +358,8 @@ public class VerticalDecisionTableHeaderWidget extends
             // Extracting visible columns makes life easier
             visibleCols.clear();
             visibleConditionCols.clear();
-            for ( int iCol = 0; iCol < dtable.getColumns().size(); iCol++ ) {
-                DynamicColumn col = dtable.getColumns().get( iCol );
+            for ( int iCol = 0; iCol < grid.getColumns().size(); iCol++ ) {
+                DynamicColumn<DTColumnConfig> col = grid.getColumns().get( iCol );
                 if ( col.isVisible() ) {
                     visibleCols.add( col );
                     DTColumnConfig modelCol = col.getModelColumn();
@@ -387,7 +393,7 @@ public class VerticalDecisionTableHeaderWidget extends
             switch ( iRow ) {
                 case 0 :
                     // General row, all visible cells included
-                    for ( DynamicColumn col : dtable.getColumns() ) {
+                    for ( DynamicColumn<DTColumnConfig> col : grid.getColumns() ) {
                         if ( col.isVisible() ) {
                             tce = DOM.createTD();
                             tce.addClassName( style.headerText() );
@@ -420,7 +426,7 @@ public class VerticalDecisionTableHeaderWidget extends
                         tce.addClassName( style.headerText() );
                         tre.appendChild( tce );
 
-                        DynamicColumn col = visibleConditionCols.get( iCol );
+                        DynamicColumn<DTColumnConfig> col = visibleConditionCols.get( iCol );
                         ConditionCol cc = (ConditionCol) col.getModelColumn();
 
                         // Merging
@@ -428,8 +434,8 @@ public class VerticalDecisionTableHeaderWidget extends
                         int width = col.getWidth();
                         while ( iCol
                                 + colSpan < visibleConditionCols.size() ) {
-                            DynamicColumn mergeCol = visibleConditionCols.get( iCol
-                                                                               + colSpan );
+                            DynamicColumn<DTColumnConfig> mergeCol = visibleConditionCols.get( iCol
+                                                                                               + colSpan );
                             ConditionCol mergeCondCol = (ConditionCol) mergeCol
                                     .getModelColumn();
 
@@ -463,7 +469,7 @@ public class VerticalDecisionTableHeaderWidget extends
 
                 case 3 :
                     // Condition FactField
-                    for ( DynamicColumn col : visibleConditionCols ) {
+                    for ( DynamicColumn<DTColumnConfig> col : visibleConditionCols ) {
                         tce = DOM.createTD();
                         tce.addClassName( style.headerText() );
                         tce.addClassName( style.headerRowIntermediate() );
@@ -480,16 +486,16 @@ public class VerticalDecisionTableHeaderWidget extends
 
                 case 4 :
                     // Sorters
-                    for ( DynamicColumn col : dtable.getColumns() ) {
+                    for ( DynamicColumn<DTColumnConfig> col : grid.getColumns() ) {
                         if ( col.isVisible() ) {
                             final HeaderSorter shp = new HeaderSorter( col );
-                            final DynamicColumn sortableColumn = col;
+                            final DynamicColumn<DTColumnConfig> sortableColumn = col;
                             shp.addClickHandler( new ClickHandler() {
 
                                 public void onClick(ClickEvent event) {
                                     if ( sortableColumn.isSortable() ) {
                                         updateSortOrder( sortableColumn );
-                                        dtable.sort();
+                                        grid.sort();
                                     }
                                 }
 
@@ -513,7 +519,7 @@ public class VerticalDecisionTableHeaderWidget extends
 
         // Update sort order. The column clicked becomes the primary sort column
         // and the other, previously sorted, columns degrade in priority
-        private void updateSortOrder(DynamicColumn column) {
+        private void updateSortOrder(DynamicColumn<DTColumnConfig> column) {
             if ( column.getSortIndex() == 0 ) {
                 if ( column.getSortDirection() != SortDirection.ASCENDING ) {
                     column.setSortDirection( SortDirection.ASCENDING );
@@ -524,7 +530,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 column.setSortIndex( 0 );
                 column.setSortDirection( SortDirection.ASCENDING );
                 int sortIndex = 1;
-                for ( DynamicColumn sortableColumn : dtable.getColumns() ) {
+                for ( DynamicColumn<DTColumnConfig> sortableColumn : grid.getColumns() ) {
                     if ( !sortableColumn.equals( column ) ) {
                         if ( sortableColumn.getSortDirection() != SortDirection.NONE ) {
                             sortableColumn.setSortIndex( sortIndex );
@@ -553,8 +559,8 @@ public class VerticalDecisionTableHeaderWidget extends
      * 
      * @param decisionTable
      */
-    public VerticalDecisionTableHeaderWidget(final DecisionTableWidget dtable) {
-        super( dtable );
+    public VerticalDecisionTableHeaderWidget(final DecoratedGridWidget<DTColumnConfig> grid) {
+        super( grid );
 
         // Container DIV in which the components will live
         Element div = DOM.createDiv();
@@ -597,16 +603,12 @@ public class VerticalDecisionTableHeaderWidget extends
                                                  resizeColumnWidth );
 
                                    // Second call to set dimensions as a column
-                                   // resize can add
-                                   // (or remove) a scroll bar to (or from) the
-                                   // Decision Table
-                                   // and our resizer needs to be redrawn
-                                   // accordingly. Just
-                                   // having the call to set dimensions after
-                                   // the column has
-                                   // been resized added excess flicker to
-                                   // movement of the
-                                   // resizer.
+                                   // resize can add (or remove) a scroll bar to
+                                   // (or from) the Decision Table and our
+                                   // resizer needs to be redrawn accordingly.
+                                   // Just having the call to set dimensions
+                                   // after the column has been resized added
+                                   // excess flicker to movement of the resizer.
                                    setResizerDimensions( event.getX() );
                                    event.preventDefault();
                                } else {
@@ -633,8 +635,8 @@ public class VerticalDecisionTableHeaderWidget extends
 
                            // Set the cursor type for all cells on the table as
                            // we only use rowHeader[0] to check which column
-                           // needs resizing
-                           // however the mouse could be over any row
+                           // needs resizing however the mouse could be over any
+                           // row
                            private void setCursorType(Cursor cursor) {
                                for ( int iRow = 0; iRow < widget.rowHeaders.length; iRow++ ) {
                                    TableRowElement tre = widget.rowHeaders[iRow]
@@ -699,53 +701,38 @@ public class VerticalDecisionTableHeaderWidget extends
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.drools.guvnor.client.decisiontable.widget.HasColumnResizeHandlers
-     * #addColumnResizeHandler
-     * (org.drools.guvnor.client.decisiontable.widget.ColumnResizeHandler)
-     */
+    @Override
     public HandlerRegistration addColumnResizeHandler(
                                                       ColumnResizeHandler handler) {
+        if ( handler == null ) {
+            throw new IllegalArgumentException( "handler cannot be null" );
+        }
+
         return addHandler( handler,
                            ColumnResizeEvent.getType() );
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.event.logical.shared.HasResizeHandlers#addResizeHandler
-     * (com.google.gwt.event.logical.shared.ResizeHandler)
-     */
+    @Override
     public HandlerRegistration addResizeHandler(ResizeHandler handler) {
+        if ( handler == null ) {
+            throw new IllegalArgumentException( "handler cannot be null" );
+        }
+
         return addHandler( handler,
                            ResizeEvent.getType() );
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.drools.guvnor.decisiontable.client.widget.DecisionTableHeaderWidget
-     * #redraw()
-     */
     @Override
     public void redraw() {
         widget.redraw();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.drools.guvnor.decisiontable.client.widget.DecisionTableHeaderWidget
-     * #setScrollPosition(int)
-     */
     @Override
     public void setScrollPosition(int position) {
+        if ( position < 0 ) {
+            throw new IllegalArgumentException( "position cannot be null" );
+        }
+
         ((ScrollPanel) this.panel).setHorizontalScrollPosition( position );
     }
 
@@ -778,7 +765,7 @@ public class VerticalDecisionTableHeaderWidget extends
         // Row 3 (Fact Fields). This column is resized before row 1
         // as it depends on the total width of all Condition Columns
         for ( int iCol = 0; iCol < widget.visibleConditionCols.size(); iCol++ ) {
-            DynamicColumn col = widget.visibleConditionCols.get( iCol );
+            DynamicColumn<DTColumnConfig> col = widget.visibleConditionCols.get( iCol );
             int colWidth = col.getWidth();
             conditionColsWidth = conditionColsWidth
                                  + colWidth;
@@ -799,7 +786,7 @@ public class VerticalDecisionTableHeaderWidget extends
         // Row 2 (Fact Types)
         int iColColumn = 0;
         for ( int iCol = 0; iCol < widget.visibleConditionCols.size(); iCol++ ) {
-            DynamicColumn col = widget.visibleConditionCols.get( iCol );
+            DynamicColumn<DTColumnConfig> col = widget.visibleConditionCols.get( iCol );
             ConditionCol cc = (ConditionCol) col.getModelColumn();
 
             // Merging
@@ -807,8 +794,8 @@ public class VerticalDecisionTableHeaderWidget extends
             int width = col.getWidth();
             while ( iCol
                     + colSpan < widget.visibleConditionCols.size() ) {
-                DynamicColumn mergeCol = widget.visibleConditionCols.get( iCol
-                                                                          + colSpan );
+                DynamicColumn<DTColumnConfig> mergeCol = widget.visibleConditionCols.get( iCol
+                                                                                          + colSpan );
                 ConditionCol mergeCondCol = (ConditionCol) mergeCol
                         .getModelColumn();
 
@@ -848,16 +835,16 @@ public class VerticalDecisionTableHeaderWidget extends
                                 resizeColumnWidth );
     }
 
+    // Bit of a hack to ensure the resizer is the correct size. The
+    // Decision Table itself could be contained in an outer most DIV
+    // that hides any overflow however the horizontal scrollbar
+    // would be rendered inside the DIV and hence still be covered
+    // by the resizer.
     private void setResizerDimensions(int position) {
-        // Bit of a hack to ensure the resizer is the correct size. The
-        // Decision Table itself could be contained in an outer most DIV
-        // that hides any overflow however the horizontal scrollbar
-        // would be rendered inside the DIV and hence still be covered
-        // by the resizer.
         resizer.getStyle().setTop( widget.rowHeaders[0].getOffsetTop(),
                                    Unit.PX );
         resizer.getStyle().setHeight(
-                                      dtable.getSidebarWidget().getOffsetHeight(),
+                                      grid.getSidebarWidget().getOffsetHeight(),
                                       Unit.PX );
         resizer.getStyle().setLeft( position,
                                     Unit.PX );

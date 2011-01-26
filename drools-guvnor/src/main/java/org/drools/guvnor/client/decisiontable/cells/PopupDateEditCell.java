@@ -58,7 +58,7 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
                 if ( valueUpdater != null ) {
                     valueUpdater.update( date );
                 }
-                
+
                 panel.hide();
             }
         } );
@@ -66,14 +66,6 @@ public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
         vPanel.add( datePicker );
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.cell.client.AbstractCell#render(com.google.gwt.cell.client
-     * .Cell.Context, java.lang.Object,
-     * com.google.gwt.safehtml.shared.SafeHtmlBuilder)
-     */
     @Override
     public void render(Context context,
                        Date value,

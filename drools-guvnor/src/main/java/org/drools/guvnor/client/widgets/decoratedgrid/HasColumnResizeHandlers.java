@@ -13,24 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.decisiontable.widget;
+package org.drools.guvnor.client.widgets.decoratedgrid;
 
-import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.HasHandlers;
 
 /**
- * Handler interface for {@link ColumnResizeEvent} events.
+ * A widget that implements this interface is a public source of
+ * {@link ColumnResizeEvent} events.
  * 
  * @author manstis
  */
-public interface ColumnResizeHandler
-    extends
-    EventHandler {
+public interface HasColumnResizeHandlers extends HasHandlers {
 
-    /**
-     * Called when {@link ColumnResizeEvent} is fired.
-     * 
-     * @param event
-     *            the {@link ColumnResizeEvent} that was fired
-     */
-    void onColumnResize(ColumnResizeEvent event);
+	/**
+	 * Adds a {@link ColumnResizeEvent} handler.
+	 * 
+	 * @param handler
+	 *            the handler
+	 * @return the handler registration
+	 */
+	HandlerRegistration addColumnResizeHandler(ColumnResizeHandler handler);
+
 }

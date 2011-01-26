@@ -13,30 +13,24 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.decisiontable.cells;
+package org.drools.guvnor.client.widgets.decoratedgrid;
 
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.event.shared.EventHandler;
 
 /**
- * A Cell that renders it's corresponding row index number only
+ * Handler interface for {@link ColumnResizeEvent} events.
  * 
  * @author manstis
- * 
  */
-public class RowNumberCell extends AbstractCell<Integer> {
+public interface ColumnResizeHandler
+    extends
+    EventHandler {
 
-    public RowNumberCell() {
-        // Good citizen: AbstractCell does not initialise an empty set of
-        // consumed events
-        super( "" );
-    }
-
-    @Override
-    public void render(Context context,
-                       Integer value,
-                       SafeHtmlBuilder sb) {
-        sb.append( value );
-    }
-
+    /**
+     * Called when {@link ColumnResizeEvent} is fired.
+     * 
+     * @param event
+     *            the {@link ColumnResizeEvent} that was fired
+     */
+    void onColumnResize(ColumnResizeEvent event);
 }

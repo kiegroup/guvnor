@@ -13,30 +13,30 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.decisiontable.cells;
+package org.drools.guvnor.client.widgets.decoratedgrid;
 
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import java.util.ArrayList;
 
 /**
- * A Cell that renders it's corresponding row index number only
+ * A simple container for rows of data.
  * 
  * @author manstis
  * 
  */
-public class RowNumberCell extends AbstractCell<Integer> {
+public class DynamicData extends ArrayList<DynamicDataRow> {
 
-    public RowNumberCell() {
-        // Good citizen: AbstractCell does not initialise an empty set of
-        // consumed events
-        super( "" );
+    private static final long serialVersionUID = -3710491920672816057L;
+
+    public CellValue< ? extends Comparable< ? >> get(Coordinate c) {
+        return this.get( c.getRow() ).get( c.getCol() );
     }
 
-    @Override
-    public void render(Context context,
-                       Integer value,
-                       SafeHtmlBuilder sb) {
-        sb.append( value );
+    public void set(Coordinate c,
+                    Object value) {
+        if ( c == null ) {
+            throw new IllegalArgumentException( "c cannot be null" );
+        }
+        this.get( c.getRow() ).get( c.getCol() ).setValue( value );
     }
 
 }

@@ -1,19 +1,19 @@
 /*
  * Copyright 2011 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-package org.drools.guvnor.client.decisiontable.widget;
+package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -24,10 +24,14 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class ColumnResizeEvent extends GwtEvent<ColumnResizeHandler> {
 
+    // Parameters for the Event
+    private final DynamicColumn< ? >         column;
+    private final int                        width;
+
     /**
      * Handler type.
      */
-    private static Type<ColumnResizeHandler> TYPE;
+    private static Type<ColumnResizeHandler> TYPE = new Type<ColumnResizeHandler>();
 
     /**
      * Fires a value change event on all registered handlers in the handler
@@ -41,29 +45,27 @@ public class ColumnResizeEvent extends GwtEvent<ColumnResizeHandler> {
      *            the columns width (px)
      */
     public static void fire(HasColumnResizeHandlers source,
-                            DynamicColumn column,
+                            DynamicColumn< ? > column,
                             int width) {
-        if ( TYPE != null ) {
-            ColumnResizeEvent event = new ColumnResizeEvent( column,
-                                                             width );
-            source.fireEvent( event );
+        if ( source == null ) {
+            throw new IllegalArgumentException( "source cannot be null" );
         }
+        if ( column == null ) {
+            throw new IllegalArgumentException( "column cannot be null" );
+        }
+        ColumnResizeEvent event = new ColumnResizeEvent( column,
+                                                             width );
+        source.fireEvent( event );
     }
 
     /**
-     * Gets the type associated with this event.
+     * Gets the type of Handlers that can handle the event
      * 
-     * @return returns the handler type
+     * @return
      */
     public static Type<ColumnResizeHandler> getType() {
-        if ( TYPE == null ) {
-            TYPE = new Type<ColumnResizeHandler>();
-        }
         return TYPE;
     }
-
-    private final DynamicColumn column;
-    private final int           width;
 
     /**
      * Creates a value change event.
@@ -73,7 +75,7 @@ public class ColumnResizeEvent extends GwtEvent<ColumnResizeHandler> {
      * @param width
      *            The new width of the column
      */
-    protected ColumnResizeEvent(DynamicColumn column,
+    protected ColumnResizeEvent(DynamicColumn< ? > column,
                                 int width) {
         if ( column == null ) {
             throw new IllegalArgumentException( "column cannot be null" );
@@ -84,10 +86,9 @@ public class ColumnResizeEvent extends GwtEvent<ColumnResizeHandler> {
 
     // The instance knows its BeforeSelectionHandler is of type I, but the TYPE
     // field itself does not, so we have to do an unsafe cast here.
-    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public final Type<ColumnResizeHandler> getAssociatedType() {
-        return (Type) TYPE;
+        return TYPE;
     }
 
     /**
@@ -95,7 +96,7 @@ public class ColumnResizeEvent extends GwtEvent<ColumnResizeHandler> {
      * 
      * @return the column
      */
-    public DynamicColumn getColumn() {
+    public DynamicColumn< ? > getColumn() {
         return this.column;
     }
 
@@ -110,8 +111,11 @@ public class ColumnResizeEvent extends GwtEvent<ColumnResizeHandler> {
 
     @Override
     public String toDebugString() {
-        return super.toDebugString() + "column = " + getColumn().toString()
-                + ", width = " + getWidth();
+        return super.toDebugString()
+               + "column = "
+               + getColumn().toString()
+                + ", width = "
+               + getWidth();
     }
 
     @Override

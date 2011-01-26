@@ -13,13 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.decisiontable.cells;
+package org.drools.guvnor.client.decisiontable.widget;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.decisiontable.widget.CellValue;
-import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
+import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
@@ -37,7 +36,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
  * @author manstis
  * 
  */
-public class CellValueFactory {
+public class DecisionTableCellValueFactory {
 
     // Dates are serialised and de-serialised to this fixed (locale-independent)
     // format (for now)
@@ -193,12 +192,12 @@ public class CellValueFactory {
     }
 
     // The Singleton
-    private static CellValueFactory instance;
+    private static DecisionTableCellValueFactory instance;
 
     // Singleton constructor
-    public static synchronized CellValueFactory getInstance() {
+    public static synchronized DecisionTableCellValueFactory getInstance() {
         if ( instance == null ) {
-            instance = new CellValueFactory();
+            instance = new DecisionTableCellValueFactory();
         }
         return instance;
     }
@@ -214,7 +213,7 @@ public class CellValueFactory {
      *            CellValue for which value will be serialised
      * @return String representation of value
      */
-    public String serialiseValue(DecisionTableWidget dtable,
+    public String serialiseValue(VerticalDecisionTableWidget dtable,
                                  DTColumnConfig column,
                                  CellValue< ? > cv) {
         DATA_TYPES dataType = getDataType( column,
@@ -223,7 +222,7 @@ public class CellValueFactory {
 
     }
 
-    private CellValueFactory() {
+    private DecisionTableCellValueFactory() {
     }
 
     /**
@@ -246,7 +245,7 @@ public class CellValueFactory {
                                                               int iRow,
                                                               int iCol,
                                                               String initialValue,
-                                                              DecisionTableWidget dtable) {
+                                                              VerticalDecisionTableWidget dtable) {
         DATA_TYPES dataType = getDataType( column,
                                            dtable );
         CellValue< ? extends Comparable< ? >> cell = dataType.getNewCellValue(
@@ -255,10 +254,10 @@ public class CellValueFactory {
                                                                                initialValue );
         return cell;
     }
-
+    
     // Get the Data Type corresponding to a given column
     private DATA_TYPES getDataType(DTColumnConfig column,
-                                   DecisionTableWidget dtable) {
+                                   VerticalDecisionTableWidget dtable) {
 
         DATA_TYPES dataType = DATA_TYPES.STRING;
 
@@ -312,7 +311,7 @@ public class CellValueFactory {
 
     // Derive the Data Type for a Condition or Action column
     private DATA_TYPES makeNewCellDataType(DTColumnConfig col,
-                                           DecisionTableWidget dtable) {
+                                           VerticalDecisionTableWidget dtable) {
 
         GuidedDecisionTable model = dtable.getModel();
         SuggestionCompletionEngine sce = dtable.getSCE();

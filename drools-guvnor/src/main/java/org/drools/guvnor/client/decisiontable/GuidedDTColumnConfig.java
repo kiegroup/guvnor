@@ -23,7 +23,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
+import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.resources.Images;
@@ -86,7 +86,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     private Constants                  constants                   = ((Constants) GWT.create( Constants.class ));
 
     private static Images              images                      = (Images) GWT.create( Images.class );
-    private DecisionTableWidget        dtable;
+    private VerticalDecisionTableWidget        dtable;
     private SuggestionCompletionEngine sce;
     private ConditionCol               editingCol;
     private SmallLabel                 patternLabel                = new SmallLabel();
@@ -99,7 +99,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
      * Pass in a null col and it will create a new one.
      */
     public GuidedDTColumnConfig(SuggestionCompletionEngine sce,
-                                final DecisionTableWidget dtable,
+                                final VerticalDecisionTableWidget dtable,
                                 final ColumnCentricCommand refreshGrid,
                                 final ConditionCol col,
                                 final boolean isNew) {

@@ -21,7 +21,6 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableControlsWidget;
-import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
 import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
@@ -83,7 +82,7 @@ public class GuidedDecisionTableWidget extends Composite
     private VerticalPanel               actionsConfigWidget;
     private SuggestionCompletionEngine  sce;
 
-    private DecisionTableWidget         dtable;
+    private VerticalDecisionTableWidget dtable;
     private DecisionTableControlsWidget dtableCtrls;
 
     public GuidedDecisionTableWidget(RuleAsset asset,
@@ -464,7 +463,7 @@ public class GuidedDecisionTableWidget extends Composite
                 hp.add( new SmallLabel( "(" ) );
                 final CheckBox reverseOrder = new CheckBox();
                 reverseOrder.setValue( at.isReverseOrder() );
-                reverseOrder.setEnabled( false );
+                reverseOrder.setEnabled( at.isUseRowNumber() );
 
                 useRowNumber.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent sender) {

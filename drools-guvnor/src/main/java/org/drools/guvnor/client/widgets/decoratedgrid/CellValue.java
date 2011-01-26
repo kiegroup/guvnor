@@ -1,19 +1,19 @@
 /*
  * Copyright 2011 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-package org.drools.guvnor.client.decisiontable.widget;
+package org.drools.guvnor.client.widgets.decoratedgrid;
 
 /**
  * This is a wrapper around a value. The wrapper provides additional information
@@ -36,6 +36,9 @@ package org.drools.guvnor.client.decisiontable.widget;
  * which has a row span of 2. Therefore physical cells (0,0) and (1,0) have a
  * <code>mapDataToHtml</code> coordinate of (0,0) whilst physical cell (1,0) has
  * a <code>mapHtmlToData</code> coordinate of (1,1).
+ * 
+ * @param <T>
+ *            The data-type of the value
  * 
  * @author manstis
  * 
@@ -82,6 +85,9 @@ public class CellValue<T extends Comparable<T>>
     }
 
     public void setHtmlCoordinate(Coordinate c) {
+        if ( c == null ) {
+            throw new IllegalArgumentException( "Coordinate cannot be null." );
+        }
         this.mapDataToHtml = c;
     }
 
@@ -111,14 +117,23 @@ public class CellValue<T extends Comparable<T>>
     }
 
     public void setCoordinate(Coordinate coordinate) {
+        if ( coordinate == null ) {
+            throw new IllegalArgumentException( "Coordinate cannot be null." );
+        }
         this.coordinate = coordinate;
     }
 
     public void setPhysicalCoordinate(Coordinate c) {
+        if ( c == null ) {
+            throw new IllegalArgumentException( "Coordinate cannot be null." );
+        }
         this.mapHtmlToData = c;
     }
 
     public void setRowSpan(int rowSpan) {
+        if ( rowSpan < 0 ) {
+            throw new IllegalArgumentException( "rowSpan cannot be less than zero." );
+        }
         this.rowSpan = rowSpan;
     }
 
@@ -154,26 +169,38 @@ public class CellValue<T extends Comparable<T>>
     }
 
     @Override
-    // Good citizen as overriding equals
     public int hashCode() {
         int hash = 1;
-        hash = hash * 31 + (value == null ? 0 : value.hashCode());
-        hash = hash * 31 + rowSpan;
-        hash = hash * 31 + (coordinate == null ? 0 : coordinate.hashCode());
-        hash = hash * 31
+        hash = hash
+               * 31
+               + (value == null ? 0 : value.hashCode());
+        hash = hash
+               * 31
+               + rowSpan;
+        hash = hash
+               * 31
+               + (coordinate == null ? 0 : coordinate.hashCode());
+        hash = hash
+               * 31
                 + (mapHtmlToData == null ? 0 : mapHtmlToData.hashCode());
-        hash = hash * 31
+        hash = hash
+               * 31
                 + (mapDataToHtml == null ? 0 : mapDataToHtml.hashCode());
-        hash = hash * 31 + ((Boolean) isSelected).hashCode();
+        hash = hash
+               * 31
+               + ((Boolean) isSelected).hashCode();
         return hash;
     }
 
+    // Check whether two objects are equal or both null
     private boolean nullOrEqual(Object thisAttr,
                                 Object thatAttr) {
-        if ( thisAttr == null && thatAttr == null ) {
+        if ( thisAttr == null
+             && thatAttr == null ) {
             return true;
         }
-        if ( thisAttr == null && thatAttr != null ) {
+        if ( thisAttr == null
+             && thatAttr != null ) {
             return false;
         }
         return thisAttr.equals( thatAttr );

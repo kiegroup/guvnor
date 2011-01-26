@@ -13,26 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.decisiontable.widget;
+package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.ArrayList;
 
 /**
- * A simple container for rows of data.
+ * A row of data in the Decision Table
  * 
  * @author manstis
  * 
  */
-public class DynamicData extends ArrayList<DynamicDataRow> {
+public class DynamicDataRow extends
+		ArrayList<CellValue<? extends Comparable<?>>> {
 
-	private static final long serialVersionUID = -3710491920672816057L;
-
-	public CellValue<? extends Comparable<?>> get(Coordinate c) {
-		return this.get(c.getRow()).get(c.getCol());
-	}
-
-	public void set(Coordinate c, Object value) {
-		this.get(c.getRow()).get(c.getCol()).setValue(value);
-	}
+	private static final long serialVersionUID = -7816621427456956740L;
 
 }

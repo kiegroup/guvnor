@@ -1,0 +1,113 @@
+/*
+ * Copyright 2011 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package org.drools.guvnor.client.widgets.decoratedgrid;
+
+import org.drools.guvnor.client.resources.DecisionTableResources;
+import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Composite;
+
+/**
+ * An abstract "Sidebar" widget to decorate a <code>DecoratedGridWidget</code>
+ * 
+ * @param <T>
+ *            The type of domain columns represented by the Header
+ * 
+ * @author manstis
+ * 
+ */
+public abstract class DecoratedGridSidebarWidget<T> extends Composite {
+
+    protected DecoratedGridWidget<T>              grid;
+    protected HasRows                             hasRows;
+
+    // Resources
+    protected static final DecisionTableResources resource = GWT
+                                                                   .create( DecisionTableResources.class );
+    protected static final DecisionTableStyle     style    = resource.cellTableStyle();
+
+    /**
+     * Construct a "Sidebar" for the provided DecoratedGridWidget. The sidebar
+     * will call upon the <code>HasRows</code> to facilitate addition and
+     * removal of rows.
+     * 
+     * @param grid
+     * @param hasRows
+     */
+    public DecoratedGridSidebarWidget(DecoratedGridWidget<T> grid,
+                                      HasRows hasRows) {
+        if ( grid == null ) {
+            throw new IllegalArgumentException( "grid cannot be null" );
+        }
+        if ( hasRows == null ) {
+            throw new IllegalArgumentException( "hasRows cannot be null" );
+        }
+        this.grid = grid;
+        this.hasRows = hasRows;
+        style.ensureInjected();
+    }
+
+    /**
+     * Append a selector widget to the sidebar. A selector widget can implement
+     * any row-level operation, such as selecting, inserting new (positional)
+     * etc.
+     * 
+     * @param row
+     *            The row for which the selector will be added
+     */
+    public abstract void appendSelector(DynamicDataRow row);
+
+    /**
+     * Delete a Selector at the given index.
+     * 
+     * @param index
+     */
+    public abstract void deleteSelector(int index);
+
+    /**
+     * Initialise the sidebar, this normally involves clearing any content
+     * before calls to addSelector are made. I.E. ensure the sidebar is empty
+     * before items are added to it.
+     */
+    public abstract void initialise();
+
+    /**
+     * Insert a Selector before the given index.
+     * 
+     * @param row
+     *            The row for which the selector will be added
+     * @param index
+     */
+    public abstract void insertSelectorBefore(DynamicDataRow row,
+                                              int index);
+
+    /**
+     * Resize the sidebar.
+     * 
+     * @param height
+     */
+    public abstract void resizeSidebar(int height);
+
+    /**
+     * Set scroll position to enable some degree of synchronisation between
+     * DecisionTable and DecisionTableSidebar
+     * 
+     * @param position
+     */
+    public abstract void setScrollPosition(int position);
+
+}

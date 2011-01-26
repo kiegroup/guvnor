@@ -1,24 +1,24 @@
 /*
  * Copyright 2011 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-package org.drools.guvnor.client.decisiontable.cells;
+package org.drools.guvnor.client.decisiontable.widget;
 
 import java.util.Set;
 
-import org.drools.guvnor.client.decisiontable.widget.CellValue;
-import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
+import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
+import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -33,14 +33,16 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  * 
  * @param <T>
  *            The data-type required by the wrapped cell
+ * @param <C>
+ *            The data-type of columns represented in the domain model
  */
-public class DecisionTableCellValueAdaptor<T> extends
+public class DecisionTableCellValueAdaptor<T, C> extends
         AbstractCell<CellValue< ? extends Comparable< ? >>> {
 
     // Really we want AbstractCell<?> but that leads to generics hell
-    private AbstractCell<T>       cell;
+    private AbstractCell<T>          cell;
 
-    protected DecisionTableWidget dtable;
+    protected DecoratedGridWidget<C> grid;
 
     /**
      * @param cell
@@ -50,44 +52,21 @@ public class DecisionTableCellValueAdaptor<T> extends
         this.cell = cell;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.google.gwt.cell.client.AbstractCell#dependsOnSelection()
-     */
     @Override
     public boolean dependsOnSelection() {
         return cell.dependsOnSelection();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.google.gwt.cell.client.AbstractCell#getConsumedEvents()
-     */
     @Override
     public Set<String> getConsumedEvents() {
         return cell.getConsumedEvents();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.google.gwt.cell.client.AbstractCell#handlesSelection()
-     */
     @Override
     public boolean handlesSelection() {
         return cell.handlesSelection();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.cell.client.AbstractCell#isEditing(com.google.gwt.cell
-     * .client.Cell.Context, com.google.gwt.dom.client.Element,
-     * java.lang.Object)
-     */
     @Override
     @SuppressWarnings("unchecked")
     public boolean isEditing(Context context,
@@ -98,15 +77,6 @@ public class DecisionTableCellValueAdaptor<T> extends
                                (T) value.getValue() );
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.cell.client.AbstractCell#onBrowserEvent(com.google.gwt
-     * .cell.client.Cell.Context, com.google.gwt.dom.client.Element,
-     * java.lang.Object, com.google.gwt.dom.client.NativeEvent,
-     * com.google.gwt.cell.client.ValueUpdater)
-     */
     @Override
     @SuppressWarnings("unchecked")
     public void onBrowserEvent(Context context,
@@ -115,9 +85,9 @@ public class DecisionTableCellValueAdaptor<T> extends
                                NativeEvent event,
                                ValueUpdater<CellValue< ? extends Comparable< ? >>> valueUpdater) {
 
-        // Updates are passed back to the SelectionManager where merged cells
+        // Updates are passed back to the DecoratedGridWidget where merged cells
         // are also updated. Override the Column's FieldUpdater because
-        // a Horizontal Decision Table will potentially have a different
+        // a Horizontal MergableGridWidget will potentially have a different
         // data-type per row.
         cell.onBrowserEvent( context,
                              parent,
@@ -126,20 +96,12 @@ public class DecisionTableCellValueAdaptor<T> extends
                              new ValueUpdater<T>() {
 
                                  public void update(T value) {
-                                     dtable.update( value );
+                                     grid.update( value );
                                  }
 
                              } );
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.cell.client.AbstractCell#render(com.google.gwt.cell.client
-     * .Cell.Context, java.lang.Object,
-     * com.google.gwt.safehtml.shared.SafeHtmlBuilder)
-     */
     @Override
     @SuppressWarnings("unchecked")
     public void render(Context context,
@@ -150,14 +112,6 @@ public class DecisionTableCellValueAdaptor<T> extends
                      sb );
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.cell.client.AbstractCell#resetFocus(com.google.gwt.cell
-     * .client.Cell.Context, com.google.gwt.dom.client.Element,
-     * java.lang.Object)
-     */
     @Override
     @SuppressWarnings("unchecked")
     public boolean resetFocus(Context context,
@@ -169,21 +123,14 @@ public class DecisionTableCellValueAdaptor<T> extends
     }
 
     /**
-     * Inject a DecisionTableWidget to handle value updates
+     * Inject a DecoratedGridWidget to handle value updates
      * 
      * @param manager
      */
-    public void setDecisionTableWidget(DecisionTableWidget dtable) {
-        this.dtable = dtable;
+    public void setDecoratedGridWidget(DecoratedGridWidget<C> grid) {
+        this.grid = grid;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.cell.client.AbstractCell#setValue(com.google.gwt.cell.
-     * client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
-     */
     @Override
     @SuppressWarnings("unchecked")
     public void setValue(Context context,

@@ -1,21 +1,21 @@
 /*
  * Copyright 2011 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
-package org.drools.guvnor.client.decisiontable.widget;
+package org.drools.guvnor.client.widgets.decoratedgrid;
 
-import org.drools.guvnor.client.decisiontable.cells.DecisionTableCellValueAdaptor;
+import org.drools.guvnor.client.decisiontable.widget.DecisionTableCellValueAdaptor;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
@@ -35,14 +35,14 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  * Forked GWT2.1.1's Column<T, C> class to make Cell<C> non-final.
  * 
  */
-public abstract class DynamicBaseColumn
+public abstract class DynamicBaseColumn<T>
     implements
     HasCell<DynamicDataRow, CellValue< ? extends Comparable< ? >>> {
 
     /**
      * The {@link Cell} responsible for rendering items in the column.
      */
-    protected DecisionTableCellValueAdaptor< ? extends Comparable< ? >>           cell;
+    protected DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T>        cell;
 
     /**
      * The {@link FieldUpdater} used for updating values in the column.
@@ -55,7 +55,10 @@ public abstract class DynamicBaseColumn
      * @param cell
      *            the Cell used by this Column
      */
-    public DynamicBaseColumn(DecisionTableCellValueAdaptor< ? extends Comparable< ? >> cell) {
+    public DynamicBaseColumn(DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> cell) {
+        if ( cell == null ) {
+            throw new IllegalArgumentException( "cell cannot be null" );
+        }
         this.cell = cell;
     }
 
@@ -64,7 +67,7 @@ public abstract class DynamicBaseColumn
      * 
      * @return a Cell
      */
-    public DecisionTableCellValueAdaptor< ? extends Comparable< ? >> getCell() {
+    public DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> getCell() {
         return cell;
     }
 
@@ -138,7 +141,10 @@ public abstract class DynamicBaseColumn
      * 
      * @param cell
      */
-    public void setCell(DecisionTableCellValueAdaptor< ? extends Comparable< ? >> cell) {
+    public void setCell(DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> cell) {
+        if ( cell == null ) {
+            throw new IllegalArgumentException( "cell cannot be null" );
+        }
         this.cell = cell;
     }
 
@@ -150,6 +156,9 @@ public abstract class DynamicBaseColumn
      * @see #getFieldUpdater()
      */
     public void setFieldUpdater(FieldUpdater<DynamicDataRow, CellValue< ? extends Comparable< ? >>> fieldUpdater) {
+        if ( fieldUpdater == null ) {
+            throw new IllegalArgumentException( "fieldUpdater cannot be null" );
+        }
         this.fieldUpdater = fieldUpdater;
     }
 
