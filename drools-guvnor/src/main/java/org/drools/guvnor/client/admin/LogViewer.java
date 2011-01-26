@@ -104,7 +104,7 @@ public class LogViewer extends Composite {
         Object[][] data = new Object[entries.size()][3];
         for ( int i = 0; i < entries.size(); i++ ) {
             LogEntry e = entries.get( i );
-            data[i][0] = new Integer( e.severity );
+            data[i][0] = Integer.valueOf( e.severity );
             data[i][1] = e.timestamp;
             data[i][2] = e.message;
         }
