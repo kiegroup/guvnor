@@ -52,7 +52,7 @@ public class BusinessProcessEditor extends DirtyableComposite
 
     private void initWidgets() {
         String name;
-        if ( EditorLauncher.HOSTED_MODE.booleanValue() ) {
+        if ( EditorLauncher.hostedMode.booleanValue() ) {
             // THIS IS A HACK TO GET DESIGNER WORKING ON HOSTED MODE
             // I will add ability to input where oryx designer is 
             // available in the admin section soon

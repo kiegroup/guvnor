@@ -60,13 +60,13 @@ public class EditorLauncher {
 
     public static final Map<String, RuleFormatImageResource> TYPE_IMAGES = getTypeImages();
     private static RepositoryServiceAsync                    SERVICE     = RepositoryServiceFactory.getService();
-    public static Boolean                                    HOSTED_MODE = Boolean.FALSE;
+    public static Boolean hostedMode = Boolean.FALSE;
 
     static {
         SERVICE.isHostedMode( new GenericCallback<Boolean>() {
             public void onSuccess(Boolean result) {
                 if ( result.booleanValue() ) {
-                    HOSTED_MODE = Boolean.TRUE;
+                    hostedMode = Boolean.TRUE;
                 }
             }
         } );
