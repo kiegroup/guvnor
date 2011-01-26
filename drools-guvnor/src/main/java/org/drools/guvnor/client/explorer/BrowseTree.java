@@ -130,10 +130,10 @@ public class BrowseTree extends AbstractTree
     }
 
     private void removeStateIDs(Map<TreeItem, String> itemWidgets) {
-        Iterator<TreeItem> it = itemWidgets.keySet().iterator();
-        while ( it.hasNext() ) {
-            TreeItem item = (TreeItem) it.next();
-            String id = itemWidgets.get( item );
+        for (Iterator<Map.Entry<TreeItem, String>> it = itemWidgets.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<TreeItem, String> entry = it.next();
+            TreeItem item = entry.getKey();
+            String id = entry.getValue();
             if ( id.startsWith( ExplorerNodeConfig.STATES_ID + "-" ) ) {
                 it.remove();
             }
@@ -141,10 +141,10 @@ public class BrowseTree extends AbstractTree
     }
 
     private void removeCategoryIDs(Map<TreeItem, String> itemWidgets) {
-        Iterator<TreeItem> it = itemWidgets.keySet().iterator();
-        while ( it.hasNext() ) {
-            TreeItem item = (TreeItem) it.next();
-            String id = itemWidgets.get( item );
+        for (Iterator<Map.Entry<TreeItem, String>> it = itemWidgets.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<TreeItem, String> entry = it.next();
+            TreeItem item = entry.getKey();
+            String id = entry.getValue();
             if ( id.startsWith( ExplorerNodeConfig.CATEGORY_ID + "-" ) ) {
                 it.remove();
             }
