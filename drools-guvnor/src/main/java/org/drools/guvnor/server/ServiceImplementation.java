@@ -975,22 +975,22 @@ public class ServiceImplementation implements RepositoryService {
 
     // HashMap DOES NOT guarantee order in different iterations!
     private static KeyValueTO convertMapToCsv(final Map map) {
-        String keys = "";
-        String values = "";
+        StringBuilder keysBuilder = new StringBuilder();
+        StringBuilder valuesBuilder = new StringBuilder();
         for ( Iterator i = map.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry entry = (Map.Entry) i.next();
-            if ( keys.length() > 0 ) {
-                keys += ",";
+            if ( keysBuilder.length() > 0 ) {
+                keysBuilder.append(",");
             }
 
-            if ( values.length() > 0 ) {
-                values += ",";
+            if ( valuesBuilder.length() > 0 ) {
+                valuesBuilder.append(",");
             }
 
-            keys += entry.getKey();
-            values += entry.getValue();
+            keysBuilder.append(entry.getKey());
+            valuesBuilder.append(entry.getValue());
         }
-        return new KeyValueTO( keys, values );
+        return new KeyValueTO( keysBuilder.toString(), valuesBuilder.toString() );
     }
 
     private static class KeyValueTO {
