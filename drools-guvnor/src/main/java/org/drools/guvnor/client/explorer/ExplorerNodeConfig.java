@@ -45,10 +45,10 @@ public class ExplorerNodeConfig {
 
     //Browse
     public static final String FIND_ID                = "find";
-    public static String       CATEGORY_ROOT_ID       = "rootcategory";                             //NON-NLS
-    public static String       CATEGORY_ID            = "category";                                 //NON-NLS
-    public static String       STATES_ID              = "states";                                   //NON-NLS
-    public static String       STATES_ROOT_ID         = "rootstates";                               //NON-NLS
+    public static final String CATEGORY_ROOT_ID = "rootcategory";                             //NON-NLS
+    public static final String CATEGORY_ID      = "category";                                 //NON-NLS
+    public static final String STATES_ID        = "states";                                   //NON-NLS
+    public static final String STATES_ROOT_ID   = "rootstates";                               //NON-NLS
     public static final String RECENT_EDITED_ID       = "recentEdited";
     public static final String RECENT_VIEWED_ID       = "recentViewed";
     public static final String INCOMING_ID            = "incoming";
