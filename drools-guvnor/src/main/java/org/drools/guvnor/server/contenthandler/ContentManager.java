@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 public class ContentManager {
 
 	private static final Logger log = LoggerFactory.getLogger( ContentManager.class );
-	public static String CONTENT_CONFIG_PROPERTIES = "/contenthandler.properties";
+	public static final String CONTENT_CONFIG_PROPERTIES = "/contenthandler.properties";
 	private static ContentManager INSTANCE;
 
     /**
