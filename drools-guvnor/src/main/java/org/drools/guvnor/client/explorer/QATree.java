@@ -114,10 +114,10 @@ public class QATree extends AbstractTree
     }
 
     private void removeTestScenarioIDs(Map<TreeItem, String> itemWidgets) {
-        Iterator<TreeItem> it = itemWidgets.keySet().iterator();
-        while ( it.hasNext() ) {
-            TreeItem item = (TreeItem) it.next();
-            String id = itemWidgets.get( item );
+        for (Iterator<Map.Entry<TreeItem, String>> it = itemWidgets.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<TreeItem, String> entry = it.next();
+            TreeItem item = entry.getKey();
+            String id = entry.getValue();
             if ( ExplorerNodeConfig.TEST_SCENARIOS_ID.equals( id ) ) {
                 it.remove();
             }
@@ -125,10 +125,10 @@ public class QATree extends AbstractTree
     }
 
     private void removeAnalysisIDs(Map<TreeItem, String> itemWidgets) {
-        Iterator<TreeItem> it = itemWidgets.keySet().iterator();
-        while ( it.hasNext() ) {
-            TreeItem item = (TreeItem) it.next();
-            String id = itemWidgets.get( item );
+        for (Iterator<Map.Entry<TreeItem, String>> it = itemWidgets.entrySet().iterator(); it.hasNext();) {
+            Map.Entry<TreeItem, String> entry = it.next();
+            TreeItem item = entry.getKey();
+            String id = entry.getValue();
             if ( ExplorerNodeConfig.ANALYSIS_ID.equals( id ) ) {
                 it.remove();
             }
