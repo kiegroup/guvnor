@@ -89,7 +89,6 @@ public class VerticalDecisionTableWidget extends Composite
         initWidget( widget );
     }
 
-    @Override
     public void addColumn(DTColumnConfig modelColumn) {
         if ( modelColumn == null ) {
             throw new IllegalArgumentException(
@@ -99,7 +98,6 @@ public class VerticalDecisionTableWidget extends Composite
                    true );
     }
 
-    @Override
     public void appendRow() {
         DynamicDataRow row = makeNewRow();
         widget.appendRow( row );
@@ -107,7 +105,6 @@ public class VerticalDecisionTableWidget extends Composite
         redrawSystemControlledColumns();
     }
 
-    @Override
     public void deleteColumn(DTColumnConfig modelColumn) {
         if ( modelColumn == null ) {
             throw new IllegalArgumentException(
@@ -118,7 +115,6 @@ public class VerticalDecisionTableWidget extends Composite
         widget.deleteColumn( col );
     }
 
-    @Override
     public void deleteRow(DynamicDataRow row) {
         if ( row == null ) {
             throw new IllegalArgumentException( "row cannot be null" );
@@ -146,7 +142,6 @@ public class VerticalDecisionTableWidget extends Composite
         return this.sce;
     }
 
-    @Override
     public void insertRowBefore(DynamicDataRow rowBefore) {
         if ( rowBefore == null ) {
             throw new IllegalArgumentException( "rowBefore cannot be null" );
@@ -243,7 +238,6 @@ public class VerticalDecisionTableWidget extends Composite
         this.model.setData( grid );
     }
 
-    @Override
     public void setColumnVisibility(DTColumnConfig modelColumn,
                                     boolean isVisible) {
         if ( modelColumn == null ) {
@@ -663,7 +657,6 @@ public class VerticalDecisionTableWidget extends Composite
 
     }
 
-    @Override
     public void updateSystemControlledColumnValues() {
 
         DynamicData data = widget.getData();

@@ -701,7 +701,6 @@ public class VerticalDecisionTableHeaderWidget extends
 
     }
 
-    @Override
     public HandlerRegistration addColumnResizeHandler(
                                                       ColumnResizeHandler handler) {
         if ( handler == null ) {
@@ -712,7 +711,6 @@ public class VerticalDecisionTableHeaderWidget extends
                            ColumnResizeEvent.getType() );
     }
 
-    @Override
     public HandlerRegistration addResizeHandler(ResizeHandler handler) {
         if ( handler == null ) {
             throw new IllegalArgumentException( "handler cannot be null" );

@@ -100,7 +100,6 @@ public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
         this.headerWidget = headerWidget;
         headerWidget.addColumnResizeHandler( new ColumnResizeHandler() {
 
-            @Override
             public void onColumnResize(ColumnResizeEvent event) {
                 gridWidget.resizeColumn( event.getColumn(),
                                          event.getWidth() );
