@@ -38,6 +38,14 @@ public class Coordinate {
 		this.displayString = "(R" + row + ",C" + col + ")";
 	}
 
+	public int getCol() {
+		return this.col;
+	}
+
+	public int getRow() {
+		return this.row;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (o == null) {
@@ -45,14 +53,6 @@ public class Coordinate {
 		}
 		Coordinate c = (Coordinate) o;
 		return c.col == col && c.row == row;
-	}
-
-	public int getCol() {
-		return this.col;
-	}
-
-	public int getRow() {
-		return this.row;
 	}
 
 	@Override
