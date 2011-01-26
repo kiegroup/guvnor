@@ -2527,7 +2527,7 @@ public class ServiceImplementation implements RepositoryService {
         while ( rightExistingIter.hasNext() ) {
             AssetItem right = rightExistingIter.next();
             AssetItem left = null;
-            if ( leftPackage.containsAsset( right.getName() ) ) {
+            if ( right != null && leftPackage.containsAsset( right.getName() ) ) {
                 left = leftPackage.loadAsset( right.getName() );
             }
 
