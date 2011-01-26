@@ -2542,9 +2542,7 @@ public class ServiceImplementation implements RepositoryService {
                 }
 
                 list.add( diff );
-            } else
-            // Has the asset been archived or restored
-            if ( isAssetArchivedOrRestored( right, left ) ) {
+            } else if ( isAssetArchivedOrRestored( right, left ) ) { // Has the asset been archived or restored
                 SnapshotDiff diff = new SnapshotDiff();
 
                 diff.name = right.getName();
@@ -2558,9 +2556,7 @@ public class ServiceImplementation implements RepositoryService {
                 }
 
                 list.add( diff );
-            } else
-            // Has the asset been updated
-            if ( isAssetItemUpdated( right, left ) ) {
+            } else if ( isAssetItemUpdated( right, left ) ) { // Has the asset been updated
                 SnapshotDiff diff = new SnapshotDiff();
 
                 diff.name = right.getName();
