@@ -33,7 +33,7 @@ import org.drools.repository.AssetItem;
 public class SelectorManager {
 
 	private static final Logger log = LoggerFactory.getLogger( SelectorManager.class );
-	public static String SELECTOR_CONFIG_PROPERTIES = "/selectors.properties";
+	public static final String SELECTOR_CONFIG_PROPERTIES = "/selectors.properties";
 	private static final SelectorManager INSTANCE = new SelectorManager(SELECTOR_CONFIG_PROPERTIES);
 
     /**
