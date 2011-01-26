@@ -51,6 +51,17 @@ public class CompositeFactPattern
     public CompositeFactPattern() {
     }
 
+    public void clearFactPatterns(){
+        this.patterns = new FactPattern[0];
+    }
+    
+    public void addFactPatterns(IFactPattern[] patterns){
+        for (int i = 0; i < patterns.length; i++) {
+            IFactPattern iFactPattern = patterns[i];
+            this.addFactPattern(iFactPattern);
+        }
+    }
+    
     public void addFactPattern(final IFactPattern pat) {
         if ( this.patterns == null ) {
             this.patterns = new FactPattern[0];
