@@ -157,7 +157,7 @@ public class VerifyRulesFiredWidget extends Composite {
                         num.setVisible( true );
                         v.expectedFire = null;
                         num.setText( "1" );
-                        v.expectedCount = new Integer( 1 );
+                        v.expectedCount = Integer.valueOf( 1 );
                     }
                 }
             } );
