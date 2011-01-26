@@ -34,7 +34,7 @@ public class DecisionTableControlsWidget extends Composite {
 
 	private Panel panel = new HorizontalPanel();
 
-	public DecisionTableControlsWidget(final VerticalDecisionTableWidget dtable) {
+	public DecisionTableControlsWidget(final HasRows dtable) {
 
 		// Add row button
 		Button btnAddRow = new Button("Add Row", new ClickHandler() {
@@ -44,16 +44,7 @@ public class DecisionTableControlsWidget extends Composite {
 			}
 		});
 		panel.add(btnAddRow);
-		
-	      // Add redraw header button
-        Button btnRedrawHeader = new Button("RH", new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                dtable.redrawHeader();
-            }
-        });
-        panel.add(btnRedrawHeader);
-
+        
 		initWidget(panel);
 
 	}

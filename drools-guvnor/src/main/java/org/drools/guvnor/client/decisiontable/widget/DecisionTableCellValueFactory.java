@@ -38,10 +38,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
  */
 public class DecisionTableCellValueFactory {
 
-    // Dates are serialised and de-serialised to this fixed (locale-independent)
-    // format (for now)
-    private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat( "dd-MMM-yyyy" );
-
     // Recognised data-types
     private enum DATA_TYPES {
         STRING() {
@@ -191,38 +187,27 @@ public class DecisionTableCellValueFactory {
 
     }
 
-    // The Singleton
-    private static DecisionTableCellValueFactory instance;
+    // Dates are serialised and de-serialised to locale-independent format
+    private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat( "dd-MMM-yyyy" );
 
-    // Singleton constructor
-    public static synchronized DecisionTableCellValueFactory getInstance() {
-        if ( instance == null ) {
-            instance = new DecisionTableCellValueFactory();
-        }
-        return instance;
-    }
+    // Model used to determine data-types etc for cells
+    private GuidedDecisionTable         model;
+
+    // SuggestionCompletionEngine to aid data-type resolution etc
+    private SuggestionCompletionEngine  sce;
 
     /**
-     * Serialise value to a String
+     * Construct a Cell Value Factory for a specific Decision Table
      * 
      * @param dtable
-     *            The Decision Table with which an SCE is associated
-     * @param column
-     *            The model column
-     * @param cv
-     *            CellValue for which value will be serialised
-     * @return String representation of value
+     *            Decision Table to which Factory relates
      */
-    public String serialiseValue(VerticalDecisionTableWidget dtable,
-                                 DTColumnConfig column,
-                                 CellValue< ? > cv) {
-        DATA_TYPES dataType = getDataType( column,
-                                           dtable );
-        return dataType.serialiseValue( cv );
-
-    }
-
-    private DecisionTableCellValueFactory() {
+    public DecisionTableCellValueFactory(VerticalDecisionTableWidget dtable) {
+        if ( dtable == null ) {
+            throw new IllegalArgumentException( "dtable cannot be null" );
+        }
+        this.model = dtable.getModel();
+        this.sce = dtable.getSCE();
     }
 
     /**
@@ -236,28 +221,39 @@ public class DecisionTableCellValueFactory {
      *            Column coordinate for initialisation
      * @param initialValue
      *            The initial value of the cell
-     * @param dtable
-     *            The Decision Table
      * @return A CellValue
      */
     public CellValue< ? extends Comparable< ? >> getCellValue(
                                                               DTColumnConfig column,
                                                               int iRow,
                                                               int iCol,
-                                                              String initialValue,
-                                                              VerticalDecisionTableWidget dtable) {
-        DATA_TYPES dataType = getDataType( column,
-                                           dtable );
+                                                              String initialValue) {
+        DATA_TYPES dataType = getDataType( column );
         CellValue< ? extends Comparable< ? >> cell = dataType.getNewCellValue(
                                                                                iRow,
                                                                                iCol,
                                                                                initialValue );
         return cell;
     }
-    
+
+    /**
+     * Serialise value to a String
+     * 
+     * @param column
+     *            The model column
+     * @param cv
+     *            CellValue for which value will be serialised
+     * @return String representation of value
+     */
+    public String serialiseValue(DTColumnConfig column,
+                                 CellValue< ? > cv) {
+        DATA_TYPES dataType = getDataType( column );
+        return dataType.serialiseValue( cv );
+
+    }
+
     // Get the Data Type corresponding to a given column
-    private DATA_TYPES getDataType(DTColumnConfig column,
-                                   VerticalDecisionTableWidget dtable) {
+    private DATA_TYPES getDataType(DTColumnConfig column) {
 
         DATA_TYPES dataType = DATA_TYPES.STRING;
 
@@ -292,16 +288,13 @@ public class DecisionTableCellValueFactory {
             }
 
         } else if ( column instanceof ConditionCol ) {
-            dataType = makeNewCellDataType( column,
-                                            dtable );
+            dataType = makeNewCellDataType( column );
 
         } else if ( column instanceof ActionSetFieldCol ) {
-            dataType = makeNewCellDataType( column,
-                                            dtable );
+            dataType = makeNewCellDataType( column );
 
         } else if ( column instanceof ActionInsertFactCol ) {
-            dataType = makeNewCellDataType( column,
-                                            dtable );
+            dataType = makeNewCellDataType( column );
 
         }
 
@@ -310,11 +303,8 @@ public class DecisionTableCellValueFactory {
     }
 
     // Derive the Data Type for a Condition or Action column
-    private DATA_TYPES makeNewCellDataType(DTColumnConfig col,
-                                           VerticalDecisionTableWidget dtable) {
+    private DATA_TYPES makeNewCellDataType(DTColumnConfig col) {
 
-        GuidedDecisionTable model = dtable.getModel();
-        SuggestionCompletionEngine sce = dtable.getSCE();
         DATA_TYPES dataType = DATA_TYPES.STRING;
 
         // Columns with lists of values, enums etc are always Text (for now)

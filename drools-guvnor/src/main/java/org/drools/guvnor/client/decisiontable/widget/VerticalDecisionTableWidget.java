@@ -68,16 +68,14 @@ public class VerticalDecisionTableWidget extends Composite
     protected GuidedDecisionTable                 model;
     protected DecoratedGridWidget<DTColumnConfig> widget;
     protected SuggestionCompletionEngine          sce;
+    protected DecisionTableCellFactory            cellFactory;
+    protected DecisionTableCellValueFactory       cellValueFactory;
 
-    public void redrawHeader() {
-        widget.getHeaderWidget().redraw();
-    }
-    
     public VerticalDecisionTableWidget(SuggestionCompletionEngine sce) {
+
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
-
         this.sce = sce;
 
         // Construct the widget from which we're composed
@@ -87,6 +85,7 @@ public class VerticalDecisionTableWidget extends Composite
                                                                                                      this );
         widget.setHeaderWidget( header );
         widget.setSidebarWidget( sidebar );
+        widget.setHasSystemControlledColumns( this );
         initWidget( widget );
     }
 
@@ -235,9 +234,8 @@ public class VerticalDecisionTableWidget extends Composite
             for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
                 CellValue< ? > cv = dataRow.get( iCol );
                 DynamicColumn<DTColumnConfig> column = columns.get( iCol );
-                String serialisedValue = DecisionTableCellValueFactory.getInstance().serialiseValue( this,
-                                                                                                     column.getModelColumn(),
-                                                                                                     cv );
+                String serialisedValue = cellValueFactory.serialiseValue( column.getModelColumn(),
+                                                                          cv );
                 row[iCol] = serialisedValue;
             }
             grid[iRow] = row;
@@ -269,6 +267,9 @@ public class VerticalDecisionTableWidget extends Composite
         }
 
         this.model = model;
+        this.cellFactory = new DecisionTableCellFactory( this,
+                                                         widget );
+        this.cellValueFactory = new DecisionTableCellValueFactory( this );
 
         widget.getData().clear();
         widget.getColumns().clear();
@@ -285,10 +286,7 @@ public class VerticalDecisionTableWidget extends Composite
         DynamicColumn<DTColumnConfig> columnStatic;
         colStatic = model.getRowNumberCol();
         columnStatic = new DynamicColumn<DTColumnConfig>( colStatic,
-                                                          DecisionTableCellFactory.getInstance()
-                                                                  .getCell( colStatic,
-                                                                            this,
-                                                                            widget ),
+                                                          cellFactory.getCell( colStatic ),
                                                           colIndex,
                                                           true,
                                                           false );
@@ -301,10 +299,7 @@ public class VerticalDecisionTableWidget extends Composite
         // Static columns, Description
         colStatic = model.getDescriptionCol();
         columnStatic = new DynamicColumn<DTColumnConfig>( colStatic,
-                                                          DecisionTableCellFactory.getInstance()
-                                                                  .getCell( colStatic,
-                                                                            this,
-                                                                            widget ),
+                                                          cellFactory.getCell( colStatic ),
                                                           colIndex );
         widget.appendColumn( columnStatic,
                              makeColumnData( colStatic,
@@ -314,10 +309,7 @@ public class VerticalDecisionTableWidget extends Composite
         // Initialise CellTable's Metadata columns
         for ( DTColumnConfig col : model.getMetadataCols() ) {
             DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( col,
-                                                                                      DecisionTableCellFactory
-                                                                                              .getInstance().getCell( col,
-                                                                                                                      this,
-                                                                                                                      widget ),
+                                                                                      cellFactory.getCell( col ),
                                                                                       colIndex );
             column.setVisible( !col.isHideColumn() );
             widget.appendColumn( column,
@@ -329,10 +321,7 @@ public class VerticalDecisionTableWidget extends Composite
         // Initialise CellTable's Attribute columns
         for ( DTColumnConfig col : model.getAttributeCols() ) {
             DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( col,
-                                                                                      DecisionTableCellFactory
-                                                                                              .getInstance().getCell( col,
-                                                                                                                      this,
-                                                                                                                      widget ),
+                                                                                      cellFactory.getCell( col ),
                                                                                       colIndex );
             column.setVisible( !col.isHideColumn() );
             column.setSystemControlled( col.isUseRowNumber() );
@@ -347,10 +336,7 @@ public class VerticalDecisionTableWidget extends Composite
         assertConditionColumnGrouping( model );
         for ( DTColumnConfig col : model.getConditionCols() ) {
             DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( col,
-                                                                                      DecisionTableCellFactory
-                                                                                              .getInstance().getCell( col,
-                                                                                                                      this,
-                                                                                                                      widget ),
+                                                                                      cellFactory.getCell( col ),
                                                                                       colIndex );
             column.setVisible( !col.isHideColumn() );
             widget.appendColumn( column,
@@ -362,10 +348,7 @@ public class VerticalDecisionTableWidget extends Composite
         // Initialise CellTable's Action columns
         for ( DTColumnConfig col : model.getActionCols() ) {
             DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( col,
-                                                                                      DecisionTableCellFactory
-                                                                                              .getInstance().getCell( col,
-                                                                                                                      this,
-                                                                                                                      widget ),
+                                                                                      cellFactory.getCell( col ),
                                                                                       colIndex );
             column.setVisible( !col.isHideColumn() );
             widget.appendColumn( column,
@@ -715,10 +698,7 @@ public class VerticalDecisionTableWidget extends Composite
                         }
                     }
                     // Ensure Salience cells are rendered with the correct Cell
-                    col.setCell( DecisionTableCellFactory.getInstance()
-                            .getCell( attrCol,
-                                      this,
-                                      widget ) );
+                    col.setCell( cellFactory.getCell( attrCol ) );
                     col.setSystemControlled( attrCol.isUseRowNumber() );
                     col.setSortable( !attrCol.isUseRowNumber() );
                 }
@@ -899,10 +879,7 @@ public class VerticalDecisionTableWidget extends Composite
 
         // Create new column for grid
         DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( modelColumn,
-                                                                                  DecisionTableCellFactory
-                                                                                          .getInstance().getCell( modelColumn,
-                                                                                                                  this,
-                                                                                                                  widget ),
+                                                                                  cellFactory.getCell( modelColumn ),
                                                                                   index );
         column.setVisible( !modelColumn.isHideColumn() );
         DynamicColumn<DTColumnConfig> columnBefore = widget.getColumns().get( index );
@@ -911,12 +888,10 @@ public class VerticalDecisionTableWidget extends Composite
         DynamicData data = widget.getData();
         List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            CellValue< ? > cell = DecisionTableCellValueFactory.getInstance().getCellValue(
-                                                                                            modelColumn,
-                                                                                            iRow,
-                                                                                            index,
-                                                                                            modelColumn.getDefaultValue(),
-                                                                                            this );
+            CellValue< ? > cell = cellValueFactory.getCellValue( modelColumn,
+                                                                 iRow,
+                                                                 index,
+                                                                 modelColumn.getDefaultValue() );
             columnData.add( cell );
         }
 
@@ -961,12 +936,10 @@ public class VerticalDecisionTableWidget extends Composite
         List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
             String[] row = model.getData()[iRow];
-            CellValue< ? extends Comparable< ? >> cv = DecisionTableCellValueFactory
-                        .getInstance().getCellValue( column,
-                                                     iRow,
-                                                     colIndex,
-                                                     row[colIndex],
-                                                     this );
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( column,
+                                                                                      iRow,
+                                                                                      colIndex,
+                                                                                      row[colIndex] );
             columnData.add( cv );
         }
         return columnData;
@@ -978,12 +951,10 @@ public class VerticalDecisionTableWidget extends Composite
         List<DynamicColumn<DTColumnConfig>> columns = widget.getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             DTColumnConfig col = columns.get( iCol ).getModelColumn();
-            CellValue< ? extends Comparable< ? >> cv = DecisionTableCellValueFactory
-                        .getInstance().getCellValue( col,
-                                                     0,
-                                                     iCol,
-                                                     col.getDefaultValue(),
-                                                     this );
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( col,
+                                                                                      0,
+                                                                                      iCol,
+                                                                                      col.getDefaultValue() );
             row.add( cv );
         }
         return row;
@@ -1036,17 +1007,14 @@ public class VerticalDecisionTableWidget extends Composite
     private void updateCellsForDataType(final DTColumnConfig editColumn,
                                         final DynamicColumn<DTColumnConfig> column) {
         DynamicData data = widget.getData();
-        column.setCell( DecisionTableCellFactory.getInstance().getCell( editColumn,
-                                                                        this,
-                                                                        widget ) );
+        column.setCell( cellFactory.getCell( editColumn ) );
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             DynamicDataRow row = data.get( iRow );
             row.set( column.getColumnIndex(),
-                     DecisionTableCellValueFactory.getInstance().getCellValue( editColumn,
-                                                                               iRow,
-                                                                               column.getColumnIndex(),
-                                                                               null,
-                                                                               this ) );
+                     cellValueFactory.getCellValue( editColumn,
+                                                    iRow,
+                                                    column.getColumnIndex(),
+                                                    null ) );
         }
 
         // Setting CellValues mashes the indexes
@@ -1060,9 +1028,7 @@ public class VerticalDecisionTableWidget extends Composite
         DynamicData data = widget.getData();
         List<String> vals = Arrays.asList( model.getValueList( editColumn,
                                                                sce ) );
-        column.setCell( DecisionTableCellFactory.getInstance().getCell( editColumn,
-                                                                        this,
-                                                                        widget ) );
+        column.setCell( cellFactory.getCell( editColumn ) );
         int iCol = column.getColumnIndex();
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             DynamicDataRow row = data.get( iRow );

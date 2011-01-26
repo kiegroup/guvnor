@@ -38,27 +38,44 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 
 /**
- * A Factory to provide the Cell specific to a given coordinate.
+ * A Factory to provide the Cells for given coordinate for Decision Tables.
  * 
  * @author manstis
  * 
  */
-public class DecisionTableCellFactory<T> {
+public class DecisionTableCellFactory {
 
-    private static String[]    DIALECTS = {"java", "mvel"};
+    private static String[]                     DIALECTS = {"java", "mvel"};
 
-    // The Singleton
-    private static DecisionTableCellFactory<DTColumnConfig> instance;
+    // The containing DecoratedGridWidget to which cells will send their updates
+    private DecoratedGridWidget<DTColumnConfig> grid;
 
-    // Singleton constructor
-    public static synchronized DecisionTableCellFactory<DTColumnConfig> getInstance() {
-        if ( instance == null ) {
-            instance = new DecisionTableCellFactory<DTColumnConfig>();
+    // SuggestionCompletionEngine to aid data-type resolution etc
+    private SuggestionCompletionEngine          sce;
+
+    // Model used to determine data-types etc for cells
+    private GuidedDecisionTable                 model;
+
+    /**
+     * Construct a Cell Factory for a specific Decision Table
+     * 
+     * @param dtable
+     *            Decision Table to which Factory relates
+     * @param grid
+     *            DecoratedGridWidget to which cells will send their updates
+     */
+    public DecisionTableCellFactory(VerticalDecisionTableWidget dtable,
+                                    DecoratedGridWidget<DTColumnConfig> grid) {
+        if ( dtable == null ) {
+            throw new IllegalArgumentException( "dtable cannot be null" );
         }
-        return instance;
-    }
+        if ( grid == null ) {
+            throw new IllegalArgumentException( "grid cannot be null" );
+        }
 
-    private DecisionTableCellFactory() {
+        this.model = dtable.getModel();
+        this.sce = dtable.getSCE();
+        this.grid = grid;
     }
 
     /**
@@ -66,15 +83,11 @@ public class DecisionTableCellFactory<T> {
      * 
      * @param column
      *            The Decision Table model column
-     * @param dtable
-     *            The Decision Table. This is used to extract
      * @return A Cell
      */
-    public DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> getCell(
-                                                                             DTColumnConfig column,
-                                                                             VerticalDecisionTableWidget dtable, DecoratedGridWidget<T> grid) {
+    public DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> getCell(DTColumnConfig column) {
 
-        DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> cell = makeTextCell();
+        DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> cell = makeTextCell();
 
         if ( column instanceof RowNumberCol ) {
             cell = makeRowNumberCell();
@@ -107,16 +120,13 @@ public class DecisionTableCellFactory<T> {
             }
 
         } else if ( column instanceof ConditionCol ) {
-            cell = makeNewCell( column,
-                                dtable );
+            cell = makeNewCell( column );
 
         } else if ( column instanceof ActionSetFieldCol ) {
-            cell = makeNewCell( column,
-                                dtable );
+            cell = makeNewCell( column );
 
         } else if ( column instanceof ActionInsertFactCol ) {
-            cell = makeNewCell( column,
-                                dtable );
+            cell = makeNewCell( column );
 
         }
 
@@ -124,33 +134,30 @@ public class DecisionTableCellFactory<T> {
         return cell;
 
     }
-    
+
     // Make a new Cell for Boolean columns
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> makeBooleanCell() {
-        return new DecisionTableCellValueAdaptor<Boolean, T>( new CheckboxCell() );
+    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeBooleanCell() {
+        return new DecisionTableCellValueAdaptor<Boolean, DTColumnConfig>( new CheckboxCell() );
     }
 
     // Make a new Cell for Date columns
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> makeDateCell() {
-        return new DecisionTableCellValueAdaptor<Date, T>( new PopupDateEditCell(
-                                                                               DateTimeFormat.getFormat( PredefinedFormat.DATE_SHORT ) ) );
+    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeDateCell() {
+        return new DecisionTableCellValueAdaptor<Date, DTColumnConfig>( new PopupDateEditCell(
+                                                                                               DateTimeFormat.getFormat( PredefinedFormat.DATE_SHORT ) ) );
     }
 
     // Make a new Cell for Dialect columns
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> makeDialectCell() {
+    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeDialectCell() {
         PopupDropDownEditCell pudd = new PopupDropDownEditCell();
         pudd.setItems( DIALECTS );
-        return new DecisionTableCellValueAdaptor<String, T>( pudd );
+        return new DecisionTableCellValueAdaptor<String, DTColumnConfig>( pudd );
     }
 
     // Make a new Cell for Condition and Actions columns
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> makeNewCell(
-                                                                                  DTColumnConfig col,
-                                                                                  VerticalDecisionTableWidget dtable) {
+    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeNewCell(
+                                                                                                  DTColumnConfig col) {
 
-        GuidedDecisionTable model = dtable.getModel();
-        SuggestionCompletionEngine sce = dtable.getSCE();
-        DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> cell = makeTextCell();
+        DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> cell = makeTextCell();
 
         // Columns with lists of values, enums etc are always Text (for now)
         String[] vals = model.getValueList( col,
@@ -169,26 +176,26 @@ public class DecisionTableCellFactory<T> {
         } else {
             PopupDropDownEditCell pudd = new PopupDropDownEditCell();
             pudd.setItems( vals );
-            cell = new DecisionTableCellValueAdaptor<String, T>( pudd );
+            cell = new DecisionTableCellValueAdaptor<String, DTColumnConfig>( pudd );
         }
         return cell;
     }
 
     // Make a new Cell for Numeric columns
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> makeNumericCell() {
-        return new DecisionTableCellValueAdaptor<Integer, T>(
-                                                           new PopupNumericEditCell() );
+    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeNumericCell() {
+        return new DecisionTableCellValueAdaptor<Integer, DTColumnConfig>(
+                                                                           new PopupNumericEditCell() );
     }
 
     // Make a new Cell for String columns
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> makeRowNumberCell() {
-        return new DecisionTableCellValueAdaptor<Integer, T>( new RowNumberCell() );
+    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeRowNumberCell() {
+        return new DecisionTableCellValueAdaptor<Integer, DTColumnConfig>( new RowNumberCell() );
     }
 
     // Make a new Cell for a RowNumberCol
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> makeTextCell() {
-        return new DecisionTableCellValueAdaptor<String, T>(
-                                                          new PopupTextEditCell() );
+    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeTextCell() {
+        return new DecisionTableCellValueAdaptor<String, DTColumnConfig>(
+                                                                          new PopupTextEditCell() );
     }
 
 }

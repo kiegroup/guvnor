@@ -775,14 +775,6 @@ public class VerticalDecisionTableHeaderWidget extends
                                      Unit.PX );
         }
 
-        // Row 1 (Splitter)
-        if ( widget.visibleConditionCols.size() > 0 ) {
-            tce = widget.rowHeaders[1].getChild( 0 ).<TableCellElement> cast();
-            div = tce.getFirstChild().<DivElement> cast();
-            div.getStyle().setWidth( conditionColsWidth,
-                                     Unit.PX );
-        }
-
         // Row 2 (Fact Types)
         int iColColumn = 0;
         for ( int iCol = 0; iCol < widget.visibleConditionCols.size(); iCol++ ) {

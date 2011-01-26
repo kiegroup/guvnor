@@ -49,6 +49,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -556,14 +557,31 @@ public class GuidedDecisionTableWidget extends Composite
 
                                                    addbutton.addClickHandler( new ClickHandler() {
                                                        public void onClick(ClickEvent w) {
+
+                                                           String metadata = box.getText();
+                                                           if ( !isUnique( metadata ) ) {
+                                                               Window.alert( constants
+                                                                       .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                                                               return;
+                                                           }
                                                            MetadataCol met = new MetadataCol();
                                                            met.setHideColumn( true );
-                                                           met.setMetadata( box.getText() );
+                                                           met.setMetadata( metadata );
                                                            dtable.addColumn( met );
                                                            dtable.scrapeColumns();
                                                            refreshAttributeWidget();
                                                            pop.hide();
                                                        }
+
+                                                       private boolean isUnique(String metadata) {
+                                                           for ( MetadataCol mc : guidedDecisionTable.getMetadataCols() ) {
+                                                               if ( metadata.equals( mc.getMetadata() ) ) {
+                                                                   return false;
+                                                               }
+                                                           }
+                                                           return true;
+                                                       }
+
                                                    } );
                                                    DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
                                                    horiz.add( box );
