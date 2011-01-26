@@ -82,7 +82,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
         AssetItem header = pkg.addAsset( "drools",
                                          "" );
         header.updateFormat( "package" );
-        header.updateContent( "import org.drools.SampleFact\n global org.drools.SampleFact sf" );
+        header.updateContent( "import org.drools.guvnor.server.files.SampleFact\n global org.drools.guvnor.server.files.SampleFact sf" );
         header.checkin( "" );
 
         AssetItem asset = pkg.addAsset( "someRule",
@@ -386,7 +386,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
         asset.updateFormat( "pgn" );
         File imageFile = new File( getClass().getResource( "resources/myprocess.png" ).toURI() );
         asset.updateBinaryContentAttachment( new FileInputStream( imageFile ) );
-        asset.updateContent( "import org.drools.SampleFact\n global org.drools.SampleFact sf" );
+        asset.updateContent( "import org.drools.guvnor.server.files.SampleFact\n global org.drools.guvnor.server.files.SampleFact sf" );
         asset.checkin( "" );
 
         AssetItem assetnew = repo.loadAssetByUUID( asset.getUUID() );

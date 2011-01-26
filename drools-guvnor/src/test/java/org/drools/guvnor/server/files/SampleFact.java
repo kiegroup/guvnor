@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools;
+package org.drools.guvnor.server.files;
 
 import java.util.Date;
 
