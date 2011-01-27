@@ -621,6 +621,27 @@ public class ServiceImplementation implements RepositoryService {
             asset.updateContent( "when\n\t#conditions\nthen\n\t#actions" );
         } else if ( format.equals( AssetFormats.ENUMERATION ) ) {
 
+        } else if ( format.equals( AssetFormats.SPRING_CONTEXT)){
+            String content = "";
+            content += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+            content += "<beans xmlns=\"http://www.springframework.org/schema/beans\" ";
+            content += "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ";
+            content += "xmlns:drools=\"http://drools.org/schema/drools-spring\" ";
+            content += "xsi:schemaLocation=\"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://drools.org/schema/drools-spring org/drools/container/spring/drools-spring-1.2.0.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd\">";
+       
+            content += "\n\n\n";
+            
+            content += "\t<drools:grid-node id=\"node1\" />\n";
+            
+            content += "\t<drools:kbase id=\"kbase1\" node=\"node1\">\n";
+            
+            content += "\t<drools:ksession id=\"ksession1\" type=\"stateful\" kbase=\"kbase1\" node=\"node1\"/>";
+            
+            content += "\n\n\n";
+            
+            content += "</beans>";
+       
+            asset.updateContent(content);
         }
     }
 

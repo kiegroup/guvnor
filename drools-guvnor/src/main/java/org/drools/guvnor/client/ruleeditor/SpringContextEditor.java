@@ -60,19 +60,18 @@ public class SpringContextEditor extends DirtyableComposite
                                     int visibleLines) {
         asset = a;
                        
-        //data = (RuleContentText) asset.content;
+        data = (RuleContentText) asset.content;
         
-        data= null;
         
-        //if ( data.content == null ) {
-        //    data.content = "";
-        //}
+        
+        if ( data.content == null ) {
+            data.content = "Empty!";
+        }
         
         text = new TextArea();
         text.setWidth( "100%" );
         text.setVisibleLines( (visibleLines == -1) ? 16 : visibleLines );
-        //text.setText( data.content );
-        text.setText("Spring Context");
+        text.setText( data.content );
         text.getElement().setAttribute( "spellcheck",
                                         "false" ); //NON-NLS
 
@@ -80,7 +79,7 @@ public class SpringContextEditor extends DirtyableComposite
 
         text.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
-                //data.content = text.getText();
+                data.content = text.getText();
                 makeDirty();
             }
         } );
@@ -109,7 +108,7 @@ public class SpringContextEditor extends DirtyableComposite
         String right = text.getText().substring( i,
                                                  text.getText().length() );
         text.setText( left + ins + right );
-        //this.data.content = text.getText();
+        this.data.content = text.getText();
     }
 
 	public void onSave() {
