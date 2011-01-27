@@ -174,7 +174,7 @@ public class DataInputWidget extends DirtyableFlexTable {
                 // Set Header
                 setWidget( 0,
                            ++col,
-                           new SmallLabel( "[" + factData.getFactName() + "]" ) );
+                           new SmallLabel( "[" + factData.getName() + "]" ) );
 
                 Map<String, Integer> presentFields = new HashMap<String, Integer>();
 
@@ -184,7 +184,7 @@ public class DataInputWidget extends DirtyableFlexTable {
                     if ( rowIndexByFieldName.doesNotContain( fieldData.getName() ) ) {
                         newRow( rowIndexByFieldName,
                                 totalCols,
-                                factData.getFactName(),
+                                factData.getName(),
                                 fieldData.getName() );
                     }
 
@@ -284,15 +284,15 @@ public class DataInputWidget extends DirtyableFlexTable {
         public DeleteFactColumnButton(final FactData factData) {
             super( images.deleteItemSmall(),
                    Format.format( constants.RemoveTheColumnForScenario(),
-                                  factData.getFactName() ) );
+                                  factData.getName() ) );
 
             addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     if ( scenario.isFactDataReferenced( factData ) ) {
                         Window.alert( Format.format( constants.CanTRemoveThisColumnAsTheName0IsBeingUsed(),
-                                                     factData.getFactName() ) );
+                                                     factData.getName() ) );
                     } else if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemoveColumn0(),
-                                                               factData.getFactName() ) ) ) {
+                                                               factData.getName() ) ) ) {
                         scenario.removeFixture( factData );
                         definitionList.remove( factData );
 

@@ -86,14 +86,14 @@ public class VerifyFactWidget extends Composite {
         this.executionTrace = executionTrace;
         HorizontalPanel ab = new HorizontalPanel();
         if ( !vf.anonymous ) {
-            type = (String) sc.getVariableTypes().get( vf.getFactName() );
+            type = (String) sc.getVariableTypes().get( vf.getName() );
             ab.add( new SmallLabel( Format.format( constants.scenarioFactTypeHasValues(),
                                                    type,
-                                                   vf.getFactName() ) ) );
+                                                   vf.getName() ) ) );
         } else {
-            type = vf.getFactName();
+            type = vf.getName();
             ab.add( new SmallLabel( Format.format( constants.AFactOfType0HasValues(),
-                                                   vf.getFactName() ) ) );
+                                                   vf.getName() ) ) );
         }
         this.showResults = showResults;
 

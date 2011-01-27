@@ -84,7 +84,7 @@ public class RetractWidget extends FlexTable {
                 final RetractFact retractFact = (RetractFact) fixture;
                 setWidget( row,
                            0,
-                           new SmallLabel( retractFact.getFactName() ) );
+                           new SmallLabel( retractFact.getName() ) );
 
                 setWidget( row,
                            1,

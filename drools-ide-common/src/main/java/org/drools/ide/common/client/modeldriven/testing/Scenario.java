@@ -169,7 +169,7 @@ public class Scenario
         for ( Fixture fixture : fixtures ) {
             if ( fixture instanceof FactData ) {
                 FactData factData = (FactData) fixture;
-                factTypesByName.put( factData.getFactName(),
+                factTypesByName.put( factData.getName(),
                                      factData );
             }
         }
@@ -185,12 +185,12 @@ public class Scenario
         for ( Fixture fixture : fixtures ) {
             if ( fixture instanceof FactData ) {
                 FactData factData = (FactData) fixture;
-                map.put( factData.getFactName(),
+                map.put( factData.getName(),
                          factData.getType() );
             }
         }
         for ( FactData factData : globals ) {
-            map.put( factData.getFactName(),
+            map.put( factData.getName(),
                      factData.getType() );
         }
         return map;
@@ -212,16 +212,16 @@ public class Scenario
             Fixture fixture = (Fixture) getFixtures().get( i );
             if ( fixture instanceof FactData ) {
                 FactData factData = (FactData) fixture;
-                factDataNames.add( factData.getFactName() );
+                factDataNames.add( factData.getName() );
             } else if ( fixture instanceof RetractFact ) {
                 RetractFact retractFact = (RetractFact) fixture;
-                factDataNames.remove( retractFact.getFactName() );
+                factDataNames.remove( retractFact.getName() );
             }
         }
 
         if ( includeGlobals ) {
             for ( FactData factData : getGlobals() ) {
-                factDataNames.add( factData.getFactName() );
+                factDataNames.add( factData.getName() );
             }
         }
         return factDataNames;
@@ -244,7 +244,7 @@ public class Scenario
         for ( Fixture fixture : fixtures ) {
             if ( fixture instanceof FactData ) {
                 FactData factData = (FactData) fixture;
-                if ( factData.getFactName().equals( factName ) ) {
+                if ( factData.getName().equals( factName ) ) {
                     return true;
                 }
             }
@@ -254,7 +254,7 @@ public class Scenario
 
     protected boolean isFactNameUsedInGlobals(String factName) {
         for ( FactData factData : globals ) {
-            if ( factData.getFactName().equals( factName ) ) {
+            if ( factData.getName().equals( factName ) ) {
                 return true;
             }
         }
@@ -267,7 +267,7 @@ public class Scenario
      */
     public boolean isFactDataReferenced(FactData factData) {
         int start = fixtures.indexOf( factData ) + 1;
-        String factName = factData.getFactName();
+        String factName = factData.getName();
 
         for ( Fixture fixture : fixtures.subList( start,
                                                   fixtures.size() ) ) {
@@ -283,11 +283,11 @@ public class Scenario
     private boolean isFactNameUsedInThisFixture(Fixture fixture,
                                                 String factName) {
         if ( fixture instanceof FactData ) {
-            return ((FactData) fixture).getFactName().equals( factName );
+            return ((FactData) fixture).getName().equals( factName );
         } else if ( fixture instanceof VerifyFact ) {
-            return ((VerifyFact) fixture).getFactName().equals( factName );
+            return ((VerifyFact) fixture).getName().equals( factName );
         } else if ( fixture instanceof RetractFact ) {
-            return ((RetractFact) fixture).getFactName().equals( factName );
+            return ((RetractFact) fixture).getName().equals( factName );
         } else {
             return false;
         }

@@ -3107,7 +3107,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
-        person.setFactName( "p" );
+        person.setName("p");
         person.setType( "Person" );
         person.getFieldData().add( new FieldData( "age",
                                              "40" ) );
@@ -3122,7 +3122,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         sc.getFixtures().add( vr );
 
         VerifyFact vf = new VerifyFact();
-        vf.setFactName( "p" );
+        vf.setName("p");
         vf.getFieldValues().add( new VerifyField( "name",
                                              "michael",
                                              "==" ) );
@@ -3132,7 +3132,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         sc.getFixtures().add( vf );
 
         FactData cheese = new FactData();
-        cheese.setFactName( "cheese" );
+        cheese.setName("cheese");
         cheese.setType( "Cheese" );
         cheese.getFieldData().add( new FieldData( "price",
                                              "42" ) );
@@ -3221,7 +3221,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
-        person.setFactName( "c" );
+        person.setName("c");
         person.setType( "GenBean" );
         person.getFieldData().add( new FieldData( "age",
                                              "40" ) );
@@ -3236,7 +3236,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         sc.getFixtures().add( vr );
 
         VerifyFact vf = new VerifyFact();
-        vf.setFactName( "c" );
+        vf.setName("c");
         vf.getFieldValues().add( new VerifyField( "name",
                                              "mic",
                                              "==" ) );
@@ -3289,7 +3289,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         //first, the green scenario
         Scenario sc = new Scenario();
         FactData person = new FactData();
-        person.setFactName( "p" );
+        person.setName("p");
         person.setType( "Wang" );
         person.getFieldData().add( new FieldData( "age",
                                              "40" ) );
@@ -3304,7 +3304,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         sc.getFixtures().add( vr );
 
         VerifyFact vf = new VerifyFact();
-        vf.setFactName( "p" );
+        vf.setName("p");
         vf.getFieldValues().add( new VerifyField( "name",
                                              "michael",
                                              "==" ) );
@@ -3322,7 +3322,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         //now the bad scenario
         sc = new Scenario();
         person = new FactData();
-        person.setFactName( "p" );
+        person.setName("p");
         person.setType( "Wang" );
         person.getFieldData().add( new FieldData( "age",
                                              "40" ) );
@@ -3403,7 +3403,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
-        person.setFactName( "p" );
+        person.setName("p");
         person.setType( "Board" );
         person.getFieldData().add( new FieldData( "cost",
                                              "42" ) );
@@ -3416,7 +3416,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         sc.getFixtures().add( vr );
 
         VerifyFact vf = new VerifyFact();
-        vf.setFactName( "p" );
+        vf.setName("p");
 
         vf.getFieldValues().add( new VerifyField( "cost",
                                              "42",
@@ -3478,7 +3478,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
-        person.setFactName( "p" );
+        person.setName("p");
         person.setType( "Person" );
 
         sc.getFixtures().add( person );
@@ -3545,7 +3545,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         //first, the green scenario
         Scenario sc = new Scenario();
         FactData person = new FactData();
-        person.setFactName( "p" );
+        person.setName("p");
         person.setType( "Person" );
         person.getFieldData().add( new FieldData( "age",
                                              "40" ) );
@@ -3560,7 +3560,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         sc.getFixtures().add( vr );
 
         VerifyFact vf = new VerifyFact();
-        vf.setFactName( "p" );
+        vf.setName("p");
         vf.getFieldValues().add( new VerifyField( "name",
                                              "michael",
                                              "==" ) );
@@ -3578,7 +3578,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         //now the bad scenario
         sc = new Scenario();
         person = new FactData();
-        person.setFactName( "p" );
+        person.setName("p");
         person.setType( "Person" );
         person.getFieldData().add( new FieldData( "age",
                                              "40" ) );

@@ -27,21 +27,21 @@ public class RetractFact
 
     private static final long serialVersionUID = 510l;
 
-    private String            factName;
+    private String name;
 
     public RetractFact() {
     }
 
     public RetractFact(String name) {
-        this.factName = name;
+        this.name = name;
     }
 
-    public void setFactName(String name) {
-        this.factName = name;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getFactName() {
-        return factName;
+    public String getName() {
+        return name;
     }
 
 }

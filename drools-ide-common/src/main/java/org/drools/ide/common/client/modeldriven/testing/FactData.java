@@ -32,7 +32,7 @@ public class FactData
     /**
      * The name of the "variable"
      */
-    private String            factName;
+    private String name;
 
     private List<FieldData>   fieldData        = new ArrayList<FieldData>();
 
@@ -60,7 +60,7 @@ public class FactData
                     boolean modify) {
 
         this.type = type;
-        this.factName = name;
+        this.name = name;
         this.isModify = modify;
     }
 
@@ -72,12 +72,12 @@ public class FactData
         return type;
     }
 
-    public void setFactName(String name) {
-        this.factName = name;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getFactName() {
-        return factName;
+    public String getName() {
+        return name;
     }
 
     public void setFieldData(List<FieldData> fieldData) {
@@ -88,8 +88,8 @@ public class FactData
         return fieldData;
     }
 
-    public void setModify(boolean isModify) {
-        this.isModify = isModify;
+    public void setModify(boolean modify) {
+        isModify = modify;
     }
 
     public boolean isModify() {

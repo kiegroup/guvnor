@@ -92,14 +92,14 @@ public class ScenarioHelperTest {
 		List fdl = (List) first.get("Q");
 		assertEquals(2, fdl.size());
 		FactData fd = (FactData) fdl.get(0);
-		assertEquals("x", fd.getFactName());
+		assertEquals("x", fd.getName());
 		fd = (FactData) fdl.get(1);
-		assertEquals("y", fd.getFactName());
+		assertEquals("y", fd.getName());
 
 		fdl = (List) first.get("X");
 		assertEquals(2, fdl.size());
 		fd = (FactData) fdl.get(0);
-		assertEquals("a", fd.getFactName());
+		assertEquals("a", fd.getName());
 
 		CallFixtureMap callMap = (CallFixtureMap)fx.get(1);
 		assertEquals(2, callMap.size());
@@ -143,7 +143,7 @@ public class ScenarioHelperTest {
 		List retracts = (List) second.get("retract");
 		assertEquals(1, retracts.size());
 		RetractFact ret = (RetractFact) retracts.get(0);
-		assertEquals("y", ret.getFactName());
+		assertEquals("y", ret.getName());
 
 	
 		CallFixtureMap third = (CallFixtureMap)fx.get(6);
@@ -178,13 +178,13 @@ public class ScenarioHelperTest {
 		assertEquals(2, m.size());
 		List fd = (List) m.get("X");
 		assertEquals(2, fd.size());
-		assertEquals("d", ((FactData)fd.get(0)).getFactName());
-		assertEquals("c", ((FactData)fd.get(1)).getFactName());
+		assertEquals("d", ((FactData)fd.get(0)).getName());
+		assertEquals("c", ((FactData)fd.get(1)).getName());
 
 		fd = (List) m.get("Q");
 		assertEquals(2, fd.size());
-		assertEquals("a", ((FactData)fd.get(0)).getFactName());
-		assertEquals("b", ((FactData)fd.get(1)).getFactName());
+		assertEquals("a", ((FactData)fd.get(0)).getName());
+		assertEquals("b", ((FactData)fd.get(1)).getName());
 
 	}
     
