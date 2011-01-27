@@ -35,6 +35,7 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.remoteapi.Response.Binary;
 import org.drools.repository.remoteapi.Response.Text;
+import org.drools.repository.utils.IOUtils;
 
 /**
  * This provides a simple REST style remote friendly API.
@@ -53,14 +54,17 @@ public class RestAPI {
 	}
 
 	private static Properties loadAssetTypes() {
-		Properties p = new Properties();
+        InputStream in = null;
 		try {
-			p.load(RestAPI.class.getResourceAsStream("text_assets.properties"));
+            in = RestAPI.class.getResourceAsStream("text_assets.properties");
+		    Properties p = new Properties();
+            p.load(in);
+            return p;
 		} catch (IOException e) {
-			System.err.println("Unable to load asset text types properties.");
-			return null;
-		}
-		return p;
+			throw new IllegalStateException("Unable to load asset text types properties.", e);
+		} finally {
+            IOUtils.closeQuietly(in);
+        }
 	}
 
 	/**

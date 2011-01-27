@@ -1,17 +1,17 @@
 /*
  * Copyright 2011 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.drools.guvnor.client.decisiontable;
 
@@ -21,7 +21,6 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableControlsWidget;
-import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
 import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
@@ -50,6 +49,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -83,7 +83,7 @@ public class GuidedDecisionTableWidget extends Composite
     private VerticalPanel               actionsConfigWidget;
     private SuggestionCompletionEngine  sce;
 
-    private DecisionTableWidget         dtable;
+    private VerticalDecisionTableWidget dtable;
     private DecisionTableControlsWidget dtableCtrls;
 
     public GuidedDecisionTableWidget(RuleAsset asset,
@@ -102,7 +102,8 @@ public class GuidedDecisionTableWidget extends Composite
         configureColumnsNote = new PrettyFormLayout();
         configureColumnsNote.startSection();
         configureColumnsNote.addRow( new HTML( "<img src='"
-                                               + new Image( images.information() ).getUrl() + "'/>&nbsp;"
+                                               + new Image( images.information() ).getUrl()
+                                               + "'/>&nbsp;"
                                                + constants.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();
 
@@ -412,7 +413,7 @@ public class GuidedDecisionTableWidget extends Composite
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
             hp.add( removeMeta( atc ) );
-            hp.add( new SmallLabel( atc.attr ) );
+            hp.add( new SmallLabel( atc.getMetadata() ) );
 
             final MetadataCol at = atc;
             final CheckBox hide = new CheckBox();
@@ -443,7 +444,7 @@ public class GuidedDecisionTableWidget extends Composite
 
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
             hp.add( removeAttr( at ) );
-            hp.add( new SmallLabel( at.attr ) );
+            hp.add( new SmallLabel( at.getAttribute() ) );
 
             final TextBox defaultValue = new TextBox();
             defaultValue.setText( at.getDefaultValue() );
@@ -453,7 +454,7 @@ public class GuidedDecisionTableWidget extends Composite
                 }
             } );
 
-            if ( at.attr.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
+            if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 hp.add( new HTML( "&nbsp;&nbsp;" ) );
                 final CheckBox useRowNumber = new CheckBox();
                 useRowNumber.setValue( at.isUseRowNumber() );
@@ -463,7 +464,7 @@ public class GuidedDecisionTableWidget extends Composite
                 hp.add( new SmallLabel( "(" ) );
                 final CheckBox reverseOrder = new CheckBox();
                 reverseOrder.setValue( at.isReverseOrder() );
-                reverseOrder.setEnabled( false );
+                reverseOrder.setEnabled( at.isUseRowNumber() );
 
                 useRowNumber.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent sender) {
@@ -526,7 +527,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                    for ( AttributeCol col : guidedDecisionTable
                                                            .getAttributeCols() ) {
                                                        for ( int iItem = 0; iItem < list.getItemCount(); iItem++ ) {
-                                                           if ( list.getItemText( iItem ).equals( col.attr ) ) {
+                                                           if ( list.getItemText( iItem ).equals( col.getAttribute() ) ) {
                                                                list.removeItem( iItem );
                                                                break;
                                                            }
@@ -543,8 +544,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                    list.addChangeHandler( new ChangeHandler() {
                                                        public void onChange(ChangeEvent event) {
                                                            AttributeCol attr = new AttributeCol();
-                                                           attr.attr = list.getItemText( list
-                                                                   .getSelectedIndex() );
+                                                           attr.setAttribute( list.getItemText( list
+                                                                   .getSelectedIndex() ) );
                                                            dtable.addColumn( attr );
                                                            dtable.scrapeColumns();
                                                            refreshAttributeWidget();
@@ -556,14 +557,31 @@ public class GuidedDecisionTableWidget extends Composite
 
                                                    addbutton.addClickHandler( new ClickHandler() {
                                                        public void onClick(ClickEvent w) {
+
+                                                           String metadata = box.getText();
+                                                           if ( !isUnique( metadata ) ) {
+                                                               Window.alert( constants
+                                                                       .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                                                               return;
+                                                           }
                                                            MetadataCol met = new MetadataCol();
                                                            met.setHideColumn( true );
-                                                           met.attr = box.getText();
+                                                           met.setMetadata( metadata );
                                                            dtable.addColumn( met );
                                                            dtable.scrapeColumns();
                                                            refreshAttributeWidget();
                                                            pop.hide();
                                                        }
+
+                                                       private boolean isUnique(String metadata) {
+                                                           for ( MetadataCol mc : guidedDecisionTable.getMetadataCols() ) {
+                                                               if ( metadata.equals( mc.getMetadata() ) ) {
+                                                                   return false;
+                                                               }
+                                                           }
+                                                           return true;
+                                                       }
+
                                                    } );
                                                    DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
                                                    horiz.add( box );
@@ -590,7 +608,7 @@ public class GuidedDecisionTableWidget extends Composite
                                          public void onClick(ClickEvent w) {
                                              String ms = Format.format(
                                                                         constants.DeleteActionColumnWarning(),
-                                                                        at.attr );
+                                                                        at.getAttribute() );
                                              if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
                                                  dtable.deleteColumn( at );
                                                  dtable.scrapeColumns();
@@ -609,7 +627,7 @@ public class GuidedDecisionTableWidget extends Composite
                                          public void onClick(ClickEvent w) {
                                              String ms = Format.format(
                                                                         constants.DeleteActionColumnWarning(),
-                                                                        md.attr );
+                                                                        md.getMetadata() );
                                              if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
                                                  dtable.deleteColumn( md );
                                                  dtable.scrapeColumns();

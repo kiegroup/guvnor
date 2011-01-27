@@ -22,7 +22,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
+import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
@@ -54,14 +54,14 @@ public class ActionInsertColumn extends FormStylePopup {
     private static Images              images       = (Images) GWT.create( Images.class );
     private Constants                  constants    = GWT.create( Constants.class );
 
-    private DecisionTableWidget        dtable;
+    private VerticalDecisionTableWidget        dtable;
     private SuggestionCompletionEngine sce;
     private ActionInsertFactCol        editingCol;
     private SmallLabel                 patternLabel = new SmallLabel();
     private TextBox                    fieldLabel   = getFieldLabel();
 
     public ActionInsertColumn(SuggestionCompletionEngine sce,
-                              final DecisionTableWidget dtable,
+                              final VerticalDecisionTableWidget dtable,
                               final ColumnCentricCommand refreshGrid,
                               final ActionInsertFactCol col,
                               final boolean isNew) {

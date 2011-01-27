@@ -86,14 +86,14 @@ public class VerifyFactWidget extends Composite {
         this.executionTrace = executionTrace;
         HorizontalPanel ab = new HorizontalPanel();
         if ( !vf.anonymous ) {
-            type = (String) sc.getVariableTypes().get( vf.name );
+            type = (String) sc.getVariableTypes().get( vf.getName() );
             ab.add( new SmallLabel( Format.format( constants.scenarioFactTypeHasValues(),
                                                    type,
-                                                   vf.name ) ) );
+                                                   vf.getName() ) ) );
         } else {
-            type = vf.name;
+            type = vf.getName();
             ab.add( new SmallLabel( Format.format( constants.AFactOfType0HasValues(),
-                                                   vf.name ) ) );
+                                                   vf.getName() ) ) );
         }
         this.showResults = showResults;
 
@@ -114,7 +114,7 @@ public class VerifyFactWidget extends Composite {
                                              ok.addClickHandler( new ClickHandler() {
                                                  public void onClick(ClickEvent w) {
                                                      String f = b.getItemText( b.getSelectedIndex() );
-                                                     vf.fieldValues.add( new VerifyField( f,
+                                                     vf.getFieldValues().add( new VerifyField( f,
                                                                                           "",
                                                                                           "==" ) );
                                                      FlexTable data = render( vf );
@@ -145,11 +145,11 @@ public class VerifyFactWidget extends Composite {
 
     private FlexTable render(final VerifyFact vf) {
         FlexTable data = new FlexTable();
-        for ( int i = 0; i < vf.fieldValues.size(); i++ ) {
-            final VerifyField fld = (VerifyField) vf.fieldValues.get( i );
+        for ( int i = 0; i < vf.getFieldValues().size(); i++ ) {
+            final VerifyField fld = (VerifyField) vf.getFieldValues().get( i );
             data.setWidget( i,
                             1,
-                            new SmallLabel( fld.fieldName + ":" ) );
+                            new SmallLabel( fld.getFieldName() + ":" ) );
             data.getFlexCellFormatter().setHorizontalAlignment( i,
                                                                 1,
                                                                 HasHorizontalAlignment.ALIGN_RIGHT );
@@ -159,14 +159,14 @@ public class VerifyFactWidget extends Composite {
                          "==" );
             opr.addItem( constants.doesNotEqualScenario(),
                          "!=" );
-            if ( fld.operator.equals( "==" ) ) {
+            if ( fld.getOperator().equals( "==" ) ) {
                 opr.setSelectedIndex( 0 );
             } else {
                 opr.setSelectedIndex( 1 );
             }
             opr.addChangeHandler( new ChangeHandler() {
                 public void onChange(ChangeEvent event) {
-                    fld.operator = opr.getValue( opr.getSelectedIndex() );
+                    fld.setOperator( opr.getValue( opr.getSelectedIndex() ) );
                 }
             } );
 
@@ -176,7 +176,7 @@ public class VerifyFactWidget extends Composite {
             Widget cellEditor = new VerifyFieldConstraintEditor( type,
                                                                  new ValueChanged() {
                                                                      public void valueChanged(String newValue) {
-                                                                         fld.expected = newValue;
+                                                                         fld.setExpected( newValue );
                                                                      }
 
                                                                  },
@@ -194,8 +194,8 @@ public class VerifyFactWidget extends Composite {
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
                                                  if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemoveThisFieldExpectation(),
-                                                                                     fld.fieldName ) ) ) {
-                                                     vf.fieldValues.remove( fld );
+                                                                                     fld.getFieldName() ) ) ) {
+                                                     vf.getFieldValues().remove( fld );
                                                      FlexTable data = render( vf );
                                                      outer.setWidget( 1,
                                                                       0,
@@ -207,15 +207,15 @@ public class VerifyFactWidget extends Composite {
                             4,
                             del );
 
-            if ( showResults && fld.successResult != null ) {
-                if ( !fld.successResult.booleanValue() ) {
+            if ( showResults && fld.getSuccessResult() != null ) {
+                if ( !fld.getSuccessResult().booleanValue() ) {
                     data.setWidget( i,
                                     0,
                                     new Image( images.warning() ) );
                     data.setWidget( i,
                                     5,
                                     new HTML( Format.format( constants.ActualResult(),
-                                                             fld.actualResult ) ) );
+                                                             fld.getActualResult() ) ) );
 
                     data.getCellFormatter().addStyleName( i,
                                                           5,

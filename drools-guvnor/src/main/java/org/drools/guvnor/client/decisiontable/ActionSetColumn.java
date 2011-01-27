@@ -23,7 +23,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.decisiontable.widget.DecisionTableWidget;
+import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -53,11 +53,11 @@ public class ActionSetColumn extends FormStylePopup {
     private ActionSetFieldCol          editingCol;
     private SmallLabel                 bindingLabel = new SmallLabel();
     private TextBox                    fieldLabel   = getFieldLabel();
-    private DecisionTableWidget        dtable;
+    private VerticalDecisionTableWidget        dtable;
     private SuggestionCompletionEngine sce;
 
     public ActionSetColumn(SuggestionCompletionEngine sce,
-                           final DecisionTableWidget dtable,
+                           final VerticalDecisionTableWidget dtable,
                            final ColumnCentricCommand refreshGrid,
                            final ActionSetFieldCol col,
                            final boolean isNew) {

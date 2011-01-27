@@ -84,6 +84,7 @@ public class MetaDataWidget extends Composite {
         this.data = d;
         this.readOnly = readOnly;
 
+        layout.setWidth( "100%" );
         this.metaDataRefreshView = metaDataRefreshView;
         this.fullRefreshView = fullRefreshView;
 

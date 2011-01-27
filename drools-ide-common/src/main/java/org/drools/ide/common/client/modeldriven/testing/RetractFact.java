@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,20 +16,32 @@
 
 package org.drools.ide.common.client.modeldriven.testing;
 
-
 /**
  * Retract a named fact.
  * @author Michael Neale
  *
  */
-public class RetractFact implements Fixture {
+public class RetractFact
+    implements
+    Fixture {
 
-    public RetractFact() {}
+    private static final long serialVersionUID = 510l;
+
+    private String name;
+
+    public RetractFact() {
+    }
+
     public RetractFact(String name) {
         this.name = name;
     }
 
-    public String name;
+    public void setName(String name) {
+        this.name = name;
+    }
 
+    public String getName() {
+        return name;
+    }
 
 }

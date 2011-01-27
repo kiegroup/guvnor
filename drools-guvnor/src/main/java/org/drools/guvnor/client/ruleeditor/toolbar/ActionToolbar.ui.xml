@@ -95,7 +95,7 @@
 									</gwt:MenuItem>
 								</gwt:MenuBar>
 							</gwt:MenuItem>
-							<gwt:MenuItem styleName="{style.menuItem}">
+							<gwt:MenuItem  ui:field="sourceMenu" styleName="{style.menuItem}">
 								<ui:text from="{i18n.Source}" />
 								<gwt:MenuBar vertical="true">
 									<gwt:MenuItem ui:field="validate">

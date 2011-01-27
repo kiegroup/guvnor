@@ -49,8 +49,8 @@ public class ConfigWidget extends Composite {
 
         final ListBox box = new ListBox( true );
 
-        for ( int i = 0; i < sc.rules.size(); i++ ) {
-            box.addItem( (String) sc.rules.get( i ) );
+        for ( int i = 0; i < sc.getRules().size(); i++ ) {
+            box.addItem( (String) sc.getRules().get( i ) );
         }
         HorizontalPanel filter = new HorizontalPanel();
 
@@ -61,7 +61,7 @@ public class ConfigWidget extends Composite {
                 showRulePopup( (Widget) event.getSource(),
                                box,
                                packageName,
-                               sc.rules,
+                               sc.getRules(),
                                scWidget );
             }
         } );
@@ -74,7 +74,7 @@ public class ConfigWidget extends Composite {
                     Window.alert( constants.PleaseChooseARuleToRemove() );
                 } else {
                     String r = box.getItemText( box.getSelectedIndex() );
-                    sc.rules.remove( r );
+                    sc.getRules().remove( r );
                     box.removeItem( box.getSelectedIndex() );
                 }
             }
@@ -93,17 +93,17 @@ public class ConfigWidget extends Composite {
             public void onChange(ChangeEvent event) {
                 String s = drop.getValue( drop.getSelectedIndex() );
                 if ( s.equals( "inc" ) ) { //NON-NLS
-                    sc.inclusive = true;
+                    sc.setInclusive( true );
                     add.setVisible( true );
                     remove.setVisible( true );
                     box.setVisible( true );
                 } else if ( s.equals( "exc" ) ) { //NON-NLS
-                    sc.inclusive = false;
+                    sc.setInclusive( false );
                     add.setVisible( true );
                     remove.setVisible( true );
                     box.setVisible( true );
                 } else {
-                    sc.rules.clear();
+                    sc.getRules().clear();
                     box.clear();
                     box.setVisible( false );
                     add.setVisible( false );
@@ -112,8 +112,8 @@ public class ConfigWidget extends Composite {
             }
         } );
 
-        if ( sc.rules.size() > 0 ) {
-            drop.setSelectedIndex( (sc.inclusive) ? 0 : 1 );
+        if ( sc.getRules().size() > 0 ) {
+            drop.setSelectedIndex( (sc.isInclusive()) ? 0 : 1 );
         } else {
             drop.setSelectedIndex( 2 );
             box.setVisible( false );

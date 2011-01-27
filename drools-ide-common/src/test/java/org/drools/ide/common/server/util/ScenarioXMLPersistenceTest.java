@@ -51,8 +51,8 @@ public class ScenarioXMLPersistenceTest {
 	    assertTrue(s.indexOf("<ruleName>Life unverse and everything</ruleName>") > 0);
 
 	    Scenario sc_ = p.unmarshal(s);
-	    assertEquals(sc.globals.size(), sc_.globals.size());
-	    assertEquals(sc.fixtures.size(), sc_.fixtures.size());
+	    assertEquals(sc.getGlobals().size(), sc_.getGlobals().size());
+	    assertEquals(sc.getFixtures().size(), sc_.getFixtures().size());
 	    assertTrue(s.indexOf("org.drools") == -1); //check we have aliased all
 
 	}
@@ -61,15 +61,15 @@ public class ScenarioXMLPersistenceTest {
     public void testTrimUneededSection() {
 		Scenario sc = getDemo();
 		Scenario orig = getDemo();
-		sc.fixtures.add(new ExecutionTrace());
+		sc.getFixtures().add(new ExecutionTrace());
 
-		int origSize = orig.fixtures.size();
+		int origSize = orig.getFixtures().size();
 
-		assertEquals(origSize + 1, sc.fixtures.size());
+		assertEquals(origSize + 1, sc.getFixtures().size());
 		String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
 		Scenario sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
 
-		assertEquals(origSize, sc_.fixtures.size());
+		assertEquals(origSize, sc_.getFixtures().size());
 
 
 
@@ -83,21 +83,21 @@ public class ScenarioXMLPersistenceTest {
     public void testNewScenario() {
         FactData d1 = new FactData("Driver", "d1", ls(new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}), false);
         Scenario sc = new Scenario();
-        sc.fixtures.add(d1);
-        sc.fixtures.add(new ExecutionTrace());
+        sc.getFixtures().add(d1);
+        sc.getFixtures().add(new ExecutionTrace());
 
-        int size = sc.fixtures.size();
+        int size = sc.getFixtures().size();
 
 		String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
 		Scenario sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
 
-		assertEquals(size, sc_.fixtures.size());
+		assertEquals(size, sc_.getFixtures().size());
 
 		sc = new Scenario();
-		sc.fixtures.add(new ExecutionTrace());
+		sc.getFixtures().add(new ExecutionTrace());
 		xml = ScenarioXMLPersistence.getInstance().marshal(sc);
 		sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
-		assertEquals(1, sc_.fixtures.size());
+		assertEquals(1, sc_.getFixtures().size());
 	}
 
 	private Scenario getDemo() {
@@ -107,44 +107,44 @@ public class ScenarioXMLPersistenceTest {
         FactData d3 = new FactData("Driver", "d3", ls(new FieldData[] {new FieldData("name", "michael2")}), false);
         FactData d4 = new FactData("Accident", "a1", ls(new FieldData[] {new FieldData("name", "michael2")}), false);
         Scenario sc = new Scenario();
-        sc.fixtures.add(d1);
-        sc.fixtures.add(d2);
-        sc.globals.add(d3);
-        sc.globals.add(d4);
-        sc.rules.add("rule1");
-        sc.rules.add("rule2");
+        sc.getFixtures().add(d1);
+        sc.getFixtures().add(d2);
+        sc.getGlobals().add(d3);
+        sc.getGlobals().add(d4);
+        sc.getRules().add("rule1");
+        sc.getRules().add("rule2");
 
-        sc.fixtures.add(new ExecutionTrace());
+        sc.getFixtures().add(new ExecutionTrace());
 
         List fields = new ArrayList();
         VerifyField vfl = new VerifyField("age", "42", "==");
-        vfl.actualResult = "43";
-        vfl.successResult = new Boolean(false);
-        vfl.explanation = "Not cool jimmy.";
+        vfl.setActualResult( "43" );
+        vfl.setSuccessResult( new Boolean(false) );
+        vfl.setExplanation( "Not cool jimmy." );
 
         fields.add(vfl);
 
         vfl = new VerifyField("name", "michael", "!=");
-        vfl.actualResult = "bob";
-        vfl.successResult = new Boolean(true);
-        vfl.explanation = "Yeah !";
+        vfl.setActualResult( "bob" );
+        vfl.setSuccessResult( new Boolean(true) );
+        vfl.setExplanation( "Yeah !" );
         fields.add(vfl);
 
         VerifyFact vf = new VerifyFact("d1", fields);
 
-        sc.fixtures.add(vf);
+        sc.getFixtures().add(vf);
 
         VerifyRuleFired vf1 = new VerifyRuleFired("Life unverse and everything", new Integer(42), null);
-        vf1.actualResult = new Integer(42);
-        vf1.successResult = new Boolean(true);
-        vf1.explanation = "All good here.";
+        vf1.setActualResult( new Integer(42) );
+        vf1.setSuccessResult( new Boolean(true) );
+        vf1.setExplanation( "All good here." );
 
         VerifyRuleFired vf2 = new VerifyRuleFired("Everything else", null, new Boolean(true));
-        vf2.actualResult = new Integer(0);
-        vf2.successResult = new Boolean(false);
-        vf2.explanation = "Not so good here.";
-        sc.fixtures.add(vf1);
-        sc.fixtures.add(vf2);
+        vf2.setActualResult( new Integer(0) );
+        vf2.setSuccessResult( new Boolean(false) );
+        vf2.setExplanation( "Not so good here." );
+        sc.getFixtures().add(vf1);
+        sc.getFixtures().add(vf2);
 
 		return sc;
 	}

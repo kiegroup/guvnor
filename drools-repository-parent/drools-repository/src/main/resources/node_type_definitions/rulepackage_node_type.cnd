@@ -39,7 +39,10 @@
 //optionally store the binary compiled package (really a cache)
 - drools:compiledPackage (binary)
 
-
+//workspace property. One package can belong to multiple workspaces
+- drools:workspace (string)
+  multiple
+  
 // use this to capture fields which are not known ahead of time 
 - * (undefined) 
 

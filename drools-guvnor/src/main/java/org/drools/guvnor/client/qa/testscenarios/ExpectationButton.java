@@ -69,7 +69,7 @@ public class ExpectationButton extends TestScenarioButton {
                                                                    public void ruleSelected(String name) {
                                                                        VerifyRuleFired verifyRuleFired = new VerifyRuleFired( name,
                                                                                                                               null,
-                                                                                                                              new Boolean( true ) );
+                                                                                                                              Boolean.TRUE );
                                                                        scenario.insertBetween( previousEx,
                                                                                                verifyRuleFired );
                                                                        parent.renderEditor();

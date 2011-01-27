@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -32,7 +34,7 @@ public class DecisionTableControlsWidget extends Composite {
 
 	private Panel panel = new HorizontalPanel();
 
-	public DecisionTableControlsWidget(final DecisionTableWidget dtable) {
+	public DecisionTableControlsWidget(final HasRows dtable) {
 
 		// Add row button
 		Button btnAddRow = new Button("Add Row", new ClickHandler() {
@@ -41,8 +43,8 @@ public class DecisionTableControlsWidget extends Composite {
 				dtable.appendRow();
 			}
 		});
-
 		panel.add(btnAddRow);
+        
 		initWidget(panel);
 
 	}

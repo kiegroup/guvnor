@@ -16,36 +16,25 @@
 
 package org.drools.guvnor.client.ruleeditor.toolbar;
 
-import static org.drools.guvnor.client.common.AssetFormats.BUSINESS_RULE;
-import static org.drools.guvnor.client.common.AssetFormats.DECISION_SPREADSHEET_XLS;
-import static org.drools.guvnor.client.common.AssetFormats.DECISION_TABLE_GUIDED;
-import static org.drools.guvnor.client.common.AssetFormats.DRL;
-import static org.drools.guvnor.client.common.AssetFormats.DRL_MODEL;
-import static org.drools.guvnor.client.common.AssetFormats.DSL;
-import static org.drools.guvnor.client.common.AssetFormats.DSL_TEMPLATE_RULE;
-import static org.drools.guvnor.client.common.AssetFormats.ENUMERATION;
-import static org.drools.guvnor.client.common.AssetFormats.FUNCTION;
-import static org.drools.guvnor.client.common.AssetFormats.RULE_TEMPLATE;
-
 import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.EditorWidget;
-import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.client.security.CapabilitiesManager;
+
+import static org.drools.guvnor.client.common.AssetFormats.*;
 
 /**
- *
  * @author esteban.aliverti
  */
 public class DefaultActionToolbarButtonsConfigurationProvider
-    implements
-    ActionToolbarButtonsConfigurationProvider {
+        implements
+        ActionToolbarButtonsConfigurationProvider {
 
     private static String[] VALIDATING_FORMATS = new String[]{BUSINESS_RULE, DSL_TEMPLATE_RULE, DECISION_SPREADSHEET_XLS, DRL, ENUMERATION, DECISION_TABLE_GUIDED, DRL_MODEL, DSL, FUNCTION, RULE_TEMPLATE};
-    private static String[] VERIFY_FORMATS     = new String[]{BUSINESS_RULE, DECISION_SPREADSHEET_XLS, DRL, DECISION_TABLE_GUIDED, DRL_MODEL, RULE_TEMPLATE};
+    private static String[] SOURCE_FORMATS = new String[]{BUSINESS_RULE, DSL_TEMPLATE_RULE, DRL, DECISION_TABLE_GUIDED, RULE_TEMPLATE, BPMN2_PROCESS, BPMN_PROCESS};
+    private static String[] VERIFY_FORMATS = new String[]{BUSINESS_RULE, DECISION_SPREADSHEET_XLS, DRL, DECISION_TABLE_GUIDED, DRL_MODEL, RULE_TEMPLATE};
 
-    private RuleAsset       asset;
-    private EditorWidget    editor;
+    private RuleAsset asset;
+    private EditorWidget editor;
 
     public DefaultActionToolbarButtonsConfigurationProvider(RuleAsset asset,
                                                             EditorWidget editor) {
@@ -90,11 +79,11 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showVerifyButton() {
-        return this.isValidatorTypeAsset() && this.isVerificationTypeAsset();
+        return this.isVerificationTypeAsset();
     }
 
     public boolean showViewSourceButton() {
-        return shouldShowViewSource();
+        return isMemberOfFormats(asset.metaData.format, SOURCE_FORMATS);
     }
 
     public boolean showStateLabel() {
@@ -102,27 +91,20 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     }
 
     private boolean isValidatorTypeAsset() {
-        String format = asset.metaData.format;
-        for ( String fmt : VALIDATING_FORMATS ) {
-            if ( fmt.equals( format ) ) {
-                return true;
-            }
-        }
-        return false;
+        return isMemberOfFormats(asset.metaData.format, VALIDATING_FORMATS);
     }
 
     private boolean isVerificationTypeAsset() {
-        String format = asset.metaData.format;
-        for ( String fmt : VERIFY_FORMATS ) {
-            if ( fmt.equals( format ) ) {
+        return isMemberOfFormats(asset.metaData.format, VERIFY_FORMATS);
+    }
+
+    private boolean isMemberOfFormats(String format, String[] formats) {
+        for (String fmt : formats) {
+            if (fmt.equals(format)) {
                 return true;
             }
         }
         return false;
-    }
-
-    private boolean shouldShowViewSource() {
-        return CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW );
     }
 
 }

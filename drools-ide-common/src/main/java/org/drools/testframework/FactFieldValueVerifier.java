@@ -59,19 +59,19 @@ public class FactFieldValueVerifier {
         while ( fields.hasNext() ) {
             this.currentField = fields.next();
 
-            if ( currentField.expected != null ) {
+            if ( currentField.getExpected() != null ) {
                 ResultVerifier resultVerifier = new ResultVerifier( factObject );
 
                 resultVerifier.setExpected( getExpectedResult() );
 
-                currentField.successResult = resultVerifier.isSuccess( currentField );
+                currentField.setSuccessResult( resultVerifier.isSuccess( currentField ) );
 
-                if ( !currentField.successResult ) {
-                    currentField.actualResult = resultVerifier.getActual( currentField );
+                if ( !currentField.getSuccessResult() ) {
+                    currentField.setActualResult( resultVerifier.getActual( currentField ) );
 
-                    currentField.explanation = getFailingExplanation();
+                    currentField.setExplanation( getFailingExplanation() );
                 } else {
-                    currentField.explanation = getSuccesfulExplanation();
+                    currentField.setExplanation( getSuccesfulExplanation() );
                 }
             }
 
@@ -80,17 +80,17 @@ public class FactFieldValueVerifier {
     }
 
     private Object getExpectedResult() {
-        Object expectedResult = currentField.expected.trim();
-        if ( currentField.expected.startsWith( "=" ) ) {
-            expectedResult = eval( currentField.expected.substring( 1 ),
+        Object expectedResult = currentField.getExpected().trim();
+        if ( currentField.getExpected().startsWith( "=" ) ) {
+            expectedResult = eval( currentField.getExpected().substring( 1 ),
                                    this.populatedData );
         } else if (currentField.getNature() == VerifyField.TYPE_ENUM) {
 			try {
 				// The string representation of enum value is using a  
 				// format like CheeseType.CHEDDAR
-				String classNameOfEnum = currentField.expected.substring(0,
-						currentField.expected.indexOf("."));
-				String valueOfEnum = currentField.expected.substring(currentField.expected
+				String classNameOfEnum = currentField.getExpected().substring(0,
+						currentField.getExpected().indexOf("."));
+				String valueOfEnum = currentField.getExpected().substring(currentField.getExpected()
 						.indexOf(".") + 1);
 				String fullName = resolver.getFullTypeName(classNameOfEnum);
 
@@ -103,20 +103,20 @@ public class FactFieldValueVerifier {
     }
 
     private String getSuccesfulExplanation() {
-        if ( currentField.operator.equals( "==" ) ) {
-            return "[" + factName + "] field [" + currentField.fieldName + "] was [" + currentField.expected + "].";
-        } else if ( currentField.operator.equals( "!=" ) ) {
-            return "[" + factName + "] field [" + currentField.fieldName + "] was not [" + currentField.expected + "].";
+        if ( currentField.getOperator().equals( "==" ) ) {
+            return "[" + factName + "] field [" + currentField.getFieldName() + "] was [" + currentField.getExpected() + "].";
+        } else if ( currentField.getOperator().equals( "!=" ) ) {
+            return "[" + factName + "] field [" + currentField.getFieldName() + "] was not [" + currentField.getExpected() + "].";
         }
 
         return "";
     }
 
     private String getFailingExplanation() {
-        if ( currentField.operator.equals( "==" ) ) {
-            return "[" + factName + "] field [" + currentField.fieldName + "] was [" + currentField.actualResult + "] expected [" + currentField.expected + "].";
+        if ( currentField.getOperator().equals( "==" ) ) {
+            return "[" + factName + "] field [" + currentField.getFieldName() + "] was [" + currentField.getActualResult() + "] expected [" + currentField.getExpected() + "].";
         } else {
-            return "[" + factName + "] field [" + currentField.fieldName + "] was not expected to be [" + currentField.actualResult + "].";
+            return "[" + factName + "] field [" + currentField.getFieldName() + "] was not expected to be [" + currentField.getActualResult() + "].";
         }
     }
 }
@@ -145,14 +145,14 @@ class ResultVerifier {
     }
 
     protected Boolean isSuccess(VerifyField currentField) {
-        CompiledExpression expression = new ExpressionCompiler( "__fact__." + currentField.fieldName + " " + currentField.operator + " __expected__" ).compile( parserContext );
+        CompiledExpression expression = new ExpressionCompiler( "__fact__." + currentField.getFieldName() + " " + currentField.getOperator() + " __expected__" ).compile( parserContext );
 
         return (Boolean) MVEL.executeExpression( expression,
                                                  variables );
     }
 
     protected String getActual(VerifyField currentField) {
-        Object actualValue = MVEL.executeExpression( new ExpressionCompiler( "__fact__." + currentField.fieldName ).compile( parserContext ),
+        Object actualValue = MVEL.executeExpression( new ExpressionCompiler( "__fact__." + currentField.getFieldName() ).compile( parserContext ),
                                                      variables );
 
         return (actualValue != null) ? actualValue.toString() : "";

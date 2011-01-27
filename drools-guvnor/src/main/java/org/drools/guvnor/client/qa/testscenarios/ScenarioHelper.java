@@ -113,10 +113,10 @@ public class ScenarioHelper {
     }
 
     private void accumulateDataForFactData(Map<String, FixtureList> dataInput, FactData fd) {
-        if ( !dataInput.containsKey( fd.type ) ) {
-            dataInput.put( fd.type, new FixtureList() );
+        if ( !dataInput.containsKey( fd.getType() ) ) {
+            dataInput.put( fd.getType(), new FixtureList() );
         }
-        ((FixtureList) dataInput.get( fd.type )).add( fd );
+        ((FixtureList) dataInput.get( fd.getType() )).add( fd );
 
     }
 
@@ -142,10 +142,10 @@ public class ScenarioHelper {
     }
 
     private void accumulateCallMethod(Map<String, FixtureList> dataInput, CallMethod fd) {
-        if ( !dataInput.containsKey( fd.variable ) ) {
-            dataInput.put( fd.variable, new FixtureList() );
+        if ( !dataInput.containsKey( fd.getVariable() ) ) {
+            dataInput.put( fd.getVariable(), new FixtureList() );
         }
-        ((FixtureList) dataInput.get( fd.variable )).add( fd );
+        ((FixtureList) dataInput.get( fd.getVariable() )).add( fd );
 
     }
 
@@ -153,9 +153,9 @@ public class ScenarioHelper {
         for ( Fixture fixture : factDatas ) {
             if ( fixture instanceof FactData ) {
                 FactData factData = (FactData) fixture;
-                for ( Iterator<FieldData> fieldDataIterator = factData.fieldData.iterator(); fieldDataIterator.hasNext(); ) {
+                for ( Iterator<FieldData> fieldDataIterator = factData.getFieldData().iterator(); fieldDataIterator.hasNext(); ) {
                     FieldData fieldData = fieldDataIterator.next();
-                    if ( fieldData.name.equals( field ) ) {
+                    if ( fieldData.getName().equals( field ) ) {
                         fieldDataIterator.remove();
                     }
                 }

@@ -150,7 +150,7 @@ public class NewDataButton extends TestScenarioButton {
                         if ( factName.equals( "" ) || factNameTextBox.getText().indexOf( ' ' ) > -1 ) {
                             Window.alert( constants.YouMustEnterAValidFactName() );
                         } else {
-                            if ( scenario.isFactNameExisting( factName ) ) {
+                            if ( scenario.isFactNameReserved( factName ) ) {
                                 Window.alert( Format.format( constants.TheFactName0IsAlreadyInUsePleaseChooseAnotherName(),
                                                              factName ) );
                             } else {

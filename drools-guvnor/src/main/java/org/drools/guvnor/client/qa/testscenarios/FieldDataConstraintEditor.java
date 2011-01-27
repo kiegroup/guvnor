@@ -95,18 +95,18 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
     }
 
     private void refreshEditor() {
-        String key = factType + "." + field.name;
+        String key = factType + "." + field.getName();
         String flType = sce.getFieldType( key );
         panel.clear();
         if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             final TextBox box = editableTextBox( callback,
-                                                 field.name,
-                                                 field.value );
+                                                 field.getName(),
+                                                 field.getValue() );
             box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
             panel.add( box );
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             String[] c = new String[]{"true", "false"};
-            panel.add( new EnumDropDown( field.value,
+            panel.add( new EnumDropDown( field.getValue(),
                                          new DropDownValueChanged() {
                                              public void valueChanged(String newText,
                                                                       String newValue) {
@@ -115,13 +115,13 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                          },
                                          DropDownData.create( c ) ) );
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            final DatePickerTextBox datePicker = new DatePickerTextBox( field.value );
+            final DatePickerTextBox datePicker = new DatePickerTextBox( field.getValue() );
             String m = Format.format( ((Constants) GWT.create( Constants.class )).ValueFor0(),
-                                      field.name );
+                                      field.getName() );
             datePicker.setTitle( m );
             datePicker.addValueChanged( new ValueChanged() {
                 public void valueChanged(String newValue) {
-                    field.value = newValue;
+                    field.setValue( newValue );
                 }
             } );
 
@@ -129,8 +129,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         } else {
             String[] enums = sce.getDataEnumList( key );
             if ( enums != null ) {
-                field.nature = FieldData.TYPE_ENUM;
-                panel.add( new EnumDropDown( field.value,
+                field.setNature( FieldData.TYPE_ENUM );
+                panel.add( new EnumDropDown( field.getValue(),
                                              new DropDownValueChanged() {
                                                  public void valueChanged(String newText,
                                                                           String newValue) {
@@ -140,16 +140,16 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                              DropDownData.create( enums ) ) );
 
             } else {
-                if ( field.value != null && field.value.length() > 0 && field.nature == FieldData.TYPE_UNDEFINED ) {
-                    if ( field.value.length() > 1 && field.value.charAt( 1 ) == '[' && field.value.charAt( 0 ) == '=' ) {
-                        field.nature = FieldData.TYPE_LITERAL;
-                    } else if ( field.value.charAt( 0 ) == '=' ) {
-                        field.nature = FieldData.TYPE_VARIABLE;
+                if ( field.getValue() != null && field.getValue().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED ) {
+                    if ( field.getValue().length() > 1 && field.getValue().charAt( 1 ) == '[' && field.getValue().charAt( 0 ) == '=' ) {
+                        field.setNature( FieldData.TYPE_LITERAL );
+                    } else if ( field.getValue().charAt( 0 ) == '=' ) {
+                        field.setNature( FieldData.TYPE_VARIABLE );
                     } else {
-                        field.nature = FieldData.TYPE_LITERAL;
+                        field.setNature( FieldData.TYPE_LITERAL );
                     }
                 }
-                if ( field.nature == FieldData.TYPE_UNDEFINED && (isThereABoundVariableToSet() == true || isItAList() == true) ) {
+                if ( field.getNature() == FieldData.TYPE_UNDEFINED && (isThereABoundVariableToSet() == true || isItAList() == true) ) {
                     Image clickme = new Image( images.edit() );
                     clickme.addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent w) {
@@ -158,14 +158,14 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                         }
                     } );
                     panel.add( clickme );
-                } else if ( field.nature == FieldData.TYPE_VARIABLE ) {
+                } else if ( field.getNature() == FieldData.TYPE_VARIABLE ) {
                     panel.add( variableEditor( callback ) );
-                } else if ( field.nature == FieldData.TYPE_COLLECTION ) {
+                } else if ( field.getNature() == FieldData.TYPE_COLLECTION ) {
                     panel.add( listEditor( callback ) );
                 } else {
                     panel.add( editableTextBox( callback,
-                                                field.name,
-                                                field.value ) );
+                                                field.getName(),
+                                                field.getValue() ) );
                 }
             }
         }
@@ -196,7 +196,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
         final ListBox box = new ListBox();
 
-        if ( this.field.value == null ) {
+        if ( this.field.getValue() == null ) {
             box.addItem( constants.Choose() );
         }
         int j = 0;
@@ -206,18 +206,18 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             String fieldType = null;
             if ( field.collectionType == null ) {
                 fieldType = sce.getFieldType( this.factType,
-                                              field.name );
+                                              field.getName() );
             } else {
                 fieldType = field.collectionType;
             }
 
-            if ( f.type.equals( fieldType ) ) {
+            if ( f.getType().equals( fieldType ) ) {
                 if ( box.getItemCount() == 0 ) {
                     box.addItem( "..." );
                     j++;
                 }
                 box.addItem( "=" + var );
-                if ( this.field.value != null && this.field.value.equals( "=" + var ) ) {
+                if ( this.field.getValue() != null && this.field.getValue().equals( "=" + var ) ) {
                     box.setSelectedIndex( j );
 
                 }
@@ -228,8 +228,8 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         box.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                field.value = box.getItemText( box.getSelectedIndex() );
-                changed.valueChanged( field.value );
+                field.setValue( box.getItemText( box.getSelectedIndex() ) );
+                changed.valueChanged( field.getValue() );
             }
         } );
 
@@ -246,7 +246,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             FieldDataConstraintEditor fieldElement = new FieldDataConstraintEditor( f.collectionType,
                                                                                     new ValueChanged() {
                                                                                         public void valueChanged(String newValue) {
-                                                                                            f.value = newValue;
+                                                                                            f.setValue( newValue );
                                                                                             calculateValueFromList();
                                                                                             makeDirty();
                                                                                         }
@@ -277,7 +277,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             addPattern.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     FieldData newFieldData = new FieldData();
-                    newFieldData.name = field.name;
+                    newFieldData.setName( field.getName() );
                     newFieldData.collectionType = field.collectionType;
                     field.collectionFieldList.add( index + 1,
                                                    newFieldData );
@@ -332,7 +332,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
                                                  FieldData newFieldData = new FieldData();
-                                                 newFieldData.name = field.name;
+                                                 newFieldData.setName( field.getName() );
                                                  newFieldData.collectionType = field.collectionType;
                                                  field.collectionFieldList.add( newFieldData );
                                                  calculateValueFromList();
@@ -346,17 +346,17 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
     private void calculateValueFromList() {
         if ( this.field.collectionFieldList == null || this.field.collectionFieldList.isEmpty() ) {
-            this.field.value = "=[]";
+            this.field.setValue( "=[]" );
             return;
         }
         StringBuffer listContent = new StringBuffer();
         for ( final FieldData f : this.field.collectionFieldList ) {
             listContent.append( ',' );
-            if ( f.value != null ) {
-                listContent.append( f.value.substring( 1 ) );
+            if ( f.getValue() != null ) {
+                listContent.append( f.getValue().substring( 1 ) );
             }
         }
-        this.field.value = "=[" + listContent.substring( 1 ) + "]";
+        this.field.setValue( "=[" + listContent.substring( 1 ) + "]" );
     }
 
     private void showTypeChoice(ClickEvent w,
@@ -367,7 +367,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         Button lit = new Button( constants.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                con.nature = FieldData.TYPE_LITERAL;
+                con.setNature( FieldData.TYPE_LITERAL );
                 doTypeChosen( form );
             }
 
@@ -386,7 +386,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             Button variable = new Button( constants.BoundVariable() );
             variable.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent w) {
-                    con.nature = FieldData.TYPE_VARIABLE;
+                    con.setNature( FieldData.TYPE_VARIABLE );
                     doTypeChosen( form );
                 }
             } );
@@ -400,7 +400,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             variable.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent w) {
                     String factCollectionType = sce.getParametricFieldType( factType,
-                                                                            field.name );
+                                                                            field.getName() );
                     con.setNature( FieldData.TYPE_COLLECTION,
                                    factCollectionType );
                     doTypeChosen( form );
@@ -425,11 +425,11 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                 String fieldType = null;
                 if ( field.collectionType == null ) {
                     fieldType = sce.getFieldType( this.factType,
-                                                  field.name );
+                                                  field.getName() );
                 } else {
                     fieldType = field.collectionType;
                 }
-                if ( f.type.equals( fieldType ) ) {
+                if ( f.getType().equals( fieldType ) ) {
                     retour = true;
                     break;
                 }
@@ -441,7 +441,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
     private boolean isItAList() {
         boolean retour = false;
         String fieldType = sce.getFieldType( this.factType,
-                                             field.name );
+                                             field.getName() );
         if ( fieldType != null && fieldType.equals( "Collection" ) ) {
             retour = true;
         }

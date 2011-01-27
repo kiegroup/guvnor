@@ -24,7 +24,7 @@ public class ExpressionUnboundFact extends ExpressionPart {
 	private ExpressionUnboundFact() {}
 
 	public ExpressionUnboundFact(FactPattern fact) {
-		super(fact.factType, fact.factType, fact.factType);
+		super(fact.getFactType(), fact.getFactType(), fact.getFactType());
 		this.fact = fact;
 	}
 

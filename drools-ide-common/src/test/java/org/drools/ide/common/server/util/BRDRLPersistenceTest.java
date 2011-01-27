@@ -16,7 +16,6 @@
 
 package org.drools.ide.common.server.util;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -40,23 +39,21 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.ide.common.server.util.BRDRLPersistence;
-import org.drools.ide.common.server.util.BRLPersistence;
 
 public class BRDRLPersistenceTest {
 
-	private BRLPersistence p;
+	private BRLPersistence brlPersistence;
 
     @Before
     public void setUp() throws Exception {
-		p = BRDRLPersistence.getInstance();
+		brlPersistence = BRDRLPersistence.getInstance();
 	}
 
     @Test
     public void testGenerateEmptyDRL() {
 		String expected = "rule \"null\"\n\tdialect \"mvel\"\n\twhen\n\tthen\nend\n";
 
-		final String drl = p.marshal(new RuleModel());
+		final String drl = brlPersistence.marshal(new RuleModel());
 
 		assertNotNull(drl);
 		assertEquals(expected, drl);
@@ -77,7 +74,7 @@ public class BRDRLPersistenceTest {
         fr.text = "fun()";
         m.rhs[0] = fr;
 
-        String drl = p.marshal(m);
+        String drl = brlPersistence.marshal(m);
         assertNotNull(drl);
         assertTrue(drl.indexOf("Person()") > 0);
         assertTrue(drl.indexOf("fun()") > drl.indexOf("Person()"));
@@ -95,7 +92,7 @@ public class BRDRLPersistenceTest {
 		m.addRhsItem(new ActionInsertFact("Report"));
 		m.name = "my rule";
 
-		final String drl = p.marshal(m);
+		final String drl = brlPersistence.marshal(m);
 		assertEquals(expected, drl);
 	}
 
@@ -112,7 +109,7 @@ public class BRDRLPersistenceTest {
 
 		m.name = "my rule";
 
-		final String drl = p.marshal(m);
+		final String drl = brlPersistence.marshal(m);
 		assertEquals(expected, drl);
 	}
 
@@ -121,7 +118,7 @@ public class BRDRLPersistenceTest {
 		RuleModel m = new RuleModel();
 		m.attributes = new RuleAttribute[1];
 		m.attributes[0] = new RuleAttribute("enabled", "true");
-		final String drl = p.marshal(m);
+		final String drl = brlPersistence.marshal(m);
 
 		assertTrue(drl.indexOf("enabled true") > 0);
 
@@ -132,9 +129,8 @@ public class BRDRLPersistenceTest {
 		String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type = CheeseType.CHEDDAR )\n"
 				+ "\tthen\n\t\tinsert( new Report() );\nend\n";
 		final RuleModel m = new RuleModel();
-		final FactPattern pat = new FactPattern();
+		final FactPattern pat = new FactPattern("Cheese");
 		//pat.boundName = "p1";
-		pat.factType = "Cheese";		
 		m.addLhsItem(pat);
 		final SingleFieldConstraint con = new SingleFieldConstraint();
 		con.setFieldName("type");
@@ -146,7 +142,7 @@ public class BRDRLPersistenceTest {
 		m.addRhsItem(new ActionInsertFact("Report"));
 		m.name = "my rule";
 
-		final String drl = p.marshal(m);
+		final String drl = brlPersistence.marshal(m);
 		assertEquals(expected, drl);
 	}
 	
@@ -157,12 +153,12 @@ public class BRDRLPersistenceTest {
 				+ "\tsalience -10\n" + "\tagenda-group \"aGroup\"\n"
 				+ "\tdialect \"mvel\"\n" + "\twhen\n"
 				+ "\t\t>p1 : Person( f1 : age < 42 )\n"
-				+ "\t\t>not Cancel( )\n" + "\tthen\n"
+				+ "\t\t>not (Cancel( )) \n" + "\tthen\n"
 				+ "\t\t>p1.setStatus( \"rejected\" );\n"
 				+ "\t\t>update( p1 );\n" + "\t\t>retract( p1 );\n"
 				+ "\t\tSend an email to administrator\n" + "end\n";
 
-		final String drl = p.marshal(m);
+		final String drl = brlPersistence.marshal(m);
 
 		assertEquals(expected, drl);
 
@@ -210,9 +206,8 @@ public class BRDRLPersistenceTest {
 	private RuleModel getModelWithNoConstraints() {
 		final RuleModel m = new RuleModel();
 		m.name = "Complex Rule";
-		final FactPattern pat = new FactPattern();
+		final FactPattern pat = new FactPattern("Person");
 		pat.boundName = "p1";
-		pat.factType = "Person";
 		final SingleFieldConstraint con = new SingleFieldConstraint();
 		con.setFieldBinding("f1");
 		con.setFieldName("age");
@@ -233,9 +228,8 @@ public class BRDRLPersistenceTest {
 		m.addAttribute(new RuleAttribute("salience", "-10"));
 		m.addAttribute(new RuleAttribute("agenda-group", "aGroup"));
 
-		final FactPattern pat = new FactPattern();
+		final FactPattern pat = new FactPattern("Person");
 		pat.boundName = "p1";
-		pat.factType = "Person";
 		final SingleFieldConstraint con = new SingleFieldConstraint();
 		con.setFieldBinding("f1");
 		con.setFieldName("age");
@@ -327,7 +321,7 @@ public class BRDRLPersistenceTest {
 
 		String result = BRDRLPersistence.getInstance().marshal(m);
 
-		assertTrue(result.indexOf("exists Person( age == 42 )") > 0);
+		assertTrue(result.indexOf("exists (Person( age == 42 )) ") > 0);
 
 	}
 
@@ -447,8 +441,7 @@ public class BRDRLPersistenceTest {
 		RuleModel m = new RuleModel();
 		m.name = "boo";
 
-		FactPattern p = new FactPattern();
-		p.factType = "Person";
+		FactPattern p = new FactPattern("Person");
 
 		// this isn't an effective constraint, so it should be ignored.
 		p.addConstraint(new SingleFieldConstraint("field1"));
@@ -548,14 +541,13 @@ public class BRDRLPersistenceTest {
 		RuleModel m = new RuleModel();
 		m.name = "yeah";
 
-		FactPattern p = new FactPattern();
+		FactPattern p = new FactPattern("Goober");
 
 		SingleFieldConstraint con = new SingleFieldConstraint();
 		con.setConstraintValueType(SingleFieldConstraint.TYPE_RET_VALUE);
 		con.setValue("someFunc(x)");
 		con.setOperator("==");
 		con.setFieldName("goo");
-		p.factType = "Goober";
 
 		p.addConstraint(con);
 		m.addLhsItem(p);
@@ -573,13 +565,11 @@ public class BRDRLPersistenceTest {
 		RuleModel m = new RuleModel();
 		m.name = "yeah";
 
-		FactPattern p = new FactPattern();
+		FactPattern p = new FactPattern("Goober");
 
 		SingleFieldConstraint con = new SingleFieldConstraint();
 		con.setConstraintValueType(SingleFieldConstraint.TYPE_PREDICATE);
 		con.setValue("field soundslike 'poo'");
-
-		p.factType = "Goober";
 
 		p.addConstraint(con);
 		m.addLhsItem(p);
@@ -711,7 +701,7 @@ public class BRDRLPersistenceTest {
         m.addRhsItem(add);
 		m.name = "my rule";
 
-		final String drl = p.marshal(m);
+		final String drl = brlPersistence.marshal(m);
 		assertEquals(expected, drl);
 	}
 

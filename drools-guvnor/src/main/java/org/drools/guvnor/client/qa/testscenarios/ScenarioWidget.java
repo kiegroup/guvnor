@@ -101,8 +101,8 @@ public class ScenarioWidget extends Composite
     }
 
     private void ifFixturesSizeZeroThenAddExecutionTrace() {
-        if ( getScenario().fixtures.size() == 0 ) {
-            getScenario().fixtures.add( new ExecutionTrace() );
+        if ( getScenario().getFixtures().size() == 0 ) {
+            getScenario().getFixtures().add( new ExecutionTrace() );
         }
     }
 
@@ -125,7 +125,7 @@ public class ScenarioWidget extends Composite
         this.layout.add( editorLayout );
         ScenarioHelper scenarioHelper = new ScenarioHelper();
 
-        List<Fixture> fixtures = scenarioHelper.lumpyMap( getScenario().fixtures );
+        List<Fixture> fixtures = scenarioHelper.lumpyMap( getScenario().getFixtures() );
         List<ExecutionTrace> listExecutionTrace = scenarioHelper.getExecutionTraceFor( fixtures );
 
         int layoutRow = 1;

@@ -137,7 +137,7 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
                                                        true );
         for ( String v : vars ) {
             FactData factData = (FactData) model.getFactTypes().get( v );
-            if ( factData.type.equals( this.methodParameter.type ) ) {
+            if ( factData.getType().equals( this.methodParameter.type ) ) {
                 // First selection is empty
                 if ( listVariable.getItemCount() == 0 ) {
                     listVariable.addItem( "..." );
@@ -261,7 +261,7 @@ public class MethodParameterCallValueEditor extends DirtyableComposite {
             boolean createButton = false;
             Button variable = new Button( constants.BoundVariable() );
             FactData factData = (FactData) model.getFactTypes().get( v );
-            if ( factData.type.equals( this.parameterType ) ) {
+            if ( factData.getType().equals( this.parameterType ) ) {
                 createButton = true;
             }
             if ( createButton == true ) {

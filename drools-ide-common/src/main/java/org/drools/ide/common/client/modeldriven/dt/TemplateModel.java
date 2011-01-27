@@ -35,6 +35,7 @@ import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.IFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
@@ -266,8 +267,8 @@ public class TemplateModel extends RuleModel implements PortableObject {
         }
 
 		private void visitCompositeFactPattern(CompositeFactPattern pattern) {
-			if (pattern.patterns != null) {
-				for (FactPattern fp : pattern.patterns) {
+			if (pattern.getPatterns() != null) {
+				for (IFactPattern fp : pattern.getPatterns()) {
 					visit(fp);
 				}
 			}

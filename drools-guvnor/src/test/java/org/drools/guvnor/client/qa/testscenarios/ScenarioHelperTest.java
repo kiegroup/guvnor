@@ -92,30 +92,30 @@ public class ScenarioHelperTest {
 		List fdl = (List) first.get("Q");
 		assertEquals(2, fdl.size());
 		FactData fd = (FactData) fdl.get(0);
-		assertEquals("x", fd.name);
+		assertEquals("x", fd.getName());
 		fd = (FactData) fdl.get(1);
-		assertEquals("y", fd.name);
+		assertEquals("y", fd.getName());
 
 		fdl = (List) first.get("X");
 		assertEquals(2, fdl.size());
 		fd = (FactData) fdl.get(0);
-		assertEquals("a", fd.name);
+		assertEquals("a", fd.getName());
 
 		CallFixtureMap callMap = (CallFixtureMap)fx.get(1);
 		assertEquals(2, callMap.size());
 		assertTrue(callMap.containsKey("x"));
 		FixtureList lcall1 = callMap.get("x");
 		CallMethod c1 = (CallMethod)lcall1.get(0);
-		assertTrue(c1.variable.equals("x"));
-		assertTrue(c1.methodName.equals("hello"));
+		assertTrue(c1.getVariable().equals("x"));
+		assertTrue(c1.getMethodName().equals("hello"));
 		CallMethod c2 = (CallMethod)lcall1.get(1);
-		assertTrue(c2.variable.equals("x"));
-		assertTrue(c2.methodName.equals("helloItherWay"));
+		assertTrue(c2.getVariable().equals("x"));
+		assertTrue(c2.getMethodName().equals("helloItherWay"));
 		assertTrue(callMap.containsKey("v"));
 		FixtureList lcall2 = callMap.get("v");
 		CallMethod c3= (CallMethod)lcall2.get(0);
-		assertTrue(c3.variable.equals("v"));
-		assertTrue(c3.methodName.equals("helloAgain"));
+		assertTrue(c3.getVariable().equals("v"));
+		assertTrue(c3.getMethodName().equals("helloAgain"));
 		
 		
 		assertEquals(ex1, fx.get(2));
@@ -143,7 +143,7 @@ public class ScenarioHelperTest {
 		List retracts = (List) second.get("retract");
 		assertEquals(1, retracts.size());
 		RetractFact ret = (RetractFact) retracts.get(0);
-		assertEquals("y", ret.name);
+		assertEquals("y", ret.getName());
 
 	
 		CallFixtureMap third = (CallFixtureMap)fx.get(6);
@@ -151,8 +151,8 @@ public class ScenarioHelperTest {
 		assertTrue(third.containsKey("x"));
 		FixtureList lcall3 = third.get("x");
 		CallMethod c4= (CallMethod)lcall3.get(0);
-		assertTrue(c4.variable.equals("x"));
-		assertTrue(c4.methodName.equals("hello"));
+		assertTrue(c4.getVariable().equals("x"));
+		assertTrue(c4.getMethodName().equals("hello"));
 		assertEquals(ex2, fx.get(7));
 
 
@@ -178,13 +178,13 @@ public class ScenarioHelperTest {
 		assertEquals(2, m.size());
 		List fd = (List) m.get("X");
 		assertEquals(2, fd.size());
-		assertEquals("d", ((FactData)fd.get(0)).name);
-		assertEquals("c", ((FactData)fd.get(1)).name);
+		assertEquals("d", ((FactData)fd.get(0)).getName());
+		assertEquals("c", ((FactData)fd.get(1)).getName());
 
 		fd = (List) m.get("Q");
 		assertEquals(2, fd.size());
-		assertEquals("a", ((FactData)fd.get(0)).name);
-		assertEquals("b", ((FactData)fd.get(1)).name);
+		assertEquals("a", ((FactData)fd.get(0)).getName());
+		assertEquals("b", ((FactData)fd.get(1)).getName());
 
 	}
     
@@ -211,9 +211,9 @@ public class ScenarioHelperTest {
 		assertEquals(2, factData.size());
 
 		assertEquals(1, fieldData.size());
-		assertEquals("w", ((FieldData)fieldData.get(0)).name);
+		assertEquals("w", ((FieldData)fieldData.get(0)).getName());
 		assertEquals(2, fieldData2.size());
-		assertEquals("w", ((FieldData)fieldData2.get(0)).name);
+		assertEquals("w", ((FieldData)fieldData2.get(0)).getName());
 
 	}
     @SuppressWarnings("unchecked")

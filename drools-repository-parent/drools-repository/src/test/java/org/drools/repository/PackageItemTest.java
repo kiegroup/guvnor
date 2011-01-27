@@ -839,7 +839,36 @@ public class PackageItemTest {
 
         assertEquals(v, item.getVersionNumber());
     }
-	
+    
+    @Test 
+    public void testPackageWorkspaceProperty() throws Exception {
+        RulesRepository repo = getRepo();
+        PackageItem item = repo.createPackage( "testPackageWorkspaceProperty1", "lalalala" );
+        getRepo().save();
+        
+        String[] workspaces = repo.loadPackage(item.getName()).getWorkspaces();
+
+        item.removeWorkspace("workspace1");
+        
+        workspaces = item.getWorkspaces();
+        assertEquals(workspaces.length, 0);
+
+        item.addWorkspace("workspace1");
+        item.addWorkspace("workspace2");
+        item.addWorkspace("workspace1");
+        item.addWorkspace("workspace2");
+
+        workspaces = item.getWorkspaces();
+        assertEquals(workspaces.length, 2);
+        
+        item.removeWorkspace("workspace1");
+        item.removeWorkspace("workspace3");
+
+        workspaces = item.getWorkspaces();
+        assertEquals(workspaces.length, 1);
+        assertTrue((workspaces[0]).equals("workspace2"));
+    }
+    
     static class MockAssetItem extends AssetItem {
         private long version;
 

@@ -59,7 +59,7 @@ public class StateManager extends Composite {
 
         HorizontalPanel hPanel = new HorizontalPanel();
         Button create = new Button( constants.NewStatus() );
-        create.setTitle( constants.CreateANewCategory() );
+        //create.setTitle( constants.CreateANewCategory() );
         create.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 StatusEditor newCat = new StatusEditor( new Command() {
@@ -103,7 +103,7 @@ public class StateManager extends Composite {
         hPanel.add( edit );
         hPanel.add( remove );
 
-        form.addAttribute( constants.AddNewStatus(),
+        form.addAttribute("",
                            hPanel );
 
         form.endSection();

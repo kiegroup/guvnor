@@ -27,11 +27,11 @@ public class SnapshotDiff
     implements
     IsSerializable {
 
-    public static String TYPE_ADDED    = "TYPE_ADDED";
-    public static String TYPE_ARCHIVED = "TYPE_ARCHIVED";
-    public static String TYPE_UPDATED  = "TYPE_UPDATED";
-    public static String TYPE_DELETED  = "TYPE_DELETED";
-    public static String TYPE_RESTORED = "TYPE_RESTORED";
+    public static final String TYPE_ADDED    = "TYPE_ADDED";
+    public static final String TYPE_ARCHIVED = "TYPE_ARCHIVED";
+    public static final String TYPE_UPDATED  = "TYPE_UPDATED";
+    public static final String TYPE_DELETED  = "TYPE_DELETED";
+    public static final String TYPE_RESTORED = "TYPE_RESTORED";
 
     public String        diffType;
 

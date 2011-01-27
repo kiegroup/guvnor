@@ -24,7 +24,7 @@ public class ExpressionVariable extends ExpressionPart {
 	private ExpressionVariable() {}
 
 	public ExpressionVariable(FactPattern fact) {
-		super(fact.boundName, fact.factType, fact.factType);
+		super(fact.boundName, fact.getFactType(), fact.getFactType());
 		if (!fact.isBound()) {
 			throw new RuntimeException("the fact is not bounded: " + fact);
 		}

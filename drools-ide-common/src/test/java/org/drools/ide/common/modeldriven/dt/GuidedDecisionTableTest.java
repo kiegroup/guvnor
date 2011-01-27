@@ -239,7 +239,7 @@ public class GuidedDecisionTableTest {
                       r[2] );
 
         AttributeCol at = new AttributeCol();
-        at.attr = "no-loop";
+        at.setAttribute( "no-loop" );
         dt.getAttributeCols().add( at );
 
         r = dt.getValueList( at,
@@ -251,12 +251,12 @@ public class GuidedDecisionTableTest {
         assertEquals( "false",
                       r[1] );
 
-        at.attr = "enabled";
+        at.setAttribute( "enabled" );
         assertEquals( 2,
                       dt.getValueList( at,
                                        sce ).length );
 
-        at.attr = "salience";
+        at.setAttribute( "salience" );
         assertEquals( 0,
                       dt.getValueList( at,
                                        sce ).length );
@@ -286,9 +286,9 @@ public class GuidedDecisionTableTest {
         GuidedDecisionTable dt = new GuidedDecisionTable();
 
         AttributeCol at = new AttributeCol();
-        at.attr = "salience";
+        at.setAttribute( "salience" );
         AttributeCol at_ = new AttributeCol();
-        at_.attr = "enabled";
+        at_.setAttribute( "enabled" );
 
         dt.getAttributeCols().add( at );
         dt.getAttributeCols().add( at_ );
@@ -389,9 +389,9 @@ public class GuidedDecisionTableTest {
         GuidedDecisionTable dt = new GuidedDecisionTable();
 
         AttributeCol salienceAttribute = new AttributeCol();
-        salienceAttribute.attr = "salience";
+        salienceAttribute.setAttribute( "salience" );
         AttributeCol enabledAttribute = new AttributeCol();
-        enabledAttribute.attr = "enabled";
+        enabledAttribute.setAttribute( "enabled" );
 
         dt.getAttributeCols().add( salienceAttribute );
         dt.getAttributeCols().add( enabledAttribute );
@@ -533,10 +533,10 @@ public class GuidedDecisionTableTest {
         DescriptionCol dc = new DescriptionCol();
 
         MetadataCol mdc = new MetadataCol();
-        mdc.attr = "cheese";
+        mdc.setMetadata( "cheese" );
 
         AttributeCol ac = new AttributeCol();
-        ac.attr = "salience";
+        ac.setAttribute( "salience" );
 
         ActionSetFieldCol asfc = new ActionSetFieldCol();
         asfc.setBoundName( "d1" );

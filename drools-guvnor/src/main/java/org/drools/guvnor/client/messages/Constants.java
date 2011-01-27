@@ -1149,6 +1149,10 @@ public interface Constants
     String NewRuleFlow();
 
     String CreateANewRuleFlow();
+    
+    String NewBPMN2Process();
+
+    String CreateANewBPMN2Process();
 
     String NewEnumeration();
 
@@ -2169,4 +2173,26 @@ public interface Constants
     String Edit();
     
     String EmptyValue();
+    
+    String ManageWorkspaces();
+    
+    String Workspaces();
+    
+    String AddWorkspace();
+    
+    String DeleteSelectedWorkspace();
+    
+    String CanTHaveAnEmptyWorkspaceName();
+    
+    String PleaseSelectAWorkspaceToRemove();
+    
+    String PleaseSelectAWorkspaceToUpdate();
+    
+    String WorkspaceRemoved();
+    
+    String WorkspaceUpdated();
+   
+    String LoadingWorkspaces();
+    
+    String UpdateSelectedWorkspace();
 }

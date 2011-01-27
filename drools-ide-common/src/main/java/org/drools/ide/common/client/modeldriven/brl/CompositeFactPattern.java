@@ -37,7 +37,7 @@ public class CompositeFactPattern
     /**
      * The patterns.
      */
-    public FactPattern[]       patterns;
+    private IFactPattern[]       patterns;
 
 
 
@@ -51,20 +51,32 @@ public class CompositeFactPattern
     public CompositeFactPattern() {
     }
 
-    public void addFactPattern(final FactPattern pat) {
+    public void clearFactPatterns(){
+        this.patterns = new FactPattern[0];
+    }
+    
+    public void addFactPatterns(IFactPattern[] patterns){
+        for (int i = 0; i < patterns.length; i++) {
+            IFactPattern iFactPattern = patterns[i];
+            this.addFactPattern(iFactPattern);
+        }
+    }
+    
+    public void addFactPattern(final IFactPattern pat) {
         if ( this.patterns == null ) {
             this.patterns = new FactPattern[0];
         }
 
-        final FactPattern[] list = this.patterns;
-        final FactPattern[] newList = new FactPattern[list.length + 1];
-
-        for ( int i = 0; i < list.length; i++ ) {
-            newList[i] = list[i];
-        }
+        final IFactPattern[] list = this.patterns;
+        final IFactPattern[] newList = new IFactPattern[list.length + 1];
+        System.arraycopy(list, 0, newList, 0, list.length);
         newList[list.length] = pat;
 
         this.patterns = newList;
     }
 
+    public IFactPattern[] getPatterns() {
+        return patterns;
+    }
+    
 }

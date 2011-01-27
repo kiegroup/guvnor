@@ -80,6 +80,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
@@ -94,6 +95,7 @@ import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
@@ -336,6 +338,41 @@ public class ServiceImplementation implements RepositoryService {
         }
     }
 
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String[] listWorkspaces() {
+    	return repository.listWorkspaces();
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void createWorkspace(String workspace) {
+    	repository.createWorkspace(workspace);
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void removeWorkspace(String workspace) {
+    	repository.removeWorkspace(workspace);
+    }
+    
+    /**
+     * For the time being, module == package
+     */
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void updateWorkspace(String workspace, String[] selectedModules, String[] unselectedModules) {
+    	for(String moduleName : selectedModules) {
+    		PackageItem module = repository.loadPackage(moduleName);
+    		module.addWorkspace(workspace);
+    	}
+    	for(String moduleName : unselectedModules) {
+    		PackageItem module = repository.loadPackage(moduleName);
+    		module.removeWorkspace(workspace);
+    	}    
+        repository.save();
+    }
+    
     /**
      * Role-based Authorization check: This method only returns packages that the user has
      * permission to access. User has permission to access the particular package when:
@@ -345,15 +382,27 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public PackageConfigData[] listPackages() {
-        RepositoryFilter pf = new PackageFilter();
-        return listPackages( false, pf );
+        return listPackages( null);
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public PackageConfigData[] listArchivedPackages() {
+    public PackageConfigData[] listPackages(String workspace) {
         RepositoryFilter pf = new PackageFilter();
-        return listPackages( true, pf );
+        return listPackages( false, workspace, pf );
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PackageConfigData[] listArchivedPackages() {
+        return listArchivedPackages( null );
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PackageConfigData[] listArchivedPackages(String workspace) {
+        RepositoryFilter pf = new PackageFilter();
+        return listPackages( true, workspace, pf );
     }
 
     public PackageConfigData loadGlobalPackage() {
@@ -381,26 +430,26 @@ public class ServiceImplementation implements RepositoryService {
         return data;
     }
 
-    private PackageConfigData[] listPackages(boolean archive, RepositoryFilter filter) {
+    private PackageConfigData[] listPackages(boolean archive, String workspace, RepositoryFilter filter) {
         List<PackageConfigData> result = new ArrayList<PackageConfigData>();
         PackageIterator pkgs = repository.listPackages();
-        handleIteratePackages( archive, filter, result, pkgs );
+        handleIteratePackages( archive, workspace, filter, result, pkgs );
 
         sortPackages( result );
         return result.toArray( new PackageConfigData[result.size()] );
     }
 
-    private PackageConfigData[] listSubPackages(PackageItem parentPkg, boolean archive, RepositoryFilter filter) {
+    private PackageConfigData[] listSubPackages(PackageItem parentPkg, boolean archive, String workspace, RepositoryFilter filter) {
         List<PackageConfigData> children = new LinkedList<PackageConfigData>();
 
         PackageIterator pkgs = parentPkg.listSubPackages();
-        handleIteratePackages( archive, filter, children, pkgs );
+        handleIteratePackages( archive, workspace, filter, children, pkgs );
 
         sortPackages( children );
         return children.toArray( new PackageConfigData[children.size()] );
     }
 
-    private void handleIteratePackages(boolean archive, RepositoryFilter filter, List<PackageConfigData> result, PackageIterator pkgs) {
+    private void handleIteratePackages(boolean archive, String workspace, RepositoryFilter filter, List<PackageConfigData> result, PackageIterator pkgs) {
         pkgs.setArchivedIterator( archive );
         while ( pkgs.hasNext() ) {
             PackageItem pkg = pkgs.next();
@@ -409,18 +458,32 @@ public class ServiceImplementation implements RepositoryService {
             data.uuid = pkg.getUUID();
             data.name = pkg.getName();
             data.archived = pkg.isArchived();
-            handleIsPackagesListed( archive, filter, result, data );
+            data.workspace = pkg.getWorkspaces();
+            handleIsPackagesListed( archive, workspace, filter, result, data );
 
-            data.subPackages = listSubPackages( pkg, archive, filter );
+            data.subPackages = listSubPackages( pkg, archive, null, filter );
         }
     }
 
-    private void handleIsPackagesListed(boolean archive, RepositoryFilter filter, List<PackageConfigData> result, PackageConfigData data) {
-        if ( !archive && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) ) {
+    private void handleIsPackagesListed(boolean archive, String workspace, RepositoryFilter filter, 
+    		List<PackageConfigData> result, 
+    		PackageConfigData data) {
+        if ( !archive && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) 
+        		&& (workspace == null || isWorkspace(workspace, data.workspace)) ) {
             result.add( data );
-        } else if ( archive && data.archived && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) ) {
+        } else if ( archive && data.archived && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY ))
+        		&& (workspace == null || isWorkspace(workspace, data.workspace)) ) {
             result.add( data );
         }
+    }
+    
+    private boolean isWorkspace(String workspace, String[] workspaces) {
+    	for(String w: workspaces) {
+    		if(w.equals(workspace)) {
+    			return true;
+    		}
+    	}    	
+    	return false;
     }
 
     void sortPackages(List<PackageConfigData> result) {
@@ -696,8 +759,10 @@ public class ServiceImplementation implements RepositoryService {
         updateEffectiveAndExpiredDate( repoAsset, meta );
 
         repoAsset.updateCategoryList( meta.categories );
-        getContentHandler( repoAsset ).storeAssetContent( asset, repoAsset );
 
+        ContentHandler handler = ContentManager.getHandler( repoAsset.getFormat() );
+        handler.storeAssetContent( asset, repoAsset );
+        
         if ( !(asset.metaData.format.equals( AssetFormats.TEST_SCENARIO )) || asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
             PackageItem pkg = repoAsset.getPackage();
             pkg.updateBinaryUpToDate( false );
@@ -841,13 +906,18 @@ public class ServiceImplementation implements RepositoryService {
     }
 
     @WebRemote
-    public String createPackage(String name, String description) throws RulesRepositoryException {
+    public String createPackage(String name, String description, String[] workspace) throws RulesRepositoryException {
         checkSecurityIsAdmin();
 
         log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
-        PackageItem item = repository.createPackage( name, description );
+        PackageItem item = repository.createPackage( name, description, workspace );
 
         return item.getUUID();
+    }
+    
+    @WebRemote
+    public String createPackage(String name, String description) throws RulesRepositoryException {
+    	return createPackage(name, description, new String[]{});
     }
 
     @WebRemote
@@ -975,22 +1045,22 @@ public class ServiceImplementation implements RepositoryService {
 
     // HashMap DOES NOT guarantee order in different iterations!
     private static KeyValueTO convertMapToCsv(final Map map) {
-        String keys = "";
-        String values = "";
+        StringBuilder keysBuilder = new StringBuilder();
+        StringBuilder valuesBuilder = new StringBuilder();
         for ( Iterator i = map.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry entry = (Map.Entry) i.next();
-            if ( keys.length() > 0 ) {
-                keys += ",";
+            if ( keysBuilder.length() > 0 ) {
+                keysBuilder.append(",");
             }
 
-            if ( values.length() > 0 ) {
-                values += ",";
+            if ( valuesBuilder.length() > 0 ) {
+                valuesBuilder.append(",");
             }
 
-            keys += entry.getKey();
-            values += entry.getValue();
+            keysBuilder.append(entry.getKey());
+            valuesBuilder.append(entry.getValue());
         }
-        return new KeyValueTO( keys, values );
+        return new KeyValueTO( keysBuilder.toString(), valuesBuilder.toString() );
     }
 
     private static class KeyValueTO {
@@ -1582,9 +1652,11 @@ public class ServiceImplementation implements RepositoryService {
         checkSecurityIsPackageDeveloper( asset );
 
         ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
+        log.info("****** ContentHandler is: " + handler.getClass().getName());
 
         StringBuffer buf = new StringBuffer();
         if ( handler.isRuleAsset() ) {
+            log.info("****** isRuleAsset!");
 
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
@@ -1603,9 +1675,12 @@ public class ServiceImplementation implements RepositoryService {
             } else {
                 ((IRuleAsset) handler).assembleDRL( builder, asset, buf );
             }
-
+        } else {
+            if(handler.getClass().getName().equals("org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler")) {
+                BPMN2ProcessHandler bpmn2handler = ((BPMN2ProcessHandler) handler);
+                bpmn2handler.assembleProcessSource(asset.content, buf);
+            }
         }
-
         return buf.toString();
     }
 
@@ -1991,15 +2066,15 @@ public class ServiceImplementation implements RepositoryService {
                     log.error( "There were errors when rebuilding the knowledgebase." );
                     throw new DetailedSerializationException( "There were errors when rebuilding the knowledgebase.", "" );
                 }
-                try {
-                    return deserKnowledgebase( item, cl );
-                } catch ( Exception e2 ) {
-                    log.error( "Unable to reload knowledgebase: " + e.getMessage() );
-                    throw new DetailedSerializationException( "Unable to reload knowledgebase.", e.getMessage() );
-                }
             } catch ( Exception e1 ) {
                 log.error( "Unable to rebuild the rulebase: " + e.getMessage() );
-                throw new DetailedSerializationException( "Unable to rebuild the rulebase.", "" );
+                throw new DetailedSerializationException( "Unable to rebuild the rulebase.", e.getMessage() );
+            }
+            try {
+                return deserKnowledgebase( item, cl );
+            } catch ( Exception e2 ) {
+                log.error( "Unable to reload knowledgebase: " + e.getMessage() );
+                throw new DetailedSerializationException( "Unable to reload knowledgebase.", e.getMessage() );
             }
 
         }
@@ -2527,7 +2602,7 @@ public class ServiceImplementation implements RepositoryService {
         while ( rightExistingIter.hasNext() ) {
             AssetItem right = rightExistingIter.next();
             AssetItem left = null;
-            if ( leftPackage.containsAsset( right.getName() ) ) {
+            if ( right != null && leftPackage.containsAsset( right.getName() ) ) {
                 left = leftPackage.loadAsset( right.getName() );
             }
 
@@ -2542,9 +2617,7 @@ public class ServiceImplementation implements RepositoryService {
                 }
 
                 list.add( diff );
-            } else
-            // Has the asset been archived or restored
-            if ( isAssetArchivedOrRestored( right, left ) ) {
+            } else if ( isAssetArchivedOrRestored( right, left ) ) { // Has the asset been archived or restored
                 SnapshotDiff diff = new SnapshotDiff();
 
                 diff.name = right.getName();
@@ -2558,9 +2631,7 @@ public class ServiceImplementation implements RepositoryService {
                 }
 
                 list.add( diff );
-            } else
-            // Has the asset been updated
-            if ( isAssetItemUpdated( right, left ) ) {
+            } else if ( isAssetItemUpdated( right, left ) ) { // Has the asset been updated
                 SnapshotDiff diff = new SnapshotDiff();
 
                 diff.name = right.getName();

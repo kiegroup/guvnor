@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,282 +37,394 @@ public class ScenarioTest {
 
     @Test
     public void testInsertBetween() {
-		Scenario sc = new Scenario();
-		VerifyRuleFired vf = new VerifyRuleFired();
-		sc.insertBetween(null, vf);
-		assertEquals(1, sc.fixtures.size());
-		assertEquals(vf, sc.fixtures.get(0));
+        Scenario sc = new Scenario();
+        VerifyRuleFired vf = new VerifyRuleFired();
+        sc.insertBetween( null,
+                          vf );
+        assertEquals( 1,
+                      sc.getFixtures().size() );
+        assertEquals( vf,
+                      sc.getFixtures().get( 0 ) );
 
-		VerifyRuleFired vf2 = new VerifyRuleFired();
-		sc.fixtures.add(vf2);
+        VerifyRuleFired vf2 = new VerifyRuleFired();
+        sc.getFixtures().add( vf2 );
 
-		VerifyRuleFired vf3 = new VerifyRuleFired();
-		sc.insertBetween(vf, vf3);
-		assertEquals(3, sc.fixtures.size());
-		assertEquals(vf, sc.fixtures.get(0));
-		assertEquals(vf2, sc.fixtures.get(1));
-		assertEquals(vf3, sc.fixtures.get(2));
+        VerifyRuleFired vf3 = new VerifyRuleFired();
+        sc.insertBetween( vf,
+                          vf3 );
+        assertEquals( 3,
+                      sc.getFixtures().size() );
+        assertEquals( vf,
+                      sc.getFixtures().get( 0 ) );
+        assertEquals( vf2,
+                      sc.getFixtures().get( 1 ) );
+        assertEquals( vf3,
+                      sc.getFixtures().get( 2 ) );
 
-		VerifyRuleFired vf4 = new VerifyRuleFired();
-		sc.insertBetween(vf2, vf4);
-		assertEquals(4, sc.fixtures.size());
-		assertEquals(3, sc.fixtures.indexOf(vf4));
-		assertEquals(2, sc.fixtures.indexOf(vf3));
-		//assertEquals(vf4, sc.fixtures.get(3));
-		assertEquals(1, sc.fixtures.indexOf(vf2));
-		//assertEquals(vf2, sc.fixtures.get(2));
-		assertEquals(0, sc.fixtures.indexOf(vf));
+        VerifyRuleFired vf4 = new VerifyRuleFired();
+        sc.insertBetween( vf2,
+                          vf4 );
+        assertEquals( 4,
+                      sc.getFixtures().size() );
+        assertEquals( 3,
+                      sc.getFixtures().indexOf( vf4 ) );
+        assertEquals( 2,
+                      sc.getFixtures().indexOf( vf3 ) );
+        //assertEquals(vf4, sc.fixtures.get(3));
+        assertEquals( 1,
+                      sc.getFixtures().indexOf( vf2 ) );
+        //assertEquals(vf2, sc.fixtures.get(2));
+        assertEquals( 0,
+                      sc.getFixtures().indexOf( vf ) );
 
+        VerifyRuleFired vf5 = new VerifyRuleFired();
+        sc.insertBetween( null,
+                          vf5 );
+        assertEquals( 5,
+                      sc.getFixtures().size() );
+        assertEquals( 4,
+                      sc.getFixtures().indexOf( vf5 ) );
 
-		VerifyRuleFired vf5 = new VerifyRuleFired();
-		sc.insertBetween(null, vf5);
-		assertEquals(5, sc.fixtures.size());
-		assertEquals(4, sc.fixtures.indexOf(vf5));
+        sc = new Scenario();
 
+        sc.getFixtures().add( vf );
+        ExecutionTrace ex = new ExecutionTrace();
+        sc.getFixtures().add( ex );
+        sc.insertBetween( null,
+                          vf2 );
+        assertEquals( 0,
+                      sc.getFixtures().indexOf( vf ) );
+        assertEquals( 1,
+                      sc.getFixtures().indexOf( vf2 ) );
+        assertEquals( 2,
+                      sc.getFixtures().indexOf( ex ) );
+        assertEquals( 3,
+                      sc.getFixtures().size() );
 
-		sc = new Scenario();
+        sc.insertBetween( ex,
+                          vf3 );
+        assertEquals( 4,
+                      sc.getFixtures().size() );
+        assertEquals( 0,
+                      sc.getFixtures().indexOf( vf ) );
+        assertEquals( 1,
+                      sc.getFixtures().indexOf( vf2 ) );
+        assertEquals( 2,
+                      sc.getFixtures().indexOf( ex ) );
+        assertEquals( 3,
+                      sc.getFixtures().indexOf( vf3 ) );
 
-		sc.fixtures.add(vf);
-		ExecutionTrace ex = new ExecutionTrace();
-		sc.fixtures.add(ex);
-		sc.insertBetween(null, vf2);
-		assertEquals(0, sc.fixtures.indexOf(vf));
-		assertEquals(1, sc.fixtures.indexOf(vf2));
-		assertEquals(2, sc.fixtures.indexOf(ex));
-		assertEquals(3, sc.fixtures.size());
+        ExecutionTrace ex2 = new ExecutionTrace();
+        sc.getFixtures().add( ex2 );
+        sc.insertBetween( ex,
+                          vf4 );
+        assertEquals( 6,
+                      sc.getFixtures().size() );
+        assertEquals( 0,
+                      sc.getFixtures().indexOf( vf ) );
+        assertEquals( 1,
+                      sc.getFixtures().indexOf( vf2 ) );
+        assertEquals( 2,
+                      sc.getFixtures().indexOf( ex ) );
+        assertEquals( 3,
+                      sc.getFixtures().indexOf( vf3 ) );
+        assertEquals( 4,
+                      sc.getFixtures().indexOf( vf4 ) );
+        assertEquals( 5,
+                      sc.getFixtures().indexOf( ex2 ) );
 
-		sc.insertBetween(ex, vf3);
-		assertEquals(4, sc.fixtures.size());
-		assertEquals(0, sc.fixtures.indexOf(vf));
-		assertEquals(1, sc.fixtures.indexOf(vf2));
-		assertEquals(2, sc.fixtures.indexOf(ex));
-		assertEquals(3, sc.fixtures.indexOf(vf3));
+        sc.insertBetween( ex2,
+                          vf5 );
+        assertEquals( 7,
+                      sc.getFixtures().size() );
+        assertEquals( 0,
+                      sc.getFixtures().indexOf( vf ) );
+        assertEquals( 1,
+                      sc.getFixtures().indexOf( vf2 ) );
+        assertEquals( 2,
+                      sc.getFixtures().indexOf( ex ) );
+        assertEquals( 3,
+                      sc.getFixtures().indexOf( vf3 ) );
+        assertEquals( 4,
+                      sc.getFixtures().indexOf( vf4 ) );
+        assertEquals( 5,
+                      sc.getFixtures().indexOf( ex2 ) );
+        assertEquals( 6,
+                      sc.getFixtures().indexOf( vf5 ) );
 
+        sc = new Scenario();
+        sc.getFixtures().add( ex );
 
-		ExecutionTrace ex2 = new ExecutionTrace();
-		sc.fixtures.add(ex2);
-		sc.insertBetween(ex, vf4);
-		assertEquals(6, sc.fixtures.size());
-		assertEquals(0, sc.fixtures.indexOf(vf));
-		assertEquals(1, sc.fixtures.indexOf(vf2));
-		assertEquals(2, sc.fixtures.indexOf(ex));
-		assertEquals(3, sc.fixtures.indexOf(vf3));
-		assertEquals(4, sc.fixtures.indexOf(vf4));
-		assertEquals(5, sc.fixtures.indexOf(ex2));
+        sc.insertBetween( null,
+                          vf );
+        assertEquals( 2,
+                      sc.getFixtures().size() );
+        assertEquals( 0,
+                      sc.getFixtures().indexOf( vf ) );
+        assertEquals( 1,
+                      sc.getFixtures().indexOf( ex ) );
 
-
-		sc.insertBetween(ex2, vf5);
-		assertEquals(7, sc.fixtures.size());
-		assertEquals(0, sc.fixtures.indexOf(vf));
-		assertEquals(1, sc.fixtures.indexOf(vf2));
-		assertEquals(2, sc.fixtures.indexOf(ex));
-		assertEquals(3, sc.fixtures.indexOf(vf3));
-		assertEquals(4, sc.fixtures.indexOf(vf4));
-		assertEquals(5, sc.fixtures.indexOf(ex2));
-		assertEquals(6, sc.fixtures.indexOf(vf5));
-
-
-		sc = new Scenario();
-		sc.fixtures.add(ex);
-
-		sc.insertBetween(null, vf);
-		assertEquals(2, sc.fixtures.size());
-		assertEquals(0, sc.fixtures.indexOf(vf));
-		assertEquals(1, sc.fixtures.indexOf(ex));
-
-
-
-
-
-	}
-
-
+    }
 
     @Test
     public void testExecutionTrace() {
         Scenario sc = new Scenario();
 
-        sc.globals.add(new FactData("A", "A", new ArrayList(), false));
-        sc.fixtures.add(new FactData("B", "B", new ArrayList(), true));
-        sc.fixtures.add(new FactData("C", "C", new ArrayList(), true));
+        sc.getGlobals().add( new FactData( "A",
+                                           "A",
+                                           new ArrayList(),
+                                           false ) );
+        sc.getFixtures().add( new FactData( "B",
+                                            "B",
+                                            new ArrayList(),
+                                            true ) );
+        sc.getFixtures().add( new FactData( "C",
+                                            "C",
+                                            new ArrayList(),
+                                            true ) );
         ExecutionTrace ex1 = new ExecutionTrace();
-        sc.fixtures.add(ex1);
-        sc.fixtures.add(new VerifyFact());
-        sc.fixtures.add(new RetractFact());
-        sc.fixtures.add(new FactData("D", "D", new ArrayList(), false));
-        sc.fixtures.add(new FactData("E", "E", new ArrayList(), false));
+        sc.getFixtures().add( ex1 );
+        sc.getFixtures().add( new VerifyFact() );
+        sc.getFixtures().add( new RetractFact() );
+        sc.getFixtures().add( new FactData( "D",
+                                            "D",
+                                            new ArrayList(),
+                                            false ) );
+        sc.getFixtures().add( new FactData( "E",
+                                            "E",
+                                            new ArrayList(),
+                                            false ) );
         ExecutionTrace ex2 = new ExecutionTrace();
-        sc.fixtures.add(ex2);
-        sc.fixtures.add(new VerifyFact());
-        sc.fixtures.add(new FactData("F", "F", new ArrayList(), false));
+        sc.getFixtures().add( ex2 );
+        sc.getFixtures().add( new VerifyFact() );
+        sc.getFixtures().add( new FactData( "F",
+                                            "F",
+                                            new ArrayList(),
+                                            false ) );
         ExecutionTrace ex3 = new ExecutionTrace();
-        sc.fixtures.add(ex3);
+        sc.getFixtures().add( ex3 );
 
         assertEquals( 11,
-                      sc.fixtures.size() );
+                      sc.getFixtures().size() );
 
         sc.removeExecutionTrace( ex2 );
 
         assertEquals( 6,
-                      sc.fixtures.size() );
-        assertTrue( sc.isFactNameExisting( "A" ) );
-        assertTrue( sc.isFactNameExisting( "B" ) );
-        assertTrue( sc.isFactNameExisting( "C" ) );
-        assertFalse( sc.isFactNameExisting( "D" ) );
-        assertFalse( sc.isFactNameExisting( "E" ) );
-        assertTrue( sc.isFactNameExisting( "F" ) );
-	}
+                      sc.getFixtures().size() );
+        assertTrue( sc.isFactNameReserved( "A" ) );
+        assertTrue( sc.isFactNameReserved( "B" ) );
+        assertTrue( sc.isFactNameReserved( "C" ) );
+        assertFalse( sc.isFactNameReserved( "D" ) );
+        assertFalse( sc.isFactNameReserved( "E" ) );
+        assertTrue( sc.isFactNameReserved( "F" ) );
+    }
 
     @Test
     public void testRemoveFixture() {
-		Scenario sc = new Scenario();
+        Scenario sc = new Scenario();
 
-		VerifyRuleFired vf1 = new VerifyRuleFired();
-		VerifyRuleFired vf2 = new VerifyRuleFired();
-		VerifyRuleFired vf3 = new VerifyRuleFired();
+        VerifyRuleFired vf1 = new VerifyRuleFired();
+        VerifyRuleFired vf2 = new VerifyRuleFired();
+        VerifyRuleFired vf3 = new VerifyRuleFired();
 
-		FactData fd = new FactData();
+        FactData fd = new FactData();
 
-		sc.fixtures.add(vf1);
-		sc.fixtures.add(vf2);
-		sc.fixtures.add(vf3);
-		sc.globals.add(fd);
+        sc.getFixtures().add( vf1 );
+        sc.getFixtures().add( vf2 );
+        sc.getFixtures().add( vf3 );
+        sc.getGlobals().add( fd );
 
+        sc.removeFixture( vf2 );
+        assertEquals( 2,
+                      sc.getFixtures().size() );
+        assertEquals( vf1,
+                      sc.getFixtures().get( 0 ) );
+        assertEquals( vf3,
+                      sc.getFixtures().get( 1 ) );
+        assertEquals( 1,
+                      sc.getGlobals().size() );
 
-		sc.removeFixture(vf2);
-		assertEquals(2, sc.fixtures.size());
-		assertEquals(vf1, sc.fixtures.get(0));
-		assertEquals(vf3, sc.fixtures.get(1));
-		assertEquals(1, sc.globals.size());
+        sc.removeFixture( fd );
+        assertEquals( 0,
+                      sc.getGlobals().size() );
+        assertEquals( 2,
+                      sc.getFixtures().size() );
 
-		sc.removeFixture(fd);
-		assertEquals(0, sc.globals.size());
-		assertEquals(2, sc.fixtures.size());
-
-
-
-
-	}
+    }
 
     @Test
     public void testMapFactTypes() {
-		Scenario sc = new Scenario();
-		sc.fixtures.add(new FactData("X", "q", null, false));
-		sc.globals.add(new FactData("Q", "x", null, false));
+        Scenario sc = new Scenario();
+        sc.getFixtures().add( new FactData( "X",
+                                            "q",
+                                            null,
+                                            false ) );
+        sc.getGlobals().add( new FactData( "Q",
+                                           "x",
+                                           null,
+                                           false ) );
 
-		Map r = sc.getVariableTypes();
-		assertEquals(2, r.size());
+        Map r = sc.getVariableTypes();
+        assertEquals( 2,
+                      r.size() );
 
-		assertEquals("X", r.get("q"));
-		assertEquals("Q", r.get("x"));
+        assertEquals( "X",
+                      r.get( "q" ) );
+        assertEquals( "Q",
+                      r.get( "x" ) );
 
-	}
+    }
 
     @Test
     public void testVariablesInScope() {
-		Scenario sc = new Scenario();
-		sc.globals.add(new FactData("X", "x", new ArrayList(), false));
+        Scenario sc = new Scenario();
+        sc.getGlobals().add( new FactData( "X",
+                                           "x",
+                                           new ArrayList(),
+                                           false ) );
 
-		sc.fixtures.add(new FactData("Q", "q", new ArrayList(), true));
-		sc.fixtures.add(new FactData("Z", "z", new ArrayList(), false));
-		ExecutionTrace ex1 = new ExecutionTrace();
+        sc.getFixtures().add( new FactData( "Q",
+                                            "q",
+                                            new ArrayList(),
+                                            true ) );
+        sc.getFixtures().add( new FactData( "Z",
+                                            "z",
+                                            new ArrayList(),
+                                            false ) );
+        ExecutionTrace ex1 = new ExecutionTrace();
 
-		sc.fixtures.add(ex1);
-		sc.fixtures.add(new RetractFact("z"));
-		sc.fixtures.add(new FactData("Y", "y", new ArrayList(), false));
+        sc.getFixtures().add( ex1 );
+        sc.getFixtures().add( new RetractFact( "z" ) );
+        sc.getFixtures().add( new FactData( "Y",
+                                            "y",
+                                            new ArrayList(),
+                                            false ) );
 
-		ExecutionTrace ex2 = new ExecutionTrace();
-		sc.fixtures.add(ex2);
+        ExecutionTrace ex2 = new ExecutionTrace();
+        sc.getFixtures().add( ex2 );
 
-		List l = sc.getFactNamesInScope(ex1, true);
+        List l = sc.getFactNamesInScope( ex1,
+                                         true );
 
-		assertEquals(3, l.size());
-		assertEquals("q", l.get(0));
-		assertEquals("z", l.get(1));
-		assertEquals("x", l.get(2));
+        assertEquals( 3,
+                      l.size() );
+        assertEquals( "q",
+                      l.get( 0 ) );
+        assertEquals( "z",
+                      l.get( 1 ) );
+        assertEquals( "x",
+                      l.get( 2 ) );
 
+        l = sc.getFactNamesInScope( ex1,
+                                    false );
+        assertEquals( 2,
+                      l.size() );
+        assertFalse( l.contains( sc.getGlobals().get( 0 ) ) );
 
-		l = sc.getFactNamesInScope(ex1, false);
-		assertEquals(2, l.size());
-		assertFalse(l.contains(sc.globals.get(0)));
+        l = sc.getFactNamesInScope( ex2,
+                                    true );
+        assertEquals( 3,
+                      l.size() );
+        assertEquals( "q",
+                      l.get( 0 ) );
+        assertEquals( "y",
+                      l.get( 1 ) );
+        assertEquals( "x",
+                      l.get( 2 ) );
 
-		l = sc.getFactNamesInScope(ex2, true);
-		assertEquals(3, l.size());
-		assertEquals("q", l.get(0));
-		assertEquals("y", l.get(1));
-		assertEquals("x", l.get(2));
+        l = sc.getFactNamesInScope( null,
+                                    true );
+        assertEquals( 0,
+                      l.size() );
 
-		l= sc.getFactNamesInScope(null, true);
-		assertEquals(0, l.size());
-
-	}
+    }
 
     @Test
     public void testAllowRemoveFact() {
-		Scenario sc = new Scenario();
+        Scenario sc = new Scenario();
 
-		FactData fd1 = new FactData("X", "x", new ArrayList(), false);
-		sc.fixtures.add(fd1);
-		FactData fd2 = new FactData("Q", "q", new ArrayList(), false);
-		sc.fixtures.add(fd2);
-		FactData fd3 = new FactData("Z", "z", new ArrayList(), false);
-		sc.fixtures.add(fd3);
-		ExecutionTrace ex1 = new ExecutionTrace();
-		FactData fd4 = new FactData("I", "i", new ArrayList(), false);
-		sc.globals.add(fd4);
+        FactData fd1 = new FactData( "X",
+                                     "x",
+                                     new ArrayList(),
+                                     false );
+        sc.getFixtures().add( fd1 );
+        FactData fd2 = new FactData( "Q",
+                                     "q",
+                                     new ArrayList(),
+                                     false );
+        sc.getFixtures().add( fd2 );
+        FactData fd3 = new FactData( "Z",
+                                     "z",
+                                     new ArrayList(),
+                                     false );
+        sc.getFixtures().add( fd3 );
+        ExecutionTrace ex1 = new ExecutionTrace();
+        FactData fd4 = new FactData( "I",
+                                     "i",
+                                     new ArrayList(),
+                                     false );
+        sc.getGlobals().add( fd4 );
 
-		sc.fixtures.add(ex1);
-		sc.fixtures.add(new RetractFact("z"));
-		sc.fixtures.add(new FactData("Z", "z", new ArrayList(), true));
-		sc.fixtures.add(new VerifyFact("q", new ArrayList()));
+        sc.getFixtures().add( ex1 );
+        sc.getFixtures().add( new RetractFact( "z" ) );
+        sc.getFixtures().add( new FactData( "Z",
+                                            "z",
+                                            new ArrayList(),
+                                            true ) );
+        sc.getFixtures().add( new VerifyFact( "q",
+                                              new ArrayList() ) );
 
-		assertFalse(sc.isFactNameUsed(fd1));
-		assertTrue(sc.isFactNameUsed(fd2));
-		assertTrue(sc.isFactNameUsed(fd3));
-		assertFalse(sc.isFactNameUsed(fd4));
-	}
+        assertFalse( sc.isFactDataReferenced( fd1 ) );
+        assertTrue( sc.isFactDataReferenced( fd2 ) );
+        assertTrue( sc.isFactDataReferenced( fd3 ) );
+        assertFalse( sc.isFactDataReferenced( fd4 ) );
+    }
 
     @Test
     public void testIsFactNameUsed() {
-		Scenario sc = new Scenario();
-		sc.globals.add(new FactData("X", "x", null, false));
-		sc.fixtures.add(new FactData("Q", "q", null, false));
-		sc.fixtures.add(new ExecutionTrace());
+        Scenario sc = new Scenario();
+        sc.getGlobals().add( new FactData( "X",
+                                           "x",
+                                           null,
+                                           false ) );
+        sc.getFixtures().add( new FactData( "Q",
+                                            "q",
+                                            null,
+                                            false ) );
+        sc.getFixtures().add( new ExecutionTrace() );
 
-		assertTrue(sc.isFactNameExisting("x"));
-		assertTrue(sc.isFactNameExisting("q"));
-		assertFalse(sc.isFactNameExisting("w"));
+        assertTrue( sc.isFactNameReserved( "x" ) );
+        assertTrue( sc.isFactNameReserved( "q" ) );
+        assertFalse( sc.isFactNameReserved( "w" ) );
 
-
-		sc = new Scenario();
-		assertFalse(sc.isFactNameExisting("w"));
-	}
+        sc = new Scenario();
+        assertFalse( sc.isFactNameReserved( "w" ) );
+    }
 
     @Test
     public void testCountSuccessFailures() {
-		Scenario sc = new Scenario();
-		sc.fixtures.add(new FactData());
-		sc.fixtures.add(new ExecutionTrace());
-		VerifyRuleFired vr = new VerifyRuleFired();
-		vr.successResult = false;
-		sc.fixtures.add(vr);
+        Scenario sc = new Scenario();
+        sc.getFixtures().add( new FactData() );
+        sc.getFixtures().add( new ExecutionTrace() );
+        VerifyRuleFired vr = new VerifyRuleFired();
+        vr.setSuccessResult( false );
+        sc.getFixtures().add( vr );
 
-		VerifyField vf = new VerifyField();
-		vf.successResult = true;
-		VerifyField vf2 = new VerifyField();
-		vf2.successResult = false;
-		VerifyFact vfact = new VerifyFact();
-		vfact.fieldValues.add(vf);
-		vfact.fieldValues.add(vf2);
-		sc.fixtures.add(vfact);
+        VerifyField vf = new VerifyField();
+        vf.setSuccessResult( true );
+        VerifyField vf2 = new VerifyField();
+        vf2.setSuccessResult( false );
+        VerifyFact vfact = new VerifyFact();
+        vfact.getFieldValues().add( vf );
+        vfact.getFieldValues().add( vf2 );
+        sc.getFixtures().add( vfact );
 
+        int[] totals = sc.countFailuresTotal();
+        assertEquals( 2,
+                      totals[0] );
+        assertEquals( 3,
+                      totals[1] );
 
-		int[] totals = sc.countFailuresTotal();
-		assertEquals(2, totals[0]);
-		assertEquals(3, totals[1]);
-
-
-
-	}
+    }
 
 }

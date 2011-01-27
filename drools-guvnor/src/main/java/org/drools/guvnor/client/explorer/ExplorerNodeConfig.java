@@ -45,10 +45,10 @@ public class ExplorerNodeConfig {
 
     //Browse
     public static final String FIND_ID                = "find";
-    public static String       CATEGORY_ROOT_ID       = "rootcategory";                             //NON-NLS
-    public static String       CATEGORY_ID            = "category";                                 //NON-NLS
-    public static String       STATES_ID              = "states";                                   //NON-NLS
-    public static String       STATES_ROOT_ID         = "rootstates";                               //NON-NLS
+    public static final String CATEGORY_ROOT_ID = "rootcategory";                             //NON-NLS
+    public static final String CATEGORY_ID      = "category";                                 //NON-NLS
+    public static final String STATES_ID        = "states";                                   //NON-NLS
+    public static final String STATES_ROOT_ID   = "rootstates";                               //NON-NLS
     public static final String RECENT_EDITED_ID       = "recentEdited";
     public static final String RECENT_VIEWED_ID       = "recentViewed";
     public static final String INCOMING_ID            = "incoming";
@@ -90,17 +90,17 @@ public class ExplorerNodeConfig {
         item.setUserObject( new String[]{AssetFormats.DRL_MODEL, AssetFormats.MODEL} );
         pkg.addItem( item );
 
+        
         if ( Preferences.getBooleanPref( "flex-bpel-editor" ) ) {
             item = new TreeItem( Util.getHeader( images.ruleflowSmall(), constants.RuleFlows() ) );
             itemWidgets.put( item, AssetFormats.RULE_FLOW_RF );
-            item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN2_PROCESS, AssetFormats.BPEL_PACKAGE} );
+            item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS, AssetFormats.BPEL_PACKAGE} );
             pkg.addItem( item );
         } else {
             item = new TreeItem( Util.getHeader( images.ruleflowSmall(), constants.RuleFlows() ) );
             itemWidgets.put( item, AssetFormats.RULE_FLOW_RF );
-            item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN2_PROCESS} );
+            item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF,  AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS} );
             pkg.addItem( item );
-
         }
 
         item = new TreeItem( Util.getHeader( images.enumeration(), constants.Enumerations() ) );
@@ -173,7 +173,7 @@ public class ExplorerNodeConfig {
         tree.setAnimationEnabled( true );
 
         Object[][] adminStructure =
-                new Object[][]{{constants.Category(), images.categorySmall(), "0"}, {constants.Status(), images.statusSmall(), "2"}, {constants.Archive(), images.backupSmall(), "1"}, {constants.EventLog(), images.error(), "4"}, {constants.UserPermission(), images.icoUsersSmall(), "5"}, {constants.ImportExport(), images.saveEdit(), "3"},
+                new Object[][]{{constants.Category(), images.categorySmall(), "0"}, {constants.Status(), images.statusSmall(), "2"}, {constants.Archive(), images.backupSmall(), "1"}, {constants.EventLog(), images.error(), "4"}, {constants.UserPermission(), images.icoUsersSmall(), "5"}, {constants.Workspaces(), images.emptyPackage(), "9"}, {constants.ImportExport(), images.saveEdit(), "3"},
                         {constants.RulesVerification(), images.ruleVerification(), "7"}, {constants.RepositoryConfiguration(), images.config(), "8"}, {constants.About(), images.information(), "6"}};
 
         for ( int i = 0; i < adminStructure.length; i++ ) {

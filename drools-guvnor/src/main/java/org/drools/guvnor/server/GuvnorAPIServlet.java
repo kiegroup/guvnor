@@ -40,6 +40,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.repository.utils.IOUtils;
 import org.drools.xml.SemanticModules;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
@@ -192,18 +193,9 @@ public class GuvnorAPIServlet extends HttpServlet {
             bos.close();
             return new String( bytes );
         } finally {
-            try {
-                if ( out != null ) {
-                    out.close();
-                }
-                if ( content != null ) {
-                    content.close();
-                }
-                if ( bos != null ) {
-                    bos.close();
-                }
-            } catch ( IOException e ) {
-            }
+            IOUtils.closeQuietly(out);
+            IOUtils.closeQuietly(content);
+            IOUtils.closeQuietly(bos);
         }
     }
 

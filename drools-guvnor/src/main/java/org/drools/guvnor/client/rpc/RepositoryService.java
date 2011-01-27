@@ -108,6 +108,32 @@ public interface RepositoryService
     public PackageConfigData[] listPackages();
 
     /**
+     * This returns a list of packages where rules may be added.
+     * Only the UUID and the name need to be populated.
+     */
+    public PackageConfigData[] listPackages(String workspace);
+    
+    /**
+     * This returns a list of workspaces 
+     */
+    public String[] listWorkspaces();
+
+    /**
+     * This creates a workspace 
+     */
+    public void createWorkspace(String workspace);    
+    
+    /**
+     * This removes a workspace 
+     */
+    public void removeWorkspace(String workspace);    
+    
+    /**
+     * This removes a workspace 
+     */
+    public void updateWorkspace(String workspace, String[] selectedModules, String[] unselectedModules);    
+    
+    /**
      * This returns the global packages. 
      */
     public PackageConfigData loadGlobalPackage();

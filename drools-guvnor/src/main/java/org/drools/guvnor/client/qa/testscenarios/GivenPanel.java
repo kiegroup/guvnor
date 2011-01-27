@@ -51,7 +51,7 @@ public class GivenPanel extends VerticalPanel {
                                                  parent ) );
             } else {
                 FactData first = (FactData) itemList.get( 0 );
-                if ( first.isModify ) {
+                if ( first.isModify() ) {
                     add( new ModifyFactWidget( e.getKey(),
                                                itemList,
                                                scenario,

@@ -218,9 +218,8 @@ public class RuleModelTest {
 		RuleModel m = new RuleModel();
 		m.name = "blah";
 
-		FactPattern pat = new FactPattern();
+		FactPattern pat = new FactPattern("Person");
 		pat.boundName = "pat";
-		pat.factType = "Person";
 
 		m.addLhsItem(pat);
 
@@ -466,9 +465,9 @@ public class RuleModelTest {
 		String varTypeLong = model.getBindingType("make");
 		assertEquals(null, varTypeLong);
 		FactPattern varTypeBoat = model.getBoundFact("x");
-		assertEquals("Boat", varTypeBoat.factType);
+		assertEquals("Boat", varTypeBoat.getFactType());
 		FactPattern varTypeCar = model.getBoundFact("y");
-		assertEquals("Car", varTypeCar.factType);
+		assertEquals("Car", varTypeCar.getFactType());
 	}
 
     @Test

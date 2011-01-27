@@ -60,7 +60,8 @@ public class AssetFormats {
 
     /** Use a ruleflow.*/
     public static final String RULE_FLOW_RF = "rf";
-    public static final String BPMN2_PROCESS = "bpmn";
+    public static final String BPMN_PROCESS = "bpmn";
+    public static final String BPMN2_PROCESS = "bpmn2";
 
     /** Use a data enum.*/
     public static final String ENUMERATION = "enumeration";

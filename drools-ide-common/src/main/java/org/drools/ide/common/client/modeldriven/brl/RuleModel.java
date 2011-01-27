@@ -67,7 +67,7 @@ public class RuleModel implements PortableObject {
             if (this.lhs[i] instanceof FactPattern) {
                 final FactPattern p = (FactPattern) this.lhs[i];
                 if (p.isBound() && var.equals(p.boundName) ) {
-                	return p.factType;
+                	return p.getFactType();
                 }
                 for (FieldConstraint z : p.getFieldConstraints()) {
                     String type = giveFieldBinding(z, var);

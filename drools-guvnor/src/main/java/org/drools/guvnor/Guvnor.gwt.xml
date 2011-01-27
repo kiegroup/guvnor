@@ -51,6 +51,7 @@
   <servlet path="/verificationService" class="org.drools.guvnor.server.VerificationServiceImplementation"/>
   <servlet path="/standaloneEditorServlet" class="org.drools.guvnor.server.StandaloneEditorServlet"/>
   <servlet path="/standaloneEditorService" class="org.drools.guvnor.server.StandaloneEditorServiceImplementation"/>
+  <servlet path="/oryxeditor" class="org.drools.guvnor.server.files.OryxEditorServlet"/>
 
 
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />

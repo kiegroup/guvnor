@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,50 +21,73 @@ import java.util.List;
 
 /**
  * This is for making assertions over a specific facts value/state AFTER execution.
- * @author Michael Neale
  *
+ * @author Michael Neale
  */
 public class VerifyFact
-    implements
-    Expectation {
+        implements
+        Expectation {
 
     private static final long serialVersionUID = 510l;
 
-    public List<VerifyField>  fieldValues      = new ArrayList<VerifyField>();
-    public String             name;
-    public String             description;
+    private List<VerifyField> fieldValues = new ArrayList<VerifyField>();
+    private String name;
+    private String description;
 
     /**
      * This is true if it isn't a named fact, but it will just search working memory to verify.
      */
-    public boolean            anonymous        = false;
+    public boolean anonymous = false;
 
     public VerifyFact() {
     }
 
-    public VerifyFact(String factName,
+    public VerifyFact(String name,
                       List<VerifyField> fieldValues,
                       boolean anonymous) {
-        this.name = factName;
+        this.name = name;
         this.fieldValues = fieldValues;
         this.anonymous = anonymous;
     }
 
-    public VerifyFact(String factName,
+    public VerifyFact(String name,
                       List<VerifyField> fieldValues) {
-        this( factName,
-              fieldValues,
-              false );
+        this(name,
+                fieldValues,
+                false);
     }
 
     public boolean wasSuccessful() {
-        for ( int i = 0; i < fieldValues.size(); i++ ) {
-            VerifyField vf = (VerifyField) fieldValues.get( i );
-            if ( !vf.successResult.booleanValue() ) {
+        for (VerifyField verifyField : fieldValues) {
+            if (!verifyField.getSuccessResult().booleanValue()) {
                 return false;
             }
         }
         return true;
+    }
+
+    public void setFieldValues(List<VerifyField> fieldValues) {
+        this.fieldValues = fieldValues;
+    }
+
+    public List<VerifyField> getFieldValues() {
+        return fieldValues;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
 }

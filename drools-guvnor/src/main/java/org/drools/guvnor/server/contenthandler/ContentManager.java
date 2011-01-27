@@ -17,11 +17,13 @@
 package org.drools.guvnor.server.contenthandler;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
+import org.drools.repository.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +34,7 @@ import org.slf4j.LoggerFactory;
 public class ContentManager {
 
 	private static final Logger log = LoggerFactory.getLogger( ContentManager.class );
-	public static String CONTENT_CONFIG_PROPERTIES = "/contenthandler.properties";
+	public static final String CONTENT_CONFIG_PROPERTIES = "/contenthandler.properties";
 	private static ContentManager INSTANCE;
 
     /**
@@ -45,18 +47,21 @@ public class ContentManager {
 	ContentManager(String configPath) {
 		log.debug("Loading content properties");
 		Properties props = new Properties();
-		try {
-			props.load(this.getClass().getResourceAsStream(configPath));
+        InputStream in = null;
+        try {
+            in = getClass().getResourceAsStream(configPath);
+            props.load(in);
 			for (Iterator iter = props.keySet().iterator(); iter.hasNext();) {
 				String contentHandler = (String) iter.next();
 				String val = props.getProperty(contentHandler);
 
 				contentHandlers.put(contentHandler, loadContentHandlerImplementation( val ));
-
 			}
 		} catch (IOException e) {
 			log.error("UNABLE to load content handlers. Ahem, nothing will actually work. Ignore subsequent errors until this is resolved.", e);
-		}
+		} finally {
+            IOUtils.closeQuietly(in);
+        }
 	}
 
     /**

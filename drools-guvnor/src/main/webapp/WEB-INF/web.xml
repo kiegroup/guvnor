@@ -67,6 +67,14 @@
 		<servlet-name>verificationService</servlet-name>
 		<servlet-class>org.drools.guvnor.server.VerificationServiceImplementation</servlet-class>
 	</servlet>
+    <servlet>
+      <servlet-name>OryxEditorServlet</servlet-name>
+      <servlet-class>org.drools.guvnor.server.files.OryxEditorServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>OryxEditorServlet</servlet-name>
+      <url-pattern>/org.drools.guvnor.Guvnor/oryxeditor/*</url-pattern>
+    </servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>guvnorService</servlet-name>
 		<url-pattern>/org.drools.guvnor.Guvnor/guvnorService</url-pattern>

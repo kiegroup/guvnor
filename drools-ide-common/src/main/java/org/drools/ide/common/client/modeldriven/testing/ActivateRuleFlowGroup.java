@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,13 +26,21 @@ public class ActivateRuleFlowGroup
 
     private static final long serialVersionUID = 510l;
 
+    private String            name;
+
     public ActivateRuleFlowGroup() {
     }
 
     public ActivateRuleFlowGroup(String s) {
-        this.name = s;
+        this.setName( s );
     }
 
-    public String name;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 
 }

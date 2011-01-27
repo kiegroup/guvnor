@@ -85,6 +85,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                              ExpressionFormLine expression,
                              Boolean readOnly) {
         super( modeller );
+        this.expression = expression;
 
         if ( readOnly == null ) {
             this.readOnly = !modeller.getSuggestionCompletions().containsFactType( modeller.getSuggestionCompletions().getFactNameFromType( this.expression.getRootExpression().getClassType() ) );
@@ -94,7 +95,6 @@ public class ExpressionBuilder extends RuleModellerWidget
 
         panel.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
 
-        this.expression = expression;
         if ( expression == null || expression.isEmpty() ) {
             if ( this.readOnly ) {
                 panel.add( new SmallLabel( "<b>-</b>" ) );

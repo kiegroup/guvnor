@@ -329,13 +329,13 @@ public class SnapshotView extends Composite {
 
     protected void showAssetList(final String[] assetTypes) {
 
-        String key = this.snapInfo.uuid;
-        for ( int i = 0; i < assetTypes.length; i++ ) {
-            key = key + assetTypes[i];
+        StringBuilder keyBuilder = new StringBuilder(this.snapInfo.uuid);
+        for (String assetType : assetTypes) {
+            keyBuilder.append(assetType);
         }
 
         TabOpener tabOpener = TabOpener.getInstance();
-        tabOpener.openSnapshotAssetList( snapInfo.name, snapInfo.uuid, assetTypes, key );
+        tabOpener.openSnapshotAssetList( snapInfo.name, snapInfo.uuid, assetTypes, keyBuilder.toString() );
     }
 
     public static void showNewSnapshot(final Command refreshCmd) {

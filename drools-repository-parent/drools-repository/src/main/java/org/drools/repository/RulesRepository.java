@@ -83,6 +83,7 @@ import org.slf4j.LoggerFactory;
 public class RulesRepository {
 
     public static final String  DEFAULT_PACKAGE       = "defaultPackage";
+    public static final String  DEFAULT_WORKSPACE     = "defaultWorkspace";
 
     public static final String  DROOLS_URI            = "http://www.jboss.org/drools-repository/1.0";
 
@@ -108,6 +109,21 @@ public class RulesRepository {
      * The name of the state area of the repository
      */
     public final static String  STATE_AREA            = "drools:state_area";
+
+    /**
+     * The name of the schema area within the JCR repository
+     */
+    public final static String SCHEMA_AREA = "drools:schema_area";
+
+    /**
+     * The name of the meta data area within the JCR repository
+     */
+    public final static String METADATA_TYPE_AREA = "drools:metadata_type_area";
+    
+    /**
+     * The name of the workspace area within the JCR repository
+     */
+    public final static String WORKSPACE_AREA = "drools:workspace_area";
 
     /**
      * The name of the rules repository within the JCR repository
@@ -217,6 +233,22 @@ public class RulesRepository {
         }
         return folderNode;
     }
+    
+	private Node getMetaDataTypeNode(String metadataType)
+			throws RepositoryException {
+		Node schemaNode = getAreaNode(SCHEMA_AREA);
+		Node node = addNodeIfNew(
+				addNodeIfNew(schemaNode, METADATA_TYPE_AREA,
+						"nt:folder"), metadataType, "nt:file");
+		return node;
+	}
+
+	private NodeIterator getMetaDataTypeNodes() throws RepositoryException {
+		Node schemaNode = getAreaNode(SCHEMA_AREA);
+		NodeIterator node = addNodeIfNew(schemaNode,
+				METADATA_TYPE_AREA, "nt:folder").getNodes();
+		return node;
+	}   
 
     //    MN: This is kept for future reference showing how to tie references
     //    to a specific version when
@@ -674,7 +706,7 @@ public class RulesRepository {
         }
 
     }
-
+    
     /**
      * Adds a package to the repository.
      *
@@ -687,6 +719,22 @@ public class RulesRepository {
      */	
     public PackageItem createPackage(String name,
                                      String description) throws RulesRepositoryException {
+    	return createPackage(name, description, null);
+    }
+    
+    /**
+     * Adds a package to the repository.
+     *
+     * @param name
+     *            what to name the node added
+     * @param description
+     *            what description to use for the node
+     * @return a PackageItem, encapsulating the created node
+     * @throws RulesRepositoryException
+     */	
+    public PackageItem createPackage(String name,
+                                     String description,
+                                     String[] workspace) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
 
         try {
@@ -706,6 +754,8 @@ public class RulesRepository {
                                          PackageItem.PACKAGE_FORMAT );
             rulePackageNode.setProperty( PackageItem.CREATOR_PROPERTY_NAME,
                                          this.session.getUserID() );
+            rulePackageNode.setProperty( PackageItem.WORKSPACE_PROPERTY_NAME,
+                    workspace );
 
             Calendar lastModified = Calendar.getInstance();
             rulePackageNode.setProperty( PackageItem.LAST_MODIFIED_PROPERTY_NAME,
@@ -731,6 +781,7 @@ public class RulesRepository {
 
     }
 
+    
     /**
      * Adds a Sub package to the repository.
      *
@@ -823,7 +874,72 @@ public class RulesRepository {
             throw new RulesRepositoryException( e );
         }
     }
+    
+    public String[] listWorkspaces() throws RulesRepositoryException {
+		List<String> result = new ArrayList<String>();
+                
+		try {
+			//SCHEMA_AREA and WORKSPACE_AREA may not exist if the repository is imported from an old version. 
+            Node schemaNode = addNodeIfNew(this.session.getRootNode().getNode( RULES_REPOSITORY_NAME ),
+            		                       SCHEMA_AREA,
+            		                       "nt:folder" );
+          	NodeIterator workspaceNodes = addNodeIfNew(schemaNode, WORKSPACE_AREA, "nt:folder").getNodes();
+    		
+         	while (workspaceNodes.hasNext()) {
+        		Node workspaceNode = workspaceNodes.nextNode();
+        		result.add(workspaceNode.getName());
+         	}
 
+        } catch ( Exception e ) {
+            log.error( e.getMessage(), e );
+            throw new RulesRepositoryException( e );
+        }
+        
+        return result.toArray(new String[result.size()]);
+    }
+    
+    /**
+     * Create a status node of the given name.
+     */
+    public Node createWorkspace(String workspace) {
+        try {
+			//SCHEMA_AREA and WORKSPACE_AREA may not exist if the repository is imported from an old version. 
+            Node schemaNode = addNodeIfNew(this.session.getRootNode().getNode( RULES_REPOSITORY_NAME ),
+            		                       SCHEMA_AREA,
+            		                       "nt:folder" );
+            Node workspaceNode = addNodeIfNew(schemaNode, WORKSPACE_AREA, "nt:folder");
+
+    		Node node = addNodeIfNew(workspaceNode,
+    				workspace, "nt:file");
+    		
+    		//TODO: use cnd instead
+    		node.addNode("jcr:content", "nt:unstructured");
+
+            this.getSession().save();
+            log.debug( "Created workspace [" + workspace + "]" );
+            return node;
+        } catch ( Exception e ) {
+            log.error( e.getMessage(), e );
+            throw new RulesRepositoryException( e );
+        }
+    }
+    
+    public void removeWorkspace(String workspace) {
+        try {
+            Node schemaNode = addNodeIfNew(this.session.getRootNode().getNode( RULES_REPOSITORY_NAME ),
+                    SCHEMA_AREA,
+                    "nt:folder" );
+            Node workspaceAreaNode = addNodeIfNew(schemaNode, WORKSPACE_AREA, "nt:folder");
+
+    		Node workspaceNode = workspaceAreaNode.getNode(workspace);
+    		workspaceNode.remove();    		
+    		this.getSession().save();
+        } catch ( Exception e ) {
+            log.error( e.getMessage(), e );
+            throw new RulesRepositoryException( e );
+        }    
+    }
+    
     /**
      * This will return a category for the given category path.
      *
@@ -1407,47 +1523,49 @@ public class RulesRepository {
                                    DateQuery[] dates) {
         try {
 
-            String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME + ", " + AssetItem.DESCRIPTION_PROPERTY_NAME + ", " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
-            sql += " WHERE jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
+            StringBuilder sql = new StringBuilder("SELECT ").append(AssetItem.TITLE_PROPERTY_NAME).append(", ")
+                    .append(AssetItem.DESCRIPTION_PROPERTY_NAME).append(", ")
+                    .append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG)
+                    .append(" FROM ").append(AssetItem.RULE_NODE_TYPE_NAME);
+            sql.append(" WHERE jcr:path LIKE '/").append(RULES_REPOSITORY_NAME).append("/").append(RULE_PACKAGE_AREA).append("/%'");
             for ( Iterator<Map.Entry<String, String[]>> iterator = params.entrySet().iterator(); iterator.hasNext(); ) {
                 Map.Entry<String, String[]> en = iterator.next();
                 String fld = en.getKey();
                 String[] options = en.getValue();
                 if ( options != null && options.length > 0 ) {
                     if ( options.length > 1 ) {
-                        sql += " AND (";
+                        sql.append(" AND (");
                         for ( int i = 0; i < options.length; i++ ) {
-                            sql += fld + " LIKE '" + options[i].replace( "*",
-                                                                         "%" ) + "'";
+                            sql.append(fld).append(" LIKE '").append(options[i].replace( "*", "%" )).append("'");
                             if ( i < options.length - 1 ) {
-                                sql += " OR ";
+                                sql.append(" OR ");
                             }
                         }
-                        sql += ")";
+                        sql.append(")");
                     } else {
-                        sql += " AND " + fld + " LIKE '" + options[0].replace( "*",
-                                                                               "%" ) + "'";
+                        sql.append(" AND ").append(fld)
+                                .append(" LIKE '").append(options[0].replace( "*", "%" )).append("'");
                     }
                 }
             }
-            if ( seekArchived == false ) {
-                sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
+            if (!seekArchived) {
+                sql.append(" AND ").append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).append(" = 'false'");
             }
 
             if ( dates != null ) {
                 for ( int i = 0; i < dates.length; i++ ) {
                     DateQuery d = dates[i];
                     if ( d.after != null ) {
-                        sql += " AND " + d.field + " > TIMESTAMP '" + d.after + "'";
+                        sql.append(" AND ").append(d.field).append(" > TIMESTAMP '").append(d.after).append("'");
                     }
                     if ( d.before != null ) {
-                        sql += " AND " + d.field + " < TIMESTAMP '" + d.before + "'";
+                        sql.append(" AND ").append(d.field).append(" < TIMESTAMP '").append(d.before).append("'");
                     }
                 }
             }
 
 
-            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql,
+            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql.toString(),
                                                                                  Query.SQL );
 
             QueryResult res = q.execute();

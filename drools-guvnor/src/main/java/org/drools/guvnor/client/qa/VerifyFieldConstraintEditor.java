@@ -97,18 +97,18 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
     }
 
     private void refreshEditor() {
-        String key = factType + "." + field.fieldName;
+        String key = factType + "." + field.getFieldName();
         String flType = sce.getFieldType( key );
         panel.clear();
-        if ( flType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+        if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             final TextBox box = editableTextBox( callback,
-                                                 field.fieldName,
-                                                 field.expected );
+                                                 field.getFieldName(),
+                                                 field.getExpected() );
             box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
             panel.add( box );
-        } else if ( flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+        } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             String[] c = new String[]{"true", "false"};
-            panel.add( new EnumDropDown( field.expected,
+            panel.add( new EnumDropDown( field.getExpected(),
                                          new DropDownValueChanged() {
                                              public void valueChanged(String newText,
                                                                       String newValue) {
@@ -117,13 +117,13 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                          },
                                          DropDownData.create( c ) ) );
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            final DatePickerTextBox datePicker = new DatePickerTextBox( field.expected );
+            final DatePickerTextBox datePicker = new DatePickerTextBox( field.getExpected() );
             String m = Format.format( ((Constants) GWT.create( Constants.class )).ValueFor0(),
-                                      field.fieldName );
+                                      field.getFieldName() );
             datePicker.setTitle( m );
             datePicker.addValueChanged( new ValueChanged() {
                 public void valueChanged(String newValue) {
-                    field.expected = newValue;
+                    field.setExpected( newValue );
                 }
             } );
 
@@ -131,8 +131,8 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         } else {
             String[] enums = sce.getDataEnumList( key );
             if ( enums != null ) {
-                field.nature = FieldData.TYPE_ENUM;
-                panel.add( new EnumDropDown( field.expected,
+                field.setNature( FieldData.TYPE_ENUM );
+                panel.add( new EnumDropDown( field.getExpected(),
                                              new DropDownValueChanged() {
                                                  public void valueChanged(String newText,
                                                                           String newValue) {
@@ -142,14 +142,14 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                              DropDownData.create( enums ) ) );
 
             } else {
-                if ( field.expected != null && field.expected.length() > 0 && field.nature == FieldData.TYPE_UNDEFINED ) {
-                    if ( field.expected.charAt( 0 ) == '=' ) {
-                        field.nature = FieldData.TYPE_VARIABLE;
+                if ( field.getExpected() != null && field.getExpected().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED ) {
+                    if ( field.getExpected().charAt( 0 ) == '=' ) {
+                        field.setNature( FieldData.TYPE_VARIABLE );
                     } else {
-                        field.nature = FieldData.TYPE_LITERAL;
+                        field.setNature( FieldData.TYPE_LITERAL );
                     }
                 }
-                if ( field.nature == FieldData.TYPE_UNDEFINED && isThereABoundVariableToSet() == true ) {
+                if ( field.getNature() == FieldData.TYPE_UNDEFINED && isThereABoundVariableToSet() == true ) {
                     Image clickme = new Image( images.edit() );
                     clickme.addClickHandler( new ClickHandler() {
 
@@ -159,12 +159,12 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                         }
                     } );
                     panel.add( clickme );
-                } else if ( field.nature == FieldData.TYPE_VARIABLE ) {
+                } else if ( field.getNature() == FieldData.TYPE_VARIABLE ) {
                     panel.add( variableEditor() );
                 } else {
                     panel.add( editableTextBox( callback,
-                                                field.fieldName,
-                                                field.expected ) );
+                                                field.getFieldName(),
+                                                field.getExpected() ) );
                 }
 
             }
@@ -177,7 +177,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
         final ListBox box = new ListBox();
 
-        if ( this.field.expected == null ) {
+        if ( this.field.getExpected() == null ) {
             box.addItem( constants.Choose() );
         }
         int j = 0;
@@ -185,14 +185,14 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
             String var = vars.get( i );
             FactData f = (FactData) scenario.getFactTypes().get( var );
             String fieldType = sce.getFieldType( this.factType,
-                                                 field.fieldName );
-            if ( f.type.equals( fieldType ) ) {
+                                                 field.getFieldName() );
+            if ( f.getType().equals( fieldType ) ) {
                 if ( box.getItemCount() == 0 ) {
                     box.addItem( "..." );
                     j++;
                 }
                 box.addItem( "=" + var );
-                if ( this.field.expected != null && this.field.expected.equals( "=" + var ) ) {
+                if ( this.field.getExpected() != null && this.field.getExpected().equals( "=" + var ) ) {
                     box.setSelectedIndex( j );
                 }
                 j++;
@@ -202,7 +202,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         box.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                field.expected = box.getItemText( box.getSelectedIndex() );
+                field.setExpected( box.getItemText( box.getSelectedIndex() ) );
             }
         } );
 
@@ -236,7 +236,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         lit.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                con.nature = FieldData.TYPE_LITERAL;
+                con.setNature( FieldData.TYPE_LITERAL );
                 doTypeChosen( form );
             }
 
@@ -256,7 +256,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         variable.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                con.nature = FieldData.TYPE_VARIABLE;
+                con.setNature( FieldData.TYPE_VARIABLE );
                 doTypeChosen( form );
             }
         } );
@@ -277,8 +277,8 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                 String var = (String) vars.get( i );
                 FactData f = (FactData) scenario.getFactTypes().get( var );
                 String fieldType = sce.getFieldType( this.factType,
-                                                     field.fieldName );
-                if ( f.type.equals( fieldType ) ) {
+                                                     field.getFieldName() );
+                if ( f.getType().equals( fieldType ) ) {
                     retour = true;
                     break;
                 }

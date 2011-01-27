@@ -20,7 +20,7 @@ package org.drools.ide.common.client.modeldriven.brl;
  *
  * @author esteban.aliverti@gmail.com
  */
-public class FromCompositeFactPattern implements IPattern {
+public class FromCompositeFactPattern implements IFactPattern {
 
     public FactPattern factPattern;
     private ExpressionFormLine expression = new ExpressionFormLine();
@@ -42,6 +42,14 @@ public class FromCompositeFactPattern implements IPattern {
 
     public void setFactPattern(FactPattern pattern) {
         this.factPattern = pattern;
+    }
+
+    public String getFactType() {
+        if (this.factPattern == null){
+            return null;
+        }
+        
+        return this.factPattern.getFactType();
     }
 
 

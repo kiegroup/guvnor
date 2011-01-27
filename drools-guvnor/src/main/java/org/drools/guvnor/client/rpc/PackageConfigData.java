@@ -48,6 +48,7 @@ public class PackageConfigData implements IsSerializable {
     public Date dateCreated;
     public String checkinComment;
     public HashMap<String,String> catRules;
+    public String[] workspace;
     
     public PackageConfigData[] subPackages;
 

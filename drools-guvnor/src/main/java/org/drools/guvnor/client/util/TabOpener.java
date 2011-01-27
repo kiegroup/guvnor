@@ -26,6 +26,7 @@ import org.drools.guvnor.client.admin.PermissionViewer;
 import org.drools.guvnor.client.admin.RepoConfigManager;
 import org.drools.guvnor.client.admin.RuleVerifierManager;
 import org.drools.guvnor.client.admin.StateManager;
+import org.drools.guvnor.client.admin.WorkspaceManager;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -82,6 +83,7 @@ public class TabOpener {
     private static final String           STATEMAN              = "stateman";
     private static final String           ARCHMAN               = "archman";
     private static final String           CATMAN                = "catman";
+    private static final String           WORKSPACES            = "workspaces";
 
     private final ExplorerViewCenterPanel explorerViewCenterPanel;
 
@@ -122,8 +124,8 @@ public class TabOpener {
             t.schedule( 200 );
 
             loadRuleAsset( uuid,
-                           loading );
-        }
+                    loading );
+      }
     }
 
     private void loadRuleAsset(final String uuid,
@@ -395,6 +397,11 @@ public class TabOpener {
                 if ( !explorerViewCenterPanel.showIfOpen( REPOCONFIG ) ) explorerViewCenterPanel.addTab( constants.RepositoryConfig(),
                                                                                                          new RepoConfigManager(),
                                                                                                          REPOCONFIG );
+                break;
+            case 9 :
+                if ( !explorerViewCenterPanel.showIfOpen( WORKSPACES ) ) explorerViewCenterPanel.addTab( constants.Workspaces(),
+                                                                                                         new WorkspaceManager(),
+                                                                                                         WORKSPACES );
                 break;
         }
 

@@ -83,6 +83,7 @@ public class PackageDeploymentURIHelper {
 
         private static final String PDF  = ".pdf";
         private static final String BPMN = ".bpmn";
+        private static final String BPMN2 = ".bpmn2";
         private static final String DRL  = ".drl";
         private static final String PNG  = ".png";
 
@@ -113,7 +114,7 @@ public class PackageDeploymentURIHelper {
         }
 
         private void setFileTypeIfAny(String extension) {
-            if ( extension.equals( DRL ) || extension.equals( BPMN ) ) {
+            if ( extension.equals( DRL ) || extension.equals( BPMN ) || extension.equals( BPMN2 ) ) {
                 fileType = FileType.SOURCE;
             } else if ( extension.equals( PDF ) ) {
                 fileType = FileType.DOCUMENTATION;
@@ -135,6 +136,8 @@ public class PackageDeploymentURIHelper {
                 return DRL;
             } else if ( isFileType( BPMN ) ) {
                 return BPMN;
+            } else if ( isFileType( BPMN2 ) ) {
+                return BPMN2;
             } else if ( isFileType( PDF ) ) {
                 return PDF;
             } else if ( isFileType( PNG ) ) {

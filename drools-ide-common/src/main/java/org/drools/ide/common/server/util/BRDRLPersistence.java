@@ -200,8 +200,8 @@ public class BRDRLPersistence implements BRLPersistence {
                 renderCompositeFOL(pattern);
             } else if (CompositeFactPattern.COMPOSITE_TYPE_OR.equals(pattern.type)) {
                 buf.append("( ");
-                if (pattern.patterns != null) {
-                    for (int i = 0; i < pattern.patterns.length; i++) {
+                if (pattern.getPatterns() != null) {
+                    for (int i = 0; i < pattern.getPatterns().length; i++) {
                         if (i > 0) {
                             buf.append(" ");
                             buf.append(pattern.type);
@@ -307,27 +307,34 @@ public class BRDRLPersistence implements BRLPersistence {
 
         private void renderCompositeFOL(CompositeFactPattern pattern) {
             buf.append(pattern.type);
-            if (pattern.patterns != null && pattern.patterns.length > 1) {
+            if (pattern.getPatterns() != null) {
                 buf.append(" (");
-                for (int i = 0; i < pattern.patterns.length; i++) {
+                for (int i = 0; i < pattern.getPatterns().length; i++) {
                     renderSubPattern(pattern, i);
-                    if (i != pattern.patterns.length - 1) {
+                    if (i != pattern.getPatterns().length - 1) {
                         buf.append(" and ");
                     }
                 }
                 buf.append(") \n");
-            } else {
-                buf.append(" ");
-                renderSubPattern(pattern, 0);
-                buf.append("\n");
             }
         }
 
         private void renderSubPattern(CompositeFactPattern pattern, int subIndex) {
-            if (pattern.patterns == null || pattern.patterns.length == 0) {
+            if (pattern.getPatterns() == null || pattern.getPatterns().length == 0) {
                 return;
             }
-            this.generateFactPattern(pattern.patterns[subIndex]);
+            IFactPattern subPattern = pattern.getPatterns()[subIndex];
+            if (subPattern instanceof FactPattern){
+                this.generateFactPattern((FactPattern) subPattern);
+            }else if (subPattern instanceof FromAccumulateCompositeFactPattern){
+                this.visitFromAccumulateCompositeFactPattern((FromAccumulateCompositeFactPattern) subPattern);
+            }else if (subPattern instanceof FromCollectCompositeFactPattern){
+                this.visitFromCollectCompositeFactPattern((FromCollectCompositeFactPattern) subPattern);
+            }else if (subPattern instanceof FromCompositeFactPattern){
+                this.visitFromCompositeFactPattern((FromCompositeFactPattern) subPattern);
+            }else{
+                throw new IllegalStateException("Unsupported Pattern: "+subPattern.getClass().getName());
+            }
         }
 
         private void renderExpression(ExpressionFormLine expression) {
@@ -345,8 +352,8 @@ public class BRDRLPersistence implements BRLPersistence {
                 buf.append(pattern.boundName);
                 buf.append(" : ");
             }
-            if (pattern.factType != null) {
-                buf.append(pattern.factType);
+            if (pattern.getFactType() != null) {
+                buf.append(pattern.getFactType());
             }
             buf.append("( ");
 

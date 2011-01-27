@@ -35,6 +35,7 @@ import org.drools.guvnor.server.builder.RuleFlowContentModelBuilder;
 import org.drools.guvnor.server.builder.RuleFlowProcessBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
@@ -95,7 +96,6 @@ public class BPMN2ProcessHandler extends ContentHandler
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
         RuleFlowContentModel content = (RuleFlowContentModel) asset.content;
-        System.out.println( content );
         // 
         // Migrate v4 ruleflows to v5
         // Added guards to check for nulls in the case where the ruleflows
@@ -121,16 +121,16 @@ public class BPMN2ProcessHandler extends ContentHandler
                     repoAsset.updateContent( content.getXml() );
                 }
             }
-            if ( content.getJson() != null ) {
+            if ( content.getJson() != null ) {     
                 try {
-                    String xml = serialize( "http://localhost:8080/designer/bpmn2_0serialization",
-                                            content.getJson() );
-                    System.out.println( "xml = " + xml );
-                    repoAsset.updateContent( xml );
+                    String xml = serialize("http://localhost:8080/designer/uuidRepository?profile=drools&action=toXML",
+                                        content.getJson());
+                    content.setXml(xml);
+                    repoAsset.updateContent(content.getXml());
                 } catch ( Exception e ) {
-                    log.error( e.getMessage(),
-                               e );
-                }
+                  log.error( e.getMessage(),
+                             e );
+              }
             }
         }
     }
@@ -142,8 +142,8 @@ public class BPMN2ProcessHandler extends ContentHandler
         ByteArrayOutputStream bos = null;
 
         try {
-            modelJson = "data=" + URLEncoder.encode( modelJson,
-                                                     "UTF-8" ) + "&xml=true";
+            modelJson = "&data=" + URLEncoder.encode( modelJson,
+                                                     "UTF-8" );
             byte[] bytes = modelJson.getBytes( "UTF-8" );
 
             HttpURLConnection connection = (HttpURLConnection) new URL( serializeUrl ).openConnection();
@@ -222,5 +222,23 @@ public class BPMN2ProcessHandler extends ContentHandler
                         RuleAsset asset,
                         ErrorLogger logger) {
         // This can not work, no binary data in RuleAsset
+    }
+    
+    public void assembleProcessSource(PortableObject assetContent, StringBuffer buf) {
+        RuleFlowContentModel content = (RuleFlowContentModel) assetContent;
+        if(content.getXml() != null && content.getXml().length() > 0) {
+            buf.append(content.getXml());
+        } else if(content.getJson() != null && content.getJson().length() > 0) {
+            // convert the json to xml
+            try {
+                String xml = BPMN2ProcessHandler.serialize("http://localhost:8080/designer/uuidRepository?profile=drools&action=toXML",
+                        content.getJson());
+                buf.append(xml);
+            } catch (IOException e) {
+                log.error("Exception converting to xml: " + e.getMessage());
+            }
+        } else {
+            //default..nothing.
+        }
     }
 }

@@ -77,6 +77,7 @@ public class PackageItem extends VersionableItem {
     public static final String EXTERNAL_URI_PROPERTY_NAME             = "drools:externalURI";
     public static final String CATEGORY_RULE_KEYS_PROPERTY_NAME       = "categoryRuleKeys";
     public static final String CATEGORY_RULE_VALUES_PROPERTY_NAME     = "categoryRuleValues";
+    public static final String WORKSPACE_PROPERTY_NAME     = "drools:workspace";
 
     private static final String COMPILED_PACKAGE_PROPERTY_NAME = "drools:compiledPackage";
 
@@ -116,7 +117,6 @@ public class PackageItem extends VersionableItem {
      */
     public String getName() {
         try {
-
             if (isSnapshot()) {
                 return this.node.getParent().getName();
             } else {
@@ -137,7 +137,6 @@ public class PackageItem extends VersionableItem {
             throw new IllegalStateException(e);
         }
     }
-
 
 
     /**
@@ -178,6 +177,68 @@ public class PackageItem extends VersionableItem {
             return super.getName();
     }
 
+    /**
+     * @return the workspace this package belongs to.
+     * @throws RulesRepositoryException
+     */
+    public String[] getWorkspaces() throws RulesRepositoryException {
+        return getStringPropertyArray( WORKSPACE_PROPERTY_NAME );
+    }
+    
+    /**
+     * This sets the Workspace 
+     *
+     * @param workspace
+     */
+    public void updateWorkspace(String[] workspace) {
+        this.updateStringArrayProperty( workspace, WORKSPACE_PROPERTY_NAME, false);
+    }    
+    
+    /**
+     * This adds a workspace 
+     *
+     * @param workspace
+     */
+    public void addWorkspace(String workspace) {
+    	String[] existingWorkspaces = getStringPropertyArray( WORKSPACE_PROPERTY_NAME );
+    	boolean found = false;
+    	for(String existingWorkspace : existingWorkspaces) {
+    		if(existingWorkspace.equals(workspace)) {
+    			found = true;
+    			break;
+    		}
+    	}
+    	if(! found) {
+    		String[] newWorkspaces = new String[existingWorkspaces.length +1];
+    		for(int i =0; i< existingWorkspaces.length ; i++)  {
+    			newWorkspaces[i] = existingWorkspaces[i];
+    		}
+    		newWorkspaces[existingWorkspaces.length] = workspace;
+            this.updateStringArrayProperty( newWorkspaces, WORKSPACE_PROPERTY_NAME, false );
+    	}
+    } 
+    
+    /**
+     * This removes a workspace 
+     *
+     * @param workspace
+     */
+    public void removeWorkspace(String workspace) {
+    	String[] existingWorkspaces = getStringPropertyArray( WORKSPACE_PROPERTY_NAME );
+    	if(existingWorkspaces.length == 0) {
+    		return;
+    	}
+    	
+    	List<String> existingWorkspaceList = new ArrayList<String>(existingWorkspaces.length);
+       	for(String existingWorkspace : existingWorkspaces) {
+       		existingWorkspaceList.add(existingWorkspace);
+       	}    	
+       	existingWorkspaceList.remove(workspace);
+       	if(existingWorkspaceList.size() != existingWorkspaces.length) {
+            this.updateStringArrayProperty( existingWorkspaceList.toArray(new String[existingWorkspaceList.size()]), WORKSPACE_PROPERTY_NAME, false );       		
+       	}
+    } 
+    
     /**
      * Adds a rule to the current package with no category (not recommended !).
      * Without categories, its going to be hard to find rules later on
@@ -550,15 +611,15 @@ public class PackageItem extends VersionableItem {
         if (formats.length == 1) {
             return queryAssets( FORMAT_PROPERTY_NAME + "='" + formats[0] + "'" );
         } else {
-            String predicate = " ( ";
+            StringBuilder predicateBuilder = new StringBuilder(" ( ");
             for ( int i = 0; i < formats.length; i++ ) {
-                predicate = predicate + FORMAT_PROPERTY_NAME + "='" + formats[i] + "'";
+                predicateBuilder.append(FORMAT_PROPERTY_NAME).append("='").append(formats[i]).append("'");
                 if (i != formats.length -1) { 
-                	predicate =  predicate + " OR "; 
+                	predicateBuilder.append(" OR ");
                 }
             }
-            predicate = predicate + " ) ";
-            return queryAssets( predicate );
+            predicateBuilder.append(" ) ");
+            return queryAssets( predicateBuilder.toString() );
         }
     }
 
@@ -566,22 +627,22 @@ public class PackageItem extends VersionableItem {
         if (formats.length == 1) {
             return queryAssets( "not drools:format='" + formats[0] + "'" );
         } else {
-            String predicate = "not ( ";
+            StringBuilder predicateBuilder = new StringBuilder("not ( ");
             for ( int i = 0; i < formats.length; i++ ) {
-                predicate = predicate + "drools:format='" + formats[i] + "'";
-                if (!(i == formats.length -1 )) { predicate =  predicate + " OR "; }
+                predicateBuilder.append("drools:format='").append(formats[i]).append("'");
+                if (!(i == formats.length -1 )) {
+                    predicateBuilder.append(" OR ");
+                }
             }
-            predicate = predicate + " ) ";
-            return queryAssets( predicate );
+            predicateBuilder.append(" ) ");
+            return queryAssets( predicateBuilder.toString() );
         }
-
     }
 
     /**
      * Load a specific rule asset by name.
      */
     public AssetItem loadAsset(String name) {
-
         try {
             Node content = getVersionContentNode();
             return new AssetItem(
@@ -612,15 +673,12 @@ public class PackageItem extends VersionableItem {
      */
     public String toString() {
         try {
-            StringBuffer returnString = new StringBuffer();
-            returnString.append( "Content of the rule package named " + this.node.getName() + ":" );
-            returnString.append( "Description: " + this.getDescription() + "\n" );
-            returnString.append( "Format: " + this.getFormat() + "\n" );
-            returnString.append( "Last modified: " + this.getLastModified() + "\n" );
-            returnString.append( "Title: " + this.getTitle() + "\n" );
-            returnString.append( "----\n" );
-
-            return returnString.toString();
+            return "Content of the rule package named " + this.node.getName() + ":"
+                    + "Description: " + this.getDescription() + "\n"
+                    + "Format: " + this.getFormat() + "\n"
+                    + "Last modified: " + this.getLastModified() + "\n"
+                    + "Title: " + this.getTitle() + "\n"
+                    + "----\n";
         } catch ( Exception e ) {
             log.error( "Caught Exception",
                        e );
@@ -683,8 +741,7 @@ public class PackageItem extends VersionableItem {
                 result.add( head );
             } else if (head.sameState( ignoreState )) {
                 //ignore this one
-            }
-            else {
+            } else {
                 List<AssetItem> fullHistory = new LinkedList<AssetItem>();
                 for ( Iterator<AssetItem> iter = head.getHistory(); iter.hasNext(); ) {
                     AssetItem element = iter.next();

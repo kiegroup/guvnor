@@ -98,8 +98,6 @@ import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -2484,7 +2482,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                     false,
                                     "" );
 
-        pattern.factType = "PersonX";
+        pattern.setFactType("PersonX");
         rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
         rule2.checkin( "" );
 
@@ -3109,36 +3107,36 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
-        person.name = "p";
-        person.type = "Person";
-        person.fieldData.add( new FieldData( "age",
+        person.setName("p");
+        person.setType( "Person" );
+        person.getFieldData().add( new FieldData( "age",
                                              "40" ) );
-        person.fieldData.add( new FieldData( "name",
+        person.getFieldData().add( new FieldData( "name",
                                              "michael" ) );
 
-        sc.fixtures.add( person );
-        sc.fixtures.add( new ExecutionTrace() );
+        sc.getFixtures().add( person );
+        sc.getFixtures().add( new ExecutionTrace() );
         VerifyRuleFired vr = new VerifyRuleFired( "rule1",
                                                   1,
                                                   null );
-        sc.fixtures.add( vr );
+        sc.getFixtures().add( vr );
 
         VerifyFact vf = new VerifyFact();
-        vf.name = "p";
-        vf.fieldValues.add( new VerifyField( "name",
+        vf.setName("p");
+        vf.getFieldValues().add( new VerifyField( "name",
                                              "michael",
                                              "==" ) );
-        vf.fieldValues.add( new VerifyField( "age",
+        vf.getFieldValues().add( new VerifyField( "age",
                                              "42",
                                              "==" ) );
-        sc.fixtures.add( vf );
+        sc.getFixtures().add( vf );
 
         FactData cheese = new FactData();
-        cheese.name = "cheese";
-        cheese.type = "Cheese";
-        cheese.fieldData.add( new FieldData( "price",
+        cheese.setName("cheese");
+        cheese.setType( "Cheese" );
+        cheese.getFieldData().add( new FieldData( "price",
                                              "42" ) );
-        sc.globals.add( cheese );
+        sc.getGlobals().add( cheese );
 
         ScenarioRunResult res = impl.runScenario( pkg.getName(),
                                                   sc ).result;
@@ -3193,14 +3191,14 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( asset.content instanceof Scenario );
 
         Scenario sc_ = (Scenario) asset.content;
-        sc_.fixtures.add( new ExecutionTrace() );
+        sc_.getFixtures().add( new ExecutionTrace() );
         impl.checkinVersion( asset );
         asset = impl.loadRuleAsset( scenarioId );
         assertNotNull( asset.content );
         assertTrue( asset.content instanceof Scenario );
         sc_ = (Scenario) asset.content;
         assertEquals( 1,
-                      sc_.fixtures.size() );
+                      sc_.getFixtures().size() );
 
     }
 
@@ -3223,29 +3221,29 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
-        person.name = "c";
-        person.type = "GenBean";
-        person.fieldData.add( new FieldData( "age",
+        person.setName("c");
+        person.setType( "GenBean" );
+        person.getFieldData().add( new FieldData( "age",
                                              "40" ) );
-        person.fieldData.add( new FieldData( "name",
+        person.getFieldData().add( new FieldData( "name",
                                              "mic" ) );
 
-        sc.fixtures.add( person );
-        sc.fixtures.add( new ExecutionTrace() );
+        sc.getFixtures().add( person );
+        sc.getFixtures().add( new ExecutionTrace() );
         VerifyRuleFired vr = new VerifyRuleFired( "rule1",
                                                   1,
                                                   null );
-        sc.fixtures.add( vr );
+        sc.getFixtures().add( vr );
 
         VerifyFact vf = new VerifyFact();
-        vf.name = "c";
-        vf.fieldValues.add( new VerifyField( "name",
+        vf.setName("c");
+        vf.getFieldValues().add( new VerifyField( "name",
                                              "mic",
                                              "==" ) );
-        vf.fieldValues.add( new VerifyField( "age",
+        vf.getFieldValues().add( new VerifyField( "age",
                                              "42",
                                              "==" ) );
-        sc.fixtures.add( vf );
+        sc.getFixtures().add( vf );
 
         SingleScenarioResult res_ = impl.runScenario( pkg.getName(),
                                                       sc );
@@ -3291,29 +3289,29 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         //first, the green scenario
         Scenario sc = new Scenario();
         FactData person = new FactData();
-        person.name = "p";
-        person.type = "Wang";
-        person.fieldData.add( new FieldData( "age",
+        person.setName("p");
+        person.setType( "Wang" );
+        person.getFieldData().add( new FieldData( "age",
                                              "40" ) );
-        person.fieldData.add( new FieldData( "name",
+        person.getFieldData().add( new FieldData( "name",
                                              "michael" ) );
 
-        sc.fixtures.add( person );
-        sc.fixtures.add( new ExecutionTrace() );
+        sc.getFixtures().add( person );
+        sc.getFixtures().add( new ExecutionTrace() );
         VerifyRuleFired vr = new VerifyRuleFired( "rule1",
                                                   1,
                                                   null );
-        sc.fixtures.add( vr );
+        sc.getFixtures().add( vr );
 
         VerifyFact vf = new VerifyFact();
-        vf.name = "p";
-        vf.fieldValues.add( new VerifyField( "name",
+        vf.setName("p");
+        vf.getFieldValues().add( new VerifyField( "name",
                                              "michael",
                                              "==" ) );
-        vf.fieldValues.add( new VerifyField( "age",
+        vf.getFieldValues().add( new VerifyField( "age",
                                              "42",
                                              "==" ) );
-        sc.fixtures.add( vf );
+        sc.getFixtures().add( vf );
 
         AssetItem scenario1 = pkg.addAsset( "scen1",
                                             "" );
@@ -3324,19 +3322,19 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         //now the bad scenario
         sc = new Scenario();
         person = new FactData();
-        person.name = "p";
-        person.type = "Wang";
-        person.fieldData.add( new FieldData( "age",
+        person.setName("p");
+        person.setType( "Wang" );
+        person.getFieldData().add( new FieldData( "age",
                                              "40" ) );
-        person.fieldData.add( new FieldData( "name",
+        person.getFieldData().add( new FieldData( "name",
                                              "michael" ) );
 
-        sc.fixtures.add( person );
-        sc.fixtures.add( new ExecutionTrace() );
+        sc.getFixtures().add( person );
+        sc.getFixtures().add( new ExecutionTrace() );
         vr = new VerifyRuleFired( "rule2",
                                   1,
                                   null );
-        sc.fixtures.add( vr );
+        sc.getFixtures().add( vr );
 
         AssetItem scenario2 = pkg.addAsset( "scen2",
                                             "" );
@@ -3405,25 +3403,25 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
-        person.name = "p";
-        person.type = "Board";
-        person.fieldData.add( new FieldData( "cost",
+        person.setName("p");
+        person.setType( "Board" );
+        person.getFieldData().add( new FieldData( "cost",
                                              "42" ) );
 
-        sc.fixtures.add( person );
-        sc.fixtures.add( new ExecutionTrace() );
+        sc.getFixtures().add( person );
+        sc.getFixtures().add( new ExecutionTrace() );
         VerifyRuleFired vr = new VerifyRuleFired( "MyGoodRule",
                                                   1,
                                                   null );
-        sc.fixtures.add( vr );
+        sc.getFixtures().add( vr );
 
         VerifyFact vf = new VerifyFact();
-        vf.name = "p";
+        vf.setName("p");
 
-        vf.fieldValues.add( new VerifyField( "cost",
+        vf.getFieldValues().add( new VerifyField( "cost",
                                              "42",
                                              "==" ) );
-        sc.fixtures.add( vf );
+        sc.getFixtures().add( vf );
 
         ScenarioRunResult res = impl.runScenario( pkg.getName(),
                                                   sc ).result;
@@ -3480,15 +3478,15 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
-        person.name = "p";
-        person.type = "Person";
+        person.setName("p");
+        person.setType( "Person" );
 
-        sc.fixtures.add( person );
-        sc.fixtures.add( new ExecutionTrace() );
+        sc.getFixtures().add( person );
+        sc.getFixtures().add( new ExecutionTrace() );
         VerifyRuleFired vr = new VerifyRuleFired( "MyGoodRule",
                                                   1,
                                                   null );
-        sc.fixtures.add( vr );
+        sc.getFixtures().add( vr );
 
         ScenarioRunResult res = null;
         try {
@@ -3547,29 +3545,29 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         //first, the green scenario
         Scenario sc = new Scenario();
         FactData person = new FactData();
-        person.name = "p";
-        person.type = "Person";
-        person.fieldData.add( new FieldData( "age",
+        person.setName("p");
+        person.setType( "Person" );
+        person.getFieldData().add( new FieldData( "age",
                                              "40" ) );
-        person.fieldData.add( new FieldData( "name",
+        person.getFieldData().add( new FieldData( "name",
                                              "michael" ) );
 
-        sc.fixtures.add( person );
-        sc.fixtures.add( new ExecutionTrace() );
+        sc.getFixtures().add( person );
+        sc.getFixtures().add( new ExecutionTrace() );
         VerifyRuleFired vr = new VerifyRuleFired( "rule1",
                                                   1,
                                                   null );
-        sc.fixtures.add( vr );
+        sc.getFixtures().add( vr );
 
         VerifyFact vf = new VerifyFact();
-        vf.name = "p";
-        vf.fieldValues.add( new VerifyField( "name",
+        vf.setName("p");
+        vf.getFieldValues().add( new VerifyField( "name",
                                              "michael",
                                              "==" ) );
-        vf.fieldValues.add( new VerifyField( "age",
+        vf.getFieldValues().add( new VerifyField( "age",
                                              "42",
                                              "==" ) );
-        sc.fixtures.add( vf );
+        sc.getFixtures().add( vf );
 
         AssetItem scenario1 = pkg.addAsset( "scen1",
                                             "" );
@@ -3580,19 +3578,19 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         //now the bad scenario
         sc = new Scenario();
         person = new FactData();
-        person.name = "p";
-        person.type = "Person";
-        person.fieldData.add( new FieldData( "age",
+        person.setName("p");
+        person.setType( "Person" );
+        person.getFieldData().add( new FieldData( "age",
                                              "40" ) );
-        person.fieldData.add( new FieldData( "name",
+        person.getFieldData().add( new FieldData( "name",
                                              "michael" ) );
 
-        sc.fixtures.add( person );
-        sc.fixtures.add( new ExecutionTrace() );
+        sc.getFixtures().add( person );
+        sc.getFixtures().add( new ExecutionTrace() );
         vr = new VerifyRuleFired( "rule2",
                                   1,
                                   null );
-        sc.fixtures.add( vr );
+        sc.getFixtures().add( vr );
 
         AssetItem scenario2 = pkg.addAsset( "scen2",
                                             "" );
@@ -4076,6 +4074,17 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                 fail( "Diff not expected." );
             }
         }
+    }
+    
+    @Test
+    @Ignore
+    public void testWorkspaces() throws Exception {
+        ServiceImplementation impl = getServiceImplementation();
+        impl.createWorkspace("testWorkspaces1");
+        impl.createWorkspace("testWorkspaces2");
+
+        String[] result = impl.listWorkspaces();
+        assertEquals( 2, result.length );
     }
 
 }

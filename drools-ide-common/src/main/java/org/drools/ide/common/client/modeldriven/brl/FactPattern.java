@@ -28,10 +28,10 @@ import java.util.List;
  */
 public class FactPattern
     implements
-    IPattern {
+    IFactPattern {
 
     public CompositeFieldConstraint constraintList;
-    public String       factType;
+    private String       factType;
     public String       boundName;
 
     public FactPattern() {
@@ -91,4 +91,18 @@ public class FactPattern
                 this.constraintList.constraints = null;
             }
         }
+
+    public String getFactType() {
+        return this.factType;
+    }
+
+    /**
+     * WARNING! This method should only be used for testing purposes!
+     * @param factType 
+     */
+    public void setFactType(String factType) {
+        this.factType = factType;
+    }
+    
+    
 }

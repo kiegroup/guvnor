@@ -55,14 +55,6 @@ public class PopupTextEditCell extends AbstractPopupEditCell<String, String> {
         vPanel.add( textBox );
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.cell.client.AbstractCell#render(com.google.gwt.cell.client
-     * .Cell.Context, java.lang.Object,
-     * com.google.gwt.safehtml.shared.SafeHtmlBuilder)
-     */
     @Override
     public void render(Context context,
                        String value,

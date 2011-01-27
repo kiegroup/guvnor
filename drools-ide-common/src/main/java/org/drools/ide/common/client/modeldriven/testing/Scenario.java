@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,47 +36,48 @@ public class Scenario
     implements
     PortableObject {
 
+    private static final long serialVersionUID = 510l;
+
     /**
      * The maximum number of rules to fire so we don't recurse for ever.
      */
-    public int            maxRuleFirings = 100000;
+    private int               maxRuleFirings   = 100000;
 
     /**
      * global data which must be setup before hand.
      */
-    public List<FactData> globals        = new ArrayList<FactData>();
+    private List<FactData>    globals          = new ArrayList<FactData>();
 
     /**
      * Fixtures are parts of the test. They may be assertions, globals, data, execution runs etc.
      * Anything really.
      *
      */
-    public List<Fixture>  fixtures       = new ArrayList<Fixture>();
+    private List<Fixture>     fixtures         = new ArrayList<Fixture>();
 
     /**
      * This is the date the last time the scenario was run (and what the results apply to).
      */
-    public Date           lastRunResult;
+    private Date              lastRunResult;
 
     /**
      * the rules to include or exclude
      */
-    public List<String>   rules          = new ArrayList<String>();
+    private List<String>      rules            = new ArrayList<String>();
 
     /**
      * true if only the rules in the list should be allowed to fire. Otherwise
      * it is exclusive (ie all rules can fire BUT the ones in the list).
      */
-    public boolean        inclusive      = false;
+    private boolean           inclusive        = false;
 
     /**
      * Returns true if this was a totally successful scenario, based on the results contained.
      */
     public boolean wasSuccessful() {
-        for ( Iterator iterator = fixtures.iterator(); iterator.hasNext(); ) {
-            Fixture f = (Fixture) iterator.next();
-            if ( f instanceof Expectation ) {
-                if ( !((Expectation) f).wasSuccessful() ) {
+        for ( Fixture fixture : fixtures ) {
+            if ( fixture instanceof Expectation ) {
+                if ( !((Expectation) fixture).wasSuccessful() ) {
                     return false;
                 }
             }
@@ -88,25 +89,22 @@ public class Scenario
     /**
      * Will slip in a fixture after the specified one, but before the next execution trace.
      */
-    public void insertBetween(Fixture fix,
-                              Fixture toAdd) {
+    public void insertBetween(Fixture fixtureBeforeTheNewOne,
+                              Fixture newFixture) {
 
-    	boolean inserted = false;
-        int start = (fix == null) ? 0 : fixtures.indexOf( fix ) + 1;
-      
+        boolean inserted = false;
+        int start = (fixtureBeforeTheNewOne == null) ? 0 : fixtures.indexOf( fixtureBeforeTheNewOne ) + 1;
+
         for ( int j = start; j < fixtures.size(); j++ ) {
-            Fixture f = (Fixture) fixtures.get( j );
-            if ( f instanceof ExecutionTrace ) {
-                fixtures.add( j,
-                              toAdd );
-                System.out.println(toAdd.toString());
+            if ( fixtures.get( j ) instanceof ExecutionTrace ) {
+                getFixtures().add( j,
+                                   newFixture );
                 return;
             }
         }
 
         if ( !inserted ) {
-            //fixtures.add( fixtures.indexOf(fix) + 1, toAdd);
-            fixtures.add( toAdd );
+            fixtures.add( newFixture );
         }
     }
 
@@ -124,38 +122,38 @@ public class Scenario
     public void removeExecutionTrace(ExecutionTrace et) {
 
         boolean remove = false;
-        for ( Iterator<Fixture> iterator = fixtures.iterator(); iterator.hasNext(); ) {
-            Fixture f = iterator.next();
+        for ( Iterator<Fixture> iterator = getFixtures().iterator(); iterator.hasNext(); ) {
+            Fixture fixture = iterator.next();
 
-            if ( f.equals( et ) ) {
+            if ( fixture.equals( et ) ) {
                 remove = true;
                 continue;
-            } else if ( remove && (f instanceof ExecutionTrace || (f instanceof FactData)) ) {
+            } else if ( remove && (fixture instanceof ExecutionTrace || (fixture instanceof FactData)) ) {
                 break;
             }
 
             if ( remove ) {
                 iterator.remove();
-                this.globals.remove( f );
+                globals.remove( fixture );
             }
         }
 
-        Collections.reverse( fixtures );
+        Collections.reverse( getFixtures() );
 
         remove = false;
-        for ( Iterator<Fixture> iterator = fixtures.iterator(); iterator.hasNext(); ) {
-            Fixture f = iterator.next();
+        for ( Iterator<Fixture> iterator = getFixtures().iterator(); iterator.hasNext(); ) {
+            Fixture fixture = iterator.next();
 
             // Catch the first or next ExecutionTrace.
-            if ( f.equals( et ) ) {
+            if ( fixture.equals( et ) ) {
                 remove = true;
-            } else if ( remove && (f instanceof ExecutionTrace || (f instanceof VerifyFact)) ) {
+            } else if ( remove && (fixture instanceof ExecutionTrace || (fixture instanceof VerifyFact)) ) {
                 break;
             }
 
             if ( remove ) {
                 iterator.remove();
-                this.globals.remove( f );
+                globals.remove( fixture );
             }
         }
 
@@ -166,18 +164,16 @@ public class Scenario
     *
     * @return A mapping of variable names to their fact type.
     */
-    public Map getFactTypes() {
-        Map m = new HashMap();
-        int p = this.fixtures.size();
-        for ( int i = 0; i < p; i++ ) {
-            Fixture f = (Fixture) fixtures.get( i );
-            if ( f instanceof FactData ) {
-                FactData fd = (FactData) f;
-                m.put( fd.name,
-                       fd );
+    public Map<String, FactData> getFactTypes() {
+        Map<String, FactData> factTypesByName = new HashMap<String, FactData>();
+        for ( Fixture fixture : fixtures ) {
+            if ( fixture instanceof FactData ) {
+                FactData factData = (FactData) fixture;
+                factTypesByName.put( factData.getName(),
+                                     factData );
             }
         }
-        return m;
+        return factTypesByName;
     }
 
     /**
@@ -189,13 +185,13 @@ public class Scenario
         for ( Fixture fixture : fixtures ) {
             if ( fixture instanceof FactData ) {
                 FactData factData = (FactData) fixture;
-                map.put( factData.name,
-                         factData.type );
+                map.put( factData.getName(),
+                         factData.getType() );
             }
         }
         for ( FactData factData : globals ) {
-            map.put( factData.name,
-                     factData.type );
+            map.put( factData.getName(),
+                     factData.getType() );
         }
         return map;
     }
@@ -204,45 +200,51 @@ public class Scenario
      * This will return a list of fact names that are in scope (including globals).
      * @return List<String>
      */
-    public List<String> getFactNamesInScope(ExecutionTrace ex,
+    public List<String> getFactNamesInScope(ExecutionTrace executionTrace,
                                             boolean includeGlobals) {
-        if ( ex == null ) return Collections.emptyList();
+        if ( executionTrace == null ) {
+            return Collections.emptyList();
+        }
+
         List<String> factDataNames = new ArrayList<String>();
-        int p = this.fixtures.indexOf( ex );
+        int p = this.getFixtures().indexOf( executionTrace );
         for ( int i = 0; i < p; i++ ) {
-            Fixture fixture = (Fixture) fixtures.get( i );
+            Fixture fixture = (Fixture) getFixtures().get( i );
             if ( fixture instanceof FactData ) {
                 FactData factData = (FactData) fixture;
-                factDataNames.add( factData.name );
+                factDataNames.add( factData.getName() );
             } else if ( fixture instanceof RetractFact ) {
                 RetractFact retractFact = (RetractFact) fixture;
-                factDataNames.remove( retractFact.name );
+                factDataNames.remove( retractFact.getName() );
             }
         }
 
         if ( includeGlobals ) {
-            for ( FactData factData : globals ) {
-                factDataNames.add( factData.name );
+            for ( FactData factData : getGlobals() ) {
+                factDataNames.add( factData.getName() );
             }
         }
         return factDataNames;
     }
 
     /**
-     * @return true iff a fact name is already in use.
+     * @return true if a fact name is already in use.
      */
-    public boolean isFactNameExisting(String factName) {
-        for ( Iterator iterator = globals.iterator(); iterator.hasNext(); ) {
-            FactData fd = (FactData) iterator.next();
-            if ( fd.name.equals( factName ) ) {
-                return true;
-            }
+    public boolean isFactNameReserved(String factName) {
+        if ( isFactNameUsedInGlobals( factName ) ) {
+            return true;
+        } else if ( isFactNameUsedInFactDataFixtures( factName ) ) {
+            return true;
+        } else {
+            return false;
         }
-        for ( Iterator iterator = fixtures.iterator(); iterator.hasNext(); ) {
-            Fixture f = (Fixture) iterator.next();
-            if ( f instanceof FactData ) {
-                FactData fd = (FactData) f;
-                if ( fd.name.equals( factName ) ) {
+    }
+
+    protected boolean isFactNameUsedInFactDataFixtures(String factName) {
+        for ( Fixture fixture : fixtures ) {
+            if ( fixture instanceof FactData ) {
+                FactData factData = (FactData) fixture;
+                if ( factData.getName().equals( factName ) ) {
                     return true;
                 }
             }
@@ -250,28 +252,45 @@ public class Scenario
         return false;
     }
 
-    /**
-     * @return true iff a fact is actually used (ie if its not, its safe to remove it).
-     */
-    public boolean isFactNameUsed(FactData fd) {
-        int start = this.fixtures.indexOf( fd );
-        for ( int i = start + 1; i < fixtures.size(); i++ ) {
-            Fixture f = (Fixture) fixtures.get( i );
-            if ( f instanceof RetractFact ) {
-                if ( ((RetractFact) f).name.equals( fd.name ) ) {
-                    return true;
-                }
-            } else if ( f instanceof VerifyFact ) {
-                if ( ((VerifyFact) f).name.equals( fd.name ) ) {
-                    return true;
-                }
-            } else if ( f instanceof FactData ) {
-                if ( ((FactData) f).name.equals( fd.name ) ) {
-                    return true;
-                }
+    protected boolean isFactNameUsedInGlobals(String factName) {
+        for ( FactData factData : globals ) {
+            if ( factData.getName().equals( factName ) ) {
+                return true;
             }
         }
+
         return false;
+    }
+
+    /**
+     * @return true if a fact is actually used (ie if its not, its safe to remove it).
+     */
+    public boolean isFactDataReferenced(FactData factData) {
+        int start = fixtures.indexOf( factData ) + 1;
+        String factName = factData.getName();
+
+        for ( Fixture fixture : fixtures.subList( start,
+                                                  fixtures.size() ) ) {
+            if ( isFactNameUsedInThisFixture( fixture,
+                                              factName ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isFactNameUsedInThisFixture(Fixture fixture,
+                                                String factName) {
+        if ( fixture instanceof FactData ) {
+            return ((FactData) fixture).getName().equals( factName );
+        } else if ( fixture instanceof VerifyFact ) {
+            return ((VerifyFact) fixture).getName().equals( factName );
+        } else if ( fixture instanceof RetractFact ) {
+            return ((RetractFact) fixture).getName().equals( factName );
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -281,19 +300,17 @@ public class Scenario
     public int[] countFailuresTotal() {
         int total = 0;
         int failures = 0;
-        for ( Iterator iterator = fixtures.iterator(); iterator.hasNext(); ) {
-            Fixture f = (Fixture) iterator.next();
-            if ( f instanceof VerifyRuleFired ) {
+        for ( Fixture fixture : fixtures ) {
+            if ( fixture instanceof VerifyRuleFired ) {
                 total++;
-                VerifyRuleFired vr = (VerifyRuleFired) f;
-                if ( vr.successResult != null && !vr.successResult.booleanValue() ) {
+                VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
+                if ( ruleFailedToFire( verifyRuleFired ) ) {
                     failures++;
                 }
-            } else if ( f instanceof VerifyFact ) {
-                VerifyFact vf = (VerifyFact) f;
-                for ( Iterator it = vf.fieldValues.iterator(); it.hasNext(); ) {
-                    VerifyField vfl = (VerifyField) it.next();
-                    if ( vfl.successResult != null && !vfl.successResult.booleanValue() ) {
+            } else if ( fixture instanceof VerifyFact ) {
+                VerifyFact verifyFact = (VerifyFact) fixture;
+                for ( VerifyField verifyField : verifyFact.getFieldValues() ) {
+                    if ( fieldExpectationFailed( verifyField ) ) {
                         failures++;
                     }
                     total++;
@@ -303,38 +320,44 @@ public class Scenario
         return new int[]{failures, total};
     }
 
-    public String printFailureReport() {
-        int total = 0;
-        int failures = 0;
-        StringBuilder buf = new StringBuilder();
-        buf.append( "------- Unmet expectations: -------\n" );
-        for ( Iterator iterator = fixtures.iterator(); iterator.hasNext(); ) {
-            Fixture f = (Fixture) iterator.next();
-            if ( f instanceof VerifyRuleFired ) {
-                total++;
-                VerifyRuleFired vr = (VerifyRuleFired) f;
-                if ( vr.successResult != null && !vr.successResult.booleanValue() ) {
-                    failures++;
-                    buf.append( vr.explanation );
-                    buf.append( '\n' );
-                }
-            } else if ( f instanceof VerifyFact ) {
-                VerifyFact vf = (VerifyFact) f;
-                for ( Iterator it = vf.fieldValues.iterator(); it.hasNext(); ) {
-                    VerifyField vfl = (VerifyField) it.next();
-                    if ( vfl.successResult != null && !vfl.successResult.booleanValue() ) {
-                        failures++;
-                        buf.append( vfl.explanation );
-                        buf.append( '\n' );
+    protected boolean fieldExpectationFailed(VerifyField verifyField) {
+        return verifyField.getSuccessResult() != null && !verifyField.getSuccessResult();
+    }
 
-                    }
-                    total++;
-                }
-            }
-        }
-        buf.append( "\n------- Summary: ------\n" );
-        buf.append( failures + " failures out of " + total + " expectations." );
-        return buf.toString();
+    protected boolean ruleFailedToFire(VerifyRuleFired verifyRuleFired) {
+        return verifyRuleFired.getSuccessResult() != null && !verifyRuleFired.getSuccessResult();
+    }
+
+    public List<Fixture> getFixtures() {
+        return fixtures;
+    }
+
+    public int getMaxRuleFirings() {
+        return maxRuleFirings;
+    }
+
+    public List<FactData> getGlobals() {
+        return globals;
+    }
+
+    public void setLastRunResult(Date lastRunResult) {
+        this.lastRunResult = lastRunResult;
+    }
+
+    public Date getLastRunResult() {
+        return lastRunResult;
+    }
+
+    public List<String> getRules() {
+        return rules;
+    }
+
+    public void setInclusive(boolean inclusive) {
+        this.inclusive = inclusive;
+    }
+
+    public boolean isInclusive() {
+        return inclusive;
     }
 
 }

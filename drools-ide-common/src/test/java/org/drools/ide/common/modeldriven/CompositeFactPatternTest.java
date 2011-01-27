@@ -32,16 +32,16 @@ public class CompositeFactPatternTest {
         final FactPattern x = new FactPattern();
         pat.addFactPattern( x );
         assertEquals( 1,
-                      pat.patterns.length );
+                      pat.getPatterns().length );
 
         final FactPattern y = new FactPattern();
         pat.addFactPattern( y );
         assertEquals( 2,
-                      pat.patterns.length );
+                      pat.getPatterns().length );
         assertEquals( x,
-                      pat.patterns[0] );
+                      pat.getPatterns()[0] );
         assertEquals( y,
-                      pat.patterns[1] );
+                      pat.getPatterns()[1] );
     }
 
 }

@@ -147,9 +147,9 @@ public class NewAssetWizard extends FormStylePopup {
         private void buildDescriptionTextArea(String format) {
             description.setVisibleLines( 4 );
             description.setWidth( "100%" );
-            if ( format == AssetFormats.DSL_TEMPLATE_RULE ) {
+            if ( AssetFormats.DSL_TEMPLATE_RULE.equals(format) ) {
                 description.setText( constants.DSLMappingTip() );
-            } else if ( format == AssetFormats.ENUMERATION ) {
+            } else if ( AssetFormats.ENUMERATION.equals(format) ) {
                 description.setText( constants.NewEnumDoco() );
             }
         }

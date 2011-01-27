@@ -41,9 +41,7 @@ public abstract class ContentHandler {
      * @param item The source.
      * @throws SerializationException
      */
-    public abstract void retrieveAssetContent(RuleAsset asset,
-                                              PackageItem pkg,
-                                              AssetItem item) throws SerializationException;
+    public abstract void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item) throws SerializationException;
 
     /**
      * For storing the asset content back into the repo node (any changes).
@@ -51,8 +49,7 @@ public abstract class ContentHandler {
      * @param repoAsset
      * @throws SerializationException
      */
-    public abstract void storeAssetContent(RuleAsset asset,
-                                           AssetItem repoAsset) throws SerializationException;
+    public abstract void storeAssetContent(RuleAsset asset, AssetItem repoAsset) throws SerializationException;
 
     /**
      * @return true if the current content type is for a rule asset.
@@ -64,23 +61,19 @@ public abstract class ContentHandler {
         return this instanceof IRuleAsset;
     }
 
-    private String findParentCategory(AssetItem asset,
-                                      String currentCat) {
+    private String findParentCategory(AssetItem asset, String currentCat) {
         //Start your search at the top
         CategoryItem item = asset.getRulesRepository().loadCategory( "/" );
-        return findCategoryInChild( item,
-                                    currentCat );
+        return findCategoryInChild( item, currentCat );
     }
 
-    private String findCategoryInChild(CategoryItem item,
-                                       String currentCat) {
+    private String findCategoryInChild(CategoryItem item, String currentCat) {
         List children = item.getChildTags();
         for ( int i = 0; i < children.size(); i++ ) {
             if ( ((CategoryItem) children.get( i )).getName().equals( currentCat ) ) {
                 return item.getName();
             } else {
-                String check = findCategoryInChild( (CategoryItem) children.get( i ),
-                                                    currentCat );
+                String check = findCategoryInChild( (CategoryItem) children.get( i ), currentCat );
                 if ( check != null && check.length() > 0 ) {
                     return check;
                 }
@@ -90,8 +83,7 @@ public abstract class ContentHandler {
         return "";
     }
 
-    private String findKeyforValue(HashMap<String, String> catRules,
-                                   String catToFind) {
+    private String findKeyforValue(HashMap<String, String> catRules, String catToFind) {
         for ( Iterator i = catRules.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry entry = (Map.Entry) i.next();
             //Found rule name that should be used to extend current rule as defined in the Category Rule	
@@ -109,40 +101,29 @@ public abstract class ContentHandler {
      * @param asset
      * @return rule that should be extended, based on categories
      */
-    protected String parentNameFromCategory(AssetItem asset,
-                                            String currentParent) {
+    protected String parentNameFromCategory(AssetItem asset, String currentParent) {
 
         List<CategoryItem> cats = asset.getCategories();
         String catName = null;
-        String parentCat = null;
         if ( cats.size() > 0 ) {
-            //        	for(int i=0;i< cats.size(); i++){
-            //        		System.out.println(i+" Cat: "+((CategoryItem)(cats.get(i))).getName());
-            //        		System.out.println(i+" Path: "+((CategoryItem)(cats.get(i))).getFullPath());     
-            //        		
-            //        	}
+
             catName = cats.get( 0 ).getName();
         }
         //get all Category Rules for Package
-        HashMap<String, String> catRules = asset.getPackage().getCategoryRules();
+        HashMap<String, String> categoryRules = asset.getPackage().getCategoryRules();
 
         String newParent = currentParent;
-        if ( null != catRules && null != catName ) {
+        if ( null != categoryRules && null != catName ) {
             //Asset or Rule is actually used in the Category Rule, so ignore the category of the normal rule
             //Either extend from the parent category rule or none at all
             String ruleName = asset.getName();
-            if ( catRules.containsKey( ruleName ) ) {
+            if ( categoryRules.containsKey( ruleName ) ) {
                 //find Cat for your rule		
-                parentCat = findParentCategory( asset,
-                                                catRules.get( ruleName ) );
-                //        		System.out.println("Found rule: " + ruleName + " in categoryRuleHash, Parent Cat: " + parentCat);
+                String parentCategory = findParentCategory( asset, categoryRules.get( ruleName ) );
                 //This rule name is in our Category Rules
                 //See if there is a Parent and it has a rule defined, if so extend that rule, to create a chain
-                if ( parentCat != null && parentCat.length() > 0 && catRules.containsValue( parentCat ) ) {
-                    //        			System.out.println("Should have rule in Category to use for my Parent");
-                    newParent = findKeyforValue( catRules,
-                                                 parentCat );
-
+                if ( parentCategory != null && parentCategory.length() > 0 && categoryRules.containsValue( parentCategory ) ) {
+                    newParent = findKeyforValue( categoryRules, parentCategory );
                 } else {
                     //Must be blank to avoid circular reference
                     newParent = "";
@@ -155,9 +136,8 @@ public abstract class ContentHandler {
                 newParent = currentParent;
                 //Normal use case
                 //Category of the current asset has been defined in Category Rules for the current package
-            } else if ( catRules.containsValue( catName ) ) {
-                newParent = findKeyforValue( catRules,
-                                             catName );
+            } else if ( categoryRules.containsValue( catName ) ) {
+                newParent = findKeyforValue( categoryRules, catName );
             }
         }
         return newParent;

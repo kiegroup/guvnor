@@ -96,14 +96,6 @@ public abstract class AbstractPopupEditCell<C, V> extends
 
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.cell.client.AbstractEditableCell#isEditing(com.google.
-     * gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element,
-     * java.lang.Object)
-     */
     @Override
     public boolean isEditing(Context context,
                              Element parent,
@@ -112,15 +104,6 @@ public abstract class AbstractPopupEditCell<C, V> extends
                && lastContext.equals( context );
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.cell.client.AbstractCell#onBrowserEvent(com.google.gwt
-     * .cell.client.Cell.Context, com.google.gwt.dom.client.Element,
-     * java.lang.Object, com.google.gwt.dom.client.NativeEvent,
-     * com.google.gwt.cell.client.ValueUpdater)
-     */
     @Override
     public void onBrowserEvent(Context context,
                                Element parent,
@@ -164,15 +147,6 @@ public abstract class AbstractPopupEditCell<C, V> extends
      */
     protected abstract void commit();
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.google.gwt.cell.client.AbstractCell#onEnterKeyDown(com.google.gwt
-     * .cell.client.Cell.Context, com.google.gwt.dom.client.Element,
-     * java.lang.Object, com.google.gwt.dom.client.NativeEvent,
-     * com.google.gwt.cell.client.ValueUpdater)
-     */
     @Override
     protected void onEnterKeyDown(Context context,
                                   Element parent,

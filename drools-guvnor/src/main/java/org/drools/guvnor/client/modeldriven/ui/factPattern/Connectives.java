@@ -96,7 +96,7 @@ public class Connectives {
     }
 
     private Widget connectiveOperatorDropDown(final ConnectiveConstraint con, String fieldName) {
-        String[] ops = this.getCompletions().getConnectiveOperatorCompletions( pattern.factType, fieldName );
+        String[] ops = this.getCompletions().getConnectiveOperatorCompletions( pattern.getFactType(), fieldName );
         final ListBox box = new ListBox();
         box.addItem(constants.pleaseChoose());
         for ( int i = 0; i < ops.length; i++ ) {
