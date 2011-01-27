@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,38 +16,92 @@
 
 package org.drools.ide.common.client.modeldriven.testing;
 
+public class VerifyRuleFired
+    implements
+    Expectation {
 
-public class VerifyRuleFired implements Expectation {
+    private static final long serialVersionUID = 510l;
 
-    public String ruleName;
-    public Integer expectedCount;
+    private String            ruleName;
+    private Integer           expectedCount;
 
     /**
      * This is a natural language explanation of this verification.
      * For reporting purposes.
      */
-    public String explanation;
+    private String            explanation;
 
     /**
      * If this is true, then we expect it to fire at least once.
      * False means it should not fire at all (this is an alternative
      * to specifying an expected count).
      */
-    public Boolean expectedFire;
+    private Boolean           expectedFire;
 
-    public Boolean successResult;
-    public Integer actualResult;
+    private Boolean           successResult;
+    private Integer           actualResult;
 
-    public VerifyRuleFired() {}
-    public VerifyRuleFired(String ruleName, Integer expectedCount, Boolean expectedFire) {
+    public VerifyRuleFired() {
+    }
+
+    public VerifyRuleFired(String ruleName,
+                           Integer expectedCount,
+                           Boolean expectedFire) {
+        this.setRuleName( ruleName );
+        this.setExpectedCount( expectedCount );
+        this.setExpectedFire( expectedFire );
+    }
+
+    public boolean wasSuccessful() {
+        return getSuccessResult().booleanValue();
+    }
+
+    public void setRuleName(String ruleName) {
         this.ruleName = ruleName;
+    }
+
+    public String getRuleName() {
+        return ruleName;
+    }
+
+    public void setExpectedCount(Integer expectedCount) {
         this.expectedCount = expectedCount;
+    }
+
+    public Integer getExpectedCount() {
+        return expectedCount;
+    }
+
+    public void setExplanation(String explanation) {
+        this.explanation = explanation;
+    }
+
+    public String getExplanation() {
+        return explanation;
+    }
+
+    public void setExpectedFire(Boolean expectedFire) {
         this.expectedFire = expectedFire;
     }
 
+    public Boolean getExpectedFire() {
+        return expectedFire;
+    }
 
-    public boolean wasSuccessful() {
-        return successResult.booleanValue();
+    public void setSuccessResult(Boolean successResult) {
+        this.successResult = successResult;
+    }
+
+    public Boolean getSuccessResult() {
+        return successResult;
+    }
+
+    public void setActualResult(Integer actualResult) {
+        this.actualResult = actualResult;
+    }
+
+    public Integer getActualResult() {
+        return actualResult;
     }
 
 }

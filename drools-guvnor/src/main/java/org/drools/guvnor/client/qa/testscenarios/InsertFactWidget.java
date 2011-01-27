@@ -52,7 +52,7 @@ public class InsertFactWidget extends FactWidget {
         for ( Fixture fixture : definitionList ) {
             if ( fixture instanceof FactData ) {
                 final FactData factData = (FactData) fixture;
-                if ( scenario.isFactNameUsed( factData ) ) {
+                if ( scenario.isFactDataReferenced( factData ) ) {
                     used = true;
                     break;
                 }

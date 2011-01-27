@@ -152,42 +152,42 @@ public class TestRunnerWidget extends Composite {
         int total = 0;
         VerticalPanel resultsDetail = new VerticalPanel();
 
-        for ( Iterator<Fixture> fixturesIterator = data.result.getScenario().fixtures.iterator(); fixturesIterator.hasNext(); ) {
+        for ( Iterator<Fixture> fixturesIterator = data.result.getScenario().getFixtures().iterator(); fixturesIterator.hasNext(); ) {
             Fixture fixture = fixturesIterator.next();
             if ( fixture instanceof VerifyRuleFired ) {
 
                 VerifyRuleFired verifyRuleFired = (VerifyRuleFired) fixture;
                 HorizontalPanel panel = new HorizontalPanel();
-                if ( !verifyRuleFired.successResult.booleanValue() ) {
+                if ( !verifyRuleFired.getSuccessResult().booleanValue() ) {
                     panel.add( new Image( images.warning() ) );
                     failures++;
                 } else {
                     panel.add( new Image( images.testPassed() ) );
                 }
-                panel.add( new SmallLabel( verifyRuleFired.explanation ) );
+                panel.add( new SmallLabel( verifyRuleFired.getExplanation() ) );
                 resultsDetail.add( panel );
                 total++;
             } else if ( fixture instanceof VerifyFact ) {
                 VerifyFact verifyFact = (VerifyFact) fixture;
-                for ( Iterator<VerifyField> fieldIterator = verifyFact.fieldValues.iterator(); fieldIterator.hasNext(); ) {
+                for ( Iterator<VerifyField> fieldIterator = verifyFact.getFieldValues().iterator(); fieldIterator.hasNext(); ) {
                     total++;
                     VerifyField verifyField = fieldIterator.next();
                     HorizontalPanel panel = new HorizontalPanel();
-                    if ( !verifyField.successResult.booleanValue() ) {
+                    if ( !verifyField.getSuccessResult().booleanValue() ) {
                         panel.add( new Image( images.warning() ) );
                         failures++;
                     } else {
                         panel.add( new Image( images.testPassed() ) );
                     }
-                    panel.add( new SmallLabel( verifyField.explanation ) );
+                    panel.add( new SmallLabel( verifyField.getExplanation() ) );
                     resultsDetail.add( panel );
                 }
 
             } else if ( fixture instanceof ExecutionTrace ) {
                 ExecutionTrace ex = (ExecutionTrace) fixture;
-                if ( ex.getNumberOfRulesFired() == data.result.getScenario().maxRuleFirings ) {
+                if ( ex.getNumberOfRulesFired() == data.result.getScenario().getMaxRuleFirings() ) {
                     Window.alert( Format.format( constants.MaxRuleFiringsReachedWarning(),
-                                                 data.result.getScenario().maxRuleFirings ) );
+                                                 data.result.getScenario().getMaxRuleFirings() ) );
                 }
             }
 

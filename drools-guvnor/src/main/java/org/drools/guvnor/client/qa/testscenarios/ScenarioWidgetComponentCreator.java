@@ -55,7 +55,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     protected GlobalPanel createGlobalPanel(ScenarioHelper scenarioHelper, ExecutionTrace previousExecutionTrace) {
-        return new GlobalPanel( scenarioHelper.lumpyMapGlobals( getScenario().globals ), getScenario(), previousExecutionTrace, this.scenarioWidget );
+        return new GlobalPanel( scenarioHelper.lumpyMapGlobals( getScenario().getGlobals() ), getScenario(), previousExecutionTrace, this.scenarioWidget );
     }
 
     protected HorizontalPanel createHorizontalPanel() {

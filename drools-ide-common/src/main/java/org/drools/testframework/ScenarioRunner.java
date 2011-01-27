@@ -69,7 +69,7 @@ public class ScenarioRunner {
     final Map<String, FactHandle> factHandles   = new HashMap<String, FactHandle>();
 
     final InternalWorkingMemory   workingMemory;
-    final TypeResolver resolver;
+    final TypeResolver            resolver;
 
     /**
      * This constructor is normally used by Guvnor for running tests on a users request.
@@ -103,18 +103,19 @@ public class ScenarioRunner {
     public ScenarioRunner(String xml,
                           RuleBase rb) throws ClassNotFoundException {
         this.scenario = ScenarioXMLPersistence.getInstance().unmarshal( xml );
-        
+
         SessionConfiguration conf = new SessionConfiguration();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
-        
-        this.workingMemory = (InternalWorkingMemory) rb.newStatefulSession( conf, null );
-                Package pk = rb.getPackages()[0];
+
+        this.workingMemory = (InternalWorkingMemory) rb.newStatefulSession( conf,
+                                                                            null );
+        Package pk = rb.getPackages()[0];
         ClassLoader cl = ((InternalRuleBase) rb).getRootClassLoader();
         HashSet<String> imports = new HashSet<String>();
         imports.add( pk.getName() + ".*" );
         imports.addAll( pk.getImports().keySet() );
         this.resolver = new ClassTypeResolver( imports,
-                                                       cl );
+                                               cl );
         runScenario( scenario,
                      resolver );
     }
@@ -126,16 +127,16 @@ public class ScenarioRunner {
     private void runScenario(final Scenario scenario,
                              final TypeResolver resolver) throws ClassNotFoundException {
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
-        scenario.lastRunResult = new Date();
+        scenario.setLastRunResult( new Date() );
         //stub out any rules we don't want to have the consequences firing of.
         HashSet<String> ruleList = new HashSet<String>();
-        ruleList.addAll( scenario.rules );
+        ruleList.addAll( scenario.getRules() );
 
         TestingEventListener listener = null;
 
         List<Populate> toPopulate = new ArrayList<Populate>();
 
-        for ( final FactData fact : scenario.globals ) {
+        for ( final FactData fact : scenario.getGlobals() ) {
             final Object factObject = eval( "new " + getTypeName( resolver,
                                                                   fact ) + "()" );
             toPopulate.add( new Populate() {
@@ -143,64 +144,65 @@ public class ScenarioRunner {
                     populateFields( fact,
                                     globalData,
                                     factObject,
-                                    resolver);
+                                    resolver );
                 }
             } );
-            globalData.put( fact.name,
+            globalData.put( fact.getFactName(),
                             factObject );
-            this.workingMemory.setGlobal( fact.name,
+            this.workingMemory.setGlobal( fact.getFactName(),
                                           factObject );
         }
 
         doPopulate( toPopulate );
 
-        for ( Iterator<Fixture> iterator = scenario.fixtures.iterator(); iterator.hasNext(); ) {
+        for ( Iterator<Fixture> iterator = scenario.getFixtures().iterator(); iterator.hasNext(); ) {
             Fixture fixture = iterator.next();
 
             if ( fixture instanceof FactData ) {
                 //deal with facts and globals
                 final FactData fact = (FactData) fixture;
-                final Object factObject = (fact.isModify) ? this.populatedData.get( fact.name ) : eval( "new " + getTypeName( resolver,
-                                                                                                                              fact ) + "()" );
-                if ( fact.isModify ) {
-                    if ( !this.factHandles.containsKey( fact.name ) ) {
-                        throw new IllegalArgumentException( "Was not a previously inserted fact. [" + fact.name + "]" );
+                final Object factObject = (fact.isModify()) ? this.populatedData.get( fact.getFactName() ) : eval( "new " + getTypeName( resolver,
+                                                                                                                                         fact ) + "()" );
+                if ( fact.isModify() ) {
+                    if ( !this.factHandles.containsKey( fact.getFactName() ) ) {
+                        throw new IllegalArgumentException( "Was not a previously inserted fact. [" + fact.getFactName() + "]" );
                     }
                     toPopulate.add( new Populate() {
                         public void go() {
                             populateFields( fact,
                                             populatedData,
                                             factObject,
-                                            resolver);
-                            workingMemory.update( factHandles.get( fact.name ),
+                                            resolver );
+                            workingMemory.update( factHandles.get( fact.getFactName() ),
                                                   factObject );
                         }
                     } );
                 } else /* a new one */{
-                    populatedData.put( fact.name,
+                    populatedData.put( fact.getFactName(),
                                        factObject );
                     toPopulate.add( new Populate() {
                         public void go() {
                             populateFields( fact,
                                             populatedData,
                                             factObject,
-                                            resolver);
-                            factHandles.put( fact.name,
+                                            resolver );
+                            factHandles.put( fact.getFactName(),
                                              workingMemory.insert( factObject ) );
                         }
                     } );
                 }
             } else if ( fixture instanceof RetractFact ) {
                 RetractFact retractFact = (RetractFact) fixture;
-                this.workingMemory.retract( this.factHandles.get( retractFact.name ) );
-                this.populatedData.remove( retractFact.name );
-            } else if (fixture instanceof CallMethod){
-            	CallMethod aCall = (CallMethod)(fixture);
-            	Object targetInstance = populatedData.get(aCall.variable);
-            	executeMethodOnObject(aCall,targetInstance);
+                this.workingMemory.retract( this.factHandles.get( retractFact.getFactName() ) );
+                this.populatedData.remove( retractFact.getFactName() );
+            } else if ( fixture instanceof CallMethod ) {
+                CallMethod aCall = (CallMethod) (fixture);
+                Object targetInstance = populatedData.get( aCall.getVariable() );
+                executeMethodOnObject( aCall,
+                                       targetInstance );
             } else if ( fixture instanceof ActivateRuleFlowGroup ) {
-       
-                workingMemory.getAgenda().activateRuleFlowGroup( ((ActivateRuleFlowGroup) fixture).name );
+
+                workingMemory.getAgenda().activateRuleFlowGroup( ((ActivateRuleFlowGroup) fixture).getName() );
             } else if ( fixture instanceof ExecutionTrace ) {
                 doPopulate( toPopulate );
                 ExecutionTrace executionTrace = (ExecutionTrace) fixture;
@@ -218,8 +220,8 @@ public class ScenarioRunner {
                 //love you
                 long time = System.currentTimeMillis();
                 this.workingMemory.fireAllRules( listener.getAgendaFilter( ruleList,
-                                                                           scenario.inclusive ),
-                                                 scenario.maxRuleFirings );
+                                                                           scenario.isInclusive() ),
+                                                 scenario.getMaxRuleFirings() );
                 executionTrace.setExecutionTimeResult( System.currentTimeMillis() - time );
                 executionTrace.setNumberOfRulesFired( listener.totalFires );
                 executionTrace.setRulesFired( listener.getRulesFiredSummary() );
@@ -252,7 +254,7 @@ public class ScenarioRunner {
     private String getTypeName(TypeResolver resolver,
                                FactData fact) throws ClassNotFoundException {
 
-        String fullName = resolver.getFullTypeName( fact.type );
+        String fullName = resolver.getFullTypeName( fact.getType() );
         if ( fullName.equals( "java.util.List" ) || fullName.equals( "java.util.Collection" ) ) {
             return "java.util.ArrayList";
         } else {
@@ -264,46 +266,47 @@ public class ScenarioRunner {
                                   ExecutionTrace executionTrace) {
         long targetTime = 0;
         if ( executionTrace.getScenarioSimulatedDate() != null ) {
-            targetTime = executionTrace.getScenarioSimulatedDate().getTime();            
+            targetTime = executionTrace.getScenarioSimulatedDate().getTime();
         } else {
             targetTime = new Date().getTime();
         }
-        
-        long currentTime = wm.getSessionClock().getCurrentTime();        
-        ((PseudoClockScheduler)wm.getSessionClock()).advanceTime( targetTime - currentTime, TimeUnit.MILLISECONDS );        
+
+        long currentTime = wm.getSessionClock().getCurrentTime();
+        ((PseudoClockScheduler) wm.getSessionClock()).advanceTime( targetTime - currentTime,
+                                                                   TimeUnit.MILLISECONDS );
     }
 
     void verify(VerifyRuleFired assertion,
                 Map<String, Integer> firingCounts) {
 
-        assertion.actualResult = firingCounts.containsKey( assertion.ruleName ) ? firingCounts.get( assertion.ruleName ) : 0;
-        if ( assertion.expectedFire != null ) {
-            if ( assertion.expectedFire ) {
-                if ( assertion.actualResult > 0 ) {
-                    assertion.successResult = true;
-                    assertion.explanation = "Rule [" + assertion.ruleName + "] was actived " + assertion.actualResult + " times.";
+        assertion.setActualResult( firingCounts.containsKey( assertion.getRuleName() ) ? firingCounts.get( assertion.getRuleName() ) : 0 );
+        if ( assertion.getExpectedFire() != null ) {
+            if ( assertion.getExpectedFire() ) {
+                if ( assertion.getActualResult() > 0 ) {
+                    assertion.setSuccessResult( true );
+                    assertion.setExplanation( "Rule [" + assertion.getRuleName() + "] was actived " + assertion.getActualResult() + " times." );
                 } else {
-                    assertion.successResult = false;
-                    assertion.explanation = "Rule [" + assertion.ruleName + "] was not activated. Expected it to be activated.";
+                    assertion.setSuccessResult( false );
+                    assertion.setExplanation( "Rule [" + assertion.getRuleName() + "] was not activated. Expected it to be activated." );
                 }
             } else {
-                if ( assertion.actualResult == 0 ) {
-                    assertion.successResult = true;
-                    assertion.explanation = "Rule [" + assertion.ruleName + "] was not activated.";
+                if ( assertion.getActualResult() == 0 ) {
+                    assertion.setSuccessResult( true );
+                    assertion.setExplanation( "Rule [" + assertion.getRuleName() + "] was not activated." );
                 } else {
-                    assertion.successResult = false;
-                    assertion.explanation = "Rule [" + assertion.ruleName + "] was activated " + assertion.actualResult + " times, but expected none.";
+                    assertion.setSuccessResult( false );
+                    assertion.setExplanation( "Rule [" + assertion.getRuleName() + "] was activated " + assertion.getActualResult() + " times, but expected none." );
                 }
             }
         }
 
-        if ( assertion.expectedCount != null ) {
-            if ( assertion.actualResult.equals( assertion.expectedCount ) ) {
-                assertion.successResult = true;
-                assertion.explanation = "Rule [" + assertion.ruleName + "] activated " + assertion.actualResult + " times.";
+        if ( assertion.getExpectedCount() != null ) {
+            if ( assertion.getActualResult().equals( assertion.getExpectedCount() ) ) {
+                assertion.setSuccessResult( true );
+                assertion.setExplanation( "Rule [" + assertion.getRuleName() + "] activated " + assertion.getActualResult() + " times." );
             } else {
-                assertion.successResult = false;
-                assertion.explanation = "Rule [" + assertion.ruleName + "] activated " + assertion.actualResult + " times. Expected " + assertion.expectedCount + " times.";
+                assertion.setSuccessResult( false );
+                assertion.setExplanation( "Rule [" + assertion.getRuleName() + "] activated " + assertion.getActualResult() + " times. Expected " + assertion.getExpectedCount() + " times." );
             }
         }
     }
@@ -311,30 +314,30 @@ public class ScenarioRunner {
     void verify(VerifyFact value) {
 
         if ( !value.anonymous ) {
-            Object factObject = this.populatedData.get( value.name );
-            if ( factObject == null ) factObject = this.globalData.get( value.name );
+            Object factObject = this.populatedData.get( value.getFactName() );
+            if ( factObject == null ) factObject = this.globalData.get( value.getFactName() );
             FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
-                                                                               value.name,
+                                                                               value.getFactName(),
                                                                                factObject,
-                                                                               resolver);
-            fieldVerifier.checkFields( value.fieldValues );
+                                                                               resolver );
+            fieldVerifier.checkFields( value.getFieldValues() );
         } else {
             Iterator obs = this.workingMemory.iterateObjects();
             while ( obs.hasNext() ) {
                 Object factObject = obs.next();
-                if ( factObject.getClass().getSimpleName().equals( value.name ) ) {
+                if ( factObject.getClass().getSimpleName().equals( value.getFactName() ) ) {
                     FactFieldValueVerifier fieldVerifier = new FactFieldValueVerifier( populatedData,
-                                                                                       value.name,
+                                                                                       value.getFactName(),
                                                                                        factObject,
                                                                                        resolver );
-                    fieldVerifier.checkFields( value.fieldValues );
+                    fieldVerifier.checkFields( value.getFieldValues() );
                     if ( value.wasSuccessful() ) return;
                 }
             }
-            for ( VerifyField vfl : value.fieldValues ) {
-                if ( vfl.successResult == null ) {
-                    vfl.successResult = Boolean.FALSE;
-                    vfl.actualResult = "No match";
+            for ( VerifyField vfl : value.getFieldValues() ) {
+                if ( vfl.getSuccessResult() == null ) {
+                    vfl.setSuccessResult( Boolean.FALSE );
+                    vfl.setActualResult( "No match" );
                 }
             }
         }
@@ -344,90 +347,83 @@ public class ScenarioRunner {
                           Map<String, Object> factData,
                           Object factObject,
                           final TypeResolver resolver) {
-        for ( int i = 0; i < fact.fieldData.size(); i++ ) {
-            FieldData field = (FieldData) fact.fieldData.get( i );
+        for ( int i = 0; i < fact.getFieldData().size(); i++ ) {
+            FieldData field = (FieldData) fact.getFieldData().get( i );
             Object val = null;
-            
-            if ( field.value != null && !field.value.equals( "" ) ) {
-             		
-                if ( field.value.startsWith( "=" ) ) {
-                    // eval the val into existence
-                    val = eval( field.value.substring( 1 ),
-                                factData );
-				} else if (field.getNature() == FieldData.TYPE_ENUM) {
-					try {
-						// The string representation of enum value is using 
-						// format like CheeseType.CHEDDAR
-						String classNameOfEnum = field.value.substring(0,
-								field.value.indexOf("."));
-						String valueOfEnum = field.value.substring(field.value
-								.indexOf(".") + 1);
-						String fullName = resolver
-								.getFullTypeName(classNameOfEnum);
 
-						val = eval(fullName + "." + valueOfEnum);
-					} catch (ClassNotFoundException e) {
-						//Do nothing. 
-					}
-				} else {
-					val = field.value;
-				}
-                
+            if ( field.getValue() != null && !field.getValue().equals( "" ) ) {
+
+                if ( field.getValue().startsWith( "=" ) ) {
+                    // eval the val into existence
+                    val = eval( field.getValue().substring( 1 ),
+                                factData );
+                } else if ( field.getNature() == FieldData.TYPE_ENUM ) {
+                    try {
+                        // The string representation of enum value is using 
+                        // format like CheeseType.CHEDDAR
+                        String classNameOfEnum = field.getValue().substring( 0,
+                                                                             field.getValue().indexOf( "." ) );
+                        String valueOfEnum = field.getValue().substring( field.getValue().indexOf( "." ) + 1 );
+                        String fullName = resolver.getFullTypeName( classNameOfEnum );
+
+                        val = eval( fullName + "." + valueOfEnum );
+                    } catch ( ClassNotFoundException e ) {
+                        //Do nothing. 
+                    }
+                } else {
+                    val = field.getValue();
+                }
+
                 Map<String, Object> vars = new HashMap<String, Object>();
                 vars.putAll( factData );
                 vars.put( "__val__",
-                		val );
+                          val );
                 vars.put( "__fact__",
                           factObject );
                 //System.out.println("eval: " + "__fact__." + field.name + " = __val__");
-                eval( "__fact__." + field.name + " = __val__",
+                eval( "__fact__." + field.getName() + " = __val__",
                       vars );
             }
         }
         return factObject;
     }
 
-	Object executeMethodOnObject(CallMethod fact, Object factObject) {
-		Map<String, Object> vars = new HashMap<String, Object>();
-		vars.put("__fact__", factObject);
-		String methodName = "__fact__." + fact.methodName + "(";
-		for (int i = 0; i < fact.callFieldValues.length; i++) {
-			CallFieldValue field = (CallFieldValue) fact.callFieldValues[i];
-			Object val;
-			if (field.value != null && !field.value.equals("")) {
-				if (field.value.startsWith("=")) {
-					// eval the val into existence
-					val = populatedData.get(field.value.substring(1));
-				} else {
-					val = field.value;
-				}
-				vars.put("__val" + i + "__", val);
-				methodName = methodName + "__val" + i + "__";
-				if (i < fact.callFieldValues.length - 1) {
-					methodName = methodName + ",";
-				}
+    Object executeMethodOnObject(CallMethod fact,
+                                 Object factObject) {
+        Map<String, Object> vars = new HashMap<String, Object>();
+        vars.put( "__fact__",
+                  factObject );
+        String methodName = "__fact__." + fact.getMethodName() + "(";
+        for ( int i = 0; i < fact.getCallFieldValues().length; i++ ) {
+            CallFieldValue field = (CallFieldValue) fact.getCallFieldValues()[i];
+            Object val;
+            if ( field.value != null && !field.value.equals( "" ) ) {
+                if ( field.value.startsWith( "=" ) ) {
+                    // eval the val into existence
+                    val = populatedData.get( field.value.substring( 1 ) );
+                } else {
+                    val = field.value;
+                }
+                vars.put( "__val" + i + "__",
+                          val );
+                methodName = methodName + "__val" + i + "__";
+                if ( i < fact.getCallFieldValues().length - 1 ) {
+                    methodName = methodName + ",";
+                }
 
-			}
-		}
-		methodName = methodName + ")";
-		eval(methodName, vars);
-		return factObject;
-	}
-    
+            }
+        }
+        methodName = methodName + ")";
+        eval( methodName,
+              vars );
+        return factObject;
+    }
 
     /**
      * True if the scenario was run with 100% success.
      */
     public boolean wasSuccess() {
         return this.scenario.wasSuccessful();
-    }
-
-    /**
-     * @return A pretty printed report detailing any failures that occured
-     * when running the scenario (unmet expectations).
-     */
-    public String getReport() {
-        return this.scenario.printFailureReport();
     }
 
 }

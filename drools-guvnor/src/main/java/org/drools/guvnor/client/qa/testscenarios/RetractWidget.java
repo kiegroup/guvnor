@@ -84,7 +84,7 @@ public class RetractWidget extends FlexTable {
                 final RetractFact retractFact = (RetractFact) fixture;
                 setWidget( row,
                            0,
-                           new SmallLabel( retractFact.name ) );
+                           new SmallLabel( retractFact.getFactName() ) );
 
                 setWidget( row,
                            1,
@@ -103,7 +103,7 @@ public class RetractWidget extends FlexTable {
             addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     retractList.remove( retractFact );
-                    scenario.fixtures.remove( retractFact );
+                    scenario.getFixtures().remove( retractFact );
                     parent.renderEditor();
                 }
             } );

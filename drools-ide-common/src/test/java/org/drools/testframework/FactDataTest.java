@@ -30,10 +30,10 @@ public class FactDataTest {
     @Test
     public void testAdd() {
 		FactData fd = new FactData("x", "y", new ArrayList(), false );
-		assertEquals(0, fd.fieldData.size());
-		fd.fieldData.add(new FieldData("x", "y"));
-		assertEquals(1, fd.fieldData.size());
-		fd.fieldData.add(new FieldData("q", "x"));
-		assertEquals(2, fd.fieldData.size());
+		assertEquals(0, fd.getFieldData().size());
+		fd.getFieldData().add(new FieldData("x", "y"));
+		assertEquals(1, fd.getFieldData().size());
+		fd.getFieldData().add(new FieldData("q", "x"));
+		assertEquals(2, fd.getFieldData().size());
 	}
 }

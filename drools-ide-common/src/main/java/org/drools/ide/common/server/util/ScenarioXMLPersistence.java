@@ -62,11 +62,11 @@ public class ScenarioXMLPersistence {
 
 
     public String marshal(Scenario sc) {
-    	if (sc.fixtures.size() > 1  && sc.fixtures.get(sc.fixtures.size() - 1) instanceof ExecutionTrace) {
-    		Object f = sc.fixtures.get(sc.fixtures.size() - 2);
+    	if (sc.getFixtures().size() > 1  && sc.getFixtures().get(sc.getFixtures().size() - 1) instanceof ExecutionTrace) {
+    		Object f = sc.getFixtures().get(sc.getFixtures().size() - 2);
 
     		if (f instanceof Expectation) {
-    			sc.fixtures.remove(sc.fixtures.size() - 1);
+    			sc.getFixtures().remove(sc.getFixtures().size() - 1);
     		}
 
     	}

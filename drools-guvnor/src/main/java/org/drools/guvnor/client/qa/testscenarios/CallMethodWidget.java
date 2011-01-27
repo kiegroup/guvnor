@@ -74,9 +74,9 @@ public class CallMethodWidget extends DirtyableComposite {
 
         layout.setStyleName( "model-builderInner-Background" ); // NON-NLS
 
-        if ( suggestionCompletionEngine.isGlobalVariable( mCall.variable ) ) {
+        if ( suggestionCompletionEngine.isGlobalVariable( mCall.getVariable() ) ) {
 
-            List<MethodInfo> infos = suggestionCompletionEngine.getMethodInfosForGlobalVariable( mCall.variable );
+            List<MethodInfo> infos = suggestionCompletionEngine.getMethodInfosForGlobalVariable( mCall.getVariable() );
             this.fieldCompletionTexts = new String[infos.size()];
             this.fieldCompletionValues = new String[infos.size()];
             int i = 0;
@@ -86,11 +86,11 @@ public class CallMethodWidget extends DirtyableComposite {
                 i++;
             }
 
-            this.variableClass = (String) suggestionCompletionEngine.getGlobalVariable( mCall.variable );
+            this.variableClass = (String) suggestionCompletionEngine.getGlobalVariable( mCall.getVariable() );
         } else {
-            FactData pattern = (FactData) scenario.getFactTypes().get( mCall.variable );
+            FactData pattern = (FactData) scenario.getFactTypes().get( mCall.getVariable() );
             if ( pattern != null ) {
-                List<String> methodList = suggestionCompletionEngine.getMethodNames( pattern.type );
+                List<String> methodList = suggestionCompletionEngine.getMethodNames( pattern.getType() );
                 fieldCompletionTexts = new String[methodList.size()];
                 fieldCompletionValues = new String[methodList.size()];
                 int i = 0;
@@ -99,7 +99,7 @@ public class CallMethodWidget extends DirtyableComposite {
                     fieldCompletionValues[i] = methodName;
                     i++;
                 }
-                this.variableClass = pattern.type;
+                this.variableClass = pattern.getType();
                 this.isBoundFact = true;
             }
         }
@@ -114,8 +114,8 @@ public class CallMethodWidget extends DirtyableComposite {
                           0,
                           getSetterLabel() );
         DirtyableFlexTable inner = new DirtyableFlexTable();
-        for ( int i = 0; i < mCall.callFieldValues.length; i++ ) {
-            CallFieldValue val = mCall.callFieldValues[i];
+        for ( int i = 0; i < mCall.getCallFieldValues().length; i++ ) {
+            CallFieldValue val = mCall.getCallFieldValues()[i];
 
             inner.setWidget( i,
                              0,
@@ -136,7 +136,7 @@ public class CallMethodWidget extends DirtyableComposite {
     private Widget getSetterLabel() {
         HorizontalPanel horiz = new HorizontalPanel();
 
-        if ( mCall.state == ActionCallMethod.TYPE_UNDEFINED ) {
+        if ( mCall.getState() == ActionCallMethod.TYPE_UNDEFINED ) {
             Image edit = new ImageButton( images.addFieldToFact() );
             edit.setTitle( constants.AddAnotherFieldToThisSoYouCanSetItsValue() );
 
@@ -149,10 +149,10 @@ public class CallMethodWidget extends DirtyableComposite {
                 }
             } );
 
-            horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + mCall.variable + "]" ) ); // NON-NLS
+            horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + mCall.getVariable() + "]" ) ); // NON-NLS
             horiz.add( edit );
         } else {
-            horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + mCall.variable + "." + mCall.methodName + "]" ) ); // NON-NLS
+            horiz.add( new SmallLabel( HumanReadable.getActionDisplayName( "call" ) + " [" + mCall.getVariable() + "." + mCall.getMethodName() + "]" ) ); // NON-NLS
         }
 
         return horiz;
@@ -177,12 +177,12 @@ public class CallMethodWidget extends DirtyableComposite {
         box.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                mCall.state = ActionCallMethod.TYPE_DEFINED;
+                mCall.setState( ActionCallMethod.TYPE_DEFINED );
                 ListBox sourceW = (ListBox) event.getSource();
                 String methodName = sourceW.getItemText( sourceW.getSelectedIndex() );
                 String methodNameWithParams = sourceW.getValue( sourceW.getSelectedIndex() );
 
-                mCall.methodName = methodName;
+                mCall.setMethodName( methodName );
                 List<String> fieldList = new ArrayList<String>();
 
                 fieldList.addAll( suggestionCompletionEngine.getMethodParams( variableClass,
@@ -213,15 +213,15 @@ public class CallMethodWidget extends DirtyableComposite {
     private Widget valueEditor(final CallFieldValue val) {
 
         String type = "";
-        if ( suggestionCompletionEngine.isGlobalVariable( this.mCall.variable ) ) {
-            type = suggestionCompletionEngine.getGlobalVariable( this.mCall.variable );
+        if ( suggestionCompletionEngine.isGlobalVariable( this.mCall.getVariable() ) ) {
+            type = suggestionCompletionEngine.getGlobalVariable( this.mCall.getVariable() );
         } else {
             Map<String, String> mFactTypes = scenario.getVariableTypes();
-            type = mFactTypes.get( this.mCall.variable );
+            type = mFactTypes.get( this.mCall.getVariable() );
         }
 
         DropDownData enums = suggestionCompletionEngine.getEnums( type,
-                                                                  this.mCall.callFieldValues,
+                                                                  this.mCall.getCallFieldValues(),
                                                                   val.field );
         return new MethodParameterCallValueEditor( val,
                                                    enums,

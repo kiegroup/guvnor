@@ -84,13 +84,13 @@ public class ActivateRuleFlowWidget extends Composite {
             final ActivateRuleFlowGroup acticateRuleFlowGroup = (ActivateRuleFlowGroup) fixture;
             outer.setWidget( row,
                              0,
-                             new SmallLabel( acticateRuleFlowGroup.name ) );
+                             new SmallLabel( acticateRuleFlowGroup.getName() ) );
             Image del = new ImageButton( images.deleteItemSmall(),
                                          constants.RemoveThisRuleFlowActivation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
                                                  retList.remove( acticateRuleFlowGroup );
-                                                 sc.fixtures.remove( acticateRuleFlowGroup );
+                                                 sc.getFixtures().remove( acticateRuleFlowGroup );
                                                  render( retList,
                                                          outer,
                                                          sc );

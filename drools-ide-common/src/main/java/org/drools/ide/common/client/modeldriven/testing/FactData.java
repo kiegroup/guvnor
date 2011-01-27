@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,19 +27,19 @@ public class FactData
     /**
      * The type (class)
      */
-    public String             type;
+    private String            type;
 
     /**
      * The name of the "variable"
      */
-    public String             name;
+    private String            factName;
 
-    public List<FieldData>    fieldData        = new ArrayList<FieldData>();
+    private List<FieldData>   fieldData        = new ArrayList<FieldData>();
 
     /**
      * If its a modify, obviously we are modifying existing data in working memory.
      */
-    public boolean            isModify;
+    private boolean           isModify;
 
     public FactData() {
     }
@@ -51,7 +51,7 @@ public class FactData
         this( type,
               name,
               modify );
-        this.fieldData = fieldData;
+        this.setFieldData( fieldData );
 
     }
 
@@ -60,7 +60,39 @@ public class FactData
                     boolean modify) {
 
         this.type = type;
-        this.name = name;
+        this.factName = name;
         this.isModify = modify;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setFactName(String name) {
+        this.factName = name;
+    }
+
+    public String getFactName() {
+        return factName;
+    }
+
+    public void setFieldData(List<FieldData> fieldData) {
+        this.fieldData = fieldData;
+    }
+
+    public List<FieldData> getFieldData() {
+        return fieldData;
+    }
+
+    public void setModify(boolean isModify) {
+        this.isModify = isModify;
+    }
+
+    public boolean isModify() {
+        return isModify;
     }
 }

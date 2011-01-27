@@ -109,8 +109,8 @@ public class DataInputWidget extends DirtyableFlexTable {
                 HashSet<String> existingFields = new HashSet<String>();
                 if ( definitionList.size() > 0 ) {
                     FactData factData = (FactData) definitionList.get( 0 );
-                    for ( FieldData fieldData : factData.fieldData ) {
-                        existingFields.add( fieldData.name );
+                    for ( FieldData fieldData : factData.getFieldData() ) {
+                        existingFields.add( fieldData.getName() );
                     }
 
                 }
@@ -131,8 +131,8 @@ public class DataInputWidget extends DirtyableFlexTable {
                         for ( Fixture fixture : definitionList ) {
                             if ( fixture instanceof FactData ) {
                                 FactData factData = (FactData) fixture;
-                                factData.fieldData.add( new FieldData( field,
-                                                                       "" ) );
+                                factData.getFieldData().add( new FieldData( field,
+                                                                            "" ) );
                             }
                         }
                         render();
@@ -174,29 +174,29 @@ public class DataInputWidget extends DirtyableFlexTable {
                 // Set Header
                 setWidget( 0,
                            ++col,
-                           new SmallLabel( "[" + factData.name + "]" ) );
+                           new SmallLabel( "[" + factData.getFactName() + "]" ) );
 
                 Map<String, Integer> presentFields = new HashMap<String, Integer>();
 
                 // Sets row name and delete button.
-                for ( final FieldData fieldData : factData.fieldData ) {
+                for ( final FieldData fieldData : factData.getFieldData() ) {
                     // Avoid duplicate field rows, only one for each name.
-                    if ( rowIndexByFieldName.doesNotContain( fieldData.name ) ) {
+                    if ( rowIndexByFieldName.doesNotContain( fieldData.getName() ) ) {
                         newRow( rowIndexByFieldName,
                                 totalCols,
-                                factData.name,
-                                fieldData.name );
+                                factData.getFactName(),
+                                fieldData.getName() );
                     }
 
                     // Sets row data
-                    int fieldRowIndex = rowIndexByFieldName.getRowIndex( fieldData.name );
+                    int fieldRowIndex = rowIndexByFieldName.getRowIndex( fieldData.getName() );
                     setWidget( fieldRowIndex,
                                col,
                                editableCell( fieldData,
                                              factData,
-                                             factData.type,
+                                             factData.getType(),
                                              this.executionTrace ) );
-                    presentFields.remove( fieldData.name );
+                    presentFields.remove( fieldData.getName() );
                 }
 
                 // 
@@ -204,12 +204,12 @@ public class DataInputWidget extends DirtyableFlexTable {
                     int fieldRow = ((Integer) entry.getValue()).intValue();
                     FieldData fieldData = new FieldData( (String) entry.getKey(),
                                                          "" );
-                    factData.fieldData.add( fieldData );
+                    factData.getFieldData().add( fieldData );
                     setWidget( fieldRow,
                                col,
                                editableCell( fieldData,
                                              factData,
-                                             factData.type,
+                                             factData.getType(),
                                              this.executionTrace ) );
                 }
 
@@ -269,7 +269,7 @@ public class DataInputWidget extends DirtyableFlexTable {
         return new FieldDataConstraintEditor( factType,
                                               new ValueChanged() {
                                                   public void valueChanged(String newValue) {
-                                                      fd.value = newValue;
+                                                      fd.setValue( newValue );
                                                   }
                                               },
                                               fd,
@@ -284,15 +284,15 @@ public class DataInputWidget extends DirtyableFlexTable {
         public DeleteFactColumnButton(final FactData factData) {
             super( images.deleteItemSmall(),
                    Format.format( constants.RemoveTheColumnForScenario(),
-                                  factData.name ) );
+                                  factData.getFactName() ) );
 
             addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    if ( scenario.isFactNameUsed( factData ) ) {
+                    if ( scenario.isFactDataReferenced( factData ) ) {
                         Window.alert( Format.format( constants.CanTRemoveThisColumnAsTheName0IsBeingUsed(),
-                                                     factData.name ) );
+                                                     factData.getFactName() ) );
                     } else if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemoveColumn0(),
-                                                               factData.name ) ) ) {
+                                                               factData.getFactName() ) ) ) {
                         scenario.removeFixture( factData );
                         definitionList.remove( factData );
 

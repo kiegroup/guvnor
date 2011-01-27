@@ -43,7 +43,7 @@ public class AddExecuteButton extends Button {
         addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                scenario.fixtures.add( new ExecutionTrace() );
+                scenario.getFixtures().add( new ExecutionTrace() );
                 parent.renderEditor();
             }
         } );

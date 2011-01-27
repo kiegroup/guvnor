@@ -98,15 +98,15 @@ public class VerifyRulesFiredWidget extends Composite {
         for ( int i = 0; i < rfl.size(); i++ ) {
             final VerifyRuleFired v = (VerifyRuleFired) rfl.get( i );
 
-            if ( showResults && v.successResult != null ) {
-                if ( !v.successResult.booleanValue() ) {
+            if ( showResults && v.getSuccessResult() != null ) {
+                if ( !v.getSuccessResult().booleanValue() ) {
                     data.setWidget( i,
                                     0,
                                     new Image( images.warning() ) );
                     data.setWidget( i,
                                     4,
                                     new HTML( Format.format( constants.ActualResult(),
-                                                             v.actualResult ) ) );
+                                                             v.getActualResult() ) ) );
 
                     data.getCellFormatter().addStyleName( i,
                                                           4,
@@ -121,7 +121,7 @@ public class VerifyRulesFiredWidget extends Composite {
             }
             data.setWidget( i,
                             1,
-                            new SmallLabel( v.ruleName + ":" ) );
+                            new SmallLabel( v.getRuleName() + ":" ) );
             data.getFlexCellFormatter().setAlignment( i,
                                                       1,
                                                       HasHorizontalAlignment.ALIGN_RIGHT,
@@ -137,12 +137,12 @@ public class VerifyRulesFiredWidget extends Composite {
             final TextBox num = new TextBox();
             num.setVisibleLength( 5 );
 
-            if ( v.expectedFire != null ) {
-                b.setSelectedIndex( (v.expectedFire.booleanValue()) ? 0 : 1 );
+            if ( v.getExpectedFire() != null ) {
+                b.setSelectedIndex( (v.getExpectedFire().booleanValue()) ? 0 : 1 );
                 num.setVisible( false );
             } else {
                 b.setSelectedIndex( 2 );
-                String xc = (v.expectedCount != null) ? "" + v.expectedCount.intValue() : "0";
+                String xc = (v.getExpectedCount() != null) ? "" + v.getExpectedCount().intValue() : "0";
                 num.setText( xc );
             }
 
@@ -151,13 +151,13 @@ public class VerifyRulesFiredWidget extends Composite {
                     String s = b.getValue( b.getSelectedIndex() );
                     if ( s.equals( "y" ) || s.equals( "n" ) ) {
                         num.setVisible( false );
-                        v.expectedFire = (s.equals( "y" )) ? Boolean.TRUE : Boolean.FALSE;
-                        v.expectedCount = null;
+                        v.setExpectedFire( (s.equals( "y" )) ? Boolean.TRUE : Boolean.FALSE );
+                        v.setExpectedCount( null );
                     } else {
                         num.setVisible( true );
-                        v.expectedFire = null;
+                        v.setExpectedFire( null );
                         num.setText( "1" );
-                        v.expectedCount = Integer.valueOf( 1 );
+                        v.setExpectedCount( new Integer( 1 ) );
                     }
                 }
             } );
@@ -166,7 +166,7 @@ public class VerifyRulesFiredWidget extends Composite {
 
             num.addChangeHandler( new ChangeHandler() {
                 public void onChange(ChangeEvent event) {
-                    v.expectedCount = new Integer( num.getText() );
+                    v.setExpectedCount( new Integer( num.getText() ) );
                 }
             } );
 
