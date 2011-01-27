@@ -4075,5 +4075,15 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             }
         }
     }
+    
+    @Test
+    public void testWorkspaces() throws Exception {
+        ServiceImplementation impl = getServiceImplementation();
+        impl.createWorkspace("workspace1");
+        impl.createWorkspace("workspace2");
+
+        String[] result = impl.listWorkspaces();
+        assertEquals( 2, result.length );
+    }
 
 }

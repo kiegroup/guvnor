@@ -75,8 +75,7 @@ public class RulesRepositoryConfigurator {
 				jcrRepository = jcrRepositoryConfigurator.getJCRRepository(properties);
 			} catch (Exception ex) {
 				throw new RepositoryException (ex);
-			} 
-			
+			} 			
 		}
 		return rulesRepositoryConfigurator;
 	}
@@ -87,8 +86,7 @@ public class RulesRepositoryConfigurator {
 	
 	public Session login(String userName) throws RepositoryException {
 		return jcrRepositoryConfigurator.login(userName);
-	}
-	
+	}	
 
 	/**
 	 * Attempts to setup the repository. If the work that it tries to do has already been done, it will return without modifying
@@ -120,9 +118,7 @@ public class RulesRepositoryConfigurator {
 	
 			// Setup the rule repository node
 			Node repositoryNode = RulesRepository.addNodeIfNew(root, RulesRepository.RULES_REPOSITORY_NAME, "nt:folder");
-	
-	
-	
+		
 			// Setup the RulePackageItem area        
 			Node packageAreaNode = RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.RULE_PACKAGE_AREA, "nt:folder");
 	
@@ -150,6 +146,12 @@ public class RulesRepositoryConfigurator {
 			//and we need the "Draft" state
 			RulesRepository.addNodeIfNew( repositoryNode.getNode( RulesRepository.STATE_AREA ), StateItem.DRAFT_STATE_NAME, StateItem.STATE_NODE_TYPE_NAME );
 	
+			//Setup the schema area                
+			RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.SCHEMA_AREA, "nt:folder");
+
+			//Setup the workspace area                
+			RulesRepository.addNodeIfNew(repositoryNode.getNode( RulesRepository.SCHEMA_AREA ), RulesRepository.WORKSPACE_AREA, "nt:folder");
+
 			session.save();                        
 		} catch (Exception e) {
 			log.error("Caught Exception", e);

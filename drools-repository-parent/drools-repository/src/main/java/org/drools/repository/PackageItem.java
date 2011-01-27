@@ -77,7 +77,7 @@ public class PackageItem extends VersionableItem {
     public static final String EXTERNAL_URI_PROPERTY_NAME             = "drools:externalURI";
     public static final String CATEGORY_RULE_KEYS_PROPERTY_NAME       = "categoryRuleKeys";
     public static final String CATEGORY_RULE_VALUES_PROPERTY_NAME     = "categoryRuleValues";
-    public static final String WORKSPACE_PROPERTY_NAME     = "workspace";
+    public static final String WORKSPACE_PROPERTY_NAME     = "drools:workspace";
 
     private static final String COMPILED_PACKAGE_PROPERTY_NAME = "drools:compiledPackage";
 
@@ -181,8 +181,8 @@ public class PackageItem extends VersionableItem {
      * @return the workspace this package belongs to.
      * @throws RulesRepositoryException
      */
-    public String getWorkspace() throws RulesRepositoryException {
-            return getStringProperty( WORKSPACE_PROPERTY_NAME );
+    public String[] getWorkspaces() throws RulesRepositoryException {
+        return getStringPropertyArray( WORKSPACE_PROPERTY_NAME );
     }
     
     /**
@@ -190,9 +190,55 @@ public class PackageItem extends VersionableItem {
      *
      * @param workspace
      */
-    public void updateWorkspace(String workspace) {
-        this.updateStringProperty( workspace, WORKSPACE_PROPERTY_NAME );
+    public void updateWorkspace(String[] workspace) {
+        this.updateStringArrayProperty( workspace, WORKSPACE_PROPERTY_NAME, false);
     }    
+    
+    /**
+     * This adds a workspace 
+     *
+     * @param workspace
+     */
+    public void addWorkspace(String workspace) {
+    	String[] existingWorkspaces = getStringPropertyArray( WORKSPACE_PROPERTY_NAME );
+    	boolean found = false;
+    	for(String existingWorkspace : existingWorkspaces) {
+    		if(existingWorkspace.equals(workspace)) {
+    			found = true;
+    			break;
+    		}
+    	}
+    	if(! found) {
+    		String[] newWorkspaces = new String[existingWorkspaces.length +1];
+    		for(int i =0; i< existingWorkspaces.length ; i++)  {
+    			newWorkspaces[i] = existingWorkspaces[i];
+    		}
+    		newWorkspaces[existingWorkspaces.length] = workspace;
+            this.updateStringArrayProperty( newWorkspaces, WORKSPACE_PROPERTY_NAME, false );
+    	}
+    } 
+    
+    /**
+     * This removes a workspace 
+     *
+     * @param workspace
+     */
+    public void removeWorkspace(String workspace) {
+    	String[] existingWorkspaces = getStringPropertyArray( WORKSPACE_PROPERTY_NAME );
+    	if(existingWorkspaces.length == 0) {
+    		return;
+    	}
+    	
+    	List<String> existingWorkspaceList = new ArrayList<String>(existingWorkspaces.length);
+       	for(String existingWorkspace : existingWorkspaces) {
+       		existingWorkspaceList.add(existingWorkspace);
+       	}    	
+       	existingWorkspaceList.remove(workspace);
+       	if(existingWorkspaceList.size() != existingWorkspaces.length) {
+            this.updateStringArrayProperty( existingWorkspaceList.toArray(new String[existingWorkspaceList.size()]), WORKSPACE_PROPERTY_NAME, false );       		
+       	}
+    } 
+    
     /**
      * Adds a rule to the current package with no category (not recommended !).
      * Without categories, its going to be hard to find rules later on

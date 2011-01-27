@@ -2169,4 +2169,26 @@ public interface Constants
     String Edit();
     
     String EmptyValue();
+    
+    String ManageWorkspaces();
+    
+    String Workspaces();
+    
+    String AddWorkspace();
+    
+    String DeleteSelectedWorkspace();
+    
+    String CanTHaveAnEmptyWorkspaceName();
+    
+    String PleaseSelectAWorkspaceToRemove();
+    
+    String PleaseSelectAWorkspaceToUpdate();
+    
+    String WorkspaceRemoved();
+    
+    String WorkspaceUpdated();
+   
+    String LoadingWorkspaces();
+    
+    String UpdateSelectedWorkspace();
 }

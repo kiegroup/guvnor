@@ -111,6 +111,21 @@ public class RulesRepository {
     public final static String  STATE_AREA            = "drools:state_area";
 
     /**
+     * The name of the schema area within the JCR repository
+     */
+    public final static String SCHEMA_AREA = "drools:schema_area";
+
+    /**
+     * The name of the meta data area within the JCR repository
+     */
+    public final static String METADATA_TYPE_AREA = "drools:metadata_type_area";
+    
+    /**
+     * The name of the workspace area within the JCR repository
+     */
+    public final static String WORKSPACE_AREA = "drools:workspace_area";
+
+    /**
      * The name of the rules repository within the JCR repository
      */
     public final static String  RULES_REPOSITORY_NAME = "drools:repository";
@@ -218,6 +233,22 @@ public class RulesRepository {
         }
         return folderNode;
     }
+    
+	private Node getMetaDataTypeNode(String metadataType)
+			throws RepositoryException {
+		Node schemaNode = getAreaNode(SCHEMA_AREA);
+		Node node = addNodeIfNew(
+				addNodeIfNew(schemaNode, METADATA_TYPE_AREA,
+						"nt:folder"), metadataType, "nt:file");
+		return node;
+	}
+
+	private NodeIterator getMetaDataTypeNodes() throws RepositoryException {
+		Node schemaNode = getAreaNode(SCHEMA_AREA);
+		NodeIterator node = addNodeIfNew(schemaNode,
+				METADATA_TYPE_AREA, "nt:folder").getNodes();
+		return node;
+	}   
 
     //    MN: This is kept for future reference showing how to tie references
     //    to a specific version when
@@ -703,7 +734,7 @@ public class RulesRepository {
      */	
     public PackageItem createPackage(String name,
                                      String description,
-                                     String workspace) throws RulesRepositoryException {
+                                     String[] workspace) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
 
         try {
@@ -843,7 +874,72 @@ public class RulesRepository {
             throw new RulesRepositoryException( e );
         }
     }
+    
+    public String[] listWorkspaces() throws RulesRepositoryException {
+		List<String> result = new ArrayList<String>();
+                
+		try {
+			//SCHEMA_AREA and WORKSPACE_AREA may not exist if the repository is imported from an old version. 
+            Node schemaNode = addNodeIfNew(this.session.getRootNode().getNode( RULES_REPOSITORY_NAME ),
+            		                       SCHEMA_AREA,
+            		                       "nt:folder" );
+          	NodeIterator workspaceNodes = addNodeIfNew(schemaNode, WORKSPACE_AREA, "nt:folder").getNodes();
+    		
+         	while (workspaceNodes.hasNext()) {
+        		Node workspaceNode = workspaceNodes.nextNode();
+        		result.add(workspaceNode.getName());
+         	}
 
+        } catch ( Exception e ) {
+            log.error( e.getMessage(), e );
+            throw new RulesRepositoryException( e );
+        }
+        
+        return result.toArray(new String[result.size()]);
+    }
+    
+    /**
+     * Create a status node of the given name.
+     */
+    public Node createWorkspace(String workspace) {
+        try {
+			//SCHEMA_AREA and WORKSPACE_AREA may not exist if the repository is imported from an old version. 
+            Node schemaNode = addNodeIfNew(this.session.getRootNode().getNode( RULES_REPOSITORY_NAME ),
+            		                       SCHEMA_AREA,
+            		                       "nt:folder" );
+            Node workspaceNode = addNodeIfNew(schemaNode, WORKSPACE_AREA, "nt:folder");
+
+    		Node node = addNodeIfNew(workspaceNode,
+    				workspace, "nt:file");
+    		
+    		//TODO: use cnd instead
+    		node.addNode("jcr:content", "nt:unstructured");
+
+            this.getSession().save();
+            log.debug( "Created workspace [" + workspace + "]" );
+            return node;
+        } catch ( Exception e ) {
+            log.error( e.getMessage(), e );
+            throw new RulesRepositoryException( e );
+        }
+    }
+    
+    public void removeWorkspace(String workspace) {
+        try {
+            Node schemaNode = addNodeIfNew(this.session.getRootNode().getNode( RULES_REPOSITORY_NAME ),
+                    SCHEMA_AREA,
+                    "nt:folder" );
+            Node workspaceAreaNode = addNodeIfNew(schemaNode, WORKSPACE_AREA, "nt:folder");
+
+    		Node workspaceNode = workspaceAreaNode.getNode(workspace);
+    		workspaceNode.remove();    		
+    		this.getSession().save();
+        } catch ( Exception e ) {
+            log.error( e.getMessage(), e );
+            throw new RulesRepositoryException( e );
+        }    
+    }
+    
     /**
      * This will return a category for the given category path.
      *

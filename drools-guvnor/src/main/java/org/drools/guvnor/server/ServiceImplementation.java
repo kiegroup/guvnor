@@ -339,17 +339,36 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] listWorkspaces() {
-        List<String> result = new ArrayList<String>();
-
-    	PackageConfigData[] pacakges = listPackages( null);
-    	
-    	for(PackageConfigData p : pacakges) {
-    		if(!result.contains(p.workspace)) {    			
-    		    result.add(p.workspace);   		
-    		} 
+    	return repository.listWorkspaces();
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void createWorkspace(String workspace) {
+    	repository.createWorkspace(workspace);
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void removeWorkspace(String workspace) {
+    	repository.removeWorkspace(workspace);
+    }
+    
+    /**
+     * For the time being, module == package
+     */
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void updateWorkspace(String workspace, String[] selectedModules, String[] unselectedModules) {
+    	for(String moduleName : selectedModules) {
+    		PackageItem module = repository.loadPackage(moduleName);
+    		module.addWorkspace(workspace);
     	}
-    	
-    	return result.toArray(new String[result.size()]);
+    	for(String moduleName : unselectedModules) {
+    		PackageItem module = repository.loadPackage(moduleName);
+    		module.removeWorkspace(workspace);
+    	}    
+        repository.save();
     }
     
     /**
@@ -437,7 +456,7 @@ public class ServiceImplementation implements RepositoryService {
             data.uuid = pkg.getUUID();
             data.name = pkg.getName();
             data.archived = pkg.isArchived();
-            data.workspace = pkg.getWorkspace();
+            data.workspace = pkg.getWorkspaces();
             handleIsPackagesListed( archive, workspace, filter, result, data );
 
             data.subPackages = listSubPackages( pkg, archive, null, filter );
@@ -448,12 +467,21 @@ public class ServiceImplementation implements RepositoryService {
     		List<PackageConfigData> result, 
     		PackageConfigData data) {
         if ( !archive && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) 
-        		&& (workspace == null || workspace.equals(data.workspace)) ) {
+        		&& (workspace == null || isWorkspace(workspace, data.workspace)) ) {
             result.add( data );
         } else if ( archive && data.archived && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY ))
-        		&& (workspace == null || workspace.equals(data.workspace)) ) {
+        		&& (workspace == null || isWorkspace(workspace, data.workspace)) ) {
             result.add( data );
         }
+    }
+    
+    private boolean isWorkspace(String workspace, String[] workspaces) {
+    	for(String w: workspaces) {
+    		if(w.equals(workspace)) {
+    			return true;
+    		}
+    	}    	
+    	return false;
     }
 
     void sortPackages(List<PackageConfigData> result) {
@@ -874,7 +902,7 @@ public class ServiceImplementation implements RepositoryService {
     }
 
     @WebRemote
-    public String createPackage(String name, String description, String workspace) throws RulesRepositoryException {
+    public String createPackage(String name, String description, String[] workspace) throws RulesRepositoryException {
         checkSecurityIsAdmin();
 
         log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
@@ -885,7 +913,7 @@ public class ServiceImplementation implements RepositoryService {
     
     @WebRemote
     public String createPackage(String name, String description) throws RulesRepositoryException {
-    	return createPackage(name, description, RulesRepository.DEFAULT_WORKSPACE);
+    	return createPackage(name, description, new String[]{});
     }
 
     @WebRemote
