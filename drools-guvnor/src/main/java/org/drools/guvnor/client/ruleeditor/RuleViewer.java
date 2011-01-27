@@ -38,6 +38,7 @@ import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
@@ -165,6 +166,12 @@ public class RuleViewer extends GuvnorEditor {
 
         editor = EditorLauncher.getEditorViewer( asset,
                                                  this );
+        
+        // for designer we need to give it more playing room
+        if(editor.getClass().getName().equals("org.drools.guvnor.client.processeditor.BusinessProcessEditor")) {
+            editor.setWidth( "1100px" );
+            editor.setHeight( "480px" );
+        }
 
         toolbar = new ActionToolbar( getConfiguration(),
                                      asset.metaData.status );
@@ -476,7 +483,6 @@ public class RuleViewer extends GuvnorEditor {
         final boolean[] saved = {false};
 
         if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
-
         RepositoryServiceFactory.getService().checkinVersion( this.asset,
                                                               new GenericCallback<String>() {
 

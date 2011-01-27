@@ -248,6 +248,7 @@ public class VersionBrowser extends Composite {
                                                                                                          null,
                                                                                                          true );
                                                                      viewer.setWidth( "100%" );
+                                                                     viewer.setHeight( "100%" );
 
                                                                      pop.addRow( restore );
                                                                      pop.addRow( viewer );

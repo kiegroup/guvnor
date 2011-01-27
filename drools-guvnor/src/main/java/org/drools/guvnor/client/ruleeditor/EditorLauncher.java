@@ -97,7 +97,7 @@ public class EditorLauncher {
         } else if ( asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF ) ) {
             return new RuleFlowWrapper( asset,
                                         viewer );
-        } else if ( asset.metaData.format.equals( AssetFormats.BPMN2_PROCESS ) && Preferences.getBooleanPref( "oryx-bpmn-editor" ) ) {
+        } else if ( ( asset.metaData.format.equals( AssetFormats.BPMN2_PROCESS )  || asset.metaData.format.equals( AssetFormats.BPMN_PROCESS ) )  && Preferences.getBooleanPref( "oryx-bpmn-editor" ) ) {
             return new BusinessProcessEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.DRL ) ) {
             return new DrlEditor( asset );
@@ -157,6 +157,9 @@ public class EditorLauncher {
         result.put( AssetFormats.RULE_FLOW_RF,
                     new RuleFormatImageResource( AssetFormats.RULE_FLOW_RF,
                                                  images.ruleflowSmall() ) );
+        result.put( AssetFormats.BPMN_PROCESS,
+                new RuleFormatImageResource( AssetFormats.BPMN_PROCESS,
+                                             images.ruleflowSmall() ) );
         result.put( AssetFormats.BPMN2_PROCESS,
                     new RuleFormatImageResource( AssetFormats.BPMN2_PROCESS,
                                                  images.ruleflowSmall() ) );

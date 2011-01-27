@@ -17,15 +17,14 @@
 package org.drools.guvnor.client.processeditor;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.ruleeditor.EditorLauncher;
 import org.drools.guvnor.client.ruleeditor.EditorWidget;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.user.client.ui.Frame;
@@ -52,15 +51,16 @@ public class BusinessProcessEditor extends DirtyableComposite
 
     private void initWidgets() {
         String name;
-        if ( EditorLauncher.hostedMode.booleanValue() ) {
-            // THIS IS A HACK TO GET DESIGNER WORKING ON HOSTED MODE
-            // I will add ability to input where oryx designer is 
-            // available in the admin section soon
-            name = "http://localhost:8080/designer/editor";
-        } else {
-            name = "/designer/editor";
-        }
-        name += "?uuid=" + modelUUID;
+
+        /**
+         EditorLauncher.HOSTED_MODE = Boolean.TRUE; // HACK to set it to HOSTED MODE
+         if ( EditorLauncher.HOSTED_MODE.booleanValue() ) {
+             name = "http://localhost:8080/designer/editor";
+         } else {
+             name = "/designer/editor";
+         } **/
+        
+        name = "/designer/editor/?uuid=" + modelUUID + "&profile=drools";
         frame = new Frame( name );
         frame.getElement().setAttribute( "domain",
                                          Document.get().getDomain() );
@@ -72,18 +72,22 @@ public class BusinessProcessEditor extends DirtyableComposite
     }
 
     private final native String callSave(Document frameDoc) /*-{
-        //console.log(frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON());
+        //window.alert("JSON: " + frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON());
         return frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON();
     }-*/;
-
+    
     public void onSave() {
-        //we replace the model by the new model:
-        String s = callSave( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
-        if ( asset.content == null ) {
-            asset.content = new RuleFlowContentModel();
+        try {
+            String s = callSave( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
+            if ( asset.content == null ) {
+                asset.content = new RuleFlowContentModel();
+            }
+            ((RuleFlowContentModel) asset.content).setXml( null );
+            ((RuleFlowContentModel) asset.content).setJson( s );
+        } catch(Exception e) {
+            GWT.log("JSNI method callSave() threw an exception:", e);
+            Window.alert("JSNI method callSave() threw an exception: " + e);
         }
-        ((RuleFlowContentModel) asset.content).setXml( null );
-        ((RuleFlowContentModel) asset.content).setJson( s );
     }
 
     public void onAfterSave() {

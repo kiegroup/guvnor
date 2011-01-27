@@ -90,17 +90,17 @@ public class ExplorerNodeConfig {
         item.setUserObject( new String[]{AssetFormats.DRL_MODEL, AssetFormats.MODEL} );
         pkg.addItem( item );
 
+        
         if ( Preferences.getBooleanPref( "flex-bpel-editor" ) ) {
             item = new TreeItem( Util.getHeader( images.ruleflowSmall(), constants.RuleFlows() ) );
             itemWidgets.put( item, AssetFormats.RULE_FLOW_RF );
-            item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN2_PROCESS, AssetFormats.BPEL_PACKAGE} );
+            item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS, AssetFormats.BPEL_PACKAGE} );
             pkg.addItem( item );
         } else {
             item = new TreeItem( Util.getHeader( images.ruleflowSmall(), constants.RuleFlows() ) );
             itemWidgets.put( item, AssetFormats.RULE_FLOW_RF );
-            item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN2_PROCESS} );
+            item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF,  AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS} );
             pkg.addItem( item );
-
         }
 
         item = new TreeItem( Util.getHeader( images.enumeration(), constants.Enumerations() ) );

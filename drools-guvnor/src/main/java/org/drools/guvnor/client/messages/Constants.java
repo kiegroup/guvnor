@@ -1149,6 +1149,10 @@ public interface Constants
     String NewRuleFlow();
 
     String CreateANewRuleFlow();
+    
+    String NewBPMN2Process();
+
+    String CreateANewBPMN2Process();
 
     String NewEnumeration();
 

@@ -128,6 +128,14 @@ public class PackagesNewMenu {
             }
         });  
     	
+    	createNewMenu.addItem(Util.getHeader(images.ruleflowSmall(), constants.NewBPMN2Process()),
+                true,
+                new Command() {
+            public void execute() {
+                manager.launchWizard(AssetFormats.BPMN2_PROCESS, constants.CreateANewBPMN2Process(), false);
+            }
+        });  
+    	
     	createNewMenu.addItem(Util.getHeader(images.newEnumeration(), constants.NewEnumeration()),
         		true,
         		new Command() {

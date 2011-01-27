@@ -223,7 +223,7 @@ public class NewPackageWizard extends FormStylePopup {
             public void onSubmitComplete(SubmitCompleteEvent event) {
                 if ( event.getResults().indexOf( "OK" ) > -1 ) { //NON-NLS
                     LoadingPopup.close();
-		    Window.alert( constants.PackageWasImportedSuccessfully() );
+                    Window.alert( constants.PackageWasImportedSuccessfully() );
                     afterCreatedEvent.execute();
                     parent.hide();
                     if ( packageNamePopup != null ) {

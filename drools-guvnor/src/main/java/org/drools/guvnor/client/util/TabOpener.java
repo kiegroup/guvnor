@@ -124,8 +124,8 @@ public class TabOpener {
             t.schedule( 200 );
 
             loadRuleAsset( uuid,
-                           loading );
-        }
+                    loading );
+      }
     }
 
     private void loadRuleAsset(final String uuid,

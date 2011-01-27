@@ -260,6 +260,7 @@ public class MultiViewEditor extends GuvnorEditor {
 
                                                                   content.add( ruleViewer );
                                                                   ruleViewer.setWidth( "100%" );
+                                                                  ruleViewer.setHeight( "100%" );
 
                                                                   ruleViewer.setCloseCommand( new Command() {
 

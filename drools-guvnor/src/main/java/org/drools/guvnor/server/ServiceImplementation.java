@@ -80,6 +80,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
@@ -94,6 +95,7 @@ import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
@@ -757,8 +759,10 @@ public class ServiceImplementation implements RepositoryService {
         updateEffectiveAndExpiredDate( repoAsset, meta );
 
         repoAsset.updateCategoryList( meta.categories );
-        getContentHandler( repoAsset ).storeAssetContent( asset, repoAsset );
 
+        ContentHandler handler = ContentManager.getHandler( repoAsset.getFormat() );
+        handler.storeAssetContent( asset, repoAsset );
+        
         if ( !(asset.metaData.format.equals( AssetFormats.TEST_SCENARIO )) || asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
             PackageItem pkg = repoAsset.getPackage();
             pkg.updateBinaryUpToDate( false );
@@ -1648,9 +1652,11 @@ public class ServiceImplementation implements RepositoryService {
         checkSecurityIsPackageDeveloper( asset );
 
         ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
+        log.info("****** ContentHandler is: " + handler.getClass().getName());
 
         StringBuffer buf = new StringBuffer();
         if ( handler.isRuleAsset() ) {
+            log.info("****** isRuleAsset!");
 
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
@@ -1669,9 +1675,12 @@ public class ServiceImplementation implements RepositoryService {
             } else {
                 ((IRuleAsset) handler).assembleDRL( builder, asset, buf );
             }
-
+        } else {
+            if(handler.getClass().getName().equals("org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler")) {
+                BPMN2ProcessHandler bpmn2handler = ((BPMN2ProcessHandler) handler);
+                bpmn2handler.assembleProcessSource(asset.content, buf);
+            }
         }
-
         return buf.toString();
     }
 
