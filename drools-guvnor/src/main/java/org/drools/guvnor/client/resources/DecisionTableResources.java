@@ -64,11 +64,11 @@ public interface DecisionTableResources extends ClientBundle {
 	@Source("../resources/images/smallUpArrow.png")
 	ImageResource smallUpArrow();
 
-	@Source("../resources/images/toggleSelected.png")
-	ImageResource toggleSelected();
+	@Source("../resources/images/icon-unmerge.png")
+	ImageResource toggleUnmerge();
 
-	@Source("../resources/images/toggleDeselected.png")
-	ImageResource toggleDeselected();
+	@Source("../resources/images/icon-merge.png")
+	ImageResource toggleMerge();
 
 	@Source("../resources/images/new_item.gif")
 	ImageResource selectorAdd();

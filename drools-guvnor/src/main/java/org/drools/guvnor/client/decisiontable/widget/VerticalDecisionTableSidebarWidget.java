@@ -238,9 +238,9 @@ public class VerticalDecisionTableSidebarWidget extends
         // Set the icon's image accordingly
         private void setIconImage(boolean isMerged) {
             if ( isMerged ) {
-                icon.setResource( resource.toggleSelected() );
+                icon.setResource( resource.toggleUnmerge() );
             } else {
-                icon.setResource( resource.toggleDeselected() );
+                icon.setResource( resource.toggleMerge() );
             }
         }
     }
