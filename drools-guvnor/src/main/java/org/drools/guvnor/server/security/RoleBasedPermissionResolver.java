@@ -85,7 +85,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
      *
      */
     public boolean hasPermission(Object requestedObject, String requestedPermission) {
-        if ( !((requestedObject instanceof CategoryPathType) || (requestedObject instanceof PackageNameType) || (requestedObject instanceof WebDavPackageNameType) || (requestedObject instanceof AdminType) || (requestedObject instanceof PackageUUIDType)) ) {
+        if ( isInvalidInstance( requestedObject ) ) {
             log.debug( "Requested permission is not an instance of CategoryPathType|PackageNameType|WebDavPackageNameType|AdminType|PackageUUIDType" );
             return false;
         }
@@ -94,8 +94,8 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
             return true;
         }
 
-        RoleBasedPermissionManager permManager = (RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" );
-        List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
+        RoleBasedPermissionManager roleBasedPermissionManager = (RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" );
+        List<RoleBasedPermission> permissions = roleBasedPermissionManager.getRoleBasedPermission();
 
         if ( hasAdminPermission( permissions ) ) {
             return true;
@@ -104,68 +104,79 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
         }
 
         if ( requestedObject instanceof CategoryPathType ) {
-            String requestedPath = ((CategoryPathType) requestedObject).getCategoryPath();
-            String requestedPermType = (requestedPermission == null) ? RoleTypes.ANALYST : requestedPermission;
-            if ( requestedPermType.equals( "navigate" ) ) {
-                for ( RoleBasedPermission p : permissions ) {
-                    if ( p.getCategoryPath() != null ) {
-                        if ( p.getCategoryPath().equals( requestedPath ) ){
-                            return true;
-                        }
-                        if ( isSubPath( requestedPath, p.getCategoryPath() ) ) {
-                            log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: Yes" );
-                            return true;
-                        } else if ( isSubPath( p.getCategoryPath(), requestedPath ) ) {
-                            log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: Yes" );
-                            return true;
-                        }
-                    }
-                }
-                log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: No" );
-                return false;
-            } else {
-                for ( RoleBasedPermission pbp : permissions ) {
-                    // Check if there is a analyst or analyst.readonly role
-                    if ( pbp.getRole().equals( RoleTypes.ANALYST ) || pbp.getRole().equals( RoleTypes.ANALYST_READ ) ) {
+            return handleCategoryPathPersmission( requestedObject, requestedPermission, permissions );
+        }
+        String targetName = "";
 
-                        // Check if user has permissions for the current category
-                        if ( requestedPermType.equals( pbp.getRole() ) || (requestedPermType.equals( RoleTypes.ANALYST_READ ) && pbp.getRole().equals( RoleTypes.ANALYST )) ) {
-                            if ( isPermittedCategoryPath( requestedPath, pbp.getCategoryPath() ) ) {
-                                log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: Yes" );
-                                return true;
-                            }
-                        }
-                    }
-                }
-
-                log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: No" );
+        if ( requestedObject instanceof PackageUUIDType ) {
+            String targetUUID = ((PackageUUIDType) requestedObject).getUUID();
+            try {
+                ServiceImplementation serviceImplementation = (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
+                targetName = serviceImplementation.repository.loadPackageByUUID( targetUUID ).getName();
+            } catch ( RulesRepositoryException e ) {
                 return false;
             }
-        } else {
-            String targetName = "";
+        } else if ( requestedObject instanceof PackageNameType ) {
+            targetName = ((PackageNameType) requestedObject).getPackageName();
+        }
 
-            if ( requestedObject instanceof PackageUUIDType ) {
-                String targetUUID = ((PackageUUIDType) requestedObject).getUUID();
-                try {
-                    ServiceImplementation si = (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
-                    targetName = si.repository.loadPackageByUUID( targetUUID ).getName();
-                } catch ( RulesRepositoryException e ) {
-                    return false;
-                }
-            } else if ( requestedObject instanceof PackageNameType ) {
-                targetName = ((PackageNameType) requestedObject).getPackageName();
+        for ( RoleBasedPermission pbp : permissions ) {
+            if ( targetName.equalsIgnoreCase( pbp.getPackageName() ) && isPermittedPackage( requestedPermission, pbp.getRole() ) ) {
+                log.debug( "Requested permission: " + requestedPermission + ", Requested object: " + targetName + " , Permission granted: Yes" );
+                return true;
             }
+        }
 
-            for ( RoleBasedPermission pbp : permissions ) {
-                if ( targetName.equalsIgnoreCase( pbp.getPackageName() ) && isPermittedPackage( requestedPermission, pbp.getRole() ) ) {
-                    log.debug( "Requested permission: " + requestedPermission + ", Requested object: " + targetName + " , Permission granted: Yes" );
-                    return true;
+        log.debug( "Requested permission: " + requestedPermission + ", Requested object: " + targetName + " , Permission granted: No" );
+        return false;
+
+    }
+
+    private boolean handleCategoryPathPersmission(Object requestedObject, String requestedPermission, List<RoleBasedPermission> permissions) {
+        String requestedPath = ((CategoryPathType) requestedObject).getCategoryPath();
+        String requestedPermType = (requestedPermission == null) ? RoleTypes.ANALYST : requestedPermission;
+        if ( requestedPermType.equals( "navigate" ) ) {
+            for ( RoleBasedPermission roleBasedPermission : permissions ) {
+                if ( roleBasedPermission.getCategoryPath() != null ) {
+                    if ( isCategoryPathMatched( requestedPath, roleBasedPermission ) ) {
+                        return true;
+                    }
+                    if ( isSubPath( requestedPath, roleBasedPermission.getCategoryPath() ) ) {
+                        log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: Yes" );
+                        return true;
+                    } else if ( isSubPath( roleBasedPermission.getCategoryPath(), requestedPath ) ) {
+                        log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: Yes" );
+                        return true;
+                    }
                 }
             }
-
-            log.debug( "Requested permission: " + requestedPermission + ", Requested object: " + targetName + " , Permission granted: No" );
+            log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: No" );
             return false;
         }
+        for ( RoleBasedPermission roleBasedPermission : permissions ) {
+            if ( isRoleAnalyst( roleBasedPermission ) && isPermissionToCurrentDirectory( requestedPermType, roleBasedPermission ) && isPermittedCategoryPath( requestedPath, roleBasedPermission.getCategoryPath() ) ) {
+                log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: Yes" );
+                return true;
+            }
+        }
+        log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: No" );
+        return false;
+    }
+
+    private boolean isPermissionToCurrentDirectory(String requestedPermType, RoleBasedPermission roleBasedPermission) {
+        return requestedPermType.equals( roleBasedPermission.getRole() ) || (requestedPermType.equals( RoleTypes.ANALYST_READ ) && roleBasedPermission.getRole().equals( RoleTypes.ANALYST ));
+    }
+
+    private boolean isRoleAnalyst(RoleBasedPermission roleBasedPermission) {
+        return roleBasedPermission.getRole().equals( RoleTypes.ANALYST ) || roleBasedPermission.getRole().equals( RoleTypes.ANALYST_READ );
+    }
+
+    private boolean isCategoryPathMatched(String requestedPath, RoleBasedPermission roleBasedPermission) {
+        return roleBasedPermission.getCategoryPath().equals( requestedPath );
+    }
+
+    private boolean isInvalidInstance(Object requestedObject) {
+        return !((requestedObject instanceof CategoryPathType) || (requestedObject instanceof PackageNameType) || (requestedObject instanceof WebDavPackageNameType) || (requestedObject instanceof AdminType) || (requestedObject instanceof PackageUUIDType));
     }
 
     private boolean hasAdminPermission(List<RoleBasedPermission> permissions) {
