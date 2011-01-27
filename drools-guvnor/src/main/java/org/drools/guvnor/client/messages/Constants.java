@@ -1857,6 +1857,8 @@ public interface Constants
     String URLToChangeSetForDeploymentAgents();
 
     String URLToDownloadModelSet();
+    
+    String URLToDownloadSpringContext();
 
     String FrozenAreas();
 

@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 
 import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.categorynav.CategorySelectHandler;
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
@@ -36,13 +37,10 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.util.Format;
-import org.drools.guvnor.server.RepositoryServiceServlet;
-import org.drools.guvnor.server.files.PackageDeploymentServlet;
-import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
-import org.drools.repository.RulesRepository;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -170,36 +168,51 @@ public class PackageEditor extends PrettyFormLayout {
 
         HTML html0 = new HTML( "<a href='" + getDocumentationDownload( this.conf ) + "' target='_blank'>" + getDocumentationDownload( this.conf ) + "</a>" );
         addAttribute( constants.URLForDocumention(),
-                      h( html0,
+                      createHPanel( html0,
                          constants.URLDocumentionDescription() ) );
 
         HTML html = new HTML( "<a href='" + getSourceDownload( this.conf ) + "' target='_blank'>" + getSourceDownload( this.conf ) + "</a>" );
         addAttribute( constants.URLForPackageSource(),
-                      h( html,
+                      createHPanel( html,
                          constants.URLSourceDescription() ) );
 
         HTML html2 = new HTML( "<a href='" + getBinaryDownload( this.conf ) + "' target='_blank'>" + getBinaryDownload( this.conf ) + "</a>" );
         addAttribute( constants.URLForPackageBinary(),
-                      h( html2,
+                      createHPanel( html2,
                          constants.UseThisUrlInTheRuntimeAgentToFetchAPreCompiledBinary() ) );
 
         HTML html3 = new HTML( "<a href='" + getScenarios( this.conf ) + "' target='_blank'>" + getScenarios( this.conf ) + "</a>" );
         addAttribute( constants.URLForRunningTests(),
-                      h( html3,
+                      createHPanel( html3,
                          constants.URLRunTestsRemote() ) );
 
         HTML html4 = new HTML( "<a href='" + getChangeset( this.conf ) + "' target='_blank'>" + getChangeset( this.conf ) + "</a>" );
 
         addAttribute( constants.ChangeSet(),
-                      h( html4,
+                      createHPanel( html4,
                          constants.URLToChangeSetForDeploymentAgents() ) );
 
         HTML html5 = new HTML( "<a href='" + getModelDownload( this.conf ) + "' target='_blank'>" + getModelDownload( this.conf ) + "</a>" );
 
         addAttribute( constants.ModelSet(),
-                      h( html5,
+                      createHPanel( html5,
                          constants.URLToDownloadModelSet()) );
 
+        GenericCallback<TableDataResult> callBack = new GenericCallback<TableDataResult>() {
+
+        	public void onSuccess(TableDataResult resultTable) {
+
+        		for (int i = 0; i < resultTable.data.length; i++) {
+        			
+        			String url = getDownloadURL(conf, resultTable.data[i].getDisplayName());
+        			HTML html = new HTML( "<a href='" + url + "' target='_blank'>" + url + "</a>" );        			
+        	        addAttribute( constants.SpringContext(), createHPanel( html, constants.URLToDownloadSpringContext()) );
+        		}
+        	}
+        };
+        
+        RepositoryServiceFactory.getService().listAssetsWithPackageName(this.conf.name, new String[]{AssetFormats.SPRING_CONTEXT}, 0,
+        																-1, AssetItemGrid.RULE_LIST_TABLE_ID, callBack);
         
         status = new HTML();
         HorizontalPanel statusBar = new HorizontalPanel();
@@ -226,13 +239,11 @@ public class PackageEditor extends PrettyFormLayout {
 
     }
 
-    private Widget h(Widget w,
-                     String string) {
-        HorizontalPanel hp = new HorizontalPanel();
-        hp.add( w );
-        hp.add( new InfoPopup( constants.Tip(),
-                               string ) );
-        return hp;
+    private Widget createHPanel(Widget widget, String popUpText) {
+        HorizontalPanel hPanel = new HorizontalPanel();
+        hPanel.add( widget );
+        hPanel.add( new InfoPopup( constants.Tip(), popUpText ) );
+        return hPanel;
     }
 
     private Widget getShowCatRules() {
@@ -387,6 +398,10 @@ public class PackageEditor extends PrettyFormLayout {
 
     static String getModelDownload(PackageConfigData conf) {
         return makeLink( conf ) + "/MODEL"; //NON-NLS
+    }
+    
+    static String getDownloadURL(PackageConfigData conf, String name) {
+    	return makeLink( conf ) + "/" + name;
     }
     
     /**
