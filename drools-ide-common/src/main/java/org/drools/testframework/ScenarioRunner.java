@@ -198,6 +198,7 @@ public class ScenarioRunner {
                         targetInstance);
             } else if (fixture instanceof ActivateRuleFlowGroup) {
                 String ruleFlowGroupName = ((ActivateRuleFlowGroup) fixture).getName();
+                workingMemory.getAgenda().getRuleFlowGroup(ruleFlowGroupName).setAutoDeactivate(false);
                 workingMemory.getAgenda().activateRuleFlowGroup(ruleFlowGroupName);
             } else if (fixture instanceof ExecutionTrace) {
                 doPopulate(toPopulate);
