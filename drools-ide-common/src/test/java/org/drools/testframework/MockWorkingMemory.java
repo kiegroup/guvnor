@@ -144,7 +144,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
 
-    public long getId() {
+    public int getId() {
         // TODO Auto-generated method stub
         return 0;
     }
@@ -233,7 +233,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         // TODO Auto-generated method stub
         
     }
