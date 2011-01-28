@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.server;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
 
 import java.io.ByteArrayInputStream;
@@ -166,6 +168,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
+import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 
 /**
  * This is the implementation of the repository service to drive the GWT based
@@ -2043,6 +2046,20 @@ public class ServiceImplementation implements RepositoryService {
             return StringEscapeUtils.escapeXml( strw.toString() );
         } catch ( Exception e ) {
             return "";
+        }
+    }
+    
+    /**
+     * Returns the Spring context elements specified by SpringContextElementsManager
+     * @return a Map containing the key,value pairs of data.
+     * @throws DetailedSerializationException 
+     */
+    public Map<String,String> loadSpringContextElementData() throws DetailedSerializationException{
+        try {
+            return SpringContextElementsManager.getInstance().getElements();
+        } catch (IOException ex) {
+            log.error("Error loading Spring Context Elements", ex);
+            throw new DetailedSerializationException( "Error loading Spring Context Elements", "View server logs for more information" );
         }
     }
 

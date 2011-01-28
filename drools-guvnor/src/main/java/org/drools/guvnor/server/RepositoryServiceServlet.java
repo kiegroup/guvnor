@@ -413,4 +413,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
          return getService().isHostedMode();
     }
 
+    public Map<String,String> loadSpringContextElementData() throws org.drools.guvnor.client.rpc.DetailedSerializationException{
+    	return getService().loadSpringContextElementData();
+    }	
 }

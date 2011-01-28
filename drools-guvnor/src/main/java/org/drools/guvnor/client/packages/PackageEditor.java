@@ -396,7 +396,7 @@ public class PackageEditor extends PrettyFormLayout {
         return makeLink( conf ) + "/ChangeSet.xml"; //NON-NLS
     }
 
-    static String getModelDownload(PackageConfigData conf) {
+    public static String getModelDownload(PackageConfigData conf) {
         return makeLink( conf ) + "/MODEL"; //NON-NLS
     }
     

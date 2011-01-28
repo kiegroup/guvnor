@@ -126,4 +126,5 @@ public interface RepositoryServiceAsync {
     public void compareSnapshots(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotDiffs> cb);
     public void processTemplate(java.lang.String p0, java.util.Map p1, AsyncCallback<java.lang.String> cb);
     public void isHostedMode(AsyncCallback<java.lang.Boolean> cb);
+    public void loadSpringContextElementData(com.google.gwt.user.client.rpc.AsyncCallback<java.util.Map<String,String>> data);
 }

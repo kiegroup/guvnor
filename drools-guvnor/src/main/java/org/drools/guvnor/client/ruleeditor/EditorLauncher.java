@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
+import org.drools.guvnor.client.ruleeditor.springcontext.SpringContextEditor;
 import java.util.HashMap;
 import java.util.Map;
 

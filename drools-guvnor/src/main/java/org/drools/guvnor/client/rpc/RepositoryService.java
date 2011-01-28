@@ -821,4 +821,11 @@ public interface RepositoryService
      */
     public PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest queryRequest) throws SerializationException;
 
+    /**
+     * Returns the Spring context elements specified by SpringContextElementsManager
+     * @return a Map containing the key,value pairs of data.
+     * @throws DetailedSerializationException 
+     */
+    public Map<String,String> loadSpringContextElementData() throws DetailedSerializationException;
+
 }
