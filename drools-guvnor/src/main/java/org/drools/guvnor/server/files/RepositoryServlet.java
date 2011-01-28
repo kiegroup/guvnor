@@ -164,8 +164,18 @@ public class RepositoryServlet extends HttpServlet {
         String userpassDecoded = new String(Base64.decodeBase64(userpassEncoded.getBytes()));
 
         String[] a = userpassDecoded.split(":");
-        a[0] = a[0].trim();
-        a[1] = a[1].trim();
-		return a;
+        for(int i=0;i<a.length;i++) {
+        	a[i] = a[i].trim();
+        	
+        }
+        if (a.length == 2) {
+		    return a;
+        } else if (a.length == 1) {
+        	//pwd is empty
+        	String[] b = new String[]{a[0], ""};
+        	return b;        	
+        } else {
+        	return new String[]{"", ""};
+        }
 	}
 }
