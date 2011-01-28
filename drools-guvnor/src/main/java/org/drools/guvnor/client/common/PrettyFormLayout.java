@@ -105,30 +105,36 @@ public class PrettyFormLayout extends Composite {
     }
 
     public void addRow(final Widget versionBrowser) {
-        int i = currentTable.getRowCount();
-        currentTable.setWidget( i,
+        int row = currentTable.getRowCount();
+        currentTable.setWidget( row,
                                 0,
                                 versionBrowser );
-        currentTable.getFlexCellFormatter().setColSpan( i,
+        currentTable.getFlexCellFormatter().setColSpan( row,
                                                         0,
                                                         2 );
     }
 
-    public void addAttribute(String lbl,
-                             final Widget categories) {
-        int i = this.currentTable.getRowCount();
-        currentTable.setWidget( i,
+    public int addAttribute(String lbl, final Widget categories) {
+        
+    	int row = currentTable.getRowCount();
+        currentTable.setWidget( row,
                                 0,
                                 new Label( lbl ) );
-        currentTable.setWidget( i,
+        currentTable.setWidget( row,
                                 1,
                                 categories );
-        currentTable.getFlexCellFormatter().setHorizontalAlignment( i,
+        currentTable.getFlexCellFormatter().setHorizontalAlignment( row,
                                                                     0,
                                                                     HasHorizontalAlignment.ALIGN_RIGHT );
-        currentTable.getFlexCellFormatter().setVerticalAlignment( i,
+        currentTable.getFlexCellFormatter().setVerticalAlignment( row,
                                                                   0,
                                                                   HasVerticalAlignment.ALIGN_TOP );
+        
+        return row;
     }
-
+    
+    public void removeRow(int row) {
+    	
+    	currentTable.removeRow(row);
+    }
 }

@@ -58,6 +58,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -198,15 +200,26 @@ public class PackageEditor extends PrettyFormLayout {
                       createHPanel( html5,
                          constants.URLToDownloadModelSet()) );
 
+        final Tree springContextTree = new Tree();
+        final TreeItem rootItem = new TreeItem("");
+        
+        springContextTree.addItem(rootItem);
+        
+        final int rowNumber = addAttribute(constants.SpringContext() + ":", springContextTree);
+        
         GenericCallback<TableDataResult> callBack = new GenericCallback<TableDataResult>() {
 
         	public void onSuccess(TableDataResult resultTable) {
 
+        		if (resultTable.data.length == 0) {
+        			removeRow(rowNumber);
+        		}
+        		
         		for (int i = 0; i < resultTable.data.length; i++) {
         			
         			String url = getSpringContextDownload(conf, resultTable.data[i].getDisplayName());
-        			HTML html = new HTML( "<a href='" + url + "' target='_blank'>" + url + "</a>" );        			
-        	        addAttribute( constants.SpringContext(), createHPanel( html, constants.URLToDownloadSpringContext()) );
+        			HTML html = new HTML( "<a href='" + url + "' target='_blank'>" + url + "</a>" );
+        			rootItem.addItem(html);
         		}
         	}
         };
