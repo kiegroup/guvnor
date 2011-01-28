@@ -19,7 +19,6 @@ package org.drools.guvnor.server.files;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -209,54 +208,65 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 		                 BufferedInputStream inputFile = null;
 		                 byte[] data = new byte[1000];
 		                 int count = 0;
-		                 int cantAssets = 0;
-		                 	while(it.hasNext()){
-		                 		it.next();		                 		
-		                 		cantAssets++;
-		                 	}
-		                 	
-		                 	if (cantAssets==0){
-		                 		res.setContentType( "text/html" );
-		                 		PrintWriter outEM = res.getWriter();
-		                 	    outEM.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 " +
-		                 	                                        "Transitional//EN\">\n" +
-		                 	                "<HTML>\n" +
-		                 	                "<HEAD><TITLE>Empty Model</TITLE></HEAD>\n" +
-		                 	                "<BODY>\n" +
-		                 	                "<H1>EMPTY MODEL</H1>\n" +
-		                 	                "</BODY></HTML>");
-		                 	    return;
-		                 	}
-		                 	
-		                 	if(cantAssets>1){
-		                 		fileName="Model.zip";
-		                 		inputFile = new BufferedInputStream(zipModel(pkg));
-		                 		while((count = inputFile.read(data,0,1000)) != -1)
-								{      
-		                 			out.write(data, 0, count);
-								}
-								
-		                 		inputFile.close();	                 		
-		                 	}else{ 
-		                 		fileName="ModelJar.jar";		                 		
-		                 		inputFile = new BufferedInputStream(zipModel(pkg));
-		                 		while((count = inputFile.read(data,0,1000)) != -1)
-								{      
-		                 			out.write(data, 0, count);
-								}							       			                 		
-		                 			
-		                 		inputFile.close();
-		                 		
-		                 	}
-		                    	                    	
-		                    
-		            	}else{
-		            		fileName = fm.loadBinaryPackage( helper.getPackageName(),
-                                    helper.getVersion(),
-                                    helper.isLatest(),
-                                    out );
+		                 int numberOfAssets = 0;
+		                 while(it.hasNext()){
+		                	 it.next();		                 		
+		                	 numberOfAssets++;
+		                 }
+
+		                 if (numberOfAssets==0){
+		                	 res.setContentType( "text/html" );
+		                	 PrintWriter outEM = res.getWriter();
+		                	 outEM.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 " +
+		                			 "Transitional//EN\">\n" +
+		                			 "<HTML>\n" +
+		                			 "<HEAD><TITLE>Empty Model</TITLE></HEAD>\n" +
+		                			 "<BODY>\n" +
+		                			 "<H1>EMPTY MODEL</H1>\n" +
+		                	 "</BODY></HTML>");
+		                	 return;
+		                 }
+
+		                 if(numberOfAssets>1){
+		                	 fileName="Model.zip";
+		                	 inputFile = new BufferedInputStream(zipModel(pkg));
+		                	 while((count = inputFile.read(data,0,1000)) != -1)
+		                	 {      
+		                		 out.write(data, 0, count);
+		                	 }
+
+		                	 inputFile.close();	                 		
+		                 }else{ 
+		                	 fileName="ModelJar.jar";		                 		
+		                	 inputFile = new BufferedInputStream(zipModel(pkg));
+		                	 while((count = inputFile.read(data,0,1000)) != -1)
+		                	 {      
+		                		 out.write(data, 0, count);
+		                	 }							       			                 		
+
+		                	 inputFile.close();
+
+		                 }
+
+
+		            } else if (req.getRequestURI().contains("/SpringContext/")) {
+
+		            	String uri = req.getRequestURI();
+		            	int lastIndexOfSlash = uri.lastIndexOf('/');
+		            	String assetName = uri.substring(lastIndexOfSlash + 1);
+		            	fileName = assetName + ".xml";
+
+		            	PackageItem pkg = fm.getRepository().loadPackage( helper.getPackageName() );
+		            	AssetItem asset = pkg.loadAsset(assetName);
+		            	out.write(asset.getBinaryContentAsBytes());	
+
+		            } else {
+		            	fileName = fm.loadBinaryPackage( helper.getPackageName(),
+		            			helper.getVersion(),
+		            			helper.isLatest(),
+		            			out );
 		            }
-		            
+
 		        }
 
 		        res.setContentType( "application/x-download" );
@@ -298,8 +308,6 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 		
    	LinkedList<AssetItem> jarAssets = new LinkedList<AssetItem>();
    	AssetZipper assetZipper = null;
-   	byte[] data = new byte[1000];
-	
      	
    	Iterator<AssetItem> it = pkg.getAssets();
    		while (it.hasNext()){

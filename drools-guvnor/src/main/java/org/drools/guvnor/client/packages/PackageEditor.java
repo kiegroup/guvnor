@@ -204,7 +204,7 @@ public class PackageEditor extends PrettyFormLayout {
 
         		for (int i = 0; i < resultTable.data.length; i++) {
         			
-        			String url = getDownloadURL(conf, resultTable.data[i].getDisplayName());
+        			String url = getSpringContextDownload(conf, resultTable.data[i].getDisplayName());
         			HTML html = new HTML( "<a href='" + url + "' target='_blank'>" + url + "</a>" );        			
         	        addAttribute( constants.SpringContext(), createHPanel( html, constants.URLToDownloadSpringContext()) );
         		}
@@ -400,8 +400,8 @@ public class PackageEditor extends PrettyFormLayout {
         return makeLink( conf ) + "/MODEL"; //NON-NLS
     }
     
-    static String getDownloadURL(PackageConfigData conf, String name) {
-    	return makeLink( conf ) + "/" + name;
+    static String getSpringContextDownload(PackageConfigData conf, String name) {
+    	return makeLink( conf ) + "/SpringContext/" + name;
     }
     
     /**
