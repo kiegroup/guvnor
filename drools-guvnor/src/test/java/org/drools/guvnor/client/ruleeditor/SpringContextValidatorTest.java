@@ -48,16 +48,14 @@ public class SpringContextValidatorTest {
 								"<bean id=\"fileEventType\" class=\"com.devdaily.springtest1.bean.FileEventType\">"+
 								"<property name=\"eventType\" value=\"10\"/>"+
 								"<property name=\"description\" value=\"A sample description here\"/>"+
-								"</bean"+
+								"</bean>"+
 								"</beans>";
 
 			
 		validator.setContent(springCtxt);
 
-					
-					
-			validator.validate();	        
-	        assertTrue(validator.validate());
+							
+			assertEquals(validator.validate(),"");
 	}
 	
 	    

@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.drools.guvnor.client.rpc.BuilderResult;
 import org.w3c.dom.Document;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
@@ -29,10 +30,11 @@ public class SpringContextValidator {
 		return content;
 	}
 	
-	public boolean validate(){				
+	public String validate(){				
 		// Create a new factory to create parsers that will
 	    // be aware of namespaces and will validate or
 	    // not according to the flag setting.
+		BuilderResult br = new BuilderResult();
 	    DocumentBuilderFactory dbf =  DocumentBuilderFactory.newInstance();
 	    dbf.setValidating(true);
 	    dbf.setNamespaceAware(true);
@@ -43,19 +45,25 @@ public class SpringContextValidator {
 	           InputStream is = new ByteArrayInputStream(content.getBytes("UTF-8"));
 	           Document doc = builder.parse(is);
 	       } catch (SAXException e) {
-	           System.exit(1);
+	           return e.getMessage();	    	   
+	           //System.exit(1);
 	       } catch (ParserConfigurationException e) {
-	           System.err.println(e);
-	           System.exit(1);
+	    	   return e.getMessage();
+	    	   //System.err.println(e);
+	           //System.exit(1);
 	       } catch (IOException e) {
-	           System.err.println(e);
-	           System.exit(1);
+	    	   return e.getMessage();
+	    	   //System.err.println(e);
+	           //System.exit(1);
 	       }
 	    
 	      
 	       
-		return true;	
+		return "";	
 	}
+	
+	
+	
 	
 	class MyErrorHandler implements ErrorHandler {
 		  public void warning(SAXParseException e) throws SAXException {

@@ -19,9 +19,14 @@ package org.drools.guvnor.server.contenthandler;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
+import org.drools.guvnor.client.ruleeditor.SpringContextValidator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
@@ -31,7 +36,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 /**
  *
  */
-public class SpringContextContentHandler extends PlainTextContentHandler {
+public class SpringContextContentHandler extends PlainTextContentHandler implements IValidating {
     public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)
             throws SerializationException {
         if (item.getContent() != null) {
@@ -53,4 +58,53 @@ public class SpringContextContentHandler extends PlainTextContentHandler {
             throw new RuntimeException(e);     
         }
     }
+
+	public BuilderResult validateAsset(AssetItem asset) {
+		SpringContextValidator contextValidator = new SpringContextValidator();
+		contextValidator.setContent(asset.getContent());
+		String msg = contextValidator.validate();
+		if(msg == ""){
+				return new BuilderResult();		
+		}else{
+			List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
+                        
+			BuilderResultLine result = new BuilderResultLine();
+			result.assetName = asset.getName();
+			result.assetFormat = asset.getFormat();
+			result.uuid = asset.getUUID();
+			result.message = msg;
+			errors.add( result );
+
+            BuilderResult builderResult = new BuilderResult();
+            builderResult.setLines( errors.toArray( new BuilderResultLine[errors.size()] ) );	
+            
+            return builderResult;
+            
+		}
+	}
+
+	public BuilderResult validateAsset(RuleAsset asset) {
+		SpringContextValidator contextValidator = new SpringContextValidator();
+		String content = ((RuleContentText) asset.content).content;
+		contextValidator.setContent(content);
+		String msg = contextValidator.validate();
+		if(msg == ""){
+				return null;		
+		}else{
+			List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
+                        
+			BuilderResultLine result = new BuilderResultLine();
+			result.assetName = asset.metaData.name;
+			result.assetFormat = asset.metaData.format;
+			result.uuid = asset.uuid;
+			result.message = msg;
+			errors.add( result );
+
+            BuilderResult builderResult = new BuilderResult();
+            builderResult.setLines( errors.toArray( new BuilderResultLine[errors.size()] ) );	
+            
+            return builderResult;
+            
+		}
+	}
 }
