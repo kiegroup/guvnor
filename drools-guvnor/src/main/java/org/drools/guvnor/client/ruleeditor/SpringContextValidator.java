@@ -36,8 +36,9 @@ public class SpringContextValidator {
 	    // not according to the flag setting.
 		BuilderResult br = new BuilderResult();
 	    DocumentBuilderFactory dbf =  DocumentBuilderFactory.newInstance();
-	    dbf.setValidating(true);
+	    dbf.setValidating(false);
 	    dbf.setNamespaceAware(true);
+	    
 	    
 	    try {
 	           DocumentBuilder builder = dbf.newDocumentBuilder();
@@ -46,15 +47,10 @@ public class SpringContextValidator {
 	           Document doc = builder.parse(is);
 	       } catch (SAXException e) {
 	           return e.getMessage();	    	   
-	           //System.exit(1);
 	       } catch (ParserConfigurationException e) {
-	    	   return e.getMessage();
-	    	   //System.err.println(e);
-	           //System.exit(1);
+	    	   return e.getMessage();	    	
 	       } catch (IOException e) {
-	    	   return e.getMessage();
-	    	   //System.err.println(e);
-	           //System.exit(1);
+	    	   return e.getMessage();	    	 
 	       }
 	    
 	      

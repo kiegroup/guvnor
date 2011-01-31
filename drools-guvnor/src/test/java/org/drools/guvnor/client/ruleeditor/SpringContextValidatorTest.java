@@ -17,17 +17,17 @@ public class SpringContextValidatorTest {
 	@Test
 	public void testValidator()  {
 			String droolsSpringCtxt = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-										"<beans xmlns=\"http://www.springframework.org/schema/beans\""+
-										"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""+
-									    "xmlns:context=\"http://www.springframework.org/schema/context\""+
-									    "xmlns:drools=\"http://drools.org/schema/drools-spring\""+
-									    "xsi:schemaLocation=\"http://www.springframework.org/schema/beans"+
-									    " http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"+
-									    " http://www.springframework.org/schema/context"+
-									    " http://www.springframework.org/schema/context/spring-context-2.5.xsd"+
-									    " http://drools.org/schema/drools-spring"+
+										"<beans xmlns=\"http://www.springframework.org/schema/beans\"\n"+
+										"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"+
+									    "xmlns:context=\"http://www.springframework.org/schema/context\"\n"+
+									    "xmlns:drools=\"http://drools.org/schema/drools-spring\"\n"+
+									    "xsi:schemaLocation=\"http://www.springframework.org/schema/beans\n"+
+									    " http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n"+
+									    " http://www.springframework.org/schema/context\n"+
+									    " http://www.springframework.org/schema/context/spring-context-2.5.xsd\n"+
+									    " http://drools.org/schema/drools-spring\n"+
 									    " http://drools.org/schema/drools-spring.xsd\""+ 
-									    "default-autowire=\"byName\">" +
+									    " default-autowire=\"byName\">" +
 									    "<drools:connection id=\"connection1\" type=\"local\" />"+
 									    "<drools:execution-node id=\"node1\" connection=\"connection1\" />"+
 									    "<drools:kbase id=\"kbase1\" node=\"node1\">"+
@@ -52,10 +52,13 @@ public class SpringContextValidatorTest {
 								"</beans>";
 
 			
+		
+		/*Validate Common Spring Context*/
 		validator.setContent(springCtxt);
-
-							
-			assertEquals(validator.validate(),"");
+		assertEquals(validator.validate(),"");	
+		/*Validate Drools Spring Integration*/
+		validator.setContent(droolsSpringCtxt);
+		assertEquals(validator.validate(),"");
 	}
 	
 	    
