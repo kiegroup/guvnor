@@ -60,51 +60,45 @@ public class SpringContextContentHandler extends PlainTextContentHandler impleme
     }
 
 	public BuilderResult validateAsset(AssetItem asset) {
-		SpringContextValidator contextValidator = new SpringContextValidator();
-		contextValidator.setContent(asset.getContent());
-		String msg = contextValidator.validate();
-		if(msg == ""){
-				return new BuilderResult();		
-		}else{
-			List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
-                        
-			BuilderResultLine result = new BuilderResultLine();
-			result.assetName = asset.getName();
-			result.assetFormat = asset.getFormat();
-			result.uuid = asset.getUUID();
-			result.message = msg;
-			errors.add( result );
 
-            BuilderResult builderResult = new BuilderResult();
-            builderResult.setLines( errors.toArray( new BuilderResultLine[errors.size()] ) );	
-            
-            return builderResult;
-            
-		}
+		String message = validate(asset.getContent());
+		
+		return createBuilderResult(message, asset.getName(), asset.getFormat(), asset.getUUID());
 	}
 
 	public BuilderResult validateAsset(RuleAsset asset) {
-		SpringContextValidator contextValidator = new SpringContextValidator();
-		String content = ((RuleContentText) asset.content).content;
-		contextValidator.setContent(content);
-		String msg = contextValidator.validate();
-		if(msg == ""){
-				return null;		
+		
+		String message = validate(((RuleContentText) asset.content).content);
+	
+		return createBuilderResult(message, asset.metaData.name, asset.metaData.format, asset.uuid);
+	}
+	
+	private BuilderResult createBuilderResult(String message, String name, String format, String uuid) {
+
+		if(message.isEmpty()){
+			return new BuilderResult();		
 		}else{
 			List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
-                        
+
 			BuilderResultLine result = new BuilderResultLine();
-			result.assetName = asset.metaData.name;
-			result.assetFormat = asset.metaData.format;
-			result.uuid = asset.uuid;
-			result.message = msg;
+			result.assetName = name;
+			result.assetFormat = format;
+			result.uuid = uuid;
+			result.message = message;
 			errors.add( result );
 
-            BuilderResult builderResult = new BuilderResult();
-            builderResult.setLines( errors.toArray( new BuilderResultLine[errors.size()] ) );	
-            
-            return builderResult;
-            
+			BuilderResult builderResult = new BuilderResult();
+			builderResult.setLines( errors.toArray( new BuilderResultLine[errors.size()] ) );	
+
+			return builderResult;
 		}
+	}
+	
+	private String validate(String content) {
+		
+		SpringContextValidator contextValidator = new SpringContextValidator();
+		contextValidator.setContent(content);
+		
+		return contextValidator.validate();
 	}
 }
