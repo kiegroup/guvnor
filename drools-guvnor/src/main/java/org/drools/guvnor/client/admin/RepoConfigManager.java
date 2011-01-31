@@ -115,9 +115,6 @@ public class RepoConfigManager extends Composite {
         saveRepoConfigForm.setMethod( FormPanel.METHOD_POST );
         saveRepoConfigForm.setAction( GWT.getModuleBaseURL() + "backup" );
 
-        //hiddenRepoConfig.setID("repoConfig");
-        //hiddenRepoConfig.setName("repoConfig");
-
         VerticalPanel formHolder = new VerticalPanel();
         HorizontalPanel saveInfoHolder = new HorizontalPanel();
         saveInfoHolder.add( saveButton );
@@ -248,11 +245,13 @@ public class RepoConfigManager extends Composite {
                          constants.UseJndi() );
 
         final CheckBox useJndi = new CheckBox();
-        useJndi.setValue( rdbmsConf.isJndi() );
+        useJndi.setChecked( rdbmsConf.isJndi() );
         useJndi.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                rdbmsConf.setJndi( useJndi.isEnabled() );
-                if ( useJndi.isEnabled() ) {
+                // do not change this to isEnabled..it will always return true.
+                boolean checked = ((CheckBox) w.getSource()).getValue();
+                rdbmsConf.setJndi( checked );
+                if ( checked ) {
                     noJndiInfo.setVisible( false );
                     jndiInfo.setVisible( true );
                 } else {
@@ -274,7 +273,7 @@ public class RepoConfigManager extends Composite {
                     Window.alert( constants.PleaseSelectRdbmsType() );
                     return;
                 }
-                if ( !useJndi.isEnabled() ) {
+                if ( !useJndi.getValue() ) {
                     jndiInfo.setVisible( false );
                 }
                 vPanel2.setVisible( true );
