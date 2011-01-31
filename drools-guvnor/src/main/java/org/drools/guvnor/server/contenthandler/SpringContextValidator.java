@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.ruleeditor;
+package org.drools.guvnor.server.contenthandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

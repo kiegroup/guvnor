@@ -1,14 +1,11 @@
 
 
-package org.drools.guvnor.client.ruleeditor;
+package org.drools.guvnor.server.contenthandler;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
 
-import org.drools.guvnor.client.common.AssetFormats;
-import org.junit.Ignore;
+import org.drools.guvnor.server.contenthandler.SpringContextValidator;
 import org.junit.Test;
 
 public class SpringContextValidatorTest {
