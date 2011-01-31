@@ -2,117 +2,36 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import java.io.InputStream;
+import static org.junit.Assert.*;
 
-import org.drools.guvnor.server.contenthandler.SpringContextValidator;
 import org.junit.Test;
 
 public class SpringContextValidatorTest {
 	
-	SpringContextValidator validator = new SpringContextValidator();
 	
-	@Test
-	public void testValidator()  {
-			String droolsSpringCtxt = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-										"<beans xmlns=\"http://www.springframework.org/schema/beans\"\n"+
-										"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"+
-									    "xmlns:context=\"http://www.springframework.org/schema/context\"\n"+
-									    "xmlns:drools=\"http://drools.org/schema/drools-spring\"\n"+
-									    "xsi:schemaLocation=\"http://www.springframework.org/schema/beans\n"+
-									    " http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n"+
-									    " http://www.springframework.org/schema/context\n"+
-									    " http://www.springframework.org/schema/context/spring-context-2.5.xsd\n"+
-									    " http://drools.org/schema/drools-spring\n"+
-									    " http://drools.org/schema/drools-spring.xsd\""+ 
-									    " default-autowire=\"byName\">" +
-									    "<drools:connection id=\"connection1\" type=\"local\" />"+
-									    "<drools:execution-node id=\"node1\" connection=\"connection1\" />"+
-									    "<drools:kbase id=\"kbase1\" node=\"node1\">"+
-										"<drools:resource source=\"classpath:changesets/change-set-1.xml\" type=\"CHANGE_SET\" />"+
-									        "<drools:model source=\"classpath:model/person.xsd\" />"+
-									    "</drools:kbase>"+
-									    "<drools:kbase id=\"kbase2\" node=\"node1\">"+
-									        "<drools:resource source=\"classpath:changesets/change-set-2.xml\" type=\"CHANGE_SET\" />"+
-									    "</drools:kbase>"+
-							            "<drools:ksession id=\"ksession1\" type=\"stateful\"  kbase=\"kbase1\" node=\"node1\"/>"+
-									    "<drools:ksession id=\"ksession2\" type=\"stateless\" kbase=\"kbase2\" node=\"node1\"/>"+
-									    "</beans>";
-										
-		
-			String springCtxt = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+
-								"<!DOCTYPE beans PUBLIC \"-//SPRING//DTD BEAN//EN\" \"http://www.springframework.org/dtd/spring-beans.dtd\">"+
-								"<beans>"+
-								"<bean id=\"fileEventType\" class=\"com.devdaily.springtest1.bean.FileEventType\">"+
-								"<property name=\"eventType\" value=\"10\"/>"+
-								"<property name=\"description\" value=\"A sample description here\"/>"+
-								"</bean>"+
-								"</beans>";
-			
-			String droolsSpringCtxtErr1 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-									  "<beans xmlns=\"http://www.springframework.org/schema/beans\"\n"+
-			                          "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"+
-			                          "xmlns:context=\"http://www.springframework.org/schema/context\"\n"+
-			                          "xmlns:drools=\"http://drools.org/schema/drools-spring\"\n"+
-			                          "xsi:schemaLocation=\"http://www.springframework.org/schema/beans\n"+
-			                          " http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n"+
-			                          " http://www.springframework.org/schema/context\n"+
-			                          " http://www.springframework.org/schema/context/spring-context-2.5.xsd\n"+
-			                          " http://drools.org/schema/drools-spring\n"+
-			                          " http://drools.org/schema/drools-spring.xsd\""+ 
-			                          " default-autowire=\"byName\">" +
-			                          "<drools:connection id=\"connection1\" type=\"local\" />"+
-			                          "<drools:execution-node id=\"node1\" connection=\"connection1\" />"+
-			                          "<drools:kbase id=\"kbase1\" node=\"node1\">"+
-			                          "<drools:resource source=\"classpath:changesets/change-set-1.xml\" type=\"CHANGE_SET\" />"+
-			                          "<drools:model source=\"classpath:model/person.xsd\" />"+
-			                          "</drools:kbase>"+
-			                          "<drools:kbase id=\"kbase2\" node=\"node1\">"+
-			                          "<drools:resource source=\"classpath:changesets/change-set-2.xml\" type=\"CHANGE_SET\" />"+
-			                          "<drools:kbase>"+
-			                          "<drools:ksession id=\"ksession1\" type=\"stateful\"  kbase=\"kbase1\" node=\"node1\"/>"+
-			                          "<drools:ksession id=\"ksession2\" type=\"stateless\" kbase=\"kbase2\" node=\"node1\"/>"+
-			                          "</beans>";
-
-			String droolsSpringCtxtErr2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-			  "<beans xmlns=\"http://www.springframework.org/schema/beans\"\n"+
-            "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"+
-            "xmlns:context=\"http://www.springframework.org/schema/context\"\n"+
-            "xmlns:drools=\"http://drools.org/schema/drools-spring\"\n"+
-            "xsi:schemaLocation=\"http://www.springframework.org/schema/beans\n"+
-            " http://www.springframework.org/schema/beans/spring-beans-2.5.xsd\n"+
-            " http://www.springframework.org/schema/context\n"+
-            " http://www.springframework.org/schema/context/spring-context-2.5.xsd\n"+
-            " http://drools.org/schema/drools-spring\n"+
-            " http://drools.org/schema/drools-spring.xsd\""+ 
-            " default-autowire=\"byName\">" +
-            "<pepe:abc id=\"connection1\" type=\"local\" />"+
-            "<drools:execution-node id=\"node1\" connection=\"connection1\" />"+
-            "<drools:kbase id=\"kbase1\" node=\"node1\">"+
-            "<drools:resource source=\"classpath:changesets/change-set-1.xml\" type=\"CHANGE_SET\" />"+
-            "<drools:model source=\"classpath:model/person.xsd\" />"+
-            "</drools:kbase>"+
-            "<drools:kbase id=\"kbase2\" node=\"node1\">"+
-            "<drools:resource source=\"classpath:changesets/change-set-2.xml\" type=\"CHANGE_SET\" />"+
-            "<drools:kbase>"+
-            "<drools:ksession id=\"ksession1\" type=\"stateful\"  kbase=\"kbase1\" node=\"node1\"/>"+
-            "<drools:ksession id=\"ksession2\" type=\"stateless\" kbase=\"kbase2\" node=\"node1\"/>"+
-            "</beans>";
-			
-		
-		/*Validate Common Spring Context*/
-		validator.setContent(springCtxt);
-		assertEquals(validator.validate(),"");	
-		/*Validate Drools Spring Integration*/
-		validator.setContent(droolsSpringCtxt);
-		assertEquals(validator.validate(),"");
-		/*Validate Drools Spring Integration Sixntax Error*/
-		validator.setContent(droolsSpringCtxtErr1);
-		assertNotSame(validator.validate(),"");
-		/*Validate Drools Spring Integration Semantic Error*/
-		validator.setContent(droolsSpringCtxtErr2);
-		assertNotSame(validator.validate(),"");
-	}
-	
-	    
+        @Test
+        public void testValidContext(){
+            SpringContextValidator validator = new SpringContextValidator();
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("org/drools/guvnor/server/contenthandler/valid-spring-context.xml");
+            validator.setContent(resourceAsStream);
+            assertEquals("",validator.validate());
+        }
+        
+        @Test
+        public void testInvalidContext(){
+            SpringContextValidator validator = new SpringContextValidator();
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("org/drools/guvnor/server/contenthandler/invalid-spring-context.xml");
+            validator.setContent(resourceAsStream);
+            assertFalse(validator.validate().isEmpty());
+        }
+        
+        @Test
+        public void testMalformedContext(){
+            SpringContextValidator validator = new SpringContextValidator();
+            InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("org/drools/guvnor/server/contenthandler/malformed-spring-context.xml");
+            validator.setContent(resourceAsStream);
+            assertFalse(validator.validate().isEmpty());
+        }
+        
 }

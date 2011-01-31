@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.server;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
 
 import java.io.ByteArrayInputStream;
@@ -110,7 +108,6 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
-import org.drools.guvnor.server.files.AssetZipper;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.security.AdminType;
@@ -168,6 +165,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
+import java.io.BufferedInputStream;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 
 /**
@@ -625,26 +623,16 @@ public class ServiceImplementation implements RepositoryService {
         } else if ( format.equals( AssetFormats.ENUMERATION ) ) {
 
         } else if ( format.equals( AssetFormats.SPRING_CONTEXT)){
-            String content = "";
-            content += "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-            content += "<beans xmlns=\"http://www.springframework.org/schema/beans\" ";
-            content += "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ";
-            content += "xmlns:drools=\"http://drools.org/schema/drools-spring\" ";
-            content += "xsi:schemaLocation=\"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd http://drools.org/schema/drools-spring org/drools/container/spring/drools-spring-1.2.0.xsd http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd\">";
-       
-            content += "\n\n\n";
-            
-            content += "\t<drools:grid-node id=\"node1\" />\n";
-            
-            content += "\t<drools:kbase id=\"kbase1\" node=\"node1\">\n";
-            
-            content += "\t<drools:ksession id=\"ksession1\" type=\"stateful\" kbase=\"kbase1\" node=\"node1\"/>";
-            
-            content += "\n\n\n";
-            
-            content += "</beans>";
-       
-            asset.updateContent(content);
+            try {
+                ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+                BufferedInputStream inContent = new BufferedInputStream(this.getClass().getClassLoader().getResourceAsStream("spring-context-sample.xml"));
+                IOUtils.copy(inContent, outContent);
+           
+                asset.updateContent(outContent.toString());
+            } catch (IOException ex) {
+                log.error("Error reading spring-context-sample.xml", ex);
+                throw new IllegalArgumentException("Error reading spring-context-sample.xml");
+            }
         }
     }
 

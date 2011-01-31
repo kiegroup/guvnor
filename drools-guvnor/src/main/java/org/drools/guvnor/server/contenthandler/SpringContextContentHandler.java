@@ -96,7 +96,7 @@ public class SpringContextContentHandler extends PlainTextContentHandler impleme
 	private String validate(String content) {
 		
 		SpringContextValidator contextValidator = new SpringContextValidator();
-		contextValidator.setContent(content);
+		contextValidator.setContentAsString(content);
 		
 		return contextValidator.validate();
 	}
