@@ -3850,6 +3850,7 @@ public class ServiceImplementation
         if ( request.getMode().equals( ExplorerNodeConfig.INCOMING_ID ) ) {
             InboxIncomingPageRow tr = new InboxIncomingPageRow();
             tr.setUuid( ie.assetUUID );
+            tr.setFormat( AssetFormats.BUSINESS_RULE );
             tr.setNote( ie.note );
             tr.setTimestamp( new Date( ie.timestamp ) );
             tr.setFrom( ie.from );

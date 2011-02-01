@@ -19,9 +19,11 @@ package org.drools.guvnor.client.rulelist;
 import java.util.Date;
 
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.ruleeditor.EditorLauncher;
 import org.drools.guvnor.client.table.ColumnPicker;
 import org.drools.guvnor.client.table.SortableHeader;
 import org.drools.guvnor.client.table.SortableHeaderGroup;
@@ -69,6 +71,19 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> {
     @Override
     protected void addAncillaryColumns(ColumnPicker<InboxPageRow> columnPicker,
                                        SortableHeaderGroup<InboxPageRow> sortableHeaderGroup) {
+
+        Column<InboxPageRow, RuleFormatImageResource> formatColumn = new Column<InboxPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
+
+            public RuleFormatImageResource getValue(InboxPageRow row) {
+                return EditorLauncher.getAssetFormatIcon( row.getFormat() );
+            }
+        };
+        columnPicker.addColumn( formatColumn,
+                                new SortableHeader<InboxPageRow, RuleFormatImageResource>(
+                                                                                           sortableHeaderGroup,
+                                                                                           constants.Format(),
+                                                                                           formatColumn ),
+                                true );
 
         TextColumn<InboxPageRow> noteColumn = new TextColumn<InboxPageRow>() {
             public String getValue(InboxPageRow row) {
