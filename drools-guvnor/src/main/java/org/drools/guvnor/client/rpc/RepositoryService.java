@@ -59,6 +59,12 @@ public interface RepositoryService
                                                 String tableConfig) throws SerializationException;
 
     /**
+     * Return a list of Assets by status
+     * @param The name of the status.
+     */
+    public PageResponse<StatePageRow> loadRuleListForState(StatePageRequest request) throws SerializationException;
+    
+    /**
      * This will return a TableConfig of header names.
      * @param listName The name of the list that we are going to render.
      */

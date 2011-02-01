@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.rulelist;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,6 +44,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
@@ -69,6 +71,7 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
     // TODO use (C)DI
     protected RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
 
+    protected Set<Command>           unloadListenerSet = new HashSet<Command>();
     protected MultiSelectionModel<T> selectionModel;
     protected final OpenItemCommand  editEvent;
     protected AsyncDataProvider<T>   dataProvider;
@@ -111,6 +114,23 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
     }
 
     /**
+     * Register an UnloadListener
+     * 
+     * @param unloadListener
+     */
+    public void addUnloadListener(Command unloadListener) {
+        unloadListenerSet.add( unloadListener );
+    }
+
+    @Override
+    protected void onUnload() {
+        super.onUnload();
+        for ( Command unloadListener : unloadListenerSet ) {
+            unloadListener.execute();
+        }
+    }
+
+    /**
      * Simple constructor that associates an OpenItemCommand with the "Open"
      * column and other buttons.
      * 
@@ -148,7 +168,7 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
      */
     protected void addAncillaryColumns(ColumnPicker<T> columnPicker,
                                                 SortableHeaderGroup<T> sortableHeaderGroup) {
-        
+
         // Add "Open" button column
         Column<T, String> openColumn = new Column<T, String>( new ButtonCell() ) {
             public String getValue(T row) {
@@ -164,7 +184,8 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
         } );
         columnPicker.addColumn( openColumn,
                                 new TextHeader( constants.Open() ),
-                                true );    }
+                                true );
+    }
 
     /**
      * Open selected item(s)
@@ -239,6 +260,29 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
         cellTable.setWidth( "100%" );
 
         pager = new SimplePager() {
+
+            // Override so the last page is shown with a number of rows less
+            // than the pageSize rather than always showing the pageSize number
+            // of rows and possibly repeating rows on the last and penultimate
+            // page
+            public void setPageStart(int index) {
+                if ( getDisplay() != null ) {
+                    Range range = getDisplay().getVisibleRange();
+                    int pageSize = range.getLength();
+                    if ( isRangeLimited()
+                         && getDisplay().isRowCountExact() ) {
+                        pageSize = Math.min( pageSize,
+                                             getDisplay().getRowCount()
+                                                     - index );
+                    }
+                    index = Math.max( 0,
+                                      index );
+                    if ( index != range.getStart() ) {
+                        getDisplay().setVisibleRange( index,
+                                                      pageSize );
+                    }
+                }
+            }
 
             // Override to display "0 of 0" when there are no records (otherwise
             // you get "1-1 of 0") and "1 of 1" when there is only one record

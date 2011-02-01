@@ -57,6 +57,7 @@ import org.drools.guvnor.client.rulelist.AssetPagedTable;
 import org.drools.guvnor.client.rulelist.InboxPagedTable;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.rulelist.QueryWidget;
+import org.drools.guvnor.client.rulelist.StatePagedTable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
@@ -439,31 +440,19 @@ public class TabOpener {
                           String widgetID) {
         if ( !explorerViewCenterPanel.showIfOpen( widgetID ) ) {
             final String stateName = widgetID.substring( widgetID.indexOf( "-" ) + 1 );
-            final AssetItemGrid grid = new AssetItemGrid( createEditEvent(),
-                                                          AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                          new AssetItemGridDataLoader() {
-                                                              public void loadData(int skip,
-                                                                                   int numberOfRows,
-                                                                                   GenericCallback<TableDataResult> cb) {
-                                                                  RepositoryServiceFactory.getService().loadRuleListForState( stateName,
-                                                                                                                              skip,
-                                                                                                                              numberOfRows,
-                                                                                                                              AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                                                                                              cb );
+            final StatePagedTable table = new StatePagedTable( stateName,
+                                                               createEditEvent() );
 
-                                                              }
-                                                          },
-                                                          null );
             final ServerPushNotification push = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
                     if ( response.messageType.equals( "statusChange" )
                          && (response.message).equals( stateName ) ) {
-                        grid.refreshGrid();
+                        table.refresh();
                     }
                 }
             };
             PushClient.instance().subscribe( push );
-            grid.addUnloadListener( new Command() {
+            table.addUnloadListener( new Command() {
                 public void execute() {
                     PushClient.instance().unsubscribe( push );
                 }
@@ -471,7 +460,7 @@ public class TabOpener {
 
             explorerViewCenterPanel.addTab( constants.Status()
                                                     + title,
-                                            grid,
+                                                    table,
                                             widgetID );
         }
     }

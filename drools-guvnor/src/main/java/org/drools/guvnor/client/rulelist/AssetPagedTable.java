@@ -17,9 +17,7 @@
 package org.drools.guvnor.client.rulelist;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
@@ -36,7 +34,6 @@ import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 
@@ -47,10 +44,7 @@ import com.google.gwt.view.client.HasData;
  */
 public class AssetPagedTable extends AbstractPagedTable<AssetPageRow> {
 
-    // Asset table specifics
-    private Set<Command>     unloadListenerSet = new HashSet<Command>();
-
-    private static final int PAGE_SIZE         = 20;
+    private static final int PAGE_SIZE = 20;
 
     /**
      * Construct a table to display AssetItems
@@ -109,15 +103,6 @@ public class AssetPagedTable extends AbstractPagedTable<AssetPageRow> {
 
     }
 
-    /**
-     * Register an UnloadListener
-     * 
-     * @param unloadListener
-     */
-    public void addUnloadListener(Command unloadListener) {
-        unloadListenerSet.add( unloadListener );
-    }
-
     @Override
     protected void addAncillaryColumns(ColumnPicker<AssetPageRow> columnPicker,
                                        SortableHeaderGroup<AssetPageRow> sortableHeaderGroup) {
@@ -137,7 +122,8 @@ public class AssetPagedTable extends AbstractPagedTable<AssetPageRow> {
 
         TitledTextColumn<AssetPageRow> titleColumn = new TitledTextColumn<AssetPageRow>() {
             public TitledText getValue(AssetPageRow row) {
-                TitledText tt = new TitledText(row.getName(), row.getAbbreviatedDescription());
+                TitledText tt = new TitledText( row.getName(),
+                                                row.getAbbreviatedDescription() );
                 return tt;
             }
         };
@@ -253,14 +239,6 @@ public class AssetPagedTable extends AbstractPagedTable<AssetPageRow> {
         // Include the "Open" button column
         super.addAncillaryColumns( columnPicker,
                                    sortableHeaderGroup );
-    }
-
-    @Override
-    protected void onUnload() {
-        super.onUnload();
-        for ( Command unloadListener : unloadListenerSet ) {
-            unloadListener.execute();
-        }
     }
 
 }

@@ -34,6 +34,7 @@ public interface RepositoryServiceAsync {
     public void loadChildCategories(java.lang.String p0, AsyncCallback<java.lang.String[]> cb);
     public void loadRuleListForCategories(java.lang.String p0, int p1, int p2, java.lang.String p3, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadRuleListForState(java.lang.String p0, int p1, int p2, java.lang.String p3, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
+    public void loadRuleListForState(org.drools.guvnor.client.rpc.StatePageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<StatePageRow>> cb);
     public void loadTableConfig(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableConfig> cb);
     public void createCategory(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback<java.lang.Boolean> cb);
     public void createNewRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, AsyncCallback<java.lang.String> cb);
