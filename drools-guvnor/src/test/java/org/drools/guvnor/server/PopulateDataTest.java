@@ -79,7 +79,7 @@ public class PopulateDataTest extends GuvnorTestBase {
 
         createPermissions( serv );
 
-        PackageItem pkg = serv.getRepository().loadPackage( "com.billasurf.manufacturing.plant" );
+        PackageItem pkg = serv.getRulesRepository().loadPackage( "com.billasurf.manufacturing.plant" );
 
         serv.buildPackage( pkg.getUUID(),
                            true );
@@ -105,7 +105,7 @@ public class PopulateDataTest extends GuvnorTestBase {
     }
 
     private void createModel(ServiceImplementation serv) throws Exception {
-        RulesRepository repo = serv.getRepository();
+        RulesRepository repo = serv.getRulesRepository();
         String uuid = serv.createNewRule( "DomainModel",
                                           "This is the business object model",
                                           null,

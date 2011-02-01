@@ -52,7 +52,7 @@ public class VerificationServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testVerifierCauseTrace() throws Exception {
-        PackageItem pkg = serviceImplementation.getRepository().createPackage( "testVerifierCauseTrace",
+        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testVerifierCauseTrace",
                                                                           "" );
         AssetItem asset = pkg.addAsset( "SomeDRL",
                                         "" );
@@ -70,7 +70,7 @@ public class VerificationServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testVerifier() throws Exception {
-        PackageItem pkg = serviceImplementation.getRepository().createPackage( "testVerifier",
+        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testVerifier",
                                                                           "" );
         AssetItem asset = pkg.addAsset( "SomeDRL",
                                         "" );

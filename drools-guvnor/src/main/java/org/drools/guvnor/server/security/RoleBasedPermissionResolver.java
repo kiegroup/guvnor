@@ -112,7 +112,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
             String targetUUID = ((PackageUUIDType) requestedObject).getUUID();
             try {
                 ServiceImplementation serviceImplementation = (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
-                targetName = serviceImplementation.getRepository().loadPackageByUUID( targetUUID ).getName();
+                targetName = serviceImplementation.getRulesRepository().loadPackageByUUID( targetUUID ).getName();
             } catch ( RulesRepositoryException e ) {
                 return false;
             }

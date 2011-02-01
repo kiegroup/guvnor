@@ -66,7 +66,7 @@ public class GuvnorTestBase {
         Lifecycle.beginCall();
 
         ServiceImplementation serviceImplementation = new ServiceImplementation();
-        serviceImplementation.setRepository( getRulesRepository() );
+        serviceImplementation.setRulesRepository( getRulesRepository() );
 
         Contexts.getSessionContext().set( "repository",
                                           repository );
