@@ -279,7 +279,7 @@ public class FeedServletTest extends GuvnorTestBase {
                                           manager );
 
         ServiceImplementation impl = new ServiceImplementation();
-        impl.repository = repo;
+        impl.setRepository( repo );
         impl.addToDiscussionForAsset( asset.getUUID(),
                                       "This is a comment" );
         impl.addToDiscussionForAsset( asset.getUUID(),

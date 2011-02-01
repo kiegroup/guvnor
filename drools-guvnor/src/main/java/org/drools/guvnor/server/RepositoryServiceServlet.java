@@ -58,7 +58,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
         //this is only for out of container hosted mode in GWT
         synchronized ( RepositoryServiceServlet.class ) {
             ServiceImplementation serviceImplementation = new ServiceImplementation();
-            serviceImplementation.repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
+            serviceImplementation.setRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
 
             if ( !testListenerInit ) {
                 MailboxService.getInstance().init( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );

@@ -43,13 +43,13 @@ public class BuiltInSelectorTest extends GuvnorTestBase {
     @Test
     public void testBuiltInSelector() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
-        impl.repository.loadDefaultPackage();
-        impl.repository.createPackage( "testBuiltInSelectorPackage",
+        impl.getRepository().loadDefaultPackage();
+        impl.getRepository().createPackage( "testBuiltInSelectorPackage",
                                        "woot" );
-        impl.repository.createState( "Dev" );
-        impl.repository.createState( "QA" );
+        impl.getRepository().createState( "Dev" );
+        impl.getRepository().createState( "QA" );
 
-        CategoryItem cat = impl.repository.loadCategory( "/" );
+        CategoryItem cat = impl.getRepository().loadCategory( "/" );
         cat.addCategory( "testBuiltInSelectorCat1",
                          "yeah" );
         cat.addCategory( "testBuiltInSelectorCat2",
@@ -60,28 +60,28 @@ public class BuiltInSelectorTest extends GuvnorTestBase {
                                            "testBuiltInSelectorCat1",
                                            "testBuiltInSelectorPackage",
                                            "txt" );
-        AssetItem item1 = impl.repository.loadAssetByUUID( uuid1 );
+        AssetItem item1 = impl.getRepository().loadAssetByUUID( uuid1 );
         item1.updateState( "Dev" );
         String uuid2 = impl.createNewRule( "test AddRule2",
                                            "a description",
                                            "testBuiltInSelectorCat1",
                                            "testBuiltInSelectorPackage",
                                            "txt" );
-        AssetItem item2 = impl.repository.loadAssetByUUID( uuid2 );
+        AssetItem item2 = impl.getRepository().loadAssetByUUID( uuid2 );
         item2.updateState( "QA" );
         String uuid3 = impl.createNewRule( "test AddRule3",
                                            "a description",
                                            "testBuiltInSelectorCat2",
                                            "testBuiltInSelectorPackage",
                                            "txt" );
-        AssetItem item3 = impl.repository.loadAssetByUUID( uuid3 );
+        AssetItem item3 = impl.getRepository().loadAssetByUUID( uuid3 );
         item3.updateState( "Dev" );
         String uuid4 = impl.createNewRule( "test AddRule4",
                                            "a description",
                                            "testBuiltInSelectorCat2",
                                            "testBuiltInSelectorPackage",
                                            "txt" );
-        AssetItem item4 = impl.repository.loadAssetByUUID( uuid4 );
+        AssetItem item4 = impl.getRepository().loadAssetByUUID( uuid4 );
         item4.updateState( "QA" );
 
         //Select asset using "category =" 

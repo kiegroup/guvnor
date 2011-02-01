@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.server;
 
+import java.io.Serializable;
+
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.PackageNameType;
@@ -25,8 +27,12 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
-
-public class ServiceSecurity {
+/**
+ * Handles security checks.
+ * @author Jari Timonen
+ *
+ */
+public class ServiceSecurity{
 
     protected void checkSecurityIsPackageNameTypeAdmin(String packageName) {
         if ( Contexts.isSessionContextActive() ) {
