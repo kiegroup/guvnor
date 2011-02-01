@@ -207,7 +207,10 @@ public class ServiceImplementation implements RepositoryService {
      * This is used for pushing messages back to the client.
      */
     private static Backchannel          backchannel                       = new Backchannel();
-
+    private ServiceSecurity serviceSecurity = new ServiceSecurity();
+    public ServiceImplementation() {
+        // TODO Auto-generated constructor stub
+    }
     public RulesRepository getRulesRepository() {
         return this.repository;
     }
@@ -233,7 +236,7 @@ public class ServiceImplementation implements RepositoryService {
 
     @WebRemote
     public Boolean createCategory(String path, String name, String description) {
-        checkSecurityIsAdmin();
+        serviceSecurity.checkSecurityIsAdmin();
 
         log.info( "USER:" + getCurrentUserName() + " CREATING cateogory: [" + name + "] in path [" + path + "]" );
 
@@ -254,9 +257,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String createNewRule(String ruleName, String description, String initialCategory, String initialPackage, String format) throws SerializationException {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( initialPackage ), RoleTypes.PACKAGE_DEVELOPER );
-        }
+        serviceSecurity.checkSecurityIsPackageDeveloper( initialPackage );
 
         log.info( "USER:" + getCurrentUserName() + " CREATING new asset name [" + ruleName + "] in package [" + initialPackage + "]" );
 
@@ -282,6 +283,7 @@ public class ServiceImplementation implements RepositoryService {
         }
 
     }
+   
 
     /**
      * This will create a new asset which refers to an existing asset
@@ -289,9 +291,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String createNewImportedRule(String sharedAssetName, String initialPackage) throws SerializationException {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( initialPackage ), RoleTypes.PACKAGE_DEVELOPER );
-        }
+        serviceSecurity.checkSecurityIsPackageDeveloperForName( initialPackage );
 
         log.info( "USER:" + repository.getSession().getUserID() + " CREATING shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
 
@@ -918,7 +918,7 @@ public class ServiceImplementation implements RepositoryService {
 
     @WebRemote
     public String createPackage(String name, String description, String[] workspace) throws RulesRepositoryException {
-        checkSecurityIsAdmin();
+        serviceSecurity.checkSecurityIsAdmin();
 
         log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
         PackageItem item = repository.createPackage( name, description, workspace );
@@ -933,7 +933,7 @@ public class ServiceImplementation implements RepositoryService {
 
     @WebRemote
     public String createSubPackage(String name, String description, String parentNode) throws SerializationException {
-        checkSecurityIsAdmin();
+        serviceSecurity.checkSecurityIsAdmin();
 
         log.info( "USER: " + getCurrentUserName() + " CREATING subPackage [" + name + "], parent [" + parentNode + "]" );
         PackageItem item = repository.createSubPackage( name, description, parentNode );
@@ -947,7 +947,7 @@ public class ServiceImplementation implements RepositoryService {
         // the uuid passed in is the uuid of that deployment bundle, not the
         // package uudi.
         // we have to figure out the package name.
-        checkSecurityNameTypePackageReadOnly( item );
+        serviceSecurity.checkSecurityNameTypePackageReadOnly( item );
 
         PackageConfigData data = createPackageConfigData( item );
         if ( data.isSnapshot ) {
@@ -1344,7 +1344,7 @@ public class ServiceImplementation implements RepositoryService {
 
             addToDiscussionForAsset( asset.getUUID(), oldState + " -> " + newState );
         } else {
-            checkSecurityIsPackageDeveloper( uuid );
+            serviceSecurity.checkSecurityIsPackageDeveloper( uuid );
 
             PackageItem pkg = repository.loadPackageByUUID( uuid );
             log.info( "USER:" + getCurrentUserName() + " CHANGING Package STATUS. Asset name, uuid: " + "[" + pkg.getName() + ", " + pkg.getUUID() + "]" + " to [" + newState + "]" );
@@ -1356,9 +1356,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void changeAssetPackage(String uuid, String newPackage, String comment) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( newPackage ), RoleTypes.PACKAGE_DEVELOPER );
-        }
+        serviceSecurity.checkSecurityIsPackageDeveloper( newPackage );
 
         log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]" );
         repository.moveRuleItemPackage( newPackage, uuid, comment );
@@ -1378,9 +1376,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String copyAsset(String assetUUID, String newPackage, String newName) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( newPackage ), RoleTypes.PACKAGE_DEVELOPER );
-        }
+        serviceSecurity.checkSecurityIsPackageDeveloper( newPackage );
 
         log.info( "USER:" + getCurrentUserName() + " COPYING asset: [" + assetUUID + "] to [" + newName + "] in PACKAGE [" + newPackage + "]" );
         return repository.copyAsset( assetUUID, newPackage, newName );
@@ -1389,9 +1385,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public SnapshotInfo[] listSnapshots(String packageName) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( packageName ), RoleTypes.PACKAGE_DEVELOPER );
-        }
+        serviceSecurity.checkSecurityIsPackageDeveloper( packageName );
 
         String[] snaps = repository.listPackageSnapshots( packageName );
         SnapshotInfo[] res = new SnapshotInfo[snaps.length];
@@ -1409,7 +1403,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void createPackageSnapshot(String packageName, String snapshotName, boolean replaceExisting, String comment) {
-        checkSecurityIsPackageNameTypeAdmin( packageName );
+        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
 
         log.info( "USER:" + getCurrentUserName() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
 
@@ -1427,7 +1421,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void copyOrRemoveSnapshot(String packageName, String snapshotName, boolean delete, String newSnapshotName) throws SerializationException {
-        checkSecurityIsPackageNameTypeAdmin( packageName );
+        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
 
         if ( delete ) {
             log.info( "USER:" + getCurrentUserName() + " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
@@ -1460,7 +1454,7 @@ public class ServiceImplementation implements RepositoryService {
 
     @WebRemote
     public void clearRulesRepository() {
-        checkSecurityIsAdmin();
+        serviceSecurity.checkSecurityIsAdmin();
 
         RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator( repository.getSession() );
         admin.clearRulesRepository();
@@ -1469,7 +1463,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
-        checkSecurityIsPackageReadOnly( packageName );
+        serviceSecurity.checkSecurityIsPackageReadOnly( packageName );
 
         SuggestionCompletionEngine result = null;
         ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
@@ -1507,7 +1501,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public BuilderResult buildPackage(String packageUUID, boolean force, String buildMode, String statusOperator, String statusDescriptionValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String customSelectorName) throws SerializationException {
-        checkSecurityIsPackageDeveloper( packageUUID );
+        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
         PackageItem item = repository.loadPackageByUUID( packageUUID );
         try {
             return buildPackage( item, force, buildMode, statusOperator, statusDescriptionValue, enableStatusSelector, categoryOperator, category, enableCategorySelector, customSelectorName );
@@ -1588,7 +1582,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String buildPackageSource(String packageUUID) throws SerializationException {
-        checkSecurityIsPackageDeveloper( packageUUID );
+        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
 
         PackageItem item = repository.loadPackageByUUID( packageUUID );
         ContentPackageAssembler asm = new ContentPackageAssembler( item, false );
@@ -1598,7 +1592,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String buildAssetSource(RuleAsset asset) throws SerializationException {
-        checkSecurityIsPackageDeveloper( asset );
+        serviceSecurity.checkSecurityIsPackageDeveloper( asset );
 
         ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
         log.info( "****** ContentHandler is: " + handler.getClass().getName() );
@@ -1639,7 +1633,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public BuilderResult buildAsset(RuleAsset asset) throws SerializationException {
-        checkSecurityIsPackageDeveloper( asset );
+        serviceSecurity.checkSecurityIsPackageDeveloper( asset );
         BuilderResult result = new BuilderResult();
 
         try {
@@ -1693,7 +1687,7 @@ public class ServiceImplementation implements RepositoryService {
 
     @WebRemote
     public void copyPackage(String sourcePackageName, String destPackageName) throws SerializationException {
-        checkSecurityIsAdmin();
+        serviceSecurity.checkSecurityIsAdmin();
 
         try {
             log.info( "USER:" + getCurrentUserName() + " COPYING package [" + sourcePackageName + "] to  package [" + destPackageName + "]" );
@@ -1724,7 +1718,7 @@ public class ServiceImplementation implements RepositoryService {
     @Restrict("#{identity.loggedIn}")
     public String renameAsset(String uuid, String newName) {
         AssetItem item = repository.loadAssetByUUID( uuid );
-        checkSecurityIsPackageDeveloper( item );
+        serviceSecurity.checkSecurityIsPackageDeveloper( item );
 
         return repository.renameAsset( uuid, newName );
     }
@@ -1743,7 +1737,7 @@ public class ServiceImplementation implements RepositoryService {
         try {
             AssetItem item = repository.loadAssetByUUID( uuid );
 
-            checkSecurityIsPackageDeveloper( item );
+            serviceSecurity.checkSecurityIsPackageDeveloper( item );
 
             if ( item.getPackage().isArchived() ) {
                 throw new RulesRepositoryException( "The package [" + item.getPackageName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first." );
@@ -1791,7 +1785,7 @@ public class ServiceImplementation implements RepositoryService {
     public void removeAsset(String uuid) {
         try {
             AssetItem item = repository.loadAssetByUUID( uuid );
-            checkSecurityIsPackageDeveloper( item );
+            serviceSecurity.checkSecurityIsPackageDeveloper( item );
 
             item.remove();
             repository.save();
@@ -1812,7 +1806,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void removePackage(String uuid) {
-        checkSecurityIsPackageAdmin( uuid );
+        serviceSecurity.checkSecurityIsPackageAdmin( uuid );
 
         try {
             PackageItem item = repository.loadPackageByUUID( uuid );
@@ -1828,7 +1822,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String renamePackage(String uuid, String newName) {
-        checkSecurityIsPackageAdmin( uuid );
+        serviceSecurity.checkSecurityIsPackageAdmin( uuid );
         log.info( "USER:" + getCurrentUserName() + " RENAMING package [UUID: " + uuid + "] to package [" + newName + "]" );
 
         return repository.renamePackage( uuid, newName );
@@ -1837,7 +1831,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public byte[] exportPackages(String packageName) {
-        checkSecurityIsPackageNameTypeAdmin( packageName );
+        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
         log.info( "USER:" + getCurrentUserName() + " export package [name: " + packageName + "] " );
 
         byte[] result = null;
@@ -1864,7 +1858,7 @@ public class ServiceImplementation implements RepositoryService {
 
     @WebRemote
     public void rebuildSnapshots() throws SerializationException {
-        checkSecurityIsAdmin();
+        serviceSecurity.checkSecurityIsAdmin();
 
         Iterator pkit = repository.listPackages();
         while ( pkit.hasNext() ) {
@@ -1890,7 +1884,7 @@ public class ServiceImplementation implements RepositoryService {
     public String[] listRulesInPackage(String packageName) throws SerializationException {
 
         // check security
-        checkSecurityIsPackageReadOnly( packageName );
+        serviceSecurity.checkSecurityIsPackageReadOnly( packageName );
 
         // load package
         PackageItem item = repository.loadPackage( packageName );
@@ -1940,9 +1934,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public SingleScenarioResult runScenario(String packageName, Scenario scenario) throws SerializationException {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( packageName ), RoleTypes.PACKAGE_DEVELOPER );
-        }
+        serviceSecurity.checkSecurityIsPackageDeveloper( packageName );
 
         return runScenario( packageName, scenario, null );
 
@@ -2089,7 +2081,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException {
-        checkSecurityIsPackageDeveloper( packageUUID );
+        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
         PackageItem item = repository.loadPackageByUUID( packageUUID );
         return runScenariosInPackage( item );
     }
@@ -2228,14 +2220,14 @@ public class ServiceImplementation implements RepositoryService {
 
     @WebRemote
     public LogEntry[] showLog() {
-        checkSecurityIsAdmin();
+        serviceSecurity.checkSecurityIsAdmin();
 
         return LoggingHelper.getMessages();
     }
 
     @WebRemote
     public void cleanLog() {
-        checkSecurityIsAdmin();
+        serviceSecurity.checkSecurityIsAdmin();
 
         LoggingHelper.cleanLog();
     }
@@ -2335,7 +2327,7 @@ public class ServiceImplementation implements RepositoryService {
 
     @Restrict("#{identity.loggedIn}")
     public Map<String, List<String>> listUserPermissions() {
-        checkSecurityIsAdmin();
+        serviceSecurity.checkSecurityIsAdmin();
 
         PermissionManager pm = new PermissionManager( repository );
         return pm.listUsers();
@@ -2343,7 +2335,7 @@ public class ServiceImplementation implements RepositoryService {
 
     @Restrict("#{identity.loggedIn}")
     public Map<String, List<String>> retrieveUserPermissions(String userName) {
-        checkSecurityIsAdmin();
+        serviceSecurity.checkSecurityIsAdmin();
 
         PermissionManager pm = new PermissionManager( repository );
         return pm.retrieveUserPermissions( userName );
@@ -2351,7 +2343,7 @@ public class ServiceImplementation implements RepositoryService {
 
     @Restrict("#{identity.loggedIn}")
     public void updateUserPermissions(String userName, Map<String, List<String>> perms) {
-        checkSecurityIsAdmin();
+        serviceSecurity.checkSecurityIsAdmin();
 
         PermissionManager pm = new PermissionManager( repository );
 
@@ -2362,7 +2354,7 @@ public class ServiceImplementation implements RepositoryService {
 
     @Restrict("#{identity.loggedIn}")
     public String[] listAvailablePermissionTypes() {
-        checkSecurityIsAdmin();
+        serviceSecurity.checkSecurityIsAdmin();
 
         return RoleTypes.listAvailableTypes();
     }
@@ -2658,53 +2650,7 @@ public class ServiceImplementation implements RepositoryService {
         return hm;
     }
 
-    private void checkSecurityIsPackageNameTypeAdmin(String packageName) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( packageName ), RoleTypes.PACKAGE_ADMIN );
-        }
-    }
-
-    private void checkSecurityIsPackageDeveloper(String packageUUID) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( packageUUID ), RoleTypes.PACKAGE_DEVELOPER );
-        }
-    }
-
-    private void checkSecurityIsPackageDeveloper(RuleAsset asset) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ), RoleTypes.PACKAGE_DEVELOPER );
-        }
-    }
-
-    private void checkSecurityIsPackageReadOnly(String packageName) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( packageName ), RoleTypes.PACKAGE_READONLY );
-        }
-    }
-
-    private void checkSecurityIsPackageDeveloper(AssetItem item) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( item.getPackage().getUUID() ), RoleTypes.PACKAGE_DEVELOPER );
-        }
-    }
-
-    private void checkSecurityIsPackageAdmin(String uuid) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( uuid ), RoleTypes.PACKAGE_ADMIN );
-        }
-    }
-
-    private void checkSecurityIsAdmin() {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new AdminType(), RoleTypes.ADMIN );
-        }
-    }
-
-    private void checkSecurityNameTypePackageReadOnly(PackageItem item) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( item.getName() ), RoleTypes.PACKAGE_READONLY );
-        }
-    }
+    
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
