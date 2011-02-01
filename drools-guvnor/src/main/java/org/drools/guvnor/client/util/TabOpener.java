@@ -54,6 +54,7 @@ import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.AssetPagedTable;
+import org.drools.guvnor.client.rulelist.CategoryPagedTable;
 import org.drools.guvnor.client.rulelist.InboxPagedTable;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.rulelist.QueryWidget;
@@ -471,35 +472,24 @@ public class TabOpener {
     public void openCategory(String title,
                              String widgetID) {
         if ( !explorerViewCenterPanel.showIfOpen( widgetID ) ) {
-            final String categoryName = widgetID.substring( widgetID.indexOf( "-" ) + 1 );
-            final AssetItemGrid grid = new AssetItemGrid( createEditEvent(),
-                                                          AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                          new AssetItemGridDataLoader() {
-                                                              public void loadData(int skip,
-                                                                                   int numberOfRows,
-                                                                                   GenericCallback<TableDataResult> cb) {
-                                                                  RepositoryServiceFactory.getService().loadRuleListForCategories( categoryName,
-                                                                                                                                   skip,
-                                                                                                                                   numberOfRows,
-                                                                                                                                   AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                                                                                                   cb );
-                                                              }
-                                                          },
-                                                          GWT.getModuleBaseURL()
-                                                                  + "feed/category?name="
-                                                                  + categoryName
-                                                                  + "&viewUrl="
-                                                                  + Util.getSelfURL() );
+            final String categoryPath = widgetID.substring( widgetID.indexOf( "-" ) + 1 );
+            final CategoryPagedTable table = new CategoryPagedTable( categoryPath,
+                                                                     createEditEvent(),
+                                                                     GWT.getModuleBaseURL()
+                                                                             + "feed/category?name="
+                                                                             + categoryPath
+                                                                             + "&viewUrl="
+                                                                             + Util.getSelfURL() );
             final ServerPushNotification push = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
                     if ( response.messageType.equals( "categoryChange" )
-                         && response.message.equals( categoryName ) ) {
-                        grid.refreshGrid();
+                         && response.message.equals( categoryPath ) ) {
+                        table.refresh();
                     }
                 }
             };
             PushClient.instance().subscribe( push );
-            grid.addUnloadListener( new Command() {
+            table.addUnloadListener( new Command() {
                 public void execute() {
                     PushClient.instance().unsubscribe( push );
                 }
@@ -507,7 +497,7 @@ public class TabOpener {
 
             explorerViewCenterPanel.addTab( (constants.CategoryColon())
                                                     + title,
-                                            grid,
+                                            table,
                                             widgetID );
         }
     }

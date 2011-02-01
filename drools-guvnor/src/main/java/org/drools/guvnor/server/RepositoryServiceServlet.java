@@ -130,6 +130,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public org.drools.guvnor.client.rpc.TableDataResult loadRuleListForCategories(java.lang.String p0, int p1, int p2, java.lang.String p3) throws com.google.gwt.user.client.rpc.SerializationException {
          return getService().loadRuleListForCategories( p0,  p1,  p2,  p3);
     }
+    public org.drools.guvnor.client.rpc.PageResponse loadRuleListForCategories(org.drools.guvnor.client.rpc.CategoryPageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
+         return getService().loadRuleListForCategories( p0);
+    }
     public org.drools.guvnor.client.rpc.TableDataResult loadRuleListForState(java.lang.String p0, int p1, int p2, java.lang.String p3) throws com.google.gwt.user.client.rpc.SerializationException {
          return getService().loadRuleListForState( p0,  p1,  p2,  p3);
     }

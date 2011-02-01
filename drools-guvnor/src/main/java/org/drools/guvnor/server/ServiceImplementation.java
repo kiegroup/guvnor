@@ -72,6 +72,8 @@ import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
+import org.drools.guvnor.client.rpc.CategoryPageRequest;
+import org.drools.guvnor.client.rpc.CategoryPageRow;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.InboxIncomingPageRow;
@@ -3898,10 +3900,10 @@ public class ServiceImplementation
         // Do query
         long start = System.currentTimeMillis();
 
-        // TODO: May need to use a filter that acts on both package based and
-        // category based. NOTE: Filtering is handled in
-        // repository.findAssetsByState()
+        // TODO: May need to use a filter for both package and categories
         RepositoryFilter filter = new AssetItemFilter();
+
+        // NOTE: Filtering is handled in repository.findAssetsByState()
         AssetItemPageResult result = repository.findAssetsByState( request.getStateName(),
                                                                    false,
                                                                    request.getStartRowIndex(),
@@ -3952,6 +3954,89 @@ public class ServiceImplementation
 
     private StatePageRow makeStatePageRow(AssetItem assetItem) {
         StatePageRow row = new StatePageRow();
+        populatePageRowBaseProperties( assetItem,
+                                       row );
+        row.setDescription( assetItem.getDescription() );
+        row.setAbbreviatedDescription( StringUtils.abbreviate( assetItem.getDescription(),
+                                                               80 ) );
+        row.setLastModified( assetItem.getLastModified().getTime() );
+        row.setStateName( assetItem.getState().getName() );
+        row.setPackageName( assetItem.getPackageName() );
+        return row;
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PageResponse<CategoryPageRow> loadRuleListForCategories(CategoryPageRequest request) throws SerializationException {
+        if ( request == null ) {
+            throw new IllegalArgumentException( "request cannot be null" );
+        }
+
+        PageResponse<CategoryPageRow> response = new PageResponse<CategoryPageRow>();
+
+        // Role-based Authorization check: This method only returns rules that
+        // the user has permission to access. The user is considered to has
+        // permission to access the particular category when: The user has
+        // ANALYST_READ role or higher (i.e., ANALYST) to this category
+        if ( Contexts.isSessionContextActive() ) {
+            if ( !Identity.instance().hasPermission( new CategoryPathType( request.getCategoryPath() ),
+                                                     RoleTypes.ANALYST_READ ) ) {
+                return response;
+            }
+        }
+
+        // Do query
+        long start = System.currentTimeMillis();
+
+        // NOTE: Filtering is handled in repository.findAssetsByCategory()
+        AssetItemPageResult result = repository.findAssetsByCategory( request.getCategoryPath(),
+                                                                      false,
+                                                                      request.getStartRowIndex(),
+                                                                      request.getPageSize() );
+        log.debug( "Search time: "
+                   + (System.currentTimeMillis() - start) );
+
+        // Populate response
+        boolean bHasMoreRows = result.hasNext;
+        List<CategoryPageRow> rowList = fillCategoryPageRows( request,
+                                                              result );
+        response.setStartRowIndex( request.getStartRowIndex() );
+        response.setPageRowList( rowList );
+        response.setLastPage( !bHasMoreRows );
+
+        // Fix Total Row Size
+        fixTotalRowSize( request,
+                         response,
+                         -1,
+                         rowList.size(),
+                         bHasMoreRows );
+
+        long methodDuration = System.currentTimeMillis()
+                              - start;
+        log.debug( "Searched for Assest with Category ("
+                   + request.getCategoryPath()
+                   + ") in "
+                   + methodDuration
+                   + " ms." );
+        return response;
+    }
+
+    private List<CategoryPageRow> fillCategoryPageRows(CategoryPageRequest request,
+                                                       AssetItemPageResult result) {
+        List<CategoryPageRow> rowList = new ArrayList<CategoryPageRow>( result.assets.size() );
+
+        // Filtering and skipping records to the required page is handled in
+        // repository.findAssetsByState() so we only need to simply copy
+        Iterator<AssetItem> it = result.assets.iterator();
+        while ( it.hasNext() ) {
+            AssetItem assetItem = (AssetItem) it.next();
+            rowList.add( makeCategoryPageRow( assetItem ) );
+        }
+        return rowList;
+    }
+
+    private CategoryPageRow makeCategoryPageRow(AssetItem assetItem) {
+        CategoryPageRow row = new CategoryPageRow();
         populatePageRowBaseProperties( assetItem,
                                        row );
         row.setDescription( assetItem.getDescription() );
