@@ -104,7 +104,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
         }
 
         if ( requestedObject instanceof CategoryPathType ) {
-            return handleCategoryPathPermission( requestedObject, requestedPermission, permissions );
+            return handleCategoryPathPersmission( requestedObject, requestedPermission, permissions );
         }
         String targetName = "";
 
@@ -132,7 +132,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
 
     }
 
-    private boolean handleCategoryPathPermission(Object requestedObject, String requestedPermission, List<RoleBasedPermission> permissions) {
+    private boolean handleCategoryPathPersmission(Object requestedObject, String requestedPermission, List<RoleBasedPermission> permissions) {
         String requestedPath = ((CategoryPathType) requestedObject).getCategoryPath();
         String requestedPermType = (requestedPermission == null) ? RoleTypes.ANALYST : requestedPermission;
         if ( requestedPermType.equals( "navigate" ) ) {
