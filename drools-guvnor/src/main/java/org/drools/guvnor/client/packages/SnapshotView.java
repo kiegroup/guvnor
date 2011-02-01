@@ -315,7 +315,7 @@ public class SnapshotView extends Composite {
                 Object uo = event.getSelectedItem().getUserObject();
                 if ( uo instanceof Object[] ) {
                     Object o = ((Object[]) uo)[0];
-                    showAssetList( (String[]) o );
+                    showAssetList( new String[] {(String) o} );
                 } else if ( uo instanceof SnapshotInfo ) {
                     SnapshotInfo s = (SnapshotInfo) uo;
                     TabOpener tabOpener = TabOpener.getInstance();
