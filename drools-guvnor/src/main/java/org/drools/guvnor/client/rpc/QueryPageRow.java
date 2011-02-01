@@ -23,18 +23,15 @@ import java.util.Date;
  * 
  * @author manstis
  */
-public class AssetPageRow extends AbstractPageRow {
+public class QueryPageRow extends AbstractPageRow {
 
     private String description;
     private String abbreviatedDescription;
     private String packageName;
-    private String stateName;
     private String creator;
     private Date   createdDate;
     private String lastContributor;
     private Date   lastModified;
-    private String categorySummary;
-    private String externalSource;
 
     // ************************************************************************
     // Getters and setters
@@ -42,10 +39,6 @@ public class AssetPageRow extends AbstractPageRow {
 
     public String getAbbreviatedDescription() {
         return abbreviatedDescription;
-    }
-
-    public String getCategorySummary() {
-        return categorySummary;
     }
 
     public Date getCreatedDate() {
@@ -60,10 +53,6 @@ public class AssetPageRow extends AbstractPageRow {
         return description;
     }
 
-    public String getExternalSource() {
-        return externalSource;
-    }
-
     public String getLastContributor() {
         return lastContributor;
     }
@@ -76,16 +65,8 @@ public class AssetPageRow extends AbstractPageRow {
         return packageName;
     }
 
-    public String getStateName() {
-        return stateName;
-    }
-
     public void setAbbreviatedDescription(String abbreviatedDescription) {
         this.abbreviatedDescription = abbreviatedDescription;
-    }
-
-    public void setCategorySummary(String categorySummary) {
-        this.categorySummary = categorySummary;
     }
 
     public void setCreatedDate(Date createdDate) {
@@ -100,10 +81,6 @@ public class AssetPageRow extends AbstractPageRow {
         this.description = description;
     }
 
-    public void setExternalSource(String externalSource) {
-        this.externalSource = externalSource;
-    }
-
     public void setLastContributor(String lastContributor) {
         this.lastContributor = lastContributor;
     }
@@ -114,10 +91,6 @@ public class AssetPageRow extends AbstractPageRow {
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
-    }
-
-    public void setStateName(String stateName) {
-        this.stateName = stateName;
     }
 
 }

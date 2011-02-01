@@ -38,36 +38,6 @@ public class BrowseTree extends AbstractTree
     private static Constants constants = GWT.create( Constants.class );
     private static Images    images    = (Images) GWT.create( Images.class );
 
-    /** Table set up for the inboxes */
-    static {
-        TableConfig conf = new TableConfig();
-        conf.headers = new String[2];
-        conf.headers[0] = constants.Name();
-        conf.headers[1] = constants.Date();
-        conf.headerTypes = new String[2];
-        conf.headerTypes[0] = "class java.lang.String";
-        conf.headerTypes[1] = "class java.util.Calendar";
-        conf.rowsPerPage = 500;
-        AssetItemGrid.registerTableConfig( conf,
-                                           ExplorerNodeConfig.RECENT_EDITED_ID );
-        AssetItemGrid.registerTableConfig( conf,
-                                           ExplorerNodeConfig.RECENT_VIEWED_ID );
-
-        conf = new TableConfig();
-        conf.headers = new String[3];
-        conf.headers[0] = constants.Name();
-        conf.headers[1] = constants.Date();
-        conf.headers[2] = constants.From();
-        conf.headerTypes = new String[3];
-        conf.headerTypes[0] = "class java.lang.String";
-        conf.headerTypes[1] = "class java.util.Calendar";
-        conf.headerTypes[2] = "class java.lang.String";
-        conf.rowsPerPage = 500;
-
-        AssetItemGrid.registerTableConfig( conf,
-                                           ExplorerNodeConfig.INCOMING_ID );
-    }
-
     public BrowseTree() {
         this.name = constants.Browse();
         this.image = images.ruleAsset();

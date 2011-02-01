@@ -216,7 +216,7 @@ public interface RepositoryService
      * @return never null, contains the {@link List} of {@link AssetPageRow}
      * @throws SerializationException
      */
-    public AssetPageResponse findAssetPage(AssetPageRequest request) throws SerializationException;
+    public PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request) throws SerializationException;
 
     /**
      * Given a format, this will return assets that match.
@@ -659,4 +659,40 @@ public interface RepositoryService
      public String processTemplate(String name, Map<String, Object> data);
      
      public Boolean isHostedMode();
+     
+    
+     /**
+      * Load the data for a given inbox for the currently logged in user.
+      */
+     public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request) throws DetailedSerializationException;
+     
+     /**
+      * Runs a full text search using JCR.
+      * 
+      * @param request
+      * @return
+      * @throws SerializationException
+      */
+     public PageResponse<QueryPageRow> queryFullText(QueryPageRequest request) throws SerializationException;
+
+     /**
+      * Run a meta data search. All dates are in format as configured for the
+      * system. Pass in null and they will not be included in the search (that
+      * applies to any field).
+      * 
+      * @param request
+      * @return
+      * @throws SerializationException
+      */
+     public PageResponse<QueryPageRow> queryMetaData(QueryMetadataPageRequest request) throws SerializationException;
+
+     /**
+      * This will quickly return a list of assets
+      * 
+      * @param queryRequest
+      *            The parameters for the search
+      */
+     public PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest queryRequest) throws SerializationException;
+
+
 }

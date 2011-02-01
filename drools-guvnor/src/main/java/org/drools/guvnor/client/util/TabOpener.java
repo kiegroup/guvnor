@@ -1,17 +1,17 @@
 /*
  * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.drools.guvnor.client.util;
 
@@ -53,7 +53,8 @@ import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
-import org.drools.guvnor.client.rulelist.AssetTable;
+import org.drools.guvnor.client.rulelist.AssetPagedTable;
+import org.drools.guvnor.client.rulelist.InboxPagedTable;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.rulelist.QueryWidget;
 
@@ -68,7 +69,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 /**
  * 
  * @author rikkola
- *
+ * 
  */
 public class TabOpener {
 
@@ -108,7 +109,8 @@ public class TabOpener {
         if ( uuid.contains( "<" ) ) {
             return;
         }
-        History.newItem( "asset=" + uuid ); // NON-NLS
+        History.newItem( "asset="
+                         + uuid ); // NON-NLS
 
         if ( !explorerViewCenterPanel.showIfOpen( uuid ) ) {
 
@@ -124,8 +126,8 @@ public class TabOpener {
             t.schedule( 200 );
 
             loadRuleAsset( uuid,
-                    loading );
-      }
+                           loading );
+        }
     }
 
     private void loadRuleAsset(final String uuid,
@@ -158,7 +160,8 @@ public class TabOpener {
                                                         uuid );
                         ruleViewer.setCloseCommand( createCloseCommandForRuleViewer( uuid ) );
 
-                        // When model is saved update the package view if it is opened.
+                        // When model is saved update the package view if it is
+                        // opened.
                         if ( ruleAsset.metaData.format.equals( AssetFormats.MODEL ) ) {
                             Command command = createCheckInAndArchiveCommandForRuleViewer( ruleAsset );
                             ruleViewer.setCheckedInCommand( command );
@@ -284,7 +287,7 @@ public class TabOpener {
     }
 
     public void openFind() {
-        if ( !explorerViewCenterPanel.showIfOpen( "FIND" ) ) { //NON-NLS
+        if ( !explorerViewCenterPanel.showIfOpen( "FIND" ) ) { // NON-NLS
             explorerViewCenterPanel.addTab( constants.Find(),
                                             new QueryWidget( new OpenItemCommand() {
                                                 public void open(String uuid) {
@@ -297,13 +300,14 @@ public class TabOpener {
                                                     }
                                                 }
                                             } ),
-                                            "FIND" ); //NON-NLS
+                                            "FIND" ); // NON-NLS
 
         }
     }
 
     public void openSnapshot(final SnapshotInfo snap) {
-        if ( !explorerViewCenterPanel.showIfOpen( snap.name + snap.uuid ) ) {
+        if ( !explorerViewCenterPanel.showIfOpen( snap.name
+                                                  + snap.uuid ) ) {
             LoadingPopup.showMessage( constants.LoadingSnapshot() );
             RepositoryServiceFactory.getService().loadPackageConfig( snap.uuid,
                                                                      new GenericCallback<PackageConfigData>() {
@@ -314,10 +318,12 @@ public class TabOpener {
                                                                                                                                conf,
                                                                                                                                new Command() {
                                                                                                                                    public void execute() {
-                                                                                                                                       explorerViewCenterPanel.close( snap.name + snap.uuid );
+                                                                                                                                       explorerViewCenterPanel.close( snap.name
+                                                                                                                                                                      + snap.uuid );
                                                                                                                                    }
                                                                                                                                } ),
-                                                                                                             snap.name + snap.uuid );
+                                                                                                             snap.name
+                                                                                                                     + snap.uuid );
                                                                              LoadingPopup.close();
                                                                          }
                                                                      } );
@@ -373,15 +379,20 @@ public class TabOpener {
                 }
                 break;
             case 6 :
-                Frame aboutInfoFrame = new Frame( "../AboutInfo.html" ); //NON-NLS
+                Frame aboutInfoFrame = new Frame( "../AboutInfo.html" ); // NON-NLS
 
                 FormStylePopup aboutPop = new FormStylePopup();
                 aboutPop.setWidth( 600 + "px" );
                 aboutPop.setTitle( constants.About() );
-                String hhurl = GWT.getModuleBaseURL() + "webdav";
-                aboutPop.addAttribute( constants.WebDAVURL() + ":",
-                                       new SmallLabel( "<b>" + hhurl + "</b>" ) );
-                aboutPop.addAttribute( constants.Version() + ":",
+                String hhurl = GWT.getModuleBaseURL()
+                               + "webdav";
+                aboutPop.addAttribute( constants.WebDAVURL()
+                                               + ":",
+                                       new SmallLabel( "<b>"
+                                                       + hhurl
+                                                       + "</b>" ) );
+                aboutPop.addAttribute( constants.Version()
+                                               + ":",
                                        aboutInfoFrame );
                 aboutPop.show();
                 break;
@@ -413,19 +424,11 @@ public class TabOpener {
     public void openInbox(String title,
                           final String widgetID) {
         if ( !explorerViewCenterPanel.showIfOpen( widgetID ) ) {
-            AssetItemGrid g = new AssetItemGrid( createEditEvent(),
-                                                 widgetID,
-                                                 new AssetItemGridDataLoader() {
-                                                     public void loadData(int startRow,
-                                                                          int numberOfRows,
-                                                                          GenericCallback<TableDataResult> cb) {
-                                                         RepositoryServiceFactory.getService().loadInbox( widgetID,
-                                                                                                          cb );
-                                                     }
-                                                 } );
+            InboxPagedTable table = new InboxPagedTable( widgetID,
+                                                             createEditEvent() );
             explorerViewCenterPanel.addTab( title,
-                                            g,
-                                            widgetID );
+                                                table,
+                                                widgetID );
         }
     }
 
@@ -453,7 +456,8 @@ public class TabOpener {
                                                           null );
             final ServerPushNotification push = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
-                    if ( response.messageType.equals( "statusChange" ) && (response.message).equals( stateName ) ) {
+                    if ( response.messageType.equals( "statusChange" )
+                         && (response.message).equals( stateName ) ) {
                         grid.refreshGrid();
                     }
                 }
@@ -465,14 +469,15 @@ public class TabOpener {
                 }
             } );
 
-            explorerViewCenterPanel.addTab( constants.Status() + title,
+            explorerViewCenterPanel.addTab( constants.Status()
+                                                    + title,
                                             grid,
                                             widgetID );
         }
     }
 
     /**
-     * open a category 
+     * open a category
      */
     public void openCategory(String title,
                              String widgetID) {
@@ -491,10 +496,15 @@ public class TabOpener {
                                                                                                                                    cb );
                                                               }
                                                           },
-                                                          GWT.getModuleBaseURL() + "feed/category?name=" + categoryName + "&viewUrl=" + Util.getSelfURL() );
+                                                          GWT.getModuleBaseURL()
+                                                                  + "feed/category?name="
+                                                                  + categoryName
+                                                                  + "&viewUrl="
+                                                                  + Util.getSelfURL() );
             final ServerPushNotification push = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
-                    if ( response.messageType.equals( "categoryChange" ) && response.message.equals( categoryName ) ) {
+                    if ( response.messageType.equals( "categoryChange" )
+                         && response.message.equals( categoryName ) ) {
                         grid.refreshGrid();
                     }
                 }
@@ -506,7 +516,8 @@ public class TabOpener {
                 }
             } );
 
-            explorerViewCenterPanel.addTab( (constants.CategoryColon()) + title,
+            explorerViewCenterPanel.addTab( (constants.CategoryColon())
+                                                    + title,
                                             grid,
                                             widgetID );
         }
@@ -534,27 +545,36 @@ public class TabOpener {
                                       final String itemName) {
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
 
-            String feedUrl = GWT.getModuleBaseURL() + "feed/package?name=" + packageName + "&viewUrl=" + Util.getSelfURL() + "&status=*";
-            final AssetTable table = new AssetTable( packageUuid,
-                                                     formatInList,
-                                                     formatIsRegistered,
-                                                     new OpenItemCommand() {
-                                                         public void open(String uuid) {
-                                                             openAsset( uuid );
-                                                         }
+            String feedUrl = GWT.getModuleBaseURL()
+                             + "feed/package?name="
+                             + packageName
+                             + "&viewUrl="
+                             + Util.getSelfURL()
+                             + "&status=*";
+            final AssetPagedTable table = new AssetPagedTable( packageUuid,
+                                                               formatInList,
+                                                               formatIsRegistered,
+                                                               new OpenItemCommand() {
+                                                                   public void open(String uuid) {
+                                                                       openAsset( uuid );
+                                                                   }
 
-                                                         public void open(MultiViewRow[] rows) {
-                                                             openAssetsToMultiView( rows );
-                                                         }
-                                                     },
-                                                     feedUrl );
-            explorerViewCenterPanel.addTab( itemName + " [" + packageName + "]",
+                                                                   public void open(MultiViewRow[] rows) {
+                                                                       openAssetsToMultiView( rows );
+                                                                   }
+                                                               },
+                                                               feedUrl );
+            explorerViewCenterPanel.addTab( itemName
+                                                    + " ["
+                                                    + packageName
+                                                    + "]",
                                             table,
                                             key );
 
             final ServerPushNotification sub = new ServerPushNotification() {
                 public void messageReceived(PushResponse response) {
-                    if ( response.messageType.equals( "packageChange" ) && response.message.equals( packageName ) ) {
+                    if ( response.messageType.equals( "packageChange" )
+                         && response.message.equals( packageName ) ) {
                         table.refresh();
                     }
                 }
@@ -571,7 +591,8 @@ public class TabOpener {
     public void openTestScenario(String packageUuid,
                                  String packageName) {
 
-        if ( !explorerViewCenterPanel.showIfOpen( "scenarios" + packageUuid ) ) {
+        if ( !explorerViewCenterPanel.showIfOpen( "scenarios"
+                                                  + packageUuid ) ) {
             final OpenItemCommand edit = new OpenItemCommand() {
                 public void open(String key) {
                     openAsset( key );
@@ -591,13 +612,15 @@ public class TabOpener {
                                                                      packageName,
                                                                      edit,
                                                                      explorerViewCenterPanel ),
-                                            "scenarios" + packageUuid );
+                                            "scenarios"
+                                                    + packageUuid );
         }
     }
 
     public void openVerifierView(String packageUuid,
                                  String packageName) {
-        if ( !explorerViewCenterPanel.showIfOpen( "analysis" + packageUuid ) ) { //NON-NLS
+        if ( !explorerViewCenterPanel.showIfOpen( "analysis"
+                                                  + packageUuid ) ) { // NON-NLS
             final OpenItemCommand edit = new OpenItemCommand() {
                 public void open(String key) {
                     openAsset( key );
@@ -616,7 +639,8 @@ public class TabOpener {
                                             new AnalysisView( packageUuid,
                                                               packageName,
                                                               edit ),
-                                            "analysis" + packageUuid );
+                                            "analysis"
+                                                    + packageUuid );
         }
     }
 
@@ -651,7 +675,10 @@ public class TabOpener {
                                                     } );
 
             VerticalPanel vp = new VerticalPanel();
-            vp.add( new HTML( "<i><small>" + constants.SnapshotListingFor() + name + "</small></i>" ) );
+            vp.add( new HTML( "<i><small>"
+                              + constants.SnapshotListingFor()
+                              + name
+                              + "</small></i>" ) );
             vp.add( grid );
             explorerViewCenterPanel.addTab( constants.SnapshotItems(),
                                             vp,

@@ -1,17 +1,17 @@
 /*
- * Copyright 2005 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright 2011 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.drools.guvnor.client.rulelist;
@@ -24,8 +24,10 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.QueryPageRequest;
+import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.TableDataResult;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -44,66 +46,54 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.gwtext.client.util.Format;
-import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.core.client.GWT;
 
 /**
  * This is for quickly finding an asset by name. Partial completion is allowed.
  * This also uses some auto completion magic.
+ * 
  * @author Michael Neale
  */
 public class QuickFindWidget extends Composite {
 
-    private Constants             constants = GWT.create( Constants.class );
-    private static Images         images    = GWT.create( Images.class );
+    private Constants     constants = GWT.create( Constants.class );
+    private static Images images    = GWT.create( Images.class );
 
-    private final OpenItemCommand editEvent;
+    private SuggestBox    searchBox;
+    private CheckBox      archiveBox;
 
-    private SuggestBox            searchBox;
-    private CheckBox              archiveBox;
+    public QuickFindWidget(final OpenItemCommand editEvent) {
 
-    public QuickFindWidget(OpenItemCommand editEvent) {
-        this.editEvent = editEvent;
+        VerticalPanel container = new VerticalPanel();
+        VerticalPanel criteria = new VerticalPanel();
 
-        FormStyleLayout layout = new FormStyleLayout(images.systemSearch(),
-                "");
+        FormStyleLayout layout = new FormStyleLayout( images.systemSearch(),
+                                                      "" );
 
         searchBox = new SuggestBox( new SuggestOracle() {
             public void requestSuggestions(Request r,
                                            Callback cb) {
                 loadShortList( r.getQuery(),
+                               archiveBox.getValue(),
                                r,
                                cb );
 
             }
         } );
 
-        final SimplePanel resultsP = new SimplePanel();
-
         HorizontalPanel srch = new HorizontalPanel();
+
+        final SimplePanel resultsP = new SimplePanel();
         final ClickHandler cl = new ClickHandler() {
             public void onClick(ClickEvent event) {
                 resultsP.clear();
-                AssetItemGrid grid = new AssetItemGrid(QuickFindWidget.this.editEvent,
-                                                        "searchresults",
-                                                        new AssetItemGridDataLoader() { //NON-NLS
-                                                            public void loadData(int startRow,
-                                                                                 int numberOfRows,
-                                                                                 GenericCallback<TableDataResult> cb) {
-                                                                RepositoryServiceFactory.getService().quickFindAsset( searchBox.getText(),
-                                                                                                                      archiveBox.getValue(),
-                                                                                                                      startRow,
-                                                                                                                      numberOfRows,
-                                                                                                                      cb );
-                                                            }
-                                                        } );
-                resultsP.add( grid );
-
+                QueryPagedTable table = new QueryPagedTable( searchBox.getValue(),
+                                                   archiveBox.getValue(),
+                                                   editEvent );
+                resultsP.add( table );
             }
         };
-
         searchBox.addKeyUpHandler( new KeyUpHandler() {
             public void onKeyUp(KeyUpEvent event) {
                 if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
@@ -132,50 +122,50 @@ public class QuickFindWidget extends Composite {
                                                       images.information().getURL(),
                                                       constants.EnterSearchString()
 
-                             ) ) ); //NON-NLS
+                             ) ) ); // NON-NLS
 
         PrettyFormLayout pfl = new PrettyFormLayout();
         pfl.startSection();
-        pfl.addRow(listPanel);
-        pfl.addRow( resultsP );
-
+        pfl.addRow( listPanel );
         pfl.endSection();
-        layout.addRow( pfl );
 
-        initWidget(layout);
+        criteria.add( pfl );
+        criteria.add( layout );
+        container.add( criteria );
+        container.add( resultsP );
+
+        initWidget( container );
     }
 
     /**
      * This will load a list of items as they are typing.
      */
-    protected void loadShortList(String match,
+    protected void loadShortList(String searchText,
+                                 Boolean searchArchived,
                                  final Request r,
                                  final Callback cb) {
-        RepositoryServiceFactory.getService().quickFindAsset( match,
-                                                              archiveBox.getValue(),
-                                                              0,
-                                                              5,
-                                                              new GenericCallback<TableDataResult>() {
+        final QueryPageRequest queryRequest = new QueryPageRequest( searchText,
+                                                                    searchArchived,
+                                                                    0,
+                                                                    5 );
+        RepositoryServiceFactory.getService().quickFindAsset( queryRequest,
+                                                              new GenericCallback<PageResponse<QueryPageRow>>() {
 
-
-                                                                  public void onSuccess(TableDataResult result) {
+                                                                  public void onSuccess(PageResponse<QueryPageRow> result) {
                                                                       List<SuggestOracle.Suggestion> items = new ArrayList<SuggestOracle.Suggestion>();
-                                                                      for ( int i = 0; i < result.data.length; i++ ) {
-                                                                          if ( !result.data[i].id.equals( "MORE" ) ) { //NON-NLS
-                                                                              final String str = result.data[i].values[0];
-                                                                              items.add( new SuggestOracle.Suggestion() {
+                                                                      for ( QueryPageRow row : result.getPageRowList() ) {
+                                                                          final String name = row.getName();
+                                                                          items.add( new SuggestOracle.Suggestion() {
 
-                                                                                  public String getDisplayString() {
-                                                                                      return str;
-                                                                                  }
+                                                                              public String getDisplayString() {
+                                                                                  return name;
+                                                                              }
 
-                                                                                  public String getReplacementString() {
-                                                                                      return str;
-                                                                                  }
+                                                                              public String getReplacementString() {
+                                                                                  return name;
+                                                                              }
 
-                                                                              } );
-
-                                                                          }
+                                                                          } );
                                                                       }
                                                                       cb.onSuggestionsReady( r,
                                                                                              new SuggestOracle.Response( items ) );
