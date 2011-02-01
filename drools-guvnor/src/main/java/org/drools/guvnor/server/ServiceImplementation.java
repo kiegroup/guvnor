@@ -116,7 +116,6 @@ import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
-import org.drools.guvnor.server.security.RoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.AssetFormatHelper;
@@ -152,7 +151,6 @@ import org.drools.rule.Package;
 import org.drools.runtime.rule.ConsequenceException;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
-import org.jboss.seam.Component;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -185,33 +183,48 @@ public class ServiceImplementation implements RepositoryService {
     /**
      * Maximum number of rules to display in "list rules in package" method
      */
-    private static final int               MAX_RULES_TO_SHOW_IN_PACKAGE_LIST = 5000;
+    private static final int            MAX_RULES_TO_SHOW_IN_PACKAGE_LIST = 5000;
 
     @In
-    private RulesRepository                 repository;
+    private RulesRepository             repository;
 
-    private static final long              serialVersionUID                  = 510l;
+    private static final long           serialVersionUID                  = 510l;
 
-    private static final DateFormat        dateFormatter                     = DateFormat.getInstance();
+    private static final DateFormat     dateFormatter                     = DateFormat.getInstance();
 
-    private static final LoggingHelper     log                               = LoggingHelper.getLogger( ServiceImplementation.class );
+    private static final LoggingHelper  log                               = LoggingHelper.getLogger( ServiceImplementation.class );
 
-    private MetaDataMapper                 metaDataMapper                    = new MetaDataMapper();
+    private MetaDataMapper              metaDataMapper                    = new MetaDataMapper();
 
     /**
      * Used for a simple cache of binary packages to avoid serialization from
      * the database - for test scenarios.
      */
-    public static Map<String, RuleBase>    ruleBaseCache                     = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
+    public static Map<String, RuleBase> ruleBaseCache                     = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
 
     /**
      * This is used for pushing messages back to the client.
      */
-    private static Backchannel             backchannel                       = new Backchannel();
-    private ServiceSecurity                serviceSecurity                   = new ServiceSecurity();
-    @In
-    private RepositoryAssetOperations repositoryAssetOperations;
-  
+    private static Backchannel          backchannel                       = new Backchannel();
+    private ServiceSecurity             serviceSecurity                   = new ServiceSecurity();
+
+    private RepositoryAssetOperations   repositoryAssetOperations         = new RepositoryAssetOperations();
+    /* This is called also by Seam AND Hosted mode */
+    @Create
+    public void create() {
+        repositoryAssetOperations.setRepository( getRulesRepository() );
+    }
+   
+     /* This is called in hosted mode when creating "by hand" */
+    public void setRulesRepository(RulesRepository repository) {
+        this.repository = repository;
+        create();
+    }
+
+    public RulesRepository getRulesRepository() {
+        return repository;
+    }
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] loadChildCategories(String categoryPath) {
@@ -234,7 +247,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     public Boolean createCategory(String path, String name, String description) {
         serviceSecurity.checkSecurityIsAdmin();
-        
+
         log.info( "USER:" + getCurrentUserName() + " CREATING cateogory: [" + name + "] in path [" + path + "]" );
 
         if ( path == null || "".equals( path ) ) {
@@ -2615,7 +2628,7 @@ public class ServiceImplementation implements RepositoryService {
         ContentPackageAssembler asm = new ContentPackageAssembler( item, true, buildMode, statusOperator, statusDescriptionValue, enableStatusSelector, categoryOperator, category, enableCategorySelector, selectorConfigName );
         if ( asm.hasErrors() ) {
             BuilderResult result = new BuilderResult();
-            BuilderResultHelper builderResultHelper = new BuilderResultHelper(); 
+            BuilderResultHelper builderResultHelper = new BuilderResultHelper();
             result.setLines( builderResultHelper.generateBuilderResults( asm ) );
             return result;
         }
@@ -2650,8 +2663,6 @@ public class ServiceImplementation implements RepositoryService {
         RuleBase rb = RuleBaseFactory.newRuleBase( conf );
         rb.addPackage( asm.getBinaryPackage() );
     }
-
-    
 
     private SingleScenarioResult runScenario(String packageName, Scenario scenario, RuleCoverageListener coverage) throws SerializationException {
         PackageItem item = this.getRulesRepository().loadPackage( packageName );
@@ -3092,22 +3103,6 @@ public class ServiceImplementation implements RepositoryService {
         row.setStateName( assetItem.getState().getName() );
         row.setPackageName( assetItem.getPackageName() );
         return row;
-    }
-
-
-    public void setRulesRepository(RulesRepository repository) {
-        this.repository = repository;
-        create();
-    }
-    /* for hosted mode */
-    private void create() {
-        repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRepository( getRulesRepository() );
-    }
-
-
-    public RulesRepository getRulesRepository() {
-        return repository;
     }
 
 }

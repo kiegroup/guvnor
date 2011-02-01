@@ -27,9 +27,11 @@ import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.jboss.seam.Component;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.contexts.Contexts;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -41,11 +43,10 @@ import com.google.gwt.user.client.rpc.SerializationException;
 @Name("org.drools.guvnor.server.RepositoryAssetOperations")
 @AutoCreate
 public class RepositoryAssetOperations {
-    @In
-    private RulesRepository repository;
     
-    private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryAssetOperations.class );
+    private RulesRepository            repository;
 
+    private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryAssetOperations.class );
 
     public String renameAsset(String uuid, String newName) {
         return getRepository().renameAsset( uuid, newName );
@@ -57,7 +58,7 @@ public class RepositoryAssetOperations {
         try {
 
             ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
-            BuilderResultHelper builderResultHelper = new BuilderResultHelper(); 
+            BuilderResultHelper builderResultHelper = new BuilderResultHelper();
             if ( asset.metaData.isBinary() ) {
                 AssetItem item = getRepository().loadAssetByUUID( asset.uuid );
 
@@ -110,7 +111,5 @@ public class RepositoryAssetOperations {
     public RulesRepository getRepository() {
         return repository;
     }
-
-   
 
 }
