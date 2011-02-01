@@ -86,7 +86,7 @@ public class SpringContextEditor extends DirtyableComposite
                           browser );
         text = new TextArea();
         text.setWidth( "100%" );
-        text.setVisibleLines( (visibleLines == -1) ? 16 : visibleLines );
+        text.setVisibleLines( (visibleLines == -1) ? 25 : visibleLines );
         text.setText( data.content );
         text.getElement().setAttribute( "spellcheck",
                                         "false" ); //NON-NLS

@@ -17,7 +17,6 @@ package org.drools.guvnor.client.ruleeditor.springcontext;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -43,7 +42,6 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
 public class SpringContextElementsBrowser extends Composite {
 
     private Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
     
     private Map<String,String> springContextElements;
     
@@ -160,7 +158,7 @@ public class SpringContextElementsBrowser extends Composite {
         ScrollPanel scrollPanel = new ScrollPanel(resourcesTree);
 
         scrollPanel.setHeight("150px");
-        scrollPanel.setWidth("200px");
+        scrollPanel.setWidth("130px");
 
         mainPanel.add(scrollPanel);
 
