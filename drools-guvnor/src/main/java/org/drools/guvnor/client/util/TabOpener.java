@@ -153,7 +153,7 @@ public class TabOpener {
                     public void execute() {
                         loading[0] = false;
                         RuleViewer ruleViewer = new RuleViewer( ruleAsset,
-                                                                createEditItemEvent() );
+                                                                createEditEvent() );
                         explorerViewCenterPanel.addTab( ruleAsset.metaData.name,
                                                         ruleViewer,
                                                         uuid );
@@ -190,20 +190,6 @@ public class TabOpener {
                         };
                     }
 
-                    private OpenItemCommand createEditItemEvent() {
-                        OpenItemCommand edit = new OpenItemCommand() {
-                            public void open(String key) {
-                                openAsset( key );
-                            }
-
-                            public void open(MultiViewRow[] rows) {
-                                for ( MultiViewRow row : rows ) {
-                                    openAsset( row.uuid );
-                                }
-                            }
-                        };
-                        return edit;
-                    }
                 };
             }
         };
@@ -234,17 +220,7 @@ public class TabOpener {
         }
 
         MultiViewEditor multiview = new MultiViewEditor( rows,
-                                                         new OpenItemCommand() {
-                                                             public void open(String key) {
-                                                                 openAsset( key );
-                                                             }
-
-                                                             public void open(MultiViewRow[] rows) {
-                                                                 for ( MultiViewRow row : rows ) {
-                                                                     openAsset( row.uuid );
-                                                                 }
-                                                             }
-                                                         } );
+                                                         createEditEvent() );
 
         multiview.setCloseCommand( new Command() {
             public void execute() {
@@ -530,15 +506,7 @@ public class TabOpener {
             final AssetPagedTable table = new AssetPagedTable( packageUuid,
                                                                formatInList,
                                                                formatIsRegistered,
-                                                               new OpenItemCommand() {
-                                                                   public void open(String uuid) {
-                                                                       openAsset( uuid );
-                                                                   }
-
-                                                                   public void open(MultiViewRow[] rows) {
-                                                                       openAssetsToMultiView( rows );
-                                                                   }
-                                                               },
+                                                               createEditEvent(),
                                                                feedUrl );
             explorerViewCenterPanel.addTab( itemName
                                                     + " ["
@@ -569,24 +537,12 @@ public class TabOpener {
 
         if ( !explorerViewCenterPanel.showIfOpen( "scenarios"
                                                   + packageUuid ) ) {
-            final OpenItemCommand edit = new OpenItemCommand() {
-                public void open(String key) {
-                    openAsset( key );
-                }
-
-                public void open(MultiViewRow[] rows) {
-                    for ( MultiViewRow row : rows ) {
-                        openAsset( row.uuid );
-                    }
-                }
-            };
-
             String m = Format.format( constants.ScenariosForPackage(),
                                       packageName );
             explorerViewCenterPanel.addTab( m,
                                             new ScenarioPackageView( packageUuid,
                                                                      packageName,
-                                                                     edit,
+                                                                     createEditEvent(),
                                                                      explorerViewCenterPanel ),
                                             "scenarios"
                                                     + packageUuid );
@@ -597,24 +553,12 @@ public class TabOpener {
                                  String packageName) {
         if ( !explorerViewCenterPanel.showIfOpen( "analysis"
                                                   + packageUuid ) ) { // NON-NLS
-            final OpenItemCommand edit = new OpenItemCommand() {
-                public void open(String key) {
-                    openAsset( key );
-                }
-
-                public void open(MultiViewRow[] rows) {
-                    for ( MultiViewRow row : rows ) {
-                        openAsset( row.uuid );
-                    }
-                }
-            };
-
             String m = Format.format( constants.AnalysisForPackage(),
                                       packageName );
             explorerViewCenterPanel.addTab( m,
                                             new AnalysisView( packageUuid,
                                                               packageName,
-                                                              edit ),
+                                                              createEditEvent() ),
                                             "analysis"
                                                     + packageUuid );
         }
@@ -626,20 +570,9 @@ public class TabOpener {
                                       String key) {
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
             AssetPagedTable table = new AssetPagedTable( uuid,
-                                              Arrays.asList( assetTypes),
-                                              null,
-                                              new OpenItemCommand() {
-                                                  public void open(String key) {
-                                                      openAsset( key );
-                                                  }
-
-                                                  public void open(MultiViewRow[] rows) {
-                                                      for ( MultiViewRow row : rows ) {
-                                                          openAsset( row.uuid );
-                                                      }
-                                                  }
-                                              });
-            
+                                                         Arrays.asList( assetTypes ),
+                                                         null,
+                                                         createEditEvent() );
 
             VerticalPanel vp = new VerticalPanel();
             vp.add( new HTML( "<i><small>"
