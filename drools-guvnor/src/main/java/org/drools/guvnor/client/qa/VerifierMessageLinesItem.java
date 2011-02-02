@@ -1,17 +1,17 @@
 /**
  * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.drools.guvnor.client.qa;
@@ -36,8 +36,8 @@ import com.gwtext.client.util.Format;
  */
 class VerifierMessageLinesItem extends TreeItem {
 
-    private Constants     constants = GWT.create( Constants.class );
-    private Images        images    = GWT.create( Images.class );
+    private Constants       constants = GWT.create( Constants.class );
+    private Images          images    = GWT.create( Images.class );
 
     private OpenItemCommand edit;
 
@@ -53,14 +53,19 @@ class VerifierMessageLinesItem extends TreeItem {
         for ( AnalysisReportLine line : lines ) {
             TreeItem report = new TreeItem( new HTML( line.description ) );
             if ( line.reason != null ) {
-                report.addItem( new TreeItem( new HTML( "<b>" + constants.Reason() + ":</b>&nbsp;" + line.reason ) ) );
+                report.addItem( new TreeItem( new HTML( "<b>"
+                                                        + constants.Reason()
+                                                        + ":</b>&nbsp;"
+                                                        + line.reason ) ) );
             }
 
             TreeItem impactedRules = doImpactedRules( line );
             report.addItem( impactedRules );
 
             if ( line.causes.length > 0 ) {
-                TreeItem causes = doCauses( new HTML( "<b>" + constants.Causes() + ":</b>" ),
+                TreeItem causes = doCauses( new HTML( "<b>"
+                                                      + constants.Causes()
+                                                      + ":</b>" ),
                                             line.causes );
 
                 report.addItem( causes );
@@ -76,16 +81,24 @@ class VerifierMessageLinesItem extends TreeItem {
 
     private TreeItem doImpactedRules(AnalysisReportLine line) {
 
-        TreeItem impactedRules = new TreeItem( new HTML( "<b>" + constants.ImpactedRules() + ":</b>&nbsp;" ) );
+        TreeItem impactedRules = new TreeItem( new HTML( "<b>"
+                                                         + constants.ImpactedRules()
+                                                         + ":</b>&nbsp;" ) );
 
         for ( final String ruleAssetGuid : line.impactedRules.keySet() ) {
             HTML rule = new HTML( Format.format( "<img src='{0}'/>",
-                                                 new Image( images.ruleAsset() ).getUrl() ) + line.impactedRules.get( ruleAssetGuid ) );
-            rule.addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent event) {
-                    edit.open( ruleAssetGuid );
-                }
-            } );
+                                                 new Image( images.ruleAsset() ).getUrl() )
+                                  + line.impactedRules.get( ruleAssetGuid ) );
+
+            // TODO ruleAssetGuid is not a Asset UUID, but a delimited\tokenised
+            // String returned from the drools-verifier framework. This String
+            // is Guvnor-agnostic and needs to be transformed
+            //
+            // rule.addClickHandler( new ClickHandler() {
+            // public void onClick(ClickEvent event) {
+            // edit.open( ruleAssetGuid );
+            // }
+            // } );
             impactedRules.addItem( rule );
         }
 

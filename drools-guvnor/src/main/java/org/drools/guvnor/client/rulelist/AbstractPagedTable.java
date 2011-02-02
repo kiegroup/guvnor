@@ -256,30 +256,59 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
         addAncillaryColumns( columnPicker,
                              sortableHeaderGroup );
 
-        cellTable.setPageSize( pageSize );
+        // cellTable.setPageSize( pageSize );
         cellTable.setWidth( "100%" );
 
         pager = new SimplePager() {
+
+            // We want pageSize to remain constant
+            @Override
+            public int getPageSize() {
+                return pageSize;
+            }
+
+            // Page forward by an exact size rather than the number of visible
+            // rows as is in the norm in the underlying implementation
+            @Override
+            public void nextPage() {
+                if ( getDisplay() != null ) {
+                    Range range = getDisplay().getVisibleRange();
+                    setPageStart( range.getStart()
+                                  + getPageSize() );
+                }
+            }
+
+            // Page back by an exact size rather than the number of visible
+            // rows as is in the norm in the underlying implementation
+            @Override
+            public void previousPage() {
+                if ( getDisplay() != null ) {
+                    Range range = getDisplay().getVisibleRange();
+                    setPageStart( range.getStart()
+                                  - getPageSize() );
+                }
+            }
 
             // Override so the last page is shown with a number of rows less
             // than the pageSize rather than always showing the pageSize number
             // of rows and possibly repeating rows on the last and penultimate
             // page
+            @Override
             public void setPageStart(int index) {
                 if ( getDisplay() != null ) {
                     Range range = getDisplay().getVisibleRange();
-                    int pageSize = range.getLength();
+                    int displayPageSize = getPageSize();
                     if ( isRangeLimited()
                          && getDisplay().isRowCountExact() ) {
-                        pageSize = Math.min( pageSize,
-                                             getDisplay().getRowCount()
-                                                     - index );
+                        displayPageSize = Math.min( getPageSize(),
+                                                    getDisplay().getRowCount()
+                                                            - index );
                     }
                     index = Math.max( 0,
                                       index );
                     if ( index != range.getStart() ) {
                         getDisplay().setVisibleRange( index,
-                                                      pageSize );
+                                                      displayPageSize );
                     }
                 }
             }
@@ -304,8 +333,10 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
                 boolean exact = display.isRowCountExact();
                 if ( dataSize == 0 ) {
                     return "0 of 0";
-                } else if ( dataSize == 1 ) {
-                    return "1 of 1";
+                } else if ( pageStart == endIndex ) {
+                    return formatter.format( pageStart )
+                           + " of "
+                           + formatter.format( dataSize );
                 }
                 return formatter.format( pageStart )
                        + "-"
@@ -316,6 +347,7 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
 
         };
         pager.setDisplay( cellTable );
+        pager.setPageSize( pageSize );
 
         columnPickerButton = columnPicker.createToggleButton();
     }

@@ -44,7 +44,7 @@ import com.google.gwt.view.client.HasData;
  */
 public class AssetPagedTable extends AbstractPagedTable<AssetPageRow> {
 
-    private static final int PAGE_SIZE = 20;
+    private static final int PAGE_SIZE = 10;
 
     /**
      * Construct a table to display AssetItems
