@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -47,12 +47,9 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ServerPushNotification;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
 import org.drools.guvnor.client.rulelist.AssetPagedTable;
 import org.drools.guvnor.client.rulelist.CategoryPagedTable;
 import org.drools.guvnor.client.rulelist.InboxPagedTable;
@@ -628,37 +625,28 @@ public class TabOpener {
                                       final String[] assetTypes,
                                       String key) {
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
-            AssetItemGrid grid = new AssetItemGrid( new OpenItemCommand() {
-                                                        public void open(String key) {
-                                                            openAsset( key );
-                                                        }
+            AssetPagedTable table = new AssetPagedTable( uuid,
+                                              Arrays.asList( assetTypes),
+                                              null,
+                                              new OpenItemCommand() {
+                                                  public void open(String key) {
+                                                      openAsset( key );
+                                                  }
 
-                                                        public void open(MultiViewRow[] rows) {
-                                                            for ( MultiViewRow row : rows ) {
-                                                                openAsset( row.uuid );
-                                                            }
-                                                        }
-                                                    },
-                                                    AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                    new AssetItemGridDataLoader() {
-                                                        public void loadData(int startRow,
-                                                                             int numberOfRows,
-                                                                             GenericCallback<TableDataResult> cb) {
-                                                            RepositoryServiceFactory.getService().listAssets( uuid,
-                                                                                                              assetTypes,
-                                                                                                              startRow,
-                                                                                                              numberOfRows,
-                                                                                                              AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                                                                              cb );
-                                                        }
-                                                    } );
+                                                  public void open(MultiViewRow[] rows) {
+                                                      for ( MultiViewRow row : rows ) {
+                                                          openAsset( row.uuid );
+                                                      }
+                                                  }
+                                              });
+            
 
             VerticalPanel vp = new VerticalPanel();
             vp.add( new HTML( "<i><small>"
                               + constants.SnapshotListingFor()
                               + name
                               + "</small></i>" ) );
-            vp.add( grid );
+            vp.add( table );
             explorerViewCenterPanel.addTab( constants.SnapshotItems(),
                                             vp,
                                             key );

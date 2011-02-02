@@ -31,7 +31,6 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
@@ -50,13 +49,8 @@ public class VerifierResultWidget extends Composite {
     public VerifierResultWidget(AnalysisReport report,
                                 boolean showFactUsage,
                                 OpenItemCommand edit) {
-        this( report,
-              showFactUsage );
+        
         this.edit = edit;
-    }
-
-    public VerifierResultWidget(AnalysisReport report,
-                                boolean showFactUsage) {
         FormStyleLayout layout = new FormStyleLayout();
 
         Tree tree = new Tree();

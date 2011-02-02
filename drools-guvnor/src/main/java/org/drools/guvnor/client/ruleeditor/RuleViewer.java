@@ -1,17 +1,17 @@
 /*
  * Copyright 2005 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.drools.guvnor.client.ruleeditor;
@@ -38,7 +38,6 @@ import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
@@ -64,7 +63,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The main layout parent/controller the rule viewer.
- *
+ * 
  * @author Michael Neale
  */
 public class RuleViewer extends GuvnorEditor {
@@ -106,12 +105,13 @@ public class RuleViewer extends GuvnorEditor {
 
     private long                                      lastSaved = System.currentTimeMillis();
 
-    private final OpenItemCommand                       editEvent;
+    private final OpenItemCommand                     editEvent;
 
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
     /**
-     * @param historicalReadOnly true if this is a read only view for historical purposes.
+     * @param historicalReadOnly
+     *            true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
                       final OpenItemCommand event) {
@@ -123,7 +123,8 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     /**
-     * @param historicalReadOnly true if this is a read only view for historical purposes.
+     * @param historicalReadOnly
+     *            true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
                       final OpenItemCommand event,
@@ -136,9 +137,10 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     /**
-     * @param historicalReadOnly true if this is a read only view for historical purposes.
-     * @param actionToolbarButtonsConfigurationProvider used to change the default
-     * button configuration provider.
+     * @param historicalReadOnly
+     *            true if this is a read only view for historical purposes.
+     * @param actionToolbarButtonsConfigurationProvider
+     *            used to change the default button configuration provider.
      */
     public RuleViewer(RuleAsset asset,
                       final OpenItemCommand event,
@@ -147,7 +149,8 @@ public class RuleViewer extends GuvnorEditor {
                       RuleViewerSettings ruleViewerSettings) {
         this.editEvent = event;
         this.asset = asset;
-        this.readOnly = historicalReadOnly && asset.isreadonly;
+        this.readOnly = historicalReadOnly
+                        && asset.isreadonly;
 
         if ( ruleViewerSettings == null ) {
             this.ruleViewerSettings = new RuleViewerSettings();
@@ -166,9 +169,9 @@ public class RuleViewer extends GuvnorEditor {
 
         editor = EditorLauncher.getEditorViewer( asset,
                                                  this );
-        
+
         // for designer we need to give it more playing room
-        if(editor.getClass().getName().equals("org.drools.guvnor.client.processeditor.BusinessProcessEditor")) {
+        if ( editor.getClass().getName().equals( "org.drools.guvnor.client.processeditor.BusinessProcessEditor" ) ) {
             editor.setWidth( "1100px" );
             editor.setHeight( "480px" );
         }
@@ -208,14 +211,15 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     /**
-     * This will actually load up the data (this is called by the callback)
-     * when we get the data back from the server,
-     * also determines what widgets to load up).
+     * This will actually load up the data (this is called by the callback) when
+     * we get the data back from the server, also determines what widgets to
+     * load up).
      */
     private void doWidgets() {
 
-        //the action widgets (checkin/close etc).
-        if ( readOnly || asset.isreadonly ) {
+        // the action widgets (checkin/close etc).
+        if ( readOnly
+             || asset.isreadonly ) {
             toolbar.setVisible( false );
         } else {
             toolbar.setPromtToGlobalCommand( new Command() {
@@ -327,7 +331,8 @@ public class RuleViewer extends GuvnorEditor {
             ((RuleModeller) editor).verifyRule( new Command() {
 
                 public void execute() {
-                    if ( ((RuleModeller) editor).hasVerifierErrors() || ((RuleModeller) editor).hasVerifierWarnings() ) {
+                    if ( ((RuleModeller) editor).hasVerifierErrors()
+                         || ((RuleModeller) editor).hasVerifierWarnings() ) {
                         if ( !Window.confirm( constants.theRuleHasErrorsOrWarningsDotDoYouWantToContinue() ) ) {
                             return;
                         }
@@ -341,8 +346,8 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     /**
-     * Called when user wants to checkin.
-     * set closeAfter to true if it should close this whole thing after saving it.
+     * Called when user wants to checkin. set closeAfter to true if it should
+     * close this whole thing after saving it.
      */
     protected void doCheckinConfirm(final boolean closeAfter) {
         final CheckinPopup pop = new CheckinPopup( constants.CheckInChanges() );
@@ -393,7 +398,8 @@ public class RuleViewer extends GuvnorEditor {
                                                  final FormStylePopup form = new FormStylePopup( images.ruleAsset(),
                                                                                                  constants.VerificationReport() );
                                                  ScrollPanel scrollPanel = new ScrollPanel( new VerifierResultWidget( report,
-                                                                                                                      false ) );
+                                                                                                                      false,
+                                                                                                                      editEvent ) );
                                                  scrollPanel.setWidth( "100%" );
                                                  form.addRow( scrollPanel );
 
@@ -402,7 +408,8 @@ public class RuleViewer extends GuvnorEditor {
                                              }
 
                                              public void onFailure(Throwable arg0) {
-                                                 // TODO Auto-generated method stub
+                                                 // TODO Auto-generated method
+                                                 // stub
                                              }
                                          } );
 
@@ -446,7 +453,7 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     protected boolean hasDirty() {
-        //not sure how to implement this now.
+        // not sure how to implement this now.
         return false;
     }
 
@@ -456,7 +463,7 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     void doDelete() {
-        readOnly = true; //set to not cause the extra confirm popup
+        readOnly = true; // set to not cause the extra confirm popup
         RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.uuid,
                                                                    this.asset.metaData.packageName,
                                                                    new GenericCallback<Void>() {
@@ -492,7 +499,7 @@ public class RuleViewer extends GuvnorEditor {
                                                                           return;
                                                                       }
 
-                                                                      if ( uuid.startsWith( "ERR" ) ) { //NON-NLS
+                                                                      if ( uuid.startsWith( "ERR" ) ) { // NON-NLS
                                                                           ErrorPopup.showMessage( uuid.substring( 5 ) );
                                                                           return;
                                                                       }
@@ -520,8 +527,9 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     /**
-     * In some cases we will want to flush the package dependency stuff for suggestion completions.
-     * The user will still need to reload the asset editor though.
+     * In some cases we will want to flush the package dependency stuff for
+     * suggestion completions. The user will still need to reload the asset
+     * editor though.
      */
     public void flushSuggestionCompletionCache() {
         if ( AssetFormats.isPackageDependency( this.asset.metaData.format ) ) {
@@ -561,7 +569,7 @@ public class RuleViewer extends GuvnorEditor {
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
                                                                      asset.metaData = asset_.metaData;
-                                                                     metaWidget.setMetaData(asset.metaData);
+                                                                     metaWidget.setMetaData( asset.metaData );
                                                                      metaWidget.refresh();
                                                                      if ( showBusy ) LoadingPopup.close();
                                                                  }
@@ -570,6 +578,7 @@ public class RuleViewer extends GuvnorEditor {
 
     /**
      * This needs to be called to allow the opened viewer to close itself.
+     * 
      * @param c
      */
     public void setCloseCommand(Command c) {
@@ -578,6 +587,7 @@ public class RuleViewer extends GuvnorEditor {
 
     /**
      * This is called when this viewer saves something.
+     * 
      * @param c
      */
     public void setCheckedInCommand(Command c) {
@@ -634,7 +644,8 @@ public class RuleViewer extends GuvnorEditor {
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
-                if ( newName.getText() == null || newName.getText().equals( "" ) ) {
+                if ( newName.getText() == null
+                     || newName.getText().equals( "" ) ) {
                     Window.alert( constants.AssetNameMustNotBeEmpty() );
                     return;
                 }
@@ -655,7 +666,7 @@ public class RuleViewer extends GuvnorEditor {
 
                                                                      @Override
                                                                      public void onFailure(Throwable t) {
-                                                                         if ( t.getMessage().indexOf( "ItemExistsException" ) > -1 ) { //NON-NLS
+                                                                         if ( t.getMessage().indexOf( "ItemExistsException" ) > -1 ) { // NON-NLS
                                                                              Window.alert( constants.ThatNameIsInUsePleaseTryAnother() );
                                                                          } else {
                                                                              super.onFailure( t );
