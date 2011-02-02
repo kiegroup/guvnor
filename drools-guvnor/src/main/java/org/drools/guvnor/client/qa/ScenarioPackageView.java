@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.qa;
 
+import java.util.Arrays;
+
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -25,9 +27,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
+import org.drools.guvnor.client.rulelist.AssetPagedTable;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.core.client.GWT;
@@ -51,28 +51,18 @@ public class ScenarioPackageView extends Composite {
 
     private VerticalPanel layout;
 
-    private AssetItemGrid grid;
-
+    private AssetPagedTable table;
+    
     public ScenarioPackageView(final String packageUUID,
                                String packageName,
                                OpenItemCommand editEvent,
                                ExplorerViewCenterPanel centerPanel) {
 
-        grid = new AssetItemGrid( editEvent,
-                                  AssetItemGrid.RULE_LIST_TABLE_ID,
-                                  new AssetItemGridDataLoader() {
-                                      public void loadData(int startRow,
-                                                           int numberOfRows,
-                                                           GenericCallback<TableDataResult> cb) {
-                                          RepositoryServiceFactory.getService().listAssets( packageUUID,
-                                                                                            new String[]{AssetFormats.TEST_SCENARIO},
-                                                                                            startRow,
-                                                                                            numberOfRows,
-                                                                                            AssetItemGrid.RULE_LIST_TABLE_ID,
-                                                                                            cb );
-                                      }
-                                  } );
-
+        this.table = new AssetPagedTable( packageUUID,
+                                                           Arrays.asList( new String[]{AssetFormats.TEST_SCENARIO}),
+                                                           null,
+                                                           editEvent);
+        
         layout = new VerticalPanel();
         layout.setWidth( "100%" );
         PrettyFormLayout pf = new PrettyFormLayout();
@@ -92,7 +82,7 @@ public class ScenarioPackageView extends Composite {
                       vert );
 
         layout.add( pf );
-        layout.add( grid );
+        layout.add( this.table );
 
         initWidget( layout );
 
@@ -100,7 +90,7 @@ public class ScenarioPackageView extends Composite {
 
     private void refreshShowGrid() {
         layout.remove( 1 );
-        layout.add( grid );
+        layout.add( this.table );
     }
 
     /**
