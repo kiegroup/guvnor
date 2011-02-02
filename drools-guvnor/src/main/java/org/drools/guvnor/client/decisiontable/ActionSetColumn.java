@@ -47,14 +47,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ActionSetColumn extends FormStylePopup {
 
-    private Constants                  constants    = GWT.create( Constants.class );
-    private static Images              images       = (Images) GWT.create( Images.class );
+    private Constants                   constants    = GWT.create( Constants.class );
+    private static Images               images       = (Images) GWT.create( Images.class );
 
-    private ActionSetFieldCol          editingCol;
-    private SmallLabel                 bindingLabel = new SmallLabel();
-    private TextBox                    fieldLabel   = getFieldLabel();
-    private VerticalDecisionTableWidget        dtable;
-    private SuggestionCompletionEngine sce;
+    private ActionSetFieldCol           editingCol;
+    private SmallLabel                  bindingLabel = new SmallLabel();
+    private TextBox                     fieldLabel   = getFieldLabel();
+    private VerticalDecisionTableWidget dtable;
+    private SuggestionCompletionEngine  sce;
 
     public ActionSetColumn(SuggestionCompletionEngine sce,
                            final VerticalDecisionTableWidget dtable,
@@ -162,8 +162,8 @@ public class ActionSetColumn extends FormStylePopup {
                         }
                     }
                 }
-                
-                //Pass new\modified column back for handling 
+
+                // Pass new\modified column back for handling
                 refreshGrid.execute( editingCol );
                 hide();
             }
@@ -175,7 +175,8 @@ public class ActionSetColumn extends FormStylePopup {
 
     private void doBindingLabel() {
         if ( this.editingCol.getBoundName() != null ) {
-            this.bindingLabel.setText( "" + this.editingCol.getBoundName() );
+            this.bindingLabel.setText( ""
+                                       + this.editingCol.getBoundName() );
         } else {
             this.bindingLabel.setText( constants
                     .pleaseChooseABoundFactForThisColumn() );
@@ -202,7 +203,7 @@ public class ActionSetColumn extends FormStylePopup {
                     cb.setEnabled( false );
                     editingCol.setUpdate( false );
                 } else {
-                    editingCol.setUpdate( cb.isEnabled() );
+                    editingCol.setUpdate( cb.getValue() );
                 }
             }
         } );

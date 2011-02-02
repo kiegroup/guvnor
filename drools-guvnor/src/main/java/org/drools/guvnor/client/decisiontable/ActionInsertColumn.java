@@ -37,11 +37,13 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is an editor for columns that are for inserting facts.
@@ -51,14 +53,14 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class ActionInsertColumn extends FormStylePopup {
 
-    private static Images              images       = (Images) GWT.create( Images.class );
-    private Constants                  constants    = GWT.create( Constants.class );
+    private static Images               images       = (Images) GWT.create( Images.class );
+    private Constants                   constants    = GWT.create( Constants.class );
 
-    private VerticalDecisionTableWidget        dtable;
-    private SuggestionCompletionEngine sce;
-    private ActionInsertFactCol        editingCol;
-    private SmallLabel                 patternLabel = new SmallLabel();
-    private TextBox                    fieldLabel   = getFieldLabel();
+    private VerticalDecisionTableWidget dtable;
+    private SuggestionCompletionEngine  sce;
+    private ActionInsertFactCol         editingCol;
+    private SmallLabel                  patternLabel = new SmallLabel();
+    private TextBox                     fieldLabel   = getFieldLabel();
 
     public ActionInsertColumn(SuggestionCompletionEngine sce,
                               final VerticalDecisionTableWidget dtable,
@@ -77,6 +79,7 @@ public class ActionInsertColumn extends FormStylePopup {
         editingCol.setValueList( col.getValueList() );
         editingCol.setDefaultValue( col.getDefaultValue() );
         editingCol.setHideColumn( col.isHideColumn() );
+        editingCol.setInsertLogical( col.isInsertLogical() );
 
         setTitle( constants.ActionColumnConfigurationInsertingANewFact() );
 
@@ -134,6 +137,9 @@ public class ActionInsertColumn extends FormStylePopup {
         addAttribute( constants.ColumnHeaderDescription(),
                       header );
 
+        addAttribute( constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved(),
+                      doInsertLogical() );
+
         addAttribute( constants.DefaultValue(),
                       GuidedDTColumnConfig.getDefaultEditor( editingCol ) );
 
@@ -184,8 +190,10 @@ public class ActionInsertColumn extends FormStylePopup {
 
     private void doPatternLabel() {
         if ( this.editingCol.getFactType() != null ) {
-            this.patternLabel.setText( this.editingCol.getFactType() + " ["
-                                       + editingCol.getBoundName() + "]" );
+            this.patternLabel.setText( this.editingCol.getFactType()
+                                       + " ["
+                                       + editingCol.getBoundName()
+                                       + "]" );
         }
     }
 
@@ -208,9 +216,13 @@ public class ActionInsertColumn extends FormStylePopup {
             if ( col instanceof ActionInsertFactCol ) {
                 ActionInsertFactCol c = (ActionInsertFactCol) col;
                 if ( !vars.contains( c.getBoundName() ) ) {
-                    patterns.addItem( c.getFactType() + " [" + c.getBoundName()
+                    patterns.addItem( c.getFactType()
+                                              + " ["
+                                              + c.getBoundName()
                                               + "]",
-                                      c.getFactType() + " " + c.getBoundName() );
+                                      c.getFactType()
+                                              + " "
+                                              + c.getBoundName() );
                     vars.add( c.getBoundName() );
                 }
             }
@@ -222,7 +234,8 @@ public class ActionInsertColumn extends FormStylePopup {
     }
 
     private boolean nil(String s) {
-        return s == null || s.equals( "" );
+        return s == null
+               || s.equals( "" );
     }
 
     private void showFieldChange() {
@@ -333,6 +346,29 @@ public class ActionInsertColumn extends FormStylePopup {
                           ok );
 
         pop.show();
+    }
+
+    private Widget doInsertLogical() {
+        HorizontalPanel hp = new HorizontalPanel();
+
+        final CheckBox cb = new CheckBox();
+        cb.setValue( editingCol.isInsertLogical() );
+        cb.setText( "" );
+        cb.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
+                if ( sce.isGlobalVariable( editingCol.getBoundName() ) ) {
+                    cb.setEnabled( false );
+                    editingCol.setInsertLogical( false );
+                } else {
+                    editingCol.setInsertLogical( cb.getValue() );
+                }
+            }
+        } );
+        hp.add( cb );
+        hp.add( new InfoPopup( constants.UpdateFact(),
+                               constants
+                                       .UpdateDescription() ) );
+        return hp;
     }
 
 }

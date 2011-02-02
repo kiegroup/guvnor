@@ -41,13 +41,18 @@ public class ActionInsertFactCol extends ActionCol {
 	 * types in SuggestionCompletionEngine.
 	 */
 	private String type;
-
+	
 	/**
 	 * An optional comman separated list of values.
 	 */
 	private String valueList;
 
-	public void setFactType(String factType) {
+    /**
+     * Is insert to be performed Logically
+     */
+    private boolean isInsertLogical = false;
+
+    public void setFactType(String factType) {
 		this.factType = factType;
 	}
 
@@ -87,7 +92,15 @@ public class ActionInsertFactCol extends ActionCol {
 		return valueList;
 	}
 
-	@Override
+	public boolean isInsertLogical() {
+        return isInsertLogical;
+    }
+
+    public void setInsertLogical(boolean isInsertLogical) {
+        this.isInsertLogical = isInsertLogical;
+    }
+
+    @Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
 			return false;
@@ -101,6 +114,7 @@ public class ActionInsertFactCol extends ActionCol {
 				&& nullOrEqual(this.factField, that.factField)
 				&& nullOrEqual(this.type, that.type)
 				&& nullOrEqual(this.valueList, that.valueList)
+				&& this.isInsertLogical==that.isInsertLogical
 				&& super.equals(obj);
 	}
 
@@ -112,6 +126,7 @@ public class ActionInsertFactCol extends ActionCol {
 		hash = hash * 31 + (factField == null ? 0 : factField.hashCode());
 		hash = hash * 31 + (type == null ? 0 : type.hashCode());
 		hash = hash * 31 + (valueList == null ? 0 : valueList.hashCode());
+		hash = hash * 31 + (((Boolean) isInsertLogical).hashCode());
 		hash = hash * 31 + super.hashCode();
 		return hash;
 	}

@@ -22,6 +22,7 @@ import java.util.StringTokenizer;
 
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
@@ -123,9 +124,15 @@ public class GuidedDTDRLPersistence {
                     if ( a == null ) {
                         a = new LabelledAction();
                         a.boundName = ac.getBoundName();
-                        ActionInsertFact ins = new ActionInsertFact( ac.getFactType() );
-                        ins.setBoundName( ac.getBoundName() );
-                        a.action = ins;
+                        if ( !ac.isInsertLogical() ) {
+                            ActionInsertFact ins = new ActionInsertFact( ac.getFactType() );
+                            ins.setBoundName( ac.getBoundName() );
+                            a.action = ins;
+                        } else {
+                            ActionInsertLogicalFact ins = new ActionInsertLogicalFact( ac.getFactType() );
+                            ins.setBoundName( ac.getBoundName() );
+                            a.action = ins;
+                        }
                         actions.add( a );
                     }
                     ActionInsertFact ins = (ActionInsertFact) a.action;

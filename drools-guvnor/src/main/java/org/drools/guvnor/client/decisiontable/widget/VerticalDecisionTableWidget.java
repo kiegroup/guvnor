@@ -963,8 +963,8 @@ public class VerticalDecisionTableWidget extends Composite
         col.setValueList( editingCol.getValueList() );
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
-
         col.setFactType( editingCol.getFactType() );
+        col.setInsertLogical( editingCol.isInsertLogical() );
     }
 
     // Copy values from one (transient) model column into another
@@ -977,7 +977,6 @@ public class VerticalDecisionTableWidget extends Composite
         col.setValueList( editingCol.getValueList() );
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
-
         col.setUpdate( editingCol.isUpdate() );
     }
 
