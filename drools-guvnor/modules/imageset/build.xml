@@ -12,7 +12,7 @@
         
         <javac srcdir="src"
                destdir="classes"
-               classpath="../../../lib/gwt-rolodex-gwt15-1.1.jar;${gwt.home}/gwt-user.jar;../../target/classes"
+               classpath="../lib/gwt-rolodex-gwt15-1.1.jar;${gwt.home}/gwt-user.jar;../../target/classes"
                debug="on"/>
         <copy todir="classes">
             <fileset dir="src"/> 
