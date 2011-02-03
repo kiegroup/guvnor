@@ -1282,12 +1282,11 @@ public class ServiceImplementation implements RepositoryService {
         serviceSecurity.checkSecurityIsPackageDeveloper( asset );
 
         ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
+<<<<<<< HEAD
         log.info( "****** ContentHandler is: " + handler.getClass().getName() );
 
         StringBuffer buf = new StringBuffer();
         if ( handler.isRuleAsset() ) {
-            log.info( "****** isRuleAsset!" );
-
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
             PackageItem packageItem = getRulesRepository().loadPackage( asset.metaData.packageName );

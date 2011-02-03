@@ -26,6 +26,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -233,7 +234,7 @@ public class BPMN2ProcessHandler extends ContentHandler
             try {
                 String xml = BPMN2ProcessHandler.serialize("http://localhost:8080/designer/uuidRepository?profile=drools&action=toXML",
                         content.getJson());
-                buf.append(xml);
+                buf.append(StringEscapeUtils.escapeXml(xml));
             } catch (IOException e) {
                 log.error("Exception converting to xml: " + e.getMessage());
             }
