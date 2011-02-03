@@ -294,21 +294,24 @@ public class WebDAVImpl implements IWebdavStore {
     }
 
     public StoredObject getStoredObject(ITransaction iTransaction, String uri) {
-        RulesRepository repository = getRepo();
-        String[] path = getPath( uri );
-        if ( path.length < 2 ) {
-            return createStoredObject( uri );
-        }
+        try {
+            RulesRepository repository = getRepo();
+            String[] path = getPath( uri );
+            if ( path.length < 2 ) {
+                return createStoredObject( uri );
+            }
 
-        if ( isPackages( path ) && checkPackagePermissionIfReadOnly( path ) ) {
-            return getStoredObjectForReadOnlyPackages( uri, repository, path );
-        }
+            if ( isPackages( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+                return getStoredObjectForReadOnlyPackages( uri, repository, path );
+            }
 
-        if ( isSnaphosts( path ) && checkPackagePermissionIfReadOnly( path ) ) {
-            return getStoredObjectForReadOnlySnapshots( uri, repository, path );
+            if ( isSnaphosts( path ) && checkPackagePermissionIfReadOnly( path ) ) {
+                return getStoredObjectForReadOnlySnapshots( uri, repository, path );
+            }
+            throw new UnsupportedOperationException();
+        } catch( Exception e ) {
+            throw new UnsupportedOperationException(e.getMessage());
         }
-        throw new UnsupportedOperationException();
-
     }
 
     private StoredObject createStoredObject(String uri) {
@@ -587,7 +590,12 @@ public class WebDAVImpl implements IWebdavStore {
     //REVISIT: We should never reach this code which is using webdav as regex,
     //i.e., input uri is sth like /webdav/packages/mypackage
     String[] getPath(String uri) {
-        return getPath( uri, false );
+        if ( Contexts.isSessionContextActive() ) { 
+            return getPath( uri, false );
+        } else {
+            return getPath( uri, true );
+        }
+        
     }
 
     String[] getPath(String uri, boolean usingWebdavAsRegex) {

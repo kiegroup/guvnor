@@ -69,7 +69,7 @@ public class WebdavServlet extends WebDavServletBean {
                                                     IOException {
         //love you
         long time = System.currentTimeMillis();
-
+        
         String auth = req.getHeader( "Authorization" );
         if ( !RestAPIServlet.allowUser( auth ) ) {
             resp.setHeader( "WWW-Authenticate",
