@@ -63,7 +63,7 @@ public class RepositoryAssetOperations {
     private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryAssetOperations.class );
 
     public String renameAsset(String uuid, String newName) {
-        return getRepository().renameAsset( uuid, newName );
+        return getRulesRepository().renameAsset( uuid, newName );
     }
 
     protected BuilderResult buildAsset(RuleAsset asset) throws SerializationException {
@@ -74,7 +74,7 @@ public class RepositoryAssetOperations {
             ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
             BuilderResultHelper builderResultHelper = new BuilderResultHelper();
             if ( asset.metaData.isBinary() ) {
-                AssetItem item = getRepository().loadAssetByUUID( asset.uuid );
+                AssetItem item = getRulesRepository().loadAssetByUUID( asset.uuid );
 
                 handler.storeAssetContent( asset, item );
 
@@ -93,7 +93,7 @@ public class RepositoryAssetOperations {
                     return ((IValidating) handler).validateAsset( asset );
                 }
 
-                PackageItem packageItem = getRepository().loadPackageByUUID( asset.metaData.packageUUID );
+                PackageItem packageItem = getRulesRepository().loadPackageByUUID( asset.metaData.packageUUID );
 
                 ContentPackageAssembler asm = new ContentPackageAssembler( asset, packageItem );
                 if ( !asm.hasErrors() ) {
@@ -174,7 +174,7 @@ public class RepositoryAssetOperations {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
         RepositoryFilter filter = new AssetItemFilter();
 
-        AssetItemIterator it = getRepository().findArchivedAssets();
+        AssetItemIterator it = getRulesRepository().findArchivedAssets();
         it.skip( skip );
         int count = 0;
         while ( it.hasNext() ) {
@@ -217,7 +217,7 @@ public class RepositoryAssetOperations {
     protected PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) throws SerializationException {
         // Do query
         long start = System.currentTimeMillis();
-        AssetItemIterator it = getRepository().findArchivedAssets();
+        AssetItemIterator it = getRulesRepository().findArchivedAssets();
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
@@ -278,7 +278,7 @@ public class RepositoryAssetOperations {
             throw new DetailedSerializationException( "Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh..." );
         }
         long start = System.currentTimeMillis();
-        PackageItem pkg = getRepository().loadPackageByUUID( packageUuid );
+        PackageItem pkg = getRulesRepository().loadPackageByUUID( packageUuid );
         AssetItemIterator it;
         if ( formats.length > 0 ) {
             it = pkg.listAssetsByFormat( formats );
@@ -290,11 +290,11 @@ public class RepositoryAssetOperations {
         return handler.loadRuleListTable( it, skip, numRows );
     }
 
-    public void setRepository(RulesRepository repository) {
+    public void setRulesRepository(RulesRepository repository) {
         this.repository = repository;
     }
 
-    public RulesRepository getRepository() {
+    public RulesRepository getRulesRepository() {
         return repository;
     }
 

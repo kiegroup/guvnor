@@ -211,7 +211,7 @@ public class ServiceImplementation implements RepositoryService {
     /* This is called also by Seam AND Hosted mode */
     @Create
     public void create() {
-        repositoryAssetOperations.setRepository( getRulesRepository() );
+        repositoryAssetOperations.setRulesRepository( getRulesRepository() );
     }
 
     /* This is called in hosted mode when creating "by hand" */
