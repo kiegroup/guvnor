@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
+import org.drools.guvnor.client.rpc.AssetPageRequest;
+import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -37,6 +39,7 @@ import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.IValidating;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.AssetFormatHelper;
+import org.drools.guvnor.server.util.AssetPageRowPopulator;
 import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
@@ -334,8 +337,8 @@ public class RepositoryAssetOperations {
         TableDisplayHandler handler = new TableDisplayHandler( "searchresults" );
         return handler.loadRuleListTable( resultList, skip, numRows );
     }
-    
-    protected String buildAssetSource(RuleAsset asset) throws SerializationException{
+
+    protected String buildAssetSource(RuleAsset asset) throws SerializationException {
         ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
 
         StringBuffer buf = new StringBuffer();
@@ -367,6 +370,58 @@ public class RepositoryAssetOperations {
             }
         }
         return buf.toString();
+    }
+
+    protected PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request) throws SerializationException {
+        log.debug( "Finding asset page of packageUuid (" + request.getPackageUuid() + ")" );
+        long start = System.currentTimeMillis();
+
+        PackageItem packageItem = getRulesRepository().loadPackageByUUID( request.getPackageUuid() );
+
+        AssetItemIterator it;
+        if ( request.getFormatInList() != null ) {
+            if ( request.getFormatIsRegistered() != null ) {
+                throw new IllegalArgumentException( "Combining formatInList and formatIsRegistered is not yet supported." );
+            } else {
+                it = packageItem.listAssetsByFormat( request.getFormatInList() );
+            }
+        } else {
+            if ( request.getFormatIsRegistered() != null ) {
+                it = packageItem.listAssetsNotOfFormat( AssetFormatHelper.listRegisteredTypes() );
+            } else {
+                it = packageItem.queryAssets( "" );
+            }
+        }
+
+        // Populate response
+        long totalRowsCount = it.getSize();
+        PageResponse<AssetPageRow> response = new PageResponse<AssetPageRow>();
+        List<AssetPageRow> rowList = fillAssetPageRowsForFindAssetPage( request, it );
+        boolean bHasMoreRows = it.hasNext();
+        response.setStartRowIndex( request.getStartRowIndex() );
+        response.setPageRowList( rowList );
+        response.setLastPage( !bHasMoreRows );
+
+        // Fix Total Row Size
+        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
+        serviceRowSizeHelper.fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
+
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Found asset page of packageUuid (" + request.getPackageUuid() + ") in " + methodDuration + " ms." );
+        return response;
+    }
+
+    private List<AssetPageRow> fillAssetPageRowsForFindAssetPage(AssetPageRequest request, AssetItemIterator it) {
+        int pageSize = request.getPageSize();
+        it.skip( request.getStartRowIndex() );
+        List<AssetPageRow> rowList = new ArrayList<AssetPageRow>( request.getPageSize() );
+
+        while ( it.hasNext() && (pageSize < 0 || rowList.size() <= pageSize) ) {
+            AssetItem assetItem = (AssetItem) it.next();
+            AssetPageRowPopulator assetPageRowPopulator = new AssetPageRowPopulator();
+            rowList.add( assetPageRowPopulator.makeAssetPageRow( assetItem ) );
+        }
+        return rowList;
     }
 
     public void setRulesRepository(RulesRepository repository) {
