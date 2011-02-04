@@ -18,6 +18,7 @@ package org.drools.guvnor.server;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -415,5 +416,8 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
 
     public Map<String,String> loadSpringContextElementData() throws org.drools.guvnor.client.rpc.DetailedSerializationException{
     	return getService().loadSpringContextElementData();
-    }	
+    }
+    
+    
+
 }

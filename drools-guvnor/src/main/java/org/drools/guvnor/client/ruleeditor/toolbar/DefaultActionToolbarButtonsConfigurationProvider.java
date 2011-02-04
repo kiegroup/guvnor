@@ -29,7 +29,6 @@ public class DefaultActionToolbarButtonsConfigurationProvider
         implements
         ActionToolbarButtonsConfigurationProvider {
 
-
     private static String[] VALIDATING_FORMATS = new String[]{BUSINESS_RULE, DSL_TEMPLATE_RULE, DECISION_SPREADSHEET_XLS, DRL, ENUMERATION, DECISION_TABLE_GUIDED, DRL_MODEL, DSL, FUNCTION, RULE_TEMPLATE, SPRING_CONTEXT};
     private static String[] SOURCE_FORMATS = new String[]{BUSINESS_RULE, DSL_TEMPLATE_RULE, DRL, DECISION_TABLE_GUIDED, RULE_TEMPLATE, BPMN2_PROCESS, BPMN_PROCESS};
 

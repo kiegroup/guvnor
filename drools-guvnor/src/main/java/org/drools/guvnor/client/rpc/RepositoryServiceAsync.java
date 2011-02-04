@@ -19,12 +19,12 @@ package org.drools.guvnor.client.rpc;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
- * 
- * This is what the remote service will implement, as a servlet.
- * 
- * (in hosted/debug mode, you could also use an implementation that was
- * in-process).
- */
+*
+* This is what the remote service will implement, as a servlet.
+*
+* (in hosted/debug mode, you could also use an implementation that was
+* in-process).
+*/
 public interface RepositoryServiceAsync {
 
     /** PLACE THE FOLLOWING IN RepositoryServiceAsync.java **/
@@ -128,3 +128,4 @@ public interface RepositoryServiceAsync {
     public void isHostedMode(AsyncCallback<java.lang.Boolean> cb);
     public void loadSpringContextElementData(com.google.gwt.user.client.rpc.AsyncCallback<java.util.Map<String,String>> data);
 }
+

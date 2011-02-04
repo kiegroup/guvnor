@@ -71,7 +71,7 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledText> {
             return description;
         }
 
-        @Override
+     
         public int compareTo(TitledText o) {
             return title.compareTo( o.title );
         }
@@ -101,7 +101,7 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledText> {
         private TitledTextSafeHtmlRenderer() {
         }
 
-        @Override
+       
         public SafeHtml render(TitledText object) {
             String html = "<div>"
                           + object.title
@@ -116,7 +116,7 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledText> {
             return SafeHtmlUtils.fromTrustedString( html );
         }
 
-        @Override
+      
         public void render(TitledText object,
                            SafeHtmlBuilder builder) {
             builder.append( render( object ) );
