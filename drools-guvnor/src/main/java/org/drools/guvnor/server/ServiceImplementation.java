@@ -848,29 +848,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult quickFindAsset(String searchText, boolean searchArchived, int skip, int numRows) throws SerializationException {
-        String search = searchText.replace( '*', '%' );
-
-        if ( !search.endsWith( "%" ) ) {
-            search += "%";
-        }
-
-        List<AssetItem> resultList = new ArrayList<AssetItem>();
-
-        long start = System.currentTimeMillis();
-        AssetItemIterator it = getRulesRepository().findAssetsByName( search, searchArchived );
-        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-
-        RepositoryFilter filter = new AssetItemFilter();
-
-        while ( it.hasNext() ) {
-            AssetItem ai = it.next();
-            if ( filter.accept( ai, RoleTypes.PACKAGE_READONLY ) ) {
-                resultList.add( ai );
-            }
-        }
-
-        TableDisplayHandler handler = new TableDisplayHandler( "searchresults" );
-        return handler.loadRuleListTable( resultList, skip, numRows );
+        return repositoryAssetOperations.quickFindAsset( searchText, searchArchived, skip, numRows );
     }
 
     @WebRemote

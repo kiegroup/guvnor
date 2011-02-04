@@ -271,7 +271,7 @@ public class RepositoryAssetOperations {
         row.setLastModified( assetItem.getLastModified().getTime() );
         return row;
     }
-    
+
     protected TableDataResult listAssets(String packageUuid, String formats[], int skip, int numRows, String tableConfig) throws SerializationException {
         log.debug( "Loading asset list for [" + packageUuid + "]" );
         if ( numRows == 0 ) {
@@ -288,6 +288,32 @@ public class RepositoryAssetOperations {
         TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
         log.debug( "time for asset list load: " + (System.currentTimeMillis() - start) );
         return handler.loadRuleListTable( it, skip, numRows );
+    }
+
+    protected TableDataResult quickFindAsset(String searchText, boolean searchArchived, int skip, int numRows) throws SerializationException {
+        String search = searchText.replace( '*', '%' );
+
+        if ( !search.endsWith( "%" ) ) {
+            search += "%";
+        }
+
+        List<AssetItem> resultList = new ArrayList<AssetItem>();
+
+        long start = System.currentTimeMillis();
+        AssetItemIterator it = getRulesRepository().findAssetsByName( search, searchArchived );
+        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+        RepositoryFilter filter = new AssetItemFilter();
+
+        while ( it.hasNext() ) {
+            AssetItem ai = it.next();
+            if ( filter.accept( ai, RoleTypes.PACKAGE_READONLY ) ) {
+                resultList.add( ai );
+            }
+        }
+
+        TableDisplayHandler handler = new TableDisplayHandler( "searchresults" );
+        return handler.loadRuleListTable( resultList, skip, numRows );
     }
 
     public void setRulesRepository(RulesRepository repository) {
