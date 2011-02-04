@@ -125,7 +125,7 @@ public class ActionToolbar extends Composite {
     }
 
     private boolean areSourceMenuChildrenVisible() {
-        return validate.isVisible() || verify.isVisible() || verify.isVisible();
+        return validate.isVisible() || verify.isVisible() || viewSource.isVisible();
     }
 
     public void setSelectWorkingSetsCommand(Command command) {
