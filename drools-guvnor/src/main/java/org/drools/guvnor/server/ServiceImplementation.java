@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectOutput;
 import java.io.StringWriter;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -66,7 +65,6 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
-import org.drools.guvnor.client.rpc.AbstractPageRow;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
@@ -102,7 +100,6 @@ import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
@@ -129,6 +126,7 @@ import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
+import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
@@ -537,31 +535,23 @@ public class ServiceImplementation implements RepositoryService {
         // through category
         // based permission
         if ( Contexts.isSessionContextActive() ) {
-            boolean passed = false;
 
             try {
                 Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ), RoleTypes.PACKAGE_READONLY );
             } catch ( RuntimeException e ) {
-                if ( asset.metaData.categories.length == 0 ) {
-                    Identity.instance().checkPermission( new CategoryPathType( null ), RoleTypes.ANALYST_READ );
-                } else {
-                    RuntimeException exception = null;
-
-                    for ( String cat : asset.metaData.categories ) {
-                        try {
-                            Identity.instance().checkPermission( new CategoryPathType( cat ), RoleTypes.ANALYST_READ );
-                            passed = true;
-                        } catch ( RuntimeException re ) {
-                            exception = re;
-                        }
-                    }
-                    if ( !passed ) {
-                        throw exception;
-                    }
-                }
+                handleLoadRuleAssetException( asset );
             }
         }
 
+        PackageItem pkgItem = handlePackageItem( item, asset );
+
+        log.debug( "Package: " + pkgItem.getName() + ", asset: " + item.getName() + ". Load time taken for asset: " + (System.currentTimeMillis() - time) );
+        UserInbox.recordOpeningEvent( item );
+        return asset;
+
+    }
+
+    private PackageItem handlePackageItem(AssetItem item, RuleAsset asset) throws SerializationException {
         PackageItem pkgItem = item.getPackage();
 
         ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
@@ -572,11 +562,27 @@ public class ServiceImplementation implements RepositoryService {
         if ( pkgItem.isSnapshot() ) {
             asset.isreadonly = true;
         }
+        return pkgItem;
+    }
 
-        log.debug( "Package: " + pkgItem.getName() + ", asset: " + item.getName() + ". Load time taken for asset: " + (System.currentTimeMillis() - time) );
-        UserInbox.recordOpeningEvent( item );
-        return asset;
-
+    private void handleLoadRuleAssetException(RuleAsset asset) {
+        if ( asset.metaData.categories.length == 0 ) {
+            Identity.instance().checkPermission( new CategoryPathType( null ), RoleTypes.ANALYST_READ );
+        } else {
+            RuntimeException exception = null;
+            boolean passed = false;
+            for ( String cat : asset.metaData.categories ) {
+                try {
+                    Identity.instance().checkPermission( new CategoryPathType( cat ), RoleTypes.ANALYST_READ );
+                    passed = true;
+                } catch ( RuntimeException re ) {
+                    exception = re;
+                }
+            }
+            if ( !passed ) {
+                throw exception;
+            }
+        }
     }
 
     @WebRemote
@@ -705,26 +711,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadArchivedAssets(int skip, int numRows) throws SerializationException {
-        List<TableDataRow> result = new ArrayList<TableDataRow>();
-        RepositoryFilter filter = new AssetItemFilter();
-
-        AssetItemIterator it = getRulesRepository().findArchivedAssets();
-        it.skip( skip );
-        int count = 0;
-        while ( it.hasNext() ) {
-
-            AssetItem archived = (AssetItem) it.next();
-
-            if ( filter.accept( archived, "read" ) ) {
-                result.add( createArchivedRow( archived ) );
-                count++;
-            }
-            if ( count == numRows ) {
-                break;
-            }
-        }
-
-        return createArchivedTable( result, it );
+        return repositoryAssetOperations.loadArchivedAssets( skip, numRows );
     }
 
     @WebRemote
@@ -734,26 +721,7 @@ public class ServiceImplementation implements RepositoryService {
             throw new IllegalArgumentException( "request cannot be null" );
         }
 
-        // Do query
-        long start = System.currentTimeMillis();
-        AssetItemIterator it = getRulesRepository().findArchivedAssets();
-        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-
-        // Populate response
-        long totalRowsCount = it.getSize();
-        PageResponse<AdminArchivedPageRow> response = new PageResponse<AdminArchivedPageRow>();
-        List<AdminArchivedPageRow> rowList = fillAdminArchivePageRows( request, it );
-        boolean bHasMoreRows = it.hasNext();
-        response.setStartRowIndex( request.getStartRowIndex() );
-        response.setPageRowList( rowList );
-        response.setLastPage( !bHasMoreRows );
-
-        // Fix Total Row Size
-        fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
-
-        long methodDuration = System.currentTimeMillis() - start;
-        log.debug( "Searched for Archived Assests in " + methodDuration + " ms." );
-        return response;
+        return repositoryAssetOperations.loadArchivedAssets( request );
     }
 
     @WebRemote
@@ -1430,7 +1398,8 @@ public class ServiceImplementation implements RepositoryService {
         response.setLastPage( !bHasMoreRows );
 
         // Fix Total Row Size
-        fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
+        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
+        serviceRowSizeHelper.fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Found asset page of packageUuid (" + request.getPackageUuid() + ") in " + methodDuration + " ms." );
@@ -1468,7 +1437,8 @@ public class ServiceImplementation implements RepositoryService {
         response.setLastPage( !bHasMoreRows );
 
         // Fix Total Row Size
-        fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
+        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
+        serviceRowSizeHelper.fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Quick Find) for (" + search + ") in " + methodDuration + " ms." );
@@ -2199,7 +2169,8 @@ public class ServiceImplementation implements RepositoryService {
         response.setLastPage( !bHasMoreRows );
 
         // Fix Total Row Size
-        fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
+        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
+        serviceRowSizeHelper.fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Full Text) for (" + request.getSearchText() + ") in " + methodDuration + " ms." );
@@ -2241,7 +2212,8 @@ public class ServiceImplementation implements RepositoryService {
         response.setLastPage( !bHasMoreRows );
 
         // Fix Total Row Size
-        fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
+        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
+        serviceRowSizeHelper.fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Metadata) in " + methodDuration + " ms." );
@@ -2275,7 +2247,8 @@ public class ServiceImplementation implements RepositoryService {
         response.setLastPage( !bHasMoreRows );
 
         // Fix Total Row Size
-        fixTotalRowSize( request, response, -1, rowList.size(), bHasMoreRows );
+        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
+        serviceRowSizeHelper.fixTotalRowSize( request, response, -1, rowList.size(), bHasMoreRows );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Assest with State (" + request.getStateName() + ") in " + methodDuration + " ms." );
@@ -2316,7 +2289,8 @@ public class ServiceImplementation implements RepositoryService {
         response.setLastPage( !bHasMoreRows );
 
         // Fix Total Row Size
-        fixTotalRowSize( request, response, -1, rowList.size(), bHasMoreRows );
+        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
+        serviceRowSizeHelper.fixTotalRowSize( request, response, -1, rowList.size(), bHasMoreRows );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Assest with Category (" + request.getCategoryPath() + ") in " + methodDuration + " ms." );
@@ -2490,29 +2464,6 @@ public class ServiceImplementation implements RepositoryService {
         Calendar cal = Calendar.getInstance();
         cal.setTime( date );
         return cal;
-    }
-
-  
-   
-    private TableDataResult createArchivedTable(List<TableDataRow> result, AssetItemIterator it) {
-        TableDataResult table = new TableDataResult();
-        table.data = result.toArray( new TableDataRow[result.size()] );
-        table.currentPosition = it.getPosition();
-        table.total = it.getSize();
-        table.hasNext = it.hasNext();
-        return table;
-    }
-
-    private TableDataRow createArchivedRow(AssetItem archived) {
-        TableDataRow row = new TableDataRow();
-        row.id = archived.getUUID();
-        row.values = new String[5];
-        row.values[0] = archived.getName();
-        row.values[1] = archived.getFormat();
-        row.values[2] = archived.getPackageName();
-        row.values[3] = archived.getLastContributor();
-        row.values[4] = Long.toString( archived.getLastModified().getTime().getTime() );
-        return row;
     }
 
     private PackageConfigData createPackageConfigData(PackageItem item) {
@@ -2988,33 +2939,6 @@ public class ServiceImplementation implements RepositoryService {
         return rowList;
     }
 
-    // The total Record Count returned from AssetItemIterator.getSize() can be
-    // -1 which is not very helpful. We can however derive the total row count
-    // when on the last page of data
-    private void fixTotalRowSize(PageRequest request, PageResponse< ? extends AbstractPageRow> response, long totalRowsCount, int rowsRetrievedCount, boolean bHasMoreRows) {
-
-        // CellTable only handles integer row counts
-        if ( totalRowsCount > Integer.MAX_VALUE ) {
-            throw new IllegalStateException( "The totalRowSize (" + totalRowsCount + ") is too big." );
-        }
-
-        // Unable to ascertain size of whole data-set
-        if ( totalRowsCount == -1 ) {
-
-            // Last page, we can be derive absolute size
-            if ( !bHasMoreRows ) {
-                response.setTotalRowSize( request.getStartRowIndex() + rowsRetrievedCount );
-                response.setTotalRowSizeExact( true );
-            } else {
-                response.setTotalRowSize( -1 );
-                response.setTotalRowSizeExact( false );
-            }
-        } else {
-            response.setTotalRowSize( (int) totalRowsCount );
-            response.setTotalRowSizeExact( true );
-        }
-    }
-
     private AssetPageRow makeAssetPageRow(AssetItem assetItem) {
         AssetPageRow row = new AssetPageRow();
         populatePageRowBaseProperties( assetItem, row );
@@ -3113,40 +3037,6 @@ public class ServiceImplementation implements RepositoryService {
         row.setLastModified( assetItem.getLastModified().getTime() );
         row.setStateName( assetItem.getState().getName() );
         row.setPackageName( assetItem.getPackageName() );
-        return row;
-    }
-
-    private List<AdminArchivedPageRow> fillAdminArchivePageRows(PageRequest request, AssetItemIterator it) {
-        int skipped = 0;
-        int pageSize = request.getPageSize();
-        int startRowIndex = request.getStartRowIndex();
-        RepositoryFilter filter = new AssetItemFilter();
-        List<AdminArchivedPageRow> rowList = new ArrayList<AdminArchivedPageRow>( request.getPageSize() );
-
-        while ( it.hasNext() && (pageSize < 0 || rowList.size() < pageSize) ) {
-            AssetItem archivedAssetItem = (AssetItem) it.next();
-
-            // Filter surplus assets
-            if ( filter.accept( archivedAssetItem, RoleTypes.READ ) ) {
-
-                // Cannot use AssetItemIterator.skip() as it skips non-filtered
-                // assets whereas startRowIndex is the index of the
-                // first displayed asset (i.e. filtered)
-                if ( skipped >= startRowIndex ) {
-                    rowList.add( makeAdminArchivedPageRow( archivedAssetItem ) );
-                }
-                skipped++;
-            }
-        }
-        return rowList;
-    }
-
-    private AdminArchivedPageRow makeAdminArchivedPageRow(AssetItem assetItem) {
-        AdminArchivedPageRow row = new AdminArchivedPageRow();
-        populatePageRowBaseProperties( assetItem, row );
-        row.setPackageName( assetItem.getPackageName() );
-        row.setLastContributor( assetItem.getLastContributor() );
-        row.setLastModified( assetItem.getLastModified().getTime() );
         return row;
     }
 

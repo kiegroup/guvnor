@@ -19,8 +19,12 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.rpc.AbstractPageRow;
+import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.PageRequest;
+import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
@@ -28,11 +32,15 @@ import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IValidating;
+import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
+import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
@@ -158,6 +166,108 @@ public class RepositoryAssetOperations {
         tableDataRow.values[2] = dateFormatter.format( historical.getLastModified().getTime() );
         tableDataRow.values[3] = historical.getStateDescription();
         return tableDataRow;
+    }
+
+    protected TableDataResult loadArchivedAssets(int skip, int numRows) throws SerializationException {
+        List<TableDataRow> result = new ArrayList<TableDataRow>();
+        RepositoryFilter filter = new AssetItemFilter();
+
+        AssetItemIterator it = getRepository().findArchivedAssets();
+        it.skip( skip );
+        int count = 0;
+        while ( it.hasNext() ) {
+
+            AssetItem archived = (AssetItem) it.next();
+
+            if ( filter.accept( archived, "read" ) ) {
+                result.add( createArchivedRow( archived ) );
+                count++;
+            }
+            if ( count == numRows ) {
+                break;
+            }
+        }
+
+        return createArchivedTable( result, it );
+    }
+
+    private TableDataRow createArchivedRow(AssetItem archived) {
+        TableDataRow row = new TableDataRow();
+        row.id = archived.getUUID();
+        row.values = new String[5];
+        row.values[0] = archived.getName();
+        row.values[1] = archived.getFormat();
+        row.values[2] = archived.getPackageName();
+        row.values[3] = archived.getLastContributor();
+        row.values[4] = Long.toString( archived.getLastModified().getTime().getTime() );
+        return row;
+    }
+
+    private TableDataResult createArchivedTable(List<TableDataRow> result, AssetItemIterator it) {
+        TableDataResult table = new TableDataResult();
+        table.data = result.toArray( new TableDataRow[result.size()] );
+        table.currentPosition = it.getPosition();
+        table.total = it.getSize();
+        table.hasNext = it.hasNext();
+        return table;
+    }
+
+    protected PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) throws SerializationException {
+        // Do query
+        long start = System.currentTimeMillis();
+        AssetItemIterator it = getRepository().findArchivedAssets();
+        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+        // Populate response
+        long totalRowsCount = it.getSize();
+        PageResponse<AdminArchivedPageRow> response = new PageResponse<AdminArchivedPageRow>();
+        List<AdminArchivedPageRow> rowList = fillAdminArchivePageRows( request, it );
+        boolean bHasMoreRows = it.hasNext();
+        response.setStartRowIndex( request.getStartRowIndex() );
+        response.setPageRowList( rowList );
+        response.setLastPage( !bHasMoreRows );
+        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
+        serviceRowSizeHelper.fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
+
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Searched for Archived Assests in " + methodDuration + " ms." );
+        return response;
+    }
+
+    private List<AdminArchivedPageRow> fillAdminArchivePageRows(PageRequest request, AssetItemIterator it) {
+        int skipped = 0;
+        int pageSize = request.getPageSize();
+        int startRowIndex = request.getStartRowIndex();
+        RepositoryFilter filter = new AssetItemFilter();
+        List<AdminArchivedPageRow> rowList = new ArrayList<AdminArchivedPageRow>( request.getPageSize() );
+
+        while ( it.hasNext() && (pageSize < 0 || rowList.size() < pageSize) ) {
+            AssetItem archivedAssetItem = (AssetItem) it.next();
+
+            // Filter surplus assets
+            if ( filter.accept( archivedAssetItem, RoleTypes.READ ) ) {
+
+                // Cannot use AssetItemIterator.skip() as it skips non-filtered
+                // assets whereas startRowIndex is the index of the
+                // first displayed asset (i.e. filtered)
+                if ( skipped >= startRowIndex ) {
+                    rowList.add( makeAdminArchivedPageRow( archivedAssetItem ) );
+                }
+                skipped++;
+            }
+        }
+        return rowList;
+    }
+
+    private AdminArchivedPageRow makeAdminArchivedPageRow(AssetItem assetItem) {
+        AdminArchivedPageRow row = new AdminArchivedPageRow();
+        row.setUuid( assetItem.getUUID() );
+        row.setFormat( assetItem.getFormat() );
+        row.setName( assetItem.getName() );
+        row.setPackageName( assetItem.getPackageName() );
+        row.setLastContributor( assetItem.getLastContributor() );
+        row.setLastModified( assetItem.getLastModified().getTime() );
+        return row;
     }
 
     public void setRepository(RulesRepository repository) {
