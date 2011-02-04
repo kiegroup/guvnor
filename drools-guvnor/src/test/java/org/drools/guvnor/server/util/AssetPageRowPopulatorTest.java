@@ -16,6 +16,7 @@
 package org.drools.guvnor.server.util;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
@@ -35,7 +36,7 @@ public class AssetPageRowPopulatorTest {
     @Test
     public void testMakeAssetPageRow() {
 
-        AssetItem assetItem = Mockito.mock( AssetItem.class );
+        AssetItem assetItem = mock( AssetItem.class );
         Calendar calendar = GregorianCalendar.getInstance();
         calendar.add( Calendar.MONTH, -1 );
         Calendar lastModifiedCalendar = GregorianCalendar.getInstance();
@@ -45,7 +46,7 @@ public class AssetPageRowPopulatorTest {
         when( assetItem.getName() ).thenReturn( "name" );
         when( assetItem.getDescription() ).thenReturn( "descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescription" );
         when( assetItem.getStateDescription() ).thenReturn( "statedescription" );
-        when( assetItem.getCreator() ).thenReturn( "createot" );
+        when( assetItem.getCreator() ).thenReturn( "creator" );
         when( assetItem.getCreatedDate() ).thenReturn( calendar );
         when( assetItem.getLastContributor() ).thenReturn( "lastcontributor" );
         when( assetItem.getLastModified() ).thenReturn( lastModifiedCalendar );
