@@ -25,9 +25,9 @@ import java.util.Date;
  */
 public class LogPageRow extends AbstractPageRow {
 
-    public int    severity;  // TODO should be an enum
-    public String message;
-    public Date   timestamp;
+    private int    severity;  // TODO should be an enum
+    private String message;
+    private Date   timestamp;
 
     // ************************************************************************
     // Getters and setters

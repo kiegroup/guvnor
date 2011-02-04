@@ -22,7 +22,6 @@ import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.repository.RulesRepository;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -694,11 +693,24 @@ public interface RepositoryService
     public Map<String, List<String>> listUserPermissions() throws DetailedSerializationException;
 
     /**
+<<<<<<< HEAD
 * Loads the user permissions.
 *
 * @param userName
 * @return A map of permission type to the targets it applies to.
 */
+=======
+     * @return User permissions: list of permission types for display reasons.
+     */
+    public PageResponse<PermissionsPageRow> listUserPermissions(PageRequest request) throws DetailedSerializationException;
+    
+    /**
+     * Loads the user permissions.
+     * 
+     * @param userName
+     * @return A map of permission type to the targets it applies to.
+     */
+>>>>>>> GWTEXT table replacement: Admin->User permissions
     public Map<String, List<String>> retrieveUserPermissions(String userName);
 
     /**

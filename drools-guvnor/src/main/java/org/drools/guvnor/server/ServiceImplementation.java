@@ -84,6 +84,7 @@ import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.PermissionsPageRow;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
@@ -1628,9 +1629,16 @@ public class ServiceImplementation implements RepositoryService {
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setTotalRowSize( entries.length );
         response.setTotalRowSizeExact( true );
+<<<<<<< HEAD
 
         List<LogPageRow> rowList = new ArrayList<LogPageRow>( request.getPageSize() );
         for ( int i = request.getStartRowIndex(); i < request.getPageSize() && i < entries.length; i++ ) {
+=======
+        
+        int rowMaxNumber = Math.min(request.getStartRowIndex()+request.getPageSize(), entries.length);
+        List<LogPageRow> rowList = new ArrayList<LogPageRow>(request.getPageSize());
+        for(int i = request.getStartRowIndex(); i<rowMaxNumber;i++) {
+>>>>>>> GWTEXT table replacement: Admin->User permissions
             LogEntry e = entries[i];
             LogPageRow row = new LogPageRow();
             row.setSeverity( e.severity );
@@ -1753,6 +1761,48 @@ public class ServiceImplementation implements RepositoryService {
         return pm.listUsers();
     }
 
+    @Restrict("#{identity.loggedIn}")
+    public PageResponse<PermissionsPageRow> listUserPermissions(PageRequest request) {
+        if ( request == null ) {
+            throw new IllegalArgumentException( "request cannot be null" );
+        }
+
+        serviceSecurity.checkSecurityIsAdmin();
+
+        // Do query
+        long start = System.currentTimeMillis();
+        PermissionManager pm = new PermissionManager( getRulesRepository() );
+        Map<String, List<String>> permissions = pm.listUsers();
+        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+        // Populate response
+        PageResponse<PermissionsPageRow> response = new PageResponse<PermissionsPageRow>();
+        response.setStartRowIndex( request.getStartRowIndex() );
+        response.setTotalRowSize( permissions.size() );
+        response.setTotalRowSizeExact( true );
+        
+        List<PermissionsPageRow> rowList = new ArrayList<PermissionsPageRow>(request.getPageSize());
+        Iterator<String> mapItr = permissions.keySet().iterator();
+        int rowNumber=0;
+        int rowMaxNumber = request.getStartRowIndex()+request.getPageSize();
+        while(mapItr.hasNext() && rowNumber<rowMaxNumber) {
+            String userName = mapItr.next();
+            if(rowNumber>=request.getStartRowIndex()) {
+                List<String> userPermissions = permissions.get( userName );
+                PermissionsPageRow row = new PermissionsPageRow();
+                row.setUserName( userName );
+                row.setUserPermissions( userPermissions );
+                rowList.add(row);
+            }
+            rowNumber++;
+        }
+        response.setPageRowList( rowList );
+        
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Retrieved Log Entries in " + methodDuration + " ms." );
+        return response;
+    }
+    
     @Restrict("#{identity.loggedIn}")
     public Map<String, List<String>> retrieveUserPermissions(String userName) {
         serviceSecurity.checkSecurityIsAdmin();
