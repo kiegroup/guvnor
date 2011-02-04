@@ -104,11 +104,9 @@ import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
-import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
-import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.UserInbox;
@@ -1194,38 +1192,7 @@ public class ServiceImplementation implements RepositoryService {
     @Restrict("#{identity.loggedIn}")
     public String buildAssetSource(RuleAsset asset) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloper( asset );
-
-        ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
-
-        StringBuffer buf = new StringBuffer();
-        if ( handler.isRuleAsset() ) {
-            BRMSPackageBuilder builder = new BRMSPackageBuilder();
-            // now we load up the DSL files
-            PackageItem packageItem = getRulesRepository().loadPackage( asset.metaData.packageName );
-            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( packageItem, new BRMSPackageBuilder.DSLErrorEvent() {
-                public void recordError(AssetItem asset, String message) {
-                    // ignore
-                    // at
-                    // this
-                    // point...
-                }
-            } ) );
-
-            if ( asset.metaData.isBinary() ) {
-                AssetItem item = getRulesRepository().loadAssetByUUID( asset.uuid );
-
-                handler.storeAssetContent( asset, item );
-                ((IRuleAsset) handler).assembleDRL( builder, item, buf );
-            } else {
-                ((IRuleAsset) handler).assembleDRL( builder, asset, buf );
-            }
-        } else {
-            if ( handler.getClass().getName().equals( "org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler" ) ) {
-                BPMN2ProcessHandler bpmn2handler = ((BPMN2ProcessHandler) handler);
-                bpmn2handler.assembleProcessSource( asset.content, buf );
-            }
-        }
-        return buf.toString();
+        return repositoryAssetOperations.buildAssetSource( asset );
     }
 
     @WebRemote
