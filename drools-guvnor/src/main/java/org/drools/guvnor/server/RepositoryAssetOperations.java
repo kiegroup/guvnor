@@ -19,10 +19,10 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.rpc.AbstractPageRow;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -33,9 +33,11 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IValidating;
 import org.drools.guvnor.server.security.RoleTypes;
+import org.drools.guvnor.server.util.AssetFormatHelper;
 import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
+import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -268,6 +270,24 @@ public class RepositoryAssetOperations {
         row.setLastContributor( assetItem.getLastContributor() );
         row.setLastModified( assetItem.getLastModified().getTime() );
         return row;
+    }
+    
+    protected TableDataResult listAssets(String packageUuid, String formats[], int skip, int numRows, String tableConfig) throws SerializationException {
+        log.debug( "Loading asset list for [" + packageUuid + "]" );
+        if ( numRows == 0 ) {
+            throw new DetailedSerializationException( "Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh..." );
+        }
+        long start = System.currentTimeMillis();
+        PackageItem pkg = getRepository().loadPackageByUUID( packageUuid );
+        AssetItemIterator it;
+        if ( formats.length > 0 ) {
+            it = pkg.listAssetsByFormat( formats );
+        } else {
+            it = pkg.listAssetsNotOfFormat( AssetFormatHelper.listRegisteredTypes() );
+        }
+        TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
+        log.debug( "time for asset list load: " + (System.currentTimeMillis() - start) );
+        return handler.loadRuleListTable( it, skip, numRows );
     }
 
     public void setRepository(RulesRepository repository) {

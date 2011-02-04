@@ -842,21 +842,7 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult listAssets(String packageUuid, String formats[], int skip, int numRows, String tableConfig) throws SerializationException {
-        log.debug( "Loading asset list for [" + packageUuid + "]" );
-        if ( numRows == 0 ) {
-            throw new DetailedSerializationException( "Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh..." );
-        }
-        long start = System.currentTimeMillis();
-        PackageItem pkg = getRulesRepository().loadPackageByUUID( packageUuid );
-        AssetItemIterator it;
-        if ( formats.length > 0 ) {
-            it = pkg.listAssetsByFormat( formats );
-        } else {
-            it = pkg.listAssetsNotOfFormat( AssetFormatHelper.listRegisteredTypes() );
-        }
-        TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-        log.debug( "time for asset list load: " + (System.currentTimeMillis() - start) );
-        return handler.loadRuleListTable( it, skip, numRows );
+        return repositoryAssetOperations.listAssets( packageUuid, formats, skip, numRows, tableConfig );
     }
 
     @WebRemote
