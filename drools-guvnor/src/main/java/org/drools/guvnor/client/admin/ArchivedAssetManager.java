@@ -1,17 +1,17 @@
 /*
  * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.drools.guvnor.client.admin;
@@ -24,22 +24,20 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
-import org.drools.guvnor.client.rulelist.AssetItemGridDataLoader;
+import org.drools.guvnor.client.rulelist.AdminArchivedPagedTable;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.TabOpener;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.widgets.Button;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 
 /**
  * @author Fernando Meyer
@@ -47,11 +45,13 @@ import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 
 public class ArchivedAssetManager extends Composite {
 
-    private static Images images    = (Images) GWT.create( Images.class );
+    private static Images           images    = (Images) GWT.create( Images.class );
 
-    private AssetItemGrid grid;
-    private ListBox       packages  = new ListBox( true );
-    private Constants     constants = GWT.create( Constants.class );
+    private AdminArchivedPagedTable table;
+    private ListBox                 packages  = new ListBox( true );
+    private Constants               constants = GWT.create( Constants.class );
+    private Button                  btnRestorePackage;
+    private Button                  btnDeletePackage;
 
     public ArchivedAssetManager() {
 
@@ -61,7 +61,7 @@ public class ArchivedAssetManager extends Composite {
         header.add( new HTML( constants.ArchivedItems() ) );
 
         pf.addHeader( images.backupLarge(),
-                      header ); 
+                      header );
 
         final TabOpener tabOpener = TabOpener.getInstance();
 
@@ -76,102 +76,97 @@ public class ArchivedAssetManager extends Composite {
                 }
             }
         };
-        grid = new AssetItemGrid( edit,
-                                  AssetItemGrid.ARCHIVED_RULE_LIST_TABLE_ID,
-                                  new AssetItemGridDataLoader() {
-                                      public void loadData(int startRow,
-                                                           int numberOfRows,
-                                                           GenericCallback<org.drools.guvnor.client.rpc.TableDataResult> cb) {
-                                          RepositoryServiceFactory.getService().loadArchivedAssets( startRow,
-                                                                                                    numberOfRows,
-                                                                                                    cb );
-                                      }
-                                  } );
 
         loadPackages();
-        Toolbar tb = new Toolbar();
-        final ToolbarButton restorePackage = new ToolbarButton();
-        restorePackage.addListener( new ButtonListenerAdapter() {
-            public void onClick(Button button,
-                                EventObject e) {
+
+        table = new AdminArchivedPagedTable( edit );
+        HorizontalPanel packagesToolbar = new HorizontalPanel();
+        btnRestorePackage = new Button( constants.RestoreSelectedPackage() );
+        btnRestorePackage.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                if ( packages.getSelectedIndex() == -1 ) {
+                    Window.alert( constants.PleaseSelectAnItemToRestore() );
+                    return;
+                }
                 restorePackage( packages.getValue( packages.getSelectedIndex() ) );
             }
 
         } );
-        restorePackage.setText( constants.RestoreSelectedPackage() );
-        tb.addButton( restorePackage );
+        packagesToolbar.add( btnRestorePackage );
 
-        final ToolbarButton delPackage = new ToolbarButton();
-        delPackage.setText( constants.PermanentlyDeletePackage() );
-        delPackage.addListener( new ButtonListenerAdapter() {
-            public void onClick(Button button,
-                                EventObject e) {
+        btnDeletePackage = new Button( constants.PermanentlyDeletePackage() );
+        btnDeletePackage.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                if ( packages.getSelectedIndex() == -1 ) {
+                    Window.alert( constants.PleaseSelectAnItemToPermanentlyDelete() );
+                    return;
+                }
                 if ( Window.confirm( constants.AreYouSurePackageDelete() ) ) {
                     deletePackage( packages.getValue( packages.getSelectedIndex() ) );
                 }
             }
+
         } );
-        tb.addButton( delPackage );
+        packagesToolbar.add( btnDeletePackage );
 
         pf.startSection( constants.ArchivedPackagesList() );
-
-        pf.addRow( tb );
+        pf.addRow( packagesToolbar );
         pf.addRow( packages );
-
         pf.endSection();
 
-        tb = new Toolbar();
-        final ToolbarButton restoreAsset = new ToolbarButton();
-        restoreAsset.setText( constants.RestoreSelectedAsset() );
-        tb.addButton( restoreAsset );
-        restoreAsset.addListener( new ButtonListenerAdapter() {
-            public void onClick(Button button,
-                                EventObject e) {
-                if ( grid.getSelectedRowUUIDs() == null ) {
+        Button button;
+        button = new Button( constants.RestoreSelectedAsset() );
+        button.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                if ( table.getSelectedRowUUIDs() == null ) {
                     Window.alert( constants.PleaseSelectAnItemToRestore() );
                     return;
                 }
-                RepositoryServiceFactory.getService().archiveAssets( grid.getSelectedRowUUIDs(),
+                RepositoryServiceFactory.getService().archiveAssets( table.getSelectedRowUUIDs(),
                                                                      false,
                                                                      new GenericCallback<java.lang.Void>() {
                                                                          public void onSuccess(Void arg0) {
                                                                              Window.alert( constants.ItemRestored() );
-                                                                             grid.refreshGrid();
+                                                                             table.refresh();
                                                                          }
                                                                      } );
-            };
+            }
         } );
+        table.getToolbar().insert( button,
+                                   0 );
 
-        final ToolbarButton deleteAsset = new ToolbarButton();
-        deleteAsset.setText( constants.DeleteSelectedAsset() );
-        tb.addButton( deleteAsset );
+        button = new Button( constants.DeleteSelectedAsset() );
+        button.addClickHandler( new ClickHandler() {
 
-        deleteAsset.addListener( new ButtonListenerAdapter() {
-            public void onClick(Button button,
-                                EventObject e) {
-                if ( grid.getSelectedRowUUIDs() == null ) {
+            @Override
+            public void onClick(ClickEvent event) {
+                if ( table.getSelectedRowUUIDs() == null ) {
                     Window.alert( constants.PleaseSelectAnItemToPermanentlyDelete() );
                     return;
                 }
                 if ( !Window.confirm( constants.AreYouSureDeletingAsset() ) ) {
                     return;
                 }
-                RepositoryServiceFactory.getService().removeAssets( grid.getSelectedRowUUIDs(),
+                RepositoryServiceFactory.getService().removeAssets( table.getSelectedRowUUIDs(),
                                                                     new GenericCallback<java.lang.Void>() {
-
                                                                         public void onSuccess(Void arg0) {
                                                                             Window.alert( constants.ItemDeleted() );
-                                                                            grid.refreshGrid();
+                                                                            table.refresh();
                                                                         }
                                                                     } );
             }
         } );
+        table.getToolbar().insert( button,
+                                   1 );
 
         pf.startSection( constants.ArchivedAssets() );
-        pf.addRow( tb );
-
-        pf.addRow( grid );
-
+        pf.addRow( table );
         pf.endSection();
 
         initWidget( pf );
@@ -216,6 +211,10 @@ public class ArchivedAssetManager extends Composite {
                 if ( configs.length == 0 ) {
                     packages.addItem( constants.noArchivedPackages() );
                 }
+                boolean enabled = (configs.length != 0);
+                packages.setEnabled( enabled );
+                btnRestorePackage.setEnabled( enabled );
+                btnDeletePackage.setEnabled( enabled );
             }
         } );
 

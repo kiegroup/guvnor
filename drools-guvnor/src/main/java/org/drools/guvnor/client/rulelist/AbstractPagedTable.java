@@ -47,6 +47,7 @@ import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -65,20 +66,6 @@ import com.google.gwt.view.client.Range;
  */
 public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Composite {
 
-    // Usual suspects
-    protected static final Constants constants         = GWT.create( Constants.class );
-
-    // TODO use (C)DI
-    protected RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
-
-    protected Set<Command>           unloadListenerSet = new HashSet<Command>();
-    protected MultiSelectionModel<T> selectionModel;
-    protected final OpenItemCommand  editEvent;
-    protected AsyncDataProvider<T>   dataProvider;
-    protected String                 feedURL;
-
-    protected int                    pageSize          = 5;
-
     // UI
     @SuppressWarnings("rawtypes")
     interface PagedTableBinder
@@ -86,19 +73,36 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
         UiBinder<Widget, AbstractPagedTable> {
     }
 
-    private static PagedTableBinder uiBinder = GWT.create( PagedTableBinder.class );
+    // Usual suspects
+    protected static final Constants constants         = GWT.create( Constants.class );
+
+    // TODO use (C)DI
+    protected RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
+    protected Set<Command>           unloadListenerSet = new HashSet<Command>();
+    protected MultiSelectionModel<T> selectionModel;
+    protected final OpenItemCommand  editEvent;
+    protected AsyncDataProvider<T>   dataProvider;
+
+    protected String                 feedURL;
+
+    protected int                    pageSize          = 5;
+
+    private static PagedTableBinder  uiBinder          = GWT.create( PagedTableBinder.class );
 
     @UiField(provided = true)
-    ToggleButton                    columnPickerButton;
+    ToggleButton                     columnPickerButton;
 
     @UiField(provided = true)
-    CellTable<T>                    cellTable;
+    CellTable<T>                     cellTable;
 
     @UiField(provided = true)
-    SimplePager                     pager;
+    SimplePager                      pager;
 
     @UiField()
-    Image                           feedImage;
+    Image                            feedImage;
+
+    @UiField()
+    HorizontalPanel                  toolbar;
 
     /**
      * Simple constructor that associates an OpenItemCommand with the "Open"
@@ -111,23 +115,6 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
         this( pageSize,
               editEvent,
               null );
-    }
-
-    /**
-     * Register an UnloadListener
-     * 
-     * @param unloadListener
-     */
-    public void addUnloadListener(Command unloadListener) {
-        unloadListenerSet.add( unloadListener );
-    }
-
-    @Override
-    protected void onUnload() {
-        super.onUnload();
-        for ( Command unloadListener : unloadListenerSet ) {
-            unloadListener.execute();
-        }
     }
 
     /**
@@ -153,9 +140,62 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
     }
 
     /**
+     * Register an UnloadListener
+     * 
+     * @param unloadListener
+     */
+    public void addUnloadListener(Command unloadListener) {
+        unloadListenerSet.add( unloadListener );
+    }
+
+    /**
+     * Return an array of selected UUIDs. API is maintained for backwards
+     * compatibility of legacy code with AssetItemGrid's implementation
+     * 
+     * @return
+     */
+    public String[] getSelectedRowUUIDs() {
+        Set<T> selectedRows = selectionModel.getSelectedSet();
+
+        // Compatibility with existing API
+        if ( selectedRows.size() == 0 ) {
+            return null;
+        }
+
+        // Create the array of UUIDs
+        String[] uuids = new String[selectedRows.size()];
+        int rowCount = 0;
+        for ( T row : selectedRows ) {
+            uuids[rowCount++] = row.getUuid();
+        }
+        return uuids;
+    }
+
+    /**
+     * Open selected item(s)
+     * 
+     * @param e
+     */
+    @UiHandler("openSelectedToSingleTabButton")
+    public void openSelectedToSingleTab(ClickEvent e) {
+        Set<T> selectedSet = selectionModel.getSelectedSet();
+        // TODO directly push the selected QueryPageRows
+        List<MultiViewRow> multiViewRowList = new ArrayList<MultiViewRow>( selectedSet.size() );
+        for ( T selected : selectedSet ) {
+            MultiViewRow row = new MultiViewRow();
+            row.uuid = selected.getUuid();
+            row.format = selected.getFormat();
+            row.name = selected.getName();
+            multiViewRowList.add( row );
+        }
+        editEvent.open( multiViewRowList.toArray( new MultiViewRow[multiViewRowList.size()] ) );
+    }
+
+    /**
      * Refresh table programmatically
      */
     public void refresh() {
+        selectionModel.clear();
         cellTable.setVisibleRangeAndClearData( cellTable.getVisibleRange(),
                                                true );
     }
@@ -185,40 +225,6 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
         columnPicker.addColumn( openColumn,
                                 new TextHeader( constants.Open() ),
                                 true );
-    }
-
-    /**
-     * Open selected item(s)
-     * 
-     * @param e
-     */
-    @UiHandler("openSelectedToSingleTabButton")
-    public void openSelectedToSingleTab(ClickEvent e) {
-        Set<T> selectedSet = selectionModel.getSelectedSet();
-        // TODO directly push the selected QueryPageRows
-        List<MultiViewRow> multiViewRowList = new ArrayList<MultiViewRow>( selectedSet.size() );
-        for ( T selected : selectedSet ) {
-            MultiViewRow row = new MultiViewRow();
-            row.uuid = selected.getUuid();
-            row.format = selected.getFormat();
-            row.name = selected.getName();
-            multiViewRowList.add( row );
-        }
-        editEvent.open( multiViewRowList.toArray( new MultiViewRow[multiViewRowList.size()] ) );
-    }
-
-    /**
-     * Open selected item(s)
-     * 
-     * @param e
-     */
-    @UiHandler("openSelectedButton")
-    void openSelected(ClickEvent e) {
-        Set<T> selectedSet = selectionModel.getSelectedSet();
-        for ( T selected : selectedSet ) {
-            // TODO directly push the selected QueryPageRow
-            editEvent.open( selected.getUuid() );
-        }
     }
 
     /**
@@ -352,6 +358,14 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
         columnPickerButton = columnPicker.createToggleButton();
     }
 
+    @Override
+    protected void onUnload() {
+        super.onUnload();
+        for ( Command unloadListener : unloadListenerSet ) {
+            unloadListener.execute();
+        }
+    }
+
     /**
      * Link a data provider to the table
      * 
@@ -360,16 +374,6 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
     protected void setDataProvider(AsyncDataProvider<T> dataProvider) {
         this.dataProvider = dataProvider;
         this.dataProvider.addDataDisplay( cellTable );
-    }
-
-    /**
-     * Refresh table in response to ClickEvent
-     * 
-     * @param e
-     */
-    @UiHandler("refreshButton")
-    void refresh(ClickEvent e) {
-        refresh();
     }
 
     @UiHandler("feedImage")
@@ -384,4 +388,36 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
                      null );
     }
 
+    /**
+     * Open selected item(s)
+     * 
+     * @param e
+     */
+    @UiHandler("openSelectedButton")
+    void openSelected(ClickEvent e) {
+        Set<T> selectedSet = selectionModel.getSelectedSet();
+        for ( T selected : selectedSet ) {
+            // TODO directly push the selected QueryPageRow
+            editEvent.open( selected.getUuid() );
+        }
+    }
+
+    /**
+     * Refresh table in response to ClickEvent
+     * 
+     * @param e
+     */
+    @UiHandler("refreshButton")
+    void refresh(ClickEvent e) {
+        refresh();
+    }
+
+    /**
+     * Returns an area of the widget in which additional buttons can be added
+     * 
+     * @return
+     */
+    public HorizontalPanel getToolbar() {
+        return this.toolbar;
+    }
 }

@@ -20,7 +20,7 @@ package org.drools.guvnor.client.rpc;
  * 
  * @author manstis
  */
-public class QueryPageRequest extends AbstractPageRequest {
+public class QueryPageRequest extends PageRequest {
 
     private String  searchText;
     private Boolean searchArchived;

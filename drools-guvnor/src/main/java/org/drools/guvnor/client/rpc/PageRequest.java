@@ -24,7 +24,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @see PageResponse
  * @author (Originally) Geoffrey De Smet
  */
-public abstract class AbstractPageRequest
+public class PageRequest
         implements
     IsSerializable {
 
@@ -32,10 +32,10 @@ public abstract class AbstractPageRequest
     protected Integer pageSize      = null; // null returns all pages
 
     // For GWT serialisation
-    public AbstractPageRequest() {
+    public PageRequest() {
     }
 
-    public AbstractPageRequest(int startRowIndex,
+    public PageRequest(int startRowIndex,
                                Integer pageSize) {
         this.startRowIndex = startRowIndex;
         this.pageSize = pageSize;

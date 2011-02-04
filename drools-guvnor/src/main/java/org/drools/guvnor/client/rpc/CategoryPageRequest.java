@@ -20,7 +20,7 @@ package org.drools.guvnor.client.rpc;
  * 
  * @author manstis
  */
-public class CategoryPageRequest extends AbstractPageRequest {
+public class CategoryPageRequest extends PageRequest {
 
     private String categoryPath;
 

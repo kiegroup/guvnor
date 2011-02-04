@@ -22,7 +22,7 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
  * 
  * @author manstis
  */
-public class InboxPageRequest extends AbstractPageRequest {
+public class InboxPageRequest extends PageRequest {
 
     private String mode;
 

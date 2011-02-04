@@ -65,8 +65,8 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.rpc.AbstractPageRequest;
 import org.drools.guvnor.client.rpc.AbstractPageRow;
+import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
@@ -82,6 +82,7 @@ import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
@@ -764,6 +765,35 @@ public class ServiceImplementation implements RepositoryService {
         return createArchivedTable( result, it );
     }
 
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) throws SerializationException {
+        if ( request == null ) {
+            throw new IllegalArgumentException( "request cannot be null" );
+        }
+
+        // Do query
+        long start = System.currentTimeMillis();
+        AssetItemIterator it = getRulesRepository().findArchivedAssets();
+        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+     // Populate response
+        long totalRowsCount = it.getSize();
+        PageResponse<AdminArchivedPageRow> response = new PageResponse<AdminArchivedPageRow>();
+        List<AdminArchivedPageRow> rowList = fillAdminArchivePageRows( request, it );
+        boolean bHasMoreRows = it.hasNext();
+        response.setStartRowIndex( request.getStartRowIndex() );
+        response.setPageRowList( rowList );
+        response.setLastPage( !bHasMoreRows );
+
+        // Fix Total Row Size
+        fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
+        
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Searched for Archived Assests in " + methodDuration + " ms." );
+        return response;
+    }
+    
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void restoreVersion(String versionUUID, String assetUUID, String comment) {
@@ -2977,7 +3007,7 @@ public class ServiceImplementation implements RepositoryService {
     // The total Record Count returned from AssetItemIterator.getSize() can be
     // -1 which is not very helpful. We can however derive the total row count
     // when on the last page of data
-    private void fixTotalRowSize(AbstractPageRequest request, PageResponse< ? extends AbstractPageRow> response, long totalRowsCount, int rowsRetrievedCount, boolean bHasMoreRows) {
+    private void fixTotalRowSize(PageRequest request, PageResponse< ? extends AbstractPageRow> response, long totalRowsCount, int rowsRetrievedCount, boolean bHasMoreRows) {
 
         // CellTable only handles integer row counts
         if ( totalRowsCount > Integer.MAX_VALUE ) {
@@ -3102,4 +3132,38 @@ public class ServiceImplementation implements RepositoryService {
         return row;
     }
 
+    private List<AdminArchivedPageRow> fillAdminArchivePageRows( PageRequest request, AssetItemIterator it ) {
+        int skipped = 0;
+        int pageSize = request.getPageSize();
+        int startRowIndex = request.getStartRowIndex();
+        RepositoryFilter filter = new AssetItemFilter();
+        List<AdminArchivedPageRow> rowList = new ArrayList<AdminArchivedPageRow>( request.getPageSize() );
+
+        while ( it.hasNext() && (pageSize < 0 || rowList.size() < pageSize) ) {
+            AssetItem archivedAssetItem = (AssetItem) it.next();
+
+            // Filter surplus assets
+            if ( filter.accept( archivedAssetItem, RoleTypes.READ ) ) {
+
+                // Cannot use AssetItemIterator.skip() as it skips non-filtered
+                // assets whereas startRowIndex is the index of the
+                // first displayed asset (i.e. filtered)
+                if ( skipped >= startRowIndex ) {
+                    rowList.add( makeAdminArchivedPageRow( archivedAssetItem ) );
+                }
+                skipped++;
+            }
+        }
+        return rowList;
+    }
+
+    private AdminArchivedPageRow makeAdminArchivedPageRow(AssetItem assetItem) {
+        AdminArchivedPageRow row = new AdminArchivedPageRow();
+        populatePageRowBaseProperties( assetItem, row );
+        row.setPackageName( assetItem.getPackageName() );
+        row.setLastContributor( assetItem.getLastContributor());
+        row.setLastModified( assetItem.getLastModified().getTime() );
+        return row;
+    }
+    
 }

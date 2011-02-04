@@ -26,7 +26,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @see AssetPageResponse
  * @author Geoffrey De Smet
  */
-public class AssetPageRequest extends AbstractPageRequest
+public class AssetPageRequest extends PageRequest
         implements
     IsSerializable {
 

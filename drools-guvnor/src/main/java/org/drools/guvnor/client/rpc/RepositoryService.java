@@ -192,6 +192,13 @@ public interface RepositoryService
                                               int numRows) throws SerializationException;
 
     /**
+     * This will load all archived assets, in a summary format suitable for
+     * display in a table.
+     */
+
+    public PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) throws SerializationException;
+
+    /**
      * This checks in a new version of an asset.
      * 
      * @return the UUID of the asset you are checking in, null if there was some

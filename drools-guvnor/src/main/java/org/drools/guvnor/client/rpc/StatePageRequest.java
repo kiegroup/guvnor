@@ -20,7 +20,7 @@ package org.drools.guvnor.client.rpc;
  * 
  * @author manstis
  */
-public class StatePageRequest extends AbstractPageRequest {
+public class StatePageRequest extends PageRequest {
 
     private String stateName;
 

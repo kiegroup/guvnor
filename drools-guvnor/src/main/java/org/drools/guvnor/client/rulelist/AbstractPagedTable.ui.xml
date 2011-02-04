@@ -24,7 +24,7 @@
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
 
   <gwt:VerticalPanel>
-    <gwt:HorizontalPanel>
+    <gwt:HorizontalPanel ui:field="toolbar">
       <gwt:Button ui:field="refreshButton" text='{i18n.refreshList}'/>
       <gwt:Button ui:field="openSelectedButton" text='{i18n.openSelected}'/>
       <gwt:Button ui:field="openSelectedToSingleTabButton" text='{i18n.openSelectedToSingleTab}'/>

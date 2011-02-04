@@ -23,7 +23,7 @@ import java.util.List;
  * 
  * @author manstis
  */
-public class QueryMetadataPageRequest extends AbstractPageRequest {
+public class QueryMetadataPageRequest extends PageRequest {
 
     private List<MetaDataQuery> metadata;
     private Date                createdAfter;

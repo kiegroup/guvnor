@@ -193,6 +193,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public org.drools.guvnor.client.rpc.TableDataResult loadArchivedAssets(int p0, int p1) throws com.google.gwt.user.client.rpc.SerializationException {
          return getService().loadArchivedAssets( p0,  p1);
     }
+    public org.drools.guvnor.client.rpc.PageResponse loadArchivedAssets(org.drools.guvnor.client.rpc.PageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
+         return getService().loadArchivedAssets( p0);
+    }
     public java.lang.String checkinVersion(org.drools.guvnor.client.rpc.RuleAsset p0) throws com.google.gwt.user.client.rpc.SerializationException {
          return getService().checkinVersion( p0);
     }
