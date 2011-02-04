@@ -1629,16 +1629,10 @@ public class ServiceImplementation implements RepositoryService {
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setTotalRowSize( entries.length );
         response.setTotalRowSizeExact( true );
-<<<<<<< HEAD
-
-        List<LogPageRow> rowList = new ArrayList<LogPageRow>( request.getPageSize() );
-        for ( int i = request.getStartRowIndex(); i < request.getPageSize() && i < entries.length; i++ ) {
-=======
         
         int rowMaxNumber = Math.min(request.getStartRowIndex()+request.getPageSize(), entries.length);
         List<LogPageRow> rowList = new ArrayList<LogPageRow>(request.getPageSize());
         for(int i = request.getStartRowIndex(); i<rowMaxNumber;i++) {
->>>>>>> GWTEXT table replacement: Admin->User permissions
             LogEntry e = entries[i];
             LogPageRow row = new LogPageRow();
             row.setSeverity( e.severity );
@@ -2796,8 +2790,6 @@ public class ServiceImplementation implements RepositoryService {
         return leftPackage.getLastModified().compareTo( rightPackage.getLastModified() ) > 0;
     }
 
-    
-
     private List<InboxPageRow> fillInboxPageRows(InboxPageRequest request, Iterator<InboxEntry> it) {
 
         int skipped = 0;
@@ -2978,42 +2970,5 @@ public class ServiceImplementation implements RepositoryService {
         row.setPackageName( assetItem.getPackageName() );
         return row;
     }
-
-<<<<<<< HEAD
-=======
-    private List<AdminArchivedPageRow> fillAdminArchivePageRows( PageRequest request, AssetItemIterator it ) {
-        int skipped = 0;
-        int pageSize = request.getPageSize();
-        int startRowIndex = request.getStartRowIndex();
-        RepositoryFilter filter = new AssetItemFilter();
-        List<AdminArchivedPageRow> rowList = new ArrayList<AdminArchivedPageRow>( request.getPageSize() );
-
-        while ( it.hasNext() && (pageSize < 0 || rowList.size() < pageSize) ) {
-            AssetItem archivedAssetItem = (AssetItem) it.next();
-
-            // Filter surplus assets
-            if ( filter.accept( archivedAssetItem, "read" ) ) {
-
-                // Cannot use AssetItemIterator.skip() as it skips non-filtered
-                // assets whereas startRowIndex is the index of the
-                // first displayed asset (i.e. filtered)
-                if ( skipped >= startRowIndex ) {
-                    rowList.add( makeAdminArchivedPageRow( archivedAssetItem ) );
-                }
-                skipped++;
-            }
-        }
-        return rowList;
-    }
-
-    private AdminArchivedPageRow makeAdminArchivedPageRow(AssetItem assetItem) {
-        AdminArchivedPageRow row = new AdminArchivedPageRow();
-        populatePageRowBaseProperties( assetItem, row );
-        row.setPackageName( assetItem.getPackageName() );
-        row.setLastContributor( assetItem.getLastContributor());
-        row.setLastModified( assetItem.getLastModified().getTime() );
-        return row;
-    }
     
->>>>>>> GWTEXT table replacement: Fix regression.
 }

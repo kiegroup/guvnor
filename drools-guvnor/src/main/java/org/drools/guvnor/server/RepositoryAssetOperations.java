@@ -1,17 +1,17 @@
 /**
  * Copyright 2011 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 package org.drools.guvnor.server;
 
@@ -57,8 +57,9 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Handles operations for Assets
+ * 
  * @author Jari Timonen
- *
+ * 
  */
 @Name("org.drools.guvnor.server.RepositoryAssetOperations")
 @AutoCreate
@@ -68,8 +69,10 @@ public class RepositoryAssetOperations {
 
     private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryAssetOperations.class );
 
-    public String renameAsset(String uuid, String newName) {
-        return getRulesRepository().renameAsset( uuid, newName );
+    public String renameAsset(String uuid,
+                              String newName) {
+        return getRulesRepository().renameAsset( uuid,
+                                                 newName );
     }
 
     protected BuilderResult buildAsset(RuleAsset asset) throws SerializationException {
@@ -82,7 +85,8 @@ public class RepositoryAssetOperations {
             if ( asset.metaData.isBinary() ) {
                 AssetItem item = getRulesRepository().loadAssetByUUID( asset.uuid );
 
-                handler.storeAssetContent( asset, item );
+                handler.storeAssetContent( asset,
+                                           item );
 
                 if ( handler instanceof IValidating ) {
                     return ((IValidating) handler).validateAsset( item );
@@ -101,14 +105,16 @@ public class RepositoryAssetOperations {
 
                 PackageItem packageItem = getRulesRepository().loadPackageByUUID( asset.metaData.packageUUID );
 
-                ContentPackageAssembler asm = new ContentPackageAssembler( asset, packageItem );
+                ContentPackageAssembler asm = new ContentPackageAssembler( asset,
+                                                                           packageItem );
                 if ( !asm.hasErrors() ) {
                     return null;
                 }
                 result.setLines( builderResultHelper.generateBuilderResults( asm ) );
             }
         } catch ( Exception e ) {
-            log.error( "Unable to build asset.", e );
+            log.error( "Unable to build asset.",
+                       e );
             result = new BuilderResult();
 
             BuilderResultLine res = new BuilderResultLine();
@@ -146,8 +152,10 @@ public class RepositoryAssetOperations {
         while ( it.hasNext() ) {
             AssetItem historical = (AssetItem) it.next();
             long versionNumber = historical.getVersionNumber();
-            if ( isHistory( assetItem, versionNumber ) ) {
-                result.add( createHistoricalRow( result, historical ) );
+            if ( isHistory( assetItem,
+                            versionNumber ) ) {
+                result.add( createHistoricalRow( result,
+                                                 historical ) );
             }
         }
 
@@ -160,11 +168,14 @@ public class RepositoryAssetOperations {
         return table;
     }
 
-    private boolean isHistory(AssetItem item, long versionNumber) {
-        return versionNumber != 0 && versionNumber != item.getVersionNumber();
+    private boolean isHistory(AssetItem item,
+                              long versionNumber) {
+        return versionNumber != 0
+               && versionNumber != item.getVersionNumber();
     }
 
-    private TableDataRow createHistoricalRow(List<TableDataRow> result, AssetItem historical) {
+    private TableDataRow createHistoricalRow(List<TableDataRow> result,
+                                             AssetItem historical) {
         final DateFormat dateFormatter = DateFormat.getInstance();
         TableDataRow tableDataRow = new TableDataRow();
         tableDataRow.id = historical.getVersionSnapshotUUID();
@@ -176,7 +187,8 @@ public class RepositoryAssetOperations {
         return tableDataRow;
     }
 
-    protected TableDataResult loadArchivedAssets(int skip, int numRows) throws SerializationException {
+    protected TableDataResult loadArchivedAssets(int skip,
+                                                 int numRows) throws SerializationException {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
         RepositoryFilter filter = new AssetItemFilter();
 
@@ -187,7 +199,8 @@ public class RepositoryAssetOperations {
 
             AssetItem archived = (AssetItem) it.next();
 
-            if ( filter.accept( archived, "read" ) ) {
+            if ( filter.accept( archived,
+                                "read" ) ) {
                 result.add( createArchivedRow( archived ) );
                 count++;
             }
@@ -196,7 +209,8 @@ public class RepositoryAssetOperations {
             }
         }
 
-        return createArchivedTable( result, it );
+        return createArchivedTable( result,
+                                    it );
     }
 
     private TableDataRow createArchivedRow(AssetItem archived) {
@@ -211,7 +225,8 @@ public class RepositoryAssetOperations {
         return row;
     }
 
-    private TableDataResult createArchivedTable(List<TableDataRow> result, AssetItemIterator it) {
+    private TableDataResult createArchivedTable(List<TableDataRow> result,
+                                                AssetItemIterator it) {
         TableDataResult table = new TableDataResult();
         table.data = result.toArray( new TableDataRow[result.size()] );
         table.currentPosition = it.getPosition();
@@ -224,36 +239,48 @@ public class RepositoryAssetOperations {
         // Do query
         long start = System.currentTimeMillis();
         AssetItemIterator it = getRulesRepository().findArchivedAssets();
-        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+        log.debug( "Search time: "
+                   + (System.currentTimeMillis() - start) );
 
         // Populate response
         long totalRowsCount = it.getSize();
         PageResponse<AdminArchivedPageRow> response = new PageResponse<AdminArchivedPageRow>();
-        List<AdminArchivedPageRow> rowList = fillAdminArchivePageRows( request, it );
+        List<AdminArchivedPageRow> rowList = fillAdminArchivePageRows( request,
+                                                                       it );
         boolean bHasMoreRows = it.hasNext();
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
         response.setLastPage( !bHasMoreRows );
         ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
+        serviceRowSizeHelper.fixTotalRowSize( request,
+                                              response,
+                                              totalRowsCount,
+                                              rowList.size(),
+                                              bHasMoreRows );
 
-        long methodDuration = System.currentTimeMillis() - start;
-        log.debug( "Searched for Archived Assests in " + methodDuration + " ms." );
+        long methodDuration = System.currentTimeMillis()
+                              - start;
+        log.debug( "Searched for Archived Assests in "
+                   + methodDuration
+                   + " ms." );
         return response;
     }
 
-    private List<AdminArchivedPageRow> fillAdminArchivePageRows(PageRequest request, AssetItemIterator it) {
+    private List<AdminArchivedPageRow> fillAdminArchivePageRows(PageRequest request,
+                                                                AssetItemIterator it) {
         int skipped = 0;
         int pageSize = request.getPageSize();
         int startRowIndex = request.getStartRowIndex();
         RepositoryFilter filter = new AssetItemFilter();
         List<AdminArchivedPageRow> rowList = new ArrayList<AdminArchivedPageRow>( request.getPageSize() );
 
-        while ( it.hasNext() && (pageSize < 0 || rowList.size() < pageSize) ) {
+        while ( it.hasNext()
+                && (pageSize < 0 || rowList.size() < pageSize) ) {
             AssetItem archivedAssetItem = (AssetItem) it.next();
 
             // Filter surplus assets
-            if ( filter.accept( archivedAssetItem, RoleTypes.READ ) ) {
+            if ( filter.accept( archivedAssetItem,
+                                "read" ) ) {
 
                 // Cannot use AssetItemIterator.skip() as it skips non-filtered
                 // assets whereas startRowIndex is the index of the
@@ -278,7 +305,11 @@ public class RepositoryAssetOperations {
         return row;
     }
 
-    protected TableDataResult listAssets(String packageUuid, String formats[], int skip, int numRows, String tableConfig) throws SerializationException {
+    protected TableDataResult listAssets(String packageUuid,
+                                         String formats[],
+                                         int skip,
+                                         int numRows,
+                                         String tableConfig) throws SerializationException {
         long start = System.currentTimeMillis();
         PackageItem pkg = getRulesRepository().loadPackageByUUID( packageUuid );
         AssetItemIterator it;
@@ -288,12 +319,19 @@ public class RepositoryAssetOperations {
             it = pkg.listAssetsNotOfFormat( AssetFormatHelper.listRegisteredTypes() );
         }
         TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-        log.debug( "time for asset list load: " + (System.currentTimeMillis() - start) );
-        return handler.loadRuleListTable( it, skip, numRows );
+        log.debug( "time for asset list load: "
+                   + (System.currentTimeMillis() - start) );
+        return handler.loadRuleListTable( it,
+                                          skip,
+                                          numRows );
     }
 
-    protected TableDataResult quickFindAsset(String searchText, boolean searchArchived, int skip, int numRows) throws SerializationException {
-        String search = searchText.replace( '*', '%' );
+    protected TableDataResult quickFindAsset(String searchText,
+                                             boolean searchArchived,
+                                             int skip,
+                                             int numRows) throws SerializationException {
+        String search = searchText.replace( '*',
+                                            '%' );
 
         if ( !search.endsWith( "%" ) ) {
             search += "%";
@@ -302,24 +340,33 @@ public class RepositoryAssetOperations {
         List<AssetItem> resultList = new ArrayList<AssetItem>();
 
         long start = System.currentTimeMillis();
-        AssetItemIterator it = getRulesRepository().findAssetsByName( search, searchArchived );
-        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+        AssetItemIterator it = getRulesRepository().findAssetsByName( search,
+                                                                      searchArchived );
+        log.debug( "Search time: "
+                   + (System.currentTimeMillis() - start) );
 
         RepositoryFilter filter = new AssetItemFilter();
 
         while ( it.hasNext() ) {
             AssetItem ai = it.next();
-            if ( filter.accept( ai, RoleTypes.PACKAGE_READONLY ) ) {
+            if ( filter.accept( ai,
+                                RoleTypes.PACKAGE_READONLY ) ) {
                 resultList.add( ai );
             }
         }
 
         TableDisplayHandler handler = new TableDisplayHandler( "searchresults" );
-        return handler.loadRuleListTable( resultList, skip, numRows );
+        return handler.loadRuleListTable( resultList,
+                                          skip,
+                                          numRows );
     }
 
-    protected TableDataResult queryFullText(String text, boolean seekArchived, int skip, int numRows) throws SerializationException {
-        AssetItemIterator it = getRulesRepository().queryFullText( text, seekArchived );
+    protected TableDataResult queryFullText(String text,
+                                            boolean seekArchived,
+                                            int skip,
+                                            int numRows) throws SerializationException {
+        AssetItemIterator it = getRulesRepository().queryFullText( text,
+                                                                   seekArchived );
 
         // Add filter for READONLY permission
         List<AssetItem> resultList = new ArrayList<AssetItem>();
@@ -329,13 +376,16 @@ public class RepositoryAssetOperations {
             AssetItem ai = it.next();
             PackageConfigData data = new PackageConfigData();
             data.uuid = ai.getPackage().getUUID();
-            if ( filter.accept( data, RoleTypes.PACKAGE_READONLY ) ) {
+            if ( filter.accept( data,
+                                RoleTypes.PACKAGE_READONLY ) ) {
                 resultList.add( ai );
             }
         }
 
         TableDisplayHandler handler = new TableDisplayHandler( "searchresults" );
-        return handler.loadRuleListTable( resultList, skip, numRows );
+        return handler.loadRuleListTable( resultList,
+                                          skip,
+                                          numRows );
     }
 
     protected String buildAssetSource(RuleAsset asset) throws SerializationException {
@@ -346,34 +396,44 @@ public class RepositoryAssetOperations {
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
             PackageItem packageItem = getRulesRepository().loadPackage( asset.metaData.packageName );
-            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( packageItem, new BRMSPackageBuilder.DSLErrorEvent() {
-                public void recordError(AssetItem asset, String message) {
-                    // ignore
-                    // at
-                    // this
-                    // point...
-                }
-            } ) );
+            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( packageItem,
+                                                                        new BRMSPackageBuilder.DSLErrorEvent() {
+                                                                            public void recordError(AssetItem asset,
+                                                                                                    String message) {
+                                                                                // ignore
+                                                                                // at
+                                                                                // this
+                                                                                // point...
+                                                                            }
+                                                                        } ) );
 
             if ( asset.metaData.isBinary() ) {
                 AssetItem item = getRulesRepository().loadAssetByUUID( asset.uuid );
 
-                handler.storeAssetContent( asset, item );
-                ((IRuleAsset) handler).assembleDRL( builder, item, buf );
+                handler.storeAssetContent( asset,
+                                           item );
+                ((IRuleAsset) handler).assembleDRL( builder,
+                                                    item,
+                                                    buf );
             } else {
-                ((IRuleAsset) handler).assembleDRL( builder, asset, buf );
+                ((IRuleAsset) handler).assembleDRL( builder,
+                                                    asset,
+                                                    buf );
             }
         } else {
             if ( handler.getClass().getName().equals( "org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler" ) ) {
                 BPMN2ProcessHandler bpmn2handler = ((BPMN2ProcessHandler) handler);
-                bpmn2handler.assembleProcessSource( asset.content, buf );
+                bpmn2handler.assembleProcessSource( asset.content,
+                                                    buf );
             }
         }
         return buf.toString();
     }
 
     protected PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request) throws SerializationException {
-        log.debug( "Finding asset page of packageUuid (" + request.getPackageUuid() + ")" );
+        log.debug( "Finding asset page of packageUuid ("
+                   + request.getPackageUuid()
+                   + ")" );
         long start = System.currentTimeMillis();
 
         PackageItem packageItem = getRulesRepository().loadPackageByUUID( request.getPackageUuid() );
@@ -396,7 +456,8 @@ public class RepositoryAssetOperations {
         // Populate response
         long totalRowsCount = it.getSize();
         PageResponse<AssetPageRow> response = new PageResponse<AssetPageRow>();
-        List<AssetPageRow> rowList = fillAssetPageRowsForFindAssetPage( request, it );
+        List<AssetPageRow> rowList = fillAssetPageRowsForFindAssetPage( request,
+                                                                        it );
         boolean bHasMoreRows = it.hasNext();
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
@@ -404,19 +465,30 @@ public class RepositoryAssetOperations {
 
         // Fix Total Row Size
         ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
+        serviceRowSizeHelper.fixTotalRowSize( request,
+                                              response,
+                                              totalRowsCount,
+                                              rowList.size(),
+                                              bHasMoreRows );
 
-        long methodDuration = System.currentTimeMillis() - start;
-        log.debug( "Found asset page of packageUuid (" + request.getPackageUuid() + ") in " + methodDuration + " ms." );
+        long methodDuration = System.currentTimeMillis()
+                              - start;
+        log.debug( "Found asset page of packageUuid ("
+                   + request.getPackageUuid()
+                   + ") in "
+                   + methodDuration
+                   + " ms." );
         return response;
     }
 
-    private List<AssetPageRow> fillAssetPageRowsForFindAssetPage(AssetPageRequest request, AssetItemIterator it) {
+    private List<AssetPageRow> fillAssetPageRowsForFindAssetPage(AssetPageRequest request,
+                                                                 AssetItemIterator it) {
         int pageSize = request.getPageSize();
         it.skip( request.getStartRowIndex() );
         List<AssetPageRow> rowList = new ArrayList<AssetPageRow>( request.getPageSize() );
 
-        while ( it.hasNext() && (pageSize < 0 || rowList.size() <= pageSize) ) {
+        while ( it.hasNext()
+                && (pageSize < 0 || rowList.size() <= pageSize) ) {
             AssetItem assetItem = (AssetItem) it.next();
             AssetPageRowPopulator assetPageRowPopulator = new AssetPageRowPopulator();
             rowList.add( assetPageRowPopulator.makeAssetPageRow( assetItem ) );
