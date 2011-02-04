@@ -87,4 +87,11 @@ public class ServiceSecurity{
             Identity.instance().checkPermission( new PackageNameType( initialPackage ), RoleTypes.PACKAGE_DEVELOPER );
         }
     }
+    
+    protected void checkSecurityAssetPackagePackageReadOnly(AssetItem item) {
+        if ( Contexts.isSessionContextActive() ) {
+            Identity.instance().checkPermission( new PackageUUIDType( item.getPackage().getUUID() ), RoleTypes.PACKAGE_READONLY );
+        }
+    }
+
 }

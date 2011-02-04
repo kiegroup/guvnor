@@ -134,7 +134,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
-import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
@@ -193,8 +192,6 @@ public class ServiceImplementation implements RepositoryService {
 
     private static final long           serialVersionUID                  = 510l;
 
-    private static final DateFormat     dateFormatter                     = DateFormat.getInstance();
-
     private static final LoggingHelper  log                               = LoggingHelper.getLogger( ServiceImplementation.class );
 
     private MetaDataMapper              metaDataMapper                    = new MetaDataMapper();
@@ -212,13 +209,14 @@ public class ServiceImplementation implements RepositoryService {
     private ServiceSecurity             serviceSecurity                   = new ServiceSecurity();
 
     private RepositoryAssetOperations   repositoryAssetOperations         = new RepositoryAssetOperations();
+
     /* This is called also by Seam AND Hosted mode */
     @Create
     public void create() {
         repositoryAssetOperations.setRepository( getRulesRepository() );
     }
-   
-     /* This is called in hosted mode when creating "by hand" */
+
+    /* This is called in hosted mode when creating "by hand" */
     public void setRulesRepository(RulesRepository repository) {
         this.repository = repository;
         create();
@@ -699,47 +697,9 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadAssetHistory(String uuid) throws SerializationException {
-
-        List<TableDataRow> result = new ArrayList<TableDataRow>();
-
-        AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
-
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( item.getPackage().getUUID() ), RoleTypes.PACKAGE_READONLY );
-        }
-
-        AssetHistoryIterator it = item.getHistory();
-
-        // MN Note: this uses the lazy iterator, but then loads the whole lot
-        // up, and returns it.
-        // The reason for this is that the GUI needs to show things in numeric
-        // order by the version number.
-        // When a version is restored, its previous version is NOT what you
-        // thought it was - due to how JCR works
-        // (its more like CVS then SVN). So to get a linear progression of
-        // versions, we use the incrementing version number,
-        // and load it all up and sort it. This is not ideal.
-        // In future, we may do a "restore" instead just by copying content into
-        // a new version, not restoring a node,
-        // in which case the iterator will be in order (or you can just walk all
-        // the way back).
-        // So if there are performance problems with looking at lots of
-        // historical versions, look at this nasty bit of code.
-        while ( it.hasNext() ) {
-            AssetItem historical = (AssetItem) it.next();
-            long versionNumber = historical.getVersionNumber();
-            if ( isHistory( item, versionNumber ) ) {
-                result.add( createHistoricalRow( result, historical ) );
-            }
-        }
-
-        if ( result.size() == 0 ) {
-            return null;
-        }
-        TableDataResult table = new TableDataResult();
-        table.data = result.toArray( new TableDataRow[result.size()] );
-
-        return table;
+        AssetItem assetItem = getRulesRepository().loadAssetByUUID( uuid );
+        serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
+        return repositoryAssetOperations.loadAssetHistory( assetItem );
     }
 
     @WebRemote
@@ -779,7 +739,7 @@ public class ServiceImplementation implements RepositoryService {
         AssetItemIterator it = getRulesRepository().findArchivedAssets();
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-     // Populate response
+        // Populate response
         long totalRowsCount = it.getSize();
         PageResponse<AdminArchivedPageRow> response = new PageResponse<AdminArchivedPageRow>();
         List<AdminArchivedPageRow> rowList = fillAdminArchivePageRows( request, it );
@@ -790,12 +750,12 @@ public class ServiceImplementation implements RepositoryService {
 
         // Fix Total Row Size
         fixTotalRowSize( request, response, totalRowsCount, rowList.size(), bHasMoreRows );
-        
+
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Archived Assests in " + methodDuration + " ms." );
         return response;
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void restoreVersion(String versionUUID, String assetUUID, String comment) {
@@ -1800,23 +1760,23 @@ public class ServiceImplementation implements RepositoryService {
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setTotalRowSize( entries.length );
         response.setTotalRowSizeExact( true );
-        
-        List<LogPageRow> rowList = new ArrayList<LogPageRow>(request.getPageSize());
-        for(int i = request.getStartRowIndex(); i<request.getPageSize() && i<entries.length;i++) {
+
+        List<LogPageRow> rowList = new ArrayList<LogPageRow>( request.getPageSize() );
+        for ( int i = request.getStartRowIndex(); i < request.getPageSize() && i < entries.length; i++ ) {
             LogEntry e = entries[i];
             LogPageRow row = new LogPageRow();
             row.setSeverity( e.severity );
             row.setMessage( e.message );
             row.setTimestamp( e.timestamp );
-            rowList.add(row);
+            rowList.add( row );
         }
         response.setPageRowList( rowList );
-        
+
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Retrieved Log Entries in " + methodDuration + " ms." );
         return response;
-   }
-    
+    }
+
     @WebRemote
     public void cleanLog() {
         serviceSecurity.checkSecurityIsAdmin();
@@ -2532,21 +2492,8 @@ public class ServiceImplementation implements RepositoryService {
         return cal;
     }
 
-    private TableDataRow createHistoricalRow(List<TableDataRow> result, AssetItem historical) {
-        TableDataRow tableDataRow = new TableDataRow();
-        tableDataRow.id = historical.getVersionSnapshotUUID();
-        tableDataRow.values = new String[4];
-        tableDataRow.values[0] = Long.toString( historical.getVersionNumber() );
-        tableDataRow.values[1] = historical.getCheckinComment();
-        tableDataRow.values[2] = dateFormatter.format( historical.getLastModified().getTime() );
-        tableDataRow.values[3] = historical.getStateDescription();
-        return tableDataRow;
-    }
-
-    private boolean isHistory(AssetItem item, long versionNumber) {
-        return versionNumber != 0 && versionNumber != item.getVersionNumber();
-    }
-
+  
+   
     private TableDataResult createArchivedTable(List<TableDataRow> result, AssetItemIterator it) {
         TableDataResult table = new TableDataResult();
         table.data = result.toArray( new TableDataRow[result.size()] );
@@ -3169,7 +3116,7 @@ public class ServiceImplementation implements RepositoryService {
         return row;
     }
 
-    private List<AdminArchivedPageRow> fillAdminArchivePageRows( PageRequest request, AssetItemIterator it ) {
+    private List<AdminArchivedPageRow> fillAdminArchivePageRows(PageRequest request, AssetItemIterator it) {
         int skipped = 0;
         int pageSize = request.getPageSize();
         int startRowIndex = request.getStartRowIndex();
@@ -3198,9 +3145,9 @@ public class ServiceImplementation implements RepositoryService {
         AdminArchivedPageRow row = new AdminArchivedPageRow();
         populatePageRowBaseProperties( assetItem, row );
         row.setPackageName( assetItem.getPackageName() );
-        row.setLastContributor( assetItem.getLastContributor());
+        row.setLastContributor( assetItem.getLastContributor() );
         row.setLastModified( assetItem.getLastModified().getTime() );
         return row;
     }
-    
+
 }
