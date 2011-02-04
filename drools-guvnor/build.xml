@@ -43,14 +43,5 @@
     <delete file="${jbossAS.version}.zip"/>
   </target>
 
-  <target name="plug-editors">
-    <taskdef name="editorlauncher" classname="org.drools.guvnor.EditorLauncherGenerator" classpath="../lib/editors-task.jar"/>
-    <editorlauncher configuration="guvnor-editors.properties"
-                    outPath="src/main/java/org/drools/guvnor/client/ruleeditor"/>
-    <taskdef name="rulemenu" classname="org.drools.guvnor.RulesNewMenuGenerator" classpath="../lib/editors-task.jar"/>
-    <rulemenu configuration="rules-new-menu.properties"
-              outPath="src/main/java/org/drools/guvnor/client/ruleeditor"/>
-  </target>
-
 </project>
 
