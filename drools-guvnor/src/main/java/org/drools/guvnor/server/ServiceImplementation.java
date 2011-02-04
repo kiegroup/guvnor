@@ -2137,7 +2137,7 @@ public class ServiceImplementation implements RepositoryService {
             throw new IllegalArgumentException( "request cannot be null" );
         }
 
-        String inboxName = request.getMode();
+        String inboxName = request.getInboxName();
         UserInbox ib = new UserInbox( getRulesRepository() );
         List<InboxEntry> entries = new ArrayList<InboxEntry>();
         PageResponse<InboxPageRow> response = new PageResponse<InboxPageRow>();
@@ -3048,7 +3048,7 @@ public class ServiceImplementation implements RepositoryService {
 
     private InboxPageRow makeInboxPageRow(InboxEntry ie, InboxPageRequest request) {
         InboxPageRow row = null;
-        if ( request.getMode().equals( ExplorerNodeConfig.INCOMING_ID ) ) {
+        if ( request.getInboxName().equals( ExplorerNodeConfig.INCOMING_ID ) ) {
             InboxIncomingPageRow tr = new InboxIncomingPageRow();
             tr.setUuid( ie.assetUUID );
             tr.setFormat( AssetFormats.BUSINESS_RULE );

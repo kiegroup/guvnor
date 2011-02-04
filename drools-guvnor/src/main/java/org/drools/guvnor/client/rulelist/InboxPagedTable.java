@@ -45,14 +45,15 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> {
     private static final int PAGE_SIZE = 10;
 
     public InboxPagedTable(
-                           final String widgetId,
+                           final String inboxName,
                            OpenItemCommand editEvent) {
         super( PAGE_SIZE,
                editEvent );
+
         setDataProvider( new AsyncDataProvider<InboxPageRow>() {
             protected void onRangeChanged(HasData<InboxPageRow> display) {
                 InboxPageRequest request = new InboxPageRequest();
-                request.setInboxMode( widgetId );
+                request.setInboxName( inboxName );
                 request.setStartRowIndex( pager.getPageStart() );
                 request.setPageSize( pageSize );
                 repositoryService.loadInbox( request,
@@ -112,9 +113,6 @@ public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> {
                                                                         dateColumn ),
                                 false );
 
-        // Include the "Open" button column
-        super.addAncillaryColumns( columnPicker,
-                                   sortableHeaderGroup );
     }
 
 }

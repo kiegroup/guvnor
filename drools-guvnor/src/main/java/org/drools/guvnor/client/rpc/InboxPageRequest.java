@@ -24,41 +24,41 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
  */
 public class InboxPageRequest extends PageRequest {
 
-    private String mode;
+    private String inboxName;
 
     // For GWT serialisation
     public InboxPageRequest() {
     }
 
-    public InboxPageRequest(String mode,
+    public InboxPageRequest(String inboxName,
                             int startRowIndex,
                             Integer pageSize) {
         super( startRowIndex,
                pageSize );
-        validateMode( mode );
-        this.mode = mode;
+        validateInboxName( inboxName );
+        this.inboxName = inboxName;
     }
 
     // ************************************************************************
     // Getters and setters
     // ************************************************************************
 
-    public String getMode() {
-        return mode;
+    public String getInboxName() {
+        return inboxName;
     }
 
-    public void setInboxMode(String mode) {
-        validateMode( mode );
-        this.mode = mode;
+    public void setInboxName(String inboxName) {
+        validateInboxName( inboxName );
+        this.inboxName = inboxName;
     }
 
-    private void validateMode(String mode) {
+    private void validateInboxName(String inboxName) {
         // An enum would have been nice but existing inbox handling "generally"
         // uses these constants extensively throughout existing code
-        if ( !mode.equals( ExplorerNodeConfig.RECENT_EDITED_ID )
-             && !mode.equals( ExplorerNodeConfig.RECENT_VIEWED_ID )
-             && !mode.equals( ExplorerNodeConfig.INCOMING_ID ) ) {
-            throw new IllegalArgumentException( "Unexpected value for 'mode'" );
+        if ( !inboxName.equals( ExplorerNodeConfig.RECENT_EDITED_ID )
+             && !inboxName.equals( ExplorerNodeConfig.RECENT_VIEWED_ID )
+             && !inboxName.equals( ExplorerNodeConfig.INCOMING_ID ) ) {
+            throw new IllegalArgumentException( "Unexpected value for 'inboxName'" );
         }
     }
 

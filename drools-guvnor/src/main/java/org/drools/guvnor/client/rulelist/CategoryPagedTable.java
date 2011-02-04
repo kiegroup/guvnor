@@ -142,9 +142,6 @@ public class CategoryPagedTable extends AbstractPagedTable<CategoryPageRow> {
                                                                            lastModifiedColumn ),
                                 true );
 
-        // Include the "Open" button column
-        super.addAncillaryColumns( columnPicker,
-                                   sortableHeaderGroup );
     }
 
     @Override

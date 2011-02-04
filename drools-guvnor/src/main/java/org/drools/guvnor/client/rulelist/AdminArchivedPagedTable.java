@@ -142,9 +142,6 @@ public class AdminArchivedPagedTable extends AbstractPagedTable<AdminArchivedPag
                                                                                 lastModifiedColumn ),
                                 true );
 
-        // Include the "Open" button column
-        super.addAncillaryColumns( columnPicker,
-                                   sortableHeaderGroup );
     }
 
 }

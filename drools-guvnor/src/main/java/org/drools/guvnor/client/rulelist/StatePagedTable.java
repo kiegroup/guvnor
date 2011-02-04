@@ -139,12 +139,8 @@ public class StatePagedTable extends AbstractPagedTable<StatePageRow> {
                                                                         constants.LastModified(),
                                                                         lastModifiedColumn ),
                                 true );
-
-        // Include the "Open" button column
-        super.addAncillaryColumns( columnPicker,
-                                   sortableHeaderGroup );
     }
-    
+
     @Override
     protected void onUnload() {
         super.onUnload();

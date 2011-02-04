@@ -236,9 +236,6 @@ public class AssetPagedTable extends AbstractPagedTable<AssetPageRow> {
                                                                           externalSourceColumn ),
                                 false );
 
-        // Include the "Open" button column
-        super.addAncillaryColumns( columnPicker,
-                                   sortableHeaderGroup );
     }
 
 }

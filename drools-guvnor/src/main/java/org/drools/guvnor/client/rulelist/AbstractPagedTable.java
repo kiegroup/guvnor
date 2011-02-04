@@ -206,26 +206,8 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
      * @param columnPicker
      * @param sortableHeaderGroup
      */
-    protected void addAncillaryColumns(ColumnPicker<T> columnPicker,
-                                                SortableHeaderGroup<T> sortableHeaderGroup) {
-
-        // Add "Open" button column
-        Column<T, String> openColumn = new Column<T, String>( new ButtonCell() ) {
-            public String getValue(T row) {
-                return constants.Open();
-            }
-        };
-        openColumn.setFieldUpdater( new FieldUpdater<T, String>() {
-            public void update(int index,
-                               T row,
-                               String value) {
-                editEvent.open( row.getUuid() );
-            }
-        } );
-        columnPicker.addColumn( openColumn,
-                                new TextHeader( constants.Open() ),
-                                true );
-    }
+    protected abstract void addAncillaryColumns(ColumnPicker<T> columnPicker,
+                                                SortableHeaderGroup<T> sortableHeaderGroup);
 
     /**
      * Set up table and common columns
@@ -261,6 +243,23 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
         // Add any additional columns
         addAncillaryColumns( columnPicker,
                              sortableHeaderGroup );
+
+        // Add "Open" button column
+        Column<T, String> openColumn = new Column<T, String>( new ButtonCell() ) {
+            public String getValue(T row) {
+                return constants.Open();
+            }
+        };
+        openColumn.setFieldUpdater( new FieldUpdater<T, String>() {
+            public void update(int index,
+                               T row,
+                               String value) {
+                editEvent.open( row.getUuid() );
+            }
+        } );
+        columnPicker.addColumn( openColumn,
+                                new TextHeader( constants.Open() ),
+                                true );
 
         // cellTable.setPageSize( pageSize );
         cellTable.setWidth( "100%" );

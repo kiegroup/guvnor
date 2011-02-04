@@ -144,7 +144,8 @@ public class QueryPagedTable extends AbstractPagedTable<QueryPageRow> {
 
         TitledTextColumn<QueryPageRow> titleColumn = new TitledTextColumn<QueryPageRow>() {
             public TitledText getValue(QueryPageRow row) {
-                TitledText tt = new TitledText(row.getName(), row.getAbbreviatedDescription());
+                TitledText tt = new TitledText( row.getName(),
+                                                row.getAbbreviatedDescription() );
                 return tt;
             }
         };
@@ -197,9 +198,6 @@ public class QueryPagedTable extends AbstractPagedTable<QueryPageRow> {
                                                                         lastModifiedColumn ),
                                 true );
 
-        // Include the "Open" button column
-        super.addAncillaryColumns( columnPicker,
-                                   sortableHeaderGroup );
     }
 
 }

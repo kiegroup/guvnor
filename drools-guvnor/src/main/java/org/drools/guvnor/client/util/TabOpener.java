@@ -32,6 +32,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.PackageEditor;
@@ -52,6 +53,7 @@ import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.rulelist.AssetPagedTable;
 import org.drools.guvnor.client.rulelist.CategoryPagedTable;
+import org.drools.guvnor.client.rulelist.InboxIncomingPagedTable;
 import org.drools.guvnor.client.rulelist.InboxPagedTable;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.rulelist.QueryWidget;
@@ -397,13 +399,20 @@ public class TabOpener {
      * Show the inbox of the given name.
      */
     public void openInbox(String title,
-                          final String widgetID) {
-        if ( !explorerViewCenterPanel.showIfOpen( widgetID ) ) {
-            InboxPagedTable table = new InboxPagedTable( widgetID,
-                                                             createEditEvent() );
+                          final String inboxName) {
+        if ( !explorerViewCenterPanel.showIfOpen( inboxName ) ) {
+            InboxPagedTable table;
+            if ( inboxName.equals( ExplorerNodeConfig.INCOMING_ID ) ) {
+                table = new InboxIncomingPagedTable( inboxName,
+                                                     createEditEvent() );
+
+            } else {
+                table = new InboxPagedTable( inboxName,
+                                             createEditEvent() );
+            }
             explorerViewCenterPanel.addTab( title,
                                                 table,
-                                                widgetID );
+                                                inboxName );
         }
     }
 
