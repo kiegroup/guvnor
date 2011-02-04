@@ -28,40 +28,9 @@ public abstract class AbstractPageRow
     IsSerializable,
     Comparable<AbstractPageRow> {
 
-    private String uuid;
-    private String format; // TODO should be an enum
-    private String name;
-
-    public int compareTo(AbstractPageRow other) {
-        return uuid.compareTo( other.uuid );
-    }
-
-    // ************************************************************************
-    // Getters and setters
-    // ************************************************************************
-
-    public String getFormat() {
-        return format;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    @Override
+    public int compareTo(AbstractPageRow o) {
+        return 0;
     }
 
 }

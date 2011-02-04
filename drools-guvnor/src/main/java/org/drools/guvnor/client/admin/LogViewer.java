@@ -1,58 +1,37 @@
 /*
- * Copyright 2010 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright 2011 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.drools.guvnor.client.admin;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.LogEntry;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rulelist.LogPagedTable;
 
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Image;
-
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.core.SortDir;
-import com.gwtext.client.data.ArrayReader;
-import com.gwtext.client.data.DateFieldDef;
-import com.gwtext.client.data.FieldDef;
-import com.gwtext.client.data.IntegerFieldDef;
-import com.gwtext.client.data.MemoryProxy;
-import com.gwtext.client.data.Record;
-import com.gwtext.client.data.RecordDef;
-import com.gwtext.client.data.Store;
-import com.gwtext.client.data.StringFieldDef;
-import com.gwtext.client.widgets.Button;
-import com.gwtext.client.widgets.Toolbar;
-import com.gwtext.client.widgets.ToolbarButton;
-import com.gwtext.client.widgets.ToolbarSeparator;
-import com.gwtext.client.widgets.ToolbarTextItem;
-import com.gwtext.client.widgets.event.ButtonListenerAdapter;
-import com.gwtext.client.widgets.grid.CellMetadata;
-import com.gwtext.client.widgets.grid.ColumnConfig;
-import com.gwtext.client.widgets.grid.ColumnModel;
-import com.gwtext.client.widgets.grid.GridPanel;
-import com.gwtext.client.widgets.grid.Renderer;
+import com.google.gwt.dom.client.Style.FontWeight;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class LogViewer extends Composite {
 
@@ -62,22 +41,45 @@ public class LogViewer extends Composite {
     private VerticalPanel layout;
 
     public LogViewer() {
+
+        PrettyFormLayout pf = new PrettyFormLayout();
+
+        VerticalPanel header = new VerticalPanel();
+        Label caption = new Label( constants.ShowRecentLogTip() );
+        caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
+        header.add( caption );
+
+        pf.addHeader( images.statusLarge(),
+                      header );
+
         layout = new VerticalPanel();
         layout.setHeight( "100%" );
         layout.setWidth( "100%" );
 
+        pf.startSection();
+        pf.addRow( layout );
+        pf.endSection();
+
         refresh();
-        initWidget( layout );
+        initWidget( pf );
     }
 
     private void refresh() {
-        LoadingPopup.showMessage( constants.LoadingLogMessages() );
-        RepositoryServiceFactory.getService().showLog( new GenericCallback<LogEntry[]>() {
-            public void onSuccess(LogEntry[] logs) {
-                showLogs( logs );
-                LoadingPopup.close();
+
+        layout.clear();
+
+        LogPagedTable table = new LogPagedTable();
+        layout.add( table );
+
+        Button btnClean = new Button( constants.Clean() );
+        btnClean.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                cleanLog();
             }
         } );
+
+        table.getToolbar().insert( btnClean,
+                                   0 );
     }
 
     private void cleanLog() {
@@ -88,128 +90,6 @@ public class LogViewer extends Composite {
                 LoadingPopup.close();
             }
         } );
-    }
-
-    private void showLogs(LogEntry[] logs) {
-        List<LogEntry> entries = new ArrayList<LogEntry>();
-
-        // Drop the null rows
-        for ( int i = 0; i < logs.length; i++ ) {
-            LogEntry e = logs[i];
-            if ( e != null ) {
-                entries.add( e );
-            }
-        }
-
-        Object[][] data = new Object[entries.size()][3];
-        for ( int i = 0; i < entries.size(); i++ ) {
-            LogEntry e = entries.get( i );
-            data[i][0] = Integer.valueOf( e.severity );
-            data[i][1] = e.timestamp;
-            data[i][2] = e.message;
-        }
-
-        MemoryProxy proxy = new MemoryProxy( data );
-        RecordDef recordDef = new RecordDef( new FieldDef[]{new IntegerFieldDef( "severity" ), new DateFieldDef( "timestamp" ), new StringFieldDef( "message" ),} );
-
-        ArrayReader reader = new ArrayReader( recordDef );
-        Store store = new Store( proxy,
-                                 reader );
-        store.setDefaultSort( "timestamp",
-                              SortDir.DESC );
-        store.load();
-
-        ColumnModel cm = new ColumnModel( new ColumnConfig[]{new ColumnConfig() {
-            {
-                setDataIndex( "severity" ); //NON-NLS
-                setHeader( constants.Severity() );
-                setSortable( true );
-                setRenderer( new Renderer() {
-                    public String render(Object value,
-                                         CellMetadata cellMetadata,
-                                         Record record,
-                                         int rowIndex,
-                                         int colNum,
-                                         Store store) {
-                        Integer i = (Integer) value;
-                        if ( i.intValue() == 0 ) {
-                            return "<img src='" + new Image( images.error() ).getUrl() + "'/>";
-                        } else if ( i.intValue() == 1 ) {
-                            return "<img src='" + new Image( images.information() ).getUrl() + "'/>";
-                        } else {
-                            return "";
-                        }
-                    }
-                } );
-                setWidth( 50 );
-            }
-        }, new ColumnConfig() {
-            {
-                setHeader( constants.Timestamp() );
-                setSortable( true );
-                setDataIndex( "timestamp" );
-                setWidth( 180 );
-            }
-        }, new ColumnConfig() {
-            {
-                setHeader( constants.Message() );
-                setSortable( true );
-                setDataIndex( "message" ); //NON-NLS
-                setWidth( 580 );
-
-                setRenderer( new Renderer() {
-                    public String render(Object value,
-                                         CellMetadata cellMetadata,
-                                         Record record,
-                                         int rowIndex,
-                                         int colNum,
-                                         Store store) {
-
-                        if ( value != null ) {
-                            cellMetadata.setHtmlAttribute( "style=\"overflow:auto;\"" ); //NON-NLS
-                            return value.toString();
-                        } else {
-                            return "";
-                        }
-                    }
-                } );
-            }
-        }} );
-
-        final GridPanel g = new GridPanel( store,
-                                           cm );
-        g.setWidth( 800 );
-        g.setHeight( 600 );
-
-        Toolbar tb = new Toolbar();
-        g.setTopToolbar( tb );
-
-        tb.addItem( new ToolbarTextItem( constants.ShowRecentLogTip() ) );
-        tb.addItem( new ToolbarSeparator() );
-
-        layout.add( g );
-
-        ToolbarButton reload = new ToolbarButton( constants.Reload() );
-        reload.addListener( new ButtonListenerAdapter() {
-            public void onClick(Button button,
-                                EventObject e) {
-                layout.remove( g );
-                refresh();
-            }
-        } );
-
-        tb.addButton( reload );
-
-        ToolbarButton clean = new ToolbarButton( constants.Clean() );
-        clean.addListener( new ButtonListenerAdapter() {
-            public void onClick(Button button,
-                                EventObject e) {
-                layout.remove( g );
-                cleanLog();
-            }
-        } );
-
-        tb.addButton( clean );
     }
 
 }

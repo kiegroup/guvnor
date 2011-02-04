@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.drools.guvnor.client.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 
 /**
  * 
@@ -99,6 +98,7 @@ public interface RepositoryServiceAsync {
     public void runScenariosInPackage(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.BulkTestRunResult> cb);
     public void listTypesInPackage(java.lang.String p0, AsyncCallback<java.lang.String[]> cb);
     public void showLog(AsyncCallback<org.drools.guvnor.client.rpc.LogEntry[]> cb);
+    public void showLog(org.drools.guvnor.client.rpc.PageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.LogPageRow>> cb);
     public void cleanLog(AsyncCallback cb);
     public void loadDropDownExpression(java.lang.String[] p0, java.lang.String p1, AsyncCallback<java.lang.String[]> cb);
     public void quickFindAsset(java.lang.String p0, boolean p1, int p2, int p3, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
@@ -127,6 +127,4 @@ public interface RepositoryServiceAsync {
     public void processTemplate(java.lang.String p0, java.util.Map p1, AsyncCallback<java.lang.String> cb);
     public void isHostedMode(AsyncCallback<java.lang.Boolean> cb);
 
-
-    
 }

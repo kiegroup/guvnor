@@ -19,29 +19,38 @@ package org.drools.guvnor.client.rpc;
 import java.util.Date;
 
 /**
- * A single row of a paged data
+ * A single row of the event log
  * 
  * @author manstis
  */
-public class InboxPageRow extends AbstractAssetPageRow {
+public class LogPageRow extends AbstractPageRow {
 
-    private String note;
-    private Date   timestamp;
+    public int    severity;  // TODO should be an enum
+    public String message;
+    public Date   timestamp;
 
     // ************************************************************************
     // Getters and setters
     // ************************************************************************
 
-    public String getNote() {
-        return note;
+    public String getMessage() {
+        return message;
+    }
+
+    public int getSeverity() {
+        return severity;
     }
 
     public Date getTimestamp() {
         return timestamp;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setSeverity(int severity) {
+        this.severity = severity;
     }
 
     public void setTimestamp(Date timestamp) {

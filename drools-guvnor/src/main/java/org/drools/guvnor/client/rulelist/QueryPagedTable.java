@@ -44,7 +44,7 @@ import com.google.gwt.view.client.HasData;
  * 
  * @author manstis
  */
-public class QueryPagedTable extends AbstractPagedTable<QueryPageRow> {
+public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
 
     private static final int PAGE_SIZE = 10;
 

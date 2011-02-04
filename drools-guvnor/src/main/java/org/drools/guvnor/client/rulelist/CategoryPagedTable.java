@@ -42,7 +42,7 @@ import com.google.gwt.view.client.HasData;
  * 
  * @author manstis
  */
-public class CategoryPagedTable extends AbstractPagedTable<CategoryPageRow> {
+public class CategoryPagedTable extends AbstractAssetPagedTable<CategoryPageRow> {
 
     private static final int PAGE_SIZE = 10;
 

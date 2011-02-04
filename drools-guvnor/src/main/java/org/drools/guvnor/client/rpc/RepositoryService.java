@@ -607,8 +607,17 @@ public interface RepositoryService
     /**
      * This will list the last N log entryies logged by the server. For
      * debugging purposes in the GUI.
+     * 
+     * @deprecated in favour of {@link showLogEntries()}
      */
     public LogEntry[] showLog();
+
+    /**
+     * This will list log entries logged by the server. For debugging purposes
+     * in the GUI. This is an equivalent function to {@link showLog()} which has
+     * been deprecated in favour of DTO centric operations.
+     */
+    public PageResponse<LogPageRow> showLog(PageRequest request);
 
     /**
      * clean up the log entry.

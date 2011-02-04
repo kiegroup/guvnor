@@ -65,6 +65,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
 import org.drools.guvnor.client.rpc.AbstractPageRow;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
@@ -79,6 +80,7 @@ import org.drools.guvnor.client.rpc.InboxIncomingPageRow;
 import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.guvnor.client.rpc.LogEntry;
+import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -1781,6 +1783,41 @@ public class ServiceImplementation implements RepositoryService {
     }
 
     @WebRemote
+    public PageResponse<LogPageRow> showLog(PageRequest request) {
+        if ( request == null ) {
+            throw new IllegalArgumentException( "request cannot be null" );
+        }
+
+        serviceSecurity.checkSecurityIsAdmin();
+
+        // Do query
+        long start = System.currentTimeMillis();
+        LogEntry[] entries = LoggingHelper.getMessages();
+        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+        // Populate response
+        PageResponse<LogPageRow> response = new PageResponse<LogPageRow>();
+        response.setStartRowIndex( request.getStartRowIndex() );
+        response.setTotalRowSize( entries.length );
+        response.setTotalRowSizeExact( true );
+        
+        List<LogPageRow> rowList = new ArrayList<LogPageRow>(request.getPageSize());
+        for(int i = request.getStartRowIndex(); i<request.getPageSize() && i<entries.length;i++) {
+            LogEntry e = entries[i];
+            LogPageRow row = new LogPageRow();
+            row.setSeverity( e.severity );
+            row.setMessage( e.message );
+            row.setTimestamp( e.timestamp );
+            rowList.add(row);
+        }
+        response.setPageRowList( rowList );
+        
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Retrieved Log Entries in " + methodDuration + " ms." );
+        return response;
+   }
+    
+    @WebRemote
     public void cleanLog() {
         serviceSecurity.checkSecurityIsAdmin();
 
@@ -2002,6 +2039,56 @@ public class ServiceImplementation implements RepositoryService {
         }
     }
 
+    @Restrict("#{identity.loggedIn}")
+    public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request) throws DetailedSerializationException {
+
+        if ( request == null ) {
+            throw new IllegalArgumentException( "request cannot be null" );
+        }
+
+        String inboxName = request.getInboxName();
+        UserInbox ib = new UserInbox( getRulesRepository() );
+        List<InboxEntry> entries = new ArrayList<InboxEntry>();
+        PageResponse<InboxPageRow> response = new PageResponse<InboxPageRow>();
+        long start = System.currentTimeMillis();
+
+        try {
+
+            // Do applicable query
+            if ( inboxName.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
+                entries = ib.loadRecentOpened();
+                log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+            } else if ( inboxName.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) ) {
+                entries = ib.loadRecentEdited();
+                log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+            } else {
+                entries = ib.loadIncoming();
+                log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+            }
+
+            // Populate response
+            Iterator<InboxEntry> it = entries.iterator();
+            List<InboxPageRow> rowList = fillInboxPageRows( request, it );
+
+            response.setStartRowIndex( request.getStartRowIndex() );
+            response.setTotalRowSize( entries.size() );
+            response.setTotalRowSizeExact( true );
+            response.setPageRowList( rowList );
+            response.setLastPage( !it.hasNext() );
+
+            long methodDuration = System.currentTimeMillis() - start;
+            log.debug( "Queried inbox ('" + inboxName + "') in " + methodDuration + " ms." );
+
+        } catch ( Exception e ) {
+            log.error( "Unable to load Inbox: " + e.getMessage() );
+            throw new DetailedSerializationException( "Unable to load Inbox", e.getMessage() );
+        }
+        return response;
+    }
+
     public List<PushResponse> subscribe() {
         if ( Contexts.isApplicationContextActive() && !Session.instance().isInvalid() ) {
             try {
@@ -2128,56 +2215,6 @@ public class ServiceImplementation implements RepositoryService {
     public Boolean isHostedMode() {
         Boolean hm = Contexts.isApplicationContextActive() ? Boolean.FALSE : Boolean.TRUE;
         return hm;
-    }
-
-    @Restrict("#{identity.loggedIn}")
-    public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request) throws DetailedSerializationException {
-
-        if ( request == null ) {
-            throw new IllegalArgumentException( "request cannot be null" );
-        }
-
-        String inboxName = request.getInboxName();
-        UserInbox ib = new UserInbox( getRulesRepository() );
-        List<InboxEntry> entries = new ArrayList<InboxEntry>();
-        PageResponse<InboxPageRow> response = new PageResponse<InboxPageRow>();
-        long start = System.currentTimeMillis();
-
-        try {
-
-            // Do applicable query
-            if ( inboxName.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
-                entries = ib.loadRecentOpened();
-                log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-
-            } else if ( inboxName.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) ) {
-                entries = ib.loadRecentEdited();
-                log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-
-            } else {
-                entries = ib.loadIncoming();
-                log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-
-            }
-
-            // Populate response
-            Iterator<InboxEntry> it = entries.iterator();
-            List<InboxPageRow> rowList = fillInboxPageRows( request, it );
-
-            response.setStartRowIndex( request.getStartRowIndex() );
-            response.setTotalRowSize( entries.size() );
-            response.setTotalRowSizeExact( true );
-            response.setPageRowList( rowList );
-            response.setLastPage( !it.hasNext() );
-
-            long methodDuration = System.currentTimeMillis() - start;
-            log.debug( "Queried inbox ('" + inboxName + "') in " + methodDuration + " ms." );
-
-        } catch ( Exception e ) {
-            log.error( "Unable to load Inbox: " + e.getMessage() );
-            throw new DetailedSerializationException( "Unable to load Inbox", e.getMessage() );
-        }
-        return response;
     }
 
     @WebRemote
@@ -3078,7 +3115,7 @@ public class ServiceImplementation implements RepositoryService {
         return row;
     }
 
-    private void populatePageRowBaseProperties(AssetItem assetItem, AbstractPageRow row) {
+    private void populatePageRowBaseProperties(AssetItem assetItem, AbstractAssetPageRow row) {
         row.setUuid( assetItem.getUUID() );
         row.setFormat( assetItem.getFormat() );
         row.setName( assetItem.getName() );

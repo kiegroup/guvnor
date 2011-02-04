@@ -40,7 +40,7 @@ import com.google.gwt.view.client.HasData;
  * 
  * @author manstis
  */
-public class InboxPagedTable extends AbstractPagedTable<InboxPageRow> {
+public class InboxPagedTable extends AbstractAssetPagedTable<InboxPageRow> {
 
     private static final int PAGE_SIZE = 10;
 

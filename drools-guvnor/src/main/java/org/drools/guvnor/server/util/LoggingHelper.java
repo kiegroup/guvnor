@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.server.util;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import org.drools.guvnor.client.rpc.LogEntry;
@@ -103,10 +104,11 @@ class MessageList {
     }
 
     public LogEntry[] getMessages() {
-        return messages;
+        return Arrays.copyOf( messages, current );
     }
 
     public synchronized void cleanEntry() {
         messages = new LogEntry[MAX];
+        current = 0;
     }
 }

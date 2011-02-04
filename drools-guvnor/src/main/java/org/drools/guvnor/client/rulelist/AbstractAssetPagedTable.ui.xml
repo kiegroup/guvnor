@@ -26,7 +26,10 @@
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel ui:field="toolbar">
       <gwt:Button ui:field="refreshButton" text='{i18n.refreshList}'/>
+      <gwt:Button ui:field="openSelectedButton" text='{i18n.openSelected}'/>
+      <gwt:Button ui:field="openSelectedToSingleTabButton" text='{i18n.openSelectedToSingleTab}'/>
       <gwt:ToggleButton ui:field="columnPickerButton"/>
+      <gwt:Image ui:field="feedImage" resource='{images.feed}'></gwt:Image>
     </gwt:HorizontalPanel>
     <cellview:CellTable ui:field="cellTable"/>
     <cellview:SimplePager ui:field="pager"/>

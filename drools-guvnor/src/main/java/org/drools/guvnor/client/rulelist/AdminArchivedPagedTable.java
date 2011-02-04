@@ -40,7 +40,7 @@ import com.google.gwt.view.client.HasData;
  * 
  * @author manstis
  */
-public class AdminArchivedPagedTable extends AbstractPagedTable<AdminArchivedPageRow> {
+public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchivedPageRow> {
 
     private static final int PAGE_SIZE = 10;
 

@@ -23,7 +23,7 @@ import java.util.Date;
  * 
  * @author manstis
  */
-public class AdminArchivedPageRow extends AbstractPageRow {
+public class AdminArchivedPageRow extends AbstractAssetPageRow {
 
     private String packageName;
     private String lastContributor;

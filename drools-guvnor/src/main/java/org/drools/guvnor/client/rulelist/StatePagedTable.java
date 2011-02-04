@@ -42,7 +42,7 @@ import com.google.gwt.view.client.HasData;
  * 
  * @author manstis
  */
-public class StatePagedTable extends AbstractPagedTable<StatePageRow> {
+public class StatePagedTable extends AbstractAssetPagedTable<StatePageRow> {
 
     private static final int PAGE_SIZE = 10;
 

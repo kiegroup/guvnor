@@ -23,7 +23,7 @@ import java.util.Date;
  * 
  * @author manstis
  */
-public class QueryPageRow extends AbstractPageRow {
+public class QueryPageRow extends AbstractAssetPageRow {
 
     private String description;
     private String abbreviatedDescription;

@@ -16,36 +16,51 @@
 
 package org.drools.guvnor.client.rpc;
 
-import java.util.Date;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A single row of a paged data
  * 
  * @author manstis
  */
-public class InboxPageRow extends AbstractAssetPageRow {
+public abstract class AbstractAssetPageRow extends AbstractPageRow
+    implements
+    IsSerializable {
 
-    private String note;
-    private Date   timestamp;
+    private String uuid;
+    private String format; // TODO should be an enum
+    private String name;
+
+    public int compareTo(AbstractAssetPageRow other) {
+        return uuid.compareTo( other.uuid );
+    }
 
     // ************************************************************************
     // Getters and setters
     // ************************************************************************
 
-    public String getNote() {
-        return note;
+    public String getFormat() {
+        return format;
     }
 
-    public Date getTimestamp() {
-        return timestamp;
+    public String getName() {
+        return name;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
 }
