@@ -22,7 +22,7 @@ import java.util.List;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -273,10 +273,6 @@ public class RepositoryAssetOperations {
     }
 
     protected TableDataResult listAssets(String packageUuid, String formats[], int skip, int numRows, String tableConfig) throws SerializationException {
-        log.debug( "Loading asset list for [" + packageUuid + "]" );
-        if ( numRows == 0 ) {
-            throw new DetailedSerializationException( "Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh..." );
-        }
         long start = System.currentTimeMillis();
         PackageItem pkg = getRulesRepository().loadPackageByUUID( packageUuid );
         AssetItemIterator it;
@@ -308,6 +304,26 @@ public class RepositoryAssetOperations {
         while ( it.hasNext() ) {
             AssetItem ai = it.next();
             if ( filter.accept( ai, RoleTypes.PACKAGE_READONLY ) ) {
+                resultList.add( ai );
+            }
+        }
+
+        TableDisplayHandler handler = new TableDisplayHandler( "searchresults" );
+        return handler.loadRuleListTable( resultList, skip, numRows );
+    }
+
+    protected TableDataResult queryFullText(String text, boolean seekArchived, int skip, int numRows) throws SerializationException {
+        AssetItemIterator it = getRulesRepository().queryFullText( text, seekArchived );
+
+        // Add filter for READONLY permission
+        List<AssetItem> resultList = new ArrayList<AssetItem>();
+        RepositoryFilter filter = new PackageFilter();
+
+        while ( it.hasNext() ) {
+            AssetItem ai = it.next();
+            PackageConfigData data = new PackageConfigData();
+            data.uuid = ai.getPackage().getUUID();
+            if ( filter.accept( data, RoleTypes.PACKAGE_READONLY ) ) {
                 resultList.add( ai );
             }
         }

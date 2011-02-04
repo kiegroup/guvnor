@@ -842,6 +842,10 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult listAssets(String packageUuid, String formats[], int skip, int numRows, String tableConfig) throws SerializationException {
+        log.debug( "Loading asset list for [" + packageUuid + "]" );
+        if ( numRows == 0 ) {
+            throw new DetailedSerializationException( "Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh..." );
+        }
         return repositoryAssetOperations.listAssets( packageUuid, formats, skip, numRows, tableConfig );
     }
 
@@ -857,21 +861,7 @@ public class ServiceImplementation implements RepositoryService {
         if ( numRows == 0 ) {
             throw new DetailedSerializationException( "Unable to return zero results (bug)", "probably have the parameters around the wrong way, sigh..." );
         }
-        AssetItemIterator it = getRulesRepository().queryFullText( text, seekArchived );
-
-        // Add filter for READONLY permission
-        List<AssetItem> resultList = new ArrayList<AssetItem>();
-        RepositoryFilter filter = new PackageFilter();
-
-        while ( it.hasNext() ) {
-            AssetItem ai = it.next();
-            if ( checkPackagePermissionHelper( filter, ai, RoleTypes.PACKAGE_READONLY ) ) {
-                resultList.add( ai );
-            }
-        }
-
-        TableDisplayHandler handler = new TableDisplayHandler( "searchresults" );
-        return handler.loadRuleListTable( resultList, skip, numRows );
+        return repositoryAssetOperations.queryFullText( text, seekArchived, skip, numRows );
     }
 
     @WebRemote

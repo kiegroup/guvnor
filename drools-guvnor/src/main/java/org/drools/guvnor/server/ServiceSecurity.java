@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.server;
 
-import java.io.Serializable;
-
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.PackageNameType;
@@ -27,12 +25,13 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
+
 /**
  * Handles security checks.
  * @author Jari Timonen
  *
  */
-public class ServiceSecurity{
+public class ServiceSecurity {
 
     protected void checkSecurityIsPackageNameTypeAdmin(String packageName) {
         if ( Contexts.isSessionContextActive() ) {
@@ -81,17 +80,16 @@ public class ServiceSecurity{
             Identity.instance().checkPermission( new PackageNameType( item.getName() ), RoleTypes.PACKAGE_READONLY );
         }
     }
-    
+
     protected void checkSecurityIsPackageDeveloperForName(String initialPackage) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( initialPackage ), RoleTypes.PACKAGE_DEVELOPER );
         }
     }
-    
+
     protected void checkSecurityAssetPackagePackageReadOnly(AssetItem item) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageUUIDType( item.getPackage().getUUID() ), RoleTypes.PACKAGE_READONLY );
         }
     }
-
 }
