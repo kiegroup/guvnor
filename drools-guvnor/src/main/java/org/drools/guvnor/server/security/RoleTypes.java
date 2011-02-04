@@ -52,12 +52,6 @@ public class RoleTypes {
 	 */
 	public final static String PACKAGE_READONLY = "package.readonly";
 
-
-	/**
-	 * Read permission for archived assets
-	 */
-	public final static String READ = "read";
-
 	/**
 	 * @return A list of all available types.
 	 */
