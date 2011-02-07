@@ -36,7 +36,7 @@ public class UserInboxTest extends GuvnorTestBase {
 
     @Before
     public void setup() {
-        setUpSeam();
+        setUpSeamAndRepository();
     }
 
     @After

@@ -47,14 +47,13 @@ import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.permission.PermissionResolver;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Before
     public void setUp() {
-        setUpSeam();
+        setUpSeamAndRepository();
         setUpMockIdentity();
     }
 

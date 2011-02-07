@@ -33,7 +33,7 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
     @Before
     public void setup() {
-        setUpSeam();
+        setUpSeamAndRepository();
         setUpMockIdentity();
     }
 

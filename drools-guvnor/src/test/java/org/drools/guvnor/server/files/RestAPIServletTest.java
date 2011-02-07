@@ -29,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.security.MockIdentity;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
@@ -45,7 +44,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Before
     public void setup() {
-        setUpSeam();
+        setUpSeamAndRepository();
         setUpFileManagerUtils();
     }
 

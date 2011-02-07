@@ -32,8 +32,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.jcr.Session;
-
 import org.apache.commons.fileupload.FileItem;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.Snapshot;
@@ -52,7 +50,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
     @Before
     public void setUp() throws Exception {
-        setUpSeam();
+        setUpSeamAndRepository();
         setUpMockIdentity();
     }
 

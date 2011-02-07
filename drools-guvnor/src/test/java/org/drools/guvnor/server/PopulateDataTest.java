@@ -56,7 +56,7 @@ public class PopulateDataTest extends GuvnorTestBase {
 
     @Before
     public void setUp() {
-        setUpSeam();
+        setUpSeamAndRepository();
         setUpMockIdentity();
     }
 

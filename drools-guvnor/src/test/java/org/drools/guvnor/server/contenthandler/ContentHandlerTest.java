@@ -37,7 +37,7 @@ public class ContentHandlerTest extends GuvnorTestBase {
 
     @Before
     public void setup() {
-        setUpSeam();
+        setUpSeamAndRepository();
         setUpMockIdentity();
     }
 
