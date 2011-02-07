@@ -28,6 +28,7 @@ import org.drools.guvnor.client.table.SortableHeaderGroup;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextHeader;
@@ -167,6 +168,11 @@ public class PermissionsPagedTable extends AbstractPagedTable<PermissionsPageRow
                                                                                 hasCategoryPermissionsColumn ),
                                 true );
 
+    }
+    
+    void openSelected(ClickEvent e) {
+        PermissionsPageRow selectedItem = selectionModel.getSelectedObject();
+            openCommand.open( selectedItem.getUserName() );
     }
 
 }

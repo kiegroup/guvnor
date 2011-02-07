@@ -59,11 +59,24 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class PermissionViewer extends Composite {
 
-    private static Images         images    = (Images) GWT.create( Images.class );
-    private Constants             constants = ((Constants) GWT.create( Constants.class ));
+    private static Images         images      = (Images) GWT.create( Images.class );
+    private Constants             constants   = ((Constants) GWT.create( Constants.class ));
 
     private VerticalPanel         layout;
     private PermissionsPagedTable table;
+    private OpenItemCommand       openCommand = new OpenItemCommand() {
+
+                                                  @Override
+                                                  public void open(String key) {
+                                                      showEditor( key );
+                                                  }
+
+                                                  @Override
+                                                  public void open(MultiViewRow[] rows) {
+                                                      // Do nothing, unsupported
+                                                  }
+
+                                              };
 
     public PermissionViewer() {
 
@@ -86,7 +99,7 @@ public class PermissionViewer extends Composite {
         pf.addRow( layout );
         pf.endSection();
 
-        refresh();
+        setupWidget();
         initWidget( pf );
     }
 
@@ -101,23 +114,11 @@ public class PermissionViewer extends Composite {
         return hp;
     }
 
-    private void refresh() {
+    private void setupWidget() {
         if ( table != null ) {
             layout.remove( table );
         }
-        table = new PermissionsPagedTable( new OpenItemCommand() {
-
-            @Override
-            public void open(String key) {
-                showEditor( key );
-            }
-
-            @Override
-            public void open(MultiViewRow[] rows) {
-                // Do nothing, unsupported
-            }
-
-        } );
+        table = new PermissionsPagedTable( openCommand );
 
         Button btnCreate = new Button( constants.CreateNewUserMapping() );
         btnCreate.addClickHandler( new ClickHandler() {
@@ -142,7 +143,7 @@ public class PermissionViewer extends Composite {
                             RepositoryServiceFactory.getService().createUser( userName.getText(),
                                                                               new GenericCallback<java.lang.Void>() {
                                                                                   public void onSuccess(Void a) {
-                                                                                      refresh();
+                                                                                      table.refresh();
                                                                                       showEditor( userName.getText() );
                                                                                   }
 
@@ -169,19 +170,31 @@ public class PermissionViewer extends Composite {
             public void onClick(ClickEvent event) {
                 final String userName = table.getSelectionModel().getSelectedObject().getUserName();
                 if ( userName != null
-                     && Window.confirm( Format.format( constants.AreYouSureYouWantToDeleteUser0(),
-                                                       userName ) ) ) {
+                        && Window.confirm( Format.format( constants.AreYouSureYouWantToDeleteUser0(),
+                                                          userName ) ) ) {
                     RepositoryServiceFactory.getService().deleteUser( userName,
-                                                                      new GenericCallback<java.lang.Void>() {
-                                                                          public void onSuccess(Void a) {
-                                                                              refresh();
-                                                                          }
-                                                                      } );
+                                                                         new GenericCallback<java.lang.Void>() {
+                                                                             public void onSuccess(Void a) {
+                                                                                 table.refresh();
+                                                                             }
+                                                                         } );
                 }
             }
         } );
         table.getToolbar().insert( btnDelete,
                                    1 );
+
+        Button btnOpenSelected = new Button( constants.openSelected() );
+        btnOpenSelected.addClickHandler( new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                final String userName = table.getSelectionModel().getSelectedObject().getUserName();
+                openCommand.open( userName );
+            }
+        } );
+        table.getToolbar().insert( btnOpenSelected,
+                                   2 );
 
         layout.add( table );
 
@@ -240,7 +253,7 @@ public class PermissionViewer extends Composite {
                                                                                                                                                     new GenericCallback<java.lang.Void>() {
                                                                                                                                                         public void onSuccess(Void a) {
                                                                                                                                                             LoadingPopup.close();
-                                                                                                                                                            refresh();
+                                                                                                                                                            table.refresh();
                                                                                                                                                             editor.hide();
                                                                                                                                                         }
                                                                                                                                                     } );
