@@ -120,7 +120,7 @@ public class RepositoryAssetOperationsTest {
         AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
         when( assetItemIterator.hasNext() ).thenReturn( true,
                                                         false );
-        initialiseAssetItemMockForLoadArchivedAssets( rulesRepository,
+        initializeAssetItemMockForLoadArchivedAssets( rulesRepository,
                                                       assetItemIterator );
 
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
@@ -141,7 +141,7 @@ public class RepositoryAssetOperationsTest {
                                                         true,
                                                         true,
                                                         false );
-        initialiseAssetItemMockForLoadArchivedAssets( rulesRepository,
+        initializeAssetItemMockForLoadArchivedAssets( rulesRepository,
                                                       assetItemIterator );
 
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
@@ -153,7 +153,7 @@ public class RepositoryAssetOperationsTest {
                       2 );
     }
 
-    private void initialiseAssetItemMockForLoadArchivedAssets(RulesRepository rulesRepository,
+    private void initializeAssetItemMockForLoadArchivedAssets(RulesRepository rulesRepository,
                                                               AssetItemIterator assetItemIterator) {
         AssetItem assetItem = mock( AssetItem.class );
         when( assetItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
