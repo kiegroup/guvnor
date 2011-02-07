@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.drools.guvnor.client.rulelist;
+package org.drools.guvnor.client.widgets.tables;
 
 import java.util.Date;
 
@@ -23,9 +23,6 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
-import org.drools.guvnor.client.table.ColumnPicker;
-import org.drools.guvnor.client.table.SortableHeader;
-import org.drools.guvnor.client.table.SortableHeaderGroup;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.DateCell;

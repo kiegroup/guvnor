@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.table;
+package org.drools.guvnor.client.widgets.tables;
 
 import java.util.ArrayList;
 import java.util.Collections;

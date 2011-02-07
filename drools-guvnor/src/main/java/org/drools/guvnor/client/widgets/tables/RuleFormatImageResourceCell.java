@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-package org.drools.guvnor.client.rulelist;
+package org.drools.guvnor.client.widgets.tables;
 
 import com.google.gwt.cell.client.Cell;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;

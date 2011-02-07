@@ -14,14 +14,12 @@
  * the License.
  */
 
-package org.drools.guvnor.client.rulelist;
+package org.drools.guvnor.client.widgets.tables;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.AbstractPageRow;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.table.ColumnPicker;
-import org.drools.guvnor.client.table.SortableHeaderGroup;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

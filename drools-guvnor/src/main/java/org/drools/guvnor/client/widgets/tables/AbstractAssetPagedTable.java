@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.drools.guvnor.client.rulelist;
+package org.drools.guvnor.client.widgets.tables;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,10 +26,7 @@ import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.table.ColumnPicker;
-import org.drools.guvnor.client.table.SelectionColumn;
-import org.drools.guvnor.client.table.SortableHeader;
-import org.drools.guvnor.client.table.SortableHeaderGroup;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;

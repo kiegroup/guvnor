@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2011 JBoss Inc
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,6 +18,7 @@ package org.drools.guvnor.server;
 
 import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -114,6 +115,7 @@ import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.UserInbox;
+import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
@@ -164,14 +166,11 @@ import org.jboss.seam.web.Session;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
-import com.google.gwt.dev.util.collect.Lists;
 import com.google.gwt.user.client.rpc.SerializationException;
 
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
-import java.io.BufferedInputStream;
-import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 
 /**
  * This is the implementation of the repository service to drive the GWT based
@@ -289,6 +288,9 @@ public class ServiceImplementation implements RepositoryService {
         return repositoryAssetOperations.loadAssetHistory( assetItem );
     }
 
+    /**
+     * @deprecated in favour of {@link loadArchivedAssets(PageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadArchivedAssets(int skip, int numRows) throws SerializationException {
@@ -305,6 +307,9 @@ public class ServiceImplementation implements RepositoryService {
         return repositoryAssetOperations.loadArchivedAssets( request );
     }
 
+    /**
+     * @deprecated in favour of {@link findAssetPage(AssetPageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult listAssetsWithPackageName(String packageName, String formats[], int skip, int numRows, String tableConfig) throws SerializationException {
@@ -312,6 +317,9 @@ public class ServiceImplementation implements RepositoryService {
         return listAssets( pkg.getUUID(), formats, skip, numRows, tableConfig );
     }
 
+    /**
+     * @deprecated in favour of {@link findAssetPage(AssetPageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult listAssets(String packageUuid, String formats[], int skip, int numRows, String tableConfig) throws SerializationException {
@@ -743,16 +751,21 @@ public class ServiceImplementation implements RepositoryService {
         } );
     }
 
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
     /**
      * loadRuleListForCategories
      *
      * Role-based Authorization check: This method only returns rules that the user has
      * permission to access. The user is considered to has permission to access the particular category when:
      * The user has ANALYST_READ role or higher (i.e., ANALYST) to this category
+     * 
+     * @deprecated in favour of {@link loadRuleListForCategories(CategoryPageRequest)}
      */
-    public TableDataResult loadRuleListForCategories(String categoryPath, int skip, int numRows, String tableConfig) throws SerializationException {
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public TableDataResult loadRuleListForCategories(String categoryPath,
+                                                     int skip,
+                                                     int numRows,
+                                                     String tableConfig) throws SerializationException {
 
         // First check the user has permission to access this categoryPath.
         if ( Contexts.isSessionContextActive() ) {
@@ -769,6 +782,9 @@ public class ServiceImplementation implements RepositoryService {
 
     }
 
+    /**
+     * @deprecated in favour of {@link loadRuleListForState(StatePageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadRuleListForState(String stateName, int skip, int numRows, String tableConfig) throws SerializationException {
@@ -781,6 +797,9 @@ public class ServiceImplementation implements RepositoryService {
         return handler.loadRuleListTable( result );
     }
 
+    /**
+     * @deprecated in favour of {@link AbstractPagedTable}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableConfig loadTableConfig(String listName) {
@@ -1039,12 +1058,18 @@ public class ServiceImplementation implements RepositoryService {
         }
     }
 
+    /**
+     * @deprecated in favour of {@link quickFindAsset(QueryPageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult quickFindAsset(String searchText, boolean searchArchived, int skip, int numRows) throws SerializationException {
         return repositoryAssetOperations.quickFindAsset( searchText, searchArchived, skip, numRows );
     }
 
+    /**
+     * @deprecated in favour of {@link queryFullText(QueryPageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult queryFullText(String text, boolean seekArchived, int skip, int numRows) throws SerializationException {
@@ -1054,6 +1079,9 @@ public class ServiceImplementation implements RepositoryService {
         return repositoryAssetOperations.queryFullText( text, seekArchived, skip, numRows );
     }
 
+    /**
+     * @deprecated in favour of {@link queryMetaData(QueryPageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult queryMetaData(final MetaDataQuery[] qr, Date createdAfter, Date createdBefore, Date modifiedAfter, Date modifiedBefore, boolean seekArchived, int skip, int numRows) throws SerializationException {
@@ -1608,6 +1636,9 @@ public class ServiceImplementation implements RepositoryService {
 
     }
 
+    /**
+     * @deprecated in favour of {@link showLog(PageRequest)}
+     */
     @WebRemote
     public LogEntry[] showLog() {
         serviceSecurity.checkSecurityIsAdmin();
@@ -1751,6 +1782,9 @@ public class ServiceImplementation implements RepositoryService {
         }
     }
 
+    /**
+     * @deprecated in favour of {@link listUserPermissions(PageRequest)}
+     */
     @Restrict("#{identity.loggedIn}")
     public Map<String, List<String>> listUserPermissions() {
         serviceSecurity.checkSecurityIsAdmin();
@@ -1898,6 +1932,9 @@ public class ServiceImplementation implements RepositoryService {
 
     }
 
+    /**
+     * @deprecated in favour of {@link loadInbox(InboxPageRequest)}
+     */
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException {
         try {
@@ -1981,6 +2018,9 @@ public class ServiceImplementation implements RepositoryService {
         return s.replace( "<", "&lt;" ).replace( ">", "&gt;" );
     }
 
+    /**
+     * @deprecated in favour of {@link compareSnapshots(SnapshotComparisonPageRequest)}
+     */
     public SnapshotDiffs compareSnapshots(String packageName, String firstSnapshotName, String secondSnapshotName) {
         SnapshotDiffs diffs = new SnapshotDiffs();
         List<SnapshotDiff> list = new ArrayList<SnapshotDiff>();

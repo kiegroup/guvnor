@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
-import org.drools.guvnor.client.table.SortDirection;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridSidebarWidget;
@@ -34,6 +33,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.HasColumns;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasSystemControlledColumns;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridWidget;
+import org.drools.guvnor.client.widgets.tables.SortDirection;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;

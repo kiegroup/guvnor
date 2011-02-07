@@ -46,6 +46,8 @@ public interface RepositoryService
      * 
      * @param A
      *            "/" delimited path to a category.
+     * @deprecated in favor of {@link
+     *             loadRuleListForCategories(CategoryPageRequest)}
      */
     public TableDataResult loadRuleListForCategories(String categoryPath,
                                                      int skip,
@@ -65,6 +67,7 @@ public interface RepositoryService
      * 
      * @param The
      *            name of the state.
+     * @deprecated in favor of {@link loadRuleListForState(StatePageRequest)}
      */
     public TableDataResult loadRuleListForState(String state,
                                                 int skip,
@@ -84,6 +87,7 @@ public interface RepositoryService
      * 
      * @param listName
      *            The name of the list that we are going to render.
+     * @deprecated in favour of {@link AbstractPagedTable}
      */
     public TableConfig loadTableConfig(String listName);
 
@@ -185,8 +189,9 @@ public interface RepositoryService
     /**
      * This will load all archived assets, in a summary format suitable for
      * display in a table.
+     * 
+     * @deprecated in favor of {@link loadArchiveAssets(PageRequest)}
      */
-
     public TableDataResult loadArchivedAssets(int skip,
                                               int numRows) throws SerializationException;
 
@@ -641,6 +646,8 @@ public interface RepositoryService
 
     /**
      * This will quickly return a list of assets
+     * 
+     * @deprecated in favor of {@link quickFindAsset(QueryPageRequest)}
      */
     public TableDataResult quickFindAsset(String searchText,
                                           boolean searchArchived,
@@ -656,6 +663,7 @@ public interface RepositoryService
      * @param numRows
      * @return
      * @throws SerializationException
+     * @deprecated in favor of {@link queryFullText(QueryPageRequest)}
      */
     public TableDataResult queryFullText(String text,
                                          boolean seekArchived,
@@ -677,6 +685,7 @@ public interface RepositoryService
      * @param numRows
      * @return
      * @throws SerializationException
+     * @deprecated in favor of {@link queryMetaData(QueryPageRequest)}
      */
     public TableDataResult queryMetaData(final MetaDataQuery[] qr,
                                          Date createdAfter,
@@ -689,6 +698,7 @@ public interface RepositoryService
 
     /**
      * @return A map of username : list of permission types for display reasons.
+     * @deprecated in favor of {@link listUserPermissions(PageRequest)}
      */
     public Map<String, List<String>> listUserPermissions() throws DetailedSerializationException;
 
@@ -778,6 +788,8 @@ public interface RepositoryService
 
     /**
      * Load the data for a given inbox for the currently logged in user.
+     * 
+     * @deprecated in favor of {@link loadInbox(InboxPageRequest)}
      */
     public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException;
 

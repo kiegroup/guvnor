@@ -51,13 +51,13 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
-import org.drools.guvnor.client.rulelist.AssetPagedTable;
-import org.drools.guvnor.client.rulelist.CategoryPagedTable;
-import org.drools.guvnor.client.rulelist.InboxIncomingPagedTable;
-import org.drools.guvnor.client.rulelist.InboxPagedTable;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.rulelist.QueryWidget;
-import org.drools.guvnor.client.rulelist.StatePagedTable;
+import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
+import org.drools.guvnor.client.widgets.tables.CategoryPagedTable;
+import org.drools.guvnor.client.widgets.tables.InboxIncomingPagedTable;
+import org.drools.guvnor.client.widgets.tables.InboxPagedTable;
+import org.drools.guvnor.client.widgets.tables.StatePagedTable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;

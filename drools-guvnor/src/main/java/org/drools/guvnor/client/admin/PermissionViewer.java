@@ -35,8 +35,8 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
-import org.drools.guvnor.client.rulelist.PermissionsPagedTable;
 import org.drools.guvnor.client.util.Format;
+import org.drools.guvnor.client.widgets.tables.PermissionsPagedTable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.FontWeight;

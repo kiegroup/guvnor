@@ -35,9 +35,9 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
-import org.drools.guvnor.client.rulelist.SnapshotComparisonPagedTable;
 import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.util.TabOpener;
+import org.drools.guvnor.client.widgets.tables.SnapshotComparisonPagedTable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

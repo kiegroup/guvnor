@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.drools.guvnor.client.rulelist;
+package org.drools.guvnor.client.widgets.tables;
 
 import java.util.Set;
 
@@ -22,10 +22,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
-import org.drools.guvnor.client.table.ColumnPicker;
-import org.drools.guvnor.client.table.SelectionColumn;
-import org.drools.guvnor.client.table.SortableHeader;
-import org.drools.guvnor.client.table.SortableHeaderGroup;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.cell.client.ButtonCell;

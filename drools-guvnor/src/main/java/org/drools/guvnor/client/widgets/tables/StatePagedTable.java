@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.drools.guvnor.client.rulelist;
+package org.drools.guvnor.client.widgets.tables;
 
 import java.util.Date;
 
@@ -24,10 +24,8 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.ruleeditor.EditorLauncher;
-import org.drools.guvnor.client.rulelist.TitledTextCell.TitledText;
-import org.drools.guvnor.client.table.ColumnPicker;
-import org.drools.guvnor.client.table.SortableHeader;
-import org.drools.guvnor.client.table.SortableHeaderGroup;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
+import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
 
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.i18n.client.DateTimeFormat;

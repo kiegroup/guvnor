@@ -1,6 +1,6 @@
-package org.drools.guvnor.client.rulelist;
+package org.drools.guvnor.client.widgets.tables;
 
-import org.drools.guvnor.client.rulelist.TitledTextCell.TitledText;
+import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
 
 import com.google.gwt.cell.client.AbstractSafeHtmlCell;
 import com.google.gwt.safehtml.shared.SafeHtml;

@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.table;
+package org.drools.guvnor.client.widgets.tables;
 
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
@@ -8,19 +8,19 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface TableImageResources extends ClientBundle {
 
-    @Source("../resources/images/downArrow.png")
+    @Source("../../resources/images/downArrow.png")
     ImageResource downArrow();
 
-    @Source("../resources/images/smallDownArrow.png")
+    @Source("../../resources/images/smallDownArrow.png")
     ImageResource smallDownArrow();
 
-    @Source("../resources/images/upArrow.png")
+    @Source("../../resources/images/upArrow.png")
     ImageResource upArrow();
 
-    @Source("../resources/images/smallUpArrow.png")
+    @Source("../../resources/images/smallUpArrow.png")
     ImageResource smallUpArrow();
 
-    @Source("../resources/images/columnPicker.png")
+    @Source("../../resources/images/columnPicker.png")
     ImageResource columnPicker();
 
 }

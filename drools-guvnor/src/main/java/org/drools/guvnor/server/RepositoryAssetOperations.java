@@ -65,11 +65,12 @@ import com.google.gwt.user.client.rpc.SerializationException;
 @AutoCreate
 public class RepositoryAssetOperations {
 
-    //TODO: Remove as many as possible static functions as there seems no need for static -> makes testing hard.
-    //TODO: Use DI when possible
-    //TODO: Harmonize usage of all "backend" systems
-    //TODO: Write tests
-    //TODO: Each method should have only one responsibility
+    // TODO: Remove as many as possible static functions as there seems no need
+    // for static -> makes testing hard.
+    // TODO: Use DI when possible
+    // TODO: Harmonize usage of all "backend" systems
+    // TODO: Write tests
+    // TODO: Each method should have only one responsibility
 
     private RulesRepository            repository;
 
@@ -193,6 +194,13 @@ public class RepositoryAssetOperations {
         return tableDataRow;
     }
 
+    /**
+     * @param skip
+     * @param numRows
+     * @return
+     * @throws SerializationException
+     * @deprecated in favour of {@link loadArchivedAssets(PageRequest)}
+     */
     protected TableDataResult loadArchivedAssets(int skip,
                                                  int numRows) throws SerializationException {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
@@ -311,6 +319,16 @@ public class RepositoryAssetOperations {
         return row;
     }
 
+    /**
+     * @param packageUuid
+     * @param formats
+     * @param skip
+     * @param numRows
+     * @param tableConfig
+     * @return
+     * @throws SerializationException
+     * @deprecated in favour of {@link findAssetPage(AssetPageRequest)}
+     */
     protected TableDataResult listAssets(String packageUuid,
                                          String formats[],
                                          int skip,
@@ -332,6 +350,15 @@ public class RepositoryAssetOperations {
                                           numRows );
     }
 
+    /**
+     * @param searchText
+     * @param searchArchived
+     * @param skip
+     * @param numRows
+     * @return
+     * @throws SerializationException
+     * @deprecated in favour of {@link quickFindAsset(QueryPageRequest)}
+     */
     protected TableDataResult quickFindAsset(String searchText,
                                              boolean searchArchived,
                                              int skip,
@@ -367,6 +394,15 @@ public class RepositoryAssetOperations {
                                           numRows );
     }
 
+    /**
+     * @param text
+     * @param seekArchived
+     * @param skip
+     * @param numRows
+     * @return
+     * @throws SerializationException
+     * @deprecated in favour of {@link queryFullText(QueryPageRequest)}
+     */
     protected TableDataResult queryFullText(String text,
                                             boolean seekArchived,
                                             int skip,

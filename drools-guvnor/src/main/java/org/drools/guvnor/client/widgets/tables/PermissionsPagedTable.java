@@ -14,16 +14,13 @@
  * the License.
  */
 
-package org.drools.guvnor.client.rulelist;
+package org.drools.guvnor.client.widgets.tables;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
-import org.drools.guvnor.client.table.ColumnPicker;
-import org.drools.guvnor.client.table.SelectionColumn;
-import org.drools.guvnor.client.table.SortableHeader;
-import org.drools.guvnor.client.table.SortableHeaderGroup;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
