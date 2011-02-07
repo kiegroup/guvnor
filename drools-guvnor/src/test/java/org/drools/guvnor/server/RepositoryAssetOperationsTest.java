@@ -69,15 +69,13 @@ public class RepositoryAssetOperationsTest {
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepository( rulesRepository );
 
-        AssetItem assetItem = mock( AssetItem.class );
-        when( assetItem.getVersionNumber() ).thenReturn( 1324567L );
+        AssetItem assetItem = initializeAssetItemMockForLoadAssetHistory();
 
         AssetHistoryIterator assetHistoryIterator = mock( AssetHistoryIterator.class );
         when( assetItem.getHistory() ).thenReturn( assetHistoryIterator );
         when( assetHistoryIterator.hasNext() ).thenReturn( true,
                                                                false );
-        AssetItem historicalAssetItem = mock( AssetItem.class );
-        when( assetHistoryIterator.next() ).thenReturn( historicalAssetItem );
+        AssetItem historicalAssetItem = initializeAssetItemHistoryMockForLoadAssetHistory( assetHistoryIterator );
         when( historicalAssetItem.getVersionNumber() ).thenReturn( 1324567L );
 
         assertNull( repositoryAssetOperations.loadAssetHistory( assetItem ) );
@@ -90,16 +88,14 @@ public class RepositoryAssetOperationsTest {
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
         repositoryAssetOperations.setRulesRepository( rulesRepository );
 
-        AssetItem assetItem = mock( AssetItem.class );
-        when( assetItem.getVersionNumber() ).thenReturn( 1324567L );
+        AssetItem assetItem = initializeAssetItemMockForLoadAssetHistory();
 
         AssetHistoryIterator assetHistoryIterator = mock( AssetHistoryIterator.class );
         when( assetItem.getHistory() ).thenReturn( assetHistoryIterator );
         when( assetHistoryIterator.hasNext() ).thenReturn( true,
                                                                false );
 
-        AssetItem historicalAssetItem = mock( AssetItem.class );
-        when( assetHistoryIterator.next() ).thenReturn( historicalAssetItem );
+        AssetItem historicalAssetItem = initializeAssetItemHistoryMockForLoadAssetHistory( assetHistoryIterator );
         when( historicalAssetItem.getVersionNumber() ).thenReturn( 123456L );
 
         Calendar calendar = GregorianCalendar.getInstance();
@@ -111,6 +107,18 @@ public class RepositoryAssetOperationsTest {
         assertNotNull( tableDataRow );
         assertEquals( tableDataRow.length,
                           1 );
+    }
+
+    private AssetItem initializeAssetItemMockForLoadAssetHistory() {
+        AssetItem assetItem = mock( AssetItem.class );
+        when( assetItem.getVersionNumber() ).thenReturn( 1324567L );
+        return assetItem;
+    }
+
+    private AssetItem initializeAssetItemHistoryMockForLoadAssetHistory(AssetHistoryIterator assetHistoryIterator) {
+        AssetItem historicalAssetItem = mock( AssetItem.class );
+        when( assetHistoryIterator.next() ).thenReturn( historicalAssetItem );
+        return historicalAssetItem;
     }
 
     @Test
@@ -133,7 +141,7 @@ public class RepositoryAssetOperationsTest {
     }
 
     @Test
-    public void testLoadArchivedAssetsReturnLessThanIsAwailable() throws SerializationException {
+    public void testLoadArchivedAssetsReturnLessThanIsAvailable() throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
 
         AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
