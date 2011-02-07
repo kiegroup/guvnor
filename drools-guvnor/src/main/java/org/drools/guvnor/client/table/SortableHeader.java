@@ -12,37 +12,40 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
  * Based on GWT bikeshed example.
+ * 
  * @author Geoffrey De Smet
  */
 public class SortableHeader<T, C extends Comparable> extends Header<String> {
 
-    private static final TableImageResources TABLE_IMAGE_RESOURCES = GWT.create(TableImageResources.class);
-    private static final String DOWN_ARROW = makeImage(TABLE_IMAGE_RESOURCES.downArrow());
-    private static final String SMALL_DOWN_ARROW = makeImage(TABLE_IMAGE_RESOURCES.smallDownArrow());
-    private static final String UP_ARROW = makeImage(TABLE_IMAGE_RESOURCES.upArrow());
-    private static final String SMALL_UP_ARROW = makeImage(TABLE_IMAGE_RESOURCES.smallUpArrow());
+    private static final TableImageResources TABLE_IMAGE_RESOURCES = GWT.create( TableImageResources.class );
+    private static final String              DOWN_ARROW            = makeImage( TABLE_IMAGE_RESOURCES.downArrow() );
+    private static final String              SMALL_DOWN_ARROW      = makeImage( TABLE_IMAGE_RESOURCES.smallDownArrow() );
+    private static final String              UP_ARROW              = makeImage( TABLE_IMAGE_RESOURCES.upArrow() );
+    private static final String              SMALL_UP_ARROW        = makeImage( TABLE_IMAGE_RESOURCES.smallUpArrow() );
 
     private static String makeImage(ImageResource resource) {
-        AbstractImagePrototype prototype = AbstractImagePrototype.create(resource);
+        AbstractImagePrototype prototype = AbstractImagePrototype.create( resource );
         return prototype.getHTML();
     }
 
     private final SortableHeaderGroup sortableHeaderGroup;
-    private String text;
-    private final Column<T, C> column;
-    private SortDirection sortDirection = SortDirection.NONE;
-    private int sortIndex = -1;
+    private String                    text;
+    private final Column<T, C>        column;
+    private SortDirection             sortDirection = SortDirection.NONE;
+    private int                       sortIndex     = -1;
 
-    public SortableHeader(SortableHeaderGroup sortableHeaderGroup, String text, Column<T, C> column) {
-        super(new ClickableTextCell());
+    public SortableHeader(SortableHeaderGroup sortableHeaderGroup,
+                          String text,
+                          Column<T, C> column) {
+        super( new ClickableTextCell() );
         this.sortableHeaderGroup = sortableHeaderGroup;
         this.text = text;
         this.column = column;
-        setUpdater(new ValueUpdater<String>() {
+        setUpdater( new ValueUpdater<String>() {
             public void update(String s) {
-                SortableHeader.this.sortableHeaderGroup.headerClicked(SortableHeader.this);
+                SortableHeader.this.sortableHeaderGroup.headerClicked( SortableHeader.this );
             }
-        });
+        } );
     }
 
     /**
@@ -50,6 +53,15 @@ public class SortableHeader<T, C extends Comparable> extends Header<String> {
      */
     public String getValue() {
         return text;
+    }
+
+    /**
+     * Set the Column header
+     * 
+     * @param text
+     */
+    public void setValue(String text) {
+        this.text = text;
     }
 
     public Column<T, C> getColumn() {
@@ -73,28 +85,31 @@ public class SortableHeader<T, C extends Comparable> extends Header<String> {
     }
 
     @Override
-    public void render(Cell.Context context, SafeHtmlBuilder sb) {
-        sb.appendHtmlConstant("<div style='position: relative; cursor: pointer; padding: 0px;'>");
-        sb.appendHtmlConstant("<span style='padding-right: 10px'>");
-        sb.appendEscaped(text);
-        sb.appendHtmlConstant("</span>");
-//        sb.appendHtmlConstant("<div style='position:absolute;right:0px;top:0px;'></div>");
-        switch (sortDirection) {
-            case NONE:
+    public void render(Cell.Context context,
+                       SafeHtmlBuilder sb) {
+        sb.appendHtmlConstant( "<div style='position: relative; cursor: pointer; padding: 0px;'>" );
+        sb.appendHtmlConstant( "<span style='padding-right: 10px'>" );
+        sb.appendEscaped( text );
+        sb.appendHtmlConstant( "</span>" );
+        // sb.appendHtmlConstant("<div style='position:absolute;right:0px;top:0px;'></div>");
+        switch ( sortDirection ) {
+            case NONE :
                 // nothing
                 break;
-            case ASCENDING:
-                sb.appendHtmlConstant(sortIndex == 0 ? UP_ARROW : SMALL_UP_ARROW);
+            case ASCENDING :
+                sb.appendHtmlConstant( sortIndex == 0 ? UP_ARROW : SMALL_UP_ARROW );
                 break;
-            case DESCENDING:
-                sb.appendHtmlConstant(sortIndex == 0 ? DOWN_ARROW : SMALL_DOWN_ARROW);
+            case DESCENDING :
+                sb.appendHtmlConstant( sortIndex == 0 ? DOWN_ARROW : SMALL_DOWN_ARROW );
                 break;
-            default:
-                throw new IllegalArgumentException("Unknown sortDirection (" + sortDirection + ").");
+            default :
+                throw new IllegalArgumentException( "Unknown sortDirection ("
+                                                    + sortDirection
+                                                    + ")." );
         }
-        sb.appendHtmlConstant("</div>");
-//        sb.appendHtmlConstant("<div>");
-//        sb.appendHtmlConstant("</div></div>");
+        sb.appendHtmlConstant( "</div>" );
+        // sb.appendHtmlConstant("<div>");
+        // sb.appendHtmlConstant("</div></div>");
     }
 
 }

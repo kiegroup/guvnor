@@ -31,11 +31,18 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 
@@ -46,19 +53,35 @@ import com.google.gwt.view.client.HasData;
  */
 public class LogPagedTable extends AbstractPagedTable<LogPageRow> {
 
-    private static Images       images          = (Images) GWT.create( Images.class );
-    private static final String HTML_ERROR_ICON = makeImage( images.error() );
-    private static final String HTML_INFO_ICON  = makeImage( images.information() );
+    // UI
+    interface LogPagedTableBinder
+        extends
+        UiBinder<Widget, LogPagedTable> {
+    }
+
+    @UiField()
+    protected Button cleanButton;
+
+    private static LogPagedTableBinder uiBinder        = GWT.create( LogPagedTableBinder.class );
+
+    private static Images              images          = (Images) GWT.create( Images.class );
+    private static final String        HTML_ERROR_ICON = makeImage( images.error() );
+    private static final String        HTML_INFO_ICON  = makeImage( images.information() );
 
     private static String makeImage(ImageResource resource) {
         AbstractImagePrototype prototype = AbstractImagePrototype.create( resource );
         return prototype.getHTML();
     }
+    
+    //Commands for UI
+    private Command  cleanCommand;
 
-    private static final int PAGE_SIZE = 10;
+    //Other stuff
+    private static final int           PAGE_SIZE       = 10;
 
-    public LogPagedTable() {
+    public LogPagedTable(Command cleanCommand) {
         super( PAGE_SIZE );
+        this.cleanCommand = cleanCommand;
         setDataProvider( new AsyncDataProvider<LogPageRow>() {
             protected void onRangeChanged(HasData<LogPageRow> display) {
                 PageRequest request = new PageRequest();
@@ -131,6 +154,16 @@ public class LogPagedTable extends AbstractPagedTable<LogPageRow> {
                                                                       timestampColumn ),
                                 true );
 
+    }
+
+    @Override
+    protected Widget makeWidget() {
+        return uiBinder.createAndBindUi( this );
+    }
+
+    @UiHandler("cleanButton")
+    void clean(ClickEvent e) {
+        cleanCommand.execute();
     }
 
 }

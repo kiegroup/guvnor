@@ -28,10 +28,17 @@ import org.drools.guvnor.client.table.SortableHeaderGroup;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextHeader;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ProvidesKey;
@@ -44,18 +51,40 @@ import com.google.gwt.view.client.SingleSelectionModel;
  */
 public class PermissionsPagedTable extends AbstractPagedTable<PermissionsPageRow> {
 
-    private static final int                           PAGE_SIZE = 10;
-
-    protected OpenItemCommand                          openCommand;
-    protected SingleSelectionModel<PermissionsPageRow> selectionModel;
-
-    public SingleSelectionModel<PermissionsPageRow> getSelectionModel() {
-        return this.selectionModel;
+    // UI
+    interface PermissionsPagedTableBinder
+        extends
+        UiBinder<Widget, PermissionsPagedTable> {
     }
 
-    public PermissionsPagedTable(OpenItemCommand openCommand) {
+    @UiField()
+    protected Button                                   createNewUserButton;
+
+    @UiField()
+    protected Button                                   deleteSelectedUserButton;
+
+    @UiField()
+    protected Button                                   openSelectedUserButton;
+
+    private static PermissionsPagedTableBinder         uiBinder  = GWT.create( PermissionsPagedTableBinder.class );
+
+    // Commands for UI
+    private Command                                    newUserCommand;
+    private Command                                    deleteUserCommand;
+    private OpenItemCommand                            openSelectedCommand;
+
+    // Other stuff
+    private static final int                           PAGE_SIZE = 10;
+
+    protected SingleSelectionModel<PermissionsPageRow> selectionModel;
+
+    public PermissionsPagedTable(Command newUserCommand,
+                                 Command deleteUserCommand,
+                                 OpenItemCommand openSelectedCommand) {
         super( PAGE_SIZE );
-        this.openCommand = openCommand;
+        this.newUserCommand = newUserCommand;
+        this.deleteUserCommand = deleteUserCommand;
+        this.openSelectedCommand = openSelectedCommand;
         setDataProvider( new AsyncDataProvider<PermissionsPageRow>() {
             protected void onRangeChanged(HasData<PermissionsPageRow> display) {
                 PageRequest request = new PageRequest();
@@ -74,46 +103,8 @@ public class PermissionsPagedTable extends AbstractPagedTable<PermissionsPageRow
         } );
     }
 
-    @Override
-    protected void doCellTable() {
-
-        ProvidesKey<PermissionsPageRow> providesKey = new ProvidesKey<PermissionsPageRow>() {
-            public Object getKey(PermissionsPageRow row) {
-                return row.getUserName();
-            }
-        };
-
-        cellTable = new CellTable<PermissionsPageRow>( providesKey );
-        selectionModel = new SingleSelectionModel<PermissionsPageRow>( providesKey );
-        cellTable.setSelectionModel( selectionModel );
-        SelectionColumn.createAndAddSelectionColumn( cellTable );
-
-        ColumnPicker<PermissionsPageRow> columnPicker = new ColumnPicker<PermissionsPageRow>( cellTable );
-        SortableHeaderGroup<PermissionsPageRow> sortableHeaderGroup = new SortableHeaderGroup<PermissionsPageRow>( cellTable );
-
-        // Add any additional columns
-        addAncillaryColumns( columnPicker,
-                             sortableHeaderGroup );
-
-        // Add "Open" button column
-        Column<PermissionsPageRow, String> openColumn = new Column<PermissionsPageRow, String>( new ButtonCell() ) {
-            public String getValue(PermissionsPageRow row) {
-                return constants.Open();
-            }
-        };
-        openColumn.setFieldUpdater( new FieldUpdater<PermissionsPageRow, String>() {
-            public void update(int index,
-                               PermissionsPageRow row,
-                               String value) {
-                openCommand.open( row.getUserName() );
-            }
-        } );
-        columnPicker.addColumn( openColumn,
-                                new TextHeader( constants.Open() ),
-                                true );
-
-        cellTable.setWidth( "100%" );
-        columnPickerButton = columnPicker.createToggleButton();
+    public SingleSelectionModel<PermissionsPageRow> getSelectionModel() {
+        return this.selectionModel;
     }
 
     @Override
@@ -169,10 +160,68 @@ public class PermissionsPagedTable extends AbstractPagedTable<PermissionsPageRow
                                 true );
 
     }
-    
-    void openSelected(ClickEvent e) {
-        PermissionsPageRow selectedItem = selectionModel.getSelectedObject();
-            openCommand.open( selectedItem.getUserName() );
+
+    @Override
+    protected void doCellTable() {
+
+        ProvidesKey<PermissionsPageRow> providesKey = new ProvidesKey<PermissionsPageRow>() {
+            public Object getKey(PermissionsPageRow row) {
+                return row.getUserName();
+            }
+        };
+
+        cellTable = new CellTable<PermissionsPageRow>( providesKey );
+        selectionModel = new SingleSelectionModel<PermissionsPageRow>( providesKey );
+        cellTable.setSelectionModel( selectionModel );
+        SelectionColumn.createAndAddSelectionColumn( cellTable );
+
+        ColumnPicker<PermissionsPageRow> columnPicker = new ColumnPicker<PermissionsPageRow>( cellTable );
+        SortableHeaderGroup<PermissionsPageRow> sortableHeaderGroup = new SortableHeaderGroup<PermissionsPageRow>( cellTable );
+
+        // Add any additional columns
+        addAncillaryColumns( columnPicker,
+                             sortableHeaderGroup );
+
+        // Add "Open" button column
+        Column<PermissionsPageRow, String> openColumn = new Column<PermissionsPageRow, String>( new ButtonCell() ) {
+            public String getValue(PermissionsPageRow row) {
+                return constants.Open();
+            }
+        };
+        openColumn.setFieldUpdater( new FieldUpdater<PermissionsPageRow, String>() {
+            public void update(int index,
+                               PermissionsPageRow row,
+                               String value) {
+                openSelectedCommand.open( row.getUserName() );
+            }
+        } );
+        columnPicker.addColumn( openColumn,
+                                new TextHeader( constants.Open() ),
+                                true );
+
+        cellTable.setWidth( "100%" );
+        columnPickerButton = columnPicker.createToggleButton();
+    }
+
+    @Override
+    protected Widget makeWidget() {
+        return uiBinder.createAndBindUi( this );
+    }
+
+    @UiHandler("createNewUserButton")
+    void createNewUser(ClickEvent e) {
+        newUserCommand.execute();
+    }
+
+    @UiHandler("deleteSelectedUserButton")
+    void deleteSelectedUser(ClickEvent e) {
+        deleteUserCommand.execute();
+    }
+
+    @UiHandler("openSelectedUserButton")
+    void openSelectedUser(ClickEvent e) {
+        String userName = this.selectionModel.getSelectedObject().getUserName();
+        openSelectedCommand.open( userName );
     }
 
 }

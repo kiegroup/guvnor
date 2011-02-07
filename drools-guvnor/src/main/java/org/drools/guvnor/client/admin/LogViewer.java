@@ -26,9 +26,7 @@ import org.drools.guvnor.client.rulelist.LogPagedTable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.FontWeight;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -39,6 +37,7 @@ public class LogViewer extends Composite {
     private Constants     constants = ((Constants) GWT.create( Constants.class )); ;
 
     private VerticalPanel layout;
+    private LogPagedTable table;
 
     public LogViewer() {
 
@@ -60,33 +59,31 @@ public class LogViewer extends Composite {
         pf.addRow( layout );
         pf.endSection();
 
-        refresh();
+        setupWidget();
         initWidget( pf );
     }
 
-    private void refresh() {
+    private void setupWidget() {
 
-        layout.clear();
+        final Command cleanCommand = new Command() {
 
-        LogPagedTable table = new LogPagedTable();
-        layout.add( table );
-
-        Button btnClean = new Button( constants.Clean() );
-        btnClean.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
+            @Override
+            public void execute() {
                 cleanLog();
             }
-        } );
 
-        table.getToolbar().insert( btnClean,
-                                   0 );
+        };
+
+        this.table = new LogPagedTable( cleanCommand );
+        layout.add( table );
+
     }
 
     private void cleanLog() {
         LoadingPopup.showMessage( constants.CleaningLogMessages() );
         RepositoryServiceFactory.getService().cleanLog( new GenericCallback<java.lang.Void>() {
             public void onSuccess(Void v) {
-                refresh();
+                table.refresh();
                 LoadingPopup.close();
             }
         } );

@@ -785,6 +785,8 @@ public interface RepositoryService
                                           String firstSnapshotName,
                                           String secondSnapshotName);
 
+    public SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request);
+
     /**
      * Load and process the repository configuration templates.
      */

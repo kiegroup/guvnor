@@ -94,6 +94,9 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
 import org.drools.guvnor.client.rpc.SnapshotDiff;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
@@ -161,6 +164,7 @@ import org.jboss.seam.web.Session;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
+import com.google.gwt.dev.util.collect.Lists;
 import com.google.gwt.user.client.rpc.SerializationException;
 
 import freemarker.template.Configuration;
@@ -2063,6 +2067,44 @@ public class ServiceImplementation implements RepositoryService {
         return diffs;
     }
 
+    @Override
+    public SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request) {
+        
+        if(request==null) {
+            throw new IllegalArgumentException("request cannot be null");
+        }
+        
+        SnapshotComparisonPageResponse response = new SnapshotComparisonPageResponse();
+        
+        // Do query (bit of a cheat really!)
+        long start = System.currentTimeMillis();
+        SnapshotDiffs diffs = compareSnapshots( request.getPackageName(), request.getFirstSnapshotName(), request.getSecondSnapshotName() );
+        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+        
+        // Populate response
+        response.setLeftSnapshotName( diffs.leftName);
+        response.setRightSnapshotName( diffs.rightName );
+        List<SnapshotComparisonPageRow> rowList = new ArrayList<SnapshotComparisonPageRow>();
+        
+        int pageStart = request.getStartRowIndex();
+        int maxRow = Math.min(request.getPageSize(), diffs.diffs.length-request.getStartRowIndex());
+        for(int i=pageStart; i<pageStart+maxRow; i++) {
+            SnapshotComparisonPageRow pr = new SnapshotComparisonPageRow();
+            pr.setDiff( diffs.diffs[i] );
+            rowList.add(pr);
+        }
+        response.setPageRowList( rowList );
+        response.setStartRowIndex( request.getStartRowIndex() );
+        response.setTotalRowSize( diffs.diffs.length );
+        response.setTotalRowSizeExact( true );
+        response.setLastPage( (pageStart+maxRow==diffs.diffs.length) );
+
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Compared Snapshots ('" + request.getFirstSnapshotName() + "') and ('"+request.getSecondSnapshotName()+"') in package ('" + request.getPackageName()+"') in " + methodDuration + " ms." );
+        
+        return response;
+    }
+
     /**
      * Load and process the repository configuration templates.
      */
@@ -2882,8 +2924,6 @@ public class ServiceImplementation implements RepositoryService {
         }
         return rowList;
     }
-
-    
 
     private InboxPageRow makeInboxPageRow(InboxEntry ie, InboxPageRequest request) {
         InboxPageRow row = null;

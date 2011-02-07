@@ -31,6 +31,7 @@ import org.drools.guvnor.client.util.TabOpener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -65,7 +66,7 @@ public class ArchivedAssetManager extends Composite {
 
         final TabOpener tabOpener = TabOpener.getInstance();
 
-        OpenItemCommand edit = new OpenItemCommand() {
+        OpenItemCommand openSelectedCommand = new OpenItemCommand() {
             public void open(String key) {
                 tabOpener.openAsset( key );
             }
@@ -79,7 +80,49 @@ public class ArchivedAssetManager extends Composite {
 
         loadPackages();
 
-        table = new AdminArchivedPagedTable( edit );
+        Command restoreSelectedAssetCommand = new Command() {
+
+            @Override
+            public void execute() {
+                if ( table.getSelectedRowUUIDs() == null ) {
+                    Window.alert( constants.PleaseSelectAnItemToRestore() );
+                    return;
+                }
+                RepositoryServiceFactory.getService().archiveAssets( table.getSelectedRowUUIDs(),
+                                                                     false,
+                                                                     new GenericCallback<java.lang.Void>() {
+                                                                         public void onSuccess(Void arg0) {
+                                                                             Window.alert( constants.ItemRestored() );
+                                                                             table.refresh();
+                                                                         }
+                                                                     } );
+            }
+            
+        };
+        
+        Command deleteSelectedAssetCommand = new Command() {
+
+            @Override
+            public void execute() {
+                if ( table.getSelectedRowUUIDs() == null ) {
+                    Window.alert( constants.PleaseSelectAnItemToPermanentlyDelete() );
+                    return;
+                }
+                if ( !Window.confirm( constants.AreYouSureDeletingAsset() ) ) {
+                    return;
+                }
+                RepositoryServiceFactory.getService().removeAssets( table.getSelectedRowUUIDs(),
+                                                                    new GenericCallback<java.lang.Void>() {
+                                                                        public void onSuccess(Void arg0) {
+                                                                            Window.alert( constants.ItemDeleted() );
+                                                                            table.refresh();
+                                                                        }
+                                                                    } );
+            }
+            
+        };
+        
+        table = new AdminArchivedPagedTable( restoreSelectedAssetCommand, deleteSelectedAssetCommand, openSelectedCommand );
         HorizontalPanel packagesToolbar = new HorizontalPanel();
         btnRestorePackage = new Button( constants.RestoreSelectedPackage() );
         btnRestorePackage.addClickHandler( new ClickHandler() {
@@ -118,53 +161,6 @@ public class ArchivedAssetManager extends Composite {
         pf.addRow( packages );
         pf.endSection();
 
-        Button button;
-        button = new Button( constants.RestoreSelectedAsset() );
-        button.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                if ( table.getSelectedRowUUIDs() == null ) {
-                    Window.alert( constants.PleaseSelectAnItemToRestore() );
-                    return;
-                }
-                RepositoryServiceFactory.getService().archiveAssets( table.getSelectedRowUUIDs(),
-                                                                     false,
-                                                                     new GenericCallback<java.lang.Void>() {
-                                                                         public void onSuccess(Void arg0) {
-                                                                             Window.alert( constants.ItemRestored() );
-                                                                             table.refresh();
-                                                                         }
-                                                                     } );
-            }
-        } );
-        table.getToolbar().insert( button,
-                                   0 );
-
-        button = new Button( constants.DeleteSelectedAsset() );
-        button.addClickHandler( new ClickHandler() {
-
-            @Override
-            public void onClick(ClickEvent event) {
-                if ( table.getSelectedRowUUIDs() == null ) {
-                    Window.alert( constants.PleaseSelectAnItemToPermanentlyDelete() );
-                    return;
-                }
-                if ( !Window.confirm( constants.AreYouSureDeletingAsset() ) ) {
-                    return;
-                }
-                RepositoryServiceFactory.getService().removeAssets( table.getSelectedRowUUIDs(),
-                                                                    new GenericCallback<java.lang.Void>() {
-                                                                        public void onSuccess(Void arg0) {
-                                                                            Window.alert( constants.ItemDeleted() );
-                                                                            table.refresh();
-                                                                        }
-                                                                    } );
-            }
-        } );
-        table.getToolbar().insert( button,
-                                   1 );
-
         pf.startSection( constants.ArchivedAssets() );
         pf.addRow( table );
         pf.endSection();
@@ -194,6 +190,7 @@ public class ArchivedAssetManager extends Composite {
                                                                                                                                     Window.alert( constants.PackageRestored() );
                                                                                                                                     packages.clear();
                                                                                                                                     loadPackages();
+                                                                                                                                    table.refresh();
                                                                                                                                 }
                                                                                                                             } );
                                                                      }

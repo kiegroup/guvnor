@@ -44,7 +44,6 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
@@ -67,22 +66,21 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
         UiBinder<Widget, AbstractAssetPagedTable> {
     }
 
-    // Usual suspects
     protected static final Constants     constants         = GWT.create( Constants.class );
+
+    private static AssetPagedTableBinder uiBinder          = GWT.create( AssetPagedTableBinder.class );
+
+    @UiField()
+    protected Image                      feedImage;
 
     // TODO use (C)DI
     protected RepositoryServiceAsync     repositoryService = RepositoryServiceFactory.getService();
 
     protected Set<Command>               unloadListenerSet = new HashSet<Command>();
     protected MultiSelectionModel<T>     selectionModel;
-    protected final OpenItemCommand      editEvent;
+    protected final OpenItemCommand      openSelectedCommand;
 
     protected String                     feedURL;
-
-    private static AssetPagedTableBinder uiBinder          = GWT.create( AssetPagedTableBinder.class );
-
-    @UiField()
-    protected Image                      feedImage;
 
     /**
      * Simple constructor that associates an OpenItemCommand with the "Open"
@@ -104,10 +102,10 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
      * @param event
      */
     public AbstractAssetPagedTable(int pageSize,
-                                   OpenItemCommand editEvent,
+                                   OpenItemCommand openSelectedCommand,
                                    String feedURL) {
         super( pageSize );
-        this.editEvent = editEvent;
+        this.openSelectedCommand = openSelectedCommand;
         this.feedURL = feedURL;
         if ( this.feedURL == null
                 || "".equals( feedURL ) ) {
@@ -149,15 +147,6 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     }
 
     /**
-     * Returns an area of the widget in which additional buttons can be added
-     * 
-     * @return
-     */
-    public HorizontalPanel getToolbar() {
-        return this.toolbar;
-    }
-
-    /**
      * Open selected item(s)
      * 
      * @param e
@@ -174,7 +163,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
             row.name = selected.getName();
             multiViewRowList.add( row );
         }
-        editEvent.open( multiViewRowList.toArray( new MultiViewRow[multiViewRowList.size()] ) );
+        openSelectedCommand.open( multiViewRowList.toArray( new MultiViewRow[multiViewRowList.size()] ) );
     }
 
     /**
@@ -232,7 +221,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
             public void update(int index,
                                T row,
                                String value) {
-                editEvent.open( row.getUuid() );
+                openSelectedCommand.open( row.getUuid() );
             }
         } );
         columnPicker.addColumn( openColumn,
@@ -262,7 +251,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     }
 
     @Override
-    Widget makeWidget() {
+    protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
     }
 
@@ -288,7 +277,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
         Set<T> selectedSet = selectionModel.getSelectedSet();
         for ( T selected : selectedSet ) {
             // TODO directly push the selected QueryPageRow
-            editEvent.open( selected.getUuid() );
+            openSelectedCommand.open( selected.getUuid() );
         }
     }
 

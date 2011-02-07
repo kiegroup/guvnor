@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -29,9 +29,17 @@ import org.drools.guvnor.client.table.SortableHeader;
 import org.drools.guvnor.client.table.SortableHeaderGroup;
 
 import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 
@@ -42,7 +50,26 @@ import com.google.gwt.view.client.HasData;
  */
 public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchivedPageRow> {
 
-    private static final int PAGE_SIZE = 10;
+    // UI
+    interface AdminArchivedPagedTableBinder
+        extends
+        UiBinder<Widget, AdminArchivedPagedTable> {
+    }
+
+    @UiField()
+    protected Button                             restoreSelectedAssetButton;
+
+    @UiField()
+    protected Button                             deleteSelectedAssetButton;
+
+    private static AdminArchivedPagedTableBinder uiBinder  = GWT.create( AdminArchivedPagedTableBinder.class );
+
+    // Commands for UI
+    private Command                              restoreSelectedAssetCommand;
+    private Command                              deleteSelectedAssetCommand;
+
+    // Other stuff
+    private static final int                     PAGE_SIZE = 10;
 
     /**
      * Construct a table to display Archived AssetItems
@@ -52,9 +79,13 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
      * @param formatIsRegistered
      * @param editEvent
      */
-    public AdminArchivedPagedTable(OpenItemCommand editEvent) {
+    public AdminArchivedPagedTable(Command restoreSelectedAssetCommand,
+                                   Command deleteSelectedAssetCommand,
+                                   OpenItemCommand openSelectedCommand) {
         super( PAGE_SIZE,
-               editEvent );
+               openSelectedCommand );
+        this.restoreSelectedAssetCommand = restoreSelectedAssetCommand;
+        this.deleteSelectedAssetCommand = deleteSelectedAssetCommand;
         setDataProvider( new AsyncDataProvider<AdminArchivedPageRow>() {
             protected void onRangeChanged(HasData<AdminArchivedPageRow> display) {
                 PageRequest request = new PageRequest( pager.getPageStart(),
@@ -142,6 +173,21 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
                                                                                 lastModifiedColumn ),
                                 true );
 
+    }
+
+    @Override
+    protected Widget makeWidget() {
+        return uiBinder.createAndBindUi( this );
+    }
+
+    @UiHandler("restoreSelectedAssetButton")
+    void restoreSelectedAsset(ClickEvent e) {
+        restoreSelectedAssetCommand.execute();
+    }
+
+    @UiHandler("deleteSelectedAssetButton")
+    void deleteSelectedAsset(ClickEvent e) {
+        deleteSelectedAssetCommand.execute();
     }
 
 }

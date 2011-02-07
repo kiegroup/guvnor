@@ -44,6 +44,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -59,24 +60,11 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class PermissionViewer extends Composite {
 
-    private static Images         images      = (Images) GWT.create( Images.class );
-    private Constants             constants   = ((Constants) GWT.create( Constants.class ));
+    private static Images         images    = (Images) GWT.create( Images.class );
+    private Constants             constants = ((Constants) GWT.create( Constants.class ));
 
     private VerticalPanel         layout;
     private PermissionsPagedTable table;
-    private OpenItemCommand       openCommand = new OpenItemCommand() {
-
-                                                  @Override
-                                                  public void open(String key) {
-                                                      showEditor( key );
-                                                  }
-
-                                                  @Override
-                                                  public void open(MultiViewRow[] rows) {
-                                                      // Do nothing, unsupported
-                                                  }
-
-                                              };
 
     public PermissionViewer() {
 
@@ -115,16 +103,10 @@ public class PermissionViewer extends Composite {
     }
 
     private void setupWidget() {
-        if ( table != null ) {
-            layout.remove( table );
-        }
-        table = new PermissionsPagedTable( openCommand );
-
-        Button btnCreate = new Button( constants.CreateNewUserMapping() );
-        btnCreate.addClickHandler( new ClickHandler() {
+        Command newUserCommand = new Command() {
 
             @Override
-            public void onClick(ClickEvent event) {
+            public void execute() {
                 final FormStylePopup form = new FormStylePopup( images.snapshot(),
                                                                 constants.EnterNewUserName() );
                 final TextBox userName = new TextBox();
@@ -155,19 +137,15 @@ public class PermissionViewer extends Composite {
                         }
                     }
                 } );
-
                 form.show();
             }
 
-        } );
-        table.getToolbar().insert( btnCreate,
-                                   0 );
+        };
 
-        Button btnDelete = new Button( constants.DeleteSelectedUser() );
-        btnDelete.addClickHandler( new ClickHandler() {
+        Command deleteUserCommand = new Command() {
 
             @Override
-            public void onClick(ClickEvent event) {
+            public void execute() {
                 final String userName = table.getSelectionModel().getSelectedObject().getUserName();
                 if ( userName != null
                         && Window.confirm( Format.format( constants.AreYouSureYouWantToDeleteUser0(),
@@ -180,21 +158,25 @@ public class PermissionViewer extends Composite {
                                                                          } );
                 }
             }
-        } );
-        table.getToolbar().insert( btnDelete,
-                                   1 );
+        };
 
-        Button btnOpenSelected = new Button( constants.openSelected() );
-        btnOpenSelected.addClickHandler( new ClickHandler() {
+        OpenItemCommand openSelectedCommand = new OpenItemCommand() {
 
             @Override
-            public void onClick(ClickEvent event) {
-                final String userName = table.getSelectionModel().getSelectedObject().getUserName();
-                openCommand.open( userName );
+            public void open(String key) {
+                showEditor( key );
             }
-        } );
-        table.getToolbar().insert( btnOpenSelected,
-                                   2 );
+
+            @Override
+            public void open(MultiViewRow[] rows) {
+                // Not implemented
+            }
+
+        };
+
+        table = new PermissionsPagedTable( newUserCommand,
+                                           deleteUserCommand,
+                                           openSelectedCommand );
 
         layout.add( table );
 

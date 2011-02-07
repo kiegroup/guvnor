@@ -26,13 +26,11 @@ import org.drools.guvnor.client.table.SortableHeaderGroup;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
@@ -46,13 +44,6 @@ import com.google.gwt.view.client.Range;
  */
 public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Composite {
 
-    // UI
-    @SuppressWarnings("rawtypes")
-    interface PagedTableBinder
-        extends
-        UiBinder<Widget, AbstractPagedTable> {
-    }
-
     // Usual suspects
     protected static final Constants constants         = GWT.create( Constants.class );
 
@@ -62,8 +53,6 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
     protected int                    pageSize;
     protected AsyncDataProvider<T>   dataProvider;
 
-    private static PagedTableBinder  uiBinder          = GWT.create( PagedTableBinder.class );
-
     @UiField(provided = true)
     protected ToggleButton           columnPickerButton;
 
@@ -72,9 +61,6 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
 
     @UiField(provided = true)
     protected SimplePager            pager;
-
-    @UiField()
-    protected HorizontalPanel        toolbar;
 
     /**
      * Simple constructor that associates an OpenItemCommand with the "Open"
@@ -87,15 +73,6 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
         doCellTable();
         doCellTablePager();
         initWidget( makeWidget() );
-    }
-
-    /**
-     * Returns an area of the widget in which additional buttons can be added
-     * 
-     * @return
-     */
-    public HorizontalPanel getToolbar() {
-        return this.toolbar;
     }
 
     /**
@@ -241,9 +218,7 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Comp
      * 
      * @return
      */
-    Widget makeWidget() {
-        return uiBinder.createAndBindUi( this );
-    }
+    protected abstract Widget makeWidget();
 
     /**
      * Refresh table in response to ClickEvent
