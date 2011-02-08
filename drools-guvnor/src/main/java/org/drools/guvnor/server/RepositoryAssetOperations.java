@@ -125,11 +125,11 @@ public class RepositoryAssetOperations {
             result = new BuilderResult();
 
             BuilderResultLine res = new BuilderResultLine();
-            res.assetName = asset.metaData.name;
-            res.assetFormat = asset.metaData.format;
-            res.message = "Unable to validate this asset. (Check log for detailed messages).";
-            res.uuid = asset.uuid;
-            result.getLines()[0] = res;
+            res.setAssetName( asset.metaData.name);
+            res.setAssetFormat(asset.metaData.format);
+            res.setMessage( "Unable to validate this asset. (Check log for detailed messages).");
+            res.setUuid(asset.uuid);
+            result.getLines().add( res );
 
             return result;
 

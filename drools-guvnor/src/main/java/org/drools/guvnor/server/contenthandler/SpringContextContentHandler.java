@@ -80,14 +80,14 @@ public class SpringContextContentHandler extends PlainTextContentHandler impleme
 			List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
 
 			BuilderResultLine result = new BuilderResultLine();
-			result.assetName = name;
-			result.assetFormat = format;
-			result.uuid = uuid;
-			result.message = message;
+			result.setAssetName(name);
+			result.setAssetFormat(format);
+			result.setUuid(uuid);
+			result.setMessage( message);
 			errors.add( result );
 
 			BuilderResult builderResult = new BuilderResult();
-			builderResult.setLines( errors.toArray( new BuilderResultLine[errors.size()] ) );	
+			builderResult.setLines( errors );	
 
 			return builderResult;
 		}

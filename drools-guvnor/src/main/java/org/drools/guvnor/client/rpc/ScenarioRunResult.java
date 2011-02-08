@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.rpc;
 
+import java.util.List;
+
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -29,13 +31,13 @@ public class ScenarioRunResult
     implements
     IsSerializable {
 
-    private BuilderResultLine[] errors;
+    private List<BuilderResultLine> errors;
     private Scenario            scenario;
 
     public ScenarioRunResult() {
     }
 
-    public ScenarioRunResult(BuilderResultLine[] errors,
+    public ScenarioRunResult(List<BuilderResultLine> errors,
                              Scenario scenario) {
 
         this.errors = errors;
@@ -46,7 +48,7 @@ public class ScenarioRunResult
         return scenario;
     }
 
-    public BuilderResultLine[] getErrors() {
+    public List<BuilderResultLine> getErrors() {
         return errors;
     }
 

@@ -1474,8 +1474,8 @@ public class ServiceImplementation implements RepositoryService {
                 BuilderResult res = this.buildPackage( snap.getUUID(), true );
                 if ( res != null ) {
                     StringBuffer buf = new StringBuffer();
-                    for ( int i = 0; i < res.getLines().length; i++ ) {
-                        buf.append( res.getLines()[i].toString() );
+                    for ( int i = 0; i < res.getLines().size(); i++ ) {
+                        buf.append( res.getLines().get( i ).toString() );
                         buf.append( '\n' );
                     }
                     throw new DetailedSerializationException( "Unable to rebuild snapshot [" + snapName, buf.toString() + "]" );
@@ -1563,7 +1563,7 @@ public class ServiceImplementation implements RepositoryService {
                     ServiceImplementation.ruleBaseCache.put( item.getUUID(), loadRuleBase( item, cl ) );
                 } else {
                     BuilderResult result = this.buildPackage( item, false );
-                    if ( result == null || result.getLines().length == 0 ) {
+                    if ( result == null || result.getLines().size() == 0 ) {
                         ServiceImplementation.ruleBaseCache.put( item.getUUID(), loadRuleBase( item, cl ) );
                     } else {
                         return new BulkTestRunResult( result, null, 0, null );
@@ -1764,8 +1764,8 @@ public class ServiceImplementation implements RepositoryService {
                 if ( res != null ) {
                     errs.append( "Unable to build package name [" + pkg.getName() + "]\n" );
                     StringBuffer buf = new StringBuffer();
-                    for ( int i = 0; i < res.getLines().length; i++ ) {
-                        buf.append( res.getLines()[i].toString() );
+                    for ( int i = 0; i < res.getLines().size(); i++ ) {
+                        buf.append( res.getLines().get( i ).toString() );
                         buf.append( '\n' );
                     }
                     log.warn( buf.toString() );
@@ -2710,7 +2710,7 @@ public class ServiceImplementation implements RepositoryService {
                 ServiceImplementation.ruleBaseCache.put( item.getUUID(), rb );
             } else {
                 BuilderResult result = this.buildPackage( item, false );
-                if ( result == null || result.getLines().length == 0 ) {
+                if ( result == null || result.getLines().size() == 0 ) {
                     rb = loadRuleBase( item, buildCl );
                     ServiceImplementation.ruleBaseCache.put( item.getUUID(), rb );
                 } else throw new DetailedSerializationException( "Build error", result.getLines() );
@@ -2731,7 +2731,7 @@ public class ServiceImplementation implements RepositoryService {
             log.info( "...but trying to rebuild binaries..." );
             try {
                 BuilderResult res = this.buildPackage( item, true );
-                if ( res != null && res.getLines().length > 0 ) {
+                if ( res != null && res.getLines().size() > 0 ) {
                     log.error( "There were errors when rebuilding the knowledgebase." );
                     throw new DetailedSerializationException( "There were errors when rebuilding the knowledgebase.", "" );
                 }

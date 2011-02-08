@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.rpc;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.SerializationException;
 
 
@@ -28,14 +30,14 @@ public class DetailedSerializationException extends SerializationException {
 
     private String longDescription;
 
-    private BuilderResultLine[] errs;
+    private List<BuilderResultLine> errs;
     public DetailedSerializationException() {}
 
     public DetailedSerializationException(String shortDescription, String longDescription) {
         super(shortDescription);
         this.longDescription = longDescription;
     }
-    public DetailedSerializationException(String shortDescription, BuilderResultLine[] errs) {
+    public DetailedSerializationException(String shortDescription, List<BuilderResultLine> errs) {
         super(shortDescription);
         this.errs = errs;
     }
@@ -43,7 +45,7 @@ public class DetailedSerializationException extends SerializationException {
     public String getLongDescription() {
         return this.longDescription;
     }
-    public BuilderResultLine[] getErrs(){
+    public List<BuilderResultLine> getErrs(){
     	return errs;
     }
 

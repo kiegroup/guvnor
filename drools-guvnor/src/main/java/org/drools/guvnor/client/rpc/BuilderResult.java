@@ -16,6 +16,9 @@
 
 package org.drools.guvnor.client.rpc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -26,15 +29,15 @@ public class BuilderResult
     implements
     IsSerializable {
 
-    private BuilderResultLine[] lines = new BuilderResultLine[0];
+    private List<BuilderResultLine> lines = new ArrayList<BuilderResultLine>();
 
     private AnalysisReport      verifierReport;
 
-    public void setLines(BuilderResultLine[] lines) {
+    public void setLines(List<BuilderResultLine> lines) {
         this.lines = lines;
     }
 
-    public BuilderResultLine[] getLines() {
+    public List<BuilderResultLine> getLines() {
         return lines;
     }
 

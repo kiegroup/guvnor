@@ -129,7 +129,7 @@ public class BulkRunResult
     }
 
     private boolean resultHasErrors() {
-        return result != null && result.getResult() != null && result.getResult().getLines() != null && result.getResult().getLines().length > 0;
+        return result != null && result.getResult() != null && result.getResult().getLines() != null && result.getResult().getLines().size() > 0;
     }
 
     public void onClose() {

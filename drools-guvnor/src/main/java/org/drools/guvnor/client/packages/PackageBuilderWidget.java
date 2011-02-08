@@ -481,13 +481,13 @@ public class PackageBuilderWidget extends Composite {
                                          Panel buildResults) {
         buildResults.clear();
 
-        Object[][] data = new Object[results.getLines().length][4];
-        for ( int i = 0; i < results.getLines().length; i++ ) {
-            BuilderResultLine res = results.getLines()[i];
-            data[i][0] = res.uuid;
-            data[i][1] = res.assetName;
-            data[i][2] = res.assetFormat;
-            data[i][3] = res.message;
+        Object[][] data = new Object[results.getLines().size()][4];
+        for ( int i = 0; i < results.getLines().size(); i++ ) {
+            BuilderResultLine res = results.getLines().get( i );
+            data[i][0] = res.getUuid();
+            data[i][1] = res.getAssetName();
+            data[i][2] = res.getAssetFormat();
+            data[i][3] = res.getMessage();
         }
 
         MemoryProxy proxy = new MemoryProxy( data );
