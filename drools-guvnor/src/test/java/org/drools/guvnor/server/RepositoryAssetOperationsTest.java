@@ -188,8 +188,7 @@ public class RepositoryAssetOperationsTest {
 		RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
 		repositoryAssetOperations.setRulesRepository(rulesRepository);
 		AssetPageRequest assetPageRequest = new AssetPageRequest("uuid",
-				Arrays.asList("formatInList"), null, 1, 10);
-		//assetPageRequest = Mockito.spy(assetPageRequest);
+				Arrays.asList("formatInList"), null, 1, 2);
 		PackageItem packageItem = mock(PackageItem.class);
 		when(rulesRepository.loadPackageByUUID(Mockito.anyString()))
 				.thenReturn(packageItem);
@@ -197,10 +196,11 @@ public class RepositoryAssetOperationsTest {
 
 		when(packageItem.listAssetsByFormat(assetPageRequest.getFormatInList()))
 				.thenReturn(assetItemIterator);
-		
-		PageResponse<AssetPageRow> pageResponse = repositoryAssetOperations.findAssetPage(assetPageRequest);
+		PageResponse<AssetPageRow> pageResponse = repositoryAssetOperations
+				.findAssetPage(assetPageRequest);
+		assertNotNull(pageResponse);
 		assertEquals(pageResponse.getStartRowIndex(), 1);
-		verify(packageItem).listAssetsByFormat(assetPageRequest.getFormatInList());
-		//TODO: not completed
+		verify(packageItem).listAssetsByFormat(
+				assetPageRequest.getFormatInList());
 	}
 }
