@@ -33,13 +33,13 @@ import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.StatusChangePopup;
 import org.drools.guvnor.client.common.ValidationMessageWidget;
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
@@ -225,7 +225,7 @@ public class PackageEditor extends PrettyFormLayout {
         };
         
         RepositoryServiceFactory.getService().listAssetsWithPackageName(this.conf.name, new String[]{AssetFormats.SPRING_CONTEXT}, 0,
-        																-1, AssetItemGrid.RULE_LIST_TABLE_ID, callBack);
+        																-1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, callBack);
         
         status = new HTML();
         HorizontalPanel statusBar = new HorizontalPanel();

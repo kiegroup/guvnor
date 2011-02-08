@@ -64,7 +64,7 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
+import org.drools.guvnor.client.util.TabOpener;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
@@ -621,7 +621,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Ignore
     public void testRuleTableLoad() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
-        TableConfig conf = impl.loadTableConfig( AssetItemGrid.RULE_LIST_TABLE_ID );
+        TableConfig conf = impl.loadTableConfig( ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertNotNull( conf.headers );
         assertNotNull( conf.headerTypes );
 
@@ -645,7 +645,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         TableDataResult result = impl.loadRuleListForCategories( "testRuleTableLoad",
                                                                  0,
                                                                  -1,
-                                                                 AssetItemGrid.RULE_LIST_TABLE_ID );
+                                                                 ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 2,
                       result.data.length );
 
@@ -662,7 +662,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Ignore
     public void testDateFormatting() throws Exception {
         Calendar cal = Calendar.getInstance();
-        TableDisplayHandler handler = new TableDisplayHandler( AssetItemGrid.RULE_LIST_TABLE_ID );
+        TableDisplayHandler handler = new TableDisplayHandler( ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         String fmt = handler.formatDate( cal );
         assertNotNull( fmt );
 
@@ -688,7 +688,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         TableDataResult res = impl.loadRuleListForCategories( "testLoadRuleAsset",
                                                               0,
                                                               -1,
-                                                              AssetItemGrid.RULE_LIST_TABLE_ID );
+                                                              ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 1,
                       res.data.length );
         assertEquals( -1,
@@ -797,7 +797,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                new String[]{AssetFormats.BUSINESS_RULE},
                                                0,
                                                2,
-                                               AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID );
+                                               ExplorerNodeConfig.PACKAGEVIEW_LIST_TABLE_ID );
 
         assertEquals( 2,
                       res.data.length );
@@ -809,7 +809,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                new String[]{AssetFormats.BUSINESS_RULE},
                                2,
                                2,
-                               AssetItemGrid.PACKAGEVIEW_LIST_TABLE_ID );
+                               ExplorerNodeConfig.PACKAGEVIEW_LIST_TABLE_ID );
         assertEquals( 2,
                       res.data.length );
         assertTrue( 5 == res.total );
@@ -1338,7 +1338,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                arr( "testListByFormat" ),
                                                0,
                                                -1,
-                                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 4,
                       res.data.length );
         assertEquals( uuid,
@@ -1350,7 +1350,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                arr( "testListByFormat" ),
                                0,
                                4,
-                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 4,
                       res.data.length );
 
@@ -1358,7 +1358,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                arr( "testListByFormat" ),
                                0,
                                2,
-                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 2,
                       res.data.length );
         assertEquals( uuid,
@@ -1371,7 +1371,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                arr( "testListByFormat" ),
                                2,
                                2,
-                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 2,
                       res.data.length );
         assertEquals( uuid3,
@@ -1390,7 +1390,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                arr( "otherFormat" ),
                                0,
                                40,
-                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 1,
                       res.data.length );
         assertEquals( uuid,
@@ -1400,7 +1400,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                new String[]{"otherFormat", "testListByFormat"},
                                0,
                                40,
-                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 5,
                       res.data.length );
 
@@ -1442,7 +1442,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                new String[0],
                                                0,
                                                40,
-                                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 1,
                       res.data.length );
     }
@@ -1663,7 +1663,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                new String[]{"drl"},
                                                0,
                                                2,
-                                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 0,
                       res.data.length );
 
@@ -1674,7 +1674,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                new String[]{"drl"},
                                0,
                                2,
-                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
 
         assertEquals( 1,
                       res.data.length );
@@ -1683,7 +1683,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                new String[]{"drl"},
                                0,
                                2,
-                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
 
         assertEquals( 0,
                       res.data.length );
@@ -1948,7 +1948,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                arr( "testRemoveAsset" ),
                                                0,
                                                -1,
-                                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 4,
                       res.data.length );
 
@@ -1958,7 +1958,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                arr( "testRemoveAsset" ),
                                0,
                                -1,
-                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 3,
                       res.data.length );
     }
@@ -2083,8 +2083,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         TableDataResult res = impl.listAssets( pkgUUID,
                                                arr( "testArchiveAsset" ),
                                                0,
-                                               -1,
-                                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                                               -1,ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 4,
                       res.data.length );
         assertEquals( 4,
@@ -2105,7 +2104,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                arr( "testArchiveAsset" ),
                                0,
                                -1,
-                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 3,
                       res.data.length );
 
@@ -2115,7 +2114,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                arr( "testArchiveAsset" ),
                                0,
                                -1,
-                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 4,
                       res.data.length );
 
@@ -2160,7 +2159,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                arr( packageName ),
                                                0,
                                                -1,
-                                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 4,
                       res.data.length );
         assertEquals( 4,
@@ -2183,7 +2182,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                arr( packageName ),
                                0,
                                -1,
-                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 3,
                       res.data.length );
 
@@ -2198,7 +2197,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                arr( packageName ),
                                0,
                                -1,
-                               AssetItemGrid.RULE_LIST_TABLE_ID );
+                               ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertEquals( 3,
                       res.data.length );
 

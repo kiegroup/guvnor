@@ -40,27 +40,32 @@ import com.google.gwt.user.client.ui.TreeItem;
  */
 public class ExplorerNodeConfig {
 
-    private static Constants   constants              = ((Constants) GWT.create( Constants.class ));
-    private static Images      images                 = (Images) GWT.create( Images.class );
+    private static Constants   constants                   = ((Constants) GWT.create( Constants.class ));
+    private static Images      images                      = (Images) GWT.create( Images.class );
 
-    //Browse
-    public static final String FIND_ID                = "find";
-    public static final String CATEGORY_ROOT_ID = "rootcategory";                             //NON-NLS
-    public static final String CATEGORY_ID      = "category";                                 //NON-NLS
-    public static final String STATES_ID        = "states";                                   //NON-NLS
-    public static final String STATES_ROOT_ID   = "rootstates";                               //NON-NLS
-    public static final String RECENT_EDITED_ID       = "recentEdited";
-    public static final String RECENT_VIEWED_ID       = "recentViewed";
-    public static final String INCOMING_ID            = "incoming";
+    // Browse
+    public static final String FIND_ID                     = "find";
+    public static final String CATEGORY_ROOT_ID            = "rootcategory";                             // NON-NLS
+    public static final String CATEGORY_ID                 = "category";                                 // NON-NLS
+    public static final String STATES_ID                   = "states";                                   // NON-NLS
+    public static final String STATES_ROOT_ID              = "rootstates";                               // NON-NLS
+    public static final String RECENT_EDITED_ID            = "recentEdited";
+    public static final String RECENT_VIEWED_ID            = "recentViewed";
+    public static final String INCOMING_ID                 = "incoming";
 
-    //QA
-    public static final String TEST_SCENARIOS_ID      = "testScenarios";
-    public static final String TEST_SCENARIOS_ROOT_ID = "roottestScenarios";
-    public static final String ANALYSIS_ID            = "analysis";
-    public static final String ANALYSIS_ROOT_ID       = "rootanalysis";
+    // QA
+    public static final String TEST_SCENARIOS_ID           = "testScenarios";
+    public static final String TEST_SCENARIOS_ROOT_ID      = "roottestScenarios";
+    public static final String ANALYSIS_ID                 = "analysis";
+    public static final String ANALYSIS_ROOT_ID            = "rootanalysis";
 
-    //Package snapshot
-    public static final String PACKAGE_SNAPSHOTS      = "packageSnapshots";
+    // Table configurations
+    public static final String RULE_LIST_TABLE_ID          = "rulelist";
+    public static final String PACKAGEVIEW_LIST_TABLE_ID   = "packageviewlist";
+    public static final String ARCHIVED_RULE_LIST_TABLE_ID = "archivedrulelist";
+
+    // Package snapshot
+    public static final String PACKAGE_SNAPSHOTS           = "packageSnapshots";
 
     public static TreeItem getPackageItemStructure(String packageName, String uuid, final Map<TreeItem, String> itemWidgets) {
         TreeItem pkg = new TreeItem( Util.getHeader( images.packages(), packageName ) );

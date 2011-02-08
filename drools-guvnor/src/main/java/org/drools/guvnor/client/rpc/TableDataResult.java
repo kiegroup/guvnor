@@ -22,7 +22,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * This contains the results returned to populate a table/grid.
  * 
  * @author Michael Neale
- * @deprecated in favor of {@link PageResponse}
  */
 public class TableDataResult
     implements

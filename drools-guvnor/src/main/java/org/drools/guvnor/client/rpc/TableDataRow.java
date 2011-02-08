@@ -22,7 +22,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * This is a row of data from a table.
  * 
  * @author michael neale
- * @deprecated in favour of {@link PageResponse}
  */
 public class TableDataRow
     implements

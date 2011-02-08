@@ -21,8 +21,6 @@ import java.util.Map;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.TableConfig;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.client.util.TabOpener;
 
 import com.google.gwt.core.client.GWT;
