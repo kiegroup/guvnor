@@ -76,7 +76,7 @@ public class PermissionViewer extends Composite {
         header.add( caption );
         header.add( howToTurnOn() );
 
-        pf.addHeader( images.statusLarge(),
+        pf.addHeader( images.userPermissionsLarge(),
                       header );
 
         layout = new VerticalPanel();

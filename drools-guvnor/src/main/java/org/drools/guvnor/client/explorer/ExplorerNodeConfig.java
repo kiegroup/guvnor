@@ -185,7 +185,7 @@ public class ExplorerNodeConfig {
         tree.setAnimationEnabled( true );
 
         Object[][] adminStructure =
-                new Object[][]{{constants.Category(), images.categorySmall(), "0"}, {constants.Status(), images.statusSmall(), "2"}, {constants.Archive(), images.backupSmall(), "1"}, {constants.EventLog(), images.error(), "4"}, {constants.UserPermission(), images.icoUsersSmall(), "5"}, {constants.Workspaces(), images.emptyPackage(), "9"}, {constants.ImportExport(), images.saveEdit(), "3"},
+                new Object[][]{{constants.Category(), images.categorySmall(), "0"}, {constants.Status(), images.statusSmall(), "2"}, {constants.Archive(), images.backupSmall(), "1"}, {constants.EventLog(), images.eventLogSmall(), "4"}, {constants.UserPermission(), images.userPermissionsSmall(), "5"}, {constants.Workspaces(), images.emptyPackage(), "9"}, {constants.ImportExport(), images.saveEdit(), "3"},
                         {constants.RulesVerification(), images.ruleVerification(), "7"}, {constants.RepositoryConfiguration(), images.config(), "8"}, {constants.About(), images.information(), "6"}};
 
         for ( int i = 0; i < adminStructure.length; i++ ) {

@@ -309,4 +309,17 @@ public interface Images
 
     @Source("images/fact.gif")
     ImageResource fact();
+    
+    @Source("images/eventLog_small.gif")
+    ImageResource eventLogSmall();
+
+    @Source("images/eventLog_large.png")
+    ImageResource eventLogLarge();
+
+    @Source("images/userPermissions_small.gif")
+    ImageResource userPermissionsSmall();
+
+    @Source("images/userPermissions_large.png")
+    ImageResource userPermissionsLarge();
+    
 }

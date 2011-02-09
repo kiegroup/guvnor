@@ -48,7 +48,7 @@ public class LogViewer extends Composite {
         caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
         header.add( caption );
 
-        pf.addHeader( images.statusLarge(),
+        pf.addHeader( images.eventLogLarge(),
                       header );
 
         layout = new VerticalPanel();
