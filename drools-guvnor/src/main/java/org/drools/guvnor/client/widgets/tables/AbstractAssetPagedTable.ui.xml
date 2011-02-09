@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright 2010 JBoss Inc
+  ~ Copyright 2011 JBoss Inc
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -17,14 +17,15 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
     xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-    xmlns:cellview="urn:import:com.google.gwt.user.cellview.client">
+    xmlns:cellview="urn:import:com.google.gwt.user.cellview.client"
+    xmlns:guvnor-pager="urn:import:org.drools.guvnor.client.widgets.tables">
 
   <ui:with field='images' type='org.drools.guvnor.client.resources.Images'/>
 	
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
 
   <gwt:VerticalPanel>
-    <gwt:HorizontalPanel ui:field="toolbar">
+    <gwt:HorizontalPanel>
       <gwt:Button ui:field="refreshButton" text='{i18n.refreshList}'/>
       <gwt:Button ui:field="openSelectedButton" text='{i18n.openSelected}'/>
       <gwt:Button ui:field="openSelectedToSingleTabButton" text='{i18n.openSelectedToSingleTab}'/>
@@ -32,7 +33,7 @@
       <gwt:Image ui:field="feedImage" resource='{images.feed}'></gwt:Image>
     </gwt:HorizontalPanel>
     <cellview:CellTable ui:field="cellTable"/>
-    <cellview:SimplePager ui:field="pager"/>
+    <guvnor-pager:GuvnorSimplePager ui:field="pager"/>
   </gwt:VerticalPanel>
 
 </ui:UiBinder>

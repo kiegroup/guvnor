@@ -30,7 +30,7 @@ import org.drools.guvnor.server.builder.ContentPackageAssembler;
 public class BuilderResultHelper {
     public List<BuilderResultLine> generateBuilderResults(ContentPackageAssembler asm) {
         List<BuilderResultLine> result = new ArrayList<BuilderResultLine>( asm.getErrors().size() );
-        for ( int i = 0; i < result.size(); i++ ) {
+        for ( int i = 0; i < asm.getErrors().size(); i++ ) {
             ContentAssemblyError err = asm.getErrors().get( i );
             BuilderResultLine res = new BuilderResultLine();
             res.setAssetName( err.getName() );

@@ -70,7 +70,7 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
     private static final int                     PAGE_SIZE = 10;
 
     /**
-     * Construct a table to display Archived AssetItems
+     * Constructor
      * 
      * @param packageUuid
      * @param formatInList

@@ -31,7 +31,6 @@ import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
 
@@ -44,6 +43,12 @@ public class StatePagedTable extends AbstractAssetPagedTable<StatePageRow> {
 
     private static final int PAGE_SIZE = 10;
 
+    /**
+     * Constructor
+     * 
+     * @param stateName
+     * @param editEvent
+     */
     public StatePagedTable(
                            final String stateName,
                            final OpenItemCommand editEvent) {
@@ -137,14 +142,6 @@ public class StatePagedTable extends AbstractAssetPagedTable<StatePageRow> {
                                                                         constants.LastModified(),
                                                                         lastModifiedColumn ),
                                 true );
-    }
-
-    @Override
-    protected void onUnload() {
-        super.onUnload();
-        for ( Command unloadListener : unloadListenerSet ) {
-            unloadListener.execute();
-        }
     }
 
 }

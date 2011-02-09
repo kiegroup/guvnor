@@ -17,8 +17,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
     xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
-    xmlns:cellview="urn:import:com.google.gwt.user.cellview.client"
-    xmlns:guvnor-pager="urn:import:org.drools.guvnor.client.widgets.tables">
+    xmlns:cellview="urn:import:com.google.gwt.user.cellview.client">
 
   <ui:with field='images' type='org.drools.guvnor.client.resources.Images'/>
 	
@@ -26,12 +25,10 @@
 
   <gwt:VerticalPanel>
     <gwt:HorizontalPanel>
-      <gwt:Button ui:field="cleanButton" text='{i18n.Clean}'/>
-      <gwt:Button ui:field="refreshButton" text='{i18n.refreshList}'/>
+      <gwt:Button ui:field="openSelectedButton" text='{i18n.openSelected}'/>
       <gwt:ToggleButton ui:field="columnPickerButton"/>
     </gwt:HorizontalPanel>
     <cellview:CellTable ui:field="cellTable"/>
-    <guvnor-pager:GuvnorSimplePager ui:field="pager"/>
   </gwt:VerticalPanel>
 
 </ui:UiBinder>

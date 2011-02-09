@@ -45,7 +45,7 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
     private static final int PAGE_SIZE = 10;
 
     /**
-     * Construct a table to display AssetItems
+     * Constructor
      * 
      * @param packageUuid
      * @param formatInList
@@ -64,7 +64,7 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
     }
 
     /**
-     * Construct a table to display AssetItems
+     * Constructor
      * 
      * @param packageUuid
      * @param formatInList

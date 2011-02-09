@@ -30,6 +30,12 @@ import com.google.gwt.user.cellview.client.TextColumn;
  */
 public class InboxIncomingPagedTable extends InboxPagedTable {
 
+    /**
+     * Constructor
+     * 
+     * @param inboxName
+     * @param editEvent
+     */
     public InboxIncomingPagedTable(
                                    final String inboxName,
                                    OpenItemCommand editEvent) {

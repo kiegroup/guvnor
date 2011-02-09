@@ -23,8 +23,6 @@ import java.util.Set;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
@@ -48,9 +46,13 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 
 /**
- * Widget that shows rows of AssetItems data. This makes the assumption that a
- * large number of columns are common to all grids displayed in Guvnor. Based
- * upon work by Geoffrey de Smet.
+ * Widget that shows rows of paged data where columns "uuid", "name" and
+ * "format" are common. A "checkbox" and "open" button column are added by
+ * default. Additional columns can be inserted inbetween these columns by
+ * overriding <code>addAncillaryColumns()</code>. A "RSS Feed" button can also
+ * be included if required.
+ * 
+ * Based upon work by Geoffrey de Smet.
  * 
  * @author manstis
  */
@@ -70,9 +72,6 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     @UiField()
     protected Image                      feedImage;
 
-    // TODO use (C)DI
-    protected RepositoryServiceAsync     repositoryService = RepositoryServiceFactory.getService();
-
     protected Set<Command>               unloadListenerSet = new HashSet<Command>();
     protected MultiSelectionModel<T>     selectionModel;
     protected final OpenItemCommand      openSelectedCommand;
@@ -80,10 +79,10 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     protected String                     feedURL;
 
     /**
-     * Simple constructor that associates an OpenItemCommand with the "Open"
-     * column and other buttons.
+     * Constructor
      * 
-     * @param event
+     * @param pageSize
+     * @param editEvent
      */
     public AbstractAssetPagedTable(int pageSize,
                                    OpenItemCommand editEvent) {
@@ -93,10 +92,11 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     }
 
     /**
-     * Simple constructor that associates an OpenItemCommand with the "Open"
-     * column and other buttons.
+     * Constructor
      * 
-     * @param event
+     * @param pageSize
+     * @param openSelectedCommand
+     * @param feedURL
      */
     public AbstractAssetPagedTable(int pageSize,
                                    OpenItemCommand openSelectedCommand,
@@ -112,7 +112,8 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     }
 
     /**
-     * Register an UnloadListener
+     * Register an UnloadListener used to remove "RSS Feed Listeners" when the
+     * table is unloaded
      * 
      * @param unloadListener
      */
@@ -144,14 +145,13 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     }
 
     /**
-     * Open selected item(s)
+     * Open selected item(s) to a single tab
      * 
      * @param e
      */
     @UiHandler("openSelectedToSingleTabButton")
     public void openSelectedToSingleTab(ClickEvent e) {
         Set<T> selectedSet = selectionModel.getSelectedSet();
-        // TODO directly push the selected QueryPageRows
         List<MultiViewRow> multiViewRowList = new ArrayList<MultiViewRow>( selectedSet.size() );
         for ( T selected : selectedSet ) {
             MultiViewRow row = new MultiViewRow();
@@ -173,7 +173,9 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     }
 
     /**
-     * Set up table and common columns
+     * Set up table and common columns. Additional columns can be appended
+     * between the "checkbox" and "open" columns by overriding
+     * <code>addAncillaryColumns()</code>
      */
     @Override
     protected void doCellTable() {
@@ -227,8 +229,12 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
 
         cellTable.setWidth( "100%" );
         columnPickerButton = columnPicker.createToggleButton();
+
     }
 
+    /**
+     * Disconnect all listening consumers
+     */
     @Override
     protected void onUnload() {
         super.onUnload();
@@ -247,6 +253,9 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
         this.dataProvider.addDataDisplay( cellTable );
     }
 
+    /**
+     * Construct a widget representing the table
+     */
     @Override
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
@@ -265,7 +274,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     }
 
     /**
-     * Open selected item(s)
+     * Open selected item(s) to separate tabs
      * 
      * @param e
      */
@@ -273,7 +282,6 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     void openSelected(ClickEvent e) {
         Set<T> selectedSet = selectionModel.getSelectedSet();
         for ( T selected : selectedSet ) {
-            // TODO directly push the selected QueryPageRow
             openSelectedCommand.open( selected.getUuid() );
         }
     }

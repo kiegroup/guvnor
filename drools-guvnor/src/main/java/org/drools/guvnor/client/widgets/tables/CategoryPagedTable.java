@@ -44,6 +44,13 @@ public class CategoryPagedTable extends AbstractAssetPagedTable<CategoryPageRow>
 
     private static final int PAGE_SIZE = 10;
 
+    /**
+     * Constructor
+     * 
+     * @param categoryName
+     * @param editEvent
+     * @param feedURL
+     */
     public CategoryPagedTable(
                               final String categoryName,
                               final OpenItemCommand editEvent,

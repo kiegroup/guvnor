@@ -16,16 +16,13 @@
 
 package org.drools.guvnor.client.rpc;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Returned by the builder.
  * 
  * @author Michael Neale
  */
-public class BuilderResultLine
-    implements
-    IsSerializable {
+public class BuilderResultLine extends AbstractPageRow {
 
     private String assetFormat;
     private String assetName;

@@ -75,6 +75,13 @@ public class PermissionsPagedTable extends AbstractPagedTable<PermissionsPageRow
 
     protected SingleSelectionModel<PermissionsPageRow> selectionModel;
 
+    /**
+     * Constructor
+     * 
+     * @param newUserCommand
+     * @param deleteUserCommand
+     * @param openSelectedCommand
+     */
     public PermissionsPagedTable(Command newUserCommand,
                                  Command deleteUserCommand,
                                  OpenItemCommand openSelectedCommand) {
@@ -219,6 +226,11 @@ public class PermissionsPagedTable extends AbstractPagedTable<PermissionsPageRow
     void openSelectedUser(ClickEvent e) {
         String userName = this.selectionModel.getSelectedObject().getUserName();
         openSelectedCommand.open( userName );
+    }
+
+    @UiHandler("refreshButton")
+    void refresh(ClickEvent e) {
+        refresh();
     }
 
 }

@@ -51,14 +51,6 @@ import com.google.gwt.view.client.ProvidesKey;
  */
 public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotComparisonPageRow> {
 
-    private static final int                                  PAGE_SIZE = 10;
-
-    protected OpenItemCommand                                 openCommand;
-    protected MultiSelectionModel<SnapshotComparisonPageRow>  selectionModel;
-
-    private SortableHeader<SnapshotComparisonPageRow, String> lhsSnapshotHeader;
-    private SortableHeader<SnapshotComparisonPageRow, String> rhsSnapshotHeader;
-
     // UI
     interface SnapshotComparisonPagedTableBinder
         extends
@@ -74,12 +66,29 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
         return this.selectionModel;
     }
 
+    // Commands for UI
+    protected OpenItemCommand                                 openSelectedCommand;
+
+    // Other stuff
+    private static final int                                  PAGE_SIZE = 10;
+    protected MultiSelectionModel<SnapshotComparisonPageRow>  selectionModel;
+    private SortableHeader<SnapshotComparisonPageRow, String> lhsSnapshotHeader;
+    private SortableHeader<SnapshotComparisonPageRow, String> rhsSnapshotHeader;
+
+    /**
+     * Constructor
+     * 
+     * @param packageName
+     * @param firstSnapshotName
+     * @param secondSnapshotName
+     * @param openSelectedCommand
+     */
     public SnapshotComparisonPagedTable(final String packageName,
                                         final String firstSnapshotName,
                                         final String secondSnapshotName,
-                                        OpenItemCommand openCommand) {
+                                        OpenItemCommand openSelectedCommand) {
         super( PAGE_SIZE );
-        this.openCommand = openCommand;
+        this.openSelectedCommand = openSelectedCommand;
 
         setDataProvider( new AsyncDataProvider<SnapshotComparisonPageRow>() {
             protected void onRangeChanged(HasData<SnapshotComparisonPageRow> display) {
@@ -149,7 +158,7 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
             public void update(int index,
                                SnapshotComparisonPageRow row,
                                String value) {
-                openCommand.open( row.getDiff().rightUuid );
+                openSelectedCommand.open( row.getDiff().rightUuid );
             }
         } );
         columnPicker.addColumn( openColumn,
@@ -215,9 +224,13 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
     void openSelected(ClickEvent e) {
         Set<SnapshotComparisonPageRow> selectedSet = selectionModel.getSelectedSet();
         for ( SnapshotComparisonPageRow selected : selectedSet ) {
-            // TODO directly push the selected QueryPageRow
-            openCommand.open( selected.getDiff().rightUuid );
+            openSelectedCommand.open( selected.getDiff().rightUuid );
         }
+    }
+
+    @UiHandler("refreshButton")
+    void refresh(ClickEvent e) {
+        refresh();
     }
 
 }

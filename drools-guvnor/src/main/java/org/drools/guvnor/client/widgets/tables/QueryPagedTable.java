@@ -47,7 +47,7 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
     private static final int PAGE_SIZE = 10;
 
     /**
-     * Construct a table to display query results
+     * Constructor
      * 
      * @param metadata
      * @param createdAfter
@@ -92,7 +92,7 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
     }
 
     /**
-     * Construct a table to display query results
+     * Constructor
      * 
      * @param searchText
      * @param searchArchived

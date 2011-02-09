@@ -42,6 +42,12 @@ public class InboxPagedTable extends AbstractAssetPagedTable<InboxPageRow> {
 
     private static final int PAGE_SIZE = 10;
 
+    /**
+     * Constructor
+     * 
+     * @param inboxName
+     * @param editEvent
+     */
     public InboxPagedTable(
                            final String inboxName,
                            OpenItemCommand editEvent) {

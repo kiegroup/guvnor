@@ -1,17 +1,17 @@
 /*
- * Copyright 2050 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * Copyright 2011 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package org.drools.guvnor.client.packages;
@@ -29,12 +29,14 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.ruleeditor.MultiViewRow;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.util.TabOpener;
+import org.drools.guvnor.client.widgets.tables.BuildPackageErrorsSimpleTable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -54,28 +56,13 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.gwtext.client.core.EventObject;
-import com.gwtext.client.data.ArrayReader;
-import com.gwtext.client.data.FieldDef;
-import com.gwtext.client.data.MemoryProxy;
-import com.gwtext.client.data.Record;
-import com.gwtext.client.data.RecordDef;
-import com.gwtext.client.data.Store;
-import com.gwtext.client.data.StringFieldDef;
-import com.gwtext.client.widgets.grid.CellMetadata;
-import com.gwtext.client.widgets.grid.ColumnConfig;
-import com.gwtext.client.widgets.grid.ColumnModel;
-import com.gwtext.client.widgets.grid.GridPanel;
-import com.gwtext.client.widgets.grid.Renderer;
-import com.gwtext.client.widgets.grid.event.GridRowListenerAdapter;
 
 /**
  * This is the widget for building packages, validating etc. Visually decorates
  * or wraps a rule editor widget with buttons for this purpose.
- *
+ * 
  * @author Michael Neale
  */
 public class PackageBuilderWidget extends Composite {
@@ -83,7 +70,7 @@ public class PackageBuilderWidget extends Composite {
     private static Constants      constants               = GWT.create( Constants.class );
     private static Images         images                  = GWT.create( Images.class );
 
-    public FormStyleLayout        layout;
+    private FormStyleLayout       layout;
     private PackageConfigData     conf;
 
     private final FormStyleLayout buildWholePackageLayout = new FormStyleLayout();
@@ -92,10 +79,13 @@ public class PackageBuilderWidget extends Composite {
     private String                buildMode               = "buildWholePackage";
 
     public PackageBuilderWidget(final PackageConfigData conf) {
-        layout = new FormStyleLayout();
+
         this.conf = conf;
 
-        final SimplePanel buildResults = new SimplePanel();
+        // UI above the results table
+        layout = new FormStyleLayout();
+        final VerticalPanel container = new VerticalPanel();
+        final VerticalPanel buildResults = new VerticalPanel();
 
         RadioButton wholePackageRadioButton = new RadioButton( "action",
                                                                constants.BuildWholePackage() );
@@ -156,17 +146,21 @@ public class PackageBuilderWidget extends Composite {
         builtInSelectorLayout.setVisible( false );
         customSelectorLayout.setVisible( false );
 
-        //Build whole package layout
+        // Build whole package layout
         layout.addRow( buildWholePackageLayout );
 
-        //Built-in selector layout
-        builtInSelectorLayout.addRow( new HTML( "&nbsp;&nbsp;<i>" + constants.BuildPackageUsingFollowingAssets() + "</i>" ) );
+        // Built-in selector layout
+        builtInSelectorLayout.addRow( new HTML( "&nbsp;&nbsp;<i>"
+                                                + constants.BuildPackageUsingFollowingAssets()
+                                                + "</i>" ) );
 
         HorizontalPanel builtInSelectorStatusPanel = new HorizontalPanel();
         final CheckBox enableStatusCheckBox = new CheckBox();
         enableStatusCheckBox.setValue( false );
         builtInSelectorStatusPanel.add( enableStatusCheckBox );
-        builtInSelectorStatusPanel.add( new HTML( "&nbsp;&nbsp;<i>" + constants.BuildPackageUsingBuiltInSelectorStatus() + " </i>" ) );
+        builtInSelectorStatusPanel.add( new HTML( "&nbsp;&nbsp;<i>"
+                                                  + constants.BuildPackageUsingBuiltInSelectorStatus()
+                                                  + " </i>" ) );
         final ListBox statusOperator = new ListBox();
         String[] vals = new String[]{"=", "!="};
         for ( int i = 0; i < vals.length; i++ ) {
@@ -185,7 +179,9 @@ public class PackageBuilderWidget extends Composite {
         final CheckBox enableCategoryCheckBox = new CheckBox();
         enableCategoryCheckBox.setValue( false );
         builtInSelectorCatPanel.add( enableCategoryCheckBox );
-        builtInSelectorCatPanel.add( new HTML( "&nbsp;&nbsp;<i>" + constants.BuildPackageUsingBuiltInSelectorCat() + " </i>" ) );
+        builtInSelectorCatPanel.add( new HTML( "&nbsp;&nbsp;<i>"
+                                               + constants.BuildPackageUsingBuiltInSelectorCat()
+                                               + " </i>" ) );
         final ListBox catOperator = new ListBox();
         String[] catVals = new String[]{"=", "!="};
         for ( int i = 0; i < catVals.length; i++ ) {
@@ -207,10 +203,12 @@ public class PackageBuilderWidget extends Composite {
 
         layout.addRow( builtInSelectorLayout );
 
-        //Custom selector layout
+        // Custom selector layout
         customSelectorLayout.setVisible( false );
         HorizontalPanel customSelectorPanel = new HorizontalPanel();
-        customSelectorPanel.add( new HTML( "&nbsp;&nbsp;<i>" + constants.BuildPackageUsingCustomSelectorSelector() + " </i>" ) ); //NON-NLS
+        customSelectorPanel.add( new HTML( "&nbsp;&nbsp;<i>"
+                                           + constants.BuildPackageUsingCustomSelectorSelector()
+                                           + " </i>" ) ); // NON-NLS
 
         final ListBox customSelector = new ListBox();
         customSelector.setTitle( constants.WildCardsSearchTip() );
@@ -234,15 +232,21 @@ public class PackageBuilderWidget extends Composite {
                          customSelector.getSelectedIndex() != -1 ? customSelector.getValue( customSelector.getSelectedIndex() ) : null );
             }
         } );
-
         HorizontalPanel buildStuff = new HorizontalPanel();
         buildStuff.add( b );
 
         layout.addAttribute( constants.BuildBinaryPackage(),
                              buildStuff );
-        layout.addRow( new HTML( "<i><small>" + constants.BuildingPackageNote() + "</small></i>" ) );//NON-NLS
-        layout.addRow( buildResults );
+        layout.addRow( new HTML( "<i><small>"
+                                 + constants.BuildingPackageNote()
+                                 + "</small></i>" ) );// NON-NLS
+        container.add( layout );
 
+        // The build results
+        container.add( buildResults );
+
+        // UI below the results table
+        layout = new FormStyleLayout();
         Button snap = new Button( constants.CreateSnapshotForDeployment() );
         snap.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -252,10 +256,9 @@ public class PackageBuilderWidget extends Composite {
         } );
         layout.addAttribute( constants.TakeSnapshot(),
                              snap );
+        container.add( layout );
 
-        layout.setWidth( "100%" );
-
-        initWidget( layout );
+        initWidget( container );
     }
 
     private void loadCustomSelectorList(final ListBox customSelector) {
@@ -359,7 +362,9 @@ public class PackageBuilderWidget extends Composite {
 
             table.setHTML( i,
                            0,
-                           "<span style='color:grey;'>" + (i + 1) + ".</span>" );
+                           "<span style='color:grey;'>"
+                                   + (i + 1)
+                                   + ".</span>" );
             table.setHTML( i,
                            1,
                            "<span style='color:green;' >|</span>" );
@@ -383,7 +388,9 @@ public class PackageBuilderWidget extends Composite {
     private static String addSyntaxHilights(String text) {
 
         if ( text.trim().startsWith( "#" ) ) {
-            text = "<span style='color:green'>" + text + "</span>";
+            text = "<span style='color:green'>"
+                   + text
+                   + "</span>";
         } else {
 
             String[] keywords = {"rule", "when", "then", "end", "accumulate", "collect", "from", "null", "over", "lock-on-active", "date-effective", "date-expires", "no-loop", "auto-focus", "activation-group", "agenda-group", "ruleflow-group",
@@ -393,7 +400,9 @@ public class PackageBuilderWidget extends Composite {
             for ( String keyword : keywords ) {
                 if ( text.contains( keyword ) ) {
                     text = text.replace( keyword,
-                                         "<span style='color:red;'>" + keyword + "</span>" );
+                                         "<span style='color:red;'>"
+                                                 + keyword
+                                                 + "</span>" );
                 }
             }
 
@@ -420,15 +429,21 @@ public class PackageBuilderWidget extends Composite {
             String oldString = text.substring( stringStart,
                                                stringEnd + 1 );
 
-            String newString = "<span style='color:green;'>" + oldString + "</span>";
+            String newString = "<span style='color:green;'>"
+                               + oldString
+                               + "</span>";
 
             String beginning = text.substring( 0,
                                                stringStart );
             String end = text.substring( stringEnd + 1 );
 
-            text = beginning + newString + end;
+            text = beginning
+                   + newString
+                   + end;
 
-            int searchStart = stringStart + newString.length() + 1;
+            int searchStart = stringStart
+                              + newString.length()
+                              + 1;
 
             if ( searchStart < text.length() ) {
                 stringStart = text.indexOf( character,
@@ -442,18 +457,28 @@ public class PackageBuilderWidget extends Composite {
 
     /**
      * This is called to display the success (and a download option).
-     *
+     * 
      * @param buildResults
      */
     private void showSuccessfulBuild(Panel buildResults) {
         buildResults.clear();
         VerticalPanel vert = new VerticalPanel();
 
-        vert.add( new HTML( "<img src='" + images.greenTick() + "'/><i>" + constants.PackageBuiltSuccessfully() + " " + conf.lastModified + "</i>" ) );
+        vert.add( new HTML( "<img src='"
+                            + images.greenTick()
+                            + "'/><i>"
+                            + constants.PackageBuiltSuccessfully()
+                            + " "
+                            + conf.lastModified
+                            + "</i>" ) );
 
         final String hyp = getDownloadLink( this.conf );
 
-        HTML html = new HTML( "<a href='" + hyp + "' target='_blank'>" + constants.DownloadBinaryPackage() + "</a>" );
+        HTML html = new HTML( "<a href='"
+                              + hyp
+                              + "' target='_blank'>"
+                              + constants.DownloadBinaryPackage()
+                              + "</a>" );
 
         vert.add( html );
 
@@ -464,11 +489,17 @@ public class PackageBuilderWidget extends Composite {
      * Get a download link for the binary package.
      */
     public static String getDownloadLink(PackageConfigData conf) {
-        String hurl = GWT.getModuleBaseURL() + "package/" + conf.name; //NON-NLS
+        String hurl = GWT.getModuleBaseURL()
+                      + "package/"
+                      + conf.name; // NON-NLS
         if ( !conf.isSnapshot ) {
-            hurl = hurl + "/" + SnapshotView.LATEST_SNAPSHOT;
+            hurl = hurl
+                   + "/"
+                   + SnapshotView.LATEST_SNAPSHOT;
         } else {
-            hurl = hurl + "/" + conf.snapshotName;
+            hurl = hurl
+                   + "/"
+                   + conf.snapshotName;
         }
         final String uri = hurl;
         return uri;
@@ -481,82 +512,22 @@ public class PackageBuilderWidget extends Composite {
                                          Panel buildResults) {
         buildResults.clear();
 
-        Object[][] data = new Object[results.getLines().size()][4];
-        for ( int i = 0; i < results.getLines().size(); i++ ) {
-            BuilderResultLine res = results.getLines().get( i );
-            data[i][0] = res.getUuid();
-            data[i][1] = res.getAssetName();
-            data[i][2] = res.getAssetFormat();
-            data[i][3] = res.getMessage();
-        }
+        BuildPackageErrorsSimpleTable errorsTable = new BuildPackageErrorsSimpleTable( new OpenItemCommand() {
 
-        MemoryProxy proxy = new MemoryProxy( data );
-        RecordDef recordDef = new RecordDef( new FieldDef[]{new StringFieldDef( "uuid" ), //NON-NLS
-                new StringFieldDef( "assetName" ), //NON-NLS
-                new StringFieldDef( "assetFormat" ), //NON-NLS
-                new StringFieldDef( "message" ) //NON-NLS
+            @Override
+            public void open(String key) {
+                TabOpener.getInstance().openAsset( key );
+            }
+
+            @Override
+            public void open(MultiViewRow[] rows) {
+                // Do nothing, not supported
+            }
+
         } );
-
-        ArrayReader reader = new ArrayReader( recordDef );
-        Store store = new Store( proxy,
-                                 reader );
-        store.load();
-
-        ColumnModel cm = new ColumnModel( new ColumnConfig[]{new ColumnConfig() {
-            {
-                setHidden( true );
-                setDataIndex( "uuid" ); //NON-NLS
-            }
-        }, new ColumnConfig() {
-            {
-                setHeader( constants.Name() );
-                setSortable( true );
-                setDataIndex( "assetName" ); //NON-NLS
-                setRenderer( new Renderer() {
-                    public String render(Object value,
-                                         CellMetadata cellMetadata,
-                                         Record record,
-                                         int rowIndex,
-                                         int colNum,
-                                         Store store) {
-                        return "<img src='" + images.error() + "'/>" + value; //NON-NLS
-                    }
-
-                } );
-            }
-        }, new ColumnConfig() {
-            {
-                setHeader( constants.Format() );
-                setSortable( true );
-                setDataIndex( "assetFormat" ); //NON-NLS
-            }
-        }, new ColumnConfig() {
-            {
-                setHeader( constants.Message1() );
-                setSortable( true );
-                setDataIndex( "message" ); //NON-NLS
-                setWidth( 300 );
-
-            }
-        }} );
-
-        GridPanel g = new GridPanel( store,
-                                     cm );
-        g.setWidth( 600 );
-        g.setHeight( 300 );
-
-        g.addGridRowListener( new GridRowListenerAdapter() {
-            public void onRowDblClick(GridPanel grid,
-                                      int rowIndex,
-                                      EventObject e) {
-                if ( !grid.getSelectionModel().getSelected().getAsString( "assetFormat" ).equals( "Package" ) ) { //NON-NLS
-                    String uuid = grid.getSelectionModel().getSelected().getAsString( "uuid" ); //NON-NLS
-                    TabOpener.getInstance().openAsset( uuid );
-                }
-            }
-        } );
-
-        buildResults.add( g );
+        errorsTable.setRowData( results.getLines() );
+        errorsTable.setRowCount( results.getLines().size() );
+        buildResults.add( errorsTable );
     }
 
     /**
@@ -574,21 +545,22 @@ public class PackageBuilderWidget extends Composite {
                            vert );
         final List<RadioButton> radioList = new ArrayList<RadioButton>();
         final TextBox newName = new TextBox();
-        final String newSnapshotText = constants.NEW() + ": ";
+        final String newSnapshotText = constants.NEW()
+                                       + ": ";
 
         RepositoryServiceFactory.getService().listSnapshots( packageName,
                                                              new GenericCallback<SnapshotInfo[]>() {
                                                                  public void onSuccess(SnapshotInfo[] result) {
                                                                      for ( int i = 0; i < result.length; i++ ) {
                                                                          RadioButton existing = new RadioButton( "snapshotNameGroup",
-                                                                                                                 result[i].name ); //NON-NLS
+                                                                                                                 result[i].name ); // NON-NLS
                                                                          radioList.add( existing );
                                                                          vert.add( existing );
                                                                      }
                                                                      HorizontalPanel newSnap = new HorizontalPanel();
 
                                                                      final RadioButton newSnapRadio = new RadioButton( "snapshotNameGroup",
-                                                                                                                       newSnapshotText ); //NON-NLS
+                                                                                                                       newSnapshotText ); // NON-NLS
                                                                      newSnap.add( newSnapRadio );
                                                                      newName.setEnabled( false );
                                                                      newSnapRadio.addClickHandler( new ClickHandler() {
@@ -658,5 +630,5 @@ public class PackageBuilderWidget extends Composite {
         form.show();
 
     }
-    
+
 }

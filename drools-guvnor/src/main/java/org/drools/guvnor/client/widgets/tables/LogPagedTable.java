@@ -57,7 +57,7 @@ public class LogPagedTable extends AbstractPagedTable<LogPageRow> {
     }
 
     @UiField()
-    protected Button cleanButton;
+    protected Button                   cleanButton;
 
     private static LogPagedTableBinder uiBinder        = GWT.create( LogPagedTableBinder.class );
 
@@ -69,13 +69,18 @@ public class LogPagedTable extends AbstractPagedTable<LogPageRow> {
         AbstractImagePrototype prototype = AbstractImagePrototype.create( resource );
         return prototype.getHTML();
     }
-    
-    //Commands for UI
-    private Command  cleanCommand;
 
-    //Other stuff
-    private static final int           PAGE_SIZE       = 10;
+    // Commands for UI
+    private Command          cleanCommand;
 
+    // Other stuff
+    private static final int PAGE_SIZE = 10;
+
+    /**
+     * Constructor
+     * 
+     * @param cleanCommand
+     */
     public LogPagedTable(Command cleanCommand) {
         super( PAGE_SIZE );
         this.cleanCommand = cleanCommand;
@@ -161,6 +166,11 @@ public class LogPagedTable extends AbstractPagedTable<LogPageRow> {
     @UiHandler("cleanButton")
     void clean(ClickEvent e) {
         cleanCommand.execute();
+    }
+
+    @UiHandler("refreshButton")
+    void refresh(ClickEvent e) {
+        refresh();
     }
 
 }
