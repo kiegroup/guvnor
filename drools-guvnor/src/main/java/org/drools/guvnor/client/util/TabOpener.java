@@ -491,9 +491,7 @@ public class TabOpener {
             }
 
             public void open(MultiViewRow[] rows) {
-                for ( MultiViewRow row : rows ) {
-                    openAsset( row.uuid );
-                }
+                openAssetsToMultiView( rows );
             }
         };
     }
