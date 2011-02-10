@@ -27,9 +27,9 @@ import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.factconstraints.client.customform.CustomFormConfiguration;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.factconstraints.client.customform.CustomFormConfiguration;
 
 /**
  *

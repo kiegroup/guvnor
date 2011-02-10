@@ -12,14 +12,14 @@
   <name>Drools :: Fact Constraint</name>
 
   <dependencies>
-    <dependency>
+    <!-- dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-verifier</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
-    </dependency>
+    </dependency-->
 
   </dependencies>
 </project>

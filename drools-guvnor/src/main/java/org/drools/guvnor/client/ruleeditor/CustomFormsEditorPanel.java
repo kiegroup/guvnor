@@ -32,15 +32,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import org.drools.factconstraints.client.ConstraintConfiguration;
-import org.drools.factconstraints.client.customform.CustomFormConfiguration;
-import org.drools.factconstraints.client.helper.CustomFormsContainer;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.factconstraints.client.ConstraintConfiguration;
+import org.drools.ide.common.factconstraints.client.customform.CustomFormConfiguration;
+import org.drools.ide.common.factconstraints.client.helper.CustomFormsContainer;
 
 /**
  *
