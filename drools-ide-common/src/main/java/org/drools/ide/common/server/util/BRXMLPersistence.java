@@ -16,10 +16,10 @@
 
 package org.drools.ide.common.server.util;
 
-import org.drools.ide.common.client.modeldriven.brl.*;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import org.drools.ide.common.client.modeldriven.brl.*;
 
 /**
  * This class persists the rule model to XML and back.
