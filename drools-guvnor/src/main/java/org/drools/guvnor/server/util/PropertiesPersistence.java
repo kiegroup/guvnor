@@ -40,8 +40,8 @@ public class PropertiesPersistence {
 	public String marshal(PropertiesHolder holder) {
 		StringBuilder sb = new StringBuilder();
 		for (PropertyHolder propertyHolder : holder.list) {
-			sb.append(propertyHolder.name).append("=").append(
-					propertyHolder.value).append("\n");
+			sb.append(propertyHolder.getName()).append("=").append(
+					propertyHolder.getValue()).append("\n");
 		}
 		return sb.toString();
 	}

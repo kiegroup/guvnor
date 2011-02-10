@@ -88,6 +88,9 @@ public interface Images
     @Source("images/new_file.gif")
     ImageResource newFile();
 
+    @Source("images/new_file_large.png")
+    ImageResource newFileLarge();
+
     @Source("images/technical_rule_assets.gif")
     ImageResource technicalRuleAssets();
 
