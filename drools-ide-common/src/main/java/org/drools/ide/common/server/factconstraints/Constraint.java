@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.rpc;
+package org.drools.ide.common.server.factconstraints;
 
 import java.io.Serializable;
 import java.util.List;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
-import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
+import org.drools.ide.common.client.factconstraints.ValidationResult;
 
 /**
- * 
- * @author bauna
+ *
+ * @author esteban.aliverti@gmail.com
+ * @author baunax@gmail.com
  */
-public class WorkingSetConfigData implements PortableObject, Serializable {
-	private static final long serialVersionUID = 510l;
+public interface Constraint extends Serializable {
+    public List<String> getArgumentKeys();
 
-	public String name;
-	public String description;
-	public List<ConstraintConfiguration> constraints;
-	public List<CustomFormConfiguration> customForms;
+    public ValidationResult validate(Object value, ConstraintConfiguration config);
+    public String getVerifierRule(ConstraintConfiguration config);
+    public String getConstraintName();
 	
-	public String[] validFacts;
-	public WorkingSetConfigData[] workingSets;	
 }

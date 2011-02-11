@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.drools.builder.ResourceType;
-import org.drools.factconstraints.client.ConstraintConfiguration;
-import org.drools.factconstraints.server.factory.ConstraintsFactory;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -34,6 +32,8 @@ import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.VerifierRunner;
+import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
+import org.drools.ide.common.server.factconstraints.factory.ConstraintsFactory;
 import org.drools.io.ResourceFactory;
 import org.drools.repository.PackageItem;
 import org.drools.verifier.DefaultVerifierConfiguration;

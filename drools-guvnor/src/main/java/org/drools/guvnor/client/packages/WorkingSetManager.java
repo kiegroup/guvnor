@@ -22,17 +22,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.factconstraints.client.ConstraintConfiguration;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.modeldriven.SetFactTypeFilter;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
+import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
+import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
+import org.drools.ide.common.client.factconstraints.helper.CustomFormsContainer;
 
 import com.google.gwt.user.client.Command;
 import java.util.ArrayList;
-import org.drools.factconstraints.client.customform.CustomFormConfiguration;
-import org.drools.factconstraints.client.helper.CustomFormsContainer;
 
 /**
  *
