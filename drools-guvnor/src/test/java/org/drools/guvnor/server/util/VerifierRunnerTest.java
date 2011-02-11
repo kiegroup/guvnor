@@ -38,7 +38,7 @@ public class VerifierRunnerTest extends GuvnorTestBase {
 
     @Before
     public void setUp() throws Exception {
-        setUpSeam();
+        setUpSeamAndRepository();
 
         serviceImplementation = getServiceImplementation();
 

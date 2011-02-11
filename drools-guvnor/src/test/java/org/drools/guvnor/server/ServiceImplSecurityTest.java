@@ -27,12 +27,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleBasedPermission;
@@ -47,14 +47,13 @@ import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.permission.PermissionResolver;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Before
     public void setUp() {
-        setUpSeam();
+        setUpSeamAndRepository();
         setUpMockIdentity();
     }
 
@@ -1468,7 +1467,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             TableDataResult res = impl.loadRuleListForCategories( "testloadRuleListForCategoriesPackageReadonlyCat1",
                                                                   0,
                                                                   -1,
-                                                                  AssetItemGrid.RULE_LIST_TABLE_ID );
+                                                                  ExplorerNodeConfig.RULE_LIST_TABLE_ID );
             assertEquals( 0,
                           res.data.length );
         } finally {
@@ -1556,7 +1555,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             TableDataResult res = impl.loadRuleListForCategories( "testloadRuleListForCategoriesPackageReadonlyPositiveCat1",
                                                                   0,
                                                                   -1,
-                                                                  AssetItemGrid.RULE_LIST_TABLE_ID );
+                                                                  ExplorerNodeConfig.RULE_LIST_TABLE_ID );
             assertEquals( 3,
                           res.data.length );
         } finally {

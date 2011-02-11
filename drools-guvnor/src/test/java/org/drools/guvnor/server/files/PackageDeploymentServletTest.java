@@ -18,7 +18,6 @@ package org.drools.guvnor.server.files;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -38,7 +37,6 @@ import org.drools.definition.KnowledgePackage;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
 import org.drools.repository.AssetItem;
@@ -59,7 +57,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
 
     @Before
     public void setup() {
-        setUpSeam();
+        setUpSeamAndRepository();
         setUpFileManagerUtils();
         setUpMockIdentity();
     }

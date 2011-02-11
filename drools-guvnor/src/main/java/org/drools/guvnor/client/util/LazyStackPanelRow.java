@@ -50,7 +50,6 @@ public class LazyStackPanelRow extends VerticalPanel {
 
         if ( contentWidget != null ) {
             contentWidget.setVisible( expanded );
-            contentPanel.add( contentWidget );
         }
 
     }
@@ -68,8 +67,8 @@ public class LazyStackPanelRow extends VerticalPanel {
 
         if ( contentWidget == null ) {
             contentWidget = contentLoad.load();
+            contentPanel.add( contentWidget );
         }
-
         init();
     }
 

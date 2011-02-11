@@ -28,7 +28,6 @@ import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -44,7 +43,7 @@ public class ActionAPIServletTest extends GuvnorTestBase {
 
     @Before
     public void setUp() {
-        setUpSeam();
+        setUpSeamAndRepository();
         setUpMockIdentity();
     }
 

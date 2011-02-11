@@ -551,3 +551,48 @@ input,.constraint-value-Editor {
 .guvnor-cursor {
 	cursor: pointer;
 }
+
+.snapshot-comparison-added {
+	background: blue;
+	color: white;
+	font-weight: bold;
+	font-size: smaller;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.snapshot-comparison-archived {
+	background: purple;
+	color: white;
+	font-weight: bold;
+	font-size: smaller;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.snapshot-comparison-deleted {
+	background: red;
+	color: white;
+	font-weight: bold;
+	font-size: smaller;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.snapshot-comparison-restored {
+	background: orange;
+	color: white;
+	font-weight: bold;
+	font-size: smaller;
+	padding-left: 20px;
+	padding-right: 20px;
+}
+
+.snapshot-comparison-updated {
+	background: green;
+	color: white;
+	font-weight: bold;
+	font-size: smaller;
+	padding-left: 20px;
+	padding-right: 20px;
+}

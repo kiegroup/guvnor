@@ -17,9 +17,9 @@
 package org.drools.guvnor.client.common;
 
 
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rulelist.AssetItemGrid;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -60,7 +60,7 @@ public class GlobalAreaAssetSelector extends Composite {
     }
     
 	private void loadAssetList() {
-		RepositoryServiceFactory.getService().listAssetsWithPackageName("globalArea", new String[]{format}, 0, -1, AssetItemGrid.RULE_LIST_TABLE_ID, new GenericCallback<TableDataResult>() {
+		RepositoryServiceFactory.getService().listAssetsWithPackageName("globalArea", new String[]{format}, 0, -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, new GenericCallback<TableDataResult>() {
 
             public void onSuccess(TableDataResult result) {
 

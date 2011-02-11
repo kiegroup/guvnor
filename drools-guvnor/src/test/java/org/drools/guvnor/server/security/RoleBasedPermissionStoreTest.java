@@ -30,7 +30,7 @@ public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
 
     @Before
     public void setup() {
-        setUpSeam();
+        setUpSeamAndRepository();
     }
 
     @After

@@ -28,7 +28,9 @@ import java.util.StringTokenizer;
 
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepositoryException;
-
+/**
+ * @deprecated in favour of {@link AbstractPagedTable}
+ */
 public class RowLoader {
     private String[] headers;
     private String[] headerTypes;

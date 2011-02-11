@@ -36,7 +36,7 @@ public class EventsTest extends GuvnorTestBase {
 
     @Before
     public void setup() {
-        setUpSeam();
+        setUpSeamAndRepository();
     }
 
     @After

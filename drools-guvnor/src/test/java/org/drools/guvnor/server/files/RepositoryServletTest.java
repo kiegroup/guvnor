@@ -16,103 +16,82 @@
 
 package org.drools.guvnor.server.files;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.util.codec.Base64;
 import org.drools.guvnor.server.security.MockIdentity;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.contexts.Lifecycle;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 
-public class RepositoryServletTest {
+public class RepositoryServletTest extends GuvnorTestBase {
+
+    @Before
+    public void setUp() throws Exception {
+        setUpSeam();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        tearAllDown();
+    }
 
     @Test
     public void testAllowUser() throws Exception {
-        //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn(false);
-        midentity.setAllowLogin(true);
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
+        setUpMockIdentity(getMockIdentity());
 
-		String authToken = "usr:pwd";
-		String encodedAuthToken = "BASIC " + new String(Base64.encodeBase64(authToken.getBytes()));
-		boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
-		assertTrue(allowed);
-		
-        Lifecycle.endApplication();
-	}
-	
-    @Test
-    public void testAllowUserNoBasicAuthticationHeader() throws Exception {
-        //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn(false);
-        midentity.setAllowLogin(true);
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-		String encodedAuthToken = null;
-		boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
-		assertTrue(allowed);
-		
-        Lifecycle.endApplication();
-	}
+        String authToken = "usr:pwd";
+        String encodedAuthToken = "BASIC " + new String(Base64.encodeBase64(authToken.getBytes()));
+        boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
+        assertTrue(allowed);
+    }
 
     @Test
-    public void testAllowUserNoBasicAuthticationHeaderNotAllowLogin() throws Exception {
-        //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn(false);
-        midentity.setAllowLogin(false);
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
+    public void testAllowUserNoBasicAuthenticationHeader() throws Exception {
+        setUpMockIdentity(getMockIdentity());
 
-		String encodedAuthToken = null;
-		boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
-		assertFalse(allowed);
-		
-        Lifecycle.endApplication();
-	}
+        String encodedAuthToken = null;
+        boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
+        assertTrue(allowed);
+    }
 
     @Test
-    public void testAllowUserNotBasicAuthticationHeader() throws Exception {
-        //Mock up SEAM contexts
-        Map application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn(false);
-        midentity.setAllowLogin(true);
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
+    public void testAllowUserNoBasicAuthenticationHeaderNotAllowLogin() throws Exception {
+        MockIdentity mockIdentity = new MockIdentity();
+        mockIdentity.setIsLoggedIn(false);
+        mockIdentity.setAllowLogin(false);
+        setUpMockIdentity(mockIdentity);
 
-		String encodedAuthToken = "NON-Basic ";
-		boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
-		assertTrue(allowed);
-		
-        Lifecycle.endApplication();
-	}
+        String encodedAuthToken = null;
+        boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
+        assertFalse(allowed);
+    }
+
+    @Test
+    public void testAllowUserNotBasicAuthenticationHeader() throws Exception {
+        setUpMockIdentity(getMockIdentity());
+
+        String encodedAuthToken = "NON-Basic ";
+        boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
+        assertTrue(allowed);
+    }
+
 
     @Test
     public void testUnpack() {
-		String b42 = "BASIC " + new String( Base64.encodeBase64("user:pass".getBytes()) );
-		String[] d = RepositoryServlet.unpack(b42);
-		assertEquals("user", d[0]);
-		assertEquals("pass", d[1]);
-	}
+        String b42 = "BASIC " + new String(Base64.encodeBase64("user:pass".getBytes()));
+        String[] d = RepositoryServlet.unpack(b42);
+        assertEquals("user", d[0]);
+        assertEquals("pass", d[1]);
+    }
+
+    private MockIdentity getMockIdentity() {
+        MockIdentity mockIdentity = new MockIdentity();
+        mockIdentity.setIsLoggedIn(false);
+        mockIdentity.setAllowLogin(true);
+        return mockIdentity;
+    }
 
 }

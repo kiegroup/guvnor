@@ -108,6 +108,7 @@ public interface RepositoryServiceAsync {
     public void queryMetaData(org.drools.guvnor.client.rpc.MetaDataQuery[] p0, java.util.Date p1, java.util.Date p2, java.util.Date p3, java.util.Date p4, boolean p5, int p6, int p7, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void queryMetaData(org.drools.guvnor.client.rpc.QueryMetadataPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.QueryPageRow>> cb);
     public void listUserPermissions(AsyncCallback cb);
+    public void listUserPermissions(org.drools.guvnor.client.rpc.PageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.PermissionsPageRow>> cb);
     public void retrieveUserPermissions(java.lang.String p0, AsyncCallback cb);
     public void updateUserPermissions(java.lang.String p0, java.util.Map p1, AsyncCallback cb);
     public void listAvailablePermissionTypes(AsyncCallback<java.lang.String[]> cb);
@@ -124,8 +125,10 @@ public interface RepositoryServiceAsync {
     public void loadInbox(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadInbox(org.drools.guvnor.client.rpc.InboxPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.InboxPageRow>> cb);
     public void compareSnapshots(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotDiffs> cb);
+    public void compareSnapshots(org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse> cb);
     public void processTemplate(java.lang.String p0, java.util.Map p1, AsyncCallback<java.lang.String> cb);
     public void isHostedMode(AsyncCallback<java.lang.Boolean> cb);
-    public void loadSpringContextElementData(com.google.gwt.user.client.rpc.AsyncCallback<java.util.Map<String,String>> data);
+    public void loadSpringContextElementData(AsyncCallback cb);
+
 }
 

@@ -27,7 +27,6 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -38,7 +37,7 @@ public class MailboxServiceTest extends GuvnorTestBase {
 
     @Before
     public void setUp() {
-        setUpSeam();
+        setUpSeamAndRepository();
         setUpMockIdentity();
     }
 

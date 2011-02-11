@@ -46,7 +46,7 @@ public class FeedServletTest extends GuvnorTestBase {
 
     @Before
     public void setUp() {
-        setUpSeam();
+        setUpSeamAndRepository();
     }
 
     @After

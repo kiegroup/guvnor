@@ -43,15 +43,15 @@ public class EnumerationContentHandler extends PlainTextContentHandler
             for ( String message : errs ) {
 
                 BuilderResultLine result = new BuilderResultLine();
-                result.assetName = asset.getName();
-                result.assetFormat = asset.getFormat();
-                result.uuid = asset.getUUID();
-                result.message = message;
+                result.setAssetName(asset.getName());
+                result.setAssetFormat(asset.getFormat());
+                result.setUuid(asset.getUUID());
+                result.setMessage(message);
                 errors.add( result );
             }
 
             BuilderResult result = new BuilderResult();
-            result.setLines( errors.toArray( new BuilderResultLine[errors.size()] ) );
+            result.setLines( errors );
 
             return result;
         }
@@ -69,15 +69,15 @@ public class EnumerationContentHandler extends PlainTextContentHandler
             for ( String message : errs ) {
 
                 BuilderResultLine result = new BuilderResultLine();
-                result.assetName = asset.metaData.name;
-                result.assetFormat = asset.metaData.format;
-                result.uuid = asset.uuid;
-                result.message = message;
+                result.setAssetName(asset.metaData.name);
+                result.setAssetFormat(asset.metaData.format);
+                result.setUuid(asset.uuid);
+                result.setMessage(message);
                 errors.add( result );
             }
 
             BuilderResult result = new BuilderResult();
-            result.setLines( errors.toArray( new BuilderResultLine[errors.size()] ) );
+            result.setLines( errors );
 
             return result;
         }

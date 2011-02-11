@@ -359,6 +359,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public java.util.Map listUserPermissions() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
          return getService().listUserPermissions();
     }
+    public org.drools.guvnor.client.rpc.PageResponse listUserPermissions(org.drools.guvnor.client.rpc.PageRequest p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
+         return getService().listUserPermissions( p0);
+    }
     public java.util.Map retrieveUserPermissions(java.lang.String p0)  {
          return getService().retrieveUserPermissions( p0);
     }
@@ -407,17 +410,17 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public org.drools.guvnor.client.rpc.SnapshotDiffs compareSnapshots(java.lang.String p0, java.lang.String p1, java.lang.String p2)  {
          return getService().compareSnapshots( p0,  p1,  p2);
     }
+    public org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse compareSnapshots(org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest p0)  {
+         return getService().compareSnapshots( p0);
+    }
     public java.lang.String processTemplate(java.lang.String p0, java.util.Map p1)  {
          return getService().processTemplate( p0,  p1);
     }
     public java.lang.Boolean isHostedMode()  {
          return getService().isHostedMode();
     }
-
-    public Map<String,String> loadSpringContextElementData() throws org.drools.guvnor.client.rpc.DetailedSerializationException{
-    	return getService().loadSpringContextElementData();
+    public java.util.Map loadSpringContextElementData() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
+         return getService().loadSpringContextElementData();
     }
-    
-    
 
 }

@@ -171,7 +171,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         }
 
         // Keyboard navigation
-        if ( eventType.equals( "keypress" ) ) {
+        if ( eventType.equals( "keydown" )) {
             if ( event.getKeyCode() == KeyCodes.KEY_DELETE ) {
                 grid.update( null );
             } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT

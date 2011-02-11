@@ -18,13 +18,13 @@ package org.drools.guvnor.client.decisiontable.widget;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.table.SortDirection;
 import org.drools.guvnor.client.widgets.decoratedgrid.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.decoratedgrid.ColumnResizeHandler;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.decoratedgrid.SortConfiguration;
+import org.drools.guvnor.client.widgets.tables.SortDirection;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;

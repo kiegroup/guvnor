@@ -37,7 +37,7 @@ public class ContentHandlerTest extends GuvnorTestBase {
 
     @Before
     public void setup() {
-        setUpSeam();
+        setUpSeamAndRepository();
         setUpMockIdentity();
     }
 
@@ -87,15 +87,15 @@ public class ContentHandlerTest extends GuvnorTestBase {
         EnumerationContentHandler ch = new EnumerationContentHandler();
         BuilderResult result =  ch.validateAsset( asset );
         assertNotNull(result);
-        assertEquals(0, result.getLines().length);
+        assertEquals(0, result.getLines().size());
 
         asset.updateContent( "goober boy" );
         result = ch.validateAsset( asset );
-        assertFalse(result.getLines().length == 0);
-        assertEquals(asset.getName(), result.getLines()[0].assetName);
-        assertEquals(asset.getFormat(), result.getLines()[0].assetFormat);
-        assertNotNull(result.getLines()[0].message);
-        assertEquals(asset.getUUID(), result.getLines()[0].uuid);
+        assertFalse(result.getLines().size() == 0);
+        assertEquals(asset.getName(), result.getLines().get( 0 ).getAssetName());
+        assertEquals(asset.getFormat(), result.getLines().get( 0 ).getAssetFormat());
+        assertNotNull(result.getLines().get( 0 ).getMessage());
+        assertEquals(asset.getUUID(), result.getLines().get( 0 ).getUuid());
 
     }
 

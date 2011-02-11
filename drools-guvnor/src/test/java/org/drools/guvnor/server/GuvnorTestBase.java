@@ -56,14 +56,9 @@ public class GuvnorTestBase {
         return TestEnvironmentSessionHelper.getSession( true );
     }
 
-    protected void setUpSeam() {
+    protected void setUpSeamAndRepository() {
 
-        // setting it to false as most unit tests in this file assume no signing
-        System.setProperty( KeyStoreHelper.PROP_SIGN,
-                            "false" );
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
+        setUpSeam();
 
         ServiceImplementation serviceImplementation = new ServiceImplementation();
         serviceImplementation.setRulesRepository( getRulesRepository() );
@@ -72,6 +67,14 @@ public class GuvnorTestBase {
                                           repository );
         Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
                                           serviceImplementation );
+    }
+
+    public void setUpSeam() {
+        System.setProperty( KeyStoreHelper.PROP_SIGN,
+                            "false" );
+        Map<String, Object> application = new HashMap<String, Object>();
+        Lifecycle.beginApplication(application);
+        Lifecycle.beginCall();
     }
 
     protected void setUpFileManagerUtils() {
@@ -87,12 +90,16 @@ public class GuvnorTestBase {
 
     protected void setUpMockIdentity() {
         MockIdentity mockIdentity = new MockIdentity();
-        mockIdentity.setIsLoggedIn( true );
-        mockIdentity.inject();
-        mockIdentity.create();
+        mockIdentity.setIsLoggedIn(true);
         RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
         resolver.setEnableRoleBasedAuthorization( false );
         mockIdentity.addPermissionResolver( new RoleBasedPermissionResolver() );
+        setUpMockIdentity(mockIdentity);
+    }
+
+    public void setUpMockIdentity(MockIdentity mockIdentity) {
+        mockIdentity.inject();
+        mockIdentity.create();
     }
 
     public WebDAVImpl getWebDAVImpl() throws Exception {

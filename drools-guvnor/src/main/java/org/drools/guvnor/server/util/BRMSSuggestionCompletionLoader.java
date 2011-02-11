@@ -56,7 +56,7 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
     /**
      * Initialize the extra Imports and creates a Provider to use them.
      */
-    private void initAndAttachExtraImportsProvider(){
+    private void initAndAttachExtraImportsProvider() {
         this.extraImports.add(new ImportDescr("java.util.Set"));
         this.extraImports.add(new ImportDescr("java.util.List"));
         this.extraImports.add(new ImportDescr("java.util.Collection"));
@@ -100,7 +100,7 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
         return BRMSPackageBuilder.getDSLMappingFiles(pkg, new BRMSPackageBuilder.DSLErrorEvent() {
 
             public void recordError(AssetItem asset, String message) {
-                errors.add(asset.getName() + " : " + message);
+                getErrors().add(asset.getName() + " : " + message);
             }
         });
     }

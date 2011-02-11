@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.server.util;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +25,7 @@ import java.util.GregorianCalendar;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.repository.AssetItem;
 import org.junit.Test;
-import org.mockito.Mockito;
+
 /**
  * 
  * @author Jari Timonen
@@ -38,7 +38,8 @@ public class AssetPageRowPopulatorTest {
 
         AssetItem assetItem = mock( AssetItem.class );
         Calendar calendar = GregorianCalendar.getInstance();
-        calendar.add( Calendar.MONTH, -1 );
+        calendar.add( Calendar.MONTH,
+                      -1 );
         Calendar lastModifiedCalendar = GregorianCalendar.getInstance();
 
         when( assetItem.getUUID() ).thenReturn( "UUID" );
@@ -54,18 +55,30 @@ public class AssetPageRowPopulatorTest {
         when( assetItem.getExternalSource() ).thenReturn( "externalsource" );
         AssetPageRowPopulator assetPageRowPopulator = new AssetPageRowPopulator();
         AssetPageRow makeAssetPageRow = assetPageRowPopulator.makeAssetPageRow( assetItem );
-        assertTrue( makeAssetPageRow.getUuid().equals( assetItem.getUUID() ) );
-        assertTrue( makeAssetPageRow.getFormat().equals( assetItem.getFormat() ) );
-        assertTrue( makeAssetPageRow.getName().equals( assetItem.getName() ) );
-        assertTrue( makeAssetPageRow.getDescription().equals( assetItem.getDescription() ) );
-        assertTrue( makeAssetPageRow.getAbbreviatedDescription().length() == 80 );
-        assertTrue( makeAssetPageRow.getStateName().equals( assetItem.getStateDescription() ) );
-        assertTrue( makeAssetPageRow.getCreator().equals( assetItem.getCreator() ) );
-        assertTrue( makeAssetPageRow.getCreatedDate().equals( assetItem.getCreatedDate().getTime() ) );
-        assertTrue( makeAssetPageRow.getLastContributor().equals( assetItem.getLastContributor() ) );
-        assertTrue( makeAssetPageRow.getLastModified().equals( assetItem.getLastModified().getTime() ) );
-        assertTrue( makeAssetPageRow.getCategorySummary().equals( assetItem.getCategorySummary() ) );
-        assertTrue( makeAssetPageRow.getExternalSource().equals( assetItem.getExternalSource() ) );
+        assertEquals( makeAssetPageRow.getUuid(),
+                      assetItem.getUUID() );
+        assertEquals( makeAssetPageRow.getFormat(),
+                      assetItem.getFormat() );
+        assertEquals( makeAssetPageRow.getName(),
+                      assetItem.getName() );
+        assertEquals( makeAssetPageRow.getDescription(),
+                      assetItem.getDescription() );
+        assertEquals( makeAssetPageRow.getAbbreviatedDescription().length(),
+                      80 );
+        assertEquals( makeAssetPageRow.getStateName(),
+                      assetItem.getStateDescription() );
+        assertEquals( makeAssetPageRow.getCreator(),
+                      assetItem.getCreator() );
+        assertEquals( makeAssetPageRow.getCreatedDate(),
+                      assetItem.getCreatedDate().getTime() );
+        assertEquals( makeAssetPageRow.getLastContributor(),
+                      assetItem.getLastContributor() );
+        assertEquals( makeAssetPageRow.getLastModified(),
+                      assetItem.getLastModified().getTime() );
+        assertEquals( makeAssetPageRow.getCategorySummary(),
+                      assetItem.getCategorySummary() );
+        assertEquals( makeAssetPageRow.getExternalSource(),
+                      assetItem.getExternalSource() );
 
     }
 }

@@ -43,25 +43,7 @@ import java.util.Locale;
 public class RepositoryServlet extends HttpServlet {
 
     private static final long  serialVersionUID = 510l;
-    //    protected final FileManagerUtils uploadHelper = new FileManagerUtils();
     public static final Logger log              = LoggerFactory.getLogger( RepositoryServlet.class );
-
-    //    protected RulesRepository getRepository() {
-    //
-    //        if ( Contexts.isApplicationContextActive() ) {
-    //            return (RulesRepository) Component.getInstance( "repository" );
-    //        } else {
-    //            //MN: NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
-    //            //THIS IS ALL THAT IS NEEDED FOR THE SERVLETS.
-    //            log.debug( "WARNING: RUNNING IN NON SEAM MODE SINGLE USER MODE - ONLY FOR TESTING AND DEBUGGING !!!!!" );
-    //
-    //            try {
-    //                return new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
-    //            } catch ( Exception e ) {
-    //                throw new IllegalStateException( "Unable to launch debug mode..." );
-    //            }
-    //        }
-    //    }   
 
     public FileManagerUtils getFileManager() {
         if ( Contexts.isApplicationContextActive() ) {

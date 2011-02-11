@@ -106,26 +106,26 @@ public class TestRunnerWidget extends Composite {
         initWidget( layout );
     }
 
-    private void showErrors(BuilderResultLine[] rs) {
+    private void showErrors(List<BuilderResultLine> rs) {
         results.clear();
         results.setVisible( true );
 
         FlexTable errTable = new FlexTable();
         errTable.setStyleName( "build-Results" );
-        for ( int i = 0; i < rs.length; i++ ) {
+        for ( int i = 0; i < rs.size(); i++ ) {
             int row = i;
-            final BuilderResultLine res = rs[i];
+            final BuilderResultLine res = rs.get(i);
             errTable.setWidget( row,
                                 0,
                                 new Image( images.error() ) );
-            if ( res.assetFormat.equals( "package" ) ) {
+            if ( res.getAssetFormat().equals( "package" ) ) {
                 errTable.setText( row,
                                   1,
-                                  constants.packageConfigurationProblem1() + res.message );
+                                  constants.packageConfigurationProblem1() + res.getMessage() );
             } else {
                 errTable.setText( row,
                                   1,
-                                  "[" + res.assetName + "] " + res.message );
+                                  "[" + res.getAssetName() + "] " + res.getMessage() );
             }
 
         }

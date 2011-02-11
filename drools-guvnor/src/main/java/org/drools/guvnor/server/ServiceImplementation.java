@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2011 JBoss Inc
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,6 +18,7 @@ package org.drools.guvnor.server;
 
 import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -84,6 +85,7 @@ import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.PermissionsPageRow;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
@@ -93,6 +95,9 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
 import org.drools.guvnor.client.rpc.SnapshotDiff;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
@@ -110,6 +115,7 @@ import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.UserInbox;
+import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
@@ -165,8 +171,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
-import java.io.BufferedInputStream;
-import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 
 /**
  * This is the implementation of the repository service to drive the GWT based
@@ -284,6 +288,9 @@ public class ServiceImplementation implements RepositoryService {
         return repositoryAssetOperations.loadAssetHistory( assetItem );
     }
 
+    /**
+     * @deprecated in favour of {@link loadArchivedAssets(PageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadArchivedAssets(int skip, int numRows) throws SerializationException {
@@ -300,6 +307,9 @@ public class ServiceImplementation implements RepositoryService {
         return repositoryAssetOperations.loadArchivedAssets( request );
     }
 
+    /**
+     * @deprecated in favour of {@link findAssetPage(AssetPageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult listAssetsWithPackageName(String packageName, String formats[], int skip, int numRows, String tableConfig) throws SerializationException {
@@ -307,6 +317,9 @@ public class ServiceImplementation implements RepositoryService {
         return listAssets( pkg.getUUID(), formats, skip, numRows, tableConfig );
     }
 
+    /**
+     * @deprecated in favour of {@link findAssetPage(AssetPageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult listAssets(String packageUuid, String formats[], int skip, int numRows, String tableConfig) throws SerializationException {
@@ -738,16 +751,21 @@ public class ServiceImplementation implements RepositoryService {
         } );
     }
 
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
     /**
      * loadRuleListForCategories
      *
      * Role-based Authorization check: This method only returns rules that the user has
      * permission to access. The user is considered to has permission to access the particular category when:
      * The user has ANALYST_READ role or higher (i.e., ANALYST) to this category
+     * 
+     * @deprecated in favour of {@link loadRuleListForCategories(CategoryPageRequest)}
      */
-    public TableDataResult loadRuleListForCategories(String categoryPath, int skip, int numRows, String tableConfig) throws SerializationException {
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public TableDataResult loadRuleListForCategories(String categoryPath,
+                                                     int skip,
+                                                     int numRows,
+                                                     String tableConfig) throws SerializationException {
 
         // First check the user has permission to access this categoryPath.
         if ( Contexts.isSessionContextActive() ) {
@@ -764,6 +782,9 @@ public class ServiceImplementation implements RepositoryService {
 
     }
 
+    /**
+     * @deprecated in favour of {@link loadRuleListForState(StatePageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadRuleListForState(String stateName, int skip, int numRows, String tableConfig) throws SerializationException {
@@ -776,6 +797,9 @@ public class ServiceImplementation implements RepositoryService {
         return handler.loadRuleListTable( result );
     }
 
+    /**
+     * @deprecated in favour of {@link AbstractPagedTable}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableConfig loadTableConfig(String listName) {
@@ -1034,12 +1058,18 @@ public class ServiceImplementation implements RepositoryService {
         }
     }
 
+    /**
+     * @deprecated in favour of {@link quickFindAsset(QueryPageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult quickFindAsset(String searchText, boolean searchArchived, int skip, int numRows) throws SerializationException {
         return repositoryAssetOperations.quickFindAsset( searchText, searchArchived, skip, numRows );
     }
 
+    /**
+     * @deprecated in favour of {@link queryFullText(QueryPageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult queryFullText(String text, boolean seekArchived, int skip, int numRows) throws SerializationException {
@@ -1049,6 +1079,9 @@ public class ServiceImplementation implements RepositoryService {
         return repositoryAssetOperations.queryFullText( text, seekArchived, skip, numRows );
     }
 
+    /**
+     * @deprecated in favour of {@link queryMetaData(QueryPageRequest)}
+     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult queryMetaData(final MetaDataQuery[] qr, Date createdAfter, Date createdBefore, Date modifiedAfter, Date modifiedBefore, boolean seekArchived, int skip, int numRows) throws SerializationException {
@@ -1441,8 +1474,8 @@ public class ServiceImplementation implements RepositoryService {
                 BuilderResult res = this.buildPackage( snap.getUUID(), true );
                 if ( res != null ) {
                     StringBuffer buf = new StringBuffer();
-                    for ( int i = 0; i < res.getLines().length; i++ ) {
-                        buf.append( res.getLines()[i].toString() );
+                    for ( int i = 0; i < res.getLines().size(); i++ ) {
+                        buf.append( res.getLines().get( i ).toString() );
                         buf.append( '\n' );
                     }
                     throw new DetailedSerializationException( "Unable to rebuild snapshot [" + snapName, buf.toString() + "]" );
@@ -1530,7 +1563,7 @@ public class ServiceImplementation implements RepositoryService {
                     ServiceImplementation.ruleBaseCache.put( item.getUUID(), loadRuleBase( item, cl ) );
                 } else {
                     BuilderResult result = this.buildPackage( item, false );
-                    if ( result == null || result.getLines().length == 0 ) {
+                    if ( result == null || result.getLines().size() == 0 ) {
                         ServiceImplementation.ruleBaseCache.put( item.getUUID(), loadRuleBase( item, cl ) );
                     } else {
                         return new BulkTestRunResult( result, null, 0, null );
@@ -1603,6 +1636,9 @@ public class ServiceImplementation implements RepositoryService {
 
     }
 
+    /**
+     * @deprecated in favour of {@link showLog(PageRequest)}
+     */
     @WebRemote
     public LogEntry[] showLog() {
         serviceSecurity.checkSecurityIsAdmin();
@@ -1628,9 +1664,10 @@ public class ServiceImplementation implements RepositoryService {
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setTotalRowSize( entries.length );
         response.setTotalRowSizeExact( true );
-
-        List<LogPageRow> rowList = new ArrayList<LogPageRow>( request.getPageSize() );
-        for ( int i = request.getStartRowIndex(); i < request.getPageSize() && i < entries.length; i++ ) {
+        
+        int rowMaxNumber = Math.min(request.getStartRowIndex()+request.getPageSize(), entries.length);
+        List<LogPageRow> rowList = new ArrayList<LogPageRow>(request.getPageSize());
+        for(int i = request.getStartRowIndex(); i<rowMaxNumber;i++) {
             LogEntry e = entries[i];
             LogPageRow row = new LogPageRow();
             row.setSeverity( e.severity );
@@ -1727,8 +1764,8 @@ public class ServiceImplementation implements RepositoryService {
                 if ( res != null ) {
                     errs.append( "Unable to build package name [" + pkg.getName() + "]\n" );
                     StringBuffer buf = new StringBuffer();
-                    for ( int i = 0; i < res.getLines().length; i++ ) {
-                        buf.append( res.getLines()[i].toString() );
+                    for ( int i = 0; i < res.getLines().size(); i++ ) {
+                        buf.append( res.getLines().get( i ).toString() );
                         buf.append( '\n' );
                     }
                     log.warn( buf.toString() );
@@ -1745,6 +1782,9 @@ public class ServiceImplementation implements RepositoryService {
         }
     }
 
+    /**
+     * @deprecated in favour of {@link listUserPermissions(PageRequest)}
+     */
     @Restrict("#{identity.loggedIn}")
     public Map<String, List<String>> listUserPermissions() {
         serviceSecurity.checkSecurityIsAdmin();
@@ -1753,6 +1793,48 @@ public class ServiceImplementation implements RepositoryService {
         return pm.listUsers();
     }
 
+    @Restrict("#{identity.loggedIn}")
+    public PageResponse<PermissionsPageRow> listUserPermissions(PageRequest request) {
+        if ( request == null ) {
+            throw new IllegalArgumentException( "request cannot be null" );
+        }
+
+        serviceSecurity.checkSecurityIsAdmin();
+
+        // Do query
+        long start = System.currentTimeMillis();
+        PermissionManager pm = new PermissionManager( getRulesRepository() );
+        Map<String, List<String>> permissions = pm.listUsers();
+        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+        // Populate response
+        PageResponse<PermissionsPageRow> response = new PageResponse<PermissionsPageRow>();
+        response.setStartRowIndex( request.getStartRowIndex() );
+        response.setTotalRowSize( permissions.size() );
+        response.setTotalRowSizeExact( true );
+        
+        List<PermissionsPageRow> rowList = new ArrayList<PermissionsPageRow>(request.getPageSize());
+        Iterator<String> mapItr = permissions.keySet().iterator();
+        int rowNumber=0;
+        int rowMaxNumber = request.getStartRowIndex()+request.getPageSize();
+        while(mapItr.hasNext() && rowNumber<rowMaxNumber) {
+            String userName = mapItr.next();
+            if(rowNumber>=request.getStartRowIndex()) {
+                List<String> userPermissions = permissions.get( userName );
+                PermissionsPageRow row = new PermissionsPageRow();
+                row.setUserName( userName );
+                row.setUserPermissions( userPermissions );
+                rowList.add(row);
+            }
+            rowNumber++;
+        }
+        response.setPageRowList( rowList );
+        
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Retrieved Log Entries in " + methodDuration + " ms." );
+        return response;
+    }
+    
     @Restrict("#{identity.loggedIn}")
     public Map<String, List<String>> retrieveUserPermissions(String userName) {
         serviceSecurity.checkSecurityIsAdmin();
@@ -1850,6 +1932,9 @@ public class ServiceImplementation implements RepositoryService {
 
     }
 
+    /**
+     * @deprecated in favour of {@link loadInbox(InboxPageRequest)}
+     */
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException {
         try {
@@ -1933,6 +2018,9 @@ public class ServiceImplementation implements RepositoryService {
         return s.replace( "<", "&lt;" ).replace( ">", "&gt;" );
     }
 
+    /**
+     * @deprecated in favour of {@link compareSnapshots(SnapshotComparisonPageRequest)}
+     */
     public SnapshotDiffs compareSnapshots(String packageName, String firstSnapshotName, String secondSnapshotName) {
         SnapshotDiffs diffs = new SnapshotDiffs();
         List<SnapshotDiff> list = new ArrayList<SnapshotDiff>();
@@ -2017,6 +2105,44 @@ public class ServiceImplementation implements RepositoryService {
 
         diffs.diffs = list.toArray( new SnapshotDiff[list.size()] );
         return diffs;
+    }
+
+    @Override
+    public SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request) {
+        
+        if(request==null) {
+            throw new IllegalArgumentException("request cannot be null");
+        }
+        
+        SnapshotComparisonPageResponse response = new SnapshotComparisonPageResponse();
+        
+        // Do query (bit of a cheat really!)
+        long start = System.currentTimeMillis();
+        SnapshotDiffs diffs = compareSnapshots( request.getPackageName(), request.getFirstSnapshotName(), request.getSecondSnapshotName() );
+        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+        
+        // Populate response
+        response.setLeftSnapshotName( diffs.leftName);
+        response.setRightSnapshotName( diffs.rightName );
+        List<SnapshotComparisonPageRow> rowList = new ArrayList<SnapshotComparisonPageRow>();
+        
+        int pageStart = request.getStartRowIndex();
+        int maxRow = Math.min(request.getPageSize(), diffs.diffs.length-request.getStartRowIndex());
+        for(int i=pageStart; i<pageStart+maxRow; i++) {
+            SnapshotComparisonPageRow pr = new SnapshotComparisonPageRow();
+            pr.setDiff( diffs.diffs[i] );
+            rowList.add(pr);
+        }
+        response.setPageRowList( rowList );
+        response.setStartRowIndex( request.getStartRowIndex() );
+        response.setTotalRowSize( diffs.diffs.length );
+        response.setTotalRowSizeExact( true );
+        response.setLastPage( (pageStart+maxRow==diffs.diffs.length) );
+
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Compared Snapshots ('" + request.getFirstSnapshotName() + "') and ('"+request.getSecondSnapshotName()+"') in package ('" + request.getPackageName()+"') in " + methodDuration + " ms." );
+        
+        return response;
     }
 
     /**
@@ -2584,7 +2710,7 @@ public class ServiceImplementation implements RepositoryService {
                 ServiceImplementation.ruleBaseCache.put( item.getUUID(), rb );
             } else {
                 BuilderResult result = this.buildPackage( item, false );
-                if ( result == null || result.getLines().length == 0 ) {
+                if ( result == null || result.getLines().size() == 0 ) {
                     rb = loadRuleBase( item, buildCl );
                     ServiceImplementation.ruleBaseCache.put( item.getUUID(), rb );
                 } else throw new DetailedSerializationException( "Build error", result.getLines() );
@@ -2605,7 +2731,7 @@ public class ServiceImplementation implements RepositoryService {
             log.info( "...but trying to rebuild binaries..." );
             try {
                 BuilderResult res = this.buildPackage( item, true );
-                if ( res != null && res.getLines().length > 0 ) {
+                if ( res != null && res.getLines().size() > 0 ) {
                     log.error( "There were errors when rebuilding the knowledgebase." );
                     throw new DetailedSerializationException( "There were errors when rebuilding the knowledgebase.", "" );
                 }
@@ -2746,8 +2872,6 @@ public class ServiceImplementation implements RepositoryService {
         return leftPackage.getLastModified().compareTo( rightPackage.getLastModified() ) > 0;
     }
 
-    
-
     private List<InboxPageRow> fillInboxPageRows(InboxPageRequest request, Iterator<InboxEntry> it) {
 
         int skipped = 0;
@@ -2841,8 +2965,6 @@ public class ServiceImplementation implements RepositoryService {
         return rowList;
     }
 
-    
-
     private InboxPageRow makeInboxPageRow(InboxEntry ie, InboxPageRequest request) {
         InboxPageRow row = null;
         if ( request.getInboxName().equals( ExplorerNodeConfig.INCOMING_ID ) ) {
@@ -2928,5 +3050,5 @@ public class ServiceImplementation implements RepositoryService {
         row.setPackageName( assetItem.getPackageName() );
         return row;
     }
-
+    
 }
