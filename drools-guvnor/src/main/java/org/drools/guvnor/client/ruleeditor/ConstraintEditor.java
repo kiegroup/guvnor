@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.ide.common.factconstraints.client.ConstraintConfiguration;
+import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.ChangeListener;

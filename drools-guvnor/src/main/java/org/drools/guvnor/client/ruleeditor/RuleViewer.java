@@ -53,7 +53,6 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -391,7 +390,7 @@ public class RuleViewer extends GuvnorEditor {
 
         verificationService.verifyAsset( asset,
                                          activeWorkingSets,
-                                         new AsyncCallback<AnalysisReport>() {
+                                         new GenericCallback<AnalysisReport>() {
 
                                              public void onSuccess(AnalysisReport report) {
                                                  LoadingPopup.close();
@@ -405,11 +404,6 @@ public class RuleViewer extends GuvnorEditor {
 
                                                  LoadingPopup.close();
                                                  form.show();
-                                             }
-
-                                             public void onFailure(Throwable arg0) {
-                                                 // TODO Auto-generated method
-                                                 // stub
                                              }
                                          } );
 

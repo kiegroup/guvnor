@@ -38,9 +38,9 @@ import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.factconstraints.client.ConstraintConfiguration;
-import org.drools.ide.common.factconstraints.client.customform.CustomFormConfiguration;
-import org.drools.ide.common.factconstraints.client.helper.CustomFormsContainer;
+import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
+import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
+import org.drools.ide.common.client.factconstraints.helper.CustomFormsContainer;
 
 /**
  *

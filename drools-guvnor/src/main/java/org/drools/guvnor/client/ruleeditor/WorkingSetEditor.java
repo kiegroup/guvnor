@@ -28,8 +28,8 @@ import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.factconstraints.client.helper.ConstraintsContainer;
-import org.drools.ide.common.factconstraints.client.helper.CustomFormsContainer;
+import org.drools.ide.common.client.factconstraints.helper.ConstraintsContainer;
+import org.drools.ide.common.client.factconstraints.helper.CustomFormsContainer;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
