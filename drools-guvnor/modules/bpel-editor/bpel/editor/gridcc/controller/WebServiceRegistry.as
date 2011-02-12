@@ -1,8 +1,8 @@
 package bpel.editor.gridcc.controller
 {
-	public class WebServiceRegistry
-	{		
-		/**
+    public class WebServiceRegistry
+    {
+        /**
          * The Singleton instance of WebServiceRegistry
          */        
         protected static var instance:WebServiceRegistry;  
@@ -41,7 +41,7 @@ package bpel.editor.gridcc.controller
         }
         
         private function initializeRegistry():void {
-        	WSRegistry = new XML("<node label='Web Service Registry'/>");
+            WSRegistry = new XML("<node label='Web Service Registry'/>");
         }
-	}
+    }
 }

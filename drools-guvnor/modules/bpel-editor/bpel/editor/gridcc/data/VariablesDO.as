@@ -1,28 +1,28 @@
 package bpel.editor.gridcc.data
 {
-	public class VariablesDO implements DOInterface
-	{
-		
-		protected static var instance:VariablesDO; 
-		private var _subActivitiesArray:Array; 
-		
-		public function get subActivitiesArray():Array {
-			return _subActivitiesArray;
-		}
-				
-		[Bindable]
-		public function set subActivitiesArray(subActivitiesArrayValue:Array):void{
-			subActivitiesArray = subActivitiesArrayValue;
-		}
-		
-		public function updateSubActivitiesArray(type:String, variable:Object):void {
-			if(!_subActivitiesArray){
-				_subActivitiesArray = new Array();
-			}
-			_subActivitiesArray.push([type,VariableDO(variable)]);
-		}
-		
-		/**
+    public class VariablesDO implements DOInterface
+    {
+
+        protected static var instance:VariablesDO;
+        private var _subActivitiesArray:Array;
+
+        public function get subActivitiesArray():Array {
+            return _subActivitiesArray;
+        }
+
+        [Bindable]
+        public function set subActivitiesArray(subActivitiesArrayValue:Array):void{
+            subActivitiesArray = subActivitiesArrayValue;
+        }
+
+        public function updateSubActivitiesArray(type:String, variable:Object):void {
+            if(!_subActivitiesArray){
+                _subActivitiesArray = new Array();
+            }
+            _subActivitiesArray.push([type,VariableDO(variable)]);
+        }
+
+        /**
          * Constructor
          * 
          * Instantiates Singleton instance of Variables
@@ -56,19 +56,19 @@ package bpel.editor.gridcc.data
         * Delete the Singleton instance of Variables
         */
         public function removeInstance():void {
-			if(instance){
-				instance = null;
-			}
-		}
-		
-		public function getName():String {			
-			return "variables";
-		}
-		
-		public function updateAttributesArray(attributeName:String, attributeValue:String):void {}		
-		
-		public function populateAttributes(attNamesList:XMLList):String {
-			return null;
-		}
-	}
+            if(instance){
+                instance = null;
+            }
+        }
+
+        public function getName():String {
+            return "variables";
+        }
+
+        public function updateAttributesArray(attributeName:String, attributeValue:String):void {}
+
+        public function populateAttributes(attNamesList:XMLList):String {
+            return null;
+        }
+    }
 }
