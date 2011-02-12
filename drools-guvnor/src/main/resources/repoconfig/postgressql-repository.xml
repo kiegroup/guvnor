@@ -24,12 +24,12 @@
         (e.g. registered namespaces, custom node types, etc.)
     -->
     <FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">
-	<param name="driver" value="${dbDriver}"/>
+  <param name="driver" value="${dbDriver}"/>
     <param name="url" value="${dbUrl}"/>
     <param name="user" value="${dbUser}"/>
     <param name="password" value="${dbPass}"/>
-	<param name="schema" value="postgresql"/>
-	<param name="schemaObjectPrefix" value="FS_"/>
+  <param name="schema" value="postgresql"/>
+  <param name="schemaObjectPrefix" value="FS_"/>
     </FileSystem>
 
     <!--
@@ -69,28 +69,28 @@
             class: FQN of class implementing the FileSystem interface
         -->
 
-		
-		<FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">
-			<param name="driver" value="${dbDriver}"/>
-       		<param name="url" value="${dbUrl}"/>
-       		<param name="user" value="${dbUser}"/>
-       		<param name="password" value="${dbPass}"/>
-			<param name="schema" value="postgresql"/>
-			<#noparse><param name="schemaObjectPrefix" value="FS_WS_${wsp.name}_"/></#noparse>
-		</FileSystem>
+
+    <FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">
+      <param name="driver" value="${dbDriver}"/>
+           <param name="url" value="${dbUrl}"/>
+           <param name="user" value="${dbUser}"/>
+           <param name="password" value="${dbPass}"/>
+      <param name="schema" value="postgresql"/>
+      <#noparse><param name="schemaObjectPrefix" value="FS_WS_${wsp.name}_"/></#noparse>
+    </FileSystem>
 
         <!--
             persistence manager of the workspace:
             class: FQN of class implementing the PersistenceManager interface
         -->
-		<PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.PostgreSQLPersistenceManager">
-			<param name="driver" value="${dbDriver}"/>
-       		<param name="url" value="${dbUrl}"/>
-       		<param name="user" value="${dbUser}"/>
-       		<param name="password" value="${dbPass}"/>
-			<param name="schema" value="postgresql"/>
-			<#noparse><param name="schemaObjectPrefix" value="PM_WS_${wsp.name}_" /></#noparse>
-		</PersistenceManager>
+    <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.PostgreSQLPersistenceManager">
+      <param name="driver" value="${dbDriver}"/>
+           <param name="url" value="${dbUrl}"/>
+           <param name="user" value="${dbUser}"/>
+           <param name="password" value="${dbPass}"/>
+      <param name="schema" value="postgresql"/>
+      <#noparse><param name="schemaObjectPrefix" value="PM_WS_${wsp.name}_" /></#noparse>
+    </PersistenceManager>
 
         <!--
             Search index and the file system it uses.
@@ -114,13 +114,13 @@
         -->
 
         <FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">
-			<param name="driver" value="${dbDriver}"/>
-       		<param name="url" value="${dbUrl}"/>
-       		<param name="user" value="${dbUser}"/>
-       		<param name="password" value="${dbPass}"/>
-			<param name="schema" value="postgresql"/>
-			<param name="schemaObjectPrefix" value="Versioning_FS_"/>
-		</FileSystem>
+      <param name="driver" value="${dbDriver}"/>
+           <param name="url" value="${dbUrl}"/>
+           <param name="user" value="${dbUser}"/>
+           <param name="password" value="${dbPass}"/>
+      <param name="schema" value="postgresql"/>
+      <param name="schemaObjectPrefix" value="Versioning_FS_"/>
+    </FileSystem>
 
         <!--
             Configures the persistence manager to be used for persisting version state.
@@ -128,14 +128,14 @@
             a 'normal' persistence manager, but this could change in future
             implementations.
         -->
-		<PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.PostgreSQLPersistenceManager">
-			<param name="driver" value="${dbDriver}"/>
-       		<param name="url" value="${dbUrl}"/>
-       		<param name="user" value="${dbUser}"/>
-       		<param name="password" value="${dbPass}"/>
-			<param name="schema" value="postgresql"/>
-			<param name="schemaObjectPrefix" value="Versioning_PM_" />
-		</PersistenceManager>
+    <PersistenceManager class="org.apache.jackrabbit.core.persistence.bundle.PostgreSQLPersistenceManager">
+      <param name="driver" value="${dbDriver}"/>
+           <param name="url" value="${dbUrl}"/>
+           <param name="user" value="${dbUser}"/>
+           <param name="password" value="${dbPass}"/>
+      <param name="schema" value="postgresql"/>
+      <param name="schemaObjectPrefix" value="Versioning_PM_" />
+    </PersistenceManager>
 
 
     </Versioning>

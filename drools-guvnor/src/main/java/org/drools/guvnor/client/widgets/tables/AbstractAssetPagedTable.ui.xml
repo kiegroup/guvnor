@@ -21,7 +21,7 @@
     xmlns:guvnor-pager="urn:import:org.drools.guvnor.client.widgets.tables">
 
   <ui:with field='images' type='org.drools.guvnor.client.resources.Images'/>
-	
+
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
 
   <gwt:VerticalPanel>
