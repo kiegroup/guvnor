@@ -25,7 +25,6 @@ import org.drools.guvnor.client.rpc.RepositoryService;
 /**
  * This utility uses reflection to generate the async interface from the Service
  * interface as per GWT standard.
- * 
  */
 public class AsyncInterfaceGenerator {
 

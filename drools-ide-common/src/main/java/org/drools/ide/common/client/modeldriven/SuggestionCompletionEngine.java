@@ -34,7 +34,6 @@ import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 /**
  * An suggestion completion processor. This should be usable in both GWT/Web and
  * the IDE. The data for this can be loaded into this from simple string lists.
- * 
  */
 public class SuggestionCompletionEngine implements PortableObject {
 
@@ -71,7 +70,6 @@ public class SuggestionCompletionEngine implements PortableObject {
     * List<String> name
     * key = "name"
     * value = "String"
-    *
     */
     private Map<String, String>            fieldParametersType    = new HashMap<String, String>();
 
@@ -259,7 +257,6 @@ public class SuggestionCompletionEngine implements PortableObject {
      * given field of the given FactPattern.
      * 
      * This also takes into account enums that depend on other fields.
-     * 
      */
     public DropDownData getEnums(FactPattern pat,
                                  String field) {

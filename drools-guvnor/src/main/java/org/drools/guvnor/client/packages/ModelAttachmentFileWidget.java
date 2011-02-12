@@ -31,7 +31,6 @@ import com.google.gwt.core.client.GWT;
 /**
  * This wraps a file uploader utility for model packages.
  * Model packages are jar files.
- *
  */
 
 public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget

@@ -34,7 +34,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * For guided decision tables.
- *
  */
 public class GuidedDTContentHandler extends ContentHandler
     implements

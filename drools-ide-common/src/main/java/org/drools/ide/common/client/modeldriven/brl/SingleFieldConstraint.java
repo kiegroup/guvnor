@@ -68,7 +68,6 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint implements 
 
     /**
      * This adds a new connective.
-     *
      */
     public void addNewConnective() {
         if (this.connectives == null) {

@@ -3,7 +3,6 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 /**
  * Callback for consumers of DecoratedGridWidget to update cell values following
  * operations controlled by DecordatedGridWidget (such as sorting)
- * 
  */
 public interface HasSystemControlledColumns {
 

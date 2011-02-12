@@ -31,7 +31,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * Wrapper for GWT RPC.
- *
  */
 public class SecurityServiceServlet extends RemoteServiceServlet implements
         SecurityService {

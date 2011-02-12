@@ -77,7 +77,6 @@ import org.slf4j.LoggerFactory;
  * version). The JCR specification supports a more complicated versioning
  * system, and if there is sufficient demand, we can modify our versioning
  * scheme to be better aligned with JCR's versioning abilities.
- *
  */
 public class RulesRepository {
 
@@ -986,7 +985,6 @@ public class RulesRepository {
      * provided category. Only the latest versions of each RuleItem will be
      * returned (you will have to delve into the rules deepest darkest history
      * yourself... mahahahaha).
-     *
      */
     public AssetItemPageResult findAssetsByCategory(String categoryTag,
                                               boolean seekArchivedAsset,
@@ -1045,7 +1043,6 @@ public class RulesRepository {
      * Finds the AssetItem's linked to the requested state.
      * Similar to finding by category.
      * @param filter an AssetItem filter
-     *
      */
     public AssetItemPageResult findAssetsByState(String stateName,
                                            boolean seekArchivedAsset,

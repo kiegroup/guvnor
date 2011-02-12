@@ -28,7 +28,6 @@ import com.google.gwt.core.client.GWT;
  *
  * Yes, I am making the presumption that programmers are not human,
  * but I think they (we) are cool with that.
- *
  */
 public class HumanReadable {
 

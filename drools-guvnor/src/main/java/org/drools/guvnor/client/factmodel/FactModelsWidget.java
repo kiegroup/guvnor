@@ -33,7 +33,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The editor for fact models (DRL declared types).
- *
  */
 public class FactModelsWidget extends Composite
     implements

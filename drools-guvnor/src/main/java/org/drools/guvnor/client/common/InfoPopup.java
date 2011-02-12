@@ -26,7 +26,6 @@ import com.google.gwt.user.client.ui.Image;
 
 /**
  * This is handy for in-place context help.
- *
  */
 public class InfoPopup extends Composite {
 

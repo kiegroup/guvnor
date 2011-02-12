@@ -41,7 +41,6 @@ import org.junit.Test;
  * This is a bit of a hacked scalability test.
  * It will add 5000 odd rule nodes, and then do some basic operations.
  * It will take a LONG time to add these nodes, and does it in batches.
- *
  */
 public class ScalabilityTest extends RepositoryTestCase {
 

@@ -31,7 +31,6 @@ public class Cheesery
     implements
     Serializable {
     /**
-     *
      */
     private static final long serialVersionUID = 510l;
     public final static int   MAKING_CHEESE    = 0;

@@ -101,7 +101,6 @@ public class SecurityServiceImpl implements SecurityService {
      * This will return a auto login user name if it has been configured.
      * Autologin means that its not really logged in, but a generic username will be used.
      * Basically means security is bypassed.
-     *
      */
     private String checkAutoLogin() {
         Identity id = Identity.instance();

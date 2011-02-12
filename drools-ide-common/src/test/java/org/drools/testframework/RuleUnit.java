@@ -38,7 +38,6 @@ import static org.junit.Assert.*;
 
 /**
  * A class with some utilities for testing rules.
- *
  */
 public abstract class RuleUnit {
 

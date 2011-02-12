@@ -34,8 +34,6 @@ import com.google.gwt.user.client.ui.ListBox;
 
 /**
  * A drop down for enumerated values
- * 
- *
  */
 public class EnumDropDown extends ListBox
     implements

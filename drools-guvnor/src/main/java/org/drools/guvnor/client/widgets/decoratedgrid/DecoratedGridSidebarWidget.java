@@ -26,8 +26,6 @@ import com.google.gwt.user.client.ui.Composite;
  * 
  * @param <T>
  *            The type of domain columns represented by the Header
- * 
- *
  */
 public abstract class DecoratedGridSidebarWidget<T> extends Composite {
 

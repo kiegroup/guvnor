@@ -65,7 +65,6 @@ public class ExplorerLayoutManager {
 
     /**
      * Create the main panel.
-     * 
      */
     private void setupMainPanel(BookmarkInfo bi) {
         mainPanel = new DockLayoutPanel( Unit.EM );

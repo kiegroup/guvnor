@@ -81,7 +81,6 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
      *            otherwise return false;
      * @return true if the permission can be granted on the requested object with the
      * requested role; return false otherwise.
-     *
      */
     public boolean hasPermission(Object requestedObject, String requestedPermission) {
         if ( isInvalidInstance( requestedObject ) ) {

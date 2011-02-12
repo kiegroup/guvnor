@@ -20,8 +20,6 @@ package org.drools.ide.common.client.modeldriven.brl;
  * This class is the parent for field setting or assertion actions.
  * 
  * Contains the list of fields and their values to be set.
- * 
- *
  */
 public abstract class ActionFieldList
     implements

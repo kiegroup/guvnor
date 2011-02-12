@@ -17,8 +17,6 @@ package org.drools.ide.common.client.modeldriven.dt;
 
 /**
  * This is a rule metadata - eg @foo(bar) etc.
- * 
- *
  */
 public class MetadataCol extends DTColumnConfig {
 

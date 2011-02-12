@@ -20,7 +20,6 @@ import java.util.List;
 
 /**
  * A single row of User Permissions
- * 
  */
 public class PermissionsPageRow extends AbstractPageRow {
 

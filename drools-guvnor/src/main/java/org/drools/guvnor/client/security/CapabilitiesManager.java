@@ -7,7 +7,6 @@ import com.google.gwt.user.client.Command;
 
 /**
  * The capabilities manager
- *
  */
 public class CapabilitiesManager {
 

@@ -24,8 +24,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * This is passed back to the client to give the UI some context information on what to display and
  * not display.
- *
- *
  */
 public class UserSecurityContext implements IsSerializable {
 

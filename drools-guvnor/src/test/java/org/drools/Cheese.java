@@ -27,7 +27,6 @@ public class Cheese
     implements
     Serializable {
     /**
-     * 
      */
     private static final long serialVersionUID = 510l;
     private String            type;

@@ -23,7 +23,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
 
 /**
  * Contains methods for authenticating/authorising from the front end.
- *
  */
 public interface SecurityService extends RemoteService {
 

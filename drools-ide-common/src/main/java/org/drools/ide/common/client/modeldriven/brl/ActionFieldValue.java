@@ -20,7 +20,6 @@ import org.drools.ide.common.client.modeldriven.FieldNature;
 
 /**
  * Holds field and value for "action" parts of the rule.
- * 
  */
 public class ActionFieldValue implements PortableObject, FieldNature {
 

@@ -25,7 +25,6 @@ import com.google.gwt.i18n.client.ConstantsWithLookup;
  *
  * Each method name matches up with a key in Constants.properties (the properties file can still be used on the server).
  * To use this, use <code>GWT.create(Constants.class)</code>.
- *
  */
 public interface Constants
     extends

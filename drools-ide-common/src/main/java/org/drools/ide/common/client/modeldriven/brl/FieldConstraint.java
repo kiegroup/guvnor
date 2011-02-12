@@ -19,7 +19,6 @@ package org.drools.ide.common.client.modeldriven.brl;
 /**
  * This is the top level interface for all field constraints.
  * These may be composites. 
- * 
  */
 public interface FieldConstraint extends PortableObject {
 

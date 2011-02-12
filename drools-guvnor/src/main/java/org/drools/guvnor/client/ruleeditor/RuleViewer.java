@@ -62,7 +62,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The main layout parent/controller the rule viewer.
- * 
  */
 public class RuleViewer extends GuvnorEditor {
 

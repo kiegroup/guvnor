@@ -23,8 +23,6 @@ import java.util.UUID;
 
 /**
  * Provides any generated input to inject into the output templates
- * 
- *
  */
 public class GeneratedData {
   /** formatter for the drools-guvnor xml timestamp */

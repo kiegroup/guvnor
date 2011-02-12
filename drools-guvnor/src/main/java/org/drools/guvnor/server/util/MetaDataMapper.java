@@ -33,7 +33,6 @@ import org.drools.repository.RulesRepositoryException;
  * the AssetItem back end class, to adhere to the DRY principle.
  * 
  * AssetItem is not a remotable instance, but MetaData is.
- * 
  */
 public class MetaDataMapper {
 

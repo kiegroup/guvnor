@@ -23,7 +23,6 @@ import org.drools.ide.common.client.modeldriven.brl.*;
 
 /**
  * This class persists the rule model to DRL and back
- * 
  */
 public class BRDRLPersistence implements BRLPersistence {
 

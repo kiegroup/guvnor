@@ -20,7 +20,6 @@ import java.util.Date;
 
 /**
  * A single row of the event log
- * 
  */
 public class LogPageRow extends AbstractPageRow {
 

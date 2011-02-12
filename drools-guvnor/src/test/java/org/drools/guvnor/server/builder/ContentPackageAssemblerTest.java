@@ -521,7 +521,6 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
 
     /**
      * This time, we mix up stuff a bit
-     *
      */
     @Test
     public void testRuleAndDSLAndFunction() throws Exception {

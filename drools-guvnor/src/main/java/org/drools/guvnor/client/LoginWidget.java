@@ -38,7 +38,6 @@ import com.google.gwt.event.dom.client.KeyPressHandler;
 
 /**
  * Used for logging in, obviously !
- *
  */
 public class LoginWidget {
 

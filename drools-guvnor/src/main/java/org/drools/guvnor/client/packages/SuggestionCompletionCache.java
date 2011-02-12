@@ -38,8 +38,6 @@ import com.google.gwt.user.client.Command;
  * as they are somewhat heavy to load.
  * If it needs to be loaded, then it will load, and then call the appropriate action,
  * and keep it in the cache.
- *
- *
  */
 public class SuggestionCompletionCache {
 

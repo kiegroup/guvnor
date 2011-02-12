@@ -71,8 +71,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * Header for a Vertical Decision Table
- * 
- *
  */
 public class VerticalDecisionTableHeaderWidget extends
         DecoratedGridHeaderWidget<DTColumnConfig> {

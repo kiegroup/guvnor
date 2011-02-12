@@ -28,7 +28,6 @@ import javax.jcr.NodeIterator;
  *
  * JCR iterators are/can be lazy, so this makes the most of it for large
  * numbers of assets.
- *
  */
 public class AssetItemIterator
     implements

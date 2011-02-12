@@ -19,7 +19,6 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 
 /**
  * A Query request.
- * 
  */
 public class InboxPageRequest extends PageRequest {
 

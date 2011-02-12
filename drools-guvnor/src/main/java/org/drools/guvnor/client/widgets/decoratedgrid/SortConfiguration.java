@@ -21,8 +21,6 @@ import org.drools.guvnor.client.widgets.tables.SortDirection;
  * Container for sort information. Encapsulated in a single class to avoid the
  * need for multiple ValueChangeHandlers for all attributes affecting sorting on
  * a Column.
- * 
- *
  */
 public class SortConfiguration {
     private SortDirection sortDirection = SortDirection.NONE;

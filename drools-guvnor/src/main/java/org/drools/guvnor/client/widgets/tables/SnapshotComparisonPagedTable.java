@@ -46,7 +46,6 @@ import com.google.gwt.view.client.ProvidesKey;
 
 /**
  * Widget with a table of Snapshot comparison entries.
- * 
  */
 public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotComparisonPageRow> {
 

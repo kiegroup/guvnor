@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Implements the Iterator interface, allowing iteration over the version history of versionableItem 
  * nodes
- * 
  */
 class ItemVersionIterator implements Iterator {
     private static final Logger log = LoggerFactory.getLogger(ItemVersionIterator.class);

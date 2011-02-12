@@ -26,7 +26,6 @@ import com.google.gwt.view.client.AsyncDataProvider;
 
 /**
  * Widget that shows rows of paged data.
- * 
  */
 public abstract class AbstractPagedTable<T extends AbstractPageRow> extends AbstractSimpleTable<T> {
 

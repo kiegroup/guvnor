@@ -37,7 +37,6 @@ import com.google.gwt.view.client.HasData;
 
 /**
  * Widget with a table of "By Category" query results.
- * 
  */
 public class CategoryPagedTable extends AbstractAssetPagedTable<CategoryPageRow> {
 

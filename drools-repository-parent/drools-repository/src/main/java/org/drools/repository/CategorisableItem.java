@@ -34,8 +34,6 @@ import javax.jcr.version.VersionException;
 /**
  * This contains logic for categorisable items
  * (not all versionably items are categorisable).
- *
- *
  */
 public abstract class CategorisableItem extends VersionableItem {
 

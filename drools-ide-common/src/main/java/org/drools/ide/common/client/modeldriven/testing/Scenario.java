@@ -29,7 +29,6 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 /**
  * This represents a test scenario.
  * It also encapsulates the result of a scenario run.
- *
  */
 public class Scenario
     implements
@@ -50,7 +49,6 @@ public class Scenario
     /**
      * Fixtures are parts of the test. They may be assertions, globals, data, execution runs etc.
      * Anything really.
-     *
      */
     private List<Fixture>     fixtures         = new ArrayList<Fixture>();
 

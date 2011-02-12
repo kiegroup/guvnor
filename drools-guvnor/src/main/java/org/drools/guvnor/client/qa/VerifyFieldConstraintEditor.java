@@ -63,7 +63,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Constraint editor for the VerifyField of the expect part
- *
  */
 public class VerifyFieldConstraintEditor extends DirtyableComposite {
 

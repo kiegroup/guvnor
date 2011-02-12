@@ -50,8 +50,6 @@ import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * This is a configuration editor for a column in a the guided decision table.
- * 
- *
  */
 public class GuidedDTColumnConfig extends FormStylePopup {
 

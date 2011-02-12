@@ -32,8 +32,6 @@ import com.google.gwt.user.client.ui.TextArea;
 /**
  *
  * A popup and confirmation dialog for committing an asset.
- *
- *
  */
 public class CheckinPopup extends FormStylePopup {
 

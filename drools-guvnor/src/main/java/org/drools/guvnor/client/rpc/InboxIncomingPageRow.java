@@ -18,7 +18,6 @@ package org.drools.guvnor.client.rpc;
 
 /**
  * A single row of a paged data
- * 
  */
 public class InboxIncomingPageRow
         extends InboxPageRow {

@@ -51,7 +51,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This widget shows a list of versions.
- *
  */
 public class VersionBrowser extends Composite {
 

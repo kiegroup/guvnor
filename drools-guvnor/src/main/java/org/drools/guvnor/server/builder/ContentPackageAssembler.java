@@ -49,7 +49,6 @@ import org.drools.rule.Package;
  * This assembles packages in the BRMS into binary package objects, and deals
  * with errors etc. Each content type is responsible for contributing to the
  * package.
- * 
  */
 public class ContentPackageAssembler {
     private static final LoggingHelper log    = LoggingHelper.getLogger( ContentPackageAssembler.class );
@@ -412,7 +411,6 @@ public class ContentPackageAssembler {
 
     /**
      * This is passed in to the compilers so extra errors can be added.
-     * 
      */
     public class ErrorLogger {
         public void logError(ContentAssemblyError err) {

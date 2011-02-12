@@ -43,7 +43,6 @@ import com.google.gwt.view.client.HasData;
 
 /**
  * Widget with a table of Archived Assets.
- * 
  */
 public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchivedPageRow> {
 

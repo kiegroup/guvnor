@@ -17,7 +17,6 @@ package org.drools.guvnor.client.rpc;
 
 /**
  * A Query request.
- * 
  */
 public class QueryPageRequest extends PageRequest {
 

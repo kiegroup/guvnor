@@ -176,7 +176,6 @@ import freemarker.template.Template;
  * This is the implementation of the repository service to drive the GWT based
  * front end. Generally requests for this are passed through from
  * RepositoryServiceServlet - and Seam manages instances of this.
- * 
  */
 @Name("org.drools.guvnor.client.rpc.RepositoryService")
 @AutoCreate

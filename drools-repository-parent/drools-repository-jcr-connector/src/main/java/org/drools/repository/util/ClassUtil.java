@@ -42,7 +42,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility methods to aid in class/resource loading.
- * 
  */
 public class ClassUtil
 {

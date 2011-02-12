@@ -49,7 +49,6 @@ import org.jbpm.bpmn2.xml.BPMNSemanticModule;
  * This decorates the drools-compiler PackageBuilder
  * with some functionality needed for the BRMS.
  * This can use the BRMS repo as a classpath.
- *
  */
 public class BRMSPackageBuilder extends PackageBuilder {
 

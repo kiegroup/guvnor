@@ -23,8 +23,6 @@ import org.drools.repository.PackageItem;
 
 /**
  * TODO: Perform JAI routines to add the effects
- *
- * 
  */
 public class RolodexImageHandler extends ContentHandler {
     public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)

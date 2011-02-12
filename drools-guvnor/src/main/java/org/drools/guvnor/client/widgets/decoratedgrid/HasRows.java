@@ -2,7 +2,6 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 
 /**
  * Row operations for consumers of DecoratedGridWidget
- * 
  */
 public interface HasRows {
 

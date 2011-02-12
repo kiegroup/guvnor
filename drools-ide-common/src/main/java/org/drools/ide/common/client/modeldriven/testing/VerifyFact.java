@@ -21,7 +21,6 @@ import java.util.List;
 
 /**
  * This is for making assertions over a specific facts value/state AFTER execution.
- *
  */
 public class VerifyFact
         implements

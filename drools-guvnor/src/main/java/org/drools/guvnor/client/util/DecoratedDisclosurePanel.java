@@ -33,8 +33,6 @@ import com.google.gwt.user.client.ui.Widget;
  * Disclosure panel with rounded corners in header.
  * 
  * Using this class we don't need to set the header and event handlers for the header everywhere we use DisclosurePanels.
- * 
- *
  */
 public class DecoratedDisclosurePanel extends Composite
     implements

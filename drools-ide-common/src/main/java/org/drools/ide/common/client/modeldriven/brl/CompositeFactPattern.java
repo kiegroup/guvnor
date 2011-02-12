@@ -19,7 +19,6 @@ package org.drools.ide.common.client.modeldriven.brl;
 
 /**
  * Represents first order logic like Or, Not, Exists.
- *
  */
 public class CompositeFactPattern
     implements

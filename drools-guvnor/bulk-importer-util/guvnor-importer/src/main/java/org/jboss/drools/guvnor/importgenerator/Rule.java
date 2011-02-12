@@ -19,7 +19,6 @@ package org.jboss.drools.guvnor.importgenerator;
 
 /**
  * Represents an individual rule within a drl package file found in the file system
- * 
  */
 public class Rule{
     private String ruleName;

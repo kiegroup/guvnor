@@ -33,7 +33,6 @@ import org.drools.lang.dsl.DSLMappingEntry;
 
 /**
  * A builder to incrementally populate a SuggestionCompletionEngine
- *
  */
 public class SuggestionCompletionEngineBuilder {
 

@@ -18,7 +18,6 @@ package org.drools.ide.common.client.modeldriven.testing;
 
 /**
  * Retract a named fact.
- *
  */
 public class RetractFact
     implements

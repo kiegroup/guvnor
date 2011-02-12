@@ -19,8 +19,6 @@ import java.util.ArrayList;
 
 /**
  * A simple container for rows of data.
- * 
- *
  */
 public class DynamicData extends ArrayList<DynamicDataRow> {
 

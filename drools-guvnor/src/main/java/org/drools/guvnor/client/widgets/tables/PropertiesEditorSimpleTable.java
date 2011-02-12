@@ -40,7 +40,6 @@ import com.google.gwt.view.client.ProvidesKey;
 
 /**
  * Widget with a table of Properties that can be edited.
- * 
  */
 public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHolderAdaptor> {
 

@@ -29,8 +29,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * based on roles and permissions granted. This is essentially a security and permissions function.
  * (however the Capabilities do not enforce actions on the server - these are more for GUI convenience so elements are not displayed
  * that are not relevant to a given users role).
- *
- *
  */
 public class Capabilities implements IsSerializable {
 

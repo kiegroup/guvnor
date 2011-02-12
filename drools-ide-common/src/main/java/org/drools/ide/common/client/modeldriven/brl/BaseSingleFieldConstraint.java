@@ -18,7 +18,6 @@ package org.drools.ide.common.client.modeldriven.brl;
 
 /**
  * Represents a constraint, which may be part of a direct field constraint or a connective.
- *
  */
 public class BaseSingleFieldConstraint
     implements

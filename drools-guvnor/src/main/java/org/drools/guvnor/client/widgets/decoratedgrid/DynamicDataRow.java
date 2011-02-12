@@ -19,8 +19,6 @@ import java.util.ArrayList;
 
 /**
  * A row of data in the Decision Table
- * 
- *
  */
 public class DynamicDataRow extends
         ArrayList<CellValue<? extends Comparable<?>>> {

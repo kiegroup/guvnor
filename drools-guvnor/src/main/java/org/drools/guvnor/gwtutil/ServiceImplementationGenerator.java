@@ -24,7 +24,6 @@ import org.drools.guvnor.client.rpc.RepositoryService;
 
 /**
  * This utility uses reflection to generate servlet code for the service components.
- *
  */
 public class ServiceImplementationGenerator {
 

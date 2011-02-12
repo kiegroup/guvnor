@@ -36,7 +36,6 @@ import java.util.jar.JarFile;
  * This is not currently used, as I can't work out a way to make it work including the dynamically added stuff into the MapBackedClassloader
  * (ie classes added in memory only). It requires some more surgery to cope with this. Was worth a try though !
  * (can be wired into the loadClass method of the SuggestionCompletionLoader).
- *
  */
 public class ClassWalker {
 

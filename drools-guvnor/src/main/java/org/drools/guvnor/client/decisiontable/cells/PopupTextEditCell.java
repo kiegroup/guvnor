@@ -27,8 +27,6 @@ import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * A Popup Text Editor.
- * 
- *
  */
 public class PopupTextEditCell extends AbstractPopupEditCell<String, String> {
 

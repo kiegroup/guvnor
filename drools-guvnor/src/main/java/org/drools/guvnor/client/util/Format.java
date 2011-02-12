@@ -18,7 +18,6 @@ package org.drools.guvnor.client.util;
 
 /**
  * @TODO replace usages with http://code.google.com/intl/nl/webtoolkit/doc/latest/DevGuideI18nMessages.html
- *
  */
 public class Format {
 

@@ -29,8 +29,6 @@ import com.google.gwt.user.client.ui.Panel;
  * 
  * @param <T>
  *            The type of domain columns represented by the Header
- * 
- *
  */
 public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
     implements

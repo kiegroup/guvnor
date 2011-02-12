@@ -23,7 +23,6 @@ import java.util.Map;
 /**
  * Storage for global prefs.
  * Preferences effect behaviour and display.
- * 
  */
 public class Preferences {
 

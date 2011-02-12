@@ -21,7 +21,6 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * Holds field and value for "action" parts of the rule.
- * 
  */
 public class CallFieldValue implements  FieldNature,PortableObject {
 
@@ -51,7 +50,6 @@ public class CallFieldValue implements  FieldNature,PortableObject {
      *
      * If it IS a formula, then the value should never be turned into a string,
      * always left as-is.
-     *
      */
     public boolean isFormula() {
         return this.value != null && this.value.trim().startsWith("=");

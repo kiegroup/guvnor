@@ -52,8 +52,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This provides for editing of fields in the RHS of a rule.
- * 
- *
  */
 public class ActionValueEditor extends DirtyableComposite {
 

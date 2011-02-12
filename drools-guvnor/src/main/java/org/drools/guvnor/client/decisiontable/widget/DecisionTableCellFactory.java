@@ -39,8 +39,6 @@ import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 
 /**
  * A Factory to provide the Cells for given coordinate for Decision Tables.
- * 
- *
  */
 public class DecisionTableCellFactory {
 

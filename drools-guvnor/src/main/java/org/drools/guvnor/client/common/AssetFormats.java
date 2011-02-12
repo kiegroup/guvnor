@@ -25,7 +25,6 @@ package org.drools.guvnor.client.common;
  * If you are adding new types they need to be registered here.
  *
  * If an asset type is unknown, then it will be opened with the default editor.
- *
  */
 public class AssetFormats {
 

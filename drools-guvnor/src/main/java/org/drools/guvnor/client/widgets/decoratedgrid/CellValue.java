@@ -39,8 +39,6 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
  * 
  * @param <T>
  *            The data-type of the value
- * 
- *
  */
 public class CellValue<T extends Comparable<T>>
     implements

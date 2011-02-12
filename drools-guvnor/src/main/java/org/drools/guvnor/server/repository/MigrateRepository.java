@@ -46,7 +46,6 @@ import org.slf4j.LoggerFactory;
  * danger that the person who last checked in the file may have lost
  * privileges to check-in the file, so we use the admin user
  * for now.
- * 
  */
 public class MigrateRepository {
 

@@ -20,7 +20,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This contains the results returned to populate a table/grid.
- * 
  */
 public class TableDataResult
     implements

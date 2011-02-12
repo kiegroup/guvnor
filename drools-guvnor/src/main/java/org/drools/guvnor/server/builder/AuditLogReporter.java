@@ -26,7 +26,6 @@ import org.drools.audit.event.LogEvent;
 
 /**
  * Add a little web specific reporting functionality to the audit logger.
- *
  */
 public class AuditLogReporter extends WorkingMemoryInMemoryLogger {
 

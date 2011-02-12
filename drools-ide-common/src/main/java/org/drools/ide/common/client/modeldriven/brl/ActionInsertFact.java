@@ -18,8 +18,6 @@ package org.drools.ide.common.client.modeldriven.brl;
 
 /**
  * This is used when asserting a new fact.
- * 
- *
  */
 public class ActionInsertFact extends ActionFieldList {
 

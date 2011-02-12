@@ -36,7 +36,6 @@ import org.drools.repository.util.ClassUtil;
  * This contains code to initialize the repository using the {@link javax.jcr.RepositoryFactory} interface defined by the JCR 2.0
  * specification. This configurator loads the properties from the {@link PROPERTIES_FILE "/drools_repository.properties"}
  * resource, and passes these to the {@link javax.jcr.RepositoryFactory#getRepository(java.util.Map)}.
- * 
  */
 public abstract class JCRRepositoryConfigurator {
 

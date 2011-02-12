@@ -43,7 +43,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This wraps a file uploader utility for model packages.
  * Model packages are jar files.
- *
  */
 
 public abstract class AssetAttachmentFileWidget extends Composite

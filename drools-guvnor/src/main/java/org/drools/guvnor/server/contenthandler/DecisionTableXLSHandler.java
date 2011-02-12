@@ -33,7 +33,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * This is for handling XLS content (classic decision tables).
- *
  */
 public class DecisionTableXLSHandler extends ContentHandler
     implements

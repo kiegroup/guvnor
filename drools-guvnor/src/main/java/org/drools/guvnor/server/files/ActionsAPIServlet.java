@@ -33,7 +33,6 @@ import org.drools.guvnor.server.ServiceImplementation;
  * Entrance point to basic actions API.
  *
  * Fix for GUVNOR-1080
- *
  */
 public class ActionsAPIServlet extends RepositoryServlet {
 

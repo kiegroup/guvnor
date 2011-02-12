@@ -18,7 +18,6 @@ package org.drools.guvnor.client.ruleeditor;
 
 /**
  * This is used to notify that a save even is about to occur.
- *
  */
 public interface SaveEventListener {
 

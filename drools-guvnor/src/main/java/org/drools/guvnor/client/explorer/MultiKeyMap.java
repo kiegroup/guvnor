@@ -23,8 +23,6 @@ import java.util.Set;
 
 /**
  * Map that uses a collection of Strings as a key.
- * 
- *
  */
 public class MultiKeyMap<T> {
     private static final long       serialVersionUID = 510l;

@@ -22,7 +22,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This builds on the FormStyleLayout for providing common popup features in a
  * columnar form layout, with a title and a large (ish) icon.
- *
  */
 public class FormStylePopup extends Popup {
 

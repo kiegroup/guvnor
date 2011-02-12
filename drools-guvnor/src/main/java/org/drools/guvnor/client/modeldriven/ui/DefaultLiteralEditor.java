@@ -44,8 +44,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * 
  * Default editor for literal values, a text box. 
- * 
- *
  */
 public class DefaultLiteralEditor extends Composite {
 

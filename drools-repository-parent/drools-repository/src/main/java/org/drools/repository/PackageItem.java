@@ -50,7 +50,6 @@ import org.slf4j.LoggerFactory;
  * A PackageItem refers to rule nodes within the RulesRepository.  It contains the "master copy" of assets (which may be linked
  * into other packages or other types of containers).
  * This is a container "node".
- *
  */
 public class PackageItem extends VersionableItem {
     private static final Logger log = LoggerFactory.getLogger(PackageItem.class);

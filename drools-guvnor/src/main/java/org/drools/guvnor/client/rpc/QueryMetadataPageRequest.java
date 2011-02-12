@@ -20,7 +20,6 @@ import java.util.List;
 
 /**
  * A Query request.
- * 
  */
 public class QueryMetadataPageRequest extends PageRequest {
 

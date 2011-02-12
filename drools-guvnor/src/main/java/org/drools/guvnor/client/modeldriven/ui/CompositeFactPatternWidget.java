@@ -45,8 +45,6 @@ import org.drools.ide.common.client.modeldriven.brl.IFactPattern;
 /**
  * This represents a top level CE, like an OR, NOT, EXIST etc...
  * Contains a list of FactPatterns.
- *
- *
  */
 public class CompositeFactPatternWidget extends RuleModellerWidget {
 

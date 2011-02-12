@@ -20,7 +20,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This is a row of data from a table.
- * 
  */
 public class TableDataRow
     implements

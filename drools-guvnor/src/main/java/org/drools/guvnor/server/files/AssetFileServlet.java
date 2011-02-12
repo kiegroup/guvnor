@@ -30,7 +30,6 @@ import org.drools.guvnor.server.util.FormData;
 
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
- *
  */
 public class AssetFileServlet extends RepositoryServlet {
 

@@ -6,8 +6,6 @@ import com.google.gwt.resources.client.ImageResource;
 
 /**
  * Resources for the Decision Table.
- * 
- *
  */
 public interface DecisionTableResources extends ClientBundle {
 

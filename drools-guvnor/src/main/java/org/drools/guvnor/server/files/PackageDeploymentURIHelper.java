@@ -27,7 +27,6 @@ import org.drools.guvnor.client.common.Snapshot;
  * Works out from the path URI what package is being requested.
  * Uses Regular expression Pattern matching to recover packagename and version
  * it works both with gwt hosted mode and application server standalone.
- *
  */
 public class PackageDeploymentURIHelper {
 

@@ -37,8 +37,6 @@ import com.google.gwt.user.client.Event;
 /**
  * A Vertical implementation of MergableGridWidget, that renders columns as erm,
  * columns and rows as rows. Supports merging of cells between rows.
- * 
- *
  */
 public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 

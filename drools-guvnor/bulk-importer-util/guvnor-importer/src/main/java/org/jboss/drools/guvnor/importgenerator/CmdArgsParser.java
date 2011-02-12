@@ -25,7 +25,6 @@ import java.util.Properties;
 
 /**
  * Command line argument parser
- * 
  */
 public class CmdArgsParser{
   private static Map<Parameters, String> options=new HashMap<Parameters, String>();

@@ -36,7 +36,6 @@ import org.drools.repository.PackageItem;
 
 /**
  * This decorates the suggestion completion loader with BRMS specific stuff.
- *
  */
 public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
 

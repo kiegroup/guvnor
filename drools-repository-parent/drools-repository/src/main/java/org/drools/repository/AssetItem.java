@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
  * The RuleItem class is used to abstract away the details of the underlying JCR
  * repository. It is used to pass information about rules stored in the
  * repository.
- * 
  */
 public class AssetItem extends CategorisableItem {
     private Logger             log                                  = LoggerFactory.getLogger( AssetItem.class );

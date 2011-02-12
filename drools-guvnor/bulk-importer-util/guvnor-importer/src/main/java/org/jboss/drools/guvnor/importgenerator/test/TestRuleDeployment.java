@@ -37,7 +37,6 @@ import org.drools.rule.Package;
 
 /**
  * Test class to check that rules have been deployed correctly.
- * 
  */
 public class TestRuleDeployment {
   public enum RuleAgentType{ HTTP, FILE_DRL, FILE_PKG }

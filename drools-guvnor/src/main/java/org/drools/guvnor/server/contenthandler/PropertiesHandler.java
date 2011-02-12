@@ -33,7 +33,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 /**
  * Handle *.properties file as a content for rule asset instead of a binary
  * attachment
- * 
  */
 public class PropertiesHandler extends ContentHandler {
     public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,

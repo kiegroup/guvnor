@@ -19,7 +19,6 @@ package org.drools.repository;
 /**
  * The main exception thrown by classes in this package. May contain an error message and/or another
  * nested exception.
- * 
  */
 public class RulesRepositoryException extends RuntimeException {
 

@@ -21,7 +21,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * This is used for services that validate.
  * Ie they may provide a validation error to be reported.
- * 
  */
 public class ValidatedResponse
     implements

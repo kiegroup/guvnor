@@ -56,7 +56,6 @@ import org.drools.guvnor.client.resources.Images;
  * This is an editor for constraint values.
  * How this behaves depends on the constraint value type.
  * When the constraint value has no type, it will allow the user to choose the first time.
- *
  */
 public class ConstraintValueEditor extends DirtyableComposite {
 

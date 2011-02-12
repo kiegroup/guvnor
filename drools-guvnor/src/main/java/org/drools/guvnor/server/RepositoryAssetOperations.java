@@ -57,8 +57,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Handles operations for Assets
- * 
- *
  */
 @Name("org.drools.guvnor.server.RepositoryAssetOperations")
 @AutoCreate

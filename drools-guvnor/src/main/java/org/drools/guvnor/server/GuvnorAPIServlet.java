@@ -56,7 +56,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * A servlet opening an API into the Guvnor services.
- *
  */
 public class GuvnorAPIServlet extends HttpServlet {
 

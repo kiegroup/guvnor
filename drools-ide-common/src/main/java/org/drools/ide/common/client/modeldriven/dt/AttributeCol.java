@@ -17,8 +17,6 @@ package org.drools.ide.common.client.modeldriven.dt;
 
 /**
  * This is a rule attribute - eg salience, no-loop etc.
- * 
- *
  */
 public class AttributeCol extends DTColumnConfig {
 

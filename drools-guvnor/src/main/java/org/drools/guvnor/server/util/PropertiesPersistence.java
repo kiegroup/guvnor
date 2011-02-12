@@ -23,7 +23,6 @@ import org.drools.guvnor.client.ruleeditor.PropertyHolder;
 
 /**
  * used to convert PropertiesHolder to text and back
- * 
  */
 public class PropertiesPersistence {
 

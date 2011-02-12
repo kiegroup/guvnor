@@ -35,7 +35,6 @@ import com.google.gwt.view.client.HasData;
 
 /**
  * Widget with a table of inbox entries results.
- * 
  */
 public class InboxPagedTable extends AbstractAssetPagedTable<InboxPageRow> {
 

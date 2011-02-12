@@ -17,8 +17,6 @@ package org.drools.ide.common.client.modeldriven.dt;
 
 /**
  * This is a rule description
- * 
- *
  */
 public class DescriptionCol extends DTColumnConfig {
 

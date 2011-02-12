@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The TagItem class abstracts away details of the underlying JCR repository.
- * 
  */
 public class CategoryItem extends Item {
     private Logger log = LoggerFactory.getLogger(CategoryItem.class);

@@ -33,7 +33,6 @@ import com.google.gwt.event.shared.SimpleEventBus;
  * 
  * @param <T>
  *            The type of domain columns represented
- *
  */
 public class DynamicColumn<T> extends DynamicBaseColumn<T>
     implements

@@ -22,8 +22,6 @@ import org.drools.repository.AssetItem;
 
 /**
  * =(^.^)=
- * 
- *
  */
 public interface ICanHasAttachment {
 

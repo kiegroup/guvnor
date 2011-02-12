@@ -53,7 +53,6 @@ import com.google.gwt.view.client.ProvidesKey;
  * be included if required.
  * 
  * Based upon work by Geoffrey de Smet.
- * 
  */
 public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> extends AbstractPagedTable<T> {
 

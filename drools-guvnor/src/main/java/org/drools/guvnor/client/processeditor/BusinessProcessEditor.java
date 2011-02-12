@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.Frame;
 
 /**
  * The Business Process Editor, wrapping the Process Editor
- *
  */
 public class BusinessProcessEditor extends DirtyableComposite
     implements

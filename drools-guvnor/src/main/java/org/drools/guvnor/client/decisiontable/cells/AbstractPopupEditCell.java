@@ -33,8 +33,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * A Popup Editor.
- * 
- *
  */
 public abstract class AbstractPopupEditCell<C, V> extends
         AbstractEditableCell<C, V> {

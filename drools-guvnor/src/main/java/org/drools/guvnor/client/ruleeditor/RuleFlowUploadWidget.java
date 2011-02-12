@@ -27,7 +27,6 @@ import com.google.gwt.core.client.GWT;
 
 /**
  * For ruleflow upload.
- * 
  */
 public class RuleFlowUploadWidget extends AssetAttachmentFileWidget {
 

@@ -21,8 +21,6 @@ package org.drools.ide.common.client.modeldriven.brl;
  * that users can call methods that modify the object. If setting a field on a
  * fact bound variable, this will NOT notify the engine of any changes (unless
  * done outside of the engine).
- * 
- *
  */
 public class ActionCallMethod extends ActionSetField {
     /*

@@ -63,7 +63,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the new guided decision table editor for the web.
- * 
  */
 public class GuidedDecisionTableWidget extends Composite
     implements

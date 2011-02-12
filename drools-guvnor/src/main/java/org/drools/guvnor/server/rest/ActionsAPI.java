@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
  * compilation and snapshot creation for packages.
  *
  * Fix for GUVNOR-1080
- *
  */
 public class ActionsAPI {
 

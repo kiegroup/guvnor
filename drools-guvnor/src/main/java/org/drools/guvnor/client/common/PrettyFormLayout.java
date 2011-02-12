@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Uses ext forms to do a prettier layout.
- *
  */
 public class PrettyFormLayout extends Composite {
 

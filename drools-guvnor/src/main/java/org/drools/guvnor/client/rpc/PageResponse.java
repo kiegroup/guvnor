@@ -22,7 +22,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A Page of data for display in a PagedTable
- * 
  */
 public class PageResponse<T extends AbstractPageRow>
         implements

@@ -20,7 +20,6 @@ import java.util.Date;
 
 /**
  * A single row of a paged data
- * 
  */
 public class AssetPageRow extends AbstractAssetPageRow {
 

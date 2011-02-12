@@ -56,7 +56,6 @@ import org.mvel2.MVEL;
 
 /**
  * This actually runs the test scenarios.
- *
  */
 public class ScenarioRunner {
 

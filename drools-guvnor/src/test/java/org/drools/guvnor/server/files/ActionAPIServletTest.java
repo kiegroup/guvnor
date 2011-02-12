@@ -33,7 +33,6 @@ import org.junit.Test;
 /**
  * Some basic unit tests for compilation and snapshot
  * creation in the ActionsAPIServlet.
- *
  */
 public class ActionAPIServletTest extends GuvnorTestBase {
 

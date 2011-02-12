@@ -45,7 +45,6 @@ import org.jboss.drools.guvnor.importgenerator.utils.FileIO;
 
 /**
  * Represents a drl package file found in the file system
- * 
  */
 public class PackageFile {
   private static final String PH_RULE_START="rule ";

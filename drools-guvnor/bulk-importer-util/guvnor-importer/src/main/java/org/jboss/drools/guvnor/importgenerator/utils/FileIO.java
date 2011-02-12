@@ -30,7 +30,6 @@ import java.io.UnsupportedEncodingException;
 import org.apache.commons.codec.binary.Base64;
 /**
  * File IO helper class for reading/writing files and converting to/from base64 
- * 
  */
 
 public class FileIO {

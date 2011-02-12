@@ -18,7 +18,6 @@ package org.drools.guvnor.client.rpc;
 
 /**
  * A Page of Snapshot comparison results for display in a PagedTable
- * 
  */
 public class SnapshotComparisonPageResponse extends PageResponse<SnapshotComparisonPageRow> {
 

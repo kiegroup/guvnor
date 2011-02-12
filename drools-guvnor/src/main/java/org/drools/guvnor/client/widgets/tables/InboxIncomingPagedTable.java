@@ -25,7 +25,6 @@ import com.google.gwt.user.cellview.client.TextColumn;
 
 /**
  * Widget with a table of inbox entries results.
- * 
  */
 public class InboxIncomingPagedTable extends InboxPagedTable {
 

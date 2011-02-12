@@ -42,7 +42,6 @@ import org.joda.time.Seconds;
 
 /**
  * a BRMS import file generator for drl and xml decision table files
- * 
  */
 public class ImportFileGenerator implements Constants{
   private Logger logger=null;

@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This contains the widgets used to action a rule asset
  * (ie checkin, change state, close window)
- *
  */
 public class ActionToolbar extends Composite {
 

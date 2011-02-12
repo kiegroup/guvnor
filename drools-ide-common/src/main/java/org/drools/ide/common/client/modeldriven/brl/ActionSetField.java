@@ -21,7 +21,6 @@ package org.drools.ide.common.client.modeldriven.brl;
  * For setting a field on a bound LHS variable or a global.
  * If setting a field on a fact bound variable, this will
  * NOT notify the engine of any changes (unless done outside of the engine).
- *
  */
 public class ActionSetField extends ActionFieldList {
 

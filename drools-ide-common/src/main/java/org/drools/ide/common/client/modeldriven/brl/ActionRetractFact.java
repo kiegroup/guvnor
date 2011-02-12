@@ -20,7 +20,6 @@ package org.drools.ide.common.client.modeldriven.brl;
 /**
  * This is used to specify that the bound fact should be retracted
  * when the rule fires.
- *
  */
 public class ActionRetractFact
     implements

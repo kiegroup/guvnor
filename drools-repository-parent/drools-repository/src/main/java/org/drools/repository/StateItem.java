@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
 /**
  * The StateItem represents the status of an asset.
  * An asset can only be in 1 state at a time. Kind of for workflow.
- * 
- * 
  */
 public class StateItem extends Item {
 

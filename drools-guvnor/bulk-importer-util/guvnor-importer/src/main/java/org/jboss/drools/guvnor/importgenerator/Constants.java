@@ -18,8 +18,6 @@ package org.jboss.drools.guvnor.importgenerator;
 
 /**
  * Constants specifying the template files for generating the output
- * 
- *
  */
 public interface Constants {
     static final String TEMPLATES_FOLDER = "templates";

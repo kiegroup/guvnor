@@ -20,7 +20,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * A single row of a paged data
- * 
  */
 public abstract class AbstractAssetPageRow extends AbstractPageRow
     implements

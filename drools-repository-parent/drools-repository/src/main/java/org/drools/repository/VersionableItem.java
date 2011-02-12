@@ -39,7 +39,6 @@ import org.drools.repository.events.StorageEventManager;
  * For dublin core, refer to <a href="http://dublincore.org/documents/dces/">Here</a>
  *
  * @see CategorisableItem for more attributes to do with BRMS resources.
- *
  */
 public abstract class VersionableItem extends Item {
 
@@ -492,7 +491,6 @@ public abstract class VersionableItem extends Item {
     /**
      * When retrieving content, if we are dealing with a version in the history,
      * we need to get the actual content node to retrieve values.
-     *
      */
     public Node getVersionContentNode() throws RepositoryException,
                                        PathNotFoundException {

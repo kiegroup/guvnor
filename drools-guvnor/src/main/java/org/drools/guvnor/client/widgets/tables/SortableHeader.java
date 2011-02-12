@@ -12,7 +12,6 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
 /**
  * Based on GWT bikeshed example.
- * 
  */
 public class SortableHeader<T, C extends Comparable> extends Header<String> {
 

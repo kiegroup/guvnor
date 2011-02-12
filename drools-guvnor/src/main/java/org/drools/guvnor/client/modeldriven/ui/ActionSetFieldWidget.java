@@ -47,7 +47,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This widget is for setting fields on a bound fact or global variable.
- *
  */
 public class ActionSetFieldWidget extends RuleModellerWidget {
 

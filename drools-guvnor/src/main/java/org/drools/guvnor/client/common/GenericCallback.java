@@ -28,7 +28,6 @@ import com.google.gwt.user.client.ui.HTML;
 
 /**
  * This is a generic call back that handles errors (very simply).
- * 
  */
 public abstract class GenericCallback<T> implements AsyncCallback<T> {
 

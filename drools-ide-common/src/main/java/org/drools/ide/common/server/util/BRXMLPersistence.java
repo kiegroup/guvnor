@@ -25,7 +25,6 @@ import org.drools.ide.common.client.modeldriven.brl.*;
  * This class persists the rule model to XML and back.
  *
  * This is the 'brl' xml format (Business Rule Language).
- *
  */
 public class BRXMLPersistence
     implements

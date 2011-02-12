@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This is a utility to simulate session behavior for the test suite.
- * 
  */
 public class RepositorySessionUtil {
 

@@ -33,15 +33,11 @@ import com.google.gwt.user.client.ui.Widget;
  * An abstract grid of data. Implementations can choose the orientation to
  * render "rows" and "columns" (e.g. some may transpose the normal meaning to
  * provide a horizontal implementation of normally vertical tabular data)
- * 
- *
  */
 public abstract class MergableGridWidget<T> extends Widget {
 
     /**
      * Container for a cell's extents
-     * 
-     *
      */
     public static class CellExtents {
         private int offsetX;

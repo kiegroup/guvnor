@@ -35,8 +35,6 @@ import com.google.gwt.user.client.ui.ListBox;
  * Well this one should be pretty obvious what it does.
  * I feel like I have wasted valuable time writing this comment, but I hope
  * you enjoyed reading it.
- *
- *
  */
 public class StatusChangePopup extends FormStylePopup {
 

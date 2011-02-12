@@ -21,7 +21,6 @@ import org.jboss.drools.guvnor.importgenerator.CmdArgsParser.Parameters;
 
 /**
  * Simple std io logger
- * 
  */
 public class Logger {
   public boolean debugEnabled=true;

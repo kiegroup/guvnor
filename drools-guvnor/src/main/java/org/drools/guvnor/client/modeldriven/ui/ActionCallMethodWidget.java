@@ -47,8 +47,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This widget is for modifying facts bound to a variable.
- * 
- *
  */
 public class ActionCallMethodWidget extends RuleModellerWidget {
 

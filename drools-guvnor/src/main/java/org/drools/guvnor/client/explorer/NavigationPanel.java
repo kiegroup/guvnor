@@ -27,8 +27,6 @@ import com.google.gwt.user.client.ui.StackLayoutPanel;
 
 /**
  * Navigation panel for the west area.
- * 
- *
  */
 public class NavigationPanel extends StackLayoutPanel {
 

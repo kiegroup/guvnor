@@ -27,7 +27,6 @@ import org.drools.repository.AssetItem;
 /**
  * This inferface indicates that an asset is a rule asset content type, 
  * ie not a model, dsl etc that supports package compilation.
- * 
  */
 public interface ICompilable {
 

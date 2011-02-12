@@ -31,8 +31,6 @@ import net.sf.webdav.WebDavServletBean;
  * Taken from the webdav servlet project. Modified to be more useful.
  * But most of the logic is still in webdav servlet library (which at the time
  * of writing was included as source as it was easier - needed some fixes).
- *
- *
  */
 public class WebdavServlet extends WebDavServletBean {
     private static final long serialVersionUID = 510l;

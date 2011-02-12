@@ -39,7 +39,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * rulelist.properties and archivedrulelist.properties are the files used.
  * 
  * @deprecated in favour of {@link AbstractPagedTable}
- * 
  */
 public class TableDisplayHandler {
 

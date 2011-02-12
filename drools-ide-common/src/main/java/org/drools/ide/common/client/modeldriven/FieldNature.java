@@ -41,7 +41,6 @@ public interface FieldNature{
      *
      * If it IS a formula, then the value should never be turned into a string,
      * always left as-is.
-     *
      */
     public abstract boolean isFormula();
 

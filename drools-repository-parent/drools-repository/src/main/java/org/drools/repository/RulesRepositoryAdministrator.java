@@ -28,8 +28,6 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is for administering the rules repo.
  * Any "sensitive" actions can happen in here.
- * 
- *
  */
 public class RulesRepositoryAdministrator {
 

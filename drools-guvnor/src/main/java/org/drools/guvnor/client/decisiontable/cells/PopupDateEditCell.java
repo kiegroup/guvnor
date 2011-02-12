@@ -27,8 +27,6 @@ import com.google.gwt.user.datepicker.client.DatePicker;
 
 /**
  * A Popup Date Editor.
- * 
- *
  */
 public class PopupDateEditCell extends AbstractPopupEditCell<Date, Date> {
 

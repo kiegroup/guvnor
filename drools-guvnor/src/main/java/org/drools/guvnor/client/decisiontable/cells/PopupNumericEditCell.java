@@ -30,8 +30,6 @@ import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * A Popup Text Editor.
- * 
- *
  */
 public class PopupNumericEditCell extends
         AbstractPopupEditCell<Integer, Integer> {

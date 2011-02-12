@@ -64,8 +64,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the new snapshot view.
- * 
- *
  */
 public class SnapshotView extends Composite {
 

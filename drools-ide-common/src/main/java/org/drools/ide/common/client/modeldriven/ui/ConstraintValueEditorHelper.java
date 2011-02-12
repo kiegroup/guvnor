@@ -23,7 +23,6 @@ public class ConstraintValueEditorHelper {
      *
      * This will split the drop down item into a value and a key.
      * eg key=value
-     *
      */
     public static String[] splitValue(String v) {
         String[] s = new String[2];

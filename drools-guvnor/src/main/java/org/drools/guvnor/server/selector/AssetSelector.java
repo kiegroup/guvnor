@@ -24,8 +24,6 @@ import org.drools.repository.AssetItem;
  * Asset selectors can be used to choose if an asset is part of a build.
  *
  * Asset selectors should be stateless, they will be called multiple times.
- *
- *
  */
 public interface AssetSelector {
 

@@ -38,7 +38,6 @@ import com.google.gwt.view.client.SelectionModel;
 /**
  * A composite Widget that shows rows of data (not-paged) and a "column picker"
  * to allow columns to be hidden from view. Columns can also be sorted.
- * 
  */
 public abstract class AbstractSimpleTable<T extends AbstractPageRow> extends Composite
     implements

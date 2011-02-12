@@ -27,7 +27,6 @@ import org.drools.guvnor.client.ruleeditor.toolbar.StandaloneEditorIndividualAct
 
 /**
  * Class used to manage the stand-alone version of Guvnor's Editors
- *
  */
 public class StandaloneEditorManager {
 

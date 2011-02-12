@@ -74,7 +74,6 @@ import org.drools.rule.MapBackedClassLoader;
  * models etc as needed.
  * <p/>
  * FYI: the tests for this are in the BRMS module, in context of a full BRMS.
- *
  */
 public class SuggestionCompletionLoader
         implements
@@ -98,7 +97,6 @@ public class SuggestionCompletionLoader
     /**
      * Interface used for add external ImportDescr added to SuggestionCompletionEngine
      * Use this to add Fact Types that are not imported by the package.
-     *
      */
     public static interface ExternalImportDescrProvider {
         public Set<ImportDescr> getImportDescrs();

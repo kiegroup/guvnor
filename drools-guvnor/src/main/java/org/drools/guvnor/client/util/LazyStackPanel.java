@@ -33,8 +33,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * The GWT StackPanel is not working as we want. So doing a custom one.
- * 
- *
  */
 public class LazyStackPanel extends Composite
         implements

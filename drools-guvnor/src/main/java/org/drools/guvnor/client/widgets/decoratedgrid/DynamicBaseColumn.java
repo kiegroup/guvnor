@@ -33,7 +33,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  * Cell's {@link Cell#onBrowserEvent} and {@link Cell#render} methods.
  * 
  * Forked GWT2.1.1's Column<T, C> class to make Cell<C> non-final.
- * 
  */
 public abstract class DynamicBaseColumn<T>
     implements
