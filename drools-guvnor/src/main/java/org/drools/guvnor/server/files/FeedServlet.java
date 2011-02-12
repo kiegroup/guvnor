@@ -148,8 +148,6 @@ public class FeedServlet extends RepositoryServlet {
         }
     }
 
-    /**
-     */
     public static class AtomFeed {
 
         private static String TEMPLATE = StringUtils.readFileAsString(new InputStreamReader(AtomFeed.class.getResourceAsStream("/atom-feed-template.xml")));
