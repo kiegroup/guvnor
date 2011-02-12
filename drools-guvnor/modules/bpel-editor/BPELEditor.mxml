@@ -386,7 +386,7 @@
 				</customComponent:ActivityPanel>
 			</mx:ApplicationControlBar>			
 			
-			<mx:ApplicationControlBar label="QoS Activities" id="QoSActivity" x="{component4X}" 
+			<mx:ApplicationControlBar label="QoS Activities" id="QoSActivity" x="{component4X}" 
 				width="{component4Width}" height="{component4Height}" fillColors="[#ebd9ec, #a4a4ff]" 
 				fillAlphas="[0.7, 0.28]" bottom="5">
 				<customComponent:QoSPanel label="QoS Activities" x="{component4X - 5}" 
