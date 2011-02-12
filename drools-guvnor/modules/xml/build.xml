@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
-
-<!--
- @author Anton Arhipov
--->
 <project name="guvnor.xml" default="jar">
     <property file="../../build.properties"/>
 
