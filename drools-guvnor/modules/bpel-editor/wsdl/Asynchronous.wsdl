@@ -5,49 +5,49 @@
              xmlns:client="http://gridcc.ac.uk/DUMMY_PROCESS"
              xmlns:xsd="http://www.w3.org/2001/XMLSchema"
              xmlns:plnk="http://schemas.xmlsoap.org/ws/2003/05/partner-link/">
-	
-	<types>
-		<schema xmlns="http://www.w3.org/2001/XMLSchema">
-		<!--
-			<import namespace="http://gridcc.ac.uk/DUMMY_PROCESS" schemaLocation="DUMMY_PROCESS.xsd" />
-		-->
-		</schema>
-	</types>
-	
-	<message name="DUMMY_PROCESSRequestMessage">
-		<part name="payload" type="xsd:string"/>
-	</message>
 
-	<message name="DUMMY_PROCESSResponseMessage">
-		<part name="payload" type="xsd:string"/>
-	</message>
-	
-	<!-- portType implemented by the DUMMY_PROCESS BPEL process -->
-	<portType name="DUMMY_PROCESS_PT">
-		<operation name="initiate">
-			<input message="client:DUMMY_PROCESSRequestMessage"/>
-		</operation>
-	</portType>
+  <types>
+    <schema xmlns="http://www.w3.org/2001/XMLSchema">
+    <!--
+      <import namespace="http://gridcc.ac.uk/DUMMY_PROCESS" schemaLocation="DUMMY_PROCESS.xsd" />
+    -->
+    </schema>
+  </types>
 
-	<!-- portType implemented by the requester of BPEL process
-		for asynchronous callback purposes 	-->
-	<portType name="DUMMY_PROCESSCallback">
-		<operation name="onResult">
-			<input message="client:DUMMY_PROCESSResponseMessage"/>
-		</operation>
-	</portType>
+  <message name="DUMMY_PROCESSRequestMessage">
+    <part name="payload" type="xsd:string"/>
+  </message>
 
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	PARTNER LINK TYPE DEFINITION
-	the partnerLinkType binds the provider and
-	requester portType into an asynchronous conversation.
-	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<plnk:partnerLinkType name="DUMMY_PROCESS_PLT">
-		<plnk:role name="DUMMY_PROCESSProvider_PT">
-			<plnk:portType name="client:DUMMY_PROCESS"/>
-		</plnk:role>
-		<plnk:role name="DUMMY_PROCESSRequester">
-			<plnk:portType name="client:DUMMY_PROCESSCallback"/>
-		</plnk:role>
-	</plnk:partnerLinkType>
+  <message name="DUMMY_PROCESSResponseMessage">
+    <part name="payload" type="xsd:string"/>
+  </message>
+
+  <!-- portType implemented by the DUMMY_PROCESS BPEL process -->
+  <portType name="DUMMY_PROCESS_PT">
+    <operation name="initiate">
+      <input message="client:DUMMY_PROCESSRequestMessage"/>
+    </operation>
+  </portType>
+
+  <!-- portType implemented by the requester of BPEL process
+    for asynchronous callback purposes   -->
+  <portType name="DUMMY_PROCESSCallback">
+    <operation name="onResult">
+      <input message="client:DUMMY_PROCESSResponseMessage"/>
+    </operation>
+  </portType>
+
+  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  PARTNER LINK TYPE DEFINITION
+  the partnerLinkType binds the provider and
+  requester portType into an asynchronous conversation.
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+  <plnk:partnerLinkType name="DUMMY_PROCESS_PLT">
+    <plnk:role name="DUMMY_PROCESSProvider_PT">
+      <plnk:portType name="client:DUMMY_PROCESS"/>
+    </plnk:role>
+    <plnk:role name="DUMMY_PROCESSRequester">
+      <plnk:portType name="client:DUMMY_PROCESSCallback"/>
+    </plnk:role>
+  </plnk:partnerLinkType>
 </definitions>
