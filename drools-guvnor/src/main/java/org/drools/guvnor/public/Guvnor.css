@@ -14,585 +14,585 @@
  * limitations under the License.
  */
 body {
-	font-family: tahoma, arial, helvetica, sans-serif;
-	line-height: 1.5em;
-	color: #444;
-	margin: 0;
-	padding: 0;
-	background: #FFF;
+    font-family: tahoma, arial, helvetica, sans-serif;
+    line-height: 1.5em;
+    color: #444;
+    margin: 0;
+    padding: 0;
+    background: #FFF;
 }
 
 code {
-	font-size: small;
+    font-size: small;
 }
 
 .gwt-Frame {
-	border: 0;
+    border: 0;
 }
 
 .gwt-DisclosurePanel .content {
-	border-left: 3px solid #e3e3e3;
-	padding: 4px 0px 4px 8px;
-	margin-left: 16px;
+    border-left: 3px solid #e3e3e3;
+    padding: 4px 0px 4px 8px;
+    margin-left: 16px;
 }
 
 .VerticalSplitPanel .vsplitter {
-	background-color: #f3f2e7;
-	border: 1px solid #aa9;
-	/* Pretty much everything */
-	cursor: n-resize;
-	/* IE6, IE7, FF2, Safari Win */
-	cursor: row-resize;
+    background-color: #f3f2e7;
+    border: 1px solid #aa9;
+    /* Pretty much everything */
+    cursor: n-resize;
+    /* IE6, IE7, FF2, Safari Win */
+    cursor: row-resize;
 }
 
 .selectable-label:hover {
-	text-decoration: underline;
-	cursor: pointer;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .HorizontalSplitPanel .hsplitter {
-	background-color: #f3f2e7;
-	border: 1px solid #aa9;
-	/* Pretty much everything */
-	cursor: n-resize;
-	/* IE6, IE7, FF2, Safari Win */
-	cursor: col-resize;
+    background-color: #f3f2e7;
+    border: 1px solid #aa9;
+    /* Pretty much everything */
+    cursor: n-resize;
+    /* IE6, IE7, FF2, Safari Win */
+    cursor: col-resize;
 }
 
 .gwt-SuggestBoxPopup {
-	background: white;
-	border: 1px solid black;
+    background: white;
+    border: 1px solid black;
 }
 
 .gwt-SuggestBoxPopup .item {
-	font-size: 0.7em;
+    font-size: 0.7em;
 }
 
 .gwt-SuggestBoxPopup .item-selected {
-	background: yellow;
+    background: yellow;
 }
 
 .testErrorValue {
-	border: 1px solid #CC0000;
-	font-color: #CC000;
-	font-size: small;
-	font-style: italics;
+    border: 1px solid #CC0000;
+    font-color: #CC000;
+    font-size: small;
+    font-style: italics;
 }
 
 .error-title {
-	font-size: small;
+    font-size: small;
 }
 
 .error-long-message {
-	font-size: small;
+    font-size: small;
 }
 
 .successBar {
-	border: 1px;
-	solid
-	#aa9;
+    border: 1px;
+    solid
+    #aa9;
 }
 
 .gwt-DialogBox {
-	sborder: 8px solid #aa9;
-	border: 1px solid #aa9;
-	background: #FFF;
+    sborder: 8px solid #aa9;
+    border: 1px solid #aa9;
+    background: #FFF;
 }
 
 .gwt-DialogBox .Caption {
-	font-weight: 700;
-	cursor: default;
-	margin: 2px;
-	padding: 3px;
-	background: #FFFFF0;
+    font-weight: 700;
+    cursor: default;
+    margin: 2px;
+    padding: 3px;
+    background: #FFFFF0;
 }
 
 .gwt-HorizontalSplitter .Bar {
-	width: 8px;
-	background: #aa9;
+    width: 8px;
+    background: #aa9;
 }
 
 .gwt-VerticalSplitter .Bar {
-	height: 8px;
-	background: #aa9;
+    height: 8px;
+    background: #aa9;
 }
 
 select {
-	border: 1px solid #ccc;
-	color: #666;
-	border-color: #ccc !important;
-	padding: 0 !important;
+    border: 1px solid #ccc;
+    color: #666;
+    border-color: #ccc !important;
+    padding: 0 !important;
 }
 
 .model-builder-Background { #
-	-moz-border-radius: .7em; #
-	-webkit-border-radius: .7em; #
-	-khtml-border-radius: .7em; #
-	border-radius: .7em;
-	padding-left: .5em; #
-	border: 1px solid #ddd;
-	background: #FFF;
+    -moz-border-radius: .7em; #
+    -webkit-border-radius: .7em; #
+    -khtml-border-radius: .7em; #
+    border-radius: .7em;
+    padding-left: .5em; #
+    border: 1px solid #ddd;
+    background: #FFF;
 }
 
 .analysis-Report {
-	padding-left: .5em;
-	background: #FFF;
-	font-size: smaller;
+    padding-left: .5em;
+    background: #FFF;
+    font-size: smaller;
 }
 
 .model-builderInner-Background {
-	border-top: 1px solid #ccc;
-	border-bottom: 1px solid #ccc; #
-	-moz-border-radius: .7em; #
-	-khtml-border-radius: .7em; #
-	-webkit-border-radius: .7em; #
-	border-radius: .7em;
-	background: #FFF;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc; #
+    -moz-border-radius: .7em; #
+    -khtml-border-radius: .7em; #
+    -webkit-border-radius: .7em; #
+    border-radius: .7em;
+    background: #FFF;
 }
 
 .model-builderInnerInner-Background {
-	border-top: 0 solid #ccc;
-	border-bottom: 0 solid #ccc; #
-	-moz-border-radius: .7em; #
-	-webkit-border-radius: .7em; #
-	-khtml-border-radius: .7em; #
-	border-radius: .7em;
-	background: #FFF;
+    border-top: 0 solid #ccc;
+    border-bottom: 0 solid #ccc; #
+    -moz-border-radius: .7em; #
+    -webkit-border-radius: .7em; #
+    -khtml-border-radius: .7em; #
+    border-radius: .7em;
+    background: #FFF;
 }
 
 .modeller-fact-pattern-Widget {
-	border-top: 1px solid #ccc;
-	border-bottom: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
 .modeller-composite-Label {
-	font-style: italic;
+    font-style: italic;
 }
 
 .modeller-action-Label {
-	font-style: italic;
+    font-style: italic;
 }
 
 .gwt-TabBar {
-	background: #aa9;
+    background: #aa9;
 }
 
 .gwt-TabBar .gwt-TabBarFirst {
-	width: 0;
-	margin: 0;
-	padding: 0;
+    width: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .gwt-TabBar .gwt-TabBarRest {
-	border-bottom: 1px solid #aa9;
-	padding-right: 3px;
+    border-bottom: 1px solid #aa9;
+    padding-right: 3px;
 }
 
 .gwt-TabBar .gwt-TabBarItem {
-	border: 1px solid #aa9;
-	cursor: pointer;
-	color: #FFF;
-	padding: .5em 1em;
+    border: 1px solid #aa9;
+    cursor: pointer;
+    color: #FFF;
+    padding: .5em 1em;
 }
 
 .gwt-TabBar .gwt-TabBarItem-selected {
-	border-bottom: 0 solid #aa9;
-	cursor: url;
-	border: 0 transparent none;
-	margin: 0;
-	padding: .5em 1em;
-	background: #f6f6f6;
+    border-bottom: 0 solid #aa9;
+    cursor: url;
+    border: 0 transparent none;
+    margin: 0;
+    padding: .5em 1em;
+    background: #f6f6f6;
 }
 
 .gwt-TabBarItem-selected {
-	color: #000 !important;
+    color: #000 !important;
 }
 
 .gwt-TextArea {
-	border: 1px solid #aa9;
-	padding: 0;
+    border: 1px solid #aa9;
+    padding: 0;
 }
 
 .gwt-StackPanel .gwt-StackPanelItem {
-	cursor: hand;
-	background: #aa9;
+    cursor: hand;
+    background: #aa9;
 }
 
 .ks-popups-Popup {
-	border: 6px solid #black; //# aa9;
-	-moz-border-radius: .7em;
-	-webkit-border-radius: .7em;
-	-khtml-border-radius: .7em;
-	border-radius: .5em;
-	padding: 4px;
-	background: #FFF;
+    border: 6px solid #black; //# aa9;
+    -moz-border-radius: .7em;
+    -webkit-border-radius: .7em;
+    -khtml-border-radius: .7em;
+    border-radius: .5em;
+    padding: 4px;
+    background: #FFF;
 }
 
 .decision-Table-upload { #
-	border: 1px solid #aa9;
-	background: #FFF;
+    border: 1px solid #aa9;
+    background: #FFF;
 }
 
 .metadata-Widget {
-	color: #666;
+    color: #666;
 }
 
 .loading-Popup {
-	border: 2px solid #aa9;
-	font-color: #FFF !important;
-	padding: 4px;
-	background: #FFF;
+    border: 2px solid #aa9;
+    font-color: #FFF !important;
+    padding: 4px;
+    background: #FFF;
 }
 
 .build-Results {
-	border: 1px solid #666;
-	font-size: small;
-	border-collapse: collapse;
-	-moz-border-radius: .7em;
-	-webkit-border-radius: .7em;
-	-khtml-border-radius: .7em;
-	border-radius: .7em;
-	border-style: inset;
-	border-width: 1px;
-	background: #FFF;
+    border: 1px solid #666;
+    font-size: small;
+    border-collapse: collapse;
+    -moz-border-radius: .7em;
+    -webkit-border-radius: .7em;
+    -khtml-border-radius: .7em;
+    border-radius: .7em;
+    border-style: inset;
+    border-width: 1px;
+    background: #FFF;
 }
 
 .welcome-Page {
-	width: 100%;
-	height: 100%;
-	border: none;
-	background: #ccc;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #ccc;
 }
 
 .category-explorer-Tree {
-	width: 100%;
+    width: 100%;
 }
 
 .category-explorer-Tree img {
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 .rule-breditor-Table {
-	border: 1px solid #aa9;
-	-moz-border-radius: .7em;
-	-webkit-border-radius: .7em;
-	-khtml-border-radius: .7em;
-	border-radius: .7em;
-	padding: 4px;
-	background: #FFFFF0;
+    border: 1px solid #aa9;
+    -moz-border-radius: .7em;
+    -webkit-border-radius: .7em;
+    -khtml-border-radius: .7em;
+    border-radius: .7em;
+    padding: 4px;
+    background: #FFFFF0;
 }
 
 .new-asset-Icons {
-	border: 1px solid #aa9;
-	border-radius: .7em;
-	background: #FFFFF0;
-	width: 100%;
+    border: 1px solid #aa9;
+    border-radius: .7em;
+    background: #FFFFF0;
+    width: 100%;
 }
 
 .version-browser-Border {
-	border: 1px solid #aa9;
-	-moz-border-radius: .7em;
-	-webkit-border-radius: .7em;
-	-khtml-border-radius: .7em;
-	border-radius: .7em;
+    border: 1px solid #aa9;
+    -moz-border-radius: .7em;
+    -webkit-border-radius: .7em;
+    -khtml-border-radius: .7em;
+    border-radius: .7em;
 }
 
 .highlight {
-	background: #FF0;
+    background: #FF0;
 }
 
 .dt-editor-Grid {
-	border: 1px solid #aa9;
-	border-spacing: 0;
-	border-collapse: collapse;
-	background: #FFFFF0;
+    border: 1px solid #aa9;
+    border-spacing: 0;
+    border-collapse: collapse;
+    background: #FFFFF0;
 }
 
 .dt-editor-Cell {
-	border: 1px solid #aa9;
-	padding: 2px;
-	background: #FFF;
+    border: 1px solid #aa9;
+    padding: 2px;
+    background: #FFF;
 }
 
 .dt-editor-Toolbar {
-	border: 1px solid #aa9;
-	padding: 2px;
-	background: #FFF;
+    border: 1px solid #aa9;
+    padding: 2px;
+    background: #FFF;
 }
 
 .dt-editor-Cell-selected {
-	border: 2px solid #aa9;
-	padding: 0;
-	background: #FFF;
+    border: 2px solid #aa9;
+    padding: 0;
+    background: #FFF;
 }
 
 .dt-editor-Title {
-	font-size: larger;
+    font-size: larger;
 }
 
 .dt-field-TextBox {
-	border: none;
-	width: 100%;
-	padding: 0;
+    border: none;
+    width: 100%;
+    padding: 0;
 }
 
 .rule-ListHeader {
-	color: #666;
-	padding-left: 1em !important;
-	font-weight: 700;
-	height: 2em;
-	background: #f6f6f6;
+    color: #666;
+    padding-left: 1em !important;
+    font-weight: 700;
+    height: 2em;
+    background: #f6f6f6;
 }
 
 .rule-List {
-	border: 1px solid #aa9;
-	font-family: Arial, sans-serif;
-	cursor: hand;
-	border-spacing: 0;
-	border-collapse: collapse;
-	-moz-border-radius: .7em;
-	-webkit-border-radius: .7em;
-	-khtml-border-radius: .7em;
-	border-radius: .7em;
-	background: #FFF;
+    border: 1px solid #aa9;
+    font-family: Arial, sans-serif;
+    cursor: hand;
+    border-spacing: 0;
+    border-collapse: collapse;
+    -moz-border-radius: .7em;
+    -webkit-border-radius: .7em;
+    -khtml-border-radius: .7em;
+    border-radius: .7em;
+    background: #FFF;
 }
 
 .login-Form {
-	border: 4px solid #aa9;
-	background: #f6f6f6;
+    border: 4px solid #aa9;
+    background: #f6f6f6;
 }
 
 .resource-name-Label { #
-	font-weight: 700;
+    font-weight: 700;
 }
 
 .infoProse {
-	margin: 8px;
+    margin: 8px;
 }
 
 .DatePicker .navbar {
-	width: 100%;
-	vertical-align: middle;
-	border-bottom: 1px solid #aa9;
-	background: #FFFFF0;
+    width: 100%;
+    vertical-align: middle;
+    border-bottom: 1px solid #aa9;
+    background: #FFFFF0;
 }
 
 .DatePicker .navbar .gwt-Button {
-	padding-left: 5px;
-	padding-right: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .DatePicker .table {
-	text-align: center;
+    text-align: center;
 }
 
 .DatePicker .weekheader .days {
-	width: 3em;
+    width: 3em;
 }
 
 .DatePicker .cell {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 button {
-	border: 1px solid #ccc;
-	margin-right: 1px;
-	border-bottom: 1px solid #aaa;
-	border-top-color: #ddd;
-	background: #fff;
+    border: 1px solid #ccc;
+    margin-right: 1px;
+    border-bottom: 1px solid #aaa;
+    border-top-color: #ddd;
+    background: #fff;
 }
 
 button:active,button:focus {
-	color: #FFF;
-	border: 1px solid #444;
-	background: #999;
+    color: #FFF;
+    border: 1px solid #444;
+    background: #999;
 }
 
 .DatePicker .cell .gwt-HTML span {
-	width: 100%;
-	height: 100%;
-	line-height: 2em;
+    width: 100%;
+    height: 100%;
+    line-height: 2em;
 }
 
 textarea {
-	color: #666;
-	border: 1px solid #ccc !important;
-	padding: .3em;
-	background: #fefefe !important;
+    color: #666;
+    border: 1px solid #ccc !important;
+    padding: .3em;
+    background: #fefefe !important;
 }
 
 textarea:focus,textarea:active {
-	color: #000;
-	border-color: #000 !important;
-	background: #fff !important;
+    color: #000;
+    border-color: #000 !important;
+    background: #fff !important;
 }
 
 .DatePicker .today .gwt-HTML {
-	background: #FFF;
+    background: #FFF;
 }
 
 .image-Button {
-	cursor: pointer !important;
+    cursor: pointer !important;
 }
 
 .guvnor-Tree .gwt-TreeItem-selected {
-	background: none !important;
+    background: none !important;
 }
 
 .gwt-TreeItem {
-	width: 100%;
-	cursor: pointer;
-	display: block !important;
-	line-height: em;
-	margin: 0;
-	padding: 0;
+    width: 100%;
+    cursor: pointer;
+    display: block !important;
+    line-height: em;
+    margin: 0;
+    padding: 0;
 }
 
 a,a:visited {
-	color: #00008B;
+    color: #00008B;
 }
 
 .gwt-CheckBox,.gwt-Tree .gwt-TreeItem,.small-Text,.global-Font { #
-	font-size: smaller;
+    font-size: smaller;
 }
 
 select:focus,input:focus,input:active,.constraint-value-Editor:focus,.constraint-value-Editor:active
-	{
-	color: #000;
-	border-color: #000 !important;
+    {
+    color: #000;
+    border-color: #000 !important;
 }
 
 input,.constraint-value-Editor {
-	border: 1px solid #aa9;
-	color: #666;
-	border-color: #ccc !important;
-	padding: 2px !important;
+    border: 1px solid #aa9;
+    color: #666;
+    border-color: #ccc !important;
+    padding: 2px !important;
 }
 
 .ks-info,.ks-List .ks-SinkItem-selected a,.sinkitem {
-	color: #FFF;
+    color: #FFF;
 }
 
 .editable-Surface,.package-Editor { #
-	border: 1px solid #aa9;
-	background: #white;
+    border: 1px solid #aa9;
+    background: #white;
 }
 
 .dt-editor-DescriptionCell,.dt-editor-CountColumn {
-	padding: 3px;
-	background: #FFFFF0;
+    padding: 3px;
+    background: #FFFFF0;
 }
 
 .dt-editor-DescriptionCell-selected,.dt-editor-CountColumn-selected {
-	color: #FFF;
-	padding: 3px;
-	background: #aa9;
+    color: #FFF;
+    padding: 3px;
+    background: #aa9;
 }
 
 .rule-viewer-Documentation,.dsl-text-Editor,.default-text-Area {
-	border: 1px solid #aa9;
-	background: #FFFFF0;
+    border: 1px solid #aa9;
+    background: #FFFFF0;
 }
 
 .rule-ListEvenRow,.DatePicker .weekheader {
-	background: #FFFFF0;
+    background: #FFFFF0;
 }
 
 .discussion-header {
-	background: #FFFFF0;
+    background: #FFFFF0;
 }
 
 .fact-model-fact-edit-selections {
-	border-bottom: 1px solid #aa9;
+    border-bottom: 1px solid #aa9;
 }
 
 .DatePicker,.DatePicker .cell .gwt-HTML,.DatePicker .day .gwt-HTML {
-	border: 1px solid #aa9;
+    border: 1px solid #aa9;
 }
 
 .editor-disabled-widget {
-	background-color: #F7F7F8;
-	color: #868686;
+    background-color: #F7F7F8;
+    color: #868686;
 }
 
 .guvnor-LazyStackPanel-row-header {
-	border: 1px solid #BBBBBB;
-	padding: 1px 0px 1px 5px;
-	min-width: 640px;
-	background-color: #E3E3E3;
+    border: 1px solid #BBBBBB;
+    padding: 1px 0px 1px 5px;
+    min-width: 640px;
+    background-color: #E3E3E3;
 }
 
 .guvnor-LazyStackPanel-row-header-icon {
-	padding: 1px 5px 0px 0px;
-	cursor: pointer;
+    padding: 1px 5px 0px 0px;
+    cursor: pointer;
 }
 
 .guvnor-FormPanel {
-	background-color: #E3E3E3;
-	padding: 2px;
-	border-bottom: 1px solid #BBBBBB;
+    background-color: #E3E3E3;
+    padding: 2px;
+    border-bottom: 1px solid #BBBBBB;
 }
 
 .guvnor-bold-label {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .guvnor-lazyStackPanel {
-	border-collapse: collapse;
+    border-collapse: collapse;
 }
 
 .guvnor-modelview-button-bar {
-	background-color: #EBEBEB;
-	border: 1px solid #BBBBBB;
-	border-top: 0px;
-	margin-left: 1px;
+    background-color: #EBEBEB;
+    border: 1px solid #BBBBBB;
+    border-top: 0px;
+    margin-left: 1px;
 }
 
 .guvnor-cursor {
-	cursor: pointer;
+    cursor: pointer;
 }
 
 .snapshot-comparison-added {
-	background: blue;
-	color: white;
-	font-weight: bold;
-	font-size: smaller;
-	padding-left: 20px;
-	padding-right: 20px;
+    background: blue;
+    color: white;
+    font-weight: bold;
+    font-size: smaller;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .snapshot-comparison-archived {
-	background: purple;
-	color: white;
-	font-weight: bold;
-	font-size: smaller;
-	padding-left: 20px;
-	padding-right: 20px;
+    background: purple;
+    color: white;
+    font-weight: bold;
+    font-size: smaller;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .snapshot-comparison-deleted {
-	background: red;
-	color: white;
-	font-weight: bold;
-	font-size: smaller;
-	padding-left: 20px;
-	padding-right: 20px;
+    background: red;
+    color: white;
+    font-weight: bold;
+    font-size: smaller;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .snapshot-comparison-restored {
-	background: orange;
-	color: white;
-	font-weight: bold;
-	font-size: smaller;
-	padding-left: 20px;
-	padding-right: 20px;
+    background: orange;
+    color: white;
+    font-weight: bold;
+    font-size: smaller;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .snapshot-comparison-updated {
-	background: green;
-	color: white;
-	font-weight: bold;
-	font-size: smaller;
-	padding-left: 20px;
-	padding-right: 20px;
+    background: green;
+    color: white;
+    font-weight: bold;
+    font-size: smaller;
+    padding-left: 20px;
+    padding-right: 20px;
 }

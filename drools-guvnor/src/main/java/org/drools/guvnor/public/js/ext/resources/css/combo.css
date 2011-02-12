@@ -38,7 +38,7 @@
     text-overflow: ellipsis;
 }
 .x-combo-list .x-combo-selected{
-	border:1px dotted #a3bae9 !important;
+    border:1px dotted #a3bae9 !important;
     background:#DFE8F6;
     cursor:pointer;
 }

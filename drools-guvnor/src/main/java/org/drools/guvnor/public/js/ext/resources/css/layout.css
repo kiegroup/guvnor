@@ -97,10 +97,10 @@
 }
 
 .x-accordion-hd {
-	color:#222;
-	padding-top:4px;
-	padding-bottom:3px;
-	border-top:0 none;
+    color:#222;
+    padding-top:4px;
+    padding-bottom:3px;
+    border-top:0 none;
     font-weight:normal;
     background: transparent url(../images/default/panel/light-hd.gif) repeat-x 0 -9px;
 }
@@ -114,8 +114,8 @@
     width:20px;
     height:20px;
     overflow:hidden;
-	border:1px solid #98c0f4;
-	z-index:20;
+    border:1px solid #98c0f4;
+    z-index:20;
 }
 .ext-border-box .x-layout-collapsed{
     width:22px;
@@ -123,10 +123,10 @@
 }
 .x-layout-collapsed-over{
     cursor:pointer;
-	 background-color:#d9e8fb;
+     background-color:#d9e8fb;
 }
 .x-layout-collapsed-west .x-layout-collapsed-tools, .x-layout-collapsed-east .x-layout-collapsed-tools{
-	position:absolute;
+    position:absolute;
     top:0;
     left:0;
     width:20px;

@@ -156,17 +156,17 @@ textarea {
 
 /* field focus style */
 .x-form-focus, textarea.x-form-focus{
-	border: 1px solid #7eadd9;
+    border: 1px solid #7eadd9;
 }
 
 /* invalid fields */
 .x-form-invalid, textarea.x-form-invalid{
-	background:#fff url(../images/default/grid/invalid_line.gif) repeat-x bottom;
-	border: 1px solid #dd7870;
+    background:#fff url(../images/default/grid/invalid_line.gif) repeat-x bottom;
+    border: 1px solid #dd7870;
 }
 .ext-safari .x-form-invalid{
-	background-color:#ffeeee;
-	border: 1px solid #ff7870;
+    background-color:#ffeeee;
+    border: 1px solid #ff7870;
 }
 
 /* editors */
@@ -191,13 +191,13 @@ textarea {
 }
 /* If you override the default field font above, you would need to change this font as well */
 .x-form-grow-sizer {
-	font:normal 12px tahoma, arial, helvetica, sans-serif;
+    font:normal 12px tahoma, arial, helvetica, sans-serif;
     left: -10000px;
-	padding: 8px 3px;
+    padding: 8px 3px;
     position: absolute;
     visibility:hidden;
     top: -10000px;
-	white-space: pre-wrap;
+    white-space: pre-wrap;
     white-space: -moz-pre-wrap;
     white-space: -pre-wrap;
     white-space: -o-pre-wrap;
@@ -347,49 +347,49 @@ textarea {
 
 /* buttons */
 .x-form .x-form-btns-ct .x-btn{
-	float:right;
-	clear:none;
+    float:right;
+    clear:none;
 }
 .x-form .x-form-btns-ct .x-form-btns td {
-	border:0;
-	padding:0;
+    border:0;
+    padding:0;
 }
 .x-form .x-form-btns-ct .x-form-btns-right table{
-	float:right;
-	clear:none;
+    float:right;
+    clear:none;
 }
 .x-form .x-form-btns-ct .x-form-btns-left table{
-	float:left;
-	clear:none;
+    float:left;
+    clear:none;
 }
 .x-form .x-form-btns-ct .x-form-btns-center{
-	text-align:center; /*ie*/
+    text-align:center; /*ie*/
 }
 .x-form .x-form-btns-ct .x-form-btns-center table{
-	margin:0 auto; /*everyone else*/
+    margin:0 auto; /*everyone else*/
 }
 .x-form .x-form-btns-ct table td.x-form-btn-td{
-	padding:3px;
+    padding:3px;
 }
 
 .x-form .x-form-btns-ct .x-btn-focus .x-btn-left{
-	background-position:0 -147px;
+    background-position:0 -147px;
 }
 .x-form .x-form-btns-ct .x-btn-focus .x-btn-right{
-	background-position:0 -168px;
+    background-position:0 -168px;
 }
 .x-form .x-form-btns-ct .x-btn-focus .x-btn-center{
-	background-position:0 -189px;
+    background-position:0 -189px;
 }
 
 .x-form .x-form-btns-ct .x-btn-click .x-btn-center{
-	background-position:0 -126px;
+    background-position:0 -126px;
 }
 .x-form .x-form-btns-ct .x-btn-click  .x-btn-right{
-	background-position:0 -84px;
+    background-position:0 -84px;
 }
 .x-form .x-form-btns-ct .x-btn-click .x-btn-left{
-	background-position:0 -63px;
+    background-position:0 -63px;
 }
 .x-form-invalid-icon {
     width:16px;

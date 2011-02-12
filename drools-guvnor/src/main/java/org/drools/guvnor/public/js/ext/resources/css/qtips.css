@@ -7,53 +7,53 @@
  */
 
 .x-tip{
-	position: absolute;
-	top: 0;
+    position: absolute;
+    top: 0;
     left:0;
     visibility: hidden;
-	z-index: 20000;
+    z-index: 20000;
     border:0 none;
 }
 .x-tip .x-tip-close{
-	background-image: url(../images/default/qtip/close.gif);
-	height: 15px;
-	float:right;
-	width: 15px;
+    background-image: url(../images/default/qtip/close.gif);
+    height: 15px;
+    float:right;
+    width: 15px;
     margin:0 0 2px 2px;
     cursor:pointer;
     display:none;
 }
 .x-tip .x-tip-tc {
-	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -62px;
-	padding-top:3px;
+    background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -62px;
+    padding-top:3px;
     overflow:hidden;
     zoom:1;
 }
 .x-tip .x-tip-tl {
-	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 0;
-	padding-left:6px;
+    background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 0;
+    padding-left:6px;
     overflow:hidden;
     zoom:1;
 }
 .x-tip .x-tip-tr {
-	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat right 0;
-	padding-right:6px;
+    background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat right 0;
+    padding-right:6px;
     overflow:hidden;
     zoom:1;
 }
 .x-tip .x-tip-bc {
-	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -121px;
-	height:3px;
+    background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -121px;
+    height:3px;
     overflow:hidden;
 }
 .x-tip .x-tip-bl {
-	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -59px;
-	padding-left:6px;
+    background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -59px;
+    padding-left:6px;
     zoom:1;
 }
 .x-tip .x-tip-br {
-	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat right -59px;
-	padding-right:6px;
+    background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat right -59px;
+    padding-right:6px;
     zoom:1;
 }
 .x-tip .x-tip-mc {
@@ -61,13 +61,13 @@
     font: normal 11px tahoma,arial,helvetica,sans-serif;
 }
 .x-tip .x-tip-ml {
-	background: #fff url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -124px;
-	padding-left:6px;
+    background: #fff url(../images/default/qtip/tip-sprite.gif) no-repeat 0 -124px;
+    padding-left:6px;
     zoom:1;
 }
 .x-tip .x-tip-mr {
-	background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat right -124px;
-	padding-right:6px;
+    background: transparent url(../images/default/qtip/tip-sprite.gif) no-repeat right -124px;
+    padding-right:6px;
     zoom:1;
 }
 .ext-ie .x-tip .x-tip-header,.ext-ie .x-tip .x-tip-tc {
@@ -100,30 +100,30 @@
 }
 
 .x-form-invalid-tip .x-tip-tc {
-	background: url(../images/default/form/error-tip-corners.gif) repeat-x 0 -12px;
+    background: url(../images/default/form/error-tip-corners.gif) repeat-x 0 -12px;
     padding-top:6px;
 }
 .x-form-invalid-tip .x-tip-tl {
-	background-image: url(../images/default/form/error-tip-corners.gif);
+    background-image: url(../images/default/form/error-tip-corners.gif);
 }
 .x-form-invalid-tip .x-tip-tr {
-	background-image: url(../images/default/form/error-tip-corners.gif);
+    background-image: url(../images/default/form/error-tip-corners.gif);
 }
 .x-form-invalid-tip .x-tip-bc {
-	background: url(../images/default/form/error-tip-corners.gif) repeat-x 0 -18px;
+    background: url(../images/default/form/error-tip-corners.gif) repeat-x 0 -18px;
     height:6px;
 }
 .x-form-invalid-tip .x-tip-bl {
-	background: url(../images/default/form/error-tip-corners.gif) no-repeat 0 -6px;
+    background: url(../images/default/form/error-tip-corners.gif) no-repeat 0 -6px;
 }
 .x-form-invalid-tip .x-tip-br {
-	background: url(../images/default/form/error-tip-corners.gif) no-repeat right -6px;
+    background: url(../images/default/form/error-tip-corners.gif) no-repeat right -6px;
 }
 .x-form-invalid-tip .x-tip-ml {
-	background-image: url(../images/default/form/error-tip-corners.gif);
+    background-image: url(../images/default/form/error-tip-corners.gif);
 }
 .x-form-invalid-tip .x-tip-mr {
-	background-image: url(../images/default/form/error-tip-corners.gif);
+    background-image: url(../images/default/form/error-tip-corners.gif);
 }
 .x-form-invalid-tip .x-tip-body {
     padding:2px;

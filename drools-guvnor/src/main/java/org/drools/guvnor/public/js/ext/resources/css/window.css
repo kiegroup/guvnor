@@ -39,30 +39,30 @@
 }
 .x-window-tl .x-window-header {
     color:#15428b;
-	font:bold 11px tahoma,arial,verdana,sans-serif;
+    font:bold 11px tahoma,arial,verdana,sans-serif;
     padding:5px 0 4px 0;
 }
 .x-window-header-text {
     cursor:pointer;
 }
 .x-window-tc {
-	background: transparent url(../images/default/window/top-bottom.png) repeat-x 0 0;
-	overflow:hidden;
+    background: transparent url(../images/default/window/top-bottom.png) repeat-x 0 0;
+    overflow:hidden;
     zoom:1;
 }
 .x-window-tl {
-	background: transparent url(../images/default/window/left-corners.png) no-repeat 0 0;
-	padding-left:6px;
+    background: transparent url(../images/default/window/left-corners.png) no-repeat 0 0;
+    padding-left:6px;
     zoom:1;
     z-index:1;
     position:relative;
 }
 .x-window-tr {
-	background: transparent url(../images/default/window/right-corners.png) no-repeat right 0;
-	padding-right:6px;
+    background: transparent url(../images/default/window/right-corners.png) no-repeat right 0;
+    padding-right:6px;
 }
 .x-window-bc {
-	background: transparent url(../images/default/window/top-bottom.png) repeat-x 0 bottom;
+    background: transparent url(../images/default/window/top-bottom.png) repeat-x 0 bottom;
     zoom:1;
 }
 .x-window-bc .x-window-footer {
@@ -72,13 +72,13 @@
     line-height:0;
 }
 .x-window-bl {
-	background: transparent url(../images/default/window/left-corners.png) no-repeat 0 bottom;
-	padding-left:6px;
+    background: transparent url(../images/default/window/left-corners.png) no-repeat 0 bottom;
+    padding-left:6px;
     zoom:1;
 }
 .x-window-br {
-	background: transparent url(../images/default/window/right-corners.png) no-repeat right bottom;
-	padding-right:6px;
+    background: transparent url(../images/default/window/right-corners.png) no-repeat right bottom;
+    padding-right:6px;
     zoom:1;
 }
 .x-window-mc {
@@ -91,17 +91,17 @@
 
 
 .x-window-ml {
-	background: transparent url(../images/default/window/left-right.png) repeat-y 0 0;
-	padding-left:6px;
+    background: transparent url(../images/default/window/left-right.png) repeat-y 0 0;
+    padding-left:6px;
     zoom:1;
 }
 .x-window-mr {
-	background: transparent url(../images/default/window/left-right.png) repeat-y right 0;
-	padding-right:6px;
+    background: transparent url(../images/default/window/left-right.png) repeat-y right 0;
+    padding-right:6px;
     zoom:1;
 }
 .x-panel-nofooter .x-window-bc {
-	height:6px;
+    height:6px;
 }
 .x-window-body {
     overflow:hidden;
@@ -161,17 +161,17 @@
 
 
 .x-dlg-focus{
-	-moz-outline:0 none;
-	outline:0 none;
-	width:0;
-	height:0;
-	overflow:hidden;
-	position:absolute;
-	top:0;
-	left:0;
+    -moz-outline:0 none;
+    outline:0 none;
+    width:0;
+    height:0;
+    overflow:hidden;
+    position:absolute;
+    top:0;
+    left:0;
 }
 .x-dlg-mask{
-	z-index:10000;
+    z-index:10000;
    display:none;
    position:absolute;
    top:0;
@@ -183,10 +183,10 @@
 }
 
 body.ext-ie6.x-body-masked select {
-	visibility:hidden;
+    visibility:hidden;
 }
 body.ext-ie6.x-body-masked .x-window select {
-	visibility:visible;
+    visibility:visible;
 }
 
 .x-window-plain .x-window-mc {

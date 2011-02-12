@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 .guvnor-PopupTitleBar-bar {
-	background-color: #E3E3E3;
-	width: 100%;
+    background-color: #E3E3E3;
+    width: 100%;
 }
 
 .guvnor-PopupTitleBar-title {
-	padding: 2px 0px 0px 4px;
+    padding: 2px 0px 0px 4px;
 }
 
 .guvnor-PopupTitleBar-close-button {
-	padding: 2px 4px 0px 0px;
+    padding: 2px 4px 0px 0px;
 }
