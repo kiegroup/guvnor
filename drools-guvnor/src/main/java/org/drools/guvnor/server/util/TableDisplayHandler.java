@@ -38,7 +38,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * This is to give some flexibility in what fields are displayed.
  * rulelist.properties and archivedrulelist.properties are the files used.
  * 
- * @author Michael Neale
  * @deprecated in favour of {@link AbstractPagedTable}
  * 
  */

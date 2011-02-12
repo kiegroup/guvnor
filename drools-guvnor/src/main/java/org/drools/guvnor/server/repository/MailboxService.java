@@ -33,7 +33,6 @@ import org.drools.repository.UserInfo.InboxEntry;
  * This service the "delivery" of messages to users inboxes for events.
  * Ideally only one instance of this running at a time (at least on a node) to avoid doubling up.
  *
- * @author Michael Neale
  */
 public class MailboxService {
 

@@ -24,7 +24,6 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 /**
  * Represents the GUI data for a fact model definition.
  *
- * @author Michael Neale
  */
 public class FactMetaModel
     implements

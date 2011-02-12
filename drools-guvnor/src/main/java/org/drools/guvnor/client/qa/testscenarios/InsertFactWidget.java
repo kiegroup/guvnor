@@ -25,11 +25,6 @@ import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 
-/**
- * 
- * @author rikkola
- *
- */
 public class InsertFactWidget extends FactWidget {
 
     public InsertFactWidget(String factType,

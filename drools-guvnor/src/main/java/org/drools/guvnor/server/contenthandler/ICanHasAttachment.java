@@ -23,7 +23,6 @@ import org.drools.repository.AssetItem;
 /**
  * =(^.^)=
  * 
- * @author Toni Rikkola
  *
  */
 public interface ICanHasAttachment {

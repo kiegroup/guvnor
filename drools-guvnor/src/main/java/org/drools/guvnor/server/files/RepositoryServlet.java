@@ -38,7 +38,6 @@ import java.util.Locale;
 /**
  * This is a base servlet that all repo servlets inherit behaviour from. 
  * 
- * @author Michael Neale
  */
 public class RepositoryServlet extends HttpServlet {
 

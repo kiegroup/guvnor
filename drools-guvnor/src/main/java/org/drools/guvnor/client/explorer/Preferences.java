@@ -24,7 +24,6 @@ import java.util.Map;
  * Storage for global prefs.
  * Preferences effect behaviour and display.
  * 
- * @author Michael Neale
  */
 public class Preferences {
 

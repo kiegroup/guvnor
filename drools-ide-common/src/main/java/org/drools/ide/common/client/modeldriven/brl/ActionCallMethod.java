@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * 
- */
 package org.drools.ide.common.client.modeldriven.brl;
 
 /**
@@ -25,8 +22,7 @@ package org.drools.ide.common.client.modeldriven.brl;
  * fact bound variable, this will NOT notify the engine of any changes (unless
  * done outside of the engine).
  * 
- * @author isabel
- * 
+ *
  */
 public class ActionCallMethod extends ActionSetField {
     /*

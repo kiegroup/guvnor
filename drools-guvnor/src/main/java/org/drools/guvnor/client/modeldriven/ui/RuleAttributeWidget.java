@@ -45,7 +45,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Displays a list of rule options (attributes).
  *
- * @author Michael Neale
  *         <p/>
  *         Added support for metadata - Michael Rhoden 10/17/08
  */

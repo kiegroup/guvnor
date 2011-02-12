@@ -40,10 +40,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- */
 public class RangeConstraintSingleOperatorTest {
 
     private Verifier verifier;

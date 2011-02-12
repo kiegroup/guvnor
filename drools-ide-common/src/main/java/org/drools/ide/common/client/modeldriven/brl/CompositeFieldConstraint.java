@@ -20,7 +20,6 @@ package org.drools.ide.common.client.modeldriven.brl;
 /**
  * This is a field constraint that may span multiple fields.
  *
- * @author Michael Neale
  */
 public class CompositeFieldConstraint implements FieldConstraint {
 

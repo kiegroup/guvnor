@@ -19,7 +19,6 @@ package org.drools.ide.common.client.modeldriven.brl;
 /**
  * This holds values for rule metadata (eg @foo(bar), @foo2(bar2)).
  * 
- * @author Michael Rhoden
  */
 public class RuleMetadata implements PortableObject {
 

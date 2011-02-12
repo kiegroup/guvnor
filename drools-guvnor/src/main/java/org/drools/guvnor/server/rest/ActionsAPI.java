@@ -31,7 +31,6 @@ import javax.servlet.http.HttpServletResponse;
  *
  * Fix for GUVNOR-1080
  *
- * @author andrew.waterman@gmail.com
  */
 public class ActionsAPI {
 

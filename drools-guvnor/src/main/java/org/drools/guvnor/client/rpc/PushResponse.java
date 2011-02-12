@@ -21,7 +21,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * A response packet that is sent back to the client.
  * messageType is to allow filtering on the client, message data itself contains the message.
- * @author Michael Neale
  */
 public class PushResponse implements IsSerializable {
 

@@ -19,8 +19,7 @@ package org.drools.ide.common.client.modeldriven.dt;
  * This is the config for a condition column. Typically many of them have their
  * constraints added.
  * 
- * @author Michael Neale
- * 
+ *
  */
 public class ConditionCol extends DTColumnConfig {
 

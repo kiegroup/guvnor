@@ -26,7 +26,6 @@ import java.util.Date;
  * This is a discussion record item - persisted via Discussion.java (xstream) to XML, as a
  * a property on an AssetItem.
  * 
- * @author Michael Neale
  */
 public class DiscussionRecord implements IsSerializable {
 

@@ -24,7 +24,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * A request for AssetItem paged data used from the Knowledge Bases Browser
  * 
  * @see AssetPageResponse
- * @author Geoffrey De Smet
  */
 public class AssetPageRequest extends PageRequest
         implements

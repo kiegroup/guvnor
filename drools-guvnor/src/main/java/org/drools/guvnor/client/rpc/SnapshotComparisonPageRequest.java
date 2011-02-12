@@ -18,7 +18,6 @@ package org.drools.guvnor.client.rpc;
 /**
  * A request for Snapshot comparison differences.
  * 
- * @author manstis
  */
 public class SnapshotComparisonPageRequest extends PageRequest {
 

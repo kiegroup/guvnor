@@ -16,10 +16,6 @@
 
 package org.drools.ide.common.factconstraint.model;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- */
 public class Person {
     private String name;
     private int age;

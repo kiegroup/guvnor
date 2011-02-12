@@ -22,10 +22,6 @@ import java.util.Map;
 import org.drools.ide.common.client.factconstraints.ArgumentNotSetException;
 import org.drools.ide.common.client.factconstraints.dataprovider.FieldDataProvider;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- */
 public abstract class DefaultFieldDataProviderImpl implements FieldDataProvider {
 
     private String factType;

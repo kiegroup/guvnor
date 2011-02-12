@@ -39,7 +39,6 @@ import com.google.gwt.user.client.Command;
  * If it needs to be loaded, then it will load, and then call the appropriate action,
  * and keep it in the cache.
  *
- * @author Michael Neale
  *
  */
 public class SuggestionCompletionCache {

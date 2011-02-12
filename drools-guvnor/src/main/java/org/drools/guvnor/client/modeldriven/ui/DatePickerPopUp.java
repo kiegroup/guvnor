@@ -31,11 +31,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 
-/**
- * 
- * @author Toni Rikkola
- *
- */
 public class DatePickerPopUp extends PopupPanel {
     private Label     timeColonLabel  = new Label( ":" );
 

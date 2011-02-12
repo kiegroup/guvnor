@@ -45,8 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
  * A sidebar for a VericalDecisionTable. This provides a vertical list of
  * controls to add and remove the associated row from the DecisionTable.
  * 
- * @author manstis
- * 
+ *
  */
 public class VerticalDecisionTableSidebarWidget extends
         DecoratedGridSidebarWidget<DTColumnConfig> {
@@ -191,8 +190,7 @@ public class VerticalDecisionTableSidebarWidget extends
     /**
      * Simple spacer to ensure scrollable part of sidebar aligns with grid.
      * 
-     * @author manstis
-     * 
+     *
      */
     private class VerticalSideBarSpacerWidget extends CellPanel {
 

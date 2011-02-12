@@ -22,7 +22,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 /**
  * Interface used by the standalone editor to convert request parameters
  * to RuleAssets.
- * @author esteban.aliverti
  */
 public interface RuleAssetProvider {
     

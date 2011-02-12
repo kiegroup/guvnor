@@ -37,7 +37,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Shows the results of an analysis run.
- * @author Michael Neale
  */
 public class VerifierResultWidget extends Composite {
 

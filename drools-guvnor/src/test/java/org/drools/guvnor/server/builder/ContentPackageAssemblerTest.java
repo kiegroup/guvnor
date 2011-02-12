@@ -62,7 +62,6 @@ import org.mvel2.MVEL;
 
 /**
  * This will unit test package assembly into a binary.
- * @author Michael Neale
  */
 public class ContentPackageAssemblerTest extends GuvnorTestBase {
 

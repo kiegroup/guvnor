@@ -20,10 +20,6 @@ import java.io.Serializable;
 
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 
-/**
- *
- * @author esteban
- */
 public class DefaultCustomFormImplementation implements CustomFormConfiguration, Serializable{
 
     private int width = 200;

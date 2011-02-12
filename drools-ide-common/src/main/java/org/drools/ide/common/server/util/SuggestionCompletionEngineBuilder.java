@@ -34,7 +34,6 @@ import org.drools.lang.dsl.DSLMappingEntry;
 /**
  * A builder to incrementally populate a SuggestionCompletionEngine
  *
- * @author etirelli
  */
 public class SuggestionCompletionEngineBuilder {
 

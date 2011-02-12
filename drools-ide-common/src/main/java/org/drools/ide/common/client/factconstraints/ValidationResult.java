@@ -16,10 +16,6 @@
 
 package org.drools.ide.common.client.factconstraints;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- */
 public class ValidationResult {
     private boolean success;
     private String message;

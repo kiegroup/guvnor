@@ -21,7 +21,6 @@ package org.drools.ide.common.client.modeldriven.brl;
  * it will notify the engine of the changes.
  * This only applies to bound fact variables from the LHS.
  * 
- * @author Michael Neale
  */
 public class ActionUpdateField extends ActionSetField {
 

@@ -29,9 +29,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author Michael Neale
- */
 public class EventsTest extends GuvnorTestBase {
 
     @Before

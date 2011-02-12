@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
  * privileges to check-in the file, so we use the admin user
  * for now.
  * 
- * @author Shahad Ahmed
  */
 public class MigrateRepository {
 

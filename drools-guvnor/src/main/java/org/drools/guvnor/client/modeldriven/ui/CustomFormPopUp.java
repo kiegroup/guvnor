@@ -31,10 +31,6 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 
-/**
- *
- * @author esteban
- */
 public class CustomFormPopUp extends FormStylePopup {
 
     private Constants                     constants = ((Constants) GWT.create( Constants.class ));

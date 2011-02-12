@@ -18,7 +18,6 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 /**
  * Configuration singleton class for RuleModeller. 
- * @author esteban.aliverti
  */
 public class RuleModellerConfiguration {
     private static RuleModellerConfiguration INSTANCE;

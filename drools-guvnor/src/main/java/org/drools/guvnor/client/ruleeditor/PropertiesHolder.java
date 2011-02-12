@@ -24,7 +24,6 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 /**
  * Properties representation used for RPC data exchange
  *
- *  @author Anton Arhipov
  */
 public class PropertiesHolder implements PortableObject {
 

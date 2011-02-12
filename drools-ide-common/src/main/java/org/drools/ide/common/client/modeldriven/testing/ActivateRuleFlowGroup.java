@@ -16,10 +16,6 @@
 
 package org.drools.ide.common.client.modeldriven.testing;
 
-/**
- * @author Toni Rikkola 
- *
- */
 public class ActivateRuleFlowGroup
     implements
     Fixture {

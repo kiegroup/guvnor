@@ -34,11 +34,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class VerifyFactsPanel extends VerticalPanel {
 
     private Constants            constants = GWT.create( Constants.class );

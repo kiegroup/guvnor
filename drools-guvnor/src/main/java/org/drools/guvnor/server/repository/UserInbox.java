@@ -30,7 +30,6 @@ import java.util.Iterator;
 
 /**
  * This manages the users "inbox".
- * @author Michael Neale
  */
 public class UserInbox {
     static final int MAX_RECENT_EDITED = 200;

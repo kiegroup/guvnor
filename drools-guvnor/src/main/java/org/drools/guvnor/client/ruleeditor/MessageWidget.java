@@ -25,11 +25,6 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Composite;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class MessageWidget extends Composite {
 
     interface MessageTemplate

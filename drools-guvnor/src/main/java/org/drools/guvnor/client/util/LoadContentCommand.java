@@ -17,11 +17,6 @@ package org.drools.guvnor.client.util;
 
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * 
- * @author rikkola
- *
- */
 public interface LoadContentCommand {
     public Widget load();
 }

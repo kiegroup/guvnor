@@ -23,7 +23,6 @@ import com.google.gwt.user.client.Command;
 
 /**
  * This presents the results of a bulk run.
- * @author Michael Neale
  */
 public class BulkRunResult
     implements

@@ -19,7 +19,6 @@ package org.drools.guvnor.client.ruleeditor.toolbar;
 /**
  * This interface is used by ActionToolbar to know which buttons should be 
  * displayed
- * @author esteban.aliverti
  */
 public interface ActionToolbarButtonsConfigurationProvider {
 

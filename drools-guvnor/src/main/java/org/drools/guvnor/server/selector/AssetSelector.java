@@ -25,7 +25,6 @@ import org.drools.repository.AssetItem;
  *
  * Asset selectors should be stateless, they will be called multiple times.
  *
- * @author Michael Neale
  *
  */
 public interface AssetSelector {

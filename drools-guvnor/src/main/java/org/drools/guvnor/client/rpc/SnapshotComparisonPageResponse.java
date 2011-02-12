@@ -19,7 +19,6 @@ package org.drools.guvnor.client.rpc;
 /**
  * A Page of Snapshot comparison results for display in a PagedTable
  * 
- * @author manstis
  */
 public class SnapshotComparisonPageResponse extends PageResponse<SnapshotComparisonPageRow> {
 

@@ -17,11 +17,6 @@ package org.drools.guvnor.client.resources;
 
 import com.google.gwt.resources.client.ImageResource;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class RuleFormatImageResource
     implements
     ImageResource,

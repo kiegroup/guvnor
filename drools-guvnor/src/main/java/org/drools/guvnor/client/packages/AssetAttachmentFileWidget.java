@@ -44,8 +44,6 @@ import com.google.gwt.user.client.ui.Widget;
  * This wraps a file uploader utility for model packages.
  * Model packages are jar files.
  *
- * @author Michael Neale
- * @author Fernando Meyer
  */
 
 public abstract class AssetAttachmentFileWidget extends Composite

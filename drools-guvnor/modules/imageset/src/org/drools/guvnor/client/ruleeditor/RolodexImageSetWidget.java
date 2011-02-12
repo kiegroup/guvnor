@@ -30,7 +30,6 @@ import org.drools.guvnor.client.ruleeditor.RuleViewer;
  * RolodexImageSetWidget makes use of <a href="http://code.google.com/p/gwt-rolodex/">rolodex</a><br/>
  * widget to display the attached images.
  *
- * @author Anton Arhipov
  */
 public class RolodexImageSetWidget extends AssetAttachmentFileWidget {
 

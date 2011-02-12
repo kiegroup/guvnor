@@ -24,7 +24,6 @@ import java.util.Set;
 /**
  * Map that uses a collection of Strings as a key.
  * 
- * @author trikkola
  *
  */
 public class MultiKeyMap<T> {

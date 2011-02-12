@@ -33,10 +33,6 @@
 
 package org.drools.guvnor.client.common;
 
-/**
- * @author fernandomeyer
- *
- */
 public interface IDirtyable {
 
 }

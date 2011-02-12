@@ -28,11 +28,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class FiredRulesPanel extends HorizontalPanel {
 
     private Constants            constants = ((Constants) GWT.create( Constants.class ));

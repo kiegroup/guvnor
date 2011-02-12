@@ -27,11 +27,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class AddButton extends Composite
     implements
     HasClickHandlers {

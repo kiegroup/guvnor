@@ -24,7 +24,6 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 
 /**
  * A superclass for the widgets present in RuleModeller. 
- * @author esteban.aliverti@gmail.com
  */
 public abstract class RuleModellerWidget extends DirtyableComposite {
 

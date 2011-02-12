@@ -34,7 +34,6 @@ import org.junit.Test;
  * Some basic unit tests for compilation and snapshot
  * creation in the ActionsAPIServlet.
  *
- * @author andrew.waterman@gmail.com
  */
 public class ActionAPIServletTest extends GuvnorTestBase {
 

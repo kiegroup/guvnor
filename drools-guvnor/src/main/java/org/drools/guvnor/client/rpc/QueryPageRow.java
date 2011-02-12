@@ -21,7 +21,6 @@ import java.util.Date;
 /**
  * A single row of a paged data
  * 
- * @author manstis
  */
 public class QueryPageRow extends AbstractAssetPageRow {
 

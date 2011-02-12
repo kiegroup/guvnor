@@ -26,10 +26,6 @@ import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * @author rikkola
- *
- */
 public class SummaryTableTest {
 
     private SummaryTable     summaryTable;

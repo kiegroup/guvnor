@@ -19,11 +19,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class LazyStackPanelRow extends VerticalPanel {
 
     private final AbstractLazyStackPanelHeader header;

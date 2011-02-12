@@ -18,7 +18,6 @@ package org.drools.guvnor.client.rpc;
 /**
  * A Query request.
  * 
- * @author manstis
  */
 public class QueryPageRequest extends PageRequest {
 

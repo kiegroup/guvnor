@@ -57,7 +57,6 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * This is the new smart widget that works off the model.
- * @author Michael Neale
  *
  */
 public class FactPatternWidget extends RuleModellerWidget {

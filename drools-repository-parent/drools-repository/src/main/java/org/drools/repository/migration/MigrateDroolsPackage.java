@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 /**
  * This is a one time class which will be used to migrate package header info for drools.
  * Only needed for drools version 4 repositories.
- * @author Michael Neale
  */
 public class MigrateDroolsPackage {
 

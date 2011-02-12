@@ -22,9 +22,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SelectionColumn<T> extends Column<T, Boolean> {
 
     public static <T> void createAndAddSelectionColumn(CellTable<T> cellTable) {

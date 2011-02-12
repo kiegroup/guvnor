@@ -55,8 +55,7 @@ import com.google.gwt.user.client.ui.Composite;
  * necessary boiler-plate to convert from DTColumnConfig objects to the
  * DynamicData related classes used by the DecoratedGridWidget
  * 
- * @author manstis
- * 
+ *
  */
 public class VerticalDecisionTableWidget extends Composite
     implements

@@ -17,9 +17,6 @@
 package org.drools.ide.common.client.modeldriven.brl;
 
 
-/**
- * @author baunax@gmail.com
- */
 public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
 
     public SingleFieldConstraintEBLeftSide() {

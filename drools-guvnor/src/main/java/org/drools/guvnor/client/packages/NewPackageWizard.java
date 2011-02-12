@@ -51,7 +51,6 @@ import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
 /**
  * This is the wizard used when creating new packages or importing them.
  *
- * @author Michael Neale
  */
 public class NewPackageWizard extends FormStylePopup {
 

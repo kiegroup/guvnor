@@ -34,11 +34,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class FactModelsEditor extends Composite {
 
     private static Constants constants = ((Constants) GWT.create( Constants.class ));

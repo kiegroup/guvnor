@@ -25,11 +25,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class AddExecuteButton extends Button {
 
     private final static Constants constants = ((Constants) GWT.create( Constants.class ));

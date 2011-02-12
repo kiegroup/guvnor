@@ -30,7 +30,6 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * This represents a test scenario.
  * It also encapsulates the result of a scenario run.
  *
- * @author Michael Neale
  */
 public class Scenario
     implements

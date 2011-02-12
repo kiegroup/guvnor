@@ -53,7 +53,6 @@ import com.google.gwt.user.client.ui.Widget;
  * The editors will make changes to the rpc objects in place, and when checking in the whole RPC
  * objects will be sent back to the server.
  *
- * @author Michael Neale
  */
 public class EditorLauncher {
 

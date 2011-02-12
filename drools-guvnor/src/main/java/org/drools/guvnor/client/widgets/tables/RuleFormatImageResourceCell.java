@@ -24,10 +24,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 
-/**
-*
-* @author rikkola
-*/
 public class RuleFormatImageResourceCell extends AbstractCell<RuleFormatImageResource> {
 
     @Override

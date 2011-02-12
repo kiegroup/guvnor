@@ -28,7 +28,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 /**
  * Properties (key/value pairs) editor with a file attachment.
  * 
- * @author Anton Arhipov
  */
 public class PropertiesWidget extends AssetAttachmentFileWidget
     implements

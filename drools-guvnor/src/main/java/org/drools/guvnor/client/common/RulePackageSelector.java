@@ -28,7 +28,6 @@ import com.google.gwt.user.client.ui.ListBox;
 
 /**
  * A rule package selector widget.
- * @author michael neale
  */
 public class RulePackageSelector extends Composite {
 

@@ -35,7 +35,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the tab panel manager.
- * @author Fernando Meyer, Michael Neale
  */
 public class ExplorerViewCenterPanel extends Composite {
 

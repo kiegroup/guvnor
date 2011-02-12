@@ -22,11 +22,6 @@ import java.util.List;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.ValidationResult;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- * @author baunax@gmail.com
- */
 public interface Constraint extends Serializable {
     public List<String> getArgumentKeys();
 

@@ -22,7 +22,6 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 /**
  * Holds field and value for "action" parts of the rule.
  * 
- * @author Michael Neale
  */
 public class CallFieldValue implements  FieldNature,PortableObject {
 

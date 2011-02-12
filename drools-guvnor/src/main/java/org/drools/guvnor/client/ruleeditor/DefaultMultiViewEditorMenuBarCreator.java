@@ -23,7 +23,6 @@ import org.drools.guvnor.client.messages.Constants;
 /**
  * Default implementation of EditorMenuBarCreator that includes 2 button:
  * "Save All Changes" and "Save And Close All" 
- * @author esteban.aliverti
  */
 public class DefaultMultiViewEditorMenuBarCreator implements MultiViewEditorMenuBarCreator {
 

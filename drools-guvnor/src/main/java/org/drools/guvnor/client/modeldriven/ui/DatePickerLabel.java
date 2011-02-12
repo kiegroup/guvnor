@@ -30,11 +30,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 
-/**
- * 
- * @author Toni Rikkola
- *
- */
 public class DatePickerLabel extends DatePicker {
 
     protected Label   labelWidget = new Label();

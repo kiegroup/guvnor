@@ -20,7 +20,6 @@ import com.google.gwt.user.client.ui.MenuBar;
 
 /**
  * Creates a MenuBar component for a MultiViewEditor instance
- * @author esteban.aliverti
  */
 public interface MultiViewEditorMenuBarCreator {
 

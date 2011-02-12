@@ -63,7 +63,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * This is the widget for building packages, validating etc. Visually decorates
  * or wraps a rule editor widget with buttons for this purpose.
  * 
- * @author Michael Neale
  */
 public class PackageBuilderWidget extends Composite {
 

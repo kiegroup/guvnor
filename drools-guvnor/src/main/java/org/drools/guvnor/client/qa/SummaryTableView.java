@@ -17,10 +17,6 @@ package org.drools.guvnor.client.qa;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-/**
- * @author rikkola
- *
- */
 public interface SummaryTableView
     extends
     IsWidget {

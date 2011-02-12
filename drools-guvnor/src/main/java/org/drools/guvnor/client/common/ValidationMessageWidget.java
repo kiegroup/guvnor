@@ -27,7 +27,6 @@ import org.drools.guvnor.client.resources.Images;
  * This presents validation error messages to the user, from the server side.
  * Such as validation or compile errors.
  * 
- * @author Michael Neale
  */
 public class ValidationMessageWidget extends FormStylePopup {
 

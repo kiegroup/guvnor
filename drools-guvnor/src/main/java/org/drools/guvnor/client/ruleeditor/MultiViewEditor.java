@@ -41,11 +41,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * 
- * @author toni rikkola
- *
- */
 public class MultiViewEditor extends GuvnorEditor {
 
     private Constants                                 constants       = GWT.create( Constants.class );

@@ -91,7 +91,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This is the parent widget that contains the model based rule builder.
  *
- * @author Michael Neale
  *
  */
 public class RuleModeller extends DirtyableComposite

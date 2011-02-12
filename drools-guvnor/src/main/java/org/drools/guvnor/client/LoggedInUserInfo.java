@@ -32,7 +32,6 @@ import com.google.gwt.core.client.GWT;
 
 /**
  * Simple widget to show who is logged in, and a link to logout.
- * @author Fernando Meyer
  */
 public class LoggedInUserInfo extends Composite {
 

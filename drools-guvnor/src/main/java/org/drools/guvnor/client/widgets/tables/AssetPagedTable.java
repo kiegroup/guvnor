@@ -38,7 +38,6 @@ import com.google.gwt.view.client.HasData;
 /**
  * Widget with a table of Assets.
  * 
- * @author (Originally) Geoffrey De Smet
  */
 public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
 

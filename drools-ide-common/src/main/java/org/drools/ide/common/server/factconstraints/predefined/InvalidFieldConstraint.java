@@ -24,10 +24,6 @@ import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.ValidationResult;
 import org.drools.ide.common.server.factconstraints.DefaultFieldConstraintImpl;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- */
 public class InvalidFieldConstraint extends DefaultFieldConstraintImpl {
     private static final long serialVersionUID = 501l;
     public static final String NAME = "IvalidFieldConstraint";

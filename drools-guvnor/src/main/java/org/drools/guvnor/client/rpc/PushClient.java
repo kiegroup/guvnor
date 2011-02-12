@@ -27,7 +27,6 @@ import org.drools.guvnor.client.common.GenericCallback;
 
 /**
  * This manages "subscriptions" for when messages are pushed from the server.
- * @author Michael Neale
  */
 public class PushClient {
 

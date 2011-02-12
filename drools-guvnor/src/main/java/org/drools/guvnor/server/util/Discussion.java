@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 /**
  * Utility methods for persisting discussion data as a property on an asset.
- * @author Michael Neale
  */
 public class Discussion {
 

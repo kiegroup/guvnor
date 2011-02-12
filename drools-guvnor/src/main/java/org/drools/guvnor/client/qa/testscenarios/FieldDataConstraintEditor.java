@@ -58,7 +58,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Constraint editor for the FieldData in the Given Section
  *
- * @author Nicolas Heron
  */
 
 public class FieldDataConstraintEditor extends DirtyableComposite {

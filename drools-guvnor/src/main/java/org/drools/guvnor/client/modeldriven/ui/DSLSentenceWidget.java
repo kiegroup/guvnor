@@ -48,7 +48,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This displays a widget to edit a DSL sentence.
  * 
- * @author Michael Neale
  */
 public class DSLSentenceWidget extends RuleModellerWidget {
 

@@ -19,11 +19,6 @@ package org.drools.guvnor.client.rpc;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.drools.guvnor.client.ruleeditor.standalone.StandaloneEditorInvocationParameters;
 
-/**
- * 
- * @author esteban.aliverti
- *
- */
 public interface StandaloneEditorServiceAsync {
 
     void getInvocationParameters(String parametersUUID, AsyncCallback<StandaloneEditorInvocationParameters> asyncCallback);

@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
  * repository. It is used to pass information about rules stored in the
  * repository.
  * 
- * @author btruitt
  */
 public class AssetItem extends CategorisableItem {
     private Logger             log                                  = LoggerFactory.getLogger( AssetItem.class );

@@ -53,7 +53,6 @@ import org.jboss.seam.security.permission.PermissionResolver;
  *
  *
 
- * @author Jervis Liu
  */
 @Name("org.jboss.seam.security.roleBasedPermissionResolver")
 @Scope(APPLICATION)

@@ -22,7 +22,6 @@ import com.google.gwt.event.shared.HasHandlers;
  * A widget that implements this interface is a public source of
  * {@link ColumnResizeEvent} events.
  * 
- * @author manstis
  */
 public interface HasColumnResizeHandlers extends HasHandlers {
 

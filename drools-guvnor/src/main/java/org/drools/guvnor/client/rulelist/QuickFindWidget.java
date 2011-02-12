@@ -54,7 +54,6 @@ import com.gwtext.client.util.Format;
  * This is for quickly finding an asset by name. Partial completion is allowed.
  * This also uses some auto completion magic.
  * 
- * @author Michael Neale
  */
 public class QuickFindWidget extends Composite {
 

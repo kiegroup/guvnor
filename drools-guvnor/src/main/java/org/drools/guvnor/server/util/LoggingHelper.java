@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Collects messages for displaying in the GUI as well as providing a logger.
- * @author Michael Neale.
  *
  */
 public class LoggingHelper {

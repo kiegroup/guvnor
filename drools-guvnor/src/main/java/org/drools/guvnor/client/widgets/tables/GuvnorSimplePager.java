@@ -27,8 +27,7 @@ import com.google.gwt.view.client.Range;
  * rows are always rendered even if the "last" page has less than
  * <code>pageSize</code> rows remain.
  * 
- * @author manstis
- * 
+ *
  */
 public class GuvnorSimplePager extends SimplePager {
 

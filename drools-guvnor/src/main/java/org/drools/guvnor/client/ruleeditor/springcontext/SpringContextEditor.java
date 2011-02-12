@@ -39,7 +39,6 @@ import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
 /**
  * This is the default Spring editor widget - more to come later.
- * @author Nicolas Sanchez
  */
 public class SpringContextEditor extends DirtyableComposite
     implements

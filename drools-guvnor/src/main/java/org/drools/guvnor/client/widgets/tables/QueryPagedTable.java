@@ -40,7 +40,6 @@ import com.google.gwt.view.client.HasData;
 /**
  * Widget with a table of repository query results.
  * 
- * @author manstis
  */
 public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
 

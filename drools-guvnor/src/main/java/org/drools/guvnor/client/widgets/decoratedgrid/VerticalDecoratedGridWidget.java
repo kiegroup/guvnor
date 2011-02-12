@@ -29,8 +29,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * @param <T>
  *            The type of domain columns represented
  * 
- * @author manstis
- * 
+ *
  */
 public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
 

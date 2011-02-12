@@ -16,10 +16,6 @@
 
 package org.drools.ide.common.client.factconstraints;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- */
 public class ArgumentNotSetException extends Exception {
 
     private static final long serialVersionUID = 501l;

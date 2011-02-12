@@ -24,11 +24,6 @@ import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class GivenLabelButton extends HorizontalPanel {
 
     private Constants constants = ((Constants) GWT.create( Constants.class ));

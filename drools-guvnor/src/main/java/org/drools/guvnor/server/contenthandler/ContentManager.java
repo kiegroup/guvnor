@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This configures the content handlers based on a props file.
- * @author Barry Knapp
  */
 public class ContentManager {
 

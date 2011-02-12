@@ -27,11 +27,6 @@ import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class GivenPanel extends VerticalPanel {
     public GivenPanel(List<ExecutionTrace> listExecutionTrace,
                       int executionTraceLine,

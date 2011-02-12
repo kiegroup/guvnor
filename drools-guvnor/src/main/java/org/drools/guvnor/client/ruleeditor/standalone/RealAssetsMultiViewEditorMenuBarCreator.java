@@ -25,7 +25,6 @@ import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
 
 /**
  * Creates a default menu bar with an additional "Cancel" button.
- * @author esteban.aliverti
  */
 public class RealAssetsMultiViewEditorMenuBarCreator extends DefaultMultiViewEditorMenuBarCreator {
 

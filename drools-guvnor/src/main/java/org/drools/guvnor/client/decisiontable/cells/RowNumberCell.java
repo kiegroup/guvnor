@@ -21,8 +21,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 /**
  * A Cell that renders it's corresponding row index number only
  * 
- * @author manstis
- * 
+ *
  */
 public class RowNumberCell extends AbstractCell<Integer> {
 

@@ -20,7 +20,6 @@ package org.drools.guvnor.client.common;
  * This is a central location for all form fields use in HTML forms for submission to the file servlet.
  * The all must be unique, of course.
  * 
- * @author Michael Neale
  */
 public class HTMLFileManagerFields {
 

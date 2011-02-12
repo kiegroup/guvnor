@@ -34,7 +34,6 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * Using this class we don't need to set the header and event handlers for the header everywhere we use DisclosurePanels.
  * 
- * @author rikkola
  *
  */
 public class DecoratedDisclosurePanel extends Composite

@@ -23,7 +23,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Returned by the builder.
- * @author Michael Neale
  */
 public class BuilderResult
     implements

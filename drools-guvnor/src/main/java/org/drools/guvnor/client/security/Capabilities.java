@@ -30,7 +30,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * (however the Capabilities do not enforce actions on the server - these are more for GUI convenience so elements are not displayed
  * that are not relevant to a given users role).
  *
- * @author Michael Neale
  *
  */
 public class Capabilities implements IsSerializable {

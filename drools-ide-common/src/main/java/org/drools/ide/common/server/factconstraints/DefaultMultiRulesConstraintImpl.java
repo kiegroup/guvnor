@@ -27,7 +27,6 @@ import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
  * This class contains an internal counter to avoid multiple declaration of
  * package, imports and globals.
  * The counter must be handled by subclasses.
- * @author esteban.aliverti@gmail.com
  */
 public abstract class DefaultMultiRulesConstraintImpl extends DefaultFieldConstraintImpl {
 

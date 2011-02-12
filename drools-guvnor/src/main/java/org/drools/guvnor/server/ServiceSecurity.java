@@ -28,7 +28,6 @@ import org.jboss.seam.security.Identity;
 
 /**
  * Handles security checks.
- * @author Jari Timonen
  *
  */
 public class ServiceSecurity {

@@ -18,7 +18,6 @@ package org.drools.guvnor.client.rpc;
 /**
  * A Category request.
  * 
- * @author manstis
  */
 public class CategoryPageRequest extends PageRequest {
 

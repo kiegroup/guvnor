@@ -18,11 +18,6 @@ package org.drools.guvnor.client.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-/**
- * 
- * @author rikkola
- *
- */
 public interface VerificationServiceAsync {
     
     void verifyAsset(org.drools.guvnor.client.rpc.RuleAsset asset,

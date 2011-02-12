@@ -16,10 +16,6 @@
 
 package org.drools.guvnor.client.ruleeditor.springcontext;
 
-/**
- *
- * @author esteban
- */
 public interface SpringContextElementSelectedListener {
 
     public void onElementSelected(String elementName, String pasteValue);

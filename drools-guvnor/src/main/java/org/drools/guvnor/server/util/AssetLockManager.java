@@ -28,7 +28,6 @@ import org.jboss.seam.annotations.Startup;
 /**
  * Manages the locks for assets.
  * 
- * @author Toni Rikkola
  *
  */
 @Scope(ScopeType.APPLICATION)

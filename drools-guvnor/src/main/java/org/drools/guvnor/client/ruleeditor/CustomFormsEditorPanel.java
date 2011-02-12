@@ -42,10 +42,6 @@ import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 import org.drools.ide.common.client.factconstraints.helper.CustomFormsContainer;
 
-/**
- *
- * @author esteban
- */
 public class CustomFormsEditorPanel extends Composite {
     private Constants constants = GWT.create(Constants.class);
     private ListBox factsCombo = new ListBox(false);

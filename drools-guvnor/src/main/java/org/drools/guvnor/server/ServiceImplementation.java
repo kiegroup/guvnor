@@ -177,7 +177,6 @@ import freemarker.template.Template;
  * front end. Generally requests for this are passed through from
  * RepositoryServiceServlet - and Seam manages instances of this.
  * 
- * @author Michael Neale
  */
 @Name("org.drools.guvnor.client.rpc.RepositoryService")
 @AutoCreate

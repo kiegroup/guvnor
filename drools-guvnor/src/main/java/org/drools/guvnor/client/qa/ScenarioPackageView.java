@@ -42,7 +42,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 /**
  * This shows a list of scenarios in a package.
  * And allows them to be run in bulk.
- * @author Michael Neale
  */
 public class ScenarioPackageView extends Composite {
 

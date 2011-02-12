@@ -38,11 +38,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class AttributeSelectorPopup extends FormStylePopup {
 
     private static Constants constants = GWT.create( Constants.class );

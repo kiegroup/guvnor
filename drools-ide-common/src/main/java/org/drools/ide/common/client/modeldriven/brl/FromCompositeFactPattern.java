@@ -16,10 +16,6 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- */
 public class FromCompositeFactPattern implements IFactPattern {
 
     public FactPattern factPattern;

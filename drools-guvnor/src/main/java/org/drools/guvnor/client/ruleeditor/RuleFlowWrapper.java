@@ -38,12 +38,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/**
- * 
- * 
- * @author Toni Rikkola
- * 
- */
 public class RuleFlowWrapper extends Composite
     implements
     SaveEventListener,

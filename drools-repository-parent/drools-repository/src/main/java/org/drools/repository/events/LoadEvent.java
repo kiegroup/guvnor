@@ -30,7 +30,6 @@ import java.io.InputStream;
  * To install, create an instance of LoadEvent, make it available on the classpath and then set the system property
  * 'loadEventListener' with the value of the full name of the class. 
  *
- * @author Michael Neale
  */
 public interface LoadEvent {
 

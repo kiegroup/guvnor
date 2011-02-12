@@ -20,7 +20,6 @@ import com.google.gwt.event.shared.GwtEvent;
 /**
  * Represents a column resize event.
  * 
- * @author manstis
  */
 public class ColumnResizeEvent extends GwtEvent<ColumnResizeHandler> {
 

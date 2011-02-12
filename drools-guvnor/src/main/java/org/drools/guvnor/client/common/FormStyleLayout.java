@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
  * This form style class is to be extended to provide
  * "form style" dialogs (eg in a popup).
  *
- * @author Michael Neale
  */
 public class FormStyleLayout extends Composite {
 

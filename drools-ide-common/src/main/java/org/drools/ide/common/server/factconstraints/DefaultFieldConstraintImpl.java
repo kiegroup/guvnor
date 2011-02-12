@@ -27,11 +27,6 @@ import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.ValidationResult;
 import org.drools.verifier.report.components.Severity;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- * @author baunax@gmail.com
- */
 public abstract class DefaultFieldConstraintImpl implements Constraint {
 
     private static final long serialVersionUID = 501l;

@@ -22,9 +22,6 @@ import org.drools.guvnor.client.ruleeditor.EditorWidget;
 
 import static org.drools.guvnor.client.common.AssetFormats.*;
 
-/**
- * @author esteban.aliverti
- */
 public class DefaultActionToolbarButtonsConfigurationProvider
         implements
         ActionToolbarButtonsConfigurationProvider {

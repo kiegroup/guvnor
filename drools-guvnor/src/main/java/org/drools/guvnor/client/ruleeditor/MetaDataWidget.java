@@ -55,7 +55,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This displays the metadata for a versionable asset.
  * It also captures edits, but it does not load or save anything itself.
- * @author Michael Neale
  */
 public class MetaDataWidget extends Composite {
 

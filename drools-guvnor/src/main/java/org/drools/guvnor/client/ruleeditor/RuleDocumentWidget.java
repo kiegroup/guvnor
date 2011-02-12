@@ -26,7 +26,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 /**
  * This holds the editor and viewer for rule documentation.
  * It will update the model when the text is changed.
- * @author Michael Neale
  *
  */
 public class RuleDocumentWidget extends DirtyableComposite {

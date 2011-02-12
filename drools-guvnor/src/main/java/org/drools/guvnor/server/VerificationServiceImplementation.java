@@ -50,11 +50,6 @@ import org.jboss.seam.security.Identity;
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class VerificationServiceImplementation extends RemoteServiceServlet implements VerificationService {
 
     private static final long          serialVersionUID = 510l;

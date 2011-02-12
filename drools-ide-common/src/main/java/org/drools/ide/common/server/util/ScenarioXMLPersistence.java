@@ -33,7 +33,6 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
  * Persists the scenario model.
- * @author Michael Neale
  */
 public class ScenarioXMLPersistence {
 

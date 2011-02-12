@@ -22,9 +22,6 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
-/**
- * @author Anton Arhipov
- */
 public class XmlFileHandler extends ContentHandler {
     public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)
             throws SerializableException {

@@ -22,8 +22,7 @@ import org.drools.guvnor.client.widgets.tables.SortDirection;
  * need for multiple ValueChangeHandlers for all attributes affecting sorting on
  * a Column.
  * 
- * @author manstis
- * 
+ *
  */
 public class SortConfiguration {
     private SortDirection sortDirection = SortDirection.NONE;

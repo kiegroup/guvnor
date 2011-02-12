@@ -29,11 +29,6 @@ import org.drools.ide.common.client.modeldriven.testing.VerifyRuleFired;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class ExpectationButton extends TestScenarioButton {
 
     private static Images images = GWT.create( Images.class );

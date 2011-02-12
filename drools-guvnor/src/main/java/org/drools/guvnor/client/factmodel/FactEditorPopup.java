@@ -28,11 +28,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class FactEditorPopup {
 
     private static Constants      constants = ((Constants) GWT.create( Constants.class ));

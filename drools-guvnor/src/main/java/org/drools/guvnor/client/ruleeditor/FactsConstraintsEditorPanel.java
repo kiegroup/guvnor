@@ -47,10 +47,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/**
- *
- * @author esteban
- */
 public class FactsConstraintsEditorPanel extends Composite {
 
     private Constants                            constants         = GWT.create( Constants.class );

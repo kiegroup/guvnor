@@ -33,7 +33,6 @@ import org.jboss.seam.security.Identity;
 
 /**
  * This enhances the BRMS repository for lifecycle management.
- * @author Chester Woo/Jervis Liu
  */
 @Scope(ScopeType.SESSION)
 @AutoCreate

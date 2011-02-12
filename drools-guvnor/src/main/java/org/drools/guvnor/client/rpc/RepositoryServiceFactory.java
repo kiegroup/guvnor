@@ -22,7 +22,6 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
  * Creates instances of the repository service for the client code to use.
- * @author Michael Neale
  */
 public class RepositoryServiceFactory {
 

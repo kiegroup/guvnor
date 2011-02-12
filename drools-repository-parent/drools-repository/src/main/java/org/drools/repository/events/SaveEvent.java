@@ -26,7 +26,6 @@ import org.drools.repository.PackageItem;
  * To install an implementation of this, create an instance of SaveEvent, make it available on the classpath
  * and set the system property 'guvnor.saveEventListener' with the full name of the class. 
  *
- * @author Michael Neale
  */
 public interface SaveEvent {
 

@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
  * This is only to be used for testing, eg in hosted mode, or unit tests.
  * This is deliberately in the src/main path. 
  *
- * @author Michael Neale
  */
 public class TestEnvironmentSessionHelper {
 

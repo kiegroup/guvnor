@@ -23,9 +23,6 @@ import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/**
- *
- */
 public class PropertiesHolder implements PortableObject {
 
     /**

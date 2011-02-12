@@ -36,7 +36,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This widget wraps a rule asset widget, and provides actions to validate and view source.
- * @author Michael Neale
  */
 public class RuleValidatorWrapper extends DirtyableComposite
     implements

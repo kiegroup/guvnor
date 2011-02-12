@@ -30,10 +30,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.gwtext.client.util.Format;
 
-/**
- * 
- * @author Toni Rikkola
- */
 class VerifierMessageLinesItem extends TreeItem {
 
     private Constants       constants = GWT.create( Constants.class );

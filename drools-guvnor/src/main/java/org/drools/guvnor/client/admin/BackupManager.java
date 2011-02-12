@@ -40,10 +40,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- *
- * @author Fernando Meyer
- */
 public class BackupManager extends Composite {
 
     private static Images images    = (Images) GWT.create( Images.class );

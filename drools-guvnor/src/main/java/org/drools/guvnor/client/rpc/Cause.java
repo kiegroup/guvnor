@@ -18,11 +18,6 @@ package org.drools.guvnor.client.rpc;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-/**
- * 
- * @author trikkola
- *
- */
 public class Cause
     implements
     IsSerializable {

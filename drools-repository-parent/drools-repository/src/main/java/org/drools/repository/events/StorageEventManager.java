@@ -25,7 +25,6 @@ import java.util.ArrayList;
 
 /**
  * This manages storage events, which may load/save from another location, or just notify on change etc.
- * @author Michael Neale
  */
 public class StorageEventManager {
 

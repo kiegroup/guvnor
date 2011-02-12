@@ -22,11 +22,6 @@ import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class ModelNameHelper {
 
     private static Constants           constants         = ((Constants) GWT.create( Constants.class ));

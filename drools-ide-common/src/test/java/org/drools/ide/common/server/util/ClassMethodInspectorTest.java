@@ -30,11 +30,6 @@ import static org.junit.Assert.*;
 import org.drools.ide.common.server.rules.ClassToGenericClassConverter;
 import org.drools.ide.common.server.util.ClassMethodInspector;
 
-/**
- * 
- * @author Toni Rikkola
- * 
- */
 public class ClassMethodInspectorTest {
 
     @Test

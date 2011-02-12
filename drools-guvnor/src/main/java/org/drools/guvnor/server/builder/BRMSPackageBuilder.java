@@ -50,7 +50,6 @@ import org.jbpm.bpmn2.xml.BPMNSemanticModule;
  * with some functionality needed for the BRMS.
  * This can use the BRMS repo as a classpath.
  *
- * @author Michael Neale
  */
 public class BRMSPackageBuilder extends PackageBuilder {
 

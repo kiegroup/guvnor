@@ -19,7 +19,6 @@ package org.jboss.drools.guvnor.importgenerator;
 /**
  * Constants specifying the template files for generating the output
  * 
- * @author <a href="mailto:mallen@redhat.com">Mat Allen</a>
  *
  */
 public interface Constants {

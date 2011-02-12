@@ -25,7 +25,6 @@ import com.google.gwt.user.client.rpc.RemoteService;
 /**
  * Contains methods for authenticating/authorising from the front end.
  *
- * @author Michael Neale
  */
 public interface SecurityServiceAsync {
 

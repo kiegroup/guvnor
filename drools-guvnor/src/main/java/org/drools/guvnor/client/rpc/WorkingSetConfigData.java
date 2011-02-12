@@ -23,10 +23,6 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 
-/**
- * 
- * @author bauna
- */
 public class WorkingSetConfigData implements PortableObject, Serializable {
     private static final long serialVersionUID = 510l;
 

@@ -32,10 +32,6 @@ import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 
-/**
- * @author rikkola
- *
- */
 public class GuvnorTestBase {
 
     private RulesRepository repository;

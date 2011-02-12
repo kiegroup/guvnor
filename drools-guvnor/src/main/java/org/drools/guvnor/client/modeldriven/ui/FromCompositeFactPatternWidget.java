@@ -40,10 +40,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- *
- * @author esteban
- */
 public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected Constants                constants = ((Constants) GWT.create( Constants.class ));

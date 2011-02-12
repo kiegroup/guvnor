@@ -17,10 +17,6 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-/**
- *
- * @author esteban
- */
 public class FromAccumulateCompositeFactPattern extends FromCompositeFactPattern {
     
     public static final String USE_FUNCTION = "use_function";

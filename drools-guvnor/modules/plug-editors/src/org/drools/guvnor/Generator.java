@@ -22,9 +22,6 @@ import org.apache.tools.ant.Task;
 import java.io.*;
 import java.util.*;
 
-/**
- *
- */
 public abstract class Generator extends Task {
 
     List<Object> configs = new ArrayList<Object>();

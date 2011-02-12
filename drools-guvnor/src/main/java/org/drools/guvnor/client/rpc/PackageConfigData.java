@@ -23,7 +23,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This contains data for a package configuration.
- * @author Michael Neale
  *
  */
 public class PackageConfigData implements IsSerializable {

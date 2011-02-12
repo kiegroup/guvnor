@@ -45,7 +45,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * This is a textual rule editor, which provides DSL content assistance. This is
  * similar (but simpler) to the IDE based one.
  *
- * @author michael neale
  */
 
 public class DSLRuleEditor extends DirtyableComposite {

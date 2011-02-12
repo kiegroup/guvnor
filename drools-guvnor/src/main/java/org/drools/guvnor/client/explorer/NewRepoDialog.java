@@ -33,7 +33,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /**
  * To be shown when the user opens repo for the first time.
- * @author Michael Neale
  *
  */
 public class NewRepoDialog extends FormStylePopup {

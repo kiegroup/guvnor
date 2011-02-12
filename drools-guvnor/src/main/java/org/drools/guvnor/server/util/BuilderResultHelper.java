@@ -22,11 +22,6 @@ import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.server.builder.ContentAssemblyError;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 
-/**
- * 
- * @author Jari Timonen
- * 
- */
 public class BuilderResultHelper {
     public List<BuilderResultLine> generateBuilderResults(ContentPackageAssembler asm) {
         List<BuilderResultLine> result = new ArrayList<BuilderResultLine>( asm.getErrors().size() );

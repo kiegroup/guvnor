@@ -29,11 +29,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 
-/**
- * 
- * @author Toni Rikkola
- *
- */
 abstract class DatePicker extends DirtyableComposite {
 
     protected DatePickerPopUp     datePickerPopUp;

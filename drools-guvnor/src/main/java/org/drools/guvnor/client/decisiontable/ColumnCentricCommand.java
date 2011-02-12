@@ -20,8 +20,7 @@ import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 /**
  * Interface defining commands relating to Column operations
  * 
- * @author manstis
- * 
+ *
  */
 public interface ColumnCentricCommand {
 

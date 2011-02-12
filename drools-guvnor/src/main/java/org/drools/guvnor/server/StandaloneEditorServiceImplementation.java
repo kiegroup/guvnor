@@ -37,7 +37,6 @@ import org.drools.ide.common.server.util.BRXMLPersistence;
 /**
  * All the needed Services in order to get Guvnor's Editors running as standalone
  * app.
- * @author esteban.aliverti
  */
 public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
     implements

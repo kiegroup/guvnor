@@ -24,10 +24,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-/**
- *
- * @author esteban
- */
 public class SpringContextElementsManager {
 
     public static String SPRING_CONTEXT_ELEMENTS_PROPERTIES = "/springContextElements.properties";

@@ -28,9 +28,6 @@ import org.drools.repository.PackageItem;
 import com.google.gwt.user.client.rpc.SerializationException;
 
 
-/**
- *
- */
 public class XmlFileHandler extends PlainTextContentHandler {
     public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)
             throws SerializationException {

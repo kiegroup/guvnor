@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This enhances the BRMS repository for lifecycle management.
- * @author Michael Neale
  */
 @Scope(ScopeType.EVENT)
 @AutoCreate

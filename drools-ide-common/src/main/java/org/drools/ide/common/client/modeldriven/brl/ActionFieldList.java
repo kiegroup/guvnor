@@ -21,7 +21,6 @@ package org.drools.ide.common.client.modeldriven.brl;
  * 
  * Contains the list of fields and their values to be set.
  * 
- * @author Michael Neale
  *
  */
 public abstract class ActionFieldList

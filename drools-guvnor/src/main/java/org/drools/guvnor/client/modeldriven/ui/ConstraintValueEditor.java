@@ -57,8 +57,6 @@ import org.drools.guvnor.client.resources.Images;
  * How this behaves depends on the constraint value type.
  * When the constraint value has no type, it will allow the user to choose the first time.
  *
- * @author Michael Neale
- * @author Fernando Meyer
  */
 public class ConstraintValueEditor extends DirtyableComposite {
 

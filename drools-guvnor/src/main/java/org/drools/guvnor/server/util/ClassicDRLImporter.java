@@ -38,7 +38,6 @@ import org.drools.lang.descr.RuleDescr;
  * This class imports legacy DRL into a structure suitable for storing more
  * normalised in the repository.
  *
- * @author Michael Neale
  */
 public class ClassicDRLImporter {
 
@@ -282,7 +281,6 @@ public class ClassicDRLImporter {
     /**
      * Holds a rule to import. The content does not include the "end".
      *
-     * @author Michael Neale
      */
     public static class Asset {
 

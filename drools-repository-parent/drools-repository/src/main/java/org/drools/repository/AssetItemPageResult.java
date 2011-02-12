@@ -24,7 +24,6 @@ import javax.jcr.RangeIterator;
 /**
  * Used for holding a page of asset data.
  *
- * @author Michael Neale
  */
 public class AssetItemPageResult {
 

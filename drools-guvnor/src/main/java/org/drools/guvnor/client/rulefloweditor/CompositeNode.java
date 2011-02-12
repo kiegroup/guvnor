@@ -33,10 +33,6 @@
 
 package org.drools.guvnor.client.rulefloweditor;
 
-/**
- * @author Toni Rikkola
- *
- */
 public class CompositeNode extends ElementContainerNode {
 
 }

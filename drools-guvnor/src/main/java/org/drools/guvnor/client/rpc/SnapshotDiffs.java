@@ -22,7 +22,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * Differences between two snapshots.
  * Difference between different asset versions.
  * 
- * @author Toni Rikkola
  */
 public class SnapshotDiffs
     implements

@@ -19,7 +19,6 @@ package org.drools.guvnor.client.categorynav;
 /**
  * This represents an event of a category being selected.
  * This means the category widget can be used in several different places.
- * @author Michael Neale
  */
 public interface CategorySelectHandler {
 

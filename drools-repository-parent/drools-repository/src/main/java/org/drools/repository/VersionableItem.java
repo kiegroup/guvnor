@@ -39,7 +39,6 @@ import org.drools.repository.events.StorageEventManager;
  * For dublin core, refer to <a href="http://dublincore.org/documents/dces/">Here</a>
  *
  * @see CategorisableItem for more attributes to do with BRMS resources.
- * @author Ben Truitt, Michael Neale
  *
  */
 public abstract class VersionableItem extends Item {

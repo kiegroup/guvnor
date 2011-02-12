@@ -40,7 +40,6 @@ import org.jboss.seam.security.Identity;
 
 /**
  * This implements security related services.
- * @author Michael Neale
  */
 public class SecurityServiceImpl implements SecurityService {
 

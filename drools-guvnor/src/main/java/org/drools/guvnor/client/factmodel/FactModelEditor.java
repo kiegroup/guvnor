@@ -35,11 +35,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
     private static Constants constants = ((Constants) GWT.create( Constants.class ));

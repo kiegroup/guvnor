@@ -29,9 +29,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- */
 public class PropertiesWidget extends AssetAttachmentFileWidget implements SaveEventListener {
 
     PropertiesHolder properties;

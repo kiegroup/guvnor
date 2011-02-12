@@ -28,7 +28,6 @@ import com.google.gwt.core.client.GWT;
 /**
  * This widget deals with XLS files in "classic" decision tables.
  *
- * @author Michael Neale
  */
 public class DecisionTableXLSWidget extends AssetAttachmentFileWidget {
 

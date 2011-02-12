@@ -56,7 +56,6 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  * Does the discussion panel for assets.
  * 
- * @author Michael Neale
  */
 public class DiscussionWidget extends Composite {
 

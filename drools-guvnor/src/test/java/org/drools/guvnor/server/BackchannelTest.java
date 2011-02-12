@@ -28,9 +28,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.ArrayList;
 
-/**
- * @author Michael Neale
- */
 public class BackchannelTest {
 
     @Test

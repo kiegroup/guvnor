@@ -28,11 +28,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class FactFieldEditor extends Composite {
 
     private static Constants constants = ((Constants) GWT.create( Constants.class ));

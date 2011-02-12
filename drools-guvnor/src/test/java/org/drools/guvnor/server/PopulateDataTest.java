@@ -50,7 +50,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * This sets up the data for a fictional company Billasurf, dealing with surfwear and equipment
  * (for surfing, boarding etc).
  *
- * @author Michael Neale
  */
 public class PopulateDataTest extends GuvnorTestBase {
 

@@ -37,8 +37,6 @@ import java.util.jar.JarFile;
  * (ie classes added in memory only). It requires some more surgery to cope with this. Was worth a try though !
  * (can be wired into the loadClass method of the SuggestionCompletionLoader).
  *
- * @author Mark Derricutt
- * @author Michael Neale
  */
 public class ClassWalker {
 

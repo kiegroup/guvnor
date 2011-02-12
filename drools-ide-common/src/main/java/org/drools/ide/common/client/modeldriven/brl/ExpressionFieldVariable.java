@@ -21,7 +21,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 /**
  * This expression represent a bound field. Right now it only acts as a Text
  * expression
- * @author esteban
  */
 public class ExpressionFieldVariable extends ExpressionText {
 

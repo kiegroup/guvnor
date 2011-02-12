@@ -18,7 +18,6 @@ package org.drools.ide.common.client.modeldriven.brl;
 
 /**
  * This holds values for rule attributes (eg salience, agenda-group etc).
- * @author Michael Neale
  */
 public class RuleAttribute
     implements

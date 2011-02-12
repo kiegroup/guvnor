@@ -26,9 +26,6 @@ import java.util.List;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.junit.Test;
 
-/**
- * @author Michael Neale
- */
 public class DiscussionTest {
 
     @Test

@@ -22,7 +22,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * For showing a log in the GUI (last X messages).
- * @author Michael Neale
  */
 public class LogEntry implements IsSerializable {
 

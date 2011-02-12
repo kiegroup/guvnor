@@ -51,7 +51,6 @@ import org.slf4j.LoggerFactory;
  * into other packages or other types of containers).
  * This is a container "node".
  *
- * @author btruitt
  */
 public class PackageItem extends VersionableItem {
     private static final Logger log = LoggerFactory.getLogger(PackageItem.class);

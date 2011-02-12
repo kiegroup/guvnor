@@ -18,10 +18,6 @@ package org.drools.ide.common.client.factconstraints.dataprovider;
 
 import java.util.Map;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- */
 public interface FieldDataProvider {
     public void setFactTYpe(String factType);
     public void setFieldName(String fieldName);

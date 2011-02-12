@@ -42,8 +42,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  *
  * It is intended to work with the meta data form.
  *
- * @author Michael Neale
- * @author Fernando Meyer
  */
 public class AssetCategoryEditor extends DirtyableComposite {
 

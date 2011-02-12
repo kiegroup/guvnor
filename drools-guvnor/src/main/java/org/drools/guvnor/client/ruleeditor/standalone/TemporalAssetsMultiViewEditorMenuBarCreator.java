@@ -25,7 +25,6 @@ import org.drools.guvnor.client.ruleeditor.MultiViewEditorMenuBarCreator;
 
 /**
  * Creates a menu bar with 2 buttons: "Done" and "Cancel".
- * @author esteban.aliverti
  */
 public class TemporalAssetsMultiViewEditorMenuBarCreator implements MultiViewEditorMenuBarCreator {
 

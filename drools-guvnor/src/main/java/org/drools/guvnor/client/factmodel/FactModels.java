@@ -21,11 +21,6 @@ import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class FactModels
     implements
     PortableObject {

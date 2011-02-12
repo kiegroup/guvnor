@@ -19,10 +19,6 @@ import org.drools.guvnor.client.qa.SummaryTableView.Presenter;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.util.TabOpener;
 
-/**
- * @author rikkola
- *
- */
 public class SummaryTable
     implements
     Presenter {

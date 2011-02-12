@@ -34,7 +34,6 @@ import org.drools.guvnor.server.ServiceImplementation;
  *
  * Fix for GUVNOR-1080
  *
- * @author andrew.waterman@gmail.com
  */
 public class ActionsAPIServlet extends RepositoryServlet {
 

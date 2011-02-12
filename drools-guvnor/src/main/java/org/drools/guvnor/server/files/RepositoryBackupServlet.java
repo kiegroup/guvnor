@@ -37,8 +37,6 @@ import org.drools.guvnor.server.util.LoggingHelper;
  * 
  * This servlet deals with import and export of the repository to XML/zip files.
  * 
- * @author Michael Neale
- * @author Fernando Meyer
  */
 public class RepositoryBackupServlet extends RepositoryServlet {
 

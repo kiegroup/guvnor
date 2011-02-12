@@ -38,7 +38,6 @@ import com.google.gwt.user.client.ui.TextBox;
  * 
  * This button gives a choice of modifying data, based on the positional context.
  *     
- * @author rikkola
  *
  */
 public class NewDataButton extends TestScenarioButton {

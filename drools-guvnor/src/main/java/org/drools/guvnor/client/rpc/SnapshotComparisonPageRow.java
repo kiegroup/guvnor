@@ -19,7 +19,6 @@ package org.drools.guvnor.client.rpc;
 /**
  * A single row of the Snapshot comparison results
  * 
- * @author manstis
  */
 public class SnapshotComparisonPageRow extends AbstractPageRow {
 

@@ -26,11 +26,6 @@ import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.repository.AssetItem;
 import org.junit.Test;
 
-/**
- * 
- * @author Jari Timonen
- *
- */
 public class AssetPageRowPopulatorTest {
 
     @Test

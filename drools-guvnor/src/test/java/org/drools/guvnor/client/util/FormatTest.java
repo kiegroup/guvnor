@@ -22,7 +22,6 @@ import static org.junit.Assert.*;
 
 /**
  * �
- * @author rikkola
  *
  */
 public class FormatTest {

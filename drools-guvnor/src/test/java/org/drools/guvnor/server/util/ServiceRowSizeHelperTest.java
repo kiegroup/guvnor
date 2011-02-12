@@ -25,11 +25,6 @@ import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.junit.Test;
 
-/**
- * 
- * @author Jari Timonen
- *
- */
 public class ServiceRowSizeHelperTest {
     @Test(expected = IllegalStateException.class)
     public void testFixTotalRowSizeThrowsExceptionWhenTotalRowsCountOverInteger() {

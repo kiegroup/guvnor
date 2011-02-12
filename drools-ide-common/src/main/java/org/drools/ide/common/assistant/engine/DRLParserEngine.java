@@ -29,7 +29,6 @@ import org.drools.ide.common.assistant.info.drl.RuleLineContentInfo;
 /**
  * A simple DRL parser implemented with regular expressions to get the offset of rule components
  * 
- * @author lucas
  *
  */
 public class DRLParserEngine extends AbstractParserEngine {

@@ -20,7 +20,6 @@ package org.drools.guvnor.client.rpc;
 /**
  * Returned by the builder.
  * 
- * @author Michael Neale
  */
 public class BuilderResultLine extends AbstractPageRow {
 

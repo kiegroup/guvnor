@@ -34,7 +34,6 @@ import org.drools.repository.RulesRepositoryException;
  * 
  * AssetItem is not a remotable instance, but MetaData is.
  * 
- * @author Michael Neale
  */
 public class MetaDataMapper {
 

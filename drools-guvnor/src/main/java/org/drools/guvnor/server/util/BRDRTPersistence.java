@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 /**
  * This class persists a {@link TemplateModel} to DRL template 
  * 
- * @author baunax
  */
 public class BRDRTPersistence extends BRDRLPersistence {
     private static final Logger         log                 = LoggerFactory.getLogger( BRDRTPersistence.class );

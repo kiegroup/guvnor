@@ -35,10 +35,6 @@ package org.drools.guvnor.client.common;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * @author fernandomeyer
- *
- */
 public class DirtyableVerticalPane extends VerticalPanel implements DirtyableContainer {
     public boolean hasDirty() {
         

@@ -36,9 +36,6 @@ package org.drools.guvnor.client.common;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * @author fernandomeyer
- */
 
 public class DirtyableHorizontalPane extends HorizontalPanel implements DirtyableContainer {
 

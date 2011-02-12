@@ -30,8 +30,7 @@ import com.google.gwt.user.client.ui.PopupPanel.PositionCallback;
 /**
  * A Popup drop-down Editor ;-)
  * 
- * @author manstis
- * 
+ *
  */
 public class PopupDropDownEditCell extends
         AbstractPopupEditCell<String, String> {

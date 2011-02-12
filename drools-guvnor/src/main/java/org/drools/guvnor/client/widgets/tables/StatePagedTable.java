@@ -37,7 +37,6 @@ import com.google.gwt.view.client.HasData;
 /**
  * Widget with a table of "By State" query results.
  * 
- * @author manstis
  */
 public class StatePagedTable extends AbstractAssetPagedTable<StatePageRow> {
 

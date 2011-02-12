@@ -17,11 +17,6 @@ package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-/**
- * 
- * @author rikkola
- *
- */
 public interface EditorWidget
     extends
     IsWidget {

@@ -12,8 +12,7 @@ import com.google.gwt.text.shared.SafeHtmlRenderer;
  * An extension to the normal TextCell that renders upto two rows of text; one
  * being the title and the other being narrative.
  * 
- * @author manstis
- * 
+ *
  */
 public class TitledTextCell extends AbstractSafeHtmlCell<TitledText> {
 
@@ -48,8 +47,7 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledText> {
     /**
      * Container for the Cell value; consisting of title and description
      * 
-     * @author manstis
-     * 
+     *
      */
     public static class TitledText
         implements
@@ -81,8 +79,7 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledText> {
     /**
      * A renderer for TitledText values
      * 
-     * @author manstis
-     * 
+     *
      */
     public static class TitledTextSafeHtmlRenderer
         implements

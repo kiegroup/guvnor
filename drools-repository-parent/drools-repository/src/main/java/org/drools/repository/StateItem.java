@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
  * An asset can only be in 1 state at a time. Kind of for workflow.
  * 
  * 
- * @author btruitt
  */
 public class StateItem extends Item {
 

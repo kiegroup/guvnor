@@ -19,11 +19,6 @@ import org.drools.guvnor.client.rpc.AbstractPageRow;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 
-/**
- * 
- * @author Jari Timonen
- *
- */
 public class ServiceRowSizeHelper {
     // The total Record Count returned from AssetItemIterator.getSize() can be
     // -1 which is not very helpful. We can however derive the total row count

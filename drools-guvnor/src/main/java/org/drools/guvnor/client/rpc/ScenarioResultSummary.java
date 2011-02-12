@@ -21,7 +21,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * Represents a summary result from a run.
  * To get more detail, need to drill in and run it.
- * @author Michael Neale
  */
 public class ScenarioResultSummary
     implements

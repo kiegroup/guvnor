@@ -7,8 +7,7 @@ import com.google.gwt.user.cellview.client.Column;
 /**
  * A column containing TitleText cells
  * 
- * @author manstis
- * 
+ *
  * @param <T>
  */
 public abstract class TitledTextColumn<T> extends Column<T, TitledText> {

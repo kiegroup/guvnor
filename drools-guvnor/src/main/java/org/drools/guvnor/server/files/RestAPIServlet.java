@@ -43,7 +43,6 @@ import org.jboss.seam.security.Identity;
 /**
  * This servlet is the entry point for the rest API.
  *
- * @author Michael Neale
  */
 public class RestAPIServlet extends RepositoryServlet {
 

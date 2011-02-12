@@ -34,10 +34,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PopupPanel;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public class EnumDropDownLabel extends Composite {
 
     private Constants          constants = ((Constants) GWT.create( Constants.class ));

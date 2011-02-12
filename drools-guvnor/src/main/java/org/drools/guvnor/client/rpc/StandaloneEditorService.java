@@ -22,11 +22,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.ruleeditor.standalone.StandaloneEditorInvocationParameters;
 
-/**
- * 
- * @author esteban.aliverti
- *
- */
 @RemoteServiceRelativePath("standaloneEditorService")
 public interface StandaloneEditorService
     extends

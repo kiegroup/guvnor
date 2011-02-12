@@ -21,7 +21,6 @@ import java.util.Date;
 /**
  * This contains lists of rules to include in the scenario (or exclude, as the case may be !).
  * This will be used to filter the rule engines behaviour under test.
- * @author Michael Neale
  */
 public class ExecutionTrace
     implements

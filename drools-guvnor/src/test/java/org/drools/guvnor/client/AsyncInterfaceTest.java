@@ -32,7 +32,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * This will verify that the interfaces are kosher for GWT to use.
- * @author Michael Neale
  */
 public class AsyncInterfaceTest {
 

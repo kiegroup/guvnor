@@ -34,16 +34,14 @@ import com.google.gwt.user.client.ui.Widget;
  * render "rows" and "columns" (e.g. some may transpose the normal meaning to
  * provide a horizontal implementation of normally vertical tabular data)
  * 
- * @author manstis
- * 
+ *
  */
 public abstract class MergableGridWidget<T> extends Widget {
 
     /**
      * Container for a cell's extents
      * 
-     * @author manstis
-     * 
+     *
      */
     public static class CellExtents {
         private int offsetX;

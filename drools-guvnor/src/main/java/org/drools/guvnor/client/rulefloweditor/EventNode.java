@@ -21,10 +21,6 @@ import org.drools.guvnor.client.resources.FlowImages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;
 
-/**
- * @author Toni Rikkola
- *
- */
 public class EventNode extends RuleFlowBaseNode {
 
     private static FlowImages images = GWT.create( FlowImages.class );

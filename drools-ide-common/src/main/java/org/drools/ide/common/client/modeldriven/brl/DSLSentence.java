@@ -19,7 +19,6 @@ package org.drools.ide.common.client.modeldriven.brl;
 
 /**
  * This represents a DSL sentence.
- * @author Michael Neale
  */
 public class DSLSentence
     implements

@@ -34,7 +34,6 @@ import org.drools.repository.RulesRepositoryException;
 
 /**
  * Deals with storing permissions for data and so on.
- * @author Michael Neale
  */
 public class PermissionManager {
 

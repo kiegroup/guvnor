@@ -46,8 +46,7 @@ import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 /**
  * This takes care of converting GuidedDT object to DRL (via the RuleModel).
  * 
- * @author Michael Neale
- * 
+ *
  */
 public class GuidedDTDRLPersistence {
 

@@ -20,7 +20,6 @@ package org.drools.ide.common.client.modeldriven.brl;
  * This represents a constraint on a fact - involving a SINGLE FIELD.
  * 
  * Can also include optional "connective constraints" that extend the options for matches.
- * @author Michael Neale
  */
 public class SingleFieldConstraint extends BaseSingleFieldConstraint implements FieldConstraint {
 

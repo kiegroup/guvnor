@@ -16,9 +16,6 @@
 
 package org.drools.guvnor;
 
-/**
- *
- */
 public class EditorLauncherGenerator extends Generator {
 
     public EditorLauncherGenerator() {

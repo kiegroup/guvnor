@@ -37,7 +37,6 @@ import org.drools.repository.util.ClassUtil;
  * specification. This configurator loads the properties from the {@link PROPERTIES_FILE "/drools_repository.properties"}
  * resource, and passes these to the {@link javax.jcr.RepositoryFactory#getRepository(java.util.Map)}.
  * 
- * @author Michael Neale
  */
 public abstract class JCRRepositoryConfigurator {
 

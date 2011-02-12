@@ -22,7 +22,6 @@ package org.drools.ide.common.client.modeldriven.brl;
  * If setting a field on a fact bound variable, this will
  * NOT notify the engine of any changes (unless done outside of the engine).
  *
- * @author Michael Neale
  */
 public class ActionSetField extends ActionFieldList {
 

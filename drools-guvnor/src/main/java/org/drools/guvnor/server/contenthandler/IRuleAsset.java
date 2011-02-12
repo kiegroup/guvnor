@@ -20,10 +20,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.repository.AssetItem;
 
-/**
- * 
- * @author Toni Rikkola
- */
 public interface IRuleAsset
     extends
     ICompilable {

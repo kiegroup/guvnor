@@ -15,11 +15,6 @@
  */
 package org.drools.guvnor.client.ruleeditor;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class RuleViewerSettings {
 
     private boolean metaVisible = true;

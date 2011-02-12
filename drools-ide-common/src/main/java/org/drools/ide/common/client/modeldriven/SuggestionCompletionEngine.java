@@ -35,7 +35,6 @@ import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
  * An suggestion completion processor. This should be usable in both GWT/Web and
  * the IDE. The data for this can be loaded into this from simple string lists.
  * 
- * @author Michael Neale
  */
 public class SuggestionCompletionEngine implements PortableObject {
 

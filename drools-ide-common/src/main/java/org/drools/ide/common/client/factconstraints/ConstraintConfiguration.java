@@ -19,11 +19,6 @@ package org.drools.ide.common.client.factconstraints;
 import java.io.Serializable;
 import java.util.Set;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- * @author baunax@gmail.com
- */
 public interface ConstraintConfiguration extends Serializable {
     public String getFactType();
     public void setFactType(String factType);

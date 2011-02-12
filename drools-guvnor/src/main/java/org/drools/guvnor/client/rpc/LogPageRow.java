@@ -21,7 +21,6 @@ import java.util.Date;
 /**
  * A single row of the event log
  * 
- * @author manstis
  */
 public class LogPageRow extends AbstractPageRow {
 

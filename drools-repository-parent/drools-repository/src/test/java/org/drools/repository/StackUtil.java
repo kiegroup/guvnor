@@ -25,7 +25,6 @@ public class StackUtil {
     /**
      * Return the name of the routine that called getCurrentMethodName
      *
-     * @author Johan Känngård, http://dev.kanngard.net
      * (found on the net in 2000, donŽt remember where...)
      */
     public static String getCurrentMethodName() {

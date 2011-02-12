@@ -21,7 +21,6 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 /**
  * key/value pair to be used as an exchange object for properties rule asset
  * 
- * @author Anton Arhipov
  */
 public class PropertyHolder implements
     PortableObject {

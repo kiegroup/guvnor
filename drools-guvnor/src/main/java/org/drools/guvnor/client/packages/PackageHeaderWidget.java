@@ -48,7 +48,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is for managing imports etc.
- * @author Michael Neale
  */
 public class PackageHeaderWidget extends Composite {
 

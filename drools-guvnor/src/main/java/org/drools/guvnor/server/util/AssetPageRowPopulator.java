@@ -19,11 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.repository.AssetItem;
 
-/**
- * 
- * @author Jari Timonen
- *
- */
 public class AssetPageRowPopulator {
     public AssetPageRow makeAssetPageRow(AssetItem assetItem) {
         AssetPageRow row = new AssetPageRow();

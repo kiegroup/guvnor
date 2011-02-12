@@ -32,7 +32,6 @@ import com.google.gwt.user.client.ui.Frame;
 /**
  * The Business Process Editor, wrapping the Process Editor
  *
- * @author <a href="mailto:atoulme@intalio.com">Antoine Toulme</a>
  */
 public class BusinessProcessEditor extends DirtyableComposite
     implements

@@ -20,7 +20,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Simple DTO for snapshot info.
- * @author Michael Neale
  */
 public class SnapshotInfo
     implements

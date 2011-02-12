@@ -41,10 +41,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- *
- * @author baunax@gmail.com
- */
 public class NotMatchesConstraintTest {
 
     private ConstraintConfiguration conf;

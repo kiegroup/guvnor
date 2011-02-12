@@ -34,7 +34,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The editor for fact models (DRL declared types).
  *
- * @author Michael Neale
  */
 public class FactModelsWidget extends Composite
     implements

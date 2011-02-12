@@ -32,7 +32,6 @@ import net.sf.webdav.WebDavServletBean;
  * But most of the logic is still in webdav servlet library (which at the time
  * of writing was included as source as it was easier - needed some fixes).
  *
- * @author Michael Neale
  *
  */
 public class WebdavServlet extends WebDavServletBean {

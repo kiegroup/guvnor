@@ -7,7 +7,6 @@ import com.google.gwt.user.client.Command;
 
 /**
  * The capabilities manager
- * @author esteban.aliverti@gmail.com
  *
  */
 public class CapabilitiesManager {

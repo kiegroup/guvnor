@@ -31,11 +31,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class FieldEditorPopup {
 
     private static Constants      constants = ((Constants) GWT.create( Constants.class ));

@@ -30,11 +30,6 @@ import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExpressionCompiler;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class FactFieldValueVerifier {
 
     private final Map<String, Object> populatedData;

@@ -24,7 +24,6 @@ import java.util.UUID;
 /**
  * Provides any generated input to inject into the output templates
  * 
- * @author <a href="mailto:mallen@redhat.com">Mat Allen</a>
  *
  */
 public class GeneratedData {

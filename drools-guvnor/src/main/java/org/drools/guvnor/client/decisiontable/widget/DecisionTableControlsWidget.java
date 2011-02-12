@@ -27,8 +27,7 @@ import com.google.gwt.user.client.ui.Panel;
 /**
  * Simple container for controls to manipulate a Decision Table
  * 
- * @author manstis
- * 
+ *
  */
 public class DecisionTableControlsWidget extends Composite {
 

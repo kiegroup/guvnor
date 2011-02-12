@@ -21,9 +21,6 @@ import org.drools.repository.AssetItem;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
 
-/**
- * @author Michael Neale
- */
 public class MockLoadEvent implements LoadEvent {
     boolean loadCalled;
 

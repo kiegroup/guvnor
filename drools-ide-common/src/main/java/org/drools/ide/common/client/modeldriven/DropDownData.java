@@ -18,7 +18,6 @@ package org.drools.ide.common.client.modeldriven;
 
 /**
  * Used to drive drop downs.
- * @author Michael Neale
  *
  */
 public class DropDownData {

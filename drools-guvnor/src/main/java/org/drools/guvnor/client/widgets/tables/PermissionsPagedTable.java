@@ -44,7 +44,6 @@ import com.google.gwt.view.client.SingleSelectionModel;
 /**
  * Widget with a table of Permission entries.
  * 
- * @author manstis
  */
 public class PermissionsPagedTable extends AbstractPagedTable<PermissionsPageRow> {
 

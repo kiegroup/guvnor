@@ -29,8 +29,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 /**
  * A Cell that casts values to whatever is appropriate for the wrapped Cell
  * 
- * @author manstis
- * 
+ *
  * @param <T>
  *            The data-type required by the wrapped cell
  * @param <C>

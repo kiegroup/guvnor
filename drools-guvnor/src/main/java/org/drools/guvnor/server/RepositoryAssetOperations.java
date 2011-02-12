@@ -58,8 +58,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 /**
  * Handles operations for Assets
  * 
- * @author Jari Timonen
- * 
+ *
  */
 @Name("org.drools.guvnor.server.RepositoryAssetOperations")
 @AutoCreate

@@ -35,7 +35,6 @@ import javax.jcr.NodeIterator;
 
 /**
  * Manage access to misc. user info that we might want to store. 
- * @author Michael Neale
  */
 public class UserInfo {
     private static final Logger log                   = LoggerFactory.getLogger( UserInfo.class );

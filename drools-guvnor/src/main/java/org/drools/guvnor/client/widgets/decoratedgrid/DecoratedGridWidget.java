@@ -43,8 +43,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  * @param <T>
  *            The type of domain columns represented by the Grid
  * 
- * @author manstis
- * 
+ *
  */
 public abstract class DecoratedGridWidget<T> extends Composite
     implements

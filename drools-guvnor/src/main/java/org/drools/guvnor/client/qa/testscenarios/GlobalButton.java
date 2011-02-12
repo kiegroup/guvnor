@@ -33,11 +33,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 
-/**
- * 
- * @author rikkola
- *
- */
 class GlobalButton extends ImageButton {
 
     private static Constants                 constants = GWT.create( Constants.class );

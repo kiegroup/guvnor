@@ -78,7 +78,6 @@ import org.slf4j.LoggerFactory;
  * system, and if there is sufficient demand, we can modify our versioning
  * scheme to be better aligned with JCR's versioning abilities.
  *
- * @author Ben Truitt - with contributions from Michael Neale and Fernando Meyer over time.
  */
 public class RulesRepository {
 
@@ -1579,7 +1578,6 @@ public class RulesRepository {
 
     /**
      * Used for querying based on date.
-     * @author Michael Neale
      */
     public static class DateQuery {
         private String after;

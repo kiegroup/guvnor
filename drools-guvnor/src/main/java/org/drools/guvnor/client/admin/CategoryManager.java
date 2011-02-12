@@ -39,7 +39,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 
 /**
  * This controls category administration.
- * @author Michael Neale
  */
 public class CategoryManager extends Composite {
 

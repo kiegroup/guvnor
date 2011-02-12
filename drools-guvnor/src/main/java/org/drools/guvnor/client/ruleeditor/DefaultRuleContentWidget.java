@@ -29,7 +29,6 @@ import com.google.gwt.user.client.ui.TextArea;
 
 /**
  * This is the default rule editor widget (just text editor based) - more to come later.
- * @author michael neale
  */
 public class DefaultRuleContentWidget extends DirtyableComposite
     implements

@@ -20,8 +20,7 @@ import java.util.ArrayList;
 /**
  * A row of data in the Decision Table
  * 
- * @author manstis
- * 
+ *
  */
 public class DynamicDataRow extends
         ArrayList<CellValue<? extends Comparable<?>>> {

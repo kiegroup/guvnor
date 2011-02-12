@@ -21,7 +21,6 @@ package org.drools.ide.common.client.modeldriven.testing;
  * All assertions on results.
  *
  *
- * @author Michael Neale
  */
 public interface Expectation extends Fixture {
 

@@ -26,7 +26,6 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * This is the "payload" of a rule asset.
  * Includes the meta data.
  * 
- * @author Michael Neale
  */
 public class RuleAsset
     implements

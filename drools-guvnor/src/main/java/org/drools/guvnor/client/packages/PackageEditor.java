@@ -66,7 +66,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This is the package editor and viewer for package configuration.
  * 
- * @author Michael Neale
  */
 public class PackageEditor extends PrettyFormLayout {
 

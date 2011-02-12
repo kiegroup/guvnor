@@ -22,7 +22,6 @@ import org.jboss.drools.guvnor.importgenerator.CmdArgsParser.Parameters;
 /**
  * Simple std io logger
  * 
- * @author <a href="mailto:mallen@redhat.com">Mat Allen</a>
  */
 public class Logger {
   public boolean debugEnabled=true;

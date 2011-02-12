@@ -31,7 +31,6 @@ import org.drools.guvnor.client.security.Capabilities;
 
 /**
  * Load up the capabilities from a given list of roles.
- * @author Michael Neale
  */
 public class CapabilityCalculator {
 

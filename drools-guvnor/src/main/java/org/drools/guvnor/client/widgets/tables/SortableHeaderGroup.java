@@ -8,9 +8,6 @@ import java.util.List;
 
 import com.google.gwt.user.cellview.client.CellTable;
 
-/**
- * @author Geoffrey De Smet
- */
 public class SortableHeaderGroup<T extends Comparable> {
 
     private final CellTable<T> cellTable;

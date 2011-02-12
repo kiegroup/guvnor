@@ -50,7 +50,6 @@ import org.drools.rule.Package;
  * with errors etc. Each content type is responsible for contributing to the
  * package.
  * 
- * @author Michael Neale
  */
 public class ContentPackageAssembler {
     private static final LoggingHelper log    = LoggingHelper.getLogger( ContentPackageAssembler.class );
@@ -414,7 +413,6 @@ public class ContentPackageAssembler {
     /**
      * This is passed in to the compilers so extra errors can be added.
      * 
-     * @author Michael Neale
      */
     public class ErrorLogger {
         public void logError(ContentAssemblyError err) {

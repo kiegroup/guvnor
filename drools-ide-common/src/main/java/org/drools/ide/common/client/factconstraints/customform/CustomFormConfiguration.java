@@ -18,10 +18,6 @@ package org.drools.ide.common.client.factconstraints.customform;
 
 import java.io.Serializable;
 
-/**
- *
- * @author esteban
- */
 public interface CustomFormConfiguration extends Serializable{
 
     String getFactType();

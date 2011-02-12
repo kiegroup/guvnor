@@ -20,7 +20,6 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
  * This is the guts of a plain text (advanced) rule.
- * @author Michael Neale
  */
 public class RuleContentText
     implements

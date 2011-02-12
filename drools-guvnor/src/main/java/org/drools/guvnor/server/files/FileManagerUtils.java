@@ -63,7 +63,6 @@ import org.jboss.seam.security.Identity;
 
 /**
  * This assists the file manager servlets.
- * @author Fernando Meyer
  */
 @Name("fileManager")
 @Scope(ScopeType.EVENT)

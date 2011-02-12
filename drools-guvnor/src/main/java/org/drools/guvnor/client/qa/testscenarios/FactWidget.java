@@ -30,11 +30,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
-/**
- * 
- * @author rikkola
- *
- */
 public abstract class FactWidget extends HorizontalPanel {
 
     protected static Constants     constants = GWT.create( Constants.class );

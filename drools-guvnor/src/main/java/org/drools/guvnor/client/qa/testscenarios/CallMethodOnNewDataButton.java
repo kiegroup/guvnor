@@ -31,8 +31,7 @@ import com.google.gwt.core.client.GWT;
  * This button gives a choice of modifying data, based on the positional
  * context.
  * 
- * @author rikkola
- * 
+ *
  */
 public class CallMethodOnNewDataButton extends TestScenarioButton {
 

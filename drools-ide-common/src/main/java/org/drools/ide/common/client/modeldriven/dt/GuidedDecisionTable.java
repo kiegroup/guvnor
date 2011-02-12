@@ -33,7 +33,6 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * table of data to produce rule models.
  * 
  * 
- * @author Michael Neale
  */
 public class GuidedDecisionTable
     implements

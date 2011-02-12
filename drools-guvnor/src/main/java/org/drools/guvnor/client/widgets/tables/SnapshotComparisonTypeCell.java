@@ -28,7 +28,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 /**
  * Cell to render the appropriate text and style for a Snapshot Comparison type
  * 
- * @author manstis
  */
 public class SnapshotComparisonTypeCell extends AbstractCell<String> {
 

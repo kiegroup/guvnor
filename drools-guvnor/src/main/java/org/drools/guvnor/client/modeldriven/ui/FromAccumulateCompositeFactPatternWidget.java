@@ -41,10 +41,6 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- *
- * @author esteban
- */
 public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
 
     private RuleModellerWidget sourcePatternWidget;

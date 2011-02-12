@@ -20,7 +20,6 @@ package org.jboss.drools.guvnor.importgenerator;
 /**
  * Represents an individual rule within a drl package file found in the file system
  * 
- * @author <a href="mailto:mallen@redhat.com">Mat Allen</a>
  */
 public class Rule{
     private String ruleName;

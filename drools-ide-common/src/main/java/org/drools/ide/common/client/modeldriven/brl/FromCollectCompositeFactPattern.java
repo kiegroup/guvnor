@@ -17,10 +17,6 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-/**
- *
- * @author esteban
- */
 public class FromCollectCompositeFactPattern extends FromCompositeFactPattern {
 
     private IPattern rightPattern;

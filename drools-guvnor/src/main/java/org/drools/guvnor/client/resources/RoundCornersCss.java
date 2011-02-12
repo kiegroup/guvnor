@@ -17,11 +17,6 @@ package org.drools.guvnor.client.resources;
 
 import com.google.gwt.resources.client.CssResource;
 
-/**
- * 
- * @author rikkola
- *
- */
 public interface RoundCornersCss
     extends
     CssResource {

@@ -37,11 +37,6 @@ import org.drools.verifier.doc.DroolsDocsBuilder;
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
 
-/**
- * 
- * @author Toni Rikkola
- *
- */
 public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
 
     private static List<String> formats = new ArrayList<String>();

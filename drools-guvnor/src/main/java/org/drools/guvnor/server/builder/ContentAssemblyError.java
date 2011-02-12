@@ -25,7 +25,6 @@ import org.drools.repository.VersionableItem;
  * This class is used to accumulate error reports for asset.
  * This can then be used to feed back to the user where the problems are.
  * 
- * @author Michael Neale
  */
 public class ContentAssemblyError {
 

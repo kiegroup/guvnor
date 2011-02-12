@@ -36,11 +36,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- * 
- * @author rikkola
- *
- */
 abstract class TestScenarioButton extends ImageButton {
 
     protected static Constants                 constants = GWT.create( Constants.class );

@@ -42,10 +42,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
-/**
- *
- * @author esteban
- */
 public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
 
     private Map<String,String> extraLeftSidePatternFactTypes = null;

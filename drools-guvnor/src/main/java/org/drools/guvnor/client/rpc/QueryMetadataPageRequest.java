@@ -21,7 +21,6 @@ import java.util.List;
 /**
  * A Query request.
  * 
- * @author manstis
  */
 public class QueryMetadataPageRequest extends PageRequest {
 

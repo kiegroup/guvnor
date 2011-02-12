@@ -52,7 +52,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 /**
  * This servlet deals with providing packages in binary form.
  *
- * @author Michael Neale
  */
 public class PackageDeploymentServlet extends RepositoryServlet {
 

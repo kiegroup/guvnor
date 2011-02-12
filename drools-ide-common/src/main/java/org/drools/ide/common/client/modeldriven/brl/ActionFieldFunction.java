@@ -20,7 +20,6 @@ package org.drools.ide.common.client.modeldriven.brl;
  * This node indicates that the user wants to execute a method on some
  * fact in case the LHR matches.
  * 
- * @author isabel
  * */
 public class ActionFieldFunction extends ActionFieldValue {
     

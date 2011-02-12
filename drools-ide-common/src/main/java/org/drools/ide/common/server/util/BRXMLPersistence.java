@@ -26,7 +26,6 @@ import org.drools.ide.common.client.modeldriven.brl.*;
  *
  * This is the 'brl' xml format (Business Rule Language).
  *
- * @author Michael Neale
  */
 public class BRXMLPersistence
     implements

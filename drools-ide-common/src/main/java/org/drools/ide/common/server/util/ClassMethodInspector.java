@@ -33,8 +33,6 @@ import org.drools.ide.common.server.rules.ClassToGenericClassConverter;
  * 
  * Finds all methods that are not getters or setters from a class.
  * 
- * @author Nicolas Heron
- * @author Toni Rikkola
  *
  */
 public class ClassMethodInspector {

@@ -32,9 +32,6 @@ import org.drools.repository.PackageItem;
 import com.google.gwt.user.client.rpc.SerializationException;
 
 
-/**
- *
- */
 public class SpringContextContentHandler extends PlainTextContentHandler implements IValidating {
     public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)
             throws SerializationException {

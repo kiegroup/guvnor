@@ -105,7 +105,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * This is really a collection of integration tests.
- * @author Michael Neale
  */
 public class ServiceImplementationTest extends GuvnorTestBase {
 

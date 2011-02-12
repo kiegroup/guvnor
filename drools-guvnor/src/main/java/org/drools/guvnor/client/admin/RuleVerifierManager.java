@@ -34,7 +34,6 @@ import com.google.gwt.user.client.ui.CheckBox;
 
 /**
  * This controls category administration.
- * @author Michael Neale
  */
 public class RuleVerifierManager extends Composite {
 

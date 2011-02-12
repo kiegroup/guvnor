@@ -27,7 +27,6 @@ import javax.jcr.version.VersionIterator;
  * A lazy iterator for walking back through history.
  * Wraps the version iterator from JCR and allows skipping.
  *
- * @author Michael Neale
  *
  */
 public class AssetHistoryIterator

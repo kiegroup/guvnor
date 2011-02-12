@@ -3,9 +3,6 @@ package org.drools.guvnor.client.widgets.tables;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-/**
- * @author Geoffrey De Smet
- */
 public interface TableImageResources extends ClientBundle {
 
     @Source("../../resources/images/downArrow.png")

@@ -26,7 +26,6 @@ import java.util.Properties;
 /**
  * Command line argument parser
  * 
- * @author <a href="mailto:mallen@redhat.com">Mat Allen</a>
  */
 public class CmdArgsParser{
   private static Map<Parameters, String> options=new HashMap<Parameters, String>();

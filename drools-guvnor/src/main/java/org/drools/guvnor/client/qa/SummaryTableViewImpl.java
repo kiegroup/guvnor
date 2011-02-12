@@ -28,10 +28,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 
-/**
- * @author rikkola
- *
- */
 public class SummaryTableViewImpl extends Composite
     implements
     SummaryTableView {

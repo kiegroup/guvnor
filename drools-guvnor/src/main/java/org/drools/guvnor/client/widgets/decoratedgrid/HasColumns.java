@@ -6,7 +6,6 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
  * @param <T>
  *            The type of domain columns represented
  * 
- * @author manstis
  */
 public interface HasColumns<T> {
 

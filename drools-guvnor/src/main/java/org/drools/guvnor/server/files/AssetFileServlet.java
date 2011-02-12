@@ -31,8 +31,6 @@ import org.drools.guvnor.server.util.FormData;
 /**
  * This is for dealing with assets that have an attachment (ie assets that are really an attachment).
  *
- * @author Michael Neale
- * @author Fernando Meyer
  */
 public class AssetFileServlet extends RepositoryServlet {
 

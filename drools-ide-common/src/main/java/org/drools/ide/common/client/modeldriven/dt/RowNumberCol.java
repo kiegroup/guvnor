@@ -18,8 +18,7 @@ package org.drools.ide.common.client.modeldriven.dt;
 /**
  * This is a rule index column (i.e. just displays row's number)
  * 
- * @author manstis
- * 
+ *
  */
 public class RowNumberCol extends DTColumnConfig {
 

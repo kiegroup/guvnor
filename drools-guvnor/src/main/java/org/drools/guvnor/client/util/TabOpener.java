@@ -67,11 +67,6 @@ import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/**
- * 
- * @author rikkola
- * 
- */
 public class TabOpener {
 
     private Constants                     constants             = GWT.create( Constants.class );

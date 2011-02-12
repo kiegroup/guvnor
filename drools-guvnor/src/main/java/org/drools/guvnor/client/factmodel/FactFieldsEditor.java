@@ -32,11 +32,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.util.Format;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class FactFieldsEditor extends Composite {
 
     private static Constants constants = ((Constants) GWT.create( Constants.class ));

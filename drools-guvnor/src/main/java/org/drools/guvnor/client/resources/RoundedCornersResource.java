@@ -21,11 +21,6 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.resources.client.ImageResource.ImageOptions;
 import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 
-/**
- * 
- * @author rikkola
- *
- */
 public interface RoundedCornersResource
     extends
     ClientBundle {

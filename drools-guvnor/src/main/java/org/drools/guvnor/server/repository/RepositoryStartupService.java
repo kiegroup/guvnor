@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This startup class manages the JCR repository, sets it up if necessary.
- * @author Michael Neale
  */
 @Scope(ScopeType.APPLICATION)
 @Startup

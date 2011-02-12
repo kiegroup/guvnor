@@ -31,7 +31,6 @@ import org.apache.commons.codec.binary.Base64;
 /**
  * File IO helper class for reading/writing files and converting to/from base64 
  * 
- * @author <a href="mailto:mallen@redhat.com">Mat Allen</a>
  */
 
 public class FileIO {

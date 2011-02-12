@@ -18,10 +18,6 @@ package org.drools.guvnor.client.util;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ListBox;
 
-/**
- * @author rikkola
- *
- */
 public class ValueList extends Composite {
 
     private final ListBox layout              = new ListBox();

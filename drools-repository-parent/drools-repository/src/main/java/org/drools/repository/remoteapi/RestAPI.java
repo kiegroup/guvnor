@@ -40,7 +40,6 @@ import org.drools.repository.utils.IOUtils;
 /**
  * This provides a simple REST style remote friendly API.
  *
- * @author Michael Neale
  *
  */
 public class RestAPI {

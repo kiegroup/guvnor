@@ -36,7 +36,6 @@ import org.jboss.drools.guvnor.importgenerator.PackageFile;
 /**
  * drools helper class that provides functions to build drl and decision table to objects 
  * 
- * @author <a href="mailto:mallen@redhat.com">Mat Allen</a>
  */
 public class DroolsHelper {
   private static final String FUNCTIONS_FILE="functions.drl";

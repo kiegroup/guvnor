@@ -48,8 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This is an editor for columns that are for inserting facts.
  * 
- * @author Michael Neale
- * 
+ *
  */
 public class ActionInsertColumn extends FormStylePopup {
 

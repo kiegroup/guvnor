@@ -50,7 +50,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This is used when asserting a new fact into working memory.
  *
- * @author Michael Neale
  *
  */
 public class ActionInsertFactWidget extends RuleModellerWidget {

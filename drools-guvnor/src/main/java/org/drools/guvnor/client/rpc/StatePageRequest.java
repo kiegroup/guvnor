@@ -18,7 +18,6 @@ package org.drools.guvnor.client.rpc;
 /**
  * A State request.
  * 
- * @author manstis
  */
 public class StatePageRequest extends PageRequest {
 

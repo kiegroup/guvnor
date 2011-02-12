@@ -20,10 +20,6 @@ import org.cobogw.gwt.user.client.ui.RoundedPanel;
 
 import com.google.gwt.user.client.DOM;
 
-/**
- * @author trikkola
- *
- */
 public class RuleFlowRoundedPanel extends RoundedPanel {
 
     /**

@@ -46,7 +46,6 @@ import com.google.gwt.view.client.HasData;
 /**
  * Widget with a table of Log entries.
  * 
- * @author manstis
  */
 public class LogPagedTable extends AbstractPagedTable<LogPageRow> {
 

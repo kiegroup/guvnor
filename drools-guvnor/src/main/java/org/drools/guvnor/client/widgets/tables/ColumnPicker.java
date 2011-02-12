@@ -35,9 +35,6 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/**
- * @author Geoffrey De Smet
- */
 public class ColumnPicker<T> {
 
     private static final TableImageResources TABLE_IMAGE_RESOURCES = GWT.create(TableImageResources.class);

@@ -23,7 +23,6 @@ import org.drools.guvnor.server.ServiceImplementation;
 
 /**
  * Creates a new RuleAsset.
- * @author esteban.aliverti
  */
 public class UUIDRuleAssetProvider implements RuleAssetProvider {
 

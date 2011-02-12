@@ -40,9 +40,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/**
- * @author Fernando Meyer
- */
 
 public class ArchivedAssetManager extends Composite {
 

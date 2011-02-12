@@ -20,7 +20,6 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 /**
  * A Query request.
  * 
- * @author manstis
  */
 public class InboxPageRequest extends PageRequest {
 

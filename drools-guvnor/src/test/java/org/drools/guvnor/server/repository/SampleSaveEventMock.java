@@ -23,9 +23,6 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 
-/**
- * @author Michael Neale
- */
 public class SampleSaveEventMock implements SaveEvent {
     public void onAssetCheckin(AssetItem item) {
         if (item.getFormat().equals(AssetFormats.BUSINESS_RULE)) {

@@ -16,10 +16,6 @@
 
 package org.drools.guvnor.client.ruleeditor.toolbar;
 
-/**
- *
- * @author esteban.aliverti
- */
 public class StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider implements ActionToolbarButtonsConfigurationProvider {
 
     public boolean showSaveButton() {

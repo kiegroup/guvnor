@@ -33,7 +33,6 @@ import org.drools.repository.AssetItem;
 /**
  * This uses rules to decide if an asset is to be included in a build.
  *
- * @author Michael Neale
  *
  */
 public class RuleBasedSelector implements AssetSelector {

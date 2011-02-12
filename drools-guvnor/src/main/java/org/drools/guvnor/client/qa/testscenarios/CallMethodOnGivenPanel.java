@@ -14,11 +14,6 @@ import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-/**
- * 
- * @author nheron
- * 
- */
 public class CallMethodOnGivenPanel extends VerticalPanel {
     public CallMethodOnGivenPanel(List<ExecutionTrace> listExecutionTrace,
             int executionTraceLine, CallFixtureMap given,

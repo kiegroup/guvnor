@@ -22,7 +22,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * A generic request for paged data
  * 
  * @see PageResponse
- * @author (Originally) Geoffrey De Smet
  */
 public class PageRequest
         implements

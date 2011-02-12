@@ -34,10 +34,6 @@ import org.drools.ide.common.client.factconstraints.helper.CustomFormsContainer;
 import com.google.gwt.user.client.Command;
 import java.util.ArrayList;
 
-/**
- *
- * @author esteban.aliverti@gmail.com
- */
 public class WorkingSetManager {
 
     private static WorkingSetManager INSTANCE = new WorkingSetManager();

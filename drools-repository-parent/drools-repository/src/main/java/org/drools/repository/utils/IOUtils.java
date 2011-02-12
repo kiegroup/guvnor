@@ -68,14 +68,6 @@ import java.util.List;
  * <p>
  * Origin of code: Excalibur.
  *
- * @author Peter Donald
- * @author Jeff Turner
- * @author Matthew Hawthorne
- * @author Stephen Colebourne
- * @author Gareth Davis
- * @author Ian Springer
- * @author Niall Pemberton
- * @author Sandy McArthur
  * @version $Id: IOUtils.java 481854 2006-12-03 18:30:07Z scolebourne $
  */
 public class IOUtils {

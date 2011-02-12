@@ -26,7 +26,6 @@ package org.drools.guvnor.client.common;
  *
  * If an asset type is unknown, then it will be opened with the default editor.
  *
- * @author Michael Neale
  */
 public class AssetFormats {
 

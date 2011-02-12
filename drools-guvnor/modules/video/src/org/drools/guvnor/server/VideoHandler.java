@@ -22,9 +22,6 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.AssetItem;
 import com.google.gwt.user.client.rpc.SerializableException;
 
-/**
- *
- */
 public class VideoHandler extends ContentHandler {
     public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)
             throws SerializableException {

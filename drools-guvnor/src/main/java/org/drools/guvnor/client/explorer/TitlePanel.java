@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.HTML;
 /**
  * The title bar at the top of the application.
  * 
- * @author rikkola
  *
  */
 public class TitlePanel extends DockPanel {

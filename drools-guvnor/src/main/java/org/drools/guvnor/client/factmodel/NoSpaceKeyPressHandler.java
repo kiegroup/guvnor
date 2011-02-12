@@ -19,11 +19,6 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.ui.TextBox;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class NoSpaceKeyPressHandler
     implements
     KeyPressHandler {

@@ -26,7 +26,6 @@ import org.jboss.seam.security.Identity;
 /**
  * This is kind of a nil authenticator, does not validate the user at all.
  * This will accept any user name except the "guest" user name (as that is used for skipping logging in altogether).
- * @author Michael Neale
  */
 @Name("defaultAuthenticator")
 public class DefaultAuthenticator {

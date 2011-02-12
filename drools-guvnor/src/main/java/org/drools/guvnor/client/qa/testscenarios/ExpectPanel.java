@@ -29,11 +29,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class ExpectPanel extends HorizontalPanel {
 
     private Constants              constants = GWT.create( Constants.class );

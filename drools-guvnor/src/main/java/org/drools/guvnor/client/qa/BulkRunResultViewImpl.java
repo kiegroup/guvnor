@@ -39,7 +39,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This presents the results of a bulk run.
- * @author Michael Neale
  */
 public class BulkRunResultViewImpl extends Composite
     implements

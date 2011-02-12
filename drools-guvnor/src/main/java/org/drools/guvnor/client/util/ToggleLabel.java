@@ -22,10 +22,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 
-/**
- * @author rikkola
- *
- */
 public class ToggleLabel extends Composite
     implements
     HasValue<Boolean> {

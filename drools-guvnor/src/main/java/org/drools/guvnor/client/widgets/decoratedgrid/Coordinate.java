@@ -18,8 +18,7 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 /**
  * A coordinate
  * 
- * @author manstis
- * 
+ *
  */
 public class Coordinate {
     private int row;

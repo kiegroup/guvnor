@@ -25,9 +25,6 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.TextArea;
 
-/**
- *
- */
 public class XmlFileWidget extends AssetAttachmentFileWidget
     implements
     SaveEventListener {

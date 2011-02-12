@@ -34,7 +34,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * This is used for handling jar models for the rules.
- * @author Michael Neale
  */
 public class ModelContentHandler extends ContentHandler
     implements

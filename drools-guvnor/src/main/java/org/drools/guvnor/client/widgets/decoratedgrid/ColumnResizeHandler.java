@@ -20,7 +20,6 @@ import com.google.gwt.event.shared.EventHandler;
 /**
  * Handler interface for {@link ColumnResizeEvent} events.
  * 
- * @author manstis
  */
 public interface ColumnResizeHandler
     extends

@@ -27,7 +27,6 @@ import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
 
 /**
  * Add Variable to global collection Widget
- * @author esteban.aliverti@gmail.com
  *
  */
 public class GlobalCollectionAddWidget extends RuleModellerWidget {

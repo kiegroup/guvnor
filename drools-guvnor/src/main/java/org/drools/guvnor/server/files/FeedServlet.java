@@ -38,9 +38,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-/**
- * @author Michael Neale
- */
 public class FeedServlet extends RepositoryServlet {
 
     private static final String VIEW_URL = "viewUrl";
@@ -152,7 +149,6 @@ public class FeedServlet extends RepositoryServlet {
     }
 
     /**
- * @author Michael Neale
      */
     public static class AtomFeed {
 

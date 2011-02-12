@@ -18,7 +18,6 @@ package org.drools.ide.common.client.modeldriven.brl;
 
 /**
  * Interface for Patterns that contains a Fact Type
- * @author esteban.aliverti@gmail.com
  */
 public interface IFactPattern extends IPattern {
     public String getFactType();

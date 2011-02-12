@@ -25,7 +25,6 @@ import org.drools.repository.RulesRepositoryException;
 
 /**
  * Needed to list what registered format types there are.
- * @author Michael Neale
  */
 public class AssetFormatHelper {
 

@@ -31,7 +31,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Free form DRL line widget
- * @author esteban.aliverti@gmail.com
  *
  */
 public class FreeFormLineWidget extends RuleModellerWidget {

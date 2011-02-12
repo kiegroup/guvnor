@@ -52,7 +52,6 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This is the wizard used when creating new packages or importing them.
  *
- * @author Michael Neale
  */
 public class NewSubPackageWizard extends FormStylePopup {
 

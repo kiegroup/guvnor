@@ -40,7 +40,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * This passes on all requests unmolested to the underlying ServiceImplemention class. 
  * 
  *
- * @author Michael Neale
  */
 public class RepositoryServiceServlet extends RemoteServiceServlet implements RepositoryService {
 

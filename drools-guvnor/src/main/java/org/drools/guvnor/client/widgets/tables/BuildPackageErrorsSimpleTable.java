@@ -42,7 +42,6 @@ import com.google.gwt.view.client.ProvidesKey;
 /**
  * Widget with a table of Build Package errors.
  * 
- * @author manstis
  */
 public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderResultLine> {
 

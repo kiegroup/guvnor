@@ -28,11 +28,6 @@ import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 
-/**
- * 
- * @author rikkola
- *
- */
 public class CommentWidget extends DirtyableComposite {
 
     private Constants                      constants = GWT.create( Constants.class );

@@ -26,9 +26,6 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
-/**
- * @author Michael Neale
- */
 public class UserInfoTest {
 
     @Test

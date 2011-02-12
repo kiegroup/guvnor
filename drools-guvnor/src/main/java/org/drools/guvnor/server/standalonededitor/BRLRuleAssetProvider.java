@@ -32,7 +32,6 @@ import org.drools.ide.common.server.util.BRXMLPersistence;
  * BRL -> RuleAsset converter used by standalone editor.
  * For each brl provided, a new RuleAsset is created. The name of the RuleAsset
  * will be the name present in the brl concatenated with a unique number.
- * @author esteban.aliverti
  */
 public class BRLRuleAssetProvider
     implements

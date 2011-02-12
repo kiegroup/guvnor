@@ -25,7 +25,6 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /**
  * This is essentially a "Either" class.
  * It will either be a list of rule compiler errors (should it have to compile), or the scenario run results.
- * @author Michael Neale
  */
 public class ScenarioRunResult
     implements

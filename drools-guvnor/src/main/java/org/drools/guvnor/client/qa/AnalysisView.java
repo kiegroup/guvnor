@@ -39,7 +39,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 /**
  * Viewer for, well, analysis !
  *
- * @author Michael Neale
  */
 public class AnalysisView extends Composite {
 

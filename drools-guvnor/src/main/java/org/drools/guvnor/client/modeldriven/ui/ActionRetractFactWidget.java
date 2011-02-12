@@ -27,7 +27,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 /**
  * This is used when you want to retract a fact. It will provide a list of
  * bound facts for you to retract.
- * @author Michael Neale
  */
 public class ActionRetractFactWidget extends RuleModellerWidget {
 

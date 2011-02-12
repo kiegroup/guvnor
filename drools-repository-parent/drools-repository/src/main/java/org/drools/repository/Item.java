@@ -26,7 +26,6 @@ import org.slf4j.LoggerFactory;
 /**
  * The item class is used to abstract away the underlying details of the JCR repository.
  * 
- * @author btruitt
  */
 public abstract class Item {
     static Logger log = LoggerFactory.getLogger(Item.class);

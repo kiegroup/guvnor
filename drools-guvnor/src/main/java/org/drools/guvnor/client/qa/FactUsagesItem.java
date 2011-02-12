@@ -27,10 +27,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TreeItem;
 
-/**
- * 
- * @author Toni Rikkola
- */
 class FactUsagesItem extends TreeItem {
 
     private Constants constants = GWT.create( Constants.class );
