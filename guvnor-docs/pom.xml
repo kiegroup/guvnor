@@ -6,14 +6,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>drools-docs</artifactId>
+    <groupId>org.droolsjbpm</groupId>
+    <artifactId>guvnor</artifactId>
     <version>5.2.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-docs-guvnor</artifactId>
+  <artifactId>guvnor-docs</artifactId>
   <packaging>jdocbook</packaging>
-  <name>Drools :: Documentation :: Drools :: Guvnor</name>
-  <description>Drools Guvnor Documentation</description>
+  
+  <name>Guvnor Documentation</name>
+  <description>Guvnor Documentation</description>
 
 </project>
