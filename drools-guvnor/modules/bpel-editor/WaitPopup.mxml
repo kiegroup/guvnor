@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="doInit();"
-	width="404" height="190"  title="Add New Wait Activity in the BPEL Process">
-	<mx:Script>
+  width="404" height="190"  title="Add New Wait Activity in the BPEL Process">
+  <mx:Script>
         <![CDATA[
-        	import bpel.editor.gridcc.controller.WorkflowManager;  
-        	import bpel.editor.gridcc.constant.WorkflowActivities;
-        	
-        	import bpel.editor.gridcc.utility.ActivityDOSearch;
-        	import bpel.editor.gridcc.data.WaitDO;      	
+          import bpel.editor.gridcc.controller.WorkflowManager;
+          import bpel.editor.gridcc.constant.WorkflowActivities;
+
+          import bpel.editor.gridcc.utility.ActivityDOSearch;
+          import bpel.editor.gridcc.data.WaitDO;
             import mx.managers.PopUpManager;
             import flash.events.*;
             import  mx.events.ItemClickEvent;            
@@ -34,12 +34,12 @@
             public var modifyable:Boolean = false;   
             
             public function setWaitDO(waitDOValue:WaitDO):void {
-            	waitDO = waitDOValue;
-            	nameWait = waitDO.getName();
-            	durationType = waitDO.waitType;
-            	durationValue = waitDO.waitValue
-            	
-            	selectIndex(durationType);            	
+              waitDO = waitDOValue;
+              nameWait = waitDO.getName();
+              durationType = waitDO.waitType;
+              durationValue = waitDO.waitValue
+
+              selectIndex(durationType);
             }
             
             private function doInit():void {
@@ -49,49 +49,49 @@
                 //nameWait = _waitDO.getName();
                 waitName.addEventListener(KeyboardEvent.KEY_UP, keyHandler);   
                 if(modifyable)
-                	waitName.enabled = false;
+                  waitName.enabled = false;
             } 
             
             private function keyHandler(event:KeyboardEvent):void {
-            	//trace("keyUpHandler: " + event.keyCode);
-            	//event.currentTarget
-            	var textField:TextInput = TextInput(event.currentTarget);
-            	// Key Code 65 - 90 for a - z
-            	// Key Code 48 - 57 for 0 - 9
-            	if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
-            		// Key Code 16 for shift and // Key Code 17 for ctrl
-            		if(event.keyCode != 16 && event.keyCode != 17){
-            			// Key Code 37 - 40 for directional arrows
-            			if(!(event.keyCode > 36 && event.keyCode < 41)){
-            				textField.text = textField.text.substr(0,textField.length -1);
-            			}
-            		}            		
-            	}           	
-        	}          
+              //trace("keyUpHandler: " + event.keyCode);
+              //event.currentTarget
+              var textField:TextInput = TextInput(event.currentTarget);
+              // Key Code 65 - 90 for a - z
+              // Key Code 48 - 57 for 0 - 9
+              if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
+                // Key Code 16 for shift and // Key Code 17 for ctrl
+                if(event.keyCode != 16 && event.keyCode != 17){
+                  // Key Code 37 - 40 for directional arrows
+                  if(!(event.keyCode > 36 && event.keyCode < 41)){
+                    textField.text = textField.text.substr(0,textField.length -1);
+                  }
+                }
+              }
+          }
             
             private function selectIndex(durationType:String):void{
-            	if (durationType == "for"){   
-            		forSelection = true;         		
-            	} else if (durationType == "until"){
-            		untilSelection = true;
-            	}          	
+              if (durationType == "for"){
+                forSelection = true;
+              } else if (durationType == "until"){
+                untilSelection = true;
+              }
             }
             
             private function createWaitDO():void {
-            	var tempArray:Array = new Array();
-            	tempArray.push(["name",waitName.text]);
-            	tempArray.push([paramTypeGroup.selectedValue, expressionValueInput.text]);
-            	
-            	waitDO.attributesArray = tempArray; 
-            	    
-            	var workflowManager:WorkflowManager = WorkflowManager.getInstance();
-            	PopUpManager.removePopUp(this);
-            	workflowManager.popUPOKHandler(this, WorkflowActivities.WAIT);         
+              var tempArray:Array = new Array();
+              tempArray.push(["name",waitName.text]);
+              tempArray.push([paramTypeGroup.selectedValue, expressionValueInput.text]);
+
+              waitDO.attributesArray = tempArray;
+
+              var workflowManager:WorkflowManager = WorkflowManager.getInstance();
+              PopUpManager.removePopUp(this);
+              workflowManager.popUPOKHandler(this, WorkflowActivities.WAIT);
             }
             
             private function handleType(event:ItemClickEvent):void {
-        		durationType = event.currentTarget.selectedValue;	        	
-	        }           
+            durationType = event.currentTarget.selectedValue;
+          }
 
         ]]>
     </mx:Script>
@@ -102,10 +102,10 @@
         </mx:FormItem>  
       
       <mx:HBox horizontalAlign="center">
-      	<mx:RadioButtonGroup id="paramTypeGroup" itemClick="handleType(event);" enabled="false"/>
-		<mx:RadioButton label="Wait Until Duration    " groupName="paramTypeGroup" value="until" selected="{untilSelection}"/>
-		<mx:RadioButton label="Wait For Duration          " groupName="paramTypeGroup" 
-			value="for" selected="{forSelection}"/>		    	
+        <mx:RadioButtonGroup id="paramTypeGroup" itemClick="handleType(event);" enabled="false"/>
+    <mx:RadioButton label="Wait Until Duration    " groupName="paramTypeGroup" value="until" selected="{untilSelection}"/>
+    <mx:RadioButton label="Wait For Duration          " groupName="paramTypeGroup"
+      value="for" selected="{forSelection}"/>
       </mx:HBox>        
         
         <mx:FormItem label="Duration" width="336" >            

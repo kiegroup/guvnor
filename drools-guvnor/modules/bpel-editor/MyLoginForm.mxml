@@ -2,8 +2,8 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" title="Create New BPEL Process" creationComplete="doInit();">
     <mx:Script>
         <![CDATA[
-        	import bpel.editor.gridcc.controller.WorkflowManager;     
-			import bpel.editor.gridcc.utility.QueryString;   	
+          import bpel.editor.gridcc.controller.WorkflowManager;
+      import bpel.editor.gridcc.utility.QueryString;
             import mx.managers.PopUpManager;
             import flash.events.*;            
             
@@ -16,7 +16,7 @@
                 PopUpManager.centerPopUp(this);
                 workflowName.addEventListener(KeyboardEvent.KEY_UP, keyHandler);
                 
-				var queryString:QueryString = new QueryString();
+        var queryString:QueryString = new QueryString();
                 workflowName.text = queryString.parameters.fileName;
             }
             
@@ -28,37 +28,37 @@
             }
             
             // Never USED ...May Need it Later
-            private function textInputHandler(e:TextEvent):void {            	
-	            //trace(">> e.text: " + e.);
-	            // Picks the character typed for workflow name 
-	            // Concanate it with Target Namespace
-	            //targetNamespace.text = targetNamespace.text + e.text
-        	}
-        	
-        	private function keyHandler(event:KeyboardEvent):void {
-            	//trace("keyUpHandler: " + event.keyCode);
-            	//trace(event.currentTarget.);
-            	// Key Code 65 - 90 for a - z
-            	// Key Code 48 - 57 for 0 - 9
-            	if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
-            		// Key Code 16 for shift and // Key Code 17 for ctrl
-            		if(event.keyCode != 16 && event.keyCode != 17){
-            			// Key Code 37 - 40 for directional arrows
-            			if(!(event.keyCode > 36 && event.keyCode < 41)){
-            				workflowName.text = workflowName.text.substr(0,workflowName.length -1);
-            			}
-            		}            		
-            	} 
-            	// Key Code 8 is for back space (Not Used)
-            	//if(event.keyCode == 8){
-            		//if(targetNamespace.length > 20){
-	            		//var tempNamespace:String = targetNamespace.text;
-	            		//var tempNamespace1:String = tempNamespace.substr(0,tempNamespace.length -1);
-	            		
-	            		targetNamespace.text = "http://gridcc.org/" + workflowName.text		            				
-            		//}
-            	//}
-        	}
+            private function textInputHandler(e:TextEvent):void {
+              //trace(">> e.text: " + e.);
+              // Picks the character typed for workflow name
+              // Concanate it with Target Namespace
+              //targetNamespace.text = targetNamespace.text + e.text
+          }
+
+          private function keyHandler(event:KeyboardEvent):void {
+              //trace("keyUpHandler: " + event.keyCode);
+              //trace(event.currentTarget.);
+              // Key Code 65 - 90 for a - z
+              // Key Code 48 - 57 for 0 - 9
+              if(!(event.keyCode > 64 && event.keyCode < 91) && !(event.keyCode > 47 && event.keyCode < 58)){
+                // Key Code 16 for shift and // Key Code 17 for ctrl
+                if(event.keyCode != 16 && event.keyCode != 17){
+                  // Key Code 37 - 40 for directional arrows
+                  if(!(event.keyCode > 36 && event.keyCode < 41)){
+                    workflowName.text = workflowName.text.substr(0,workflowName.length -1);
+                  }
+                }
+              }
+              // Key Code 8 is for back space (Not Used)
+              //if(event.keyCode == 8){
+                //if(targetNamespace.length > 20){
+                  //var tempNamespace:String = targetNamespace.text;
+                  //var tempNamespace1:String = tempNamespace.substr(0,tempNamespace.length -1);
+
+                  targetNamespace.text = "http://gridcc.org/" + workflowName.text
+                //}
+              //}
+          }
 
         ]]>
     </mx:Script>

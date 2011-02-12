@@ -2,10 +2,10 @@
 <mx:TitleWindow xmlns:mx="http://www.adobe.com/2006/mxml" creationComplete="doInit();" width="464" height="230" title="Add New PartnerLink in the BPEL Process">
     <mx:Script>
         <![CDATA[
-        	import bpel.editor.gridcc.controller.WorkflowManager;  
-        	import bpel.editor.gridcc.constant.WorkflowActivities;
-        	import bpel.editor.gridcc.data.PartnerLinkDO;      
-        	import bpel.editor.gridcc.data.PartnerLinkTypeWrapperDO;	
+          import bpel.editor.gridcc.controller.WorkflowManager;
+          import bpel.editor.gridcc.constant.WorkflowActivities;
+          import bpel.editor.gridcc.data.PartnerLinkDO;
+          import bpel.editor.gridcc.data.PartnerLinkTypeWrapperDO;
             import mx.managers.PopUpManager;
             import flash.events.*;            
             
@@ -22,10 +22,10 @@
             private var namePartnerRole:String; 
             
             public function setPartnerLinkDO(partnerLinkDOValue:PartnerLinkDO):void {
-            	partnerLinkDO = partnerLinkDOValue;
-            	namePartnerLink = partnerLinkDO.getName();
-            	namePartnerLinkType = partnerLinkDO.getPartnerLinkType();
-            	namePartnerRole = partnerLinkDO.getPartnerRole();
+              partnerLinkDO = partnerLinkDOValue;
+              namePartnerLink = partnerLinkDO.getName();
+              namePartnerLinkType = partnerLinkDO.getPartnerLinkType();
+              namePartnerRole = partnerLinkDO.getPartnerRole();
             }  
                        
             private function doInit():void {
@@ -45,12 +45,12 @@
     <mx:Form width="429" height="143">
         <mx:FormItem label="PartnerLink Name" width="396"  horizontalAlign="center">
             <mx:TextInput id="partnerLinkName" width="279" text="{namePartnerLink}" 
-            	enabled="false" fontSize="10" fontWeight="bold"/>
+              enabled="false" fontSize="10" fontWeight="bold"/>
         </mx:FormItem> 
         
         <mx:FormItem label="PartnerLink Type " width="396"  horizontalAlign="center">           
             <mx:TextInput id="partnerLinkType" text="{namePartnerLinkType}" 
-            	width="279" enabled="false" fontSize="10" fontWeight="bold"></mx:TextInput>
+              width="279" enabled="false" fontSize="10" fontWeight="bold"></mx:TextInput>
         </mx:FormItem>        
         
         
@@ -60,7 +60,7 @@
                 
         <mx:FormItem label="Partner Role" width="396"  horizontalAlign="center">            
             <mx:TextInput id="partnerRole" width="279" text="{namePartnerRole}"
-            	enabled="false" fontSize="10" fontWeight="bold"/>
+              enabled="false" fontSize="10" fontWeight="bold"/>
         </mx:FormItem>        
     </mx:Form>
     <mx:HBox> 
