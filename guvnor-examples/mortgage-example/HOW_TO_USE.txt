@@ -1,5 +1,5 @@
 ********************************************************************************
-	Instructions for how to use this BRMS/Guvnor sample repository.   
+    Instructions for how to use this BRMS/Guvnor sample repository.
 ********************************************************************************
 
 This shows a very basic sample repository with validation and pricing rules for mortgages. 
