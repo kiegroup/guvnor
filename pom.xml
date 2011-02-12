@@ -40,6 +40,21 @@
     <module>drools-repository-parent</module>
     <module>drools-ide-common</module>
     <module>drools-guvnor</module>
+    <!--<module>guvnor-examples</module>--><!-- TODO Add in the default build -->
   </modules>
+
+  <profiles>
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <modules>
+        <module>guvnor-docs</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>
