@@ -20,39 +20,39 @@ import goo.wee
 
 
 function void goo1() {
-	//do something ! { yeah }
+    //do something ! { yeah }
 }
 
 function String goo2(String la) {
-	//yeah man !
-	return "whee";
+    //yeah man !
+    return "whee";
 }
 
 function String goo3() { return "HELLO"; }
 
 function String goo4() { 
 
-	if( true ) {
-		return "HELLO"; 
-	}
+    if( true ) {
+        return "HELLO";
+    }
 }
 
 /*
-	function String goo5() { 
-	
-		if( true ) {
-			return "HELLO"; 
-		}
-	}
+    function String goo5() {
+
+        if( true ) {
+            return "HELLO";
+        }
+    }
 */
 
 function String goo6() { 
 
-		return "HELLO"; 
-	/* } */
-	/* }
-	}
-	} */
+        return "HELLO";
+    /* } */
+    /* }
+    }
+    } */
 }
 
 rule "blah"

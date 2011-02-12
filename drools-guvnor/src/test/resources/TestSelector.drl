@@ -22,9 +22,9 @@ import org.drools.repository.AssetItem
 import org.drools.guvnor.server.selector.Allow
 
 rule "rule1"
-	when
-		AssetItem()
-	then
-		insert(new Allow())
+    when
+        AssetItem()
+    then
+        insert(new Allow())
 end
 

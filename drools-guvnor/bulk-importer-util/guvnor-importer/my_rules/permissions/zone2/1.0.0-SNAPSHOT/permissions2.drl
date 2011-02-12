@@ -23,9 +23,9 @@ import org.jboss.drools.guvnor.importgenerator.example.InvalidClass;
 
 rule "does the user have permission to return from ZONE 2"
 when
-	not RuleResult()
+    not RuleResult()
     $user: UserVO($permissions : permissions)
     eval($permissions.contains(new PermissionVO("RETURN_ZONE_2")))
 then
-	insert(new RuleResultVO("success"));
+    insert(new RuleResultVO("success"));
 end
