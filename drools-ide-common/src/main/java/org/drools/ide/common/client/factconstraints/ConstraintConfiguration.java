@@ -36,6 +36,6 @@ public interface ConstraintConfiguration extends Serializable {
     public void setArgumentValue(String key, String value);
     public boolean containsArgument(String key);
 
-	public String getConstraintName();
-	public void setConstraintName(String name);
+    public String getConstraintName();
+    public void setConstraintName(String name);
 }

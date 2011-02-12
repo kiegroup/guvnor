@@ -26,8 +26,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class LogEntry implements IsSerializable {
 
-	public int severity;
-	public String message;
-	public Date timestamp;
+    public int severity;
+    public String message;
+    public Date timestamp;
 
 }

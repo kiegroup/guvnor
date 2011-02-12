@@ -23,18 +23,18 @@ package org.drools.guvnor.server.security;
  */
 public class PackageNameType {
 
-	private String packageName;
-	
-	public PackageNameType(String packageName) {
-		this.packageName = packageName;
-	}
-	
-	public String getPackageName() {
-		return packageName;
-	}
-	
-	public String toString() {
-		return "Package name: " + packageName;
-	}
+    private String packageName;
+
+    public PackageNameType(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public String toString() {
+        return "Package name: " + packageName;
+    }
 
 }

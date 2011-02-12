@@ -89,7 +89,7 @@ public class LoginWidget {
                 Scheduler scheduler = Scheduler.get();
                 scheduler.scheduleDeferred( new Command() {
                     public void execute() {
-                        userName.setFocus( true );                    	
+                        userName.setFocus( true );
                     }
                 });
             }

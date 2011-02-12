@@ -57,8 +57,8 @@ public class IntegerConstraintTest {
 
     @Test
     public void testValidConstraint() {
-    	Constraint cons = new IntegerConstraint();
-    	
+        Constraint cons = new IntegerConstraint();
+
         ValidationResult result = cons.validate(12, conf);
         assertTrue(result.isSuccess());
 
@@ -72,8 +72,8 @@ public class IntegerConstraintTest {
 
     @Test
     public void testInvalidConstraint() {
-    	Constraint cons = new IntegerConstraint();
-    	
+        Constraint cons = new IntegerConstraint();
+
         ValidationResult result = cons.validate(new Object(), conf);
         assertFalse(result.isSuccess());
         System.out.println("Message: " + result.getMessage());

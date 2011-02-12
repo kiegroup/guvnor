@@ -22,9 +22,9 @@ import org.drools.ide.common.assistant.refactor.AbstractRuleRefactor;
 
 public abstract class AbstractRuleRefactorProcessor extends AbstractRuleAssistantProcessor {
 
-	protected AbstractRuleRefactor ruleRefactorEngine;
-	protected AbstractParserEngine ruleParserEngine;
-	
-	protected abstract RuleRefactorInfo generateRuleRefactorInfo(String text);
-	
+    protected AbstractRuleRefactor ruleRefactorEngine;
+    protected AbstractParserEngine ruleParserEngine;
+
+    protected abstract RuleRefactorInfo generateRuleRefactorInfo(String text);
+
 }

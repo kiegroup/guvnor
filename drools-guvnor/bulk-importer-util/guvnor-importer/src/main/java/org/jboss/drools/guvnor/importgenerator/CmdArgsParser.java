@@ -86,28 +86,28 @@ public class CmdArgsParser{
 //          "-b", "/home/mallen/workspace/guvnor-importer",
 //          "-w", "kagentChangeSet.xml",
 //          "-V"};
-    	System.out.println("Invalid number of parameters - 0");
-    	return options;
+        System.out.println("Invalid number of parameters - 0");
+        return options;
     } else if (args.length == 2) {
-    	String arg = args[0];
-    	String val = args[1];
-    	if(arg.equals("-prop")) {
-    		try {
-    			Properties props = new Properties();
-    			props.load(new FileInputStream(val));
-    			for(Object prop : props.keySet()) {
-    				String key = (String) prop;
-    				String value = props.getProperty(key);
-    				options.put(map.get(key), value);
-    			}
-    		} catch (IOException e) {
-    			System.out.println("Invalid file specified: " + val);
-    		}
-    		options.put(Parameters.OPTIONS_VERBOSE, "true");
-    	} else {
-    		System.out.println("To use a properties file use the \"-prop\" parameter");
-    	}
-    	return options;
+        String arg = args[0];
+        String val = args[1];
+        if(arg.equals("-prop")) {
+            try {
+                Properties props = new Properties();
+                props.load(new FileInputStream(val));
+                for(Object prop : props.keySet()) {
+                    String key = (String) prop;
+                    String value = props.getProperty(key);
+                    options.put(map.get(key), value);
+                }
+            } catch (IOException e) {
+                System.out.println("Invalid file specified: " + val);
+            }
+            options.put(Parameters.OPTIONS_VERBOSE, "true");
+        } else {
+            System.out.println("To use a properties file use the \"-prop\" parameter");
+        }
+        return options;
     } else {
     for (int i=0;i<args.length;i++) {
       String arg = args[i];

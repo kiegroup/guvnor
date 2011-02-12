@@ -28,7 +28,7 @@ import org.junit.Test;
 public class EditorLauncherTest {
 
 
-	@Test @Ignore
+    @Test @Ignore
     public void testIcons()  {
 
         assertNotNull(EditorLauncher.TYPE_IMAGES);

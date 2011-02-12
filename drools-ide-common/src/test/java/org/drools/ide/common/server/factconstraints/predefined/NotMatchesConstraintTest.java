@@ -64,7 +64,7 @@ public class NotMatchesConstraintTest {
 
     @Test @Ignore
     public void testValidConstraint(){
-    	
+
         ValidationResult result = cons.validate("Bart", conf);
         assertTrue(result.isSuccess());
 

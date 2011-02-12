@@ -59,7 +59,7 @@ public class DSLSentenceTest {
 
     @Test
     public void testWithNewLines() {
-    	final DSLSentence sen = new DSLSentence();
+        final DSLSentence sen = new DSLSentence();
         sen.sentence = "this is {variable}\\n here and {here}";
         assertEquals( "this is variable\n here and here",sen.toString() );
 

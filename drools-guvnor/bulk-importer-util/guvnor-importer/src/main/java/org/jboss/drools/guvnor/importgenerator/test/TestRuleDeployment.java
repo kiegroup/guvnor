@@ -42,26 +42,26 @@ import org.drools.rule.Package;
  */
 public class TestRuleDeployment {
   public enum RuleAgentType{ HTTP, FILE_DRL, FILE_PKG }
-	private static final String ruleServer="http://localhost:8080/brms";
-	private static final String packageName="ping";
-	private static final String snapshotName="1.0.0-SNAPSHOT";
-	
-	public void run(){
-	  boolean executeRules=false;
-	  Properties props=getProps(packageName, snapshotName);
-	  String packSnap=packageName +"/"+ snapshotName;
-	  String urlstr=(String)props.get("url");
-	  try{
-	    System.out.println("1: Drools method - looking up ["+packSnap+"]");
-	    HttpClientImpl c=new HttpClientImpl();
-	    Package pa=c.fetchPackage(new URL(urlstr));
-	    System.out.println("1: found ["+ pa.getName() +"; clazz="+ pa.getClass().getName() +"]");
-	    executeRules=true;
-	  }catch(Exception e){
-	    System.out.println("ERROR "+ e.getClass().getName() +" - "+ e.getMessage());
-	  }
-	  
-	  try{
+    private static final String ruleServer="http://localhost:8080/brms";
+    private static final String packageName="ping";
+    private static final String snapshotName="1.0.0-SNAPSHOT";
+
+    public void run(){
+      boolean executeRules=false;
+      Properties props=getProps(packageName, snapshotName);
+      String packSnap=packageName +"/"+ snapshotName;
+      String urlstr=(String)props.get("url");
+      try{
+        System.out.println("1: Drools method - looking up ["+packSnap+"]");
+        HttpClientImpl c=new HttpClientImpl();
+        Package pa=c.fetchPackage(new URL(urlstr));
+        System.out.println("1: found ["+ pa.getName() +"; clazz="+ pa.getClass().getName() +"]");
+        executeRules=true;
+      }catch(Exception e){
+        System.out.println("ERROR "+ e.getClass().getName() +" - "+ e.getMessage());
+      }
+
+      try{
       System.out.println("2: My method - looking up ["+packSnap+"]");
       URLConnection cnn = new URL(urlstr).openConnection();
       InputStreamReader in=new InputStreamReader(cnn.getInputStream());
@@ -83,46 +83,46 @@ public class TestRuleDeployment {
         Package p=((Package)o);
         System.out.println("2: Found a Package ["+p.getName()+"]");
       }
-	  }catch(Exception e){
+      }catch(Exception e){
       System.err.println("ERROR "+ e.getClass().getName() +" - "+ e.getMessage());
-	  }
-	  
-	  if (!executeRules) return; //exit if we've not found the package in the brms to execute
-	  
-	  RuleAgentFactory factory=new RuleAgentFactory(props);
-		RuleAgent agent=factory.get(RuleAgentType.HTTP);
-		RuleBase rb=agent.getRuleBase();
-		
-		StatelessSession s=rb.newStatelessSession();
-		Collection<Object> facts=new LinkedList<Object>();
-		facts.add(new String("ping"));
-		System.out.print("ping...");
-		StatelessSessionResult result=s.executeWithResults(facts);
-		Iterator it=result.iterateObjects();
-		while(it.hasNext()) {
-			Object o=it.next();
-			if (o instanceof String){
-			  System.out.println(((String)o));
-			}
-		}
-	}
-	
-	private Properties getProps(String packageName, String snapshotName){
-		Properties r=new Properties();
-		r.put("url", ruleServer+"/org.drools.guvnor.Guvnor/package/"+packageName+"/"+snapshotName);
-		r.put("file", "my_rules/permissions/zone1/1.0.0-SNAPSHOT/permissions.");
-		r.put("name", "RuleAgent for "+ packageName); //optional
-		r.put("poll", "30");
-		r.put("localCacheDir", "/tmp");
-		r.put("newInstance", "true");
-		return r;
-	}
-	
-	 public static void main(String[] args){
-	    new TestRuleDeployment().run();
-	  }
-	
-	class RuleAgentFactory{
+      }
+
+      if (!executeRules) return; //exit if we've not found the package in the brms to execute
+
+      RuleAgentFactory factory=new RuleAgentFactory(props);
+        RuleAgent agent=factory.get(RuleAgentType.HTTP);
+        RuleBase rb=agent.getRuleBase();
+
+        StatelessSession s=rb.newStatelessSession();
+        Collection<Object> facts=new LinkedList<Object>();
+        facts.add(new String("ping"));
+        System.out.print("ping...");
+        StatelessSessionResult result=s.executeWithResults(facts);
+        Iterator it=result.iterateObjects();
+        while(it.hasNext()) {
+            Object o=it.next();
+            if (o instanceof String){
+              System.out.println(((String)o));
+            }
+        }
+    }
+
+    private Properties getProps(String packageName, String snapshotName){
+        Properties r=new Properties();
+        r.put("url", ruleServer+"/org.drools.guvnor.Guvnor/package/"+packageName+"/"+snapshotName);
+        r.put("file", "my_rules/permissions/zone1/1.0.0-SNAPSHOT/permissions.");
+        r.put("name", "RuleAgent for "+ packageName); //optional
+        r.put("poll", "30");
+        r.put("localCacheDir", "/tmp");
+        r.put("newInstance", "true");
+        return r;
+    }
+
+     public static void main(String[] args){
+        new TestRuleDeployment().run();
+      }
+
+    class RuleAgentFactory{
     Properties props;
     public RuleAgentFactory(Properties props) {
       this.props=props;

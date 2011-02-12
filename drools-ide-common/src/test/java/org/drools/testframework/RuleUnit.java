@@ -43,23 +43,23 @@ import static org.junit.Assert.*;
  */
 public abstract class RuleUnit {
 
-	/**
-	 * Return a wm ready to go based on the rules in a drl at the specified uri (in the classpath).
-	 */
-	public StatefulSession getWorkingMemory(String uri)
-			throws DroolsParserException, IOException, Exception {
-		PackageBuilder builder = new PackageBuilder();
-		builder.addPackageFromDrl(new InputStreamReader(this.getClass()
-				.getResourceAsStream(uri)));
-		assertFalse(builder.getErrors().toString(), builder.hasErrors());
-		RuleBase rb = RuleBaseFactory.newRuleBase();
-		rb.addPackage(builder.getPackage());
+    /**
+     * Return a wm ready to go based on the rules in a drl at the specified uri (in the classpath).
+     */
+    public StatefulSession getWorkingMemory(String uri)
+            throws DroolsParserException, IOException, Exception {
+        PackageBuilder builder = new PackageBuilder();
+        builder.addPackageFromDrl(new InputStreamReader(this.getClass()
+                .getResourceAsStream(uri)));
+        assertFalse(builder.getErrors().toString(), builder.hasErrors());
+        RuleBase rb = RuleBaseFactory.newRuleBase();
+        rb.addPackage(builder.getPackage());
 
-		SessionConfiguration conf = new SessionConfiguration();
-		conf.setClockType( ClockType.PSEUDO_CLOCK );
-		StatefulSession wm = rb.newStatefulSession( conf, null );
+        SessionConfiguration conf = new SessionConfiguration();
+        conf.setClockType( ClockType.PSEUDO_CLOCK );
+        StatefulSession wm = rb.newStatefulSession( conf, null );
 
         
-		return wm;
-	}
+        return wm;
+    }
 }

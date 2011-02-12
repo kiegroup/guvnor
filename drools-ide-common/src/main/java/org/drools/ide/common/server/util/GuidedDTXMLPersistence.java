@@ -33,29 +33,29 @@ public class GuidedDTXMLPersistence {
     private static GuidedDTXMLPersistence INSTANCE = new GuidedDTXMLPersistence();
 
     private GuidedDTXMLPersistence() {
-    	xt = new XStream(new DomDriver());
-    	xt.alias("decision-table", GuidedDecisionTable.class);
-    	xt.alias("metadata-column", MetadataCol.class);
-    	xt.alias("attribute-column", AttributeCol.class);
-    	xt.alias("condition-column", ConditionCol.class);
-    	xt.alias("set-field-col", ActionSetFieldCol.class);
-    	xt.alias("retract-fact-column", ActionRetractFactCol.class);
-    	xt.alias("insert-fact-column", ActionInsertFactCol.class);
+        xt = new XStream(new DomDriver());
+        xt.alias("decision-table", GuidedDecisionTable.class);
+        xt.alias("metadata-column", MetadataCol.class);
+        xt.alias("attribute-column", AttributeCol.class);
+        xt.alias("condition-column", ConditionCol.class);
+        xt.alias("set-field-col", ActionSetFieldCol.class);
+        xt.alias("retract-fact-column", ActionRetractFactCol.class);
+        xt.alias("insert-fact-column", ActionInsertFactCol.class);
     }
 
     public static GuidedDTXMLPersistence getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
     public String marshal(GuidedDecisionTable dt) {
-    	return xt.toXML(dt);
+        return xt.toXML(dt);
     }
 
     public GuidedDecisionTable unmarshal(String xml) {
-    	if (xml == null || xml.trim().equals("")) {
-    		return new GuidedDecisionTable();
-    	}
-    	return (GuidedDecisionTable) xt.fromXML(xml);
+        if (xml == null || xml.trim().equals("")) {
+            return new GuidedDecisionTable();
+        }
+        return (GuidedDecisionTable) xt.fromXML(xml);
     }
 
 

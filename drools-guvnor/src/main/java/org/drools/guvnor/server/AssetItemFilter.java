@@ -24,16 +24,16 @@ import org.jboss.seam.security.Identity;
 
 public class AssetItemFilter implements RepositoryFilter {
 
-	public boolean accept(Object artifact, String action) {
-		if (!(artifact instanceof AssetItem))
-			return false;
+    public boolean accept(Object artifact, String action) {
+        if (!(artifact instanceof AssetItem))
+            return false;
 
-		// for GWT hosted mode - debug only
-		if (!Contexts.isSessionContextActive()) {
-			return true;
-		} else {
-			return Identity.instance().hasPermission(new PackageUUIDType(((AssetItem) artifact).getPackage().getUUID()), action);
-		}
-	}
+        // for GWT hosted mode - debug only
+        if (!Contexts.isSessionContextActive()) {
+            return true;
+        } else {
+            return Identity.instance().hasPermission(new PackageUUIDType(((AssetItem) artifact).getPackage().getUUID()), action);
+        }
+    }
 
 }

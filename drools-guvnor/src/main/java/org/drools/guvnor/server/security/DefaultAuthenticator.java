@@ -38,7 +38,7 @@ public class DefaultAuthenticator {
             return false;
         }
         log.info( "User logged in via default authentication module (no security check).");
-		
+
         return true;
     }
 }

@@ -29,11 +29,11 @@ import org.drools.ide.common.client.modeldriven.testing.FieldData;
 public class FactDataTest {
     @Test
     public void testAdd() {
-		FactData fd = new FactData("x", "y", new ArrayList(), false );
-		assertEquals(0, fd.getFieldData().size());
-		fd.getFieldData().add(new FieldData("x", "y"));
-		assertEquals(1, fd.getFieldData().size());
-		fd.getFieldData().add(new FieldData("q", "x"));
-		assertEquals(2, fd.getFieldData().size());
-	}
+        FactData fd = new FactData("x", "y", new ArrayList(), false );
+        assertEquals(0, fd.getFieldData().size());
+        fd.getFieldData().add(new FieldData("x", "y"));
+        assertEquals(1, fd.getFieldData().size());
+        fd.getFieldData().add(new FieldData("q", "x"));
+        assertEquals(2, fd.getFieldData().size());
+    }
 }

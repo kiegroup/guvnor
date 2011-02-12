@@ -48,28 +48,28 @@ public class SampleSaveEvent implements SaveEvent {
             List<CategoryItem> lstCategoryItem = item.getCategories();
             List<String> lstCategoryName = new ArrayList<String>();
             for(int i=0;i<lstCategoryItem.size();i++){
-            	CategoryItem ci = lstCategoryItem.get(i);
-            	lstCategoryName.add(ci.getName());
+                CategoryItem ci = lstCategoryItem.get(i);
+                lstCategoryName.add(ci.getName());
             }
             //List of Strings
             dataToPersist.put("category", lstCategoryName);
             if (rm.attributes.length > 0) {
-				HashMap attributesToPersist = new HashMap();
-				for (int att = 0; att < rm.attributes.length; att++) {
-					attributesToPersist.put(rm.attributes[att].attributeName,rm.attributes[att].value);
-				}
-				//Hash of Strings
-				dataToPersist.put("attributes", attributesToPersist);
-			}
+                HashMap attributesToPersist = new HashMap();
+                for (int att = 0; att < rm.attributes.length; att++) {
+                    attributesToPersist.put(rm.attributes[att].attributeName,rm.attributes[att].value);
+                }
+                //Hash of Strings
+                dataToPersist.put("attributes", attributesToPersist);
+            }
             
             if (rm.metadataList.length > 0) {
-				HashMap metadataToPersist = new HashMap();
-				for (int meta = 0; meta < rm.metadataList.length; meta++) {
-					metadataToPersist.put(rm.metadataList[meta].attributeName,rm.metadataList[meta].value);
-				}
-				//Hash of Strings
-				dataToPersist.put("metadata", metadataToPersist);
-			}
+                HashMap metadataToPersist = new HashMap();
+                for (int meta = 0; meta < rm.metadataList.length; meta++) {
+                    metadataToPersist.put(rm.metadataList[meta].attributeName,rm.metadataList[meta].value);
+                }
+                //Hash of Strings
+                dataToPersist.put("metadata", metadataToPersist);
+            }
             
             dataToPersist.put("status", item.getStateDescription());
             dataToPersist.put("fullxml", item.getContent(true));

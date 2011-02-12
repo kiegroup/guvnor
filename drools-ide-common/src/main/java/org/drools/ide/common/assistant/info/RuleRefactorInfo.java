@@ -18,7 +18,7 @@ package org.drools.ide.common.assistant.info;
 
 
 public interface RuleRefactorInfo {
-	
-//	public AbstractRuleBasicContentInfo getContentAt(int offset);
+
+//    public AbstractRuleBasicContentInfo getContentAt(int offset);
 
 }

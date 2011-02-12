@@ -23,15 +23,15 @@ import java.util.Map;
 
 public class SampleDataSource2 {
 
-	public Map loadData() {
-		Map data = new HashMap();
+    public Map loadData() {
+        Map data = new HashMap();
 
-		List d = new ArrayList();
-		d.add("hey");
-		d.add("ho");
-		data.put("whee", d);
+        List d = new ArrayList();
+        d.add("hey");
+        d.add("ho");
+        data.put("whee", d);
 
-		return data;
-	}
+        return data;
+    }
 
 }

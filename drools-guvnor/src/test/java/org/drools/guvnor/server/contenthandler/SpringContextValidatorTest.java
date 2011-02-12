@@ -8,8 +8,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 public class SpringContextValidatorTest {
-	
-	
+
+
         @Test
         public void testValidContext(){
             SpringContextValidator validator = new SpringContextValidator();

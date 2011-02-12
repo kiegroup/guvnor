@@ -30,12 +30,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class UserSecurityContext implements IsSerializable {
 
-	public String userName;
+    public String userName;
 
 
-	public UserSecurityContext() {}
-	public UserSecurityContext(String userName) {
-		this.userName = userName;
-	}
+    public UserSecurityContext() {}
+    public UserSecurityContext(String userName) {
+        this.userName = userName;
+    }
 
 }

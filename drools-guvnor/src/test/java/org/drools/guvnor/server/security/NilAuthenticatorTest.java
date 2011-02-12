@@ -24,9 +24,9 @@ public class NilAuthenticatorTest {
 
     @Test
     public void testAdmin() {
-		NilAuthenticator ni = new NilAuthenticator();
+        NilAuthenticator ni = new NilAuthenticator();
 
-		assertTrue(ni.authenticate());
-	}
+        assertTrue(ni.authenticate());
+    }
 
 }

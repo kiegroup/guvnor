@@ -22,32 +22,32 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
  * 
  */
 public class Coordinate {
-	private int row;
-	private int col;
-	private String displayString;
+    private int row;
+    private int col;
+    private String displayString;
 
-	Coordinate(Coordinate c) {
-		this.row = c.row;
-		this.col = c.col;
-		this.displayString = "(R" + c.row + ",C" + c.col + ")";
-	}
+    Coordinate(Coordinate c) {
+        this.row = c.row;
+        this.col = c.col;
+        this.displayString = "(R" + c.row + ",C" + c.col + ")";
+    }
 
-	Coordinate(int row, int col) {
-		this.row = row;
-		this.col = col;
-		this.displayString = "(R" + row + ",C" + col + ")";
-	}
+    Coordinate(int row, int col) {
+        this.row = row;
+        this.col = col;
+        this.displayString = "(R" + row + ",C" + col + ")";
+    }
 
-	public int getCol() {
-		return this.col;
-	}
+    public int getCol() {
+        return this.col;
+    }
 
-	public int getRow() {
-		return this.row;
-	}
+    public int getRow() {
+        return this.row;
+    }
 
-	@Override
-	public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -55,19 +55,19 @@ public class Coordinate {
             return false;
         }
         Coordinate c = (Coordinate) o;
-		return c.col == col && c.row == row;
-	}
+        return c.col == col && c.row == row;
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = row;
-		hash = 31 * hash + col;
-		return hash;
-	}
+    @Override
+    public int hashCode() {
+        int hash = row;
+        hash = 31 * hash + col;
+        return hash;
+    }
 
-	@Override
-	public String toString() {
-		return displayString;
-	}
+    @Override
+    public String toString() {
+        return displayString;
+    }
 
 }

@@ -18,5 +18,5 @@ package org.drools.repository;
 
 
 public interface RepositoryFilter {
-	boolean accept(Object artifact, String action);
+    boolean accept(Object artifact, String action);
 }

@@ -46,13 +46,13 @@ public class UserInfo {
      * Use the current sessions userName to get to the info node.
      */
     public UserInfo(RulesRepository repo) throws RulesRepositoryException {
-		try {
-			init(repo, repo.getSession().getUserID());
-		} catch (RepositoryException e) {
-			log.error("Unable to init UserInfo", e);
-			throw new RulesRepositoryException(e);
-		}
-	}
+        try {
+            init(repo, repo.getSession().getUserID());
+        } catch (RepositoryException e) {
+            log.error("Unable to init UserInfo", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
 
     UserInfo() {}
 
@@ -60,54 +60,54 @@ public class UserInfo {
      * Use the given userName to select the node.
      */
     public UserInfo(RulesRepository repo, String userName)
-			throws RulesRepositoryException {
-		try {
-			init(repo, userName);
-		} catch (RepositoryException e) {
-			log.error("Unable to init UserInfo", e);
-			throw new RulesRepositoryException(e);
-		}
-	}
+            throws RulesRepositoryException {
+        try {
+            init(repo, userName);
+        } catch (RepositoryException e) {
+            log.error("Unable to init UserInfo", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
 
     void init(RulesRepository repo, String userName) throws RepositoryException {
         this.userInfoNode = getUserInfoNode(userName, repo);
     }
 
     public List<InboxEntry> readEntries(String fileName, String propertyName)
-			throws RulesRepositoryException {
-		try {
-			Val property = getProperty(fileName, propertyName);
-			if (!(property.value == null || property.value.equals(""))) {
-				return (List<InboxEntry>) getXStream().fromXML(property.value);
-			} else {
-				return new ArrayList<InboxEntry>();
-			}
-		} catch (RepositoryException e) {
-			log.error("Unable to readEntries", e);
-			throw new RulesRepositoryException(e);
-		}
-	}
+            throws RulesRepositoryException {
+        try {
+            Val property = getProperty(fileName, propertyName);
+            if (!(property.value == null || property.value.equals(""))) {
+                return (List<InboxEntry>) getXStream().fromXML(property.value);
+            } else {
+                return new ArrayList<InboxEntry>();
+            }
+        } catch (RepositoryException e) {
+            log.error("Unable to readEntries", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
     
     public void writeEntries(String fileName, String boxName,
-			List<InboxEntry> entries) throws RulesRepositoryException {
-		try {
-			String entry = getXStream().toXML(entries);
+            List<InboxEntry> entries) throws RulesRepositoryException {
+        try {
+            String entry = getXStream().toXML(entries);
 
-			setProperty(fileName, boxName, new UserInfo.Val(entry));
-		} catch (RepositoryException e) {
-			log.error("Unable to writeEntries", e);
-			throw new RulesRepositoryException(e);
-		}
-	}   
+            setProperty(fileName, boxName, new UserInfo.Val(entry));
+        } catch (RepositoryException e) {
+            log.error("Unable to writeEntries", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
     
     public void clear(String fileName, String boxName) {
-		try {
-			setProperty(fileName, boxName, new UserInfo.Val(""));
-		} catch (RepositoryException e) {
-			log.error("Unable to clear", e);
-			throw new RulesRepositoryException(e);
-		}
-	}
+        try {
+            setProperty(fileName, boxName, new UserInfo.Val(""));
+        } catch (RepositoryException e) {
+            log.error("Unable to clear", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
     
     /**
      * And entry in an inbox.
@@ -170,19 +170,19 @@ public class UserInfo {
      * @param c
      */
     public static void eachUser(RulesRepository repository, Command c)
-			throws RulesRepositoryException {
-		try {
+            throws RulesRepositoryException {
+        try {
 
-			NodeIterator nit = PermissionManager.getUsersRootNode(
-					PermissionManager.getRootNode(repository)).getNodes();
-			while (nit.hasNext()) {
-				c.process(nit.nextNode().getName());
-			}
-		} catch (RepositoryException e) {
-			log.error("Unable to eachUser", e);
-			throw new RulesRepositoryException(e);
-		}
-	}
+            NodeIterator nit = PermissionManager.getUsersRootNode(
+                    PermissionManager.getRootNode(repository)).getNodes();
+            while (nit.hasNext()) {
+                c.process(nit.nextNode().getName());
+            }
+        } catch (RepositoryException e) {
+            log.error("Unable to eachUser", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
 
     public static interface Command {
         public void process(String toUser) throws RulesRepositoryException;
@@ -194,13 +194,13 @@ public class UserInfo {
      * @throws RepositoryException
      */
     public void save() throws RulesRepositoryException {
-		try {
-			userInfoNode.getParent().getParent().save();
-			// userInfoNode.getParent().save();
-		} catch (RepositoryException e) {
-			log.error("Unable to save", e);
-			throw new RulesRepositoryException(e);
-		}
-	}
+        try {
+            userInfoNode.getParent().getParent().save();
+            // userInfoNode.getParent().save();
+        } catch (RepositoryException e) {
+            log.error("Unable to save", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
 
 }

@@ -29,8 +29,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class PropertiesHolder implements PortableObject {
 
     /**
-	 * @gwt.typeArgs <org.drools.guvnor.client.ruleeditor.PropertyHolder>
-	 */
+     * @gwt.typeArgs <org.drools.guvnor.client.ruleeditor.PropertyHolder>
+     */
     List<PropertyHolder> list = new ArrayList<PropertyHolder>();
 
     public PropertiesHolder() {

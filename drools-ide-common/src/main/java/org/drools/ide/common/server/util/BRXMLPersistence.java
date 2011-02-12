@@ -138,9 +138,9 @@ public class BRXMLPersistence
         return rm;
     }
 
-	protected RuleModel createEmptyModel() {
-		return new RuleModel();
-	}
+    protected RuleModel createEmptyModel() {
+        return new RuleModel();
+    }
 
     /**
      * 

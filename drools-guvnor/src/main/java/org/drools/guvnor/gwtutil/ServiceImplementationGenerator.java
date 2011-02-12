@@ -36,9 +36,9 @@ public class ServiceImplementationGenerator {
         for ( int i = 0; i < methods.length; i++ ) {
             Method meth = methods[i];
             if (meth.getDeclaringClass() == cls) {
-            	Class[] exes = meth.getExceptionTypes();
+                Class[] exes = meth.getExceptionTypes();
 
-            	String retType = typeName(meth.getReturnType().getName());
+                String retType = typeName(meth.getReturnType().getName());
                 line += "public " + retType + " " + meth.getName() + "(";
                 Class params[] = meth.getParameterTypes();
                 String body = "getService()." + meth.getName() + "(";
@@ -57,13 +57,13 @@ public class ServiceImplementationGenerator {
                 body += ");";
                 line += ") ";
                 if (exes.length > 0) {
-                	line += "throws " + exes[0].getName();
+                    line += "throws " + exes[0].getName();
                 }
                 line += " {\n";
                 if (retType.equals("void")) {
-                	line += "\t" + body + "\n";
+                    line += "\t" + body + "\n";
                 } else {
-                	line += "\t return " + body + "\n";
+                    line += "\t return " + body + "\n";
                 }
                 line += "}\n";
             }
@@ -73,11 +73,11 @@ public class ServiceImplementationGenerator {
         System.out.println(line);
     }
 
-	private static String typeName(String type) {
-		if (type.startsWith("[L")) {
-			type = type.replace("[L", "").replace(";", "[]");
-		}
-		return type;
-	}
+    private static String typeName(String type) {
+        if (type.startsWith("[L")) {
+            type = type.replace("[L", "").replace(";", "[]");
+        }
+        return type;
+    }
 
 }

@@ -85,20 +85,20 @@ public class FactFieldValueVerifier {
             expectedResult = eval( currentField.getExpected().substring( 1 ),
                                    this.populatedData );
         } else if (currentField.getNature() == VerifyField.TYPE_ENUM) {
-			try {
-				// The string representation of enum value is using a  
-				// format like CheeseType.CHEDDAR
-				String classNameOfEnum = currentField.getExpected().substring(0,
-						currentField.getExpected().indexOf("."));
-				String valueOfEnum = currentField.getExpected().substring(currentField.getExpected()
-						.indexOf(".") + 1);
-				String fullName = resolver.getFullTypeName(classNameOfEnum);
+            try {
+                // The string representation of enum value is using a
+                // format like CheeseType.CHEDDAR
+                String classNameOfEnum = currentField.getExpected().substring(0,
+                        currentField.getExpected().indexOf("."));
+                String valueOfEnum = currentField.getExpected().substring(currentField.getExpected()
+                        .indexOf(".") + 1);
+                String fullName = resolver.getFullTypeName(classNameOfEnum);
 
-				expectedResult = eval(fullName + "." + valueOfEnum);
-			} catch (ClassNotFoundException e) {
-				//Do nothing. 
-			}
-		} 
+                expectedResult = eval(fullName + "." + valueOfEnum);
+            } catch (ClassNotFoundException e) {
+                //Do nothing.
+            }
+        }
         return expectedResult;
     }
 

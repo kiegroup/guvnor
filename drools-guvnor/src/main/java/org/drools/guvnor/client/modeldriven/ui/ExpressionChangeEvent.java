@@ -18,19 +18,19 @@ package org.drools.guvnor.client.modeldriven.ui;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class ExpressionChangeEvent extends GwtEvent<ExpressionChangeHandler> {
-	private static final GwtEvent.Type<ExpressionChangeHandler> TYPE = new GwtEvent.Type<ExpressionChangeHandler>();
-	
-	@Override
-	protected void dispatch(ExpressionChangeHandler handler) {
-		handler.onExpressionChanged(this);
-	}
+    private static final GwtEvent.Type<ExpressionChangeHandler> TYPE = new GwtEvent.Type<ExpressionChangeHandler>();
 
-	@Override
-	public GwtEvent.Type<ExpressionChangeHandler> getAssociatedType() {
-		return getType();
-	}
-	
-	public static final Type<ExpressionChangeHandler> getType() {
-		return TYPE;
-	}
+    @Override
+    protected void dispatch(ExpressionChangeHandler handler) {
+        handler.onExpressionChanged(this);
+    }
+
+    @Override
+    public GwtEvent.Type<ExpressionChangeHandler> getAssociatedType() {
+        return getType();
+    }
+
+    public static final Type<ExpressionChangeHandler> getType() {
+        return TYPE;
+    }
 }

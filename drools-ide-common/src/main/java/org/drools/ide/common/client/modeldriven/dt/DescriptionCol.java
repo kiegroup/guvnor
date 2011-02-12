@@ -23,24 +23,24 @@ package org.drools.ide.common.client.modeldriven.dt;
  */
 public class DescriptionCol extends DTColumnConfig {
 
-	private static final long serialVersionUID = -306736594255777798L;
+    private static final long serialVersionUID = -306736594255777798L;
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof DescriptionCol)) {
-			return false;
-		}
-		return super.equals(obj);
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof DescriptionCol)) {
+            return false;
+        }
+        return super.equals(obj);
+    }
 
-	@Override
-	public int hashCode() {
-		int hash = 1;
-		hash = hash * 31 + super.hashCode();
-		return hash;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 1;
+        hash = hash * 31 + super.hashCode();
+        return hash;
+    }
 
 }

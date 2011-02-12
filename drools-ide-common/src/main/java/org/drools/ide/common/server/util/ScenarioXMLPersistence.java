@@ -41,42 +41,42 @@ public class ScenarioXMLPersistence {
     private static final ScenarioXMLPersistence INSTANCE = new ScenarioXMLPersistence();
 
     private ScenarioXMLPersistence() {
-    	xt = new XStream(new DomDriver());
-    	xt.alias("scenario", Scenario.class);
-    	xt.alias("execution-trace", ExecutionTrace.class);
-    	xt.alias("expectation", Expectation.class);
-    	xt.alias("fact-data", FactData.class);
-    	xt.alias("field-data", FieldData.class);
-    	xt.alias("fixture", Fixture.class);
-    	xt.alias("retract-fact", RetractFact.class);
-    	xt.alias("expect-fact", VerifyFact.class);
-    	xt.alias("expect-field", VerifyField.class);
-    	xt.alias("expect-rule", VerifyRuleFired.class);
-    	xt.omitField(ExecutionTrace.class, "rulesFired");
+        xt = new XStream(new DomDriver());
+        xt.alias("scenario", Scenario.class);
+        xt.alias("execution-trace", ExecutionTrace.class);
+        xt.alias("expectation", Expectation.class);
+        xt.alias("fact-data", FactData.class);
+        xt.alias("field-data", FieldData.class);
+        xt.alias("fixture", Fixture.class);
+        xt.alias("retract-fact", RetractFact.class);
+        xt.alias("expect-fact", VerifyFact.class);
+        xt.alias("expect-field", VerifyField.class);
+        xt.alias("expect-rule", VerifyRuleFired.class);
+        xt.omitField(ExecutionTrace.class, "rulesFired");
     }
 
     public static ScenarioXMLPersistence getInstance() {
-    	return INSTANCE;
+        return INSTANCE;
     }
 
 
 
     public String marshal(Scenario sc) {
-    	if (sc.getFixtures().size() > 1  && sc.getFixtures().get(sc.getFixtures().size() - 1) instanceof ExecutionTrace) {
-    		Object f = sc.getFixtures().get(sc.getFixtures().size() - 2);
+        if (sc.getFixtures().size() > 1  && sc.getFixtures().get(sc.getFixtures().size() - 1) instanceof ExecutionTrace) {
+            Object f = sc.getFixtures().get(sc.getFixtures().size() - 2);
 
-    		if (f instanceof Expectation) {
-    			sc.getFixtures().remove(sc.getFixtures().size() - 1);
-    		}
+            if (f instanceof Expectation) {
+                sc.getFixtures().remove(sc.getFixtures().size() - 1);
+            }
 
-    	}
-    	return xt.toXML(sc);
+        }
+        return xt.toXML(sc);
     }
 
     public Scenario unmarshal(String xml) {
-    	if (xml == null) return new Scenario();
-    	if (xml.trim().equals("")) return new Scenario();
-    	return (Scenario) xt.fromXML(xml);
+        if (xml == null) return new Scenario();
+        if (xml.trim().equals("")) return new Scenario();
+        return (Scenario) xt.fromXML(xml);
     }
 
 }

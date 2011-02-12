@@ -28,20 +28,20 @@ import javax.jcr.RangeIterator;
  */
 public class AssetItemPageResult {
 
-	public final List<AssetItem> assets;
-	public final boolean hasNext;
-	public long currentPosition;
+    public final List<AssetItem> assets;
+    public final boolean hasNext;
+    public long currentPosition;
 
-	public AssetItemPageResult(List<AssetItem> categories, RangeIterator it) {
-		this.assets = categories;
-		this.hasNext = it.hasNext();
-		this.currentPosition = it.getPosition();
-	}
+    public AssetItemPageResult(List<AssetItem> categories, RangeIterator it) {
+        this.assets = categories;
+        this.hasNext = it.hasNext();
+        this.currentPosition = it.getPosition();
+    }
 
-	public AssetItemPageResult() {
-		hasNext = false;
-		currentPosition = 0;
-		assets = new ArrayList<AssetItem>();
-	}
+    public AssetItemPageResult() {
+        hasNext = false;
+        currentPosition = 0;
+        assets = new ArrayList<AssetItem>();
+    }
 
 }

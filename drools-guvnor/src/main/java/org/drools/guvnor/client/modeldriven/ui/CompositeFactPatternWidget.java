@@ -137,13 +137,13 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
     }
 
     protected Widget getCompositeLabel() {
-    	ClickHandler click = new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
-				Widget w = (Widget)event.getSource();
-				showFactTypeSelector( w );
-			}
-		};
+        ClickHandler click = new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                Widget w = (Widget)event.getSource();
+                showFactTypeSelector( w );
+            }
+        };
         String lbl = HumanReadable.getCEDisplayName( pattern.type );
 
         if (pattern.getPatterns() == null || pattern.getPatterns().length ==0) {
@@ -172,41 +172,41 @@ public class CompositeFactPatternWidget extends RuleModellerWidget {
         popup.addAttribute(constants.chooseFactType(),
                 box);
         box.addChangeHandler(new ChangeHandler() {
-			
-			public void onChange(ChangeEvent event) {
+
+            public void onChange(ChangeEvent event) {
                 pattern.addFactPattern( new FactPattern( box.getItemText( box.getSelectedIndex() ) ) );
                 setModified(true);
                 getModeller().refreshWidget();
-                popup.hide();			}
-		});
+                popup.hide();            }
+        });
 
         final Button fromBtn = new Button(constants.From());
         final Button fromAccumulateBtn = new Button(constants.FromAccumulate());
         final Button fromCollectBtn = new Button(constants.FromCollect());
-		ClickHandler btnsClickHandler = new ClickHandler() {
+        ClickHandler btnsClickHandler = new ClickHandler() {
 
-			public void onClick(ClickEvent event) {
-				Widget sender = (Widget) event.getSource();
-				if (sender == fromBtn) {
-					pattern.addFactPattern( 
-							new FromCompositeFactPattern());
-				} else if (sender == fromAccumulateBtn) {
-					pattern.addFactPattern(
-							new FromAccumulateCompositeFactPattern());
-				} else if (sender == fromCollectBtn) {
-					pattern.addFactPattern(
-							new FromCollectCompositeFactPattern());
-				} else {
-					throw new IllegalArgumentException("Unknown sender: "
-							+ sender);
-				}
+            public void onClick(ClickEvent event) {
+                Widget sender = (Widget) event.getSource();
+                if (sender == fromBtn) {
+                    pattern.addFactPattern(
+                            new FromCompositeFactPattern());
+                } else if (sender == fromAccumulateBtn) {
+                    pattern.addFactPattern(
+                            new FromAccumulateCompositeFactPattern());
+                } else if (sender == fromCollectBtn) {
+                    pattern.addFactPattern(
+                            new FromCollectCompositeFactPattern());
+                } else {
+                    throw new IllegalArgumentException("Unknown sender: "
+                            + sender);
+                }
 
-				setModified(true);
-				getModeller().refreshWidget();
-				popup.hide();
+                setModified(true);
+                getModeller().refreshWidget();
+                popup.hide();
 
-			}
-		};
+            }
+        };
 
         fromBtn.addClickHandler(btnsClickHandler);
         fromAccumulateBtn.addClickHandler(btnsClickHandler);

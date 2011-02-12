@@ -65,14 +65,14 @@ public class Cheese
     }
 
     public CheeseType getCheeseType() {
-		return cheeseType;
-	}
+        return cheeseType;
+    }
 
-	public void setCheeseType(CheeseType cheeseType) {
-		this.cheeseType = cheeseType;
-	}
+    public void setCheeseType(CheeseType cheeseType) {
+        this.cheeseType = cheeseType;
+    }
 
-	public int getPrice() {
+    public int getPrice() {
         return this.price;
     }
 

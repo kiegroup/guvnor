@@ -67,13 +67,13 @@ public class RepositorySessionUtil {
             log.info("TEST repo was deleted.");
 
             try {
-            	//configurator = new JackrabbitRepository
-            	// create a repo instance (startup)
+                //configurator = new JackrabbitRepository
+                // create a repo instance (startup)
             
-	            multiThreadedRepository = RulesRepositoryConfigurator.getInstance(null).getJCRRepository();
-	
-	            // create a session
-	            //Session session;
+                multiThreadedRepository = RulesRepositoryConfigurator.getInstance(null).getJCRRepository();
+
+                // create a session
+                //Session session;
             
                 session = multiThreadedRepository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
                 RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(session);
@@ -106,8 +106,8 @@ public class RepositorySessionUtil {
             log.info("TEST repo was deleted.");
 
             try {
-            	// create a repo instance (startup)
-            	multiThreadedRepository = RulesRepositoryConfigurator.getInstance(null).getJCRRepository();
+                // create a repo instance (startup)
+                multiThreadedRepository = RulesRepositoryConfigurator.getInstance(null).getJCRRepository();
 
                 // create a session to config repo
                 Session session = multiThreadedRepository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
@@ -139,7 +139,7 @@ public class RepositorySessionUtil {
     }
 
     public static void shutdown() throws RepositoryException {
-    	RulesRepositoryConfigurator.getInstance(null).shutdown();
+        RulesRepositoryConfigurator.getInstance(null).shutdown();
         repo.set(null);
         multiThreadedRepository = null;
     }

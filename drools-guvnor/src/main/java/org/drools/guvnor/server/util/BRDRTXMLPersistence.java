@@ -30,32 +30,32 @@ import org.drools.ide.common.server.util.BRXMLPersistence;
  * @author dieguitoll@gmail.com
  */
 public class BRDRTXMLPersistence extends BRXMLPersistence {
-	
-	private static final BRLPersistence INSTANCE = new BRDRTXMLPersistence();
-	
-	private BRDRTXMLPersistence() {
-		super();
-	}
-	
-	public static BRLPersistence getInstance() {
-		return INSTANCE;
-	}
-	
-	@Override
-	public String marshal(RuleModel model) {
-		((TemplateModel) model).putInSync();
-		return super.marshal(model);
-	}
-	
-	@Override
-	public TemplateModel unmarshal(String xml) {
-		TemplateModel model = (TemplateModel) super.unmarshal(xml);
-		model.putInSync();
-		return model;
-	}
-	
-	@Override
-	protected RuleModel createEmptyModel() {
-		return new TemplateModel();
-	}
+
+    private static final BRLPersistence INSTANCE = new BRDRTXMLPersistence();
+
+    private BRDRTXMLPersistence() {
+        super();
+    }
+
+    public static BRLPersistence getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public String marshal(RuleModel model) {
+        ((TemplateModel) model).putInSync();
+        return super.marshal(model);
+    }
+
+    @Override
+    public TemplateModel unmarshal(String xml) {
+        TemplateModel model = (TemplateModel) super.unmarshal(xml);
+        model.putInSync();
+        return model;
+    }
+
+    @Override
+    protected RuleModel createEmptyModel() {
+        return new TemplateModel();
+    }
 }

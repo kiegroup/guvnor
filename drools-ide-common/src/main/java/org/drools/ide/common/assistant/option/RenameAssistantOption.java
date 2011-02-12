@@ -19,21 +19,21 @@ package org.drools.ide.common.assistant.option;
 import org.drools.ide.common.assistant.info.drl.RuleBasicContentInfo;
 
 public class RenameAssistantOption extends AssistantOption {
-	
-	private RuleBasicContentInfo contentInfo;
-	
-	public RenameAssistantOption(String display, String content, RuleBasicContentInfo contentInfo, Integer position) {
-		this.display = display;
-		this.content = content;
-		this.contentInfo = contentInfo;
-		this.offset = position;
-		// FIXME: weird assignation
-		this.position = position;
-		this.type = ACTION.RENAME;
-	}
 
-	public RuleBasicContentInfo getContentInfo() {
-		return contentInfo;
-	}
+    private RuleBasicContentInfo contentInfo;
+
+    public RenameAssistantOption(String display, String content, RuleBasicContentInfo contentInfo, Integer position) {
+        this.display = display;
+        this.content = content;
+        this.contentInfo = contentInfo;
+        this.offset = position;
+        // FIXME: weird assignation
+        this.position = position;
+        this.type = ACTION.RENAME;
+    }
+
+    public RuleBasicContentInfo getContentInfo() {
+        return contentInfo;
+    }
 
 }

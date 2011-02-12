@@ -48,27 +48,27 @@ public class MockRepositoryConfigurator extends JCRRepositoryConfigurator {
     
     @Override
     public Repository getJCRRepository(Properties properties) {
-    	if (repository == null) {
-    		repository = new MockRepo();
-    	}
+        if (repository == null) {
+            repository = new MockRepo();
+        }
         return repository;
     }
 
-	@Override
-	public void registerNodeTypesFromCndFile(String cndFileName, Session session, Workspace workspace)
+    @Override
+    public void registerNodeTypesFromCndFile(String cndFileName, Session session, Workspace workspace)
             throws RepositoryException {
-		// Do nothing
-	}
+        // Do nothing
+    }
 
-	@Override
-	public void shutdown() {
-		// Do nothing
-	}
+    @Override
+    public void shutdown() {
+        // Do nothing
+    }
 
-	@Override
-	public Session login(String userName) throws RepositoryException {
-		// Do nothing
-		return null;
-	}
+    @Override
+    public Session login(String userName) throws RepositoryException {
+        // Do nothing
+        return null;
+    }
     
 }

@@ -39,44 +39,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BRDRTPersistenceTest {
-	private static final Logger log = LoggerFactory.getLogger(BRDRTPersistenceTest.class); 
-	private BRLPersistence p;
+    private static final Logger log = LoggerFactory.getLogger(BRDRTPersistenceTest.class);
+    private BRLPersistence p;
 
-	@Before
-	public void setUp() throws Exception {
-		p = BRDRTPersistence.getInstance();
-	}
+    @Before
+    public void setUp() throws Exception {
+        p = BRDRTPersistence.getInstance();
+    }
 
     @After
     public void tearDown() throws Exception {
-		p = null;
-	}
-	
+        p = null;
+    }
+
     @Test
     public void testGenerateEmptyDRL() {
-		String expected = 
-				"rule \"null_0\"\n" + 
-				"	dialect \"mvel\"\n" + 
-				"	when\n" + 
-				"	then\n" + 
-				"end";
+        String expected =
+                "rule \"null_0\"\n" +
+                "    dialect \"mvel\"\n" +
+                "    when\n" +
+                "    then\n" +
+                "end";
 
-		final String drl = p.marshal(new TemplateModel());
-		log.info("drl :\n{}", drl);
+        final String drl = p.marshal(new TemplateModel());
+        log.info("drl :\n{}", drl);
 
-		assertNotNull(drl);
-		assertEquals(expected, drl);
-	}
+        assertNotNull(drl);
+        assertEquals(expected, drl);
+    }
 
     @Test
     public void testEmptyData() {
-		String expected = 
-				"rule \"with composite_0\"\n" + 
-				"	dialect \"mvel\"\n" + 
-				"	when\n" + 
-				"		$p : Person( name == name_na )\n" + 
-				"	then\n" + 
-				"end";
+        String expected =
+                "rule \"with composite_0\"\n" +
+                "    dialect \"mvel\"\n" +
+                "    when\n" +
+                "        $p : Person( name == name_na )\n" +
+                "    then\n" +
+                "end";
         TemplateModel m = new TemplateModel();
         m.name = "with composite";
         m.lhs = new IPattern[1];
@@ -89,105 +89,105 @@ public class BRDRTPersistenceTest {
         sfc.setFieldName("name");
         sfc.setValue("name");
         sfc.setOperator("==");
-        	
+
         sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
         fp.addConstraint(sfc);
         
         m.lhs[0] = fp;
         final String drl = p.marshal(m);
-		log.info("drl :\n{}", drl);
+        log.info("drl :\n{}", drl);
         assertNotNull(drl);
         assertEquals(expected, drl);
-	}
+    }
 
     @Test
     public void testFreeFormLine() {
-		String expected = 
-			"rule \"with composite_1\"\n" + 
-			"	dialect \"mvel\"\n" + 
-			"	when\n" + 
-			"		$p : Person( name == \"diegoll\" )\n" + 
-			"		Cheese(type == \"Gouda\", price < 17)\n" + 
-			"	then\n" + 
-			"		Person fact0 = new Person();\n" + 
-			"		fact0.setAge( 87 );\n" + 
-			"		insert(fact0 );\n" + 
-			"end\n" + 
-			"\n" + 
-			"rule \"with composite_0\"\n" + 
-			"	dialect \"mvel\"\n" + 
-			"	when\n" + 
-			"		$p : Person( name == \"baunax\" )\n" + 
-			"		Cheese(type == \"Cheddar\", price < 23)\n" + 
-			"	then\n" + 
-			"		Person fact0 = new Person();\n" + 
-			"		fact0.setAge( 34 );\n" + 
-			"		insert(fact0 );\n" + 
-			"end";
+        String expected =
+            "rule \"with composite_1\"\n" +
+            "    dialect \"mvel\"\n" +
+            "    when\n" +
+            "        $p : Person( name == \"diegoll\" )\n" +
+            "        Cheese(type == \"Gouda\", price < 17)\n" +
+            "    then\n" +
+            "        Person fact0 = new Person();\n" +
+            "        fact0.setAge( 87 );\n" +
+            "        insert(fact0 );\n" +
+            "end\n" +
+            "\n" +
+            "rule \"with composite_0\"\n" +
+            "    dialect \"mvel\"\n" +
+            "    when\n" +
+            "        $p : Person( name == \"baunax\" )\n" +
+            "        Cheese(type == \"Cheddar\", price < 23)\n" +
+            "    then\n" +
+            "        Person fact0 = new Person();\n" +
+            "        fact0.setAge( 34 );\n" +
+            "        insert(fact0 );\n" +
+            "end";
 
-		TemplateModel m = new TemplateModel();
-		m.name = "with composite";
-		m.lhs = new IPattern[2];
-		m.rhs = new IAction[1];
+        TemplateModel m = new TemplateModel();
+        m.name = "with composite";
+        m.lhs = new IPattern[2];
+        m.rhs = new IAction[1];
 
-		FactPattern fp = new FactPattern("Person");
-		fp.boundName = "$p";
+        FactPattern fp = new FactPattern("Person");
+        fp.boundName = "$p";
 
-		SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-		sfc.setFieldName("name");
-		sfc.setValue("name");
-		sfc.setOperator("==");
+        SingleFieldConstraint sfc = new SingleFieldConstraint("name");
+        sfc.setFieldName("name");
+        sfc.setValue("name");
+        sfc.setOperator("==");
 
-		sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
-		fp.addConstraint(sfc);
+        sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        fp.addConstraint(sfc);
 
-		m.lhs[0] = fp;
-		
-		FreeFormLine ffl = new FreeFormLine();
-		ffl.text = "Cheese(type == @{type}, price < @{price})";
-		
-		m.lhs[1] = ffl;
+        m.lhs[0] = fp;
 
-		ActionInsertFact aif = new ActionInsertFact("Person");
-		ActionFieldValue afv = new ActionFieldValue("age", "age", ""); 
-		afv.nature = FieldNature.TYPE_TEMPLATE;
+        FreeFormLine ffl = new FreeFormLine();
+        ffl.text = "Cheese(type == @{type}, price < @{price})";
 
-		aif.addFieldValue(afv);
-		m.rhs[0] = aif;
+        m.lhs[1] = ffl;
 
-		m.addRow(new String[] {"\"baunax\"", "\"Cheddar\"", "23", "34"});
-		m.addRow(new String[] {"\"diegoll\"", "\"Gouda\"", "17", "87"});
-		final String drl = p.marshal(m);
-		log.info("drl :\n{}", drl);
+        ActionInsertFact aif = new ActionInsertFact("Person");
+        ActionFieldValue afv = new ActionFieldValue("age", "age", "");
+        afv.nature = FieldNature.TYPE_TEMPLATE;
 
-		assertNotNull(drl);
-		assertEquals(expected, drl);
-	}
+        aif.addFieldValue(afv);
+        m.rhs[0] = aif;
+
+        m.addRow(new String[] {"\"baunax\"", "\"Cheddar\"", "23", "34"});
+        m.addRow(new String[] {"\"diegoll\"", "\"Gouda\"", "17", "87"});
+        final String drl = p.marshal(m);
+        log.info("drl :\n{}", drl);
+
+        assertNotNull(drl);
+        assertEquals(expected, drl);
+    }
 
     @Test
     public void testEmptyDataWithRHS() {
-		String expected = 
-				"rule \"with composite_1\"\n" + 
-				"	dialect \"mvel\"\n" + 
-				"	when\n" + 
-				"		$p : Person( name == \"diegoll\" )\n" + 
-				"	then\n" + 
-				"		Person fact0 = new Person();\n" + 
-				"		fact0.setAge( 87 );\n" + 
-				"		insert(fact0 );\n" + 
-				"end\n" + 
-				"\n" + 
-				"rule \"with composite_0\"\n" + 
-				"	dialect \"mvel\"\n" + 
-				"	when\n" + 
-				"		$p : Person( name == \"baunax\" )\n" + 
-				"	then\n" + 
-				"		Person fact0 = new Person();\n" + 
-				"		fact0.setAge( 34 );\n" + 
-				"		insert(fact0 );\n" + 
-				"end";
+        String expected =
+                "rule \"with composite_1\"\n" +
+                "    dialect \"mvel\"\n" +
+                "    when\n" +
+                "        $p : Person( name == \"diegoll\" )\n" +
+                "    then\n" +
+                "        Person fact0 = new Person();\n" +
+                "        fact0.setAge( 87 );\n" +
+                "        insert(fact0 );\n" +
+                "end\n" +
+                "\n" +
+                "rule \"with composite_0\"\n" +
+                "    dialect \"mvel\"\n" +
+                "    when\n" +
+                "        $p : Person( name == \"baunax\" )\n" +
+                "    then\n" +
+                "        Person fact0 = new Person();\n" +
+                "        fact0.setAge( 34 );\n" +
+                "        insert(fact0 );\n" +
+                "end";
 
-		TemplateModel m = new TemplateModel();
+        TemplateModel m = new TemplateModel();
         m.name = "with composite";
         m.lhs = new IPattern[1];
         m.rhs = new IAction[1];
@@ -199,7 +199,7 @@ public class BRDRTPersistenceTest {
         sfc.setFieldName("name");
         sfc.setValue("name");
         sfc.setOperator("==");
-        	
+
         sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
         fp.addConstraint(sfc);
         
@@ -215,29 +215,29 @@ public class BRDRTPersistenceTest {
         m.addRow(new String[] {"\"baunax\"", "34"});
         m.addRow(new String[] {"\"diegoll\"", "87"});
         final String drl = p.marshal(m);
-		log.info("drl :\n{}", drl);
-		
+        log.info("drl :\n{}", drl);
+
         assertNotNull(drl);
         assertEquals(expected, drl);
-	}
-	
+    }
+
     @Test
     public void testWithData() {
-		String expected = 
-				"rule \"with composite_1\"\n" + 
-				"	dialect \"mvel\"\n" + 
-				"	when\n" + 
-				"		$p : Person( name == \"diegoll\" )\n" + 
-				"	then\n" + 
-				"end\n" + 
-				"\n" + 
-				"rule \"with composite_0\"\n" + 
-				"	dialect \"mvel\"\n" + 
-				"	when\n" + 
-				"		$p : Person( name == \"baunax\" )\n" + 
-				"	then\n" + 
-				"end";
-		
+        String expected =
+                "rule \"with composite_1\"\n" +
+                "    dialect \"mvel\"\n" +
+                "    when\n" +
+                "        $p : Person( name == \"diegoll\" )\n" +
+                "    then\n" +
+                "end\n" +
+                "\n" +
+                "rule \"with composite_0\"\n" +
+                "    dialect \"mvel\"\n" +
+                "    when\n" +
+                "        $p : Person( name == \"baunax\" )\n" +
+                "    then\n" +
+                "end";
+
         TemplateModel m = new TemplateModel();
         m.name = "with composite";
         m.lhs = new IPattern[1];
@@ -250,7 +250,7 @@ public class BRDRTPersistenceTest {
         sfc.setFieldName("name");
         sfc.setValue("name");
         sfc.setOperator("==");
-        	
+
         sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
         fp.addConstraint(sfc);
         
@@ -260,29 +260,29 @@ public class BRDRTPersistenceTest {
         m.addRow(new String[] {"\"diegoll\""});
         
         final String drl = p.marshal(m);
-		log.info("drl :\n{}", drl);
+        log.info("drl :\n{}", drl);
         assertNotNull(drl);
         assertEquals(expected, drl);
 
-	}
-	
+    }
+
     @Test
     public void testRemoveWithData() {
-		String expected = 
-				"rule \"with composite_1\"\n" + 
-				"	dialect \"mvel\"\n" + 
-				"	when\n" + 
-				"		$p : Person( name == \"diegoll\" )\n" + 
-				"	then\n" + 
-				"end\n" + 
-				"\n" + 
-				"rule \"with composite_0\"\n" + 
-				"	dialect \"mvel\"\n" + 
-				"	when\n" + 
-				"		$p : Person( name == \"baunax\" )\n" + 
-				"	then\n" + 
-				"end";
-		
+        String expected =
+                "rule \"with composite_1\"\n" +
+                "    dialect \"mvel\"\n" +
+                "    when\n" +
+                "        $p : Person( name == \"diegoll\" )\n" +
+                "    then\n" +
+                "end\n" +
+                "\n" +
+                "rule \"with composite_0\"\n" +
+                "    dialect \"mvel\"\n" +
+                "    when\n" +
+                "        $p : Person( name == \"baunax\" )\n" +
+                "    then\n" +
+                "end";
+
         TemplateModel m = new TemplateModel();
         m.name = "with composite";
         m.lhs = new IPattern[1];
@@ -295,7 +295,7 @@ public class BRDRTPersistenceTest {
         sfc.setFieldName("name");
         sfc.setValue("name");
         sfc.setOperator("==");
-        	
+
         sfc.setConstraintValueType(BaseSingleFieldConstraint.TYPE_TEMPLATE);
         fp.addConstraint(sfc);
         
@@ -310,12 +310,12 @@ public class BRDRTPersistenceTest {
         m.removeRowById(id2);
         
         final String drl = p.marshal(m);
-		log.info("drl :\n{}", drl);
+        log.info("drl :\n{}", drl);
         assertNotNull(drl);
         assertEquals(expected, drl);
 
-	}
-	
+    }
+
     @Test
     public void testWithDataAndSync() {
         TemplateModel m = new TemplateModel();
@@ -365,5 +365,5 @@ public class BRDRTPersistenceTest {
         expected.add(TemplateModel.ID_COLUMN_NAME);
         assertEquals(expected, m.getTable().keySet());
         
-	}
+    }
 }

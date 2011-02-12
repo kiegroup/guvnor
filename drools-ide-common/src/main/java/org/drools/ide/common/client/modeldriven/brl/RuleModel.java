@@ -35,7 +35,7 @@ public class RuleModel implements PortableObject {
     public IAction[] rhs = new IAction[0];
 
     public RuleModel() {
-	}
+    }
     
     /**
      * This will return the fact pattern that a variable is bound to.
@@ -67,12 +67,12 @@ public class RuleModel implements PortableObject {
             if (this.lhs[i] instanceof FactPattern) {
                 final FactPattern p = (FactPattern) this.lhs[i];
                 if (p.isBound() && var.equals(p.boundName) ) {
-                	return p.getFactType();
+                    return p.getFactType();
                 }
                 for (FieldConstraint z : p.getFieldConstraints()) {
                     String type = giveFieldBinding(z, var);
                     if (type != null) {
-                    	return type;
+                        return type;
                     }
                 }
             }
@@ -559,12 +559,12 @@ public class RuleModel implements PortableObject {
                             result.add(con.getFieldBinding());
                         } 
                         if (con.getExpressionValue() != null && con.getExpressionValue().isBound()) {
-                        	result.add(con.getExpressionValue().getBinding());
+                            result.add(con.getExpressionValue().getBinding());
                         }
                         if (con instanceof SingleFieldConstraintEBLeftSide) {
-                        	SingleFieldConstraintEBLeftSide exp = (SingleFieldConstraintEBLeftSide) con;
-                        	if (exp.getExpressionLeftSide() != null && exp.getExpressionLeftSide().isBound()) {
-                            	result.add(exp.getExpressionLeftSide().getBinding());
+                            SingleFieldConstraintEBLeftSide exp = (SingleFieldConstraintEBLeftSide) con;
+                            if (exp.getExpressionLeftSide() != null && exp.getExpressionLeftSide().isBound()) {
+                                result.add(exp.getExpressionLeftSide().getBinding());
                             }
                         }
                         

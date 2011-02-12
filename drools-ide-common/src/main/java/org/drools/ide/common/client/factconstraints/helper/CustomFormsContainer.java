@@ -44,9 +44,9 @@ public class CustomFormsContainer {
         }
     }
 
-//	public CustomFormsContainer() {
+//    public CustomFormsContainer() {
 //
-//	}
+//    }
     public void removeCustomForm(CustomFormConfiguration cfc) {
         this.customForms.remove(this.createMapKey(cfc));
     }

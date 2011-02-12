@@ -33,11 +33,11 @@ import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 
 public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
-	
-	/* (non-Javadoc)
-	 * @see org.drools.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget(org.drools.guvnor.client.modeldriven.ui.RuleModeller, org.drools.guvnor.client.modeldriven.brl.IAction, boolean)
-	 */
-	public RuleModellerWidget getWidget(RuleModeller ruleModeller, IAction action, Boolean readOnly){
+
+    /* (non-Javadoc)
+     * @see org.drools.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget(org.drools.guvnor.client.modeldriven.ui.RuleModeller, org.drools.guvnor.client.modeldriven.brl.IAction, boolean)
+     */
+    public RuleModellerWidget getWidget(RuleModeller ruleModeller, IAction action, Boolean readOnly){
         if (action instanceof ActionCallMethod) {
             return new ActionCallMethodWidget(ruleModeller, (ActionCallMethod) action, readOnly);
         }
@@ -51,7 +51,7 @@ public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
             return new ActionRetractFactWidget(ruleModeller, (ActionRetractFact) action, readOnly);
         }
         if (action instanceof DSLSentence) {
-        	RuleModellerWidget w = new DSLSentenceWidget(ruleModeller,(DSLSentence) action, readOnly);
+            RuleModellerWidget w = new DSLSentenceWidget(ruleModeller,(DSLSentence) action, readOnly);
             w.addStyleName("model-builderInner-Background"); //NON-NLS
             return w;
         } 
@@ -62,12 +62,12 @@ public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
              return new GlobalCollectionAddWidget(ruleModeller, (ActionGlobalCollectionAdd) action, readOnly);
         } 
         throw new RuntimeException("I don't know what type of action is: " + action); //NON-NLS
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.drools.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget(org.drools.guvnor.client.modeldriven.ui.RuleModeller, org.drools.guvnor.client.modeldriven.brl.IPattern, boolean)
-	 */
-	public RuleModellerWidget getWidget(RuleModeller ruleModeller, IPattern pattern, Boolean readOnly){
+    }
+
+    /* (non-Javadoc)
+     * @see org.drools.guvnor.client.modeldriven.ui.ModellerWidgetFactory#getWidget(org.drools.guvnor.client.modeldriven.ui.RuleModeller, org.drools.guvnor.client.modeldriven.brl.IPattern, boolean)
+     */
+    public RuleModellerWidget getWidget(RuleModeller ruleModeller, IPattern pattern, Boolean readOnly){
         if (pattern instanceof FactPattern) {
             return new FactPatternWidget(ruleModeller, pattern, true, readOnly);
         } 
@@ -94,9 +94,9 @@ public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
         }
         throw new RuntimeException("I don't know what type of pattern is: "+pattern);
 
-	}
+    }
 
-	public boolean isTemplate(){
-		return false;
-	}
+    public boolean isTemplate(){
+        return false;
+    }
 }

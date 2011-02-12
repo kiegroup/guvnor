@@ -22,22 +22,22 @@ package org.drools.ide.common.client.factconstraints;
  */
 public class ArgumentNotSetException extends Exception {
 
-	private static final long serialVersionUID = 501l;
+    private static final long serialVersionUID = 501l;
 
-	public ArgumentNotSetException() {
-		super();
-	}
+    public ArgumentNotSetException() {
+        super();
+    }
 
-	public ArgumentNotSetException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public ArgumentNotSetException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-	public ArgumentNotSetException(String message) {
-		super(message);
-	}
+    public ArgumentNotSetException(String message) {
+        super(message);
+    }
 
-	public ArgumentNotSetException(Throwable cause) {
-		super(cause);
-	}
+    public ArgumentNotSetException(Throwable cause) {
+        super(cause);
+    }
 
 }

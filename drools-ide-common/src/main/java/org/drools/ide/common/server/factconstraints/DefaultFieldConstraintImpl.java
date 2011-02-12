@@ -34,8 +34,8 @@ import org.drools.verifier.report.components.Severity;
  */
 public abstract class DefaultFieldConstraintImpl implements Constraint {
 
-	private static final long serialVersionUID = 501l;
-	private long ruleNum = 0;
+    private static final long serialVersionUID = 501l;
+    private long ruleNum = 0;
 
     public static final List<Operator> supportedOperators = new ArrayList<Operator>();
     static{
@@ -153,7 +153,7 @@ public abstract class DefaultFieldConstraintImpl implements Constraint {
     }
 
     protected Map<String, Object> createContext() {
-    	return new HashMap<String, Object>();
+        return new HashMap<String, Object>();
     }
 
     public final String getVerifierRule(ConstraintConfiguration config) {
@@ -163,7 +163,7 @@ public abstract class DefaultFieldConstraintImpl implements Constraint {
     abstract protected String internalVerifierRule(ConstraintConfiguration config, Map<String, Object> context);
 
     public String getConstraintName() {
-    	return getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1);
+        return getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1);
     }
 
     /* Action */
@@ -199,7 +199,7 @@ public abstract class DefaultFieldConstraintImpl implements Constraint {
     protected String getVerifierActionPrefixTemplate(ConstraintConfiguration config, Map<String, Object> context) {
         StringBuilder verifierActionPrefixTemplate = new StringBuilder();
         verifierActionPrefixTemplate.append("      Map<String,String> impactedRules = new HashMap<String,String>();\n")
-        	.append("      impactedRules.put( $restriction.getPackagePath(), $restriction.getRuleName());\n");
+            .append("      impactedRules.put( $restriction.getPackagePath(), $restriction.getRuleName());\n");
         return verifierActionPrefixTemplate.toString();
     }
 
@@ -327,6 +327,6 @@ public abstract class DefaultFieldConstraintImpl implements Constraint {
     }
 
     public List<String> getArgumentKeys() {
-    	return new ArrayList<String>();
+        return new ArrayList<String>();
     }
 }

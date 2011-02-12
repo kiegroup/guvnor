@@ -32,24 +32,24 @@ import org.drools.repository.AssetItem;
 
 public class SelectorManager {
 
-	private static final Logger log = LoggerFactory.getLogger( SelectorManager.class );
-	public static final String SELECTOR_CONFIG_PROPERTIES = "/selectors.properties";
-	private static final SelectorManager INSTANCE = new SelectorManager(SELECTOR_CONFIG_PROPERTIES);
+    private static final Logger log = LoggerFactory.getLogger( SelectorManager.class );
+    public static final String SELECTOR_CONFIG_PROPERTIES = "/selectors.properties";
+    private static final SelectorManager INSTANCE = new SelectorManager(SELECTOR_CONFIG_PROPERTIES);
 
     /**
      * This is a map of the selectors to use.
      */
-	public final Map<String, AssetSelector> selectors = new HashMap<String, AssetSelector>();
+    public final Map<String, AssetSelector> selectors = new HashMap<String, AssetSelector>();
 
-	SelectorManager(String configPath) {
-		log.debug("Loading selectors");
-		Properties props = new Properties();
-		try {
-			props.load(this.getClass().getResourceAsStream(configPath));
-		    props.put("BuiltInSelector", "org.drools.guvnor.server.selector.BuiltInSelector");
-			for (Iterator iter = props.keySet().iterator(); iter.hasNext();) {
-				String selectorName = (String) iter.next();
-				String val = props.getProperty(selectorName);
+    SelectorManager(String configPath) {
+        log.debug("Loading selectors");
+        Properties props = new Properties();
+        try {
+            props.load(this.getClass().getResourceAsStream(configPath));
+            props.put("BuiltInSelector", "org.drools.guvnor.server.selector.BuiltInSelector");
+            for (Iterator iter = props.keySet().iterator(); iter.hasNext();) {
+                String selectorName = (String) iter.next();
+                String val = props.getProperty(selectorName);
                 try {
                     if (val.endsWith("drl")) {
                         selectors.put(selectorName ,loadRuleSelector( val) );
@@ -59,11 +59,11 @@ public class SelectorManager {
                 } catch (Exception e) {
                     log.error("Unable to load a selector [" + val + "]", e);
                 }
-			}
-		} catch (IOException e) {
-			log.error("Unable to load selectors.", e);
-		}
-	}
+            }
+        } catch (IOException e) {
+            log.error("Unable to load selectors.", e);
+        }
+    }
 
     /**
      * Return a selector. If the name is null or empty it will return a nil/default selector
@@ -83,15 +83,15 @@ public class SelectorManager {
     }
     
     public String[] getCustomSelectors() {
-    	 Set<String> s = selectors.keySet();    	 
-    	 List<String> selectorList = new ArrayList<String>();
-    	 selectorList.addAll(s);    	 
-    	 selectorList.remove("BuiltInSelector");
-    	 String[] result = new String[selectorList.size()];
-    	 return selectorList.toArray(result);
+         Set<String> s = selectors.keySet();
+         List<String> selectorList = new ArrayList<String>();
+         selectorList.addAll(s);
+         selectorList.remove("BuiltInSelector");
+         String[] result = new String[selectorList.size()];
+         return selectorList.toArray(result);
     }
 
-	private AssetSelector nilSelector() {
+    private AssetSelector nilSelector() {
         return new AssetSelector() {
             public boolean isAssetAllowed(AssetItem asset) {
                 return true;
@@ -101,14 +101,14 @@ public class SelectorManager {
 
     private AssetSelector loadSelectorImplementation(String val) throws Exception {
         return (AssetSelector) Thread.currentThread().getContextClassLoader().loadClass( val ).newInstance();
- 	}
+     }
 
-	private AssetSelector loadRuleSelector(String val) {
+    private AssetSelector loadRuleSelector(String val) {
 
-		return new RuleBasedSelector(val);
-	}
+        return new RuleBasedSelector(val);
+    }
 
-	public static SelectorManager getInstance() {
-		return INSTANCE;
-	}
+    public static SelectorManager getInstance() {
+        return INSTANCE;
+    }
 }

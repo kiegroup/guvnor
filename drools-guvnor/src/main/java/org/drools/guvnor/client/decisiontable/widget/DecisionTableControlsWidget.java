@@ -32,21 +32,21 @@ import com.google.gwt.user.client.ui.Panel;
  */
 public class DecisionTableControlsWidget extends Composite {
 
-	private Panel panel = new HorizontalPanel();
+    private Panel panel = new HorizontalPanel();
 
-	public DecisionTableControlsWidget(final HasRows dtable) {
+    public DecisionTableControlsWidget(final HasRows dtable) {
 
-		// Add row button
-		Button btnAddRow = new Button("Add Row", new ClickHandler() {
+        // Add row button
+        Button btnAddRow = new Button("Add Row", new ClickHandler() {
 
-			public void onClick(ClickEvent event) {
-				dtable.appendRow();
-			}
-		});
-		panel.add(btnAddRow);
+            public void onClick(ClickEvent event) {
+                dtable.appendRow();
+            }
+        });
+        panel.add(btnAddRow);
         
-		initWidget(panel);
+        initWidget(panel);
 
-	}
+    }
 
 }

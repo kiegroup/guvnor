@@ -25,15 +25,15 @@ import org.jboss.seam.annotations.Name;
 @AutoCreate
 public class MockRoleBasedPermissionStore extends RoleBasedPermissionStore {
 
-	List<RoleBasedPermission> pbps;
+    List<RoleBasedPermission> pbps;
 
-	public MockRoleBasedPermissionStore(List<RoleBasedPermission> pbps) {
-		this.pbps = pbps;
-	}
+    public MockRoleBasedPermissionStore(List<RoleBasedPermission> pbps) {
+        this.pbps = pbps;
+    }
 
-	public List<RoleBasedPermission> getRoleBasedPermissionsByUserName(
-			String userName) {
-		return pbps;
-	}
+    public List<RoleBasedPermission> getRoleBasedPermissionsByUserName(
+            String userName) {
+        return pbps;
+    }
 
 }

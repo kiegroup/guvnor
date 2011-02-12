@@ -31,9 +31,9 @@ import static org.junit.Assert.*;
 
 public class PackageItemTest {
 
-	private PackageItem loadGlobalArea() {
-		return getRepo().loadGlobalArea();
-	}
+    private PackageItem loadGlobalArea() {
+        return getRepo().loadGlobalArea();
+    }
 
     @Test
     public void testListPackages() throws Exception {
@@ -501,14 +501,14 @@ public class PackageItemTest {
         ruleItem1.checkin( "updated again" );        
         
         Iterator rulesIt2 = rulePackageItem2.getAssets();
-		List rules2 = iteratorToList(rulesIt2);
-		assertEquals(1, rules2.size());
+        List rules2 = iteratorToList(rulesIt2);
+        assertEquals(1, rules2.size());
 
-		AssetItem ai = (AssetItem) rules2.get(0);
-		assertTrue(ai.getName().equals("testAddRuleItemFromGlobalAreaRuleItem"));
-		assertEquals("new lhs", ai.getContent());
-		assertEquals("test description", ai.getDescription());
-		assertEquals("updated again", ai.getCheckinComment());       
+        AssetItem ai = (AssetItem) rules2.get(0);
+        assertTrue(ai.getName().equals("testAddRuleItemFromGlobalAreaRuleItem"));
+        assertEquals("new lhs", ai.getContent());
+        assertEquals("test description", ai.getDescription());
+        assertEquals("updated again", ai.getCheckinComment());
     }
     
     private List iteratorToList(Iterator it) {
@@ -668,7 +668,7 @@ public class PackageItemTest {
 /*        linkedItem = pkg2.loadAsset("testSearchLinkedAssetByFormatAsset2");
         assertNotNull(linkedItem);
         assertEquals("global", linkedItem.getPackageName());
-       	
+
         it = pkg2.queryAssets( "drools:format='xyz'" );
         list = iteratorToList( it );*/
         
@@ -792,23 +792,23 @@ public class PackageItemTest {
     }
 
     public static void updateHeader(String h, PackageItem pkg) {
-    	pkg.checkout();
-    	AssetItem as = null;
-    	if (pkg.containsAsset("drools")) {
-    		as = pkg.loadAsset("drools");
-    	} else {
-    		as = pkg.addAsset("drools", "");
-    	}
-		as.updateContent(h);
-		//as.checkin("");
+        pkg.checkout();
+        AssetItem as = null;
+        if (pkg.containsAsset("drools")) {
+            as = pkg.loadAsset("drools");
+        } else {
+            as = pkg.addAsset("drools", "");
+        }
+        as.updateContent(h);
+        //as.checkin("");
     }
 
     public static String getHeader(PackageItem pkg) {
-    	if (pkg.containsAsset("drools")) {
-    		return pkg.loadAsset("drools").getContent();
-    	} else {
-    		return "";
-    	}
+        if (pkg.containsAsset("drools")) {
+            return pkg.loadAsset("drools").getContent();
+        } else {
+            return "";
+        }
     }
 
     @Test

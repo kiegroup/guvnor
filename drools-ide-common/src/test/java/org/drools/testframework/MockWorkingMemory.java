@@ -80,10 +80,10 @@ import org.jbpm.process.instance.timer.TimerManager;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
                 
-	List<Object> facts = new ArrayList<Object>();
-	AgendaEventListener agendaEventListener;
-	Map<String, Object> globals = new HashMap<String, Object>();
-	private SessionClock clock = new JDKTimerService();
+    List<Object> facts = new ArrayList<Object>();
+    AgendaEventListener agendaEventListener;
+    Map<String, Object> globals = new HashMap<String, Object>();
+    private SessionClock clock = new JDKTimerService();
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         facts   = (List<Object>)in.readObject();
@@ -101,18 +101,18 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         return null;
     }
     
-	public Iterator iterateObjects() {
-		return this.facts.iterator();
-	}
+    public Iterator iterateObjects() {
+        return this.facts.iterator();
+    }
 
-	public void setGlobal(String identifier, Object value) {
-		this.globals.put(identifier, value);
+    public void setGlobal(String identifier, Object value) {
+        this.globals.put(identifier, value);
 
-	}
+    }
 
-	public void addEventListener(AgendaEventListener listener) {
-		this.agendaEventListener = listener;
-	}
+    public void addEventListener(AgendaEventListener listener) {
+        this.agendaEventListener = listener;
+    }
 
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
         // TODO Auto-generated method stub
@@ -455,8 +455,8 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public FactHandle insert(Object object) throws FactException {
-		this.facts .add(object);
-		return new MockFactHandle(object.hashCode());
+        this.facts .add(object);
+        return new MockFactHandle(object.hashCode());
     }
 
     public FactHandle insert(Object object,
@@ -497,10 +497,10 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-	public Map<String, ExitPoint> getExitPoints() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Map<String, ExitPoint> getExitPoints() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     public Environment getEnvironment() {
         // TODO Auto-generated method stub
@@ -509,7 +509,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     
     public SessionConfiguration getSessionConfiguration() {
         // TODO Auto-generated method stub
-    	return null;
+        return null;
     }
 
     public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
@@ -621,14 +621,14 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         
     }
 
-	public Map<String, Channel> getChannels() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Map<String, Channel> getChannels() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public InternalProcessRuntime getProcessRuntime() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public InternalProcessRuntime getProcessRuntime() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

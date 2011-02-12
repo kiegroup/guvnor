@@ -69,7 +69,7 @@ public class WorkspaceManager extends Composite {
         Button create = new Button( constants.AddWorkspace() );
         create.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-            	WorkspaceEditor newCat = new WorkspaceEditor( new Command() {
+                WorkspaceEditor newCat = new WorkspaceEditor( new Command() {
                     public void execute() {
                         refreshWorkspaceList();
                     }
@@ -131,24 +131,24 @@ public class WorkspaceManager extends Composite {
         
         List<String> selectedModulesList = new ArrayList<String>( selectedModulesListBox.getItemCount() );
         for ( int i = 0; i < selectedModulesListBox.getItemCount(); i++ ) {
-        	selectedModulesList.add( selectedModulesListBox.getItemText( i ) );
+            selectedModulesList.add( selectedModulesListBox.getItemText( i ) );
         }
         List<String> availableModuleList = new ArrayList<String>( availableModulesListBox.getItemCount() );
         for ( int i = 0; i < availableModulesListBox.getItemCount(); i++ ) {
-        	availableModuleList.add( availableModulesListBox.getItemText( i ) );
+            availableModuleList.add( availableModulesListBox.getItemText( i ) );
         }      
         availableModuleList.removeAll(selectedModulesList);
         LoadingPopup.showMessage( constants.LoadingStatuses() );
         
         RepositoryServiceFactory.getService().updateWorkspace(name, 
-        		selectedModulesList.toArray(new String[selectedModulesList.size()]), 
-        		availableModuleList.toArray(new String[availableModuleList.size()]), 
+                selectedModulesList.toArray(new String[selectedModulesList.size()]),
+                availableModuleList.toArray(new String[availableModuleList.size()]),
                 new GenericCallback<java.lang.Void>() {
                     public void onSuccess(Void v) {
                         Window.alert( constants.WorkspaceUpdated() );
                         refreshWorkspaceList();
                     }
-                } );    	
+                } );
     }
 
     private void refreshWorkspaceList() {
@@ -165,16 +165,16 @@ public class WorkspaceManager extends Composite {
     }
     
     private void refreshModuleList(String selectedWorkspaceName) {
-    	if(selectedWorkspaceName == null || "".equals(selectedWorkspaceName)) {
-    		return;
-    	}
+        if(selectedWorkspaceName == null || "".equals(selectedWorkspaceName)) {
+            return;
+        }
         
         LoadingPopup.showMessage( constants.LoadingWorkspaces() );
         RepositoryServiceFactory.getService().listPackages(selectedWorkspaceName,  new GenericCallback<PackageConfigData[]>() {
             public void onSuccess(PackageConfigData[] packageConfigData) {
-            	selectedModulesListBox.clear();
+                selectedModulesListBox.clear();
                 for ( PackageConfigData p : packageConfigData) {
-                	selectedModulesListBox.addItem( p.name );
+                    selectedModulesListBox.addItem( p.name );
                 }
                 LoadingPopup.close();
             }
@@ -183,13 +183,13 @@ public class WorkspaceManager extends Composite {
         LoadingPopup.showMessage( constants.LoadingWorkspaces() );
         RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
             public void onSuccess(PackageConfigData[] packageConfigData) {
-            	availableModulesListBox.clear();
+                availableModulesListBox.clear();
                 for ( PackageConfigData p : packageConfigData) {
-                	boolean isSelected = false;
+                    boolean isSelected = false;
                     for ( int i = 0; i < selectedModulesListBox.getItemCount(); i++ ) {
-                    	if(p.name.equals(selectedModulesListBox.getItemText( i ))) {
-                    		isSelected = true;
-                    	}
+                        if(p.name.equals(selectedModulesListBox.getItemText( i ))) {
+                            isSelected = true;
+                        }
                     }                     
                     if(!isSelected) {
                         availableModulesListBox.addItem( p.name );
@@ -208,10 +208,10 @@ public class WorkspaceManager extends Composite {
         availableWorkspacesListBox = new ListBox();
         availableWorkspacesListBox.setVisibleItemCount( 10 );
         availableWorkspacesListBox.addChangeHandler(new ChangeHandler() {
-			public void onChange(ChangeEvent arg0) {
-		        String selectedWorkspaceName = availableWorkspacesListBox.getItemText( availableWorkspacesListBox.getSelectedIndex() );
-		        refreshModuleList(selectedWorkspaceName);				
-			}
+            public void onChange(ChangeEvent arg0) {
+                String selectedWorkspaceName = availableWorkspacesListBox.getItemText( availableWorkspacesListBox.getSelectedIndex() );
+                refreshModuleList(selectedWorkspaceName);
+            }
         } );
         //availableWorkspaces.setWidth( "30%" );
 
@@ -232,7 +232,7 @@ public class WorkspaceManager extends Composite {
 
                                                  public void onClick(ClickEvent sender) {
                                                      copySelected( availableModulesListBox,
-                                                    		 selectedModulesListBox );
+                                                             selectedModulesListBox );
                                                  }
                                              } ) );
 
@@ -243,7 +243,7 @@ public class WorkspaceManager extends Composite {
 
                                                  public void onClick(ClickEvent sender) {
                                                      copySelected( selectedModulesListBox,
-                                                    		 availableModulesListBox );
+                                                             availableModulesListBox );
                                                  }
                                              } ) );
 

@@ -101,9 +101,9 @@ public class SuggestionCompletionCache {
             }
 
             public void onFailure(Throwable t) {
-            	LoadingPopup.close();
+                LoadingPopup.close();
                 ErrorPopup.showMessage(Format.format(constants.UnableToValidatePackageForSCE(), packageName));
-            	command.execute();
+                command.execute();
             }
         });
     }
@@ -112,9 +112,9 @@ public class SuggestionCompletionCache {
      * Removed the package from the cache, causing it to be loaded the next time.
      */
     public void refreshPackage(String packageName, Command done) {
-    	SuggestionCompletionEngine sce = cache.get(packageName);
+        SuggestionCompletionEngine sce = cache.get(packageName);
         if (sce != null) {
-        	sce.setFactTypeFilter(null);     	
+            sce.setFactTypeFilter(null);
             cache.remove( packageName );            
         }
         loadPackage( packageName, done );
@@ -126,12 +126,12 @@ public class SuggestionCompletionCache {
      * @param filter the filter.
      * @param done the command to be executed after the filter is applied.
      */
-	public void applyFactFilter(final String packageName, final FactTypeFilter filter, final Command done) {
-		this.refreshPackage(packageName, new Command() {
-			public void execute() {
-				getEngineFromCache(packageName).setFactTypeFilter(filter);
-				done.execute();
-			}
-		});
-	}
+    public void applyFactFilter(final String packageName, final FactTypeFilter filter, final Command done) {
+        this.refreshPackage(packageName, new Command() {
+            public void execute() {
+                getEngineFromCache(packageName).setFactTypeFilter(filter);
+                done.execute();
+            }
+        });
+    }
 }

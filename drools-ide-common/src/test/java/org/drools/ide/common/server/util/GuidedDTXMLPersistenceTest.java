@@ -31,71 +31,71 @@ import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 
 public class GuidedDTXMLPersistenceTest {
 
-//	public void testXML() {
+//    public void testXML() {
 
-//	        //final String xml = p.marshal( new RuleModel() );
+//            //final String xml = p.marshal( new RuleModel() );
 //
-//	}
+//    }
 
     @Before
     public void setUp() throws Exception {
-		GuidedDTXMLPersistence.getInstance();
-	}
+        GuidedDTXMLPersistence.getInstance();
+    }
 
     @Test
     public void testRoundTrip() {
 
-		GuidedDecisionTable dt = new GuidedDecisionTable();
+        GuidedDecisionTable dt = new GuidedDecisionTable();
 
-		dt.getActionCols().add(new ActionInsertFactCol());
-		ActionSetFieldCol set = new ActionSetFieldCol();
-		set.setFactField( "foo" );
-		dt.getActionCols().add(set);
+        dt.getActionCols().add(new ActionInsertFactCol());
+        ActionSetFieldCol set = new ActionSetFieldCol();
+        set.setFactField( "foo" );
+        dt.getActionCols().add(set);
 
-		dt.getMetadataCols().add(new MetadataCol());
+        dt.getMetadataCols().add(new MetadataCol());
 
-		dt.getAttributeCols().add(new AttributeCol());
+        dt.getAttributeCols().add(new AttributeCol());
 
-		dt.getConditionCols().add(new ConditionCol());
+        dt.getConditionCols().add(new ConditionCol());
 
-		dt.setData( new String[][] {
-				new String[] {"hola"}
-		} );
-		dt.setTableName( "blah" );
+        dt.setData( new String[][] {
+                new String[] {"hola"}
+        } );
+        dt.setTableName( "blah" );
 
 
-		String xml = GuidedDTXMLPersistence.getInstance().marshal(dt);
-		System.out.println(xml);
-		assertNotNull(xml);
-		assertEquals(-1, xml.indexOf("ActionSetField"));
-		assertEquals(-1, xml.indexOf("ConditionCol"));
-		assertEquals(-1, xml.indexOf("GuidedDecisionTable"));
+        String xml = GuidedDTXMLPersistence.getInstance().marshal(dt);
+        System.out.println(xml);
+        assertNotNull(xml);
+        assertEquals(-1, xml.indexOf("ActionSetField"));
+        assertEquals(-1, xml.indexOf("ConditionCol"));
+        assertEquals(-1, xml.indexOf("GuidedDecisionTable"));
 
-		GuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
-		assertNotNull(dt_);
-		assertEquals("blah", dt_.getTableName());
-		assertEquals(1, dt_.getMetadataCols().size());
-		assertEquals(1, dt_.getAttributeCols().size());
-		assertEquals(2, dt_.getActionCols().size());
-		assertEquals(1, dt_.getConditionCols().size());
+        GuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
+        assertNotNull(dt_);
+        assertEquals("blah", dt_.getTableName());
+        assertEquals(1, dt_.getMetadataCols().size());
+        assertEquals(1, dt_.getAttributeCols().size());
+        assertEquals(2, dt_.getActionCols().size());
+        assertEquals(1, dt_.getConditionCols().size());
 
-	}
+    }
 
     @Test
     public void testBackwardsCompatability() throws Exception {
-		String xml = BRLPersistenceTest.loadResource("ExistingDecisionTable.xml");
-		GuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
-		assertNotNull(dt_);
-		assertEquals("blah", dt_.getTableName());
-		assertEquals(1, dt_.getMetadataCols().size());
-		assertEquals(1, dt_.getAttributeCols().size());
-		assertEquals(2, dt_.getActionCols().size());
-		assertEquals(1, dt_.getConditionCols().size());
+        String xml = BRLPersistenceTest.loadResource("ExistingDecisionTable.xml");
+        GuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
+        assertNotNull(dt_);
+        assertEquals("blah", dt_.getTableName());
+        assertEquals(1, dt_.getMetadataCols().size());
+        assertEquals(1, dt_.getAttributeCols().size());
+        assertEquals(2, dt_.getActionCols().size());
+        assertEquals(1, dt_.getConditionCols().size());
 
-		assertTrue(dt_.getActionCols().get(1) instanceof ActionSetFieldCol );
-		ActionSetFieldCol asf = (ActionSetFieldCol) dt_.getActionCols().get(1);
-		assertEquals("foo", asf.getFactField());
-		assertEquals(false, asf.isUpdate());
-	}
+        assertTrue(dt_.getActionCols().get(1) instanceof ActionSetFieldCol );
+        ActionSetFieldCol asf = (ActionSetFieldCol) dt_.getActionCols().get(1);
+        assertEquals("foo", asf.getFactField());
+        assertEquals(false, asf.isUpdate());
+    }
 
 }

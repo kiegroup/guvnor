@@ -73,11 +73,11 @@ public class ModelField implements PortableObject {
     }
 
 
-	@Override
-	public String toString() {
-		return "ModelField [classType=" + classType + ", name=" + name
-				+ ", type=" + type + ", className=" + className + "]";
-	}
+    @Override
+    public String toString() {
+        return "ModelField [classType=" + classType + ", name=" + name
+                + ", type=" + type + ", className=" + className + "]";
+    }
 
     
     

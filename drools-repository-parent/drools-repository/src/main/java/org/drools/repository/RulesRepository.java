@@ -180,7 +180,7 @@ public class RulesRepository {
         } catch ( PathNotFoundException e ) {
             // it doesn't exist yet, so create it
             try {
-				log.debug("Adding new node of type: {} named: {} to parent node named {}", new Object[] {type, nodeName, parent.getName()});
+                log.debug("Adding new node of type: {} named: {} to parent node named {}", new Object[] {type, nodeName, parent.getName()});
                 node = parent.addNode( nodeName,
                                        type );
             } catch ( Exception e1 ) {
@@ -234,21 +234,21 @@ public class RulesRepository {
         return folderNode;
     }
     
-	private Node getMetaDataTypeNode(String metadataType)
-			throws RepositoryException {
-		Node schemaNode = getAreaNode(SCHEMA_AREA);
-		Node node = addNodeIfNew(
-				addNodeIfNew(schemaNode, METADATA_TYPE_AREA,
-						"nt:folder"), metadataType, "nt:file");
-		return node;
-	}
+    private Node getMetaDataTypeNode(String metadataType)
+            throws RepositoryException {
+        Node schemaNode = getAreaNode(SCHEMA_AREA);
+        Node node = addNodeIfNew(
+                addNodeIfNew(schemaNode, METADATA_TYPE_AREA,
+                        "nt:folder"), metadataType, "nt:file");
+        return node;
+    }
 
-	private NodeIterator getMetaDataTypeNodes() throws RepositoryException {
-		Node schemaNode = getAreaNode(SCHEMA_AREA);
-		NodeIterator node = addNodeIfNew(schemaNode,
-				METADATA_TYPE_AREA, "nt:folder").getNodes();
-		return node;
-	}   
+    private NodeIterator getMetaDataTypeNodes() throws RepositoryException {
+        Node schemaNode = getAreaNode(SCHEMA_AREA);
+        NodeIterator node = addNodeIfNew(schemaNode,
+                METADATA_TYPE_AREA, "nt:folder").getNodes();
+        return node;
+    }
 
     //    MN: This is kept for future reference showing how to tie references
     //    to a specific version when
@@ -427,17 +427,17 @@ public class RulesRepository {
             return new PackageItem( this,
                                     rulePackageNode );
         } catch ( RepositoryException e ) {
-        	//the Global package should always exist. In case it is not (eg, when
-        	//an old db was imported to repo), we create it. 
-        	if (RULE_GLOBAL_AREA.equals(name)) {
-				log.info("Creating Global area as it does not exist yet.");
-				return createPackage(RULE_GLOBAL_AREA,
-						"the global area that holds sharable assets");
-			} else {
-				log.error("Unable to load a rule package. ", e);
-				throw new RulesRepositoryException(
-						"Unable to load a rule package. ", e);
-			}
+            //the Global package should always exist. In case it is not (eg, when
+            //an old db was imported to repo), we create it.
+            if (RULE_GLOBAL_AREA.equals(name)) {
+                log.info("Creating Global area as it does not exist yet.");
+                return createPackage(RULE_GLOBAL_AREA,
+                        "the global area that holds sharable assets");
+            } else {
+                log.error("Unable to load a rule package. ", e);
+                throw new RulesRepositoryException(
+                        "Unable to load a rule package. ", e);
+            }
 
         }
     }
@@ -597,8 +597,8 @@ public class RulesRepository {
 
             Node sourceNode = pkgSnaps.getNode( snapshotName );
             if (pkgSnaps.hasNode(newName)) {
-            	pkgSnaps.getNode(newName).remove();
-            	this.session.save();
+                pkgSnaps.getNode(newName).remove();
+                this.session.save();
             }
 
             String destinationPath = pkgSnaps.getPath() + "/" + newName;
@@ -716,10 +716,10 @@ public class RulesRepository {
      *            what description to use for the node
      * @return a PackageItem, encapsulating the created node
      * @throws RulesRepositoryException
-     */	
+     */
     public PackageItem createPackage(String name,
                                      String description) throws RulesRepositoryException {
-    	return createPackage(name, description, null);
+        return createPackage(name, description, null);
     }
     
     /**
@@ -731,7 +731,7 @@ public class RulesRepository {
      *            what description to use for the node
      * @return a PackageItem, encapsulating the created node
      * @throws RulesRepositoryException
-     */	
+     */
     public PackageItem createPackage(String name,
                                      String description,
                                      String[] workspace) throws RulesRepositoryException {
@@ -790,46 +790,46 @@ public class RulesRepository {
      * @param description
      *            what description to use for the node
      * @param parentPackage
-     * 			  parent node under which this new package will be created
+     *               parent node under which this new package will be created
      * @return a PackageItem, encapsulating the created node
      * @throws RulesRepositoryException
-     */	
-	public PackageItem createSubPackage(String name, String description, String parentPackage)
-			throws RulesRepositoryException {
+     */
+    public PackageItem createSubPackage(String name, String description, String parentPackage)
+            throws RulesRepositoryException {
 
-		try {
-			PackageItem pkg = loadPackage(parentPackage);
-			PackageItem subPkg = pkg.createSubPackage(name);
+        try {
+            PackageItem pkg = loadPackage(parentPackage);
+            PackageItem subPkg = pkg.createSubPackage(name);
 
-			// create the node - see section 6.7.22.6 of the spec
-//			Node rulePackageNode = subPkg.node; // folderNode.addNode( name,
-												// PackageItem.RULE_PACKAGE_TYPE_NAME
-												// );
+            // create the node - see section 6.7.22.6 of the spec
+//            Node rulePackageNode = subPkg.node; // folderNode.addNode( name,
+                                                // PackageItem.RULE_PACKAGE_TYPE_NAME
+                                                // );
 
-//			rulePackageNode.addNode(PackageItem.ASSET_FOLDER_NAME, "drools:versionableAssetFolder");
+//            rulePackageNode.addNode(PackageItem.ASSET_FOLDER_NAME, "drools:versionableAssetFolder");
 
-//			rulePackageNode.setProperty(PackageItem.TITLE_PROPERTY_NAME, name);
-//			rulePackageNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME, description);
-//			rulePackageNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME, PackageItem.PACKAGE_FORMAT);
-//			rulePackageNode.setProperty(PackageItem.CREATOR_PROPERTY_NAME, this.session.getUserID());
+//            rulePackageNode.setProperty(PackageItem.TITLE_PROPERTY_NAME, name);
+//            rulePackageNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME, description);
+//            rulePackageNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME, PackageItem.PACKAGE_FORMAT);
+//            rulePackageNode.setProperty(PackageItem.CREATOR_PROPERTY_NAME, this.session.getUserID());
 //
-//			Calendar lastModified = Calendar.getInstance();
-//			rulePackageNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
+//            Calendar lastModified = Calendar.getInstance();
+//            rulePackageNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
 
-			subPkg.checkin("Initial");
+            subPkg.checkin("Initial");
 
-			if (StorageEventManager.hasSaveEvent()) {
-				StorageEventManager.getSaveEvent().onPackageCreate(subPkg);
-			}
+            if (StorageEventManager.hasSaveEvent()) {
+                StorageEventManager.getSaveEvent().onPackageCreate(subPkg);
+            }
 
-			return subPkg;
-		} catch (ItemExistsException e) {
-			throw new RulesRepositoryException("A package name must be unique.", e);
-		} catch (RepositoryException e) {
-			log.error("Error when creating a new rule package", e);
-			throw new RulesRepositoryException(e);
-		}
-	}
+            return subPkg;
+        } catch (ItemExistsException e) {
+            throw new RulesRepositoryException("A package name must be unique.", e);
+        } catch (RepositoryException e) {
+            log.error("Error when creating a new rule package", e);
+            throw new RulesRepositoryException(e);
+        }
+    }
     
     /**
      * Gets a StateItem for the specified state name. If a node for the
@@ -876,19 +876,19 @@ public class RulesRepository {
     }
     
     public String[] listWorkspaces() throws RulesRepositoryException {
-		List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<String>();
                 
-		try {
-			//SCHEMA_AREA and WORKSPACE_AREA may not exist if the repository is imported from an old version. 
+        try {
+            //SCHEMA_AREA and WORKSPACE_AREA may not exist if the repository is imported from an old version.
             Node schemaNode = addNodeIfNew(this.session.getRootNode().getNode( RULES_REPOSITORY_NAME ),
-            		                       SCHEMA_AREA,
-            		                       "nt:folder" );
-          	NodeIterator workspaceNodes = addNodeIfNew(schemaNode, WORKSPACE_AREA, "nt:folder").getNodes();
-    		
-         	while (workspaceNodes.hasNext()) {
-        		Node workspaceNode = workspaceNodes.nextNode();
-        		result.add(workspaceNode.getName());
-         	}
+                                           SCHEMA_AREA,
+                                           "nt:folder" );
+              NodeIterator workspaceNodes = addNodeIfNew(schemaNode, WORKSPACE_AREA, "nt:folder").getNodes();
+
+             while (workspaceNodes.hasNext()) {
+                Node workspaceNode = workspaceNodes.nextNode();
+                result.add(workspaceNode.getName());
+             }
 
         } catch ( Exception e ) {
             log.error( e.getMessage(), e );
@@ -903,17 +903,17 @@ public class RulesRepository {
      */
     public Node createWorkspace(String workspace) {
         try {
-			//SCHEMA_AREA and WORKSPACE_AREA may not exist if the repository is imported from an old version. 
+            //SCHEMA_AREA and WORKSPACE_AREA may not exist if the repository is imported from an old version.
             Node schemaNode = addNodeIfNew(this.session.getRootNode().getNode( RULES_REPOSITORY_NAME ),
-            		                       SCHEMA_AREA,
-            		                       "nt:folder" );
+                                           SCHEMA_AREA,
+                                           "nt:folder" );
             Node workspaceNode = addNodeIfNew(schemaNode, WORKSPACE_AREA, "nt:folder");
 
-    		Node node = addNodeIfNew(workspaceNode,
-    				workspace, "nt:file");
-    		
-    		//TODO: use cnd instead
-    		node.addNode("jcr:content", "nt:unstructured");
+            Node node = addNodeIfNew(workspaceNode,
+                    workspace, "nt:file");
+
+            //TODO: use cnd instead
+            node.addNode("jcr:content", "nt:unstructured");
 
             this.getSession().save();
             log.debug( "Created workspace [" + workspace + "]" );
@@ -931,9 +931,9 @@ public class RulesRepository {
                     "nt:folder" );
             Node workspaceAreaNode = addNodeIfNew(schemaNode, WORKSPACE_AREA, "nt:folder");
 
-    		Node workspaceNode = workspaceAreaNode.getNode(workspace);
-    		workspaceNode.remove();    		
-    		this.getSession().save();
+            Node workspaceNode = workspaceAreaNode.getNode(workspace);
+            workspaceNode.remove();
+            this.getSession().save();
         } catch ( Exception e ) {
             log.error( e.getMessage(), e );
             throw new RulesRepositoryException( e );
@@ -1154,14 +1154,14 @@ public class RulesRepository {
     public void importRepository(InputStream in) {
         new RulesRepositoryAdministrator( this.session ).clearRulesRepository();
         try {
-	        this.session.getWorkspace().importXML( "/", in,
-	                                               ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW );
-        	session.save();
+            this.session.getWorkspace().importXML( "/", in,
+                                                   ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW );
+            session.save();
         } catch (RepositoryException e) {
-        	throw new RulesRepositoryException(e);
+            throw new RulesRepositoryException(e);
         } catch (IOException e) {
-        	throw new RulesRepositoryException(e);
-		}
+            throw new RulesRepositoryException(e);
+        }
     }
 
     
@@ -1271,7 +1271,7 @@ public class RulesRepository {
         try {
             this.session.save();
         } catch ( InvalidItemStateException e ) {
-        	String message = "Your operation was failed because it conflicts with a change made through another user. Please try again.";
+            String message = "Your operation was failed because it conflicts with a change made through another user. Please try again.";
             log.error( "Caught Exception", e );
             throw new RulesRepositoryException( message, e );
         } catch ( Exception e ) {

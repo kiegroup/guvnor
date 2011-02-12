@@ -50,8 +50,8 @@ public class ScalabilityTest extends RepositoryTestCase {
 
     @Test @Ignore
     public void testRun() throws Exception {
-    	Properties properties = new Properties();
-    	properties.put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, "./scalabilityTestRepo");
+        Properties properties = new Properties();
+        properties.put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, "./scalabilityTestRepo");
         RulesRepositoryConfigurator config = RulesRepositoryConfigurator.getInstance(properties);
         Session session = config.getJCRRepository().login(
                                            new SimpleCredentials("alan_parsons", "password".toCharArray()));

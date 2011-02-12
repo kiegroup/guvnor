@@ -33,5 +33,5 @@ public interface Constraint extends Serializable {
     public ValidationResult validate(Object value, ConstraintConfiguration config);
     public String getVerifierRule(ConstraintConfiguration config);
     public String getConstraintName();
-	
+
 }

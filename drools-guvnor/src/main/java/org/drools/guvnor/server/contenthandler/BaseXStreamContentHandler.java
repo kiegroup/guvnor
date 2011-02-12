@@ -29,34 +29,34 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public abstract class BaseXStreamContentHandler<T extends PortableObject> extends ContentHandler {
-	protected final Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
+    protected final Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
 
-	private static final XStream xt = new XStream(new DomDriver());
+    private static final XStream xt = new XStream(new DomDriver());
 
-	protected XStream getXStream() {
-		return xt;
-	}
+    protected XStream getXStream() {
+        return xt;
+    }
 
-	@SuppressWarnings("unchecked")
-	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item) throws SerializationException {
-		if (item.getContent() != null && item.getContent().length() > 0) {
-			try {
-				asset.content = (T) getXStream().fromXML(item.getContent());
-			} catch (RulesRepositoryException e) {
-				log.error("error marshalling asset content: " + asset.metaData.name, e);
-				throw new SerializationException(e.getMessage());
-			}
-		} else {
-			asset.content = new WorkingSetConfigData();
-		}
-	}
+    @SuppressWarnings("unchecked")
+    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item) throws SerializationException {
+        if (item.getContent() != null && item.getContent().length() > 0) {
+            try {
+                asset.content = (T) getXStream().fromXML(item.getContent());
+            } catch (RulesRepositoryException e) {
+                log.error("error marshalling asset content: " + asset.metaData.name, e);
+                throw new SerializationException(e.getMessage());
+            }
+        } else {
+            asset.content = new WorkingSetConfigData();
+        }
+    }
 
-	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset) throws SerializationException {
-		try {
-			repoAsset.updateContent(getXStream().toXML(asset.content));
-		} catch (Exception e) {
-			log.error("error marshalling asset content: " + asset.metaData.name, e);
-			throw new SerializationException(e.getMessage());
-		}
-	}
+    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset) throws SerializationException {
+        try {
+            repoAsset.updateContent(getXStream().toXML(asset.content));
+        } catch (Exception e) {
+            log.error("error marshalling asset content: " + asset.metaData.name, e);
+            throw new SerializationException(e.getMessage());
+        }
+    }
 }

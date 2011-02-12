@@ -779,22 +779,22 @@ public class SuggestionCompletionEngineTest {
         });
         
         assertEquals(2, sce.getFactTypes().length);
-		sce.setFactTypeFilter(new FactTypeFilter() {
-			public boolean filter(String originalFact) {
-				return "Person".equals(originalFact);
-			}
-		});
-		
-		assertEquals(1, sce.getFactTypes().length);
-		sce.setFilteringFacts(false);
-		
-		assertEquals(2, sce.getFactTypes().length);
-		sce.setFilteringFacts(true);
-		assertEquals(1, sce.getFactTypes().length);
-		
-		sce.setFactTypeFilter(null);
-		assertEquals(2, sce.getFactTypes().length);
-		
+        sce.setFactTypeFilter(new FactTypeFilter() {
+            public boolean filter(String originalFact) {
+                return "Person".equals(originalFact);
+            }
+        });
+
+        assertEquals(1, sce.getFactTypes().length);
+        sce.setFilteringFacts(false);
+
+        assertEquals(2, sce.getFactTypes().length);
+        sce.setFilteringFacts(true);
+        assertEquals(1, sce.getFactTypes().length);
+
+        sce.setFactTypeFilter(null);
+        assertEquals(2, sce.getFactTypes().length);
+
     }
     
     public static class NestedClass {

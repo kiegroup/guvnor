@@ -26,13 +26,13 @@ import com.google.gwt.event.shared.HasHandlers;
  */
 public interface HasColumnResizeHandlers extends HasHandlers {
 
-	/**
-	 * Adds a {@link ColumnResizeEvent} handler.
-	 * 
-	 * @param handler
-	 *            the handler
-	 * @return the handler registration
-	 */
-	HandlerRegistration addColumnResizeHandler(ColumnResizeHandler handler);
+    /**
+     * Adds a {@link ColumnResizeEvent} handler.
+     *
+     * @param handler
+     *            the handler
+     * @return the handler registration
+     */
+    HandlerRegistration addColumnResizeHandler(ColumnResizeHandler handler);
 
 }

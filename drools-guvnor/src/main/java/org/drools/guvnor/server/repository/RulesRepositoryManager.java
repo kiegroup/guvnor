@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 @Name("repository")
 public class RulesRepositoryManager {
 
-	private static final Logger log = LoggerFactory.getLogger(RulesRepositoryManager.class);
+    private static final Logger log = LoggerFactory.getLogger(RulesRepositoryManager.class);
     private static String READ_ONLY_USER = "anonymous";
     
     @In

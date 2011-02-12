@@ -61,294 +61,294 @@ import org.drools.repository.RulesRepositoryException;
  *            specified file on the server
  */
 public class WorkflowManagerServlet extends AssetFileServlet {
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
-		doGet(request, response);
-	}
+    public void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        doGet(request, response);
+    }
 
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
-		String operation = request.getParameter("operation");
+        String operation = request.getParameter("operation");
 
-		if (operation != null) {
+        if (operation != null) {
 
-			/********************* DOWNLOAD OPERATION *********************/
-			if (operation.equalsIgnoreCase("download")) {
-				this.downloadWorkflow(request, response);
-			}
+            /********************* DOWNLOAD OPERATION *********************/
+            if (operation.equalsIgnoreCase("download")) {
+                this.downloadWorkflow(request, response);
+            }
 
-			/********************* RETRIEVE OPERATION *********************/
-			else if (operation.equalsIgnoreCase("retrieve")) {
-				this.retrieveWorkflow(request, response);
-			}
+            /********************* RETRIEVE OPERATION *********************/
+            else if (operation.equalsIgnoreCase("retrieve")) {
+                this.retrieveWorkflow(request, response);
+            }
 
-			/********************* SAVE OPERATION *********************/
-			else if (operation.equalsIgnoreCase("save")) {
-				this.saveWorkflow(request, response);
-			}
+            /********************* SAVE OPERATION *********************/
+            else if (operation.equalsIgnoreCase("save")) {
+                this.saveWorkflow(request, response);
+            }
 
-			/********************* GET FROM URL OPERATION *********************/
-			// else if (operation.equalsIgnoreCase("getFromURL")) {
-			// this.saveFileFromURL(request, response);
-			// } else if (operation.equalsIgnoreCase("getStatus")) {
-			// this.sendDummyMonitoring(request, response);
-			// }
-		}
-	}
+            /********************* GET FROM URL OPERATION *********************/
+            // else if (operation.equalsIgnoreCase("getFromURL")) {
+            // this.saveFileFromURL(request, response);
+            // } else if (operation.equalsIgnoreCase("getStatus")) {
+            // this.sendDummyMonitoring(request, response);
+            // }
+        }
+    }
 
-	private String getFullPath(String path, String workflowName,
-			String extension, String fileName) {
-		if (fileName.indexOf("wsdlCatalog") >= 0) {
-			return path + workflowName + "/META-INF";
-		} else {
-			return getFullPath(path, workflowName, extension);
-		}
-	}
+    private String getFullPath(String path, String workflowName,
+            String extension, String fileName) {
+        if (fileName.indexOf("wsdlCatalog") >= 0) {
+            return path + workflowName + "/META-INF";
+        } else {
+            return getFullPath(path, workflowName, extension);
+        }
+    }
 
-	private String getFullPath(String path, String workflowName,
-			String extension) {
-		String fullPath = path;
-		if (extension.equals("bpr")) {
-			fullPath += workflowName + "/bpr";
-		} else if (extension.equals("bpel")) {
-			fullPath += workflowName + "/bpel/" + workflowName;
-		} else if (extension.equals("wsdl") || extension.equals("xsd")) {
-			fullPath += workflowName + "/wsdl/" + workflowName + "/wsdl";
-		} else if (extension.equals("xml")) {
-			fullPath += workflowName + "/submission";
-		} else if (extension.equals("pdd")) {
-			fullPath += workflowName + "/META-INF/pdd/" + workflowName;
-		}
-		return fullPath;
-	}
+    private String getFullPath(String path, String workflowName,
+            String extension) {
+        String fullPath = path;
+        if (extension.equals("bpr")) {
+            fullPath += workflowName + "/bpr";
+        } else if (extension.equals("bpel")) {
+            fullPath += workflowName + "/bpel/" + workflowName;
+        } else if (extension.equals("wsdl") || extension.equals("xsd")) {
+            fullPath += workflowName + "/wsdl/" + workflowName + "/wsdl";
+        } else if (extension.equals("xml")) {
+            fullPath += workflowName + "/submission";
+        } else if (extension.equals("pdd")) {
+            fullPath += workflowName + "/META-INF/pdd/" + workflowName;
+        }
+        return fullPath;
+    }
 
-	private void downloadWorkflow(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+    private void downloadWorkflow(HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
 
-		String uuid = request.getParameter("uuid");
+        String uuid = request.getParameter("uuid");
 
-		if (uuid == null) {
-			return;
-		}
+        if (uuid == null) {
+            return;
+        }
 
-		try {
-			processAttachmentDownload(uuid, response);
-		} catch (Exception e) {
-			response.setContentType("text/html");
-			PrintWriter writer = response.getWriter();
-			writer.print("<h2>Sorry, file cannot be found!</h2>");
-			writer.close();
-		}
-	}
+        try {
+            processAttachmentDownload(uuid, response);
+        } catch (Exception e) {
+            response.setContentType("text/html");
+            PrintWriter writer = response.getWriter();
+            writer.print("<h2>Sorry, file cannot be found!</h2>");
+            writer.close();
+        }
+    }
 
-	private void retrieveWorkflow(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+    private void retrieveWorkflow(HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
 
-		String uuid = request.getParameter("uuid");
+        String uuid = request.getParameter("uuid");
 
-		String fullPath = "";// request.getParameter("fullPath");
-		String fileName = request.getParameter("fileName");
-		String workflowName = request.getParameter("workflowName");
+        String fullPath = "";// request.getParameter("fullPath");
+        String fileName = request.getParameter("fileName");
+        String workflowName = request.getParameter("workflowName");
 
-		if (fileName == null || workflowName == null || fullPath == null) {
-			return;
-		}
-		String extension = fileName.substring(fileName.indexOf('.') + 1); // request.getParameter("extension");
-		fullPath = this
-				.getFullPath(fullPath, workflowName, extension, fileName);
-		fullPath = fullPath + "/" + fileName;
+        if (fileName == null || workflowName == null || fullPath == null) {
+            return;
+        }
+        String extension = fileName.substring(fileName.indexOf('.') + 1); // request.getParameter("extension");
+        fullPath = this
+                .getFullPath(fullPath, workflowName, extension, fileName);
+        fullPath = fullPath + "/" + fileName;
 
-		try {
+        try {
 
-			AssetItem item = getFileManager().getRepository().loadAssetByUUID(uuid);
+            AssetItem item = getFileManager().getRepository().loadAssetByUUID(uuid);
 
-			final ByteArrayOutputStream out = new ByteArrayOutputStream();
+            final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-			final JarInputStream jis = new JarInputStream(item
-					.getBinaryContentAttachment());
-			JarEntry entry;
-			final byte[] buf = new byte[1024];
-			int len;
-			while ((entry = jis.getNextJarEntry()) != null) {
-				if (entry.getName().equals(fullPath)) {
-					while ((len = jis.read(buf)) >= 0) {
-						out.write(buf, 0, len);
-					}
-					break;
-				}
-			}
+            final JarInputStream jis = new JarInputStream(item
+                    .getBinaryContentAttachment());
+            JarEntry entry;
+            final byte[] buf = new byte[1024];
+            int len;
+            while ((entry = jis.getNextJarEntry()) != null) {
+                if (entry.getName().equals(fullPath)) {
+                    while ((len = jis.read(buf)) >= 0) {
+                        out.write(buf, 0, len);
+                    }
+                    break;
+                }
+            }
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					new ByteArrayInputStream(out.toByteArray())));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    new ByteArrayInputStream(out.toByteArray())));
 
-			String line = null;
-			StringBuffer sb = new StringBuffer(4 * (9216));
-			while ((line = reader.readLine()) != null) {
-				sb.append(line);
-				sb.append("\n");
-			}
+            String line = null;
+            StringBuffer sb = new StringBuffer(4 * (9216));
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+                sb.append("\n");
+            }
 
-			out.close();
-			jis.close();
-			reader.close();
-			response.setContentType("text/plain");
-			PrintWriter writer = response.getWriter();
-			writer.print(sb);
-			writer.flush();
-			writer.close();
+            out.close();
+            jis.close();
+            reader.close();
+            response.setContentType("text/plain");
+            PrintWriter writer = response.getWriter();
+            writer.print(sb);
+            writer.flush();
+            writer.close();
 
-		} catch (Exception e) {
-			response.setContentType("text/html");
-			PrintWriter writer = response.getWriter();
-			writer.print("<h2>Sorry, that file cannot be found</h2>");
-			writer.close();
-		}
-	}
+        } catch (Exception e) {
+            response.setContentType("text/html");
+            PrintWriter writer = response.getWriter();
+            writer.print("<h2>Sorry, that file cannot be found</h2>");
+            writer.close();
+        }
+    }
 
-	private void saveWorkflow(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
+    private void saveWorkflow(HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
 
-		String uuid = request.getParameter("uuid");
+        String uuid = request.getParameter("uuid");
 
-		String fullPath = ""; // request.getParameter("fullPath");
-		String fileName = request.getParameter("fileName");
-		String workflowName = request.getParameter("workflowName");
+        String fullPath = ""; // request.getParameter("fullPath");
+        String fileName = request.getParameter("fileName");
+        String workflowName = request.getParameter("workflowName");
 
-		if (fileName == null || workflowName == null || fullPath == null) {
-			return;
-		}
-		String extension = fileName.substring(fileName.indexOf('.') + 1);
-		String fullPathToFolder = this.getFullPath(fullPath, workflowName,
-				extension, fileName);
-		fullPath = fullPathToFolder + "/" + fileName;
-		 
-		AssetItem item = getFileManager().getRepository().loadAssetByUUID(uuid);
+        if (fileName == null || workflowName == null || fullPath == null) {
+            return;
+        }
+        String extension = fileName.substring(fileName.indexOf('.') + 1);
+        String fullPathToFolder = this.getFullPath(fullPath, workflowName,
+                extension, fileName);
+        fullPath = fullPathToFolder + "/" + fileName;
 
-		InputStream in = item.getBinaryContentAttachment();
+        AssetItem item = getFileManager().getRepository().loadAssetByUUID(uuid);
 
-		String fileContent = request.getParameter("fileContent");
+        InputStream in = item.getBinaryContentAttachment();
 
-		ByteArrayOutputStream bais = new ByteArrayOutputStream();
-		JarOutputStream jos = new JarOutputStream(bais);
-		JarInputStream jis = null;
+        String fileContent = request.getParameter("fileContent");
 
-		try {
-			if (in == null) {
+        ByteArrayOutputStream bais = new ByteArrayOutputStream();
+        JarOutputStream jos = new JarOutputStream(bais);
+        JarInputStream jis = null;
 
-				jos.putNextEntry(new JarEntry(fullPath));
+        try {
+            if (in == null) {
 
-				ByteArrayInputStream i = new ByteArrayInputStream(fileContent
-						.getBytes());
+                jos.putNextEntry(new JarEntry(fullPath));
 
-				int len = 0;
-				byte[] copyBuf = new byte[1024];
-				while (len != -1) {
+                ByteArrayInputStream i = new ByteArrayInputStream(fileContent
+                        .getBytes());
 
-					len = i.read(copyBuf, 0, copyBuf.length);
-					if (len > 0) {
-						jos.write(copyBuf, 0, len);
-					}
-				}
+                int len = 0;
+                byte[] copyBuf = new byte[1024];
+                while (len != -1) {
 
-				i.close();
-				jos.closeEntry();
+                    len = i.read(copyBuf, 0, copyBuf.length);
+                    if (len > 0) {
+                        jos.write(copyBuf, 0, len);
+                    }
+                }
 
-			} else {
+                i.close();
+                jos.closeEntry();
 
-				jis = new JarInputStream(in);
+            } else {
 
-				boolean found = false;
-				JarEntry entry;
-				while ((entry = jis.getNextJarEntry()) != null) {
+                jis = new JarInputStream(in);
 
-					jos.putNextEntry(new JarEntry(entry.getName()));
+                boolean found = false;
+                JarEntry entry;
+                while ((entry = jis.getNextJarEntry()) != null) {
 
-					String name = entry.getName();
-					if (fullPath.equals(name)) {
-						found = true;
+                    jos.putNextEntry(new JarEntry(entry.getName()));
 
-						ByteArrayInputStream i = new ByteArrayInputStream(
-								fileContent.getBytes());
+                    String name = entry.getName();
+                    if (fullPath.equals(name)) {
+                        found = true;
 
-						int len = 0;
-						byte[] copyBuf = new byte[1024];
-						while (len != -1) {
+                        ByteArrayInputStream i = new ByteArrayInputStream(
+                                fileContent.getBytes());
 
-							len = i.read(copyBuf, 0, copyBuf.length);
-							if (len > 0) {
-								jos.write(copyBuf, 0, len);
-							}
-						}
+                        int len = 0;
+                        byte[] copyBuf = new byte[1024];
+                        while (len != -1) {
 
-						i.close();
+                            len = i.read(copyBuf, 0, copyBuf.length);
+                            if (len > 0) {
+                                jos.write(copyBuf, 0, len);
+                            }
+                        }
 
-					} else {
-						int len = 0;
-						byte[] copyBuf = new byte[1024];
-						while (len != -1) {
+                        i.close();
 
-							len = jis.read(copyBuf, 0, copyBuf.length);
-							if (len > 0) {
-								jos.write(copyBuf, 0, len);
-							}
-						}
-					}
+                    } else {
+                        int len = 0;
+                        byte[] copyBuf = new byte[1024];
+                        while (len != -1) {
 
-					jis.closeEntry();
-					jos.closeEntry();
-				}
+                            len = jis.read(copyBuf, 0, copyBuf.length);
+                            if (len > 0) {
+                                jos.write(copyBuf, 0, len);
+                            }
+                        }
+                    }
 
-				// If the file is not found, add it
-				if (!found) {
-					jos.putNextEntry(new JarEntry(fullPath));
+                    jis.closeEntry();
+                    jos.closeEntry();
+                }
 
-					ByteArrayInputStream i = new ByteArrayInputStream(
-							fileContent.getBytes());
+                // If the file is not found, add it
+                if (!found) {
+                    jos.putNextEntry(new JarEntry(fullPath));
 
-					int len = 0;
-					byte[] copyBuf = new byte[1024];
-					while (len != -1) {
+                    ByteArrayInputStream i = new ByteArrayInputStream(
+                            fileContent.getBytes());
 
-						len = i.read(copyBuf, 0, copyBuf.length);
-						if (len > 0) {
-							jos.write(copyBuf, 0, len);
-						}
-					}
+                    int len = 0;
+                    byte[] copyBuf = new byte[1024];
+                    while (len != -1) {
 
-					i.close();
-					jos.closeEntry();
-				}
-			}
+                        len = i.read(copyBuf, 0, copyBuf.length);
+                        if (len > 0) {
+                            jos.write(copyBuf, 0, len);
+                        }
+                    }
 
-			item.updateBinaryContentAttachment(new ByteArrayInputStream(bais
-					.toByteArray()));
+                    i.close();
+                    jos.closeEntry();
+                }
+            }
 
-			item.checkin("Updated " + fileName);
+            item.updateBinaryContentAttachment(new ByteArrayInputStream(bais
+                    .toByteArray()));
 
-		} catch (IOException e) {
-			throw new RulesRepositoryException(e);
-		} finally {
-			if (jis != null) {
-				jis.close();
-			}
-			jos.close();
-		}
-	}
+            item.checkin("Updated " + fileName);
 
-	private Collection<String> createWorkflow(String fullPath,
-			String workflowName) {
-		Collection<String> list = new ArrayList<String>();
+        } catch (IOException e) {
+            throw new RulesRepositoryException(e);
+        } finally {
+            if (jis != null) {
+                jis.close();
+            }
+            jos.close();
+        }
+    }
 
-		list.add(fullPath + "/" + workflowName);
-		list.add(getFullPath(fullPath, workflowName, "bpr"));
-		list.add(getFullPath(fullPath, workflowName, "bpel"));
-		list.add(getFullPath(fullPath, workflowName, "wsdl"));
-		list.add(getFullPath(fullPath, workflowName, "pdd"));
-		list.add(getFullPath(fullPath, workflowName, "xml"));
+    private Collection<String> createWorkflow(String fullPath,
+            String workflowName) {
+        Collection<String> list = new ArrayList<String>();
 
-		return list;
-	}
+        list.add(fullPath + "/" + workflowName);
+        list.add(getFullPath(fullPath, workflowName, "bpr"));
+        list.add(getFullPath(fullPath, workflowName, "bpel"));
+        list.add(getFullPath(fullPath, workflowName, "wsdl"));
+        list.add(getFullPath(fullPath, workflowName, "pdd"));
+        list.add(getFullPath(fullPath, workflowName, "xml"));
+
+        return list;
+    }
 }

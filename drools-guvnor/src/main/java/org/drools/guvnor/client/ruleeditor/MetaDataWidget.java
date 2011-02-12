@@ -93,11 +93,11 @@ public class MetaDataWidget extends Composite {
     }
 
     public void setMetaData(MetaData data) {
-		this.data = data;
-	}
+        this.data = data;
+    }
 
-	private void render() {
-    	layout.clear();
+    private void render() {
+        layout.clear();
         layout.add( new SmallLabel( Format.format( "{0}: [<b>{1}</b>]",
                 constants.Title(),
                 data.name ) ) );

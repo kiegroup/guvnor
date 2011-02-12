@@ -70,19 +70,19 @@ public class BaseSingleFieldConstraint
     private String           value;
     private int              constraintValueType;
     
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setConstraintValueType(int constraintValueType) {
-		this.constraintValueType = constraintValueType;
-	}
+    public void setConstraintValueType(int constraintValueType) {
+        this.constraintValueType = constraintValueType;
+    }
 
-	public int getConstraintValueType() {
-		return constraintValueType;
-	}
+    public int getConstraintValueType() {
+        return constraintValueType;
+    }
 }

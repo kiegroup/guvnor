@@ -26,32 +26,32 @@ import org.drools.guvnor.client.widgets.tables.SortDirection;
  * 
  */
 public class SortConfiguration {
-	private SortDirection sortDirection = SortDirection.NONE;
-	private Boolean isSortable = true;
-	private int sortIndex = -1;
+    private SortDirection sortDirection = SortDirection.NONE;
+    private Boolean isSortable = true;
+    private int sortIndex = -1;
 
-	public SortDirection getSortDirection() {
-		return sortDirection;
-	}
+    public SortDirection getSortDirection() {
+        return sortDirection;
+    }
 
-	public void setSortDirection(SortDirection sortDirection) {
-		this.sortDirection = sortDirection;
-	}
+    public void setSortDirection(SortDirection sortDirection) {
+        this.sortDirection = sortDirection;
+    }
 
-	public Boolean isSortable() {
-		return isSortable;
-	}
+    public Boolean isSortable() {
+        return isSortable;
+    }
 
-	public void setSortable(Boolean isSortable) {
-		this.isSortable = isSortable;
-	}
+    public void setSortable(Boolean isSortable) {
+        this.isSortable = isSortable;
+    }
 
-	public int getSortIndex() {
-		return sortIndex;
-	}
+    public int getSortIndex() {
+        return sortIndex;
+    }
 
-	public void setSortIndex(int sortIndex) {
-		this.sortIndex = sortIndex;
-	}
+    public void setSortIndex(int sortIndex) {
+        this.sortIndex = sortIndex;
+    }
 
 }

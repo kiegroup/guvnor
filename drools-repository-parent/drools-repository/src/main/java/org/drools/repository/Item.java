@@ -92,12 +92,12 @@ public abstract class Item {
         else {
             Item rhs = (Item)obj;
             try {
-				return this.node.isSame(rhs.getNode());
-			} catch (RepositoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return false;
+                return this.node.isSame(rhs.getNode());
+            } catch (RepositoryException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return false;
         }
     }
 

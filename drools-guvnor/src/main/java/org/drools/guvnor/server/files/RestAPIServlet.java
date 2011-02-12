@@ -55,13 +55,13 @@ public class RestAPIServlet extends RepositoryServlet {
                           final HttpServletResponse res) throws ServletException,
                                                        IOException {
         doAuthorizedAction(req, res, new A() {
-			public void a() throws Exception {
-					res.setContentType( "text/html" );
-					RestAPI api = getAPI();
-					String comment = req.getHeader("Checkin-Comment");
-					api.post(req.getRequestURI(), req.getInputStream(), (comment != null)? comment : "");
-					res.getWriter().write( "OK" );
-			}
+            public void a() throws Exception {
+                    res.setContentType( "text/html" );
+                    RestAPI api = getAPI();
+                    String comment = req.getHeader("Checkin-Comment");
+                    api.post(req.getRequestURI(), req.getInputStream(), (comment != null)? comment : "");
+                    res.getWriter().write( "OK" );
+            }
         });
     }
 
@@ -72,65 +72,65 @@ public class RestAPIServlet extends RepositoryServlet {
                          final HttpServletResponse res) throws ServletException,
                                                  IOException {
         doAuthorizedAction(req, res, new A() {
-			public void a() throws Exception {
-					RestAPI api = getAPI();
-					String qString = req.getQueryString();
-					String ur = req.getRequestURI();
-					if (qString != null && qString.length() > 0) {
-						ur = ur + '?' + qString;
-					}
-					Response apiRes = api.get(ur);
-			        res.setContentType( "application/x-download" );
-			        res.setHeader( "Content-Disposition",
-			                       "attachment; filename=data;");
-					apiRes.writeData(res.getOutputStream());
-					res.getOutputStream().flush();
-			}
+            public void a() throws Exception {
+                    RestAPI api = getAPI();
+                    String qString = req.getQueryString();
+                    String ur = req.getRequestURI();
+                    if (qString != null && qString.length() > 0) {
+                        ur = ur + '?' + qString;
+                    }
+                    Response apiRes = api.get(ur);
+                    res.setContentType( "application/x-download" );
+                    res.setHeader( "Content-Disposition",
+                                   "attachment; filename=data;");
+                    apiRes.writeData(res.getOutputStream());
+                    res.getOutputStream().flush();
+            }
         });
 
     }
 
-	@Override
+    @Override
     protected void doPut(final HttpServletRequest req, final HttpServletResponse res)
-    		throws ServletException, IOException {
+            throws ServletException, IOException {
         doAuthorizedAction(req, res, new A() {
-			public void a() throws Exception {
-					res.setContentType( "text/html" );
-					RestAPI api = getAPI();
-					String comment = req.getHeader("Checkin-Comment");
-					Calendar lastMod = getModified(req.getHeader("Last-Modified"));
-					api.put(req.getRequestURI(), lastMod, req.getInputStream(),  (comment != null)? comment : "");
-					res.getWriter().write( "OK" );
-			}
+            public void a() throws Exception {
+                    res.setContentType( "text/html" );
+                    RestAPI api = getAPI();
+                    String comment = req.getHeader("Checkin-Comment");
+                    Calendar lastMod = getModified(req.getHeader("Last-Modified"));
+                    api.put(req.getRequestURI(), lastMod, req.getInputStream(),  (comment != null)? comment : "");
+                    res.getWriter().write( "OK" );
+            }
         });
     }
 
     Calendar getModified(String f) throws ParseException {
 
-		if (f == null) return null;
-		Calendar c = Calendar.getInstance();
-		SimpleDateFormat sdf = RestAPI.getISODateFormat();
-		try {
-			c.setTime(sdf.parse(f));
-		} catch (ParseException e) {
-			DateFormat df = DateFormat.getInstance();
-			c.setTime(df.parse(f));
-		}
-		return c;
-	}
+        if (f == null) return null;
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = RestAPI.getISODateFormat();
+        try {
+            c.setTime(sdf.parse(f));
+        } catch (ParseException e) {
+            DateFormat df = DateFormat.getInstance();
+            c.setTime(df.parse(f));
+        }
+        return c;
+    }
 
 
 
-	@Override
+    @Override
     protected void doDelete(final HttpServletRequest req, final HttpServletResponse res)
-    		throws ServletException, IOException {
+            throws ServletException, IOException {
         doAuthorizedAction(req, res, new A() {
-			public void a() throws Exception {
-					res.setContentType( "text/html" );
-					RestAPI api = getAPI();
-					api.delete(req.getRequestURI());
-					res.getWriter().write( "OK" );
-			}
+            public void a() throws Exception {
+                    res.setContentType( "text/html" );
+                    RestAPI api = getAPI();
+                    api.delete(req.getRequestURI());
+                    res.getWriter().write( "OK" );
+            }
         });
     }
 
@@ -139,30 +139,30 @@ public class RestAPIServlet extends RepositoryServlet {
 
 
 
-	/**
-	 * Get a repository instance.
-	 * This will use the Seam identity component, or it will just
-	 * return a repo for test puposes if seam is not active.
-	 */
-	static RulesRepository getRepository() {
-		if (Contexts.isApplicationContextActive()) {
-			RulesRepository repo = (RulesRepository) Component.getInstance( "repository" );
-			return repo;
-		} else {
-			try {
-				RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
-				return repo;
-			} catch (Exception e) {
-				throw new IllegalStateException("Unable to get repo to run tests", e);
-			}
+    /**
+     * Get a repository instance.
+     * This will use the Seam identity component, or it will just
+     * return a repo for test puposes if seam is not active.
+     */
+    static RulesRepository getRepository() {
+        if (Contexts.isApplicationContextActive()) {
+            RulesRepository repo = (RulesRepository) Component.getInstance( "repository" );
+            return repo;
+        } else {
+            try {
+                RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
+                return repo;
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to get repo to run tests", e);
+            }
 
-		}
+        }
 
-	}
+    }
 
-	RestAPI getAPI()  {
-		return new RestAPI(getRepository());
-	}
+    RestAPI getAPI()  {
+        return new RestAPI(getRepository());
+    }
 
 
 

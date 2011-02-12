@@ -70,14 +70,14 @@ public class AssetItemIterator
      */
     //NOTE this may return -1 as per JCR2.0 when precise count is not available due to performance reasons. 
      public long getSize() {
-    	return it.getSize();
+        return it.getSize();
     }
 
     /**
      * Get the position in the result set.
      */
     public long getPosition() {
-    	return it.getPosition();
+        return it.getPosition();
     }
 
 

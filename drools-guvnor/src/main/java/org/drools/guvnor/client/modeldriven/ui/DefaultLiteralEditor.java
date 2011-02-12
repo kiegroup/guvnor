@@ -137,8 +137,8 @@ public class DefaultLiteralEditor extends Composite {
                                    char c,
                                    int i) {
                 // all primitives will be "numeric" so this does not make sense for char as it will break the logic
-            	// allow to enter values
-            	//if ( numericValue && Character.isLetter( c ) ) {  	
+                // allow to enter values
+                //if ( numericValue && Character.isLetter( c ) ) {
                 //    ((TextBox) w).cancelKey();
                 //}
             }

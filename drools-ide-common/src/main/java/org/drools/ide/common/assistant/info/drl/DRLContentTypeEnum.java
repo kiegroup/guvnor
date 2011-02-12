@@ -17,15 +17,15 @@
 package org.drools.ide.common.assistant.info.drl;
 
 public enum DRLContentTypeEnum {
-	
-	PACKAGE,
-	IMPORT,
-	GLOBAL,
-	RULE,
-	RULE_LHS_LINE,
-	RULE_RHS_LINE;
-	
-	DRLContentTypeEnum() {
-	}
+
+    PACKAGE,
+    IMPORT,
+    GLOBAL,
+    RULE,
+    RULE_LHS_LINE,
+    RULE_RHS_LINE;
+
+    DRLContentTypeEnum() {
+    }
 
 }

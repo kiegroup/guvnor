@@ -33,11 +33,11 @@ public class TestingEventListenerTest extends RuleUnit {
 
     @Test
     public void testInclusive() throws Exception {
-		HashSet<String> set = new HashSet<String>();
-		set.add("rule1");
-		set.add("rule2");
+        HashSet<String> set = new HashSet<String>();
+        set.add("rule1");
+        set.add("rule2");
 
-		StatefulSession session  = getWorkingMemory("test_rules.drl");
+        StatefulSession session  = getWorkingMemory("test_rules.drl");
 
         TestingEventListener ls = new TestingEventListener();
         //TestingEventListener.stubOutRules(set, session.getRuleBase(), true);
@@ -61,16 +61,16 @@ public class TestingEventListenerTest extends RuleUnit {
         assertFalse(ls.firingCounts.containsKey("rule3"));
         assertEquals(4, ls.totalFires);
 
-	}
+    }
 
 
     @Test
     public void testExclusive() throws Exception {
-		HashSet<String> set = new HashSet<String>();
-		set.add("rule3");
+        HashSet<String> set = new HashSet<String>();
+        set.add("rule3");
 
 
-		StatefulSession session  = getWorkingMemory("test_rules.drl");
+        StatefulSession session  = getWorkingMemory("test_rules.drl");
 
         TestingEventListener ls = new TestingEventListener();
         //TestingEventListener.stubOutRules(set, session.getRuleBase(), false);
@@ -89,14 +89,14 @@ public class TestingEventListenerTest extends RuleUnit {
         assertFalse(ls.firingCounts.containsKey("rule4"));
 
 
-	}
+    }
 
     @Test
     public void testNoFilter() throws Exception {
-		HashSet<String> set = new HashSet<String>();
+        HashSet<String> set = new HashSet<String>();
 
 
-		StatefulSession session  = getWorkingMemory("test_rules.drl");
+        StatefulSession session  = getWorkingMemory("test_rules.drl");
 
         TestingEventListener ls = new TestingEventListener();
         //TestingEventListener.stubOutRules(set, session.getRuleBase(), false);
@@ -119,7 +119,7 @@ public class TestingEventListenerTest extends RuleUnit {
         assertFalse(summary[1].equals(""));
 
         assertEquals(1, list.size());
-	}
+    }
 
 
 }

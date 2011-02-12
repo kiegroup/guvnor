@@ -63,14 +63,14 @@ public class ModelContentHandler extends ContentHandler
         Set<String> imports = getImportsFromJar( asset.getBinaryContentAttachment() );
 
         for ( String importLine : imports ) {
-        	Pattern pattern = Pattern.compile("\\b" + importLine.replace(".", "\\.") + "\\b");
-        	if (!pattern.matcher(header).find()) {
-        		header.append( importLine ).append( "\n" );
-        	}
+            Pattern pattern = Pattern.compile("\\b" + importLine.replace(".", "\\.") + "\\b");
+            if (!pattern.matcher(header).find()) {
+                header.append( importLine ).append( "\n" );
+            }
         }
 
-		ServiceImplementation.updateDroolsHeader(header.toString(), pkg);
-		pkg.checkin("Imports setup automatically on model import.");
+        ServiceImplementation.updateDroolsHeader(header.toString(), pkg);
+        pkg.checkin("Imports setup automatically on model import.");
 
     }
 

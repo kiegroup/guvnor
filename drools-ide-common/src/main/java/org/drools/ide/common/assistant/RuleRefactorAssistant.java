@@ -17,5 +17,5 @@
 package org.drools.ide.common.assistant;
 
 public interface RuleRefactorAssistant {
-	public String bindPatternToVariable(String backText);
+    public String bindPatternToVariable(String backText);
 }

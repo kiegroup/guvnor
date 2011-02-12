@@ -33,19 +33,19 @@ public class ConstraintsConstrainerTest {
 
     @Test
     public void test() {
-		LinkedList<ConstraintConfiguration> list = new LinkedList<ConstraintConfiguration>();
-		ConstraintConfiguration conf = new SimpleConstraintConfigurationImpl();
+        LinkedList<ConstraintConfiguration> list = new LinkedList<ConstraintConfiguration>();
+        ConstraintConfiguration conf = new SimpleConstraintConfigurationImpl();
         conf.setFactType("Person");
         conf.setFieldName("age");
         
         list.add(conf);
-		ConstraintsContainer cc = new ConstraintsContainer(list);
-		assertTrue(cc.hasConstraints("Person"));
-		assertFalse(cc.hasConstraints("Person3"));
-		
-		assertEquals(1, cc.getConstraints("Person").size());
-		
-		conf = new SimpleConstraintConfigurationImpl();
+        ConstraintsContainer cc = new ConstraintsContainer(list);
+        assertTrue(cc.hasConstraints("Person"));
+        assertFalse(cc.hasConstraints("Person3"));
+
+        assertEquals(1, cc.getConstraints("Person").size());
+
+        conf = new SimpleConstraintConfigurationImpl();
         conf.setFactType("Person");
         conf.setFieldName("name");
         
@@ -58,24 +58,24 @@ public class ConstraintsConstrainerTest {
         conf = new SimpleConstraintConfigurationImpl();
         conf.setFactType("Pet");
         conf.setFieldName("name");
-		
+
         cc.addConstraint(conf);
         
         assertEquals(1, cc.getConstraints("Pet").size());
         
         assertEquals(1, cc.getConstraints("Pet", "name").size());
-	}
-	
-	@Test
-	public void newConfig() {
-		for (String confName : new String[] {"NotNull", "IntegerConstraint", "RangeConstraint", "NotMatches", "Matches"}) {
-			ConstraintConfiguration conf1 = ConstraintsContainer.getEmptyConfiguration(confName);
-			ConstraintConfiguration conf2 = ConstraintsContainer.getEmptyConfiguration(confName);
-			assertFalse(conf1.equals(conf2));
-			
-			assertEquals(conf1.getArgumentKeys(), conf2.getArgumentKeys());
-		}
-		
-	}
-	
+    }
+
+    @Test
+    public void newConfig() {
+        for (String confName : new String[] {"NotNull", "IntegerConstraint", "RangeConstraint", "NotMatches", "Matches"}) {
+            ConstraintConfiguration conf1 = ConstraintsContainer.getEmptyConfiguration(confName);
+            ConstraintConfiguration conf2 = ConstraintsContainer.getEmptyConfiguration(confName);
+            assertFalse(conf1.equals(conf2));
+
+            assertEquals(conf1.getArgumentKeys(), conf2.getArgumentKeys());
+        }
+
+    }
+
 }

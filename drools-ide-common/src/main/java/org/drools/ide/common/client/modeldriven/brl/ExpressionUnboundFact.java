@@ -18,22 +18,22 @@ package org.drools.ide.common.client.modeldriven.brl;
 
 
 public class ExpressionUnboundFact extends ExpressionPart {
-	private FactPattern fact;
-	
-	@SuppressWarnings("unused")
-	private ExpressionUnboundFact() {}
+    private FactPattern fact;
 
-	public ExpressionUnboundFact(FactPattern fact) {
-		super(fact.getFactType(), fact.getFactType(), fact.getFactType());
-		this.fact = fact;
-	}
+    @SuppressWarnings("unused")
+    private ExpressionUnboundFact() {}
 
-	public FactPattern getFact() {
-		return fact;
-	}
-	
-	@Override
-	public void accept(ExpressionVisitor visitor) {
-		visitor.visit(this);
-	}
+    public ExpressionUnboundFact(FactPattern fact) {
+        super(fact.getFactType(), fact.getFactType(), fact.getFactType());
+        this.fact = fact;
+    }
+
+    public FactPattern getFact() {
+        return fact;
+    }
+
+    @Override
+    public void accept(ExpressionVisitor visitor) {
+        visitor.visit(this);
+    }
 }

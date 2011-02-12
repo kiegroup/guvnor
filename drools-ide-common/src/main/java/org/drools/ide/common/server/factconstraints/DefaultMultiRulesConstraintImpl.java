@@ -31,20 +31,20 @@ import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
  */
 public abstract class DefaultMultiRulesConstraintImpl extends DefaultFieldConstraintImpl {
 
-	private static final long serialVersionUID = 501l;
-	protected static final String RULE_COUNT = "ruleCount";
-	
+    private static final long serialVersionUID = 501l;
+    protected static final String RULE_COUNT = "ruleCount";
+
     protected void resetRuleCount(Map<String, Object> context){
         context.put(RULE_COUNT, 0);
     }
 
     protected void incrementRuleCount(Map<String, Object> context){
-    	int rc = (Integer) context.get(RULE_COUNT);
+        int rc = (Integer) context.get(RULE_COUNT);
         context.put(RULE_COUNT, ++rc);
     }
 
     protected int getRuleCount(Map<String, Object> context){
-    	return (Integer) context.get(RULE_COUNT);
+        return (Integer) context.get(RULE_COUNT);
     }
     
     @Override

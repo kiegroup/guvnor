@@ -86,7 +86,7 @@ public abstract class ContentHandler {
     private String findKeyforValue(HashMap<String, String> catRules, String catToFind) {
         for ( Iterator i = catRules.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry entry = (Map.Entry) i.next();
-            //Found rule name that should be used to extend current rule as defined in the Category Rule	
+            //Found rule name that should be used to extend current rule as defined in the Category Rule
             if ( entry.getValue().equals( catToFind ) ) {
                 return (String) entry.getKey();
             }
@@ -118,7 +118,7 @@ public abstract class ContentHandler {
             //Either extend from the parent category rule or none at all
             String ruleName = asset.getName();
             if ( categoryRules.containsKey( ruleName ) ) {
-                //find Cat for your rule		
+                //find Cat for your rule
                 String parentCategory = findParentCategory( asset, categoryRules.get( ruleName ) );
                 //This rule name is in our Category Rules
                 //See if there is a Parent and it has a rule defined, if so extend that rule, to create a chain

@@ -23,7 +23,7 @@ package org.drools.guvnor.client.ruleeditor;
  */
 public interface SaveEventListener {
 
-	void onSave();
+    void onSave();
 
-	void onAfterSave();
+    void onAfterSave();
 }

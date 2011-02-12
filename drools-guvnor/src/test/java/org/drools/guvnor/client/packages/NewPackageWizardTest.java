@@ -25,13 +25,13 @@ public class NewPackageWizardTest {
 
     @Test
     public void testPackageNameValidation() {
-		assertTrue(PackageNameValidator.validatePackageName("foo.bar"));
-		assertTrue(PackageNameValidator.validatePackageName("whee.waa2"));
-		assertFalse(PackageNameValidator.validatePackageName(" hey DJ "));
-		assertFalse(PackageNameValidator.validatePackageName(""));
-		assertFalse(PackageNameValidator.validatePackageName(" "));
-		assertFalse(PackageNameValidator.validatePackageName(null));
+        assertTrue(PackageNameValidator.validatePackageName("foo.bar"));
+        assertTrue(PackageNameValidator.validatePackageName("whee.waa2"));
+        assertFalse(PackageNameValidator.validatePackageName(" hey DJ "));
+        assertFalse(PackageNameValidator.validatePackageName(""));
+        assertFalse(PackageNameValidator.validatePackageName(" "));
+        assertFalse(PackageNameValidator.validatePackageName(null));
 
-	}
+    }
 
 }

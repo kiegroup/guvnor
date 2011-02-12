@@ -28,27 +28,27 @@ public class RuleMetadata implements PortableObject {
         public static String HIDE_ATTRIBUTES_IN_EDITOR = "HideAttributesInEditor";
     
         public String attributeName;
-	public String value;
-	
-	public RuleMetadata() {
-	}
+    public String value;
 
-	public RuleMetadata(final String name, final String value) {
-		this.attributeName = name;
-		this.value = value;
-	}
+    public RuleMetadata() {
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder ret = new StringBuilder();
-		ret.append("@");
-		ret.append(this.attributeName);
-		if (this.value != null) {
-			ret.append("(");
-			ret.append(this.value);
-			ret.append(")");
-		}
-		return ret.toString();
-	}
+    public RuleMetadata(final String name, final String value) {
+        this.attributeName = name;
+        this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder ret = new StringBuilder();
+        ret.append("@");
+        ret.append(this.attributeName);
+        if (this.value != null) {
+            ret.append("(");
+            ret.append(this.value);
+            ret.append(")");
+        }
+        return ret.toString();
+    }
 
 }

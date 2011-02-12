@@ -18,25 +18,25 @@ package org.drools.ide.common.client.modeldriven.brl;
 
 
 public class ExpressionVariable extends ExpressionPart {
-	private FactPattern fact;
-	
-	@SuppressWarnings("unused")
-	private ExpressionVariable() {}
+    private FactPattern fact;
 
-	public ExpressionVariable(FactPattern fact) {
-		super(fact.boundName, fact.getFactType(), fact.getFactType());
-		if (!fact.isBound()) {
-			throw new RuntimeException("the fact is not bounded: " + fact);
-		}
-		this.fact = fact;
-	}
+    @SuppressWarnings("unused")
+    private ExpressionVariable() {}
 
-	public FactPattern getFact() {
-		return fact;
-	}
-	
-	@Override
-	public void accept(ExpressionVisitor visitor) {
-		visitor.visit(this);
-	}
+    public ExpressionVariable(FactPattern fact) {
+        super(fact.boundName, fact.getFactType(), fact.getFactType());
+        if (!fact.isBound()) {
+            throw new RuntimeException("the fact is not bounded: " + fact);
+        }
+        this.fact = fact;
+    }
+
+    public FactPattern getFact() {
+        return fact;
+    }
+
+    @Override
+    public void accept(ExpressionVisitor visitor) {
+        visitor.visit(this);
+    }
 }

@@ -61,20 +61,20 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
     @Override
     protected Widget getCompositeLabel() {
-    	ClickHandler leftPatternclick =  new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
-				Widget w= (Widget)event.getSource();
+        ClickHandler leftPatternclick =  new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                Widget w= (Widget)event.getSource();
                 showFactTypeSelector(w);
-			}
-		};
-		ClickHandler sourcePatternClick = new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
-				Widget w= (Widget)event.getSource();
-				 showSourcePatternSelector(w);
-			}
-		};
+            }
+        };
+        ClickHandler sourcePatternClick = new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                Widget w= (Widget)event.getSource();
+                 showSourcePatternSelector(w);
+            }
+        };
 
         String lbl = "<div class='x-form-field'>" + HumanReadable.getCEDisplayName("from accumulate") + "</div>";
 
@@ -92,57 +92,57 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         if (this.getFromAccumulatePattern().getSourcePattern() == null) {
             panel.setWidget(r++, 0, new ClickableLabel("<br> <font color='red'>" + constants.clickToAddPattern() + "</font>", sourcePatternClick, !this.readOnly));
-		} else {
-			IPattern rPattern = this.getFromAccumulatePattern()
-					.getSourcePattern();
+        } else {
+            IPattern rPattern = this.getFromAccumulatePattern()
+                    .getSourcePattern();
 
-			if (rPattern instanceof FactPattern) {
-				this.sourcePatternWidget = new FactPatternWidget(
-						this.getModeller(), rPattern, constants.All0with(),
-						true, this.readOnly);
-			} else if (rPattern instanceof FromAccumulateCompositeFactPattern) {
-				this.sourcePatternWidget = new FromAccumulateCompositeFactPatternWidget(
-						this.getModeller(),
-						(FromAccumulateCompositeFactPattern) rPattern,
-						this.readOnly);
-			} else if (rPattern instanceof FromCollectCompositeFactPattern) {
-				this.sourcePatternWidget = new FromCollectCompositeFactPatternWidget(
-						this.getModeller(),
-						(FromCollectCompositeFactPattern) rPattern,
-						this.readOnly);
-			} else if (rPattern instanceof FromCompositeFactPattern) {
-				this.sourcePatternWidget = new FromCompositeFactPatternWidget(
-						this.getModeller(),
-						(FromCompositeFactPattern) rPattern, this.readOnly);
-			} else {
-				throw new IllegalArgumentException("Unsuported pattern "
-						+ rPattern + " for right side of FROM ACCUMULATE");
-			}
+            if (rPattern instanceof FactPattern) {
+                this.sourcePatternWidget = new FactPatternWidget(
+                        this.getModeller(), rPattern, constants.All0with(),
+                        true, this.readOnly);
+            } else if (rPattern instanceof FromAccumulateCompositeFactPattern) {
+                this.sourcePatternWidget = new FromAccumulateCompositeFactPatternWidget(
+                        this.getModeller(),
+                        (FromAccumulateCompositeFactPattern) rPattern,
+                        this.readOnly);
+            } else if (rPattern instanceof FromCollectCompositeFactPattern) {
+                this.sourcePatternWidget = new FromCollectCompositeFactPatternWidget(
+                        this.getModeller(),
+                        (FromCollectCompositeFactPattern) rPattern,
+                        this.readOnly);
+            } else if (rPattern instanceof FromCompositeFactPattern) {
+                this.sourcePatternWidget = new FromCompositeFactPatternWidget(
+                        this.getModeller(),
+                        (FromCompositeFactPattern) rPattern, this.readOnly);
+            } else {
+                throw new IllegalArgumentException("Unsuported pattern "
+                        + rPattern + " for right side of FROM ACCUMULATE");
+            }
 
-			this.sourcePatternWidget.addOnModifiedCommand(new Command() {
-				public void execute() {
-					setModified(true);
-				}
-			});
+            this.sourcePatternWidget.addOnModifiedCommand(new Command() {
+                public void execute() {
+                    setModified(true);
+                }
+            });
 
-			panel.setWidget(
-					r++,
-					0,
-					addRemoveButton(this.sourcePatternWidget,
-							new ClickHandler() {
+            panel.setWidget(
+                    r++,
+                    0,
+                    addRemoveButton(this.sourcePatternWidget,
+                            new ClickHandler() {
 
-								public void onClick(ClickEvent event) {
-									if (Window.confirm(constants
-											.RemoveThisBlockOfData())) {
-										setModified(true);
-										getFromAccumulatePattern()
-												.setSourcePattern(null);
-										getModeller().refreshWidget();
-									}
+                                public void onClick(ClickEvent event) {
+                                    if (Window.confirm(constants
+                                            .RemoveThisBlockOfData())) {
+                                        setModified(true);
+                                        getFromAccumulatePattern()
+                                                .setSourcePattern(null);
+                                        getModeller().refreshWidget();
+                                    }
 
-								}
-							}));
-		}
+                                }
+                            }));
+        }
 
         //REVISIT: Nested TabLayoutPanel does not work, its content is truncated. 
         //TabLayoutPanel tPanel = new TabLayoutPanel(2, Unit.EM);
@@ -201,9 +201,9 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         //functionPanel.setDisabled(this.readOnly);
         tPanel.add(functionPanel,"Function");
         ChangeHandler changehandler = new ChangeHandler() {
-			
-			public void onChange(ChangeEvent event) {
-				Widget sender = (Widget)event.getSource();
+
+            public void onChange(ChangeEvent event) {
+                Widget sender = (Widget)event.getSource();
                 TextBox senderTB = (TextBox) event.getSource();
                 String code = senderTB.getText();
                 setModified(true);
@@ -232,7 +232,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
                     getFromAccumulatePattern().setFunction(code);
                 }
             }
-		};
+        };
 
         initField.addChangeHandler(changehandler);
         actionField.addChangeHandler(changehandler);
@@ -280,13 +280,13 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         popup.addAttribute(constants.chooseFactType(),
                 box);
         box.addChangeHandler(new ChangeHandler() {
-			
-			public void onChange(ChangeEvent event) {
+
+            public void onChange(ChangeEvent event) {
                 pattern.setFactPattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
                 setModified(true);
                 getModeller().refreshWidget();
-                popup.hide();			}
-		});
+                popup.hide();            }
+        });
         popup.show();
     }
 
@@ -309,41 +309,41 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         popup.addAttribute(constants.chooseFactType(),
                 box);
         box.addChangeHandler(new ChangeHandler() {
-			
-			public void onChange(ChangeEvent event) {
+
+            public void onChange(ChangeEvent event) {
                 getFromAccumulatePattern().setSourcePattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
                 setModified(true);
                 getModeller().refreshWidget();
-                popup.hide();			}
-		});
+                popup.hide();            }
+        });
 
         final Button fromBtn = new Button(constants.From());
         final Button fromAccumulateBtn = new Button(constants.FromAccumulate());
         final Button fromCollectBtn = new Button(constants.FromCollect());
-		ClickHandler btnsClickHandler = new ClickHandler() {
+        ClickHandler btnsClickHandler = new ClickHandler() {
 
-			public void onClick(ClickEvent event) {
-				Widget sender = (Widget) event.getSource();
-				if (sender == fromBtn) {
-					getFromAccumulatePattern().setSourcePattern(
-							new FromCompositeFactPattern());
-				} else if (sender == fromAccumulateBtn) {
-					getFromAccumulatePattern().setSourcePattern(
-							new FromAccumulateCompositeFactPattern());
-				} else if (sender == fromCollectBtn) {
-					getFromAccumulatePattern().setSourcePattern(
-							new FromCollectCompositeFactPattern());
-				} else {
-					throw new IllegalArgumentException("Unknown sender: "
-							+ sender);
-				}
+            public void onClick(ClickEvent event) {
+                Widget sender = (Widget) event.getSource();
+                if (sender == fromBtn) {
+                    getFromAccumulatePattern().setSourcePattern(
+                            new FromCompositeFactPattern());
+                } else if (sender == fromAccumulateBtn) {
+                    getFromAccumulatePattern().setSourcePattern(
+                            new FromAccumulateCompositeFactPattern());
+                } else if (sender == fromCollectBtn) {
+                    getFromAccumulatePattern().setSourcePattern(
+                            new FromCollectCompositeFactPattern());
+                } else {
+                    throw new IllegalArgumentException("Unknown sender: "
+                            + sender);
+                }
 
-				setModified(true);
-				getModeller().refreshWidget();
-				popup.hide();
+                setModified(true);
+                getModeller().refreshWidget();
+                popup.hide();
 
-			}
-		};
+            }
+        };
 
         fromBtn.addClickHandler(btnsClickHandler);
         fromAccumulateBtn.addClickHandler(btnsClickHandler);

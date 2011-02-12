@@ -21,6 +21,6 @@ import com.google.gwt.event.shared.HasHandlers;
 
 public interface HasExpressionChangeHandlers extends HasHandlers {
 
-	HandlerRegistration addExpressionChangeHandler(ExpressionChangeHandler handler);
+    HandlerRegistration addExpressionChangeHandler(ExpressionChangeHandler handler);
 
 }

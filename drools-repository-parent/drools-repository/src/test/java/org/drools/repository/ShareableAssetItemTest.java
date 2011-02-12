@@ -177,29 +177,29 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
     @Test
     public void testSimpleGetPackageItemHistoricalForShareableAsset() throws Exception {
         
-    	Node node = getRepo().getSession().getNode("/drools:repository/drools:package_area/globalArea/");
-    	Node assetNode = node.getNode("assets").addNode("testKurt","drools:assetNodeType");
-    	//Adding some required properties
-    	assetNode.setProperty("drools:packageName", "one");
-    	assetNode.setProperty("drools:title", "title");
-    	assetNode.setProperty("drools:format", "format");
-    	assetNode.setProperty("drools:description", "description");
-		Calendar lastModified = Calendar.getInstance();
-		assetNode.setProperty("drools:lastModified", lastModified);
-    	getRepo().getSession().save();
-    	assetNode.checkin();
-    	findAndPrintNodeName(assetNode);
-    	
-    	//Creating a shared Node
-		assetNode.checkout();
-		assetNode.addMixin("mix:shareable");
-		getRepo().getSession().save();
-		assetNode.checkin();
-    	Workspace workspace = getRepo().getSession().getWorkspace();
-    	String srcPath   = "/drools:repository/drools:package_area/globalArea/assets/testKurt";
-    	String path    = "/drools:repository/drools:package_area/defaultPackage/assets/testKurt";
-    	workspace.clone(workspace.getName(), srcPath, path, false);	
-    	
+        Node node = getRepo().getSession().getNode("/drools:repository/drools:package_area/globalArea/");
+        Node assetNode = node.getNode("assets").addNode("testKurt","drools:assetNodeType");
+        //Adding some required properties
+        assetNode.setProperty("drools:packageName", "one");
+        assetNode.setProperty("drools:title", "title");
+        assetNode.setProperty("drools:format", "format");
+        assetNode.setProperty("drools:description", "description");
+        Calendar lastModified = Calendar.getInstance();
+        assetNode.setProperty("drools:lastModified", lastModified);
+        getRepo().getSession().save();
+        assetNode.checkin();
+        findAndPrintNodeName(assetNode);
+
+        //Creating a shared Node
+        assetNode.checkout();
+        assetNode.addMixin("mix:shareable");
+        getRepo().getSession().save();
+        assetNode.checkin();
+        Workspace workspace = getRepo().getSession().getWorkspace();
+        String srcPath   = "/drools:repository/drools:package_area/globalArea/assets/testKurt";
+        String path    = "/drools:repository/drools:package_area/defaultPackage/assets/testKurt";
+        workspace.clone(workspace.getName(), srcPath, path, false);
+
         findAndPrintNodeName(assetNode);
         
         // Test package snapshot
@@ -223,7 +223,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
     }
     
     private void findAndPrintNodeName(Node node) throws ValueFormatException, PathNotFoundException, RepositoryException {
-    	String UUID = node.getProperty("jcr:baseVersion").getString();
+        String UUID = node.getProperty("jcr:baseVersion").getString();
         Node nodeFound = getRepo().getSession().getNodeByUUID(UUID);
         System.out.println("Node:" + nodeFound.getName());
     }
@@ -443,12 +443,12 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
         }
 
         // REVISIT:
-        /*		try {
-        			getRepo().loadCategory("testRemoveTagForShareableAssetTag3").remove();
-        			fail("should not reach here. Should have been removed");
-        		} catch (RulesRepositoryException e) {
-        			assertNotNull(e.getMessage());
-        		}*/
+        /*        try {
+                    getRepo().loadCategory("testRemoveTagForShareableAssetTag3").remove();
+                    fail("should not reach here. Should have been removed");
+                } catch (RulesRepositoryException e) {
+                    assertNotNull(e.getMessage());
+                }*/
     }
 
     @Test

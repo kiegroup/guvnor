@@ -22,14 +22,14 @@ import org.drools.ide.common.server.util.BRLPersistence;
 
 public class TemplateModelHandler extends BRLContentHandler {
 
-	@Override
-	protected BRLPersistence getBrlDrlPersistence() {
-		return BRDRTPersistence.getInstance();
-	}
-	
-	@Override
-	protected BRLPersistence getBrlXmlPersistence() {
-		return BRDRTXMLPersistence.getInstance();
-	}
-	
+    @Override
+    protected BRLPersistence getBrlDrlPersistence() {
+        return BRDRTPersistence.getInstance();
+    }
+
+    @Override
+    protected BRLPersistence getBrlXmlPersistence() {
+        return BRDRTXMLPersistence.getInstance();
+    }
+
 }

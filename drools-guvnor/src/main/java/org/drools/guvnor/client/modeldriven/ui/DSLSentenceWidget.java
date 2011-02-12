@@ -307,23 +307,23 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             panel.add( new HTML( "&nbsp;" ) );
             panel.add( box );
             panel.add( new HTML( "&nbsp;" ) );
-			box.addChangeHandler(new ChangeHandler() {
+            box.addChangeHandler(new ChangeHandler() {
 
-				public void onChange(ChangeEvent event) {
-					TextBox otherBox = (TextBox) event.getSource();
+                public void onChange(ChangeEvent event) {
+                    TextBox otherBox = (TextBox) event.getSource();
 
-					if (!regex.equals("") && !otherBox.getText().matches(regex)) {
-						Window.alert(Format.format(
-								constants.TheValue0IsNotValidForThisField(),
-								otherBox.getText()));
-						box.setText(oldValue);
-					} else {
-						oldValue = otherBox.getText();
-						updateSentence();
-						makeDirty();
-					}
-				}
-			});
+                    if (!regex.equals("") && !otherBox.getText().matches(regex)) {
+                        Window.alert(Format.format(
+                                constants.TheValue0IsNotValidForThisField(),
+                                otherBox.getText()));
+                        box.setText(oldValue);
+                    } else {
+                        oldValue = otherBox.getText();
+                        updateSentence();
+                        makeDirty();
+                    }
+                }
+            });
 
             initWidget( panel );
         }
@@ -403,12 +403,12 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                 if ( selected >= 0 ) list.setSelectedIndex( selected );
             }
             list.addChangeHandler(new ChangeHandler() {
-				
-				public void onChange(ChangeEvent event) {
-					 updateSentence();
-	                    makeDirty();
-				}
-			});
+
+                public void onChange(ChangeEvent event) {
+                     updateSentence();
+                        makeDirty();
+                }
+            });
  
             initWidget( list );
             resultWidget = list;
@@ -464,12 +464,12 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             }
 
             resultWidget.addClickHandler(new ClickHandler() {
-				
-				public void onClick(ClickEvent event) {
-					updateSentence();
-					
-				}
-			});
+
+                public void onClick(ClickEvent event) {
+                    updateSentence();
+
+                }
+            });
 
 
             resultWidget.setVisible( true );

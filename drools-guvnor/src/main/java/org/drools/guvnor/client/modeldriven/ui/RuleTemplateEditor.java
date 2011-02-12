@@ -144,13 +144,13 @@ public class RuleTemplateEditor extends DirtyableComposite
                                     cm );
         grid.setStripeRows( true );
 
-        //		GroupingView gv = new GroupingView();
+        //        GroupingView gv = new GroupingView();
         GridView gv = new GridView();
 
         // to stretch it out
         gv.setForceFit( true );
-        //		gv.setGroupTextTpl("{text} ({[values.rs.length]} {[values.rs.length > 1 ? \"" // NON-NLS
-        //				+ constants.Items() + "\" : \"" + constants.Item() + "\"]})");
+        //        gv.setGroupTextTpl("{text} ({[values.rs.length]} {[values.rs.length > 1 ? \"" // NON-NLS
+        //                + constants.Items() + "\" : \"" + constants.Item() + "\"]})");
 
         grid.setView( gv );
 
@@ -197,7 +197,7 @@ public class RuleTemplateEditor extends DirtyableComposite
                 }
             }
         } );
-        //		grid.setSelectionModel(new RowSelectionModel(false));
+        //        grid.setSelectionModel(new RowSelectionModel(false));
         ToolbarMenuButton tbb = new ToolbarMenuButton( constants.Modify(),
                                                        menu );
         tb.addButton( tbb );

@@ -22,12 +22,12 @@ import java.util.regex.Pattern;
 import org.drools.ide.common.assistant.info.RuleRefactorInfo;
 
 public abstract class AbstractParserEngine {
-	
-	protected RuleRefactorInfo ruleRefactorInfo;
-	protected Pattern pattern;
-	protected Matcher matcher;
-	protected String rule;
-	
-	public abstract RuleRefactorInfo parse();
+
+    protected RuleRefactorInfo ruleRefactorInfo;
+    protected Pattern pattern;
+    protected Matcher matcher;
+    protected String rule;
+
+    public abstract RuleRefactorInfo parse();
 
 }

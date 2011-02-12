@@ -44,10 +44,10 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class TableDisplayHandler {
 
-	/** how many rows we show on a grid page */
+    /** how many rows we show on a grid page */
 
     private static final int ROWS_PER_PAGE = 40;
-	private RowLoader          ASSET_LIST;
+    private RowLoader          ASSET_LIST;
 
 
     /**
@@ -71,54 +71,54 @@ public class TableDisplayHandler {
     }
 
     private TableDataResult loadRuleListTable(
-    		List<AssetItem> assetList, long curPos, boolean hasNext)
-    	throws SerializationException {
-    	List<TableDataRow> data = loadRows(assetList.iterator(), -1);
-    	TableDataResult result = new TableDataResult();
-    	result.data = (TableDataRow[]) data.toArray(new TableDataRow[data.size()]);
-    	result.currentPosition = curPos;
-    	result.hasNext = hasNext;
-    	return result;
+            List<AssetItem> assetList, long curPos, boolean hasNext)
+        throws SerializationException {
+        List<TableDataRow> data = loadRows(assetList.iterator(), -1);
+        TableDataResult result = new TableDataResult();
+        result.data = (TableDataRow[]) data.toArray(new TableDataRow[data.size()]);
+        result.currentPosition = curPos;
+        result.hasNext = hasNext;
+        return result;
     }
 
     public TableDataResult loadRuleListTable(
-    		List<AssetItem> assetList, int skip, int numRows) throws SerializationException {
-    	int size = assetList.size();
-    	boolean hasNext = false;
-    	int startPos = 0;
-    	int endPos = 0;
+            List<AssetItem> assetList, int skip, int numRows) throws SerializationException {
+        int size = assetList.size();
+        boolean hasNext = false;
+        int startPos = 0;
+        int endPos = 0;
 
-    	if (numRows != -1) {
-        	if (skip > size) {
-        		List<AssetItem> tempList = new ArrayList<AssetItem>();
-            	return loadRuleListTable(tempList, 0, false);
-        	}
+        if (numRows != -1) {
+            if (skip > size) {
+                List<AssetItem> tempList = new ArrayList<AssetItem>();
+                return loadRuleListTable(tempList, 0, false);
+            }
 
-        	if (skip > 0) {
-        		startPos = skip;
-        	} else {
-        		skip = 0;
-        	}
+            if (skip > 0) {
+                startPos = skip;
+            } else {
+                skip = 0;
+            }
 
-        	if ((skip + numRows) > size) {
-        		endPos = size;
-        	} else {
-        		endPos = skip + numRows;
-        		hasNext = true;
-        	}
+            if ((skip + numRows) > size) {
+                endPos = size;
+            } else {
+                endPos = skip + numRows;
+                hasNext = true;
+            }
 
-        	List<AssetItem> tempList2 = assetList.subList(startPos, endPos);
+            List<AssetItem> tempList2 = assetList.subList(startPos, endPos);
 
-        	return loadRuleListTable(tempList2, endPos, hasNext);
-    	}
+            return loadRuleListTable(tempList2, endPos, hasNext);
+        }
 
-    	return loadRuleListTable(assetList, 0, false);
+        return loadRuleListTable(assetList, 0, false);
     }
 
     public TableDataResult loadRuleListTable(AssetItemIterator it, int skip, int numRows) {
-    	if (numRows != -1) {
-    		it.skip(skip);
-    	}
+        if (numRows != -1) {
+            it.skip(skip);
+        }
         List<TableDataRow> data = loadRows(it, numRows);
         TableDataResult result = new TableDataResult();
         result.data = (TableDataRow[]) data.toArray( new TableDataRow[data.size()] );
@@ -128,8 +128,8 @@ public class TableDisplayHandler {
         return result;
     }
 
-	private List<TableDataRow> loadRows(Iterator<AssetItem> it, int numRows) {
-		List<TableDataRow> data = new ArrayList<TableDataRow>();
+    private List<TableDataRow> loadRows(Iterator<AssetItem> it, int numRows) {
+        List<TableDataRow> data = new ArrayList<TableDataRow>();
 
         for ( Iterator<AssetItem> iter = it; iter.hasNext(); ) {
             AssetItem r = (AssetItem) iter.next();
@@ -145,8 +145,8 @@ public class TableDisplayHandler {
                 }
             }
         }
-		return data;
-	}
+        return data;
+    }
 
     public String formatDate(Calendar cal) {
         DateFormat localFormat = DateFormat.getDateInstance();

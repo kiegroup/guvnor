@@ -60,7 +60,7 @@ public class NotNullConstraintTest {
 
     @Test
     public void testValidConstraint(){
-    	
+
         ValidationResult result = cons.validate(new Object(), conf);
         assertTrue(result.isSuccess());
 

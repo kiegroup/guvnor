@@ -17,14 +17,14 @@
 package org.drools.ide.common.assistant.option;
 
 public class ReplaceAssistantOption extends AssistantOption {
-	
-	public ReplaceAssistantOption(String display, String content, Integer offset, Integer length, Integer position) {
-		this.display = display;
-		this.content = content;
-		this.offset = offset;
-		this.length = length;
-		this.position = position;
-		this.type = ACTION.REPLACE;
-	}
-	
+
+    public ReplaceAssistantOption(String display, String content, Integer offset, Integer length, Integer position) {
+        this.display = display;
+        this.content = content;
+        this.offset = offset;
+        this.length = length;
+        this.position = position;
+        this.type = ACTION.REPLACE;
+    }
+
 }

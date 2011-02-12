@@ -17,8 +17,8 @@
 package org.drools;
 
 public enum CheeseType {
-	BRICK,
-	CHEDDAR,
-	COLBY,
-	MOZZARELLA
+    BRICK,
+    CHEDDAR,
+    COLBY,
+    MOZZARELLA
 }

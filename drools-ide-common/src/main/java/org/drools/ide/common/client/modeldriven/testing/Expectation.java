@@ -25,11 +25,11 @@ package org.drools.ide.common.client.modeldriven.testing;
  */
 public interface Expectation extends Fixture {
 
-	/**
-	 * Return false if the assertion
-	 * @return
-	 */
-	boolean wasSuccessful();
+    /**
+     * Return false if the assertion
+     * @return
+     */
+    boolean wasSuccessful();
 
 
 

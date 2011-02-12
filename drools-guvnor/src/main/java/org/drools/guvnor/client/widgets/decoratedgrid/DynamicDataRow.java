@@ -24,8 +24,8 @@ import java.util.ArrayList;
  * 
  */
 public class DynamicDataRow extends
-		ArrayList<CellValue<? extends Comparable<?>>> {
+        ArrayList<CellValue<? extends Comparable<?>>> {
 
-	private static final long serialVersionUID = -7816621427456956740L;
+    private static final long serialVersionUID = -7816621427456956740L;
 
 }

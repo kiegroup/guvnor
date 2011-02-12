@@ -45,22 +45,22 @@ public class RoleBasedPermissionManager implements Serializable {
     
 //    @Unwrap
     public List<RoleBasedPermission> getRoleBasedPermission() {
-		return permissions;
-	}  
+        return permissions;
+    }
     
     @Create
-	public void create() {
-		String userName = "";
-		if (Contexts.isApplicationContextActive()) {
-			userName = Identity.instance().getCredentials().getUsername();
-		}
+    public void create() {
+        String userName = "";
+        if (Contexts.isApplicationContextActive()) {
+            userName = Identity.instance().getCredentials().getUsername();
+        }
 
-		RoleBasedPermissionStore pbps = (RoleBasedPermissionStore) Component
-				.getInstance("org.drools.guvnor.server.security.RoleBasedPermissionStore");
-		permissions = pbps.getRoleBasedPermissionsByUserName(Identity
-				.instance().getCredentials().getUsername());
+        RoleBasedPermissionStore pbps = (RoleBasedPermissionStore) Component
+                .getInstance("org.drools.guvnor.server.security.RoleBasedPermissionStore");
+        permissions = pbps.getRoleBasedPermissionsByUserName(Identity
+                .instance().getCredentials().getUsername());
 
-	}
+    }
     
     @Destroy
     public void close() {

@@ -72,11 +72,11 @@ public class ClassicDRLImporterTest {
 
     @Test
     public void testWithFunction() throws Exception {
-        //    	Pattern p = Pattern.compile("function\\s+.*\\s+(.*)\\(.*\\).*");
-        //    	Matcher m = p.matcher("function void fooBar() {");
-        //    	assertTrue(m.matches());
-        //    	System.err.println(m.group());
-        //    	assertEquals("fooBar", m.group(1));
+        //        Pattern p = Pattern.compile("function\\s+.*\\s+(.*)\\(.*\\).*");
+        //        Matcher m = p.matcher("function void fooBar() {");
+        //        assertTrue(m.matches());
+        //        System.err.println(m.group());
+        //        assertEquals("fooBar", m.group(1));
 
         ClassicDRLImporter imp = new ClassicDRLImporter( getDrl( "sample_legacy_functions.drl" ) );
         assertFalse( imp.isDSLEnabled() );

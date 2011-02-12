@@ -111,9 +111,9 @@ public class Cheesery
             this.age = age;
         }
 
-		public String getAge() {
-			return this.age;
-		}
+        public String getAge() {
+            return this.age;
+        }
         public boolean equals(Object obj) {
             if (obj instanceof Maturity) {
                 return age == ((Maturity)obj).age || age != null && age.equals(((Maturity)obj).age);
@@ -170,15 +170,15 @@ public class Cheesery
 
     
     public void setTotalAmountToZero(){
-    	this.totalAmount=0;
+        this.totalAmount=0;
     }
     public void addToTotalAmount(int toAdd){
-    	this.totalAmount = this.totalAmount+toAdd;
+        this.totalAmount = this.totalAmount+toAdd;
     }
     public void setGoodMaturity(Maturity m){
-    	this.maturity = m;
+        this.maturity = m;
     }
     public void setAgeToMaturity(Maturity m,String age ){
-    	m.age = age;
-	}
+        m.age = age;
+    }
 }

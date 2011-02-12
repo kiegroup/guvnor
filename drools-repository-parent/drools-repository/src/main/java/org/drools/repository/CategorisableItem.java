@@ -67,7 +67,7 @@ public abstract class CategorisableItem extends VersionableItem {
 
             //now set the tag property of the rule
             try {
-            	Property tagReferenceProperty = this.node.getProperty( CATEGORY_PROPERTY_NAME );
+                Property tagReferenceProperty = this.node.getProperty( CATEGORY_PROPERTY_NAME );
                 Value[] oldTagValues = tagReferenceProperty.getValues();
 
                 for ( int j = 0; j < oldTagValues.length; j++ ) {
@@ -85,7 +85,7 @@ public abstract class CategorisableItem extends VersionableItem {
                 updateCategories( newTagValues );
             } catch ( PathNotFoundException e ) {
                 //the property doesn't exist yet
-            	Value[] newTagValues = new Value[1];
+                Value[] newTagValues = new Value[1];
                 newTagValues[0] = this.node.getSession().getValueFactory().createValue( tagItem.getNode() );
                 updateCategories( newTagValues );
             } 
@@ -135,28 +135,28 @@ public abstract class CategorisableItem extends VersionableItem {
      * @throws RulesRepositoryException
      */
     public List<CategoryItem> getCategories() throws RulesRepositoryException {
-    	final List<CategoryItem> cats = new ArrayList<CategoryItem>();
+        final List<CategoryItem> cats = new ArrayList<CategoryItem>();
         doList(new Accum() {
-			public void add(CategoryItem c) {
-				cats.add(c);
-			}
+            public void add(CategoryItem c) {
+                cats.add(c);
+            }
         });
         return cats;
     }
 
-	private void doList(Accum ac) {
-		try {
+    private void doList(Accum ac) {
+        try {
             Node ruleNode = getVersionContentNode();
             try {
                 Property tagReferenceProperty = ruleNode.getProperty( CATEGORY_PROPERTY_NAME );
                 if (tagReferenceProperty.isMultiple()) {
-	                Value[] tagValues = tagReferenceProperty.getValues();
-	                for ( int i = 0; i < tagValues.length; i++ ) {
-	                	addTag(ac, tagValues[i].getString());
-	                }
+                    Value[] tagValues = tagReferenceProperty.getValues();
+                    for ( int i = 0; i < tagValues.length; i++ ) {
+                        addTag(ac, tagValues[i].getString());
+                    }
                 } else {
-                	Value tagValue = tagReferenceProperty.getValue();
-                	addTag(ac, tagValue.getString());
+                    Value tagValue = tagReferenceProperty.getValue();
+                    addTag(ac, tagValue.getString());
                 }
             } catch ( PathNotFoundException e ) {
                 //the property doesn't even exist yet, so just return nothing
@@ -165,10 +165,10 @@ public abstract class CategorisableItem extends VersionableItem {
             log.error( "Error loading cateories", e );
             throw new RulesRepositoryException( e );
         }
-	}
-	
-	private void addTag(Accum ac, String tag) throws RepositoryException {
-		try {
+    }
+
+    private void addTag(Accum ac, String tag) throws RepositoryException {
+        try {
             Node tagNode = this.node.getSession().getNodeByIdentifier( tag );
             CategoryItem tagItem = new CategoryItem( this.rulesRepository,
                                                      tagNode );
@@ -178,30 +178,30 @@ public abstract class CategorisableItem extends VersionableItem {
             //ignore
             log.debug( "Was unable to load a category by UUID - must have been removed." );
         }
-	}
+    }
 
     /**
      * This will show a summary list of categories.
      */
     public String getCategorySummary() {
-    	final StringBuilder sum = new StringBuilder();
-    	doList(new Accum() {
-    		int count = 0;
-			public void add(CategoryItem c) {
-				count++;
-				if (count == 4) {
-					sum.append("...");
-				} else if (count < 4){
-					sum.append(c.getName());
-					sum.append(' ');
-				}
-			}
-    	});
-    	return sum.toString();
+        final StringBuilder sum = new StringBuilder();
+        doList(new Accum() {
+            int count = 0;
+            public void add(CategoryItem c) {
+                count++;
+                if (count == 4) {
+                    sum.append("...");
+                } else if (count < 4){
+                    sum.append(c.getName());
+                    sum.append(' ');
+                }
+            }
+        });
+        return sum.toString();
     }
 
     static interface Accum {
-    	void add(CategoryItem c);
+        void add(CategoryItem c);
     }
 
     /**
@@ -211,7 +211,7 @@ public abstract class CategorisableItem extends VersionableItem {
      * @throws RulesRepositoryException
      */
     public void removeCategory(String tag) throws RulesRepositoryException {
-    	removeCategory(this.node, tag);
+        removeCategory(this.node, tag);
     }
     
     /**

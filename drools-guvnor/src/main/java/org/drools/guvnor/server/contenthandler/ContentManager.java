@@ -33,36 +33,36 @@ import org.slf4j.LoggerFactory;
  */
 public class ContentManager {
 
-	private static final Logger log = LoggerFactory.getLogger( ContentManager.class );
-	public static final String CONTENT_CONFIG_PROPERTIES = "/contenthandler.properties";
-	private static ContentManager INSTANCE;
+    private static final Logger log = LoggerFactory.getLogger( ContentManager.class );
+    public static final String CONTENT_CONFIG_PROPERTIES = "/contenthandler.properties";
+    private static ContentManager INSTANCE;
 
     /**
      * This is a map of the contentHandlers to use.
      */
-	private final Map<String, ContentHandler> contentHandlers = new HashMap<String, ContentHandler>();
+    private final Map<String, ContentHandler> contentHandlers = new HashMap<String, ContentHandler>();
 
 
 
-	ContentManager(String configPath) {
-		log.debug("Loading content properties");
-		Properties props = new Properties();
+    ContentManager(String configPath) {
+        log.debug("Loading content properties");
+        Properties props = new Properties();
         InputStream in = null;
         try {
             in = getClass().getResourceAsStream(configPath);
             props.load(in);
-			for (Iterator iter = props.keySet().iterator(); iter.hasNext();) {
-				String contentHandler = (String) iter.next();
-				String val = props.getProperty(contentHandler);
+            for (Iterator iter = props.keySet().iterator(); iter.hasNext();) {
+                String contentHandler = (String) iter.next();
+                String val = props.getProperty(contentHandler);
 
-				contentHandlers.put(contentHandler, loadContentHandlerImplementation( val ));
-			}
-		} catch (IOException e) {
-			log.error("UNABLE to load content handlers. Ahem, nothing will actually work. Ignore subsequent errors until this is resolved.", e);
-		} finally {
+                contentHandlers.put(contentHandler, loadContentHandlerImplementation( val ));
+            }
+        } catch (IOException e) {
+            log.error("UNABLE to load content handlers. Ahem, nothing will actually work. Ignore subsequent errors until this is resolved.", e);
+        } finally {
             IOUtils.closeQuietly(in);
         }
-	}
+    }
 
     /**
      * Return the content handlers.
@@ -75,7 +75,7 @@ public class ContentManager {
 
     private ContentHandler loadContentHandlerImplementation(String val) throws IOException {
 
-		try {
+        try {
             return (ContentHandler) Thread.currentThread().getContextClassLoader().loadClass( val ).newInstance();
 
         } catch ( InstantiationException e ) {
@@ -89,20 +89,20 @@ public class ContentManager {
             return null;
         }
 
-	}
+    }
 
 
-	public static ContentManager getInstance() {
-		if (INSTANCE == null) {
-			//have to do this annoying thing, as in some cases, letting the classloader
-			//load it up means that it will fail as the classes aren't yet available.
-			//so have to use this nasty anti-pattern here. Sorry.
-			synchronized (ContentManager.class) {
-				ContentManager.INSTANCE = new ContentManager(CONTENT_CONFIG_PROPERTIES);
-			}
-		}
-		return INSTANCE;
-	}
+    public static ContentManager getInstance() {
+        if (INSTANCE == null) {
+            //have to do this annoying thing, as in some cases, letting the classloader
+            //load it up means that it will fail as the classes aren't yet available.
+            //so have to use this nasty anti-pattern here. Sorry.
+            synchronized (ContentManager.class) {
+                ContentManager.INSTANCE = new ContentManager(CONTENT_CONFIG_PROPERTIES);
+            }
+        }
+        return INSTANCE;
+    }
 
 
 

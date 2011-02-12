@@ -43,89 +43,89 @@ import org.drools.guvnor.server.util.LoggingHelper;
 public class RepositoryBackupServlet extends RepositoryServlet {
 
     private static final LoggingHelper log                               = LoggingHelper.getLogger(RepositoryBackupServlet.class);
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-	// final FileManagerUtils uploadHelper = new FileManagerUtils();
+    // final FileManagerUtils uploadHelper = new FileManagerUtils();
 
-	/**
-	 * This accepts a repository, and will apply it.
-	 */
-	protected void doPost(final HttpServletRequest request,
-			final HttpServletResponse response) throws ServletException, IOException {
+    /**
+     * This accepts a repository, and will apply it.
+     */
+    protected void doPost(final HttpServletRequest request,
+            final HttpServletResponse response) throws ServletException, IOException {
 
-		doAuthorizedAction(request, response, new A() {
-			public void a() throws Exception {
+        doAuthorizedAction(request, response, new A() {
+            public void a() throws Exception {
 
-				String repoConfig = request.getParameter("repoConfig");
-				
-				if(repoConfig != null) {
-					processExportRepoConfig(response, repoConfig);
-				} else {	
-					response.setContentType("text/html");
-					FormData uploadItem = FileManagerUtils.getFormData(request);
+                String repoConfig = request.getParameter("repoConfig");
 
-					String packageImport = request.getParameter("packageImport");
+                if(repoConfig != null) {
+                    processExportRepoConfig(response, repoConfig);
+                } else {
+                    response.setContentType("text/html");
+                    FormData uploadItem = FileManagerUtils.getFormData(request);
 
-					if ("true".equals(packageImport)) {
-						boolean importAsNew = "true".equals(request
-								.getParameter("importAsNew"));
+                    String packageImport = request.getParameter("packageImport");
 
-						response.getWriter().write(
-								processImportPackage(uploadItem.getFile().getInputStream(),
-										importAsNew));
-					} else {
-						response.getWriter().write(
-								processImportRepository(uploadItem.getFile()
-										.getInputStream()));
-					}
-				}
-			}
+                    if ("true".equals(packageImport)) {
+                        boolean importAsNew = "true".equals(request
+                                .getParameter("importAsNew"));
+
+                        response.getWriter().write(
+                                processImportPackage(uploadItem.getFile().getInputStream(),
+                                        importAsNew));
+                    } else {
+                        response.getWriter().write(
+                                processImportRepository(uploadItem.getFile()
+                                        .getInputStream()));
+                    }
+                }
+            }
         });
-	}
+    }
 
-	/**
-	 * Explore the repo, provide a download
-	 */
-	protected void doGet(final HttpServletRequest req, final HttpServletResponse res)
-			throws ServletException, IOException {
+    /**
+     * Explore the repo, provide a download
+     */
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse res)
+            throws ServletException, IOException {
 
         doAuthorizedAction(req, res, new A() {
-			public void a() throws Exception {
+            public void a() throws Exception {
 
-		try {
-			String packageName = req.getParameter("packageName");
+        try {
+            String packageName = req.getParameter("packageName");
 
-			if (packageName == null) {
-				processExportRepositoryDownload(res);
-			} else {
-				processExportPackageFromRepositoryDownload(res, packageName);
-			}
+            if (packageName == null) {
+                processExportRepositoryDownload(res);
+            } else {
+                processExportPackageFromRepositoryDownload(res, packageName);
+            }
 
-		} catch (Exception e) {
-			e.printStackTrace(new PrintWriter(res.getOutputStream()));
-		}
-			}
-	        });
-	}
-	
-	private void processExportRepoConfig(HttpServletResponse res, String repoConfig) 
-		    throws IOException {
-		log.debug("Exporting Repository Config...");
-		res.setContentType("application/x-download");
-		res.setHeader("Content-Disposition",
-				"attachment; filename=repository.xml;");
-		log.debug("Starting to process repository configuration");
-		res.getOutputStream().write(repoConfig.getBytes());
-		res.getOutputStream().flush();
+        } catch (Exception e) {
+            e.printStackTrace(new PrintWriter(res.getOutputStream()));
+        }
+            }
+            });
+    }
+
+    private void processExportRepoConfig(HttpServletResponse res, String repoConfig)
+            throws IOException {
+        log.debug("Exporting Repository Config...");
+        res.setContentType("application/x-download");
+        res.setHeader("Content-Disposition",
+                "attachment; filename=repository.xml;");
+        log.debug("Starting to process repository configuration");
+        res.getOutputStream().write(repoConfig.getBytes());
+        res.getOutputStream().flush();
         log.debug("Done exporting repository config!");
-	}
+    }
 
-	private void processExportRepositoryDownload(HttpServletResponse res)
-			throws PathNotFoundException, IOException, RepositoryException {
+    private void processExportRepositoryDownload(HttpServletResponse res)
+            throws PathNotFoundException, IOException, RepositoryException {
         log.debug("Exporting...");
-		res.setContentType("application/zip");
-		res.setHeader("Content-Disposition",
-				"attachment; filename=repository_export.zip;");
+        res.setContentType("application/zip");
+        res.setHeader("Content-Disposition",
+                "attachment; filename=repository_export.zip;");
 
         log.debug("Starting to process export");
         ZipOutputStream zout = new ZipOutputStream(res.getOutputStream());
@@ -133,33 +133,33 @@ public class RepositoryBackupServlet extends RepositoryServlet {
         getFileManager().exportRulesRepository(zout);
         zout.closeEntry();
         zout.finish();
-		res.getOutputStream().flush();
+        res.getOutputStream().flush();
         log.debug("Done exporting!");
-	}
+    }
 
-	private void processExportPackageFromRepositoryDownload(
-			HttpServletResponse res, String packageName)
-			throws PathNotFoundException, IOException, RepositoryException {
-		res.setContentType("application/zip");
-		res.setHeader("Content-Disposition", "inline; filename=" + packageName
-				+ ".zip;");
+    private void processExportPackageFromRepositoryDownload(
+            HttpServletResponse res, String packageName)
+            throws PathNotFoundException, IOException, RepositoryException {
+        res.setContentType("application/zip");
+        res.setHeader("Content-Disposition", "inline; filename=" + packageName
+                + ".zip;");
 
-		res.getOutputStream().write(
-				getFileManager().exportPackageFromRepository(packageName));
-		res.getOutputStream().flush();
-	}
+        res.getOutputStream().write(
+                getFileManager().exportPackageFromRepository(packageName));
+        res.getOutputStream().flush();
+    }
 
-	private String processImportRepository(InputStream file) throws IOException {
-		getFileManager().importRulesRepository(file);
-		return "OK";
-	}
+    private String processImportRepository(InputStream file) throws IOException {
+        getFileManager().importRulesRepository(file);
+        return "OK";
+    }
 
-	private String processImportPackage(InputStream file, boolean importAsNew)
-			throws IOException {
-		byte[] byteArray = new byte[file.available()];
-		file.read(byteArray);
-		getFileManager().importPackageToRepository(byteArray, importAsNew);
-		return "OK";
-	}
+    private String processImportPackage(InputStream file, boolean importAsNew)
+            throws IOException {
+        byte[] byteArray = new byte[file.available()];
+        file.read(byteArray);
+        getFileManager().importPackageToRepository(byteArray, importAsNew);
+        return "OK";
+    }
 
 }

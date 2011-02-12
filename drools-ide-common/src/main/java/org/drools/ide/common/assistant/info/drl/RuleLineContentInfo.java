@@ -18,18 +18,18 @@ package org.drools.ide.common.assistant.info.drl;
 
 public class RuleLineContentInfo extends RuleBasicContentInfo {
 
-	private RuleDRLContentInfo rule;
-	
-	public RuleLineContentInfo(Integer offset, String content, DRLContentTypeEnum type) {
-		super(offset, content, type);
-	}
+    private RuleDRLContentInfo rule;
 
-	public void setRule(RuleDRLContentInfo rule) {
-		this.rule = rule;
-	}
+    public RuleLineContentInfo(Integer offset, String content, DRLContentTypeEnum type) {
+        super(offset, content, type);
+    }
 
-	public RuleDRLContentInfo getRule() {
-		return rule;
-	}
+    public void setRule(RuleDRLContentInfo rule) {
+        this.rule = rule;
+    }
+
+    public RuleDRLContentInfo getRule() {
+        return rule;
+    }
 
 }

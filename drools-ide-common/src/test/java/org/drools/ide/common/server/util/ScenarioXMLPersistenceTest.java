@@ -37,46 +37,46 @@ public class ScenarioXMLPersistenceTest {
 
     @Test
     public void testToXML() {
-		ScenarioXMLPersistence p = ScenarioXMLPersistence.getInstance();
+        ScenarioXMLPersistence p = ScenarioXMLPersistence.getInstance();
 
-		Scenario sc = new Scenario();
+        Scenario sc = new Scenario();
 
-		String s = p.marshal(sc);
-		assertNotNull(s);
+        String s = p.marshal(sc);
+        assertNotNull(s);
 
-		sc = getDemo();
+        sc = getDemo();
 
-		s = p.marshal(sc);
+        s = p.marshal(sc);
 
-	    assertTrue(s.indexOf("<ruleName>Life unverse and everything</ruleName>") > 0);
+        assertTrue(s.indexOf("<ruleName>Life unverse and everything</ruleName>") > 0);
 
-	    Scenario sc_ = p.unmarshal(s);
-	    assertEquals(sc.getGlobals().size(), sc_.getGlobals().size());
-	    assertEquals(sc.getFixtures().size(), sc_.getFixtures().size());
-	    assertTrue(s.indexOf("org.drools") == -1); //check we have aliased all
+        Scenario sc_ = p.unmarshal(s);
+        assertEquals(sc.getGlobals().size(), sc_.getGlobals().size());
+        assertEquals(sc.getFixtures().size(), sc_.getFixtures().size());
+        assertTrue(s.indexOf("org.drools") == -1); //check we have aliased all
 
-	}
+    }
 
     @Test
     public void testTrimUneededSection() {
-		Scenario sc = getDemo();
-		Scenario orig = getDemo();
-		sc.getFixtures().add(new ExecutionTrace());
+        Scenario sc = getDemo();
+        Scenario orig = getDemo();
+        sc.getFixtures().add(new ExecutionTrace());
 
-		int origSize = orig.getFixtures().size();
+        int origSize = orig.getFixtures().size();
 
-		assertEquals(origSize + 1, sc.getFixtures().size());
-		String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
-		Scenario sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
+        assertEquals(origSize + 1, sc.getFixtures().size());
+        String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
+        Scenario sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
 
-		assertEquals(origSize, sc_.getFixtures().size());
-
-
+        assertEquals(origSize, sc_.getFixtures().size());
 
 
 
 
-	}
+
+
+    }
 
 
     @Test
@@ -88,19 +88,19 @@ public class ScenarioXMLPersistenceTest {
 
         int size = sc.getFixtures().size();
 
-		String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
-		Scenario sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
+        String xml = ScenarioXMLPersistence.getInstance().marshal(sc);
+        Scenario sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
 
-		assertEquals(size, sc_.getFixtures().size());
+        assertEquals(size, sc_.getFixtures().size());
 
-		sc = new Scenario();
-		sc.getFixtures().add(new ExecutionTrace());
-		xml = ScenarioXMLPersistence.getInstance().marshal(sc);
-		sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
-		assertEquals(1, sc_.getFixtures().size());
-	}
+        sc = new Scenario();
+        sc.getFixtures().add(new ExecutionTrace());
+        xml = ScenarioXMLPersistence.getInstance().marshal(sc);
+        sc_ = ScenarioXMLPersistence.getInstance().unmarshal(xml);
+        assertEquals(1, sc_.getFixtures().size());
+    }
 
-	private Scenario getDemo() {
+    private Scenario getDemo() {
         //Sample data
         FactData d1 = new FactData("Driver", "d1", ls(new FieldData[] {new FieldData("age", "42"), new FieldData("name", "david")}), false);
         FactData d2 = new FactData("Driver", "d2", ls(new FieldData[] {new FieldData("name", "michael")}), false);
@@ -146,16 +146,16 @@ public class ScenarioXMLPersistenceTest {
         sc.getFixtures().add(vf1);
         sc.getFixtures().add(vf2);
 
-		return sc;
-	}
+        return sc;
+    }
 
-	private List ls(FieldData[] fieldDatas) {
-		List ls = new ArrayList();
-		for (int i = 0; i < fieldDatas.length; i++) {
-			ls.add(fieldDatas[i]);
-		}
-		return ls;
-	}
+    private List ls(FieldData[] fieldDatas) {
+        List ls = new ArrayList();
+        for (int i = 0; i < fieldDatas.length; i++) {
+            ls.add(fieldDatas[i]);
+        }
+        return ls;
+    }
 
 
 }

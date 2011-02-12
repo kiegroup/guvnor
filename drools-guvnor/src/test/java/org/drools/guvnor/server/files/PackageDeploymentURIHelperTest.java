@@ -41,7 +41,7 @@ public class PackageDeploymentURIHelperTest {
 
     @Test
     public void testGetPackageWithDRL() throws Exception {
-    	String uri = "/org.drools.guvnor.Guvnor/package/boo/ya+man.drl";
+        String uri = "/org.drools.guvnor.Guvnor/package/boo/ya+man.drl";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
 
         assertTrue(helper.isSource());
@@ -54,7 +54,7 @@ public class PackageDeploymentURIHelperTest {
 
     @Test
     public void testGetAssetDRL() throws Exception {
-    	String uri = "/org.drools.guvnor.Guvnor/package/packName/LATEST/assetName.drl";
+        String uri = "/org.drools.guvnor.Guvnor/package/packName/LATEST/assetName.drl";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);
         assertTrue(helper.isSource());
         assertFalse(helper.isDocumentation());
@@ -77,11 +77,11 @@ public class PackageDeploymentURIHelperTest {
     }
     
     @Test
-	/*
-	 * Here is the use case: when executing a process with a given process
-	 * definition id, we want to look up an image of that process. The naming
-	 * convention for that image is {processDefinitionId}.png.
-	 */
+    /*
+     * Here is the use case: when executing a process with a given process
+     * definition id, we want to look up an image of that process. The naming
+     * convention for that image is {processDefinitionId}.png.
+     */
     public void testGetPNG() throws Exception {
         String uri = "/org.drools.guvnor.Guvnor/package/packName/LATEST/process.png";
         PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(uri);

@@ -81,14 +81,14 @@ public class FreeFormLineWidget extends RuleModellerWidget {
         tb.setTitle(constants.ThisIsADrlExpressionFreeForm());
 
         if (!this.readOnly) {
-        	tb.addChangeHandler(new ChangeHandler() {
-				
-				public void onChange(ChangeEvent event) {
-					  setModified(true);
-	                    action.text = tb.getText();
-					
-				}
-			});
+            tb.addChangeHandler(new ChangeHandler() {
+
+                public void onChange(ChangeEvent event) {
+                      setModified(true);
+                        action.text = tb.getText();
+
+                }
+            });
 
             
         } else {

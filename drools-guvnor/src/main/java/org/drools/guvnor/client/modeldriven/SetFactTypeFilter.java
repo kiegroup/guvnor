@@ -23,18 +23,18 @@ import org.drools.ide.common.client.modeldriven.FactTypeFilter;
 
 public class SetFactTypeFilter implements FactTypeFilter {
 
-	private static final long serialVersionUID = 510l;
-	private final Set<String> validFacts;
+    private static final long serialVersionUID = 510l;
+    private final Set<String> validFacts;
 
-	public SetFactTypeFilter() {
-		validFacts = Collections.emptySet();
-	}
-	
-	public SetFactTypeFilter(Set<String> validFacts) {
-		this.validFacts = validFacts;
-	}
+    public SetFactTypeFilter() {
+        validFacts = Collections.emptySet();
+    }
 
-	public boolean filter(String originalFact) {
-	    return !validFacts.contains(originalFact);
-	}
+    public SetFactTypeFilter(Set<String> validFacts) {
+        this.validFacts = validFacts;
+    }
+
+    public boolean filter(String originalFact) {
+        return !validFacts.contains(originalFact);
+    }
 }

@@ -28,23 +28,23 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 public class BPELHandler extends ContentHandler {
 
-	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
-			AssetItem item) throws SerializationException {
+    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
+            AssetItem item) throws SerializationException {
 
-		// Get the name
+        // Get the name
 
-		InputStream in = item.getBinaryContentAttachment();
+        InputStream in = item.getBinaryContentAttachment();
 
-		if (in != null) {
-			RuleContentText text = new RuleContentText();
-			text.content = asset.metaData.name;
-			asset.content = text;
-		}
+        if (in != null) {
+            RuleContentText text = new RuleContentText();
+            text.content = asset.metaData.name;
+            asset.content = text;
+        }
 
-	}
+    }
 
-	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-			throws SerializationException {
-	}
+    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
+            throws SerializationException {
+    }
 
 }

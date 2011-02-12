@@ -55,23 +55,23 @@ public class WorkingSetSelectorPopup {
         pop.setTitle(constants.SelectWorkingSets());
         Grid g = buildDoubleList(null);
 
-		RepositoryServiceFactory.getService().listAssets(asset.metaData.packageUUID,
-				new String[] { AssetFormats.WORKING_SET }, 0, -1, "workingsetList",
-				new GenericCallback<TableDataResult>() {
+        RepositoryServiceFactory.getService().listAssets(asset.metaData.packageUUID,
+                new String[] { AssetFormats.WORKING_SET }, 0, -1, "workingsetList",
+                new GenericCallback<TableDataResult>() {
 
-					public void onSuccess(TableDataResult result) {
+                    public void onSuccess(TableDataResult result) {
 
-						for (int i = 0; i < result.data.length; i++) {
-							if (WorkingSetManager.getInstance().isWorkingSetActive(
-											asset.metaData.packageName,
-											result.data[i].id)) {
-								selectedFacts.addItem(result.data[i].getDisplayName(), result.data[i].id);
-							} else {
-								availableFacts.addItem(result.data[i].getDisplayName(),	result.data[i].id);
-							}							  
-						}
-					}
-				});
+                        for (int i = 0; i < result.data.length; i++) {
+                            if (WorkingSetManager.getInstance().isWorkingSetActive(
+                                            asset.metaData.packageName,
+                                            result.data[i].id)) {
+                                selectedFacts.addItem(result.data[i].getDisplayName(), result.data[i].id);
+                            } else {
+                                availableFacts.addItem(result.data[i].getDisplayName(),    result.data[i].id);
+                            }
+                        }
+                    }
+                });
 
         save = new Button(constants.SaveAndClose());
         save.addClickHandler(new ClickHandler() {
@@ -101,38 +101,38 @@ public class WorkingSetSelectorPopup {
         pop.show();
     }
     
-	private Grid buildDoubleList(WorkingSetConfigData wsData) {
-		Grid grid = new Grid(2, 3);
+    private Grid buildDoubleList(WorkingSetConfigData wsData) {
+        Grid grid = new Grid(2, 3);
 
-		availableFacts.setVisibleItemCount(10);
-		selectedFacts.setVisibleItemCount(10);
+        availableFacts.setVisibleItemCount(10);
+        selectedFacts.setVisibleItemCount(10);
 
-		Grid btnsPanel = new Grid(2, 1);
+        Grid btnsPanel = new Grid(2, 1);
 
-		btnsPanel.setWidget(0, 0, new Button(">", new ClickHandler() {
-			public void onClick(ClickEvent sender) {
-				moveSelected(availableFacts, selectedFacts);
-			}
-		}));
+        btnsPanel.setWidget(0, 0, new Button(">", new ClickHandler() {
+            public void onClick(ClickEvent sender) {
+                moveSelected(availableFacts, selectedFacts);
+            }
+        }));
 
-		btnsPanel.setWidget(1, 0, new Button("&lt;", new ClickHandler() {
-			public void onClick(ClickEvent sender) {
-				moveSelected(selectedFacts, availableFacts);
-			}
-		}));
+        btnsPanel.setWidget(1, 0, new Button("&lt;", new ClickHandler() {
+            public void onClick(ClickEvent sender) {
+                moveSelected(selectedFacts, availableFacts);
+            }
+        }));
 
-		grid.setWidget(0, 0, new SmallLabel("Available")); // TODO i18n
-		grid.setWidget(0, 1, new SmallLabel(""));
-		grid.setWidget(0, 2, new SmallLabel("Selected")); // TODO i18n
-		grid.setWidget(1, 0, availableFacts);
-		grid.setWidget(1, 1, btnsPanel);
-		grid.setWidget(1, 2, selectedFacts);
+        grid.setWidget(0, 0, new SmallLabel("Available")); // TODO i18n
+        grid.setWidget(0, 1, new SmallLabel(""));
+        grid.setWidget(0, 2, new SmallLabel("Selected")); // TODO i18n
+        grid.setWidget(1, 0, availableFacts);
+        grid.setWidget(1, 1, btnsPanel);
+        grid.setWidget(1, 2, selectedFacts);
 
-		grid.getColumnFormatter().setWidth(0, "45%");
-		grid.getColumnFormatter().setWidth(0, "10%");
-		grid.getColumnFormatter().setWidth(0, "45%");
-		return grid;
-	}
+        grid.getColumnFormatter().setWidth(0, "45%");
+        grid.getColumnFormatter().setWidth(0, "10%");
+        grid.getColumnFormatter().setWidth(0, "45%");
+        return grid;
+    }
     
     private void moveSelected(final ListBox from, final ListBox to) {
         int selected;

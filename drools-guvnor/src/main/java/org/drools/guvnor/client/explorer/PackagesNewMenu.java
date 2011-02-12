@@ -38,44 +38,44 @@ public class PackagesNewMenu {
     private static Images images = (Images) GWT.create(Images.class);
 
     public static MenuBar getMenu(final AbstractTree manager) {    
-    	
-    	MenuBar createNewMenu = new MenuBar(true);
 
-    	createNewMenu.addItem(Util.getHeader(images.newPackage(), constants.NewPackage1()),
-        		true,
-        		new Command() {
+        MenuBar createNewMenu = new MenuBar(true);
+
+        createNewMenu.addItem(Util.getHeader(images.newPackage(), constants.NewPackage1()),
+                true,
+                new Command() {
             public void execute() {
                 NewPackageWizard wiz = new NewPackageWizard(new Command() {
                     public void execute() {
-                    	manager.refreshTree();
+                        manager.refreshTree();
                     }
                 });
                 wiz.show();            }
         });
-    	
-    	createNewMenu.addItem(Util.getHeader(images.newEnumeration(), constants.NewSpringContext()),
-        		true,
-        		new Command() {
+
+        createNewMenu.addItem(Util.getHeader(images.newEnumeration(), constants.NewSpringContext()),
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.SPRING_CONTEXT, constants.NewSpringContext(), false);
             }
         });
 
-    	createNewMenu.addItem(Util.getHeader(images.newPackage(), constants.NewWorkingSet()),
-        		true,
-        		new Command() {
+        createNewMenu.addItem(Util.getHeader(images.newPackage(), constants.NewWorkingSet()),
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.WORKING_SET, constants.NewWorkingSet(), false);
             }
         });         
-    	
-    	createNewMenu.addItem(Util.getHeader(images.ruleAsset(), constants.NewRule()),
-        		true,
-        		new Command() {
+
+        createNewMenu.addItem(Util.getHeader(images.ruleAsset(), constants.NewRule()),
+                true,
+                new Command() {
             public void execute() {
-            	manager.launchWizard(null, constants.NewRule(), true);
+                manager.launchWizard(null, constants.NewRule(), true);
             }
-        });      	
+        });
 
         createNewMenu.addItem(Util.getHeader(images.newTemplate(), constants.NewRuleTemplate()),
                 true,
@@ -85,92 +85,92 @@ public class PackagesNewMenu {
            }
         }); 
         
-    	createNewMenu.addItem(Util.getHeader(images.modelAsset(), constants.UploadPOJOModelJar()),
-        		true,
-        		new Command() {
+        createNewMenu.addItem(Util.getHeader(images.modelAsset(), constants.UploadPOJOModelJar()),
+                true,
+                new Command() {
             public void execute() {
-            	manager.launchWizard(AssetFormats.MODEL, constants.NewModelArchiveJar(), false);
+                manager.launchWizard(AssetFormats.MODEL, constants.NewModelArchiveJar(), false);
             }
         }); 
-    	
-    	createNewMenu.addItem(Util.getHeader(images.modelAsset(), constants.NewDeclarativeModel()),
-        		true,
-        		new Command() {
+
+        createNewMenu.addItem(Util.getHeader(images.modelAsset(), constants.NewDeclarativeModel()),
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.DRL_MODEL, constants.NewDeclarativeModelUsingGuidedEditor(), false);
             }
         }); 
-    	
+
         if (Preferences.getBooleanPref("flex-bpel-editor")) {
-        	createNewMenu.addItem(Util.getHeader(images.modelAsset(), constants.NewBPELPackage()),
-            		true,
-            		new Command() {
+            createNewMenu.addItem(Util.getHeader(images.modelAsset(), constants.NewBPELPackage()),
+                    true,
+                    new Command() {
                         public void execute() {
-    				        manager.launchWizard(AssetFormats.BPEL_PACKAGE, constants
-    						    .CreateANewBPELPackage(), false);
+                            manager.launchWizard(AssetFormats.BPEL_PACKAGE, constants
+                                .CreateANewBPELPackage(), false);
                 }
             }); 
         }
-    	
-    	createNewMenu.addItem(Util.getHeader(images.functionAssets(), constants.NewFunction()),
-        		true,
-        		new Command() {
+
+        createNewMenu.addItem(Util.getHeader(images.functionAssets(), constants.NewFunction()),
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.FUNCTION, constants.CreateANewFunction(), false);
             }
         }); 
-    	
-    	createNewMenu.addItem(Util.getHeader(images.dsl(), constants.NewDSL()),
-        		true,
-        		new Command() {
+
+        createNewMenu.addItem(Util.getHeader(images.dsl(), constants.NewDSL()),
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.DSL, constants.CreateANewDSLConfiguration(), false);
             }
         }); 
-    	
-    	createNewMenu.addItem(Util.getHeader(images.ruleflowSmall(), constants.NewRuleFlow()),
-        		true,
-        		new Command() {
+
+        createNewMenu.addItem(Util.getHeader(images.ruleflowSmall(), constants.NewRuleFlow()),
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.RULE_FLOW_RF, constants.CreateANewRuleFlow(), false);
             }
         });  
-    	
-    	createNewMenu.addItem(Util.getHeader(images.ruleflowSmall(), constants.NewBPMN2Process()),
+
+        createNewMenu.addItem(Util.getHeader(images.ruleflowSmall(), constants.NewBPMN2Process()),
                 true,
                 new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.BPMN2_PROCESS, constants.CreateANewBPMN2Process(), false);
             }
         });  
-    	
-    	createNewMenu.addItem(Util.getHeader(images.newEnumeration(), constants.NewEnumeration()),
-        		true,
-        		new Command() {
+
+        createNewMenu.addItem(Util.getHeader(images.newEnumeration(), constants.NewEnumeration()),
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.ENUMERATION, constants.CreateANewEnumerationDropDownMapping(), false);
             }
         });  
-    	
-    	createNewMenu.addItem(Util.getHeader(images.testManager(), constants.NewTestScenario()),
-        		true,
-        		new Command() {
+
+        createNewMenu.addItem(Util.getHeader(images.testManager(), constants.NewTestScenario()),
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.TEST_SCENARIO, constants.CreateATestScenario(), false);
            }
         }); 
-    	
-    	createNewMenu.addItem(Util.getHeader(images.newFile(), constants.CreateAFile()),
-        		true,
-        		new Command() {
+
+        createNewMenu.addItem(Util.getHeader(images.newFile(), constants.CreateAFile()),
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard("*", constants.CreateAFile(), false);
            }
         }); 
-    	
-    	createNewMenu.addItem(Util.getHeader(images.refresh(), constants.RebuildAllPackageBinariesQ()),
-        		true,
-        		new Command() {
+
+        createNewMenu.addItem(Util.getHeader(images.refresh(), constants.RebuildAllPackageBinariesQ()),
+                true,
+                new Command() {
             public void execute() {
                 if (Window.confirm(constants.RebuildConfirmWarning())) {
                     LoadingPopup.showMessage(constants.RebuildingPackageBinaries());
@@ -182,7 +182,7 @@ public class PackagesNewMenu {
                 }
             }
         }); 
-    	
+
 
         MenuBar rootMenuBar = new MenuBar(true);
         rootMenuBar.setAutoOpen(true);

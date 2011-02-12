@@ -54,61 +54,61 @@ public class PermissionManager {
      * @throws RepositoryException
      */
     public void updateUserPermissions(String userName, Map<String, List<String>> perms) {
-    	if (!isValideUserName(userName)) {
-    		return;
-    	}
+        if (!isValideUserName(userName)) {
+            return;
+        }
 
-    	try {
-	    	Node permsNode = getUserPermissionNode(userName);
-	    	permsNode.remove(); //remove this so we get a fresh set
-	    	permsNode = getUserPermissionNode(userName).addNode("jcr:content", "nt:unstructured");
-	    	for (Iterator<Map.Entry<String, List<String>>> iterator = perms.entrySet().iterator(); iterator.hasNext();) {
-	    		Map.Entry<String, List<String>> en = iterator.next();
-				String perm = en.getKey();
-				List<String> targets = en.getValue();
-				if (targets == null) targets = new ArrayList<String>();
-				permsNode.setProperty(perm, targets.toArray(new String[targets.size()]));
-			}
-	    	this.repository.save();
-    	} catch (RepositoryException e) {
-    		throw new RulesRepositoryException(e);
-    	}
+        try {
+            Node permsNode = getUserPermissionNode(userName);
+            permsNode.remove(); //remove this so we get a fresh set
+            permsNode = getUserPermissionNode(userName).addNode("jcr:content", "nt:unstructured");
+            for (Iterator<Map.Entry<String, List<String>>> iterator = perms.entrySet().iterator(); iterator.hasNext();) {
+                Map.Entry<String, List<String>> en = iterator.next();
+                String perm = en.getKey();
+                List<String> targets = en.getValue();
+                if (targets == null) targets = new ArrayList<String>();
+                permsNode.setProperty(perm, targets.toArray(new String[targets.size()]));
+            }
+            this.repository.save();
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
+        }
     }
 
     public void createUser(String userName) {
-    	if (!isValideUserName(userName)) {
-    		throw new RulesRepositoryException("Invalide user name");
-    	}
-    	if (containsUser(userName)) {
-    		throw new RulesRepositoryException("User name [" + userName + "] already exists");
-    	}
-    	try {
-	    	Node permsNode = getUserPermissionNode(userName);
-	    	permsNode.remove(); //remove this so we get a fresh set
-	    	permsNode = getUserPermissionNode(userName).addNode("jcr:content", "nt:unstructured");
-	    	this.repository.save();
-    	} catch (RepositoryException e) {
-    		throw new RulesRepositoryException(e);
-    	}
+        if (!isValideUserName(userName)) {
+            throw new RulesRepositoryException("Invalide user name");
+        }
+        if (containsUser(userName)) {
+            throw new RulesRepositoryException("User name [" + userName + "] already exists");
+        }
+        try {
+            Node permsNode = getUserPermissionNode(userName);
+            permsNode.remove(); //remove this so we get a fresh set
+            permsNode = getUserPermissionNode(userName).addNode("jcr:content", "nt:unstructured");
+            this.repository.save();
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
+        }
     }
     
     private boolean containsUser(String userName) {
-		try {
-			Node userRoot = getUsersRootNode(getRootNode(repository));
-			if (userRoot.hasNode(userName)) {
-				return true;
-			}
-		} catch (RepositoryException e) {
-		}
+        try {
+            Node userRoot = getUsersRootNode(getRootNode(repository));
+            if (userRoot.hasNode(userName)) {
+                return true;
+            }
+        } catch (RepositoryException e) {
+        }
 
-		return false;
-	}
+        return false;
+    }
     
-	private Node getUserPermissionNode(String userName)
-			throws RepositoryException {
-    	Node permsNode = getNode(getUserInfoNode(userName, repository), "permissions", "nt:file");
-		return permsNode;
-	}
+    private Node getUserPermissionNode(String userName)
+            throws RepositoryException {
+        Node permsNode = getNode(getUserInfoNode(userName, repository), "permissions", "nt:file");
+        return permsNode;
+    }
 
     /** get the specified user info node (it is an nt:folder type) */
     public static Node getUserInfoNode(String userName, RulesRepository repo) throws RepositoryException {
@@ -135,120 +135,120 @@ public class PermissionManager {
      * @throws RepositoryException
      */
     public Map<String, List<String>> retrieveUserPermissions(String userName) {
-    	try {
-	    	Map<String, List<String>> result = new HashMap<String, List<String>>(10);
-	    	if (!isValideUserName(userName)) {
-	    		return result;
-	    	}
+        try {
+            Map<String, List<String>> result = new HashMap<String, List<String>>(10);
+            if (!isValideUserName(userName)) {
+                return result;
+            }
 
-	    	if (!getUserPermissionNode(userName).hasNode("jcr:content")) {
-	    		return result;
-	    	}
-	    	Node permsNode = getUserPermissionNode(userName).getNode("jcr:content");
-	    	PropertyIterator it = permsNode.getProperties();
+            if (!getUserPermissionNode(userName).hasNode("jcr:content")) {
+                return result;
+            }
+            Node permsNode = getUserPermissionNode(userName).getNode("jcr:content");
+            PropertyIterator it = permsNode.getProperties();
 
-	    	while (it.hasNext()) {
-	    		Property p = (Property) it.next();
-	    		String name = p.getName();
-	    		if (!name.startsWith("jcr")) {
+            while (it.hasNext()) {
+                Property p = (Property) it.next();
+                String name = p.getName();
+                if (!name.startsWith("jcr")) {
 
-	    			if (p.getDefinition().isMultiple()) {
-			    		Value[] vs = p.getValues();
-			    		List<String> perms = new ArrayList<String>();
-			    		for (int i = 0; i < vs.length; i++) {
-							perms.add(vs[i].getString());
-						}
-			    		result.put(name, perms);
-	    			} else {
-	    				Value v = p.getValue();
-	    				List<String> perms = new ArrayList<String>(1);
-	    				perms.add(v.getString());
-	    				result.put(name, perms);
-	    			}
-	    		}
-	    	}
-	    	return result;
-    	} catch (RepositoryException e) {
-    		throw new RulesRepositoryException(e);
-    	}
+                    if (p.getDefinition().isMultiple()) {
+                        Value[] vs = p.getValues();
+                        List<String> perms = new ArrayList<String>();
+                        for (int i = 0; i < vs.length; i++) {
+                            perms.add(vs[i].getString());
+                        }
+                        result.put(name, perms);
+                    } else {
+                        Value v = p.getValue();
+                        List<String> perms = new ArrayList<String>(1);
+                        perms.add(v.getString());
+                        result.put(name, perms);
+                    }
+                }
+            }
+            return result;
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
+        }
     }
 
     /**
      * Gets or creates a node.
      */
-	public static Node getNode(Node node, String name, String nodeType) throws RepositoryException {
-		Node permsNode;
-		if (!node.hasNode(name)) {
-    		permsNode = node.addNode(name, nodeType);
-    	} else {
-    		permsNode = node.getNode(name);
-    	}
-		return permsNode;
-	}
+    public static Node getNode(Node node, String name, String nodeType) throws RepositoryException {
+        Node permsNode;
+        if (!node.hasNode(name)) {
+            permsNode = node.addNode(name, nodeType);
+        } else {
+            permsNode = node.getNode(name);
+        }
+        return permsNode;
+    }
 
-	/**
-	 * Returns a list of users and their permissions types for display.
-	 * The Map maps:
-	 *
-	 *  userName => [list of permission types, eg admin, package.admin etc... no IDs]
-	 *  For display purposes only.
-	 * @throws RepositoryException
-	 */
-	public Map<String, List<String>> listUsers() {
-		try {
-			Map<String, List<String>> listing = new HashMap<String, List<String>>();
-			Node root = getRootNode(this.repository);
-	    	Node usersNode = getUsersRootNode(root);
-	    	NodeIterator users = usersNode.getNodes();
-	    	while (users.hasNext()) {
-				Node userNode = (Node) users.next();
-				listing.put(userNode.getName(), listOfPermTypes(userNode));
-			}
-			return listing;
-		} catch (RepositoryException e) {
-    		throw new RulesRepositoryException(e);
-    	}
-	}
+    /**
+     * Returns a list of users and their permissions types for display.
+     * The Map maps:
+     *
+     *  userName => [list of permission types, eg admin, package.admin etc... no IDs]
+     *  For display purposes only.
+     * @throws RepositoryException
+     */
+    public Map<String, List<String>> listUsers() {
+        try {
+            Map<String, List<String>> listing = new HashMap<String, List<String>>();
+            Node root = getRootNode(this.repository);
+            Node usersNode = getUsersRootNode(root);
+            NodeIterator users = usersNode.getNodes();
+            while (users.hasNext()) {
+                Node userNode = (Node) users.next();
+                listing.put(userNode.getName(), listOfPermTypes(userNode));
+            }
+            return listing;
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
+        }
+    }
 
-	private List<String> listOfPermTypes(Node userNode) throws RepositoryException {
-		List<String> permTypes = new ArrayList<String>();
-		Node permsNode = getNode(userNode, "permissions", "nt:file");
-		Node content = getNode(permsNode, "jcr:content", "nt:unstructured");
-		PropertyIterator perms = content.getProperties();
-		while (perms.hasNext()) {
-    		Property p = (Property) perms.next();
-    		String name = p.getName();
-    		if (!name.startsWith("jcr")) {
-	    		permTypes.add(name);
-    		}
+    private List<String> listOfPermTypes(Node userNode) throws RepositoryException {
+        List<String> permTypes = new ArrayList<String>();
+        Node permsNode = getNode(userNode, "permissions", "nt:file");
+        Node content = getNode(permsNode, "jcr:content", "nt:unstructured");
+        PropertyIterator perms = content.getProperties();
+        while (perms.hasNext()) {
+            Property p = (Property) perms.next();
+            String name = p.getName();
+            if (!name.startsWith("jcr")) {
+                permTypes.add(name);
+            }
 
-		}
-		return permTypes;
-	}
+        }
+        return permTypes;
+    }
 
-	void deleteAllUsers() throws RepositoryException {
-		Node root = getRootNode(this.repository);
-		getUsersRootNode(root).remove();
-	}
+    void deleteAllUsers() throws RepositoryException {
+        Node root = getRootNode(this.repository);
+        getUsersRootNode(root).remove();
+    }
 
-	public void removeUserPermissions(String userName) {
-    	if (!isValideUserName(userName)) {
-    		return;
-    	}
+    public void removeUserPermissions(String userName) {
+        if (!isValideUserName(userName)) {
+            return;
+        }
 
-		try {
-	    	Node permsNode = getUserPermissionNode(userName);
-	    	permsNode.getParent().remove(); //remove this so we get a fresh set
-		} catch (RepositoryException e) {
-			throw new RulesRepositoryException(e);
-		}
+        try {
+            Node permsNode = getUserPermissionNode(userName);
+            permsNode.getParent().remove(); //remove this so we get a fresh set
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
+        }
 
-	}
+    }
 
-	private boolean isValideUserName(String userName) {
-		if("".equals(userName.trim()) || userName.trim().length() == 0) {
-			return false;
-		}
-		return true;
-	}
+    private boolean isValideUserName(String userName) {
+        if("".equals(userName.trim()) || userName.trim().length() == 0) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -23,39 +23,39 @@ package org.drools.guvnor.client.util;
  */
 public class Format {
 
-	public static String format(String text, String... strings) {
+    public static String format(String text, String... strings) {
 
-		StringBuilder result = new StringBuilder(text);
+        StringBuilder result = new StringBuilder(text);
 
-		for (int i = 0; i < strings.length; i++) {
-			String string = strings[i];
-			String placeKeeper = "{" + i + "}";
+        for (int i = 0; i < strings.length; i++) {
+            String string = strings[i];
+            String placeKeeper = "{" + i + "}";
 
-			int start = result.indexOf(placeKeeper);
-			if (start == -1) {
-				start = 0;
-			} else {
-				int end = start + placeKeeper.length();
-				result.replace(start, end, string);
-			}
-			
-		}
+            int start = result.indexOf(placeKeeper);
+            if (start == -1) {
+                start = 0;
+            } else {
+                int end = start + placeKeeper.length();
+                result.replace(start, end, string);
+            }
 
-		return result.toString();
-	}
+        }
 
-	public static String format(String text, int... ints) {
-		return format(text, toStringArray(ints));
-	}
+        return result.toString();
+    }
 
-	private static String[] toStringArray(int[] intArray) {
-		String[] result = new String[intArray.length];
+    public static String format(String text, int... ints) {
+        return format(text, toStringArray(ints));
+    }
 
-		for (int i = 0; i < intArray.length; i++) {
-			result[i] = String.valueOf(intArray[i]);
+    private static String[] toStringArray(int[] intArray) {
+        String[] result = new String[intArray.length];
 
-		}
+        for (int i = 0; i < intArray.length; i++) {
+            result[i] = String.valueOf(intArray[i]);
 
-		return result;
-	}
+        }
+
+        return result;
+    }
 }

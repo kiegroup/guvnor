@@ -38,12 +38,12 @@ public class AsyncInterfaceTest {
 
     @Test
     public void testService() throws Exception {
-    	try {
-	        checkService( RepositoryService.class, RepositoryServiceAsync.class );
-	        checkService( SecurityService.class, SecurityServiceAsync.class );
-    	} catch (Exception e) {
-    		fail("Async interface is not in sync with service interface. For RepositoryService you can run AsyncInterfaceGenerator.");
-    	}
+        try {
+            checkService( RepositoryService.class, RepositoryServiceAsync.class );
+            checkService( SecurityService.class, SecurityServiceAsync.class );
+        } catch (Exception e) {
+            fail("Async interface is not in sync with service interface. For RepositoryService you can run AsyncInterfaceGenerator.");
+        }
 
     }
 

@@ -42,14 +42,14 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DirtyableHorizontalPane extends HorizontalPanel implements DirtyableContainer {
 
-	public boolean hasDirty() {
+    public boolean hasDirty() {
         int widNumber = getWidgetCount();
         Widget element;
         
         for ( int i = 0; i < widNumber; i++ ) {
             element = getWidget(i);
             if ((element instanceof DirtyableWidget && ((DirtyableWidget) element).isDirty()) || 
-            		(element instanceof DirtyableContainer && ((DirtyableContainer) element).hasDirty())) 
+                    (element instanceof DirtyableContainer && ((DirtyableContainer) element).hasDirty()))
                 return true;
         }
         return false;

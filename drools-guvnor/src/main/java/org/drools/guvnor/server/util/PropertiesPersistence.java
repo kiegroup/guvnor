@@ -28,38 +28,38 @@ import org.drools.guvnor.client.ruleeditor.PropertyHolder;
  */
 public class PropertiesPersistence {
 
-	private static PropertiesPersistence INSTANCE = new PropertiesPersistence();
+    private static PropertiesPersistence INSTANCE = new PropertiesPersistence();
 
-	private PropertiesPersistence() {
-	}
+    private PropertiesPersistence() {
+    }
 
-	public static PropertiesPersistence getInstance() {
-		return INSTANCE;
-	}
+    public static PropertiesPersistence getInstance() {
+        return INSTANCE;
+    }
 
-	public String marshal(PropertiesHolder holder) {
-		StringBuilder sb = new StringBuilder();
-		for (PropertyHolder propertyHolder : holder.list) {
-			sb.append(propertyHolder.getName()).append("=").append(
-					propertyHolder.getValue()).append("\n");
-		}
-		return sb.toString();
-	}
+    public String marshal(PropertiesHolder holder) {
+        StringBuilder sb = new StringBuilder();
+        for (PropertyHolder propertyHolder : holder.list) {
+            sb.append(propertyHolder.getName()).append("=").append(
+                    propertyHolder.getValue()).append("\n");
+        }
+        return sb.toString();
+    }
 
-	public PropertiesHolder unmarshal(String properties) {
-		List<PropertyHolder> list = new ArrayList<PropertyHolder>();
-		String[] props = properties.split("\n");
-		if (props != null) {
-			for (String s : props) {
-				String[] pair = s.split("=");
-				if (pair.length == 2) {
-					list.add(new PropertyHolder(pair[0], pair[1]));
-				}
-			}
-		}
-		PropertiesHolder result = new PropertiesHolder();
-		result.list = list;
-		return result;
-	}
+    public PropertiesHolder unmarshal(String properties) {
+        List<PropertyHolder> list = new ArrayList<PropertyHolder>();
+        String[] props = properties.split("\n");
+        if (props != null) {
+            for (String s : props) {
+                String[] pair = s.split("=");
+                if (pair.length == 2) {
+                    list.add(new PropertyHolder(pair[0], pair[1]));
+                }
+            }
+        }
+        PropertiesHolder result = new PropertiesHolder();
+        result.list = list;
+        return result;
+    }
 
 }

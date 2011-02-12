@@ -29,124 +29,124 @@ import org.drools.ide.common.assistant.info.drl.RuleLineContentInfo;
 
 public class DRLParserEngineTest {
 
-	private String rule;
-	private DRLParserEngine engine;
-	private DRLRuleRefactorInfo info;
+    private String rule;
+    private DRLParserEngine engine;
+    private DRLRuleRefactorInfo info;
 
     @Before
     public void setUp() throws Exception {
-		rule = 	"package org.drools.assistant.test;\n\n";
-		rule += "import org.drools.assistant.test.model.Company;\n";
-		rule += "import org.drools.assistant.test.model.Employee;\n\n";
-		rule += "import function org.drools.assistant.model.Class1.anotherFunction \n";
-		rule += "import		function org.drools.assistant.model.Class1.mathFunction \n";
-		rule += "global     org.drools.assistant.test.model.Class2    results \n";
-		rule += "global org.drools.assistant.test.model.Class3 current\n"; 
-		rule += "expander help-expander.dsl\n";
-		rule += "query \"all clients\"\n"; 
-		rule += "	result : Clients()\n";
-		rule += "end\n";
-		rule += "query \"new query\"\n";
-		rule += "	objects : Clients()\n";
-		rule += "end\n";
-		rule += "function String hello(String name) {\n";
-		rule += "    return \"Hello \"+name+\"!\";\n";
-		rule += "}\n";
-		rule += "function String helloWithAge(String name, Integer age) {\n";
-		rule += "    return \"Hello2 \"+name+\"! \" + age;\n";
-		rule += "}\n";
-		rule += "rule   \"My Test Rule\"\n";
-		rule += "when\n";
-		rule += "	$employee : Employee($company : company, $age : age > 80, salary > 400)\n";
-		rule += "	$result : Company(company == $company, retireAge <= $age)\n"; 
-		rule += "then\n";
-		rule += "	System.out.println(\"can retire\")\n";
-		rule += "end\n";
+        rule =     "package org.drools.assistant.test;\n\n";
+        rule += "import org.drools.assistant.test.model.Company;\n";
+        rule += "import org.drools.assistant.test.model.Employee;\n\n";
+        rule += "import function org.drools.assistant.model.Class1.anotherFunction \n";
+        rule += "import        function org.drools.assistant.model.Class1.mathFunction \n";
+        rule += "global     org.drools.assistant.test.model.Class2    results \n";
+        rule += "global org.drools.assistant.test.model.Class3 current\n";
+        rule += "expander help-expander.dsl\n";
+        rule += "query \"all clients\"\n";
+        rule += "    result : Clients()\n";
+        rule += "end\n";
+        rule += "query \"new query\"\n";
+        rule += "    objects : Clients()\n";
+        rule += "end\n";
+        rule += "function String hello(String name) {\n";
+        rule += "    return \"Hello \"+name+\"!\";\n";
+        rule += "}\n";
+        rule += "function String helloWithAge(String name, Integer age) {\n";
+        rule += "    return \"Hello2 \"+name+\"! \" + age;\n";
+        rule += "}\n";
+        rule += "rule   \"My Test Rule\"\n";
+        rule += "when\n";
+        rule += "    $employee : Employee($company : company, $age : age > 80, salary > 400)\n";
+        rule += "    $result : Company(company == $company, retireAge <= $age)\n";
+        rule += "then\n";
+        rule += "    System.out.println(\"can retire\")\n";
+        rule += "end\n";
 
-		engine = new DRLParserEngine(rule);
+        engine = new DRLParserEngine(rule);
 
-	}
+    }
 
     @Test
     public void testExecuteEngine() {
-		info = (DRLRuleRefactorInfo) engine.parse();
-		RuleBasicContentInfo content = info.getContentAt(123);
-	    assertEquals(true, content!=null);
-	}
+        info = (DRLRuleRefactorInfo) engine.parse();
+        RuleBasicContentInfo content = info.getContentAt(123);
+        assertEquals(true, content!=null);
+    }
 
     @Test
     public void testImport() {
-		info = (DRLRuleRefactorInfo) engine.parse();
-		RuleBasicContentInfo content = info.getContentAt(9);
-	    assertEquals(true, content!=null);
-	}
+        info = (DRLRuleRefactorInfo) engine.parse();
+        RuleBasicContentInfo content = info.getContentAt(9);
+        assertEquals(true, content!=null);
+    }
 
     @Test
     public void testNothingInteresting() {
-		info = (DRLRuleRefactorInfo) engine.parse();
-		RuleBasicContentInfo content = info.getContentAt(199);
-	    assertEquals(true, content==null);
-	}
+        info = (DRLRuleRefactorInfo) engine.parse();
+        RuleBasicContentInfo content = info.getContentAt(199);
+        assertEquals(true, content==null);
+    }
 
     @Test
     public void testInsideTheRuleName() {
-		info = (DRLRuleRefactorInfo) engine.parse();
-		RuleBasicContentInfo content = info.getContentAt(670);
-	    assertEquals(true, content==null);
-	}
+        info = (DRLRuleRefactorInfo) engine.parse();
+        RuleBasicContentInfo content = info.getContentAt(670);
+        assertEquals(true, content==null);
+    }
 
     @Test
     public void testInsideLHSRule() {
-		info = (DRLRuleRefactorInfo) engine.parse();
-		RuleBasicContentInfo content = info.getContentAt(790);
-	    assertEquals(true, content!=null);
-	}
+        info = (DRLRuleRefactorInfo) engine.parse();
+        RuleBasicContentInfo content = info.getContentAt(790);
+        assertEquals(true, content!=null);
+    }
 
     @Test
     public void testInsideRHSRule() {
-		info = (DRLRuleRefactorInfo) engine.parse();
-		RuleBasicContentInfo content = info.getContentAt(830);
-	    assertEquals(true, content!=null);
-	}
+        info = (DRLRuleRefactorInfo) engine.parse();
+        RuleBasicContentInfo content = info.getContentAt(830);
+        assertEquals(true, content!=null);
+    }
 
     @Test
     public void testSampleDRL() {
-		rule = "package com.sample\n\n";
-		rule += "import com.sample.DroolsTest.Message;\n";
-		rule += "import com.sample.Prueba;\n\n";
-		rule += "\trule \"Hello World\"\n";
-		rule += "\twhen\n";
-		rule += "\t\tm : Message( status == Message.HELLO, myMessage : message )\n";
-		rule += "\t\tPrueba()\n";
-		rule += "\tthen\n";
-		rule += "\t\tSystem.out.println( myMessage );\n";
-		rule += "\t\tm.setMessage( \"Goodbye cruel world\" );\n";
-		rule += "\t\tm.setStatus( Message.GOODBYE );\n";
-		rule += "\t\tupdate( m );\n";
-		rule += "end\n";
-		rule += "rule \"GoodBye World\"\n";
-		rule += "\twhen\n";
-		rule += "\t\tm : Message( status == Message.GOODBYE, myMessage : message )\n";
-		rule += "\t\tPrueba()\n";
-		rule += "\tthen\n";
-		rule += "\t\tSystem.out.println( myMessage );\n";
-		rule += "\t\tm.setMessage( \"Bon Giorno\" );\n";
-		rule += "end";
+        rule = "package com.sample\n\n";
+        rule += "import com.sample.DroolsTest.Message;\n";
+        rule += "import com.sample.Prueba;\n\n";
+        rule += "\trule \"Hello World\"\n";
+        rule += "\twhen\n";
+        rule += "\t\tm : Message( status == Message.HELLO, myMessage : message )\n";
+        rule += "\t\tPrueba()\n";
+        rule += "\tthen\n";
+        rule += "\t\tSystem.out.println( myMessage );\n";
+        rule += "\t\tm.setMessage( \"Goodbye cruel world\" );\n";
+        rule += "\t\tm.setStatus( Message.GOODBYE );\n";
+        rule += "\t\tupdate( m );\n";
+        rule += "end\n";
+        rule += "rule \"GoodBye World\"\n";
+        rule += "\twhen\n";
+        rule += "\t\tm : Message( status == Message.GOODBYE, myMessage : message )\n";
+        rule += "\t\tPrueba()\n";
+        rule += "\tthen\n";
+        rule += "\t\tSystem.out.println( myMessage );\n";
+        rule += "\t\tm.setMessage( \"Bon Giorno\" );\n";
+        rule += "end";
 
-		engine = new DRLParserEngine(rule);
-		info = (DRLRuleRefactorInfo) engine.parse();
-		RuleBasicContentInfo content = info.getContentAt(173);
+        engine = new DRLParserEngine(rule);
+        info = (DRLRuleRefactorInfo) engine.parse();
+        RuleBasicContentInfo content = info.getContentAt(173);
 
-	    assertEquals(true, content!=null);
-	    assertEquals(DRLContentTypeEnum.RULE_LHS_LINE, content.getType());
-	    assertEquals("rule \"Hello World\"", ((RuleLineContentInfo)content).getRule().getRuleName());
-	    assertEquals("\t\tPrueba()", content.getContent());
+        assertEquals(true, content!=null);
+        assertEquals(DRLContentTypeEnum.RULE_LHS_LINE, content.getType());
+        assertEquals("rule \"Hello World\"", ((RuleLineContentInfo)content).getRule().getRuleName());
+        assertEquals("\t\tPrueba()", content.getContent());
 
-		content = info.getContentAt(343);
-	    assertEquals(true, content!=null);
-	    assertEquals(DRLContentTypeEnum.RULE_LHS_LINE, content.getType());
-	    assertEquals("rule \"GoodBye World\"", ((RuleLineContentInfo)content).getRule().getRuleName());
-	    assertEquals("\twhen", content.getContent());
-	}
+        content = info.getContentAt(343);
+        assertEquals(true, content!=null);
+        assertEquals(DRLContentTypeEnum.RULE_LHS_LINE, content.getType());
+        assertEquals("rule \"GoodBye World\"", ((RuleLineContentInfo)content).getRule().getRuleName());
+        assertEquals("\twhen", content.getContent());
+    }
 
 }

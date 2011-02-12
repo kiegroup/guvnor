@@ -136,7 +136,7 @@ public class ExplorerNodeConfig {
         item = new TreeItem( Util.getHeader( images.enumeration(),
                 constants.SpringContext() ) );
         itemWidgets.put( item,
-        				 AssetFormats.SPRING_CONTEXT );
+                         AssetFormats.SPRING_CONTEXT );
         item.setUserObject( new String[]{AssetFormats.SPRING_CONTEXT} );
         pkg.addItem( item );
         

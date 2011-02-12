@@ -172,6 +172,6 @@ public class SomeFact {
     }
     
     public List<SomeFact> aMethod(int anInt) {
-    	return null;
+        return null;
     }
 }

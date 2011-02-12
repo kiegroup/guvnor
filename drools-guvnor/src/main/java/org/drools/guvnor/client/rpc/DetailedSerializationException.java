@@ -46,7 +46,7 @@ public class DetailedSerializationException extends SerializationException {
         return this.longDescription;
     }
     public List<BuilderResultLine> getErrs(){
-    	return errs;
+        return errs;
     }
 
 }

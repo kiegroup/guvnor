@@ -26,67 +26,67 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  */
 public class CallFieldValue implements  FieldNature,PortableObject {
 
-	public String field;
-	public String value;
-	public long nature;
-	/**
-	 * This is the datatype archectype (eg String, Numeric etc).
-	 */
-	public String type;
+    public String field;
+    public String value;
+    public long nature;
+    /**
+     * This is the datatype archectype (eg String, Numeric etc).
+     */
+    public String type;
 
 
 
-	public CallFieldValue(final String field, final String value,
-			final String type) {
-		this.field = field;
-		this.value = value;
-		this.type = type;
-	}
+    public CallFieldValue(final String field, final String value,
+            final String type) {
+        this.field = field;
+        this.value = value;
+        this.type = type;
+    }
 
-	public CallFieldValue() {
-	}
+    public CallFieldValue() {
+    }
 
-	/**
-	 * This will return true if the value is really a "formula" - in the sense
-	 * of like an excel spreadsheet.
-	 * 
-	 * If it IS a formula, then the value should never be turned into a string,
-	 * always left as-is.
-	 * 
-	 */
-	public boolean isFormula() {
-		return this.value != null && this.value.trim().startsWith("=");
-	}
+    /**
+     * This will return true if the value is really a "formula" - in the sense
+     * of like an excel spreadsheet.
+     *
+     * If it IS a formula, then the value should never be turned into a string,
+     * always left as-is.
+     *
+     */
+    public boolean isFormula() {
+        return this.value != null && this.value.trim().startsWith("=");
+    }
 
-	public String getField() {
-		return this.field;
-	}
+    public String getField() {
+        return this.field;
+    }
 
-	public void setField(String field) {
-		this.field = field;
-	}
+    public void setField(String field) {
+        this.field = field;
+    }
 
-	public String getValue() {
-		return this.value;
-	}
+    public String getValue() {
+        return this.value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	public long getNature() {
-		return this.nature;
-	}
+    public long getNature() {
+        return this.nature;
+    }
 
-	public void setNature(long nature) {
-		this.nature = nature;
-	}
+    public void setNature(long nature) {
+        this.nature = nature;
+    }
 
-	public String getType() {
-		return this.type;
-	}
+    public String getType() {
+        return this.type;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 }

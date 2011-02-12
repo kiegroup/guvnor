@@ -26,7 +26,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class PushResponse implements IsSerializable {
 
     public PushResponse() {
-    	this("", "");
+        this("", "");
     }
     public PushResponse(String key, String message) {
         this.messageType = key;

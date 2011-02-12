@@ -25,33 +25,33 @@ import org.drools.ide.common.assistant.info.drl.RuleBasicContentInfo;
 import org.drools.ide.common.assistant.info.drl.RuleLineContentInfo;
 
 public abstract class VariableOption {
-	
-	private static final String VARIABLE_PATTERN = "[\\$\\d\\w]*\\s*:";
-	private static final Pattern pattern = Pattern.compile(VARIABLE_PATTERN);
-	private static List<String> variables = new ArrayList<String>();
-	private static Matcher matcher;
-	
-	protected static void detectCurrentVariables(RuleBasicContentInfo contentInfo) {
-		variables.clear();
-		String lhs = "";
-		List<RuleLineContentInfo> ruleLines = ((RuleLineContentInfo)contentInfo).getRule().getLHSRuleLines();
-		for (RuleLineContentInfo ruleLineContentInfo : ruleLines)
-			lhs = lhs.concat(ruleLineContentInfo.getContent());
-		matcher = pattern.matcher(lhs);
-		String varname;
-		while (matcher.find()) {
-			varname = matcher.group().replace(":", "").trim();
-			addVariableName(varname);
-		}
-	}
-	
-	protected static boolean existsVariableWithSameName(String varname) {
-		return variables.contains(varname);
-	}
-	
-	private static void addVariableName(String variableName) {
-		if (!variables.contains(variableName))
-			variables.add(variableName);
-	}
+
+    private static final String VARIABLE_PATTERN = "[\\$\\d\\w]*\\s*:";
+    private static final Pattern pattern = Pattern.compile(VARIABLE_PATTERN);
+    private static List<String> variables = new ArrayList<String>();
+    private static Matcher matcher;
+
+    protected static void detectCurrentVariables(RuleBasicContentInfo contentInfo) {
+        variables.clear();
+        String lhs = "";
+        List<RuleLineContentInfo> ruleLines = ((RuleLineContentInfo)contentInfo).getRule().getLHSRuleLines();
+        for (RuleLineContentInfo ruleLineContentInfo : ruleLines)
+            lhs = lhs.concat(ruleLineContentInfo.getContent());
+        matcher = pattern.matcher(lhs);
+        String varname;
+        while (matcher.find()) {
+            varname = matcher.group().replace(":", "").trim();
+            addVariableName(varname);
+        }
+    }
+
+    protected static boolean existsVariableWithSameName(String varname) {
+        return variables.contains(varname);
+    }
+
+    private static void addVariableName(String variableName) {
+        if (!variables.contains(variableName))
+            variables.add(variableName);
+    }
 
 }

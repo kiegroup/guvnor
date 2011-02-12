@@ -28,13 +28,13 @@ import org.drools.ide.common.client.factconstraints.customform.CustomFormConfigu
  * @author bauna
  */
 public class WorkingSetConfigData implements PortableObject, Serializable {
-	private static final long serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-	public String name;
-	public String description;
-	public List<ConstraintConfiguration> constraints;
-	public List<CustomFormConfiguration> customForms;
-	
-	public String[] validFacts;
-	public WorkingSetConfigData[] workingSets;	
+    public String name;
+    public String description;
+    public List<ConstraintConfiguration> constraints;
+    public List<CustomFormConfiguration> customForms;
+
+    public String[] validFacts;
+    public WorkingSetConfigData[] workingSets;
 }

@@ -49,12 +49,12 @@ public class EnumDropDown extends ListBox
         final Constants cs = GWT.create( Constants.class );
 
         this.valueChanged = valueChanged;
-		addChangeHandler(new ChangeHandler() {
-			public void onChange(ChangeEvent event) {
-				valueChanged.valueChanged(getItemText(getSelectedIndex()),
-						getValue(getSelectedIndex()));
-			}
-		});
+        addChangeHandler(new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                valueChanged.valueChanged(getItemText(getSelectedIndex()),
+                        getValue(getSelectedIndex()));
+            }
+        });
 
         //if we have to do it lazy, we will hit up the server when the widget gets focus
         if ( dropData.fixedList == null && dropData.queryExpression != null ) {

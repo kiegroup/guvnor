@@ -43,34 +43,34 @@ public class GlobalAreaAssetSelector extends Composite {
     public GlobalAreaAssetSelector(String formatToImport) {
         assetList = new ListBox();
         if(formatToImport == null) {
-        	//default format
-            this.format = AssetFormats.BUSINESS_RULE;        	
+            //default format
+            this.format = AssetFormats.BUSINESS_RULE;
         } else {
-        	this.format = formatToImport;
+            this.format = formatToImport;
         }
        
 
         Scheduler.get().scheduleDeferred( new Command() {
-			public void execute() {
-		        loadAssetList();
-			}
+            public void execute() {
+                loadAssetList();
+            }
         });
 
         initWidget( assetList );
     }
     
-	private void loadAssetList() {
-		RepositoryServiceFactory.getService().listAssetsWithPackageName("globalArea", new String[]{format}, 0, -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, new GenericCallback<TableDataResult>() {
+    private void loadAssetList() {
+        RepositoryServiceFactory.getService().listAssetsWithPackageName("globalArea", new String[]{format}, 0, -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, new GenericCallback<TableDataResult>() {
 
             public void onSuccess(TableDataResult result) {
 
-				for (int i = 0; i < result.data.length; i++) {
-					assetList.addItem(result.data[i].getDisplayName(), result.data[i].id);
+                for (int i = 0; i < result.data.length; i++) {
+                    assetList.addItem(result.data[i].getDisplayName(), result.data[i].id);
                     if (currentlySelectedAsset != null &&
-                    		result.data[i].equals( currentlySelectedAsset )) {
+                            result.data[i].equals( currentlySelectedAsset )) {
                         assetList.setSelectedIndex( i );
-                    }						  
-				}
+                    }
+                }
 
                 assetList.addChangeHandler(new ChangeHandler() {
                     public void onChange(ChangeEvent sender) {
@@ -79,18 +79,18 @@ public class GlobalAreaAssetSelector extends Composite {
                 });
             }
             
-	        public void onFailure(Throwable t) {
-	            if ( t.getMessage().indexOf( "AuthorizationException" ) > -1 ) { 
+            public void onFailure(Throwable t) {
+                if ( t.getMessage().indexOf( "AuthorizationException" ) > -1 ) {
                     //Do nothing, just leave asset list empty.
-	            	//Window.alert( "No permission to access global area" );
+                    //Window.alert( "No permission to access global area" );
                 } else {
                     super.onFailure( t );
                 }
             }
 
         });
-	}
-	
+    }
+
     /**
      * Returns the selected package.
      */

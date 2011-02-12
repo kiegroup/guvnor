@@ -25,105 +25,105 @@ import org.drools.ide.common.assistant.refactor.drl.VariableBinding;
 
 public class VariableBindingTest {
 
-	private String line;
-	private String response;
+    private String line;
+    private String response;
 
     @Before
     public void setUp() throws Exception {
-		line = "\tEmployee($company : company, $age : age > 80, salary > 400)";
-	}
+        line = "\tEmployee($company : company, $age : age > 80, salary > 400)";
+    }
 
     @Test
     public void testFieldWithVariableAssignedTest1() {
-		response = VariableBinding.execute(line, 24);
-	    assertEquals(true, response.equals(line));
-	}
+        response = VariableBinding.execute(line, 24);
+        assertEquals(true, response.equals(line));
+    }
 
     @Test
     public void testClassNameWithoutVariableAssigned() {
-		response = VariableBinding.execute(line, 4);
-	    assertEquals(false, response.equals(line));
-	}
+        response = VariableBinding.execute(line, 4);
+        assertEquals(false, response.equals(line));
+    }
 
     @Test
     public void testFieldWithVariableAssignedTest2() {
-		response = VariableBinding.execute(line, 39);
-	    assertEquals(true, response.equals(line));
-	}
+        response = VariableBinding.execute(line, 39);
+        assertEquals(true, response.equals(line));
+    }
 
     @Test
     public void testAssignVariableInsideTheComparator() {
-		response = VariableBinding.execute(line, 50);
-	    assertEquals(false, response.equals(line));
-	}
+        response = VariableBinding.execute(line, 50);
+        assertEquals(false, response.equals(line));
+    }
 
     @Test
     public void testInsideFieldComparator() {
-		response = VariableBinding.execute(line, 58);
-	    assertEquals(true, response.equals(line));
-	}
+        response = VariableBinding.execute(line, 58);
+        assertEquals(true, response.equals(line));
+    }
 
     @Test
     public void testComplexLineTestMustAssign() {
-		line = "$ma20 : Double() from accumulate( $r2:ClosePrice(close, this != $r1, this after [0ms,20ms] $r1) , average ( $value ))";
-		response = VariableBinding.execute(line, 53);
-	    assertEquals(false, response.equals(line));
-	}
+        line = "$ma20 : Double() from accumulate( $r2:ClosePrice(close, this != $r1, this after [0ms,20ms] $r1) , average ( $value ))";
+        response = VariableBinding.execute(line, 53);
+        assertEquals(false, response.equals(line));
+    }
 
     @Test
     public void testComplexLineTestDontMustAssign() {
-		line = "$ma20 : Double() from accumulate( $r2:ClosePrice($close : close, this != $r1, this after [0ms,20ms] $r1) , average ( $value ))";
-		response = VariableBinding.execute(line, 61);
-	    assertEquals(true, response.equals(line));
-	}
+        line = "$ma20 : Double() from accumulate( $r2:ClosePrice($close : close, this != $r1, this after [0ms,20ms] $r1) , average ( $value ))";
+        response = VariableBinding.execute(line, 61);
+        assertEquals(true, response.equals(line));
+    }
 
     @Test
     public void testComplexLineClosePriceMustAssign() {
-		line = "$ma20 : Double() from accumulate( ClosePrice($close : close, this != $r1, this after [0ms,20ms] $r1) , average ( $value ))";
-		response = VariableBinding.execute(line, 43);
-	    assertEquals(false, response.equals(line));
-	}
+        line = "$ma20 : Double() from accumulate( ClosePrice($close : close, this != $r1, this after [0ms,20ms] $r1) , average ( $value ))";
+        response = VariableBinding.execute(line, 43);
+        assertEquals(false, response.equals(line));
+    }
 
     @Test
     public void testComplexLineClosePriceDontMustAssign() {
-		line = "$ma20 : Double() from accumulate( $cp : ClosePrice($close : close, this != $r1, this after [0ms,20ms] $r1) , average ( $value ))";
-		response = VariableBinding.execute(line, 36);
-	    assertEquals(true, response.equals(line));
-	}
+        line = "$ma20 : Double() from accumulate( $cp : ClosePrice($close : close, this != $r1, this after [0ms,20ms] $r1) , average ( $value ))";
+        response = VariableBinding.execute(line, 36);
+        assertEquals(true, response.equals(line));
+    }
 
-//	public void testThisDontWorks() {
-//		line = "$ma20 : Double() from accumulate( $r2:ClosePrice($close : close, this != $r1, this after [0ms,20ms] $r1) , average ( $value ))";
-//		response = VariableBinding.execute(line, 121);
-//		System.out.println(response);
-//	    assertEquals(true, response.equals(line));
-//	}
+//    public void testThisDontWorks() {
+//        line = "$ma20 : Double() from accumulate( $r2:ClosePrice($close : close, this != $r1, this after [0ms,20ms] $r1) , average ( $value ))";
+//        response = VariableBinding.execute(line, 121);
+//        System.out.println(response);
+//        assertEquals(true, response.equals(line));
+//    }
 
     @Test
     public void testSampleDRL() {
-		line = "\t\tMessage( status == Message.HELLO, myMessage : message )\n";
-		response = VariableBinding.execute(line, 3);
-	    assertEquals(false, response.equals(line));
-	}
+        line = "\t\tMessage( status == Message.HELLO, myMessage : message )\n";
+        response = VariableBinding.execute(line, 3);
+        assertEquals(false, response.equals(line));
+    }
 
     @Test
     public void testWithoutSpacesOrTab() {
-		line = "Message( status == Message.HELLO, myMessage : message )\n";
-		response = VariableBinding.execute(line, 0);
-	    assertEquals(false, response.equals(line));
-	}
+        line = "Message( status == Message.HELLO, myMessage : message )\n";
+        response = VariableBinding.execute(line, 0);
+        assertEquals(false, response.equals(line));
+    }
 
     @Test
     public void testWithoutSpacesOrTabButWithVariableAssigned() {
-		line = "m : Message( status == Message.HELLO, myMessage : message )\n";
-		response = VariableBinding.execute(line, 1);
-	    assertEquals(true, response.equals(line));
-	}
+        line = "m : Message( status == Message.HELLO, myMessage : message )\n";
+        response = VariableBinding.execute(line, 1);
+        assertEquals(true, response.equals(line));
+    }
 
     @Test
     public void testWithoutSpaceOnLeftOfField() {
-		line = "m : Message( status == Message.HELLO,message )\n";
-		response = VariableBinding.execute(line, 37);
-	    assertEquals(false, response.equals(line));
-	}
+        line = "m : Message( status == Message.HELLO,message )\n";
+        response = VariableBinding.execute(line, 37);
+        assertEquals(false, response.equals(line));
+    }
 
 }

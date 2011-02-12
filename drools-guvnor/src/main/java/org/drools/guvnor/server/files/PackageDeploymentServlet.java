@@ -138,145 +138,145 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                                                       IOException {  
         
         doAuthorizedAction(req, res, new A() {
-			public void a() throws Exception {
-		        PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper( req.getRequestURI() );
+            public void a() throws Exception {
+                PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper( req.getRequestURI() );
 
-		        log.info( "PackageName: " + helper.getPackageName() );
-		        log.info( "PackageVersion: " + helper.getVersion() );
-		        log.info( "PackageIsLatest: " + helper.isLatest() );
-		        log.info( "PackageIsSource: " + helper.isSource() );
+                log.info( "PackageName: " + helper.getPackageName() );
+                log.info( "PackageVersion: " + helper.getVersion() );
+                log.info( "PackageIsLatest: " + helper.isLatest() );
+                log.info( "PackageIsSource: " + helper.isSource() );
 
-		        ByteArrayOutputStream out = new ByteArrayOutputStream();
-		        FileManagerUtils fm = getFileManager();
-		        String fileName = null;
-		        if ( helper.isSource() ) {
-		            if ( helper.isAsset() ) {
-		                fileName = fm.loadSourceAsset( helper.getPackageName(),
-		                                               helper.getVersion(),
-		                                               helper.isLatest(),
-		                                               helper.getAssetName(),
-		                                               out );
-		            } else {
-		                fileName = fm.loadSourcePackage( helper.getPackageName(),
-		                                                 helper.getVersion(),
-		                                                 helper.isLatest(),
-		                                                 out );
-		            }
-		        } else if ( helper.isDocumentation() ) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                FileManagerUtils fm = getFileManager();
+                String fileName = null;
+                if ( helper.isSource() ) {
+                    if ( helper.isAsset() ) {
+                        fileName = fm.loadSourceAsset( helper.getPackageName(),
+                                                       helper.getVersion(),
+                                                       helper.isLatest(),
+                                                       helper.getAssetName(),
+                                                       out );
+                    } else {
+                        fileName = fm.loadSourcePackage( helper.getPackageName(),
+                                                         helper.getVersion(),
+                                                         helper.isLatest(),
+                                                         out );
+                    }
+                } else if ( helper.isDocumentation() ) {
 
-		            PackageItem pkg = fm.getRepository().loadPackage( helper.getPackageName() );
+                    PackageItem pkg = fm.getRepository().loadPackage( helper.getPackageName() );
 
-		            GuvnorDroolsDocsBuilder builder;
-		            try {
-		                builder = GuvnorDroolsDocsBuilder.getInstance( pkg );
-		            } catch ( DroolsParserException e ) {
-		                throw new ServletException( "Could not parse the rule package." );
+                    GuvnorDroolsDocsBuilder builder;
+                    try {
+                        builder = GuvnorDroolsDocsBuilder.getInstance( pkg );
+                    } catch ( DroolsParserException e ) {
+                        throw new ServletException( "Could not parse the rule package." );
 
-		            }
+                    }
 
-		            fileName = "documentation.pdf";
+                    fileName = "documentation.pdf";
 
-		            builder.writePDF( out );
+                    builder.writePDF( out );
 
-		        } else if ( helper.isPng() ) {
-		            PackageItem pkg = fm.getRepository().loadPackage( helper.getPackageName() );
-		            AssetItem asset = pkg.loadAsset(helper.getAssetName());		            
+                } else if ( helper.isPng() ) {
+                    PackageItem pkg = fm.getRepository().loadPackage( helper.getPackageName() );
+                    AssetItem asset = pkg.loadAsset(helper.getAssetName());
 
-		            fileName = getFileManager().loadFileAttachmentByUUID( asset.getUUID(),
-		                                                                         out );
-		        } else {
-		            if ( req.getRequestURI().endsWith( "SCENARIOS" ) ) {
-		                doRunScenarios( helper,
-		                                out );
-		            } else if ( req.getRequestURI().endsWith( "ChangeSet.xml" ) ) {
-		                //here be dragons !
-		                String url = req.getRequestURL().toString().replace( "/ChangeSet.xml",
-		                                                                     "" );
-		                fileName = "ChangeSet.xml";
-		                String xml = "";
-		                xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'\n";
-		                xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'\n";
-		                xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >\n";
-		                xml += "    <add>\n ";
-		                xml += "        <resource source='" + url + "' type='PKG' />\n";
-		                xml += "    </add>\n";
-		                xml += "</change-set>";
-		                out.write( xml.getBytes() );
-		            } else if(req.getRequestURI().endsWith( "MODEL")) {
-		                 PackageItem pkg = fm.getRepository().loadPackage(helper.getPackageName());
-		                 AssetItemIterator it = pkg.listAssetsByFormat(AssetFormats.MODEL);
-		                 BufferedInputStream inputFile = null;
-		                 byte[] data = new byte[1000];
-		                 int count = 0;
-		                 int numberOfAssets = 0;
-		                 while(it.hasNext()){
-		                	 it.next();		                 		
-		                	 numberOfAssets++;
-		                 }
+                    fileName = getFileManager().loadFileAttachmentByUUID( asset.getUUID(),
+                                                                                 out );
+                } else {
+                    if ( req.getRequestURI().endsWith( "SCENARIOS" ) ) {
+                        doRunScenarios( helper,
+                                        out );
+                    } else if ( req.getRequestURI().endsWith( "ChangeSet.xml" ) ) {
+                        //here be dragons !
+                        String url = req.getRequestURL().toString().replace( "/ChangeSet.xml",
+                                                                             "" );
+                        fileName = "ChangeSet.xml";
+                        String xml = "";
+                        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'\n";
+                        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'\n";
+                        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >\n";
+                        xml += "    <add>\n ";
+                        xml += "        <resource source='" + url + "' type='PKG' />\n";
+                        xml += "    </add>\n";
+                        xml += "</change-set>";
+                        out.write( xml.getBytes() );
+                    } else if(req.getRequestURI().endsWith( "MODEL")) {
+                         PackageItem pkg = fm.getRepository().loadPackage(helper.getPackageName());
+                         AssetItemIterator it = pkg.listAssetsByFormat(AssetFormats.MODEL);
+                         BufferedInputStream inputFile = null;
+                         byte[] data = new byte[1000];
+                         int count = 0;
+                         int numberOfAssets = 0;
+                         while(it.hasNext()){
+                             it.next();
+                             numberOfAssets++;
+                         }
 
-		                 if (numberOfAssets==0){
-		                	 res.setContentType( "text/html" );
-		                	 PrintWriter outEM = res.getWriter();
-		                	 outEM.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 " +
-		                			 "Transitional//EN\">\n" +
-		                			 "<HTML>\n" +
-		                			 "<HEAD><TITLE>Empty Model</TITLE></HEAD>\n" +
-		                			 "<BODY>\n" +
-		                			 "<H1>EMPTY MODEL</H1>\n" +
-		                	 "</BODY></HTML>");
-		                	 return;
-		                 }
+                         if (numberOfAssets==0){
+                             res.setContentType( "text/html" );
+                             PrintWriter outEM = res.getWriter();
+                             outEM.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 " +
+                                     "Transitional//EN\">\n" +
+                                     "<HTML>\n" +
+                                     "<HEAD><TITLE>Empty Model</TITLE></HEAD>\n" +
+                                     "<BODY>\n" +
+                                     "<H1>EMPTY MODEL</H1>\n" +
+                             "</BODY></HTML>");
+                             return;
+                         }
 
-		                 if(numberOfAssets>1){
-		                	 fileName="Model.zip";
-		                	 inputFile = new BufferedInputStream(zipModel(pkg));
-		                	 while((count = inputFile.read(data,0,1000)) != -1)
-		                	 {      
-		                		 out.write(data, 0, count);
-		                	 }
+                         if(numberOfAssets>1){
+                             fileName="Model.zip";
+                             inputFile = new BufferedInputStream(zipModel(pkg));
+                             while((count = inputFile.read(data,0,1000)) != -1)
+                             {
+                                 out.write(data, 0, count);
+                             }
 
-		                	 inputFile.close();	                 		
-		                 }else{ 
-		                	 fileName="ModelJar.jar";		                 		
-		                	 inputFile = new BufferedInputStream(zipModel(pkg));
-		                	 while((count = inputFile.read(data,0,1000)) != -1)
-		                	 {      
-		                		 out.write(data, 0, count);
-		                	 }							       			                 		
+                             inputFile.close();
+                         }else{
+                             fileName="ModelJar.jar";
+                             inputFile = new BufferedInputStream(zipModel(pkg));
+                             while((count = inputFile.read(data,0,1000)) != -1)
+                             {
+                                 out.write(data, 0, count);
+                             }
 
-		                	 inputFile.close();
+                             inputFile.close();
 
-		                 }
+                         }
 
 
-		            } else if (req.getRequestURI().contains("/SpringContext/")) {
+                    } else if (req.getRequestURI().contains("/SpringContext/")) {
 
-		            	String uri = req.getRequestURI();
-		            	int lastIndexOfSlash = uri.lastIndexOf('/');
-		            	String assetName = uri.substring(lastIndexOfSlash + 1);
-		            	fileName = assetName + ".xml";
+                        String uri = req.getRequestURI();
+                        int lastIndexOfSlash = uri.lastIndexOf('/');
+                        String assetName = uri.substring(lastIndexOfSlash + 1);
+                        fileName = assetName + ".xml";
 
-		            	PackageItem pkg = fm.getRepository().loadPackage( helper.getPackageName() );
-		            	AssetItem asset = pkg.loadAsset(assetName);
-		            	out.write(asset.getBinaryContentAsBytes());	
+                        PackageItem pkg = fm.getRepository().loadPackage( helper.getPackageName() );
+                        AssetItem asset = pkg.loadAsset(assetName);
+                        out.write(asset.getBinaryContentAsBytes());
 
-		            } else {
-		            	fileName = fm.loadBinaryPackage( helper.getPackageName(),
-		            			helper.getVersion(),
-		            			helper.isLatest(),
-		            			out );
-		            }
+                    } else {
+                        fileName = fm.loadBinaryPackage( helper.getPackageName(),
+                                helper.getVersion(),
+                                helper.isLatest(),
+                                out );
+                    }
 
-		        }
+                }
 
-		        res.setContentType( "application/x-download" );
-		        res.setHeader( "Content-Disposition",
-		                            "attachment; filename=" + fileName + ";" );
-		        res.setContentLength( out.size() );
-		        res.getOutputStream().write( out.toByteArray() );
-		        res.getOutputStream().flush();
-			}
-        });    	
+                res.setContentType( "application/x-download" );
+                res.setHeader( "Content-Disposition",
+                                    "attachment; filename=" + fileName + ";" );
+                res.setContentLength( out.size() );
+                res.getOutputStream().write( out.toByteArray() );
+                res.getOutputStream().flush();
+            }
+        });
     }
 
     private void doRunScenarios(PackageDeploymentURIHelper helper,
@@ -302,25 +302,25 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     }
 
     /**
-	  *  Zip Model 
-	  */
+      *  Zip Model
+      */
    public InputStream zipModel(PackageItem pkg){
-		
-   	LinkedList<AssetItem> jarAssets = new LinkedList<AssetItem>();
-   	AssetZipper assetZipper = null;
-     	
-   	Iterator<AssetItem> it = pkg.getAssets();
-   		while (it.hasNext()){
-   			AssetItem asset = it.next();
-   			if(asset.getFormat().contentEquals("jar")) jarAssets.add(asset);
-   		}
-   		if(jarAssets.size() != 0){
-   			assetZipper = new AssetZipper(jarAssets,pkg);
-   			
-   			return assetZipper.zipAssets();
-   		}
-   		    		    		
-   		return null;    	    	
+
+       LinkedList<AssetItem> jarAssets = new LinkedList<AssetItem>();
+       AssetZipper assetZipper = null;
+
+       Iterator<AssetItem> it = pkg.getAssets();
+           while (it.hasNext()){
+               AssetItem asset = it.next();
+               if(asset.getFormat().contentEquals("jar")) jarAssets.add(asset);
+           }
+           if(jarAssets.size() != 0){
+               assetZipper = new AssetZipper(jarAssets,pkg);
+
+               return assetZipper.zipAssets();
+           }
+
+           return null;
    }
     
 }

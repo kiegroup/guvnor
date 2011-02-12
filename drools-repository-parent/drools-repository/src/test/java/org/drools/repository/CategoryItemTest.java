@@ -40,7 +40,7 @@ import static org.junit.Assert.fail;
 
 public class CategoryItemTest extends RepositoryTestCase {
 
-	@Test
+    @Test
     public void testTagItem() throws Exception {
 
         final CategoryItem root = getRepo().loadCategory("/");
@@ -81,7 +81,7 @@ public class CategoryItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testCreateCateories() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -106,10 +106,10 @@ public class CategoryItemTest extends RepositoryTestCase {
         }
     }
 
-	@Test
+    @Test
     public void testGetChildTags() {
-		
-		final CategoryItem root = getRepo().loadCategory("/");
+
+        final CategoryItem root = getRepo().loadCategory("/");
 
         root.addCategory("TestTag", "nothing to see");
         
@@ -135,7 +135,7 @@ public class CategoryItemTest extends RepositoryTestCase {
         assertEquals(2, childTags.size());
     }
 
-	@Test
+    @Test
     public void testGetChildTag() {
         CategoryItem root = getRepo().loadCategory("/");
         CategoryItem tagItem1 = root.addCategory("testGetChildTag", "yeah");
@@ -158,7 +158,7 @@ public class CategoryItemTest extends RepositoryTestCase {
         assertEquals(childTagItem1, childTagItem2);
     }
 
-	@Test
+    @Test
     public void testGetFullPath() {
 
         CategoryItem root = getRepo().loadCategory("/");
@@ -177,7 +177,7 @@ public class CategoryItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testRemoveCategoryUneeded() {
         RulesRepository repo = getRepo();
         repo.loadCategory("/").addCategory("testRemoveCat", "a");
@@ -195,7 +195,7 @@ public class CategoryItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testRemoveCategoryLinkedWithArchived() {
         RulesRepository repo = getRepo();
         repo.loadCategory("/").addCategory("testRemoveCategoryWithArchivedCat", "a");
@@ -213,58 +213,58 @@ public class CategoryItemTest extends RepositoryTestCase {
 
         as.remove();
     }
-	/**
-	 * This removed the complexity of testRemoveCategoryLinkedWithArchived, and
-	 * was added to show a problem in ModeShape: https://jira.jboss.org/browse/MODE-877
-	 */
-	@Test 
-	public void simpleRemoveCategoryLinkedWithArchived() {
-		try {
-			RulesRepository repo = getRepo();	
-			Session session = repo.getSession();
+    /**
+     * This removed the complexity of testRemoveCategoryLinkedWithArchived, and
+     * was added to show a problem in ModeShape: https://jira.jboss.org/browse/MODE-877
+     */
+    @Test
+    public void simpleRemoveCategoryLinkedWithArchived() {
+        try {
+            RulesRepository repo = getRepo();
+            Session session = repo.getSession();
 
-			Node rn = session.getRootNode();
-			Node asset = rn.addNode("asset","drools:assetNodeType");
-			//Adding some required properties
-			asset.setProperty("drools:packageName", "one");
-			asset.setProperty("drools:title", "title");
-			asset.setProperty("drools:format", "format");
-			asset.setProperty("drools:description", "description");
-			Calendar lastModified = Calendar.getInstance();
-			asset.setProperty("drools:lastModified", lastModified);
+            Node rn = session.getRootNode();
+            Node asset = rn.addNode("asset","drools:assetNodeType");
+            //Adding some required properties
+            asset.setProperty("drools:packageName", "one");
+            asset.setProperty("drools:title", "title");
+            asset.setProperty("drools:format", "format");
+            asset.setProperty("drools:description", "description");
+            Calendar lastModified = Calendar.getInstance();
+            asset.setProperty("drools:lastModified", lastModified);
             //Adding a category
-			Node category = rn.addNode("category","drools:categoryNodeType");
-			//adding the category to the asset
-			Value[] newTagValues = new Value[1];
+            Node category = rn.addNode("category","drools:categoryNodeType");
+            //adding the category to the asset
+            Value[] newTagValues = new Value[1];
             newTagValues[0] = asset.getSession().getValueFactory().createValue( category );
             asset.setProperty( "drools:categoryReference",
                     newTagValues );
             //save the session
-			session.save();
-			//checking that is there.
-			PropertyIterator pi = category.getReferences();
-			while (pi.hasNext()) {
-				Property property = pi.nextProperty();
-				String name = property.getName();
-				System.out.println("Name=" + name);
-				assertEquals("drools:categoryReference", name);
-			}
-			//removing the category from the asset
-			Value[] updatedTagValues = new Value[1];
-			updatedTagValues[0] = null;
-			asset.setProperty( "drools:categoryReference",
-					updatedTagValues );
-			//session.save();
-			//removing the category itself
-			category.remove();
-	        //saving the session, leads to a Referential Integrity Exception on ModeShape: 
-			//https://jira.jboss.org/browse/MODE-877
-			session.save();
+            session.save();
+            //checking that is there.
+            PropertyIterator pi = category.getReferences();
+            while (pi.hasNext()) {
+                Property property = pi.nextProperty();
+                String name = property.getName();
+                System.out.println("Name=" + name);
+                assertEquals("drools:categoryReference", name);
+            }
+            //removing the category from the asset
+            Value[] updatedTagValues = new Value[1];
+            updatedTagValues[0] = null;
+            asset.setProperty( "drools:categoryReference",
+                    updatedTagValues );
+            //session.save();
+            //removing the category itself
+            category.remove();
+            //saving the session, leads to a Referential Integrity Exception on ModeShape:
+            //https://jira.jboss.org/browse/MODE-877
+            session.save();
 
-		} catch (RepositoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			fail();
-		}
-	}
+        } catch (RepositoryException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            fail();
+        }
+    }
 }

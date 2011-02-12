@@ -31,15 +31,15 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  */
 public class CallMethodLabelButton extends HorizontalPanel {
 
-	private Constants constants = ((Constants) GWT.create(Constants.class));
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
-	public CallMethodLabelButton(ExecutionTrace previousEx, Scenario scenario,
-			ExecutionTrace executionTrace, ScenarioWidget scenarioWidget) {
+    public CallMethodLabelButton(ExecutionTrace previousEx, Scenario scenario,
+            ExecutionTrace executionTrace, ScenarioWidget scenarioWidget) {
 
-		add(new CallMethodOnNewDataButton(previousEx, scenario, executionTrace,
-				scenarioWidget));
-		add(new SmallLabel(constants.CALL()));
+        add(new CallMethodOnNewDataButton(previousEx, scenario, executionTrace,
+                scenarioWidget));
+        add(new SmallLabel(constants.CALL()));
 
-	}
+    }
 
 }

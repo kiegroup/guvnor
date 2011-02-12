@@ -83,11 +83,11 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
     protected void doLayout() {
 
-    	int row = 0;
+        int row = 0;
         if ( pattern.getFactPattern() != null ) {
             FactPattern fact = pattern.getFactPattern();
             if ( fact != null ) {
-            	this.layout.setWidget( row++, 0, createFactPatternWidget( fact ) );
+                this.layout.setWidget( row++, 0, createFactPatternWidget( fact ) );
             }
         }
 

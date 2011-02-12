@@ -47,42 +47,42 @@ public class MailboxService {
     private RulesRepository repository;
 
     public static MailboxService getInstance() { 
-    	if (INSTANCE==null) {
-	        INSTANCE = new MailboxService();
-	        executor = Executors.newSingleThreadExecutor();
-    	}
-    	return INSTANCE; 
+        if (INSTANCE==null) {
+            INSTANCE = new MailboxService();
+            executor = Executors.newSingleThreadExecutor();
+        }
+        return INSTANCE;
     }
 
     private MailboxService() {}
 
     public void init(RulesRepository systemRepo) {
         log.info("Starting mailbox service");
-	    this.repository = systemRepo;
-	    log.info("mailbox service is up");
+        this.repository = systemRepo;
+        log.info("mailbox service is up");
     }
     
     public void stop() {
-    	log.info("Shutting down mailbox service");
-    	executor.shutdown();
-    	
-    	try {
-    		System.out.println("IS DOWN: " + executor.isTerminated());
-			if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
-				executor.shutdownNow();
-				System.out.println("IS DOWN2: " + executor.isTerminated());
-				if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
-					System.err.println("executor did not terminate");
-				}
-			}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			executor.shutdownNow();
-			Thread.currentThread().interrupt();
-		}
-    	INSTANCE=null;
-    	log.info("Mailbox service is shutdown.");
-    	
+        log.info("Shutting down mailbox service");
+        executor.shutdown();
+
+        try {
+            System.out.println("IS DOWN: " + executor.isTerminated());
+            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+                System.out.println("IS DOWN2: " + executor.isTerminated());
+                if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                    System.err.println("executor did not terminate");
+                }
+            }
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+        INSTANCE=null;
+        log.info("Mailbox service is shutdown.");
+
     }
 
     public void wakeUp() {
@@ -111,7 +111,7 @@ public class MailboxService {
                         UserInbox inbox = new UserInbox(repository, toUser);
                         Set<String> recentEdited = makeSetOf(inbox.loadRecentEdited());
                         for (UserInfo.InboxEntry e : es) {
-                        	//the user who edited the item wont receive a message in inbox. 
+                            //the user who edited the item wont receive a message in inbox.
                             if (!e.from.equals(toUser) && recentEdited.contains(e.assetUUID)) {
                                 inbox.addToIncoming(e.assetUUID, e.note, e.from);
                             }
@@ -142,15 +142,15 @@ public class MailboxService {
         final String from = item.getRulesRepository().getSession().getUserID();
         executor.execute(new Runnable() {
             public void run() {
-            	if (repository!=null) {
-					// write the message to the admins outbox
-					UserInbox inbox = new UserInbox(repository, MAILMAN);
-					inbox.addToIncoming(id, name, from);
-					processOutgoing();
-	
-					repository.save();
-            	}
-			}
+                if (repository!=null) {
+                    // write the message to the admins outbox
+                    UserInbox inbox = new UserInbox(repository, MAILMAN);
+                    inbox.addToIncoming(id, name, from);
+                    processOutgoing();
+
+                    repository.save();
+                }
+            }
         });
     }
 

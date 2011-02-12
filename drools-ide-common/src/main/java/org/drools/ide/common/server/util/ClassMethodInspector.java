@@ -50,17 +50,17 @@ public class ClassMethodInspector {
             String methodName = aMethod.getName();
 
             if ( isNotGetterOrSetter(aMethod) && isReasonableMethod( clazz,
-            		methodName ) && Modifier.isPublic( modifiers ) ) {
+                    methodName ) && Modifier.isPublic( modifiers ) ) {
 
                 Class<?>[] listParam = aMethod.getParameterTypes();
                 
-				MethodInfo info = new MethodInfo(methodName,
-						solveParams(listParam), 
-						aMethod.getReturnType(),
-						SuggestionCompletionEngineBuilder
-								.obtainGenericType(aMethod.getGenericReturnType()),
-						converter.translateClassToGenericType(clazz));
-				this.methods.add(info);
+                MethodInfo info = new MethodInfo(methodName,
+                        solveParams(listParam),
+                        aMethod.getReturnType(),
+                        SuggestionCompletionEngineBuilder
+                                .obtainGenericType(aMethod.getGenericReturnType()),
+                        converter.translateClassToGenericType(clazz));
+                this.methods.add(info);
             }
         }
     }
@@ -136,10 +136,10 @@ public class ClassMethodInspector {
      * @param methodName
      */
     private boolean isNotGetterOrSetter(Method m) {
-    	String name = m.getName();
+        String name = m.getName();
         return !((name.length() > 3 && (name.startsWith( "set" ) || name.startsWith( "get" ))) ||
-        	(name.length() > 2 && name.startsWith("is") 
-        			&& (Boolean.class.isAssignableFrom(m.getReturnType()) || Boolean.TYPE == m.getReturnType())));
+            (name.length() > 2 && name.startsWith("is")
+                    && (Boolean.class.isAssignableFrom(m.getReturnType()) || Boolean.TYPE == m.getReturnType())));
         
     }
 

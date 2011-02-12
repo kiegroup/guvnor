@@ -29,21 +29,21 @@ import org.drools.repository.RulesRepositoryException;
  */
 public class AssetFormatHelper {
 
-	public static String[] listRegisteredTypes() {
-		try {
-			Field[] flds = AssetFormats.class.getFields();
-			List<String> r = new ArrayList<String>();
-			for (int i = 0; i < flds.length; i++) {
-				Object val =  flds[i].get(AssetFormats.class);
-				if (val instanceof String) {
-					r.add((String) val);
-				}
+    public static String[] listRegisteredTypes() {
+        try {
+            Field[] flds = AssetFormats.class.getFields();
+            List<String> r = new ArrayList<String>();
+            for (int i = 0; i < flds.length; i++) {
+                Object val =  flds[i].get(AssetFormats.class);
+                if (val instanceof String) {
+                    r.add((String) val);
+                }
 
-			}
-			return r.toArray(new String[r.size()]);
-		} catch (Exception e) {
-			throw new RulesRepositoryException(e);
-		}
-	}
+            }
+            return r.toArray(new String[r.size()]);
+        } catch (Exception e) {
+            throw new RulesRepositoryException(e);
+        }
+    }
 
 }

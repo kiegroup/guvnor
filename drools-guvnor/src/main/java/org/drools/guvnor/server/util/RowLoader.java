@@ -77,7 +77,7 @@ public class RowLoader {
 
         InputStream in = RowLoader.class.getResourceAsStream( "/" + resourcename + ".properties" );
         if (in == null) {
-        	throw new IllegalStateException("can't find resource name: /" + resourcename + ".properties");
+            throw new IllegalStateException("can't find resource name: /" + resourcename + ".properties");
         }
         BufferedReader reader = new BufferedReader( new InputStreamReader( in ) );
         List<String> fields = new ArrayList<String>();

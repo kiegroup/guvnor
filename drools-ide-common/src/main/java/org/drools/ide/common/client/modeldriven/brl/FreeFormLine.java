@@ -24,5 +24,5 @@ package org.drools.ide.common.client.modeldriven.brl;
  *
  */
 public class FreeFormLine implements IAction, IPattern {
-	public String text;
+    public String text;
 }

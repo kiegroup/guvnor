@@ -223,9 +223,9 @@ public class ClassMethodInspectorTest {
     
     private static class Converter implements ClassToGenericClassConverter {
 
-		public String translateClassToGenericType(Class<?> type) {
-			return null;
-		}
-    	
+        public String translateClassToGenericType(Class<?> type) {
+            return null;
+        }
+
     }
 }

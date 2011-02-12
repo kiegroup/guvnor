@@ -28,7 +28,7 @@ import static org.junit.Assert.assertFalse;
 
 public class ArchiveItemTest extends RepositoryTestCase {
 
-	@Test
+    @Test
     public void testFindArchivedAssets() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
 
@@ -63,7 +63,7 @@ public class ArchiveItemTest extends RepositoryTestCase {
         assertTrue( item.isArchived() );
     }
 
-	@Test
+    @Test
     public void testArchiveBooleanFlag() throws Exception {
         AssetItem item = RepositorySessionUtil.getRepository().loadDefaultPackage().addAsset( "testArchiveBooleanFlag",
                                                                                               "yeah" );
@@ -76,18 +76,18 @@ public class ArchiveItemTest extends RepositoryTestCase {
         item.checkin( "lalalala" );
     }
 
-	@Test
-	public void testLoadArchivedAsset() throws Exception {
-		AssetItem itemAdd = RepositorySessionUtil.getRepository().loadDefaultPackage().addAsset( "testArchiveBooleanFlag",
+    @Test
+    public void testLoadArchivedAsset() throws Exception {
+        AssetItem itemAdd = RepositorySessionUtil.getRepository().loadDefaultPackage().addAsset( "testArchiveBooleanFlag",
         "yeah" );
-		itemAdd.archiveItem( true );
-		
+        itemAdd.archiveItem( true );
+
         AssetItem item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testArchiveBooleanFlag" );
         System.out.println( item );
         assertTrue( item.isArchived() );
     }
 
-	@Test
+    @Test
     public void testFindArchivedAssetsByCategory() {
         getRepo().loadCategory( "/" ).addCategory( "testFindRulesByCatArchive",
                                                    "yeah" );
@@ -176,7 +176,7 @@ public class ArchiveItemTest extends RepositoryTestCase {
 
         // not archived until repository isn't save.
 /*        assertEquals( 1,
-        		repo.findAssetsByName( "findRulesByNameArchived1" ).getSize() );*/
+                repo.findAssetsByName( "findRulesByNameArchived1" ).getSize() );*/
 
         List list = iteratorToList( repo.findAssetsByName( "findRulesByNameArchived1" ) );
         assertEquals( 1,

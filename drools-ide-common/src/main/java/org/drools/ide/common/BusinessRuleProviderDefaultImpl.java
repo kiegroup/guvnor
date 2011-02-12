@@ -30,27 +30,27 @@ import org.drools.io.Resource;
 
 public class BusinessRuleProviderDefaultImpl implements Service, BusinessRuleProvider {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.drools.compiler.BusinessRuleProvider#getKnowledgeReader(org.drools
-	 * .io.Resource, org.drools.lang.Expander)
-	 */
-	public Reader getKnowledgeReader(Resource ruleResource) throws IOException {
-		String brl = loadBrlFile(ruleResource.getReader());
-		RuleModel model = BRXMLPersistence.getInstance().unmarshal(brl);
-		return new StringReader(BRDRLPersistence.getInstance().marshal(model));
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.drools.compiler.BusinessRuleProvider#getKnowledgeReader(org.drools
+     * .io.Resource, org.drools.lang.Expander)
+     */
+    public Reader getKnowledgeReader(Resource ruleResource) throws IOException {
+        String brl = loadBrlFile(ruleResource.getReader());
+        RuleModel model = BRXMLPersistence.getInstance().unmarshal(brl);
+        return new StringReader(BRDRLPersistence.getInstance().marshal(model));
+    }
 
-	private String loadBrlFile(final Reader drl) throws IOException {
-		final StringBuilder buf = new StringBuilder();
-		final BufferedReader input = new BufferedReader(drl);
-		String line = null;
-		while ((line = input.readLine()) != null) {
-			buf.append(line);
-			buf.append("\n");
-		}
-		return buf.toString();
-	}
+    private String loadBrlFile(final Reader drl) throws IOException {
+        final StringBuilder buf = new StringBuilder();
+        final BufferedReader input = new BufferedReader(drl);
+        String line = null;
+        while ((line = input.readLine()) != null) {
+            buf.append(line);
+            buf.append("\n");
+        }
+        return buf.toString();
+    }
 }

@@ -29,14 +29,14 @@ import org.drools.ide.common.server.factconstraints.DefaultFieldConstraintImpl;
  * @author esteban.aliverti@gmail.com
  */
 public class InvalidFieldConstraint extends DefaultFieldConstraintImpl {
-	private static final long serialVersionUID = 501l;
-	public static final String NAME = "IvalidFieldConstraint";
+    private static final long serialVersionUID = 501l;
+    public static final String NAME = "IvalidFieldConstraint";
 
     public InvalidFieldConstraint(){}
 
     @Override
     protected String internalVerifierRule(ConstraintConfiguration config,
-    		Map<String, Object> context) {
+            Map<String, Object> context) {
         return this.createVerifierRuleTemplate(config, context, "Invalid_Field_Constraint", null, "The field can not be used in this rule"); //I18N
     }
 

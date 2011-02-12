@@ -34,7 +34,7 @@ public class MortgageApplicationTest {
      */
     public static void main(String[] args) throws Exception {
 
-    	StatefulKnowledgeSession ksession = null;
+        StatefulKnowledgeSession ksession = null;
         try {
             // load up the knowledge base
             KnowledgeBase kbase = readKnowledgeBase();
@@ -77,7 +77,7 @@ public class MortgageApplicationTest {
         } catch ( Throwable t ) {
             t.printStackTrace();
         } finally {
-        	if ( ksession != null ) {
+            if ( ksession != null ) {
                 ksession.dispose();
             }
         }

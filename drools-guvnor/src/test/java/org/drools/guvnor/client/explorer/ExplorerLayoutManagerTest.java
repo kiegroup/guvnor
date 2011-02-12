@@ -30,10 +30,10 @@ import org.junit.Test;
 
 
 public class ExplorerLayoutManagerTest {
-	
+
     @Test
     public void testHistoryToken() {
-    	//TODO (JLIU):
+        //TODO (JLIU):
 /*        ExplorerLayoutManager.BookmarkInfo bi = ExplorerLayoutManager.handleHistoryToken("");
         assertNotNull(bi);
         assertTrue(bi.showChrome);

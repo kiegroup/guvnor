@@ -171,8 +171,8 @@ public class SuggestionCompletionEngine implements PortableObject {
     private Map<String, ModelField[]> filterModelFields = null;
 
     private Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
-	private FactTypeFilter factFilter = null;
-	private boolean filteringFacts = true;
+    private FactTypeFilter factFilter = null;
+    private boolean filteringFacts = true;
     
     public SuggestionCompletionEngine() {
 
@@ -222,19 +222,19 @@ public class SuggestionCompletionEngine implements PortableObject {
         return getOperatorCompletions(getFieldType( factType, fieldName ));
     }
 
-	public String[] getOperatorCompletions(final String type) {
-		if (type == null) {
-			return STANDARD_OPERATORS;
-		} else if (type.equals(TYPE_STRING)) {
-			return STRING_OPERATORS;
-		} else if (type.equals(TYPE_COMPARABLE) || type.equals(TYPE_DATE) || type.equals(TYPE_NUMERIC)) {
-			return COMPARABLE_OPERATORS;
-		} else if (type.equals(TYPE_COLLECTION)) {
-			return COLLECTION_OPERATORS;
-		} else {
-			return STANDARD_OPERATORS;
-		}
-	}
+    public String[] getOperatorCompletions(final String type) {
+        if (type == null) {
+            return STANDARD_OPERATORS;
+        } else if (type.equals(TYPE_STRING)) {
+            return STRING_OPERATORS;
+        } else if (type.equals(TYPE_COMPARABLE) || type.equals(TYPE_DATE) || type.equals(TYPE_NUMERIC)) {
+            return COMPARABLE_OPERATORS;
+        } else if (type.equals(TYPE_COLLECTION)) {
+            return COLLECTION_OPERATORS;
+        } else {
+            return STANDARD_OPERATORS;
+        }
+    }
     
     public String[] getFieldCompletionsForGlobalVariable(final String varName) {
         final String type = this.getGlobalVariable( varName );
@@ -265,9 +265,9 @@ public class SuggestionCompletionEngine implements PortableObject {
     public DropDownData getEnums(FactPattern pat,
                                  String field) {
 
-    	if (field == null) {
-    		return null;
-    	}
+        if (field == null) {
+            return null;
+        }
         Map<String, Object> dataEnumLookupFields = loadDataEnumLookupFields();
 
         if ( pat.constraintList != null && pat.constraintList.constraints != null ) {
@@ -362,7 +362,7 @@ public class SuggestionCompletionEngine implements PortableObject {
             if ( _typeField instanceof String ) {
                 String typeField = (String) dataEnumLookupFields.get( type + "." + field );
                 for ( int i = 0; i < currentValues.length; i++ ) {
-                	FieldNature val = currentValues[i];
+                    FieldNature val = currentValues[i];
                     if ( val.getField().equals( typeField ) ) {
                         String key = type + "." + field + "[" + typeField + "=" + val.getValue() + "]";
                         return DropDownData.create( this.getDataEnumList( key ) );
@@ -380,7 +380,7 @@ public class SuggestionCompletionEngine implements PortableObject {
                 // as a string...
                 for ( int i = 0; i < fieldsNeeded.length; i++ ) {
                     for ( int j = 0; j < currentValues.length; j++ ) {
-                    	FieldNature con = currentValues[j];
+                        FieldNature con = currentValues[j];
                         if ( con.getField().equals( fieldsNeeded[i] ) ) {
                             valuePairs[i] = fieldsNeeded[i] + "=" + con.getValue();
                         }
@@ -530,12 +530,12 @@ public class SuggestionCompletionEngine implements PortableObject {
     }
 
     public MethodInfo getMethodinfo(String factName, String methodFullName) {
-    	List<MethodInfo> infos = methodInfos.get( factName );
+        List<MethodInfo> infos = methodInfos.get( factName );
 
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
                 if (info.getNameWithParameters().equals(methodFullName)) {
-                	return info;
+                    return info;
                 }
             }
         }
@@ -544,12 +544,12 @@ public class SuggestionCompletionEngine implements PortableObject {
     }
     
     public String getMethodClassType(String factName, String methodFullName) {
-    	List<MethodInfo> infos = methodInfos.get( factName );
+        List<MethodInfo> infos = methodInfos.get( factName );
 
         if ( infos != null ) {
             for ( MethodInfo info : infos ) {
                 if (info.getNameWithParameters().equals(methodFullName)) {
-                	return info.getReturnClassType();
+                    return info.getReturnClassType();
                 }
             }
         }
@@ -566,11 +566,11 @@ public class SuggestionCompletionEngine implements PortableObject {
         List<String> methodList = new ArrayList<String>();
 
         if ( infos != null ) {
-			for (MethodInfo info : infos) {
-				if (paramCount == -1 || info.getParams().size() <= paramCount) {
-					methodList.add(info.getNameWithParameters());
-				}
-			}
+            for (MethodInfo info : infos) {
+                if (paramCount == -1 || info.getParams().size() <= paramCount) {
+                    methodList.add(info.getNameWithParameters());
+                }
+            }
         }
 
         return methodList;
@@ -583,20 +583,20 @@ public class SuggestionCompletionEngine implements PortableObject {
      * @return
      */
     public String getFactNameFromType(String type) {
-    	if (type == null) {
-    		return null;
-    	}
-    	if (getModelFields().containsKey(type)) {
-    		return type;
-    	} 
-    	for (Map.Entry<String, ModelField[]> entry : getModelFields().entrySet()) {
-			for (ModelField mf : entry.getValue()) {
-				if ("this".equals(mf.getName()) && type.equals(mf.getClassName())) {
-					return entry.getKey();
-				}
-			}
-		}
-    	return null;
+        if (type == null) {
+            return null;
+        }
+        if (getModelFields().containsKey(type)) {
+            return type;
+        }
+        for (Map.Entry<String, ModelField[]> entry : getModelFields().entrySet()) {
+            for (ModelField mf : entry.getValue()) {
+                if ("this".equals(mf.getName()) && type.equals(mf.getClassName())) {
+                    return entry.getKey();
+                }
+            }
+        }
+        return null;
     }
     
     /**
@@ -685,12 +685,12 @@ public class SuggestionCompletionEngine implements PortableObject {
     }
 
     public void setFactTypeFilter(FactTypeFilter filter){
-    	this.factFilter = filter;
-    	filterModelFields();
+        this.factFilter = filter;
+        filterModelFields();
     }
 
     public void setFieldsForTypes(Map<String,ModelField[]> fieldsForType){
-    	this.getModelFields().clear();
+        this.getModelFields().clear();
         this.getModelFields().putAll(fieldsForType);
     }
 
@@ -701,7 +701,7 @@ public class SuggestionCompletionEngine implements PortableObject {
     public String[] getFactTypes() {
         String[] types = this.getModelFields().keySet().toArray(new String[this.getModelFields().size()]);
         Arrays.sort(types);
-		return types;
+        return types;
     }
 
     public boolean containsFactType(String modelClassName){
@@ -818,34 +818,34 @@ public class SuggestionCompletionEngine implements PortableObject {
 
     
     
-	public void setModelFields(Map<String, ModelField[]> modelFields) {
-		this.modelFields = modelFields;
-		filterModelFields();
-	}
+    public void setModelFields(Map<String, ModelField[]> modelFields) {
+        this.modelFields = modelFields;
+        filterModelFields();
+    }
 
-	private void filterModelFields() {
-		if (factFilter != null) {
-			filterModelFields = new HashMap<String, ModelField[]>();
-			for (Map.Entry<String, ModelField[]> entry : modelFields.entrySet()) {
-				if (!factFilter.filter(entry.getKey())) {
-					filterModelFields.put(entry.getKey(), entry.getValue());
-				}
-			}
-		}
-	}
-	
-	public Map<String, ModelField[]> getModelFields() {
-		if (factFilter != null && isFilteringFacts()) {
-			return filterModelFields;
-		}
-		return modelFields;
-	}
+    private void filterModelFields() {
+        if (factFilter != null) {
+            filterModelFields = new HashMap<String, ModelField[]>();
+            for (Map.Entry<String, ModelField[]> entry : modelFields.entrySet()) {
+                if (!factFilter.filter(entry.getKey())) {
+                    filterModelFields.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+    }
 
-	public boolean isFilteringFacts() {
-		return filteringFacts;
-	}
+    public Map<String, ModelField[]> getModelFields() {
+        if (factFilter != null && isFilteringFacts()) {
+            return filterModelFields;
+        }
+        return modelFields;
+    }
 
-	public void setFilteringFacts(boolean filterFacts) {
-		this.filteringFacts = filterFacts;
-	}
+    public boolean isFilteringFacts() {
+        return filteringFacts;
+    }
+
+    public void setFilteringFacts(boolean filterFacts) {
+        this.filteringFacts = filterFacts;
+    }
 }

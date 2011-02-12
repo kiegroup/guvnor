@@ -28,20 +28,20 @@ import static org.junit.Assert.*;
 public class ResponseTest {
 
     @Test
-	public void testBinary() throws Exception {
-		Binary b = new Response.Binary();
-		ByteArrayInputStream in = new ByteArrayInputStream("abc".getBytes());
-		b.stream = in;
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
+    public void testBinary() throws Exception {
+        Binary b = new Response.Binary();
+        ByteArrayInputStream in = new ByteArrayInputStream("abc".getBytes());
+        b.stream = in;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-		b.writeData(out);
+        b.writeData(out);
 
-		byte[] d = out.toByteArray();
-		assertEquals(3, d.length);
+        byte[] d = out.toByteArray();
+        assertEquals(3, d.length);
 
-		String s = new String(d);
-		assertEquals("abc", s);
+        String s = new String(d);
+        assertEquals("abc", s);
 
-	}
+    }
 
 }

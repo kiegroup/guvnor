@@ -67,7 +67,7 @@ public class RepositoryServlet extends HttpServlet {
     /**
      * Here we perform the action in the appropriate security context.
      */
-	void doAuthorizedAction(HttpServletRequest req, HttpServletResponse res, A action) throws IOException {
+    void doAuthorizedAction(HttpServletRequest req, HttpServletResponse res, A action) throws IOException {
         String auth = req.getHeader("Authorization");
 
         if (!allowUser(auth)) {
@@ -75,17 +75,17 @@ public class RepositoryServlet extends HttpServlet {
           res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         }
         else {
-        	try {
-        		action.a();
-        	} catch (RuntimeException e) {
-        		log.error(e.getMessage(), e);
-        		throw e;
-        	} catch (Exception e) {
+            try {
+                action.a();
+            } catch (RuntimeException e) {
+                log.error(e.getMessage(), e);
+                throw e;
+            } catch (Exception e) {
                 log.error(e.getMessage(), e);
                 throw new RuntimeException(e);
             }
         }
-	}
+    }
 
 
     /**
@@ -98,11 +98,11 @@ public class RepositoryServlet extends HttpServlet {
         String pwd = null;
 
         if ( Contexts.isApplicationContextActive() ) {
-        	//If the request is from same session, the user should be logged already.
-        	if (Identity.instance().isLoggedIn()) {
-        		return true;
-        	}
-        	
+            //If the request is from same session, the user should be logged already.
+            if (Identity.instance().isLoggedIn()) {
+                return true;
+            }
+
             Identity ids = Identity.instance();
             if(auth != null && auth.toUpperCase(Locale.ENGLISH).startsWith("BASIC ")) {
                 String[] a = unpack(auth);
@@ -125,7 +125,7 @@ public class RepositoryServlet extends HttpServlet {
             String[] a = unpack(auth);
             usr = a[0];
             pwd = a[1];
-      	
+
             return usr.equals("test") && pwd.equals("password");
         }
 
@@ -155,12 +155,12 @@ public class RepositoryServlet extends HttpServlet {
             } else if (a.length == 1) {
                 //pwd is empty
                 String[] b = new String[]{a[0], ""};
-                return b;        	
+                return b;
             } else {
                 return new String[]{"", ""};
             }        
         } else {
             return new String[]{"test", "password"};
         }
-	}
+    }
 }

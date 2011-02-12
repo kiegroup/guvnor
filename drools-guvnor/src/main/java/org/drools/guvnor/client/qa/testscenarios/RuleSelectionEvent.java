@@ -24,6 +24,6 @@ package org.drools.guvnor.client.qa.testscenarios;
  * To change this template use File | Settings | File Templates.
  */
 public interface RuleSelectionEvent {
-	public void ruleSelected(String name);
+    public void ruleSelected(String name);
 }
 

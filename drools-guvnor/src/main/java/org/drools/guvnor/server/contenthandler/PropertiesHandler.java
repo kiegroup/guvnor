@@ -37,35 +37,35 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * @author Anton Arhipov
  */
 public class PropertiesHandler extends ContentHandler {
-	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
-			AssetItem item) throws SerializationException {
-		if (item.getContent() != null) {
-			asset.content = PropertiesPersistence.getInstance().unmarshal(
-					item.getContent());
-		}
-	}
+    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
+            AssetItem item) throws SerializationException {
+        if (item.getContent() != null) {
+            asset.content = PropertiesPersistence.getInstance().unmarshal(
+                    item.getContent());
+        }
+    }
 
-	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-			throws SerializationException {
-		PropertiesHolder holder = (PropertiesHolder) asset.content;
-		String toSave = PropertiesPersistence.getInstance().marshal(holder);
+    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
+            throws SerializationException {
+        PropertiesHolder holder = (PropertiesHolder) asset.content;
+        String toSave = PropertiesPersistence.getInstance().marshal(holder);
 
-		InputStream input = null;
-		try {
-			try {
-				input = new ByteArrayInputStream(toSave.getBytes("UTF-8"));
-				repoAsset.updateBinaryContentAttachment(input);
-			} finally {
-				if (input != null) {
-					input.close();
-				}
-			}
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e); // TODO: ?
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
-	}
+        InputStream input = null;
+        try {
+            try {
+                input = new ByteArrayInputStream(toSave.getBytes("UTF-8"));
+                repoAsset.updateBinaryContentAttachment(input);
+            } finally {
+                if (input != null) {
+                    input.close();
+                }
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e); // TODO: ?
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 }

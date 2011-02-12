@@ -69,21 +69,21 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
     @Override
     protected Widget getCompositeLabel() {
-		ClickHandler  leftPatternclick = new ClickHandler() {
+        ClickHandler  leftPatternclick = new ClickHandler() {
 
-			public void onClick(ClickEvent event) {
-				Widget w = (Widget) event.getSource();
-				showFactTypeSelector(w);
+            public void onClick(ClickEvent event) {
+                Widget w = (Widget) event.getSource();
+                showFactTypeSelector(w);
 
-			}
-		};
-		ClickHandler  rightPatternclick = new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
-				Widget w = (Widget) event.getSource();
-				showRightPatternSelector(w);
-			}
-		};
+            }
+        };
+        ClickHandler  rightPatternclick = new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                Widget w = (Widget) event.getSource();
+                showRightPatternSelector(w);
+            }
+        };
 
 
         String lbl = "<div class='x-form-field'>" + HumanReadable.getCEDisplayName("from collect") + "</div>";
@@ -125,18 +125,18 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                 }
             });
 
-			panel.setWidget(r++, 0,
-					addRemoveButton(patternWidget, new ClickHandler() {
+            panel.setWidget(r++, 0,
+                    addRemoveButton(patternWidget, new ClickHandler() {
 
-						public void onClick(ClickEvent event) {
-							if (Window.confirm(constants
-									.RemoveThisBlockOfData())) {
-								setModified(true);
-								getFromCollectPattern().setRightPattern(null);
-								getModeller().refreshWidget();
-							}
-						}
-					}));
+                        public void onClick(ClickEvent event) {
+                            if (Window.confirm(constants
+                                    .RemoveThisBlockOfData())) {
+                                setModified(true);
+                                getFromCollectPattern().setRightPattern(null);
+                                getModeller().refreshWidget();
+                            }
+                        }
+                    }));
         }
 
         return panel;
@@ -161,15 +161,15 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 //        box.addItem("TODO: Add Facts that extedns Collection");
 
         box.setSelectedIndex(0);
-		box.addChangeHandler(new ChangeHandler() {
-			public void onChange(ChangeEvent event) {
-				pattern.setFactPattern(new FactPattern(box.getValue(box
-						.getSelectedIndex())));
-				setModified(true);
-				getModeller().refreshWidget();
-				popup.hide();
-			}
-		});
+        box.addChangeHandler(new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                pattern.setFactPattern(new FactPattern(box.getValue(box
+                        .getSelectedIndex())));
+                setModified(true);
+                getModeller().refreshWidget();
+                popup.hide();
+            }
+        });
 
 
         popup.addAttribute(constants.chooseFactType(),
@@ -196,19 +196,19 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         popup.setTitle(constants.NewFactPattern());
         popup.addAttribute(constants.chooseFactType(),
                 box);
-		box.addChangeHandler(new ChangeHandler() {
+        box.addChangeHandler(new ChangeHandler() {
 
-			public void onChange(ChangeEvent event) {
-				getFromCollectPattern()
-						.setRightPattern(
-								new FactPattern(box.getItemText(box
-										.getSelectedIndex())));
-				setModified(true);
-				getModeller().refreshWidget();
-				popup.hide();
+            public void onChange(ChangeEvent event) {
+                getFromCollectPattern()
+                        .setRightPattern(
+                                new FactPattern(box.getItemText(box
+                                        .getSelectedIndex())));
+                setModified(true);
+                getModeller().refreshWidget();
+                popup.hide();
 
-			}
-		});
+            }
+        });
 
         final Button freeFormDRLBtn = new Button(constants.FreeFormDrl());
         final Button fromBtn = new Button(constants.From());
@@ -216,9 +216,9 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         final Button fromCollectBtn = new Button(constants.FromCollect());
 
         ClickHandler btnsClickHandler = new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
-				Widget sender = (Widget)event.getSource();
+
+            public void onClick(ClickEvent event) {
+                Widget sender = (Widget)event.getSource();
                 if (sender == fromBtn) {
                     getFromCollectPattern().setRightPattern(new FromCompositeFactPattern());
                 } else if (sender == fromAccumulateBtn) {
@@ -233,9 +233,9 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
                 setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
-				
-			}
-		};
+
+            }
+        };
         
 
         freeFormDRLBtn.addClickHandler(btnsClickHandler);
@@ -260,7 +260,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
     protected void calculateReadOnly() {
         if (this.pattern.factPattern != null) {
             this.readOnly = !(this.getExtraLeftSidePatternFactTypes().containsKey(this.pattern.factPattern.getFactType()) 
-            		|| this.getModeller().getSuggestionCompletions().containsFactType(this.pattern.factPattern.getFactType()));
+                    || this.getModeller().getSuggestionCompletions().containsFactType(this.pattern.factPattern.getFactType()));
         }
     }
 

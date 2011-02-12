@@ -18,5 +18,5 @@ package org.drools.guvnor.client.modeldriven.ui;
 import com.google.gwt.event.shared.EventHandler;
 
 public interface ExpressionTypeChangeHandler extends EventHandler {
-	void onExpressionTypeChanged(ExpressionTypeChangeEvent event);
+    void onExpressionTypeChanged(ExpressionTypeChangeEvent event);
 }

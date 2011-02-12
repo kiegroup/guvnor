@@ -35,10 +35,10 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  *
  */
 public class SecurityServiceServlet extends RemoteServiceServlet implements
-		SecurityService {
+        SecurityService {
 
     private static final LoggingHelper log              = LoggingHelper.getLogger(SecurityServiceServlet.class);
-	SecurityService service = new SecurityServiceImpl();
+    SecurityService service = new SecurityServiceImpl();
 
     @Override
     protected void doUnexpectedFailure(Throwable e) {
@@ -61,16 +61,16 @@ public class SecurityServiceServlet extends RemoteServiceServlet implements
     }
 
 
-	public UserSecurityContext getCurrentUser() {
-		return service.getCurrentUser();
-	}
+    public UserSecurityContext getCurrentUser() {
+        return service.getCurrentUser();
+    }
 
-	public Capabilities getUserCapabilities() {
-		return service.getUserCapabilities();
-	}
+    public Capabilities getUserCapabilities() {
+        return service.getUserCapabilities();
+    }
 
-	public boolean login(String userName, String password) {
-		return service.login(userName, password);
-	}
+    public boolean login(String userName, String password) {
+        return service.login(userName, password);
+    }
 
 }

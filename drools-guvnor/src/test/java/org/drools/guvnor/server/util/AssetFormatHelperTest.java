@@ -24,8 +24,8 @@ public class AssetFormatHelperTest {
 
     @Test
     public void testGetRegisteredAssetFormats() {
-		String[] ls = AssetFormatHelper.listRegisteredTypes();
-		assertTrue(ls.length > 1);
-	}
+        String[] ls = AssetFormatHelper.listRegisteredTypes();
+        assertTrue(ls.length > 1);
+    }
 
 }

@@ -32,7 +32,7 @@ public class RuleFlowContentModel
     private List<TransferNode>             nodes       = new ArrayList<TransferNode>();
     private Collection<TransferConnection> connections = new ArrayList<TransferConnection>();
     private String                         xml;
-    private String						   json;
+    private String                           json;
 
     public void setNodes(List<TransferNode> nodes) {
         this.nodes = nodes;

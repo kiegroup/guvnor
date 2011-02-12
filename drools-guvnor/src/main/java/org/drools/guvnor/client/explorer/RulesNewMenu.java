@@ -31,51 +31,51 @@ public class RulesNewMenu {
     private static Images images = (Images) GWT.create(Images.class);
 
     public static MenuBar getMenu(final AbstractTree manager) {
-    	MenuBar createNewMenu = new MenuBar(true);
+        MenuBar createNewMenu = new MenuBar(true);
 
-    	createNewMenu.addItem(Util.getHeader(images.businessRule(), constants.BusinessRuleGuidedEditor()),
-        		true,
-        		new Command() {
+        createNewMenu.addItem(Util.getHeader(images.businessRule(), constants.BusinessRuleGuidedEditor()),
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.BUSINESS_RULE, constants.NewBusinessRuleGuidedEditor(), true);
             }
         });
 
         createNewMenu.addItem(Util.getHeader(images.ruleAsset(), constants.DSLBusinessRuleTextEditor()),
-        		true,
-        		new Command() {
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.DSL_TEMPLATE_RULE, constants.NewRuleUsingDSL(), true);
             }
         });                 
         
         createNewMenu.addItem(Util.getHeader(images.ruleAsset(), constants.DRLRuleTechnicalRuleTextEditor()),
-        		true,
-        		new Command() {
+                true,
+                new Command() {
             public void execute() {
-            	manager.launchWizard(AssetFormats.DRL, constants.NewDRL(), true);
+                manager.launchWizard(AssetFormats.DRL, constants.NewDRL(), true);
             }
         }); 
         
         createNewMenu.addItem(Util.getHeader(images.spreadsheetSmall(), constants.DecisionTableSpreadsheet()),
-        		true,
-        		new Command() {
+                true,
+                new Command() {
             public void execute() {
-            	manager.launchWizard(AssetFormats.DECISION_SPREADSHEET_XLS, constants.NewDecisionTableSpreadsheet(), true);       
+                manager.launchWizard(AssetFormats.DECISION_SPREADSHEET_XLS, constants.NewDecisionTableSpreadsheet(), true);
             }
         }); 
 
         createNewMenu.addItem(Util.getHeader(images.gdst(), constants.DecisionTableWebGuidedEditor()),
-        		true,
-        		new Command() {
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.DECISION_TABLE_GUIDED, constants.NewDecisionTableGuidedEditor(), true);
             }
         });       
         
         createNewMenu.addItem(Util.getHeader(images.testManager(), constants.TestScenario()),
-        		true,
-        		new Command() {
+                true,
+                new Command() {
             public void execute() {
                 manager.launchWizard(AssetFormats.TEST_SCENARIO,
                         constants.CreateATestScenario(), false);

@@ -41,7 +41,7 @@ public class RuleBasedSelector implements AssetSelector {
     private static final Logger log = LoggerFactory.getLogger( RuleBasedSelector.class );
 
 
-	String ruleFile;
+    String ruleFile;
     private RuleBase ruleBase;
 
     public RuleBasedSelector(String val) {
@@ -65,19 +65,19 @@ public class RuleBasedSelector implements AssetSelector {
 
     public boolean isAssetAllowed(AssetItem asset) {
         return evalRules( asset );
-	}
+    }
 
     boolean evalRules(Object asset) {
         StatelessSession session = ruleBase.newStatelessSession();
         StatelessSessionResult result = session.executeWithResults( asset );
 
         java.util.Iterator objects = result.iterateObjects();
-		while(objects.hasNext()) {
-		    if (objects.next() instanceof Allow) {
-		        return true;
+        while(objects.hasNext()) {
+            if (objects.next() instanceof Allow) {
+                return true;
             }
         }
-		return false;
+        return false;
     }
 
 }

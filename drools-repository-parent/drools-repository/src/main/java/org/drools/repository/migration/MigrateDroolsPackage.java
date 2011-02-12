@@ -33,47 +33,47 @@ import org.slf4j.LoggerFactory;
  */
 public class MigrateDroolsPackage {
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	public boolean needsMigration(RulesRepository repo) throws RepositoryException {
-		Node root = repo.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
-		return !root.hasNode("drools.package.migrated");
-	}
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    public boolean needsMigration(RulesRepository repo) throws RepositoryException {
+        Node root = repo.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
+        return !root.hasNode("drools.package.migrated");
+    }
 
-	public void migrate(RulesRepository repo) throws RepositoryException {
-		log.info("AUTO MIGRATION: Performing drools.package migration...");
-    	PackageIterator pkgs = repo.listPackages();
-    	boolean performed = false;
-    	while(pkgs.hasNext()) {
-    		performed = true;
-    		PackageItem pkg = (PackageItem) pkgs.next();
-    		migratePackage(pkg);
+    public void migrate(RulesRepository repo) throws RepositoryException {
+        log.info("AUTO MIGRATION: Performing drools.package migration...");
+        PackageIterator pkgs = repo.listPackages();
+        boolean performed = false;
+        while(pkgs.hasNext()) {
+            performed = true;
+            PackageItem pkg = (PackageItem) pkgs.next();
+            migratePackage(pkg);
 
-    		String[] snaps = repo.listPackageSnapshots(pkg.getName());
-    		if (snaps != null) {
-	    		for (int i = 0; i < snaps.length; i++) {
-	    			PackageItem snap = repo.loadPackageSnapshot(pkg.getName(), snaps[i]);
-	    			migratePackage(snap);
-				}
-    		}
-    	}
+            String[] snaps = repo.listPackageSnapshots(pkg.getName());
+            if (snaps != null) {
+                for (int i = 0; i < snaps.length; i++) {
+                    PackageItem snap = repo.loadPackageSnapshot(pkg.getName(), snaps[i]);
+                    migratePackage(snap);
+                }
+            }
+        }
 
 
 
-    	if (performed) {
-	    	repo.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME).addNode("drools.package.migrated", "nt:folder");
-	    	repo.save();
-	    	log.info("AUTO MIGRATION: drools.package migration completed.");
-    	}
-	}
+        if (performed) {
+            repo.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME).addNode("drools.package.migrated", "nt:folder");
+            repo.save();
+            log.info("AUTO MIGRATION: drools.package migration completed.");
+        }
+    }
 
-	private void migratePackage(PackageItem pkg) {
-		if (!pkg.containsAsset("drools")) {
-			AssetItem asset = pkg.addAsset("drools", "");
-			asset.updateFormat("package");
-			asset.updateContent(pkg.getStringProperty(PackageItem.HEADER_PROPERTY_NAME));
-			asset.checkin("");
-		}
-	}
+    private void migratePackage(PackageItem pkg) {
+        if (!pkg.containsAsset("drools")) {
+            AssetItem asset = pkg.addAsset("drools", "");
+            asset.updateFormat("package");
+            asset.updateContent(pkg.getStringProperty(PackageItem.HEADER_PROPERTY_NAME));
+            asset.checkin("");
+        }
+    }
 
 
 }

@@ -34,7 +34,7 @@ import static org.junit.Assert.fail;
 
 public class AssetItemTest extends RepositoryTestCase {
 
-	@Test
+    @Test
     public void testAssetItemCreation() throws Exception {
 
             Calendar now = Calendar.getInstance();
@@ -73,7 +73,7 @@ public class AssetItemTest extends RepositoryTestCase {
         }
     }
 
-	@Test
+    @Test
     public void testGetContentLength() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem pkg = repo.loadDefaultPackage();
@@ -92,7 +92,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testGetPackageItem() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem def = repo.loadDefaultPackage();
@@ -103,7 +103,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testUpdateStringProperty() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem def = repo.loadDefaultPackage();
@@ -135,7 +135,7 @@ public class AssetItemTest extends RepositoryTestCase {
         
     }
 
-	@Test
+    @Test
     public void testGetPackageItemHistorical() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem pkg = repo.createPackage("testGetPackageItemHistorical", "");
@@ -161,67 +161,67 @@ public class AssetItemTest extends RepositoryTestCase {
 
         AssetHistoryIterator it = asset.getHistory();
         while(it.hasNext()) {
-        	AssetItem as = it.next();
-        	if (as.getVersionNumber() > 0) {
-	        	System.err.println(as.getVersionNumber());
-	        	System.err.println(as.getPackageName());
-	        	assertNotNull(as.getPackage());
-	        	assertEquals(pkg.getName(), as.getPackage().getName());
-        	}
+            AssetItem as = it.next();
+            if (as.getVersionNumber() > 0) {
+                System.err.println(as.getVersionNumber());
+                System.err.println(as.getPackageName());
+                assertNotNull(as.getPackage());
+                assertEquals(pkg.getName(), as.getPackage().getName());
+            }
         }
     }
 
-	@Test
+    @Test
     public void testGetAssetNameFromFileName() {
-    	String[] asset = AssetItem.getAssetNameFromFileName("foo.bar");
-    	assertEquals("foo", asset[0]);
-    	assertEquals("bar", asset[1]);
+        String[] asset = AssetItem.getAssetNameFromFileName("foo.bar");
+        assertEquals("foo", asset[0]);
+        assertEquals("bar", asset[1]);
 
-    	asset = AssetItem.getAssetNameFromFileName("Rule 261.3 Something foo.drl");
-    	assertEquals("Rule 261.3 Something foo", asset[0]);
-    	assertEquals("drl", asset[1]);
+        asset = AssetItem.getAssetNameFromFileName("Rule 261.3 Something foo.drl");
+        assertEquals("Rule 261.3 Something foo", asset[0]);
+        assertEquals("drl", asset[1]);
 
-    	asset = AssetItem.getAssetNameFromFileName("Rule_261.3_Something_foo.drl");
-    	assertEquals("Rule_261.3_Something_foo", asset[0]);
-    	assertEquals("drl", asset[1]);
+        asset = AssetItem.getAssetNameFromFileName("Rule_261.3_Something_foo.drl");
+        assertEquals("Rule_261.3_Something_foo", asset[0]);
+        assertEquals("drl", asset[1]);
 
-    	asset = AssetItem.getAssetNameFromFileName("Rule 261.3 Something foo.model.drl");
-    	assertEquals("Rule 261.3 Something foo", asset[0]);
-    	assertEquals("model.drl", asset[1]);
+        asset = AssetItem.getAssetNameFromFileName("Rule 261.3 Something foo.model.drl");
+        assertEquals("Rule 261.3 Something foo", asset[0]);
+        assertEquals("model.drl", asset[1]);
 
-    	asset = AssetItem.getAssetNameFromFileName("Rule_261.3_Something_foo.model.drl");
-    	assertEquals("Rule_261.3_Something_foo", asset[0]);
-    	assertEquals("model.drl", asset[1]);
+        asset = AssetItem.getAssetNameFromFileName("Rule_261.3_Something_foo.model.drl");
+        assertEquals("Rule_261.3_Something_foo", asset[0]);
+        assertEquals("model.drl", asset[1]);
 
-    	asset = AssetItem.getAssetNameFromFileName("application-model-1.0.0.jar");
-    	assertEquals("application-model-1.0.0", asset[0]);
-    	assertEquals("jar", asset[1]);
+        asset = AssetItem.getAssetNameFromFileName("application-model-1.0.0.jar");
+        assertEquals("application-model-1.0.0", asset[0]);
+        assertEquals("jar", asset[1]);
 
-    	asset = AssetItem.getAssetNameFromFileName("something-1.0.0.drl");
-    	assertEquals("something-1.0.0", asset[0]);
-    	assertEquals("drl", asset[1]);
+        asset = AssetItem.getAssetNameFromFileName("something-1.0.0.drl");
+        assertEquals("something-1.0.0", asset[0]);
+        assertEquals("drl", asset[1]);
 
         asset = AssetItem.getAssetNameFromFileName("foo.bpel.jar");
         assertEquals("foo", asset[0]);
         assertEquals("bpel.jar", asset[1]);
         
-    	asset = AssetItem.getAssetNameFromFileName("SubmitApplication.rf");
-    	assertEquals("SubmitApplication", asset[0]);
-    	assertEquals("rf", asset[1]);
+        asset = AssetItem.getAssetNameFromFileName("SubmitApplication.rf");
+        assertEquals("SubmitApplication", asset[0]);
+        assertEquals("rf", asset[1]);
 
-    	asset = AssetItem.getAssetNameFromFileName("Submit.rf");
-    	assertEquals("Submit", asset[0]);
-    	assertEquals("rf", asset[1]);
+        asset = AssetItem.getAssetNameFromFileName("Submit.rf");
+        assertEquals("Submit", asset[0]);
+        assertEquals("rf", asset[1]);
 
 
-//    	System.err.println(asset[0]);
-//    	System.err.println(asset[1]);
+//        System.err.println(asset[0]);
+//        System.err.println(asset[1]);
 
 
 
     }
 
-	@Test
+    @Test
     public void testGetContent() {
 
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetContent", "test content");
@@ -241,7 +241,7 @@ public class AssetItemTest extends RepositoryTestCase {
             assertNotNull(content);        
     }
 
-	@Test
+    @Test
     public void testUpdateContent() throws Exception {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testUpdateContent", "test description");
 
@@ -285,10 +285,10 @@ public class AssetItemTest extends RepositoryTestCase {
             }
     }
 
-	@Test
+    @Test
     public void testCategoriesPagination() {
-    		PackageItem pkg = getRepo().createPackage("testPagination", "");
-    		getRepo().loadCategory( "/" ).addCategory( "testPagedTag", "description" );
+            PackageItem pkg = getRepo().createPackage("testPagination", "");
+            getRepo().loadCategory( "/" ).addCategory( "testPagedTag", "description" );
 
             AssetItem a = pkg.addAsset("testPage1", "test content");
             a.addCategory("testPagedTag");
@@ -344,7 +344,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testCategories() {
         AssetItem ruleItem1 = getDefaultPackage().addAsset("testAddTag", "test content");
 
@@ -393,7 +393,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testUpdateCategories() {
         getRepo().loadCategory( "/" ).addCategory( "testUpdateCategoriesOnAsset", "la" );
         getRepo().loadCategory( "/" ).addCategory( "testUpdateCategoriesOnAsset2", "la" );
@@ -414,7 +414,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testFindRulesByCategory() throws Exception {
 
         getRepo().loadCategory( "/" ).addCategory( "testFindRulesByCat", "yeah" );
@@ -445,7 +445,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testRemoveTag() {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testRemoveTag", "test content");
 
@@ -469,7 +469,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testGetTags() {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetTags", "test content");
 
@@ -486,7 +486,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testSetStateString() {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testSetStateString", "test content");
 
@@ -516,7 +516,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testStatusStuff() {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetState", "test content");
 
@@ -534,13 +534,13 @@ public class AssetItemTest extends RepositoryTestCase {
             assertEquals(getRepo().getState( StateItem.DRAFT_STATE_NAME ), ruleItem1.getState());
     }
 
-	@Test
+    @Test
     public void testToString() {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testToString", "test content");
             assertNotNull(ruleItem1.toString());
     }
 
-	@Test
+    @Test
     public void testGetLastModifiedOnCheckin() throws Exception  {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetLastModified", "test content");
 
@@ -563,7 +563,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testGetDateEffective() {
 
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetDateEffective", "test content");
@@ -579,7 +579,7 @@ public class AssetItemTest extends RepositoryTestCase {
             assertEquals(cal, cal2);
     }
 
-	@Test
+    @Test
     public void testGetDateExpired() {
         try {
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetDateExpired", "test content");
@@ -599,7 +599,7 @@ public class AssetItemTest extends RepositoryTestCase {
         }
     }
 
-	@Test
+    @Test
     public void testSaveAndCheckinDescriptionAndTitle() throws Exception {
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetDescription", "");
             ruleItem1.checkin( "version0" );
@@ -635,7 +635,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testGetPrecedingVersionAndRestore() throws Exception {
             getRepo().loadCategory( "/" ).addCategory( "foo", "ka" );
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetPrecedingVersion", "descr");
@@ -708,7 +708,7 @@ public class AssetItemTest extends RepositoryTestCase {
             assertFalse(oldVersionNumber ==  restored.getVersionNumber() );
     }
 
-	@Test
+    @Test
     public void testGetSucceedingVersion() {
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetSucceedingVersion", "test description");
             ruleItem1.checkin( "version0" );
@@ -730,7 +730,7 @@ public class AssetItemTest extends RepositoryTestCase {
             assertEquals(ruleItem1.getContent(), succeedingRuleItem.getContent());
     }
 
-	@Test
+    @Test
     public void testGetSuccessorVersionsIterator() {
         try {
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetSuccessorVersionsIterator", "test content");
@@ -773,7 +773,7 @@ public class AssetItemTest extends RepositoryTestCase {
         }
     }
 
-	@Test
+    @Test
     public void testGetPredecessorVersionsIterator() {
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetPredecessorVersionsIterator", "test description");
             ruleItem1.checkin( "version0" );
@@ -817,7 +817,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testHistoryIterator() throws Exception {
         AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testHistoryIterator", "test description");
         ruleItem1.checkin( "version0" );
@@ -838,14 +838,14 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testGetTitle() {
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetTitle", "test content");
 
             assertEquals("testGetTitle", ruleItem1.getTitle());
     }
 
-	@Test
+    @Test
     public void testDublinCoreProperties() {
         PackageItem pkg = getRepo().createPackage( "testDublinCore", "wa" );
 
@@ -865,7 +865,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testGetFormat() throws Exception {
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetFormat", "test content");
             ruleItem1.updateContent( "la" );
@@ -878,7 +878,7 @@ public class AssetItemTest extends RepositoryTestCase {
             assertEquals("blah", ruleItem1.getFormat());
     }
 
-	@Test
+    @Test
     public void testAnonymousProperties() {
         AssetItem item = getRepo().loadDefaultPackage().addAsset( "anonymousproperty", "lalalalala" );
         item.updateUserProperty( "fooBar", "value");
@@ -898,7 +898,7 @@ public class AssetItemTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testBinaryAsset() throws Exception {
         AssetItem item = getRepo().loadDefaultPackage().addAsset( "testBinaryAsset", "yeah" );
         String data = "abc 123";

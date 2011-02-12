@@ -21,7 +21,7 @@ import java.util.List;
 import org.drools.ide.common.assistant.option.AssistantOption;
 
 public abstract class AbstractRuleAssistantProcessor {
-	
-	public abstract List<AssistantOption> getRuleAssistant(String text, Integer offset);
+
+    public abstract List<AssistantOption> getRuleAssistant(String text, Integer offset);
 
 }

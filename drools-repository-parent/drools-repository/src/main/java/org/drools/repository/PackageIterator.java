@@ -28,73 +28,73 @@ import javax.jcr.RepositoryException;
  * supports lazy loading if needed.
  */
 public class PackageIterator implements Iterator<PackageItem> {
-	private final NodeIterator packageNodeIterator;
-	private final RulesRepository repository;
-	private boolean searchArchived = false;
-	private Node current = null;
-	private Node next = null;
+    private final NodeIterator packageNodeIterator;
+    private final RulesRepository repository;
+    private boolean searchArchived = false;
+    private Node current = null;
+    private Node next = null;
 
-	public PackageIterator() {
-		this(null, null);
-	}
-	
-	public PackageIterator(RulesRepository repository, NodeIterator packageNodes) {
-		this.packageNodeIterator = packageNodes;
-		this.repository = repository;
-	}
+    public PackageIterator() {
+        this(null, null);
+    }
 
-	public boolean hasNext() {
-		if (packageNodeIterator == null) {
-			return false;
-		}
-		boolean hasnext = false;
-		if (this.next == null) {
-			while (this.packageNodeIterator.hasNext()) {
-				Node element = (Node) this.packageNodeIterator.next();
-				try {
-					//Do not return Global Area
-					if ((searchArchived || !element.getProperty(VersionableItem.CONTENT_PROPERTY_ARCHIVE_FLAG).getBoolean()) && !RulesRepository.RULE_GLOBAL_AREA.equals(element.getName())) {
-						hasnext = true;
-						this.next = element;
-						break;
-					}
-				} catch (RepositoryException e) {
-					e.printStackTrace();
-				}
-			}   
-		} else {
-			hasnext = true;
-		}
-		return hasnext;
-	}
+    public PackageIterator(RulesRepository repository, NodeIterator packageNodes) {
+        this.packageNodeIterator = packageNodes;
+        this.repository = repository;
+    }
 
-	public PackageItem next() {
-		if (this.next == null) {
-			this.hasNext();
-		}
+    public boolean hasNext() {
+        if (packageNodeIterator == null) {
+            return false;
+        }
+        boolean hasnext = false;
+        if (this.next == null) {
+            while (this.packageNodeIterator.hasNext()) {
+                Node element = (Node) this.packageNodeIterator.next();
+                try {
+                    //Do not return Global Area
+                    if ((searchArchived || !element.getProperty(VersionableItem.CONTENT_PROPERTY_ARCHIVE_FLAG).getBoolean()) && !RulesRepository.RULE_GLOBAL_AREA.equals(element.getName())) {
+                        hasnext = true;
+                        this.next = element;
+                        break;
+                    }
+                } catch (RepositoryException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            hasnext = true;
+        }
+        return hasnext;
+    }
 
-		this.current = this.next;
-		this.next = null;
+    public PackageItem next() {
+        if (this.next == null) {
+            this.hasNext();
+        }
 
-		if (this.current == null) {
-			throw new NoSuchElementException("No more elements to return");
-		}
-		
-		return new PackageItem(this.repository, (Node) this.current);
+        this.current = this.next;
+        this.next = null;
 
-	}
+        if (this.current == null) {
+            throw new NoSuchElementException("No more elements to return");
+        }
 
-	public void setArchivedIterator(boolean search) {
-		this.searchArchived = search;
-	}
+        return new PackageItem(this.repository, (Node) this.current);
 
-	public boolean isSetArchivedSearch() {
-		return this.searchArchived;
-	}
+    }
 
-	public void remove() {
-		throw new UnsupportedOperationException(
-				"You can not remove items this way.");
-	}
+    public void setArchivedIterator(boolean search) {
+        this.searchArchived = search;
+    }
+
+    public boolean isSetArchivedSearch() {
+        return this.searchArchived;
+    }
+
+    public void remove() {
+        throw new UnsupportedOperationException(
+                "You can not remove items this way.");
+    }
 
 }

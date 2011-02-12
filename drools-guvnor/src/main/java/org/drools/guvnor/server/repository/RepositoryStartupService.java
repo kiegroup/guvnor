@@ -52,51 +52,51 @@ import org.slf4j.LoggerFactory;
 @Name("repositoryConfiguration")
 public class RepositoryStartupService {
 
-	private static final Logger log = LoggerFactory.getLogger(RepositoryStartupService.class);
-	private static final String ADMIN                     = "admin";
-	private static final String ADMIN_USER_PROPERTY       = "org.drools.repository.admin.username";
-	private static final String ADMIN_PASSWORD_PROPERTY   = "org.drools.repository.admin.password";
-	private static final String MAILMAN                   = "mailman";
-	private static final String MAILMAN_USER_PROPERTY     = "org.drools.repository.mailman.username";
-	private static final String MAILMAN_PASSWORD_PROPERTY = "org.drools.repository.mailman.password";
-	private static final String SECURE_PASSWORDS_PROPERTY = "org.drools.repository.secure.passwords";
-	
-	
-	private RulesRepositoryConfigurator configurator;
+    private static final Logger log = LoggerFactory.getLogger(RepositoryStartupService.class);
+    private static final String ADMIN                     = "admin";
+    private static final String ADMIN_USER_PROPERTY       = "org.drools.repository.admin.username";
+    private static final String ADMIN_PASSWORD_PROPERTY   = "org.drools.repository.admin.password";
+    private static final String MAILMAN                   = "mailman";
+    private static final String MAILMAN_USER_PROPERTY     = "org.drools.repository.mailman.username";
+    private static final String MAILMAN_PASSWORD_PROPERTY = "org.drools.repository.mailman.password";
+    private static final String SECURE_PASSWORDS_PROPERTY = "org.drools.repository.secure.passwords";
+
+
+    private RulesRepositoryConfigurator configurator;
     Map<String,String> properties = new HashMap<String,String>();
 
     Repository repository;
-	private Session sessionForSetup;
+    private Session sessionForSetup;
     private RulesRepository mailmanSession;
 
     public Repository getRepositoryInstance() {
-    	try {
-    		Properties properties = new Properties();
-    		properties.putAll(this.properties);
-			configurator = RulesRepositoryConfigurator.getInstance(properties);
-			repository = configurator.getJCRRepository();
-		} catch (RepositoryException e) {
-			log.error(e.getMessage(),e);
-		}
-		return repository;
+        try {
+            Properties properties = new Properties();
+            properties.putAll(this.properties);
+            configurator = RulesRepositoryConfigurator.getInstance(properties);
+            repository = configurator.getJCRRepository();
+        } catch (RepositoryException e) {
+            log.error(e.getMessage(),e);
+        }
+        return repository;
     }
     
     @Create
     public void create() {
-    	repository = getRepositoryInstance();
-    	String username = ADMIN;
-    	if (properties.containsKey(ADMIN_USER_PROPERTY)) {
-    		username = properties.get(ADMIN_USER_PROPERTY);
-    	}
-    	String password = "password";
-    	if (properties.containsKey(ADMIN_PASSWORD_PROPERTY)) {
-    		password = properties.get(ADMIN_PASSWORD_PROPERTY);
-    		if ("true".equalsIgnoreCase(properties.get(SECURE_PASSWORDS_PROPERTY))) {
-    			password = decode(password);
-    		}
-    	} else {
-    		log.debug("Could not find property " + ADMIN_PASSWORD_PROPERTY + " for user " + ADMIN);
-    	}
+        repository = getRepositoryInstance();
+        String username = ADMIN;
+        if (properties.containsKey(ADMIN_USER_PROPERTY)) {
+            username = properties.get(ADMIN_USER_PROPERTY);
+        }
+        String password = "password";
+        if (properties.containsKey(ADMIN_PASSWORD_PROPERTY)) {
+            password = properties.get(ADMIN_PASSWORD_PROPERTY);
+            if ("true".equalsIgnoreCase(properties.get(SECURE_PASSWORDS_PROPERTY))) {
+                password = decode(password);
+            }
+        } else {
+            log.debug("Could not find property " + ADMIN_PASSWORD_PROPERTY + " for user " + ADMIN);
+        }
         sessionForSetup = newSession(username,password);
         create( sessionForSetup );
         startMailboxService();
@@ -105,7 +105,7 @@ public class RepositoryStartupService {
 
     /** Listen for changes to the repository - for inbox purposes */
     public static void registerCheckinListener() {
-    	System.out.println("Registering check-in listener");
+        System.out.println("Registering check-in listener");
         StorageEventManager.registerCheckinEvent(new CheckinEvent() {
             public void afterCheckin(AssetItem item) {
                 UserInbox.recordUserEditEvent(item);  //to register that she edited...
@@ -118,34 +118,34 @@ public class RepositoryStartupService {
 
     /** Start up the mailbox, flush out any messages that were left */
     private void startMailboxService() {
-    	String username = MAILMAN;
-    	if (properties.containsKey(MAILMAN_USER_PROPERTY)) {
-    		username = properties.get(MAILMAN_USER_PROPERTY);
-    	}
-    	String password = "password";
-    	if (properties.containsKey(MAILMAN_PASSWORD_PROPERTY)) {
-    		password = properties.get(MAILMAN_PASSWORD_PROPERTY);
-    		if ("true".equalsIgnoreCase(properties.get(SECURE_PASSWORDS_PROPERTY))) {
-    			password = decode(password);
-    		}
-    	} else {
-    		log.debug("Could not find property " + MAILMAN_PASSWORD_PROPERTY + " for user " + MAILMAN);
-    	}
+        String username = MAILMAN;
+        if (properties.containsKey(MAILMAN_USER_PROPERTY)) {
+            username = properties.get(MAILMAN_USER_PROPERTY);
+        }
+        String password = "password";
+        if (properties.containsKey(MAILMAN_PASSWORD_PROPERTY)) {
+            password = properties.get(MAILMAN_PASSWORD_PROPERTY);
+            if ("true".equalsIgnoreCase(properties.get(SECURE_PASSWORDS_PROPERTY))) {
+                password = decode(password);
+            }
+        } else {
+            log.debug("Could not find property " + MAILMAN_PASSWORD_PROPERTY + " for user " + MAILMAN);
+        }
         mailmanSession = new RulesRepository(newSession(username, password));
         MailboxService.getInstance().init(mailmanSession);
         MailboxService.getInstance().wakeUp();
     }
 
     void create(Session sessionForSetup) {
-    	
-    	RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(sessionForSetup);
+
+        RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(sessionForSetup);
         if (!admin.isRepositoryInitialized()) {
             try {
-				configurator.setupRepository( sessionForSetup );
-			} catch (RepositoryException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                configurator.setupRepository( sessionForSetup );
+            } catch (RepositoryException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         
         //
@@ -156,15 +156,15 @@ public class RepositoryStartupService {
         RulesRepository repo = new RulesRepository(sessionForSetup);
         try
         {
-        	if ( MigrateRepository.needsRuleflowMigration(repo) ) 
-        	{
-        		MigrateRepository.migrateRuleflows( repo );
-        	}
+            if ( MigrateRepository.needsRuleflowMigration(repo) )
+            {
+                MigrateRepository.migrateRuleflows( repo );
+            }
         }
         catch ( RepositoryException e ) 
         {
-        	e.printStackTrace();
-        	throw new RulesRepositoryException(e);
+            e.printStackTrace();
+            throw new RulesRepositoryException(e);
         }
     }
 
@@ -177,15 +177,15 @@ public class RepositoryStartupService {
     }
     
     public void setHomeDirectory(String home) {
-    	if (home!=null) {
-    		properties.put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, home);
-    	}
+        if (home!=null) {
+            properties.put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, home);
+        }
     }
 
     public void setRepositoryConfigurator(String clazz) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-    	if (clazz!=null) {
-    		properties.put(RulesRepositoryConfigurator.CONFIGURATOR_CLASS, clazz);
-    	}
+        if (clazz!=null) {
+            properties.put(RulesRepositoryConfigurator.CONFIGURATOR_CLASS, clazz);
+        }
     }
     
     /**
@@ -195,7 +195,7 @@ public class RepositoryStartupService {
     public Session newSession(String userName) {
 
         try {
-        	return configurator.login(userName);
+            return configurator.login(userName);
         } catch ( LoginException e ) {
             throw new RulesRepositoryException( "Unable to login to JCR backend." );
         } catch ( RepositoryException e ) {
@@ -211,7 +211,7 @@ public class RepositoryStartupService {
     public Session newSession(String userName, String password) {
 
         try {
-        	return configurator.login(userName, password);
+            return configurator.login(userName, password);
         } catch ( LoginException e ) {
             throw new RulesRepositoryException("UserName: [ " + userName + "] Unable to login to JCR backend." ,e);
         } catch ( RepositoryException e ) {
@@ -225,36 +225,36 @@ public class RepositoryStartupService {
     
     private static String decode(String secret)
     {
-    	String decodedPassword = secret;
-    	try {
-	    	byte[] kbytes = "jaas is the way".getBytes();
-	    	SecretKeySpec key = new SecretKeySpec(kbytes, "Blowfish");
-	
-	    	BigInteger n = new BigInteger(secret, 16);
-	    	byte[] encoding = n.toByteArray();
-	
-	    	//SECURITY-344: fix leading zeros
-	    	if (encoding.length % 8 != 0)
-	    	{
-	    		int length = encoding.length;
-	    		int newLength = ((length / 8) + 1) * 8;
-	    		int pad = newLength - length; //number of leading zeros
-	    		byte[] old = encoding;
-	    		encoding = new byte[newLength];
-	    		for (int i = old.length - 1; i >= 0; i--)
-	    		{
-	    			encoding[i + pad] = old[i];
-	    		}
-	    	}
-	
-	    	Cipher cipher = Cipher.getInstance("Blowfish");
-	    	cipher.init(Cipher.DECRYPT_MODE, key);
-	    	byte[] decode = cipher.doFinal(encoding);
-	    	decodedPassword =  new String(decode);
-    	} catch (Exception e) {
-    		log.error(e.getMessage(),e);
-    	}
-    	return decodedPassword;
+        String decodedPassword = secret;
+        try {
+            byte[] kbytes = "jaas is the way".getBytes();
+            SecretKeySpec key = new SecretKeySpec(kbytes, "Blowfish");
+
+            BigInteger n = new BigInteger(secret, 16);
+            byte[] encoding = n.toByteArray();
+
+            //SECURITY-344: fix leading zeros
+            if (encoding.length % 8 != 0)
+            {
+                int length = encoding.length;
+                int newLength = ((length / 8) + 1) * 8;
+                int pad = newLength - length; //number of leading zeros
+                byte[] old = encoding;
+                encoding = new byte[newLength];
+                for (int i = old.length - 1; i >= 0; i--)
+                {
+                    encoding[i + pad] = old[i];
+                }
+            }
+
+            Cipher cipher = Cipher.getInstance("Blowfish");
+            cipher.init(Cipher.DECRYPT_MODE, key);
+            byte[] decode = cipher.doFinal(encoding);
+            decodedPassword =  new String(decode);
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+        }
+        return decodedPassword;
     }
 
 }

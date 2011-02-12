@@ -18,40 +18,40 @@ package org.drools.guvnor.client.modeldriven.ui;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class ExpressionTypeChangeEvent extends GwtEvent<ExpressionTypeChangeHandler> {
-	private static final GwtEvent.Type<ExpressionTypeChangeHandler> TYPE = new GwtEvent.Type<ExpressionTypeChangeHandler>();
-	private String oldType;
-	private String newType;
+    private static final GwtEvent.Type<ExpressionTypeChangeHandler> TYPE = new GwtEvent.Type<ExpressionTypeChangeHandler>();
+    private String oldType;
+    private String newType;
 
-	public ExpressionTypeChangeEvent(String oldType, String newType) {
-		super();
-		this.oldType = oldType;
-		this.newType = newType;
-	}
-	
-	public String getOldType() {
-		return oldType;
-	}
+    public ExpressionTypeChangeEvent(String oldType, String newType) {
+        super();
+        this.oldType = oldType;
+        this.newType = newType;
+    }
 
-	public String getNewType() {
-		return newType;
-	}
+    public String getOldType() {
+        return oldType;
+    }
 
-	@Override
-	protected void dispatch(ExpressionTypeChangeHandler handler) {
-		
-		try {
-			handler.onExpressionTypeChanged(this);
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-	}
+    public String getNewType() {
+        return newType;
+    }
 
-	@Override
-	public GwtEvent.Type<ExpressionTypeChangeHandler> getAssociatedType() {
-		return getType();
-	}
-	
-	public static final Type<ExpressionTypeChangeHandler> getType() {
-		return TYPE;
-	}
+    @Override
+    protected void dispatch(ExpressionTypeChangeHandler handler) {
+
+        try {
+            handler.onExpressionTypeChanged(this);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public GwtEvent.Type<ExpressionTypeChangeHandler> getAssociatedType() {
+        return getType();
+    }
+
+    public static final Type<ExpressionTypeChangeHandler> getType() {
+        return TYPE;
+    }
 }

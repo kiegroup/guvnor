@@ -29,10 +29,10 @@ public class DirtyableFlexTable extends FlexTable implements DirtyableContainer 
     private List<Pair> list = new ArrayList<Pair>();
 
     public boolean hasDirty() {
-    	for (Pair coord : list) {
+        for (Pair coord : list) {
             Widget element = getWidget( coord.getRow(), coord.getColumn() );
             if ((element instanceof DirtyableWidget && ((DirtyableWidget) element).isDirty()) ||
-            		(element instanceof DirtyableContainer && ((DirtyableContainer) element).hasDirty()))
+                    (element instanceof DirtyableContainer && ((DirtyableContainer) element).hasDirty()))
                 return true;
         }
         return false;
@@ -41,13 +41,13 @@ public class DirtyableFlexTable extends FlexTable implements DirtyableContainer 
     public void setWidget(int row, int column , Widget arg2) {
         super.setWidget( row, column, arg2 );
         
-		if (arg2 instanceof IDirtyable) {
-			list.add(length++, new Pair(row, column));
-		}
+        if (arg2 instanceof IDirtyable) {
+            list.add(length++, new Pair(row, column));
+        }
     }
     
     public void setHorizontalAlignmentForFlexCellFormatter(int row, int column, HorizontalAlignmentConstant horizontalAlignmentConstant ){
-    	getFlexCellFormatter().setHorizontalAlignment(row, column, horizontalAlignmentConstant);
+        getFlexCellFormatter().setHorizontalAlignment(row, column, horizontalAlignmentConstant);
     }
 }
 

@@ -23,19 +23,19 @@ package org.drools.ide.common.client.modeldriven.brl;
 public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
 
     public SingleFieldConstraintEBLeftSide() {
-		super();
-	}
+        super();
+    }
 
-	public SingleFieldConstraintEBLeftSide(String field, String fieldType, FieldConstraint parent) {
-		super(field, fieldType, parent);
-	}
+    public SingleFieldConstraintEBLeftSide(String field, String fieldType, FieldConstraint parent) {
+        super(field, fieldType, parent);
+    }
 
-	public SingleFieldConstraintEBLeftSide(String field) {
-		super(field);
-	}
+    public SingleFieldConstraintEBLeftSide(String field) {
+        super(field);
+    }
 
-	private ExpressionFormLine expLeftSide = new ExpressionFormLine();
-	
+    private ExpressionFormLine expLeftSide = new ExpressionFormLine();
+
     /**
      * Returns true of there is a field binding.
      */
@@ -53,17 +53,17 @@ public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
     
     @Override
     public String getFieldBinding() {
-    	return getExpressionLeftSide().getBinding();
+        return getExpressionLeftSide().getBinding();
     }
     
     @Override
     public void setFieldBinding(String fieldBinding) {
-    	getExpressionLeftSide().setBinding(fieldBinding);
+        getExpressionLeftSide().setBinding(fieldBinding);
     }
     
     @Override
     public String getFieldType() {
-    	return getExpressionLeftSide().getClassType();
+        return getExpressionLeftSide().getClassType();
     }
 
 }

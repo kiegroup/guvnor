@@ -29,7 +29,7 @@ public class SelectorManagerTest {
 
     @Test
     public void testSelectorMangerConfig() {
-    	SelectorManager sm = new SelectorManager("/selectors-test.properties");
+        SelectorManager sm = new SelectorManager("/selectors-test.properties");
         assertNotNull(sm);
         assertNotNull(sm.selectors);
 
@@ -69,7 +69,7 @@ public class SelectorManagerTest {
 
     @Test
     public void testGetBuiltInSelector() {
-    	SelectorManager sm = new SelectorManager("/selectors-test.properties");
+        SelectorManager sm = new SelectorManager("/selectors-test.properties");
         assertNotNull(sm);
         assertNotNull(sm.selectors);
 
@@ -78,7 +78,7 @@ public class SelectorManagerTest {
     
     @Test
     public void testGetCustomSelectors() {
-    	SelectorManager sm = new SelectorManager("/selectors-test.properties");
+        SelectorManager sm = new SelectorManager("/selectors-test.properties");
         assertNotNull(sm);
         assertNotNull(sm.selectors);
 

@@ -26,11 +26,11 @@ public class ConnectiveConstraint extends BaseSingleFieldConstraint {
     }
 
     public ConnectiveConstraint(final String fieldName,
-    		                    final String fieldType,
-    							final String opr,
+                                final String fieldType,
+                                final String opr,
                                 final String val) {
-    	this.fieldName = fieldName;
-    	this.fieldType = fieldType;
+        this.fieldName = fieldName;
+        this.fieldType = fieldType;
         this.operator = opr;
         this.setValue(val);
     }

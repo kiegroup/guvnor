@@ -24,26 +24,26 @@ package org.drools.ide.common.client.modeldriven.brl;
  */
 public class ActionInsertFact extends ActionFieldList {
 
-	public String factType;
-	private String boundName;
-	private boolean isBound ;
-	
-	public boolean isBound() {
-		return isBound;
-	}
+    public String factType;
+    private String boundName;
+    private boolean isBound ;
 
-	public ActionInsertFact(final String type) {
-		this.factType = type;
-	}
+    public boolean isBound() {
+        return isBound;
+    }
 
-	public ActionInsertFact() {
-	}
-	public String getBoundName() {
-		return boundName;
-	}
+    public ActionInsertFact(final String type) {
+        this.factType = type;
+    }
 
-	public void setBoundName(String boundName) {
-		this.boundName = boundName;
-		isBound = true;
-	}
+    public ActionInsertFact() {
+    }
+    public String getBoundName() {
+        return boundName;
+    }
+
+    public void setBoundName(String boundName) {
+        this.boundName = boundName;
+        isBound = true;
+    }
 }

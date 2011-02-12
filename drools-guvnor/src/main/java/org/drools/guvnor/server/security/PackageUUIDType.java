@@ -23,17 +23,17 @@ package org.drools.guvnor.server.security;
  */
 public class PackageUUIDType {
 
-	private String uuid;
-	
-	public PackageUUIDType(String uuid) {
-		this.uuid = uuid;
-	}
-	
-	public String getUUID() {
-		return uuid;
-	}
-	
-	public String toString() {
-		return "Package UUID: " + uuid;
-	}
+    private String uuid;
+
+    public PackageUUIDType(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getUUID() {
+        return uuid;
+    }
+
+    public String toString() {
+        return "Package UUID: " + uuid;
+    }
 }

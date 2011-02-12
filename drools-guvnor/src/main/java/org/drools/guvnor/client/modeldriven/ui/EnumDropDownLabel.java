@@ -72,12 +72,12 @@ public class EnumDropDownLabel extends Composite {
         Label label = new Label();
         label.setStyleName( "x-form-field" );
         label.addClickHandler(new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
-				showPopup();
-				
-			}
-		});
+
+            public void onClick(ClickEvent event) {
+                showPopup();
+
+            }
+        });
         if ( label.getText() == null && "".equals( label.getText() ) ) {
             label.setText( constants.Value() );
         }
@@ -94,15 +94,15 @@ public class EnumDropDownLabel extends Composite {
                                 this.getAbsoluteTop() );
 
         okButton.addClickHandler(new ClickHandler() {
-			
-			public void onClick(ClickEvent event) {
-				executeOnValueChangeCommand();
+
+            public void onClick(ClickEvent event) {
+                executeOnValueChangeCommand();
                 panel.clear();
                 panel.add( textWidget );
                 popup.hide();
-				
-			}
-		});
+
+            }
+        });
  
         horizontalPanel.add( enumDropDown );
         horizontalPanel.add( okButton );

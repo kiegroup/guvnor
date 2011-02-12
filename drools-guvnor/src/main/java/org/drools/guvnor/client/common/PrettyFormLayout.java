@@ -116,7 +116,7 @@ public class PrettyFormLayout extends Composite {
 
     public int addAttribute(String lbl, final Widget categories) {
         
-    	int row = currentTable.getRowCount();
+        int row = currentTable.getRowCount();
         currentTable.setWidget( row,
                                 0,
                                 new Label( lbl ) );
@@ -134,7 +134,7 @@ public class PrettyFormLayout extends Composite {
     }
     
     public void removeRow(int row) {
-    	
-    	currentTable.removeRow(row);
+
+        currentTable.removeRow(row);
     }
 }

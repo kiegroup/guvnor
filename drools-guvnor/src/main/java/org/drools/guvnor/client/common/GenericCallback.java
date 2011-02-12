@@ -33,27 +33,27 @@ import com.google.gwt.user.client.ui.HTML;
  */
 public abstract class GenericCallback<T> implements AsyncCallback<T> {
 
-	public void onFailure(Throwable t) {
-		LoadingPopup.close();
-		if (t instanceof SessionExpiredException) {
-			showSessionExpiry();
-		} else if (t instanceof DetailedSerializationException) {
-			ErrorPopup.showMessage((DetailedSerializationException) t);
-		} else {
-			ErrorPopup.showMessage(t.getMessage());
-		}
-	}
+    public void onFailure(Throwable t) {
+        LoadingPopup.close();
+        if (t instanceof SessionExpiredException) {
+            showSessionExpiry();
+        } else if (t instanceof DetailedSerializationException) {
+            ErrorPopup.showMessage((DetailedSerializationException) t);
+        } else {
+            ErrorPopup.showMessage(t.getMessage());
+        }
+    }
 
-	public static void showSessionExpiry() {
-		String url = GWT.getModuleBaseURL();
-		url = url.substring(0, url.lastIndexOf('/'));
-		url = url.substring(0, url.lastIndexOf('/'));
+    public static void showSessionExpiry() {
+        String url = GWT.getModuleBaseURL();
+        url = url.substring(0, url.lastIndexOf('/'));
+        url = url.substring(0, url.lastIndexOf('/'));
 
-		FormStylePopup pop = new FormStylePopup();
+        FormStylePopup pop = new FormStylePopup();
         String m = Format.format(((Constants) GWT.create(Constants.class)).SessionExpiredMessage(), url);
-		pop.addRow(new HTML(m));
-		pop.show();
-		LoadingPopup.close();
+        pop.addRow(new HTML(m));
+        pop.show();
+        LoadingPopup.close();
 
-	}
+    }
 }

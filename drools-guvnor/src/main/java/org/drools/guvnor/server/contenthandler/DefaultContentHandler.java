@@ -28,14 +28,14 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class DefaultContentHandler extends ContentHandler {
 
-	@Override
-	public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
-			AssetItem item) throws SerializationException {
-	}
+    @Override
+    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
+            AssetItem item) throws SerializationException {
+    }
 
-	@Override
-	public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-			throws SerializationException {
-	}
+    @Override
+    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
+            throws SerializationException {
+    }
 
 }

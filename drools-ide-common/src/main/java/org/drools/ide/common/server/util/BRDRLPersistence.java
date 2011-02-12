@@ -49,7 +49,7 @@ public class BRDRLPersistence implements BRLPersistence {
     }
     
     protected String marshalRule(RuleModel model) {
-    	boolean isDSLEnhanced = model.hasDSLSentences();
+        boolean isDSLEnhanced = model.hasDSLSentences();
 
         StringBuilder buf = new StringBuilder();
         this.marshalHeader(model, buf);
@@ -62,24 +62,24 @@ public class BRDRLPersistence implements BRLPersistence {
         this.marshalRHS(buf, model, isDSLEnhanced);
         this.marshalFooter(buf);
         return buf.toString();
-	}
+    }
 
-	protected void marshalFooter(StringBuilder buf) {
-		buf.append("end\n");
-	}
+    protected void marshalFooter(StringBuilder buf) {
+        buf.append("end\n");
+    }
 
-	protected void marshalHeader(RuleModel model, StringBuilder buf) {
-		buf.append("rule \"" + marshalRuleName(model) + "\"");
+    protected void marshalHeader(RuleModel model, StringBuilder buf) {
+        buf.append("rule \"" + marshalRuleName(model) + "\"");
         if (null != model.parentName && model.parentName.length() > 0) {
             buf.append(" extends \"" + model.parentName + "\"\n");
         } else {
             buf.append('\n');
         }
-	}
+    }
 
-	protected String marshalRuleName(RuleModel model) {
-		return model.name;
-	}
+    protected String marshalRuleName(RuleModel model) {
+        return model.name;
+    }
 
     /**
      * @see
@@ -140,22 +140,22 @@ public class BRDRLPersistence implements BRLPersistence {
      */
     private void marshalLHS(StringBuilder buf, RuleModel model,
             boolean isDSLEnhanced) {
-		if (model.lhs != null) {
-			LHSPatternVisitor visitor = new LHSPatternVisitor(isDSLEnhanced, buf);
-			for (IPattern cond : model.lhs) {
-				visitor.visit(cond);
-			}
-		}
+        if (model.lhs != null) {
+            LHSPatternVisitor visitor = new LHSPatternVisitor(isDSLEnhanced, buf);
+            for (IPattern cond : model.lhs) {
+                visitor.visit(cond);
+            }
+        }
     }
 
     private void marshalRHS(StringBuilder buf, RuleModel model,
             boolean isDSLEnhanced) {
-		if (model.rhs != null) {
-			RHSActionVisitor visitor = new RHSActionVisitor(isDSLEnhanced, buf);
-			for (IAction action : model.rhs) {
-				visitor.visit(action);
-			}
-		}
+        if (model.rhs != null) {
+            RHSActionVisitor visitor = new RHSActionVisitor(isDSLEnhanced, buf);
+            for (IAction action : model.rhs) {
+                visitor.visit(action);
+            }
+        }
     }
 
     public static class LHSPatternVisitor extends ReflectiveVisitor {
@@ -434,16 +434,16 @@ public class BRDRLPersistence implements BRLPersistence {
                     }
                     buf.append(parentBuf);
                     if (constr instanceof SingleFieldConstraintEBLeftSide) {
-                    	buf.append(((SingleFieldConstraintEBLeftSide) constr).getExpressionLeftSide().getText());
+                        buf.append(((SingleFieldConstraintEBLeftSide) constr).getExpressionLeftSide().getText());
                     } else {
-                    	buf.append(constr.getFieldName());
+                        buf.append(constr.getFieldName());
                     }
                 }
                 
                 addFieldRestriction(buf, constr.getConstraintValueType(), constr.getOperator(), constr.getValue(), constr
-                		.getExpressionValue());
+                        .getExpressionValue());
                 
-				// and now do the connectives.
+                // and now do the connectives.
                 if (constr.connectives != null) {
                     for (int j = 0; j < constr.connectives.length; j++) {
                         final ConnectiveConstraint conn = constr.connectives[j];
@@ -485,11 +485,11 @@ public class BRDRLPersistence implements BRLPersistence {
                     }
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE:
-                	buf.append("@{").append(value).append("}");
-                	break;
+                    buf.append("@{").append(value).append("}");
+                    break;
                 case BaseSingleFieldConstraint.TYPE_ENUM:
-                	buf.append(value);
-                	break;              	
+                    buf.append(value);
+                    break;
                 default:
                     buf.append(value);
             }
@@ -579,8 +579,8 @@ public class BRDRLPersistence implements BRLPersistence {
 
                     buf.append(" );\n");
                 }
-//				buf.append(idx++);
-//				buf.append(" );\n");
+//                buf.append(idx++);
+//                buf.append(" );\n");
             }
         }
 
@@ -652,7 +652,7 @@ public class BRDRLPersistence implements BRLPersistence {
                 if (fieldValues[i].isFormula()) {
                     buf.append(fieldValues[i].value.substring(1));
                 } else if (fieldValues[i].nature == FieldNature.TYPE_TEMPLATE) {
-                	buf.append("@{").append(fieldValues[i].value).append("}");
+                    buf.append("@{").append(fieldValues[i].value).append("}");
                 } else if (SuggestionCompletionEngine.TYPE_STRING.equals(fieldValues[i].type)) {
                     buf.append("\"");
                     buf.append(generateFieldValue(fieldValues[i]));
@@ -664,9 +664,9 @@ public class BRDRLPersistence implements BRLPersistence {
             }
         }
 
-		private String generateFieldValue(final ActionFieldValue fieldValue) {
-			return fieldValue.value;
-		}
+        private String generateFieldValue(final ActionFieldValue fieldValue) {
+            return fieldValue.value;
+        }
 
         private void generateSetMethodCallsMethod(final ActionCallMethod action,
                 final FieldNature[] fieldValues) {

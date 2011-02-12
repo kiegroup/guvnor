@@ -143,13 +143,13 @@ public class NewPackageWizard extends FormStylePopup {
         Button cancel = new Button( constants.Cancel() );
         cancel.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
-            	hide();
+                hide();
             }
         } );
         hp.add(cancel);
         
         newPackageLayout.addAttribute( "",
-        		hp );
+                hp );
 
     }
 
@@ -199,7 +199,7 @@ public class NewPackageWizard extends FormStylePopup {
         Button cancel = new Button( constants.Cancel() );        
         cancel.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
-            	parent.hide();
+                parent.hide();
             }
         } );
         hp.add(cancel);

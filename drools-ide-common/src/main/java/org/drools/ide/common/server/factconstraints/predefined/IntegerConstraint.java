@@ -29,14 +29,14 @@ import org.drools.ide.common.server.factconstraints.DefaultFieldConstraintImpl;
  * @author esteban.aliverti@gmail.com
  */
 public class IntegerConstraint extends DefaultFieldConstraintImpl {
-	private static final long serialVersionUID = 501l;
-	public static final String NAME = "IntegerConstraint";
-	
+    private static final long serialVersionUID = 501l;
+    public static final String NAME = "IntegerConstraint";
+
     public IntegerConstraint(){}
 
     @Override
     protected String internalVerifierRule(ConstraintConfiguration config,
-    		Map<String, Object> context) {
+            Map<String, Object> context) {
         List<String> constraints = new ArrayList<String>();
         constraints.add("valueType != Field.INT");
 

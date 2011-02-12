@@ -48,9 +48,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 public class RulesRepositoryTest extends RepositoryTestCase {
-	int running = 0;
+    int running = 0;
 
-	@Test
+    @Test
     public void testDefaultPackage() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -78,8 +78,8 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         assertTrue( repo.initialized );
 
     }
-	
-	@Test
+
+    @Test
     public void testCategoryRename() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -126,7 +126,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testAddVersionARule() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem pack = repo.createPackage( "testAddVersionARule",
@@ -165,7 +165,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testFindByState() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem pkg = repo.createPackage( "testFindByStatePackage",
@@ -190,7 +190,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testFindRulesByName() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -231,7 +231,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testQueryText() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem pkg = repo.createPackage( "testQueryTest",
@@ -281,7 +281,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testQuery() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -429,7 +429,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testLoadRuleByUUIDWithConcurrentSessions() throws Exception {
         RulesRepository repo = getRepo();
 
@@ -501,7 +501,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
                       asset2.getContent() );
     }
 
-	@Test
+    @Test
     public void testAddRuleCalendarWithDates() {
         RulesRepository rulesRepository = getRepo();
 
@@ -523,7 +523,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         ruleItem1.checkin( "ho " );
     }
 
-	@Test
+    @Test
     public void testGetState() {
         RulesRepository rulesRepository = getRepo();
 
@@ -544,7 +544,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
                       stateItem2 );
     }
 
-	@Test
+    @Test
     public void testGetTag() {
         RulesRepository rulesRepository = getRepo();
 
@@ -574,7 +574,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
                       tagItem3.getFullPath() );
     }
 
-	@Test
+    @Test
     public void testListPackages() {
         RulesRepository rulesRepository = getRepo();
         rulesRepository.createPackage( "testListPackages",
@@ -596,14 +596,14 @@ public class RulesRepositoryTest extends RepositoryTestCase {
             }
             
             if ( element.getName().equals(RulesRepository.RULE_GLOBAL_AREA) ) {
-            	foundGlobalArea = true;
+                foundGlobalArea = true;
             }
          }
         assertTrue( found );
         assertFalse( foundGlobalArea );
     }
 
-	@Test
+    @Test
     public void testFindAssetsByState() throws Exception {
         RulesRepository repo = getRepo();
         repo.loadCategory( "/" ).addCategory( "testFindAssetsByStateCat",
@@ -645,7 +645,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
                       ((AssetItem) apl.assets.get( 0 )).getName() );
     }
 
-	@Test
+    @Test
     public void testFindAssetsByCategory() throws Exception {
         RulesRepository repo = getRepo();
         repo.loadCategory( "/" ).addCategory( "testFindAssetsByCategoryUsingFilterCat",
@@ -778,7 +778,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testFunnyOrdering() throws Exception {
 
     }
@@ -786,7 +786,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
     /**
      * Here we are testing to make sure that category links don't pick up stuff in snapshots area.
      */
-	@Test
+    @Test
     public void testCategoriesAndSnapshots() throws Exception {
         RulesRepository repo = getRepo();
         repo.loadCategory( "/" ).addCategory( "testCategoriesAndSnapshots",
@@ -828,7 +828,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testMoveRulePackage() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem pkg = repo.createPackage( "testMove",
@@ -875,8 +875,8 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         assertEquals( uuid,
                       r.getUUID() );
     }
-	
-	@Test
+
+    @Test
     public void testCopyAsset() throws Exception {
         RulesRepository repo = getRepo();
         repo.createPackage( "testCopyAsset",
@@ -905,7 +905,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
                       dest.getVersionNumber() );
     }
 
-	@Test
+    @Test
     public void testRenameAsset() throws Exception {
         RulesRepository repo = getRepo();
         repo.createPackage( "testRenameAsset",
@@ -934,7 +934,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testRenamePackage() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem original = repo.createPackage( "testRenamePackage",
@@ -969,7 +969,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testCopyPackage() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem source = repo.createPackage( "testCopyPackage",
@@ -1012,7 +1012,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
     }
 
-	@Test
+    @Test
     public void testListStates() {
         RulesRepository repo = getRepo();
         StateItem[] items = repo.listStates();
@@ -1025,7 +1025,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
                       items2.length );
     }
 
-	@Test
+    @Test
     public void testRenameState() {
         RulesRepository repo = getRepo();
         StateItem[] items = repo.listStates();
@@ -1055,7 +1055,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         assertNotNull( repo.loadState( newName ) );
     }
 
-	@Test
+    @Test
     public void testRemoveState() {
         RulesRepository repo = getRepo();
         StateItem[] items = repo.listStates();
@@ -1082,185 +1082,185 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         }
 
     }
-	/*
-	 * http://jira.jboss.org/browse/MODE-882
-	 */
-	@Test
+    /*
+     * http://jira.jboss.org/browse/MODE-882
+     */
+    @Test
     public void testSimpleImportExport() throws PathNotFoundException, IOException, RepositoryException {
-		RulesRepository repo = getRepo();
-	
-		byte[] repository_backup;
+        RulesRepository repo = getRepo();
 
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		Session session = getRepo().getSession();
-		session.refresh( false );
+        byte[] repository_backup;
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        Session session = getRepo().getSession();
+        session.refresh( false );
         session.exportSystemView( "/" + "drools:repository", bout, false, false );
-		repository_backup = bout.toByteArray();
-		repo.importRulesRepositoryFromStream(new ByteArrayInputStream(
-				repository_backup));
-	}
+        repository_backup = bout.toByteArray();
+        repo.importRulesRepositoryFromStream(new ByteArrayInputStream(
+                repository_backup));
+    }
 
-	@Test
+    @Test
     public void testImportExport() {
-		RulesRepository repo = getRepo();
-		byte[] repository_unitest;
-		byte[] repository_backup;
+        RulesRepository repo = getRepo();
+        byte[] repository_unitest;
+        byte[] repository_backup;
 
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		repo.exportRulesRepositoryToStream(bout);
-		repository_backup = bout.toByteArray();
-		assertNotNull(repository_backup);
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        repo.exportRulesRepositoryToStream(bout);
+        repository_backup = bout.toByteArray();
+        assertNotNull(repository_backup);
 
-		repo.createPackage("testImportExport", "nodescription");
-		bout = new ByteArrayOutputStream();
-		repo.exportRulesRepositoryToStream(bout);
+        repo.createPackage("testImportExport", "nodescription");
+        bout = new ByteArrayOutputStream();
+        repo.exportRulesRepositoryToStream(bout);
 
-		repository_unitest = bout.toByteArray();
+        repository_unitest = bout.toByteArray();
 
-		repo.importRulesRepositoryFromStream(new ByteArrayInputStream(
-				repository_backup));
-		assertFalse(repo.containsPackage("testImportExport"));
+        repo.importRulesRepositoryFromStream(new ByteArrayInputStream(
+                repository_backup));
+        assertFalse(repo.containsPackage("testImportExport"));
 
-		repo.importRulesRepositoryFromStream(new ByteArrayInputStream(
-				repository_unitest));
+        repo.importRulesRepositoryFromStream(new ByteArrayInputStream(
+                repository_unitest));
 
-		assertTrue(repo.containsPackage("testImportExport"));
+        assertTrue(repo.containsPackage("testImportExport"));
 
-		repo.importRepository(new ByteArrayInputStream(repository_unitest));
-		assertTrue(repo.containsPackage("testImportExport"));
-	}
-	
-	 /*
+        repo.importRepository(new ByteArrayInputStream(repository_unitest));
+        assertTrue(repo.containsPackage("testImportExport"));
+    }
+
+     /*
      * https://jira.jboss.org/browse/MODE-883
      */
     @Test
     public void testSimpleShareableNodes() throws Exception {
         
-    	Node node = getRepo().getSession().getNode("/drools:repository/drools:package_area/globalArea/");
-    	Node assetNode = node.getNode("assets").addNode("testKurt","drools:assetNodeType");
-    	//Adding some required properties
-    	assetNode.setProperty("drools:packageName", "one");
-    	assetNode.setProperty("drools:title", "title");
-    	assetNode.setProperty("drools:format", "format");
-    	assetNode.setProperty("drools:description", "description");
-		Calendar lastModified = Calendar.getInstance();
-		assetNode.setProperty("drools:lastModified", lastModified);
-    	getRepo().getSession().save();
-    	assetNode.checkin();
-    	
-    	
-    	//Creating a shared Node
-		assetNode.checkout();
-		assetNode.addMixin("mix:shareable");
-		getRepo().getSession().save();
-		assetNode.checkin();
-    	Workspace workspace = getRepo().getSession().getWorkspace();
-    	String srcPath   = "/drools:repository/drools:package_area/globalArea/assets/testKurt";
-    	String path    = "/drools:repository/drools:package_area/defaultPackage/assets/testKurt";
-    	workspace.clone(workspace.getName(), srcPath, path, false);	
-    	
-    	assetNode.remove();
+        Node node = getRepo().getSession().getNode("/drools:repository/drools:package_area/globalArea/");
+        Node assetNode = node.getNode("assets").addNode("testKurt","drools:assetNodeType");
+        //Adding some required properties
+        assetNode.setProperty("drools:packageName", "one");
+        assetNode.setProperty("drools:title", "title");
+        assetNode.setProperty("drools:format", "format");
+        assetNode.setProperty("drools:description", "description");
+        Calendar lastModified = Calendar.getInstance();
+        assetNode.setProperty("drools:lastModified", lastModified);
+        getRepo().getSession().save();
+        assetNode.checkin();
+
+
+        //Creating a shared Node
+        assetNode.checkout();
+        assetNode.addMixin("mix:shareable");
+        getRepo().getSession().save();
+        assetNode.checkin();
+        Workspace workspace = getRepo().getSession().getWorkspace();
+        String srcPath   = "/drools:repository/drools:package_area/globalArea/assets/testKurt";
+        String path    = "/drools:repository/drools:package_area/defaultPackage/assets/testKurt";
+        workspace.clone(workspace.getName(), srcPath, path, false);
+
+        assetNode.remove();
        
     }
 
-	@Test
-	public void testShareableNodes() throws Exception {
-		RulesRepository repo = getRepo();
-		AssetItem item = repo.loadDefaultPackage().addAsset("testShareableNodeOriginal", "desc");
-		item.updateContent("la");
-		item.getNode().addMixin("mix:shareable");
-		PackageItem source = repo.createPackage("testShareableNodesPackage", "desc");
-		repo.save();
+    @Test
+    public void testShareableNodes() throws Exception {
+        RulesRepository repo = getRepo();
+        AssetItem item = repo.loadDefaultPackage().addAsset("testShareableNodeOriginal", "desc");
+        item.updateContent("la");
+        item.getNode().addMixin("mix:shareable");
+        PackageItem source = repo.createPackage("testShareableNodesPackage", "desc");
+        repo.save();
 
-		source.checkout();
-		
-		Session session = repo.getSession();
-		Workspace workspace = session.getWorkspace();
-		String path = "/drools:repository/drools:package_area/testShareableNodesPackage/assets/testShareableNodeShared";
-		workspace.clone(workspace.getName(), item.getNode().getPath(), path, false);		
-		repo.save();
-		
-		AssetItem originalItem = repo.loadDefaultPackage().loadAsset("testShareableNodeOriginal");
-		AssetItem sharedItem = repo.loadPackage("testShareableNodesPackage").loadAsset("testShareableNodeShared");
-		
-	    assertTrue( originalItem.getContent().equals("la"));
-	    assertTrue( sharedItem.getContent().equals("la"));
-	    
-	    originalItem.remove();
-	}
-	
-	@Test
-	public void testShareableNodesWithQuery() throws Exception {
-		RulesRepository repo = getRepo();
-		AssetItem item = repo.loadGlobalArea().addAsset("testShareableNodesWithQueryOriginal", "desc");
-		item.updateFormat("xyz");
-		item.getNode().addMixin("mix:shareable");
-		PackageItem source = repo.createPackage("testShareableNodesWithQueryPackage", "desc");
-		repo.save();
+        source.checkout();
 
-	    
+        Session session = repo.getSession();
+        Workspace workspace = session.getWorkspace();
+        String path = "/drools:repository/drools:package_area/testShareableNodesPackage/assets/testShareableNodeShared";
+        workspace.clone(workspace.getName(), item.getNode().getPath(), path, false);
+        repo.save();
+
+        AssetItem originalItem = repo.loadDefaultPackage().loadAsset("testShareableNodeOriginal");
+        AssetItem sharedItem = repo.loadPackage("testShareableNodesPackage").loadAsset("testShareableNodeShared");
+
+        assertTrue( originalItem.getContent().equals("la"));
+        assertTrue( sharedItem.getContent().equals("la"));
+
+        originalItem.remove();
+    }
+
+    @Test
+    public void testShareableNodesWithQuery() throws Exception {
+        RulesRepository repo = getRepo();
+        AssetItem item = repo.loadGlobalArea().addAsset("testShareableNodesWithQueryOriginal", "desc");
+        item.updateFormat("xyz");
+        item.getNode().addMixin("mix:shareable");
+        PackageItem source = repo.createPackage("testShareableNodesWithQueryPackage", "desc");
+        repo.save();
+
+
         AssetItemIterator it = repo.loadGlobalArea().queryAssets( "drools:format='xyz'" );
         List list = iteratorToList( it );
         assertEquals(1, list.size());
         assertTrue(list.get( 0 ) instanceof AssetItem);
         
-		source.checkout();
-		
-		Session session = repo.getSession();
-		Workspace workspace = session.getWorkspace();
-		String path = "/drools:repository/drools:package_area/testShareableNodesWithQueryPackage/assets/testShareableNodesWithQueryShared";
-		workspace.clone(workspace.getName(), item.getNode().getPath(), path, false);		
-		repo.save();
-		
-		AssetItem originalItem = repo.loadGlobalArea().loadAsset("testShareableNodesWithQueryOriginal");
-		AssetItem sharedItem = repo.loadPackage("testShareableNodesWithQueryPackage").loadAsset("testShareableNodesWithQueryShared");
-		
-	    assertTrue( originalItem.getFormat().equals("xyz"));
-	    assertTrue( sharedItem.getFormat().equals("xyz"));
-	    
+        source.checkout();
+
+        Session session = repo.getSession();
+        Workspace workspace = session.getWorkspace();
+        String path = "/drools:repository/drools:package_area/testShareableNodesWithQueryPackage/assets/testShareableNodesWithQueryShared";
+        workspace.clone(workspace.getName(), item.getNode().getPath(), path, false);
+        repo.save();
+
+        AssetItem originalItem = repo.loadGlobalArea().loadAsset("testShareableNodesWithQueryOriginal");
+        AssetItem sharedItem = repo.loadPackage("testShareableNodesWithQueryPackage").loadAsset("testShareableNodesWithQueryShared");
+
+        assertTrue( originalItem.getFormat().equals("xyz"));
+        assertTrue( sharedItem.getFormat().equals("xyz"));
+
         it = repo.loadGlobalArea().queryAssets( "drools:format='xyz'" );
         list = iteratorToList( it );
         assertEquals(1, list.size());
         assertTrue(list.get( 0 ) instanceof AssetItem);
-	}	
-	
-	@Test @Ignore
-	public void testImportExportWithShareableNodes() throws Exception {
-		RulesRepository repo = getRepo();
-		AssetItem item = repo.loadDefaultPackage().addAsset("testImportExportShareableNodeOriginal", "desc");
-		item.updateContent("la");
-		item.getNode().addMixin("mix:shareable");
-		PackageItem source = repo.createPackage("testImportExportShareableNodesPackage", "desc");
-		repo.save();
+    }
 
-		source.checkout();
-		
-		Session session = repo.getSession();
-		Workspace workspace = session.getWorkspace();
-		String path = "/drools:repository/drools:package_area/testImportExportShareableNodesPackage/assets/testImportExportShareableNodeShared";
-		workspace.clone(workspace.getName(), item.getNode().getPath(), path, false);		
-		repo.save();
-		
-		byte[] repository_backup;
+    @Test @Ignore
+    public void testImportExportWithShareableNodes() throws Exception {
+        RulesRepository repo = getRepo();
+        AssetItem item = repo.loadDefaultPackage().addAsset("testImportExportShareableNodeOriginal", "desc");
+        item.updateContent("la");
+        item.getNode().addMixin("mix:shareable");
+        PackageItem source = repo.createPackage("testImportExportShareableNodesPackage", "desc");
+        repo.save();
 
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		repo.exportRulesRepositoryToStream(bout);
-		repository_backup = bout.toByteArray();
-		assertNotNull(repository_backup);
+        source.checkout();
 
-		repo.importRulesRepositoryFromStream(new ByteArrayInputStream(
-				repository_backup));
-		assertTrue(repo.containsPackage("testImportExportShareableNodesPackage"));
-		assertTrue(repo.loadPackage("testImportExportShareableNodesPackage").containsAsset("testImportExportShareableNodeOriginal"));
-	}
-	
-	//In this test case we expect an ItemExistException from the second thread,
+        Session session = repo.getSession();
+        Workspace workspace = session.getWorkspace();
+        String path = "/drools:repository/drools:package_area/testImportExportShareableNodesPackage/assets/testImportExportShareableNodeShared";
+        workspace.clone(workspace.getName(), item.getNode().getPath(), path, false);
+        repo.save();
+
+        byte[] repository_backup;
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        repo.exportRulesRepositoryToStream(bout);
+        repository_backup = bout.toByteArray();
+        assertNotNull(repository_backup);
+
+        repo.importRulesRepositoryFromStream(new ByteArrayInputStream(
+                repository_backup));
+        assertTrue(repo.containsPackage("testImportExportShareableNodesPackage"));
+        assertTrue(repo.loadPackage("testImportExportShareableNodesPackage").containsAsset("testImportExportShareableNodeOriginal"));
+    }
+
+    //In this test case we expect an ItemExistException from the second thread,
     //other than ending up with two packages with same name.
-	//https://jira.jboss.org/jira/browse/GUVNOR-346
-	@Test
+    //https://jira.jboss.org/jira/browse/GUVNOR-346
+    @Test
     public void testConcurrentCopyPackage() throws Exception {
        // set up testing data               
-	   RulesRepository repo = RepositorySessionUtil.getMultiThreadedRepository();
+       RulesRepository repo = RepositorySessionUtil.getMultiThreadedRepository();
        PackageItem source = repo.createPackage("testConcurrentCopyPackage",
                "asset");
        AssetItem item = source.addAsset("testCopyPackage", "desc");
@@ -1325,7 +1325,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
                randomSleep();                       
            } catch (RulesRepositoryException rre) {
                //expected
-        	   System.out.println("Expected");
+               System.out.println("Expected");
            } finally {
            }
        }

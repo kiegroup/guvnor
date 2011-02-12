@@ -65,15 +65,15 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
         // Get And Fill Rule Data
         Iterator<AssetItem> assets = packageItem.getAssets();
         while ( assets.hasNext() ) {
-        	
+
             AssetItem assetItem = assets.next();
 
             if ( formats.contains( assetItem.getFormat() ) && !assetItem.getDisabled() && !assetItem.isArchived() ) {
-            	
+
                 String drl = getDRL( assetItem );
                 
                 if ( drl != null ) {
-                	
+
                     List<String> categories = new ArrayList<String>();
                     
                     for ( CategoryItem categoryItem : assetItem.getCategories() ) {
@@ -83,9 +83,9 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
                     List<DrlRuleParser> ruleDataList = DrlRuleParser.findRulesDataFromDrl( drl );
                     
                     for ( DrlRuleParser ruleData : ruleDataList ) {
-                    	ruleData.getOtherInformation().put( "Categories", categories );
-                    	ruleData.getMetadata().addAll( createMetaData( assetItem ) );
-                    	rules.add( ruleData );
+                        ruleData.getOtherInformation().put( "Categories", categories );
+                        ruleData.getMetadata().addAll( createMetaData( assetItem ) );
+                        rules.add( ruleData );
                     }
                 }
             }

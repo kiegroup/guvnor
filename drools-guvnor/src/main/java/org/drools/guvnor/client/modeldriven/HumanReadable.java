@@ -100,8 +100,8 @@ public class HumanReadable {
     }
 
     private static String lookup(String ce, Map<String, String> map) {
-    	String ret = map.get(ce);
-    	return ret == null ? ce : ret;
+        String ret = map.get(ce);
+        return ret == null ? ce : ret;
     }
 
     public static String getActionDisplayName(String action) {

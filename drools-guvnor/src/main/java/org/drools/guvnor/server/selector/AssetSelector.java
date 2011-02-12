@@ -31,11 +31,11 @@ import org.drools.repository.AssetItem;
 public interface AssetSelector {
 
 
-	/**
-	 *
-	 * @param asset The asset to be tested.
-	 * @return true if asset it allowed.
-	 */
-	boolean isAssetAllowed(AssetItem asset);
+    /**
+     *
+     * @param asset The asset to be tested.
+     * @return true if asset it allowed.
+     */
+    boolean isAssetAllowed(AssetItem asset);
 
 }

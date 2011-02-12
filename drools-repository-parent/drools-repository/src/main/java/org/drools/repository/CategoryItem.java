@@ -135,17 +135,17 @@ public class CategoryItem extends Item {
         try {
             PropertyIterator pi = this.node.getReferences();
             while (pi.hasNext()) {
-				Property p = pi.nextProperty();
-				Node parentNode = p.getParent();
+                Property p = pi.nextProperty();
+                Node parentNode = p.getParent();
 
-				if (parentNode.getProperty(
-					AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).getBoolean()) {
-					CategorisableItem.removeCategory(parentNode, this.node.getName());			
-				} else {
-					throw new RulesRepositoryException(
-					"The category still has some assets linked to it. You will need to remove the links so you can delete the cateogory.");
-				}
-			}
+                if (parentNode.getProperty(
+                    AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).getBoolean()) {
+                    CategorisableItem.removeCategory(parentNode, this.node.getName());
+                } else {
+                    throw new RulesRepositoryException(
+                    "The category still has some assets linked to it. You will need to remove the links so you can delete the cateogory.");
+                }
+            }
             this.node.remove();
         } catch ( RepositoryException e ) {
             log.error("Unable to remove category item.", e );

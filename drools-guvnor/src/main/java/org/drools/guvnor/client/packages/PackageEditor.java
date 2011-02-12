@@ -209,23 +209,23 @@ public class PackageEditor extends PrettyFormLayout {
         
         GenericCallback<TableDataResult> callBack = new GenericCallback<TableDataResult>() {
 
-        	public void onSuccess(TableDataResult resultTable) {
+            public void onSuccess(TableDataResult resultTable) {
 
-        		if (resultTable.data.length == 0) {
-        			removeRow(rowNumber);
-        		}
-        		
-        		for (int i = 0; i < resultTable.data.length; i++) {
-        			
-        			String url = getSpringContextDownload(conf, resultTable.data[i].getDisplayName());
-        			HTML html = new HTML( "<a href='" + url + "' target='_blank'>" + url + "</a>" );
-        			rootItem.addItem(html);
-        		}
-        	}
+                if (resultTable.data.length == 0) {
+                    removeRow(rowNumber);
+                }
+
+                for (int i = 0; i < resultTable.data.length; i++) {
+
+                    String url = getSpringContextDownload(conf, resultTable.data[i].getDisplayName());
+                    HTML html = new HTML( "<a href='" + url + "' target='_blank'>" + url + "</a>" );
+                    rootItem.addItem(html);
+                }
+            }
         };
         
         RepositoryServiceFactory.getService().listAssetsWithPackageName(this.conf.name, new String[]{AssetFormats.SPRING_CONTEXT}, 0,
-        																-1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, callBack);
+                                                                        -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, callBack);
         
         status = new HTML();
         HorizontalPanel statusBar = new HorizontalPanel();
@@ -414,7 +414,7 @@ public class PackageEditor extends PrettyFormLayout {
     }
     
     static String getSpringContextDownload(PackageConfigData conf, String name) {
-    	return makeLink( conf ) + "/SpringContext/" + name;
+        return makeLink( conf ) + "/SpringContext/" + name;
     }
     
     /**

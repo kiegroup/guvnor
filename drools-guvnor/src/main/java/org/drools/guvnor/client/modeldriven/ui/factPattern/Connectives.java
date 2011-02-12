@@ -107,12 +107,12 @@ public class Connectives {
             }
         }
 
-		box.addChangeHandler(new ChangeHandler() {
+        box.addChangeHandler(new ChangeHandler() {
 
-			public void onChange(ChangeEvent event) {
-				con.operator = box.getValue(box.getSelectedIndex());
-			}
-		});
+            public void onChange(ChangeEvent event) {
+                con.operator = box.getValue(box.getSelectedIndex());
+            }
+        });
 
         return box;
     }

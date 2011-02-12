@@ -28,11 +28,11 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class PackageConfigData implements IsSerializable {
 
-	public PackageConfigData() {}
-	
-	public PackageConfigData(String name) {
-		this.name = name;
-	}
+    public PackageConfigData() {}
+
+    public PackageConfigData(String name) {
+        this.name = name;
+    }
 
     public String uuid;
     public String header;
