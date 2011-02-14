@@ -56,9 +56,9 @@ public class BRDRTPersistenceTest {
     public void testGenerateEmptyDRL() {
         String expected =
                 "rule \"null_0\"\n" +
-                "    dialect \"mvel\"\n" +
-                "    when\n" +
-                "    then\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\tthen\n" +
                 "end";
 
         final String drl = p.marshal(new TemplateModel());
@@ -72,10 +72,10 @@ public class BRDRTPersistenceTest {
     public void testEmptyData() {
         String expected =
                 "rule \"with composite_0\"\n" +
-                "    dialect \"mvel\"\n" +
-                "    when\n" +
-                "        $p : Person( name == name_na )\n" +
-                "    then\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\t\t$p : Person( name == name_na )\n" +
+                "\tthen\n" +
                 "end";
         TemplateModel m = new TemplateModel();
         m.name = "with composite";
@@ -96,6 +96,7 @@ public class BRDRTPersistenceTest {
         m.lhs[0] = fp;
         final String drl = p.marshal(m);
         log.info("drl :\n{}", drl);
+        
         assertNotNull(drl);
         assertEquals(expected, drl);
     }
@@ -104,25 +105,25 @@ public class BRDRTPersistenceTest {
     public void testFreeFormLine() {
         String expected =
             "rule \"with composite_1\"\n" +
-            "    dialect \"mvel\"\n" +
-            "    when\n" +
-            "        $p : Person( name == \"diegoll\" )\n" +
-            "        Cheese(type == \"Gouda\", price < 17)\n" +
-            "    then\n" +
-            "        Person fact0 = new Person();\n" +
-            "        fact0.setAge( 87 );\n" +
-            "        insert(fact0 );\n" +
+            "\tdialect \"mvel\"\n" +
+            "\twhen\n" +
+            "\t\t$p : Person( name == \"diegoll\" )\n" +
+            "\t\tCheese(type == \"Gouda\", price < 17)\n" +
+            "\tthen\n" +
+            "\t\tPerson fact0 = new Person();\n" +
+            "\t\tfact0.setAge( 87 );\n" +
+            "\t\tinsert(fact0 );\n" +
             "end\n" +
             "\n" +
             "rule \"with composite_0\"\n" +
-            "    dialect \"mvel\"\n" +
-            "    when\n" +
-            "        $p : Person( name == \"baunax\" )\n" +
-            "        Cheese(type == \"Cheddar\", price < 23)\n" +
-            "    then\n" +
-            "        Person fact0 = new Person();\n" +
-            "        fact0.setAge( 34 );\n" +
-            "        insert(fact0 );\n" +
+            "\tdialect \"mvel\"\n" +
+            "\twhen\n" +
+            "\t\t$p : Person( name == \"baunax\" )\n" +
+            "\t\tCheese(type == \"Cheddar\", price < 23)\n" +
+            "\tthen\n" +
+            "\t\tPerson fact0 = new Person();\n" +
+            "\t\tfact0.setAge( 34 );\n" +
+            "\t\tinsert(fact0 );\n" +
             "end";
 
         TemplateModel m = new TemplateModel();
@@ -168,23 +169,23 @@ public class BRDRTPersistenceTest {
     public void testEmptyDataWithRHS() {
         String expected =
                 "rule \"with composite_1\"\n" +
-                "    dialect \"mvel\"\n" +
-                "    when\n" +
-                "        $p : Person( name == \"diegoll\" )\n" +
-                "    then\n" +
-                "        Person fact0 = new Person();\n" +
-                "        fact0.setAge( 87 );\n" +
-                "        insert(fact0 );\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\t\t$p : Person( name == \"diegoll\" )\n" +
+                "\tthen\n" +
+                "\t\tPerson fact0 = new Person();\n" +
+                "\t\tfact0.setAge( 87 );\n" +
+                "\t\tinsert(fact0 );\n" +
                 "end\n" +
                 "\n" +
                 "rule \"with composite_0\"\n" +
-                "    dialect \"mvel\"\n" +
-                "    when\n" +
-                "        $p : Person( name == \"baunax\" )\n" +
-                "    then\n" +
-                "        Person fact0 = new Person();\n" +
-                "        fact0.setAge( 34 );\n" +
-                "        insert(fact0 );\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\t\t$p : Person( name == \"baunax\" )\n" +
+                "\tthen\n" +
+                "\t\tPerson fact0 = new Person();\n" +
+                "\t\tfact0.setAge( 34 );\n" +
+                "\t\tinsert(fact0 );\n" +
                 "end";
 
         TemplateModel m = new TemplateModel();
@@ -225,17 +226,17 @@ public class BRDRTPersistenceTest {
     public void testWithData() {
         String expected =
                 "rule \"with composite_1\"\n" +
-                "    dialect \"mvel\"\n" +
-                "    when\n" +
-                "        $p : Person( name == \"diegoll\" )\n" +
-                "    then\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\t\t$p : Person( name == \"diegoll\" )\n" +
+                "\tthen\n" +
                 "end\n" +
                 "\n" +
                 "rule \"with composite_0\"\n" +
-                "    dialect \"mvel\"\n" +
-                "    when\n" +
-                "        $p : Person( name == \"baunax\" )\n" +
-                "    then\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\t\t$p : Person( name == \"baunax\" )\n" +
+                "\tthen\n" +
                 "end";
 
         TemplateModel m = new TemplateModel();
@@ -270,17 +271,17 @@ public class BRDRTPersistenceTest {
     public void testRemoveWithData() {
         String expected =
                 "rule \"with composite_1\"\n" +
-                "    dialect \"mvel\"\n" +
-                "    when\n" +
-                "        $p : Person( name == \"diegoll\" )\n" +
-                "    then\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\t\t$p : Person( name == \"diegoll\" )\n" +
+                "\tthen\n" +
                 "end\n" +
                 "\n" +
                 "rule \"with composite_0\"\n" +
-                "    dialect \"mvel\"\n" +
-                "    when\n" +
-                "        $p : Person( name == \"baunax\" )\n" +
-                "    then\n" +
+                "\tdialect \"mvel\"\n" +
+                "\twhen\n" +
+                "\t\t$p : Person( name == \"baunax\" )\n" +
+                "\tthen\n" +
                 "end";
 
         TemplateModel m = new TemplateModel();
