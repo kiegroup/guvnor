@@ -8,8 +8,10 @@
     <artifactId>drools-repository-parent</artifactId>
     <version>5.2.0-SNAPSHOT</version>
   </parent>
+
   <artifactId>drools-repository-jcr-connector</artifactId>
   <packaging>jar</packaging>
+
   <name>Drools :: Repository :: JCR connector</name>
 
   <dependencies>
