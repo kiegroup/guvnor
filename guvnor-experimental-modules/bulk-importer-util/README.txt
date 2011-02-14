@@ -2,12 +2,12 @@ Guvnor-importer-v1.0
 ---------------------
 
 The Guvnor-Importer is a maven build tool that recurses your rules directory structure and constructs an
-xml import file that can be manually imported into the Drools-Guvnor web interface via the import/export 
+xml import file that can be manually imported into the Guvnor web interface via the import/export
 administration feature.
 
 It is designed for larger scale projects where in the development phases it's far easier for each developer 
 to maintain their own set of rule files, however when the project reaches the staging/pre-production phase 
-and the final drools-guvnor solution would be more appropriate to use/test then this tool enables you to 
+and the final Guvnor solution would be more appropriate to use/test then this tool enables you to
 make that transition.
 
 How to run it
