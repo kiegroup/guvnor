@@ -13,7 +13,7 @@
   <artifactId>guvnor-repository</artifactId>
   <packaging>jar</packaging>
 
-  <name>Drools :: Repository :: Repository</name>
+  <name>Guvnor repository</name>
 
 
   <build>

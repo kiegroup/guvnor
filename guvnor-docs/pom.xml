@@ -14,7 +14,7 @@
   <artifactId>guvnor-docs</artifactId>
   <packaging>jdocbook</packaging>
   
-  <name>Guvnor Documentation</name>
-  <description>Guvnor Documentation</description>
+  <name>Guvnor documentation</name>
+  <description>Guvnor documentation</description>
 
 </project>

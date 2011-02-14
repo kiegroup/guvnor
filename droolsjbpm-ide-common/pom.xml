@@ -12,7 +12,7 @@
   <artifactId>droolsjbpm-ide-common</artifactId>
   <packaging>jar</packaging>
   
-  <name>Drools :: IDE Common</name>
+  <name>Drools jBPM IDE common</name>
 
   <dependencies>
     <dependency>

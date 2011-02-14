@@ -13,7 +13,7 @@
   <artifactId>guvnor-webapp</artifactId>
   <packaging>war</packaging>
   
-  <name>Drools :: Guvnor</name>
+  <name>Guvnor web application</name>
 
   <build>
     <finalName>guvnor-webapp</finalName>

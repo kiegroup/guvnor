@@ -12,7 +12,7 @@
   <artifactId>guvnor-repository-connector-jcr</artifactId>
   <packaging>jar</packaging>
 
-  <name>Drools :: Repository :: JCR connector</name>
+  <name>Guvnor repository connector JCR</name>
 
   <dependencies>
     <!-- Internal dependencies -->

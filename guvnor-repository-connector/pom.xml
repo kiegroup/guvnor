@@ -12,7 +12,8 @@
   <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
   <artifactId>guvnor-repository-connector</artifactId>
   <packaging>pom</packaging>
-  <name>Drools :: Repository :: Parent</name>
+
+  <name>Guvnor repository connector multiproject</name>
 
   <modules>
     <module>guvnor-repository-connector-jcr</module>

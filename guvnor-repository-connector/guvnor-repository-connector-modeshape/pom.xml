@@ -12,7 +12,7 @@
   <artifactId>guvnor-repository-connector-modeshape</artifactId>
   <packaging>jar</packaging>
   
-  <name>Drools :: Repository :: ModeShape JCR connector</name>
+  <name>Guvnor repository connector ModeShape</name>
 
   <dependencies>
     <!-- Internal dependencies -->

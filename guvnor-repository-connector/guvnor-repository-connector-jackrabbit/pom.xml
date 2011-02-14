@@ -12,7 +12,7 @@
   <artifactId>guvnor-repository-connector-jackrabbit</artifactId>
   <packaging>jar</packaging>
   
-  <name>Drools :: Repository :: JackRabbit JCR connector</name>
+  <name>Guvnor repository connector Jackrabbit</name>
 
   <dependencies>
     <!-- Internal dependencies -->
