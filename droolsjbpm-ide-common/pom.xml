@@ -9,7 +9,7 @@
   </parent>
 
   <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
-  <artifactId>drools-ide-common</artifactId>
+  <artifactId>droolsjbpm-ide-common</artifactId>
   <packaging>jar</packaging>
   
   <name>Drools :: IDE Common</name>
