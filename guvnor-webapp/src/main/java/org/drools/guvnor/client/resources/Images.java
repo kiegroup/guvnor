@@ -80,7 +80,7 @@ public interface Images
     @Source("images/workingset.gif")
     ImageResource workingset();
 
-    @Source("images/new_file.gif")
+    @Source("images/new_file_small.png")
     ImageResource newFile();
 
     @Source("images/new_file_large.png")
@@ -308,16 +308,16 @@ public interface Images
     @Source("images/fact.gif")
     ImageResource fact();
     
-    @Source("images/eventLog_small.gif")
+    @Source("images/event_log_small.png")
     ImageResource eventLogSmall();
 
-    @Source("images/eventLog_large.png")
+    @Source("images/event_log_large.png")
     ImageResource eventLogLarge();
 
-    @Source("images/userPermissions_small.gif")
+    @Source("images/user_permissions_small.png")
     ImageResource userPermissionsSmall();
 
-    @Source("images/userPermissions_large.png")
+    @Source("images/user_permissions_large.png")
     ImageResource userPermissionsLarge();
     
 }
