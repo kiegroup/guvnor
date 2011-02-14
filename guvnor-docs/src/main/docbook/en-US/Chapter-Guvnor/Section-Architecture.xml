@@ -45,9 +45,9 @@
     <section>
       <title>Modules</title>
 
-      <para>There are 2 modules: drools-repository (back end) and
+      <para>There are 2 modules: guvnor-repository (back end) and
       drools-guvnor (front end and rules integration). The drools-guvnor
-      module depends on the drools-repository module, as well as other
+      module depends on the guvnor-repository module, as well as other
       components. Guvnor is part of the main build for all of Drools - when
       building Drools, Guvnor is built alongside it.</para>
     </section>
@@ -123,7 +123,7 @@
 
     <para>Guvnor uses a service interface to separate the GUI from the back
     end functionality. In this case the back end both includes the asset
-    repository (drools-repository and JCR) as well as the compiler specifics
+    repository (guvnor-repository and JCR) as well as the compiler specifics
     to deal with rules.</para>
 
     <para>The main interface is RepositoryService, which is implemented in

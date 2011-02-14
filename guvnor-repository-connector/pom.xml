@@ -10,14 +10,13 @@
   </parent>
 
   <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
-  <artifactId>drools-repository-parent</artifactId>
+  <artifactId>guvnor-repository-connector</artifactId>
   <packaging>pom</packaging>
   <name>Drools :: Repository :: Parent</name>
 
   <modules>
-    <module>drools-repository</module>
-    <module>drools-repository-jcr-connector</module>
-    <module>drools-repository-jackrabbit-connector</module>
+    <module>guvnor-repository-connector-jcr</module>
+    <module>guvnor-repository-connector-jackrabbit</module>
   </modules>
 
   <profiles>
@@ -27,7 +26,7 @@
         <jdk>[1.6,)</jdk>
       </activation>
       <modules>
-        <module>drools-repository-modeshape-connector</module>
+        <module>guvnor-repository-connector-modeshape</module>
       </modules>
     </profile>
   </profiles>

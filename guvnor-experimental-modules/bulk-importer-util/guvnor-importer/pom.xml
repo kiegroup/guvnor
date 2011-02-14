@@ -168,7 +168,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-repository</artifactId>
+      <artifactId>guvnor-repository</artifactId>
       <version>${drools.version}</version>
     </dependency>
 

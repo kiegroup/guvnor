@@ -4,19 +4,20 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.drools</groupId>
-    <artifactId>drools-repository-parent</artifactId>
+    <groupId>org.droolsjbpm</groupId>
+    <artifactId>guvnor</artifactId>
     <version>5.2.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>drools-repository</artifactId>
+  <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
+  <artifactId>guvnor-repository</artifactId>
   <packaging>jar</packaging>
 
   <name>Drools :: Repository :: Repository</name>
 
 
   <build>
-    <finalName>drools-repository</finalName>
+    <finalName>guvnor-repository</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
@@ -49,7 +50,7 @@
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-repository-jcr-connector</artifactId>
+      <artifactId>guvnor-repository-connector-jcr</artifactId>
     </dependency>
 
     <!-- External dependencies -->
@@ -97,7 +98,7 @@
       <dependencies>
         <dependency>
           <groupId>org.drools</groupId>
-          <artifactId>drools-repository-jackrabbit-connector</artifactId>
+          <artifactId>guvnor-repository-connector-jackrabbit</artifactId>
           <scope>runtime</scope>
           <!-- Not optional so guvnor works out of the box, exclude this dependency if you use modeshape -->
         </dependency>
@@ -119,7 +120,7 @@
       <dependencies>
         <dependency>
           <groupId>org.drools</groupId>
-          <artifactId>drools-repository-modeshape-connector</artifactId>
+          <artifactId>guvnor-repository-connector-modeshape</artifactId>
           <scope>runtime</scope>
         </dependency>
       </dependencies>
