@@ -23,16 +23,16 @@
 
     <para>When you have downloaded the Guvnor distribution (which you can get
     from http://www.jboss.org/drools), you need to rename drools-5.1.0-guvnor.war 
-    to drools-guvnor.war. Copy the WAR file into the deployment directory of you
+    to guvnor-webapp.war. Copy the WAR file into the deployment directory of you
     app server, and then start your app server. If you need to customize some
     settings, you can first "explode" (unzip) the war file, and change any
     configuration settings, and then either zip it up, or deploy it
     "exploded". (Note in the JBoss Application Server you will need to make
     sure the exploded folder name ends in ".war")</para>
 
-    <para>Once the drools-guvnor.war has been placed in the deployment
+    <para>Once the guvnor-webapp.war has been placed in the deployment
     directory, and the application server started, you should navigate to
-    http://localhost/drools-guvnor and check that Guvnor appears. (Obviously
+    http://localhost/guvnor-webapp and check that Guvnor appears. (Obviously
     substitute the URL for what your application server is configured
     to).</para>
 

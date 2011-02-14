@@ -20,8 +20,8 @@
     <delete dir="${jbossAS.tempdir}/${jbossAS.version}/docs"/>
     <delete dir="${jbossAS.tempdir}/${jbossAS.version}/server/all"/>
     <delete dir="${jbossAS.tempdir}/${jbossAS.version}/server/minimal"/>
-    <unzip src="target/drools-guvnor.war"
-           dest="${jbossAS.tempdir}/${jbossAS.version}/server/default/deploy/drools-guvnor.war"/>
+    <unzip src="target/guvnor-webapp.war"
+           dest="${jbossAS.tempdir}/${jbossAS.version}/server/default/deploy/guvnor-webapp.war"/>
     <zip basedir="${jbossAS.tempdir}"
          destfile="target/guvnor-standalone.zip"/>
     <delete dir="${jbossAS.tempdir}"/>

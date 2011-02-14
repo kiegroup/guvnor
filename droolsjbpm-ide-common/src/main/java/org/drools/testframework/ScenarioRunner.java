@@ -75,7 +75,7 @@ public class ScenarioRunner {
      *                 the scenario.
      *                 <p/>
      *                 For info on how to invoke this, see
-     *                 ContentPackageAssemblerTest.testPackageWithRuleflow in drools-guvnor This
+     *                 ContentPackageAssemblerTest.testPackageWithRuleflow in guvnor-webapp This
      *                 requires that the classloader for the thread context be set
      *                 appropriately. The PackageBuilder can provide a suitable TypeResolver for
      *                 a given package header, and the Package config can provide a classloader.

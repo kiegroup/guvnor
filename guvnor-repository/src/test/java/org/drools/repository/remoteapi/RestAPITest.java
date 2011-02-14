@@ -443,7 +443,7 @@ public class RestAPITest {
         assertEquals("some asset", x[2]);
 
 
-        x = a.split("http://localhost:8080/drools-guvnor/org.dooby.doo.X.html/api/packages/foo/bar.drl");
+        x = a.split("http://localhost:8080/guvnor-webapp/org.dooby.doo.X.html/api/packages/foo/bar.drl");
         assertEquals(3, x.length);
         assertEquals("packages", x[0]);
         assertEquals("foo", x[1]);

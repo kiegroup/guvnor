@@ -86,7 +86,7 @@
       <itemizedlist>
         <listitem>
           <para>Once deployed, go to "http://&lt;your
-          server&gt;/drools-guvnor/" (This will show the initial info screen -
+          server&gt;/guvnor-webapp/" (This will show the initial info screen -
           or login screen depending on the configuration).</para>
         </listitem>
 
@@ -213,7 +213,7 @@
           This freezes the package at that point in time, so any concurrent
           changes to not effect the package. It also makes the package
           available on a URL of the form: "http://&lt;your
-          server&gt;/drools-guvnor/org.drools.guvnor.Guvnor/packages/&lt;packageName&gt;/&lt;snapshotName&gt;"
+          server&gt;/guvnor-webapp/org.drools.guvnor.Guvnor/packages/&lt;packageName&gt;/&lt;snapshotName&gt;"
           (where you can use that URL and downloads will be covered in the
           section on deployment).</para>
         </listitem>
@@ -1341,7 +1341,7 @@ public class SampleDataSource2 {
       <para>URLs are central to how built packages are provided. The Guvnor
       provides packages via URLs (for download and use by the Knowledge
       Agent). These URLs take the form of:
-      http://&lt;server&gt;/drools-guvnor/org.drools.guvnor.Guvnor/package/&lt;packageName&gt;/&lt;packageVersion&gt;</para>
+      http://&lt;server&gt;/guvnor-webapp/org.drools.guvnor.Guvnor/package/&lt;packageName&gt;/&lt;packageVersion&gt;</para>
 
       <para>&lt;packageName&gt; is the name you gave the package.
       &lt;packageVersion&gt; is either the name of a snapshot, or "LATEST" (if
@@ -2034,7 +2034,7 @@ ResourceFactory.getResourceChangeScannerService().start();</programlisting>
       be edited by typing in the corresponding text box. Drag-and-drop or
       paste into the Location field of a typical Guvnor repository URL such
       as:
-      <code>http://localhost:8080/drools-guvnor/org.drools.guvnor.Guvnor/webdav</code>
+      <code>http://localhost:8080/guvnor-webapp/org.drools.guvnor.Guvnor/webdav</code>
       Results in the URL being parsed into the respective fields as well. The
       authentication information (user name and password) can optionally be
       stored in the Eclipse workbench's key-ring file based on the selection

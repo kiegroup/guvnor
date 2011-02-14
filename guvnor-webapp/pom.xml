@@ -10,13 +10,13 @@
   </parent>
 
   <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
-  <artifactId>drools-guvnor</artifactId>
+  <artifactId>guvnor-webapp</artifactId>
   <packaging>war</packaging>
   
   <name>Drools :: Guvnor</name>
 
   <build>
-    <finalName>drools-guvnor</finalName>
+    <finalName>guvnor-webapp</finalName>
     <plugins>
       <plugin>
         <!--use -Dgwt.compiler.skip=true to skip GWT compiler-->

@@ -46,7 +46,7 @@
       <title>Modules</title>
 
       <para>There are 2 modules: guvnor-repository (back end) and
-      drools-guvnor (front end and rules integration). The drools-guvnor
+      guvnor-webapp (front end and rules integration). The guvnor-webapp
       module depends on the guvnor-repository module, as well as other
       components. Guvnor is part of the main build for all of Drools - when
       building Drools, Guvnor is built alongside it.</para>
@@ -67,7 +67,7 @@
       eventuality not to occur), the flag -DskipTests can be used
       to prevent failing unit tests from preventing the build.</para>
 
-      <para>When wishing to build Guvnor, go into the drools-guvnor
+      <para>When wishing to build Guvnor, go into the guvnor-webapp
       directory, and run <command>mvn package</command>. This will run the tests,
       and then build a deployable war.
       Once the war file is in the target directory, the Guvnor is ready to
@@ -104,7 +104,7 @@
       mode</emphasis> using the GWT browser, which is great for debugging
       (from GUI to back end, the code can be stepped through, and changes made
       on the fly and simply hit refresh). There is a
-      <filename>Guvnor.launch</filename> file in in the drools-guvnor
+      <filename>Guvnor.launch</filename> file in in the guvnor-webapp
       directory. To launch Guvnor in debug mode, open the Run dialog
       (Run-&gt;Run), and then choose <emphasis>Guvnor</emphasis> from the list.
       Launching this will open a new window, with Guvnor in debug mode,

@@ -25,10 +25,10 @@ import java.util.UUID;
  * Provides any generated input to inject into the output templates
  */
 public class GeneratedData {
-  /** formatter for the drools-guvnor xml timestamp */
+  /** formatter for the guvnor-webapp xml timestamp */
     public static SimpleDateFormat XMLDATEFORMAT  = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH:mm:ss.SSSZ", Locale.UK);
 
-    /** generated uuid for new objects within the drools-guvnor jcr repository */
+    /** generated uuid for new objects within the guvnor-webapp jcr repository */
   public static String generateUUID(){
         return UUID.randomUUID().toString();
     }
