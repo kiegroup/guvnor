@@ -79,7 +79,6 @@ public class ArchivedAssetManager extends Composite {
 
         Command restoreSelectedAssetCommand = new Command() {
 
-            @Override
             public void execute() {
                 if ( table.getSelectedRowUUIDs() == null ) {
                     Window.alert( constants.PleaseSelectAnItemToRestore() );
@@ -99,7 +98,6 @@ public class ArchivedAssetManager extends Composite {
         
         Command deleteSelectedAssetCommand = new Command() {
 
-            @Override
             public void execute() {
                 if ( table.getSelectedRowUUIDs() == null ) {
                     Window.alert( constants.PleaseSelectAnItemToPermanentlyDelete() );
@@ -124,7 +122,6 @@ public class ArchivedAssetManager extends Composite {
         btnRestorePackage = new Button( constants.RestoreSelectedPackage() );
         btnRestorePackage.addClickHandler( new ClickHandler() {
 
-            @Override
             public void onClick(ClickEvent event) {
                 if ( packages.getSelectedIndex() == -1 ) {
                     Window.alert( constants.PleaseSelectAnItemToRestore() );
@@ -139,7 +136,6 @@ public class ArchivedAssetManager extends Composite {
         btnDeletePackage = new Button( constants.PermanentlyDeletePackage() );
         btnDeletePackage.addClickHandler( new ClickHandler() {
 
-            @Override
             public void onClick(ClickEvent event) {
                 if ( packages.getSelectedIndex() == -1 ) {
                     Window.alert( constants.PleaseSelectAnItemToPermanentlyDelete() );

@@ -150,7 +150,6 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
         };
         propertyNameColumn.setFieldUpdater( new FieldUpdater<PropertyHolderAdaptor, String>() {
 
-            @Override
             public void update(int index,
                                PropertyHolderAdaptor object,
                                String value) {
@@ -175,7 +174,6 @@ public class PropertiesEditorSimpleTable extends AbstractSimpleTable<PropertyHol
         };
         propertyValueColumn.setFieldUpdater( new FieldUpdater<PropertyHolderAdaptor, String>() {
 
-            @Override
             public void update(int index,
                                PropertyHolderAdaptor object,
                                String value) {

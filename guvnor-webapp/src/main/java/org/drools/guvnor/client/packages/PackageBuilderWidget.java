@@ -512,12 +512,10 @@ public class PackageBuilderWidget extends Composite {
 
         BuildPackageErrorsSimpleTable errorsTable = new BuildPackageErrorsSimpleTable( new OpenItemCommand() {
 
-            @Override
             public void open(String key) {
                 TabOpener.getInstance().openAsset( key );
             }
 
-            @Override
             public void open(MultiViewRow[] rows) {
                 // Do nothing, not supported
             }

@@ -40,15 +40,15 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Callback;
 import com.google.gwt.user.client.ui.SuggestOracle.Request;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.gwtext.client.util.Format;
 
 /**
  * This is for quickly finding an asset by name. Partial completion is allowed.
@@ -56,11 +56,11 @@ import com.gwtext.client.util.Format;
  */
 public class QuickFindWidget extends Composite {
 
-    private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
+    private static Constants constants = GWT.create( Constants.class );
+    private static Images    images    = GWT.create( Images.class );
 
-    private SuggestBox    searchBox;
-    private CheckBox      archiveBox;
+    private SuggestBox       searchBox;
+    private CheckBox         archiveBox;
 
     public QuickFindWidget(final OpenItemCommand editEvent) {
 
@@ -88,8 +88,8 @@ public class QuickFindWidget extends Composite {
             public void onClick(ClickEvent event) {
                 resultsP.clear();
                 QueryPagedTable table = new QueryPagedTable( searchBox.getValue(),
-                                                   archiveBox.getValue(),
-                                                   editEvent );
+                                                             archiveBox.getValue(),
+                                                             editEvent );
                 resultsP.add( table );
             }
         };
@@ -114,15 +114,14 @@ public class QuickFindWidget extends Composite {
         layout.addAttribute( "",
                              go );
 
+        HorizontalPanel searchTitle = new HorizontalPanel();
+        searchTitle.add(new Image(images.information()));
+        searchTitle.add(new Label(constants.EnterSearchString()));
         FlexTable listPanel = new FlexTable();
         listPanel.setWidget( 0,
                              0,
-                             new HTML( Format.format( "<img src='{0}'/>&nbsp;{1}",
-                                                      images.information().getURL(),
-                                                      constants.EnterSearchString()
-
-                             ) ) ); // NON-NLS
-
+                             searchTitle);
+                             
         PrettyFormLayout pfl = new PrettyFormLayout();
         pfl.startSection();
         pfl.addRow( listPanel );

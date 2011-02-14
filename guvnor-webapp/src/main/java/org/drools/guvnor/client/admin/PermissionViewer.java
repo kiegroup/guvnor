@@ -105,7 +105,6 @@ public class PermissionViewer extends Composite {
     private void setupWidget() {
         Command newUserCommand = new Command() {
 
-            @Override
             public void execute() {
                 final FormStylePopup form = new FormStylePopup( images.snapshot(),
                                                                 constants.EnterNewUserName() );
@@ -118,7 +117,6 @@ public class PermissionViewer extends Composite {
                                    btnOK );
                 btnOK.addClickHandler( new ClickHandler() {
 
-                    @Override
                     public void onClick(ClickEvent event) {
                         if ( userName.getText() != null
                              && userName.getText().length() != 0 ) {
@@ -144,7 +142,6 @@ public class PermissionViewer extends Composite {
 
         Command deleteUserCommand = new Command() {
 
-            @Override
             public void execute() {
                 final String userName = table.getSelectionModel().getSelectedObject().getUserName();
                 if ( userName != null
@@ -162,12 +159,10 @@ public class PermissionViewer extends Composite {
 
         OpenItemCommand openSelectedCommand = new OpenItemCommand() {
 
-            @Override
             public void open(String key) {
                 showEditor( key );
             }
 
-            @Override
             public void open(MultiViewRow[] rows) {
                 // Not implemented
             }

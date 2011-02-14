@@ -83,13 +83,11 @@ public class SnapshotView extends Composite {
     private SnapshotComparisonPagedTable table;
     private final OpenItemCommand        openCommand     = new OpenItemCommand() {
 
-                                                             @Override
                                                              public void open(String uuid) {
                                                                  TabOpener tabOpener = TabOpener.getInstance();
                                                                  tabOpener.openAsset( uuid );
                                                              }
 
-                                                             @Override
                                                              public void open(MultiViewRow[] rows) {
                                                                  // Do nothing,
                                                                  // unsupported

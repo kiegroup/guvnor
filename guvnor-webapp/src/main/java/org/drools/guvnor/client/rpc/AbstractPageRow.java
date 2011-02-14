@@ -26,7 +26,6 @@ public abstract class AbstractPageRow
     IsSerializable,
     Comparable<AbstractPageRow> {
 
-    @Override
     public int compareTo(AbstractPageRow o) {
         return 0;
     }

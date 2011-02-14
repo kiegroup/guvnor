@@ -67,7 +67,6 @@ public class LogViewer extends Composite {
 
         final Command cleanCommand = new Command() {
 
-            @Override
             public void execute() {
                 cleanLog();
             }

@@ -100,93 +100,76 @@ public abstract class AbstractSimpleTable<T extends AbstractPageRow> extends Com
      */
     protected abstract Widget makeWidget();
 
-    @Override
     public HandlerRegistration addCellPreviewHandler(Handler<T> handler) {
         return cellTable.addCellPreviewHandler( handler );
     }
 
-    @Override
     public HandlerRegistration addRangeChangeHandler(RangeChangeEvent.Handler handler) {
         return cellTable.addRangeChangeHandler( handler );
     }
 
-    @Override
     public HandlerRegistration addRowCountChangeHandler(RowCountChangeEvent.Handler handler) {
         return cellTable.addRowCountChangeHandler( handler );
     }
 
-    @Override
     public int getRowCount() {
         return cellTable.getRowCount();
     }
 
-    @Override
     public Range getVisibleRange() {
         return cellTable.getVisibleRange();
     }
 
-    @Override
     public boolean isRowCountExact() {
         return cellTable.isRowCountExact();
     }
 
-    @Override
     public void setRowCount(int count) {
         cellTable.setRowCount( count );
     }
 
-    @Override
     public void setRowCount(int count,
                             boolean isExact) {
         cellTable.setRowCount( count,
                                isExact );
     }
 
-    @Override
     public void setVisibleRange(int start,
                                 int length) {
         cellTable.setVisibleRange( start,
                                    length );
     }
 
-    @Override
     public void setVisibleRange(Range range) {
         cellTable.setVisibleRange( range );
     }
 
-    @Override
     public SelectionModel< ? super T> getSelectionModel() {
         return cellTable.getSelectionModel();
     }
 
-    @Override
     public T getVisibleItem(int indexOnPage) {
         return cellTable.getVisibleItem( indexOnPage );
     }
 
-    @Override
     public int getVisibleItemCount() {
         return cellTable.getVisibleItemCount();
     }
 
-    @Override
     public Iterable<T> getVisibleItems() {
         return cellTable.getVisibleItems();
     }
 
-    @Override
     public void setRowData(int start,
                            List< ? extends T> values) {
         cellTable.setRowData( start,
                               values );
     }
 
-    @Override
     public void setSelectionModel(SelectionModel< ? super T> selectionModel) {
         cellTable.setSelectionModel( selectionModel );
     }
 
-    @Override
     public void setVisibleRangeAndClearData(Range range,
                                             boolean forceRangeChangeEvent) {
         cellTable.setVisibleRangeAndClearData( range,

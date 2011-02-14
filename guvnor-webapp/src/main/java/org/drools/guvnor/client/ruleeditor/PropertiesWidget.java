@@ -63,14 +63,12 @@ public class PropertiesWidget extends AssetAttachmentFileWidget
         return ""; // TODO: set correct style
     }
 
-    @Override
     public void onSave() {
         // Scrape changes back into the persistent model
         properties.list = propertiesEditor.getPropertyHolders();
         asset.content = properties;
     }
 
-    @Override
     public void onAfterSave() {
         // Do nothing
     }

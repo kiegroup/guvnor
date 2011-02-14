@@ -23,19 +23,18 @@ import org.drools.guvnor.client.rpc.Cause;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TreeItem;
-import com.gwtext.client.util.Format;
 
 class VerifierMessageLinesItem extends TreeItem {
 
-    private Constants       constants = GWT.create( Constants.class );
-    private Images          images    = GWT.create( Images.class );
+    private static Constants constants = GWT.create( Constants.class );
+    private static Images    images    = GWT.create( Images.class );
 
-    private OpenItemCommand edit;
+    private OpenItemCommand  edit;
 
     public VerifierMessageLinesItem(String topicHtml,
                                     AnalysisReportLine[] lines,
@@ -82,10 +81,10 @@ class VerifierMessageLinesItem extends TreeItem {
                                                          + ":</b>&nbsp;" ) );
 
         for ( final String ruleAssetGuid : line.impactedRules.keySet() ) {
-            HTML rule = new HTML( Format.format( "<img src='{0}'/>",
-                                                 new Image( images.ruleAsset() ).getUrl() )
-                                  + line.impactedRules.get( ruleAssetGuid ) );
-
+            HorizontalPanel rule = new HorizontalPanel();
+            rule.add(new Image(images.ruleAsset()));
+            rule.add(new Label(line.impactedRules.get( ruleAssetGuid )));
+            
             // TODO ruleAssetGuid is not a Asset UUID, but a delimited\tokenised
             // String returned from the drools-verifier framework. This String
             // is Guvnor-agnostic and needs to be transformed
