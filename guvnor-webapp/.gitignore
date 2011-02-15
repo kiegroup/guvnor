@@ -1,6 +1,5 @@
 /target
 /local
-/tomcat
 
 # Eclipse, Netbeans and IntelliJ files
 /.*
@@ -14,3 +13,6 @@
 /derby*.log
 /repository.xml
 /repository
+
+#Folder created by Eclipse GWT plug-in when running in hosted-mode
+/tomcat
