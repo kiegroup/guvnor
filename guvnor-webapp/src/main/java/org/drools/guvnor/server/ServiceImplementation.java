@@ -291,6 +291,15 @@ public class ServiceImplementation implements RepositoryService {
      */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
+    public TableDataResult loadAssetHistory(String packageUUID, String assetName) throws SerializationException {
+    	PackageItem pi = getRulesRepository().loadPackageByUUID(packageUUID);
+        AssetItem assetItem = pi.loadAsset(assetName);
+        serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
+        return repositoryAssetOperations.loadAssetHistory( assetItem );
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public TableDataResult loadArchivedAssets(int skip, int numRows) throws SerializationException {
         return repositoryAssetOperations.loadArchivedAssets( skip, numRows );
     }
@@ -674,12 +683,19 @@ public class ServiceImplementation implements RepositoryService {
         for ( String moduleName : selectedModules ) {
             PackageItem module = getRulesRepository().loadPackage( moduleName );
             module.addWorkspace( workspace );
+            module.checkin("Add workspace");
         }
         for ( String moduleName : unselectedModules ) {
             PackageItem module = getRulesRepository().loadPackage( moduleName );
             module.removeWorkspace( workspace );
+            module.checkin("Remove workspace");
         }
-        getRulesRepository().save();
+    }
+    
+    public void updateDependency(String uuid, String dependencyPath) {
+        PackageItem item = getRulesRepository().loadPackageByUUID(uuid);
+        item.updateDependency(dependencyPath);
+        item.checkin("Update dependency");
     }
 
     /**
@@ -2429,7 +2445,7 @@ public class ServiceImplementation implements RepositoryService {
             data.uuid = pkg.getUUID();
             data.name = pkg.getName();
             data.archived = pkg.isArchived();
-            data.workspace = pkg.getWorkspaces();
+            data.workspaces = pkg.getWorkspaces();
             handleIsPackagesListed( archive, workspace, filter, result, data );
 
             data.subPackages = listSubPackages( pkg, archive, null, filter );
@@ -2437,9 +2453,9 @@ public class ServiceImplementation implements RepositoryService {
     }
 
     private void handleIsPackagesListed(boolean archive, String workspace, RepositoryFilter filter, List<PackageConfigData> result, PackageConfigData data) {
-        if ( !archive && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) && (workspace == null || isWorkspace( workspace, data.workspace )) ) {
+        if ( !archive && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) && (workspace == null || isWorkspace( workspace, data.workspaces )) ) {
             result.add( data );
-        } else if ( archive && data.archived && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) && (workspace == null || isWorkspace( workspace, data.workspace )) ) {
+        } else if ( archive && data.archived && (filter == null || filter.accept( data, RoleTypes.PACKAGE_READONLY )) && (workspace == null || isWorkspace( workspace, data.workspaces )) ) {
             result.add( data );
         }
     }
@@ -2516,7 +2532,8 @@ public class ServiceImplementation implements RepositoryService {
         data.lasContributor = item.getLastContributor();
         data.state = item.getStateDescription();
         data.isSnapshot = item.isSnapshot();
-        return data;
+        data.dependencies = item.getDependencies();
+       return data;
     }
 
     private ValidatedResponse validateBRMSSuggestionCompletionLoaderResponse(BRMSSuggestionCompletionLoader loader) {

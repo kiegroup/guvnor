@@ -602,5 +602,12 @@ public class AssetItem extends CategorisableItem {
         return r;
 
     }
-
+    
+    protected String getPath() {
+        try {
+            return this.node.getPath();
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
+    }
 }

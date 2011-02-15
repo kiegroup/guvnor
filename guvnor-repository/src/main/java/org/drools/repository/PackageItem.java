@@ -76,6 +76,7 @@ public class PackageItem extends VersionableItem {
     public static final String CATEGORY_RULE_KEYS_PROPERTY_NAME       = "categoryRuleKeys";
     public static final String CATEGORY_RULE_VALUES_PROPERTY_NAME     = "categoryRuleValues";
     public static final String WORKSPACE_PROPERTY_NAME     = "drools:workspace";
+    public static final String DEPENDENCIES_PROPERTY_NAME     = "drools:dependencies";
 
     private static final String COMPILED_PACKAGE_PROPERTY_NAME = "drools:compiledPackage";
 
@@ -378,6 +379,69 @@ public class PackageItem extends VersionableItem {
     }
 
 
+    /**
+     * To avoid updating dependency attribute for every asset operation like adding/renaming/deleting etc, we calculate dependency
+     * path on the fly.
+     * @return String[] The dependency path.
+     */
+    public String[] getDependencies() {
+        Iterator<AssetItem> assets = getAssets();
+        List<String> result = new ArrayList<String>();
+
+        while(assets.hasNext()) {
+            result.add(encodeDependencyPath(assets.next().getPath()));
+        }
+
+        String[] existingDependencies = getStringPropertyArray( DEPENDENCIES_PROPERTY_NAME );
+        for(String existingDependency : existingDependencies) {
+            String path = decodeDependencyPath(existingDependency)[0];
+            int index = result.indexOf(encodeDependencyPath(path));
+
+            if(index != -1) {
+                result.set(index, existingDependency);
+            }
+        }
+
+        return result.toArray(new String[result.size()]);
+    }
+
+    public void updateDependency(String dependencyPath) {
+        String[] existingDependencies = getStringPropertyArray( DEPENDENCIES_PROPERTY_NAME );
+        boolean found = false;
+        for(int i=0;i<existingDependencies.length;i++) {
+            if(decodeDependencyPath(existingDependencies[i])[0].equals(decodeDependencyPath(dependencyPath)[0])) {
+                found = true;
+                existingDependencies[i] = dependencyPath;
+                this.updateStringArrayProperty( existingDependencies, DEPENDENCIES_PROPERTY_NAME, false );
+                break;
+            }
+        }
+        if(!found) {
+            String[] newDependencies = new String[existingDependencies.length +1];
+            for(int i =0; i< existingDependencies.length ; i++)  {
+                newDependencies[i] = existingDependencies[i];
+            }
+            newDependencies[existingDependencies.length] = dependencyPath;
+            this.updateStringArrayProperty( newDependencies, DEPENDENCIES_PROPERTY_NAME, false );
+        }
+    }
+
+    private String encodeDependencyPath(String dependencyPath) {
+        if(dependencyPath.indexOf("?version=") < 0) {
+            //Default version is LATEST
+            return dependencyPath + "?version="+"LATEST";
+        }
+
+        return dependencyPath;
+    }
+
+    private String[] decodeDependencyPath(String dependencyPath) {
+        if(dependencyPath.indexOf("?version=") >=0) {
+            return dependencyPath.split("\\?version=");
+        } else {
+            return new String[]{dependencyPath, "LATEST"};
+        }
+    }
 
     // The following should be kept for reference on how to add a reference that
     //is either locked to a version or follows head - FOR SHARING ASSETS

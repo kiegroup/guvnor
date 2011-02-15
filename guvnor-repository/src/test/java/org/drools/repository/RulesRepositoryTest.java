@@ -1331,6 +1331,52 @@ public class RulesRepositoryTest extends RepositoryTestCase {
        }
    }
 
+    @Test
+    public void testDependencies() throws Exception {
+        RulesRepository repo = getRepo();
+        PackageItem packageItem = repo.createPackage("testDependenciesPackage",
+                "desc");
+        repo.save();
+
+        String[] dependencies = packageItem.getDependencies();
+        assertEquals(0, dependencies.length);
+
+        AssetItem item = packageItem.addAsset("testDependenciesAsset1", "desc");
+        repo.save();
+        item.checkout();
+        item.checkin("version 1");
+        item.checkout();
+        item.checkin("version 2");
+        item.checkout();
+        item.checkin("version 3");
+
+        dependencies = packageItem.getDependencies();
+        assertEquals(1, dependencies.length);
+        assertEquals(
+                "/drools:repository/drools:package_area/testDependenciesPackage/assets/testDependenciesAsset1?version=LATEST",
+                dependencies[0]);
+
+        packageItem
+                .updateDependency("/drools:repository/drools:package_area/testDependenciesPackage/assets/testDependenciesAsset1?version=LATEST");
+        dependencies = packageItem.getDependencies();
+        assertEquals(
+                "/drools:repository/drools:package_area/testDependenciesPackage/assets/testDependenciesAsset1?version=LATEST",
+                dependencies[0]);
+
+        // packageItem.addDependency("/drools:repository/drools:package_area/testDependenciesPackage/assets/testDependenciesAsset1");
+        // dependencies = packageItem.getDependencies();
+        // assertEquals("/drools:repository/drools:package_area/testDependenciesPackage/assets/testDependenciesAsset1?version=LATEST",
+        // dependencies[0]);
+
+        packageItem
+                .updateDependency("/drools:repository/drools:package_area/testDependenciesPackage/assets/testDependenciesAsset1?version=2");
+        packageItem.checkin("Update dependency");
+        dependencies = packageItem.getDependencies();
+        assertEquals(
+                "/drools:repository/drools:package_area/testDependenciesPackage/assets/testDependenciesAsset1?version=2",
+                dependencies[0]);
+    }
+
     private static boolean deleteDir(File dir) {
 
         if (dir.isDirectory()) {

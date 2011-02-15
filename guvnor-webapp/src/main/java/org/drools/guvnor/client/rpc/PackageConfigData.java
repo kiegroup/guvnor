@@ -23,10 +23,12 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This contains data for a package configuration.
+ *
  */
 public class PackageConfigData implements IsSerializable {
 
-    public PackageConfigData() {}
+    public PackageConfigData() {
+    }
 
     public PackageConfigData(String name) {
         this.name = name;
@@ -46,7 +48,8 @@ public class PackageConfigData implements IsSerializable {
     public Date dateCreated;
     public String checkinComment;
     public HashMap<String,String> catRules;
-    public String[] workspace;
+    public String[] workspaces;
+    public String[] dependencies;
     
     public PackageConfigData[] subPackages;
 

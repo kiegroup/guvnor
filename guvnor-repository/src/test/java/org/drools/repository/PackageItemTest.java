@@ -868,7 +868,26 @@ public class PackageItemTest {
         assertEquals(workspaces.length, 1);
         assertTrue((workspaces[0]).equals("workspace2"));
     }
-    
+
+    @Test
+    public void testDependencies() throws Exception {
+        RulesRepository repo = getRepo();
+        PackageItem item = repo.createPackage("testDependencies", "lalalala");
+        getRepo().save();
+
+        String[] dependencies = item.getDependencies();
+        assertEquals(dependencies.length, 0);
+
+        AssetItem rule = item.addAsset("testDependenciesAsset1", "w");
+        rule.checkin("goo");
+
+        dependencies = item.getDependencies();
+        assertEquals(dependencies.length, 1);
+        assertEquals(
+                "/drools:repository/drools:package_area/testDependencies/assets/testDependenciesAsset1?version=LATEST",
+                dependencies[0]);
+    }
+
     static class MockAssetItem extends AssetItem {
         private long version;
 

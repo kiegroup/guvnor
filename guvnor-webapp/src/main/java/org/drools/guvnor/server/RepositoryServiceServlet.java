@@ -38,6 +38,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 /**
  * GWT RPC service endpoint for Repository service. A place to hang some exception handling mainly.
  * This passes on all requests unmolested to the underlying ServiceImplemention class. 
+ * 
  */
 public class RepositoryServiceServlet extends RemoteServiceServlet implements RepositoryService {
 
@@ -173,6 +174,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     public void updateWorkspace(java.lang.String p0, java.lang.String[] p1, java.lang.String[] p2)  {
         getService().updateWorkspace( p0,  p1,  p2);
     }
+    public void updateDependency(java.lang.String p0, java.lang.String p1)  {
+        getService().updateDependency( p0,  p1);
+    }
     public org.drools.guvnor.client.rpc.PackageConfigData loadGlobalPackage()  {
          return getService().loadGlobalPackage();
     }
@@ -187,6 +191,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet implements Re
     }
     public org.drools.guvnor.client.rpc.TableDataResult loadAssetHistory(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
          return getService().loadAssetHistory( p0);
+    }
+    public org.drools.guvnor.client.rpc.TableDataResult loadAssetHistory(java.lang.String p0, String p1) throws com.google.gwt.user.client.rpc.SerializationException {
+        return getService().loadAssetHistory( p0, p1);
     }
     public org.drools.guvnor.client.rpc.TableDataResult loadArchivedAssets(int p0, int p1) throws com.google.gwt.user.client.rpc.SerializationException {
          return getService().loadArchivedAssets( p0,  p1);

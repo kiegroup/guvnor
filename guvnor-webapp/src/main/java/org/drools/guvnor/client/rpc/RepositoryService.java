@@ -162,6 +162,8 @@ public interface RepositoryService
                                 String[] selectedModules,
                                 String[] unselectedModules);
 
+    public void updateDependency(String uuid, String dependencyPath);
+
     /**
      * This returns the global packages.
      */
@@ -185,6 +187,12 @@ public interface RepositoryService
      * suitable for display in a table.
      */
     public TableDataResult loadAssetHistory(String uuid) throws SerializationException;
+
+    /**
+     * This will load the history of the given asset, in a summary format
+     * suitable for display in a table.
+     */
+    public TableDataResult loadAssetHistory(String packageUUID, String assetName) throws SerializationException;
 
     /**
      * This will load all archived assets, in a summary format suitable for

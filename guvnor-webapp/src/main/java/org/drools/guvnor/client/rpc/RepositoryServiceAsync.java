@@ -47,11 +47,13 @@ public interface RepositoryServiceAsync {
     public void createWorkspace(java.lang.String p0, AsyncCallback cb);
     public void removeWorkspace(java.lang.String p0, AsyncCallback cb);
     public void updateWorkspace(java.lang.String p0, java.lang.String[] p1, java.lang.String[] p2, AsyncCallback cb);
+    public void updateDependency(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void loadGlobalPackage(AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData> cb);
     public void listArchivedPackages(AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData[]> cb);
     public void loadRuleAsset(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.RuleAsset> cb);
     public void loadRuleAssets(java.lang.String[] p0, AsyncCallback<org.drools.guvnor.client.rpc.RuleAsset[]> cb);
     public void loadAssetHistory(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
+    public void loadAssetHistory(java.lang.String p0, java.lang.String p1, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadArchivedAssets(int p0, int p1, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadArchivedAssets(org.drools.guvnor.client.rpc.PageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.AdminArchivedPageRow>> cb);
     public void checkinVersion(org.drools.guvnor.client.rpc.RuleAsset p0, AsyncCallback<java.lang.String> cb);

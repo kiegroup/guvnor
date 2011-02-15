@@ -28,6 +28,14 @@
 // for example SVN
 - drools:externalURI (string)
 
+// Module can depend on modules and assets. 
+// REVIST: may want to use reference type to store dependency path 
+- drools:dependencies (string)
+  multiple  
+//- drools:dependencies (reference)
+//  multiple
+//  copy
+//  < 'drools:assetNodeType', 'drools:packageNodeType', 'nt:version'
 
 /* MN: retiring this structure  - use it in future for shared rules
 - drools:ruleReference (reference)
