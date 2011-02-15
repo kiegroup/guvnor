@@ -137,9 +137,9 @@ public class PackageEditor extends PrettyFormLayout {
 
         endSection();
 
-        startSection(constants.BuildAndValidate());
+/*        startSection(constants.BuildAndValidate());
         addRow(new DependencyWidget(this.conf));
-        endSection();
+        endSection();*/
         
         if ( !conf.isSnapshot ) {
             startSection( constants.BuildAndValidate() );
