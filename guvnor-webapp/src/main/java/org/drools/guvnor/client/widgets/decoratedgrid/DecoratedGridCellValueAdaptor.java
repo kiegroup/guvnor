@@ -13,12 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.decisiontable.widget;
+package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.Set;
 
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -35,7 +33,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  * @param <C>
  *            The data-type of columns represented in the domain model
  */
-public class DecisionTableCellValueAdaptor<T, C> extends
+public class DecoratedGridCellValueAdaptor<T, C> extends
         AbstractCell<CellValue< ? extends Comparable< ? >>> {
 
     // Really we want AbstractCell<?> but that leads to generics hell
@@ -46,7 +44,7 @@ public class DecisionTableCellValueAdaptor<T, C> extends
     /**
      * @param cell
      */
-    public DecisionTableCellValueAdaptor(AbstractCell<T> cell) {
+    public DecoratedGridCellValueAdaptor(AbstractCell<T> cell) {
         super( cell.getConsumedEvents() );
         this.cell = cell;
     }

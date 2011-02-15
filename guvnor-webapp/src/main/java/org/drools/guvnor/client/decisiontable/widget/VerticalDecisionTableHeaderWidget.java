@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.widgets.decoratedgrid.ColumnResizeEvent;
-import org.drools.guvnor.client.widgets.decoratedgrid.ColumnResizeHandler;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
@@ -39,27 +38,15 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.dom.client.Style.Overflow;
-import com.google.gwt.dom.client.Style.Position;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CellPanel;
@@ -68,6 +55,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Header for a Vertical Decision Table
@@ -158,6 +146,18 @@ public class VerticalDecisionTableHeaderWidget extends
                     this.endHeight = endHeight;
                 }
 
+                @Override
+                protected void onComplete() {
+                    super.onComplete();
+                    setHeight( endHeight );
+                }
+
+                @Override
+                protected void onUpdate(double progress) {
+                    int height = (int) (startHeight + (progress * (endHeight - startHeight)));
+                    setHeight( height );
+                }
+
                 // Set row height by setting height of children
                 private void setHeight(int height) {
                     for ( int i = 0; i < tre.getChildCount(); i++ ) {
@@ -171,18 +171,6 @@ public class VerticalDecisionTableHeaderWidget extends
                                       getBody().getClientWidth(),
                                       getBody()
                                               .getClientHeight() );
-                }
-
-                @Override
-                protected void onComplete() {
-                    super.onComplete();
-                    setHeight( endHeight );
-                }
-
-                @Override
-                protected void onUpdate(double progress) {
-                    int height = (int) (startHeight + (progress * (endHeight - startHeight)));
-                    setHeight( height );
                 }
 
             }
@@ -543,14 +531,6 @@ public class VerticalDecisionTableHeaderWidget extends
     // UI Components
     private HeaderWidget widget;
 
-    // Column resizing
-    private boolean      bResizePrimed     = false;
-    private boolean      bResizing         = false;
-    private int          resizeColumnLeft  = 0;
-    private int          resizeColumnIndex = 0;
-    private int          resizeColumnWidth = 0;
-    private DivElement   resizer;
-
     /**
      * Construct a "Header" for the provided DecisionTable
      * 
@@ -558,163 +538,40 @@ public class VerticalDecisionTableHeaderWidget extends
      */
     public VerticalDecisionTableHeaderWidget(final DecoratedGridWidget<DTColumnConfig> grid) {
         super( grid );
-
-        // Container DIV in which the components will live
-        Element div = DOM.createDiv();
-        div.getStyle().setPosition( Position.RELATIVE );
-        getBody().getParentElement().<TableElement> cast().setCellSpacing( 0 );
-        getBody().getParentElement().<TableElement> cast().setCellPadding( 0 );
-        getBody().appendChild( div );
-
-        // Widgets within the container
-        panel = new ScrollPanel();
-        widget = new HeaderWidget();
-
-        // We don't want scroll bars on the ScrollPanel so hide any overflow
-        panel.getElement().getStyle().setOverflow( Overflow.HIDDEN );
-        panel.add( widget );
-        add( panel,
-             div );
-
-        // Column resizing
-        resizer = DOM.createDiv().<DivElement> cast();
-        resizer.addClassName( style.headerResizer() );
-
-        // Add the resizer to the outer most container, otherwise it gets
-        // truncated by the ScrollPanel as it hides any overflow
-        div.appendChild( resizer );
-
-        addDomHandler( new MouseMoveHandler() {
-
-                           public void onMouseMove(MouseMoveEvent event) {
-                               int mx = event.getClientX();
-                               if ( bResizing ) {
-                                   if ( mx
-                                        - resizeColumnLeft < 10 ) {
-                                       return;
-                                   }
-                                   setResizerDimensions( event.getX() );
-                                   resizeColumnWidth = mx
-                                                       - resizeColumnLeft;
-                                   resizeColumn( resizeColumnIndex,
-                                                 resizeColumnWidth );
-
-                                   // Second call to set dimensions as a column
-                                   // resize can add (or remove) a scroll bar to
-                                   // (or from) the Decision Table and our
-                                   // resizer needs to be redrawn accordingly.
-                                   // Just having the call to set dimensions
-                                   // after the column has been resized added
-                                   // excess flicker to movement of the resizer.
-                                   setResizerDimensions( event.getX() );
-                                   event.preventDefault();
-                               } else {
-                                   bResizePrimed = false;
-                                   for ( int iCol = 0; iCol < widget.rowHeaders[0].getChildCount(); iCol++ ) {
-                                       TableCellElement tce = widget.rowHeaders[0].getChild(
-                                                                                             iCol ).<TableCellElement> cast();
-                                       int cx = tce.getAbsoluteRight();
-                                       if ( Math.abs( mx
-                                                      - cx ) <= 5 ) {
-                                           bResizePrimed = true;
-                                           resizeColumnIndex = iCol;
-                                           resizeColumnLeft = tce.getAbsoluteLeft();
-                                           break;
-                                       }
-                                   }
-                                   if ( bResizePrimed ) {
-                                       setCursorType( Cursor.COL_RESIZE );
-                                   } else {
-                                       setCursorType( Cursor.DEFAULT );
-                                   }
-                               }
-                           }
-
-                           // Set the cursor type for all cells on the table as
-                           // we only use rowHeader[0] to check which column
-                           // needs resizing however the mouse could be over any
-                           // row
-                           private void setCursorType(Cursor cursor) {
-                               for ( int iRow = 0; iRow < widget.rowHeaders.length; iRow++ ) {
-                                   TableRowElement tre = widget.rowHeaders[iRow]
-                                           .<TableRowElement> cast();
-                                   for ( int iCol = 0; iCol < tre.getCells().getLength(); iCol++ ) {
-                                       TableCellElement tce = tre.getCells().getItem( iCol );
-                                       tce.getStyle().setCursor( cursor );
-                                   }
-                               }
-                           }
-
-                       },
-                       MouseMoveEvent.getType() );
-
-        addDomHandler( new MouseDownHandler() {
-
-                           public void onMouseDown(MouseDownEvent event) {
-                               if ( !bResizePrimed ) {
-                                   return;
-                               }
-                               bResizing = true;
-                               int mx = event.getX();
-                               setResizerDimensions( mx );
-                               resizer.getStyle().setVisibility( Visibility.VISIBLE );
-                               resizeColumnWidth = mx
-                                                   - resizeColumnLeft;
-                               event.preventDefault();
-                           }
-
-                       },
-                       MouseDownEvent.getType() );
-
-        addDomHandler( new MouseUpHandler() {
-
-                           public void onMouseUp(MouseUpEvent event) {
-                               if ( !bResizing ) {
-                                   return;
-                               }
-                               bResizing = false;
-                               bResizePrimed = false;
-                               resizer.getStyle().setVisibility( Visibility.HIDDEN );
-                               event.preventDefault();
-                           }
-
-                       },
-                       MouseUpEvent.getType() );
-
-        addDomHandler( new MouseOutHandler() {
-
-                           public void onMouseOut(MouseOutEvent event) {
-                               if ( !bResizing ) {
-                                   return;
-                               }
-                               bResizing = false;
-                               bResizePrimed = false;
-                               resizer.getStyle().setVisibility( Visibility.HIDDEN );
-                               event.preventDefault();
-                           }
-
-                       },
-                       MouseOutEvent.getType() );
-
     }
 
-    public HandlerRegistration addColumnResizeHandler(
-                                                      ColumnResizeHandler handler) {
-        if ( handler == null ) {
-            throw new IllegalArgumentException( "handler cannot be null" );
+    @Override
+    protected Widget getHeaderWidget() {
+        if ( this.widget == null ) {
+            this.widget = new HeaderWidget();
         }
-
-        return addHandler( handler,
-                           ColumnResizeEvent.getType() );
+        return widget;
     }
 
-    public HandlerRegistration addResizeHandler(ResizeHandler handler) {
-        if ( handler == null ) {
-            throw new IllegalArgumentException( "handler cannot be null" );
+    @Override
+    protected ResizerInformation getResizerInformation(int mx) {
+        boolean isPrimed = false;
+        ResizerInformation resizerInfo = new ResizerInformation();
+        for ( int iCol = 0; iCol < widget.rowHeaders[0].getChildCount(); iCol++ ) {
+            TableCellElement tce = widget.rowHeaders[0].getChild(
+                                                                  iCol ).<TableCellElement> cast();
+            int cx = tce.getAbsoluteRight();
+            if ( Math.abs( mx
+                           - cx ) <= 5 ) {
+                isPrimed = true;
+                resizerInfo.setResizePrimed( isPrimed );
+                resizerInfo.setResizeColumn( widget.visibleCols.get( iCol ) );
+                resizerInfo.setResizeColumnLeft( tce.getAbsoluteLeft() );
+                break;
+            }
+        }
+        if ( isPrimed ) {
+            setCursorType( Cursor.COL_RESIZE );
+        } else {
+            setCursorType( Cursor.DEFAULT );
         }
 
-        return addHandler( handler,
-                           ResizeEvent.getType() );
+        return resizerInfo;
     }
 
     @Override
@@ -722,33 +579,17 @@ public class VerticalDecisionTableHeaderWidget extends
         widget.redraw();
     }
 
-    @Override
-    public void setScrollPosition(int position) {
-        if ( position < 0 ) {
-            throw new IllegalArgumentException( "position cannot be null" );
-        }
-
-        ((ScrollPanel) this.panel).setHorizontalScrollPosition( position );
-    }
-
-    @Override
-    public void setWidth(String width) {
-        // Set the width of our ScrollPanel too; to prevent the containing
-        // DIV from extending it's width to accommodate the increase in size
-        super.setWidth( width );
-        panel.setWidth( width );
-    }
-
     // Resize the inner DIV in each table cell
-    private void resizeColumn(int resizeColumnIndex,
-                              int resizeColumnWidth) {
+    protected void resizeColumn(DynamicColumn<DTColumnConfig> resizeColumn,
+                                int resizeColumnWidth) {
         DivElement div;
         TableCellElement tce;
         int conditionColsWidth = 0;
 
         // This is also set in the ColumnResizeEvent handler, however it makes
         // resizing columns in the header more simple too
-        widget.visibleCols.get( resizeColumnIndex ).setWidth( resizeColumnWidth );
+        resizeColumn.setWidth( resizeColumnWidth );
+        int resizeColumnIndex = widget.visibleCols.indexOf( resizeColumn );
 
         // Row 0 (General\Fact Type)
         tce = widget.rowHeaders[0].getChild( resizeColumnIndex )
@@ -822,19 +663,29 @@ public class VerticalDecisionTableHeaderWidget extends
                                 resizeColumnWidth );
     }
 
-    // Bit of a hack to ensure the resizer is the correct size. The
-    // Decision Table itself could be contained in an outer most DIV
-    // that hides any overflow however the horizontal scrollbar
-    // would be rendered inside the DIV and hence still be covered
-    // by the resizer.
-    private void setResizerDimensions(int position) {
-        resizer.getStyle().setTop( widget.rowHeaders[0].getOffsetTop(),
-                                   Unit.PX );
-        resizer.getStyle().setHeight(
-                                      grid.getSidebarWidget().getOffsetHeight(),
-                                      Unit.PX );
-        resizer.getStyle().setLeft( position,
-                                    Unit.PX );
+    // Set the cursor type for all cells on the table as
+    // we only use rowHeader[0] to check which column
+    // needs resizing however the mouse could be over any
+    // row
+    private void setCursorType(Cursor cursor) {
+        for ( int iRow = 0; iRow < widget.rowHeaders.length; iRow++ ) {
+            TableRowElement tre = widget.rowHeaders[iRow]
+                        .<TableRowElement> cast();
+            for ( int iCol = 0; iCol < tre.getCells().getLength(); iCol++ ) {
+                TableCellElement tce = tre.getCells().getItem( iCol );
+                tce.getStyle().setCursor( cursor );
+            }
+        }
+
+    }
+
+    @Override
+    public void setScrollPosition(int position) {
+        if ( position < 0 ) {
+            throw new IllegalArgumentException( "position cannot be null" );
+        }
+
+        ((ScrollPanel) this.panel).setHorizontalScrollPosition( position );
     }
 
 }

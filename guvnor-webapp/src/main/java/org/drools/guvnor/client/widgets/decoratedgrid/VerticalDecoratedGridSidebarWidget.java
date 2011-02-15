@@ -13,15 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.decisiontable.widget;
+package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.ArrayList;
 
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridSidebarWidget;
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
-import org.drools.guvnor.client.widgets.decoratedgrid.DynamicDataRow;
-import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
-import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
@@ -45,8 +40,8 @@ import com.google.gwt.user.client.ui.Widget;
  * A sidebar for a VericalDecisionTable. This provides a vertical list of
  * controls to add and remove the associated row from the DecisionTable.
  */
-public class VerticalDecisionTableSidebarWidget extends
-        DecoratedGridSidebarWidget<DTColumnConfig> {
+public class VerticalDecoratedGridSidebarWidget<T> extends
+        DecoratedGridSidebarWidget<T> {
 
     /**
      * Widget to render selectors beside rows. Two selectors are provided per
@@ -250,7 +245,7 @@ public class VerticalDecisionTableSidebarWidget extends
      * 
      * @param decisionTable
      */
-    public VerticalDecisionTableSidebarWidget(DecoratedGridWidget<DTColumnConfig> grid,
+    public VerticalDecoratedGridSidebarWidget(DecoratedGridWidget<T> grid,
                                               HasRows hasRows) {
         // Argument validation performed in the superclass constructor
         super( grid,

@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
-import org.drools.guvnor.client.decisiontable.widget.DecisionTableCellValueAdaptor;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
@@ -41,7 +40,7 @@ public abstract class DynamicBaseColumn<T>
     /**
      * The {@link Cell} responsible for rendering items in the column.
      */
-    protected DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T>        cell;
+    protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T>        cell;
 
     /**
      * The {@link FieldUpdater} used for updating values in the column.
@@ -54,7 +53,7 @@ public abstract class DynamicBaseColumn<T>
      * @param cell
      *            the Cell used by this Column
      */
-    public DynamicBaseColumn(DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> cell) {
+    public DynamicBaseColumn(DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> cell) {
         if ( cell == null ) {
             throw new IllegalArgumentException( "cell cannot be null" );
         }
@@ -66,7 +65,7 @@ public abstract class DynamicBaseColumn<T>
      * 
      * @return a Cell
      */
-    public DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> getCell() {
+    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> getCell() {
         return cell;
     }
 
@@ -140,7 +139,7 @@ public abstract class DynamicBaseColumn<T>
      * 
      * @param cell
      */
-    public void setCell(DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> cell) {
+    public void setCell(DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> cell) {
         if ( cell == null ) {
             throw new IllegalArgumentException( "cell cannot be null" );
         }

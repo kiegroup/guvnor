@@ -23,6 +23,7 @@ import org.drools.guvnor.client.decisiontable.cells.PopupNumericEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
+import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
@@ -82,9 +83,9 @@ public class DecisionTableCellFactory {
      *            The Decision Table model column
      * @return A Cell
      */
-    public DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> getCell(DTColumnConfig column) {
+    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> getCell(DTColumnConfig column) {
 
-        DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> cell = makeTextCell();
+        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> cell = makeTextCell();
 
         if ( column instanceof RowNumberCol ) {
             cell = makeRowNumberCell();
@@ -133,28 +134,28 @@ public class DecisionTableCellFactory {
     }
 
     // Make a new Cell for Boolean columns
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeBooleanCell() {
-        return new DecisionTableCellValueAdaptor<Boolean, DTColumnConfig>( new CheckboxCell() );
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeBooleanCell() {
+        return new DecoratedGridCellValueAdaptor<Boolean, DTColumnConfig>( new CheckboxCell() );
     }
 
     // Make a new Cell for Date columns
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeDateCell() {
-        return new DecisionTableCellValueAdaptor<Date, DTColumnConfig>( new PopupDateEditCell(
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeDateCell() {
+        return new DecoratedGridCellValueAdaptor<Date, DTColumnConfig>( new PopupDateEditCell(
                                                                                                DateTimeFormat.getFormat( PredefinedFormat.DATE_SHORT ) ) );
     }
 
     // Make a new Cell for Dialect columns
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeDialectCell() {
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeDialectCell() {
         PopupDropDownEditCell pudd = new PopupDropDownEditCell();
         pudd.setItems( DIALECTS );
-        return new DecisionTableCellValueAdaptor<String, DTColumnConfig>( pudd );
+        return new DecoratedGridCellValueAdaptor<String, DTColumnConfig>( pudd );
     }
 
     // Make a new Cell for Condition and Actions columns
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeNewCell(
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeNewCell(
                                                                                                   DTColumnConfig col) {
 
-        DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> cell = makeTextCell();
+        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> cell = makeTextCell();
 
         // Columns with lists of values, enums etc are always Text (for now)
         String[] vals = model.getValueList( col,
@@ -173,25 +174,25 @@ public class DecisionTableCellFactory {
         } else {
             PopupDropDownEditCell pudd = new PopupDropDownEditCell();
             pudd.setItems( vals );
-            cell = new DecisionTableCellValueAdaptor<String, DTColumnConfig>( pudd );
+            cell = new DecoratedGridCellValueAdaptor<String, DTColumnConfig>( pudd );
         }
         return cell;
     }
 
     // Make a new Cell for Numeric columns
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeNumericCell() {
-        return new DecisionTableCellValueAdaptor<Integer, DTColumnConfig>(
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeNumericCell() {
+        return new DecoratedGridCellValueAdaptor<Integer, DTColumnConfig>(
                                                                            new PopupNumericEditCell() );
     }
 
     // Make a new Cell for String columns
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeRowNumberCell() {
-        return new DecisionTableCellValueAdaptor<Integer, DTColumnConfig>( new RowNumberCell() );
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeRowNumberCell() {
+        return new DecoratedGridCellValueAdaptor<Integer, DTColumnConfig>( new RowNumberCell() );
     }
 
     // Make a new Cell for a RowNumberCol
-    private DecisionTableCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeTextCell() {
-        return new DecisionTableCellValueAdaptor<String, DTColumnConfig>(
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeTextCell() {
+        return new DecoratedGridCellValueAdaptor<String, DTColumnConfig>(
                                                                           new PopupTextEditCell() );
     }
 

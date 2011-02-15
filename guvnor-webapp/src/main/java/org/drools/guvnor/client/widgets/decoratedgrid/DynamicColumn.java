@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
-import org.drools.guvnor.client.decisiontable.widget.DecisionTableCellValueAdaptor;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
@@ -49,7 +48,7 @@ public class DynamicColumn<T> extends DynamicBaseColumn<T>
     private SimpleEventBus    seb                = new SimpleEventBus();
 
     public DynamicColumn(T modelColumn,
-                         DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> cell,
+                         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> cell,
                          int columnIndex) {
         this( modelColumn,
               cell,
@@ -59,7 +58,7 @@ public class DynamicColumn<T> extends DynamicBaseColumn<T>
     }
 
     public DynamicColumn(T modelColumn,
-                         DecisionTableCellValueAdaptor< ? extends Comparable< ? >, T> cell,
+                         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> cell,
                          int columnIndex,
                          boolean isSystemControlled,
                          boolean isSortable) {

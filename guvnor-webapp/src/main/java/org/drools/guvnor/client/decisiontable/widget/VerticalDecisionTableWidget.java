@@ -32,6 +32,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.DynamicDataRow;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasColumns;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasSystemControlledColumns;
+import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridWidget;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -78,8 +79,8 @@ public class VerticalDecisionTableWidget extends Composite
         // Construct the widget from which we're composed
         widget = new VerticalDecoratedGridWidget<DTColumnConfig>();
         DecoratedGridHeaderWidget<DTColumnConfig> header = new VerticalDecisionTableHeaderWidget( widget );
-        DecoratedGridSidebarWidget<DTColumnConfig> sidebar = new VerticalDecisionTableSidebarWidget( widget,
-                                                                                                     this );
+        DecoratedGridSidebarWidget<DTColumnConfig> sidebar = new VerticalDecoratedGridSidebarWidget<DTColumnConfig>( widget,
+                                                                                                                     this );
         widget.setHeaderWidget( header );
         widget.setSidebarWidget( sidebar );
         widget.setHasSystemControlledColumns( this );
