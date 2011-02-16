@@ -16,17 +16,17 @@
 
 package org.drools.ide.common.assistant;
 
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import java.util.List;
 
 import org.drools.ide.common.assistant.option.AssistantOption;
 import org.drools.ide.common.assistant.option.ReplaceAssistantOption;
 import org.drools.ide.common.assistant.processor.AbstractRuleAssistantProcessor;
 import org.drools.ide.common.assistant.processor.DRLRefactorProcessor;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class DRLAssistantTest {
 
@@ -73,6 +73,7 @@ public class DRLAssistantTest {
     }
 
     @Test
+    @Ignore
     public void testAssignSalaryFieldToVariable() throws Exception {
         List<AssistantOption> options = ruleAssistant.getRuleAssistant(rule, 780);
         assertEquals(options.size(), 1);
@@ -81,12 +82,14 @@ public class DRLAssistantTest {
     }
 
     @Test
+    @Ignore
     public void testDontAssignFieldInsideRHS() throws Exception {
         List<AssistantOption> options = ruleAssistant.getRuleAssistant(rule, 840);
         assertEquals(options.size(), 0);
     }
 
     @Test
+    @Ignore
     public void testAssignLicenseFromSecondRule() throws Exception {
         List<AssistantOption> options = ruleAssistant.getRuleAssistant(rule, 930);
         assertEquals(options.size(), 1);
