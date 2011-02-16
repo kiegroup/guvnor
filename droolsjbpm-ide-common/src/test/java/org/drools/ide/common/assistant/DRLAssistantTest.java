@@ -40,15 +40,15 @@ public class DRLAssistantTest {
         rule += "import org.drools.assistant.test.model.Company;\n";
         rule += "IMPORT org.drools.assistant.test.model.Employee;\n\n";
         rule += "import function org.drools.assistant.model.Class1.anotherFunction \n";
-        rule += "import        function org.drools.assistant.model.Class1.mathFunction \n";
+        rule += "import		function org.drools.assistant.model.Class1.mathFunction \n";
         rule += "global     org.drools.assistant.test.model.Class2    results \n";
         rule += "GLOBAL org.drools.assistant.test.model.Class3 current\n";
         rule += "expander help-expander.dsl\n";
-        rule += "query \"all clients\"\n";
-        rule += "    result : Clients()\n";
+        rule += "query \"all clients\"\n"; 
+        rule += "	result : Clients()\n";
         rule += "end\n";
         rule += "query \"new query\"\n";
-        rule += "    objects : Clients()\n";
+        rule += "	objects : Clients()\n";
         rule += "end\n";
         rule += "function String hello(String name) {\n";
         rule += "    return \"Hello \"+name+\"!\";\n";
@@ -58,22 +58,21 @@ public class DRLAssistantTest {
         rule += "}\n";
         rule += "rule   \"My Test Rule\"\n";
         rule += "when\n";
-        rule += "    $employee : Employee($company : company, $company1 : oldcompany, $age : age > 80, salary > 400)\n";
-        rule += "    $result : Company(company==$company, retireAge <= $age)\n";
+        rule += "	$employee : Employee($company : company, $company1 : oldcompany, $age : age > 80, salary > 400)\n";
+        rule += "	$result : Company(company==$company, retireAge <= $age)\n";
         rule += "then\n";
-        rule += "    System.out.println(\"can retire\")\n";
+        rule += "	System.out.println(\"can retire\")\n";
         rule += "end\n";
         rule += "rule   \"My Second Rule\"\n";
         rule += "when\n";
-        rule += "    Driver(licence = 1234, $name : name)\n";
-        rule += "    $car : Car(company : $company, ownerLicense == licence, year == 2009)\n";
+        rule += "	Driver(licence = 1234, $name : name)\n";
+        rule += "	$car : Car(company : $company, ownerLicense == licence, year == 2009)\n";
         rule += "then\n";
-        rule += "    System.out.println(\"licence 1234 has a new car\")\n";
+        rule += "	System.out.println(\"licence 1234 has a new car\")\n";
         rule += "end\n";
-    }
+	}
 
     @Test
-    @Ignore
     public void testAssignSalaryFieldToVariable() throws Exception {
         List<AssistantOption> options = ruleAssistant.getRuleAssistant(rule, 780);
         assertEquals(options.size(), 1);
@@ -82,14 +81,12 @@ public class DRLAssistantTest {
     }
 
     @Test
-    @Ignore
     public void testDontAssignFieldInsideRHS() throws Exception {
         List<AssistantOption> options = ruleAssistant.getRuleAssistant(rule, 840);
         assertEquals(options.size(), 0);
     }
 
     @Test
-    @Ignore
     public void testAssignLicenseFromSecondRule() throws Exception {
         List<AssistantOption> options = ruleAssistant.getRuleAssistant(rule, 930);
         assertEquals(options.size(), 1);
