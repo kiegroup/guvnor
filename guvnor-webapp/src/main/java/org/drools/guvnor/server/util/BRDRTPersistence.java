@@ -20,6 +20,7 @@ import java.io.ByteArrayInputStream;
 
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
 import org.drools.ide.common.server.util.BRDRLPersistence;
 import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.template.DataProvider;
@@ -29,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class persists a {@link TemplateModel} to DRL template 
+ * This class persists a {@link TemplateModel} to DRL template
  */
 public class BRDRTPersistence extends BRDRLPersistence {
     private static final Logger         log                 = LoggerFactory.getLogger( BRDRTPersistence.class );
@@ -48,12 +49,15 @@ public class BRDRTPersistence extends BRDRLPersistence {
     public String marshal(RuleModel model) {
 
         String ruleTemplate = super.marshalRule( model );
-        log.debug( "ruleTemplate:\n{}", ruleTemplate );
+        log.debug( "ruleTemplate:\n{}",
+                   ruleTemplate );
 
         DataProvider dataProvider = chooseDataProvider( model );
         DataProviderCompiler tplCompiler = new DataProviderCompiler();
-        String generatedDRl = tplCompiler.compile( dataProvider, new ByteArrayInputStream( ruleTemplate.getBytes() ) ).substring( PACKAGE_DECLARATION.length() ).trim();
-        log.debug( "generated drl:\n{}", generatedDRl );
+        String generatedDRl = tplCompiler.compile( dataProvider,
+                                                   new ByteArrayInputStream( ruleTemplate.getBytes() ) ).substring( PACKAGE_DECLARATION.length() ).trim();
+        log.debug( "generated drl:\n{}",
+                   generatedDRl );
         return generatedDRl;
     }
 
@@ -71,33 +75,35 @@ public class BRDRTPersistence extends BRDRLPersistence {
     private String[][] generateEmptyIterator(TemplateModel templateModel) {
         String[][] rows = new String[1][];
 
-        String[] interpolationVariables = templateModel.getInterpolationVariablesList();
+        InterpolationVariable[] interpolationVariables = templateModel.getInterpolationVariablesList();
         if ( interpolationVariables == null || interpolationVariables.length == 0 ) {
             rows[0] = new String[]{""};
         } else {
+            rows[0] = new String[interpolationVariables.length];
             for ( int i = 0; i < interpolationVariables.length; i++ ) {
-                interpolationVariables[i] += "_na";
+                rows[0][i] = interpolationVariables[i].name += "_na";
             }
-            rows[0] = interpolationVariables;
         }
         return rows;
     }
 
     @Override
-    protected void marshalHeader(RuleModel model, StringBuilder buf) {
+    protected void marshalHeader(RuleModel model,
+                                 StringBuilder buf) {
         TemplateModel templateModel = (TemplateModel) model;
         buf.append( "template header\n" );
 
-        String[] interpolationVariables = templateModel.getInterpolationVariablesList();
+        InterpolationVariable[] interpolationVariables = templateModel.getInterpolationVariablesList();
         if ( interpolationVariables.length == 0 ) {
             buf.append( "test_var" ).append( '\n' );
         } else {
-            for ( String var : interpolationVariables ) {
-                buf.append( var ).append( '\n' );
+            for ( InterpolationVariable var : interpolationVariables ) {
+                buf.append( var.name ).append( '\n' );
             }
         }
         buf.append( PACKAGE_DECLARATION ).append( "\ntemplate \"" + super.marshalRuleName( templateModel ) + "\"\n\n" );
-        super.marshalHeader( model, buf );
+        super.marshalHeader( model,
+                             buf );
     }
 
     @Override

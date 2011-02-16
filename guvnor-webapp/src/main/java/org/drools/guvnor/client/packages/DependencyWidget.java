@@ -147,12 +147,10 @@ public class DependencyWidget extends Composite {
         table = new DependenciesPagedTable(conf.dependencies, 
         		null, null, new OpenItemCommand() {
 
-            @Override
             public void open(String key) {
                 showEditor( key );
             }
 
-            @Override
             public void open(MultiViewRow[] rows) {
                 // Do nothing, unsupported
             }

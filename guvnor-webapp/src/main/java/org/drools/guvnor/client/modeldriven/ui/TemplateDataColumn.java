@@ -18,13 +18,19 @@ package org.drools.guvnor.client.modeldriven.ui;
 public class TemplateDataColumn {
 
     private String templateVar;
+    private String dataType;
     
-    public TemplateDataColumn(String templateVar) {
+    public TemplateDataColumn(String templateVar, String dataType) {
         this.templateVar=templateVar;
+        this.dataType=dataType;
     }
 
     public String getTemplateVar() {
         return templateVar;
+    }
+
+    public String getDataType() {
+        return dataType;
     }
     
 }

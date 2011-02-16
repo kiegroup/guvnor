@@ -20,7 +20,6 @@ import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 
 import com.google.gwt.core.client.GWT;
@@ -40,7 +39,6 @@ public class RuleTemplateEditor extends DirtyableComposite
     private RuleModeller               ruleModeller;
     private Constants                  constants = GWT.create( Constants.class );
 
-    private SuggestionCompletionEngine sce;
     private TemplateDataTableWidget    table;
 
     public RuleTemplateEditor(RuleAsset asset) {
@@ -63,8 +61,7 @@ public class RuleTemplateEditor extends DirtyableComposite
                                                                                          width );
                                         popUp.setHeight( height + "px" );
 
-                                        sce = ruleModeller.getSuggestionCompletions();
-                                        table = new TemplateDataTableWidget( sce );
+                                        table = new TemplateDataTableWidget();
                                         table.setPixelSize( width,
                                                             height );
                                         table.setModel( model );

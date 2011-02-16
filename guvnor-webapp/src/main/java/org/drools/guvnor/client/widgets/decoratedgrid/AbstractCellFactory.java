@@ -1,0 +1,82 @@
+/*
+ * Copyright 2011 JBoss Inc
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package org.drools.guvnor.client.widgets.decoratedgrid;
+
+import java.util.Date;
+
+import org.drools.guvnor.client.decisiontable.cells.PopupDateEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupNumericEditCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
+
+import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
+
+/**
+ * A Factory to provide the Cells.
+ */
+public abstract class AbstractCellFactory<T> {
+
+    // The containing DecoratedGridWidget to which cells will send their updates
+    protected DecoratedGridWidget<T> grid;
+
+    /**
+     * Construct a Cell Factory for a specific Template Data Widget
+     * 
+     * @param grid
+     *            DecoratedGridWidget to which cells will send their updates
+     */
+    public AbstractCellFactory(DecoratedGridWidget<T> grid) {
+        if ( grid == null ) {
+            throw new IllegalArgumentException( "grid cannot be null" );
+        }
+
+        this.grid = grid;
+    }
+    
+    /**
+     * Create a Cell for the given Column
+     * 
+     * @param column
+     *            The Decision Table model column
+     * @return A Cell
+     */
+    public abstract DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> getCell(T column); 
+    
+    // Make a new Cell for Boolean columns
+    protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> makeBooleanCell() {
+        return new DecoratedGridCellValueAdaptor<Boolean, T>( new CheckboxCell() );
+    }
+
+    // Make a new Cell for Date columns
+    protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> makeDateCell() {
+        return new DecoratedGridCellValueAdaptor<Date, T>( new PopupDateEditCell(
+                                                                                               DateTimeFormat.getFormat( PredefinedFormat.DATE_SHORT ) ) );
+    }
+
+    // Make a new Cell for Numeric columns
+    protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> makeNumericCell() {
+        return new DecoratedGridCellValueAdaptor<Integer, T>(
+                                                                           new PopupNumericEditCell() );
+    }
+
+    // Make a new Cell for a RowNumberCol
+    protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> makeTextCell() {
+        return new DecoratedGridCellValueAdaptor<String, T>(
+                                                                          new PopupTextEditCell() );
+    }
+
+}

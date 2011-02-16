@@ -28,13 +28,16 @@ import org.drools.guvnor.client.widgets.decoratedgrid.HasColumns;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridWidget;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.Composite;
 
+/**
+ * A table in which Template data can be edited
+ */
 public class TemplateDataTableWidget extends Composite
     implements
     HasRows,
@@ -42,16 +45,13 @@ public class TemplateDataTableWidget extends Composite
 
     // Decision Table data
     protected DecoratedGridWidget<TemplateDataColumn> widget;
-    protected SuggestionCompletionEngine              sce;
     protected TemplateDataCellFactory                 cellFactory;
     protected TemplateDataCellValueFactory            cellValueFactory;
 
-    public TemplateDataTableWidget(SuggestionCompletionEngine sce) {
-
-        if ( sce == null ) {
-            throw new IllegalArgumentException( "sce cannot be null" );
-        }
-        this.sce = sce;
+    /**
+     * Constructor
+     */
+    public TemplateDataTableWidget() {
 
         // Construct the widget from which we're composed
         widget = new VerticalDecoratedGridWidget<TemplateDataColumn>();
@@ -67,6 +67,9 @@ public class TemplateDataTableWidget extends Composite
         initWidget( widget );
     }
 
+    /**
+     * Add a column to the end of the table
+     */
     public void addColumn(TemplateDataColumn modelColumn) {
         if ( modelColumn == null ) {
             throw new IllegalArgumentException(
@@ -79,17 +82,23 @@ public class TemplateDataTableWidget extends Composite
     // Add column to table with optional redraw
     private void addColumn(TemplateDataColumn modelColumn,
                            boolean bRedraw) {
-        int index = 0;
+        int index = widget.getColumns().size();
         insertColumnBefore( modelColumn,
                             index,
                             bRedraw );
     }
 
+    /**
+     * Append a row to the end of the table
+     */
     public void appendRow() {
         DynamicDataRow row = makeNewRow();
         widget.appendRow( row );
     }
 
+    /**
+     * Delete a column
+     */
     public void deleteColumn(TemplateDataColumn modelColumn) {
         if ( modelColumn == null ) {
             throw new IllegalArgumentException(
@@ -100,6 +109,9 @@ public class TemplateDataTableWidget extends Composite
         widget.deleteColumn( col );
     }
 
+    /**
+     * Delete a row
+     */
     public void deleteRow(DynamicDataRow row) {
         if ( row == null ) {
             throw new IllegalArgumentException( "row cannot be null" );
@@ -119,15 +131,6 @@ public class TemplateDataTableWidget extends Composite
             }
         }
         return column;
-    }
-
-    /**
-     * Return the SCE associated with this Decision Table
-     * 
-     * @return
-     */
-    public SuggestionCompletionEngine getSCE() {
-        return this.sce;
     }
 
     // Insert a new model column at the specified index
@@ -160,6 +163,12 @@ public class TemplateDataTableWidget extends Composite
 
     }
 
+    /**
+     * Insert a row before that provided
+     * 
+     * @param rowBefore
+     *            the row before which the new row should be inserted
+     */
     public void insertRowBefore(DynamicDataRow rowBefore) {
         if ( rowBefore == null ) {
             throw new IllegalArgumentException( "rowBefore cannot be null" );
@@ -179,7 +188,7 @@ public class TemplateDataTableWidget extends Composite
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( column,
                                                                                       iRow,
                                                                                       colIndex,
-                                                                                      "" );
+                                                                                      null );
             columnData.add( cv );
         }
         return columnData;
@@ -194,12 +203,15 @@ public class TemplateDataTableWidget extends Composite
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( col,
                                                                                       0,
                                                                                       iCol,
-                                                                                      "" );
+                                                                                      null );
             row.add( cv );
         }
         return row;
     }
 
+    /**
+     * Set column visibility
+     */
     public void setColumnVisibility(TemplateDataColumn modelColumn,
                                     boolean isVisible) {
         if ( modelColumn == null ) {
@@ -212,38 +224,29 @@ public class TemplateDataTableWidget extends Composite
     }
 
     /**
-     * Ensure the wrapped DecoratedGridWidget's size is set too
+     * Set the model to render in the table
+     * 
+     * @param model
      */
-    @Override
-    public void setPixelSize(int width,
-                             int height) {
-        if ( width < 0 ) {
-            throw new IllegalArgumentException( "width cannot be less than zero" );
-        }
-        if ( height < 0 ) {
-            throw new IllegalArgumentException( "height cannot be less than zero" );
-        }
-        super.setPixelSize( width,
-                            height );
-        widget.setPixelSize( width,
-                             height );
-    }
-
     public void setModel(TemplateModel model) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
 
-        String[] vars = model.getInterpolationVariablesList();
+        //Get interpolation variables
+        InterpolationVariable[] vars = model.getInterpolationVariablesList();
         if ( vars.length == 0 ) {
             return;
         }
 
-        for ( String var : vars ) {
-            addColumn( new TemplateDataColumn( var ),
+        //Add corresponding columns to table
+        for ( InterpolationVariable var : vars ) {
+            addColumn( new TemplateDataColumn( var.name,
+                                               var.dataType ),
                        false );
         }
 
+        //Set row data
         String[][] data = model.getTableAsArray();
         for ( int iRow = 0; iRow < data.length; iRow++ ) {
             DynamicDataRow row = new DynamicDataRow();
@@ -274,6 +277,24 @@ public class TemplateDataTableWidget extends Composite
 
         } );
 
+    }
+
+    /**
+     * Ensure the wrapped DecoratedGridWidget's size is set too
+     */
+    @Override
+    public void setPixelSize(int width,
+                             int height) {
+        if ( width < 0 ) {
+            throw new IllegalArgumentException( "width cannot be less than zero" );
+        }
+        if ( height < 0 ) {
+            throw new IllegalArgumentException( "height cannot be less than zero" );
+        }
+        super.setPixelSize( width,
+                            height );
+        widget.setPixelSize( width,
+                             height );
     }
 
 }

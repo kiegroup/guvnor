@@ -15,14 +15,10 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import java.util.Date;
-
-import org.drools.guvnor.client.decisiontable.cells.PopupDateEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
-import org.drools.guvnor.client.decisiontable.cells.PopupNumericEditCell;
-import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
+import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -34,25 +30,18 @@ import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
 
-import com.google.gwt.cell.client.CheckboxCell;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
-
 /**
  * A Factory to provide the Cells for given coordinate for Decision Tables.
  */
-public class DecisionTableCellFactory {
+public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig> {
 
-    private static String[]                     DIALECTS = {"java", "mvel"};
-
-    // The containing DecoratedGridWidget to which cells will send their updates
-    private DecoratedGridWidget<DTColumnConfig> grid;
+    private static String[]            DIALECTS = {"java", "mvel"};
 
     // SuggestionCompletionEngine to aid data-type resolution etc
-    private SuggestionCompletionEngine          sce;
+    private SuggestionCompletionEngine sce;
 
     // Model used to determine data-types etc for cells
-    private GuidedDecisionTable                 model;
+    private GuidedDecisionTable        model;
 
     /**
      * Construct a Cell Factory for a specific Decision Table
@@ -64,16 +53,13 @@ public class DecisionTableCellFactory {
      */
     public DecisionTableCellFactory(VerticalDecisionTableWidget dtable,
                                     DecoratedGridWidget<DTColumnConfig> grid) {
-        if ( dtable == null ) {
-            throw new IllegalArgumentException( "dtable cannot be null" );
-        }
+        super( grid );
         if ( grid == null ) {
             throw new IllegalArgumentException( "grid cannot be null" );
         }
 
         this.model = dtable.getModel();
         this.sce = dtable.getSCE();
-        this.grid = grid;
     }
 
     /**
@@ -133,17 +119,6 @@ public class DecisionTableCellFactory {
 
     }
 
-    // Make a new Cell for Boolean columns
-    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeBooleanCell() {
-        return new DecoratedGridCellValueAdaptor<Boolean, DTColumnConfig>( new CheckboxCell() );
-    }
-
-    // Make a new Cell for Date columns
-    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeDateCell() {
-        return new DecoratedGridCellValueAdaptor<Date, DTColumnConfig>( new PopupDateEditCell(
-                                                                                               DateTimeFormat.getFormat( PredefinedFormat.DATE_SHORT ) ) );
-    }
-
     // Make a new Cell for Dialect columns
     private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeDialectCell() {
         PopupDropDownEditCell pudd = new PopupDropDownEditCell();
@@ -179,21 +154,9 @@ public class DecisionTableCellFactory {
         return cell;
     }
 
-    // Make a new Cell for Numeric columns
-    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeNumericCell() {
-        return new DecoratedGridCellValueAdaptor<Integer, DTColumnConfig>(
-                                                                           new PopupNumericEditCell() );
-    }
-
-    // Make a new Cell for String columns
+    // Make a new Cell for Row Number columns
     private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeRowNumberCell() {
         return new DecoratedGridCellValueAdaptor<Integer, DTColumnConfig>( new RowNumberCell() );
-    }
-
-    // Make a new Cell for a RowNumberCol
-    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeTextCell() {
-        return new DecoratedGridCellValueAdaptor<String, DTColumnConfig>(
-                                                                          new PopupTextEditCell() );
     }
 
 }

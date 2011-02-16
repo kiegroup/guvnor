@@ -15,14 +15,12 @@
  */
 package org.drools.guvnor.client.modeldriven.ui;
 
-import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
+import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
-public class TemplateDataCellFactory {
-
-    // The containing DecoratedGridWidget to which cells will send their updates
-    private DecoratedGridWidget<TemplateDataColumn> grid;
+public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataColumn> {
 
     /**
      * Construct a Cell Factory for a specific Template Data Widget
@@ -31,11 +29,7 @@ public class TemplateDataCellFactory {
      *            DecoratedGridWidget to which cells will send their updates
      */
     public TemplateDataCellFactory(DecoratedGridWidget<TemplateDataColumn> grid) {
-        if ( grid == null ) {
-            throw new IllegalArgumentException( "grid cannot be null" );
-        }
-
-        this.grid = grid;
+        super( grid );
     }
 
     /**
@@ -47,16 +41,22 @@ public class TemplateDataCellFactory {
      */
     public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, TemplateDataColumn> getCell(TemplateDataColumn column) {
 
-        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, TemplateDataColumn> cell = makeTextCell();
+        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, TemplateDataColumn> cell = null;
+
+        String dataType = column.getDataType();
+        if ( column.getDataType().equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+            cell = makeBooleanCell();
+        } else if ( column.getDataType().equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+            cell = makeDateCell();
+        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+            cell = makeNumericCell();
+        } else {
+            cell = makeTextCell();
+        }
+
         cell.setDecoratedGridWidget( grid );
         return cell;
 
-    }
-
-    // Make a new Cell for a TextCol
-    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, TemplateDataColumn> makeTextCell() {
-        return new DecoratedGridCellValueAdaptor<String, TemplateDataColumn>(
-                                                                              new PopupTextEditCell() );
     }
 
 }
