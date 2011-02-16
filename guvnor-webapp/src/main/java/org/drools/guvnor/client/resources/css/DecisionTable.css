@@ -6,6 +6,7 @@
 @def rowHeaderSorterHeight 16px;
 @def rowHeaderSplitterHeight 8px;
 @def sidebarWidth 48px;
+@def borderWidth 1px;
 
 .cellTable {
     cursor: default;
@@ -20,7 +21,7 @@
     font-size: 8pt;
     text-align: center;
     outline: none;
-    border-bottom: 1px solid #C8C8C8;
+    border-bottom: borderWidth solid #C8C8C8;
     border-right: 1px dotted grey;
 }
 
@@ -29,7 +30,7 @@
     margin: 0px;
     text-align: center;
     outline: none;
-    border-bottom: 1px solid #C8C8C8;
+    border-bottom: borderWidth solid #C8C8C8;
     background-color: green;
 }
 
@@ -38,7 +39,7 @@
     margin: 0px;
     text-align: center;
     outline: none;
-    border-bottom: 1px solid #C8C8C8;
+    border-bottom: borderWidth solid #C8C8C8;
     background-color: #ffff99;
 }
 
@@ -100,6 +101,6 @@
     width: sidebarWidth;
     text-align: center;
     border-right: 1px solid grey;
-    border-bottom: 1px solid #C8C8C8;
+    border-bottom: borderWidth solid #C8C8C8;
 }
 

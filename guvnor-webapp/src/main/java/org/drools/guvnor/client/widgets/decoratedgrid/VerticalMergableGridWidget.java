@@ -168,7 +168,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         }
 
         // Keyboard navigation
-        if ( eventType.equals( "keydown" )) {
+        if ( eventType.equals( "keydown" ) ) {
             if ( event.getKeyCode() == KeyCodes.KEY_DELETE ) {
                 grid.update( null );
             } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT
@@ -481,10 +481,8 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             // Dynamic attributes!
             div.getStyle().setWidth( column.getWidth(),
                                      Unit.PX );
-            div.getStyle().setHeight( Math.floor( style.rowHeight() * 0.95 ),
-                                      Unit.PX );
             tce.getStyle().setHeight( style.rowHeight()
-                                              * rowSpan,
+                                              * rowSpan + ((rowSpan - 1) * style.borderWidth()),
                                       Unit.PX );
             tce.setRowSpan( rowSpan );
 

@@ -20,6 +20,8 @@ public interface DecisionTableResources extends ClientBundle {
         int rowHeaderSorterHeight();
 
         int sidebarWidth();
+        
+        int borderWidth();
 
         String cellTable();
 
