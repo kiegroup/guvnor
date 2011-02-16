@@ -32,7 +32,7 @@ import com.google.gwt.user.client.ui.TextBox;
  * A Popup Text Editor.
  */
 public class PopupNumericEditCell extends
-        AbstractPopupEditCell<Integer, Integer> {
+        AbstractPopupEditCell<Long, Long> {
 
     private final TextBox       textBox;
 
@@ -96,10 +96,10 @@ public class PopupNumericEditCell extends
 
     @Override
     public void render(Context context,
-                       Integer value,
+                       Long value,
                        SafeHtmlBuilder sb) {
         if ( value != null ) {
-            sb.append( renderer.render( Integer.toString( value ) ) );
+            sb.append( renderer.render( Long.toString( value ) ) );
         }
     }
 
@@ -109,9 +109,13 @@ public class PopupNumericEditCell extends
 
         // Update value
         String text = textBox.getValue();
-        Integer number = null;
+        Long number = null;
         if ( text.length() > 0 ) {
-            number = Integer.parseInt( text );
+            try {
+                number = Long.parseLong( text );
+            } catch ( NumberFormatException e ) {
+                number = Long.MAX_VALUE;
+            }
         }
         setValue( lastContext,
                   lastParent,
@@ -126,9 +130,9 @@ public class PopupNumericEditCell extends
     @Override
     protected void startEditing(final Context context,
                                 final Element parent,
-                                final Integer value) {
+                                final Long value) {
 
-        textBox.setValue( (value == null ? "" : Integer.toString( value )) );
+        textBox.setValue( (value == null ? "" : Long.toString( value )) );
 
         panel.setPopupPositionAndShow( new PositionCallback() {
             public void setPosition(int offsetWidth,

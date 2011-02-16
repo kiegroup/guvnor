@@ -46,7 +46,7 @@ public abstract class AbstractCellFactory<T> {
 
         this.grid = grid;
     }
-    
+
     /**
      * Create a Cell for the given Column
      * 
@@ -54,8 +54,8 @@ public abstract class AbstractCellFactory<T> {
      *            The Decision Table model column
      * @return A Cell
      */
-    public abstract DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> getCell(T column); 
-    
+    public abstract DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> getCell(T column);
+
     // Make a new Cell for Boolean columns
     protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> makeBooleanCell() {
         return new DecoratedGridCellValueAdaptor<Boolean, T>( new CheckboxCell() );
@@ -69,7 +69,7 @@ public abstract class AbstractCellFactory<T> {
 
     // Make a new Cell for Numeric columns
     protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> makeNumericCell() {
-        return new DecoratedGridCellValueAdaptor<Integer, T>(
+        return new DecoratedGridCellValueAdaptor<Long, T>(
                                                                            new PopupNumericEditCell() );
     }
 

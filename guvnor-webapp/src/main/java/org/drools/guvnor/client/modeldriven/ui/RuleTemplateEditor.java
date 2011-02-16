@@ -31,6 +31,9 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * Guided Editor for rules using templates
+ */
 public class RuleTemplateEditor extends DirtyableComposite
     implements
     RuleModelEditor {
@@ -41,13 +44,18 @@ public class RuleTemplateEditor extends DirtyableComposite
 
     private TemplateDataTableWidget    table;
 
+    /**
+     * Constructor for a specific asset
+     * @param asset
+     */
     public RuleTemplateEditor(RuleAsset asset) {
+        
         model = (TemplateModel) asset.content;
+        ruleModeller = new RuleModeller( asset,
+                                         new TemplateModellerWidgetFactory() );
 
         final VerticalPanel tPanel = new VerticalPanel();
         tPanel.setWidth( "100%" );
-        ruleModeller = new RuleModeller( asset,
-                                         new TemplateModellerWidgetFactory() );
 
         tPanel.add( new Button( constants.LoadTemplateData(),
                                 new ClickHandler() {
@@ -61,6 +69,7 @@ public class RuleTemplateEditor extends DirtyableComposite
                                                                                          width );
                                         popUp.setHeight( height + "px" );
 
+                                        //Initialise table to edit data
                                         table = new TemplateDataTableWidget();
                                         table.setPixelSize( width,
                                                             height );
@@ -68,9 +77,11 @@ public class RuleTemplateEditor extends DirtyableComposite
                                         popUp.addAttribute( "",
                                                             table );
 
-                                        Button close = new Button( constants.Close(),
+                                        
+                                        Button btnSaveAndClose = new Button( constants.SaveAndClose(),
                                                                    new ClickHandler() {
                                                                        public void onClick(ClickEvent event) {
+                                                                           table.scrapeData(model);
                                                                            popUp.hide();
                                                                        }
                                                                    } );
@@ -86,7 +97,7 @@ public class RuleTemplateEditor extends DirtyableComposite
 
                                         HorizontalPanel pnlClose = new HorizontalPanel();
                                         pnlClose.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_RIGHT );
-                                        pnlClose.add( close );
+                                        pnlClose.add( btnSaveAndClose );
                                         pnlClose.add( btnAddRow );
                                         popUp.addAttribute( "",
                                                             pnlClose );

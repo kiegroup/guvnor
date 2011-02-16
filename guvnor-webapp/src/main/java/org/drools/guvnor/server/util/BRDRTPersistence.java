@@ -81,7 +81,7 @@ public class BRDRTPersistence extends BRDRLPersistence {
         } else {
             rows[0] = new String[interpolationVariables.length];
             for ( int i = 0; i < interpolationVariables.length; i++ ) {
-                rows[0][i] = interpolationVariables[i].name += "_na";
+                rows[0][i] = interpolationVariables[i].getName() + "_na";
             }
         }
         return rows;
@@ -98,7 +98,7 @@ public class BRDRTPersistence extends BRDRLPersistence {
             buf.append( "test_var" ).append( '\n' );
         } else {
             for ( InterpolationVariable var : interpolationVariables ) {
-                buf.append( var.name ).append( '\n' );
+                buf.append( var.getName() ).append( '\n' );
             }
         }
         buf.append( PACKAGE_DECLARATION ).append( "\ntemplate \"" + super.marshalRuleName( templateModel ) + "\"\n\n" );

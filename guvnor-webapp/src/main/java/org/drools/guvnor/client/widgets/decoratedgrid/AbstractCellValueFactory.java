@@ -17,7 +17,6 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.Date;
 
-
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
@@ -46,15 +45,15 @@ public abstract class AbstractCellValueFactory<T> {
         },
         NUMERIC() {
             @Override
-            public CellValue<Integer> getNewCellValue(int iRow,
+            public CellValue<Long> getNewCellValue(int iRow,
                                                       int iCol,
                                                       String initialValue) {
-                CellValue<Integer> cv = new CellValue<Integer>( null,
+                CellValue<Long> cv = new CellValue<Long>( null,
                                                                 iRow,
                                                                 iCol );
                 if ( initialValue != null ) {
                     try {
-                        cv.setValue( Integer.valueOf( initialValue ) );
+                        cv.setValue( Long.valueOf( initialValue ) );
                     } catch ( Exception e ) {
                     }
                 }
@@ -63,7 +62,7 @@ public abstract class AbstractCellValueFactory<T> {
 
             @Override
             public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? null : ((Integer) value.getValue()).toString());
+                return (value.getValue() == null ? null : ((Long) value.getValue()).toString());
             }
 
         },

@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.ide.common.client.modeldriven.FieldNature;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldList;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -45,31 +46,18 @@ import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 public class TemplateModel extends RuleModel
     implements
     PortableObject {
-    public static final String ID_COLUMN_NAME = "__ID_KOL_NAME__";
-
+    /**
+     * Template interpolation variable, including data-type
+     */
     public static class InterpolationVariable {
-        public String name;
-        public String dataType;
 
-        @Override
-        public int hashCode() {
-            int hashCode = (name == null ? 1 : name.hashCode());
-            hashCode = hashCode + 31 * (dataType == null ? 7 : dataType.hashCode());
-            return hashCode;
-        }
+        private String name;
+        private String dataType;
 
-        @Override
-        public boolean equals(Object obj) {
-            if ( obj == null ) {
-                return false;
-            }
-            if ( !(obj instanceof InterpolationVariable) ) {
-                return false;
-            }
-            InterpolationVariable that = (InterpolationVariable) obj;
-            return equalOrNull( this.name,
-                                that.name ) && equalOrNull( this.dataType,
-                                                            that.dataType );
+        public InterpolationVariable(String name,
+                                     String dataType) {
+            this.name = name;
+            this.dataType = dataType;
         }
 
         private boolean equalOrNull(Object lhs,
@@ -86,175 +74,39 @@ public class TemplateModel extends RuleModel
             return lhs.equals( rhs );
         }
 
-    }
-
-    private long                      idCol     = 0;
-    private Map<String, List<String>> table     = new HashMap<String, List<String>>();
-    private int                       rowsCount = 0;
-
-    public int getColsCount() {
-        return getInterpolationVariables().size() - 1;
-    }
-
-    public int getRowsCount() {
-        return rowsCount;
-    }
-
-    private String getNewIdColValue() {
-        idCol++;
-        return String.valueOf( idCol );
-    }
-
-    public String addRow(String[] row) {
-        return addRow( null,
-                       row );
-    }
-
-    public String addRow(String rowId,
-                         String[] row) {
-        Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
-        if ( row.length != vars.size() - 1 ) {
-            throw new IllegalArgumentException( "Invalid numbers of columns: " + row.length + " expected: "
-                                                + vars.size() );
-        }
-        if ( rowId == null || rowId.length() == 0 ) {
-            rowId = getNewIdColValue();
-        }
-        for ( Map.Entry<InterpolationVariable, Integer> entry : vars.entrySet() ) {
-            List<String> list = table.get( entry.getKey() );
-            if ( list == null ) {
-                list = new ArrayList<String>();
-                table.put( entry.getKey().name,
-                           list );
+        @Override
+        public boolean equals(Object obj) {
+            if ( obj == null ) {
+                return false;
             }
-            if ( rowsCount != list.size() ) {
-                throw new IllegalArgumentException( "invalid list size for " + entry.getKey() + ", expected: "
-                                                    + rowsCount + " was: " + list.size() );
+            if ( !(obj instanceof InterpolationVariable) ) {
+                return false;
             }
-            if ( ID_COLUMN_NAME.equals( entry.getKey() ) ) {
-                list.add( rowId );
-            } else {
-                list.add( row[entry.getValue()] );
-            }
-        }
-        rowsCount++;
-        return rowId;
-    }
-
-    public boolean removeRowById(String rowId) {
-        int idx = table.get( ID_COLUMN_NAME ).indexOf( rowId );
-        if ( idx != -1 ) {
-            for ( List<String> col : table.values() ) {
-                col.remove( idx );
-            }
-            rowsCount--;
-        }
-        return idx != -1;
-    }
-
-    public void removeRow(int row) {
-        if ( row >= 0 && row < rowsCount ) {
-            for ( List<String> col : table.values() ) {
-                col.remove( row );
-            }
-            rowsCount--;
-        } else {
-            throw new ArrayIndexOutOfBoundsException( row );
-        }
-    }
-
-    public void clearRows() {
-        if ( rowsCount > 0 ) {
-            for ( List<String> col : table.values() ) {
-                col.clear();
-            }
-            rowsCount = 0;
-        }
-    }
-
-    public void putInSync() {
-        
-        //vars.KeySet is a set of InterpolationVariable, whereas table.keySet is a set of String
-        Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
-        
-        // Retain all columns in table that are in vars
-        Set<String> requiredVars = new HashSet<String>();
-        for(InterpolationVariable var : vars.keySet()) {
-            if(table.containsKey( var.name )) {
-                requiredVars.add(var.name);
-            }
-        }
-        table.keySet().retainAll( requiredVars );
-
-        // Add empty columns for all vars that are not in table
-        List<String> aux = new ArrayList<String>( rowsCount );
-        for ( int i = 0; i < rowsCount; i++ ) {
-            aux.add( "" );
-        }
-        for(InterpolationVariable var : vars.keySet()) {
-            if(!requiredVars.contains( var.name )) {
-                table.put( var.name,
-                           new ArrayList<String>( aux ) );
-            }
-        }
-        
-    }
-
-    public InterpolationVariable[] getInterpolationVariablesList() {
-        Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
-        InterpolationVariable[] ret = new InterpolationVariable[vars.size() - 1];
-        for ( Map.Entry<InterpolationVariable, Integer> entry : vars.entrySet() ) {
-            if ( !ID_COLUMN_NAME.equals( entry.getKey().name ) ) {
-                ret[entry.getValue()] = entry.getKey();
-            }
-        }
-        return ret;
-    }
-
-    private Map<InterpolationVariable, Integer> getInterpolationVariables() {
-        Map<InterpolationVariable, Integer> result = new HashMap<InterpolationVariable, Integer>();
-        new RuleModelVisitor( result ).visit( this );
-
-        InterpolationVariable id = new InterpolationVariable();
-        id.name = ID_COLUMN_NAME;
-        result.put( id,
-                    result.size() );
-        return result;
-    }
-
-    public Map<String, List<String>> getTable() {
-        return table;
-    }
-
-    public String[][] getTableAsArray() {
-        if ( rowsCount <= 0 ) {
-            return new String[0][0];
+            InterpolationVariable that = (InterpolationVariable) obj;
+            return equalOrNull( this.name,
+                                that.name ) && equalOrNull( this.dataType,
+                                                            that.dataType );
         }
 
-        //Refresh against interpolation variables
-        putInSync();
-        
-        String[][] ret = new String[rowsCount][table.size() - 1];
-        Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
-        for ( Map.Entry<InterpolationVariable, Integer> entry : vars.entrySet() ) {
-            InterpolationVariable var = entry.getKey();
-            String varName = var.name;
-            if ( ID_COLUMN_NAME.equals( varName ) ) {
-                continue;
-            }
-            int idx = entry.getValue();
-            for ( int row = 0; row < rowsCount; row++ ) {
-                ret[row][idx] = table.get( varName ).get( row );
-            }
+        public String getDataType() {
+            return dataType;
         }
-        return ret;
-    }
 
-    public void setValue(String varName,
-                         int rowIndex,
-                         String newValue) {
-        getTable().get( varName ).set( rowIndex,
-                                       newValue );
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public int hashCode() {
+            int hashCode = (name == null ? 1 : name.hashCode());
+            hashCode = hashCode + 31 * (dataType == null ? 7 : dataType.hashCode());
+            return hashCode;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
     }
 
     public static class RuleModelVisitor {
@@ -263,6 +115,29 @@ public class TemplateModel extends RuleModel
 
         public RuleModelVisitor(Map<InterpolationVariable, Integer> vars) {
             this.vars = vars;
+        }
+
+        private void parseStringPattern(String text) {
+            if ( text == null || text.length() == 0 ) {
+                return;
+            }
+            int pos = 0;
+            while ( (pos = text.indexOf( "@{",
+                                         pos )) != -1 ) {
+                int end = text.indexOf( '}',
+                                        pos + 2 );
+                if ( end != -1 ) {
+                    String varName = text.substring( pos + 2,
+                                                     end );
+                    pos = end + 1;
+                    InterpolationVariable var = new InterpolationVariable( varName,
+                                                                           SuggestionCompletionEngine.TYPE_OBJECT );
+                    if ( !vars.containsKey( var ) ) {
+                        vars.put( var,
+                                  vars.size() );
+                    }
+                }
+            }
         }
 
         public void visit(Object o) {
@@ -297,13 +172,61 @@ public class TemplateModel extends RuleModel
         private void visitActionFieldList(ActionFieldList afl) {
             for ( ActionFieldValue afv : afl.fieldValues ) {
                 if ( afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey( afv.value ) ) {
-                    InterpolationVariable var = new InterpolationVariable();
-                    var.name = afv.value;
-                    var.dataType = afv.type;
+                    InterpolationVariable var = new InterpolationVariable( afv.value,
+                                                                           afv.type );
                     vars.put( var,
                               vars.size() );
                 }
             }
+        }
+
+        private void visitCompositeFactPattern(CompositeFactPattern pattern) {
+            if ( pattern.getPatterns() != null ) {
+                for ( IFactPattern fp : pattern.getPatterns() ) {
+                    visit( fp );
+                }
+            }
+        }
+
+        private void visitCompositeFieldConstraint(CompositeFieldConstraint cfc) {
+            if ( cfc.constraints != null ) {
+                for ( FieldConstraint fc : cfc.constraints ) {
+                    visit( fc );
+                }
+            }
+        }
+
+        private void visitDSLSentence(final DSLSentence sentence) {
+            parseStringPattern( sentence.sentence );
+        }
+
+        private void visitFactPattern(FactPattern pattern) {
+            for ( FieldConstraint fc : pattern.getFieldConstraints() ) {
+                visit( fc );
+            }
+        }
+
+        private void visitFreeFormLine(FreeFormLine ffl) {
+            parseStringPattern( ffl.text );
+        }
+
+        private void visitFromAccumulateCompositeFactPattern(FromAccumulateCompositeFactPattern pattern) {
+            visit( pattern.getFactPattern() );
+            visit( pattern.getSourcePattern() );
+
+            parseStringPattern( pattern.getActionCode() );
+            parseStringPattern( pattern.getInitCode() );
+            parseStringPattern( pattern.getReverseCode() );
+        }
+
+        private void visitFromCollectCompositeFactPattern(FromCollectCompositeFactPattern pattern) {
+            visit( pattern.getFactPattern() );
+            visit( pattern.getRightPattern() );
+        }
+
+        private void visitFromCompositeFactPattern(FromCompositeFactPattern pattern) {
+            visit( pattern.getFactPattern() );
+            parseStringPattern( pattern.getExpression().getText() );
         }
 
         public void visitRuleModel(RuleModel model) {
@@ -319,86 +242,184 @@ public class TemplateModel extends RuleModel
             }
         }
 
-        private void visitFactPattern(FactPattern pattern) {
-            for ( FieldConstraint fc : pattern.getFieldConstraints() ) {
-                visit( fc );
-            }
-        }
-
-        private void visitCompositeFieldConstraint(CompositeFieldConstraint cfc) {
-            if ( cfc.constraints != null ) {
-                for ( FieldConstraint fc : cfc.constraints ) {
-                    visit( fc );
-                }
-            }
-        }
-
         private void visitSingleFieldConstraint(SingleFieldConstraint sfc) {
             if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfc.getConstraintValueType() && !vars.containsKey( sfc.getValue() ) ) {
-                InterpolationVariable var = new InterpolationVariable();
-                var.name = sfc.getValue();
-                var.dataType = sfc.getFieldType();
+                InterpolationVariable var = new InterpolationVariable( sfc.getValue(),
+                                                                       sfc.getFieldType() );
                 vars.put( var,
                           vars.size() );
             }
         }
+    }
 
-        private void visitFreeFormLine(FreeFormLine ffl) {
-            parseStringPattern( ffl.text );
+    public static final String        ID_COLUMN_NAME = "__ID_KOL_NAME__";
+    private long                      idCol          = 0;
+    private Map<String, List<String>> table          = new HashMap<String, List<String>>();
+
+    private int                       rowsCount      = 0;
+
+    public String addRow(String rowId,
+                         String[] row) {
+        Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
+        if ( row.length != vars.size() - 1 ) {
+            throw new IllegalArgumentException( "Invalid numbers of columns: " + row.length + " expected: "
+                                                + vars.size() );
+        }
+        if ( rowId == null || rowId.length() == 0 ) {
+            rowId = getNewIdColValue();
+        }
+        for ( Map.Entry<InterpolationVariable, Integer> entry : vars.entrySet() ) {
+            List<String> list = table.get( entry.getKey().getName() );
+            if ( list == null ) {
+                list = new ArrayList<String>();
+                table.put( entry.getKey().getName(),
+                           list );
+            }
+            if ( rowsCount != list.size() ) {
+                throw new IllegalArgumentException( "invalid list size for " + entry.getKey() + ", expected: "
+                                                    + rowsCount + " was: " + list.size() );
+            }
+            if ( ID_COLUMN_NAME.equals( entry.getKey().getName() ) ) {
+                list.add( rowId );
+            } else {
+                list.add( row[entry.getValue()] );
+            }
+        }
+        rowsCount++;
+        return rowId;
+    }
+
+    public String addRow(String[] row) {
+        return addRow( null,
+                       row );
+    }
+
+    public void clearRows() {
+        if ( rowsCount > 0 ) {
+            for ( List<String> col : table.values() ) {
+                col.clear();
+            }
+            rowsCount = 0;
+        }
+    }
+
+    public int getColsCount() {
+        return getInterpolationVariables().size() - 1;
+    }
+
+    private Map<InterpolationVariable, Integer> getInterpolationVariables() {
+        Map<InterpolationVariable, Integer> result = new HashMap<InterpolationVariable, Integer>();
+        new RuleModelVisitor( result ).visit( this );
+
+        InterpolationVariable id = new InterpolationVariable( ID_COLUMN_NAME,
+                                                              SuggestionCompletionEngine.TYPE_NUMERIC );
+        result.put( id,
+                    result.size() );
+        return result;
+    }
+
+    public InterpolationVariable[] getInterpolationVariablesList() {
+        Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
+        InterpolationVariable[] ret = new InterpolationVariable[vars.size() - 1];
+        for ( Map.Entry<InterpolationVariable, Integer> entry : vars.entrySet() ) {
+            if ( !ID_COLUMN_NAME.equals( entry.getKey().name ) ) {
+                ret[entry.getValue()] = entry.getKey();
+            }
+        }
+        return ret;
+    }
+
+    private String getNewIdColValue() {
+        idCol++;
+        return String.valueOf( idCol );
+    }
+
+    public int getRowsCount() {
+        return rowsCount;
+    }
+
+    public Map<String, List<String>> getTable() {
+        return table;
+    }
+
+    public String[][] getTableAsArray() {
+        if ( rowsCount <= 0 ) {
+            return new String[0][0];
         }
 
-        private void visitCompositeFactPattern(CompositeFactPattern pattern) {
-            if ( pattern.getPatterns() != null ) {
-                for ( IFactPattern fp : pattern.getPatterns() ) {
-                    visit( fp );
-                }
+        //Refresh against interpolation variables
+        putInSync();
+
+        String[][] ret = new String[rowsCount][table.size() - 1];
+        Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
+        for ( Map.Entry<InterpolationVariable, Integer> entry : vars.entrySet() ) {
+            InterpolationVariable var = entry.getKey();
+            String varName = var.name;
+            if ( ID_COLUMN_NAME.equals( varName ) ) {
+                continue;
+            }
+            int idx = entry.getValue();
+            for ( int row = 0; row < rowsCount; row++ ) {
+                ret[row][idx] = table.get( varName ).get( row );
+            }
+        }
+        return ret;
+    }
+
+    public void putInSync() {
+
+        //vars.KeySet is a set of InterpolationVariable, whereas table.keySet is a set of String
+        Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
+
+        // Retain all columns in table that are in vars
+        Set<String> requiredVars = new HashSet<String>();
+        for ( InterpolationVariable var : vars.keySet() ) {
+            if ( table.containsKey( var.name ) ) {
+                requiredVars.add( var.name );
+            }
+        }
+        table.keySet().retainAll( requiredVars );
+
+        // Add empty columns for all vars that are not in table
+        List<String> aux = new ArrayList<String>( rowsCount );
+        for ( int i = 0; i < rowsCount; i++ ) {
+            aux.add( "" );
+        }
+        for ( InterpolationVariable var : vars.keySet() ) {
+            if ( !requiredVars.contains( var.name ) ) {
+                table.put( var.name,
+                           new ArrayList<String>( aux ) );
             }
         }
 
-        private void visitFromCompositeFactPattern(FromCompositeFactPattern pattern) {
-            visit( pattern.getFactPattern() );
-            parseStringPattern( pattern.getExpression().getText() );
-        }
+    }
 
-        private void visitFromCollectCompositeFactPattern(FromCollectCompositeFactPattern pattern) {
-            visit( pattern.getFactPattern() );
-            visit( pattern.getRightPattern() );
-        }
-
-        private void visitFromAccumulateCompositeFactPattern(FromAccumulateCompositeFactPattern pattern) {
-            visit( pattern.getFactPattern() );
-            visit( pattern.getSourcePattern() );
-
-            parseStringPattern( pattern.getActionCode() );
-            parseStringPattern( pattern.getInitCode() );
-            parseStringPattern( pattern.getReverseCode() );
-        }
-
-        private void visitDSLSentence(final DSLSentence sentence) {
-            parseStringPattern( sentence.sentence );
-        }
-
-        private void parseStringPattern(String text) {
-            if ( text == null || text.length() == 0 ) {
-                return;
+    public void removeRow(int row) {
+        if ( row >= 0 && row < rowsCount ) {
+            for ( List<String> col : table.values() ) {
+                col.remove( row );
             }
-            int pos = 0;
-            while ( (pos = text.indexOf( "@{",
-                                         pos )) != -1 ) {
-                int end = text.indexOf( '}',
-                                        pos + 2 );
-                if ( end != -1 ) {
-                    String varName = text.substring( pos + 2,
-                                                     end );
-                    pos = end + 1;
-                    InterpolationVariable var = new InterpolationVariable();
-                    var.name = varName;
-                    if ( !vars.containsKey( var ) ) {
-                        vars.put( var,
-                                  vars.size() );
-                    }
-                }
-            }
+            rowsCount--;
+        } else {
+            throw new ArrayIndexOutOfBoundsException( row );
         }
+    }
+
+    public boolean removeRowById(String rowId) {
+        int idx = table.get( ID_COLUMN_NAME ).indexOf( rowId );
+        if ( idx != -1 ) {
+            for ( List<String> col : table.values() ) {
+                col.remove( idx );
+            }
+            rowsCount--;
+        }
+        return idx != -1;
+    }
+
+    public void setValue(String varName,
+                         int rowIndex,
+                         String newValue) {
+        getTable().get( varName ).set( rowIndex,
+                                       newValue );
     }
 }

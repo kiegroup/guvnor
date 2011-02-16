@@ -223,6 +223,28 @@ public class TemplateDataTableWidget extends Composite
                                             isVisible );
     }
 
+    public void scrapeData(TemplateModel model) {
+        model.clearRows();
+
+        List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
+        int columnCount = columns.size();
+
+        for ( DynamicDataRow row : widget.getData() ) {
+
+            String[] rowData = new String[columnCount];
+
+            for ( int iCol = 0; iCol < columnCount; iCol++ ) {
+                CellValue< ? > cv = row.get( iCol );
+                DynamicColumn<TemplateDataColumn> column = columns.get( iCol );
+                String serialisedValue = cellValueFactory.serialiseValue( column.getModelColumn(),
+                                                                          cv );
+                rowData[iCol] = serialisedValue;
+            }
+            model.addRow( rowData );
+        }
+
+    }
+
     /**
      * Set the model to render in the table
      * 
@@ -241,8 +263,8 @@ public class TemplateDataTableWidget extends Composite
 
         //Add corresponding columns to table
         for ( InterpolationVariable var : vars ) {
-            addColumn( new TemplateDataColumn( var.name,
-                                               var.dataType ),
+            addColumn( new TemplateDataColumn( var.getName(),
+                                               var.getDataType() ),
                        false );
         }
 
