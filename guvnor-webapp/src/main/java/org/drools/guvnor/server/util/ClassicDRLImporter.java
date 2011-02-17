@@ -211,12 +211,10 @@ public class ClassicDRLImporter {
         }
 
         // Two ends are on the same line
-        // some code /* comment */
+        // some code /* comment */ some code
         if ( commentMultiLineStart != -1 && commentMultiLineEnd != -1 ) {
 
-            line = line.substring( commentMultiLineEnd );
-            line = line.substring( 0, commentMultiLineStart );
-
+            line = line.substring( 0, commentMultiLineStart ) + line.substring( commentMultiLineEnd + "*/".length());
             return line;
         }
 
