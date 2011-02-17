@@ -2986,6 +2986,7 @@ public class ServiceImplementation implements RepositoryService {
             tr.setUuid( ie.assetUUID );
             tr.setFormat( AssetFormats.BUSINESS_RULE );
             tr.setNote( ie.note );
+            tr.setName( ie.note );
             tr.setTimestamp( new Date( ie.timestamp ) );
             tr.setFrom( ie.from );
             row = tr;
@@ -2994,6 +2995,7 @@ public class ServiceImplementation implements RepositoryService {
             InboxPageRow tr = new InboxPageRow();
             tr.setUuid( ie.assetUUID );
             tr.setNote( ie.note );
+            tr.setName( ie.note );
             tr.setTimestamp( new Date( ie.timestamp ) );
             row = tr;
         }

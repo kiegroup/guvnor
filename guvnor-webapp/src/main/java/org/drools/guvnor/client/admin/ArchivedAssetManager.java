@@ -40,7 +40,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-
 public class ArchivedAssetManager extends Composite {
 
     private static Images           images    = (Images) GWT.create( Images.class );
@@ -69,9 +68,7 @@ public class ArchivedAssetManager extends Composite {
             }
 
             public void open(MultiViewRow[] rows) {
-                for ( MultiViewRow row : rows ) {
-                    tabOpener.openAsset( row.uuid );
-                }
+                tabOpener.openAssetsToMultiView( rows );
             }
         };
 
@@ -93,9 +90,9 @@ public class ArchivedAssetManager extends Composite {
                                                                          }
                                                                      } );
             }
-            
+
         };
-        
+
         Command deleteSelectedAssetCommand = new Command() {
 
             public void execute() {
@@ -114,10 +111,12 @@ public class ArchivedAssetManager extends Composite {
                                                                         }
                                                                     } );
             }
-            
+
         };
-        
-        table = new AdminArchivedPagedTable( restoreSelectedAssetCommand, deleteSelectedAssetCommand, openSelectedCommand );
+
+        table = new AdminArchivedPagedTable( restoreSelectedAssetCommand,
+                                             deleteSelectedAssetCommand,
+                                             openSelectedCommand );
         HorizontalPanel packagesToolbar = new HorizontalPanel();
         btnRestorePackage = new Button( constants.RestoreSelectedPackage() );
         btnRestorePackage.addClickHandler( new ClickHandler() {

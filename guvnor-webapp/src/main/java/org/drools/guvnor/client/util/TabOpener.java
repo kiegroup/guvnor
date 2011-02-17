@@ -262,14 +262,13 @@ public class TabOpener {
         if ( !explorerViewCenterPanel.showIfOpen( "FIND" ) ) { // NON-NLS
             explorerViewCenterPanel.addTab( constants.Find(),
                                             new QueryWidget( new OpenItemCommand() {
+                                                
                                                 public void open(String uuid) {
                                                     openAsset( uuid );
                                                 }
 
                                                 public void open(MultiViewRow[] rows) {
-                                                    for ( MultiViewRow row : rows ) {
-                                                        openAsset( row.uuid );
-                                                    }
+                                                    openAssetsToMultiView( rows );
                                                 }
                                             } ),
                                             "FIND" ); // NON-NLS
