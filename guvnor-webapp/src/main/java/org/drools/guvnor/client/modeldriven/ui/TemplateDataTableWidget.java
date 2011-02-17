@@ -28,6 +28,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.HasColumns;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridWidget;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
 
@@ -47,11 +48,17 @@ public class TemplateDataTableWidget extends Composite
     protected DecoratedGridWidget<TemplateDataColumn> widget;
     protected TemplateDataCellFactory                 cellFactory;
     protected TemplateDataCellValueFactory            cellValueFactory;
+    protected SuggestionCompletionEngine              sce;
 
     /**
      * Constructor
      */
-    public TemplateDataTableWidget() {
+    public TemplateDataTableWidget(SuggestionCompletionEngine sce) {
+
+        if ( sce == null ) {
+            throw new IllegalArgumentException( "sce cannot be null" );
+        }
+        this.sce = sce;
 
         // Construct the widget from which we're composed
         widget = new VerticalDecoratedGridWidget<TemplateDataColumn>();
@@ -61,7 +68,8 @@ public class TemplateDataTableWidget extends Composite
         widget.setHeaderWidget( header );
         widget.setSidebarWidget( sidebar );
 
-        this.cellFactory = new TemplateDataCellFactory( widget );
+        this.cellFactory = new TemplateDataCellFactory( sce,
+                                                        widget );
         this.cellValueFactory = new TemplateDataCellValueFactory();
 
         initWidget( widget );
@@ -263,8 +271,10 @@ public class TemplateDataTableWidget extends Composite
 
         //Add corresponding columns to table
         for ( InterpolationVariable var : vars ) {
-            addColumn( new TemplateDataColumn( var.getName(),
-                                               var.getDataType() ),
+            addColumn( new TemplateDataColumn( var.getVarName(),
+                                               var.getDataType(),
+                                               var.getFactType(),
+                                               var.getFactField()),
                        false );
         }
 

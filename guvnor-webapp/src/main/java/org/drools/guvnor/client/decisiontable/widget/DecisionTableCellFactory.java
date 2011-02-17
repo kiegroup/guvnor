@@ -37,29 +37,29 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
 
     private static String[]            DIALECTS = {"java", "mvel"};
 
-    // SuggestionCompletionEngine to aid data-type resolution etc
-    private SuggestionCompletionEngine sce;
-
     // Model used to determine data-types etc for cells
     private GuidedDecisionTable        model;
 
     /**
      * Construct a Cell Factory for a specific Decision Table
      * 
-     * @param dtable
-     *            Decision Table to which Factory relates
+     * @param sce
+     *            SuggestionCompletionEngine to assist with drop-downs
      * @param grid
      *            DecoratedGridWidget to which cells will send their updates
+     * @param model
+     *            The Decision Table model to assist data-type derivation
      */
-    public DecisionTableCellFactory(VerticalDecisionTableWidget dtable,
-                                    DecoratedGridWidget<DTColumnConfig> grid) {
-        super( grid );
-        if ( grid == null ) {
-            throw new IllegalArgumentException( "grid cannot be null" );
+    public DecisionTableCellFactory(SuggestionCompletionEngine sce,
+                                    DecoratedGridWidget<DTColumnConfig> grid,
+                                    GuidedDecisionTable model) {
+        super( sce,
+               grid );
+        if ( model == null ) {
+            throw new IllegalArgumentException( "model cannot be null" );
         }
+        this.model = model;
 
-        this.model = dtable.getModel();
-        this.sce = dtable.getSCE();
     }
 
     /**

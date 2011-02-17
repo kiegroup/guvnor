@@ -19,18 +19,39 @@ public class TemplateDataColumn {
 
     private String templateVar;
     private String dataType;
-    
-    public TemplateDataColumn(String templateVar, String dataType) {
-        this.templateVar=templateVar;
-        this.dataType=dataType;
+    private String factType;
+    private String factField;
+
+    public TemplateDataColumn(String templateVar,
+                              String dataType, String factType, String factField) {
+        this.templateVar = templateVar;
+        this.dataType = dataType;
+        this.factType=factType;
+        this.factField=factField;
+    }
+
+    public String getDataType() {
+        return dataType;
+    }
+
+    public String getFactField() {
+        return factField;
+    }
+
+    public String getFactType() {
+        return factType;
     }
 
     public String getTemplateVar() {
         return templateVar;
     }
 
-    public String getDataType() {
-        return dataType;
+    public void setFactField(String factField) {
+        this.factField = factField;
     }
-    
+
+    public void setFactType(String factType) {
+        this.factType = factType;
+    }
+
 }

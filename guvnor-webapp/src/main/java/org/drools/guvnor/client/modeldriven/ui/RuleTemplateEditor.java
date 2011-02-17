@@ -19,7 +19,9 @@ package org.drools.guvnor.client.modeldriven.ui;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 
 import com.google.gwt.core.client.GWT;
@@ -41,18 +43,24 @@ public class RuleTemplateEditor extends DirtyableComposite
     private TemplateModel              model;
     private RuleModeller               ruleModeller;
     private Constants                  constants = GWT.create( Constants.class );
+    private String packageName;
+    private SuggestionCompletionEngine sce;
 
     private TemplateDataTableWidget    table;
 
     /**
      * Constructor for a specific asset
+     * 
      * @param asset
      */
     public RuleTemplateEditor(RuleAsset asset) {
-        
+
         model = (TemplateModel) asset.content;
         ruleModeller = new RuleModeller( asset,
                                          new TemplateModellerWidgetFactory() );
+        
+        this.packageName = asset.metaData.packageName;
+        sce = SuggestionCompletionCache.getInstance().getEngineFromCache( this.packageName );
 
         final VerticalPanel tPanel = new VerticalPanel();
         tPanel.setWidth( "100%" );
@@ -70,21 +78,20 @@ public class RuleTemplateEditor extends DirtyableComposite
                                         popUp.setHeight( height + "px" );
 
                                         //Initialise table to edit data
-                                        table = new TemplateDataTableWidget();
+                                        table = new TemplateDataTableWidget(sce);
                                         table.setPixelSize( width,
                                                             height );
                                         table.setModel( model );
                                         popUp.addAttribute( "",
                                                             table );
 
-                                        
                                         Button btnSaveAndClose = new Button( constants.SaveAndClose(),
-                                                                   new ClickHandler() {
-                                                                       public void onClick(ClickEvent event) {
-                                                                           table.scrapeData(model);
-                                                                           popUp.hide();
-                                                                       }
-                                                                   } );
+                                                                             new ClickHandler() {
+                                                                                 public void onClick(ClickEvent event) {
+                                                                                     table.scrapeData( model );
+                                                                                     popUp.hide();
+                                                                                 }
+                                                                             } );
 
                                         Button btnAddRow = new Button( constants.AddRow(),
                                                                        new ClickHandler() {

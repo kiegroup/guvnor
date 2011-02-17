@@ -481,9 +481,9 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             // Dynamic attributes!
             div.getStyle().setWidth( column.getWidth(),
                                      Unit.PX );
-            tce.getStyle().setHeight( style.rowHeight()
-                                              * rowSpan + ((rowSpan - 1) * style.borderWidth()),
-                                      Unit.PX );
+            //tce.getStyle().setHeight( style.rowHeight()
+            //                                  * rowSpan + ((rowSpan - 1) * style.borderWidth()),
+            //                          Unit.PX );
             tce.setRowSpan( rowSpan );
 
             // Render the cell and set inner HTML
@@ -511,6 +511,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     private TableRowElement populateTableRowElement(TableRowElement tre,
                                                     DynamicDataRow rowData) {
 
+        tre.getStyle().setHeight( style.rowHeight(), Unit.PX );
         for ( int iCol = 0; iCol < grid.getColumns().size(); iCol++ ) {
             if ( grid.getColumns().get( iCol ).isVisible() ) {
                 TableCellElement tce = makeTableCellElement( iCol,

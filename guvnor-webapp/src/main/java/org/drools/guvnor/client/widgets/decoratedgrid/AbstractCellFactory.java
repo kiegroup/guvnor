@@ -20,6 +20,7 @@ import java.util.Date;
 import org.drools.guvnor.client.decisiontable.cells.PopupDateEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupNumericEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -31,19 +32,28 @@ import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 public abstract class AbstractCellFactory<T> {
 
     // The containing DecoratedGridWidget to which cells will send their updates
-    protected DecoratedGridWidget<T> grid;
+    protected DecoratedGridWidget<T>     grid;
+
+    protected SuggestionCompletionEngine sce;
 
     /**
-     * Construct a Cell Factory for a specific Template Data Widget
+     * Construct a Cell Factory for a specific grid widget
      * 
+     * @param sce
+     *            SuggestionCompletionEngine to assist with drop-downs
      * @param grid
      *            DecoratedGridWidget to which cells will send their updates
      */
-    public AbstractCellFactory(DecoratedGridWidget<T> grid) {
+    public AbstractCellFactory(SuggestionCompletionEngine sce,
+                               DecoratedGridWidget<T> grid) {
+
+        if ( sce == null ) {
+            throw new IllegalArgumentException( "sce cannot be null" );
+        }
         if ( grid == null ) {
             throw new IllegalArgumentException( "grid cannot be null" );
         }
-
+        this.sce = sce;
         this.grid = grid;
     }
 

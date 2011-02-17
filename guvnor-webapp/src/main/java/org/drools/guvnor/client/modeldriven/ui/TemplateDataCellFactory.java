@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.modeldriven.ui;
 
+import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
@@ -25,11 +26,15 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
     /**
      * Construct a Cell Factory for a specific Template Data Widget
      * 
+     * @param sce
+     *            SuggestionCompletionEngine to assist with drop-downs
      * @param grid
      *            DecoratedGridWidget to which cells will send their updates
      */
-    public TemplateDataCellFactory(DecoratedGridWidget<TemplateDataColumn> grid) {
-        super( grid );
+    public TemplateDataCellFactory(SuggestionCompletionEngine sce,
+                                   DecoratedGridWidget<TemplateDataColumn> grid) {
+        super( sce,
+               grid );
     }
 
     /**
@@ -43,15 +48,32 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
 
         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, TemplateDataColumn> cell = null;
 
-        String dataType = column.getDataType();
-        if ( column.getDataType().equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-            cell = makeBooleanCell();
-        } else if ( column.getDataType().equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            cell = makeDateCell();
-        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            cell = makeNumericCell();
+        //Check if the column has an enumeration
+        String[] vals = null;
+        String factType = column.getFactType();
+        String factField = column.getFactField();
+        if ( factType != null && factField != null ) {
+            vals = sce.getEnumValues( factType,
+                                      factField );
+        }
+        
+        //Make a drop-down or plain cell
+        if ( vals != null && vals.length > 0 ) {
+            PopupDropDownEditCell pudd = new PopupDropDownEditCell();
+            pudd.setItems( vals );
+            cell = new DecoratedGridCellValueAdaptor<String, TemplateDataColumn>( pudd );
+            
         } else {
-            cell = makeTextCell();
+            String dataType = column.getDataType();
+            if ( column.getDataType().equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+                cell = makeBooleanCell();
+            } else if ( column.getDataType().equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+                cell = makeDateCell();
+            } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+                cell = makeNumericCell();
+            } else {
+                cell = makeTextCell();
+            }
         }
 
         cell.setDecoratedGridWidget( grid );
