@@ -481,9 +481,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             // Dynamic attributes!
             div.getStyle().setWidth( column.getWidth(),
                                      Unit.PX );
-            //tce.getStyle().setHeight( style.rowHeight()
-            //                                  * rowSpan + ((rowSpan - 1) * style.borderWidth()),
-            //                          Unit.PX );
             tce.setRowSpan( rowSpan );
 
             // Render the cell and set inner HTML
