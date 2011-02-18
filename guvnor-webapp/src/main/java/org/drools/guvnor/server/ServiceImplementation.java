@@ -442,6 +442,9 @@ public class ServiceImplementation implements RepositoryService {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
         }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
+        }
 
         // Setup parameters
         String search = request.getSearchText().replace( '*', '%' );
@@ -1665,6 +1668,9 @@ public class ServiceImplementation implements RepositoryService {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
         }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
+        }
 
         serviceSecurity.checkSecurityIsAdmin();
 
@@ -1678,11 +1684,15 @@ public class ServiceImplementation implements RepositoryService {
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setTotalRowSize( entries.length );
         response.setTotalRowSizeExact( true );
-        
-        int rowMaxNumber = Math.min(request.getStartRowIndex()+request.getPageSize(), entries.length);
-        List<LogPageRow> rowList = new ArrayList<LogPageRow>(request.getPageSize());
-        for(int i = request.getStartRowIndex(); i<rowMaxNumber;i++) {
-            LogEntry e = entries[i];
+
+        int rowNumber = 0;
+        int rowMinNumber = request.getStartRowIndex();
+        int rowMaxNumber = request.getPageSize() == null ? entries.length : Math.min( rowMinNumber + request.getPageSize(),
+                                                                                      entries.length );
+        int resultsSize = (request.getPageSize() == null ? entries.length : request.getPageSize());
+        List<LogPageRow> rowList = new ArrayList<LogPageRow>( resultsSize );
+        for ( rowNumber = rowMinNumber; rowNumber < rowMaxNumber; rowNumber++ ) {
+            LogEntry e = entries[rowNumber];
             LogPageRow row = new LogPageRow();
             row.setSeverity( e.severity );
             row.setMessage( e.message );
@@ -1690,6 +1700,7 @@ public class ServiceImplementation implements RepositoryService {
             rowList.add( row );
         }
         response.setPageRowList( rowList );
+        response.setLastPage( rowNumber == entries.length );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Retrieved Log Entries in " + methodDuration + " ms." );
@@ -1812,6 +1823,9 @@ public class ServiceImplementation implements RepositoryService {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
         }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
+        }
 
         serviceSecurity.checkSecurityIsAdmin();
 
@@ -1826,24 +1840,27 @@ public class ServiceImplementation implements RepositoryService {
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setTotalRowSize( permissions.size() );
         response.setTotalRowSizeExact( true );
-        
-        List<PermissionsPageRow> rowList = new ArrayList<PermissionsPageRow>(request.getPageSize());
+
+        int rowNumber = 0;
+        int rowMinNumber = request.getStartRowIndex();
+        int rowMaxNumber = request.getPageSize() == null ? permissions.size() : rowMinNumber + request.getPageSize();
+        int resultsSize = (request.getPageSize() == null ? permissions.size() : request.getPageSize());
+        List<PermissionsPageRow> rowList = new ArrayList<PermissionsPageRow>( resultsSize );
         Iterator<String> mapItr = permissions.keySet().iterator();
-        int rowNumber=0;
-        int rowMaxNumber = request.getStartRowIndex()+request.getPageSize();
-        while(mapItr.hasNext() && rowNumber<rowMaxNumber) {
+        while ( mapItr.hasNext() && rowNumber < rowMaxNumber ) {
             String userName = mapItr.next();
-            if(rowNumber>=request.getStartRowIndex()) {
+            if ( rowNumber >= rowMinNumber ) {
                 List<String> userPermissions = permissions.get( userName );
                 PermissionsPageRow row = new PermissionsPageRow();
                 row.setUserName( userName );
                 row.setUserPermissions( userPermissions );
-                rowList.add(row);
+                rowList.add( row );
             }
             rowNumber++;
         }
         response.setPageRowList( rowList );
-        
+        response.setLastPage( !mapItr.hasNext() );
+
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Retrieved Log Entries in " + methodDuration + " ms." );
         return response;
@@ -2204,6 +2221,9 @@ public class ServiceImplementation implements RepositoryService {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
         }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
+        }
 
         // Do query
         long start = System.currentTimeMillis();
@@ -2233,6 +2253,9 @@ public class ServiceImplementation implements RepositoryService {
     public PageResponse<QueryPageRow> queryMetaData(QueryMetadataPageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
+        }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
         }
 
         // Setup parameters for generic repository query
@@ -2886,35 +2909,40 @@ public class ServiceImplementation implements RepositoryService {
         return leftPackage.getLastModified().compareTo( rightPackage.getLastModified() ) > 0;
     }
 
-    private List<InboxPageRow> fillInboxPageRows(InboxPageRequest request, Iterator<InboxEntry> it) {
-
+    private List<InboxPageRow> fillInboxPageRows(InboxPageRequest request,
+                                                 Iterator<InboxEntry> it) {
         int skipped = 0;
-        int pageSize = request.getPageSize();
+        Integer pageSize = request.getPageSize();
         int startRowIndex = request.getStartRowIndex();
-        List<InboxPageRow> rowList = new ArrayList<InboxPageRow>( request.getPageSize() );
-        while ( it.hasNext() && (pageSize < 0 || rowList.size() < pageSize) ) {
+        List<InboxPageRow> rowList = new ArrayList<InboxPageRow>();
+        while ( it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
             InboxEntry ie = (InboxEntry) it.next();
 
             if ( skipped >= startRowIndex ) {
-                rowList.add( makeInboxPageRow( ie, request ) );
+                rowList.add( makeInboxPageRow( ie,
+                                               request ) );
             }
             skipped++;
         }
         return rowList;
     }
 
-    private List<QueryPageRow> fillQueryFullTextPageRows(QueryPageRequest request, AssetItemIterator it) {
+    private List<QueryPageRow> fillQueryFullTextPageRows(QueryPageRequest request,
+                                                         AssetItemIterator it) {
         int skipped = 0;
-        int pageSize = request.getPageSize();
+        Integer pageSize = request.getPageSize();
         int startRowIndex = request.getStartRowIndex();
         RepositoryFilter filter = new PackageFilter();
-        List<QueryPageRow> rowList = new ArrayList<QueryPageRow>( request.getPageSize() );
 
-        while ( it.hasNext() && (pageSize < 0 || rowList.size() < pageSize) ) {
+        List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
+
+        while ( it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
             AssetItem assetItem = (AssetItem) it.next();
 
             // Filter surplus assets
-            if ( checkPackagePermissionHelper( filter, assetItem, RoleTypes.PACKAGE_READONLY ) ) {
+            if ( checkPackagePermissionHelper( filter,
+                                               assetItem,
+                                               RoleTypes.PACKAGE_READONLY ) ) {
 
                 // Cannot use AssetItemIterator.skip() as it skips non-filtered
                 // assets whereas startRowIndex is the index of the
@@ -2928,19 +2956,24 @@ public class ServiceImplementation implements RepositoryService {
         return rowList;
     }
 
-    private List<QueryPageRow> fillQueryMetadataPageRows(QueryMetadataPageRequest request, AssetItemIterator it) {
+    private List<QueryPageRow> fillQueryMetadataPageRows(QueryMetadataPageRequest request,
+                                                         AssetItemIterator it) {
         int skipped = 0;
-        int pageSize = request.getPageSize();
+        Integer pageSize = request.getPageSize();
         int startRowIndex = request.getStartRowIndex();
         RepositoryFilter packageFilter = new PackageFilter();
         RepositoryFilter categoryFilter = new CategoryFilter();
-        List<QueryPageRow> rowList = new ArrayList<QueryPageRow>( request.getPageSize() );
+        List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
 
-        while ( it.hasNext() && (pageSize < 0 || rowList.size() < pageSize) ) {
+        while ( it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
             AssetItem assetItem = (AssetItem) it.next();
 
             // Filter surplus assets
-            if ( checkPackagePermissionHelper( packageFilter, assetItem, RoleTypes.PACKAGE_READONLY ) || checkCategoryPermissionHelper( categoryFilter, assetItem, RoleTypes.ANALYST_READ ) ) {
+            if ( checkPackagePermissionHelper( packageFilter,
+                                               assetItem,
+                                               RoleTypes.PACKAGE_READONLY ) || checkCategoryPermissionHelper( categoryFilter,
+                                                                                                              assetItem,
+                                                                                                              RoleTypes.ANALYST_READ ) ) {
 
                 // Cannot use AssetItemIterator.skip() as it skips non-filtered
                 // assets whereas startRowIndex is the index of the
@@ -2956,12 +2989,12 @@ public class ServiceImplementation implements RepositoryService {
 
     private List<QueryPageRow> fillQueryPageRows(QueryPageRequest request, AssetItemIterator it) {
         int skipped = 0;
-        int pageSize = request.getPageSize();
+        Integer pageSize = request.getPageSize();
         int startRowIndex = request.getStartRowIndex();
         RepositoryFilter filter = new AssetItemFilter();
-        List<QueryPageRow> rowList = new ArrayList<QueryPageRow>( request.getPageSize() );
+        List<QueryPageRow> rowList = new ArrayList<QueryPageRow>( );
 
-        while ( it.hasNext() && (pageSize < 0 || rowList.size() < pageSize) ) {
+        while ( it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
             AssetItem assetItem = (AssetItem) it.next();
 
             // Filter surplus assets
@@ -3019,8 +3052,9 @@ public class ServiceImplementation implements RepositoryService {
         row.setName( assetItem.getName() );
     }
 
-    private List<StatePageRow> fillStatePageRows(StatePageRequest request, AssetItemPageResult result) {
-        List<StatePageRow> rowList = new ArrayList<StatePageRow>( result.assets.size() );
+    private List<StatePageRow> fillStatePageRows(StatePageRequest request,
+                                                 AssetItemPageResult result) {
+        List<StatePageRow> rowList = new ArrayList<StatePageRow>();
 
         // Filtering and skipping records to the required page is handled in
         // repository.findAssetsByState() so we only need to simply copy
@@ -3043,8 +3077,9 @@ public class ServiceImplementation implements RepositoryService {
         return row;
     }
 
-    private List<CategoryPageRow> fillCategoryPageRows(CategoryPageRequest request, AssetItemPageResult result) {
-        List<CategoryPageRow> rowList = new ArrayList<CategoryPageRow>( result.assets.size() );
+    private List<CategoryPageRow> fillCategoryPageRows(CategoryPageRequest request,
+                                                       AssetItemPageResult result) {
+        List<CategoryPageRow> rowList = new ArrayList<CategoryPageRow>();
 
         // Filtering and skipping records to the required page is handled in
         // repository.findAssetsByState() so we only need to simply copy

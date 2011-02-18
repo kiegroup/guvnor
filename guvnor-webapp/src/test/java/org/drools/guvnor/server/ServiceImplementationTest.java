@@ -49,8 +49,15 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.PageRequest;
+import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.PermissionsPageRow;
+import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
+import org.drools.guvnor.client.rpc.QueryPageRequest;
+import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
@@ -64,7 +71,6 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
-import org.drools.guvnor.client.util.TabOpener;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
@@ -98,6 +104,8 @@ import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -108,16 +116,16 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class ServiceImplementationTest extends GuvnorTestBase {
 
-    //    @Before
-    //    public void setUp() {
-    //        setUpSeamAndRepository();
-    //        setUpMockIdentity();
-    //    }
-    //
-    //    @After
-    //    public void tearDown() {
-    //        tearAllDown();
-    //    }
+    @Before
+    public void setUp() {
+        setUpSeamAndRepository();
+        setUpMockIdentity();
+    }
+
+    @After
+    public void tearDown() {
+        tearAllDown();
+    }
 
     @Test
     @Ignore("this test fail intermittently")
@@ -1522,7 +1530,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertEquals( 1,
                       res.data.length );
     }
-
+    
     @Test
     @Ignore
     public void testSearchMetaData() throws Exception {
@@ -3807,13 +3815,438 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
+    @Deprecated
     @Ignore
-    public void testListUserPermisisons() throws Exception {
+    public void testListUserPermisisonsLegacy() throws Exception {
         ServiceImplementation serv = getServiceImplementation();
         Map<String, List<String>> r = serv.listUserPermissions();
         assertNotNull( r );
     }
+     
+    @Test
+    @Ignore
+    public void testListUserPermisisonsPagedResults() throws Exception {
 
+        final int PAGE_SIZE = 2;
+
+        //Setup data
+        ServiceImplementation serv = getServiceImplementation();
+        RepositoryService repo = getServiceImplementation();
+        repo.createUser( "user1" );
+        repo.createUser( "user2" );
+        repo.createUser( "user3" );
+
+        PageRequest request = new PageRequest( 0,
+                                               PAGE_SIZE );
+        PageResponse<PermissionsPageRow> response;
+        response = serv.listUserPermissions( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = serv.listUserPermissions( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
+        assertTrue( response.getPageRowList().size() == 1 );
+        assertTrue( response.isLastPage() );
+
+    }
+
+    @Test
+    @Ignore
+    public void testListUserPermisisonsFullResults() throws Exception {
+
+        //Setup data
+        ServiceImplementation serv = getServiceImplementation();
+        RepositoryService repo = getServiceImplementation();
+        repo.createUser( "user1" );
+        repo.createUser( "user2" );
+        repo.createUser( "user3" );
+
+        PageRequest request = new PageRequest( 0,
+                                               null );
+        PageResponse<PermissionsPageRow> response;
+        response = serv.listUserPermissions( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == 3 );
+        assertTrue( response.isLastPage() );
+
+    }
+
+    @Test
+    @Ignore
+    public void testShowLogPagedResults() throws Exception {
+
+        final int PAGE_SIZE = 2;
+
+        //Setup data (createUser makes log entries)
+        ServiceImplementation serv = getServiceImplementation();
+        serv.cleanLog();
+        serv.createUser( "user1" );
+        serv.createUser( "user2" );
+        serv.createUser( "user3" );
+
+        PageRequest request = new PageRequest( 0,
+                                               PAGE_SIZE );
+        PageResponse<LogPageRow> response;
+        response = serv.showLog( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = serv.showLog( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
+        assertTrue( response.getPageRowList().size() == 1 );
+        assertTrue( response.isLastPage() );
+
+    }
+
+    @Test
+    @Ignore
+    public void testShowLogFullResults() throws Exception {
+
+        //Setup data (createUser makes log entries)
+        ServiceImplementation serv = getServiceImplementation();
+        serv.cleanLog();
+        serv.createUser( "user1" );
+        serv.createUser( "user2" );
+        serv.createUser( "user3" );
+
+        PageRequest request = new PageRequest( 0,
+                                               null );
+        PageResponse<LogPageRow> response;
+        response = serv.showLog( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == 3 );
+        assertTrue( response.isLastPage() );
+
+    }
+    
+    @Test
+    @Ignore
+    public void testQueryFullTextPagedResults() throws Exception {
+
+        final int PAGE_SIZE = 2;
+
+        ServiceImplementation serv = getServiceImplementation();
+        String cat = "testTextSearch";
+        serv.createCategory( "/",
+                             cat,
+                             "qkfnd" );
+        serv.createPackage( "testTextSearch",
+                            "for testing search." );
+
+        serv.createNewRule( "testTextRule1",
+                                          "desc",
+                                          cat,
+                                          "testTextSearch",
+                                          AssetFormats.DRL );
+
+        serv.createNewRule( "testTextRule2",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        serv.createNewRule( "testTextRule3",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        QueryPageRequest request = new QueryPageRequest( "testTextRule*",
+                                                         false,
+                                                         0,
+                                                         PAGE_SIZE );
+        PageResponse<QueryPageRow> response;
+        response = serv.queryFullText( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = serv.queryFullText( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
+        assertTrue( response.getPageRowList().size() == 1 );
+        assertTrue( response.isLastPage() );
+
+    }
+
+    @Test
+    @Ignore
+    public void testQueryFullTextFullResults() throws Exception {
+
+        ServiceImplementation serv = getServiceImplementation();
+        String cat = "testTextSearch";
+        serv.createCategory( "/",
+                             cat,
+                             "qkfnd" );
+        serv.createPackage( "testTextSearch",
+                            "for testing search." );
+
+        serv.createNewRule( "testTextRule1",
+                                          "desc",
+                                          cat,
+                                          "testTextSearch",
+                                          AssetFormats.DRL );
+
+        serv.createNewRule( "testTextRule2",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        serv.createNewRule( "testTextRule3",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        QueryPageRequest request = new QueryPageRequest( "testTextRule*",
+                                                         false,
+                                                         0,
+                                                         null );
+        PageResponse<QueryPageRow> response;
+        response = serv.queryFullText( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == 3 );
+        assertTrue( response.isLastPage() );
+
+    }
+    
+    @Test
+    @Ignore
+    public void testQuickFindAssetPagedResults() throws Exception {
+
+        final int PAGE_SIZE = 2;
+
+        ServiceImplementation serv = getServiceImplementation();
+        String cat = "testTextSearch";
+        serv.createCategory( "/",
+                             cat,
+                             "qkfnd" );
+        serv.createPackage( "testTextSearch",
+                            "for testing search." );
+
+        serv.createNewRule( "testTextRule1",
+                                          "desc",
+                                          cat,
+                                          "testTextSearch",
+                                          AssetFormats.DRL );
+
+        serv.createNewRule( "testTextRule2",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        serv.createNewRule( "testTextRule3",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        QueryPageRequest request = new QueryPageRequest( "testTextRule*",
+                                                         false,
+                                                         0,
+                                                         PAGE_SIZE );
+        PageResponse<QueryPageRow> response;
+        response = serv.quickFindAsset( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = serv.queryFullText( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
+        assertTrue( response.getPageRowList().size() == 1 );
+        assertTrue( response.isLastPage() );
+
+    }
+
+    @Test
+    @Ignore
+    public void testQuickFindAssetFullResults() throws Exception {
+
+        ServiceImplementation serv = getServiceImplementation();
+        String cat = "testTextSearch";
+        serv.createCategory( "/",
+                             cat,
+                             "qkfnd" );
+        serv.createPackage( "testTextSearch",
+                            "for testing search." );
+
+        serv.createNewRule( "testTextRule1",
+                                          "desc",
+                                          cat,
+                                          "testTextSearch",
+                                          AssetFormats.DRL );
+
+        serv.createNewRule( "testTextRule2",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        serv.createNewRule( "testTextRule3",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        QueryPageRequest request = new QueryPageRequest( "testTextRule*",
+                                                         false,
+                                                         0,
+                                                         null );
+        PageResponse<QueryPageRow> response;
+        response = serv.quickFindAsset( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == 3 );
+        assertTrue( response.isLastPage() );
+
+    }
+    
+    @Test
+    @Ignore
+    public void testQueryMetaDataPagedResults() throws Exception {
+
+        final int PAGE_SIZE = 2;
+
+        ServiceImplementation impl = getServiceImplementation();
+        PackageItem pkg = impl.getRulesRepository().createPackage( "testMetaDataSearch",
+                                                                   "" );
+
+        AssetItem[] assets = new AssetItem[3];
+        for ( int i = 0; i < assets.length; i++ ) {
+            AssetItem asset = pkg.addAsset( "testMetaDataSearchAsset" + i,
+                                            "" );
+            asset.updateSubject( "testMetaDataSearch" );
+            asset.updateExternalSource( "numberwang" + i );
+            asset.checkin( "" );
+        }
+
+        MetaDataQuery[] qr = new MetaDataQuery[2];
+        qr[0] = new MetaDataQuery();
+        qr[0].attribute = AssetItem.SUBJECT_PROPERTY_NAME;
+        qr[0].valueList = "wang, testMetaDataSearch";
+        qr[1] = new MetaDataQuery();
+        qr[1].attribute = AssetItem.SOURCE_PROPERTY_NAME;
+        qr[1].valueList = "numberwan*";
+
+        List<MetaDataQuery> metadata = Arrays.asList( qr );
+        QueryMetadataPageRequest request = new QueryMetadataPageRequest( metadata,
+                                                                         DateUtils.parseDate( "10-Jul-1974",
+                                                                                                       new DateFormatsImpl() ),
+                                                                         null,
+                                                                         null,
+                                                                         null,
+                                                                         false,
+                                                                         0,
+                                                                         PAGE_SIZE );
+
+        PageResponse<QueryPageRow> response;
+        response = impl.queryMetaData( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = impl.queryMetaData( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
+        assertTrue( response.getPageRowList().size() == 1 );
+        assertTrue( response.isLastPage() );
+
+    }
+
+    @Test
+    public void testQueryMetaDataFullResults() throws Exception {
+
+        ServiceImplementation impl = getServiceImplementation();
+        PackageItem pkg = impl.getRulesRepository().createPackage( "testMetaDataSearch",
+                                                                   "" );
+
+        AssetItem[] assets = new AssetItem[3];
+        for ( int i = 0; i < assets.length; i++ ) {
+            AssetItem asset = pkg.addAsset( "testMetaDataSearchAsset" + i,
+                                            "" );
+            asset.updateSubject( "testMetaDataSearch" );
+            asset.updateExternalSource( "numberwang" + i );
+            asset.checkin( "" );
+        }
+
+        MetaDataQuery[] qr = new MetaDataQuery[2];
+        qr[0] = new MetaDataQuery();
+        qr[0].attribute = AssetItem.SUBJECT_PROPERTY_NAME;
+        qr[0].valueList = "wang, testMetaDataSearch";
+        qr[1] = new MetaDataQuery();
+        qr[1].attribute = AssetItem.SOURCE_PROPERTY_NAME;
+        qr[1].valueList = "numberwan*";
+
+        List<MetaDataQuery> metadata = Arrays.asList( qr );
+        QueryMetadataPageRequest request = new QueryMetadataPageRequest( metadata,
+                                                                         DateUtils.parseDate( "10-Jul-1974",
+                                                                                                       new DateFormatsImpl() ),
+                                                                         null,
+                                                                         null,
+                                                                         null,
+                                                                         false,
+                                                                         0,
+                                                                         null );
+
+        PageResponse<QueryPageRow> response;
+        response = impl.queryMetaData( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == 3 );
+        assertTrue( response.isLastPage() );
+
+    }
+    
     @Test
     @Ignore
     public void testManageUserPermissions() throws Exception {
