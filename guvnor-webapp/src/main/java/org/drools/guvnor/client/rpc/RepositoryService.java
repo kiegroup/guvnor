@@ -46,8 +46,8 @@ public interface RepositoryService
      * 
      * @param A
      *            "/" delimited path to a category.
-     * @deprecated in favor of {@link
-     *             loadRuleListForCategories(CategoryPageRequest)}
+     *            
+     * @deprecated in favour of {@link loadRuleListForCategories(CategoryPageRequest)}
      */
     public TableDataResult loadRuleListForCategories(String categoryPath,
                                                      int skip,
@@ -67,7 +67,8 @@ public interface RepositoryService
      * 
      * @param The
      *            name of the state.
-     * @deprecated in favor of {@link loadRuleListForState(StatePageRequest)}
+     *            
+     * @deprecated in favour of {@link loadRuleListForState(StatePageRequest)}
      */
     public TableDataResult loadRuleListForState(String state,
                                                 int skip,
@@ -655,7 +656,7 @@ public interface RepositoryService
     /**
      * This will quickly return a list of assets
      * 
-     * @deprecated in favor of {@link quickFindAsset(QueryPageRequest)}
+     * @deprecated in favour of {@link quickFindAsset(QueryPageRequest)}
      */
     public TableDataResult quickFindAsset(String searchText,
                                           boolean searchArchived,
@@ -671,7 +672,8 @@ public interface RepositoryService
      * @param numRows
      * @return
      * @throws SerializationException
-     * @deprecated in favor of {@link queryFullText(QueryPageRequest)}
+     * 
+     * @deprecated in favour of {@link queryFullText(QueryPageRequest)}
      */
     public TableDataResult queryFullText(String text,
                                          boolean seekArchived,
@@ -693,7 +695,8 @@ public interface RepositoryService
      * @param numRows
      * @return
      * @throws SerializationException
-     * @deprecated in favor of {@link queryMetaData(QueryPageRequest)}
+     * 
+     * @deprecated in favour of {@link queryMetaData(QueryPageRequest)}
      */
     public TableDataResult queryMetaData(final MetaDataQuery[] qr,
                                          Date createdAfter,
@@ -706,7 +709,8 @@ public interface RepositoryService
 
     /**
      * @return A map of username : list of permission types for display reasons.
-     * @deprecated in favor of {@link listUserPermissions(PageRequest)}
+     * 
+     * @deprecated in favour of {@link listUserPermissions(PageRequest)}
      */
     public Map<String, List<String>> listUserPermissions() throws DetailedSerializationException;
 
@@ -797,10 +801,15 @@ public interface RepositoryService
     /**
      * Load the data for a given inbox for the currently logged in user.
      * 
-     * @deprecated in favor of {@link loadInbox(InboxPageRequest)}
+     * @deprecated in favour of {@link loadInbox(InboxPageRequest)}
      */
     public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException;
 
+    /**
+     * Compare two snapshots.
+     * 
+     * @deprecated in favour of {@link compareSnapshots(SnapshotComparisonRequest)}
+     */
     public SnapshotDiffs compareSnapshots(String packageName,
                                           String firstSnapshotName,
                                           String secondSnapshotName);

@@ -46,6 +46,8 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
+import org.drools.guvnor.client.rpc.AssetPageRequest;
+import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.CategoryPageRequest;
@@ -267,7 +269,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Ignore
     @Test
     public void testDeleteUnversionedRule() throws Exception {
-        RulesRepository repository = getRulesRepository();
+        getRulesRepository();
         ServiceImplementation impl = getServiceImplementation();
 
         impl.getRulesRepository().loadDefaultPackage();
@@ -636,6 +638,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     @Ignore
+    @Deprecated
     public void testRuleTableLoad() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         TableConfig conf = impl.loadTableConfig( ExplorerNodeConfig.RULE_LIST_TABLE_ID );
@@ -677,6 +680,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     @Ignore
+    @Deprecated
     public void testDateFormatting() throws Exception {
         Calendar cal = Calendar.getInstance();
         TableDisplayHandler handler = new TableDisplayHandler( ExplorerNodeConfig.RULE_LIST_TABLE_ID );
@@ -688,6 +692,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     @Ignore
+    @Deprecated
     public void testLoadRuleAsset() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         impl.getRulesRepository().createPackage( "testLoadRuleAsset",
@@ -772,6 +777,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     @Ignore
+    @Deprecated
     public void testListAssets() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         PackageItem pacakgeItem = impl.getRulesRepository().createPackage( "testListAssetsPackage",
@@ -780,31 +786,31 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              "testListAssetsCat",
                              "this is a cat" );
 
-        String uuid1 = impl.createNewRule( "testLoadArchivedAssets1",
+        impl.createNewRule( "testLoadArchivedAssets1",
                                            "description",
                                            "testListAssetsCat",
                                            "testListAssetsPackage",
                                            AssetFormats.BUSINESS_RULE );
 
-        String uuid2 = impl.createNewRule( "testLoadArchivedAssets2",
+        impl.createNewRule( "testLoadArchivedAssets2",
                                            "description",
                                            "testListAssetsCat",
                                            "testListAssetsPackage",
                                            AssetFormats.BUSINESS_RULE );
 
-        String uuid3 = impl.createNewRule( "testLoadArchivedAssets3",
+        impl.createNewRule( "testLoadArchivedAssets3",
                                            "description",
                                            "testListAssetsCat",
                                            "testListAssetsPackage",
                                            AssetFormats.BUSINESS_RULE );
 
-        String uuid4 = impl.createNewRule( "testLoadArchivedAssets4",
+        impl.createNewRule( "testLoadArchivedAssets4",
                                            "description",
                                            "testListAssetsCat",
                                            "testListAssetsPackage",
                                            AssetFormats.BUSINESS_RULE );
 
-        String uuid5 = impl.createNewRule( "testLoadArchivedAssets5",
+        impl.createNewRule( "testLoadArchivedAssets5",
                                            "description",
                                            "testListAssetsCat",
                                            "testListAssetsPackage",
@@ -1319,6 +1325,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     @Ignore
+    @Deprecated
     public void testListByFormat() throws Exception {
         RepositoryService impl = getServiceImplementation();
         String cat = "testListByFormat";
@@ -1441,6 +1448,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     @Ignore
+    @Deprecated
     public void testListUnregisteredAssetFormats() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         PackageItem pkg = impl.getRulesRepository().createPackage( "testListUnregisteredAssetFormats",
@@ -1466,6 +1474,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     @Ignore
+    @Deprecated
     public void testQuickFind() throws Exception {
         RepositoryService impl = getServiceImplementation();
         String cat = "testQuickFind";
@@ -1519,6 +1528,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     @Ignore
+    @Deprecated
     public void testSearchText() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         String cat = "testTextSearch";
@@ -1543,6 +1553,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     
     @Test
     @Ignore
+    @Deprecated
     public void testSearchMetaData() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         PackageItem pkg = impl.getRulesRepository().createPackage( "testMetaDataSearch",
@@ -3825,8 +3836,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Deprecated
     @Ignore
+    @Deprecated
     public void testListUserPermisisons() throws Exception {
         ServiceImplementation serv = getServiceImplementation();
         Map<String, List<String>> r = serv.listUserPermissions();
@@ -4919,6 +4930,140 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testFindAssetPagePagedResults() throws Exception {
+
+        final int PAGE_SIZE = 2;
+
+        ServiceImplementation impl = getServiceImplementation();
+        PackageItem packageItem = impl.getRulesRepository().createPackage( "testFindAssetPagePackage",
+                                                                           "testFindAssetPagePackageDescription" );
+        impl.createCategory( "",
+                             "testFindAssetPageCategory",
+                             "testFindAssetPageCategoryDescription" );
+
+        impl.createNewRule( "testFindAssetPageAsset1",
+                            "testFindAssetPageAsset1Description",
+                            "testFindAssetPageCategory",
+                            "testFindAssetPagePackage",
+                            AssetFormats.BUSINESS_RULE );
+
+        impl.createNewRule( "testFindAssetPageAsset2",
+                            "testFindAssetPageAsset2Description",
+                            "testFindAssetPageCategory",
+                            "testFindAssetPagePackage",
+                            AssetFormats.BUSINESS_RULE );
+
+        impl.createNewRule( "testFindAssetPageAsset3",
+                            "testFindAssetPageAsset3Description",
+                            "testFindAssetPageCategory",
+                            "testFindAssetPagePackage",
+                            AssetFormats.BUSINESS_RULE );
+
+        List<String> formats = new ArrayList<String>();
+        formats.add( AssetFormats.BUSINESS_RULE );
+        AssetPageRequest request = new AssetPageRequest( packageItem.getUUID(),
+                                                         formats,
+                                                         null,
+                                                         0,
+                                                         PAGE_SIZE );
+        PageResponse<AssetPageRow> response;
+        response = impl.findAssetPage( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = impl.findAssetPage( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
+        assertTrue( response.getPageRowList().size() == 1 );
+        assertTrue( response.isLastPage() );
+    }
+
+    @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testFindAssetPageFullResults() throws Exception {
+        ServiceImplementation impl = getServiceImplementation();
+        PackageItem packageItem = impl.getRulesRepository().createPackage( "testFindAssetPagePackage",
+                                                                           "testFindAssetPagePackageDescription" );
+        impl.createCategory( "",
+                             "testFindAssetPageCategory",
+                             "testFindAssetPageCategoryDescription" );
+
+        impl.createNewRule( "testFindAssetPageAsset1",
+                            "testFindAssetPageAsset1Description",
+                            "testFindAssetPageCategory",
+                            "testFindAssetPagePackage",
+                            AssetFormats.BUSINESS_RULE );
+
+        impl.createNewRule( "testFindAssetPageAsset2",
+                            "testFindAssetPageAsset2Description",
+                            "testFindAssetPageCategory",
+                            "testFindAssetPagePackage",
+                            AssetFormats.BUSINESS_RULE );
+
+        impl.createNewRule( "testFindAssetPageAsset3",
+                            "testFindAssetPageAsset3Description",
+                            "testFindAssetPageCategory",
+                            "testFindAssetPagePackage",
+                            AssetFormats.BUSINESS_RULE );
+
+        List<String> formats = new ArrayList<String>();
+        formats.add( AssetFormats.BUSINESS_RULE );
+        AssetPageRequest request = new AssetPageRequest( packageItem.getUUID(),
+                                                         formats,
+                                                         null,
+                                                         0,
+                                                         null );
+        PageResponse<AssetPageRow> response;
+        response = impl.findAssetPage( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == 3 );
+        assertTrue( response.isLastPage() );
+    }
+    
+    @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testFindAssetPageUnregisteredAssetFormats() throws Exception {
+        ServiceImplementation impl = getServiceImplementation();
+        PackageItem packageItem = impl.getRulesRepository().createPackage( "testFindAssetPageUnregisteredAssetFormats",
+                                                                           "testFindAssetPageUnregisteredAssetFormatsDescription" );
+        AssetItem as;
+
+        as = packageItem.addAsset( "assetWithKnownFormat",
+                                   "assetWithKnownFormatDescription" );
+        as.updateFormat( AssetFormats.DRL );
+        as.checkin( "" );
+
+        as = packageItem.addAsset( "assetWithUnknownFormat",
+                                   "assetWithUnknownFormatDescription" );
+        as.updateFormat( "something_silly" );
+        as.checkin( "" );
+
+        List<String> formats = new ArrayList<String>();
+        formats.add( AssetFormats.DRL );
+        AssetPageRequest request = new AssetPageRequest( packageItem.getUUID(),
+                                                         formats,
+                                                         null,
+                                                         0,
+                                                         null );
+        PageResponse<AssetPageRow> response;
+        response = impl.findAssetPage( request );
+
+        assertEquals( 1,
+                      response.getPageRowList().size() );
+    }
+    
+    @Test
     @Ignore
     public void testManageUserPermissions() throws Exception {
         ServiceImplementation serv = getServiceImplementation();
@@ -4947,9 +5092,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     //GUVNOR-296
-    @Ignore
     @Test
+    @Ignore
     public void testHistoryAfterReImportSampleRepository() throws Exception {
+
+        QueryPageRequest request;
+        PageResponse<QueryPageRow> response;
         ServiceImplementation impl = getServiceImplementation();
 
         //Import sample, do a sanity check, make sure sample is installed correctly
@@ -4959,13 +5107,14 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       cfgs.length );
         assertTrue( cfgs[0].name.equals( "mortgages" ) || cfgs[1].name.equals( "mortgages" ) );
 
-        TableDataResult res = impl.quickFindAsset( "Bankruptcy history",
-                                                   false,
-                                                   0,
-                                                   20 );
+        request = new QueryPageRequest( "Bankruptcy history",
+                                        false,
+                                        0,
+                                        20 );
+        response = impl.quickFindAsset( request );
         assertEquals( 1,
-                      res.data.length );
-        String uuid = res.data[0].id;
+                      response.getPageRowList().size() );
+        String uuid = response.getPageRowList().get( 0 ).getUuid();
 
         // create version 4.
         RuleAsset ai = impl.loadRuleAsset( uuid );
@@ -4982,7 +5131,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         //NOTE: Have not figured out the reason, but if we dont create a random package here, 
         //we will get an InvalidItemStateException during impl.installSampleRepository()
         impl.getRulesRepository().createPackage( "testHistoryAfterReImportSampleRepository",
-                                       "desc" );
+                                                 "desc" );
 
         TableDataResult result = impl.loadAssetHistory( uuid );
         assertNotNull( result );
@@ -4992,13 +5141,15 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         //Import sample again
         impl.installSampleRepository();
-        res = impl.quickFindAsset( "Bankruptcy history",
-                                   false,
-                                   0,
-                                   20 );
+
+        request = new QueryPageRequest( "Bankruptcy history",
+                                        false,
+                                        0,
+                                        20 );
+        response = impl.quickFindAsset( request );
         assertEquals( 1,
-                      res.data.length );
-        String newUuid = res.data[0].id;
+                      response.getPageRowList().size() );
+        String newUuid = response.getPageRowList().get( 0 ).getUuid();
 
         //Now verify history, should be zero.
         result = impl.loadAssetHistory( newUuid );
@@ -5176,7 +5327,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             }
         }
     }
-    
+   
     @Test
     @Ignore
     public void testWorkspaces() throws Exception {

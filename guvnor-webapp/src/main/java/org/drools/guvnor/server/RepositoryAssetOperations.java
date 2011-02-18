@@ -494,12 +494,11 @@ public class RepositoryAssetOperations {
 
     private List<AssetPageRow> fillAssetPageRowsForFindAssetPage(
             AssetPageRequest request, AssetItemIterator it) {
-        int pageSize = request.getPageSize();
+        Integer pageSize = request.getPageSize();
         it.skip(request.getStartRowIndex());
-        List<AssetPageRow> rowList = new ArrayList<AssetPageRow>(
-                request.getPageSize());
+        List<AssetPageRow> rowList = new ArrayList<AssetPageRow>();
 
-        while (it.hasNext() && (pageSize < 0 || rowList.size() <= pageSize)) {
+        while (it.hasNext() && (pageSize == null || rowList.size() < pageSize)) {
             AssetItem assetItem = (AssetItem) it.next();
             AssetPageRowPopulator assetPageRowPopulator = new AssetPageRowPopulator();
             rowList.add(assetPageRowPopulator.makeAssetPageRow(assetItem));

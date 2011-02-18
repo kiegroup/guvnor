@@ -300,6 +300,7 @@ public class ServiceImplementation implements RepositoryService {
     
     @WebRemote
     @Restrict("#{identity.loggedIn}")
+    @Deprecated
     public TableDataResult loadArchivedAssets(int skip, int numRows) throws SerializationException {
         return repositoryAssetOperations.loadArchivedAssets( skip, numRows );
     }
@@ -436,6 +437,13 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request) throws SerializationException {
+        if ( request == null ) {
+            throw new IllegalArgumentException( "request cannot be null" );
+        }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
+        }
+
         return repositoryAssetOperations.findAssetPage( request );
     }
 
@@ -1485,9 +1493,9 @@ public class ServiceImplementation implements RepositoryService {
     public void rebuildSnapshots() throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
 
-        Iterator pkit = getRulesRepository().listPackages();
+        Iterator<PackageItem> pkit = getRulesRepository().listPackages();
         while ( pkit.hasNext() ) {
-            PackageItem pkg = (PackageItem) pkit.next();
+            PackageItem pkg = pkit.next();
             String[] snaps = getRulesRepository().listPackageSnapshots( pkg.getName() );
             for ( String snapName : snaps ) {
                 PackageItem snap = getRulesRepository().loadPackageSnapshot( pkg.getName(), snapName );
@@ -1783,10 +1791,10 @@ public class ServiceImplementation implements RepositoryService {
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void rebuildPackages() throws SerializationException {
-        Iterator pkit = getRulesRepository().listPackages();
+        Iterator<PackageItem> pkit = getRulesRepository().listPackages();
         StringBuffer errs = new StringBuffer();
         while ( pkit.hasNext() ) {
-            PackageItem pkg = (PackageItem) pkit.next();
+            PackageItem pkg = pkit.next();
             try {
                 BuilderResult res = this.buildPackage( pkg.getUUID(), true );
                 if ( res != null ) {
