@@ -153,7 +153,7 @@ public class SerializationHelper {
         }
 
         return ksession2;
-    }    
+    }
 
     public static boolean areByteArraysEqual(byte[] b1,
                                              byte[] b2) {

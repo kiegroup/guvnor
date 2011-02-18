@@ -33,7 +33,7 @@ public class ListUtil {
             DSLSentence item = source[i];
             if (filterVal.equals( "" ) || item.sentence.startsWith( filterVal )) {
                 filteredList.add( item );
-            } 
+            }
         }
         return filteredList;
     }

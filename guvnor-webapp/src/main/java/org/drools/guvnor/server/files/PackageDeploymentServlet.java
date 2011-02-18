@@ -133,7 +133,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
      */
     protected void doGet(final HttpServletRequest req,
                          final HttpServletResponse res) throws ServletException,
-                                                      IOException {  
+                                                      IOException {
         
         doAuthorizedAction(req, res, new A() {
             public void a() throws Exception {

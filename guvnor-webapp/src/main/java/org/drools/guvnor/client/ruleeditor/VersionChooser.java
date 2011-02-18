@@ -68,7 +68,7 @@ public class VersionChooser extends Composite {
     public VersionChooser(String currentVersion,
     		String pacakgeUUID, 
     		String assetName,
-            Command ref) {  
+            Command ref) {
         this.packageUUID = pacakgeUUID;
         this.assetName = assetName;
         this.refreshCommand = ref;

@@ -50,7 +50,7 @@ public class RulesRepositoryAdministrator {
             if (RulesRepository.DROOLS_URI.equals( uris[i]) ) {
                 return true;
             }
-        }        
+        }
         return false;
     }
     
@@ -86,13 +86,13 @@ public class RulesRepositoryAdministrator {
                 System.out.println("Repo not setup, ergo not clearing it !");
             }
         }
-        catch(PathNotFoundException e) {                
+        catch(PathNotFoundException e) {
             log.error( "Unable to clear rules repository.", e );
-        }          
+        }
         catch(RepositoryException e) {
             log.error( "Unable to clear rules repository.", e );
         }
-    }  
+    }
     
     
 }

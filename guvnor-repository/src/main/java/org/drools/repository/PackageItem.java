@@ -191,7 +191,7 @@ public class PackageItem extends VersionableItem {
      */
     public void updateWorkspace(String[] workspace) {
         this.updateStringArrayProperty( workspace, WORKSPACE_PROPERTY_NAME, false);
-    }    
+    }
     
     /**
      * This adds a workspace 
@@ -215,7 +215,7 @@ public class PackageItem extends VersionableItem {
             newWorkspaces[existingWorkspaces.length] = workspace;
             this.updateStringArrayProperty( newWorkspaces, WORKSPACE_PROPERTY_NAME, false );
         }
-    } 
+    }
     
     /**
      * This removes a workspace 
@@ -236,7 +236,7 @@ public class PackageItem extends VersionableItem {
            if(existingWorkspaceList.size() != existingWorkspaces.length) {
             this.updateStringArrayProperty( existingWorkspaceList.toArray(new String[existingWorkspaceList.size()]), WORKSPACE_PROPERTY_NAME, false );
            }
-    } 
+    }
     
     /**
      * Adds a rule to the current package with no category (not recommended !).
@@ -676,7 +676,7 @@ public class PackageItem extends VersionableItem {
             StringBuilder predicateBuilder = new StringBuilder(" ( ");
             for ( int i = 0; i < formats.length; i++ ) {
                 predicateBuilder.append(FORMAT_PROPERTY_NAME).append("='").append(formats[i]).append("'");
-                if (i != formats.length -1) { 
+                if (i != formats.length -1) {
                     predicateBuilder.append(" OR ");
                 }
             }

@@ -136,7 +136,7 @@ public class WorkspaceManager extends Composite {
         List<String> availableModuleList = new ArrayList<String>( availableModulesListBox.getItemCount() );
         for ( int i = 0; i < availableModulesListBox.getItemCount(); i++ ) {
             availableModuleList.add( availableModulesListBox.getItemText( i ) );
-        }      
+        }
         availableModuleList.removeAll(selectedModulesList);
         LoadingPopup.showMessage( constants.LoadingStatuses() );
         
@@ -190,11 +190,11 @@ public class WorkspaceManager extends Composite {
                         if(p.name.equals(selectedModulesListBox.getItemText( i ))) {
                             isSelected = true;
                         }
-                    }                     
+                    }
                     if(!isSelected) {
                         availableModulesListBox.addItem( p.name );
                     }
-                }                
+                }
                 LoadingPopup.close();
             }
         } );

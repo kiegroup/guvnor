@@ -109,7 +109,7 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
 
     public SingleSelectionModel<DependenciesPageRow> getSelectionModel() {
         return this.selectionModel;
-    }    
+    }
     
     @Override
     protected void doCellTable() {

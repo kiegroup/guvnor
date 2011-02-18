@@ -55,7 +55,7 @@ public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator 
         String repoRootDir = properties.getProperty(REPOSITORY_ROOT_DIRECTORY);
         if (repoRootDir == null) {
             repository = new TransientRepository();
-        } else { 
+        } else {
             repository =  new TransientRepository(repoRootDir + "/repository.xml", repoRootDir);
         }
         return repository;
@@ -75,7 +75,7 @@ public class JackrabbitRepositoryConfigurator extends JCRRepositoryConfigurator 
         } catch (Exception e) {
             throw new RepositoryException("Registering node types for repository failed.", e);
         }
-    } 
+    }
     
     /**
      * {@inheritDoc}

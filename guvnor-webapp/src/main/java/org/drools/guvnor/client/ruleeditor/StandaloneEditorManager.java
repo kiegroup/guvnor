@@ -257,7 +257,7 @@ public class StandaloneEditorManager {
     getAssetsUUIDs: function(){
     return app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getAssetsUUIDs()();
     }
-    }    
+    }
     $wnd.guvnorEditorObject = guvnorEditorObject;
     
     }-*/;

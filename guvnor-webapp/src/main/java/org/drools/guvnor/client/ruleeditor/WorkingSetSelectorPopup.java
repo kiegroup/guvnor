@@ -140,5 +140,5 @@ public class WorkingSetSelectorPopup {
             to.addItem(from.getItemText(selected), from.getValue(selected));
             from.removeItem(selected);
         }
-    }    
+    }
 }

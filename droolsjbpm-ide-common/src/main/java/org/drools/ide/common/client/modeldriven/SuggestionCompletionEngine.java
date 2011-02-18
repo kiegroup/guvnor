@@ -555,7 +555,7 @@ public class SuggestionCompletionEngine implements PortableObject {
     
     public List<String> getMethodFullNames(String factName) {
         return getMethodFullNames(factName, -1);
-    }    
+    }
 
     public List<String> getMethodFullNames(String factName, int paramCount) {
         List<MethodInfo> infos = methodInfos.get( factName );

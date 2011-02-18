@@ -64,7 +64,7 @@ public class RowLoader {
                 } else {
                     row[i] = val.toString();
                 }
-            } catch ( Exception e ) {                    
+            } catch ( Exception e ) {
                 if ( e instanceof RuntimeException ) throw (RuntimeException) e;
                 throw new RulesRepositoryException( e );
             }

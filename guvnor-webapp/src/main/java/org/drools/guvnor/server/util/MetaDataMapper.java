@@ -60,7 +60,7 @@ public class MetaDataMapper {
                 throw new RulesRepositoryException(e1);
             }
 
-        }        
+        }
         
     }
 

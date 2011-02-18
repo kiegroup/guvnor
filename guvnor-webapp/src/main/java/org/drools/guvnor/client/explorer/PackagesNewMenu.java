@@ -37,7 +37,7 @@ public class PackagesNewMenu {
     private static Constants constants = ((Constants) GWT.create(Constants.class));
     private static Images images = (Images) GWT.create(Images.class);
 
-    public static MenuBar getMenu(final AbstractTree manager) {    
+    public static MenuBar getMenu(final AbstractTree manager) {
 
         MenuBar createNewMenu = new MenuBar(true);
 

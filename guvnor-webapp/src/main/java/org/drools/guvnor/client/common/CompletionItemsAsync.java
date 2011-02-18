@@ -26,4 +26,4 @@ public interface CompletionItemsAsync {
      */
     public void getCompletionItems(String match, CompletionItemsAsyncReturn asyncReturn);
 
-} 
+}

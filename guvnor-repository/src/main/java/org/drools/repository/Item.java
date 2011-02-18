@@ -57,7 +57,7 @@ public abstract class Item {
      */
     public Node getNode() {
         return node;
-    }    
+    }
     
     /**
      * gets the name of this item (unless overridden in a subclass, this just returns the
@@ -101,7 +101,7 @@ public abstract class Item {
 
     public int hashCode() {
         return this.node.hashCode();
-    }        
+    }
     
 
 }

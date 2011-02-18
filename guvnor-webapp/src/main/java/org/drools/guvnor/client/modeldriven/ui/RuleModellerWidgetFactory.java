@@ -43,10 +43,10 @@ public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
         }
         if (action instanceof ActionSetField) {
             return new ActionSetFieldWidget(ruleModeller, (ActionSetField) action,readOnly);
-        } 
+        }
         if (action instanceof ActionInsertFact) {
             return new ActionInsertFactWidget(ruleModeller, (ActionInsertFact) action, readOnly);
-        } 
+        }
         if (action instanceof ActionRetractFact) {
             return new ActionRetractFactWidget(ruleModeller, (ActionRetractFact) action, readOnly);
         }
@@ -54,13 +54,13 @@ public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
             RuleModellerWidget w = new DSLSentenceWidget(ruleModeller,(DSLSentence) action, readOnly);
             w.addStyleName("model-builderInner-Background"); //NON-NLS
             return w;
-        } 
+        }
         if (action instanceof FreeFormLine) {
             return new FreeFormLineWidget(ruleModeller, (FreeFormLine) action, readOnly);
-        } 
+        }
         if (action instanceof ActionGlobalCollectionAdd) {
              return new GlobalCollectionAddWidget(ruleModeller, (ActionGlobalCollectionAdd) action, readOnly);
-        } 
+        }
         throw new RuntimeException("I don't know what type of action is: " + action); //NON-NLS
     }
 
@@ -70,7 +70,7 @@ public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
     public RuleModellerWidget getWidget(RuleModeller ruleModeller, IPattern pattern, Boolean readOnly){
         if (pattern instanceof FactPattern) {
             return new FactPatternWidget(ruleModeller, pattern, true, readOnly);
-        } 
+        }
         if (pattern instanceof CompositeFactPattern) {
             return new CompositeFactPatternWidget(ruleModeller, (CompositeFactPattern) pattern, readOnly);
         }

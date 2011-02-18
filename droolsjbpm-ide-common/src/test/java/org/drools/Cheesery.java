@@ -102,7 +102,7 @@ public class Cheesery
         private String               age;
 
         public Maturity() {
-        }       
+        }
 
         public Maturity(final String age) {
             this.age = age;
@@ -132,7 +132,7 @@ public class Cheesery
             } else {
                 return Maturity.OLD;
             }
-        }  
+        }
         
         public String toString() {
             return "[Maturity age='" + this.age + "']";

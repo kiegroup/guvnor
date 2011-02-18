@@ -85,7 +85,7 @@ public abstract class CategorisableItem extends VersionableItem {
                 Value[] newTagValues = new Value[1];
                 newTagValues[0] = this.node.getSession().getValueFactory().createValue( tagItem.getNode() );
                 updateCategories( newTagValues );
-            } 
+            }
         } catch ( Exception e ) {
             log.error( "Caught exception",
                        e );

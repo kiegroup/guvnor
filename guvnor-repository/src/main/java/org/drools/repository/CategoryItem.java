@@ -54,7 +54,7 @@ public class CategoryItem extends Item {
 //                String message = this.node.getName() + " is not a node of type " + TAG_NODE_TYPE_NAME + ". It is a node of type: " + this.node.getPrimaryNodeType().getName();
 //                log.error(message);
 //                throw new RulesRepositoryException(message);
-//            }    
+//            }
 //        }
 //        catch(Exception e) {
 //            log.error("Caught exception: " + e);
@@ -66,7 +66,7 @@ public class CategoryItem extends Item {
      * @return the full path of this tag, rooted at the tag area of the repository. 
      * @throws RulesRepositoryException 
      */
-    public String getFullPath() throws RulesRepositoryException {        
+    public String getFullPath() throws RulesRepositoryException {
         try {
             
             StringBuffer returnString = new StringBuffer();
@@ -78,7 +78,7 @@ public class CategoryItem extends Item {
             }
             return returnString.toString();
         }
-        catch(Exception e) {            
+        catch(Exception e) {
             log.error("Caught Exception: " + e);
             throw new RulesRepositoryException(e);
         }
@@ -101,7 +101,7 @@ public class CategoryItem extends Item {
         catch(Exception e) {
             log.error("Caught Exception: " + e);
             throw new RulesRepositoryException(e);
-        }        
+        }
         
         return children;
     }

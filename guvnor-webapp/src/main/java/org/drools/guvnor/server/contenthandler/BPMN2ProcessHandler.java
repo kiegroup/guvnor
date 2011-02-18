@@ -122,7 +122,7 @@ public class BPMN2ProcessHandler extends ContentHandler
                     repoAsset.updateContent( content.getXml() );
                 }
             }
-            if ( content.getJson() != null ) {     
+            if ( content.getJson() != null ) {
                 try {
                     String xml = serialize("http://localhost:8080/designer/uuidRepository?profile=drools&action=toXML",
                                         content.getJson());

@@ -78,7 +78,7 @@ public class OryxEditorServlet extends HttpServlet {
         } catch (Throwable t) {
             log.error(t.getMessage(), t);
             setDefaultResponse(response);
-        } 
+        }
         
     }
     

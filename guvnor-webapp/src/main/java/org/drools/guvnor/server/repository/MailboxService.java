@@ -44,7 +44,7 @@ public class MailboxService {
      */
     private RulesRepository repository;
 
-    public static MailboxService getInstance() { 
+    public static MailboxService getInstance() {
         if (INSTANCE==null) {
             INSTANCE = new MailboxService();
             executor = Executors.newSingleThreadExecutor();

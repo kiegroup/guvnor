@@ -156,7 +156,7 @@ public class RepositoryServlet extends HttpServlet {
                 return b;
             } else {
                 return new String[]{"", ""};
-            }        
+            }
         } else {
             return new String[]{"test", "password"};
         }

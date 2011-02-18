@@ -124,7 +124,7 @@ public class UserInfo {
         public String assetUUID;
         public String note;
         public long timestamp;
-    }    
+    }
 
     private XStream getXStream() {
         XStream xs = new XStream();

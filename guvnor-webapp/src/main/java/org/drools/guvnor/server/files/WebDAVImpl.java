@@ -590,7 +590,7 @@ public class WebDAVImpl implements IWebdavStore {
     //REVISIT: We should never reach this code which is using webdav as regex,
     //i.e., input uri is sth like /webdav/packages/mypackage
     String[] getPath(String uri) {
-        if ( Contexts.isSessionContextActive() ) { 
+        if ( Contexts.isSessionContextActive() ) {
             return getPath( uri, false );
         } else {
             return getPath( uri, true );

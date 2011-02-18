@@ -44,7 +44,7 @@ public class SpringContextElementsManager {
         }
         
         return INSTANCE;
-    } 
+    }
     
     private void populateProperties(Set<Entry<Object, Object>> fileProps) {
         for (Entry<Object, Object> entry : fileProps) {

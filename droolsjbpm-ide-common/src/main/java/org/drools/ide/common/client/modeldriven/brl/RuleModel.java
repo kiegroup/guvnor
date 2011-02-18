@@ -557,7 +557,7 @@ public class RuleModel implements PortableObject {
                         SingleFieldConstraint con = (SingleFieldConstraint) fc;
                         if (con.isBound()) {
                             result.add(con.getFieldBinding());
-                        } 
+                        }
                         if (con.getExpressionValue() != null && con.getExpressionValue().isBound()) {
                             result.add(con.getExpressionValue().getBinding());
                         }

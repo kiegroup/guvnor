@@ -14,7 +14,7 @@ import org.modeshape.jcr.CndNodeTypeReader;
 import org.modeshape.jcr.JcrRepositoryFactory;
 
 /**
- * This specialized {@link JCRRepositoryConfigurator} 
+ * This specialized {@link JCRRepositoryConfigurator}
  */
 public class ModeShapeRepositoryConfigurator extends JCRRepositoryConfigurator {
 

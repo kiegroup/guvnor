@@ -71,7 +71,7 @@ public class FactPattern
     public FieldConstraint[] getFieldConstraints() {
         if (this.constraintList == null) {
             return new FieldConstraint[0];
-        } 
+        }
         return this.constraintList.constraints;
     }
 

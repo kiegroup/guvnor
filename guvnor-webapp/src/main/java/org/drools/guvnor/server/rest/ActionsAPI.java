@@ -62,7 +62,7 @@ public class ActionsAPI {
                             service.buildPackage(uuid, true);
                             break;
                         }}
-                    } 
+                    }
             } else if (pathstr [ 0 ].equals ("snapshot"))
                 if(repository.containsPackage(packageName)) {
                     repository.createPackageSnapshot(packageName, (String)
