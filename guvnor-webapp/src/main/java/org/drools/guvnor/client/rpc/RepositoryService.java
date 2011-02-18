@@ -198,7 +198,7 @@ public interface RepositoryService
      * This will load all archived assets, in a summary format suitable for
      * display in a table.
      * 
-     * @deprecated in favor of {@link loadArchiveAssets(PageRequest)}
+     * @deprecated in favor of {@link loadArchivedAssets(PageRequest)}
      */
     public TableDataResult loadArchivedAssets(int skip,
                                               int numRows) throws SerializationException;

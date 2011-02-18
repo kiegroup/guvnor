@@ -45,10 +45,15 @@ import org.drools.core.util.DateUtils;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
+import org.drools.guvnor.client.rpc.CategoryPageRequest;
+import org.drools.guvnor.client.rpc.CategoryPageRow;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.client.rpc.InboxPageRequest;
+import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -64,9 +69,14 @@ import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
 import org.drools.guvnor.client.rpc.SnapshotDiff;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.rpc.StatePageRequest;
+import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
@@ -3817,29 +3827,28 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     @Deprecated
     @Ignore
-    public void testListUserPermisisonsLegacy() throws Exception {
+    public void testListUserPermisisons() throws Exception {
         ServiceImplementation serv = getServiceImplementation();
         Map<String, List<String>> r = serv.listUserPermissions();
         assertNotNull( r );
     }
      
     @Test
-    @Ignore
+    @Ignore("until repository locking issue is resolved")
     public void testListUserPermisisonsPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
 
         //Setup data
-        ServiceImplementation serv = getServiceImplementation();
-        RepositoryService repo = getServiceImplementation();
-        repo.createUser( "user1" );
-        repo.createUser( "user2" );
-        repo.createUser( "user3" );
+        ServiceImplementation impl = getServiceImplementation();
+        impl.createUser( "user1" );
+        impl.createUser( "user2" );
+        impl.createUser( "user3" );
 
         PageRequest request = new PageRequest( 0,
                                                PAGE_SIZE );
         PageResponse<PermissionsPageRow> response;
-        response = serv.listUserPermissions( request );
+        response = impl.listUserPermissions( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -3848,57 +3857,54 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
-        response = serv.listUserPermissions( request );
+        response = impl.listUserPermissions( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
         assertTrue( response.getStartRowIndex() == PAGE_SIZE );
         assertTrue( response.getPageRowList().size() == 1 );
         assertTrue( response.isLastPage() );
-
     }
 
     @Test
-    @Ignore
+    @Ignore("until repository locking issue is resolved")
     public void testListUserPermisisonsFullResults() throws Exception {
 
         //Setup data
-        ServiceImplementation serv = getServiceImplementation();
-        RepositoryService repo = getServiceImplementation();
-        repo.createUser( "user1" );
-        repo.createUser( "user2" );
-        repo.createUser( "user3" );
+        ServiceImplementation impl = getServiceImplementation();
+        impl.createUser( "user1" );
+        impl.createUser( "user2" );
+        impl.createUser( "user3" );
 
         PageRequest request = new PageRequest( 0,
                                                null );
         PageResponse<PermissionsPageRow> response;
-        response = serv.listUserPermissions( request );
+        response = impl.listUserPermissions( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
         assertTrue( response.getStartRowIndex() == 0 );
         assertTrue( response.getPageRowList().size() == 3 );
         assertTrue( response.isLastPage() );
-
     }
 
     @Test
-    @Ignore
+    @Ignore("until repository locking issue is resolved")
     public void testShowLogPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
 
         //Setup data (createUser makes log entries)
-        ServiceImplementation serv = getServiceImplementation();
-        serv.cleanLog();
-        serv.createUser( "user1" );
-        serv.createUser( "user2" );
-        serv.createUser( "user3" );
+        ServiceImplementation impl = getServiceImplementation();
+        impl.cleanLog();
+        impl.createUser( "user1" );
+        impl.createUser( "user2" );
+        impl.createUser( "user3" );
 
         PageRequest request = new PageRequest( 0,
                                                PAGE_SIZE );
         PageResponse<LogPageRow> response;
-        response = serv.showLog( request );
+        response = impl.showLog( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -3907,67 +3913,65 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
-        response = serv.showLog( request );
+        response = impl.showLog( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
         assertTrue( response.getStartRowIndex() == PAGE_SIZE );
         assertTrue( response.getPageRowList().size() == 1 );
         assertTrue( response.isLastPage() );
-
     }
 
     @Test
-    @Ignore
+    @Ignore("until repository locking issue is resolved")
     public void testShowLogFullResults() throws Exception {
 
         //Setup data (createUser makes log entries)
-        ServiceImplementation serv = getServiceImplementation();
-        serv.cleanLog();
-        serv.createUser( "user1" );
-        serv.createUser( "user2" );
-        serv.createUser( "user3" );
+        ServiceImplementation impl = getServiceImplementation();
+        impl.cleanLog();
+        impl.createUser( "user1" );
+        impl.createUser( "user2" );
+        impl.createUser( "user3" );
 
         PageRequest request = new PageRequest( 0,
                                                null );
         PageResponse<LogPageRow> response;
-        response = serv.showLog( request );
+        response = impl.showLog( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
         assertTrue( response.getStartRowIndex() == 0 );
         assertTrue( response.getPageRowList().size() == 3 );
         assertTrue( response.isLastPage() );
-
     }
     
     @Test
-    @Ignore
+    @Ignore("until repository locking issue is resolved")
     public void testQueryFullTextPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
 
-        ServiceImplementation serv = getServiceImplementation();
+        ServiceImplementation impl = getServiceImplementation();
         String cat = "testTextSearch";
-        serv.createCategory( "/",
+        impl.createCategory( "/",
                              cat,
                              "qkfnd" );
-        serv.createPackage( "testTextSearch",
+        impl.createPackage( "testTextSearch",
                             "for testing search." );
 
-        serv.createNewRule( "testTextRule1",
+        impl.createNewRule( "testTextRule1",
                                           "desc",
                                           cat,
                                           "testTextSearch",
                                           AssetFormats.DRL );
 
-        serv.createNewRule( "testTextRule2",
+        impl.createNewRule( "testTextRule2",
                             "desc",
                             cat,
                             "testTextSearch",
                             AssetFormats.DRL );
 
-        serv.createNewRule( "testTextRule3",
+        impl.createNewRule( "testTextRule3",
                             "desc",
                             cat,
                             "testTextSearch",
@@ -3978,7 +3982,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                          0,
                                                          PAGE_SIZE );
         PageResponse<QueryPageRow> response;
-        response = serv.queryFullText( request );
+        response = impl.queryFullText( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -3987,41 +3991,40 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
-        response = serv.queryFullText( request );
+        response = impl.queryFullText( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
         assertTrue( response.getStartRowIndex() == PAGE_SIZE );
         assertTrue( response.getPageRowList().size() == 1 );
         assertTrue( response.isLastPage() );
-
     }
 
     @Test
-    @Ignore
+    @Ignore("until repository locking issue is resolved")
     public void testQueryFullTextFullResults() throws Exception {
 
-        ServiceImplementation serv = getServiceImplementation();
+        ServiceImplementation impl = getServiceImplementation();
         String cat = "testTextSearch";
-        serv.createCategory( "/",
+        impl.createCategory( "/",
                              cat,
                              "qkfnd" );
-        serv.createPackage( "testTextSearch",
+        impl.createPackage( "testTextSearch",
                             "for testing search." );
 
-        serv.createNewRule( "testTextRule1",
+        impl.createNewRule( "testTextRule1",
                                           "desc",
                                           cat,
                                           "testTextSearch",
                                           AssetFormats.DRL );
 
-        serv.createNewRule( "testTextRule2",
+        impl.createNewRule( "testTextRule2",
                             "desc",
                             cat,
                             "testTextSearch",
                             AssetFormats.DRL );
 
-        serv.createNewRule( "testTextRule3",
+        impl.createNewRule( "testTextRule3",
                             "desc",
                             cat,
                             "testTextSearch",
@@ -4032,43 +4035,42 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                          0,
                                                          null );
         PageResponse<QueryPageRow> response;
-        response = serv.queryFullText( request );
+        response = impl.queryFullText( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
         assertTrue( response.getStartRowIndex() == 0 );
         assertTrue( response.getPageRowList().size() == 3 );
         assertTrue( response.isLastPage() );
-
     }
     
     @Test
-    @Ignore
+    @Ignore("until repository locking issue is resolved")
     public void testQuickFindAssetPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
 
-        ServiceImplementation serv = getServiceImplementation();
+        ServiceImplementation impl = getServiceImplementation();
         String cat = "testTextSearch";
-        serv.createCategory( "/",
+        impl.createCategory( "/",
                              cat,
                              "qkfnd" );
-        serv.createPackage( "testTextSearch",
+        impl.createPackage( "testTextSearch",
                             "for testing search." );
 
-        serv.createNewRule( "testTextRule1",
+        impl.createNewRule( "testTextRule1",
                                           "desc",
                                           cat,
                                           "testTextSearch",
                                           AssetFormats.DRL );
 
-        serv.createNewRule( "testTextRule2",
+        impl.createNewRule( "testTextRule2",
                             "desc",
                             cat,
                             "testTextSearch",
                             AssetFormats.DRL );
 
-        serv.createNewRule( "testTextRule3",
+        impl.createNewRule( "testTextRule3",
                             "desc",
                             cat,
                             "testTextSearch",
@@ -4079,7 +4081,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                          0,
                                                          PAGE_SIZE );
         PageResponse<QueryPageRow> response;
-        response = serv.quickFindAsset( request );
+        response = impl.quickFindAsset( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -4088,41 +4090,40 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
-        response = serv.queryFullText( request );
+        response = impl.queryFullText( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
         assertTrue( response.getStartRowIndex() == PAGE_SIZE );
         assertTrue( response.getPageRowList().size() == 1 );
         assertTrue( response.isLastPage() );
-
     }
 
     @Test
-    @Ignore
+    @Ignore("until repository locking issue is resolved")
     public void testQuickFindAssetFullResults() throws Exception {
 
-        ServiceImplementation serv = getServiceImplementation();
+        ServiceImplementation impl = getServiceImplementation();
         String cat = "testTextSearch";
-        serv.createCategory( "/",
+        impl.createCategory( "/",
                              cat,
                              "qkfnd" );
-        serv.createPackage( "testTextSearch",
+        impl.createPackage( "testTextSearch",
                             "for testing search." );
 
-        serv.createNewRule( "testTextRule1",
+        impl.createNewRule( "testTextRule1",
                                           "desc",
                                           cat,
                                           "testTextSearch",
                                           AssetFormats.DRL );
 
-        serv.createNewRule( "testTextRule2",
+        impl.createNewRule( "testTextRule2",
                             "desc",
                             cat,
                             "testTextSearch",
                             AssetFormats.DRL );
 
-        serv.createNewRule( "testTextRule3",
+        impl.createNewRule( "testTextRule3",
                             "desc",
                             cat,
                             "testTextSearch",
@@ -4133,18 +4134,17 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                          0,
                                                          null );
         PageResponse<QueryPageRow> response;
-        response = serv.quickFindAsset( request );
+        response = impl.quickFindAsset( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
         assertTrue( response.getStartRowIndex() == 0 );
         assertTrue( response.getPageRowList().size() == 3 );
         assertTrue( response.isLastPage() );
-
     }
     
     @Test
-    @Ignore
+    @Ignore("until repository locking issue is resolved")
     public void testQueryMetaDataPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
@@ -4198,10 +4198,10 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( response.getStartRowIndex() == PAGE_SIZE );
         assertTrue( response.getPageRowList().size() == 1 );
         assertTrue( response.isLastPage() );
-
     }
 
     @Test
+    @Ignore("until repository locking issue is resolved")
     public void testQueryMetaDataFullResults() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -4244,9 +4244,680 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( response.getStartRowIndex() == 0 );
         assertTrue( response.getPageRowList().size() == 3 );
         assertTrue( response.isLastPage() );
+    }
 
+    @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testLoadRuleListForCategoryPagedResults() throws Exception {
+
+        final int PAGE_SIZE = 2;
+
+        ServiceImplementation impl = getServiceImplementation();
+        String cat = "testCategory";
+        impl.createCategory( "/",
+                             cat,
+                             "testCategoryDescription" );
+        impl.createPackage( "testCategoryPackage",
+                            "testCategoryPackageDescription" );
+
+        impl.createNewRule( "testTextRule1",
+                            "testCategoryRule1",
+                            cat,
+                            "testCategoryPackage",
+                            AssetFormats.DRL );
+        impl.createNewRule( "testTextRule2",
+                            "testCategoryRule2",
+                            cat,
+                            "testCategoryPackage",
+                            AssetFormats.DRL );
+        impl.createNewRule( "testTextRule3",
+                            "testCategoryRule3",
+                            cat,
+                            "testCategoryPackage",
+                            AssetFormats.DRL );
+
+        CategoryPageRequest request = new CategoryPageRequest( cat,
+                                                               0,
+                                                               PAGE_SIZE );
+        PageResponse<CategoryPageRow> response;
+        response = impl.loadRuleListForCategories( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = impl.loadRuleListForCategories( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
+        assertTrue( response.getPageRowList().size() == 1 );
+        assertTrue( response.isLastPage() );
+    }
+
+    @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testLoadRuleListForCategoryFullResults() throws Exception {
+
+        ServiceImplementation impl = getServiceImplementation();
+        String cat = "testCategory";
+        impl.createCategory( "/",
+                             cat,
+                             "testCategoryDescription" );
+        impl.createPackage( "testCategoryPackage",
+                            "testCategoryPackageDescription" );
+
+        impl.createNewRule( "testTextRule1",
+                            "testCategoryRule1",
+                            cat,
+                            "testCategoryPackage",
+                            AssetFormats.DRL );
+        impl.createNewRule( "testTextRule2",
+                            "testCategoryRule2",
+                            cat,
+                            "testCategoryPackage",
+                            AssetFormats.DRL );
+        impl.createNewRule( "testTextRule3",
+                            "testCategoryRule3",
+                            cat,
+                            "testCategoryPackage",
+                            AssetFormats.DRL );
+
+        CategoryPageRequest request = new CategoryPageRequest( cat,
+                                                               0,
+                                                               null );
+        PageResponse<CategoryPageRow> response;
+        response = impl.loadRuleListForCategories( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == 3 );
+        assertTrue( response.isLastPage() );
+    }
+
+    @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testLoadRuleListForStatePagedResults() throws Exception {
+
+        final int PAGE_SIZE = 2;
+
+        ServiceImplementation impl = getServiceImplementation();
+        String cat = "testCategory";
+        String status = "testStatus";
+        String uuid;
+        impl.createCategory( "/",
+                             cat,
+                             "testCategoryDescription" );
+        impl.createPackage( "testCategoryPackage",
+                            "testCategoryPackageDescription" );
+        impl.createState( status );
+
+        uuid = impl.createNewRule( "testTextRule1",
+                            "testCategoryRule1",
+                            cat,
+                            "testCategoryPackage",
+                            AssetFormats.DRL );
+        impl.changeState( uuid,
+                          status,
+                          false );
+
+        uuid = impl.createNewRule( "testTextRule2",
+                            "testCategoryRule2",
+                            cat,
+                            "testCategoryPackage",
+                            AssetFormats.DRL );
+        impl.changeState( uuid,
+                          status,
+                          false );
+
+        uuid = impl.createNewRule( "testTextRule3",
+                            "testCategoryRule3",
+                            cat,
+                            "testCategoryPackage",
+                            AssetFormats.DRL );
+        impl.changeState( uuid,
+                          status,
+                          false );
+
+        StatePageRequest request = new StatePageRequest(status, 0, PAGE_SIZE );
+        PageResponse<StatePageRow> response;
+        response = impl.loadRuleListForState( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = impl.loadRuleListForState( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
+        assertTrue( response.getPageRowList().size() == 1 );
+        assertTrue( response.isLastPage() );
+    }
+
+    @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testLoadRuleListForStateFullResults() throws Exception {
+
+        ServiceImplementation impl = getServiceImplementation();
+        String cat = "testCategory";
+        String status = "testStatus";
+        String uuid;
+        impl.createCategory( "/",
+                             cat,
+                             "testCategoryDescription" );
+        impl.createPackage( "testCategoryPackage",
+                            "testCategoryPackageDescription" );
+        impl.createState( status );
+
+        uuid = impl.createNewRule( "testTextRule1",
+                            "testCategoryRule1",
+                            cat,
+                            "testCategoryPackage",
+                            AssetFormats.DRL );
+        impl.changeState( uuid,
+                          status,
+                          false );
+
+        uuid = impl.createNewRule( "testTextRule2",
+                            "testCategoryRule2",
+                            cat,
+                            "testCategoryPackage",
+                            AssetFormats.DRL );
+        impl.changeState( uuid,
+                          status,
+                          false );
+
+        uuid = impl.createNewRule( "testTextRule3",
+                            "testCategoryRule3",
+                            cat,
+                            "testCategoryPackage",
+                            AssetFormats.DRL );
+        impl.changeState( uuid,
+                          status,
+                          false );
+
+        StatePageRequest request = new StatePageRequest(status, 0, null );
+        PageResponse<StatePageRow> response;
+        response = impl.loadRuleListForState( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == 3 );
+        assertTrue( response.isLastPage() );
     }
     
+    @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testLoadArchivedAssetsPagedResults() throws Exception {
+        
+        final int PAGE_SIZE = 2;
+        
+        ServiceImplementation impl = getServiceImplementation();
+        impl.getRulesRepository().createPackage( "testLoadArchivedAssetsPackage", "desc" );
+        impl.createCategory( "", "testLoadArchivedAssetsCat", "this is a cat" );
+
+        String uuid1 = impl.createNewRule( "testLoadArchivedAssets1",
+                                           "description",
+                                           "testLoadArchivedAssetsCat",
+                                           "testLoadArchivedAssetsPackage",
+                                           AssetFormats.DRL );
+        impl.archiveAsset( uuid1 );
+
+        String uuid2 = impl.createNewRule( "testLoadArchivedAssets2",
+                                           "description",
+                                           "testLoadArchivedAssetsCat",
+                                           "testLoadArchivedAssetsPackage",
+                                           AssetFormats.DRL );
+        impl.archiveAsset( uuid2 );
+
+        String uuid3 = impl.createNewRule( "testLoadArchivedAssets3",
+                                           "description",
+                                           "testLoadArchivedAssetsCat",
+                                           "testLoadArchivedAssetsPackage",
+                                           AssetFormats.DRL );
+        impl.archiveAsset( uuid3 );
+
+        PageRequest request = new PageRequest(0, PAGE_SIZE);
+        PageResponse<AdminArchivedPageRow> response;
+        response = impl.loadArchivedAssets( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = impl.loadArchivedAssets( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
+        assertTrue( response.getPageRowList().size() == 1 );
+        assertTrue( response.isLastPage() );
+    }
+    
+    @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testLoadArchivedAssetsFullResults() throws Exception {
+        
+        ServiceImplementation impl = getServiceImplementation();
+        impl.getRulesRepository().createPackage( "testLoadArchivedAssetsPackage", "desc" );
+        impl.createCategory( "", "testLoadArchivedAssetsCat", "this is a cat" );
+
+        String uuid1 = impl.createNewRule( "testLoadArchivedAssets1",
+                                           "description",
+                                           "testLoadArchivedAssetsCat",
+                                           "testLoadArchivedAssetsPackage",
+                                           AssetFormats.DRL );
+        impl.archiveAsset( uuid1 );
+
+        String uuid2 = impl.createNewRule( "testLoadArchivedAssets2",
+                                           "description",
+                                           "testLoadArchivedAssetsCat",
+                                           "testLoadArchivedAssetsPackage",
+                                           AssetFormats.DRL );
+        impl.archiveAsset( uuid2 );
+
+        String uuid3 = impl.createNewRule( "testLoadArchivedAssets3",
+                                           "description",
+                                           "testLoadArchivedAssetsCat",
+                                           "testLoadArchivedAssetsPackage",
+                                           AssetFormats.DRL );
+        impl.archiveAsset( uuid3 );
+
+        PageRequest request = new PageRequest(0, null);
+        PageResponse<AdminArchivedPageRow> response;
+        response = impl.loadArchivedAssets( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == 3 );
+        assertTrue( response.isLastPage() );
+    }
+    
+    @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testLoadInboxPagedResults() throws Exception {
+
+        final int PAGE_SIZE = 2;
+
+        ServiceImplementation impl = getServiceImplementation();
+        UserInbox ib = new UserInbox( impl.getRulesRepository() );
+        ib.clearAll();
+
+        @SuppressWarnings("unused")
+        RuleAsset asset;
+        String uuid;
+        impl.getRulesRepository().createPackage( "testLoadInboxPackage",
+                                                 "testLoadInboxDescription" );
+        impl.createCategory( "",
+                             "testLoadInboxCategory",
+                             "testLoadInboxCategoryDescription" );
+
+        uuid = impl.createNewRule( "rule1",
+                                   "desc",
+                                   "testLoadInboxCategory",
+                                   "testLoadInboxPackage",
+                                   AssetFormats.DRL );
+        asset = impl.loadRuleAsset( uuid );
+
+        uuid = impl.createNewRule( "rule2",
+                                   "desc",
+                                   "testLoadInboxCategory",
+                                   "testLoadInboxPackage",
+                                   AssetFormats.DRL );
+        asset = impl.loadRuleAsset( uuid );
+
+        uuid = impl.createNewRule( "rule3",
+                                   "desc",
+                                   "testLoadInboxCategory",
+                                   "testLoadInboxPackage",
+                                   AssetFormats.DRL );
+        asset = impl.loadRuleAsset( uuid );
+
+        InboxPageRequest request = new InboxPageRequest( ExplorerNodeConfig.RECENT_VIEWED_ID,
+                                                         0,
+                                                         PAGE_SIZE );
+        PageResponse<InboxPageRow> response;
+        response = impl.loadInbox( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = impl.loadInbox( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
+        assertTrue( response.getPageRowList().size() == 1 );
+        assertTrue( response.isLastPage() );
+    }
+
+    @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testLoadInboxFullResults() throws Exception {
+
+        ServiceImplementation impl = getServiceImplementation();
+        UserInbox ib = new UserInbox( impl.getRulesRepository() );
+        ib.clearAll();
+
+        @SuppressWarnings("unused")
+        RuleAsset asset;
+        String uuid;
+        impl.getRulesRepository().createPackage( "testLoadInboxPackage",
+                                                 "testLoadInboxDescription" );
+        impl.createCategory( "",
+                             "testLoadInboxCategory",
+                             "testLoadInboxCategoryDescription" );
+
+        uuid = impl.createNewRule( "rule1",
+                                   "desc",
+                                   "testLoadInboxCategory",
+                                   "testLoadInboxPackage",
+                                   AssetFormats.DRL );
+        asset = impl.loadRuleAsset( uuid );
+
+        uuid = impl.createNewRule( "rule2",
+                                   "desc",
+                                   "testLoadInboxCategory",
+                                   "testLoadInboxPackage",
+                                   AssetFormats.DRL );
+        asset = impl.loadRuleAsset( uuid );
+
+        uuid = impl.createNewRule( "rule3",
+                                   "desc",
+                                   "testLoadInboxCategory",
+                                   "testLoadInboxPackage",
+                                   AssetFormats.DRL );
+        asset = impl.loadRuleAsset( uuid );
+
+        InboxPageRequest request = new InboxPageRequest( ExplorerNodeConfig.RECENT_VIEWED_ID,
+                                                         0,
+                                                         null );
+        PageResponse<InboxPageRow> response;
+        response = impl.loadInbox( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == 3 );
+        assertTrue( response.isLastPage() );
+    }
+    
+    @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testSnapshotDiffPagedResults() throws Exception {
+        
+        final int PAGE_SIZE = 2;
+        
+        ServiceImplementation impl = getServiceImplementation();
+
+        // Lets make a package and put a rule into it
+        impl.createCategory( "/",
+                             "snapshotDiffTestingCategory",
+                             "snapshotDiffTestingCategoryDescription" );
+        String packageUuid = impl.createPackage( "snapshotDiffTestingPackage",
+                                                 "snapshotDiffTestingPackageDescription" );
+        assertNotNull( packageUuid );
+
+        // Create some rules
+        String archiveRuleUuid = impl.createNewRule( "testRuleArchived",
+                                                     "testRuleArchivedDescription",
+                                                     "snapshotDiffTestingCategory",
+                                                     "snapshotDiffTestingPackage",
+                                                     AssetFormats.DRL );
+        String modifiedRuleUuid = impl.createNewRule( "testRuleModified",
+                                                      "testRuleModifiedDescription",
+                                                      "snapshotDiffTestingCategory",
+                                                      "snapshotDiffTestingPackage",
+                                                      AssetFormats.DRL );
+        String deletedRuleUuid = impl.createNewRule( "testRuleDeleted",
+                                                     "testRuleDeletedDescription",
+                                                     "snapshotDiffTestingCategory",
+                                                     "snapshotDiffTestingPackage",
+                                                     AssetFormats.DRL );
+        String restoredRuleUuid = impl.createNewRule( "testRuleRestored",
+                                                      "testRuleRestoredDescription",
+                                                      "snapshotDiffTestingCategory",
+                                                      "snapshotDiffTestingPackage",
+                                                      AssetFormats.DRL );
+        impl.archiveAsset( restoredRuleUuid );
+
+        @SuppressWarnings("unused")
+        String noChangesRuleUuid = impl.createNewRule( "testRuleNoChanges",
+                                                       "testRuleNoChangesDescription",
+                                                       "snapshotDiffTestingCategory",
+                                                       "snapshotDiffTestingPackage",
+                                                       AssetFormats.DRL );
+
+        // Create a snapshot called FIRST for the package
+        impl.createPackageSnapshot( "snapshotDiffTestingPackage",
+                                    "FIRST",
+                                    false,
+                                    "First snapshot" );
+        assertEquals( 1,
+                      impl.listSnapshots( "snapshotDiffTestingPackage" ).length );
+        assertEquals( 4,
+                      impl.listRulesInPackage( "snapshotDiffTestingPackage" ).length );
+
+        // Change a rule...
+        RuleAsset asset = impl.loadRuleAsset( modifiedRuleUuid );
+        String uuid = impl.checkinVersion( asset );
+        assertNotNull( uuid );
+
+        //...delete one...
+        impl.removeAsset( deletedRuleUuid );
+        
+        //...archive one...
+        impl.archiveAsset( archiveRuleUuid );
+
+        //...create a new one...
+        @SuppressWarnings("unused")
+        String addedRuleUuid = impl.createNewRule( "testRuleAdded",
+                                                   "testRuleAddedDescription",
+                                                   "snapshotDiffTestingCategory",
+                                                   "snapshotDiffTestingPackage",
+                                                   AssetFormats.DRL );
+
+        //...and unarchive one
+        impl.unArchiveAsset( restoredRuleUuid );
+
+        // Create a snapshot called SECOND for the package
+        impl.createPackageSnapshot( "snapshotDiffTestingPackage",
+                                    "SECOND",
+                                    false,
+                                    "Second snapshot" );
+        assertEquals( 2,
+                      impl.listSnapshots( "snapshotDiffTestingPackage" ).length );
+        assertEquals( 4,
+                      impl.listRulesInPackage( "snapshotDiffTestingPackage" ).length );
+
+        // Compare the snapshots
+        SnapshotComparisonPageRequest request=new SnapshotComparisonPageRequest("snapshotDiffTestingPackage", "FIRST", "SECOND", 0, PAGE_SIZE);
+        SnapshotComparisonPageResponse response;
+        response = impl.compareSnapshots( request );
+
+        assertEquals( "FIRST",
+                      response.getLeftSnapshotName());
+        assertEquals( "SECOND",
+                      response.getRightSnapshotName() );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = impl.compareSnapshots( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
+        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE * 2);
+        response = impl.compareSnapshots( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == PAGE_SIZE * 2 );
+        assertTrue( response.getPageRowList().size() == 1 );
+        assertTrue( response.isLastPage() );
+    }
+    
+    @Test
+    @Ignore("until repository locking issue is resolved")
+    public void testSnapshotDiffFullResults() throws Exception {
+        
+        ServiceImplementation impl = getServiceImplementation();
+
+        // Lets make a package and put a rule into it
+        impl.createCategory( "/",
+                             "snapshotDiffTestingCategory",
+                             "snapshotDiffTestingCategoryDescription" );
+        String packageUuid = impl.createPackage( "snapshotDiffTestingPackage",
+                                                 "snapshotDiffTestingPackageDescription" );
+        assertNotNull( packageUuid );
+
+        // Create some rules
+        String archiveRuleUuid = impl.createNewRule( "testRuleArchived",
+                                                     "testRuleArchivedDescription",
+                                                     "snapshotDiffTestingCategory",
+                                                     "snapshotDiffTestingPackage",
+                                                     AssetFormats.DRL );
+        String modifiedRuleUuid = impl.createNewRule( "testRuleModified",
+                                                      "testRuleModifiedDescription",
+                                                      "snapshotDiffTestingCategory",
+                                                      "snapshotDiffTestingPackage",
+                                                      AssetFormats.DRL );
+        String deletedRuleUuid = impl.createNewRule( "testRuleDeleted",
+                                                     "testRuleDeletedDescription",
+                                                     "snapshotDiffTestingCategory",
+                                                     "snapshotDiffTestingPackage",
+                                                     AssetFormats.DRL );
+        String restoredRuleUuid = impl.createNewRule( "testRuleRestored",
+                                                      "testRuleRestoredDescription",
+                                                      "snapshotDiffTestingCategory",
+                                                      "snapshotDiffTestingPackage",
+                                                      AssetFormats.DRL );
+        impl.archiveAsset( restoredRuleUuid );
+
+        @SuppressWarnings("unused")
+        String noChangesRuleUuid = impl.createNewRule( "testRuleNoChanges",
+                                                       "testRuleNoChangesDescription",
+                                                       "snapshotDiffTestingCategory",
+                                                       "snapshotDiffTestingPackage",
+                                                       AssetFormats.DRL );
+
+        // Create a snapshot called FIRST for the package
+        impl.createPackageSnapshot( "snapshotDiffTestingPackage",
+                                    "FIRST",
+                                    false,
+                                    "First snapshot" );
+        assertEquals( 1,
+                      impl.listSnapshots( "snapshotDiffTestingPackage" ).length );
+        assertEquals( 4,
+                      impl.listRulesInPackage( "snapshotDiffTestingPackage" ).length );
+
+        // Change a rule...
+        RuleAsset asset = impl.loadRuleAsset( modifiedRuleUuid );
+        String uuid = impl.checkinVersion( asset );
+        assertNotNull( uuid );
+
+        //...delete one...
+        impl.removeAsset( deletedRuleUuid );
+        
+        //...archive one...
+        impl.archiveAsset( archiveRuleUuid );
+
+        //...create a new one...
+        @SuppressWarnings("unused")
+        String addedRuleUuid = impl.createNewRule( "testRuleAdded",
+                                                   "testRuleAddedDescription",
+                                                   "snapshotDiffTestingCategory",
+                                                   "snapshotDiffTestingPackage",
+                                                   AssetFormats.DRL );
+
+        //...and unarchive one
+        impl.unArchiveAsset( restoredRuleUuid );
+
+        // Create a snapshot called SECOND for the package
+        impl.createPackageSnapshot( "snapshotDiffTestingPackage",
+                                    "SECOND",
+                                    false,
+                                    "Second snapshot" );
+        assertEquals( 2,
+                      impl.listSnapshots( "snapshotDiffTestingPackage" ).length );
+        assertEquals( 4,
+                      impl.listRulesInPackage( "snapshotDiffTestingPackage" ).length );
+
+        // Compare the snapshots
+        SnapshotComparisonPageRequest request=new SnapshotComparisonPageRequest("snapshotDiffTestingPackage", "FIRST", "SECOND", 0, null);
+        SnapshotComparisonPageResponse response;
+        response = impl.compareSnapshots( request );
+
+        assertEquals( "FIRST",
+                      response.getLeftSnapshotName());
+        assertEquals( "SECOND",
+                      response.getRightSnapshotName() );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == 5 );
+        assertTrue( response.isLastPage() );
+
+        for(SnapshotComparisonPageRow row : response.getPageRowList()) {
+            SnapshotDiff diff = row.getDiff();
+            if ( diff.name.equals( "testRuleArchived" ) ) {
+                assertEquals( SnapshotDiff.TYPE_ARCHIVED,
+                              diff.diffType );
+                assertNotNull( diff.leftUuid );
+                assertNotNull( diff.rightUuid );
+            } else if ( diff.name.equals( "testRuleModified" ) ) {
+                assertEquals( SnapshotDiff.TYPE_UPDATED,
+                              diff.diffType );
+                assertNotNull( diff.leftUuid );
+                assertNotNull( diff.rightUuid );
+            } else if ( diff.name.equals( "testRuleAdded" ) ) {
+                assertEquals( SnapshotDiff.TYPE_ADDED,
+                              diff.diffType );
+                assertNull( diff.leftUuid );
+                assertNotNull( diff.rightUuid );
+            } else if ( diff.name.equals( "testRuleDeleted" ) ) {
+                assertEquals( SnapshotDiff.TYPE_DELETED,
+                              diff.diffType );
+                assertNotNull( diff.leftUuid );
+                assertNull( diff.rightUuid );
+            } else if ( diff.name.equals( "testRuleRestored" ) ) {
+                assertEquals( SnapshotDiff.TYPE_RESTORED,
+                              diff.diffType );
+                assertNotNull( diff.leftUuid );
+                assertNotNull( diff.rightUuid );
+            } else {
+                fail( "Diff not expected." );
+            }
+        }
+    }
+
     @Test
     @Ignore
     public void testManageUserPermissions() throws Exception {
@@ -4262,7 +4933,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     @Ignore
-    //Ignore
     public void testImportSampleRepository() throws Exception {
         ServiceImplementation serv = getServiceImplementation();
         serv.installSampleRepository();

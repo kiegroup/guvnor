@@ -272,13 +272,12 @@ public class RepositoryAssetOperations {
     private List<AdminArchivedPageRow> fillAdminArchivePageRows(
             PageRequest request, AssetItemIterator it) {
         int skipped = 0;
-        int pageSize = request.getPageSize();
+        Integer pageSize = request.getPageSize();
         int startRowIndex = request.getStartRowIndex();
         RepositoryFilter filter = new AssetItemFilter();
-        List<AdminArchivedPageRow> rowList = new ArrayList<AdminArchivedPageRow>(
-                request.getPageSize());
+        List<AdminArchivedPageRow> rowList = new ArrayList<AdminArchivedPageRow>();
 
-        while (it.hasNext() && (pageSize < 0 || rowList.size() < pageSize)) {
+        while (it.hasNext() && (pageSize == null || rowList.size() < pageSize)) {
             AssetItem archivedAssetItem = (AssetItem) it.next();
 
             // Filter surplus assets

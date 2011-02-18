@@ -310,6 +310,9 @@ public class ServiceImplementation implements RepositoryService {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
         }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
+        }
 
         return repositoryAssetOperations.loadArchivedAssets( request );
     }
@@ -1985,9 +1988,11 @@ public class ServiceImplementation implements RepositoryService {
 
     @Restrict("#{identity.loggedIn}")
     public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request) throws DetailedSerializationException {
-
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
+        }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
         }
 
         String inboxName = request.getInboxName();
@@ -2139,39 +2144,45 @@ public class ServiceImplementation implements RepositoryService {
     }
 
     public SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request) {
-        
-        if(request==null) {
-            throw new IllegalArgumentException("request cannot be null");
+        if ( request == null ) {
+            throw new IllegalArgumentException( "request cannot be null" );
         }
-        
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
+        }
+
         SnapshotComparisonPageResponse response = new SnapshotComparisonPageResponse();
-        
+
         // Do query (bit of a cheat really!)
         long start = System.currentTimeMillis();
-        SnapshotDiffs diffs = compareSnapshots( request.getPackageName(), request.getFirstSnapshotName(), request.getSecondSnapshotName() );
+        SnapshotDiffs diffs = compareSnapshots( request.getPackageName(),
+                                                request.getFirstSnapshotName(),
+                                                request.getSecondSnapshotName() );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-        
+
         // Populate response
-        response.setLeftSnapshotName( diffs.leftName);
+        response.setLeftSnapshotName( diffs.leftName );
         response.setRightSnapshotName( diffs.rightName );
         List<SnapshotComparisonPageRow> rowList = new ArrayList<SnapshotComparisonPageRow>();
-        
+
         int pageStart = request.getStartRowIndex();
-        int maxRow = Math.min(request.getPageSize(), diffs.diffs.length-request.getStartRowIndex());
-        for(int i=pageStart; i<pageStart+maxRow; i++) {
+        int numRowsToReturn = (request.getPageSize() == null ? diffs.diffs.length : request.getPageSize());
+        int maxRow = Math.min( numRowsToReturn,
+                               diffs.diffs.length - request.getStartRowIndex() );
+        for ( int i = pageStart; i < pageStart + maxRow; i++ ) {
             SnapshotComparisonPageRow pr = new SnapshotComparisonPageRow();
             pr.setDiff( diffs.diffs[i] );
-            rowList.add(pr);
+            rowList.add( pr );
         }
         response.setPageRowList( rowList );
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setTotalRowSize( diffs.diffs.length );
         response.setTotalRowSizeExact( true );
-        response.setLastPage( (pageStart+maxRow==diffs.diffs.length) );
+        response.setLastPage( (pageStart + maxRow == diffs.diffs.length) );
 
         long methodDuration = System.currentTimeMillis() - start;
-        log.debug( "Compared Snapshots ('" + request.getFirstSnapshotName() + "') and ('"+request.getSecondSnapshotName()+"') in package ('" + request.getPackageName()+"') in " + methodDuration + " ms." );
-        
+        log.debug( "Compared Snapshots ('" + request.getFirstSnapshotName() + "') and ('" + request.getSecondSnapshotName() + "') in package ('" + request.getPackageName() + "') in " + methodDuration + " ms." );
+
         return response;
     }
 
@@ -2301,6 +2312,9 @@ public class ServiceImplementation implements RepositoryService {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
         }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
+        }
 
         // Do query
         long start = System.currentTimeMillis();
@@ -2309,20 +2323,30 @@ public class ServiceImplementation implements RepositoryService {
         RepositoryFilter filter = new AssetItemFilter();
 
         // NOTE: Filtering is handled in repository.findAssetsByState()
-        AssetItemPageResult result = getRulesRepository().findAssetsByState( request.getStateName(), false, request.getStartRowIndex(), request.getPageSize(), filter );
+        int numRowsToReturn = (request.getPageSize() == null ? -1 : request.getPageSize());
+        AssetItemPageResult result = getRulesRepository().findAssetsByState( request.getStateName(),
+                                                                             false,
+                                                                             request.getStartRowIndex(),
+                                                                             numRowsToReturn,
+                                                                             filter );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
         boolean bHasMoreRows = result.hasNext;
         PageResponse<StatePageRow> response = new PageResponse<StatePageRow>();
-        List<StatePageRow> rowList = fillStatePageRows( request, result );
+        List<StatePageRow> rowList = fillStatePageRows( request,
+                                                        result );
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
         response.setLastPage( !bHasMoreRows );
 
         // Fix Total Row Size
         ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request, response, -1, rowList.size(), bHasMoreRows );
+        serviceRowSizeHelper.fixTotalRowSize( request,
+                                              response,
+                                              -1,
+                                              rowList.size(),
+                                              bHasMoreRows );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Assest with State (" + request.getStateName() + ") in " + methodDuration + " ms." );
@@ -2335,6 +2359,9 @@ public class ServiceImplementation implements RepositoryService {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
         }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
+        }
 
         PageResponse<CategoryPageRow> response = new PageResponse<CategoryPageRow>();
 
@@ -2343,7 +2370,8 @@ public class ServiceImplementation implements RepositoryService {
         // permission to access the particular category when: The user has
         // ANALYST_READ role or higher (i.e., ANALYST) to this category
         if ( Contexts.isSessionContextActive() ) {
-            if ( !Identity.instance().hasPermission( new CategoryPathType( request.getCategoryPath() ), RoleTypes.ANALYST_READ ) ) {
+            if ( !Identity.instance().hasPermission( new CategoryPathType( request.getCategoryPath() ),
+                                                     RoleTypes.ANALYST_READ ) ) {
                 return response;
             }
         }
@@ -2352,19 +2380,28 @@ public class ServiceImplementation implements RepositoryService {
         long start = System.currentTimeMillis();
 
         // NOTE: Filtering is handled in repository.findAssetsByCategory()
-        AssetItemPageResult result = getRulesRepository().findAssetsByCategory( request.getCategoryPath(), false, request.getStartRowIndex(), request.getPageSize() );
+        int numRowsToReturn = (request.getPageSize() == null ? -1 : request.getPageSize());
+        AssetItemPageResult result = getRulesRepository().findAssetsByCategory( request.getCategoryPath(),
+                                                                                false,
+                                                                                request.getStartRowIndex(),
+                                                                                numRowsToReturn );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
         boolean bHasMoreRows = result.hasNext;
-        List<CategoryPageRow> rowList = fillCategoryPageRows( request, result );
+        List<CategoryPageRow> rowList = fillCategoryPageRows( request,
+                                                              result );
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
         response.setLastPage( !bHasMoreRows );
 
         // Fix Total Row Size
         ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request, response, -1, rowList.size(), bHasMoreRows );
+        serviceRowSizeHelper.fixTotalRowSize( request,
+                                              response,
+                                              -1,
+                                              rowList.size(),
+                                              bHasMoreRows );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Assest with Category (" + request.getCategoryPath() + ") in " + methodDuration + " ms." );
