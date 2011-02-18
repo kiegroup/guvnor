@@ -99,10 +99,10 @@ public class WorkspaceManager extends Composite {
                     return;
                 }
                 
-                updateWorkspace();                
+                updateWorkspace();
             }
 
-        } );        
+        } );
         hPanel.add( create );
         hPanel.add( remove );
         hPanel.add( updateWorkspace );
@@ -178,7 +178,7 @@ public class WorkspaceManager extends Composite {
                 }
                 LoadingPopup.close();
             }
-        } );   
+        } );
         
         LoadingPopup.showMessage( constants.LoadingWorkspaces() );
         RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
@@ -250,19 +250,19 @@ public class WorkspaceManager extends Composite {
 
             grid.setWidget( 0,
                             0,
-                            new SmallLabel( constants.Workspaces() ) ); 
+                            new SmallLabel( constants.Workspaces() ) );
             grid.setWidget( 0,
                             2,
-                            new SmallLabel( "Workspace: Available Modules" ) ); 
+                            new SmallLabel( "Workspace: Available Modules" ) );
             grid.setWidget( 0,
                             3,
                             new SmallLabel( "" ) );
             grid.setWidget( 0,
                             4,
-                            new SmallLabel( "Workspace: Selected Modules" ) ); 
+                            new SmallLabel( "Workspace: Selected Modules" ) );
             grid.setWidget( 1,
                             0,
-                            availableWorkspacesListBox );           
+                            availableWorkspacesListBox );
             grid.setWidget( 1,
                             2,
                             availableModulesListBox );

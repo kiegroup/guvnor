@@ -47,7 +47,7 @@ public class RulesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.DSL_TEMPLATE_RULE, constants.NewRuleUsingDSL(), true);
             }
-        });                 
+        });
         
         createNewMenu.addItem(Util.getHeader(images.ruleAsset(), constants.DRLRuleTechnicalRuleTextEditor()),
                 true,
@@ -55,7 +55,7 @@ public class RulesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.DRL, constants.NewDRL(), true);
             }
-        }); 
+        });
         
         createNewMenu.addItem(Util.getHeader(images.spreadsheetSmall(), constants.DecisionTableSpreadsheet()),
                 true,
@@ -63,7 +63,7 @@ public class RulesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.DECISION_SPREADSHEET_XLS, constants.NewDecisionTableSpreadsheet(), true);
             }
-        }); 
+        });
 
         createNewMenu.addItem(Util.getHeader(images.gdst(), constants.DecisionTableWebGuidedEditor()),
                 true,
@@ -71,7 +71,7 @@ public class RulesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.DECISION_TABLE_GUIDED, constants.NewDecisionTableGuidedEditor(), true);
             }
-        });       
+        });
         
         createNewMenu.addItem(Util.getHeader(images.testManager(), constants.TestScenario()),
                 true,
@@ -80,7 +80,7 @@ public class RulesNewMenu {
                 manager.launchWizard(AssetFormats.TEST_SCENARIO,
                         constants.CreateATestScenario(), false);
             }
-        }); 
+        });
 
         MenuBar rootMenuBar = new MenuBar(true);
         rootMenuBar.setAutoOpen(true);

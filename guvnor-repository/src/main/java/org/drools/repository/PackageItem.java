@@ -336,7 +336,7 @@ public class PackageItem extends VersionableItem {
                 workspace.clone(workspace.getName(), globalAssetItem.getNode().getPath(), path, false);
 
                Node ruleNode = rulesFolder.getNode(globalAssetItem.getName());
-            AssetItem rule = new AssetItem( this.rulesRepository, ruleNode );         
+            AssetItem rule = new AssetItem( this.rulesRepository, ruleNode );
 
             return rule;
          } catch ( RepositoryException e ) {
@@ -832,7 +832,7 @@ public class PackageItem extends VersionableItem {
             public int compare(AssetItem a1, AssetItem a2) {
                 long la1 = a1.getVersionNumber();
                 long la2 = a2.getVersionNumber();
-                return la1 == la2 ? 0 : (la1 < la2 ? 1 : -1); 
+                return la1 == la2 ? 0 : (la1 < la2 ? 1 : -1);
             }
         });
     }
@@ -909,7 +909,7 @@ public class PackageItem extends VersionableItem {
                                                        "," );
             while ( tok.hasMoreTokens() ) {
                 String currentTagName = tok.nextToken();
-                list.add(currentTagName);             
+                list.add(currentTagName);
             }
 
             return list.toArray(new String[0]);

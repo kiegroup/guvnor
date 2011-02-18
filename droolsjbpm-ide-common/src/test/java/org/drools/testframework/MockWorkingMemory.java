@@ -93,7 +93,7 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject(facts);
-        out.writeObject(agendaEventListener);        
+        out.writeObject(agendaEventListener);
         out.writeObject(globals);
     }
     

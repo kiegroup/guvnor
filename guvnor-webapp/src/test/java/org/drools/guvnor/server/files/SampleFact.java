@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class SampleFact {
 
-    private String name; 
+    private String name;
     private boolean isTrue;
     private int number;
     private Date dateOccurred;

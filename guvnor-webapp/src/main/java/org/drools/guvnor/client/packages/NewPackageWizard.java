@@ -121,7 +121,7 @@ public class NewPackageWizard extends FormStylePopup {
         importLayout.addRow( new HTML( constants.ImportDRLDesc2() ) );
         importLayout.addRow( new HTML( constants.ImportDRLDesc3() ) );
 
-        HorizontalPanel hp = new HorizontalPanel();        
+        HorizontalPanel hp = new HorizontalPanel();
         Button create = new Button( constants.CreatePackage() );
         create.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
@@ -182,7 +182,7 @@ public class NewPackageWizard extends FormStylePopup {
         panel.add( upload );
 
 
-        HorizontalPanel hp = new HorizontalPanel();        
+        HorizontalPanel hp = new HorizontalPanel();
         Button create = new Button( constants.Import() );
         ClickHandler okClickHandler = new ClickHandler() {
             public void onClick(ClickEvent arg0) {
@@ -194,7 +194,7 @@ public class NewPackageWizard extends FormStylePopup {
         create.addClickHandler(okClickHandler);
         hp.add(create);
 
-        Button cancel = new Button( constants.Cancel() );        
+        Button cancel = new Button( constants.Cancel() );
         cancel.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 parent.hide();

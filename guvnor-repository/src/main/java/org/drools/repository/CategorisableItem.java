@@ -60,7 +60,7 @@ public abstract class CategorisableItem extends VersionableItem {
             checkIsUpdateable();
 
             CategoryItem tagItem = this.rulesRepository.loadCategory( tag );
-            String tagItemUUID = this.node.getSession().getValueFactory().createValue( tagItem.getNode() ).getString();          
+            String tagItemUUID = this.node.getSession().getValueFactory().createValue( tagItem.getNode() ).getString();
 
             //now set the tag property of the rule
             try {

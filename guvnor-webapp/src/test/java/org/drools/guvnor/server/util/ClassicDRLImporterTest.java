@@ -129,10 +129,10 @@ public class ClassicDRLImporterTest {
         assertTrue( imp.isDSLEnabled() );
         assertEquals( 2,
                       imp.getAssets().size() );
-        System.out.println( imp.getPackageHeader()  );   
+        System.out.println( imp.getPackageHeader()  );
         
         assertEquals( "foo",
-                      imp.getPackageName() );   
+                      imp.getPackageName() );
         assertTrue( imp.getPackageHeader().contains( "import goo.wee" ));
         assertTrue( imp.getPackageHeader().contains( "global ka.cha" ));
 

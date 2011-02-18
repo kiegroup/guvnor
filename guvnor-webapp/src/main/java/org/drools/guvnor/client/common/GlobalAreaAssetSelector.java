@@ -74,7 +74,7 @@ public class GlobalAreaAssetSelector extends Composite {
 
                 assetList.addChangeHandler(new ChangeHandler() {
                     public void onChange(ChangeEvent sender) {
-                         currentlySelectedAsset = getSelectedAsset();                       
+                         currentlySelectedAsset = getSelectedAsset();
                     }
                 });
             }

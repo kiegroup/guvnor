@@ -22,19 +22,19 @@ public class VariableRenameTest {
         String rule = "package com.sample\n\n";
         rule += "import com.sample.DroolsTest.Message;\n\n";
         rule += "rule \"Hello World\"\n";
-        rule += "    when\n"; 
-        rule += "        m : Message( $status : status == Message.HELLO, message :message )\n"; 
+        rule += "    when\n";
+        rule += "        m : Message( $status : status == Message.HELLO, message :message )\n";
         rule += "        $m2 : Message( message2 :message )";
         rule += "    then\n";
         rule += "        System.out.println( message ); \n";
         rule += "        System.out.println(message ); \n";
         rule += "        System.out.println( message); \n";
         rule += "        System.out.println(message); \n";
-        rule += "        $m.setMessage( \"Goodbye cruel world\", message);\n"; 
+        rule += "        $m.setMessage( \"Goodbye cruel world\", message);\n";
         rule += "        $m.setMessage( \"Goodbye cruel world\" +message);\n";
         rule += "        $m.setMessage( \"Goodbye cruel world\" + message );\n";
-        rule += "        $m.setStatus( Message.GOODBYE );\n"; 
-        rule += "        update( $m ) ;\n"; 
+        rule += "        $m.setStatus( Message.GOODBYE );\n";
+        rule += "        update( $m ) ;\n";
         rule += "end";
 
         engine = new DRLParserEngine(rule);

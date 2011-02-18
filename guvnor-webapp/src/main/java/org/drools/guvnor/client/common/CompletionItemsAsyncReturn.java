@@ -23,6 +23,6 @@ public interface CompletionItemsAsyncReturn {
      * Handles an array of items. Called by <code>CompletionItemsAsync.getCompletionItems</code>
      * @param items The array of compleition items
      */
-    public void itemReturn(String[] items); 
+    public void itemReturn(String[] items);
     
 }

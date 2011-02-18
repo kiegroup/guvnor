@@ -1322,7 +1322,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
                        "testConcurrentCopyPackage2");
                PackageItem dest = localRepo.loadPackage("testConcurrentCopyPackage2");
                assertNotNull(dest);
-               randomSleep();                       
+               randomSleep();
            } catch (RulesRepositoryException rre) {
                //expected
                System.out.println("Expected");

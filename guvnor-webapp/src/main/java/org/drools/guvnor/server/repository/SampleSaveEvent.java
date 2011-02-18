@@ -35,7 +35,7 @@ public class SampleSaveEvent implements SaveEvent {
         if (item.getFormat().equals(AssetFormats.BUSINESS_RULE)) {
             RuleModel rm = BRXMLPersistence.getInstance().unmarshal(item.getContent(true));
             //StevePersist(item, drl, xml)    <status, uuid, username, categories>
-            //StevePersist(guid, hm); 
+            //StevePersist(guid, hm);
             HashMap dataToPersist = new HashMap();
             dataToPersist.put("uuid", item.getUUID());
             dataToPersist.put("type", "BRL");

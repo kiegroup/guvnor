@@ -60,7 +60,7 @@ class ItemVersionIterator implements Iterator {
 
     public Object next() {
         if(this.iterationType == ITERATION_TYPE_SUCCESSOR) {
-            this.currentVersionableItem = this.currentVersionableItem.getSucceedingVersion();            
+            this.currentVersionableItem = this.currentVersionableItem.getSucceedingVersion();
         }
         else if(this.iterationType == ITERATION_TYPE_PREDECESSOR) {
             this.currentVersionableItem = this.currentVersionableItem.getPrecedingVersion();

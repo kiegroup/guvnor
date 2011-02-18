@@ -41,7 +41,7 @@ public abstract class PlainTextContentHandler extends ContentHandler {
 
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
-        repoAsset.updateContent( ((RuleContentText)asset.content).content ); 
+        repoAsset.updateContent( ((RuleContentText)asset.content).content );
 
     }
 

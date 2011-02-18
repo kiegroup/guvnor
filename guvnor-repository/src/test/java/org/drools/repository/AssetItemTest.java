@@ -238,7 +238,7 @@ public class AssetItemTest extends RepositoryTestCase {
             assertNotNull(ruleItem1.getBinaryContentAttachment());
             String content = new String(ruleItem1.getBinaryContentAsBytes());
 
-            assertNotNull(content);        
+            assertNotNull(content);
     }
 
     @Test

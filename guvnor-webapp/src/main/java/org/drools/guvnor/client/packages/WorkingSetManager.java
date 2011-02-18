@@ -88,7 +88,7 @@ public class WorkingSetManager {
     
     public void applyTemporalWorkingSetForFactTypes(final String packageName, final Set<String> factTypes, final Command done) {
         
-        Set<RuleAsset> workingSets = null; 
+        Set<RuleAsset> workingSets = null;
         if (factTypes != null && !factTypes.isEmpty()) {
             //create a temporal RuleAsset to hold the fact types.
             final RuleAsset workingSet = new RuleAsset();

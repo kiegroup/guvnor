@@ -46,7 +46,7 @@ public class RuleVerifierManager extends Composite {
 
         PrettyFormLayout form = new PrettyFormLayout();
         form.addHeader( images.ruleVerification(),
-                        new HTML( constants.EditRulesVerificationConfiguration() ) ); 
+                        new HTML( constants.EditRulesVerificationConfiguration() ) );
         form.startSection( constants.AutomaticVerification() );
 
         final CheckBox enableOnlineValidator = new CheckBox();

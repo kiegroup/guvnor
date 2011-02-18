@@ -34,8 +34,8 @@ public class BrlTest {
     @Test
     public void testBrl() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "BrlRule.package", getClass() ), ResourceType.DRL );        
-        kbuilder.add( ResourceFactory.newClassPathResource( "BrlRule.brl", getClass() ), ResourceType.BRL );        
+        kbuilder.add( ResourceFactory.newClassPathResource( "BrlRule.package", getClass() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newClassPathResource( "BrlRule.brl", getClass() ), ResourceType.BRL );
 
         // the compiled package
         KnowledgeBase kbase = kbuilder.newKnowledgeBase();

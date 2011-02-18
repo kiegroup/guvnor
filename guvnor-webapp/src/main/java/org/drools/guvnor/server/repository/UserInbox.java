@@ -74,7 +74,7 @@ public class UserInbox {
 
     private void addToInbox(String boxName, String assetId, String note, String userFrom) {
         assert boxName.equals(ExplorerNodeConfig.RECENT_EDITED_ID) || boxName.equals(ExplorerNodeConfig.RECENT_VIEWED_ID) || boxName.equals(ExplorerNodeConfig.INCOMING_ID);
-        List<InboxEntry> entries =  removeAnyExisting(assetId, userInfo.readEntries(INBOX, boxName));     
+        List<InboxEntry> entries =  removeAnyExisting(assetId, userInfo.readEntries(INBOX, boxName));
 
         if (entries.size() >= MAX_RECENT_EDITED) {
             entries.remove(0);

@@ -18,7 +18,7 @@ package org.drools.ide.common.assistant.option;
 
 public abstract class AssistantOption {
     
-    public static enum ACTION {RENAME, REPLACE}; 
+    public static enum ACTION {RENAME, REPLACE};
 
     protected String display;
     protected String content;

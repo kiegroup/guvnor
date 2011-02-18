@@ -28,7 +28,7 @@ import org.drools.guvnor.server.ServiceImplementation;
 public class NewRuleAssetProvider implements RuleAssetProvider {
 
     private String packageName;
-    private String categoryName; 
+    private String categoryName;
     private String assetName;
     private String assetFormat;
 

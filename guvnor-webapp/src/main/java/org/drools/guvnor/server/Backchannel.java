@@ -92,7 +92,7 @@ public class Backchannel {
             resp.add(message);
             mailbox.put(userName,resp);
         } else {
-            resp.add(message);            
+            resp.add(message);
         }
 
         unlatchAllWaiting();

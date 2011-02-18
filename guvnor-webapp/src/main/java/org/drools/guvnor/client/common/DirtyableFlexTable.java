@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class DirtyableFlexTable extends FlexTable implements DirtyableContainer {
     
-    private int length; 
+    private int length;
     private List<Pair> list = new ArrayList<Pair>();
 
     public boolean hasDirty() {

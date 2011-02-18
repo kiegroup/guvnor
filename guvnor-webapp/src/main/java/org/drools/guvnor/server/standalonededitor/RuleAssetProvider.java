@@ -25,6 +25,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
  */
 public interface RuleAssetProvider {
     
-    RuleAsset[] getRuleAssets() throws DetailedSerializationException ; 
+    RuleAsset[] getRuleAssets() throws DetailedSerializationException ;
     
 }

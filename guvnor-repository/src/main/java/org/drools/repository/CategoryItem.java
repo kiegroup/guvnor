@@ -76,7 +76,7 @@ public class CategoryItem extends Item {
                 returnString.insert(0, parentNode.getName() + "/");
                 parentNode = parentNode.getParent();
             }
-            return returnString.toString();                           
+            return returnString.toString();
         }
         catch(Exception e) {            
             log.error("Caught Exception: " + e);

@@ -45,7 +45,7 @@ public class RulesRepositoryAdministrator {
     static boolean isNamespaceRegistered(Session session) throws RepositoryException {
         Workspace ws = session.getWorkspace();
         //no need to set it up again, skip it if it has.
-        String uris[] = ws.getNamespaceRegistry().getURIs();            
+        String uris[] = ws.getNamespaceRegistry().getURIs();
         for ( int i = 0; i < uris.length; i++ ) {
             if (RulesRepository.DROOLS_URI.equals( uris[i]) ) {
                 return true;

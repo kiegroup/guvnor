@@ -112,7 +112,7 @@ public class SuggestionCompletionCache {
         SuggestionCompletionEngine sce = cache.get(packageName);
         if (sce != null) {
             sce.setFactTypeFilter(null);
-            cache.remove( packageName );            
+            cache.remove( packageName );
         }
         loadPackage( packageName, done );
     }

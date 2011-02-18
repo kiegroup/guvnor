@@ -53,7 +53,7 @@ public class CategoryManager extends Composite {
 
         PrettyFormLayout form = new PrettyFormLayout();
         form.addHeader( images.editCategory(),
-                        new HTML( constants.EditCategories() ) ); 
+                        new HTML( constants.EditCategories() ) );
         form.startSection( constants.CategoriesPurposeTip() );
 
         explorer = new CategoryExplorerWidget( new CategorySelectHandler() {

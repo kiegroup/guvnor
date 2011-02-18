@@ -64,7 +64,7 @@ public class FactPatternTest {
         final CompositeFieldConstraint y = new CompositeFieldConstraint();
 
         y.addConstraint( new SingleFieldConstraint("y") );
-        y.addConstraint( new SingleFieldConstraint("z") );        
+        y.addConstraint( new SingleFieldConstraint("z") );
         p.addConstraint( y );
         
         assertEquals( 2,
@@ -72,7 +72,7 @@ public class FactPatternTest {
         assertEquals( x,
                       p.constraintList.constraints[0] );
         assertEquals( y,
-                      p.constraintList.constraints[1] );     
+                      p.constraintList.constraints[1] );
         
        
         

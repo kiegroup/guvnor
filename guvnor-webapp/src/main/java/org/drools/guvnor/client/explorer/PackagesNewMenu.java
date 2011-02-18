@@ -67,7 +67,7 @@ public class PackagesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.WORKING_SET, constants.NewWorkingSet(), false);
             }
-        });         
+        });
 
         createNewMenu.addItem(Util.getHeader(images.ruleAsset(), constants.NewRule()),
                 true,
@@ -83,7 +83,7 @@ public class PackagesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.RULE_TEMPLATE, constants.NewRuleTemplate(), true);
            }
-        }); 
+        });
         
         createNewMenu.addItem(Util.getHeader(images.modelAsset(), constants.UploadPOJOModelJar()),
                 true,
@@ -91,7 +91,7 @@ public class PackagesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.MODEL, constants.NewModelArchiveJar(), false);
             }
-        }); 
+        });
 
         createNewMenu.addItem(Util.getHeader(images.modelAsset(), constants.NewDeclarativeModel()),
                 true,
@@ -99,7 +99,7 @@ public class PackagesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.DRL_MODEL, constants.NewDeclarativeModelUsingGuidedEditor(), false);
             }
-        }); 
+        });
 
         if (Preferences.getBooleanPref("flex-bpel-editor")) {
             createNewMenu.addItem(Util.getHeader(images.modelAsset(), constants.NewBPELPackage()),
@@ -109,7 +109,7 @@ public class PackagesNewMenu {
                             manager.launchWizard(AssetFormats.BPEL_PACKAGE, constants
                                 .CreateANewBPELPackage(), false);
                 }
-            }); 
+            });
         }
 
         createNewMenu.addItem(Util.getHeader(images.functionAssets(), constants.NewFunction()),
@@ -118,7 +118,7 @@ public class PackagesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.FUNCTION, constants.CreateANewFunction(), false);
             }
-        }); 
+        });
 
         createNewMenu.addItem(Util.getHeader(images.dsl(), constants.NewDSL()),
                 true,
@@ -126,7 +126,7 @@ public class PackagesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.DSL, constants.CreateANewDSLConfiguration(), false);
             }
-        }); 
+        });
 
         createNewMenu.addItem(Util.getHeader(images.ruleflowSmall(), constants.NewRuleFlow()),
                 true,
@@ -134,7 +134,7 @@ public class PackagesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.RULE_FLOW_RF, constants.CreateANewRuleFlow(), false);
             }
-        });  
+        });
 
         createNewMenu.addItem(Util.getHeader(images.ruleflowSmall(), constants.NewBPMN2Process()),
                 true,
@@ -142,7 +142,7 @@ public class PackagesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.BPMN2_PROCESS, constants.CreateANewBPMN2Process(), false);
             }
-        });  
+        });
 
         createNewMenu.addItem(Util.getHeader(images.newEnumeration(), constants.NewEnumeration()),
                 true,
@@ -150,7 +150,7 @@ public class PackagesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.ENUMERATION, constants.CreateANewEnumerationDropDownMapping(), false);
             }
-        });  
+        });
 
         createNewMenu.addItem(Util.getHeader(images.testManager(), constants.NewTestScenario()),
                 true,
@@ -158,7 +158,7 @@ public class PackagesNewMenu {
             public void execute() {
                 manager.launchWizard(AssetFormats.TEST_SCENARIO, constants.CreateATestScenario(), false);
            }
-        }); 
+        });
 
         createNewMenu.addItem(Util.getHeader(images.newFile(), constants.CreateAFile()),
                 true,
@@ -166,7 +166,7 @@ public class PackagesNewMenu {
             public void execute() {
                 manager.launchWizard("*", constants.CreateAFile(), false);
            }
-        }); 
+        });
 
         createNewMenu.addItem(Util.getHeader(images.refresh(), constants.RebuildAllPackageBinariesQ()),
                 true,
@@ -181,7 +181,7 @@ public class PackagesNewMenu {
                     });
                 }
             }
-        }); 
+        });
 
 
         MenuBar rootMenuBar = new MenuBar(true);

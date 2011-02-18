@@ -47,7 +47,7 @@ public class XmlFileHandler extends PlainTextContentHandler {
             repoAsset.updateBinaryContentAttachment(input);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            throw new RuntimeException(e);     
+            throw new RuntimeException(e);
         }
     }
 }

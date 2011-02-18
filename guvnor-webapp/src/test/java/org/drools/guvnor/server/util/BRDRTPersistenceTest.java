@@ -207,7 +207,7 @@ public class BRDRTPersistenceTest {
         m.lhs[0] = fp;
         
         ActionInsertFact aif = new ActionInsertFact("Person");
-        ActionFieldValue afv = new ActionFieldValue("age", "age", ""); 
+        ActionFieldValue afv = new ActionFieldValue("age", "age", "");
         afv.nature = FieldNature.TYPE_TEMPLATE;
         
         aif.addFieldValue(afv);

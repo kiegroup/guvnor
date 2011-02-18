@@ -44,7 +44,7 @@ public class DRLAssistantTest {
         rule += "global     org.drools.assistant.test.model.Class2    results \n";
         rule += "GLOBAL org.drools.assistant.test.model.Class3 current\n";
         rule += "expander help-expander.dsl\n";
-        rule += "query \"all clients\"\n"; 
+        rule += "query \"all clients\"\n";
         rule += "	result : Clients()\n";
         rule += "end\n";
         rule += "query \"new query\"\n";

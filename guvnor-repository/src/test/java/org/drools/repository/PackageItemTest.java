@@ -494,11 +494,11 @@ public class PackageItemTest {
         PackageItem rulePackageItem2 = getRepo().createPackage("testAddRuleItemFromGlobalArea1","desc");
         AssetItem linkedRuleItem1 = rulePackageItem2.addAssetImportedFromGlobalArea(ruleItem1.getName());
         linkedRuleItem1.updateContent( "test content for linked" );
-        linkedRuleItem1.checkin( "updated the rule content for linked" );       
+        linkedRuleItem1.checkin( "updated the rule content for linked" );
  
         //test that it is following the head revision
         ruleItem1.updateContent("new lhs");
-        ruleItem1.checkin( "updated again" );        
+        ruleItem1.checkin( "updated again" );
         
         Iterator rulesIt2 = rulePackageItem2.getAssets();
         List rules2 = iteratorToList(rulesIt2);
