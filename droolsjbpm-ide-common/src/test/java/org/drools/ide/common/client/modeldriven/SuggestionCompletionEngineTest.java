@@ -157,7 +157,7 @@ public class SuggestionCompletionEngineTest {
 
         List<String> enums = new ArrayList<String>();
 
-        enums.add( "'Fact.field1' : ['val1', 'val2'] 'Fact.field2' : ['val3', 'val4'] 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b'] 'Fact.field2[field1=val2]' : ['f1val2a', 'f1val2b']" );
+        enums.add( "'Fact.field1' : ['val1', 'val2'], 'Fact.field2' : ['val3', 'val4'], 'Fact.field2[field1=val1]' : ['f1val1a', 'f1val1b'], 'Fact.field2[field1=val2]' : ['f1val2a', 'f1val2b']" );
 
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( pkg,
                                                                         new ArrayList<JarInputStream>(),
