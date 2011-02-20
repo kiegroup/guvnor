@@ -42,7 +42,7 @@ public class DataEnumLoaderTest {
         List l = (List) result;
         assertEquals(3, l.size());
 
-        result = MVEL.eval("['Person.age' : [2, 3]\n 'Person.name' : ['qqq', \n'ccc']]", new HashMap());
+        result = MVEL.eval("['Person.age' : [2, 3]\n, 'Person.name' : ['qqq', \n'ccc']]", new HashMap());
 
         DataEnumLoader loader = new DataEnumLoader(readLines().toString());
 
@@ -62,17 +62,12 @@ public class DataEnumLoaderTest {
         assertEquals("High", list[0]);
         assertEquals("Low", list[1]);
 
-
-
-
         loader = new DataEnumLoader("goober poo error");
         assertEquals(0, loader.getData().size());
         assertFalse(loader.getErrors().size() == 0);
         assertTrue(loader.hasErrors());
 
     }
-
-
 
     @Test
     public void testNoOp() {
