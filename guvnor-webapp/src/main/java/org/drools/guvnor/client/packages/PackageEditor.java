@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.packages;
 
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -364,8 +365,11 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private String getDateString(Date d) {
-        if ( d != null ) return d.toLocaleString();
-        else return "";
+        if ( d != null ) {
+            return DateFormat.getDateInstance().format(d);
+        } else {
+            return "";
+        }
     }
 
     private Widget warnings() {
