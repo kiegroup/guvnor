@@ -65,12 +65,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 @AutoCreate
 public class RepositoryAssetOperations {
 
-    // TODO: Remove as many as possible static functions as there seems no need
-    // for static -> makes testing hard.
-    // TODO: Use DI when possible
-    // TODO: Harmonize usage of all "backend" systems
-    // TODO: Write tests
-    // TODO: Each method should have only one responsibility
 
     private RulesRepository            repository;
 

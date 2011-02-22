@@ -30,12 +30,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -142,7 +140,6 @@ import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
-import org.drools.repository.PackageIterator;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepository.DateQuery;
@@ -212,11 +209,13 @@ public class ServiceImplementation
     private ServiceSecurity             serviceSecurity                   = new ServiceSecurity();
 
     private RepositoryAssetOperations   repositoryAssetOperations         = new RepositoryAssetOperations();
+    private RepositoryPackageOperations repositoryPackageOperations       = new RepositoryPackageOperations();
 
     /* This is called also by Seam AND Hosted mode */
     @Create
     public void create() {
         repositoryAssetOperations.setRulesRepository( getRulesRepository() );
+        repositoryPackageOperations.setRulesRepository( getRulesRepository() );
     }
 
     /* This is called in hosted mode when creating "by hand" */
@@ -504,6 +503,427 @@ public class ServiceImplementation
         return repositoryAssetOperations.quickFindAsset( request );
     }
 
+    /**
+     * @deprecated in favour of {@link quickFindAsset(QueryPageRequest)}
+     */
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public TableDataResult quickFindAsset(String searchText,
+                                          boolean searchArchived,
+                                          int skip,
+                                          int numRows) throws SerializationException {
+        return repositoryAssetOperations.quickFindAsset( searchText,
+                                                         searchArchived,
+                                                         skip,
+                                                         numRows );
+    }
+
+    /**
+     * @deprecated in favour of {@link queryFullText(QueryPageRequest)}
+     */
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public TableDataResult queryFullText(String text,
+                                         boolean seekArchived,
+                                         int skip,
+                                         int numRows) throws SerializationException {
+        if ( numRows == 0 ) {
+            throw new DetailedSerializationException( "Unable to return zero results (bug)",
+                                                      "probably have the parameters around the wrong way, sigh..." );
+        }
+        return repositoryAssetOperations.queryFullText( text,
+                                                        seekArchived,
+                                                        skip,
+                                                        numRows );
+    }
+
+    /**
+     * Role-based Authorization check: This method only returns packages that
+     * the user has permission to access. User has permission to access the
+     * particular package when: The user has a package.readonly role or higher
+     * (i.e., package.admin, package.developer) to this package.
+     */
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PackageConfigData[] listPackages() {
+        return listPackages( null );
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PackageConfigData[] listPackages(String workspace) {
+        RepositoryFilter pf = new PackageFilter();
+        return repositoryPackageOperations.listPackages( false,
+                                                         workspace,
+                                                         pf );
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PackageConfigData[] listArchivedPackages() {
+        return listArchivedPackages( null );
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PackageConfigData[] listArchivedPackages(String workspace) {
+        RepositoryFilter pf = new PackageFilter();
+        return repositoryPackageOperations.listPackages( true,
+                                                         workspace,
+                                                         pf );
+    }
+
+    public PackageConfigData loadGlobalPackage() {
+        PackageConfigData data = new PackageConfigData();
+        PackageItem item = getRulesRepository().loadGlobalArea();
+
+        data.uuid = item.getUUID();
+        data.header = getDroolsHeader( item );
+        data.externalURI = item.getExternalURI();
+        data.catRules = item.getCategoryRules();
+        data.description = item.getDescription();
+        data.archived = item.isArchived();
+        data.name = item.getName();
+        data.lastModified = item.getLastModified().getTime();
+        data.dateCreated = item.getCreatedDate().getTime();
+        data.checkinComment = item.getCheckinComment();
+        data.lasContributor = item.getLastContributor();
+        data.state = item.getStateDescription();
+        data.isSnapshot = item.isSnapshot();
+
+        if ( data.isSnapshot ) {
+            data.snapshotName = item.getSnapshotName();
+        }
+
+        return data;
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void rebuildPackages() throws SerializationException {
+        Iterator<PackageItem> pkit = getRulesRepository().listPackages();
+        StringBuffer errs = new StringBuffer();
+        while ( pkit.hasNext() ) {
+            PackageItem pkg = pkit.next();
+            try {
+                BuilderResult res = this.buildPackage( pkg.getUUID(),
+                                                       true );
+                if ( res != null ) {
+                    errs.append( "Unable to build package name [" + pkg.getName() + "]\n" );
+                    StringBuffer buf = new StringBuffer();
+                    for ( int i = 0; i < res.getLines().size(); i++ ) {
+                        buf.append( res.getLines().get( i ).toString() );
+                        buf.append( '\n' );
+                    }
+                    log.warn( buf.toString() );
+
+                }
+            } catch ( Exception e ) {
+                log.error( "An error occurred building package [" + pkg.getName() + "]\n" );
+                errs.append( "An error occurred building package [" + pkg.getName() + "]\n" );
+            }
+        }
+
+        if ( errs.toString().length() > 0 ) {
+            throw new DetailedSerializationException( "Unable to rebuild all packages.",
+                                                      errs.toString() );
+        }
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String buildPackageSource(String packageUUID) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
+
+        PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
+        ContentPackageAssembler asm = new ContentPackageAssembler( item,
+                                                                   false );
+        return asm.getDRL();
+    }
+
+    @WebRemote
+    public void copyPackage(String sourcePackageName,
+                            String destPackageName) throws SerializationException {
+        serviceSecurity.checkSecurityIsAdmin();
+
+        try {
+            log.info( "USER:" + getCurrentUserName() + " COPYING package [" + sourcePackageName + "] to  package [" + destPackageName + "]" );
+
+            getRulesRepository().copyPackage( sourcePackageName,
+                                              destPackageName );
+        } catch ( RulesRepositoryException e ) {
+            log.error( "Unable to copy package.",
+                       e );
+            throw e;
+        }
+
+        // If we allow package owner to copy package, we will have to update the
+        // permission store
+        // for the newly copied package.
+        // Update permission store
+        /*
+         * String copiedUuid = ""; try { PackageItem source =
+         * repository.loadPackage( destPackageName ); copiedUuid =
+         * source.getUUID(); } catch (RulesRepositoryException e) { log.error( e
+         * ); } PackageBasedPermissionStore pbps = new
+         * PackageBasedPermissionStore(); pbps.addPackageBasedPermission(new
+         * PackageBasedPermission(copiedUuid,
+         * Identity.instance().getPrincipal().getName(),
+         * RoleTypes.PACKAGE_ADMIN));
+         */
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void removePackage(String uuid) {
+        serviceSecurity.checkSecurityIsPackageAdmin( uuid );
+
+        try {
+            PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
+            log.info( "USER:" + getCurrentUserName() + " REMOVEING package [" + item.getName() + "]" );
+            item.remove();
+            getRulesRepository().save();
+        } catch ( RulesRepositoryException e ) {
+            log.error( "Unable to remove package.",
+                       e );
+            throw e;
+        }
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String renamePackage(String uuid,
+                                String newName) {
+        serviceSecurity.checkSecurityIsPackageAdmin( uuid );
+        log.info( "USER:" + getCurrentUserName() + " RENAMING package [UUID: " + uuid + "] to package [" + newName + "]" );
+
+        return getRulesRepository().renamePackage( uuid,
+                                                   newName );
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public byte[] exportPackages(String packageName) {
+        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
+        log.info( "USER:" + getCurrentUserName() + " export package [name: " + packageName + "] " );
+
+        byte[] result = null;
+
+        try {
+            result = getRulesRepository().dumpPackageFromRepositoryXml( packageName );
+        } catch ( PathNotFoundException e ) {
+            throw new RulesRepositoryException( e );
+        } catch ( IOException e ) {
+            throw new RulesRepositoryException( e );
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
+        return result;
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    // TODO: Not working. GUVNOR-475
+    public void importPackages(byte[] byteArray,
+                               boolean importAsNew) {
+        getRulesRepository().importPackageToRepository( byteArray,
+                                                        importAsNew );
+    }
+
+    @WebRemote
+    public String createPackage(String name,
+                                String description,
+                                String[] workspace) throws RulesRepositoryException {
+        serviceSecurity.checkSecurityIsAdmin();
+
+        log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
+        PackageItem item = getRulesRepository().createPackage( name,
+                                                               description,
+                                                               workspace );
+
+        return item.getUUID();
+    }
+
+    @WebRemote
+    public String createPackage(String name,
+                                String description) throws RulesRepositoryException {
+        return createPackage( name,
+                              description,
+                              new String[]{} );
+    }
+
+    @WebRemote
+    public String createSubPackage(String name,
+                                   String description,
+                                   String parentNode) throws SerializationException {
+        serviceSecurity.checkSecurityIsAdmin();
+
+        log.info( "USER: " + getCurrentUserName() + " CREATING subPackage [" + name + "], parent [" + parentNode + "]" );
+        PackageItem item = getRulesRepository().createSubPackage( name,
+                                                                  description,
+                                                                  parentNode );
+        return item.getUUID();
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PackageConfigData loadPackageConfig(String uuid) {
+        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
+        // the uuid passed in is the uuid of that deployment bundle, not the
+        // package uudi.
+        // we have to figure out the package name.
+        serviceSecurity.checkSecurityNameTypePackageReadOnly( item );
+
+        PackageConfigData data = createPackageConfigData( item );
+        if ( data.isSnapshot ) {
+            data.snapshotName = item.getSnapshotName();
+        }
+        return data;
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException {
+        if ( Contexts.isSessionContextActive() ) {
+            Identity.instance().checkPermission( new PackageUUIDType( data.uuid ),
+                                                 RoleTypes.PACKAGE_DEVELOPER );
+        }
+
+        log.info( "USER:" + getCurrentUserName() + " SAVING package [" + data.name + "]" );
+
+        PackageItem item = getRulesRepository().loadPackage( data.name );
+
+        // If package is being unarchived.
+        boolean unarchived = (data.archived == false && item.isArchived() == true);
+        Calendar packageLastModified = item.getLastModified();
+
+        updateDroolsHeader( data.header,
+                            item );
+        updateCategoryRules( data,
+                             item );
+
+        item.updateExternalURI( data.externalURI );
+        item.updateDescription( data.description );
+        item.archiveItem( data.archived );
+        item.updateBinaryUpToDate( false );
+        ServiceImplementation.ruleBaseCache.remove( data.uuid );
+        item.checkin( data.description );
+
+        // If package is archived, archive all the assets under it
+        if ( data.archived ) {
+            handleArchivedForSavePackage( data,
+                                          item );
+        } else if ( unarchived ) {
+            handleUnarchivedForSavePackage( data,
+                                            item,
+                                            packageLastModified );
+        }
+
+        BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
+        loader.getSuggestionEngine( item );
+
+        return validateBRMSSuggestionCompletionLoaderResponse( loader );
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public BuilderResult buildPackage(String packageUUID,
+                                      boolean force) throws SerializationException {
+        return buildPackage( packageUUID,
+                             force,
+                             null,
+                             null,
+                             null,
+                             false,
+                             null,
+                             null,
+                             false,
+                             null );
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public BuilderResult buildPackage(String packageUUID,
+                                      boolean force,
+                                      String buildMode,
+                                      String statusOperator,
+                                      String statusDescriptionValue,
+                                      boolean enableStatusSelector,
+                                      String categoryOperator,
+                                      String category,
+                                      boolean enableCategorySelector,
+                                      String customSelectorName) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
+        PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
+        try {
+            return buildPackage( item,
+                                 force,
+                                 buildMode,
+                                 statusOperator,
+                                 statusDescriptionValue,
+                                 enableStatusSelector,
+                                 categoryOperator,
+                                 category,
+                                 enableCategorySelector,
+                                 customSelectorName );
+        } catch ( NoClassDefFoundError e ) {
+            throw new DetailedSerializationException( "Unable to find a class that was needed when building the package  [" + e.getMessage() + "]",
+                                                      "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
+        } catch ( UnsupportedClassVersionError e ) {
+            throw new DetailedSerializationException( "Can not build the package. One or more of the classes that are needed were compiled with an unsupported Java version.",
+                                                      "For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. [" + e.getMessage() + "]" );
+        }
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void createPackageSnapshot(String packageName,
+                                      String snapshotName,
+                                      boolean replaceExisting,
+                                      String comment) {
+        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
+
+        log.info( "USER:" + getCurrentUserName() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
+
+        if ( replaceExisting ) {
+            getRulesRepository().removePackageSnapshot( packageName,
+                                                        snapshotName );
+        }
+
+        getRulesRepository().createPackageSnapshot( packageName,
+                                                    snapshotName );
+        PackageItem item = getRulesRepository().loadPackageSnapshot( packageName,
+                                                                     snapshotName );
+        item.updateCheckinComment( comment );
+        getRulesRepository().save();
+
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void copyOrRemoveSnapshot(String packageName,
+                                     String snapshotName,
+                                     boolean delete,
+                                     String newSnapshotName) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
+
+        if ( delete ) {
+            log.info( "USER:" + getCurrentUserName() + " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
+            getRulesRepository().removePackageSnapshot( packageName,
+                                                        snapshotName );
+        } else {
+            if ( newSnapshotName.equals( "" ) ) {
+                throw new SerializationException( "Need to have a new snapshot name." );
+            }
+            log.info( "USER:" + getCurrentUserName() + " COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
+
+            getRulesRepository().copyPackageSnapshot( packageName,
+                                                      snapshotName,
+                                                      newSnapshotName );
+        }
+
+    }
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] listWorkspaces() {
@@ -617,6 +1037,120 @@ public class ServiceImplementation
                                                                description );
         getRulesRepository().save();
         return Boolean.TRUE;
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void renameCategory(String fullPathAndName,
+                               String newName) {
+        getRulesRepository().renameCategory( fullPathAndName,
+                                             newName );
+    }
+
+    /**
+     * loadRuleListForCategories
+     *
+     * Role-based Authorization check: This method only returns rules that the user has
+     * permission to access. The user is considered to has permission to access the particular category when:
+     * The user has ANALYST_READ role or higher (i.e., ANALYST) to this category
+     * 
+     * @deprecated in favour of {@link loadRuleListForCategories(CategoryPageRequest)}
+     */
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public TableDataResult loadRuleListForCategories(String categoryPath,
+                                                     int skip,
+                                                     int numRows,
+                                                     String tableConfig) throws SerializationException {
+
+        // First check the user has permission to access this categoryPath.
+        if ( Contexts.isSessionContextActive() ) {
+            if ( !Identity.instance().hasPermission( new CategoryPathType( categoryPath ),
+                                                     RoleTypes.ANALYST_READ ) ) {
+
+                TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
+                return handler.loadRuleListTable( new AssetItemPageResult() );
+            }
+        }
+
+        AssetItemPageResult result = getRulesRepository().findAssetsByCategory( categoryPath,
+                                                                                false,
+                                                                                skip,
+                                                                                numRows );
+        TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
+        return handler.loadRuleListTable( result );
+
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public PageResponse<CategoryPageRow> loadRuleListForCategories(CategoryPageRequest request) throws SerializationException {
+        if ( request == null ) {
+            throw new IllegalArgumentException( "request cannot be null" );
+        }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
+        }
+
+        PageResponse<CategoryPageRow> response = new PageResponse<CategoryPageRow>();
+
+        // Role-based Authorization check: This method only returns rules that
+        // the user has permission to access. The user is considered to has
+        // permission to access the particular category when: The user has
+        // ANALYST_READ role or higher (i.e., ANALYST) to this category
+        if ( Contexts.isSessionContextActive() ) {
+            if ( !Identity.instance().hasPermission( new CategoryPathType( request.getCategoryPath() ),
+                                                     RoleTypes.ANALYST_READ ) ) {
+                return response;
+            }
+        }
+
+        // Do query
+        long start = System.currentTimeMillis();
+
+        // NOTE: Filtering is handled in repository.findAssetsByCategory()
+        int numRowsToReturn = (request.getPageSize() == null ? -1 : request.getPageSize());
+        AssetItemPageResult result = getRulesRepository().findAssetsByCategory( request.getCategoryPath(),
+                                                                                false,
+                                                                                request.getStartRowIndex(),
+                                                                                numRowsToReturn );
+        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+        // Populate response
+        boolean bHasMoreRows = result.hasNext;
+        List<CategoryPageRow> rowList = fillCategoryPageRows( request,
+                                                              result );
+        response.setStartRowIndex( request.getStartRowIndex() );
+        response.setPageRowList( rowList );
+        response.setLastPage( !bHasMoreRows );
+
+        // Fix Total Row Size
+        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
+        serviceRowSizeHelper.fixTotalRowSize( request,
+                                              response,
+                                              -1,
+                                              rowList.size(),
+                                              bHasMoreRows );
+
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Searched for Assest with Category (" + request.getCategoryPath() + ") in " + methodDuration + " ms." );
+        return response;
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void removeCategory(String categoryPath) throws SerializationException {
+        log.info( "USER:" + getCurrentUserName() + " REMOVING CATEGORY path: [" + categoryPath + "]" );
+
+        try {
+            getRulesRepository().loadCategory( categoryPath ).remove();
+            getRulesRepository().save();
+        } catch ( RulesRepositoryException e ) {
+            log.info( "Unable to remove category [" + categoryPath + "]. It is probably still used: " + e.getMessage() );
+
+            throw new DetailedSerializationException( "Unable to remove category. It is probably still used.",
+                                                      e.getMessage() );
+        }
     }
 
     /**
@@ -756,113 +1290,7 @@ public class ServiceImplementation
         item.checkin( "Update dependency" );
     }
 
-    /**
-     * Role-based Authorization check: This method only returns packages that
-     * the user has permission to access. User has permission to access the
-     * particular package when: The user has a package.readonly role or higher
-     * (i.e., package.admin, package.developer) to this package.
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PackageConfigData[] listPackages() {
-        return listPackages( null );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PackageConfigData[] listPackages(String workspace) {
-        RepositoryFilter pf = new PackageFilter();
-        return listPackages( false,
-                             workspace,
-                             pf );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PackageConfigData[] listArchivedPackages() {
-        return listArchivedPackages( null );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PackageConfigData[] listArchivedPackages(String workspace) {
-        RepositoryFilter pf = new PackageFilter();
-        return listPackages( true,
-                             workspace,
-                             pf );
-    }
-
-    public PackageConfigData loadGlobalPackage() {
-        PackageConfigData data = new PackageConfigData();
-        PackageItem item = getRulesRepository().loadGlobalArea();
-
-        data.uuid = item.getUUID();
-        data.header = getDroolsHeader( item );
-        data.externalURI = item.getExternalURI();
-        data.catRules = item.getCategoryRules();
-        data.description = item.getDescription();
-        data.archived = item.isArchived();
-        data.name = item.getName();
-        data.lastModified = item.getLastModified().getTime();
-        data.dateCreated = item.getCreatedDate().getTime();
-        data.checkinComment = item.getCheckinComment();
-        data.lasContributor = item.getLastContributor();
-        data.state = item.getStateDescription();
-        data.isSnapshot = item.isSnapshot();
-
-        if ( data.isSnapshot ) {
-            data.snapshotName = item.getSnapshotName();
-        }
-
-        return data;
-    }
-
-    void sortPackages(List<PackageConfigData> result) {
-        Collections.sort( result,
-                          new Comparator<PackageConfigData>() {
-
-                              public int compare(final PackageConfigData d1,
-                                                 final PackageConfigData d2) {
-                                  return d1.name.compareTo( d2.name );
-                              }
-
-                          } );
-    }
-
-    /**
-     * loadRuleListForCategories
-     *
-     * Role-based Authorization check: This method only returns rules that the user has
-     * permission to access. The user is considered to has permission to access the particular category when:
-     * The user has ANALYST_READ role or higher (i.e., ANALYST) to this category
-     * 
-     * @deprecated in favour of {@link loadRuleListForCategories(CategoryPageRequest)}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadRuleListForCategories(String categoryPath,
-                                                     int skip,
-                                                     int numRows,
-                                                     String tableConfig) throws SerializationException {
-
-        // First check the user has permission to access this categoryPath.
-        if ( Contexts.isSessionContextActive() ) {
-            if ( !Identity.instance().hasPermission( new CategoryPathType( categoryPath ),
-                                                     RoleTypes.ANALYST_READ ) ) {
-
-                TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-                return handler.loadRuleListTable( new AssetItemPageResult() );
-            }
-        }
-
-        AssetItemPageResult result = getRulesRepository().findAssetsByCategory( categoryPath,
-                                                                                false,
-                                                                                skip,
-                                                                                numRows );
-        TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-        return handler.loadRuleListTable( result );
-
-    }
+    
 
     /**
      * @deprecated in favour of {@link loadRuleListForState(StatePageRequest)}
@@ -1069,101 +1497,6 @@ public class ServiceImplementation
 
     }
 
-    @WebRemote
-    public String createPackage(String name,
-                                String description,
-                                String[] workspace) throws RulesRepositoryException {
-        serviceSecurity.checkSecurityIsAdmin();
-
-        log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
-        PackageItem item = getRulesRepository().createPackage( name,
-                                                               description,
-                                                               workspace );
-
-        return item.getUUID();
-    }
-
-    @WebRemote
-    public String createPackage(String name,
-                                String description) throws RulesRepositoryException {
-        return createPackage( name,
-                              description,
-                              new String[]{} );
-    }
-
-    @WebRemote
-    public String createSubPackage(String name,
-                                   String description,
-                                   String parentNode) throws SerializationException {
-        serviceSecurity.checkSecurityIsAdmin();
-
-        log.info( "USER: " + getCurrentUserName() + " CREATING subPackage [" + name + "], parent [" + parentNode + "]" );
-        PackageItem item = getRulesRepository().createSubPackage( name,
-                                                                  description,
-                                                                  parentNode );
-        return item.getUUID();
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PackageConfigData loadPackageConfig(String uuid) {
-        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
-        // the uuid passed in is the uuid of that deployment bundle, not the
-        // package uudi.
-        // we have to figure out the package name.
-        serviceSecurity.checkSecurityNameTypePackageReadOnly( item );
-
-        PackageConfigData data = createPackageConfigData( item );
-        if ( data.isSnapshot ) {
-            data.snapshotName = item.getSnapshotName();
-        }
-        return data;
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( data.uuid ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
-        }
-
-        log.info( "USER:" + getCurrentUserName() + " SAVING package [" + data.name + "]" );
-
-        PackageItem item = getRulesRepository().loadPackage( data.name );
-
-        // If package is being unarchived.
-        boolean unarchived = (data.archived == false && item.isArchived() == true);
-        Calendar packageLastModified = item.getLastModified();
-
-        updateDroolsHeader( data.header,
-                            item );
-        updateCategoryRules( data,
-                             item );
-
-        item.updateExternalURI( data.externalURI );
-        item.updateDescription( data.description );
-        item.archiveItem( data.archived );
-        item.updateBinaryUpToDate( false );
-        ServiceImplementation.ruleBaseCache.remove( data.uuid );
-        item.checkin( data.description );
-
-        // If package is archived, archive all the assets under it
-        if ( data.archived ) {
-            handleArchivedForSavePackage( data,
-                                          item );
-        } else if ( unarchived ) {
-            handleUnarchivedForSavePackage( data,
-                                            item,
-                                            packageLastModified );
-        }
-
-        BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
-        loader.getSuggestionEngine( item );
-
-        return validateBRMSSuggestionCompletionLoaderResponse( loader );
-    }
-
     private static class KeyValueTO {
         private String keys;
         private String values;
@@ -1181,40 +1514,6 @@ public class ServiceImplementation
         public String getValues() {
             return values;
         }
-    }
-
-    /**
-     * @deprecated in favour of {@link quickFindAsset(QueryPageRequest)}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult quickFindAsset(String searchText,
-                                          boolean searchArchived,
-                                          int skip,
-                                          int numRows) throws SerializationException {
-        return repositoryAssetOperations.quickFindAsset( searchText,
-                                                         searchArchived,
-                                                         skip,
-                                                         numRows );
-    }
-
-    /**
-     * @deprecated in favour of {@link queryFullText(QueryPageRequest)}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult queryFullText(String text,
-                                         boolean seekArchived,
-                                         int skip,
-                                         int numRows) throws SerializationException {
-        if ( numRows == 0 ) {
-            throw new DetailedSerializationException( "Unable to return zero results (bug)",
-                                                      "probably have the parameters around the wrong way, sigh..." );
-        }
-        return repositoryAssetOperations.queryFullText( text,
-                                                        seekArchived,
-                                                        skip,
-                                                        numRows );
     }
 
     /**
@@ -1423,71 +1722,6 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void createPackageSnapshot(String packageName,
-                                      String snapshotName,
-                                      boolean replaceExisting,
-                                      String comment) {
-        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
-
-        log.info( "USER:" + getCurrentUserName() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
-
-        if ( replaceExisting ) {
-            getRulesRepository().removePackageSnapshot( packageName,
-                                                        snapshotName );
-        }
-
-        getRulesRepository().createPackageSnapshot( packageName,
-                                                    snapshotName );
-        PackageItem item = getRulesRepository().loadPackageSnapshot( packageName,
-                                                                     snapshotName );
-        item.updateCheckinComment( comment );
-        getRulesRepository().save();
-
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void copyOrRemoveSnapshot(String packageName,
-                                     String snapshotName,
-                                     boolean delete,
-                                     String newSnapshotName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
-
-        if ( delete ) {
-            log.info( "USER:" + getCurrentUserName() + " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
-            getRulesRepository().removePackageSnapshot( packageName,
-                                                        snapshotName );
-        } else {
-            if ( newSnapshotName.equals( "" ) ) {
-                throw new SerializationException( "Need to have a new snapshot name." );
-            }
-            log.info( "USER:" + getCurrentUserName() + " COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
-
-            getRulesRepository().copyPackageSnapshot( packageName,
-                                                      snapshotName,
-                                                      newSnapshotName );
-        }
-
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void removeCategory(String categoryPath) throws SerializationException {
-        log.info( "USER:" + getCurrentUserName() + " REMOVING CATEGORY path: [" + categoryPath + "]" );
-
-        try {
-            getRulesRepository().loadCategory( categoryPath ).remove();
-            getRulesRepository().save();
-        } catch ( RulesRepositoryException e ) {
-            log.info( "Unable to remove category [" + categoryPath + "]. It is probably still used: " + e.getMessage() );
-
-            throw new DetailedSerializationException( "Unable to remove category. It is probably still used.",
-                                                      e.getMessage() );
-        }
-    }
-
-    @WebRemote
     public void clearRulesRepository() {
         serviceSecurity.checkSecurityIsAdmin();
 
@@ -1529,158 +1763,8 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public BuilderResult buildPackage(String packageUUID,
-                                      boolean force) throws SerializationException {
-        return buildPackage( packageUUID,
-                             force,
-                             null,
-                             null,
-                             null,
-                             false,
-                             null,
-                             null,
-                             false,
-                             null );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public BuilderResult buildPackage(String packageUUID,
-                                      boolean force,
-                                      String buildMode,
-                                      String statusOperator,
-                                      String statusDescriptionValue,
-                                      boolean enableStatusSelector,
-                                      String categoryOperator,
-                                      String category,
-                                      boolean enableCategorySelector,
-                                      String customSelectorName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
-        PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
-        try {
-            return buildPackage( item,
-                                 force,
-                                 buildMode,
-                                 statusOperator,
-                                 statusDescriptionValue,
-                                 enableStatusSelector,
-                                 categoryOperator,
-                                 category,
-                                 enableCategorySelector,
-                                 customSelectorName );
-        } catch ( NoClassDefFoundError e ) {
-            throw new DetailedSerializationException( "Unable to find a class that was needed when building the package  [" + e.getMessage() + "]",
-                                                      "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
-        } catch ( UnsupportedClassVersionError e ) {
-            throw new DetailedSerializationException( "Can not build the package. One or more of the classes that are needed were compiled with an unsupported Java version.",
-                                                      "For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. [" + e.getMessage() + "]" );
-        }
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
     public String[] getCustomSelectors() throws SerializationException {
         return SelectorManager.getInstance().getCustomSelectors();
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public String buildPackageSource(String packageUUID) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
-
-        PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
-        ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                   false );
-        return asm.getDRL();
-    }
-
-    @WebRemote
-    public void copyPackage(String sourcePackageName,
-                            String destPackageName) throws SerializationException {
-        serviceSecurity.checkSecurityIsAdmin();
-
-        try {
-            log.info( "USER:" + getCurrentUserName() + " COPYING package [" + sourcePackageName + "] to  package [" + destPackageName + "]" );
-
-            getRulesRepository().copyPackage( sourcePackageName,
-                                              destPackageName );
-        } catch ( RulesRepositoryException e ) {
-            log.error( "Unable to copy package.",
-                       e );
-            throw e;
-        }
-
-        // If we allow package owner to copy package, we will have to update the
-        // permission store
-        // for the newly copied package.
-        // Update permission store
-        /*
-         * String copiedUuid = ""; try { PackageItem source =
-         * repository.loadPackage( destPackageName ); copiedUuid =
-         * source.getUUID(); } catch (RulesRepositoryException e) { log.error( e
-         * ); } PackageBasedPermissionStore pbps = new
-         * PackageBasedPermissionStore(); pbps.addPackageBasedPermission(new
-         * PackageBasedPermission(copiedUuid,
-         * Identity.instance().getPrincipal().getName(),
-         * RoleTypes.PACKAGE_ADMIN));
-         */
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void removePackage(String uuid) {
-        serviceSecurity.checkSecurityIsPackageAdmin( uuid );
-
-        try {
-            PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
-            log.info( "USER:" + getCurrentUserName() + " REMOVEING package [" + item.getName() + "]" );
-            item.remove();
-            getRulesRepository().save();
-        } catch ( RulesRepositoryException e ) {
-            log.error( "Unable to remove package.",
-                       e );
-            throw e;
-        }
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public String renamePackage(String uuid,
-                                String newName) {
-        serviceSecurity.checkSecurityIsPackageAdmin( uuid );
-        log.info( "USER:" + getCurrentUserName() + " RENAMING package [UUID: " + uuid + "] to package [" + newName + "]" );
-
-        return getRulesRepository().renamePackage( uuid,
-                                                   newName );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public byte[] exportPackages(String packageName) {
-        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
-        log.info( "USER:" + getCurrentUserName() + " export package [name: " + packageName + "] " );
-
-        byte[] result = null;
-
-        try {
-            result = getRulesRepository().dumpPackageFromRepositoryXml( packageName );
-        } catch ( PathNotFoundException e ) {
-            throw new RulesRepositoryException( e );
-        } catch ( IOException e ) {
-            throw new RulesRepositoryException( e );
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
-        }
-        return result;
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    // TODO: Not working. GUVNOR-475
-    public void importPackages(byte[] byteArray,
-                               boolean importAsNew) {
-        getRulesRepository().importPackageToRepository( byteArray,
-                                                        importAsNew );
     }
 
     @WebRemote
@@ -1950,14 +2034,6 @@ public class ServiceImplementation
         LoggingHelper.cleanLog();
     }
 
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void renameCategory(String fullPathAndName,
-                               String newName) {
-        getRulesRepository().renameCategory( fullPathAndName,
-                                             newName );
-    }
-
     public static String getDroolsHeader(PackageItem pkg) {
         if ( pkg.containsAsset( "drools" ) ) {
             return pkg.loadAsset( "drools" ).getContent();
@@ -2017,38 +2093,6 @@ public class ServiceImplementation
             return xs;
         } else {
             return null;
-        }
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void rebuildPackages() throws SerializationException {
-        Iterator<PackageItem> pkit = getRulesRepository().listPackages();
-        StringBuffer errs = new StringBuffer();
-        while ( pkit.hasNext() ) {
-            PackageItem pkg = pkit.next();
-            try {
-                BuilderResult res = this.buildPackage( pkg.getUUID(),
-                                                       true );
-                if ( res != null ) {
-                    errs.append( "Unable to build package name [" + pkg.getName() + "]\n" );
-                    StringBuffer buf = new StringBuffer();
-                    for ( int i = 0; i < res.getLines().size(); i++ ) {
-                        buf.append( res.getLines().get( i ).toString() );
-                        buf.append( '\n' );
-                    }
-                    log.warn( buf.toString() );
-
-                }
-            } catch ( Exception e ) {
-                log.error( "An error occurred building package [" + pkg.getName() + "]\n" );
-                errs.append( "An error occurred building package [" + pkg.getName() + "]\n" );
-            }
-        }
-
-        if ( errs.toString().length() > 0 ) {
-            throw new DetailedSerializationException( "Unable to rebuild all packages.",
-                                                      errs.toString() );
         }
     }
 
@@ -2644,61 +2688,6 @@ public class ServiceImplementation
         return response;
     }
 
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PageResponse<CategoryPageRow> loadRuleListForCategories(CategoryPageRequest request) throws SerializationException {
-        if ( request == null ) {
-            throw new IllegalArgumentException( "request cannot be null" );
-        }
-        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
-            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
-        }
-
-        PageResponse<CategoryPageRow> response = new PageResponse<CategoryPageRow>();
-
-        // Role-based Authorization check: This method only returns rules that
-        // the user has permission to access. The user is considered to has
-        // permission to access the particular category when: The user has
-        // ANALYST_READ role or higher (i.e., ANALYST) to this category
-        if ( Contexts.isSessionContextActive() ) {
-            if ( !Identity.instance().hasPermission( new CategoryPathType( request.getCategoryPath() ),
-                                                     RoleTypes.ANALYST_READ ) ) {
-                return response;
-            }
-        }
-
-        // Do query
-        long start = System.currentTimeMillis();
-
-        // NOTE: Filtering is handled in repository.findAssetsByCategory()
-        int numRowsToReturn = (request.getPageSize() == null ? -1 : request.getPageSize());
-        AssetItemPageResult result = getRulesRepository().findAssetsByCategory( request.getCategoryPath(),
-                                                                                false,
-                                                                                request.getStartRowIndex(),
-                                                                                numRowsToReturn );
-        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-
-        // Populate response
-        boolean bHasMoreRows = result.hasNext;
-        List<CategoryPageRow> rowList = fillCategoryPageRows( request,
-                                                              result );
-        response.setStartRowIndex( request.getStartRowIndex() );
-        response.setPageRowList( rowList );
-        response.setLastPage( !bHasMoreRows );
-
-        // Fix Total Row Size
-        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request,
-                                              response,
-                                              -1,
-                                              rowList.size(),
-                                              bHasMoreRows );
-
-        long methodDuration = System.currentTimeMillis() - start;
-        log.debug( "Searched for Assest with Category (" + request.getCategoryPath() + ") in " + methodDuration + " ms." );
-        return response;
-    }
-
     private void archiveOrUnarchiveAsset(String uuid,
                                          boolean archive) {
         try {
@@ -2772,91 +2761,6 @@ public class ServiceImplementation
         }
 
         return assets.toArray( new RuleAsset[assets.size()] );
-    }
-
-    private PackageConfigData[] listPackages(boolean archive,
-                                             String workspace,
-                                             RepositoryFilter filter) {
-        List<PackageConfigData> result = new ArrayList<PackageConfigData>();
-        PackageIterator pkgs = getRulesRepository().listPackages();
-        handleIteratePackages( archive,
-                               workspace,
-                               filter,
-                               result,
-                               pkgs );
-
-        sortPackages( result );
-        return result.toArray( new PackageConfigData[result.size()] );
-    }
-
-    private PackageConfigData[] listSubPackages(PackageItem parentPkg,
-                                                boolean archive,
-                                                String workspace,
-                                                RepositoryFilter filter) {
-        List<PackageConfigData> children = new LinkedList<PackageConfigData>();
-
-        PackageIterator pkgs = parentPkg.listSubPackages();
-        handleIteratePackages( archive,
-                               workspace,
-                               filter,
-                               children,
-                               pkgs );
-
-        sortPackages( children );
-        return children.toArray( new PackageConfigData[children.size()] );
-    }
-
-    private void handleIteratePackages(boolean archive,
-                                       String workspace,
-                                       RepositoryFilter filter,
-                                       List<PackageConfigData> result,
-                                       PackageIterator pkgs) {
-        pkgs.setArchivedIterator( archive );
-        while ( pkgs.hasNext() ) {
-            PackageItem pkg = pkgs.next();
-
-            PackageConfigData data = new PackageConfigData();
-            data.uuid = pkg.getUUID();
-            data.name = pkg.getName();
-            data.archived = pkg.isArchived();
-            data.workspaces = pkg.getWorkspaces();
-            handleIsPackagesListed( archive,
-                                    workspace,
-                                    filter,
-                                    result,
-                                    data );
-
-            data.subPackages = listSubPackages( pkg,
-                                                archive,
-                                                null,
-                                                filter );
-        }
-    }
-
-    private void handleIsPackagesListed(boolean archive,
-                                        String workspace,
-                                        RepositoryFilter filter,
-                                        List<PackageConfigData> result,
-                                        PackageConfigData data) {
-        if ( !archive && (filter == null || filter.accept( data,
-                                                           RoleTypes.PACKAGE_READONLY )) && (workspace == null || isWorkspace( workspace,
-                                                                                                                               data.workspaces )) ) {
-            result.add( data );
-        } else if ( archive && data.archived && (filter == null || filter.accept( data,
-                                                                                  RoleTypes.PACKAGE_READONLY )) && (workspace == null || isWorkspace( workspace,
-                                                                                                                                                      data.workspaces )) ) {
-            result.add( data );
-        }
-    }
-
-    private boolean isWorkspace(String workspace,
-                                String[] workspaces) {
-        for ( String w : workspaces ) {
-            if ( w.equals( workspace ) ) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private RuleAsset loadAsset(AssetItem item) throws SerializationException {
