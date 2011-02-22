@@ -158,7 +158,6 @@ public class DependencyWidget extends Composite {
 				+ "</i>"));
 */
 		editor.addAttribute("Dependency Path: ", new Label(parseDependencyPath(dependencyPath)[0]));
-		//editor.addAttribute("Is Imported from Global: ", new Label("No"));
 		final VersionChooser versionChoose = new VersionChooser( 
 				parseDependencyPath(dependencyPath)[1],
 				conf.uuid,

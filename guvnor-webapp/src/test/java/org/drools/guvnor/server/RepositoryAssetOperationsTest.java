@@ -75,15 +75,17 @@ public class RepositoryAssetOperationsTest {
         repositoryAssetOperations.setRulesRepository(rulesRepository);
 
         AssetItem assetItem = initializeAssetItemMockForLoadAssetHistory();
-
+        
+        
         AssetHistoryIterator assetHistoryIterator = mock(AssetHistoryIterator.class);
         when(assetItem.getHistory()).thenReturn(assetHistoryIterator);
         when(assetHistoryIterator.hasNext()).thenReturn(true, false);
         AssetItem historicalAssetItem = initializeAssetItemHistoryMockForLoadAssetHistory(assetHistoryIterator);
         when(historicalAssetItem.getVersionNumber()).thenReturn(1324567L);
-
-        assertNull(repositoryAssetOperations.loadAssetHistory(assetItem));
-
+        Calendar calendar = GregorianCalendar.getInstance();
+        when(historicalAssetItem.getLastModified()).thenReturn(calendar);
+  
+        assertNotNull(repositoryAssetOperations.loadAssetHistory(assetItem));
     }
 
     @Test
