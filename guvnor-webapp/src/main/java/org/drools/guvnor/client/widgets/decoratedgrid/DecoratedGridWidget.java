@@ -568,6 +568,13 @@ public abstract class DecoratedGridWidget<T> extends Composite
                         nc = new Coordinate( c.getRow()
                                                      - step,
                                              c.getCol() );
+                        CellValue< ? > newCell = data.get( c );
+                        while ( newCell.getRowSpan() == 0 ) {
+                            nc = new Coordinate( c.getRow()
+                                                         - step,
+                                                 c.getCol() );
+                            newCell = data.get( c );
+                        }
                         startSelecting( nc );
 
                         // Ensure cell is visible
@@ -580,7 +587,8 @@ public abstract class DecoratedGridWidget<T> extends Composite
                 case DOWN :
 
                     // Move down
-                    step = c.getRow() < data.size() - 1 ? 1 : 0;
+                    CellValue< ? > currentCell = data.get( c );
+                    step = c.getRow() < data.size() - 1 ? currentCell.getRowSpan() : 0;
                     if ( step > 0 ) {
                         nc = new Coordinate( c.getRow()
                                                      + step,
