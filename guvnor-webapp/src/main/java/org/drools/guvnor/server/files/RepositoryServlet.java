@@ -43,7 +43,7 @@ public class RepositoryServlet extends HttpServlet {
     private static final long  serialVersionUID = 510l;
     public static final Logger log              = LoggerFactory.getLogger( RepositoryServlet.class );
 
-    public FileManagerUtils getFileManager() {
+    public static FileManagerUtils getFileManager() {
         if ( Contexts.isApplicationContextActive() ) {
             return (FileManagerUtils) Component.getInstance( "fileManager" );
         } else {
