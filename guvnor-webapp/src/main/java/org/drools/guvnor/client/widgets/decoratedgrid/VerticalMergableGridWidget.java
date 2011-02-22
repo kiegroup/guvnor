@@ -182,10 +182,18 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                 grid.moveSelection( MOVE_DIRECTION.LEFT );
                 event.preventDefault();
             } else if ( event.getKeyCode() == KeyCodes.KEY_UP ) {
-                grid.moveSelection( MOVE_DIRECTION.UP );
+                if ( event.getShiftKey() ) {
+                    grid.moveAndExtendSelection( MOVE_DIRECTION.UP );
+                } else {
+                    grid.moveSelection( MOVE_DIRECTION.UP );
+                }
                 event.preventDefault();
             } else if ( event.getKeyCode() == KeyCodes.KEY_DOWN ) {
-                grid.moveSelection( MOVE_DIRECTION.DOWN );
+                if ( event.getShiftKey() ) {
+                    grid.moveAndExtendSelection( MOVE_DIRECTION.DOWN );
+                } else {
+                    grid.moveSelection( MOVE_DIRECTION.DOWN );
+                }
                 event.preventDefault();
             }
         }
@@ -508,7 +516,8 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     private TableRowElement populateTableRowElement(TableRowElement tre,
                                                     DynamicDataRow rowData) {
 
-        tre.getStyle().setHeight( style.rowHeight(), Unit.PX );
+        tre.getStyle().setHeight( style.rowHeight(),
+                                  Unit.PX );
         for ( int iCol = 0; iCol < grid.getColumns().size(); iCol++ ) {
             if ( grid.getColumns().get( iCol ).isVisible() ) {
                 TableCellElement tce = makeTableCellElement( iCol,
