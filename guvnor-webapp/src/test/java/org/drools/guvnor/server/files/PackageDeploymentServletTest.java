@@ -43,13 +43,11 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
+import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.servlet.Context;
-import org.mortbay.jetty.servlet.ServletHolder;
 
 import static org.junit.Assert.*;
 
@@ -215,15 +213,9 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
         //
         //now lets run it in a real server !
         //
-        Server server = new Server( 9000 );
-
-        Context ctx = new Context( server,
-                                   "/",
-                                   Context.SESSIONS );
-        ctx.addServlet( new ServletHolder( new PackageDeploymentServlet() ),
-                        "/package/*" );
-
-        server.setStopAtShutdown( true );
+        TJWSEmbeddedJaxrsServer server = new TJWSEmbeddedJaxrsServer();
+        server.setPort(8181);
+        server.addServlet("/package/*", new PackageDeploymentServlet());
         server.start();
 
         ResourceFactory.getResourceChangeNotifierService().start();

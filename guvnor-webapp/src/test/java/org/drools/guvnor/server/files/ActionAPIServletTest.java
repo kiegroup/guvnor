@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.rest.Parameters;
+import org.drools.guvnor.server.files.ActionsAPI.Parameters;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
 import org.junit.After;

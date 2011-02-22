@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 
-package org.drools.guvnor.server.rest;
+package org.drools.guvnor.server.files;
 
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.*;
@@ -32,6 +32,22 @@ import javax.servlet.http.HttpServletResponse;
  * Fix for GUVNOR-1080
  */
 public class ActionsAPI {
+
+    public enum Parameters {
+
+        PackageName {
+            public String toString() {
+                return "package-name";
+            }
+        },
+
+        SnapshotName {
+            public String toString() {
+                return "snapshot-name";
+            }
+        };
+
+    }
 
     /**
      * Post is for actions.
