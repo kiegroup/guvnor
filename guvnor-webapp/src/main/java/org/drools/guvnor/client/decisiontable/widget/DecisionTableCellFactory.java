@@ -35,10 +35,10 @@ import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
  */
 public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig> {
 
-    private static String[]            DIALECTS = {"java", "mvel"};
+    private static String[]     DIALECTS = {"java", "mvel"};
 
     // Model used to determine data-types etc for cells
-    private GuidedDecisionTable        model;
+    private GuidedDecisionTable model;
 
     /**
      * Construct a Cell Factory for a specific Decision Table
@@ -120,7 +120,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
     }
 
     // Make a new Cell for Dialect columns
-    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeDialectCell() {
+    private DecoratedGridCellValueAdaptor<String, DTColumnConfig> makeDialectCell() {
         PopupDropDownEditCell pudd = new PopupDropDownEditCell();
         pudd.setItems( DIALECTS );
         return new DecoratedGridCellValueAdaptor<String, DTColumnConfig>( pudd );
@@ -155,8 +155,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
     }
 
     // Make a new Cell for Row Number columns
-    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeRowNumberCell() {
-        return new DecoratedGridCellValueAdaptor<Integer, DTColumnConfig>( new RowNumberCell() );
+    private DecoratedGridCellValueAdaptor<Long, DTColumnConfig> makeRowNumberCell() {
+        return new DecoratedGridCellValueAdaptor<Long, DTColumnConfig>( new RowNumberCell() );
     }
 
 }

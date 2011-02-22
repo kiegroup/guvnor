@@ -668,7 +668,7 @@ public class VerticalDecisionTableWidget extends Composite
 
                 // Update Row Number column values
                 for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-                    data.get( iRow ).get( col.getColumnIndex() ).setValue( iRow + 1 );
+                    data.get( iRow ).get( col.getColumnIndex() ).setValue( (long) iRow + 1 );
                 }
 
             } else if ( modelColumn instanceof AttributeCol ) {
@@ -686,7 +686,7 @@ public class VerticalDecisionTableWidget extends Composite
                                                      - MAX_ROWS );
                             }
                             data.get( iRow ).get( col.getColumnIndex() )
-                                    .setValue( salience );
+                                    .setValue( (long) salience );
                         }
                     }
                     // Ensure Salience cells are rendered with the correct Cell

@@ -274,7 +274,7 @@ public class TemplateDataTableWidget extends Composite
             addColumn( new TemplateDataColumn( var.getVarName(),
                                                var.getDataType(),
                                                var.getFactType(),
-                                               var.getFactField()),
+                                               var.getFactField() ),
                        false );
         }
 
@@ -285,10 +285,17 @@ public class TemplateDataTableWidget extends Composite
             String[] rowData = data[iRow];
             for ( int iCol = 0; iCol < widget.getColumns().size(); iCol++ ) {
                 TemplateDataColumn col = widget.getColumns().get( iCol ).getModelColumn();
+
+                //Underlying Template model uses empty Strings as null values; which is quite different in the MergedGrid world
+                String initialValue = rowData[iCol];
+                if ( initialValue != null && initialValue.equals( "" ) ) {
+                    initialValue = null;
+                }
+
                 CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( col,
                                                                                           iRow,
                                                                                           iCol,
-                                                                                          rowData[iCol] );
+                                                                                          initialValue );
                 row.add( cv );
             }
             widget.appendRow( row );

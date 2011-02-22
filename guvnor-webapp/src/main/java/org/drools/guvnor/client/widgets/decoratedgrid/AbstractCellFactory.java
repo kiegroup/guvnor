@@ -67,26 +67,23 @@ public abstract class AbstractCellFactory<T> {
     public abstract DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> getCell(T column);
 
     // Make a new Cell for Boolean columns
-    protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> makeBooleanCell() {
+    protected DecoratedGridCellValueAdaptor<Boolean, T> makeBooleanCell() {
         return new DecoratedGridCellValueAdaptor<Boolean, T>( new CheckboxCell() );
     }
 
     // Make a new Cell for Date columns
-    protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> makeDateCell() {
-        return new DecoratedGridCellValueAdaptor<Date, T>( new PopupDateEditCell(
-                                                                                               DateTimeFormat.getFormat( PredefinedFormat.DATE_SHORT ) ) );
+    protected DecoratedGridCellValueAdaptor<Date, T> makeDateCell() {
+        return new DecoratedGridCellValueAdaptor<Date, T>( new PopupDateEditCell( DateTimeFormat.getFormat( PredefinedFormat.DATE_SHORT ) ) );
     }
 
     // Make a new Cell for Numeric columns
-    protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> makeNumericCell() {
-        return new DecoratedGridCellValueAdaptor<Long, T>(
-                                                                           new PopupNumericEditCell() );
+    protected DecoratedGridCellValueAdaptor<Long, T> makeNumericCell() {
+        return new DecoratedGridCellValueAdaptor<Long, T>( new PopupNumericEditCell() );
     }
 
     // Make a new Cell for a RowNumberCol
-    protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> makeTextCell() {
-        return new DecoratedGridCellValueAdaptor<String, T>(
-                                                                          new PopupTextEditCell() );
+    protected DecoratedGridCellValueAdaptor<String, T> makeTextCell() {
+        return new DecoratedGridCellValueAdaptor<String, T>( new PopupTextEditCell() );
     }
 
 }

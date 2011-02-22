@@ -49,8 +49,8 @@ public abstract class AbstractCellValueFactory<T> {
                                                       int iCol,
                                                       String initialValue) {
                 CellValue<Long> cv = new CellValue<Long>( null,
-                                                                iRow,
-                                                                iCol );
+                                                          iRow,
+                                                          iCol );
                 if ( initialValue != null ) {
                     try {
                         cv.setValue( Long.valueOf( initialValue ) );
@@ -68,13 +68,13 @@ public abstract class AbstractCellValueFactory<T> {
         },
         ROW_NUMBER() {
             @Override
-            public CellValue<Integer> getNewCellValue(int iRow,
-                                                      int iCol,
-                                                      String initialValue) {
+            public CellValue<Long> getNewCellValue(int iRow,
+                                                   int iCol,
+                                                   String initialValue) {
                 // Rows are 0-based internally but 1-based in the UI
-                CellValue<Integer> cv = new CellValue<Integer>( iRow + 1,
-                                                                iRow,
-                                                                iCol );
+                CellValue<Long> cv = new CellValue<Long>( (long) iRow + 1,
+                                                          iRow,
+                                                          iCol );
                 return cv;
             }
 
