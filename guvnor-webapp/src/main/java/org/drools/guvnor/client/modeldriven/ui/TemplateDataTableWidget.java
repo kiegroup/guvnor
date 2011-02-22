@@ -70,7 +70,7 @@ public class TemplateDataTableWidget extends Composite
 
         this.cellFactory = new TemplateDataCellFactory( sce,
                                                         widget );
-        this.cellValueFactory = new TemplateDataCellValueFactory();
+        this.cellValueFactory = new TemplateDataCellValueFactory( sce );
 
         initWidget( widget );
     }

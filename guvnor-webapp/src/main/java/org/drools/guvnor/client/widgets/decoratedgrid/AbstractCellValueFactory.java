@@ -17,6 +17,8 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.Date;
 
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
@@ -176,6 +178,16 @@ public abstract class AbstractCellValueFactory<T> {
     // Dates are serialised and de-serialised to locale-independent format
     private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat( "dd-MMM-yyyy" );
 
+    // SuggestionCompletionEngine to aid data-type resolution etc
+    protected SuggestionCompletionEngine sce;
+
+    public AbstractCellValueFactory(SuggestionCompletionEngine sce) {
+        if(sce==null) {
+            throw new IllegalArgumentException("sce cannot be null");
+        }
+        this.sce=sce;
+    }
+    
     /**
      * Make a CellValue applicable for the column
      * 

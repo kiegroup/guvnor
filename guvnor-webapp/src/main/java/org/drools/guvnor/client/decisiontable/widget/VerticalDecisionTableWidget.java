@@ -262,7 +262,8 @@ public class VerticalDecisionTableWidget extends Composite
         this.cellFactory = new DecisionTableCellFactory( sce,
                                                          widget,
                                                          this.model );
-        this.cellValueFactory = new DecisionTableCellValueFactory( this );
+        this.cellValueFactory = new DecisionTableCellValueFactory( sce,
+                                                                   this.model );
 
         widget.getData().clear();
         widget.getColumns().clear();

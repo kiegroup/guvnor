@@ -32,23 +32,23 @@ import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
 public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTColumnConfig> {
 
     // Model used to determine data-types etc for cells
-    private GuidedDecisionTable        model;
-
-    // SuggestionCompletionEngine to aid data-type resolution etc
-    private SuggestionCompletionEngine sce;
+    private GuidedDecisionTable model;
 
     /**
      * Construct a Cell Value Factory for a specific Decision Table
      * 
-     * @param dtable
-     *            Decision Table to which Factory relates
+     * @param sce
+     *            SuggestionCompletionEngine to assist with drop-downs
+     * @param model
+     *            The Decision Table model to assist data-type derivation
      */
-    public DecisionTableCellValueFactory(VerticalDecisionTableWidget dtable) {
-        if ( dtable == null ) {
-            throw new IllegalArgumentException( "dtable cannot be null" );
+    public DecisionTableCellValueFactory(SuggestionCompletionEngine sce,
+                                         GuidedDecisionTable model) {
+        super( sce );
+        if ( model == null ) {
+            throw new IllegalArgumentException( "model cannot be null" );
         }
-        this.model = dtable.getModel();
-        this.sce = dtable.getSCE();
+        this.model = model;
     }
 
     // Get the Data Type corresponding to a given column

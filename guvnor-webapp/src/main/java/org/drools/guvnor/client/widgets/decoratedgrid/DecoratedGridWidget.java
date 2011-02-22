@@ -486,6 +486,124 @@ public abstract class DecoratedGridWidget<T> extends Composite
         return isMerged;
     }
 
+    private Coordinate getNextCell(MOVE_DIRECTION dir) {
+        int step = 0;
+        Coordinate nc = null;
+        CellExtents ce = null;
+        Coordinate c = selections.first().getCoordinate();
+        switch ( dir ) {
+            case LEFT :
+
+                // Move left
+                step = c.getCol() > 0 ? 1 : 0;
+                if ( step > 0 ) {
+                    nc = new Coordinate( c.getRow(),
+                                         c.getCol()
+                                                 - step );
+
+                    // Skip hidden columns
+                    while ( nc.getCol() > 0
+                            && !columns.get( nc.getCol() ).isVisible() ) {
+                        nc = new Coordinate( c.getRow(),
+                                             nc.getCol()
+                                                     - step );
+                    }
+
+                    // Ensure cell is visible
+                    ce = gridWidget.getSelectedCellExtents( selections.first() );
+                    if ( ce.getOffsetX() < scrollPanel
+                            .getHorizontalScrollPosition() ) {
+                        scrollPanel
+                                .setHorizontalScrollPosition( ce.getOffsetX() );
+                    }
+                }
+                break;
+            case RIGHT :
+
+                // Move right
+                step = c.getCol() < columns.size() - 1 ? 1 : 0;
+                if ( step > 0 ) {
+                    nc = new Coordinate( c.getRow(),
+                                         c.getCol()
+                                                 + step );
+
+                    // Skip hidden columns
+                    while ( nc.getCol() < columns.size() - 2
+                            && !columns.get( nc.getCol() ).isVisible() ) {
+                        nc = new Coordinate( c.getRow(),
+                                             nc.getCol()
+                                                     + step );
+                    }
+
+                    // Ensure cell is visible
+                    ce = gridWidget.getSelectedCellExtents( selections.first() );
+                    int scrollWidth = scrollPanel.getElement().getClientWidth();
+                    if ( ce.getOffsetX()
+                         + ce.getWidth() > scrollWidth
+                                                           + scrollPanel.getHorizontalScrollPosition() ) {
+                        int delta = ce.getOffsetX()
+                                    + ce.getWidth()
+                                    - scrollPanel.getHorizontalScrollPosition()
+                                    - scrollWidth;
+                        scrollPanel.setHorizontalScrollPosition( scrollPanel
+                                .getHorizontalScrollPosition()
+                                                                 + delta );
+                    }
+                }
+                break;
+            case UP :
+
+                // Move up
+                step = c.getRow() > 0 ? 1 : 0;
+                if ( step > 0 ) {
+                    nc = new Coordinate( c.getRow()
+                                                 - step,
+                                         c.getCol() );
+                    CellValue< ? > newCell = data.get( c );
+                    while ( newCell.getRowSpan() == 0 ) {
+                        nc = new Coordinate( c.getRow()
+                                                     - step,
+                                             c.getCol() );
+                        newCell = data.get( c );
+                    }
+
+                    // Ensure cell is visible
+                    ce = gridWidget.getSelectedCellExtents( selections.first() );
+                    if ( ce.getOffsetY() < scrollPanel.getScrollPosition() ) {
+                        scrollPanel.setScrollPosition( ce.getOffsetY() );
+                    }
+                }
+                break;
+            case DOWN :
+
+                // Move down
+                CellValue< ? > currentCell = data.get( c );
+                step = c.getRow() < data.size() - 1 ? currentCell.getRowSpan() : 0;
+                if ( step > 0 ) {
+                    nc = new Coordinate( c.getRow()
+                                                 + step,
+                                         c.getCol() );
+
+                    // Ensure cell is visible
+                    ce = gridWidget.getSelectedCellExtents( selections.first() );
+                    int scrollHeight = scrollPanel.getElement()
+                            .getClientHeight();
+                    if ( ce.getOffsetY()
+                         + ce.getHeight() > scrollHeight
+                                                            + scrollPanel.getScrollPosition() ) {
+                        int delta = ce.getOffsetY()
+                                    + ce.getHeight()
+                                    - scrollPanel.getScrollPosition()
+                                    - scrollHeight;
+                        scrollPanel.setScrollPosition( scrollPanel
+                                .getScrollPosition()
+                                                       + delta );
+                    }
+                }
+        }
+        return nc;
+    }
+
     /**
      * Move the selected cell
      * 
@@ -494,124 +612,8 @@ public abstract class DecoratedGridWidget<T> extends Composite
      */
     public void moveSelection(MOVE_DIRECTION dir) {
         if ( selections.size() > 0 ) {
-            int step = 0;
-            Coordinate nc = null;
-            CellExtents ce = null;
-            Coordinate c = selections.first().getCoordinate();
-            switch ( dir ) {
-                case LEFT :
-
-                    // Move left
-                    step = c.getCol() > 0 ? 1 : 0;
-                    if ( step > 0 ) {
-                        nc = new Coordinate( c.getRow(),
-                                             c.getCol()
-                                                     - step );
-
-                        // Skip hidden columns
-                        while ( nc.getCol() > 0
-                                && !columns.get( nc.getCol() ).isVisible() ) {
-                            nc = new Coordinate( c.getRow(),
-                                                 nc.getCol()
-                                                         - step );
-                        }
-                        startSelecting( nc );
-
-                        // Ensure cell is visible
-                        ce = gridWidget.getSelectedCellExtents( selections.first() );
-                        if ( ce.getOffsetX() < scrollPanel
-                                .getHorizontalScrollPosition() ) {
-                            scrollPanel
-                                    .setHorizontalScrollPosition( ce.getOffsetX() );
-                        }
-                    }
-                    break;
-                case RIGHT :
-
-                    // Move right
-                    step = c.getCol() < columns.size() - 1 ? 1 : 0;
-                    if ( step > 0 ) {
-                        nc = new Coordinate( c.getRow(),
-                                             c.getCol()
-                                                     + step );
-
-                        // Skip hidden columns
-                        while ( nc.getCol() < columns.size() - 2
-                                && !columns.get( nc.getCol() ).isVisible() ) {
-                            nc = new Coordinate( c.getRow(),
-                                                 nc.getCol()
-                                                         + step );
-                        }
-                        startSelecting( nc );
-
-                        // Ensure cell is visible
-                        ce = gridWidget.getSelectedCellExtents( selections.first() );
-                        int scrollWidth = scrollPanel.getElement().getClientWidth();
-                        if ( ce.getOffsetX()
-                             + ce.getWidth() > scrollWidth
-                                                               + scrollPanel.getHorizontalScrollPosition() ) {
-                            int delta = ce.getOffsetX()
-                                        + ce.getWidth()
-                                        - scrollPanel.getHorizontalScrollPosition()
-                                        - scrollWidth;
-                            scrollPanel.setHorizontalScrollPosition( scrollPanel
-                                    .getHorizontalScrollPosition()
-                                                                     + delta );
-                        }
-                    }
-                    break;
-                case UP :
-
-                    // Move up
-                    step = c.getRow() > 0 ? 1 : 0;
-                    if ( step > 0 ) {
-                        nc = new Coordinate( c.getRow()
-                                                     - step,
-                                             c.getCol() );
-                        CellValue< ? > newCell = data.get( c );
-                        while ( newCell.getRowSpan() == 0 ) {
-                            nc = new Coordinate( c.getRow()
-                                                         - step,
-                                                 c.getCol() );
-                            newCell = data.get( c );
-                        }
-                        startSelecting( nc );
-
-                        // Ensure cell is visible
-                        ce = gridWidget.getSelectedCellExtents( selections.first() );
-                        if ( ce.getOffsetY() < scrollPanel.getScrollPosition() ) {
-                            scrollPanel.setScrollPosition( ce.getOffsetY() );
-                        }
-                    }
-                    break;
-                case DOWN :
-
-                    // Move down
-                    CellValue< ? > currentCell = data.get( c );
-                    step = c.getRow() < data.size() - 1 ? currentCell.getRowSpan() : 0;
-                    if ( step > 0 ) {
-                        nc = new Coordinate( c.getRow()
-                                                     + step,
-                                             c.getCol() );
-                        startSelecting( nc );
-
-                        // Ensure cell is visible
-                        ce = gridWidget.getSelectedCellExtents( selections.first() );
-                        int scrollHeight = scrollPanel.getElement()
-                                .getClientHeight();
-                        if ( ce.getOffsetY()
-                             + ce.getHeight() > scrollHeight
-                                                                + scrollPanel.getScrollPosition() ) {
-                            int delta = ce.getOffsetY()
-                                        + ce.getHeight()
-                                        - scrollPanel.getScrollPosition()
-                                        - scrollHeight;
-                            scrollPanel.setScrollPosition( scrollPanel
-                                    .getScrollPosition()
-                                                           + delta );
-                        }
-                    }
-            }
+            Coordinate nc = getNextCell( dir );
+            startSelecting( nc );
         }
     }
 

@@ -23,13 +23,36 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
  */
 public class TemplateDataCellValueFactory extends AbstractCellValueFactory<TemplateDataColumn> {
 
+    /**
+     * Construct a Cell Value Factory for a specific Template data editor
+     * 
+     * @param sce
+     *            SuggestionCompletionEngine to assist with drop-downs
+     */
+    public TemplateDataCellValueFactory(SuggestionCompletionEngine sce) {
+        super( sce );
+    }
+
     // Get the Data Type corresponding to a given column
     protected DATA_TYPES getDataType(TemplateDataColumn column) {
 
+        // Columns with lists of values, enums etc are always Text (for now)
+        String[] vals = null;
+        String factType = column.getFactType();
+        String factField = column.getFactField();
+        if ( factType != null && factField != null ) {
+            vals = sce.getEnumValues( factType,
+                                      factField );
+            if ( vals != null && vals.length > 0 ) {
+                return DATA_TYPES.STRING;
+            }
+        }
+
+        //Otherwise use data type extracted from model
         String dataType = column.getDataType();
-        if ( column.getDataType().equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+        if ( dataType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             return DATA_TYPES.BOOLEAN;
-        } else if ( column.getDataType().equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
             return DATA_TYPES.DATE;
         } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             return DATA_TYPES.NUMERIC;
