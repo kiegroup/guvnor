@@ -141,7 +141,7 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
             public void update(int index,
             		DependenciesPageRow row,
                                String value) {
-            	openSelectedCommand.open( row.getDependencyPath() );
+            	openSelectedCommand.open( DependencyWidget.encodeDependencyPath(row.getDependencyPath(), row.getDependencyVersion()) );
             }
         } );
         columnPicker.addColumn( openColumn,

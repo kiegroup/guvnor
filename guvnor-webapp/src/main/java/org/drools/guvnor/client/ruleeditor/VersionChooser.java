@@ -16,9 +16,14 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -47,6 +52,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -58,13 +64,14 @@ public class VersionChooser extends Composite {
     private Constants     constants = GWT.create( Constants.class );
     private static Images images    = GWT.create( Images.class );
 
-    private Image         refresh;
-    private FlexTable     layout;
     private String        packageUUID;
     private String        assetName;
     private Command       refreshCommand;
-    private ListBox history;
-    
+    private ListBox versionChooser;
+    private List<TableDataRow> versionInfo = new ArrayList<TableDataRow>();
+    private String currentVersion;
+
+   
     public VersionChooser(String currentVersion,
     		String pacakgeUUID, 
     		String assetName,
@@ -72,63 +79,23 @@ public class VersionChooser extends Composite {
         this.packageUUID = pacakgeUUID;
         this.assetName = assetName;
         this.refreshCommand = ref;
+        this.currentVersion = currentVersion;
 
-        HorizontalPanel wrapper = new HorizontalPanel();
+        VerticalPanel verticalPanel = new VerticalPanel();
+        versionChooser = new ListBox();
+        loadHistoryData();
+        verticalPanel.add(versionChooser);
 
-        ClickHandler clickHandler = new ClickHandler() {
-
+        Button open = new Button( "View selected version" );
+        open.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                clickLoadHistory();
+                showVersion( versionChooser.getValue( versionChooser.getSelectedIndex() ) );
             }
-        };
-        layout = new FlexTable();
-        ClickableLabel vh = new ClickableLabel( currentVersion,
-                                                clickHandler );
-        layout.setWidget( 0,
-                          0,
-                          vh );
-        layout.getCellFormatter().setStyleName( 0,
-                                                0,
-                                                "metadata-Widget" ); //NON-NLS
-        FlexCellFormatter formatter = layout.getFlexCellFormatter();
-        formatter.setHorizontalAlignment( 0,
-                                          0,
-                                          HasHorizontalAlignment.ALIGN_LEFT );
 
-        refresh = new ImageButton( images.refresh() );
-
-        refresh.addClickHandler( clickHandler );
-
-        layout.setWidget( 0,
-                          1,
-                          refresh );
-        formatter.setHorizontalAlignment( 0,
-                                          1,
-                                          HasHorizontalAlignment.ALIGN_RIGHT );
-
-        wrapper.setStyleName( "version-browser-Border" );
-
-        wrapper.add( layout );
-
-        layout.setWidth( "100%" );
-        wrapper.setWidth( "100%" );
-
-        initWidget( wrapper );
-    }
-
-    protected void clickLoadHistory() {
-        showBusyIcon();
-        Scheduler scheduler = Scheduler.get();
-        scheduler.scheduleDeferred( new Command() {
-            public void execute() {
-                loadHistoryData();
-            }
         } );
+        verticalPanel.add(open);       
 
-    }
-
-    private void showBusyIcon() {
-        refresh.setResource( images.searching() );
+        initWidget( verticalPanel );
     }
 
     /**
@@ -138,13 +105,9 @@ public class VersionChooser extends Composite {
         RepositoryServiceFactory.getService().loadAssetHistory( packageUUID,
         		                                                assetName,
                                                                 new GenericCallback<TableDataResult>() {
-
                                                                     public void onSuccess(TableDataResult table) {
                                                                         if ( table == null ) {
-                                                                            layout.setWidget( 1,
-                                                                                              0,
-                                                                                              new Label( constants.NoHistory() ) );
-                                                                            showStaticIcon();
+                                                                            //Should not get here
                                                                             return;
                                                                         }
                                                                         TableDataRow[] rows = table.data;
@@ -152,6 +115,12 @@ public class VersionChooser extends Composite {
                                                                                      new Comparator<TableDataRow>() {
                                                                                          public int compare(TableDataRow r1,
                                                                                                             TableDataRow r2) {
+                                                                                             if("LATEST".equals(r2.values[0])) {
+                                                                                                 return 1;
+                                                                                             }
+                                                                                             if("LATEST".equals(r1.values[0])) {
+                                                                                                 return -1;
+                                                                                             }                                                                                             
                                                                                              Integer v2 = Integer.valueOf( r2.values[0] );
                                                                                              Integer v1 = Integer.valueOf( r1.values[0] );
 
@@ -159,61 +128,47 @@ public class VersionChooser extends Composite {
                                                                                          }
                                                                                      } );
 
-                                                                        history = new ListBox( true );
-
                                                                         for ( int i = 0; i < rows.length; i++ ) {
-                                                                            TableDataRow row = rows[i];
+                                                                            TableDataRow row = rows[i];                                                     
+                                                                            
                                                                             String s = Format.format( constants.property0ModifiedOn12(),
                                                                                                       row.values[0],
                                                                                                       row.values[2],
                                                                                                       row.values[1] );
-                                                                            history.addItem( s,
-                                                                            		row.values[0] );
+                                                                            versionChooser.addItem( s,
+                                                                                    row.id );
+                                                                            versionInfo.add(row);
                                                                         }
-
-                                                                        layout.setWidget( 1,
-                                                                                          0,
-                                                                                          history );
-                                                                        FlexCellFormatter formatter = layout.getFlexCellFormatter();
-
-                                                                        formatter.setColSpan( 1,
-                                                                                              0,
-                                                                                              2 );
-
-                                                                        Button open = new Button( constants.View() );
-
-                                                                        open.addClickHandler( new ClickHandler() {
-
-                                                                            public void onClick(ClickEvent event) {
-                                                                                showVersion( history.getValue( history.getSelectedIndex() ) );
-                                                                            }
-
-                                                                        } );
-
-                                                                        layout.setWidget( 2,
-                                                                                          0,
-                                                                                          open );
-                                                                        formatter.setColSpan( 2,
-                                                                                              1,
-                                                                                              3 );
-                                                                        formatter.setHorizontalAlignment( 2,
-                                                                                                          1,
-                                                                                                          HasHorizontalAlignment.ALIGN_CENTER );
-
-                                                                        showStaticIcon();
-
+                                                                        selectCurrentVersoin(currentVersion);
                                                                     }
-
                                                                 } );
 
     }
     
-    public String getSelectedValue() {
-    	if(history != null) {
-    	    return history.getValue(history.getSelectedIndex());
+    public String getSelectedVersionUUID() {
+    	if(versionChooser != null) {
+    	    return versionChooser.getValue(versionChooser.getSelectedIndex());
     	} else {
     		return null;
     	}
+    }
+    
+    private void selectCurrentVersoin(String currentVersion) {
+        for(int i=0;i<versionInfo.size(); i++) {
+            TableDataRow row = versionInfo.get(i);
+            if(row.values[0].equals(currentVersion)) {
+                versionChooser.setSelectedIndex(i);
+                break;
+            }
+        }
+    }
+    
+    public String getSelectedVersionName() {
+        if(versionChooser != null) {
+            return versionInfo.get(versionChooser.getSelectedIndex()).values[0];
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -245,7 +200,4 @@ public class VersionChooser extends Composite {
                                                              } );
     }
 
-    private void showStaticIcon() {
-        refresh.setResource( images.refresh() );
-    }
 }

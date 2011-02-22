@@ -35,6 +35,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -60,7 +62,7 @@ public class DependencyWidget extends Composite {
         this.conf = conf;
         layout = new FormStyleLayout();
 
-
+/*
         VerticalPanel header = new VerticalPanel();
         Label caption = new Label( "Dependencies" );
         caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
@@ -70,8 +72,8 @@ public class DependencyWidget extends Composite {
         layout.addAttribute( "",
         		header );
 
-/*        layout.addHeader( images.statusLarge(),
-                      header );*/
+        layout.addHeader( images.statusLarge(),
+                      header );
 
         VerticalPanel vp = new VerticalPanel();
         vp.setHeight( "100%" );
@@ -80,7 +82,7 @@ public class DependencyWidget extends Composite {
         //pf.startSection();
         layout.addRow( vp );
         //pf.endSection();
-
+*/
         refresh();
         initWidget( layout );
     }
@@ -97,14 +99,31 @@ public class DependencyWidget extends Composite {
     }
 
     private void refresh() {
-/*        if ( table != null ) {
-            layout.remove( table );
-        }*/
+        layout.clear();
+        
+        VerticalPanel header = new VerticalPanel();
+        Label caption = new Label( "Dependencies" );
+        caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
+        header.add( caption );
+        header.add( howToTurnOn() );
+
+        layout.addAttribute( "",
+                header );
+
+/*        layout.addHeader( images.statusLarge(),
+                      header );*/
+
+        VerticalPanel vp = new VerticalPanel();
+        vp.setHeight( "100%" );
+        vp.setWidth( "100%" );
+
+        //pf.startSection();
+        layout.addRow( vp );
         table = new DependenciesPagedTable(conf.dependencies, 
         		null, null, new OpenItemCommand() {
 
-            public void open(String key) {
-                showEditor( key );
+            public void open(String path) {
+                showEditor( path );
             }
 
             public void open(MultiViewRow[] rows) {
@@ -114,7 +133,7 @@ public class DependencyWidget extends Composite {
         } );
 
         layout.addRow( table );
-
+        initWidget( layout );
     }
     
     public static String[] parseDependencyPath(String dependencyPath) {
@@ -138,31 +157,43 @@ public class DependencyWidget extends Composite {
 /*		editor.addRow(new HTML("<i>" + "Choose the version you want to depend on"
 				+ "</i>"));
 */
-		editor.addAttribute("Dependency Path: ", new Label(DependencyWidget.parseDependencyPath(dependencyPath)[0]));
+		editor.addAttribute("Dependency Path: ", new Label(parseDependencyPath(dependencyPath)[0]));
 		//editor.addAttribute("Is Imported from Global: ", new Label("No"));
 		final VersionChooser versionChoose = new VersionChooser( 
-				DependencyWidget.parseDependencyPath(dependencyPath)[1],
+				parseDependencyPath(dependencyPath)[1],
 				conf.uuid,
-				parseDependencyAssetName(DependencyWidget.parseDependencyPath(dependencyPath)[0]),
-                null);
+				parseDependencyAssetName(parseDependencyPath(dependencyPath)[0]),
+                new Command() {
+                    public void execute() {
+                        refresh();                        
+                    }				    
+				});
 		editor.addAttribute("Dependency Version: ",  versionChoose);
 
 
 		HorizontalPanel hp = new HorizontalPanel();
-		Button save = new Button("Use selected version");
+		Button save = new Button("Use selected version"); 
 		hp.add(save);
-		save.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent w) {
-				String selectedVersion = versionChoose.getSelectedValue();
-				RepositoryServiceFactory.getService().updateDependency( conf.uuid, 
-						encodeDependencyPath(DependencyWidget.parseDependencyPath(dependencyPath)[0], selectedVersion), 
-                new GenericCallback<Void>() {
-                    public void onSuccess(Void v) {
-                    }
-                } );
- 
-			}
-		});
+        save.addClickHandler(new ClickHandler() {
+            private Object archiveCommand;
+
+            public void onClick(ClickEvent w) {
+                String selectedVersion = versionChoose.getSelectedVersionName();
+                if (Window.confirm("Are you sure you want to use version: " + selectedVersion  + " as dependency?")) {
+                    RepositoryServiceFactory.getService().updateDependency(
+                            conf.uuid,
+                            encodeDependencyPath(DependencyWidget
+                                    .parseDependencyPath(dependencyPath)[0],
+                                    selectedVersion),
+                            new GenericCallback<Void>() {
+                                public void onSuccess(Void v) {
+                                    editor.hide();
+                                    refresh();
+                                }
+                            });
+                }
+            }
+        });
 		
 		Button cancel = new Button(constants.Cancel());
 		hp.add(cancel);
@@ -175,5 +206,4 @@ public class DependencyWidget extends Composite {
 		editor.addAttribute("", hp);
 		editor.show();
 	}
-
 }

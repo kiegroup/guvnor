@@ -151,7 +151,12 @@ public class VersionBrowser extends Composite {
                                                                                      new Comparator<TableDataRow>() {
                                                                                          public int compare(TableDataRow r1,
                                                                                                             TableDataRow r2) {
-
+                                                                                             if("LATEST".equals(r2.values[0])) {
+                                                                                                 return 1;
+                                                                                             }
+                                                                                             if("LATEST".equals(r1.values[0])) {
+                                                                                                 return -1;
+                                                                                             }   
                                                                                              Integer v2 = Integer.valueOf( r2.values[0] );
                                                                                              Integer v1 = Integer.valueOf( r1.values[0] );
 

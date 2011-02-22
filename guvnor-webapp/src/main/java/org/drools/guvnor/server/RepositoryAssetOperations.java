@@ -159,7 +159,7 @@ public class RepositoryAssetOperations {
             AssetItem historical = (AssetItem) it.next();
             long versionNumber = historical.getVersionNumber();
             if (isHistory(assetItem, versionNumber)) {
-                result.add(createHistoricalRow(result, historical));
+                result.add(createHistoricalRow(result, historical, isLatestVersion(assetItem, versionNumber)));
             }
         }
 
@@ -173,16 +173,26 @@ public class RepositoryAssetOperations {
     }
 
     private boolean isHistory(AssetItem item, long versionNumber) {
-        return versionNumber != 0 && versionNumber != item.getVersionNumber();
+        //return versionNumber != 0 && versionNumber != item.getVersionNumber();
+        //we do return the LATEST version as part of the history. 
+        return versionNumber != 0;
     }
 
+    private boolean isLatestVersion(AssetItem item, long versionNumber) {
+        return versionNumber == item.getVersionNumber();
+    }
+    
     private TableDataRow createHistoricalRow(List<TableDataRow> result,
-            AssetItem historical) {
+            AssetItem historical, boolean isLatestVersion) {
         final DateFormat dateFormatter = DateFormat.getInstance();
         TableDataRow tableDataRow = new TableDataRow();
         tableDataRow.id = historical.getVersionSnapshotUUID();
         tableDataRow.values = new String[4];
-        tableDataRow.values[0] = Long.toString(historical.getVersionNumber());
+        if(isLatestVersion) {
+            tableDataRow.values[0] = "LATEST";            
+        } else {
+            tableDataRow.values[0] = Long.toString(historical.getVersionNumber());
+        }
         tableDataRow.values[1] = historical.getCheckinComment();
         tableDataRow.values[2] = dateFormatter.format(historical
                 .getLastModified().getTime());
