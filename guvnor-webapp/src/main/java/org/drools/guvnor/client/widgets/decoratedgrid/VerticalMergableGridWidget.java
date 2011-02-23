@@ -23,6 +23,7 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableRowElement;
@@ -37,6 +38,11 @@ import com.google.gwt.user.client.Event;
  */
 public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
+    /**
+     * Constructor
+     * 
+     * @param grid
+     */
     public VerticalMergableGridWidget(final DecoratedGridWidget<T> grid) {
         super( grid );
     }
@@ -125,7 +131,8 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     public void onBrowserEvent(Event event) {
 
         String eventType = event.getType();
-        // Get the event target.
+
+        // Get the event target
         EventTarget eventTarget = event.getEventTarget();
         if ( !Element.is( eventTarget ) ) {
             return;
@@ -133,13 +140,13 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         Element target = event.getEventTarget().cast();
 
         // Find the cell where the event occurred.
-        TableCellElement tableCell = findNearestParentCell( target );
-        if ( tableCell == null ) {
+        TableCellElement eventTableCell = findNearestParentCell( target );
+        if ( eventTableCell == null ) {
             return;
         }
-        int htmlCol = tableCell.getCellIndex();
+        int htmlCol = eventTableCell.getCellIndex();
 
-        Element trElem = tableCell.getParentElement();
+        Element trElem = eventTableCell.getParentElement();
         if ( trElem == null ) {
             return;
         }
@@ -147,96 +154,64 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         int htmlRow = tr.getSectionRowIndex();
 
         // Convert HTML coordinates to physical coordinates
-        DynamicDataRow htmlRowData = data.get( htmlRow );
-        CellValue< ? extends Comparable< ? >> htmlCell = htmlRowData.get( htmlCol );
-        Coordinate c = htmlCell.getPhysicalCoordinate();
-        CellValue< ? extends Comparable< ? >> physicalCell = data.get( c.getRow() ).get( c.getCol() );
+        CellValue< ? > htmlCell = data.get( htmlRow ).get( htmlCol );
+        Coordinate eventPhysicalCoordinate = htmlCell.getPhysicalCoordinate();
+        CellValue< ? > eventPhysicalCell = data.get( eventPhysicalCoordinate.getRow() ).get( eventPhysicalCoordinate.getCol() );
 
-        // Select range
+        //Event handlers
         if ( eventType.equals( "mousedown" ) ) {
-            if ( event.getShiftKey() ) {
-                extendSelection( c );
-                return;
-            } else {
-                startSelecting( c );
-                bDragOperationPrimed = true;
-                return;
-            }
-        } else if ( bDragOperationPrimed && eventType.equals( "mousemove" ) ) {
-            extendSelection( c );
+            handleMousedownEvent( event,
+                                  eventPhysicalCoordinate );
             return;
-        } else if ( eventType.equals( "mouseup" ) ) {
-            bDragOperationPrimed = false;
-            return;
-        }
 
-        // Keyboard navigation
-        if ( eventType.equals( "keydown" ) ) {
-            if ( event.getKeyCode() == KeyCodes.KEY_DELETE ) {
-                grid.update( null );
-            } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT
-                        || (event.getKeyCode() == KeyCodes.KEY_TAB && !event
-                                .getShiftKey()) ) {
-                CellExtents ce = moveSelection( MOVE_DIRECTION.RIGHT );
-                SelectedCellChangeEvent.fire( grid,
-                                              ce );
-                event.preventDefault();
-            } else if ( event.getKeyCode() == KeyCodes.KEY_LEFT
-                        || (event.getKeyCode() == KeyCodes.KEY_TAB && event
-                                .getShiftKey()) ) {
-                CellExtents ce = moveSelection( MOVE_DIRECTION.LEFT );
-                SelectedCellChangeEvent.fire( grid,
-                                              ce );
-                event.preventDefault();
-            } else if ( event.getKeyCode() == KeyCodes.KEY_UP ) {
-                if ( event.getShiftKey() ) {
-                    extendSelection( MOVE_DIRECTION.UP );
-                } else {
-                    CellExtents ce = moveSelection( MOVE_DIRECTION.UP );
-                    SelectedCellChangeEvent.fire( grid,
-                                                  ce );
-                }
-                event.preventDefault();
-            } else if ( event.getKeyCode() == KeyCodes.KEY_DOWN ) {
-                if ( event.getShiftKey() ) {
-                    extendSelection( MOVE_DIRECTION.DOWN );
-                } else {
-                    CellExtents ce = moveSelection( MOVE_DIRECTION.DOWN );
-                    SelectedCellChangeEvent.fire( grid,
-                                                  ce );
-                }
-                event.preventDefault();
-            }
-        }
-        // Enter key is a special case; as the selected cell needs to be
-        // sent events and not the cell that GWT deemed the target for
-        // events.
-        if ( eventType.equals( "keydown" ) ) {
+        } else if ( eventType.equals( "mousemove" ) ) {
+            handleMousemoveEvent( event,
+                                  eventPhysicalCoordinate );
+            return;
+
+        } else if ( eventType.equals( "mouseup" ) ) {
+            handleMouseupEvent( event,
+                                eventPhysicalCoordinate );
+            return;
+
+        } else if ( eventType.equals( "keydown" ) ) {
+            handleKeyboardNavigationEvent( event );
+
             if ( event.getKeyCode() == KeyCodes.KEY_ENTER ) {
 
-                physicalCell = getSelections().first();
-                c = physicalCell.getCoordinate();
-                tableCell = tbody.getRows()
-                        .getItem( physicalCell.getHtmlCoordinate().getRow() )
-                        .getCells()
-                        .getItem( physicalCell.getHtmlCoordinate().getCol() );
+                // Enter key is a special case; as the selected cell needs to be
+                // sent events and not the cell that GWT deemed the target for
+                // events.
+                switch ( rangeDirection ) {
+                    case UP :
+                        eventPhysicalCell = getSelections().first();
+                        break;
+
+                    case DOWN :
+                        eventPhysicalCell = getSelections().last();
+                        break;
+                }
+                eventPhysicalCoordinate = eventPhysicalCell.getCoordinate();
+                eventTableCell = tbody.getRows()
+                            .getItem( eventPhysicalCell.getHtmlCoordinate().getRow() )
+                            .getCells()
+                            .getItem( eventPhysicalCell.getHtmlCoordinate().getCol() );
             }
         }
 
         // Pass event and physical cell to Cell Widget for handling
-        Cell<CellValue< ? extends Comparable< ? >>> cellWidget = columns.get( c.getCol() ).getCell();
+        Cell<CellValue< ? extends Comparable< ? >>> cellWidget = columns.get( eventPhysicalCoordinate.getCol() ).getCell();
 
-        // Implementations of AbstractCell aren't forced to initialise
-        // consumed events
+        // Implementations of AbstractCell aren't forced to initialise consumed events
         Set<String> consumedEvents = cellWidget.getConsumedEvents();
         if ( consumedEvents != null
              && consumedEvents.contains( eventType ) ) {
-            Context context = new Context( c.getRow(),
-                                           c.getCol(),
-                                           c );
+            Context context = new Context( eventPhysicalCoordinate.getRow(),
+                                           eventPhysicalCoordinate.getCol(),
+                                           eventPhysicalCoordinate );
             cellWidget.onBrowserEvent( context,
-                                       tableCell.getFirstChildElement(),
-                                       physicalCell,
+                                       eventTableCell.getFirstChildElement(),
+                                       eventPhysicalCell,
                                        event,
                                        null );
         }
@@ -468,6 +443,96 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         boolean isEven = iRow % 2 == 0;
         String trClasses = isEven ? evenRowStyle : oddRowStyle;
         return trClasses;
+    }
+
+    //Handle "Key Down" events relating to keyboard navigation
+    private void handleKeyboardNavigationEvent(Event event) {
+        if ( event.getKeyCode() == KeyCodes.KEY_DELETE ) {
+            grid.update( null );
+            return;
+
+        } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT
+                    || (event.getKeyCode() == KeyCodes.KEY_TAB && !event
+                            .getShiftKey()) ) {
+            CellExtents ce = moveSelection( MOVE_DIRECTION.RIGHT );
+            SelectedCellChangeEvent.fire( grid,
+                                          ce );
+            event.preventDefault();
+            return;
+
+        } else if ( event.getKeyCode() == KeyCodes.KEY_LEFT
+                    || (event.getKeyCode() == KeyCodes.KEY_TAB && event
+                            .getShiftKey()) ) {
+            CellExtents ce = moveSelection( MOVE_DIRECTION.LEFT );
+            SelectedCellChangeEvent.fire( grid,
+                                          ce );
+            event.preventDefault();
+            return;
+
+        } else if ( event.getKeyCode() == KeyCodes.KEY_UP ) {
+            if ( event.getShiftKey() ) {
+                extendSelection( MOVE_DIRECTION.UP );
+            } else {
+                CellExtents ce = moveSelection( MOVE_DIRECTION.UP );
+                SelectedCellChangeEvent.fire( grid,
+                                              ce );
+            }
+            event.preventDefault();
+            return;
+
+        } else if ( event.getKeyCode() == KeyCodes.KEY_DOWN ) {
+            if ( event.getShiftKey() ) {
+                extendSelection( MOVE_DIRECTION.DOWN );
+            } else {
+                CellExtents ce = moveSelection( MOVE_DIRECTION.DOWN );
+                SelectedCellChangeEvent.fire( grid,
+                                              ce );
+            }
+            event.preventDefault();
+            return;
+
+        }
+
+    }
+
+    //Handle "Mouse Down" events
+    private void handleMousedownEvent(Event event,
+                                      Coordinate eventCoordinate) {
+        if ( event.getButton() == NativeEvent.BUTTON_LEFT ) {
+
+            if ( event.getShiftKey() ) {
+
+                // Shift-click range selection
+                extendSelection( eventCoordinate );
+                return;
+
+            } else {
+
+                //Start of potential mouse-drag select operation
+                startSelecting( eventCoordinate );
+                bDragOperationPrimed = true;
+                return;
+            }
+        }
+    }
+
+    //Handle "Mouse Move" events
+    private void handleMousemoveEvent(Event event,
+                                      Coordinate eventCoordinate) {
+        if ( event.getButton() == NativeEvent.BUTTON_LEFT ) {
+
+            if ( bDragOperationPrimed ) {
+                extendSelection( eventCoordinate );
+                return;
+            }
+
+        }
+    }
+
+    //Handle "Mouse Up" events
+    private void handleMouseupEvent(Event event,
+                                    Coordinate eventCoordinate) {
+        bDragOperationPrimed = false;
     }
 
     // Build a TableCellElement

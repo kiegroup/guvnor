@@ -342,12 +342,12 @@ public abstract class MergableGridWidget<T> extends Widget {
      */
     public void extendSelection(MOVE_DIRECTION dir) {
         if ( selections.size() > 0 ) {
-            rangeDirection = dir;
             CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
             Coordinate nc = getNextCell( activeCell.getCoordinate(),
                                          dir );
             if ( nc != null ) {
                 clearSelection();
+                rangeDirection = dir;
                 rangeExtentCell = data.get( nc );
                 selectRange( rangeOriginCell,
                              rangeExtentCell );
@@ -463,7 +463,6 @@ public abstract class MergableGridWidget<T> extends Widget {
     public CellExtents moveSelection(MOVE_DIRECTION dir) {
         CellExtents ce = null;
         if ( selections.size() > 0 ) {
-            rangeDirection = dir;
             CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
             Coordinate nc = getNextCell( activeCell.getCoordinate(),
                                          dir );
@@ -471,6 +470,7 @@ public abstract class MergableGridWidget<T> extends Widget {
                 nc = activeCell.getCoordinate();
             }
             startSelecting( nc );
+            rangeDirection = dir;
             ce = getSelectedCellExtents( data.get( nc ) );
         }
         return ce;
