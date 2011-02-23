@@ -159,12 +159,4 @@ public class RepositoryPackageOperations {
 
         return data;
     }
-
-    public static String getDroolsHeader(PackageItem pkg) {
-        if ( pkg.containsAsset( "drools" ) ) {
-            return pkg.loadAsset( "drools" ).getContent();
-        } else {
-            return "";
-        }
-    }
 }
