@@ -18,7 +18,6 @@ package org.drools.guvnor.client.ruleeditor;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -39,6 +38,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
@@ -363,7 +363,7 @@ public class MetaDataWidget extends Composite {
         if ( lastModifiedDate == null ) {
             return null;
         } else {
-            return new SmallLabel( lastModifiedDate.toLocaleString() );
+            return new SmallLabel( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(lastModifiedDate) );
         }
     }
 
