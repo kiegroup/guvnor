@@ -164,7 +164,14 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
         // Select range
         if ( eventType.equals( "click" ) ) {
-            grid.startSelecting( c );
+            if(event.getShiftKey()) {
+                grid.extendSelection(c);
+                event.preventDefault();
+                return;
+            } else {
+                grid.startSelecting( c );
+                return;
+            }
         }
 
         // Keyboard navigation

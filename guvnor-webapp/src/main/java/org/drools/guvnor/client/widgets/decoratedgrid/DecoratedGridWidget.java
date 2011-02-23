@@ -49,7 +49,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
 
     // Enum to support keyboard navigation
     public enum MOVE_DIRECTION {
-        LEFT, RIGHT, UP, DOWN
+        LEFT, RIGHT, UP, DOWN, NONE
     }
 
     // Widgets for UI
@@ -61,36 +61,38 @@ public abstract class DecoratedGridWidget<T> extends Composite
     protected DecoratedGridHeaderWidget<T>                 headerWidget;
     protected DecoratedGridSidebarWidget<T>                sidebarWidget;
     protected HasSystemControlledColumns                   hasSystemControlledColumns;
-    protected boolean                                      isMerged   = false;
+    protected boolean                                      isMerged       = false;
 
     // Decision Table data
-    protected DynamicData                                  data       = new DynamicData();
-    protected List<DynamicColumn<T>>                       columns    = new ArrayList<DynamicColumn<T>>();
+    protected DynamicData                                  data           = new DynamicData();
+    protected List<DynamicColumn<T>>                       columns        = new ArrayList<DynamicColumn<T>>();
     protected int                                          height;
     protected int                                          width;
 
     // Resources
-    protected static final DecisionTableResources          resource   = GWT
-                                                                              .create( DecisionTableResources.class );
-    protected static final DecisionTableStyle              style      = resource.cellTableStyle();
+    protected static final DecisionTableResources          resource       = GWT
+                                                                                  .create( DecisionTableResources.class );
+    protected static final DecisionTableStyle              style          = resource.cellTableStyle();
 
-    private CellValue< ? >                                 originCell;
-    private CellValue< ? >                                 extentCell;
+    //Properties for multi-cell selection
+    private CellValue< ? >                                 rangeOriginCell;
+    private CellValue< ? >                                 rangeExtentCell;
+    private MOVE_DIRECTION                                 rangeDirection = MOVE_DIRECTION.NONE;
 
     // Selections store the actual grid data selected (irrespective of
     // merged cells). So a merged cell spanning 2 rows is stored as 2
     // selections. Selections are ordered by row number so we can
     // iterate top to bottom.
-    private TreeSet<CellValue< ? extends Comparable< ? >>> selections = new TreeSet<CellValue< ? extends Comparable< ? >>>(
-                                                                                                                            new Comparator<CellValue< ? extends Comparable< ? >>>() {
+    private TreeSet<CellValue< ? extends Comparable< ? >>> selections     = new TreeSet<CellValue< ? extends Comparable< ? >>>(
+                                                                                                                                new Comparator<CellValue< ? extends Comparable< ? >>>() {
 
-                                                                                                                                public int compare(CellValue< ? extends Comparable< ? >> o1,
-                                                                                                                                                   CellValue< ? extends Comparable< ? >> o2) {
-                                                                                                                                    return o1.getPhysicalCoordinate().getRow()
-                                                                                                                                           - o2.getPhysicalCoordinate().getRow();
-                                                                                                                                }
+                                                                                                                                    public int compare(CellValue< ? extends Comparable< ? >> o1,
+                                                                                                                                                       CellValue< ? extends Comparable< ? >> o2) {
+                                                                                                                                        return o1.getPhysicalCoordinate().getRow()
+                                                                                                                                               - o2.getPhysicalCoordinate().getRow();
+                                                                                                                                    }
 
-                                                                                                                            } );
+                                                                                                                                } );
 
     /**
      * Construct at empty DecoratedGridWidget, without DecoratedGridHeaderWidget
@@ -280,6 +282,29 @@ public abstract class DecoratedGridWidget<T> extends Composite
 
         assertDimensions();
 
+    }
+
+    /**
+     * Extend selection from the first cell selected to the cell specified
+     * 
+     * @param end
+     *            Extent of selection
+     */
+    public void extendSelection(Coordinate end) {
+        if ( rangeOriginCell == null ) {
+            throw new IllegalArgumentException( "origin cannot be null" );
+        }
+        clearSelection();
+        CellValue< ? > endCell = data.get( end );
+        selectRange( rangeOriginCell,
+                     endCell );
+        if ( rangeOriginCell.getCoordinate().getRow() > endCell.getCoordinate().getRow() ) {
+            rangeExtentCell = selections.first();
+            rangeDirection = MOVE_DIRECTION.UP;
+        } else {
+            rangeExtentCell = selections.last();
+            rangeDirection = MOVE_DIRECTION.DOWN;
+        }
     }
 
     /**
@@ -489,6 +514,21 @@ public abstract class DecoratedGridWidget<T> extends Composite
         return isMerged;
     }
 
+    public void moveAndExtendSelection(MOVE_DIRECTION dir) {
+        if ( selections.size() > 0 ) {
+            CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
+            Coordinate nc = getNextCell( activeCell.getCoordinate(),
+                                         dir );
+            if ( nc != null ) {
+                clearSelection();
+                rangeDirection = dir;
+                rangeExtentCell = data.get( nc );
+                selectRange( rangeOriginCell,
+                             rangeExtentCell );
+            }
+        }
+    }
+
     /**
      * Move the selected cell
      * 
@@ -497,28 +537,14 @@ public abstract class DecoratedGridWidget<T> extends Composite
      */
     public void moveSelection(MOVE_DIRECTION dir) {
         if ( selections.size() > 0 ) {
-            CellValue< ? > activeCell = (extentCell == null ? selections.first() : extentCell);
+            CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
             Coordinate nc = getNextCell( activeCell.getCoordinate(),
                                          dir );
-            if ( nc != null ) {
-                startSelecting( nc );
-            } else {
-                startSelecting( activeCell.getCoordinate() );
+            if ( nc == null ) {
+                nc = activeCell.getCoordinate();
             }
-        }
-    }
-
-    public void moveAndExtendSelection(MOVE_DIRECTION dir) {
-        if ( selections.size() > 0 ) {
-            CellValue< ? > activeCell = (extentCell == null ? originCell : extentCell);
-            Coordinate nc = getNextCell( activeCell.getCoordinate(),
-                                         dir );
-            if ( nc != null ) {
-                clearSelection();
-                extentCell = data.get( nc );
-                selectRange( originCell,
-                             extentCell );
-            }
+            startSelecting( nc );
+            rangeDirection = dir;
         }
     }
 
@@ -694,8 +720,8 @@ public abstract class DecoratedGridWidget<T> extends Composite
         CellValue< ? > startCell = data.get( start );
         selectRange( startCell,
                      startCell );
-        originCell = startCell;
-        extentCell = null;
+        rangeOriginCell = startCell;
+        rangeExtentCell = null;
     }
 
     /**
@@ -755,7 +781,14 @@ public abstract class DecoratedGridWidget<T> extends Composite
         //Re-select applicable cells, following change to merge
         selectRange( selections.first(),
                      selections.last() );
-        this.extentCell = this.selections.first();
+        switch ( rangeDirection ) {
+            case DOWN :
+                this.rangeExtentCell = this.selections.last();
+                break;
+            case UP :
+                this.rangeExtentCell = this.selections.first();
+                break;
+        }
     }
 
     // Ensure merging is reflected in the entire model
@@ -816,6 +849,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
 
         // Clear collection
         selections.clear();
+        rangeDirection = MOVE_DIRECTION.NONE;
     }
 
     // Delete column from table with optional redraw
@@ -939,6 +973,14 @@ public abstract class DecoratedGridWidget<T> extends Composite
                                                      - step );
                     }
 
+                    //Move to top of a merged cells
+                    CellValue< ? > newCell = data.get( nc );
+                    while ( newCell.getRowSpan() == 0 ) {
+                        nc = new Coordinate( nc.getRow() - 1,
+                                             nc.getCol() );
+                        newCell = data.get( nc );
+                    }
+                    
                     // Ensure cell is visible
                     ce = gridWidget.getSelectedCellExtents( selections.first() );
                     if ( ce.getOffsetX() < scrollPanel
@@ -963,6 +1005,14 @@ public abstract class DecoratedGridWidget<T> extends Composite
                         nc = new Coordinate( c.getRow(),
                                              nc.getCol()
                                                      + step );
+                    }
+
+                    //Move to top of a merged cells
+                    CellValue< ? > newCell = data.get( nc );
+                    while ( newCell.getRowSpan() == 0 ) {
+                        nc = new Coordinate( nc.getRow() - 1,
+                                             nc.getCol() );
+                        newCell = data.get( nc );
                     }
 
                     // Ensure cell is visible
