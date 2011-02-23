@@ -48,6 +48,7 @@ public interface RepositoryServiceAsync {
     public void removeWorkspace(java.lang.String p0, AsyncCallback cb);
     public void updateWorkspace(java.lang.String p0, java.lang.String[] p1, java.lang.String[] p2, AsyncCallback cb);
     public void updateDependency(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
+    public void getDependencies(java.lang.String p0, AsyncCallback<java.lang.String[]> cb);
     public void loadGlobalPackage(AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData> cb);
     public void listArchivedPackages(AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData[]> cb);
     public void loadRuleAsset(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.RuleAsset> cb);

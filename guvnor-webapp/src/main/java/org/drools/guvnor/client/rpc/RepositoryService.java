@@ -165,6 +165,8 @@ public interface RepositoryService
 
     public void updateDependency(String uuid, String dependencyPath);
 
+    public String[] getDependencies(String uuid);
+ 
     /**
      * This returns the global packages.
      */

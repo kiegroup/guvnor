@@ -61,29 +61,6 @@ public class DependencyWidget extends Composite {
     public DependencyWidget(final PackageConfigData conf) {
         this.conf = conf;
         layout = new FormStyleLayout();
-
-/*
-        VerticalPanel header = new VerticalPanel();
-        Label caption = new Label( "Dependencies" );
-        caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
-        header.add( caption );
-        header.add( howToTurnOn() );
-
-        layout.addAttribute( "",
-        		header );
-
-        layout.addHeader( images.statusLarge(),
-                      header );
-
-        VerticalPanel vp = new VerticalPanel();
-        vp.setHeight( "100%" );
-        vp.setWidth( "100%" );
-
-        //pf.startSection();
-        layout.addRow( vp );
-        //pf.endSection();
-*/
-        //layout.clear();
         
         VerticalPanel header = new VerticalPanel();
         Label caption = new Label( "Dependencies" );
@@ -103,7 +80,7 @@ public class DependencyWidget extends Composite {
 
         //pf.startSection();
         layout.addRow( vp );
-        table = new DependenciesPagedTable(conf.dependencies, 
+        table = new DependenciesPagedTable(conf.uuid, 
                 null, null, new OpenItemCommand() {
 
             public void open(String path) {
@@ -118,9 +95,6 @@ public class DependencyWidget extends Composite {
 
         layout.addRow( table );
         initWidget( layout );
-        
-        //refresh();
-        //initWidget( layout );
     }
 
     private Widget howToTurnOn() {
@@ -155,7 +129,7 @@ public class DependencyWidget extends Composite {
 
         //pf.startSection();
         layout.addRow( vp );
-        table = new DependenciesPagedTable(conf.dependencies, 
+        table = new DependenciesPagedTable(conf.uuid, 
         		null, null, new OpenItemCommand() {
 
             public void open(String path) {
@@ -210,8 +184,6 @@ public class DependencyWidget extends Composite {
 		Button save = new Button("Use selected version"); 
 		hp.add(save);
         save.addClickHandler(new ClickHandler() {
-            private Object archiveCommand;
-
             public void onClick(ClickEvent w) {
                 String selectedVersion = versionChoose.getSelectedVersionName();
                 if (Window.confirm("Are you sure you want to use version: " + selectedVersion  + " as dependency?")) {

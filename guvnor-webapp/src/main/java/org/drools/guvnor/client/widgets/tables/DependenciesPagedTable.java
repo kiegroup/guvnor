@@ -19,9 +19,13 @@ package org.drools.guvnor.client.widgets.tables;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.packages.DependencyWidget;
 import org.drools.guvnor.client.rpc.DependenciesPageRow;
+import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.cell.client.ButtonCell;
@@ -75,10 +79,9 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
 
     protected SingleSelectionModel<DependenciesPageRow> selectionModel;
     
-    String[] dependencies;
+    private final String uuid;
 
-
-    public DependenciesPagedTable(String[] dependencies, 
+    public DependenciesPagedTable(String theUuid,
     		Command newDependencyCommand,
             Command deleteDependencyCommand,
             OpenItemCommand openSelectedCommand) {
@@ -86,23 +89,27 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
         this.newDependencyCommand = newDependencyCommand;
         this.deleteDependencyCommand = deleteDependencyCommand;
         this.openSelectedCommand = openSelectedCommand;
-        this.dependencies = dependencies;
-        final List<DependenciesPageRow> dependencyList = new ArrayList<DependenciesPageRow>();
-        for(String dependency: dependencies) {
-        	DependenciesPageRow row = new DependenciesPageRow();
-        	row.setDependencyPath(DependencyWidget.parseDependencyPath(dependency)[0]);
-        	row.setDependencyVersion(DependencyWidget.parseDependencyPath(dependency)[1]);
-        	
-        	dependencyList.add(row);
-        }
+        this.uuid = theUuid;
         
         setDataProvider( new AsyncDataProvider<DependenciesPageRow>() {
             protected void onRangeChanged(HasData<DependenciesPageRow> display) {
-                PageRequest request = new PageRequest();
-                request.setStartRowIndex( pager.getPageStart() );
-                request.setPageSize( pageSize );
-                updateRowCount( dependencyList.size(), true );
-                updateRowData( 0, dependencyList );
+                LoadingPopup.showMessage("please wait...");
+                RepositoryServiceFactory.getService().getDependencies( uuid,
+                        new GenericCallback<String[]>() {
+                            public void onSuccess(String[] dependencies) {
+                                LoadingPopup.close();
+                                final List<DependenciesPageRow> dependencyList = new ArrayList<DependenciesPageRow>();
+                                for(String dependency: dependencies) {
+                                    DependenciesPageRow row = new DependenciesPageRow();
+                                    row.setDependencyPath(DependencyWidget.parseDependencyPath(dependency)[0]);
+                                    row.setDependencyVersion(DependencyWidget.parseDependencyPath(dependency)[1]);
+                                    dependencyList.add(row);
+                                }
+                                updateRowCount( dependencyList.size(), true );
+                                updateRowData( 0, dependencyList );
+                            }
+                        } );
+
             }
         } );
     }

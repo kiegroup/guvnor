@@ -1271,7 +1271,10 @@ public class ServiceImplementation
         item.checkin( "Update dependency" );
     }
 
-    
+    public String[] getDependencies(String uuid) {
+        PackageItem item = getRulesRepository().loadPackageByUUID(uuid);
+        return item.getDependencies();
+    }
 
     /**
      * @deprecated in favour of {@link loadRuleListForState(StatePageRequest)}
