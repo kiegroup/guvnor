@@ -193,7 +193,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             HorizontalPanel hp = new HorizontalPanel();
             hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
             hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
-            setIconImage( grid.isMerged() );
+            setIconImage( grid.getGridWidget().isMerged() );
             hp.add( icon );
             hp.setWidth( "100%" );
             hp.setHeight( "100%" );
@@ -216,7 +216,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             fp.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    setIconImage( grid.toggleMerging() );
+                    setIconImage( grid.getGridWidget().toggleMerging() );
                 }
 
             } );

@@ -48,9 +48,7 @@ public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
     @Override
     public MergableGridWidget<T> getGridWidget() {
         if ( this.gridWidget == null ) {
-            this.gridWidget = new VerticalMergableGridWidget<T>( this,
-                                                                 data,
-                                                                 columns );
+            this.gridWidget = new VerticalMergableGridWidget<T>( this );
         }
         return this.gridWidget;
     }

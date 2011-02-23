@@ -343,8 +343,8 @@ public class VerticalDecisionTableHeaderWidget extends
             // Extracting visible columns makes life easier
             visibleCols.clear();
             visibleConditionCols.clear();
-            for ( int iCol = 0; iCol < grid.getColumns().size(); iCol++ ) {
-                DynamicColumn<DTColumnConfig> col = grid.getColumns().get( iCol );
+            for ( int iCol = 0; iCol < grid.getGridWidget().getColumns().size(); iCol++ ) {
+                DynamicColumn<DTColumnConfig> col = grid.getGridWidget().getColumns().get( iCol );
                 if ( col.isVisible() ) {
                     visibleCols.add( col );
                     DTColumnConfig modelCol = col.getModelColumn();
@@ -378,7 +378,7 @@ public class VerticalDecisionTableHeaderWidget extends
             switch ( iRow ) {
                 case 0 :
                     // General row, all visible cells included
-                    for ( DynamicColumn<DTColumnConfig> col : grid.getColumns() ) {
+                    for ( DynamicColumn<DTColumnConfig> col : grid.getGridWidget().getColumns() ) {
                         if ( col.isVisible() ) {
                             tce = DOM.createTD();
                             tce.addClassName( style.headerText() );
@@ -471,7 +471,7 @@ public class VerticalDecisionTableHeaderWidget extends
 
                 case 4 :
                     // Sorters
-                    for ( DynamicColumn<DTColumnConfig> col : grid.getColumns() ) {
+                    for ( DynamicColumn<DTColumnConfig> col : grid.getGridWidget().getColumns() ) {
                         if ( col.isVisible() ) {
                             final HeaderSorter shp = new HeaderSorter( col );
                             final DynamicColumn<DTColumnConfig> sortableColumn = col;
@@ -515,7 +515,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 column.setSortIndex( 0 );
                 column.setSortDirection( SortDirection.ASCENDING );
                 int sortIndex = 1;
-                for ( DynamicColumn<DTColumnConfig> sortableColumn : grid.getColumns() ) {
+                for ( DynamicColumn<DTColumnConfig> sortableColumn : grid.getGridWidget().getColumns() ) {
                     if ( !sortableColumn.equals( column ) ) {
                         if ( sortableColumn.getSortDirection() != SortDirection.NONE ) {
                             sortableColumn.setSortIndex( sortIndex );

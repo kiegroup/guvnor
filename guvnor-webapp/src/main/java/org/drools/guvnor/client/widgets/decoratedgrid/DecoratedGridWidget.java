@@ -15,11 +15,9 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.TreeSet;
 
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
@@ -30,6 +28,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Panel;
@@ -45,54 +44,25 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  */
 public abstract class DecoratedGridWidget<T> extends Composite
     implements
-        ValueUpdater<Object> {
-
-    // Enum to support keyboard navigation
-    public enum MOVE_DIRECTION {
-        LEFT, RIGHT, UP, DOWN, NONE
-    }
+        ValueUpdater<Object>,
+    HasSelectedCellChangeHandlers {
 
     // Widgets for UI
-    protected Panel                                        mainPanel;
-    protected Panel                                        bodyPanel;
-    protected FocusPanel                                   mainFocusPanel;
-    protected ScrollPanel                                  scrollPanel;
-    protected MergableGridWidget<T>                        gridWidget;
-    protected DecoratedGridHeaderWidget<T>                 headerWidget;
-    protected DecoratedGridSidebarWidget<T>                sidebarWidget;
-    protected HasSystemControlledColumns                   hasSystemControlledColumns;
-    protected boolean                                      isMerged       = false;
+    protected Panel                               mainPanel;
+    protected Panel                               bodyPanel;
+    protected FocusPanel                          mainFocusPanel;
+    protected ScrollPanel                         scrollPanel;
+    protected MergableGridWidget<T>               gridWidget;
+    protected DecoratedGridHeaderWidget<T>        headerWidget;
+    protected DecoratedGridSidebarWidget<T>       sidebarWidget;
+    protected HasSystemControlledColumns          hasSystemControlledColumns;
 
-    // Decision Table data
-    protected DynamicData                                  data           = new DynamicData();
-    protected List<DynamicColumn<T>>                       columns        = new ArrayList<DynamicColumn<T>>();
-    protected int                                          height;
-    protected int                                          width;
+    protected int                                 height;
+    protected int                                 width;
 
     // Resources
-    protected static final DecisionTableResources          resource       = GWT
-                                                                                  .create( DecisionTableResources.class );
-    protected static final DecisionTableStyle              style          = resource.cellTableStyle();
-
-    //Properties for multi-cell selection
-    private CellValue< ? >                                 rangeOriginCell;
-    private CellValue< ? >                                 rangeExtentCell;
-    private MOVE_DIRECTION                                 rangeDirection = MOVE_DIRECTION.NONE;
-
-    // Selections store the actual grid data selected (irrespective of
-    // merged cells). So a merged cell spanning 2 rows is stored as 2
-    // selections. Selections are ordered by row number so we can
-    // iterate top to bottom.
-    private TreeSet<CellValue< ? extends Comparable< ? >>> selections     = new TreeSet<CellValue< ? extends Comparable< ? >>>(
-                                                                                                                                new Comparator<CellValue< ? extends Comparable< ? >>>() {
-
-                                                                                                                                    public int compare(CellValue< ? extends Comparable< ? >> o1,
-                                                                                                                                                       CellValue< ? extends Comparable< ? >> o2) {
-                                                                                                                                        return o1.getPhysicalCoordinate().getRow()
-                                                                                                                                               - o2.getPhysicalCoordinate().getRow();
-                                                                                                                                    }
-
-                                                                                                                                } );
+    protected static final DecisionTableResources resource = GWT.create( DecisionTableResources.class );
+    protected static final DecisionTableStyle     style    = resource.cellTableStyle();
 
     /**
      * Construct at empty DecoratedGridWidget, without DecoratedGridHeaderWidget
@@ -120,6 +90,24 @@ public abstract class DecoratedGridWidget<T> extends Composite
 
         mainFocusPanel = new FocusPanel( mainPanel );
         initWidget( mainFocusPanel );
+
+        //Add handler for when the selected cell changes
+        addSelectedCellChangeHandler( new SelectedCellChangeHandler() {
+
+            public void onSelectedCellChange(SelectedCellChangeEvent event) {
+                cellSelected( event.getCellExtents() );
+            }
+
+        } );
+
+    }
+
+    /**
+     * Add a handler for SelectedCellChangeEvents
+     */
+    public HandlerRegistration addSelectedCellChangeHandler(SelectedCellChangeHandler handler) {
+        return addHandler( handler,
+                           SelectedCellChangeEvent.getType() );
     }
 
     /**
@@ -133,6 +121,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
     public void appendColumn(DynamicColumn<T> column,
                              List<CellValue< ? >> columnData,
                              boolean bRedraw) {
+        DynamicData data = gridWidget.getData();
         if ( column == null ) {
             throw new IllegalArgumentException(
                                                 "Column cannot be null." );
@@ -158,7 +147,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
         if ( row == null ) {
             throw new IllegalArgumentException( "row cannot be null" );
         }
-        clearSelection();
+        gridWidget.clearSelection();
         insertRowBefore( null,
                          row );
     }
@@ -172,59 +161,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
                                + "px" );
         sidebarWidget.setHeight( scrollPanel.getElement().getClientHeight()
                                  + "px" );
-    }
-
-    /**
-     * Ensure indexes in the model are correct
-     */
-    // Here lays a can of worms! Each cell in the Decision Table has three
-    // coordinates: (1) The physical coordinate, (2) The coordinate relating to
-    // the HTML table element and (3) The coordinate mapping a HTML table
-    // element back to the physical coordinate. For example a cell could have
-    // the (1) physical coordinate (0,0) which equates to (2) HTML element (0,1)
-    // in which case the cell at physical coordinate (0,1) would have a (3)
-    // mapping back to (0,0).
-    public void assertModelIndexes() {
-
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DynamicDataRow row = data.get( iRow );
-            int colCount = 0;
-            for ( int iCol = 0; iCol < row.size(); iCol++ ) {
-
-                int newRow = iRow;
-                int newCol = colCount;
-                CellValue< ? extends Comparable< ? >> indexCell = row.get( iCol );
-
-                // Don't index hidden columns; indexing is used to
-                // map between HTML elements and the data behind
-                DynamicColumn<T> column = columns.get( iCol );
-                if ( column.isVisible() ) {
-
-                    if ( indexCell.getRowSpan() != 0 ) {
-                        newRow = iRow;
-                        newCol = colCount++;
-
-                        CellValue< ? extends Comparable< ? >> cell = data.get(
-                                                                               newRow ).get( newCol );
-                        cell.setPhysicalCoordinate( new Coordinate( iRow,
-                                                                    iCol ) );
-
-                    } else {
-                        DynamicDataRow priorRow = data.get( iRow - 1 );
-                        CellValue< ? extends Comparable< ? >> priorCell = priorRow
-                                .get( iCol );
-                        Coordinate priorHtmlCoordinate = priorCell
-                                .getHtmlCoordinate();
-                        newRow = priorHtmlCoordinate.getRow();
-                        newCol = priorHtmlCoordinate.getCol();
-                    }
-                }
-                indexCell.setCoordinate( new Coordinate( iRow,
-                                                         iCol ) );
-                indexCell.setHtmlCoordinate( new Coordinate( newRow,
-                                                             newCol ) );
-            }
-        }
     }
 
     /**
@@ -250,26 +186,27 @@ public abstract class DecoratedGridWidget<T> extends Composite
         if ( row == null ) {
             throw new IllegalArgumentException( "row cannot be null" );
         }
+        DynamicData data = gridWidget.getData();
         int index = data.indexOf( row );
         if ( index == -1 ) {
             throw new IllegalArgumentException(
                                                 "DynamicDataRow does not exist in table data." );
         }
-        clearSelection();
+        gridWidget.clearSelection();
 
         data.remove( index );
 
         // Partial redraw
-        if ( !isMerged ) {
+        if ( !gridWidget.isMerged() ) {
             // Single row when not merged
             gridWidget.deleteRow( index );
-            assertModelIndexes();
+            gridWidget.assertModelIndexes();
         } else {
             // Affected rows when merged
             gridWidget.deleteRow( index );
 
             if ( data.size() > 0 ) {
-                assertModelMerging();
+                gridWidget.assertModelMerging();
                 int minRedrawRow = findMinRedrawRow( index - 1 );
                 int maxRedrawRow = findMaxRedrawRow( index - 1 ) + 1;
                 if ( maxRedrawRow > data.size() - 1 ) {
@@ -285,53 +222,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
     }
 
     /**
-     * Extend selection from the first cell selected to the cell specified
-     * 
-     * @param end
-     *            Extent of selection
-     */
-    public void extendSelection(Coordinate end) {
-        if ( rangeOriginCell == null ) {
-            throw new IllegalArgumentException( "origin has not been set. Unable to extend selection" );
-        }
-        if ( end == null ) {
-            throw new IllegalArgumentException( "end cannot be null" );
-        }
-        clearSelection();
-        CellValue< ? > endCell = data.get( end );
-        selectRange( rangeOriginCell,
-                     endCell );
-        if ( rangeOriginCell.getCoordinate().getRow() > endCell.getCoordinate().getRow() ) {
-            rangeExtentCell = selections.first();
-            rangeDirection = MOVE_DIRECTION.UP;
-        } else {
-            rangeExtentCell = selections.last();
-            rangeDirection = MOVE_DIRECTION.DOWN;
-        }
-    }
-
-    /**
-     * Extend selection in the specified direction
-     * 
-     * @param dir
-     *            Direction to extend the selection
-     */
-    public void extendSelection(MOVE_DIRECTION dir) {
-        if ( selections.size() > 0 ) {
-            CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
-            Coordinate nc = getNextCell( activeCell.getCoordinate(),
-                                         dir );
-            if ( nc != null ) {
-                clearSelection();
-                rangeDirection = dir;
-                rangeExtentCell = data.get( nc );
-                selectRange( rangeOriginCell,
-                             rangeExtentCell );
-            }
-        }
-    }
-
-    /**
      * Get the DecoratedGridWidget inner panel to which the
      * DecoratedGridHeaderWidget will be added. This allows subclasses to have
      * some control over the internal layout of the grid.
@@ -339,24 +229,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
      * @return
      */
     public abstract Panel getBodyPanel();
-
-    /**
-     * Return the DecoratedGridWidget columns
-     * 
-     * @return The columns
-     */
-    public List<DynamicColumn<T>> getColumns() {
-        return this.columns;
-    }
-
-    /**
-     * Return the DecoratedGridWidget data
-     * 
-     * @return The grid data
-     */
-    public DynamicData getData() {
-        return this.data;
-    }
 
     /**
      * Return the Widget responsible for rendering the DecoratedGridWidget
@@ -395,15 +267,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
     public abstract ScrollHandler getScrollHandler();
 
     /**
-     * Retrieve the selected cells
-     * 
-     * @return The selected cells
-     */
-    public TreeSet<CellValue< ? extends Comparable< ? >>> getSelections() {
-        return this.selections;
-    }
-
-    /**
      * Return the Widget responsible for rendering the DecoratedGridWidget
      * "sidebar".
      * 
@@ -426,6 +289,9 @@ public abstract class DecoratedGridWidget<T> extends Composite
                                    DynamicColumn<T> newColumn,
                                    List<CellValue< ? >> columnData,
                                    boolean bRedraw) {
+
+        final DynamicData data = gridWidget.getData();
+        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
 
         int index = columns.size();
         if ( columnBefore != null ) {
@@ -457,7 +323,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
             data.get( iRow ).add( index,
                                   cv );
         }
-        assertModelIndexes();
+        gridWidget.assertModelIndexes();
 
         // Redraw
         if ( bRedraw ) {
@@ -477,6 +343,10 @@ public abstract class DecoratedGridWidget<T> extends Composite
      */
     public void insertRowBefore(DynamicDataRow rowBefore,
                                 DynamicDataRow newRow) {
+
+        final DynamicData data = gridWidget.getData();
+        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
+
         int index = data.size();
         if ( rowBefore != null ) {
             index = data.indexOf( rowBefore );
@@ -495,7 +365,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
         // Find rows that need to be (re)drawn
         int minRedrawRow = index;
         int maxRedrawRow = index;
-        if ( isMerged ) {
+        if ( gridWidget.isMerged() ) {
             if ( index < data.size() ) {
                 minRedrawRow = findMinRedrawRow( index );
                 maxRedrawRow = findMaxRedrawRow( index ) + 1;
@@ -509,14 +379,14 @@ public abstract class DecoratedGridWidget<T> extends Composite
                   newRow );
 
         // Partial redraw
-        if ( !isMerged ) {
+        if ( !gridWidget.isMerged() ) {
             // Only new row when not merged
-            assertModelIndexes();
+            gridWidget.assertModelIndexes();
             gridWidget.insertRowBefore( index,
                                         newRow );
         } else {
             // Affected rows when merged
-            assertModelMerging();
+            gridWidget.assertModelMerging();
 
             // This row is overwritten by the call to redrawRows()
             gridWidget.insertRowBefore( index,
@@ -530,37 +400,10 @@ public abstract class DecoratedGridWidget<T> extends Composite
     }
 
     /**
-     * Return the state of merging
-     * 
-     * @return
-     */
-    public boolean isMerged() {
-        return isMerged;
-    }
-
-    /**
-     * Move the selected cell
-     * 
-     * @param dir
-     *            Direction to move the selection
-     */
-    public void moveSelection(MOVE_DIRECTION dir) {
-        if ( selections.size() > 0 ) {
-            CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
-            Coordinate nc = getNextCell( activeCell.getCoordinate(),
-                                         dir );
-            if ( nc == null ) {
-                nc = activeCell.getCoordinate();
-            }
-            startSelecting( nc );
-            rangeDirection = dir;
-        }
-    }
-
-    /**
      * Redraw any columns that have their values programmatically manipulated
      */
     public void redrawSystemControlledColumns() {
+        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
         for ( DynamicColumn< ? > col : columns ) {
             if ( col.isSystemControlled() ) {
                 gridWidget.redrawColumn( col.getColumnIndex() );
@@ -578,6 +421,9 @@ public abstract class DecoratedGridWidget<T> extends Composite
      */
     public void setColumnVisibility(int index,
                                     boolean isVisible) {
+
+        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
+
         if ( index < 0
              || index > columns.size() ) {
             throw new IllegalArgumentException(
@@ -587,13 +433,13 @@ public abstract class DecoratedGridWidget<T> extends Composite
         if ( isVisible
              && !columns.get( index ).isVisible() ) {
             columns.get( index ).setVisible( isVisible );
-            assertModelIndexes();
+            gridWidget.assertModelIndexes();
             gridWidget.showColumn( index );
             headerWidget.redraw();
         } else if ( !isVisible
                     && columns.get( index ).isVisible() ) {
             columns.get( index ).setVisible( isVisible );
-            assertModelIndexes();
+            gridWidget.assertModelIndexes();
             gridWidget.hideColumn( index );
             headerWidget.redraw();
         }
@@ -653,6 +499,10 @@ public abstract class DecoratedGridWidget<T> extends Composite
      * Sort data based upon information stored in Columns
      */
     public void sort() {
+
+        final DynamicData data = gridWidget.getData();
+        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
+
         final DynamicColumn< ? >[] sortOrderList = new DynamicColumn[columns.size()];
         int index = 0;
         for ( DynamicColumn<T> column : columns ) {
@@ -703,8 +553,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
         }
                           } );
 
-        removeModelMerging();
-        assertModelMerging();
+        gridWidget.assertModelMerging();
 
         // Request dependent children update cell values accordingly
         if ( hasSystemControlledColumns != null ) {
@@ -714,45 +563,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
 
     }
 
-    /**
-     * Select a single cell. If the cell is merged the selection is extended to
-     * include all merged cells.
-     * 
-     * @param start
-     *            The physical coordinate of the cell
-     */
-    public void startSelecting(Coordinate start) {
-        if ( start == null ) {
-            throw new IllegalArgumentException( "start cannot be null" );
-        }
-        clearSelection();
-        CellValue< ? > startCell = data.get( start );
-        selectRange( startCell,
-                     startCell );
-        rangeOriginCell = startCell;
-        rangeExtentCell = null;
-    }
-
-    /**
-     * Toggle the state of DecoratedGridWidget merging.
-     * 
-     * @return The state of merging after completing this call
-     */
-    public boolean toggleMerging() {
-        if ( !isMerged ) {
-            isMerged = true;
-            clearSelection();
-            assertModelMerging();
-            gridWidget.redraw();
-        } else {
-            isMerged = false;
-            clearSelection();
-            removeModelMerging();
-            gridWidget.redraw();
-        }
-        return isMerged;
-    }
-
     /*
      * (non-Javadoc)
      * 
@@ -760,8 +570,11 @@ public abstract class DecoratedGridWidget<T> extends Composite
      */
     public void update(Object value) {
 
+        final DynamicData data = gridWidget.getData();
+        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
+
         // Update underlying data
-        for ( CellValue< ? extends Comparable< ? >> cell : this.selections ) {
+        for ( CellValue< ? extends Comparable< ? >> cell : gridWidget.getSelectedCells() ) {
             Coordinate c = cell.getCoordinate();
             if ( !columns.get( c.getCol() ).isSystemControlled() ) {
                 data.set( c,
@@ -770,8 +583,8 @@ public abstract class DecoratedGridWidget<T> extends Composite
         }
 
         // Partial redraw
-        assertModelMerging();
-        int baseRowIndex = this.selections.first().getPhysicalCoordinate()
+        gridWidget.assertModelMerging();
+        int baseRowIndex = gridWidget.getSelectedCells().first().getPhysicalCoordinate()
                 .getRow();
         int minRedrawRow = findMinRedrawRow( baseRowIndex );
         int maxRedrawRow = findMaxRedrawRow( baseRowIndex );
@@ -779,91 +592,55 @@ public abstract class DecoratedGridWidget<T> extends Composite
         // When merged cells become unmerged (if their value is
         // cleared need to ensure the re-draw range is at least
         // as large as the selection range
-        if ( maxRedrawRow < this.selections.last().getPhysicalCoordinate()
+        if ( maxRedrawRow < gridWidget.getSelectedCells().last().getPhysicalCoordinate()
                 .getRow() ) {
-            maxRedrawRow = this.selections.last().getPhysicalCoordinate()
+            maxRedrawRow = gridWidget.getSelectedCells().last().getPhysicalCoordinate()
                     .getRow();
         }
         gridWidget.redrawRows( minRedrawRow,
                                maxRedrawRow );
 
         //Re-select applicable cells, following change to merge
-        selectRange( selections.first(),
-                     selections.last() );
-        switch ( rangeDirection ) {
-            case DOWN :
-                this.rangeExtentCell = this.selections.last();
-                break;
-            case UP :
-                this.rangeExtentCell = this.selections.first();
-                break;
-        }
+        gridWidget.selectRange( gridWidget.getSelectedCells().first(),
+                                gridWidget.getSelectedCells().last() );
+
     }
 
-    // Ensure merging is reflected in the entire model
-    private void assertModelMerging() {
+    //Ensure the selected cell is visible
+    private void cellSelected(CellExtents ce) {
 
-        final int minRowIndex = 0;
-        final int maxRowIndex = data.size() - 1;
-
-        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            for ( int iRow = minRowIndex; iRow <= maxRowIndex; iRow++ ) {
-
-                int rowSpan = 1;
-                CellValue< ? > cell1 = data.get( iRow ).get( iCol );
-                if ( iRow
-                     + rowSpan < data.size() ) {
-
-                    CellValue< ? > cell2 = data.get( iRow
-                                                     + rowSpan ).get( iCol );
-
-                    // Don't merge empty cells
-                    if ( isMerged
-                         && !cell1.isEmpty()
-                         && !cell2.isEmpty() ) {
-                        while ( cell1.getValue().equals( cell2.getValue() )
-                                && iRow
-                                   + rowSpan < maxRowIndex ) {
-                            cell2.setRowSpan( 0 );
-                            rowSpan++;
-                            cell2 = data.get( iRow
-                                              + rowSpan ).get( iCol );
-                        }
-                        if ( cell1.getValue().equals( cell2.getValue() ) ) {
-                            cell2.setRowSpan( 0 );
-                            rowSpan++;
-                        }
-                    }
-                    cell1.setRowSpan( rowSpan );
-                    iRow = iRow
-                           + rowSpan
-                           - 1;
-                } else {
-                    cell1.setRowSpan( rowSpan );
-                }
-            }
+        //Left extent
+        if ( ce.getOffsetX() < scrollPanel.getHorizontalScrollPosition() ) {
+            scrollPanel.setHorizontalScrollPosition( ce.getOffsetX() );
         }
 
-        // Set indexes after merging has been corrected
-        assertModelIndexes();
-    }
-
-    // Clear and selection.
-    private void clearSelection() {
-        // De-select any previously selected cells
-        for ( CellValue< ? extends Comparable< ? >> cell : this.selections ) {
-            cell.setSelected( false );
-            gridWidget.deselectCell( cell );
+        //Right extent
+        int scrollWidth = scrollPanel.getElement().getClientWidth();
+        if ( ce.getOffsetX() + ce.getWidth() > scrollWidth + scrollPanel.getHorizontalScrollPosition() ) {
+            int delta = ce.getOffsetX() + ce.getWidth() - scrollPanel.getHorizontalScrollPosition() - scrollWidth;
+            scrollPanel.setHorizontalScrollPosition( scrollPanel.getHorizontalScrollPosition() + delta );
         }
 
-        // Clear collection
-        selections.clear();
-        rangeDirection = MOVE_DIRECTION.NONE;
+        //Top extent
+        if ( ce.getOffsetY() < scrollPanel.getScrollPosition() ) {
+            scrollPanel.setScrollPosition( ce.getOffsetY() );
+        }
+
+        //Bottom extent
+        int scrollHeight = scrollPanel.getElement().getClientHeight();
+        if ( ce.getOffsetY() + ce.getHeight() > scrollHeight + scrollPanel.getScrollPosition() ) {
+            int delta = ce.getOffsetY() + ce.getHeight() - scrollPanel.getScrollPosition() - scrollHeight;
+            scrollPanel.setScrollPosition( scrollPanel.getScrollPosition() + delta );
+        }
+
     }
 
     // Delete column from table with optional redraw
     private void deleteColumn(DynamicColumn<T> column,
                               boolean bRedraw) {
+
+        final DynamicData data = gridWidget.getData();
+        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
 
         // Lookup UI column
         int index = columns.indexOf( column );
@@ -873,7 +650,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
         }
 
         // Clear any selections
-        clearSelection();
+        gridWidget.clearSelection();
 
         // Delete column data
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
@@ -887,7 +664,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
 
         // Redraw
         if ( bRedraw ) {
-            assertModelIndexes();
+            gridWidget.assertModelIndexes();
             gridWidget.redraw();
             headerWidget.redraw();
         }
@@ -898,6 +675,9 @@ public abstract class DecoratedGridWidget<T> extends Composite
     // upon each columns merged cells; where each merged cell passes through the
     // base row
     private int findMaxRedrawRow(int baseRowIndex) {
+
+        final DynamicData data = gridWidget.getData();
+
         if ( data.size() == 0 ) {
             return 0;
         }
@@ -930,6 +710,9 @@ public abstract class DecoratedGridWidget<T> extends Composite
     // upon each columns merged cells; where each merged cell passes through the
     // base row
     private int findMinRedrawRow(int baseRowIndex) {
+
+        final DynamicData data = gridWidget.getData();
+
         if ( data.size() == 0 ) {
             return 0;
         }
@@ -958,208 +741,12 @@ public abstract class DecoratedGridWidget<T> extends Composite
         return minRedrawRow;
     }
 
-    //Get the next cell when selection moves in the specified direction
-    private Coordinate getNextCell(Coordinate c,
-                                   MOVE_DIRECTION dir) {
-        int step = 0;
-        Coordinate nc = null;
-        CellExtents ce = null;
-        switch ( dir ) {
-            case LEFT :
-
-                // Move left
-                step = c.getCol() > 0 ? 1 : 0;
-                if ( step > 0 ) {
-                    nc = new Coordinate( c.getRow(),
-                                         c.getCol()
-                                                 - step );
-
-                    // Skip hidden columns
-                    while ( nc.getCol() > 0
-                            && !columns.get( nc.getCol() ).isVisible() ) {
-                        nc = new Coordinate( c.getRow(),
-                                             nc.getCol()
-                                                     - step );
-                    }
-
-                    //Move to top of a merged cells
-                    CellValue< ? > newCell = data.get( nc );
-                    while ( newCell.getRowSpan() == 0 ) {
-                        nc = new Coordinate( nc.getRow() - 1,
-                                             nc.getCol() );
-                        newCell = data.get( nc );
-                    }
-                    
-                    // Ensure cell is visible
-                    ce = gridWidget.getSelectedCellExtents( selections.first() );
-                    if ( ce.getOffsetX() < scrollPanel
-                            .getHorizontalScrollPosition() ) {
-                        scrollPanel
-                                .setHorizontalScrollPosition( ce.getOffsetX() );
-                    }
-                }
-                break;
-            case RIGHT :
-
-                // Move right
-                step = c.getCol() < columns.size() - 1 ? 1 : 0;
-                if ( step > 0 ) {
-                    nc = new Coordinate( c.getRow(),
-                                         c.getCol()
-                                                 + step );
-
-                    // Skip hidden columns
-                    while ( nc.getCol() < columns.size() - 2
-                            && !columns.get( nc.getCol() ).isVisible() ) {
-                        nc = new Coordinate( c.getRow(),
-                                             nc.getCol()
-                                                     + step );
-                    }
-
-                    //Move to top of a merged cells
-                    CellValue< ? > newCell = data.get( nc );
-                    while ( newCell.getRowSpan() == 0 ) {
-                        nc = new Coordinate( nc.getRow() - 1,
-                                             nc.getCol() );
-                        newCell = data.get( nc );
-                    }
-
-                    // Ensure cell is visible
-                    ce = gridWidget.getSelectedCellExtents( selections.first() );
-                    int scrollWidth = scrollPanel.getElement().getClientWidth();
-                    if ( ce.getOffsetX()
-                         + ce.getWidth() > scrollWidth
-                                                           + scrollPanel.getHorizontalScrollPosition() ) {
-                        int delta = ce.getOffsetX()
-                                    + ce.getWidth()
-                                    - scrollPanel.getHorizontalScrollPosition()
-                                    - scrollWidth;
-                        scrollPanel.setHorizontalScrollPosition( scrollPanel
-                                .getHorizontalScrollPosition()
-                                                                 + delta );
-                    }
-                }
-                break;
-            case UP :
-
-                // Move up
-                step = c.getRow() > 0 ? 1 : 0;
-                if ( step > 0 ) {
-                    nc = new Coordinate( c.getRow()
-                                                 - step,
-                                         c.getCol() );
-
-                    //Move to top of a merged cells
-                    CellValue< ? > newCell = data.get( nc );
-                    while ( newCell.getRowSpan() == 0 ) {
-                        nc = new Coordinate( nc.getRow() - step,
-                                             nc.getCol() );
-                        newCell = data.get( nc );
-                    }
-
-                    // Ensure cell is visible
-                    ce = gridWidget.getSelectedCellExtents( selections.first() );
-                    if ( ce.getOffsetY() < scrollPanel.getScrollPosition() ) {
-                        scrollPanel.setScrollPosition( ce.getOffsetY() );
-                    }
-                }
-                break;
-            case DOWN :
-
-                // Move down
-                step = c.getRow() < data.size() - 1 ? 1 : 0;
-                if ( step > 0 ) {
-                    nc = new Coordinate( c.getRow()
-                                                 + step,
-                                         c.getCol() );
-
-                    //Move to top of a merged cells
-                    CellValue< ? > newCell = data.get( nc );
-                    while ( newCell.getRowSpan() == 0 && nc.getRow() < data.size() - 1 ) {
-                        nc = new Coordinate( nc.getRow() + step,
-                                             nc.getCol() );
-                        newCell = data.get( nc );
-                    }
-
-                    // Ensure cell is visible
-                    ce = gridWidget.getSelectedCellExtents( selections.first() );
-                    int scrollHeight = scrollPanel.getElement()
-                            .getClientHeight();
-                    if ( ce.getOffsetY()
-                         + ce.getHeight() > scrollHeight
-                                                            + scrollPanel.getScrollPosition() ) {
-                        int delta = ce.getOffsetY()
-                                    + ce.getHeight()
-                                    - scrollPanel.getScrollPosition()
-                                    - scrollHeight;
-                        scrollPanel.setScrollPosition( scrollPanel
-                                .getScrollPosition()
-                                                       + delta );
-                    }
-                }
-        }
-        return nc;
-    }
-
     // Re-index columns
     private void reindexColumns() {
+        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             DynamicColumn<T> col = columns.get( iCol );
             col.setColumnIndex( iCol );
-        }
-    }
-
-    // Remove merging from model
-    private void removeModelMerging() {
-
-        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-                CellValue< ? > cell = data.get( iRow ).get( iCol );
-                Coordinate c = new Coordinate( iRow,
-                                               iCol );
-                cell.setCoordinate( c );
-                cell.setHtmlCoordinate( c );
-                cell.setPhysicalCoordinate( c );
-                cell.setRowSpan( 1 );
-            }
-        }
-
-        // Set indexes after merging has been corrected
-        assertModelIndexes();
-    }
-
-    // Select a range of cells between the two coordinates.
-    private void selectRange(CellValue< ? > startCell,
-                             CellValue< ? > endCell) {
-        int col = startCell.getCoordinate().getCol();
-
-        //Ensure startCell precedes endCell
-        if ( startCell.getCoordinate().getRow() > endCell.getCoordinate().getRow() ) {
-            CellValue< ? > swap = startCell;
-            startCell = endCell;
-            endCell = swap;
-        }
-
-        //Ensure startCell is at the top of a merged cell
-        while ( startCell.getRowSpan() == 0 ) {
-            startCell = data.get( startCell.getCoordinate().getRow() - 1 ).get( col );
-        }
-
-        //Ensure endCell is at the bottom of a merged cell
-        while ( endCell.getRowSpan() == 0 ) {
-            endCell = data.get( endCell.getCoordinate().getRow() - 1 ).get( col );
-        }
-        endCell = data.get( endCell.getCoordinate().getRow() + endCell.getRowSpan() - 1 ).get( col );
-
-        //Select range
-        for ( int iRow = startCell.getCoordinate().getRow(); iRow <= endCell
-                .getCoordinate().getRow(); iRow++ ) {
-            CellValue< ? > cell = data.get( iRow ).get( col );
-            selections.add( cell );
-
-            // Redraw selected cell
-            cell.setSelected( true );
-            gridWidget.selectCell( cell );
         }
     }
 

@@ -178,7 +178,7 @@ public class VerticalDecisionTableWidget extends Composite
         DescriptionCol descCol = null;
 
         // Extract column information
-        for ( DynamicColumn<DTColumnConfig> column : widget.getColumns() ) {
+        for ( DynamicColumn<DTColumnConfig> column : widget.getGridWidget().getColumns() ) {
             DTColumnConfig modelCol = column.getModelColumn();
             if ( modelCol instanceof RowNumberCol ) {
                 rnCol = (RowNumberCol) modelCol;
@@ -217,8 +217,9 @@ public class VerticalDecisionTableWidget extends Composite
     public void scrapeData() {
 
         // Copy data
-        DynamicData data = widget.getData();
-        List<DynamicColumn<DTColumnConfig>> columns = widget.getColumns();
+        final DynamicData data = widget.getGridWidget().getData();
+        final List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
+
         final int GRID_ROWS = data.size();
         String[][] grid = new String[GRID_ROWS][];
         for ( int iRow = 0; iRow < GRID_ROWS; iRow++ ) {
@@ -265,13 +266,14 @@ public class VerticalDecisionTableWidget extends Composite
         this.cellValueFactory = new DecisionTableCellValueFactory( sce,
                                                                    this.model );
 
-        widget.getData().clear();
-        widget.getColumns().clear();
+        widget.getGridWidget().getData().clear();
+        widget.getGridWidget().getColumns().clear();
 
         // Dummy rows because the underlying DecoratedGridWidget expects there
         // to be enough rows to receive the columns data
+        final DynamicData data = widget.getGridWidget().getData();
         for ( int iRow = 0; iRow < model.getData().length; iRow++ ) {
-            widget.getData().add( new DynamicDataRow() );
+            data.add( new DynamicDataRow() );
         }
 
         // Static columns, Row#
@@ -352,7 +354,7 @@ public class VerticalDecisionTableWidget extends Composite
         }
 
         // Ensure cells are indexed correctly for start-up data
-        widget.assertModelIndexes();
+        widget.getGridWidget().assertModelIndexes();
 
         // Draw header first as the size of child Elements depends upon it
         widget.getHeaderWidget().redraw();
@@ -585,8 +587,8 @@ public class VerticalDecisionTableWidget extends Composite
                        false );
             DynamicColumn<DTColumnConfig> origCol = getDynamicColumn( origColumn );
             DynamicColumn<DTColumnConfig> editCol = getDynamicColumn( editColumn );
-            int origColIndex = widget.getColumns().indexOf( origCol );
-            int editColIndex = widget.getColumns().indexOf( editCol );
+            int origColIndex = widget.getGridWidget().getColumns().indexOf( origCol );
+            int editColIndex = widget.getGridWidget().getColumns().indexOf( editCol );
 
             // If the FactType, FieldType and ConstraintValueType are unchanged
             // we can copy cell values from the old column into the new
@@ -596,8 +598,9 @@ public class VerticalDecisionTableWidget extends Composite
                                    editColumn.getFactField() )
                  && origColumn.getConstraintValueType() == editColumn.getConstraintValueType() ) {
 
-                for ( int iRow = 0; iRow < widget.getData().size(); iRow++ ) {
-                    DynamicDataRow row = widget.getData().get( iRow );
+                final DynamicData data = widget.getGridWidget().getData();
+                for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                    DynamicDataRow row = data.get( iRow );
                     CellValue< ? > oldCell = row.get( origColIndex );
                     CellValue< ? > newCell = row.get( editColIndex );
                     newCell.setValue( oldCell.getValue() );
@@ -611,7 +614,7 @@ public class VerticalDecisionTableWidget extends Composite
                 origColIndex = editColIndex;
                 editColIndex = temp;
             }
-            widget.assertModelIndexes();
+            widget.getGridWidget().assertModelIndexes();
             widget.getGridWidget().redrawColumns( editColIndex,
                                                   origColIndex );
 
@@ -659,8 +662,9 @@ public class VerticalDecisionTableWidget extends Composite
 
     public void updateSystemControlledColumnValues() {
 
-        DynamicData data = widget.getData();
-        List<DynamicColumn<DTColumnConfig>> columns = widget.getColumns();
+        final DynamicData data = widget.getGridWidget().getData();
+        final List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
+
         for ( DynamicColumn<DTColumnConfig> col : columns ) {
 
             DTColumnConfig modelColumn = col.getModelColumn();
@@ -780,14 +784,14 @@ public class VerticalDecisionTableWidget extends Composite
 
     // Find the right-most index for an Action column
     private int findActionColumnIndex() {
-        int index = widget.getColumns().size() - 1;
+        int index = widget.getGridWidget().getColumns().size() - 1;
         return index;
     }
 
     // Find the right-most index for a Attribute column
     private int findAttributeColumnIndex() {
         int index = 0;
-        List<DynamicColumn<DTColumnConfig>> columns = widget.getColumns();
+        List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             DynamicColumn<DTColumnConfig> column = columns.get( iCol );
             DTColumnConfig modelColumn = column.getModelColumn();
@@ -808,7 +812,7 @@ public class VerticalDecisionTableWidget extends Composite
     private int findConditionColumnIndex(ConditionCol col) {
         int index = 0;
         boolean bMatched = false;
-        List<DynamicColumn<DTColumnConfig>> columns = widget.getColumns();
+        List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             DynamicColumn<DTColumnConfig> column = columns.get( iCol );
             DTColumnConfig modelColumn = column.getModelColumn();
@@ -836,7 +840,7 @@ public class VerticalDecisionTableWidget extends Composite
     // Find the right-most index for a Metadata column
     private int findMetadataColumnIndex() {
         int index = 0;
-        List<DynamicColumn<DTColumnConfig>> columns = widget.getColumns();
+        List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             DynamicColumn<DTColumnConfig> column = columns.get( iCol );
             DTColumnConfig modelColumn = column.getModelColumn();
@@ -855,7 +859,7 @@ public class VerticalDecisionTableWidget extends Composite
     // cannot be found
     private DynamicColumn<DTColumnConfig> getDynamicColumn(DTColumnConfig modelCol) {
         DynamicColumn<DTColumnConfig> column = null;
-        List<DynamicColumn<DTColumnConfig>> columns = widget.getColumns();
+        List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
         for ( DynamicColumn<DTColumnConfig> dc : columns ) {
             if ( dc.getModelColumn().equals( modelCol ) ) {
                 column = dc;
@@ -875,10 +879,10 @@ public class VerticalDecisionTableWidget extends Composite
                                                                                   cellFactory.getCell( modelColumn ),
                                                                                   index );
         column.setVisible( !modelColumn.isHideColumn() );
-        DynamicColumn<DTColumnConfig> columnBefore = widget.getColumns().get( index );
+        DynamicColumn<DTColumnConfig> columnBefore = widget.getGridWidget().getColumns().get( index );
 
         // Create column data
-        DynamicData data = widget.getData();
+        DynamicData data = widget.getGridWidget().getData();
         List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             CellValue< ? > cell = cellValueFactory.getCellValue( modelColumn,
@@ -941,7 +945,7 @@ public class VerticalDecisionTableWidget extends Composite
     // Construct a new row for insertion into a DecoratedGridWidget
     private DynamicDataRow makeNewRow() {
         DynamicDataRow row = new DynamicDataRow();
-        List<DynamicColumn<DTColumnConfig>> columns = widget.getColumns();
+        List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             DTColumnConfig col = columns.get( iCol ).getModelColumn();
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( col,
@@ -998,7 +1002,7 @@ public class VerticalDecisionTableWidget extends Composite
     // Ensure the Column cell type and corresponding values are correct
     private void updateCellsForDataType(final DTColumnConfig editColumn,
                                         final DynamicColumn<DTColumnConfig> column) {
-        DynamicData data = widget.getData();
+        DynamicData data = widget.getGridWidget().getData();
         column.setCell( cellFactory.getCell( editColumn ) );
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             DynamicDataRow row = data.get( iRow );
@@ -1010,14 +1014,14 @@ public class VerticalDecisionTableWidget extends Composite
         }
 
         // Setting CellValues mashes the indexes
-        widget.assertModelIndexes();
+        widget.getGridWidget().assertModelIndexes();
     }
 
     // Ensure the values in a column are within the Value List
     private boolean updateCellsForOptionValueList(final DTColumnConfig editColumn,
                                                   final DynamicColumn<DTColumnConfig> column) {
         boolean bRedrawRequired = false;
-        DynamicData data = widget.getData();
+        DynamicData data = widget.getGridWidget().getData();
         List<String> vals = Arrays.asList( model.getValueList( editColumn,
                                                                sce ) );
         column.setCell( cellFactory.getCell( editColumn ) );
