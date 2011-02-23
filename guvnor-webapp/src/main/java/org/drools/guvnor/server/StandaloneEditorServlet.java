@@ -57,7 +57,7 @@ public class StandaloneEditorServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession( true );
         //Each request uses its own parameters map (this allows concurrent requests
         //from the same cilent)
