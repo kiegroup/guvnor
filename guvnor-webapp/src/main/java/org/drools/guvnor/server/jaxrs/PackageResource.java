@@ -19,6 +19,8 @@ package org.drools.guvnor.server.jaxrs;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.server.files.RepositoryServlet;
+import org.drools.guvnor.server.jaxrs.jaxb.*;
+import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.jboss.resteasy.plugins.providers.atom.*;
 
 import java.io.IOException;
@@ -171,7 +173,7 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Package getPackageAsJAXB(@PathParam("packageName") String packageName) {
+    public org.drools.guvnor.server.jaxrs.jaxb.Package getPackageAsJAXB(@PathParam("packageName") String packageName) {
         Package ret = null;
         if (repository.containsPackage(packageName) &&
                 !repository.isPackageArchived(packageName))
@@ -210,7 +212,6 @@ public class PackageResource extends Resource {
             item.checkout();
             item.updateDescription(p.getDescription());
             item.updateTitle(p.getTitle());
-            item.updateType(p.getType());
             /* TODO: add more updates to package item from JSON */
             item.checkin(p.getCheckInComment());
             repository.save();
@@ -244,8 +245,6 @@ public class PackageResource extends Resource {
             throw new RuntimeException ("Package '" + packageName + "' does not exist!");
         return ret;
     }
-
-    /** Asset Sub-resources */
 
     @GET
     @Path("{packageName}/asset/{name}")
@@ -379,7 +378,7 @@ public class PackageResource extends Resource {
 
             /* Update asset */
             ai.checkout();
-            ai.updateTitle(asset.getTitle());
+            ai.updateTitle(asset.getMetadata().getTitle());
             ai.updateDescription(asset.getDescription());
             ai.checkin(asset.getCheckInComment());
             repository.save();

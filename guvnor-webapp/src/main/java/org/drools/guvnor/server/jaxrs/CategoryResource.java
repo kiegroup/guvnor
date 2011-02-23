@@ -20,6 +20,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import javax.ws.rs.core.MediaType;
 
+import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Link;

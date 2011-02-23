@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.jaxrs;
+package org.drools.guvnor.server.jaxrs.jaxb;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -25,27 +25,23 @@ import java.util.Set;
 @XmlRootElement()
 public class Package {
 
-    private String id;
-
     private String title;
 
     private String description;
 
-    private String checkInComment;
+    private long version;
 
-    private String type;
+    private String checkInComment;
 
     private String snapshot;
 
     private Category category;
 
-    private long version;
-
     private URI binaryLink, sourceLink;
 
     private Set<URI> assets;
 
-    private Date lastModified;
+    private PackageMetadata metadata;
 
     @XmlElement
     public URI getBinaryLink() {
@@ -84,15 +80,6 @@ public class Package {
     }
 
     @XmlElement
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    @XmlElement
     public String getTitle() {
         return title;
     }
@@ -120,24 +107,6 @@ public class Package {
     }
 
     @XmlElement
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    @XmlElement
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
-    }
-
-    @XmlElement
     public long getVersion() {
         return version;
     }
@@ -146,11 +115,21 @@ public class Package {
         this.version = version;
     }
 
+    @XmlElement
     public Set<URI> getAssets() {
         return assets;
     }
 
     public void setAssets(Set<URI> assets) {
         this.assets = assets;
+    }
+
+    @XmlElement
+    public PackageMetadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(PackageMetadata metadata) {
+        this.metadata = metadata;
     }
 }

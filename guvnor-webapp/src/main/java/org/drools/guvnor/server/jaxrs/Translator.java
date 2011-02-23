@@ -16,7 +16,10 @@
 
 package org.drools.guvnor.server.jaxrs;
 
+import org.drools.guvnor.server.jaxrs.jaxb.*;
+import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.repository.AssetItem;
+import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 
 import java.net.URI;
@@ -32,11 +35,25 @@ import org.jboss.resteasy.plugins.providers.atom.Link;
 public class Translator {
 
     public static Asset ToAsset(AssetItem a, UriInfo uriInfo) {
+        AssetMetadata metadata = new AssetMetadata();
+        metadata.setUuid(a.getUUID());
+        metadata.setTitle(a.getTitle());
+        metadata.setLastModified(a.getLastModified().getTime());
+        metadata.setCreated(a.getCreatedDate().getTime());
+        metadata.setCreatedBy(a.getCreator());
+        metadata.setDisabled(a.getDisabled());
+        metadata.setFormat(a.getFormat());
+        metadata.setNote(a.getContent());
+        List<CategoryItem> categories = a.getCategories();
+        String[] cats = new String [categories.size()];
+        int counter = 0;
+        for (CategoryItem c : categories) {
+            cats [ counter++ ] = c.getName();
+        }
+
         Asset ret = new Asset();
-        ret.setId(a.getUUID());
+        ret.setMetadata(metadata);
         ret.setType(a.getType());
-        ret.setLastmodified(a.getLastModified().getTime());
-        ret.setTitle(a.getTitle());
         ret.setCheckInComment(a.getCheckinComment());
         ret.setDescription(a.getDescription());
         UriBuilder builder = uriInfo.getBaseUriBuilder();
@@ -53,20 +70,27 @@ public class Translator {
     }
 
     public static Package ToPackage(PackageItem p, UriInfo uriInfo) {
-        Package item = new Package();  
-        item.setId(p.getUUID());
-        item.setLastModified(p.getLastModified().getTime());
-        item.setTitle(p.getTitle());
-        item.setCheckInComment(p.getCheckinComment());
-        item.setDescription(p.getDescription());
+        PackageMetadata metadata = new PackageMetadata();
+        metadata.setUuid(p.getUUID());
+        metadata.setCreated(p.getCreatedDate().getTime());
+        metadata.setLastModified(p.getLastModified().getTime());
+        metadata.setLastContributor(p.getLastContributor());
+
+        Package ret = new Package();
+        ret.setMetadata(metadata);
+        ret.setVersion(p.getVersionNumber());
+        ret.setTitle(p.getTitle());
+        ret.setCheckInComment(p.getCheckinComment());
+        ret.setDescription(p.getDescription());
+
         UriBuilder builder = uriInfo.getBaseUriBuilder();
-        item.setBinaryLink(
+        ret.setBinaryLink(
                 builder.path("/packages/" + p.getName() + "/binary").build());
         builder = uriInfo.getBaseUriBuilder();
-        item.setSourceLink(
+        ret.setSourceLink(
                 builder.path("/packages/" + p.getName() + "/source").build());
-        item.setSnapshot(p.getSnapshotName());
-        item.setVersion(p.getVersionNumber());
+        ret.setSnapshot(p.getSnapshotName());
+        ret.setVersion(p.getVersionNumber());
         Iterator<AssetItem> iter = p.getAssets();
         Set<URI> assets = new HashSet<URI>();
         while (iter.hasNext()) {
@@ -75,16 +99,12 @@ public class Translator {
             assets.add(asset.getRefLink());
         }
 
-        item.setAssets(assets);
-        return item;
+        ret.setAssets(assets);
+        return ret;
     }
     
     public static Entry ToPackageEntry(PackageItem p, UriInfo uriInfo) {
-        Content c = new Content();
-        c.setType(MediaType.APPLICATION_ATOM_XML_TYPE);                       
-        
         Entry e =new Entry();
-        e.setContent(c);               
         e.setTitle(p.getTitle());
         e.setUpdated(p.getLastModified().getTime());
         e.setPublished(p.getCreatedDate().getTime());
@@ -109,7 +129,17 @@ public class Translator {
             link.setRel("asset");
             e.getLinks().add(link);
         }
-        
+
+        Content c = new Content();
+        c.setType(MediaType.APPLICATION_XML_TYPE);
+
+        PackageMetadata metadata = new PackageMetadata();
+        metadata.setUuid(p.getUUID());
+        metadata.setCreated(p.getCreatedDate().getTime());
+        metadata.setLastModified(p.getLastModified().getTime());
+        metadata.setLastContributor(p.getLastContributor());
+        c.setJAXBObject(metadata);
+
         return e;
     }
     
@@ -117,13 +147,31 @@ public class Translator {
         Entry e = new Entry();
         e.setTitle(a.getTitle());
         e.setSummary(a.getDescription());
-        Content c = new Content();
-        c.setType(MediaType.APPLICATION_ATOM_XML_TYPE);                       
-        e.setContent(c);
+
+        Content content = new Content();
+        content.setType(MediaType.APPLICATION_XML_TYPE);
+        AssetMetadata metadata = new AssetMetadata();
+        metadata.setUuid(a.getUUID());
+        metadata.setTitle(a.getTitle());
+        metadata.setLastModified(a.getLastModified().getTime());
+        metadata.setCreated(a.getCreatedDate().getTime());
+        metadata.setCreatedBy(a.getCreator());
+        metadata.setDisabled(a.getDisabled());
+        metadata.setFormat(a.getFormat());
+        metadata.setNote(a.getContent());
+        List<CategoryItem> categories = a.getCategories();
+        String[] cats = new String [categories.size()];
+        int counter = 0;
+        for (CategoryItem c : categories) {
+            cats [ counter++ ] = c.getName();
+        }
+
+        content.setJAXBObject(metadata);
+        e.setContent(content);
         e.setTitle(a.getTitle());
-        
-        Link l = new Link();
+
         UriBuilder builder = uriInfo.getBaseUriBuilder();
+        Link l = new Link();
         l.setHref(builder.path("/packages/" + a.getPackageName() + "/asset/" +  a.getName()).build());
         l.setRel("self");
         builder = uriInfo.getBaseUriBuilder();
@@ -131,15 +179,15 @@ public class Translator {
         e.setPublished(new Date(a.getLastModified().getTimeInMillis()));
         e.setSummary(a.getDescription());
         e.setRights(a.getRights());
-        
-        l = new Link();
+
         builder = uriInfo.getBaseUriBuilder();
+        l = new Link();
         l.setHref(builder.path("/packages/" + a.getPackageName() + "/asset/" +  a.getName() + "/binary").build());
         l.setRel("binary");
         e.getLinks().add(l);
-        
-        l = new Link();
+
         builder = uriInfo.getBaseUriBuilder();
+        l = new Link();
         l.setHref(builder.path("/packages/" + a.getPackageName() + "/asset/" +  a.getName() + "/source").build());
         l.setRel("source");
         e.getLinks().add(l);                
