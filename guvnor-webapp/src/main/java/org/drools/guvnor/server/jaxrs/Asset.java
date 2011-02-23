@@ -38,12 +38,9 @@ public class Asset {
 
     private String type;
 
-    private String source;
+    private URI binaryLink, sourceLink, refLink;
 
-    private byte[] binary;
-
-    private URI binaryLink, sourceLink;
-
+    @XmlElement
     public URI getBinaryLink() {
         return binaryLink;
     }
@@ -52,30 +49,13 @@ public class Asset {
         this.binaryLink = binaryLink;
     }
 
+    @XmlElement
     public URI getSourceLink() {
         return sourceLink;
     }
 
     public void setSourceLink(URI sourceLink) {
         this.sourceLink = sourceLink;
-    }
-
-    @XmlElement
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    @XmlElement
-    public byte[] getBinary() {
-        return binary;
-    }
-
-    public void setBinary(byte[] binary) {
-        this.binary = binary;
     }
 
     @XmlElement()
@@ -132,11 +112,21 @@ public class Asset {
         this.version = version;
     }
 
+    @XmlElement
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    @XmlElement
+    public URI getRefLink() {
+        return refLink;
+    }
+
+    public void setRefLink(URI refLink) {
+        this.refLink = refLink;
     }
 }

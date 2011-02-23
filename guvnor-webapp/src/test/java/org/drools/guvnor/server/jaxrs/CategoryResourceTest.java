@@ -44,7 +44,7 @@ public class CategoryResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -56,7 +56,7 @@ public class CategoryResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
 
     }
 
@@ -69,7 +69,7 @@ public class CategoryResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class CategoryResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -93,7 +93,7 @@ public class CategoryResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
 
     }
 
@@ -106,6 +106,6 @@ public class CategoryResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 }

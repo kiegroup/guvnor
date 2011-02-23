@@ -17,13 +17,14 @@
 package org.drools.guvnor.server.jaxrs;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.server.files.RepositoryServlet;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
-import org.jboss.resteasy.annotations.providers.multipart.PartType;
 import org.jboss.resteasy.plugins.providers.atom.*;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import org.drools.repository.*;
@@ -31,6 +32,7 @@ import org.jboss.seam.annotations.Name;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import static org.drools.guvnor.server.jaxrs.Translator.*;
 
@@ -42,23 +44,6 @@ import static org.drools.guvnor.server.jaxrs.Translator.*;
 @Name("PackageResource")
 @Path("/packages")
 public class PackageResource extends Resource {
-
-    public class BinaryForm {
-        private byte[] filedata;
-
-        public BinaryForm() {}
-
-        public byte[] getData() {
-            return filedata;
-        }
-
-        @FormParam("data")
-        @PartType(value = "application/octet-stream")
-        public void setData(final byte[] filedata) {
-            this.filedata = filedata;
-        }
-    }
-
 
     @GET
     @Produces(MediaType.APPLICATION_ATOM_XML)
@@ -83,11 +68,28 @@ public class PackageResource extends Resource {
         return f;
     }
 
+    @POST
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+    public Entry createPackageFromInputAndReturnAsEntry(InputStream is, @Context UriInfo uriInfo) throws IOException,
+            DroolsParserException
+    {
+        /* Passes the DRL to the FileManagerUtils and has it import the asset as a package */
+        String packageName = RepositoryServlet.getFileManager().importClassicDRL (is, null);
+        Entry e = ToPackageEntry(repository.loadPackage(packageName), uriInfo);
+        return e;
+    }
 
     @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public void createPackageFromInputStream(@MultipartForm BinaryForm form) {
-        RepositoryServlet.getFileManager().importPackageToRepository(form.getData(), true);
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Package createPackageFromInputAndReturnAsJaxB(InputStream is, @Context UriInfo uriInfo) throws IOException,
+            DroolsParserException
+    {
+        /* Passes the DRL to the FileManagerUtils and has it import the asset as a package */
+        String packageName = RepositoryServlet.getFileManager().importClassicDRL (is, null);
+        Package p = ToPackage(repository.loadPackage(packageName), uriInfo);
+        return p;
     }
 
     @POST
