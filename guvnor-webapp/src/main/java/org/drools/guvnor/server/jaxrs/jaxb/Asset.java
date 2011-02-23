@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.jaxrs;
+package org.drools.guvnor.server.jaxrs.jaxb;
 
 import java.net.URI;
-import java.util.Date;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement()
 public class Asset {
 
-    private String id;
-
-    private String title;
+    private AssetMetadata metadata;
 
     private String description;
-
-    private Date lastmodified;
 
     private String checkInComment;
     
@@ -68,15 +63,6 @@ public class Asset {
     }
 
     @XmlElement()
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    @XmlElement()
     public String getDescription() {
         return description;
     }
@@ -85,14 +71,6 @@ public class Asset {
         this.description = description;
     }
 
-    @XmlElement()
-    public Date getLastmodified() {
-        return lastmodified;
-    }
-
-    public void setLastmodified(Date lastmodified) {
-        this.lastmodified = lastmodified;
-    }
 
     @XmlElement()
     public String getCheckInComment() {
@@ -113,20 +91,20 @@ public class Asset {
     }
 
     @XmlElement
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    @XmlElement
     public URI getRefLink() {
         return refLink;
     }
 
     public void setRefLink(URI refLink) {
         this.refLink = refLink;
+    }
+
+    @XmlElement
+    public AssetMetadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(AssetMetadata metadata) {
+        this.metadata = metadata;
     }
 }

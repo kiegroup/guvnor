@@ -21,6 +21,7 @@ import java.net.*;
 
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Entry;
+import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
@@ -254,8 +255,8 @@ public class BasicPackageResourceTest extends RestTestingBase {
         Abdera a = new Abdera();
         Entry e = a.newEntry();
         e.setTitle(p.getTitle());
-        e.setUpdated(p.getLastModified());
-        e.setPublished(p.getLastModified());
+        e.setUpdated(p.getMetadata().getLastModified());
+        e.setPublished(p.getMetadata().getCreated());
         e.addLink("self", generateBaseUrl() + "/packages/" + p.getTitle());
         e.setSummary(p.getDescription());
         return e;
@@ -295,7 +296,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
 
     @Test
     public void testUpdatePackageFromJAXB() throws Exception {
-        Package p = createTestPackage("TestCreatePackageFromJAXB");
+        org.drools.guvnor.server.jaxrs.jaxb.Package p = createTestPackage("TestCreatePackageFromJAXB");
         JAXBContext context = JAXBContext.newInstance(p.getClass());
         Marshaller marshaller = context.createMarshaller();
         StringWriter sw = new StringWriter();

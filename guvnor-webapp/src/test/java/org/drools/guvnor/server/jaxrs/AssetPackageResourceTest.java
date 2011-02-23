@@ -20,6 +20,7 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.parser.Parser;
+import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
@@ -182,7 +183,7 @@ public class AssetPackageResourceTest extends RestTestingBase {
         Unmarshaller un = context.createUnmarshaller();
         Asset a = (Asset) un.unmarshal(br);
         a.setDescription("An updated description.");
-        a.setLastmodified(new Date(System.currentTimeMillis()));
+        a.getMetadata().setLastModified(new Date(System.currentTimeMillis()));
         connection.disconnect();
 
         HttpURLConnection conn2 = (HttpURLConnection)url.openConnection();

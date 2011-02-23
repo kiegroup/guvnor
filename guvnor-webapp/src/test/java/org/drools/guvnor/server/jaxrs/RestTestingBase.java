@@ -16,6 +16,8 @@
 package org.drools.guvnor.server.jaxrs;
 
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.jaxrs.jaxb.*;
+import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.resteasy.test.EmbeddedContainer;
@@ -29,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.Date;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -84,14 +87,21 @@ public class RestTestingBase {
     }
 
     protected Package createTestPackage(String title) {
-        Package p = new Package();
         Category c = new Category();
         c.setName("test");
+
+        Package p = new Package();
+        PackageMetadata metadata = new PackageMetadata();
+        metadata.setCreated(new Date(System.currentTimeMillis()));
+        metadata.setUuid(UUID.randomUUID().toString());
+        metadata.setLastContributor("awaterma");
+        metadata.setLastModified(new Date(System.currentTimeMillis()));
+
+        p.setMetadata(metadata);
         p.setCategory(c);
-        p.setCheckInComment("check in comment for test package.");
+        p.setCheckInComment("Check in comment for test package.");
         p.setTitle(title);
-        p.setDescription("A simple test package with 5 assets.");
-        p.setLastModified(new Date(System.currentTimeMillis()));
+        p.setDescription("A simple test package with 0 assets.");
         return p;
     }
 }
