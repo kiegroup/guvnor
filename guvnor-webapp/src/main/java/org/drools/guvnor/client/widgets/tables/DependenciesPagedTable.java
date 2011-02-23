@@ -23,8 +23,6 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.packages.DependencyWidget;
 import org.drools.guvnor.client.rpc.DependenciesPageRow;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
@@ -63,9 +61,6 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
 
     @UiField()
     protected Button                                   deleteSelectedDependencyButton;
-
-    @UiField()
-    protected Button                                   openSelectedDependencyButton;
 
     private static DependenciesPagedTableBinder         uiBinder  = GWT.create( DependenciesPagedTableBinder.class );
 
@@ -201,12 +196,6 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
     @UiHandler("deleteSelectedDependencyButton")
     void deleteSelectedDependency(ClickEvent e) {
         deleteDependencyCommand.execute();
-    }
-
-    @UiHandler("openSelectedDependencyButton")
-    void openSelectedDependency(ClickEvent e) {
-        String path = this.selectionModel.getSelectedObject().getDependencyPath();
-        openSelectedCommand.open( path );
     }
 
     @UiHandler("refreshButton")

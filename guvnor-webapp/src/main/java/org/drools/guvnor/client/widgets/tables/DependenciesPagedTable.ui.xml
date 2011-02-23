@@ -28,7 +28,6 @@
     <gwt:HorizontalPanel>
       <gwt:Button ui:field="createNewDependencyButton" text='Create new dependency'/>
       <gwt:Button ui:field="deleteSelectedDependencyButton" text='Delete selected dependency'/>
-      <gwt:Button ui:field="openSelectedDependencyButton" text='{i18n.openSelected}'/>
       <gwt:Button ui:field="refreshButton" text='{i18n.refreshList}'/>
       <gwt:ToggleButton ui:field="columnPickerButton"/>
     </gwt:HorizontalPanel>

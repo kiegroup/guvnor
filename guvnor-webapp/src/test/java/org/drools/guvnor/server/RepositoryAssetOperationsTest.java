@@ -65,8 +65,12 @@ public class RepositoryAssetOperationsTest {
 
         AssetHistoryIterator assetHistoryIterator = mock( AssetHistoryIterator.class );
         when( assetItem.getHistory() ).thenReturn( assetHistoryIterator );
+        Calendar calendar = GregorianCalendar.getInstance();
+        when( assetItem.getLastModified() ).thenReturn( calendar );
 
-        assertNull( repositoryAssetOperations.loadAssetHistory( assetItem ) );
+        TableDataResult result = repositoryAssetOperations.loadAssetHistory( assetItem );
+        assertNotNull( result );
+        assertEquals( "LATEST", result.data[0].values[0] );
     }
 
     @Test

@@ -66,7 +66,7 @@ public class DependencyWidget extends Composite {
         Label caption = new Label( "Dependencies" );
         caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
         header.add( caption );
-        header.add( howToTurnOn() );
+        header.add( dependencyTip() );
 
         layout.addAttribute( "",
                 header );
@@ -97,53 +97,15 @@ public class DependencyWidget extends Composite {
         initWidget( layout );
     }
 
-    private Widget howToTurnOn() {
+    private Widget dependencyTip() {
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( new HTML( "<small><i>"
-                          + constants.TipAuthEnable()
+                          + "Edit dependency version to build a package against specific versions of Asset"
                           + "</i></small>" ) );
-        InfoPopup pop = new InfoPopup( constants.EnablingAuthorization(),
-                                       constants.EnablingAuthPopupTip() );
+        InfoPopup pop = new InfoPopup( "Edit Dependency",
+                "Edit dependency version to build a package against specific versions of Asset" );
         hp.add( pop );
         return hp;
-    }
-
-    private void refresh() {
-        layout.clear();
-        
-        VerticalPanel header = new VerticalPanel();
-        Label caption = new Label( "Dependencies" );
-        caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
-        header.add( caption );
-        header.add( howToTurnOn() );
-
-        layout.addAttribute( "",
-                header );
-
-/*        layout.addHeader( images.statusLarge(),
-                      header );*/
-
-        VerticalPanel vp = new VerticalPanel();
-        vp.setHeight( "100%" );
-        vp.setWidth( "100%" );
-
-        //pf.startSection();
-        layout.addRow( vp );
-        table = new DependenciesPagedTable(conf.uuid, 
-        		null, null, new OpenItemCommand() {
-
-            public void open(String path) {
-                showEditor( path );
-            }
-
-            public void open(MultiViewRow[] rows) {
-                // Do nothing, unsupported
-            }
-
-        } );
-
-        layout.addRow( table );
-        initWidget( layout );
     }
     
     public static String[] parseDependencyPath(String dependencyPath) {
@@ -178,7 +140,6 @@ public class DependencyWidget extends Composite {
                     }				    
 				});
 		editor.addAttribute("Dependency Version: ",  versionChoose);
-
 
 		HorizontalPanel hp = new HorizontalPanel();
 		Button save = new Button("Use selected version"); 

@@ -170,7 +170,20 @@ public class RepositoryAssetOperations {
         }
 
         if ( result.size() == 0 ) {
-            return null;
+            //NOTE, the term of LATEST version is defined as the preceding version node of the current node. 
+            //It is a frozen history node, its content is same as the current node. 
+            //If there is no historical node, we return the current node, and refer the current node 
+            //as the LATEST version node. 
+            final DateFormat dateFormatter = DateFormat.getInstance();
+            TableDataRow tableDataRow = new TableDataRow();
+            tableDataRow.id = assetItem.getUUID();
+            tableDataRow.values = new String[4];
+            tableDataRow.values[0] = "LATEST";
+            tableDataRow.values[1] = "";
+            tableDataRow.values[2] = dateFormatter.format( assetItem
+                    .getLastModified().getTime() );
+            tableDataRow.values[3] = assetItem.getStateDescription();
+            result.add(tableDataRow);
         }
         TableDataResult table = new TableDataResult();
         table.data = result.toArray( new TableDataRow[result.size()] );
