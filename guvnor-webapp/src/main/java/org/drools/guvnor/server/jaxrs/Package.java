@@ -18,15 +18,52 @@ package org.drools.guvnor.server.jaxrs;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.net.URI;
+import java.util.Date;
+import java.util.Set;
 
 @XmlRootElement()
 public class Package {
+
+    private String id;
+
+    private String title;
+
+    private String description;
+
+    private String checkInComment;
+
+    private String type;
 
     private String snapshot;
 
     private Category category;
 
-    private Asset[] assets;
+    private long version;
+
+    private URI binaryLink, sourceLink;
+
+    private Set<URI> assets;
+
+    private Date lastModified;
+
+    @XmlElement
+    public URI getBinaryLink() {
+        return binaryLink;
+    }
+
+    public void setBinaryLink(URI binaryLink) {
+        this.binaryLink = binaryLink;
+    }
+
+    @XmlElement
+    public URI getSourceLink() {
+        return sourceLink;
+    }
+
+    public void setSourceLink(URI sourceLink) {
+        this.sourceLink = sourceLink;
+    }
 
     @XmlElement()
     public String getSnapshot() {
@@ -46,12 +83,74 @@ public class Package {
         this.category = category;
     }
 
-    @XmlElement()
-    public Asset[] getAssets() {
+    @XmlElement
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @XmlElement
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    @XmlElement
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @XmlElement
+    public String getCheckInComment() {
+        return checkInComment;
+    }
+
+    public void setCheckInComment(String checkInComment) {
+        this.checkInComment = checkInComment;
+    }
+
+    @XmlElement
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @XmlElement
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
+    }
+
+    @XmlElement
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
+    public Set<URI> getAssets() {
         return assets;
     }
 
-    public void setAssets(Asset[] assets) {
+    public void setAssets(Set<URI> assets) {
         this.assets = assets;
     }
 }

@@ -52,7 +52,7 @@ public class AssetPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class AssetPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class AssetPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class AssetPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
 
     }
 
@@ -101,7 +101,7 @@ public class AssetPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class AssetPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -125,7 +125,7 @@ public class AssetPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -137,7 +137,7 @@ public class AssetPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test

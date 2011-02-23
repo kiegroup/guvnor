@@ -20,12 +20,7 @@ import java.io.*;
 import java.net.*;
 
 import org.apache.abdera.Abdera;
-import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
-import org.apache.abdera.parser.Parser;
-import org.drools.guvnor.server.util.ClassicDRLImporterTest;
-import org.jboss.resteasy.plugins.providers.atom.Content;
-import org.jboss.resteasy.plugins.providers.atom.Link;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
@@ -59,7 +54,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());        
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        logger.log (Level, GetContent(connection));
+        logger.log (LogLevel, GetContent(connection));
     }
 
     /**
@@ -74,7 +69,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        logger.log (Level, GetContent(connection));
+        logger.log (LogLevel, GetContent(connection));
     }
 
     /**
@@ -89,7 +84,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     /**
@@ -104,7 +99,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        logger.log (Level, GetContent(connection));
+        logger.log (LogLevel, GetContent(connection));
     }
 
     /**
@@ -119,7 +114,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     /**
@@ -134,7 +129,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     /* Package Creation */
@@ -167,11 +162,12 @@ public class BasicPackageResourceTest extends RestTestingBase {
 
     /* Package Creation */
     @Test
-    public void testCreatePackageFromDRL() throws Exception {
+    public void testCreatePackageFromDRLAsEntry() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", MediaType.MULTIPART_FORM_DATA);
+        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.setDoOutput(true);
 
         //Send request
@@ -184,7 +180,57 @@ public class BasicPackageResourceTest extends RestTestingBase {
         dos.flush();
         dos.close();
 
-        assertEquals (204, connection.getResponseCode());
+        assertEquals (200, connection.getResponseCode());
+        assertEquals (MediaType.APPLICATION_ATOM_XML, connection.getContentType());
+        logger.log(LogLevel, GetContent(connection));
+    }
+
+    @Test
+    public void testCreatePackageFromDRLAsJson() throws Exception {
+        URL url = new URL(generateBaseUrl() + "/packages");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
+        connection.setDoOutput(true);
+
+        //Send request
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream("simple_rules2.drl")));
+        DataOutputStream dos = new DataOutputStream (
+              connection.getOutputStream ());
+        while (br.ready())
+            dos.writeBytes (br.readLine());
+        dos.flush();
+        dos.close();
+
+        assertEquals (200, connection.getResponseCode());
+        assertEquals (MediaType.APPLICATION_JSON, connection.getContentType());
+        logger.log(LogLevel, GetContent(connection));
+    }
+
+    @Test
+    public void testCreatePackageFromDRLAsJaxB() throws Exception {
+        URL url = new URL(generateBaseUrl() + "/packages");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        connection.setDoOutput(true);
+
+        //Send request
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream("simple_rules3.drl")));
+        DataOutputStream dos = new DataOutputStream (
+              connection.getOutputStream ());
+        while (br.ready())
+            dos.writeBytes (br.readLine());
+        dos.flush();
+        dos.close();
+
+        assertEquals (200, connection.getResponseCode());
+        assertEquals (MediaType.APPLICATION_XML, connection.getContentType());
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -208,8 +254,8 @@ public class BasicPackageResourceTest extends RestTestingBase {
         Abdera a = new Abdera();
         Entry e = a.newEntry();
         e.setTitle(p.getTitle());
-        e.setUpdated(p.getLastmodified());
-        e.setPublished(p.getLastmodified());
+        e.setUpdated(p.getLastModified());
+        e.setPublished(p.getLastModified());
         e.addLink("self", generateBaseUrl() + "/packages/" + p.getTitle());
         e.setSummary(p.getDescription());
         return e;
@@ -230,7 +276,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
 
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -244,7 +290,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
 
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
-        logger.log(Level, GetContent(connection));
+        logger.log(LogLevel, GetContent(connection));
     }
 
     @Test

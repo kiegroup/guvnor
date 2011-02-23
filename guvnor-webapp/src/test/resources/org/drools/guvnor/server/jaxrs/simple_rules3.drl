@@ -1,4 +1,4 @@
-package org.drools.guvnor.server.jaxrs.test1;
+package org.drools.guvnor.server.jaxrs.test3;
 
 rule "Simple Rule"
     when

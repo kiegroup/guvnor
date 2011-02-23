@@ -19,10 +19,8 @@ package org.drools.guvnor.server.jaxrs;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.net.URI;
+import java.util.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
@@ -42,6 +40,9 @@ public class Translator {
         ret.setCheckInComment(a.getCheckinComment());
         ret.setDescription(a.getDescription());
         UriBuilder builder = uriInfo.getBaseUriBuilder();
+        ret.setRefLink(
+            builder.path("/packages/" + a.getPackage().getName() + "/asset/" + a.getName()).build());
+        builder = uriInfo.getBaseUriBuilder();
         ret.setBinaryLink(
                 builder.path("/packages/" + a.getPackage().getName() + "/asset/" + a.getName() + "/binary").build());
         builder = uriInfo.getBaseUriBuilder();
@@ -54,7 +55,7 @@ public class Translator {
     public static Package ToPackage(PackageItem p, UriInfo uriInfo) {
         Package item = new Package();  
         item.setId(p.getUUID());
-        item.setLastmodified(p.getLastModified().getTime());
+        item.setLastModified(p.getLastModified().getTime());
         item.setTitle(p.getTitle());
         item.setCheckInComment(p.getCheckinComment());
         item.setDescription(p.getDescription());
@@ -67,12 +68,14 @@ public class Translator {
         item.setSnapshot(p.getSnapshotName());
         item.setVersion(p.getVersionNumber());
         Iterator<AssetItem> iter = p.getAssets();
-        List<Asset> assets = new ArrayList<Asset>();
+        Set<URI> assets = new HashSet<URI>();
         while (iter.hasNext()) {
             AssetItem a = iter.next();
-            assets.add(ToAsset(a, uriInfo));
+            Asset asset = ToAsset(a, uriInfo);
+            assets.add(asset.getRefLink());
         }
-        item.setAssets(assets.toArray(new Asset[assets.size()]));
+
+        item.setAssets(assets);
         return item;
     }
     

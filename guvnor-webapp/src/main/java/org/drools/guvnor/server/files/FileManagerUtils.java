@@ -303,10 +303,10 @@ public class FileManagerUtils {
      * @param packageName Name for this package. Overrides the one in the DRL.
      */
     @Restrict("#{identity.loggedIn}")
-    public void importClassicDRL(InputStream drlStream,
+    public String importClassicDRL(InputStream drlStream,
                                  String packageName) throws IOException,
-                                                    DroolsParserException {
-
+                                                    DroolsParserException
+    {
         ClassicDRLImporter imp = new ClassicDRLImporter( drlStream );
         PackageItem pkg = null;
 
@@ -368,6 +368,8 @@ public class FileManagerUtils {
 
         repository.save();
 
+        /* Return the name of the new package to the caller */
+        return packageName;
     }
 
     /**

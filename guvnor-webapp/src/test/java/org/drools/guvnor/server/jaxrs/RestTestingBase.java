@@ -36,7 +36,7 @@ public class RestTestingBase {
 
     protected Logger logger;
 
-    protected static Level Level;
+    protected static Level LogLevel = Level.INFO;
 
     protected static Dispatcher dispatcher;
 
@@ -45,7 +45,6 @@ public class RestTestingBase {
     @BeforeClass
     public static void Initialize() {
         Service = Resource.Service;
-        Level = Level.FINEST;
 
         try {
             ResteasyDeployment deployment = EmbeddedContainer.start();
@@ -88,33 +87,11 @@ public class RestTestingBase {
         Package p = new Package();
         Category c = new Category();
         c.setName("test");
-
-        /* Setup assets */
-        Asset[] assets = new Asset [ 5 ];
-        for (int i = 0; i < 5; i++) {
-            Asset a = new Asset();
-            a.setTitle ("Asset -- " + i );
-            a.setCheckInComment("check in comment from asset '" + a.getTitle() + "'");
-            a.setDescription("A test asset");
-            a.setType("Test asset");
-            a.setVersion(0);
-            a.setLastmodified(new Date(System.currentTimeMillis()));
-            String rule = "rule \"Hello World-" + i + "\"" +
-                "        when       " +
-                "                m : String()" +
-                "        then" +
-                "            System.out.println(m);" +
-                "end";
-            a.setSource(rule);
-            assets [ i ] = a;
-        }
-
-        p.setAssets(assets);
         p.setCategory(c);
         p.setCheckInComment("check in comment for test package.");
         p.setTitle(title);
         p.setDescription("A simple test package with 5 assets.");
-        p.setLastmodified(new Date(System.currentTimeMillis()));
+        p.setLastModified(new Date(System.currentTimeMillis()));
         return p;
     }
 }
