@@ -83,8 +83,44 @@ public class DependencyWidget extends Composite {
         layout.addRow( vp );
         //pf.endSection();
 */
-        refresh();
+        //layout.clear();
+        
+        VerticalPanel header = new VerticalPanel();
+        Label caption = new Label( "Dependencies" );
+        caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
+        header.add( caption );
+        header.add( howToTurnOn() );
+
+        layout.addAttribute( "",
+                header );
+
+/*        layout.addHeader( images.statusLarge(),
+                      header );*/
+
+        VerticalPanel vp = new VerticalPanel();
+        vp.setHeight( "100%" );
+        vp.setWidth( "100%" );
+
+        //pf.startSection();
+        layout.addRow( vp );
+        table = new DependenciesPagedTable(conf.dependencies, 
+                null, null, new OpenItemCommand() {
+
+            public void open(String path) {
+                showEditor( path );
+            }
+
+            public void open(MultiViewRow[] rows) {
+                // Do nothing, unsupported
+            }
+
+        } );
+
+        layout.addRow( table );
         initWidget( layout );
+        
+        //refresh();
+        //initWidget( layout );
     }
 
     private Widget howToTurnOn() {
@@ -164,7 +200,7 @@ public class DependencyWidget extends Composite {
 				parseDependencyAssetName(parseDependencyPath(dependencyPath)[0]),
                 new Command() {
                     public void execute() {
-                        refresh();                        
+                        table.refresh();                        
                     }				    
 				});
 		editor.addAttribute("Dependency Version: ",  versionChoose);
@@ -187,7 +223,7 @@ public class DependencyWidget extends Composite {
                             new GenericCallback<Void>() {
                                 public void onSuccess(Void v) {
                                     editor.hide();
-                                    refresh();
+                                    table.refresh();
                                 }
                             });
                 }
