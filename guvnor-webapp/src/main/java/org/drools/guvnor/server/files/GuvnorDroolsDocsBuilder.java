@@ -29,6 +29,7 @@ import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
@@ -86,7 +87,7 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
             }
         }
 
-        String header = ServiceImplementation.getDroolsHeader( packageItem );
+        String header = DroolsHeader.getDroolsHeader( packageItem );
         List<String> globals = DrlPackageParser.findGlobals( header );
 
         // Get And Fill Package Data

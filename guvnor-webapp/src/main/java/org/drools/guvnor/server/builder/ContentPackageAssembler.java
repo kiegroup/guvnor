@@ -36,6 +36,7 @@ import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.selector.AssetSelector;
 import org.drools.guvnor.server.selector.BuiltInSelector;
 import org.drools.guvnor.server.selector.SelectorManager;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.repository.AssetItem;
@@ -267,7 +268,7 @@ public class ContentPackageAssembler {
 
         loadDeclaredTypes();
         // now we deal with the header (imports, templates, globals).
-        addDrl( ServiceImplementation.getDroolsHeader( packageItem ) );
+        addDrl( DroolsHeader.getDroolsHeader( packageItem ) );
         if ( builder.hasErrors() ) {
             recordBuilderErrors( packageItem );
             // if we have any failures, lets drop out now, no point in going
@@ -421,7 +422,7 @@ public class ContentPackageAssembler {
     public String getDRL() {
         StringBuffer src = new StringBuffer();
         src.append( "package " + this.packageItem.getName() + "\n" );
-        src.append( ServiceImplementation.getDroolsHeader( this.packageItem ) + "\n\n" );
+        src.append( DroolsHeader.getDroolsHeader( this.packageItem ) + "\n\n" );
 
         // now we load up the DSL files
         builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( packageItem, new BRMSPackageBuilder.DSLErrorEvent() {

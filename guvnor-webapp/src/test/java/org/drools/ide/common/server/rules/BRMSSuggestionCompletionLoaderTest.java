@@ -28,6 +28,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
@@ -61,7 +62,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
         repo.save();
 
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
-        String header = ServiceImplementation.getDroolsHeader( item );
+        String header = DroolsHeader.getDroolsHeader( item );
 
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
         assertNotNull( engine );
@@ -79,7 +80,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
         repo.save();
 
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
-        String header = ServiceImplementation.getDroolsHeader( item );
+        String header = DroolsHeader.getDroolsHeader( item );
 
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
         assertNotNull( engine );

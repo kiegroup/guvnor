@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
@@ -57,7 +58,7 @@ public class ModelContentHandler extends ContentHandler
     public void onAttachmentAdded(AssetItem asset) throws IOException {
 
         PackageItem pkg = asset.getPackage();
-        StringBuilder header = createNewHeader( ServiceImplementation.getDroolsHeader( pkg ) );
+        StringBuilder header = createNewHeader( DroolsHeader.getDroolsHeader( pkg ) );
 
         Set<String> imports = getImportsFromJar( asset.getBinaryContentAttachment() );
 
@@ -76,7 +77,7 @@ public class ModelContentHandler extends ContentHandler
     public void onAttachmentRemoved(AssetItem item) throws IOException {
 
         PackageItem pkg = item.getPackage();
-        StringBuilder header = createNewHeader( ServiceImplementation.getDroolsHeader( pkg ) );
+        StringBuilder header = createNewHeader( DroolsHeader.getDroolsHeader( pkg ) );
 
         Set<String> imports = getImportsFromJar( item.getBinaryContentAttachment() );
 

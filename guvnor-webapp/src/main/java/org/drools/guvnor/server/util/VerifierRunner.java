@@ -102,7 +102,7 @@ public class VerifierRunner {
     private void addHeaderToVerifier() {
         StringBuffer header = new StringBuffer();
         header.append( "package " + packageItem.getName() + "\n" );
-        header.append( ServiceImplementation.getDroolsHeader( packageItem ) + "\n" );
+        header.append( DroolsHeader.getDroolsHeader( packageItem ) + "\n" );
 
         verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( header.toString() ) ),
                                        ResourceType.DRL );

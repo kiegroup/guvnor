@@ -24,6 +24,7 @@ import java.util.List;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.server.util.PackageConfigDataFactory;
 import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.drools.repository.RepositoryFilter;
@@ -147,4 +148,23 @@ public class RepositoryPackageOperations {
         return false;
     }
 
+    protected PackageConfigData loadGlobalPackage() {
+        PackageItem item = getRulesRepository().loadGlobalArea();
+
+        PackageConfigData data = PackageConfigDataFactory.createPackageConfigDataWithOutDependencies( item );
+
+        if ( data.isSnapshot ) {
+            data.snapshotName = item.getSnapshotName();
+        }
+
+        return data;
+    }
+
+    public static String getDroolsHeader(PackageItem pkg) {
+        if ( pkg.containsAsset( "drools" ) ) {
+            return pkg.loadAsset( "drools" ).getContent();
+        } else {
+            return "";
+        }
+    }
 }

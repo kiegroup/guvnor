@@ -23,6 +23,7 @@ import java.io.InputStream;
 
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -57,7 +58,7 @@ public class ModelContentHandlerTest extends GuvnorTestBase {
         ModelContentHandler modelContentHandler = new ModelContentHandler();
         modelContentHandler.onAttachmentAdded( asset );
 
-        String header = ServiceImplementation.getDroolsHeader( pacakge );
+        String header = DroolsHeader.getDroolsHeader( pacakge );
         assertTrue( header.indexOf( "package-info.class" ) == -1 );
     }
 
@@ -77,12 +78,12 @@ public class ModelContentHandlerTest extends GuvnorTestBase {
         ModelContentHandler modelContentHandler = new ModelContentHandler();
         modelContentHandler.onAttachmentAdded( asset );
 
-        String header = ServiceImplementation.getDroolsHeader( pkg );
+        String header = DroolsHeader.getDroolsHeader( pkg );
         assertTrue( header.length() > 0 );
 
         modelContentHandler.onAttachmentRemoved( asset );
 
-        header = ServiceImplementation.getDroolsHeader( pkg );
+        header = DroolsHeader.getDroolsHeader( pkg );
         assertEquals( "import something.Else",
                       header.trim() );
 

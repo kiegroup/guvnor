@@ -128,6 +128,7 @@ import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
+import org.drools.guvnor.server.util.PackageConfigDataFactory;
 import org.drools.guvnor.server.util.QueryPageRowFactory;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
@@ -574,28 +575,7 @@ public class ServiceImplementation
     }
 
     public PackageConfigData loadGlobalPackage() {
-        PackageConfigData data = new PackageConfigData();
-        PackageItem item = getRulesRepository().loadGlobalArea();
-
-        data.uuid = item.getUUID();
-        data.header = getDroolsHeader( item );
-        data.externalURI = item.getExternalURI();
-        data.catRules = item.getCategoryRules();
-        data.description = item.getDescription();
-        data.archived = item.isArchived();
-        data.name = item.getName();
-        data.lastModified = item.getLastModified().getTime();
-        data.dateCreated = item.getCreatedDate().getTime();
-        data.checkinComment = item.getCheckinComment();
-        data.lasContributor = item.getLastContributor();
-        data.state = item.getStateDescription();
-        data.isSnapshot = item.isSnapshot();
-
-        if ( data.isSnapshot ) {
-            data.snapshotName = item.getSnapshotName();
-        }
-
-        return data;
+       return repositoryPackageOperations.loadGlobalPackage();
     }
 
     @WebRemote
@@ -774,7 +754,7 @@ public class ServiceImplementation
         // we have to figure out the package name.
         serviceSecurity.checkSecurityNameTypePackageReadOnly( item );
 
-        PackageConfigData data = createPackageConfigData( item );
+        PackageConfigData data = PackageConfigDataFactory.createPackageConfigDataWithDependencies( item );
         if ( data.isSnapshot ) {
             data.snapshotName = item.getSnapshotName();
         }
@@ -2034,13 +2014,7 @@ public class ServiceImplementation
         LoggingHelper.cleanLog();
     }
 
-    public static String getDroolsHeader(PackageItem pkg) {
-        if ( pkg.containsAsset( "drools" ) ) {
-            return pkg.loadAsset( "drools" ).getContent();
-        } else {
-            return "";
-        }
-    }
+   
 
     public static void updateDroolsHeader(String string,
                                           PackageItem pkg) {
@@ -2815,25 +2789,7 @@ public class ServiceImplementation
         cal.setTime( date );
         return cal;
     }
-
-    private PackageConfigData createPackageConfigData(PackageItem item) {
-        PackageConfigData data = new PackageConfigData();
-        data.uuid = item.getUUID();
-        data.header = getDroolsHeader( item );
-        data.externalURI = item.getExternalURI();
-        data.catRules = item.getCategoryRules();
-        data.description = item.getDescription();
-        data.archived = item.isArchived();
-        data.name = item.getName();
-        data.lastModified = item.getLastModified().getTime();
-        data.dateCreated = item.getCreatedDate().getTime();
-        data.checkinComment = item.getCheckinComment();
-        data.lasContributor = item.getLastContributor();
-        data.state = item.getStateDescription();
-        data.isSnapshot = item.isSnapshot();
-        data.dependencies = item.getDependencies();
-        return data;
-    }
+    
 
     private ValidatedResponse validateBRMSSuggestionCompletionLoaderResponse(BRMSSuggestionCompletionLoader loader) {
         ValidatedResponse res = new ValidatedResponse();

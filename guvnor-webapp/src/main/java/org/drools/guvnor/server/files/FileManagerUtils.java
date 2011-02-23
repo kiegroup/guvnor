@@ -46,6 +46,7 @@ import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.ClassicDRLImporter;
 import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -329,7 +330,7 @@ public class FileManagerUtils {
 
         if ( existing ) {
             pkg = repository.loadPackage( packageName );
-            ServiceImplementation.updateDroolsHeader( ClassicDRLImporter.mergeLines( ServiceImplementation.getDroolsHeader( pkg ),
+            ServiceImplementation.updateDroolsHeader( ClassicDRLImporter.mergeLines( DroolsHeader.getDroolsHeader( pkg ),
                                                                                      imp.getPackageHeader() ),
                                                       pkg );
             existing = true;
