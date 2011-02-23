@@ -125,6 +125,7 @@ import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.Discussion;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
@@ -777,7 +778,7 @@ public class ServiceImplementation
         boolean unarchived = (data.archived == false && item.isArchived() == true);
         Calendar packageLastModified = item.getLastModified();
 
-        updateDroolsHeader( data.header,
+        DroolsHeader.updateDroolsHeader( data.header,
                             item );
         updateCategoryRules( data,
                              item );
@@ -2012,28 +2013,6 @@ public class ServiceImplementation
         serviceSecurity.checkSecurityIsAdmin();
 
         LoggingHelper.cleanLog();
-    }
-
-   
-
-    public static void updateDroolsHeader(String string,
-                                          PackageItem pkg) {
-        pkg.checkout();
-        AssetItem conf;
-        if ( pkg.containsAsset( "drools" ) ) {
-            conf = pkg.loadAsset( "drools" );
-            conf.updateContent( string );
-
-            conf.checkin( "" );
-        } else {
-            conf = pkg.addAsset( "drools",
-                                 "" );
-            conf.updateFormat( "package" );
-            conf.updateContent( string );
-
-            conf.checkin( "" );
-        }
-
     }
 
     @WebRemote

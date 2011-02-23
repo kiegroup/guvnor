@@ -30,6 +30,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.guvnor.server.security.RoleTypes;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -125,7 +126,7 @@ public class PopulateDataTest extends GuvnorTestBase {
                       "billasurf.jar" );
 
         PackageItem pkg = repo.loadPackage( "com.billasurf.manufacturing.plant" );
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board\nimport com.billasurf.Person" + "\n\nglobal com.billasurf.Person prs",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\nimport com.billasurf.Person" + "\n\nglobal com.billasurf.Person prs",
                                                   pkg );
         pkg.checkin( "added imports" );
 

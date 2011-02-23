@@ -114,7 +114,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         assertTrue( DroolsHeader.getDroolsHeader( pkg ).indexOf( "import com.billasurf.Board" ) > -1 );
         assertTrue( DroolsHeader.getDroolsHeader( pkg ).indexOf( "import com.billasurf.Person" ) > -1 );
 
-        ServiceImplementation.updateDroolsHeader( "goo wee",
+        DroolsHeader.updateDroolsHeader( "goo wee",
                                                   pkg );
         pkg.checkin( "" );
 
@@ -164,7 +164,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
         PackageItem pkg = repo.createPackage( "testGetBinaryPackageServlet",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "import java.util.List",
+        DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
         pkg.updateCompiledPackage( new ByteArrayInputStream( "foo".getBytes() ) );
         pkg.checkin( "" );
@@ -499,7 +499,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         RulesRepository repo = getRulesRepository();
         PackageItem pkg = repo.createPackage( "testHeadOOME",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "import java.util.List",
+        DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
         pkg.updateCompiledPackage( new ByteArrayInputStream( "foo".getBytes() ) );
         pkg.checkin( "" );

@@ -330,14 +330,14 @@ public class FileManagerUtils {
 
         if ( existing ) {
             pkg = repository.loadPackage( packageName );
-            ServiceImplementation.updateDroolsHeader( ClassicDRLImporter.mergeLines( DroolsHeader.getDroolsHeader( pkg ),
+            DroolsHeader.updateDroolsHeader( ClassicDRLImporter.mergeLines( DroolsHeader.getDroolsHeader( pkg ),
                                                                                      imp.getPackageHeader() ),
                                                       pkg );
             existing = true;
         } else {
             pkg = repository.createPackage( packageName,
                                             "<imported>" );
-            ServiceImplementation.updateDroolsHeader( imp.getPackageHeader(),
+            DroolsHeader.updateDroolsHeader( imp.getPackageHeader(),
                                                       pkg );
         }
 

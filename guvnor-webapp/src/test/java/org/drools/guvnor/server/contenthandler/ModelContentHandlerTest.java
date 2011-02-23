@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -69,7 +68,7 @@ public class ModelContentHandlerTest extends GuvnorTestBase {
                                               "for test" );
         AssetItem asset = pkg.addAsset( "testModelRemovedAsset",
                                         "description" );
-        ServiceImplementation.updateDroolsHeader( "import something.Else\n",
+        DroolsHeader.updateDroolsHeader( "import something.Else\n",
                                                   pkg );
 
         InputStream is = this.getClass().getResourceAsStream( "domain.objects-1.1.8.jar" );

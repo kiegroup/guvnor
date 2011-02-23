@@ -39,9 +39,9 @@ import org.drools.WorkingMemory;
 import org.drools.compiler.PackageBuilder;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.selector.AssetSelector;
 import org.drools.guvnor.server.selector.SelectorManager;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
@@ -86,7 +86,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         RulesRepository repo = getRulesRepository();
         PackageItem pkg = repo.createPackage( "testBuilderPackageConfig",
                                               "x" );
-        ServiceImplementation.updateDroolsHeader( "import java.util.List",
+        DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
         AssetItem func = pkg.addAsset( "func1",
                                        "a function" );
@@ -121,13 +121,13 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         assertEquals( 1,
                       assembler.builder.getDSLMappingFiles().size() );
 
-        ServiceImplementation.updateDroolsHeader( "koo koo ca choo",
+        DroolsHeader.updateDroolsHeader( "koo koo ca choo",
                                                   pkg );
         assembler = new ContentPackageAssembler( pkg );
         assertTrue( assembler.hasErrors() );
         assertTrue( assembler.isPackageConfigurationInError() );
 
-        ServiceImplementation.updateDroolsHeader( "import java.util.Date",
+        DroolsHeader.updateDroolsHeader( "import java.util.Date",
                                                   pkg );
         assembler = new ContentPackageAssembler( pkg );
         assertTrue( assembler.hasErrors() );
@@ -143,7 +143,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         }
 
         //fix it up
-        ServiceImplementation.updateDroolsHeader( "import java.util.List",
+        DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
         assembler = new ContentPackageAssembler( pkg );
         assertFalse( assembler.hasErrors() );
@@ -183,7 +183,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
 
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
                                                   pkg );
 
         AssetItem rule1 = pkg.addAsset( "rule_1",
@@ -225,7 +225,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
 
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
                                                   pkg );
 
         AssetItem rule1 = pkg.addAsset( "rule_1",
@@ -300,7 +300,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         PackageItem pkg = repo.createPackage( "testSimplePackageWithDeclaredTypes2",
                                               "" );
 
-        ServiceImplementation.updateDroolsHeader( "import java.util.HashMap",
+        DroolsHeader.updateDroolsHeader( "import java.util.HashMap",
                                                   pkg );
 
         AssetItem rule1 = pkg.addAsset( "rule_1",
@@ -349,7 +349,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
 
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
                                                   pkg );
 
         AssetItem rule1 = pkg.addAsset( "rule_1",
@@ -388,7 +388,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
                                     "SNAP_1" );
 
         //and screw up the the non snapshot one
-        ServiceImplementation.updateDroolsHeader( "koo koo ca choo",
+        DroolsHeader.updateDroolsHeader( "koo koo ca choo",
                                                   pkg );
         asm = new ContentPackageAssembler( pkg );
         assertTrue( asm.hasErrors() );
@@ -414,7 +414,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
 
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
                                                   pkg );
 
         AssetItem rule1 = pkg.addAsset( "rule_1",
@@ -460,7 +460,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         model.updateFormat( AssetFormats.MODEL );
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
                                                   pkg );
         repo.save();
 
@@ -501,7 +501,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/eventing-example.jar" ) );
         model.checkin( "" );
 
-        ServiceImplementation.updateDroolsHeader( "import org.drools.examples.eventing.EventRequest\n",
+        DroolsHeader.updateDroolsHeader( "import org.drools.examples.eventing.EventRequest\n",
                                                   pkg );
         AssetItem asset = pkg.addAsset( "whee",
                                         "" );
@@ -534,7 +534,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         model.updateFormat( AssetFormats.MODEL );
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
                                                   pkg );
         repo.save();
 
@@ -595,7 +595,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         PackageItem pkg = repo.createPackage( "testShowSource",
                                               "" );
 
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
                                                   pkg );
         repo.save();
 
@@ -662,7 +662,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         PackageItem pkg = repo.createPackage( "testBuildPackageWithEmptyHeader",
                                               "" );
 
-        ServiceImplementation.updateDroolsHeader( "\n",
+        DroolsHeader.updateDroolsHeader( "\n",
                                                   pkg );
         repo.save();
 
@@ -775,7 +775,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         PackageItem pkg = repo.createPackage( "testXLSDecisionTable",
                                               "" );
 
-        ServiceImplementation.updateDroolsHeader( "import org.acme.insurance.Policy\n import org.acme.insurance.Driver",
+        DroolsHeader.updateDroolsHeader( "import org.acme.insurance.Policy\n import org.acme.insurance.Driver",
                                                   pkg );
         repo.save();
 
@@ -872,7 +872,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         //create our package
         PackageItem pkg = repo.createPackage( "testBRLWithDSLMixedIn",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "import org.drools.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                                   pkg );
         AssetItem rule1 = pkg.addAsset( "rule2",
                                         "" );
@@ -948,7 +948,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         //create our package
         PackageItem pkg = repo.createPackage( "testCustomSelector",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "import org.drools.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                                   pkg );
         AssetItem rule1 = pkg.addAsset( "rule1",
                                         "" );

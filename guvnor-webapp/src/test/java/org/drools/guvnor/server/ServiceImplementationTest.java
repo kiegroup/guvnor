@@ -84,6 +84,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.repository.UserInbox;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -1203,7 +1204,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         String uuid = it.getUUID();
         it.updateCoverage( "xyz" );
         it.updateExternalURI( "ext" );
-        ServiceImplementation.updateDroolsHeader( "header",
+        DroolsHeader.updateDroolsHeader( "header",
                                                   it );
         impl.getRulesRepository().save();
 
@@ -1835,7 +1836,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         final PackageItem pkg = repo.createPackage( "testSnapshotRebuild",
                                                     "" );
-        ServiceImplementation.updateDroolsHeader( "import java.util.List",
+        DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
         repo.save();
 
@@ -1895,7 +1896,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         final PackageItem pkg = repo.createPackage( "testPackageRebuild",
                                                     "" );
-        ServiceImplementation.updateDroolsHeader( "import java.util.List",
+        DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
         repo.save();
 
@@ -2247,7 +2248,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         model.updateFormat( AssetFormats.MODEL );
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board",
                                                   pkg );
 
         AssetItem m2 = pkg.addAsset( "MyModel2",
@@ -2354,7 +2355,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         // create our package
         PackageItem pkg = repo.createPackage( "testBinaryPackageCompile",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "global java.util.List ls \n import org.drools.Person",
+        DroolsHeader.updateDroolsHeader( "global java.util.List ls \n import org.drools.Person",
                                                   pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -2435,7 +2436,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         // create our package
         PackageItem pkg = repo.createPackage( "testBinaryPackageCompileBRL",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "import org.drools.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                                   pkg );
         AssetItem rule2 = pkg.addAsset( "rule2",
                                         "" );
@@ -2584,7 +2585,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         // create our package
         PackageItem pkg = repo.createPackage( "testSISuggestionCompletionLoading",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "import org.drools.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                                   pkg );
         AssetItem rule1 = pkg.addAsset( "model_1",
                                         "" );
@@ -2604,7 +2605,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         // create our package
         PackageItem pkg = repo.createPackage( "testPackageSource",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "import org.goo.Ber",
+        DroolsHeader.updateDroolsHeader( "import org.goo.Ber",
                                                   pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -2731,7 +2732,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
 
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Person",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Person",
                                                   pkg );
 
         AssetItem asset = pkg.addAsset( "testRule",
@@ -2766,7 +2767,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
 
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Person",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Person",
                                                   pkg );
 
         AssetItem asset = pkg.addAsset( "testRule",
@@ -2881,7 +2882,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
 
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Person",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Person",
                                                   pkg );
         impl.createCategory( "/",
                              "brl",
@@ -2995,7 +2996,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         }
         assertNull( result );
 
-        ServiceImplementation.updateDroolsHeader( "importxxxx",
+        DroolsHeader.updateDroolsHeader( "importxxxx",
                                                   pkg );
         repo.save();
         result = impl.buildAsset( rule );
@@ -3018,7 +3019,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         // create our package
         PackageItem pkg = repo.createPackage( "testRuleNameList",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "import org.goo.Ber",
+        DroolsHeader.updateDroolsHeader( "import org.goo.Ber",
                                                   pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -3065,7 +3066,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         PackageItem pkg = repo.createPackage( "testBinaryPackageUpToDate",
                                               "" );
         assertFalse( pkg.isBinaryUpToDate() );
-        ServiceImplementation.updateDroolsHeader( "import org.drools.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                                   pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -3124,7 +3125,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         System.out.println( "create package" );
         PackageItem pkg = repo.createPackage( "testScenarioRun",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "import org.drools.Person\n global org.drools.Cheese cheese\n",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person\n global org.drools.Cheese cheese\n",
                                                   pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -3238,7 +3239,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         PackageItem pkg = repo.createPackage( "testScenarioRunWithGeneratedBeans",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "declare GenBean\n name: String \n age: int \nend\n",
+        DroolsHeader.updateDroolsHeader( "declare GenBean\n name: String \n age: int \nend\n",
                                                   pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -3298,7 +3299,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         PackageItem pkg = repo.createPackage( "testScenarioRunBulkWithDeclaredFacts",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "declare Wang \n age: Integer \n name: String \n end",
+        DroolsHeader.updateDroolsHeader( "declare Wang \n age: Integer \n name: String \n end",
                                                   pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -3419,7 +3420,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
         model.checkin( "" );
 
-        ServiceImplementation.updateDroolsHeader( "import com.billasurf.Board",
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board",
                                                   pkg );
 
         AssetItem asset = pkg.addAsset( "testRule",
@@ -3494,7 +3495,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/jarWithSourceFiles.jar" ) );
         model.checkin( "" );
 
-        ServiceImplementation.updateDroolsHeader( "import org.test.Person; \n import org.test.Banana; \n ",
+        DroolsHeader.updateDroolsHeader( "import org.test.Person; \n import org.test.Banana; \n ",
                                                   pkg );
 
         AssetItem asset = pkg.addAsset( "testRule",
@@ -3554,7 +3555,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         PackageItem pkg = repo.createPackage( "testScenarioRunBulk",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "import org.drools.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                                   pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
@@ -3719,7 +3720,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         PackageItem pkg = repo.createPackage( "testGuidedDTCompile",
                                               "" );
-        ServiceImplementation.updateDroolsHeader( "import org.drools.Person",
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
                                                   pkg );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
