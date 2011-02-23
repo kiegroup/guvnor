@@ -96,7 +96,7 @@ public class EditorLauncher {
         } else if ( asset.metaData.format.equals( AssetFormats.RULE_FLOW_RF ) ) {
             return new RuleFlowWrapper( asset,
                                         viewer );
-        } else if ( ( asset.metaData.format.equals( AssetFormats.BPMN2_PROCESS )  || asset.metaData.format.equals( AssetFormats.BPMN_PROCESS ) )  && Preferences.getBooleanPref( "oryx-bpmn-editor" ) ) {
+        } else if ( ( asset.metaData.format.equals( AssetFormats.BPMN2_PROCESS )  || asset.metaData.format.equals( AssetFormats.BPMN_PROCESS ) ) ) {
             return new BusinessProcessEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.DRL ) ) {
             return new DrlEditor( asset );
