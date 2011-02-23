@@ -40,7 +40,24 @@ import com.google.gwt.user.client.Event;
  */
 public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
+    //GWT disable text selection in an HTMLTable. 
+    //event.stopPropogation() doesn't prevent text selection
+    private native static void disableTextSelectInternal(Element e,
+                                                         boolean disable)/*-{
+        if (disable) {
+            e.ondrag = function () { return false; };
+            e.onselectstart = function () { return false; };
+            e.style.MozUserSelect="none"
+        } else {
+            e.ondrag = null;
+            e.onselectstart = null;
+            e.style.MozUserSelect="text"
+        }
+    }-*/;
+
     protected DecoratedGridWidget<T> grid;
+
+    private boolean                  bDragOperationPrimed = false;
 
     public VerticalMergableGridWidget(final DecoratedGridWidget<T> grid,
                                       final DynamicData data,
@@ -48,6 +65,8 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         super( data,
                columns );
         this.grid = grid;
+        disableTextSelectInternal( table,
+                                   true );
     }
 
     @Override
@@ -134,14 +153,13 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     public void onBrowserEvent(Event event) {
 
         String eventType = event.getType();
-
         // Get the event target.
         EventTarget eventTarget = event.getEventTarget();
         if ( !Element.is( eventTarget ) ) {
             return;
         }
         Element target = event.getEventTarget().cast();
-
+        
         // Find the cell where the event occurred.
         TableCellElement tableCell = findNearestParentCell( target );
         if ( tableCell == null ) {
@@ -163,15 +181,21 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         CellValue< ? extends Comparable< ? >> physicalCell = data.get( c.getRow() ).get( c.getCol() );
 
         // Select range
-        if ( eventType.equals( "click" ) ) {
-            if(event.getShiftKey()) {
-                grid.extendSelection(c);
-                event.preventDefault();
+        if ( eventType.equals( "mousedown" ) ) {
+            if ( event.getShiftKey() ) {
+                grid.extendSelection( c );
                 return;
             } else {
                 grid.startSelecting( c );
+                bDragOperationPrimed = true;
                 return;
             }
+        } else if ( bDragOperationPrimed && eventType.equals( "mousemove" ) ) {
+            grid.extendSelection( c );
+            return;
+        } else if ( eventType.equals( "mouseup" ) ) {
+            bDragOperationPrimed = false;
+            return;
         }
 
         // Keyboard navigation
@@ -190,14 +214,14 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                 event.preventDefault();
             } else if ( event.getKeyCode() == KeyCodes.KEY_UP ) {
                 if ( event.getShiftKey() ) {
-                    grid.moveAndExtendSelection( MOVE_DIRECTION.UP );
+                    grid.extendSelection( MOVE_DIRECTION.UP );
                 } else {
                     grid.moveSelection( MOVE_DIRECTION.UP );
                 }
                 event.preventDefault();
             } else if ( event.getKeyCode() == KeyCodes.KEY_DOWN ) {
                 if ( event.getShiftKey() ) {
-                    grid.moveAndExtendSelection( MOVE_DIRECTION.DOWN );
+                    grid.extendSelection( MOVE_DIRECTION.DOWN );
                 } else {
                     grid.moveSelection( MOVE_DIRECTION.DOWN );
                 }

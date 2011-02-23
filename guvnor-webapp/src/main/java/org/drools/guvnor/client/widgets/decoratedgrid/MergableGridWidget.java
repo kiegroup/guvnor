@@ -122,7 +122,9 @@ public abstract class MergableGridWidget<T> extends Widget {
         // doing this, but I copied CellTable<?, ?>'s lead
         sinkEvents( Event.getTypeInt( "click" )
                     | Event.getTypeInt( "dblclick" )
-                    | Event.getTypeInt( "mouseover" )
+                    | Event.getTypeInt( "mousedown" )
+                    | Event.getTypeInt( "mouseup" )
+                    | Event.getTypeInt( "mousemove" )
                     | Event.getTypeInt( "mouseout" )
                     | Event.getTypeInt( "change" )
                     | Event.getTypeInt( "keypress" )

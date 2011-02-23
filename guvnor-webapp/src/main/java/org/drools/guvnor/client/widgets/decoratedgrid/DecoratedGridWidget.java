@@ -292,7 +292,10 @@ public abstract class DecoratedGridWidget<T> extends Composite
      */
     public void extendSelection(Coordinate end) {
         if ( rangeOriginCell == null ) {
-            throw new IllegalArgumentException( "origin cannot be null" );
+            throw new IllegalArgumentException( "origin has not been set. Unable to extend selection" );
+        }
+        if ( end == null ) {
+            throw new IllegalArgumentException( "end cannot be null" );
         }
         clearSelection();
         CellValue< ? > endCell = data.get( end );
@@ -304,6 +307,27 @@ public abstract class DecoratedGridWidget<T> extends Composite
         } else {
             rangeExtentCell = selections.last();
             rangeDirection = MOVE_DIRECTION.DOWN;
+        }
+    }
+
+    /**
+     * Extend selection in the specified direction
+     * 
+     * @param dir
+     *            Direction to extend the selection
+     */
+    public void extendSelection(MOVE_DIRECTION dir) {
+        if ( selections.size() > 0 ) {
+            CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
+            Coordinate nc = getNextCell( activeCell.getCoordinate(),
+                                         dir );
+            if ( nc != null ) {
+                clearSelection();
+                rangeDirection = dir;
+                rangeExtentCell = data.get( nc );
+                selectRange( rangeOriginCell,
+                             rangeExtentCell );
+            }
         }
     }
 
@@ -512,21 +536,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
      */
     public boolean isMerged() {
         return isMerged;
-    }
-
-    public void moveAndExtendSelection(MOVE_DIRECTION dir) {
-        if ( selections.size() > 0 ) {
-            CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
-            Coordinate nc = getNextCell( activeCell.getCoordinate(),
-                                         dir );
-            if ( nc != null ) {
-                clearSelection();
-                rangeDirection = dir;
-                rangeExtentCell = data.get( nc );
-                selectRange( rangeOriginCell,
-                             rangeExtentCell );
-            }
-        }
     }
 
     /**
