@@ -236,6 +236,13 @@ public class RepositoryPackageOperations {
         return result;
     }
 
+    // TODO: Not working. GUVNOR-475
+    protected void importPackages(byte[] byteArray,
+                                  boolean importAsNew) {
+        getRulesRepository().importPackageToRepository( byteArray,
+                                                        importAsNew );
+    }
+
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
     }

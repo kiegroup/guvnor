@@ -658,8 +658,8 @@ public class ServiceImplementation
     // TODO: Not working. GUVNOR-475
     public void importPackages(byte[] byteArray,
                                boolean importAsNew) {
-        getRulesRepository().importPackageToRepository( byteArray,
-                                                        importAsNew );
+        repositoryPackageOperations.importPackages( byteArray,
+                                                    importAsNew );
     }
 
     @WebRemote
