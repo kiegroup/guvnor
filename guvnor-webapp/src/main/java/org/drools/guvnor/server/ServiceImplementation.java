@@ -667,13 +667,9 @@ public class ServiceImplementation
                                 String description,
                                 String[] workspace) throws RulesRepositoryException {
         serviceSecurity.checkSecurityIsAdmin();
-
-        log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
-        PackageItem item = getRulesRepository().createPackage( name,
-                                                               description,
-                                                               workspace );
-
-        return item.getUUID();
+        return repositoryPackageOperations.createPackage( name,
+                                                          description,
+                                                          workspace );
     }
 
     @WebRemote

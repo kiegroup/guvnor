@@ -243,6 +243,18 @@ public class RepositoryPackageOperations {
                                                         importAsNew );
     }
 
+    protected String createPackage(String name,
+                                   String description,
+                                   String[] workspace) throws RulesRepositoryException {
+
+        log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
+        PackageItem item = getRulesRepository().createPackage( name,
+                                                               description,
+                                                               workspace );
+
+        return item.getUUID();
+    }
+
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
     }
