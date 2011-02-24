@@ -685,12 +685,9 @@ public class ServiceImplementation
                                    String description,
                                    String parentNode) throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
-
-        log.info( "USER: " + getCurrentUserName() + " CREATING subPackage [" + name + "], parent [" + parentNode + "]" );
-        PackageItem item = getRulesRepository().createSubPackage( name,
-                                                                  description,
-                                                                  parentNode );
-        return item.getUUID();
+        return repositoryPackageOperations.createSubPackage( name,
+                                                             description,
+                                                             parentNode );
     }
 
     @WebRemote

@@ -255,6 +255,16 @@ public class RepositoryPackageOperations {
         return item.getUUID();
     }
 
+    protected String createSubPackage(String name,
+                                      String description,
+                                      String parentNode) throws SerializationException {
+        log.info( "USER: " + getCurrentUserName() + " CREATING subPackage [" + name + "], parent [" + parentNode + "]" );
+        PackageItem item = getRulesRepository().createSubPackage( name,
+                                                                  description,
+                                                                  parentNode );
+        return item.getUUID();
+    }
+
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
     }
