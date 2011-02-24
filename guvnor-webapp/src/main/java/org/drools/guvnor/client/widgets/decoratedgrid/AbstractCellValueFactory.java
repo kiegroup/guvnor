@@ -83,7 +83,7 @@ public abstract class AbstractCellValueFactory<T> {
 
             @Override
             public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? null : ((Integer) value.getValue()).toString());
+                return (value.getValue() == null ? null : ((Long) value.getValue()).toString());
             }
 
         },
