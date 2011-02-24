@@ -634,17 +634,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public void removePackage(String uuid) {
         serviceSecurity.checkSecurityIsPackageAdmin( uuid );
-
-        try {
-            PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
-            log.info( "USER:" + getCurrentUserName() + " REMOVEING package [" + item.getName() + "]" );
-            item.remove();
-            getRulesRepository().save();
-        } catch ( RulesRepositoryException e ) {
-            log.error( "Unable to remove package.",
-                       e );
-            throw e;
-        }
+        repositoryPackageOperations.removePackage( uuid );
     }
 
     @WebRemote

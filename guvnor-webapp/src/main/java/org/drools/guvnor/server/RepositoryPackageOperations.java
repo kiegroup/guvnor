@@ -193,6 +193,20 @@ public class RepositoryPackageOperations {
          */
     }
 
+    protected void removePackage(String uuid) {
+
+        try {
+            PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
+            log.info( "USER:" + getCurrentUserName() + " REMOVEING package [" + item.getName() + "]" );
+            item.remove();
+            getRulesRepository().save();
+        } catch ( RulesRepositoryException e ) {
+            log.error( "Unable to remove package.",
+                       e );
+            throw e;
+        }
+    }
+
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
     }
