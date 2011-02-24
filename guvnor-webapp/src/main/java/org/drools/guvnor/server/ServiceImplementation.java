@@ -128,7 +128,6 @@ import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
-import org.drools.guvnor.server.util.PackageConfigDataFactory;
 import org.drools.guvnor.server.util.QueryPageRowFactory;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
@@ -693,17 +692,12 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public PackageConfigData loadPackageConfig(String uuid) {
-        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
+        PackageItem packageItem = getRulesRepository().loadPackageByUUID( uuid );
         // the uuid passed in is the uuid of that deployment bundle, not the
         // package uudi.
         // we have to figure out the package name.
-        serviceSecurity.checkSecurityNameTypePackageReadOnly( item );
-
-        PackageConfigData data = PackageConfigDataFactory.createPackageConfigDataWithDependencies( item );
-        if ( data.isSnapshot ) {
-            data.snapshotName = item.getSnapshotName();
-        }
-        return data;
+        serviceSecurity.checkSecurityNameTypePackageReadOnly( packageItem );
+        return repositoryPackageOperations.loadPackageConfig( packageItem );
     }
 
     @WebRemote

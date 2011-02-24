@@ -265,6 +265,14 @@ public class RepositoryPackageOperations {
         return item.getUUID();
     }
 
+    protected PackageConfigData loadPackageConfig(PackageItem packageItem) {
+        PackageConfigData data = PackageConfigDataFactory.createPackageConfigDataWithDependencies( packageItem );
+        if ( data.isSnapshot ) {
+            data.snapshotName = packageItem.getSnapshotName();
+        }
+        return data;
+    }
+
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
     }
