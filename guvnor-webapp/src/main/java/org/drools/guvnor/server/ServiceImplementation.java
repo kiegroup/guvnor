@@ -642,10 +642,9 @@ public class ServiceImplementation
     public String renamePackage(String uuid,
                                 String newName) {
         serviceSecurity.checkSecurityIsPackageAdmin( uuid );
-        log.info( "USER:" + getCurrentUserName() + " RENAMING package [UUID: " + uuid + "] to package [" + newName + "]" );
 
-        return getRulesRepository().renamePackage( uuid,
-                                                   newName );
+        return repositoryPackageOperations.renamePackage( uuid,
+                                                          newName );
     }
 
     @WebRemote

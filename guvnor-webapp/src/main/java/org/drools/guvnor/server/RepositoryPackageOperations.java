@@ -207,6 +207,14 @@ public class RepositoryPackageOperations {
         }
     }
 
+    protected String renamePackage(String uuid,
+                                   String newName) {
+        log.info( "USER:" + getCurrentUserName() + " RENAMING package [UUID: " + uuid + "] to package [" + newName + "]" );
+
+        return getRulesRepository().renamePackage( uuid,
+                                                   newName );
+    }
+
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
     }
