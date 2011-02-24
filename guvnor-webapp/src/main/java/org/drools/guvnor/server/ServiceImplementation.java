@@ -576,7 +576,7 @@ public class ServiceImplementation
     }
 
     public PackageConfigData loadGlobalPackage() {
-       return repositoryPackageOperations.loadGlobalPackage();
+        return repositoryPackageOperations.loadGlobalPackage();
     }
 
     @WebRemote
@@ -626,32 +626,8 @@ public class ServiceImplementation
     public void copyPackage(String sourcePackageName,
                             String destPackageName) throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
-
-        try {
-            log.info( "USER:" + getCurrentUserName() + " COPYING package [" + sourcePackageName + "] to  package [" + destPackageName + "]" );
-
-            getRulesRepository().copyPackage( sourcePackageName,
-                                              destPackageName );
-        } catch ( RulesRepositoryException e ) {
-            log.error( "Unable to copy package.",
-                       e );
-            throw e;
-        }
-
-        // If we allow package owner to copy package, we will have to update the
-        // permission store
-        // for the newly copied package.
-        // Update permission store
-        /*
-         * String copiedUuid = ""; try { PackageItem source =
-         * repository.loadPackage( destPackageName ); copiedUuid =
-         * source.getUUID(); } catch (RulesRepositoryException e) { log.error( e
-         * ); } PackageBasedPermissionStore pbps = new
-         * PackageBasedPermissionStore(); pbps.addPackageBasedPermission(new
-         * PackageBasedPermission(copiedUuid,
-         * Identity.instance().getPrincipal().getName(),
-         * RoleTypes.PACKAGE_ADMIN));
-         */
+        repositoryPackageOperations.copyPackage( sourcePackageName,
+                                                 destPackageName );
     }
 
     @WebRemote
@@ -779,7 +755,7 @@ public class ServiceImplementation
         Calendar packageLastModified = item.getLastModified();
 
         DroolsHeader.updateDroolsHeader( data.header,
-                            item );
+                                         item );
         updateCategoryRules( data,
                              item );
 
@@ -1272,7 +1248,7 @@ public class ServiceImplementation
     }
 
     public String[] getDependencies(String uuid) {
-        PackageItem item = getRulesRepository().loadPackageByUUID(uuid);
+        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
         return item.getDependencies();
     }
 
@@ -2771,7 +2747,6 @@ public class ServiceImplementation
         cal.setTime( date );
         return cal;
     }
-    
 
     private ValidatedResponse validateBRMSSuggestionCompletionLoaderResponse(BRMSSuggestionCompletionLoader loader) {
         ValidatedResponse res = new ValidatedResponse();

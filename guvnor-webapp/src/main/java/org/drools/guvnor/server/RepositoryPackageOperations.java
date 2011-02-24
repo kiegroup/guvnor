@@ -29,8 +29,11 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
+
+import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Handles operations for packages
@@ -158,5 +161,39 @@ public class RepositoryPackageOperations {
         }
 
         return data;
+    }
+
+    protected void copyPackage(String sourcePackageName,
+                               String destPackageName) throws SerializationException {
+
+        try {
+            log.info( "USER:" + getCurrentUserName() + " COPYING package [" + sourcePackageName + "] to  package [" + destPackageName + "]" );
+
+            getRulesRepository().copyPackage( sourcePackageName,
+                                              destPackageName );
+        } catch ( RulesRepositoryException e ) {
+            log.error( "Unable to copy package.",
+                       e );
+            throw e;
+        }
+
+        // If we allow package owner to copy package, we will have to update the
+        // permission store
+        // for the newly copied package.
+        // Update permission store
+        /*
+         * String copiedUuid = ""; try { PackageItem source =
+         * repository.loadPackage( destPackageName ); copiedUuid =
+         * source.getUUID(); } catch (RulesRepositoryException e) { log.error( e
+         * ); } PackageBasedPermissionStore pbps = new
+         * PackageBasedPermissionStore(); pbps.addPackageBasedPermission(new
+         * PackageBasedPermission(copiedUuid,
+         * Identity.instance().getPrincipal().getName(),
+         * RoleTypes.PACKAGE_ADMIN));
+         */
+    }
+
+    private String getCurrentUserName() {
+        return getRulesRepository().getSession().getUserID();
     }
 }
