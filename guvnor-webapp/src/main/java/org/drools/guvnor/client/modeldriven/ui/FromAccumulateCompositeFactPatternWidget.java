@@ -149,35 +149,38 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         int codeTableCol = 0;
 
         codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='x-form-field'>Init:</div>"));
+        
         final TextBox initField = new TextBox();
         initField.setTitle("init code");
         initField.setText(getFromAccumulatePattern().getInitCode());
+        initField.setEnabled(!this.readOnly);
         codeTable.setWidget(codeTableRow++, codeTableCol--, initField);
 
         codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='x-form-field'>Action:</div>"));
         final TextBox actionField = new TextBox();
         actionField.setTitle("action code");
         actionField.setText(getFromAccumulatePattern().getActionCode());
+        actionField.setEnabled(!this.readOnly);
         codeTable.setWidget(codeTableRow++, codeTableCol--, actionField);
 
         codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='x-form-field'>Reverse:</div>"));
         final TextBox reverseField = new TextBox();
         reverseField.setTitle("reverse code.");
         reverseField.setText(getFromAccumulatePattern().getReverseCode());
+        reverseField.setEnabled(!this.readOnly);
         codeTable.setWidget(codeTableRow++, codeTableCol--, reverseField);
 
         codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='x-form-field'>Result:</div>"));
         final TextBox resultField = new TextBox();
         resultField.setTitle("result code");
         resultField.setText(getFromAccumulatePattern().getResultCode());
+        resultField.setEnabled(!this.readOnly);
         codeTable.setWidget(codeTableRow++, codeTableCol--, resultField);
 
 
         //panel.setWidget(r++, 0, codeTable);
         ScrollPanel codePanel = new ScrollPanel();
         codePanel.add(codeTable);
-        //TODO:
-        //codePanel.setDisabled(this.readOnly);
         
         tPanel.add(codePanel,"Custom Code");
 
@@ -187,14 +190,15 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         final TextBox functionField = new TextBox();
         functionField.setTitle("function code");
         functionField.setText(getFromAccumulatePattern().getFunction());
+        functionField.setEnabled(!this.readOnly);
         functionTable.setWidget(0, 1, functionField);
 
 //        panel.setWidget(r++, 0, functionTable);
 
         ScrollPanel functionPanel = new ScrollPanel();
         functionPanel.add(functionTable);
-        //TODO:
-        //functionPanel.setDisabled(this.readOnly);
+        
+        
         tPanel.add(functionPanel,"Function");
         ChangeHandler changehandler = new ChangeHandler() {
 
@@ -240,15 +244,6 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         boolean useFunction = getFromAccumulatePattern().useFunctionOrCode().equals(FromAccumulateCompositeFactPattern.USE_FUNCTION);
         
         tPanel.selectTab(useFunction?1:0);
-        
-        //tPanel.setBorder(false);
-        //tPanel.setBodyBorder(false);
-        //tPanel.setWidth(200);
-
-        //tPanel.setDisabled(this.readOnly);
-
-//        functionTable.setVisible(useFunction);
-//        codeTable.setVisible(!useFunction);
 
         panel.setWidget(r++, 0, tPanel);
 
