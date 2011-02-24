@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.decisiontable.cells;
 
+import java.math.BigDecimal;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -32,12 +34,12 @@ import com.google.gwt.user.client.ui.TextBox;
  * A Popup Text Editor.
  */
 public class PopupNumericEditCell extends
-        AbstractPopupEditCell<Long, Long> {
+        AbstractPopupEditCell<BigDecimal, BigDecimal> {
 
     private final TextBox       textBox;
 
     // A valid number
-    private static final RegExp VALID = RegExp.compile( "(^-{0,1}\\d*$)" );
+    private static final RegExp VALID = RegExp.compile( "(^[-+]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
 
     public PopupNumericEditCell() {
         super();
@@ -96,10 +98,10 @@ public class PopupNumericEditCell extends
 
     @Override
     public void render(Context context,
-                       Long value,
+                       BigDecimal value,
                        SafeHtmlBuilder sb) {
         if ( value != null ) {
-            sb.append( renderer.render( Long.toString( value ) ) );
+            sb.append( renderer.render( value.toPlainString() ) );
         }
     }
 
@@ -109,12 +111,12 @@ public class PopupNumericEditCell extends
 
         // Update value
         String text = textBox.getValue();
-        Long number = null;
+        BigDecimal number = null;
         if ( text.length() > 0 ) {
             try {
-                number = Long.parseLong( text );
+                number = new BigDecimal( text );
             } catch ( NumberFormatException e ) {
-                number = Long.MAX_VALUE;
+                number = new BigDecimal( 0 );
             }
         }
         setValue( lastContext,
@@ -130,9 +132,9 @@ public class PopupNumericEditCell extends
     @Override
     protected void startEditing(final Context context,
                                 final Element parent,
-                                final Long value) {
+                                final BigDecimal value) {
 
-        textBox.setValue( (value == null ? "" : Long.toString( value )) );
+        textBox.setValue( (value == null ? "" : value.toPlainString()) );
 
         panel.setPopupPositionAndShow( new PositionCallback() {
             public void setPosition(int offsetWidth,

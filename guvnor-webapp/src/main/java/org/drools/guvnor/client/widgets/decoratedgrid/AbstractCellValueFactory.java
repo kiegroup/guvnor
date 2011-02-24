@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -47,15 +48,15 @@ public abstract class AbstractCellValueFactory<T> {
         },
         NUMERIC() {
             @Override
-            public CellValue<Long> getNewCellValue(int iRow,
+            public CellValue<BigDecimal> getNewCellValue(int iRow,
                                                       int iCol,
                                                       String initialValue) {
-                CellValue<Long> cv = new CellValue<Long>( null,
+                CellValue<BigDecimal> cv = new CellValue<BigDecimal>( null,
                                                           iRow,
                                                           iCol );
                 if ( initialValue != null ) {
                     try {
-                        cv.setValue( Long.valueOf( initialValue ) );
+                        cv.setValue( new BigDecimal(initialValue) );
                     } catch ( Exception e ) {
                     }
                 }
@@ -64,7 +65,7 @@ public abstract class AbstractCellValueFactory<T> {
 
             @Override
             public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? null : ((Long) value.getValue()).toString());
+                return (value.getValue() == null ? null : ((BigDecimal) value.getValue()).toPlainString());
             }
 
         },

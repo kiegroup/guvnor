@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.drools.guvnor.client.decisiontable.cells.PopupDateEditCell;
@@ -77,8 +78,8 @@ public abstract class AbstractCellFactory<T> {
     }
 
     // Make a new Cell for Numeric columns
-    protected DecoratedGridCellValueAdaptor<Long, T> makeNumericCell() {
-        return new DecoratedGridCellValueAdaptor<Long, T>( new PopupNumericEditCell() );
+    protected DecoratedGridCellValueAdaptor<BigDecimal, T> makeNumericCell() {
+        return new DecoratedGridCellValueAdaptor<BigDecimal, T>( new PopupNumericEditCell() );
     }
 
     // Make a new Cell for a RowNumberCol
