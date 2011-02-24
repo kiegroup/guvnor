@@ -15,11 +15,15 @@
  */
 package org.drools.guvnor.server;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.server.security.RoleTypes;
@@ -213,6 +217,23 @@ public class RepositoryPackageOperations {
 
         return getRulesRepository().renamePackage( uuid,
                                                    newName );
+    }
+
+    protected byte[] exportPackages(String packageName) {
+        log.info( "USER:" + getCurrentUserName() + " export package [name: " + packageName + "] " );
+
+        byte[] result = null;
+
+        try {
+            result = getRulesRepository().dumpPackageFromRepositoryXml( packageName );
+        } catch ( PathNotFoundException e ) {
+            throw new RulesRepositoryException( e );
+        } catch ( IOException e ) {
+            throw new RulesRepositoryException( e );
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
+        }
+        return result;
     }
 
     private String getCurrentUserName() {

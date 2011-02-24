@@ -42,7 +42,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import javax.jcr.ItemExistsException;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.io.IOUtils;
@@ -651,20 +650,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public byte[] exportPackages(String packageName) {
         serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
-        log.info( "USER:" + getCurrentUserName() + " export package [name: " + packageName + "] " );
-
-        byte[] result = null;
-
-        try {
-            result = getRulesRepository().dumpPackageFromRepositoryXml( packageName );
-        } catch ( PathNotFoundException e ) {
-            throw new RulesRepositoryException( e );
-        } catch ( IOException e ) {
-            throw new RulesRepositoryException( e );
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
-        }
-        return result;
+        return repositoryPackageOperations.exportPackages( packageName );
     }
 
     @WebRemote
