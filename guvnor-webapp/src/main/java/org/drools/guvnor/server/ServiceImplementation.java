@@ -124,7 +124,6 @@ import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.Discussion;
-import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
@@ -703,45 +702,9 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( data.uuid ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
-        }
+        serviceSecurity.checkSecurityIsPackageDeveloper( data.uuid );
+        return repositoryPackageOperations.savePackage( data );
 
-        log.info( "USER:" + getCurrentUserName() + " SAVING package [" + data.name + "]" );
-
-        PackageItem item = getRulesRepository().loadPackage( data.name );
-
-        // If package is being unarchived.
-        boolean unarchived = (data.archived == false && item.isArchived() == true);
-        Calendar packageLastModified = item.getLastModified();
-
-        DroolsHeader.updateDroolsHeader( data.header,
-                                         item );
-        updateCategoryRules( data,
-                             item );
-
-        item.updateExternalURI( data.externalURI );
-        item.updateDescription( data.description );
-        item.archiveItem( data.archived );
-        item.updateBinaryUpToDate( false );
-        ServiceImplementation.ruleBaseCache.remove( data.uuid );
-        item.checkin( data.description );
-
-        // If package is archived, archive all the assets under it
-        if ( data.archived ) {
-            handleArchivedForSavePackage( data,
-                                          item );
-        } else if ( unarchived ) {
-            handleUnarchivedForSavePackage( data,
-                                            item,
-                                            packageLastModified );
-        }
-
-        BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
-        loader.getSuggestionEngine( item );
-
-        return validateBRMSSuggestionCompletionLoaderResponse( loader );
     }
 
     @WebRemote
@@ -1417,25 +1380,6 @@ public class ServiceImplementation
                                                      head,
                                                      comment );
 
-    }
-
-    private static class KeyValueTO {
-        private String keys;
-        private String values;
-
-        public KeyValueTO(final String keys,
-                          final String values) {
-            this.keys = keys;
-            this.values = values;
-        }
-
-        public String getKeys() {
-            return keys;
-        }
-
-        public String getValues() {
-            return values;
-        }
     }
 
     /**
@@ -2708,74 +2652,6 @@ public class ServiceImplementation
         Calendar cal = Calendar.getInstance();
         cal.setTime( date );
         return cal;
-    }
-
-    private ValidatedResponse validateBRMSSuggestionCompletionLoaderResponse(BRMSSuggestionCompletionLoader loader) {
-        ValidatedResponse res = new ValidatedResponse();
-        if ( loader.hasErrors() ) {
-            res.hasErrors = true;
-            String err = "";
-            for ( Iterator iter = loader.getErrors().iterator(); iter.hasNext(); ) {
-                err += (String) iter.next();
-                if ( iter.hasNext() ) err += "\n";
-            }
-            res.errorHeader = "Package validation errors";
-            res.errorMessage = err;
-        }
-        return res;
-    }
-
-    private void handleUnarchivedForSavePackage(PackageConfigData data,
-                                                PackageItem item,
-                                                Calendar packageLastModified) {
-        for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
-            AssetItem assetItem = iter.next();
-            // Unarchive the assets archived after the package
-            // ( == at the same time that the package was archived)
-            if ( assetItem.getLastModified().compareTo( packageLastModified ) >= 0 ) {
-                assetItem.archiveItem( false );
-                assetItem.checkin( data.description );
-            }
-        }
-    }
-
-    private void handleArchivedForSavePackage(PackageConfigData data,
-                                              PackageItem item) {
-        for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
-            AssetItem assetItem = iter.next();
-            if ( !assetItem.isArchived() ) {
-                assetItem.archiveItem( true );
-                assetItem.checkin( data.description );
-            }
-        }
-    }
-
-    // HashMap DOES NOT guarantee order in different iterations!
-    private static KeyValueTO convertMapToCsv(final Map map) {
-        StringBuilder keysBuilder = new StringBuilder();
-        StringBuilder valuesBuilder = new StringBuilder();
-        for ( Iterator i = map.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) i.next();
-            if ( keysBuilder.length() > 0 ) {
-                keysBuilder.append( "," );
-            }
-
-            if ( valuesBuilder.length() > 0 ) {
-                valuesBuilder.append( "," );
-            }
-
-            keysBuilder.append( entry.getKey() );
-            valuesBuilder.append( entry.getValue() );
-        }
-        return new KeyValueTO( keysBuilder.toString(),
-                               valuesBuilder.toString() );
-    }
-
-    private void updateCategoryRules(PackageConfigData data,
-                                     PackageItem item) {
-        KeyValueTO keyValueTO = convertMapToCsv( data.catRules );
-        item.updateCategoryRules( keyValueTO.getKeys(),
-                                  keyValueTO.getValues() );
     }
 
     private boolean checkPackagePermissionHelper(RepositoryFilter filter,
