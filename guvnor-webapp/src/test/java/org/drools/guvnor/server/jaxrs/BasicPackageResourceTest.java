@@ -181,6 +181,26 @@ public class BasicPackageResourceTest extends RestTestingBase {
         dos.flush();
         dos.close();
 
+        /* Retry with a -1 from the connection */
+        if (connection.getResponseCode() == -1) {
+            url = new URL(generateBaseUrl() + "/packages");
+            connection = (HttpURLConnection)url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
+            connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+            connection.setDoOutput(true);
+
+            //Send request
+            br = new BufferedReader(new InputStreamReader(
+                    getClass().getResourceAsStream("simple_rules.drl")));
+            dos = new DataOutputStream (
+                  connection.getOutputStream ());
+            while (br.ready())
+                dos.writeBytes (br.readLine());
+            dos.flush();
+            dos.close();
+        }
+
         assertEquals (200, connection.getResponseCode());
         assertEquals (MediaType.APPLICATION_ATOM_XML, connection.getContentType());
         logger.log(LogLevel, GetContent(connection));
@@ -274,6 +294,15 @@ public class BasicPackageResourceTest extends RestTestingBase {
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.WILDCARD);
         connection.connect();
+
+        /* Try again with a -1 response */
+        if (connection.getResponseCode() == -1) {
+            url = new URL(generateBaseUrl() + "/packages/mortgages/source");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", MediaType.WILDCARD);
+            connection.connect();
+        }
 
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
