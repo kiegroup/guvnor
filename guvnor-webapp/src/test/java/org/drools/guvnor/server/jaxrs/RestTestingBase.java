@@ -45,17 +45,21 @@ public class RestTestingBase {
 
     protected static ServiceImplementation Service;
 
+    static {
+        Service = Resource.Service;
+        Service.clearRulesRepository();
+        try {
+            Service.installSampleRepository();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @BeforeClass
     public static void Initialize() {
-        Service = Resource.Service;
-
         try {
             ResteasyDeployment deployment = EmbeddedContainer.start();
             dispatcher = deployment.getDispatcher();
-            Service.clearRulesRepository();
-            Service.installSampleRepository();
-            Service.rebuildPackages();
-
         } catch (Exception e) {
             e.printStackTrace();
         }

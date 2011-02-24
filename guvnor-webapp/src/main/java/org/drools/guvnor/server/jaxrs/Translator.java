@@ -104,20 +104,28 @@ public class Translator {
     }
     
     public static Entry ToPackageEntry(PackageItem p, UriInfo uriInfo) {
+        Content c = new Content();
+        c.setType(MediaType.APPLICATION_XML_TYPE);
+        PackageMetadata metadata = new PackageMetadata();
+        metadata.setUuid(p.getUUID());
+        metadata.setCreated(p.getCreatedDate().getTime());
+        metadata.setLastModified(p.getLastModified().getTime());
+        metadata.setLastContributor(p.getLastContributor());
+        c.setJAXBObject(metadata);
+
         Entry e =new Entry();
         e.setTitle(p.getTitle());
-        e.setUpdated(p.getLastModified().getTime());
-        e.setPublished(p.getCreatedDate().getTime());
+        e.setSummary(p.getDescription());
+        e.setContent(c);
+        e.setPublished(new Date(p.getLastModified().getTimeInMillis()));
+        e.setRights(p.getRights());
 
         Link l = new Link();
         UriBuilder builder = uriInfo.getBaseUriBuilder();
         l.setHref(builder.path("/packages/" + p.getName()).build());
         l.setRel("self");
-        
+
         e.setId(l.getHref());
-        e.setPublished(new Date(p.getLastModified().getTimeInMillis()));
-        e.setSummary(p.getDescription());
-        e.setRights(p.getRights());
         
         Iterator<AssetItem> i = p.getAssets();
         while (i.hasNext()) {
@@ -129,16 +137,6 @@ public class Translator {
             link.setRel("asset");
             e.getLinks().add(link);
         }
-
-        Content c = new Content();
-        c.setType(MediaType.APPLICATION_XML_TYPE);
-
-        PackageMetadata metadata = new PackageMetadata();
-        metadata.setUuid(p.getUUID());
-        metadata.setCreated(p.getCreatedDate().getTime());
-        metadata.setLastModified(p.getLastModified().getTime());
-        metadata.setLastContributor(p.getLastContributor());
-        c.setJAXBObject(metadata);
 
         return e;
     }
@@ -159,16 +157,15 @@ public class Translator {
         metadata.setDisabled(a.getDisabled());
         metadata.setFormat(a.getFormat());
         metadata.setNote(a.getContent());
+        content.setJAXBObject(metadata);
+        e.setContent(content);
+
         List<CategoryItem> categories = a.getCategories();
         String[] cats = new String [categories.size()];
         int counter = 0;
         for (CategoryItem c : categories) {
             cats [ counter++ ] = c.getName();
         }
-
-        content.setJAXBObject(metadata);
-        e.setContent(content);
-        e.setTitle(a.getTitle());
 
         UriBuilder builder = uriInfo.getBaseUriBuilder();
         Link l = new Link();
