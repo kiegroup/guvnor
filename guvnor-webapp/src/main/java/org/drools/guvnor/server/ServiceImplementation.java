@@ -576,7 +576,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public void rebuildPackages() throws SerializationException {
         Iterator<PackageItem> pkit = getRulesRepository().listPackages();
-        StringBuffer errs = new StringBuffer();
+        StringBuilder errs = new StringBuilder();
         while ( pkit.hasNext() ) {
             PackageItem pkg = pkit.next();
             try {
