@@ -412,7 +412,29 @@ public class RepositoryPackageOperations {
         return res;
     }
 
+    public void createPackageSnapshot(String packageName,
+                                      String snapshotName,
+                                      boolean replaceExisting,
+                                      String comment) {
+
+        log.info( "USER:" + getCurrentUserName() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
+
+        if ( replaceExisting ) {
+            getRulesRepository().removePackageSnapshot( packageName,
+                                                        snapshotName );
+        }
+
+        getRulesRepository().createPackageSnapshot( packageName,
+                                                    snapshotName );
+        PackageItem item = getRulesRepository().loadPackageSnapshot( packageName,
+                                                                     snapshotName );
+        item.updateCheckinComment( comment );
+        getRulesRepository().save();
+
+    }
+
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
     }
+
 }

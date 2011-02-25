@@ -765,19 +765,10 @@ public class ServiceImplementation
                                       String comment) {
         serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
 
-        log.info( "USER:" + getCurrentUserName() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
-
-        if ( replaceExisting ) {
-            getRulesRepository().removePackageSnapshot( packageName,
-                                                        snapshotName );
-        }
-
-        getRulesRepository().createPackageSnapshot( packageName,
-                                                    snapshotName );
-        PackageItem item = getRulesRepository().loadPackageSnapshot( packageName,
-                                                                     snapshotName );
-        item.updateCheckinComment( comment );
-        getRulesRepository().save();
+        repositoryPackageOperations.createPackageSnapshot( packageName,
+                                                           snapshotName,
+                                                           replaceExisting,
+                                                           comment );
 
     }
 
