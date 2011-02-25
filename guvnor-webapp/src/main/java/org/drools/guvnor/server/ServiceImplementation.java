@@ -608,11 +608,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public String buildPackageSource(String packageUUID) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
-
-        PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
-        ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                   false );
-        return asm.getDRL();
+        return repositoryPackageOperations.buildPackageSource( packageUUID );
     }
 
     @WebRemote

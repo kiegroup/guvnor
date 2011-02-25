@@ -580,5 +580,13 @@ public class RepositoryPackageOperations {
                              false,
                              null );
     }
+    
+    protected String buildPackageSource(String packageUUID) throws SerializationException {
+
+        PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
+        ContentPackageAssembler asm = new ContentPackageAssembler( item,
+                                                                   false );
+        return asm.getDRL();
+    }
 
 }
