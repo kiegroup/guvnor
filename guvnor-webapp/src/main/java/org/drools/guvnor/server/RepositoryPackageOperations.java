@@ -15,9 +15,13 @@
  */
 package org.drools.guvnor.server;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -28,11 +32,19 @@ import java.util.Map;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
+import org.drools.common.DroolsObjectOutputStream;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
+import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.PackageConfigDataFactory;
@@ -413,9 +425,9 @@ public class RepositoryPackageOperations {
     }
 
     protected void createPackageSnapshot(String packageName,
-                                      String snapshotName,
-                                      boolean replaceExisting,
-                                      String comment) {
+                                         String snapshotName,
+                                         boolean replaceExisting,
+                                         String comment) {
 
         log.info( "USER:" + getCurrentUserName() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
 
@@ -434,9 +446,9 @@ public class RepositoryPackageOperations {
     }
 
     protected void copyOrRemoveSnapshot(String packageName,
-                                     String snapshotName,
-                                     boolean delete,
-                                     String newSnapshotName) throws SerializationException {
+                                        String snapshotName,
+                                        boolean delete,
+                                        String newSnapshotName) throws SerializationException {
 
         if ( delete ) {
             log.info( "USER:" + getCurrentUserName() + " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
@@ -455,8 +467,118 @@ public class RepositoryPackageOperations {
 
     }
 
+    public BuilderResult buildPackage(String packageUUID,
+                                      boolean force,
+                                      String buildMode,
+                                      String statusOperator,
+                                      String statusDescriptionValue,
+                                      boolean enableStatusSelector,
+                                      String categoryOperator,
+                                      String category,
+                                      boolean enableCategorySelector,
+                                      String customSelectorName) throws SerializationException {
+
+        PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
+        try {
+            return buildPackage( item,
+                                 force,
+                                 buildMode,
+                                 statusOperator,
+                                 statusDescriptionValue,
+                                 enableStatusSelector,
+                                 categoryOperator,
+                                 category,
+                                 enableCategorySelector,
+                                 customSelectorName );
+        } catch ( NoClassDefFoundError e ) {
+            throw new DetailedSerializationException( "Unable to find a class that was needed when building the package  [" + e.getMessage() + "]",
+                                                      "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
+        } catch ( UnsupportedClassVersionError e ) {
+            throw new DetailedSerializationException( "Can not build the package. One or more of the classes that are needed were compiled with an unsupported Java version.",
+                                                      "For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. [" + e.getMessage() + "]" );
+        }
+    }
+
+    private BuilderResult buildPackage(PackageItem item,
+                                       boolean force,
+                                       String buildMode,
+                                       String statusOperator,
+                                       String statusDescriptionValue,
+                                       boolean enableStatusSelector,
+                                       String categoryOperator,
+                                       String category,
+                                       boolean enableCategorySelector,
+                                       String selectorConfigName) throws DetailedSerializationException {
+        if ( !force && item.isBinaryUpToDate() ) {
+            // we can just return all OK if its up to date.
+            return null;
+        }
+        ContentPackageAssembler asm = new ContentPackageAssembler( item,
+                                                                   true,
+                                                                   buildMode,
+                                                                   statusOperator,
+                                                                   statusDescriptionValue,
+                                                                   enableStatusSelector,
+                                                                   categoryOperator,
+                                                                   category,
+                                                                   enableCategorySelector,
+                                                                   selectorConfigName );
+        if ( asm.hasErrors() ) {
+            BuilderResult result = new BuilderResult();
+            BuilderResultHelper builderResultHelper = new BuilderResultHelper();
+            result.setLines( builderResultHelper.generateBuilderResults( asm ) );
+            return result;
+        }
+        try {
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            ObjectOutput out = new DroolsObjectOutputStream( bout );
+            out.writeObject( asm.getBinaryPackage() );
+
+            item.updateCompiledPackage( new ByteArrayInputStream( bout.toByteArray() ) );
+            out.flush();
+            out.close();
+
+            updateBinaryPackage( item,
+                                 asm );
+            getRulesRepository().save();
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            log.error( "An error occurred building the package [" + item.getName() + "]: " + e.getMessage() );
+            throw new DetailedSerializationException( "An error occurred building the package.",
+                                                      e.getMessage() );
+        }
+
+        return null;
+    }
+
+    private void updateBinaryPackage(PackageItem item,
+                                     ContentPackageAssembler asm) throws SerializationException {
+        item.updateBinaryUpToDate( true );
+
+        // adding the MapBackedClassloader that is the classloader from the
+        // rulebase classloader
+        Collection<ClassLoader> loaders = asm.getBuilder().getRootClassLoader().getClassLoaders();
+        RuleBaseConfiguration conf = new RuleBaseConfiguration( loaders.toArray( new ClassLoader[loaders.size()] ) );
+        RuleBase rb = RuleBaseFactory.newRuleBase( conf );
+        rb.addPackage( asm.getBinaryPackage() );
+    }
+
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
+    }
+
+    protected BuilderResult buildPackage(PackageItem item,
+                                         boolean force) throws DetailedSerializationException {
+        return buildPackage( item,
+                             force,
+                             null,
+                             null,
+                             null,
+                             false,
+                             null,
+                             null,
+                             false,
+                             null );
     }
 
 }

@@ -19,11 +19,9 @@ package org.drools.guvnor.server;
 import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectOutput;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -54,7 +52,6 @@ import org.drools.RuleBaseFactory;
 import org.drools.SessionConfiguration;
 import org.drools.base.ClassTypeResolver;
 import org.drools.common.AbstractRuleBase;
-import org.drools.common.DroolsObjectOutputStream;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
 import org.drools.compiler.DrlParser;
@@ -122,7 +119,6 @@ import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
-import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -736,25 +732,16 @@ public class ServiceImplementation
                                       boolean enableCategorySelector,
                                       String customSelectorName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
-        PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
-        try {
-            return buildPackage( item,
-                                 force,
-                                 buildMode,
-                                 statusOperator,
-                                 statusDescriptionValue,
-                                 enableStatusSelector,
-                                 categoryOperator,
-                                 category,
-                                 enableCategorySelector,
-                                 customSelectorName );
-        } catch ( NoClassDefFoundError e ) {
-            throw new DetailedSerializationException( "Unable to find a class that was needed when building the package  [" + e.getMessage() + "]",
-                                                      "Perhaps you are missing them from the model jars, or from the BRMS itself (lib directory)." );
-        } catch ( UnsupportedClassVersionError e ) {
-            throw new DetailedSerializationException( "Can not build the package. One or more of the classes that are needed were compiled with an unsupported Java version.",
-                                                      "For example the pojo classes were compiled with Java 1.6 and Guvnor is running on Java 1.5. [" + e.getMessage() + "]" );
-        }
+        return repositoryPackageOperations.buildPackage( packageUUID,
+                                                         force,
+                                                         buildMode,
+                                                         statusOperator,
+                                                         statusDescriptionValue,
+                                                         enableStatusSelector,
+                                                         categoryOperator,
+                                                         category,
+                                                         enableCategorySelector,
+                                                         customSelectorName );
     }
 
     @WebRemote
@@ -1725,8 +1712,8 @@ public class ServiceImplementation
                                                              loadRuleBase( item,
                                                                            cl ) );
                 } else {
-                    BuilderResult result = this.buildPackage( item,
-                                                              false );
+                    BuilderResult result = repositoryPackageOperations.buildPackage( item,
+                                                                                     false );
                     if ( result == null || result.getLines().size() == 0 ) {
                         ServiceImplementation.ruleBaseCache.put( item.getUUID(),
                                                                  loadRuleBase( item,
@@ -2671,85 +2658,6 @@ public class ServiceImplementation
         return null;
     }
 
-    private BuilderResult buildPackage(PackageItem item,
-                                       boolean force) throws DetailedSerializationException {
-        return buildPackage( item,
-                             force,
-                             null,
-                             null,
-                             null,
-                             false,
-                             null,
-                             null,
-                             false,
-                             null );
-    }
-
-    private BuilderResult buildPackage(PackageItem item,
-                                       boolean force,
-                                       String buildMode,
-                                       String statusOperator,
-                                       String statusDescriptionValue,
-                                       boolean enableStatusSelector,
-                                       String categoryOperator,
-                                       String category,
-                                       boolean enableCategorySelector,
-                                       String selectorConfigName) throws DetailedSerializationException {
-        if ( !force && item.isBinaryUpToDate() ) {
-            // we can just return all OK if its up to date.
-            return null;
-        }
-        ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                   true,
-                                                                   buildMode,
-                                                                   statusOperator,
-                                                                   statusDescriptionValue,
-                                                                   enableStatusSelector,
-                                                                   categoryOperator,
-                                                                   category,
-                                                                   enableCategorySelector,
-                                                                   selectorConfigName );
-        if ( asm.hasErrors() ) {
-            BuilderResult result = new BuilderResult();
-            BuilderResultHelper builderResultHelper = new BuilderResultHelper();
-            result.setLines( builderResultHelper.generateBuilderResults( asm ) );
-            return result;
-        }
-        try {
-            ByteArrayOutputStream bout = new ByteArrayOutputStream();
-            ObjectOutput out = new DroolsObjectOutputStream( bout );
-            out.writeObject( asm.getBinaryPackage() );
-
-            item.updateCompiledPackage( new ByteArrayInputStream( bout.toByteArray() ) );
-            out.flush();
-            out.close();
-
-            updateBinaryPackage( item,
-                                 asm );
-            getRulesRepository().save();
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            log.error( "An error occurred building the package [" + item.getName() + "]: " + e.getMessage() );
-            throw new DetailedSerializationException( "An error occurred building the package.",
-                                                      e.getMessage() );
-        }
-
-        return null;
-
-    }
-
-    private void updateBinaryPackage(PackageItem item,
-                                     ContentPackageAssembler asm) throws SerializationException {
-        item.updateBinaryUpToDate( true );
-
-        // adding the MapBackedClassloader that is the classloader from the
-        // rulebase classloader
-        Collection<ClassLoader> loaders = asm.getBuilder().getRootClassLoader().getClassLoaders();
-        RuleBaseConfiguration conf = new RuleBaseConfiguration( loaders.toArray( new ClassLoader[loaders.size()] ) );
-        RuleBase rb = RuleBaseFactory.newRuleBase( conf );
-        rb.addPackage( asm.getBinaryPackage() );
-    }
-
     private SingleScenarioResult runScenario(String packageName,
                                              Scenario scenario,
                                              RuleCoverageListener coverage) throws SerializationException {
@@ -2804,8 +2712,8 @@ public class ServiceImplementation
                 ServiceImplementation.ruleBaseCache.put( item.getUUID(),
                                                          rb );
             } else {
-                BuilderResult result = this.buildPackage( item,
-                                                          false );
+                BuilderResult result = repositoryPackageOperations.buildPackage( item,
+                                                                                 false );
                 if ( result == null || result.getLines().size() == 0 ) {
                     rb = loadRuleBase( item,
                                        buildCl );
@@ -2834,8 +2742,8 @@ public class ServiceImplementation
                        e );
             log.info( "...but trying to rebuild binaries..." );
             try {
-                BuilderResult res = this.buildPackage( item,
-                                                       true );
+                BuilderResult res = repositoryPackageOperations.buildPackage( item,
+                                                                              true );
                 if ( res != null && res.getLines().size() > 0 ) {
                     log.error( "There were errors when rebuilding the knowledgebase." );
                     throw new DetailedSerializationException( "There were errors when rebuilding the knowledgebase.",
