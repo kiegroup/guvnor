@@ -590,7 +590,6 @@ public class ServiceImplementation
                         buf.append( '\n' );
                     }
                     log.warn( buf.toString() );
-
                 }
             } catch ( Exception e ) {
                 log.error( "An error occurred building package [" + pkg.getName() + "]\n" );
@@ -815,19 +814,7 @@ public class ServiceImplementation
      */
     @Restrict("#{identity.loggedIn}")
     public void lockAsset(String uuid) {
-        AssetLockManager alm = AssetLockManager.instance();
-
-        String userName;
-        if ( Contexts.isApplicationContextActive() ) {
-            userName = Identity.instance().getUsername();
-        } else {
-            userName = "anonymous";
-        }
-
-        log.info( "Locking asset uuid=" + uuid + " for user [" + userName + "]" );
-
-        alm.lockAsset( uuid,
-                       userName );
+        repositoryAssetOperations.lockAsset( uuid );
     }
 
     /*
@@ -839,9 +826,7 @@ public class ServiceImplementation
      */
     @Restrict("#{identity.loggedIn}")
     public void unLockAsset(String uuid) {
-        AssetLockManager alm = AssetLockManager.instance();
-        log.info( "Unlocking asset [" + uuid + "]" );
-        alm.unLockAsset( uuid );
+        repositoryAssetOperations.unLockAsset( uuid );
     }
 
     @WebRemote

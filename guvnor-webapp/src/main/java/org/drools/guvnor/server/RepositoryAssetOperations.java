@@ -41,6 +41,7 @@ import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.IValidating;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.AssetFormatHelper;
+import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.AssetPageRowPopulator;
 import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -55,6 +56,8 @@ import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.Identity;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -65,11 +68,18 @@ import com.google.gwt.user.client.rpc.SerializationException;
 @AutoCreate
 public class RepositoryAssetOperations {
 
-
     private RulesRepository            repository;
 
     private static final LoggingHelper log = LoggingHelper
                                                    .getLogger( RepositoryAssetOperations.class );
+
+    public void setRulesRepository(RulesRepository repository) {
+        this.repository = repository;
+    }
+
+    public RulesRepository getRulesRepository() {
+        return repository;
+    }
 
     public String renameAsset(String uuid,
                               String newName) {
@@ -183,7 +193,7 @@ public class RepositoryAssetOperations {
             tableDataRow.values[2] = dateFormatter.format( assetItem
                     .getLastModified().getTime() );
             tableDataRow.values[3] = assetItem.getStateDescription();
-            result.add(tableDataRow);
+            result.add( tableDataRow );
         }
         TableDataResult table = new TableDataResult();
         table.data = result.toArray( new TableDataRow[result.size()] );
@@ -641,12 +651,26 @@ public class RepositoryAssetOperations {
         return rowList;
     }
 
-    public void setRulesRepository(RulesRepository repository) {
-        this.repository = repository;
+    protected void lockAsset(String uuid) {
+        AssetLockManager alm = AssetLockManager.instance();
+
+        String userName;
+        if ( Contexts.isApplicationContextActive() ) {
+            userName = Identity.instance().getUsername();
+        } else {
+            userName = "anonymous";
+        }
+
+        log.info( "Locking asset uuid=" + uuid + " for user [" + userName + "]" );
+
+        alm.lockAsset( uuid,
+                       userName );
     }
 
-    public RulesRepository getRulesRepository() {
-        return repository;
+    protected void unLockAsset(String uuid) {
+        AssetLockManager alm = AssetLockManager.instance();
+        log.info( "Unlocking asset [" + uuid + "]" );
+        alm.unLockAsset( uuid );
     }
 
 }
