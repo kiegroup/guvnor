@@ -113,7 +113,6 @@ import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
-import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.ISO8601;
@@ -1958,13 +1957,7 @@ public class ServiceImplementation
      */
     @Restrict("#{identity.loggedIn}")
     public String getAssetLockerUserName(String uuid) {
-        AssetLockManager alm = AssetLockManager.instance();
-
-        String userName = alm.getAssetLockerUserName( uuid );
-
-        log.info( "Asset locked by [" + userName + "]" );
-
-        return userName;
+        return repositoryAssetOperations.getAssetLockerUserName( uuid );
     }
 
     @Restrict("#{identity.loggedIn}")

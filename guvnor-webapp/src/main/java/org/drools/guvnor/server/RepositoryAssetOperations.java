@@ -673,4 +673,14 @@ public class RepositoryAssetOperations {
         alm.unLockAsset( uuid );
     }
 
+    protected String getAssetLockerUserName(String uuid) {
+        AssetLockManager alm = AssetLockManager.instance();
+
+        String userName = alm.getAssetLockerUserName( uuid );
+
+        log.info( "Asset locked by [" + userName + "]" );
+
+        return userName;
+    }
+
 }
