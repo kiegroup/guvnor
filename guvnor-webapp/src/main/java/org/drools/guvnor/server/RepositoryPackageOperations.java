@@ -412,7 +412,7 @@ public class RepositoryPackageOperations {
         return res;
     }
 
-    public void createPackageSnapshot(String packageName,
+    protected void createPackageSnapshot(String packageName,
                                       String snapshotName,
                                       boolean replaceExisting,
                                       String comment) {
@@ -430,6 +430,28 @@ public class RepositoryPackageOperations {
                                                                      snapshotName );
         item.updateCheckinComment( comment );
         getRulesRepository().save();
+
+    }
+
+    protected void copyOrRemoveSnapshot(String packageName,
+                                     String snapshotName,
+                                     boolean delete,
+                                     String newSnapshotName) throws SerializationException {
+
+        if ( delete ) {
+            log.info( "USER:" + getCurrentUserName() + " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
+            getRulesRepository().removePackageSnapshot( packageName,
+                                                        snapshotName );
+        } else {
+            if ( newSnapshotName.equals( "" ) ) {
+                throw new SerializationException( "Need to have a new snapshot name." );
+            }
+            log.info( "USER:" + getCurrentUserName() + " COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
+
+            getRulesRepository().copyPackageSnapshot( packageName,
+                                                      snapshotName,
+                                                      newSnapshotName );
+        }
 
     }
 

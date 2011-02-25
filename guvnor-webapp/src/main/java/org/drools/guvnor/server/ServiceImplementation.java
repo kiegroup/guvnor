@@ -764,7 +764,6 @@ public class ServiceImplementation
                                       boolean replaceExisting,
                                       String comment) {
         serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
-
         repositoryPackageOperations.createPackageSnapshot( packageName,
                                                            snapshotName,
                                                            replaceExisting,
@@ -779,21 +778,10 @@ public class ServiceImplementation
                                      boolean delete,
                                      String newSnapshotName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
-
-        if ( delete ) {
-            log.info( "USER:" + getCurrentUserName() + " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
-            getRulesRepository().removePackageSnapshot( packageName,
-                                                        snapshotName );
-        } else {
-            if ( newSnapshotName.equals( "" ) ) {
-                throw new SerializationException( "Need to have a new snapshot name." );
-            }
-            log.info( "USER:" + getCurrentUserName() + " COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
-
-            getRulesRepository().copyPackageSnapshot( packageName,
-                                                      snapshotName,
-                                                      newSnapshotName );
-        }
+        repositoryPackageOperations.copyOrRemoveSnapshot( packageName,
+                                                          snapshotName,
+                                                          delete,
+                                                          newSnapshotName );
 
     }
 
