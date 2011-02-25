@@ -169,8 +169,15 @@ public class RuleViewer extends GuvnorEditor {
 
         // for designer we need to give it more playing room
         if ( editor.getClass().getName().equals( "org.drools.guvnor.client.processeditor.BusinessProcessEditor" ) ) {
-            editor.setWidth( "1100px" );
-            editor.setHeight( "480px" );
+            if(this.ruleViewerSettings.isStandalone()) {
+                // standalone bigger dimensions"
+                editor.setWidth( "1600px" );
+                editor.setHeight( "1000px" );
+            } else {
+                // normal dimensions inside guvnor
+                editor.setWidth( "1100px" );
+                editor.setHeight( "480px" );
+            }
         }
 
         toolbar = new ActionToolbar( getConfiguration(),
@@ -216,7 +223,7 @@ public class RuleViewer extends GuvnorEditor {
 
         // the action widgets (checkin/close etc).
         if ( readOnly
-             || asset.isreadonly ) {
+             || asset.isreadonly || this.ruleViewerSettings.isStandalone()) {
             toolbar.setVisible( false );
         } else {
             toolbar.setPromtToGlobalCommand( new Command() {

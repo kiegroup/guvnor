@@ -36,6 +36,7 @@ public class StandaloneEditorInvocationParameters implements Serializable {
     private boolean hideLHS;
     private boolean hideRHS;
     private boolean hideAttributes;
+    private String clientName;
 
     public RuleAsset[] getAssetsToBeEdited() {
         return assetsToBeEdited;
@@ -83,6 +84,18 @@ public class StandaloneEditorInvocationParameters implements Serializable {
 
     public void setValidFactTypes(String[] validFactTypes) {
         this.validFactTypes = validFactTypes;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
     }
     
 }

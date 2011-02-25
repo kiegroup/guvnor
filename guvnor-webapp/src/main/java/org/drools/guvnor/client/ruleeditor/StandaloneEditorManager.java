@@ -105,6 +105,13 @@ public class StandaloneEditorManager {
                                     afterCancelButtonCallbackFunction();
                                 }
                             });
+                        } else if(parameters.getClientName().equalsIgnoreCase("oryx")){
+                            editorMenuBarCreator = new OryxMultiViewEditorMenuBarCreator(new Command() {
+                                // "Close" button command
+                                public void execute() {
+                                    afterCloseButtonCallbackFunction();
+                                }
+                            });
                         } else {
                             editorMenuBarCreator = new RealAssetsMultiViewEditorMenuBarCreator(new Command() {
                                 //"Cancel" button command
@@ -295,5 +302,12 @@ public class StandaloneEditorManager {
     if ($wnd.guvnorEditorObject.afterCancelButtonCallbackFunction){
     $wnd.guvnorEditorObject.afterCancelButtonCallbackFunction();
     }
+    }-*/;
+    
+    public native void afterCloseButtonCallbackFunction()/*-{
+        $wnd.opener.location.reload();
+        if (confirm("Are you sure you want to close this window?")) {
+              $wnd.close();
+        }
     }-*/;
 }

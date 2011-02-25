@@ -21,6 +21,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.ruleeditor.EditorLauncher;
 import org.drools.guvnor.client.ruleeditor.EditorWidget;
+import org.drools.guvnor.client.ruleeditor.RuleViewerSettings;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
 import com.google.gwt.core.client.GWT;

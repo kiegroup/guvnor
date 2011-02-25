@@ -97,6 +97,7 @@ public class EditorLauncher {
             return new RuleFlowWrapper( asset,
                                         viewer );
         } else if ( ( asset.metaData.format.equals( AssetFormats.BPMN2_PROCESS )  || asset.metaData.format.equals( AssetFormats.BPMN_PROCESS ) ) ) {
+            // businesProcessEditor cares about rule viewer settings
             return new BusinessProcessEditor( asset );
         } else if ( asset.metaData.format.equals( AssetFormats.DRL ) ) {
             return new DrlEditor( asset );

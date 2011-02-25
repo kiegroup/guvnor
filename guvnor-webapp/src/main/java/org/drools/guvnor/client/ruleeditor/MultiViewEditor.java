@@ -93,16 +93,16 @@ public class MultiViewEditor extends GuvnorEditor {
     }
 
     public MultiViewEditor(RuleAsset[] assets,
-                           OpenItemCommand editItemEvent,
-                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider,
-                           MultiViewEditorMenuBarCreator menuBarCreator) {
+            OpenItemCommand editItemEvent,
+            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider,
+            MultiViewEditorMenuBarCreator menuBarCreator) {
         this.rows.addAll( createRows( assets ) );
         this.editItemEvent = editItemEvent;
         this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
         this.menuBarCreator = menuBarCreator;
         addAssets( assets );
         init();
-    }
+}
 
     private void addAssets(RuleAsset[] assets) {
         for ( RuleAsset ruleAsset : assets ) {
@@ -193,7 +193,7 @@ public class MultiViewEditor extends GuvnorEditor {
                                if ( assets.containsKey( row.uuid ) ) {
                                    addRuleViewInToSimplePanel( row,
                                                                content,
-                                                               assets.get( row.uuid ) );
+                                                               assets.get( row.uuid )  );
                                } else {
                                    RepositoryServiceFactory.getService().loadRuleAsset( row.uuid,
                                                                                         new GenericCallback<RuleAsset>() {
@@ -244,6 +244,7 @@ public class MultiViewEditor extends GuvnorEditor {
                                                                   RuleViewerSettings ruleViewerSettings = new RuleViewerSettings();
                                                                   ruleViewerSettings.setDocoVisible( false );
                                                                   ruleViewerSettings.setMetaVisible( false );
+                                                                  ruleViewerSettings.setStandalone(true);
 
                                                                   final RuleViewer ruleViewer = new RuleViewer( asset,
                                                                                                                 editItemEvent,

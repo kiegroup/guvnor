@@ -85,6 +85,9 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
                 hideAttributesInEditor = Boolean.parseBoolean( attribute.toString() );
             }
             
+            attribute = sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_CLIENT_NAME_PARAMETER_NAME.getParameterName() );
+            String clientName = attribute.toString();
+            
             String[] validFactTypes = (String[])sessionParameters.get( StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_VALID_FACT_TYPE_PARAMETER_NAME.getParameterName() );
 
             StandaloneEditorInvocationParameters invocationParameters = new StandaloneEditorInvocationParameters();
@@ -95,6 +98,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
             invocationParameters.setHideRHS( hideRHSInEditor );
             invocationParameters.setHideAttributes( hideAttributesInEditor );
             invocationParameters.setValidFactTypes(validFactTypes);
+            invocationParameters.setClientName(clientName);
 
 
             return invocationParameters;

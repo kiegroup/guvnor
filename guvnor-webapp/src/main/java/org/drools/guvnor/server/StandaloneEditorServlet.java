@@ -37,7 +37,9 @@ public class StandaloneEditorServlet extends HttpServlet {
 
         GE_HIDE_RULE_LHS_PARAMETER_NAME("hideRuleLHS", false), GE_HIDE_RULE_RHS_PARAMETER_NAME("hideRuleRHS", false), GE_HIDE_RULE_ATTRIBUTES_PARAMETER_NAME("hideRuleAttributes", false),
 
-        GE_VALID_FACT_TYPE_PARAMETER_NAME("validFactType", true);
+        GE_VALID_FACT_TYPE_PARAMETER_NAME("validFactType", true),
+        
+        GE_CLIENT_NAME_PARAMETER_NAME("client", false);
 
         private String  parameterName;
         private boolean multipleValues;

@@ -19,6 +19,7 @@ public class RuleViewerSettings {
 
     private boolean metaVisible = true;
     private boolean docoVisible = true;
+    private boolean standalone = false;
 
     public void setMetaVisible(boolean metaVisible) {
         this.metaVisible = metaVisible;
@@ -34,5 +35,13 @@ public class RuleViewerSettings {
 
     public boolean isMetaVisible() {
         return metaVisible;
+    }
+
+    public boolean isStandalone() {
+        return standalone;
+    }
+
+    public void setStandalone(boolean standalone) {
+        this.standalone = standalone;
     }
 }
