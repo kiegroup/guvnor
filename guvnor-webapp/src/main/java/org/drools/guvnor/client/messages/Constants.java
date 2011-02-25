@@ -2205,4 +2205,6 @@ public interface Constants
     String LoadingWorkspaces();
     
     String UpdateSelectedWorkspace();
+
+    String CommunicationError();
 }

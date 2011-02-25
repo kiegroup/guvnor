@@ -38,7 +38,11 @@ public abstract class GenericCallback<T> implements AsyncCallback<T> {
         } else if (t instanceof DetailedSerializationException) {
             ErrorPopup.showMessage((DetailedSerializationException) t);
         } else {
-            ErrorPopup.showMessage(t.getMessage());
+            String message = t.getMessage();
+            if (t.getMessage()!=null && t.getMessage().trim().equals("0")){
+                message = ((Constants) GWT.create(Constants.class)).CommunicationError();
+            }
+            ErrorPopup.showMessage(message);
         }
     }
 
