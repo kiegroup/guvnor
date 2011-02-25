@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.server;
 
-import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -35,7 +33,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
@@ -103,7 +100,6 @@ import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
@@ -177,34 +173,29 @@ public class ServiceImplementation
     implements
     RepositoryService {
 
-    /**
-     * Maximum number of rules to display in "list rules in package" method
-     */
-    private static final int            MAX_RULES_TO_SHOW_IN_PACKAGE_LIST = 5000;
-
     @In
     private RulesRepository             repository;
 
-    private static final long           serialVersionUID                  = 510l;
+    private static final long           serialVersionUID            = 510l;
 
-    private static final LoggingHelper  log                               = LoggingHelper.getLogger( ServiceImplementation.class );
+    private static final LoggingHelper  log                         = LoggingHelper.getLogger( ServiceImplementation.class );
 
-    private MetaDataMapper              metaDataMapper                    = new MetaDataMapper();
+    private MetaDataMapper              metaDataMapper              = new MetaDataMapper();
 
     /**
      * Used for a simple cache of binary packages to avoid serialization from
      * the database - for test scenarios.
      */
-    public static Map<String, RuleBase> ruleBaseCache                     = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
+    public static Map<String, RuleBase> ruleBaseCache               = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
 
     /**
      * This is used for pushing messages back to the client.
      */
-    private static Backchannel          backchannel                       = new Backchannel();
-    private ServiceSecurity             serviceSecurity                   = new ServiceSecurity();
+    private static Backchannel          backchannel                 = new Backchannel();
+    private ServiceSecurity             serviceSecurity             = new ServiceSecurity();
 
-    private RepositoryAssetOperations   repositoryAssetOperations         = new RepositoryAssetOperations();
-    private RepositoryPackageOperations repositoryPackageOperations       = new RepositoryPackageOperations();
+    private RepositoryAssetOperations   repositoryAssetOperations   = new RepositoryAssetOperations();
+    private RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
 
     /* This is called also by Seam AND Hosted mode */
     @Create
@@ -513,6 +504,30 @@ public class ServiceImplementation
                                                          numRows );
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.drools.guvnor.client.rpc.RepositoryService#lockAsset(java.lang.String
+     * )
+     */
+    @Restrict("#{identity.loggedIn}")
+    public void lockAsset(String uuid) {
+        repositoryAssetOperations.lockAsset( uuid );
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.drools.guvnor.client.rpc.RepositoryService#unLockAsset(java.lang.
+     * String)
+     */
+    @Restrict("#{identity.loggedIn}")
+    public void unLockAsset(String uuid) {
+        repositoryAssetOperations.unLockAsset( uuid );
+    }
+
     /**
      * @deprecated in favour of {@link queryFullText(QueryPageRequest)}
      */
@@ -764,7 +779,13 @@ public class ServiceImplementation
                                                           snapshotName,
                                                           delete,
                                                           newSnapshotName );
+    }
 
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String[] listRulesInPackage(String packageName) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageReadOnly( packageName );
+        return repositoryPackageOperations.listRulesInPackage( packageName );
     }
 
     @WebRemote
@@ -803,30 +824,6 @@ public class ServiceImplementation
             module.removeWorkspace( workspace );
             module.checkin( "Remove workspace" );
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.drools.guvnor.client.rpc.RepositoryService#lockAsset(java.lang.String
-     * )
-     */
-    @Restrict("#{identity.loggedIn}")
-    public void lockAsset(String uuid) {
-        repositoryAssetOperations.lockAsset( uuid );
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.drools.guvnor.client.rpc.RepositoryService#unLockAsset(java.lang.
-     * String)
-     */
-    @Restrict("#{identity.loggedIn}")
-    public void unLockAsset(String uuid) {
-        repositoryAssetOperations.unLockAsset( uuid );
     }
 
     @WebRemote
@@ -1603,38 +1600,6 @@ public class ServiceImplementation
                                                               buf.toString() + "]" );
                 }
             }
-        }
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public String[] listRulesInPackage(String packageName) throws SerializationException {
-
-        // check security
-        serviceSecurity.checkSecurityIsPackageReadOnly( packageName );
-
-        // load package
-        PackageItem item = getRulesRepository().loadPackage( packageName );
-
-        ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                   false );
-
-        List<String> result = new ArrayList<String>();
-        try {
-
-            String drl = asm.getDRL();
-            if ( drl == null || "".equals( drl ) ) {
-                return new String[0];
-            } else {
-                parseRulesToPackageList( asm,
-                                         result );
-            }
-
-            return result.toArray( new String[result.size()] );
-        } catch ( DroolsParserException e ) {
-            log.error( "Unable to list rules in package",
-                       e );
-            return new String[0];
         }
     }
 
@@ -2513,25 +2478,6 @@ public class ServiceImplementation
             log.error( "Unable to get item format.",
                        e );
             throw e;
-        }
-    }
-
-    private void parseRulesToPackageList(ContentPackageAssembler asm,
-                                         List<String> result) throws DroolsParserException {
-        int count = 0;
-        StringTokenizer stringTokenizer = new StringTokenizer( asm.getDRL(),
-                                                               "\n\r" );
-        while ( stringTokenizer.hasMoreTokens() ) {
-            String line = stringTokenizer.nextToken().trim();
-            if ( line.startsWith( "rule " ) ) {
-                String name = getRuleName( line );
-                result.add( name );
-                count++;
-                if ( count == MAX_RULES_TO_SHOW_IN_PACKAGE_LIST ) {
-                    result.add( "More then " + MAX_RULES_TO_SHOW_IN_PACKAGE_LIST + " rules." );
-                    break;
-                }
-            }
         }
     }
 

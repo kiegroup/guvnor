@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.server;
 
+import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,6 +30,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -36,6 +39,7 @@ import org.drools.RuleBase;
 import org.drools.RuleBaseConfiguration;
 import org.drools.RuleBaseFactory;
 import org.drools.common.DroolsObjectOutputStream;
+import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -67,10 +71,16 @@ import com.google.gwt.user.client.rpc.SerializationException;
 @Name("org.drools.guvnor.server.RepositoryPackageOperations")
 @AutoCreate
 public class RepositoryPackageOperations {
+
+    /**
+     * Maximum number of rules to display in "list rules in package" method
+     */
+    private static final int           MAX_RULES_TO_SHOW_IN_PACKAGE_LIST = 5000;
+
     private RulesRepository            repository;
 
-    private static final LoggingHelper log = LoggingHelper
-                                                   .getLogger( RepositoryPackageOperations.class );
+    private static final LoggingHelper log                               = LoggingHelper
+                                                                                 .getLogger( RepositoryPackageOperations.class );
 
     public void setRulesRepository(RulesRepository repository) {
         this.repository = repository;
@@ -580,13 +590,59 @@ public class RepositoryPackageOperations {
                              false,
                              null );
     }
-    
+
     protected String buildPackageSource(String packageUUID) throws SerializationException {
 
         PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
         ContentPackageAssembler asm = new ContentPackageAssembler( item,
                                                                    false );
         return asm.getDRL();
+    }
+
+    protected String[] listRulesInPackage(String packageName) throws SerializationException {
+
+        // load package
+        PackageItem item = getRulesRepository().loadPackage( packageName );
+
+        ContentPackageAssembler asm = new ContentPackageAssembler( item,
+                                                                   false );
+
+        List<String> result = new ArrayList<String>();
+        try {
+
+            String drl = asm.getDRL();
+            if ( drl == null || "".equals( drl ) ) {
+                return new String[0];
+            } else {
+                parseRulesToPackageList( asm,
+                                         result );
+            }
+
+            return result.toArray( new String[result.size()] );
+        } catch ( DroolsParserException e ) {
+            log.error( "Unable to list rules in package",
+                       e );
+            return new String[0];
+        }
+    }
+
+    private void parseRulesToPackageList(ContentPackageAssembler asm,
+                                         List<String> result) throws DroolsParserException {
+        int count = 0;
+        StringTokenizer stringTokenizer = new StringTokenizer( asm.getDRL(),
+                                                               "\n\r" );
+        while ( stringTokenizer.hasMoreTokens() ) {
+            String line = stringTokenizer.nextToken().trim();
+            if ( line.startsWith( "rule " ) ) {
+                String name = getRuleName( line );
+                result.add( name );
+                count++;
+                if ( count == MAX_RULES_TO_SHOW_IN_PACKAGE_LIST ) {
+                    result.add( "More then " + MAX_RULES_TO_SHOW_IN_PACKAGE_LIST + " rules." );
+                    break;
+                }
+            }
+        }
     }
 
 }
