@@ -30,7 +30,6 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
@@ -50,7 +49,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
     // Widgets for UI
     protected Panel                               mainPanel;
     protected Panel                               bodyPanel;
-    protected FocusPanel                          mainFocusPanel;
     protected ScrollPanel                         scrollPanel;
     protected MergableGridWidget<T>               gridWidget;
     protected DecoratedGridHeaderWidget<T>        headerWidget;
@@ -88,8 +86,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
         scrollPanel.add( gridWidget );
         scrollPanel.addScrollHandler( getScrollHandler() );
 
-        mainFocusPanel = new FocusPanel( mainPanel );
-        initWidget( mainFocusPanel );
+        initWidget( mainPanel );
 
         //Add handler for when the selected cell changes
         addSelectedCellChangeHandler( new SelectedCellChangeHandler() {
@@ -754,8 +751,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
     private void setHeight(final int height) {
         mainPanel.setHeight( height
                              + "px" );
-        mainFocusPanel.setHeight( height
-                                  + "px" );
 
         // The Sidebar and Header sizes are derived from the ScrollPanel
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
@@ -773,8 +768,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
                             + "px" );
         scrollPanel.setWidth( (width - style.sidebarWidth())
                               + "px" );
-        mainFocusPanel.setWidth( width
-                                 + "px" );
 
         // The Sidebar and Header sizes are derived from the ScrollPanel
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
