@@ -17,6 +17,8 @@ package org.drools.guvnor.server;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
@@ -24,6 +26,7 @@ import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
@@ -45,15 +48,18 @@ import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.AssetPageRowPopulator;
 import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.QueryPageRowFactory;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
+import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
+import org.drools.repository.VersionableItem;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
@@ -681,6 +687,73 @@ public class RepositoryAssetOperations {
         log.info( "Asset locked by [" + userName + "]" );
 
         return userName;
+    }
+    
+    protected RuleAsset loadAsset(AssetItem item) throws SerializationException {
+
+        RuleAsset asset = new RuleAsset();
+        asset.uuid = item.getUUID();
+        asset.metaData = populateMetaData( item );
+        ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
+        handler.retrieveAssetContent( asset,
+                                      item.getPackage(),
+                                      item );
+
+        return asset;
+    }
+    
+    /**
+     * Populate meta data with asset specific info.
+     */
+    MetaData populateMetaData(AssetItem item) {
+        MetaData meta = populateMetaData( (VersionableItem) item );
+
+        meta.packageName = item.getPackageName();
+        meta.packageUUID = item.getPackage().getUUID();
+        meta.setBinary( item.isBinary() );
+
+        List categories = item.getCategories();
+        fillMetaCategories( meta,
+                            categories );
+        meta.dateEffective = calendarToDate( item.getDateEffective() );
+        meta.dateExpired = calendarToDate( item.getDateExpired() );
+        return meta;
+
+    }
+    
+    /**
+     * read in the meta data, populating all dublin core and versioning stuff.
+     */
+    MetaData populateMetaData(VersionableItem item) {
+        MetaData meta = new MetaData();
+
+        meta.status = (item.getState() != null) ? item.getState().getName() : "";
+        MetaDataMapper metaDataMapper = MetaDataMapper.getInstance();
+        metaDataMapper.copyToMetaData( meta,
+                                       item );
+
+        meta.createdDate = calendarToDate( item.getCreatedDate() );
+        meta.lastModifiedDate = calendarToDate( item.getLastModified() );
+
+        meta.hasPreceedingVersion = item.getPrecedingVersion() != null;
+        meta.hasSucceedingVersion = item.getSucceedingVersion() != null;
+        return meta;
+    }
+    
+    private void fillMetaCategories(MetaData meta,
+                                    List categories) {
+        meta.categories = new String[categories.size()];
+        for ( int i = 0; i < meta.categories.length; i++ ) {
+            CategoryItem cat = (CategoryItem) categories.get( i );
+            meta.categories[i] = cat.getFullPath();
+        }
+    }
+
+    private Date calendarToDate(Calendar createdDate) {
+        if ( createdDate == null ) {
+            return null;
+        }
+        return createdDate.getTime();
     }
 
 }

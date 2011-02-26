@@ -59,7 +59,7 @@ public class WorkingSetManager {
      * @see #applyWorkingSets(java.lang.String, java.util.Set, com.google.gwt.user.client.Command)
      */
     public void applyWorkingSets(final String packageName, final String[] wsUUIDs, final Command done) {
-        RepositoryServiceFactory.getService().loadRuleAssets(wsUUIDs, new GenericCallback<RuleAsset[]>() {
+        RepositoryServiceFactory.getAssetService().loadRuleAssets(wsUUIDs, new GenericCallback<RuleAsset[]>() {
 
             public void onSuccess(RuleAsset[] result) {
                 final Set<RuleAsset> wss = new HashSet<RuleAsset>();

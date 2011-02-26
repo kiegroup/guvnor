@@ -228,7 +228,7 @@ public class PackageEditor extends PrettyFormLayout {
             }
         };
         
-        RepositoryServiceFactory.getService().listAssetsWithPackageName(this.conf.name, new String[]{AssetFormats.SPRING_CONTEXT}, 0,
+        RepositoryServiceFactory.getAssetService().listAssetsWithPackageName(this.conf.name, new String[]{AssetFormats.SPRING_CONTEXT}, 0,
                                                                         -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, callBack);
         
         status = new HTML();

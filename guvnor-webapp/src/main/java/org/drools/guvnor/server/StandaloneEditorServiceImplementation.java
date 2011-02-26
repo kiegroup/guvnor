@@ -50,8 +50,8 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
         return this.repository;
     }
 
-    private ServiceImplementation getService() {
-        return RepositoryServiceServlet.getService();
+    private RepositoryAssetService getAssetService() {
+        return RepositoryServiceServlet.getAssetService();
     }
 
     public StandaloneEditorInvocationParameters getInvocationParameters(String parametersUUID) throws DetailedSerializationException {
@@ -166,7 +166,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
         String[] sources = new String[assets.length];
 
         for ( int i = 0; i < assets.length; i++ ) {
-            sources[i] = this.getService().buildAssetSource( assets[i] );
+            sources[i] = this.getAssetService().buildAssetSource( assets[i] );
         }
 
         return sources;

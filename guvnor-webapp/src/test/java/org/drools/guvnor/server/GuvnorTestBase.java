@@ -39,6 +39,10 @@ public class GuvnorTestBase {
     protected ServiceImplementation getServiceImplementation() {
         return (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
     }
+    
+    protected RepositoryAssetService getRepositoryAssetService() {
+        return (RepositoryAssetService) Component.getInstance( "org.drools.guvnor.client.rpc.AssetService" );
+    }
 
     protected RulesRepository getRulesRepository() {
         if ( repository == null ) {
@@ -58,11 +62,16 @@ public class GuvnorTestBase {
 
         ServiceImplementation serviceImplementation = new ServiceImplementation();
         serviceImplementation.setRulesRepository( getRulesRepository() );
+        
+        RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
+        repositoryAssetService.setRulesRepository( getRulesRepository() );
 
         Contexts.getSessionContext().set( "repository",
                                           repository );
         Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
                                           serviceImplementation );
+        Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.AssetService",
+                                          repositoryAssetService );
     }
 
     public void setUpSeam() {
@@ -106,6 +115,7 @@ public class GuvnorTestBase {
         repository = null;
         Contexts.removeFromAllContexts( "repository" );
         Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.RepositoryService" );
+        Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.AssetService" );
         Contexts.removeFromAllContexts( "fileManager" );
         if ( Contexts.getApplicationContext() != null ) Contexts.getApplicationContext().flush();
         if ( Contexts.getEventContext() != null ) Contexts.getEventContext().flush();

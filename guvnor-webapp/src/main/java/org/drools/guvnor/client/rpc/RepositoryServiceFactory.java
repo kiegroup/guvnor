@@ -25,8 +25,9 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
  */
 public class RepositoryServiceFactory {
 
-    public static RepositoryServiceAsync SERVICE;
-
+    private static RepositoryServiceAsync SERVICE;
+    private static AssetServiceAsync ASSET_SERVICE;
+    
     public static RepositoryServiceAsync getService() {
         if (SERVICE == null) {
             loadService();
@@ -34,9 +35,21 @@ public class RepositoryServiceFactory {
         return SERVICE;
 
     }
+    
+    public static AssetServiceAsync getAssetService() {
+        if (ASSET_SERVICE == null) {
+            loadAssetService();
+        }
+        return ASSET_SERVICE;
+
+    }
 
     private static void loadService() {
         SERVICE = getRealService();
+    }
+    
+    private static void loadAssetService() {
+        ASSET_SERVICE = getRealAssetService();
     }
 
     private static RepositoryServiceAsync getRealService() {
@@ -50,6 +63,17 @@ public class RepositoryServiceFactory {
         return svc;
     }
 
+    private static AssetServiceAsync getRealAssetService() {
+        // define the service you want to call
+        AssetServiceAsync assetServiceAsync = (AssetServiceAsync) GWT.create(AssetService.class);
+        ServiceDefTarget endpoint = (ServiceDefTarget) assetServiceAsync;
+
+        String endpointURL = GWT.getModuleBaseURL() + "guvnorService";
+
+        endpoint.setServiceEntryPoint(endpointURL);
+        return assetServiceAsync;
+    }
+    
     /**
      * Perform the login.
      */

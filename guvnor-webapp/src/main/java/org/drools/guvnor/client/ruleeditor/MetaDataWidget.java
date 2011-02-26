@@ -297,7 +297,7 @@ public class MetaDataWidget extends Composite {
                           ok );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                RepositoryServiceFactory.getService().renameAsset( uuid,
+                RepositoryServiceFactory.getAssetService().renameAsset( uuid,
                                                                    box.getText(),
                                                                    new GenericCallback<java.lang.String>() {
                                                                        public void onSuccess(String data) {
@@ -331,7 +331,7 @@ public class MetaDataWidget extends Composite {
                     Window.alert( constants.YouNeedToPickADifferentPackageToMoveThisTo() );
                     return;
                 }
-                RepositoryServiceFactory.getService().changeAssetPackage( uuid,
+                RepositoryServiceFactory.getAssetService().changeAssetPackage( uuid,
                                                                           sel.getSelectedPackage(),
                                                                           Format.format( constants.MovedFromPackage(),
                                                                                          pkg ),

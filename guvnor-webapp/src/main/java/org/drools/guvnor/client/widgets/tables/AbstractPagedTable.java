@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.widgets.tables;
 
 import org.drools.guvnor.client.rpc.AbstractPageRow;
+import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
@@ -29,8 +30,9 @@ import com.google.gwt.view.client.AsyncDataProvider;
  */
 public abstract class AbstractPagedTable<T extends AbstractPageRow> extends AbstractSimpleTable<T> {
 
-    // TODO use (C)DI
+    // TODO use (C)DI (first GWT/Seam needs to behave properly in hosted mode)
     protected RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
+    protected AssetServiceAsync assetService = RepositoryServiceFactory.getAssetService(); 
 
     protected int                    pageSize;
     protected AsyncDataProvider<T>   dataProvider;

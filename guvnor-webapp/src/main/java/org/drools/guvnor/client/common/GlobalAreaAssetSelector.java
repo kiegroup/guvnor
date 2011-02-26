@@ -60,7 +60,7 @@ public class GlobalAreaAssetSelector extends Composite {
     }
     
     private void loadAssetList() {
-        RepositoryServiceFactory.getService().listAssetsWithPackageName("globalArea", new String[]{format}, 0, -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, new GenericCallback<TableDataResult>() {
+        RepositoryServiceFactory.getAssetService().listAssetsWithPackageName("globalArea", new String[]{format}, 0, -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, new GenericCallback<TableDataResult>() {
 
             public void onSuccess(TableDataResult result) {
 

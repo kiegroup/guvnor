@@ -58,8 +58,8 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
     private Verifier                   defaultVerifier  = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
 
-    private ServiceImplementation getService() {
-        return RepositoryServiceServlet.getService();
+    private RepositoryAssetService getAssetService() {
+        return RepositoryServiceServlet.getAssetService();
     }
 
     @WebRemote
@@ -69,7 +69,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
             Identity.instance().checkPermission( new PackageUUIDType( packageUUID ), RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        PackageItem packageItem = getService().getRulesRepository().loadPackageByUUID( packageUUID );
+        PackageItem packageItem = getAssetService().getRulesRepository().loadPackageByUUID( packageUUID );
 
         VerifierRunner runner = new VerifierRunner( defaultVerifier );
 
@@ -99,7 +99,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
             Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ), RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        PackageItem packageItem = getService().getRulesRepository().loadPackage( asset.metaData.packageName );
+        PackageItem packageItem = getAssetService().getRulesRepository().loadPackage( asset.metaData.packageName );
 
         List<String> constraintRules = applyWorkingSets( activeWorkingSets );
 
@@ -145,7 +145,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
             return new LinkedList<String>();
         }
 
-        RuleAsset[] workingSets = getService().loadRuleAssets( activeWorkingSets.toArray( new String[activeWorkingSets.size()] ) );
+        RuleAsset[] workingSets = getAssetService().loadRuleAssets( activeWorkingSets.toArray( new String[activeWorkingSets.size()] ) );
         List<String> constraintRules = new LinkedList<String>();
         if ( workingSets != null ) {
             for ( RuleAsset workingSet : workingSets ) {

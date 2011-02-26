@@ -86,7 +86,7 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
             protected void onRangeChanged(HasData<AdminArchivedPageRow> display) {
                 PageRequest request = new PageRequest( pager.getPageStart(),
                                                                  pageSize );
-                repositoryService.loadArchivedAssets( request,
+                assetService.loadArchivedAssets( request,
                                                       new GenericCallback<PageResponse<AdminArchivedPageRow>>() {
                                                           public void onSuccess(PageResponse<AdminArchivedPageRow> response) {
                                                               updateRowCount( response.getTotalRowSize(),

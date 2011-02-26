@@ -262,7 +262,7 @@ public class RuleViewer extends GuvnorEditor {
                 public void execute() {
                     onSave();
                     LoadingPopup.showMessage( constants.CalculatingSource() );
-                    RepositoryServiceFactory.getService().buildAssetSource( asset,
+                    RepositoryServiceFactory.getAssetService().buildAssetSource( asset,
                                                                             new GenericCallback<String>() {
 
                                                                                 public void onSuccess(String src) {
@@ -283,7 +283,7 @@ public class RuleViewer extends GuvnorEditor {
                 public void execute() {
                     onSave();
                     LoadingPopup.showMessage( constants.ValidatingItemPleaseWait() );
-                    RepositoryServiceFactory.getService().buildAsset( asset,
+                    RepositoryServiceFactory.getAssetService().buildAsset( asset,
                                                                       new GenericCallback<BuilderResult>() {
 
                                                                           public void onSuccess(BuilderResult results) {
@@ -473,7 +473,7 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     private void doArchive() {
-        RepositoryServiceFactory.getService().archiveAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().archiveAsset( asset.uuid,
                                                             new GenericCallback<Void>() {
                                                                 public void onSuccess(Void o) {
                                                                     if ( archiveCommand != null ) {
@@ -544,7 +544,7 @@ public class RuleViewer extends GuvnorEditor {
 
     public void refreshDataAndView() {
         LoadingPopup.showMessage( constants.RefreshingItem() );
-        RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
                                                                      asset = asset_;
@@ -564,7 +564,7 @@ public class RuleViewer extends GuvnorEditor {
     private void refreshMetaWidgetOnly(final boolean showBusy) {
 
         if ( showBusy ) LoadingPopup.showMessage( constants.RefreshingItem() );
-        RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
                                                                      asset.metaData = asset_.metaData;
@@ -652,7 +652,7 @@ public class RuleViewer extends GuvnorEditor {
                 if ( !NewAssetWizard.validatePathPerJSR170( name ) ) {
                     return;
                 }
-                RepositoryServiceFactory.getService().copyAsset( asset.uuid,
+                RepositoryServiceFactory.getAssetService().copyAsset( asset.uuid,
                                                                  sel.getSelectedPackage(),
                                                                  name,
                                                                  new GenericCallback<String>() {
@@ -699,7 +699,7 @@ public class RuleViewer extends GuvnorEditor {
             return;
         }
         if ( Window.confirm( constants.PromoteAreYouSure() ) ) {
-            RepositoryServiceFactory.getService().promoteAssetToGlobalArea( asset.uuid,
+            RepositoryServiceFactory.getAssetService().promoteAssetToGlobalArea( asset.uuid,
                                                                             new GenericCallback<Void>() {
                                                                                 public void onSuccess(Void data) {
                                                                                     Window.alert( constants.Promoted() );

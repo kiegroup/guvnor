@@ -102,7 +102,7 @@ public class VersionChooser extends Composite {
      * Actually load the history data, as demanded.
      */
     protected void loadHistoryData() {
-        RepositoryServiceFactory.getService().loadAssetHistory( packageUUID,
+        RepositoryServiceFactory.getAssetService().loadAssetHistory( packageUUID,
         		                                                assetName,
                                                                 new GenericCallback<TableDataResult>() {
                                                                     public void onSuccess(TableDataResult table) {
@@ -177,7 +177,7 @@ public class VersionChooser extends Composite {
     private void showVersion(final String versionUUID) {
         LoadingPopup.showMessage( constants.LoadingVersionFromHistory() );
 
-        RepositoryServiceFactory.getService().loadRuleAsset( versionUUID,
+        RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
                                                              new GenericCallback<RuleAsset>() {
 
                                                                  public void onSuccess(RuleAsset asset) {

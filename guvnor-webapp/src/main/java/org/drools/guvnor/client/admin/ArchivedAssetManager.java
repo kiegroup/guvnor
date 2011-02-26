@@ -81,7 +81,7 @@ public class ArchivedAssetManager extends Composite {
                     Window.alert( constants.PleaseSelectAnItemToRestore() );
                     return;
                 }
-                RepositoryServiceFactory.getService().archiveAssets( table.getSelectedRowUUIDs(),
+                RepositoryServiceFactory.getAssetService().archiveAssets( table.getSelectedRowUUIDs(),
                                                                      false,
                                                                      new GenericCallback<java.lang.Void>() {
                                                                          public void onSuccess(Void arg0) {
@@ -103,7 +103,7 @@ public class ArchivedAssetManager extends Composite {
                 if ( !Window.confirm( constants.AreYouSureDeletingAsset() ) ) {
                     return;
                 }
-                RepositoryServiceFactory.getService().removeAssets( table.getSelectedRowUUIDs(),
+                RepositoryServiceFactory.getAssetService().removeAssets( table.getSelectedRowUUIDs(),
                                                                     new GenericCallback<java.lang.Void>() {
                                                                         public void onSuccess(Void arg0) {
                                                                             Window.alert( constants.ItemDeleted() );

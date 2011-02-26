@@ -22,9 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -57,9 +55,6 @@ import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
-import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
-import org.drools.guvnor.client.rpc.AssetPageRequest;
-import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.CategoryPageRequest;
@@ -102,7 +97,6 @@ import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
-import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.UserInbox;
@@ -137,7 +131,6 @@ import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
-import org.drools.repository.VersionableItem;
 import org.drools.repository.security.PermissionManager;
 import org.drools.rule.Package;
 import org.drools.runtime.rule.ConsequenceException;
@@ -179,8 +172,6 @@ public class ServiceImplementation
 
     private static final LoggingHelper  log                         = LoggingHelper.getLogger( ServiceImplementation.class );
 
-    private MetaDataMapper              metaDataMapper              = new MetaDataMapper();
-
     /**
      * Used for a simple cache of binary packages to avoid serialization from
      * the database - for test scenarios.
@@ -213,337 +204,8 @@ public class ServiceImplementation
         return repository;
     }
 
-    /**
-     * This actually does the hard work of loading up an asset based on its
-     * format.
-     * 
-     * Role-based Authorization check: This method can be accessed if user has
-     * following permissions: 1. The user has a ANALYST_READ role or higher
-     * (i.e., ANALYST) and this role has permission to access the category which
-     * the asset belongs to. Or. 2. The user has a package.readonly role or
-     * higher (i.e., package.admin, package.developer) and this role has
-     * permission to access the package which the asset belongs to.
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public RuleAsset loadRuleAsset(String uuid) throws SerializationException {
-
-        long time = System.currentTimeMillis();
-
-        AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
-        RuleAsset asset = new RuleAsset();
-
-        asset.uuid = uuid;
-
-        // load standard meta data
-        asset.metaData = populateMetaData( item );
-
-        // Verify if the user has permission to access the asset through package
-        // based permission.
-        // If failed, then verify if the user has permission to access the asset
-        // through category
-        // based permission
-        if ( Contexts.isSessionContextActive() ) {
-
-            try {
-                Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
-                                                     RoleTypes.PACKAGE_READONLY );
-            } catch ( RuntimeException e ) {
-                handleLoadRuleAssetException( asset );
-            }
-        }
-
-        PackageItem pkgItem = handlePackageItem( item,
-                                                 asset );
-
-        log.debug( "Package: " + pkgItem.getName() + ", asset: " + item.getName() + ". Load time taken for asset: " + (System.currentTimeMillis() - time) );
-        UserInbox.recordOpeningEvent( item );
-        return asset;
-
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public RuleAsset[] loadRuleAssets(String[] uuids) throws SerializationException {
-        return loadRuleAssets( Arrays.asList( uuids ) );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadAssetHistory(String uuid) throws SerializationException {
-        AssetItem assetItem = getRulesRepository().loadAssetByUUID( uuid );
-        serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
-        return repositoryAssetOperations.loadAssetHistory( assetItem );
-    }
-
-    /**
-     * @deprecated in favour of {@link loadArchivedAssets(PageRequest)}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadAssetHistory(String packageUUID,
-                                            String assetName) throws SerializationException {
-        PackageItem pi = getRulesRepository().loadPackageByUUID( packageUUID );
-        AssetItem assetItem = pi.loadAsset( assetName );
-        serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
-        return repositoryAssetOperations.loadAssetHistory( assetItem );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    @Deprecated
-    public TableDataResult loadArchivedAssets(int skip,
-                                              int numRows) throws SerializationException {
-        return repositoryAssetOperations.loadArchivedAssets( skip,
-                                                             numRows );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) throws SerializationException {
-        if ( request == null ) {
-            throw new IllegalArgumentException( "request cannot be null" );
-        }
-        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
-            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
-        }
-
-        return repositoryAssetOperations.loadArchivedAssets( request );
-    }
-
-    /**
-     * @deprecated in favour of {@link findAssetPage(AssetPageRequest)}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult listAssetsWithPackageName(String packageName,
-                                                     String formats[],
-                                                     int skip,
-                                                     int numRows,
-                                                     String tableConfig) throws SerializationException {
-        PackageItem pkg = getRulesRepository().loadPackage( packageName );
-        return listAssets( pkg.getUUID(),
-                           formats,
-                           skip,
-                           numRows,
-                           tableConfig );
-    }
-
-    /**
-     * @deprecated in favour of {@link findAssetPage(AssetPageRequest)}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult listAssets(String packageUuid,
-                                      String formats[],
-                                      int skip,
-                                      int numRows,
-                                      String tableConfig) throws SerializationException {
-        log.debug( "Loading asset list for [" + packageUuid + "]" );
-        if ( numRows == 0 ) {
-            throw new DetailedSerializationException( "Unable to return zero results (bug)",
-                                                      "probably have the parameters around the wrong way, sigh..." );
-        }
-        return repositoryAssetOperations.listAssets( packageUuid,
-                                                     formats,
-                                                     skip,
-                                                     numRows,
-                                                     tableConfig );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public String copyAsset(String assetUUID,
-                            String newPackage,
-                            String newName) {
-        serviceSecurity.checkSecurityIsPackageDeveloper( newPackage );
-
-        log.info( "USER:" + getCurrentUserName() + " COPYING asset: [" + assetUUID + "] to [" + newName + "] in PACKAGE [" + newPackage + "]" );
-        return getRulesRepository().copyAsset( assetUUID,
-                                               newPackage,
-                                               newName );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void changeAssetPackage(String uuid,
-                                   String newPackage,
-                                   String comment) {
-        serviceSecurity.checkSecurityIsPackageDeveloper( newPackage );
-
-        log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]" );
-        getRulesRepository().moveRuleItemPackage( newPackage,
-                                                  uuid,
-                                                  comment );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void promoteAssetToGlobalArea(String uuid) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( RulesRepository.RULE_GLOBAL_AREA ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
-        }
-
-        log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [ globalArea ]" );
-        getRulesRepository().moveRuleItemPackage( RulesRepository.RULE_GLOBAL_AREA,
-                                                  uuid,
-                                                  "promote asset to globalArea" );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public String buildAssetSource(RuleAsset asset) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( asset );
-        return repositoryAssetOperations.buildAssetSource( asset );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public String renameAsset(String uuid,
-                              String newName) {
-        AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
-        serviceSecurity.checkSecurityIsPackageDeveloper( item );
-
-        return repositoryAssetOperations.renameAsset( uuid,
-                                                      newName );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void archiveAsset(String uuid) {
-        archiveOrUnarchiveAsset( uuid,
-                                 true );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public BuilderResult buildAsset(RuleAsset asset) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( asset );
-        return repositoryAssetOperations.buildAsset( asset );
-    }
-
-    public void unArchiveAsset(String uuid) {
-        archiveOrUnarchiveAsset( uuid,
-                                 false );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void archiveAssets(String[] uuids,
-                              boolean value) {
-        for ( String uuid : uuids ) {
-            archiveOrUnarchiveAsset( uuid,
-                                     value );
-        }
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void removeAsset(String uuid) {
-        try {
-            AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
-            serviceSecurity.checkSecurityIsPackageDeveloper( item );
-
-            item.remove();
-            getRulesRepository().save();
-        } catch ( RulesRepositoryException e ) {
-            log.error( "Unable to remove asset.",
-                       e );
-            throw e;
-        }
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void removeAssets(String[] uuids) {
-        for ( String uuid : uuids ) {
-            removeAsset( uuid );
-        }
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request) throws SerializationException {
-        if ( request == null ) {
-            throw new IllegalArgumentException( "request cannot be null" );
-        }
-        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
-            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
-        }
-
-        return repositoryAssetOperations.findAssetPage( request );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest request) throws SerializationException {
-        if ( request == null ) {
-            throw new IllegalArgumentException( "request cannot be null" );
-        }
-        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
-            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
-        }
-
-        return repositoryAssetOperations.quickFindAsset( request );
-    }
-
-    /**
-     * @deprecated in favour of {@link quickFindAsset(QueryPageRequest)}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult quickFindAsset(String searchText,
-                                          boolean searchArchived,
-                                          int skip,
-                                          int numRows) throws SerializationException {
-        return repositoryAssetOperations.quickFindAsset( searchText,
-                                                         searchArchived,
-                                                         skip,
-                                                         numRows );
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.drools.guvnor.client.rpc.RepositoryService#lockAsset(java.lang.String
-     * )
-     */
-    @Restrict("#{identity.loggedIn}")
-    public void lockAsset(String uuid) {
-        repositoryAssetOperations.lockAsset( uuid );
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.drools.guvnor.client.rpc.RepositoryService#unLockAsset(java.lang.
-     * String)
-     */
-    @Restrict("#{identity.loggedIn}")
-    public void unLockAsset(String uuid) {
-        repositoryAssetOperations.unLockAsset( uuid );
-    }
-
-    /**
-     * @deprecated in favour of {@link queryFullText(QueryPageRequest)}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult queryFullText(String text,
-                                         boolean seekArchived,
-                                         int skip,
-                                         int numRows) throws SerializationException {
-        if ( numRows == 0 ) {
-            throw new DetailedSerializationException( "Unable to return zero results (bug)",
-                                                      "probably have the parameters around the wrong way, sigh..." );
-        }
-        return repositoryAssetOperations.queryFullText( text,
-                                                        seekArchived,
-                                                        skip,
-                                                        numRows );
+    public static Backchannel getBackchannel() {
+        return backchannel;
     }
 
     /**
@@ -1152,83 +814,6 @@ public class ServiceImplementation
         return handler.loadTableConfig();
     }
 
-    private PackageItem handlePackageItem(AssetItem item,
-                                          RuleAsset asset) throws SerializationException {
-        PackageItem pkgItem = item.getPackage();
-
-        ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
-        handler.retrieveAssetContent( asset,
-                                      pkgItem,
-                                      item );
-
-        asset.isreadonly = asset.metaData.hasSucceedingVersion;
-
-        if ( pkgItem.isSnapshot() ) {
-            asset.isreadonly = true;
-        }
-        return pkgItem;
-    }
-
-    private void handleLoadRuleAssetException(RuleAsset asset) {
-        if ( asset.metaData.categories.length == 0 ) {
-            Identity.instance().checkPermission( new CategoryPathType( null ),
-                                                 RoleTypes.ANALYST_READ );
-        } else {
-            RuntimeException exception = null;
-            boolean passed = false;
-            for ( String cat : asset.metaData.categories ) {
-                try {
-                    Identity.instance().checkPermission( new CategoryPathType( cat ),
-                                                         RoleTypes.ANALYST_READ );
-                    passed = true;
-                } catch ( RuntimeException re ) {
-                    exception = re;
-                }
-            }
-            if ( !passed ) {
-                throw exception;
-            }
-        }
-    }
-
-    /**
-     * read in the meta data, populating all dublin core and versioning stuff.
-     */
-    MetaData populateMetaData(VersionableItem item) {
-        MetaData meta = new MetaData();
-
-        meta.status = (item.getState() != null) ? item.getState().getName() : "";
-
-        metaDataMapper.copyToMetaData( meta,
-                                       item );
-
-        meta.createdDate = calendarToDate( item.getCreatedDate() );
-        meta.lastModifiedDate = calendarToDate( item.getLastModified() );
-
-        meta.hasPreceedingVersion = item.getPrecedingVersion() != null;
-        meta.hasSucceedingVersion = item.getSucceedingVersion() != null;
-        return meta;
-    }
-
-    /**
-     * Populate meta data with asset specific info.
-     */
-    MetaData populateMetaData(AssetItem item) {
-        MetaData meta = populateMetaData( (VersionableItem) item );
-
-        meta.packageName = item.getPackageName();
-        meta.packageUUID = item.getPackage().getUUID();
-        meta.setBinary( item.isBinary() );
-
-        List categories = item.getCategories();
-        fillMetaCategories( meta,
-                            categories );
-        meta.dateEffective = calendarToDate( item.getDateEffective() );
-        meta.dateExpired = calendarToDate( item.getDateExpired() );
-        return meta;
-
-    }
-
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     /**
@@ -1286,7 +871,7 @@ public class ServiceImplementation
         }
 
         MetaData meta = asset.metaData;
-
+        MetaDataMapper metaDataMapper = MetaDataMapper.getInstance();
         metaDataMapper.copyFromMetaData( meta,
                                          repoAsset );
 
@@ -1682,7 +1267,7 @@ public class ServiceImplementation
             while ( it.hasNext() ) {
                 AssetItem as = it.next();
                 if ( !as.getDisabled() ) {
-                    RuleAsset asset = loadAsset( as );
+                    RuleAsset asset = repositoryAssetOperations.loadAsset( as );
                     Scenario sc = (Scenario) asset.content;
                     runScenario( item.getName(),
                                  sc,
@@ -1946,18 +1531,6 @@ public class ServiceImplementation
         PermissionManager pm = new PermissionManager( getRulesRepository() );
         pm.createUser( userName );
         getRulesRepository().save();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.drools.guvnor.client.rpc.RepositoryService#getAssetLockerUserName
-     * (java.lang.String)
-     */
-    @Restrict("#{identity.loggedIn}")
-    public String getAssetLockerUserName(String uuid) {
-        return repositoryAssetOperations.getAssetLockerUserName( uuid );
     }
 
     @Restrict("#{identity.loggedIn}")
@@ -2431,79 +2004,6 @@ public class ServiceImplementation
         return response;
     }
 
-    private void archiveOrUnarchiveAsset(String uuid,
-                                         boolean archive) {
-        try {
-            AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
-
-            serviceSecurity.checkSecurityIsPackageDeveloper( item );
-
-            if ( item.getPackage().isArchived() ) {
-                throw new RulesRepositoryException( "The package [" + item.getPackageName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first." );
-            }
-
-            log.info( "USER:" + getCurrentUserName() + " ARCHIVING asset: [" + item.getName() + "] UUID: [" + item.getUUID() + "] " );
-
-            try {
-                ContentHandler handler = getContentHandler( item );
-                if ( handler instanceof ICanHasAttachment ) {
-                    ((ICanHasAttachment) handler).onAttachmentRemoved( item );
-                }
-            } catch ( IOException e ) {
-                log.error( "Unable to remove asset attachment",
-                           e );
-            }
-
-            item.archiveItem( archive );
-            PackageItem pkg = item.getPackage();
-            pkg.updateBinaryUpToDate( false );
-            ruleBaseCache.remove( pkg.getUUID() );
-            if ( archive ) {
-                item.checkin( "archived" );
-            } else {
-                item.checkin( "unarchived" );
-            }
-
-            push( "packageChange",
-                  pkg.getName() );
-
-        } catch ( RulesRepositoryException e ) {
-            log.error( "Unable to get item format.",
-                       e );
-            throw e;
-        }
-    }
-
-    RuleAsset[] loadRuleAssets(Collection<String> uuids) throws SerializationException {
-        if ( uuids == null ) {
-            return null;
-        }
-        Collection<RuleAsset> assets = new HashSet<RuleAsset>();
-
-        for ( String uuid : uuids ) {
-            assets.add( loadRuleAsset( uuid ) );
-        }
-
-        return assets.toArray( new RuleAsset[assets.size()] );
-    }
-
-    private RuleAsset loadAsset(AssetItem item) throws SerializationException {
-
-        RuleAsset asset = new RuleAsset();
-        asset.uuid = item.getUUID();
-        asset.metaData = populateMetaData( item );
-        ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
-        handler.retrieveAssetContent( asset,
-                                      item.getPackage(),
-                                      item );
-
-        return asset;
-    }
-
-    private ContentHandler getContentHandler(AssetItem repoAsset) {
-        return ContentManager.getHandler( repoAsset.getFormat() );
-    }
-
     private void updateEffectiveAndExpiredDate(AssetItem repoAsset,
                                                MetaData meta) {
         repoAsset.updateDateEffective( dateToCalendar( meta.dateEffective ) );
@@ -2513,22 +2013,6 @@ public class ServiceImplementation
     private boolean isAssetUpdatedInRepository(RuleAsset asset,
                                                AssetItem repoAsset) {
         return asset.metaData.lastModifiedDate.before( repoAsset.getLastModified().getTime() );
-    }
-
-    private void fillMetaCategories(MetaData meta,
-                                    List categories) {
-        meta.categories = new String[categories.size()];
-        for ( int i = 0; i < meta.categories.length; i++ ) {
-            CategoryItem cat = (CategoryItem) categories.get( i );
-            meta.categories[i] = cat.getFullPath();
-        }
-    }
-
-    private Date calendarToDate(Calendar createdDate) {
-        if ( createdDate == null ) {
-            return null;
-        }
-        return createdDate.getTime();
     }
 
     private Calendar dateToCalendar(Date date) {
