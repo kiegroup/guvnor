@@ -32,8 +32,8 @@ import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
  */
 public abstract class AbstractCellFactory<T> {
 
-    // The containing DecoratedGridWidget to which cells will send their updates
-    protected DecoratedGridWidget<T>     grid;
+    // The containing MergableGridWidget to which cells will send their updates
+    protected MergableGridWidget<T>     grid;
 
     protected SuggestionCompletionEngine sce;
 
@@ -43,10 +43,10 @@ public abstract class AbstractCellFactory<T> {
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
      * @param grid
-     *            DecoratedGridWidget to which cells will send their updates
+     *            MergableGridWidget to which cells will send their updates
      */
     public AbstractCellFactory(SuggestionCompletionEngine sce,
-                               DecoratedGridWidget<T> grid) {
+                               MergableGridWidget<T> grid) {
 
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );

@@ -70,7 +70,7 @@ public class TemplateDataTableWidget extends Composite
         widget.setSidebarWidget( sidebar );
 
         this.cellFactory = new TemplateDataCellFactory( sce,
-                                                        widget );
+                                                        widget.getGridWidget() );
         this.cellValueFactory = new TemplateDataCellValueFactory( sce );
 
         initWidget( widget );

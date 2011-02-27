@@ -38,15 +38,6 @@ import com.google.gwt.user.client.Event;
  */
 public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
-    /**
-     * Constructor
-     * 
-     * @param grid
-     */
-    public VerticalMergableGridWidget(final DecoratedGridWidget<T> grid) {
-        super( grid );
-    }
-
     @Override
     public void deleteRow(int index) {
         if ( index < 0 ) {
@@ -58,7 +49,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                                                 "Index cannot be greater than the number of rows." );
         }
 
-        grid.getSidebarWidget().deleteSelector( index );
         tbody.deleteRow( index );
         fixRowStyles( index );
     }
@@ -119,8 +109,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             throw new IllegalArgumentException( "rowData contains a different number of columns to the grid" );
         }
 
-        grid.getSidebarWidget().insertSelectorBefore( rowData,
-                                                        index );
         TableRowElement newRow = tbody.insertRow( index );
         populateTableRowElement( newRow,
                                  rowData );
@@ -220,17 +208,11 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     @Override
     public void redraw() {
 
-        // Prepare sidebar
-        grid.getSidebarWidget().initialise();
-
         TableSectionElement nbody = Document.get().createTBodyElement();
 
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
 
-            // Add a selector for each row
             DynamicDataRow rowData = data.get( iRow );
-            grid.getSidebarWidget().appendSelector( rowData );
-
             TableRowElement tre = Document.get().createTRElement();
             tre.setClassName( getRowStyle( iRow ) );
 
@@ -363,9 +345,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                                Unit.PX );
         }
 
-        // Resizing columns can cause the scrollbar to appear
-        grid.assertDimensions();
-
     }
 
     @Override
@@ -448,14 +427,14 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     //Handle "Key Down" events relating to keyboard navigation
     private void handleKeyboardNavigationEvent(Event event) {
         if ( event.getKeyCode() == KeyCodes.KEY_DELETE ) {
-            grid.update( null );
+            update( null );
             return;
 
         } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT
                     || (event.getKeyCode() == KeyCodes.KEY_TAB && !event
                             .getShiftKey()) ) {
             CellExtents ce = moveSelection( MOVE_DIRECTION.RIGHT );
-            SelectedCellChangeEvent.fire( grid,
+            SelectedCellChangeEvent.fire( this,
                                           ce );
             event.preventDefault();
             return;
@@ -464,7 +443,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                     || (event.getKeyCode() == KeyCodes.KEY_TAB && event
                             .getShiftKey()) ) {
             CellExtents ce = moveSelection( MOVE_DIRECTION.LEFT );
-            SelectedCellChangeEvent.fire( grid,
+            SelectedCellChangeEvent.fire( this,
                                           ce );
             event.preventDefault();
             return;
@@ -474,7 +453,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                 extendSelection( MOVE_DIRECTION.UP );
             } else {
                 CellExtents ce = moveSelection( MOVE_DIRECTION.UP );
-                SelectedCellChangeEvent.fire( grid,
+                SelectedCellChangeEvent.fire( this,
                                               ce );
             }
             event.preventDefault();
@@ -485,7 +464,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                 extendSelection( MOVE_DIRECTION.DOWN );
             } else {
                 CellExtents ce = moveSelection( MOVE_DIRECTION.DOWN );
-                SelectedCellChangeEvent.fire( grid,
+                SelectedCellChangeEvent.fire( this,
                                               ce );
             }
             event.preventDefault();

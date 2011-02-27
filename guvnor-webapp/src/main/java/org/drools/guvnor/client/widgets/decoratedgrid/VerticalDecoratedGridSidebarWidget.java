@@ -100,12 +100,18 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             return trClasses;
         }
 
-        // Initialise for a complete redraw
-        private void initialise() {
+        // Redraw entire sidebar
+        private void redraw() {
+            //Remove existing
             int totalRows = widgets.size();
             for ( int iRow = 0; iRow < totalRows; iRow++ ) {
                 deleteSelector( 0 );
             }
+            //Add selector for each row
+            for(DynamicDataRow row : grid.getGridWidget().getData()) {
+                appendSelector( row );
+            }
+            
         }
 
         // Insert a new row before the given index
@@ -282,8 +288,8 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
     }
 
     @Override
-    public void initialise() {
-        selectors.initialise();
+    public void redraw() {
+        selectors.redraw();
     }
 
     @Override

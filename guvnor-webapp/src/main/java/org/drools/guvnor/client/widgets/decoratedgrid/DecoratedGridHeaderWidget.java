@@ -94,7 +94,6 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
     }
 
     protected Panel                               panel;
-
     protected DecoratedGridWidget<T>              grid;
 
     // Resources

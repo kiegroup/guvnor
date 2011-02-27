@@ -76,11 +76,10 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite {
     public abstract void deleteSelector(int index);
 
     /**
-     * Initialise the sidebar, this normally involves clearing any content
-     * before calls to addSelector are made. I.E. ensure the sidebar is empty
-     * before items are added to it.
+     * Redraw the sidebar, this involves clearing any content before calling to
+     * addSelector for each row in the grid's data
      */
-    public abstract void initialise();
+    public abstract void redraw();
 
     /**
      * Insert a Selector before the given index.

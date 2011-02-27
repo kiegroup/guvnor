@@ -23,6 +23,7 @@ import java.util.TreeSet;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -30,6 +31,7 @@ import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -38,8 +40,59 @@ import com.google.gwt.user.client.ui.Widget;
  * render "rows" and "columns" (e.g. some may transpose the normal meaning to
  * provide a horizontal implementation of normally vertical tabular data)
  */
-public abstract class MergableGridWidget<T> extends Widget {
+public abstract class MergableGridWidget<T> extends Widget
+    implements
+    ValueUpdater<Object>,
+    HasSelectedCellChangeHandlers {
 
+    /**
+     * Add a handler for SelectedCellChangeEvents
+     */
+    public HandlerRegistration addSelectedCellChangeHandler(SelectedCellChangeHandler handler) {
+        return addHandler( handler,
+                           SelectedCellChangeEvent.getType() );
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.google.gwt.cell.client.ValueUpdater#update(java.lang.Object)
+     */
+    public void update(Object value) {
+
+        // Update underlying data
+        for ( CellValue< ? extends Comparable< ? >> cell : getSelectedCells() ) {
+            Coordinate c = cell.getCoordinate();
+            if ( !columns.get( c.getCol() ).isSystemControlled() ) {
+                data.set( c,
+                          value );
+            }
+        }
+
+        // Partial redraw
+        assertModelMerging();
+        int baseRowIndex = getSelectedCells().first().getPhysicalCoordinate()
+                .getRow();
+        int minRedrawRow = findMinRedrawRow( baseRowIndex );
+        int maxRedrawRow = findMaxRedrawRow( baseRowIndex );
+
+        // When merged cells become unmerged (if their value is
+        // cleared need to ensure the re-draw range is at least
+        // as large as the selection range
+        if ( maxRedrawRow < getSelectedCells().last().getPhysicalCoordinate()
+                .getRow() ) {
+            maxRedrawRow = getSelectedCells().last().getPhysicalCoordinate()
+                    .getRow();
+        }
+        redrawRows( minRedrawRow,
+                               maxRedrawRow );
+
+        //Re-select applicable cells, following change to merge
+        selectRange( getSelectedCells().first(),
+                                getSelectedCells().last() );
+
+    }
+    
     /**
      * Container for a cell's extents
      */
@@ -123,7 +176,6 @@ public abstract class MergableGridWidget<T> extends Widget {
     // Data and columns to render
     protected List<DynamicColumn<T>>                         columns              = new ArrayList<DynamicColumn<T>>();
     protected DynamicData                                    data                 = new DynamicData();
-    protected DecoratedGridWidget<T>                         grid;
 
     //Properties for multi-cell selection
     protected CellValue< ? >                                 rangeOriginCell;
@@ -136,12 +188,7 @@ public abstract class MergableGridWidget<T> extends Widget {
     /**
      * A grid of cells.
      */
-    public MergableGridWidget(final DecoratedGridWidget<T> grid) {
-        if ( grid == null ) {
-            throw new IllegalArgumentException( "grid cannot be null" );
-        }
-        this.grid = grid;
-
+    public MergableGridWidget() {
         style.ensureInjected();
 
         // Create some elements to contain the grid
@@ -742,5 +789,72 @@ public abstract class MergableGridWidget<T> extends Widget {
         // Set indexes after merging has been corrected
         assertModelIndexes();
     }
+    
+    // Given a base row find the maximum row that needs to be re-rendered based
+    // upon each columns merged cells; where each merged cell passes through the
+    // base row
+    private int findMaxRedrawRow(int baseRowIndex) {
+
+        if ( data.size() == 0 ) {
+            return 0;
+        }
+
+        // These should never happen, but it's a safe-guard
+        if ( baseRowIndex < 0 ) {
+            baseRowIndex = 0;
+        }
+        if ( baseRowIndex > data.size() - 1 ) {
+            baseRowIndex = data.size() - 1;
+        }
+
+        int maxRedrawRow = baseRowIndex;
+        DynamicDataRow baseRow = data.get( baseRowIndex );
+        for ( int iCol = 0; iCol < baseRow.size(); iCol++ ) {
+            int iRow = baseRowIndex;
+            CellValue< ? extends Comparable< ? >> cell = baseRow.get( iCol );
+            while ( cell.getRowSpan() != 1
+                    && iRow < data.size() - 1 ) {
+                iRow++;
+                DynamicDataRow row = data.get( iRow );
+                cell = row.get( iCol );
+            }
+            maxRedrawRow = (iRow > maxRedrawRow ? iRow : maxRedrawRow);
+        }
+        return maxRedrawRow;
+    }
+
+    // Given a base row find the minimum row that needs to be re-rendered based
+    // upon each columns merged cells; where each merged cell passes through the
+    // base row
+    private int findMinRedrawRow(int baseRowIndex) {
+
+        if ( data.size() == 0 ) {
+            return 0;
+        }
+
+        // These should never happen, but it's a safe-guard
+        if ( baseRowIndex < 0 ) {
+            baseRowIndex = 0;
+        }
+        if ( baseRowIndex > data.size() - 1 ) {
+            baseRowIndex = data.size() - 1;
+        }
+
+        int minRedrawRow = baseRowIndex;
+        DynamicDataRow baseRow = data.get( baseRowIndex );
+        for ( int iCol = 0; iCol < baseRow.size(); iCol++ ) {
+            int iRow = baseRowIndex;
+            CellValue< ? extends Comparable< ? >> cell = baseRow.get( iCol );
+            while ( cell.getRowSpan() != 1
+                    && iRow > 0 ) {
+                iRow--;
+                DynamicDataRow row = data.get( iRow );
+                cell = row.get( iCol );
+            }
+            minRedrawRow = (iRow < minRedrawRow ? iRow : minRedrawRow);
+        }
+        return minRedrawRow;
+    }
+
 
 }

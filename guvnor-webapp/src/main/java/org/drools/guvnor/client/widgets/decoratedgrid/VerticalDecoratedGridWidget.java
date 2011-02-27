@@ -48,7 +48,7 @@ public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
     @Override
     public MergableGridWidget<T> getGridWidget() {
         if ( this.gridWidget == null ) {
-            this.gridWidget = new VerticalMergableGridWidget<T>( this );
+            this.gridWidget = new VerticalMergableGridWidget<T>();
         }
         return this.gridWidget;
     }
@@ -96,6 +96,8 @@ public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
         headerWidget.addColumnResizeHandler( new ColumnResizeHandler() {
 
             public void onColumnResize(ColumnResizeEvent event) {
+                // Resizing columns can cause the scrollbar to appear
+                assertDimensions();
                 gridWidget.resizeColumn( event.getColumn(),
                                          event.getWidth() );
             }

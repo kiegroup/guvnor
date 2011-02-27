@@ -261,7 +261,7 @@ public class VerticalDecisionTableWidget extends Composite
 
         this.model = model;
         this.cellFactory = new DecisionTableCellFactory( sce,
-                                                         widget,
+                                                         widget.getGridWidget(),
                                                          this.model );
         this.cellValueFactory = new DecisionTableCellValueFactory( sce,
                                                                    this.model );
@@ -358,6 +358,7 @@ public class VerticalDecisionTableWidget extends Composite
 
         // Draw header first as the size of child Elements depends upon it
         widget.getHeaderWidget().redraw();
+        widget.getSidebarWidget().redraw();
 
         // Schedule redraw of grid after sizes of child Elements have been set
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {

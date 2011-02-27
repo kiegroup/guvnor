@@ -23,12 +23,10 @@ import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget.CellExtents;
 
-import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ScrollHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -41,10 +39,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  * @param <T>
  *            The type of domain columns represented by the Grid
  */
-public abstract class DecoratedGridWidget<T> extends Composite
-    implements
-        ValueUpdater<Object>,
-    HasSelectedCellChangeHandlers {
+public abstract class DecoratedGridWidget<T> extends Composite {
 
     // Widgets for UI
     protected Panel                               mainPanel;
@@ -89,7 +84,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
         initWidget( mainPanel );
 
         //Add handler for when the selected cell changes
-        addSelectedCellChangeHandler( new SelectedCellChangeHandler() {
+        gridWidget.addSelectedCellChangeHandler( new SelectedCellChangeHandler() {
 
             public void onSelectedCellChange(SelectedCellChangeEvent event) {
                 cellSelected( event.getCellExtents() );
@@ -97,14 +92,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
 
         } );
 
-    }
-
-    /**
-     * Add a handler for SelectedCellChangeEvents
-     */
-    public HandlerRegistration addSelectedCellChangeHandler(SelectedCellChangeHandler handler) {
-        return addHandler( handler,
-                           SelectedCellChangeEvent.getType() );
     }
 
     /**
@@ -192,6 +179,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
         gridWidget.clearSelection();
 
         data.remove( index );
+        sidebarWidget.deleteSelector( index );
 
         // Partial redraw
         if ( !gridWidget.isMerged() ) {
@@ -270,7 +258,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
      * @return
      */
     public DecoratedGridSidebarWidget<T> getSidebarWidget() {
-        return sidebarWidget;
+       return sidebarWidget;
     }
 
     /**
@@ -374,6 +362,8 @@ public abstract class DecoratedGridWidget<T> extends Composite
 
         data.add( index,
                   newRow );
+        sidebarWidget.insertSelectorBefore( newRow,
+                                                      index );
 
         // Partial redraw
         if ( !gridWidget.isMerged() ) {
@@ -557,49 +547,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
             hasSystemControlledColumns.updateSystemControlledColumnValues();
         }
         gridWidget.redraw();
-
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.google.gwt.cell.client.ValueUpdater#update(java.lang.Object)
-     */
-    public void update(Object value) {
-
-        final DynamicData data = gridWidget.getData();
-        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
-
-        // Update underlying data
-        for ( CellValue< ? extends Comparable< ? >> cell : gridWidget.getSelectedCells() ) {
-            Coordinate c = cell.getCoordinate();
-            if ( !columns.get( c.getCol() ).isSystemControlled() ) {
-                data.set( c,
-                          value );
-            }
-        }
-
-        // Partial redraw
-        gridWidget.assertModelMerging();
-        int baseRowIndex = gridWidget.getSelectedCells().first().getPhysicalCoordinate()
-                .getRow();
-        int minRedrawRow = findMinRedrawRow( baseRowIndex );
-        int maxRedrawRow = findMaxRedrawRow( baseRowIndex );
-
-        // When merged cells become unmerged (if their value is
-        // cleared need to ensure the re-draw range is at least
-        // as large as the selection range
-        if ( maxRedrawRow < gridWidget.getSelectedCells().last().getPhysicalCoordinate()
-                .getRow() ) {
-            maxRedrawRow = gridWidget.getSelectedCells().last().getPhysicalCoordinate()
-                    .getRow();
-        }
-        gridWidget.redrawRows( minRedrawRow,
-                               maxRedrawRow );
-
-        //Re-select applicable cells, following change to merge
-        gridWidget.selectRange( gridWidget.getSelectedCells().first(),
-                                gridWidget.getSelectedCells().last() );
+        sidebarWidget.redraw();
 
     }
 
@@ -666,76 +614,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
             headerWidget.redraw();
         }
 
-    }
-
-    // Given a base row find the maximum row that needs to be re-rendered based
-    // upon each columns merged cells; where each merged cell passes through the
-    // base row
-    private int findMaxRedrawRow(int baseRowIndex) {
-
-        final DynamicData data = gridWidget.getData();
-
-        if ( data.size() == 0 ) {
-            return 0;
-        }
-
-        // These should never happen, but it's a safe-guard
-        if ( baseRowIndex < 0 ) {
-            baseRowIndex = 0;
-        }
-        if ( baseRowIndex > data.size() - 1 ) {
-            baseRowIndex = data.size() - 1;
-        }
-
-        int maxRedrawRow = baseRowIndex;
-        DynamicDataRow baseRow = data.get( baseRowIndex );
-        for ( int iCol = 0; iCol < baseRow.size(); iCol++ ) {
-            int iRow = baseRowIndex;
-            CellValue< ? extends Comparable< ? >> cell = baseRow.get( iCol );
-            while ( cell.getRowSpan() != 1
-                    && iRow < data.size() - 1 ) {
-                iRow++;
-                DynamicDataRow row = data.get( iRow );
-                cell = row.get( iCol );
-            }
-            maxRedrawRow = (iRow > maxRedrawRow ? iRow : maxRedrawRow);
-        }
-        return maxRedrawRow;
-    }
-
-    // Given a base row find the minimum row that needs to be re-rendered based
-    // upon each columns merged cells; where each merged cell passes through the
-    // base row
-    private int findMinRedrawRow(int baseRowIndex) {
-
-        final DynamicData data = gridWidget.getData();
-
-        if ( data.size() == 0 ) {
-            return 0;
-        }
-
-        // These should never happen, but it's a safe-guard
-        if ( baseRowIndex < 0 ) {
-            baseRowIndex = 0;
-        }
-        if ( baseRowIndex > data.size() - 1 ) {
-            baseRowIndex = data.size() - 1;
-        }
-
-        int minRedrawRow = baseRowIndex;
-        DynamicDataRow baseRow = data.get( baseRowIndex );
-        for ( int iCol = 0; iCol < baseRow.size(); iCol++ ) {
-            int iRow = baseRowIndex;
-            CellValue< ? extends Comparable< ? >> cell = baseRow.get( iCol );
-            while ( cell.getRowSpan() != 1
-                    && iRow > 0 ) {
-                iRow--;
-                DynamicDataRow row = data.get( iRow );
-                cell = row.get( iCol );
-            }
-            minRedrawRow = (iRow < minRedrawRow ? iRow : minRedrawRow);
-        }
-        return minRedrawRow;
     }
 
     // Re-index columns
