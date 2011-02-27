@@ -400,7 +400,7 @@ public class FileManagerUtils {
 
         AssetItem item = pkg.loadAsset( assetName );
         ContentHandler handler = ContentManager.getHandler( item.getFormat() );//new AssetContentFormatHandler();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
         if ( handler.isRuleAsset() ) {
 
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
@@ -414,8 +414,8 @@ public class FileManagerUtils {
                                                                         } ) );
             ((IRuleAsset) handler).assembleDRL( builder,
                                                 item,
-                                                buf );
-            out.write( buf.toString().getBytes() );
+                                                stringBuilder );
+            out.write( stringBuilder.toString().getBytes() );
             return item.getName() + ".drl";
         } else {
             out.write( item.getContent().getBytes() );

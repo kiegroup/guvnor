@@ -87,17 +87,17 @@ public class GuidedDTContentHandler extends ContentHandler
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
-                            StringBuffer buf) {
+                            StringBuilder stringBuilder) {
         GuidedDecisionTable model = (GuidedDecisionTable) asset.content;
 
-        buf.append( GuidedDTDRLPersistence.getInstance().marshal( model ) );
+        stringBuilder.append( GuidedDTDRLPersistence.getInstance().marshal( model ) );
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
-                            StringBuffer buf) {
+                            StringBuilder stringBuilder) {
         String drl = getRawDRL( asset );
-        buf.append( drl );
+        stringBuilder.append( drl );
     }
 
     public String getRawDRL(AssetItem asset) {

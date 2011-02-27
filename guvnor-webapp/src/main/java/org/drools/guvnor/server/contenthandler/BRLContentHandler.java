@@ -75,18 +75,18 @@ public class BRLContentHandler extends ContentHandler
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
-                            StringBuffer buf) {
+                            StringBuilder stringBuilder) {
         String drl = getSourceDRL( (RuleModel) asset.content,
                                    builder );
-        buf.append( drl );
+        stringBuilder.append( drl );
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
-                            StringBuffer buf) {
+                            StringBuilder stringBuilder) {
         String drl = getSourceDRL( buildModelFromAsset( asset ),
                                    builder );
-        buf.append( drl );
+        stringBuilder.append( drl );
     }
 
     private String getSourceDRL(RuleModel model,

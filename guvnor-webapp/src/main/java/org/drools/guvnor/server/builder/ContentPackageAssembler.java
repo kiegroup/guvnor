@@ -28,7 +28,6 @@ import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICompilable;
@@ -81,7 +80,8 @@ public class ContentPackageAssembler {
      *            The package.
      */
     public ContentPackageAssembler(PackageItem pkg) {
-        this( pkg, true );
+        this( pkg,
+              true );
     }
 
     /**
@@ -91,8 +91,18 @@ public class ContentPackageAssembler {
      *            true if we want to build it. False and its just for looking at
      *            source.
      */
-    public ContentPackageAssembler(PackageItem pkg, boolean compile) {
-        this( pkg, compile, null, null, null, false, null, null, false, null );
+    public ContentPackageAssembler(PackageItem pkg,
+                                   boolean compile) {
+        this( pkg,
+              compile,
+              null,
+              null,
+              null,
+              false,
+              null,
+              null,
+              false,
+              null );
     }
 
     /**
@@ -103,7 +113,16 @@ public class ContentPackageAssembler {
      *            source.
      * @param selectorConfigName
      */
-    public ContentPackageAssembler(PackageItem assetPackage, boolean compile, String buildMode, String statusOperator, String statusDescriptionValue, boolean enableStatusSelector, String categoryOperator, String categoryValue, boolean enableCategorySelector, String selectorConfigName) {
+    public ContentPackageAssembler(PackageItem assetPackage,
+                                   boolean compile,
+                                   String buildMode,
+                                   String statusOperator,
+                                   String statusDescriptionValue,
+                                   boolean enableStatusSelector,
+                                   String categoryOperator,
+                                   String categoryValue,
+                                   boolean enableCategorySelector,
+                                   String selectorConfigName) {
 
         this.packageItem = assetPackage;
         this.customSelectorName = selectorConfigName;
@@ -134,7 +153,8 @@ public class ContentPackageAssembler {
         }
     }
 
-    public ContentPackageAssembler(RuleAsset asset, PackageItem packageItem) {
+    public ContentPackageAssembler(RuleAsset asset,
+                                   PackageItem packageItem) {
         this.packageItem = packageItem;
         createBuilder();
 
@@ -146,10 +166,13 @@ public class ContentPackageAssembler {
     public void createBuilder() {
         try {
             Properties ps = loadConfProperties( packageItem );
-            ps.setProperty( DefaultPackageNameOption.PROPERTY_NAME, this.packageItem.getName() );
-            builder = BRMSPackageBuilder.getInstance( BRMSPackageBuilder.getJars( packageItem ), ps );
+            ps.setProperty( DefaultPackageNameOption.PROPERTY_NAME,
+                            this.packageItem.getName() );
+            builder = BRMSPackageBuilder.getInstance( BRMSPackageBuilder.getJars( packageItem ),
+                                                      ps );
         } catch ( IOException e ) {
-            throw new RulesRepositoryException( "Unable to load configuration properties for package.", e );
+            throw new RulesRepositoryException( "Unable to load configuration properties for package.",
+                                                e );
         }
     }
 
@@ -191,11 +214,12 @@ public class ContentPackageAssembler {
         }
 
         if ( selector == null ) {
-            this.errors.add( new ContentAssemblyError( this.packageItem, "The selector named " + customSelectorName + " is not available." ) );
+            this.errors.add( new ContentAssemblyError( this.packageItem,
+                                                       "The selector named " + customSelectorName + " is not available." ) );
             return;
         }
 
-        StringBuffer includedAssets = new StringBuffer( "Following assets have been included in package build: " );
+        StringBuilder includedAssets = new StringBuilder( "Following assets have been included in package build: " );
         Iterator<AssetItem> drls = packageItem.listAssetsByFormat( new String[]{AssetFormats.DRL} );
         while ( drls.hasNext() ) {
             AssetItem asset = (AssetItem) drls.next();
@@ -223,7 +247,9 @@ public class ContentPackageAssembler {
         ContentHandler contentHandler = ContentManager.getHandler( asset.getFormat() );
         if ( contentHandler instanceof ICompilable && !asset.getDisabled() ) {
             try {
-                ((ICompilable) contentHandler).compile( builder, asset, new ErrorLogger() );
+                ((ICompilable) contentHandler).compile( builder,
+                                                        asset,
+                                                        new ErrorLogger() );
                 if ( builder.hasErrors() ) {
                     this.recordBuilderErrors( asset );
                     // clear the errors, so we don't double report.
@@ -241,7 +267,9 @@ public class ContentPackageAssembler {
         ContentHandler contentHandler = ContentManager.getHandler( asset.metaData.format );
         if ( contentHandler instanceof ICompilable && !asset.metaData.disabled ) {
             try {
-                ((ICompilable) contentHandler).compile( builder, asset, new ErrorLogger() );
+                ((ICompilable) contentHandler).compile( builder,
+                                                        asset,
+                                                        new ErrorLogger() );
                 if ( builder.hasErrors() ) {
                     this.recordBuilderErrors( asset );
                     // clear the errors, so we don't double report.
@@ -320,9 +348,11 @@ public class ContentPackageAssembler {
                         builder.addPackageFromDrl( new StringReader( as.getContent() ) );
                     }
                 } catch ( DroolsParserException e ) {
-                    this.errors.add( new ContentAssemblyError( as, "Parser exception: " + e.getMessage() ) );
+                    this.errors.add( new ContentAssemblyError( as,
+                                                               "Parser exception: " + e.getMessage() ) );
                 } catch ( IOException e ) {
-                    this.errors.add( new ContentAssemblyError( as, "IOException: " + e.getMessage() ) );
+                    this.errors.add( new ContentAssemblyError( as,
+                                                               "IOException: " + e.getMessage() ) );
                 }
             }
         }
@@ -335,11 +365,14 @@ public class ContentPackageAssembler {
 
     private void loadDSLFiles() {
         // now we load up the DSL files
-        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( packageItem, new BRMSPackageBuilder.DSLErrorEvent() {
-            public void recordError(AssetItem asset, String message) {
-                errors.add( new ContentAssemblyError( asset, message ) );
-            }
-        } ) );
+        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( packageItem,
+                                                                    new BRMSPackageBuilder.DSLErrorEvent() {
+                                                                        public void recordError(AssetItem asset,
+                                                                                                String message) {
+                                                                            errors.add( new ContentAssemblyError( asset,
+                                                                                                                  message ) );
+                                                                        }
+                                                                    } ) );
     }
 
     /**
@@ -363,9 +396,11 @@ public class ContentPackageAssembler {
         try {
             builder.addPackageFromDrl( new StringReader( drl ) );
         } catch ( DroolsParserException e ) {
-            throw new RulesRepositoryException( "Unexpected error when parsing package.", e );
+            throw new RulesRepositoryException( "Unexpected error when parsing package.",
+                                                e );
         } catch ( IOException e ) {
-            throw new RulesRepositoryException( "IO Exception occurred when parsing package.", e );
+            throw new RulesRepositoryException( "IO Exception occurred when parsing package.",
+                                                e );
         }
     }
 
@@ -375,7 +410,8 @@ public class ContentPackageAssembler {
     private void recordBuilderErrors(VersionableItem asset) {
         DroolsError[] errs = builder.getErrors().getErrors();
         for ( int i = 0; i < errs.length; i++ ) {
-            this.errors.add( new ContentAssemblyError( asset, errs[i].getMessage() ) );
+            this.errors.add( new ContentAssemblyError( asset,
+                                                       errs[i].getMessage() ) );
         }
 
     }
@@ -383,7 +419,8 @@ public class ContentPackageAssembler {
     private void recordBuilderErrors(RuleAsset asset) {
         DroolsError[] errs = builder.getErrors().getErrors();
         for ( int i = 0; i < errs.length; i++ ) {
-            this.errors.add( new ContentAssemblyError( asset, errs[i].getMessage() ) );
+            this.errors.add( new ContentAssemblyError( asset,
+                                                       errs[i].getMessage() ) );
         }
 
     }
@@ -420,16 +457,19 @@ public class ContentPackageAssembler {
     }
 
     public String getDRL() {
-        StringBuffer src = new StringBuffer();
+        StringBuilder src = new StringBuilder();
         src.append( "package " + this.packageItem.getName() + "\n" );
         src.append( DroolsHeader.getDroolsHeader( this.packageItem ) + "\n\n" );
 
         // now we load up the DSL files
-        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( packageItem, new BRMSPackageBuilder.DSLErrorEvent() {
-            public void recordError(AssetItem asset, String message) {
-                errors.add( new ContentAssemblyError( asset, message ) );
-            }
-        } ) );
+        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( packageItem,
+                                                                    new BRMSPackageBuilder.DSLErrorEvent() {
+                                                                        public void recordError(AssetItem asset,
+                                                                                                String message) {
+                                                                            errors.add( new ContentAssemblyError( asset,
+                                                                                                                  message ) );
+                                                                        }
+                                                                    } ) );
 
         // do the functions and declared types.
         AssetItemIterator it = this.packageItem.listAssetsByFormat( new String[]{AssetFormats.FUNCTION, AssetFormats.DRL_MODEL} );
@@ -449,7 +489,9 @@ public class ContentPackageAssembler {
                 ContentHandler handler = ContentManager.getHandler( asset.getFormat() );
                 if ( handler.isRuleAsset() ) {
                     IRuleAsset ruleAsset = (IRuleAsset) handler;
-                    ruleAsset.assembleDRL( builder, asset, src );
+                    ruleAsset.assembleDRL( builder,
+                                           asset,
+                                           src );
                 }
                 src.append( "\n\n" );
             }

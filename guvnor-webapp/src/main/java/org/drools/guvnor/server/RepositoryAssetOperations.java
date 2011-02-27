@@ -481,7 +481,7 @@ public class RepositoryAssetOperations {
         ContentHandler handler = ContentManager
                 .getHandler( asset.metaData.format );
 
-        StringBuffer buf = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
         if ( handler.isRuleAsset() ) {
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
@@ -506,11 +506,11 @@ public class RepositoryAssetOperations {
                                            item );
                 ((IRuleAsset) handler).assembleDRL( builder,
                                                     item,
-                                                    buf );
+                                                    stringBuilder );
             } else {
                 ((IRuleAsset) handler).assembleDRL( builder,
                                                     asset,
-                                                    buf );
+                                                    stringBuilder );
             }
         } else {
             if ( handler
@@ -519,10 +519,10 @@ public class RepositoryAssetOperations {
                     .equals( "org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler" ) ) {
                 BPMN2ProcessHandler bpmn2handler = ((BPMN2ProcessHandler) handler);
                 bpmn2handler.assembleProcessSource( asset.content,
-                                                    buf );
+                                                    stringBuilder );
             }
         }
-        return buf.toString();
+        return stringBuilder.toString();
     }
 
     protected PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request)
@@ -688,7 +688,7 @@ public class RepositoryAssetOperations {
 
         return userName;
     }
-    
+
     protected RuleAsset loadAsset(AssetItem item) throws SerializationException {
 
         RuleAsset asset = new RuleAsset();
@@ -701,7 +701,7 @@ public class RepositoryAssetOperations {
 
         return asset;
     }
-    
+
     /**
      * Populate meta data with asset specific info.
      */
@@ -720,7 +720,7 @@ public class RepositoryAssetOperations {
         return meta;
 
     }
-    
+
     /**
      * read in the meta data, populating all dublin core and versioning stuff.
      */
@@ -739,7 +739,7 @@ public class RepositoryAssetOperations {
         meta.hasSucceedingVersion = item.getSucceedingVersion() != null;
         return meta;
     }
-    
+
     private void fillMetaCategories(MetaData meta,
                                     List categories) {
         meta.categories = new String[categories.size()];

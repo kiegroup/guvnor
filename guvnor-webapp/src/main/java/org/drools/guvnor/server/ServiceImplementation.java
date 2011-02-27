@@ -1175,13 +1175,13 @@ public class ServiceImplementation
                 BuilderResult res = this.buildPackage( snap.getUUID(),
                                                        true );
                 if ( res != null ) {
-                    StringBuilder buf = new StringBuilder();
+                    StringBuilder stringBuilder = new StringBuilder();
                     for ( int i = 0; i < res.getLines().size(); i++ ) {
-                        buf.append( res.getLines().get( i ).toString() );
-                        buf.append( '\n' );
+                        stringBuilder.append( res.getLines().get( i ).toString() );
+                        stringBuilder.append( '\n' );
                     }
                     throw new DetailedSerializationException( "Unable to rebuild snapshot [" + snapName,
-                                                              buf.toString() + "]" );
+                                                              stringBuilder.toString() + "]" );
                 }
             }
         }

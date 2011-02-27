@@ -29,11 +29,11 @@ public interface IRuleAsset
      */
     public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
-                            StringBuffer buf);
+                            StringBuilder stringBuilder);
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
-                            StringBuffer buf);
+                            StringBuilder stringBuilder);
 
     /**
      * If the rule has DSL in it, it is presented unexpanded.
