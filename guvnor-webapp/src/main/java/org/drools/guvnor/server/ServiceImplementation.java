@@ -260,7 +260,7 @@ public class ServiceImplementation
                                                        true );
                 if ( res != null ) {
                     errs.append( "Unable to build package name [" + pkg.getName() + "]\n" );
-                    StringBuffer buf = new StringBuffer();
+                    StringBuilder buf = new StringBuilder();
                     for ( int i = 0; i < res.getLines().size(); i++ ) {
                         buf.append( res.getLines().get( i ).toString() );
                         buf.append( '\n' );
@@ -1175,7 +1175,7 @@ public class ServiceImplementation
                 BuilderResult res = this.buildPackage( snap.getUUID(),
                                                        true );
                 if ( res != null ) {
-                    StringBuffer buf = new StringBuffer();
+                    StringBuilder buf = new StringBuilder();
                     for ( int i = 0; i < res.getLines().size(); i++ ) {
                         buf.append( res.getLines().get( i ).toString() );
                         buf.append( '\n' );
