@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import java.math.BigDecimal;
+
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
@@ -155,8 +157,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
     }
 
     // Make a new Cell for Row Number columns
-    private DecoratedGridCellValueAdaptor<Long, DTColumnConfig> makeRowNumberCell() {
-        return new DecoratedGridCellValueAdaptor<Long, DTColumnConfig>( new RowNumberCell() );
+    private DecoratedGridCellValueAdaptor<BigDecimal, DTColumnConfig> makeRowNumberCell() {
+        return new DecoratedGridCellValueAdaptor<BigDecimal, DTColumnConfig>( new RowNumberCell() );
     }
 
 }

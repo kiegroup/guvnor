@@ -49,14 +49,14 @@ public abstract class AbstractCellValueFactory<T> {
         NUMERIC() {
             @Override
             public CellValue<BigDecimal> getNewCellValue(int iRow,
-                                                      int iCol,
-                                                      String initialValue) {
+                                                         int iCol,
+                                                         String initialValue) {
                 CellValue<BigDecimal> cv = new CellValue<BigDecimal>( null,
-                                                          iRow,
-                                                          iCol );
+                                                                      iRow,
+                                                                      iCol );
                 if ( initialValue != null ) {
                     try {
-                        cv.setValue( new BigDecimal(initialValue) );
+                        cv.setValue( new BigDecimal( initialValue ) );
                     } catch ( Exception e ) {
                     }
                 }
@@ -71,19 +71,19 @@ public abstract class AbstractCellValueFactory<T> {
         },
         ROW_NUMBER() {
             @Override
-            public CellValue<Long> getNewCellValue(int iRow,
-                                                   int iCol,
-                                                   String initialValue) {
+            public CellValue<BigDecimal> getNewCellValue(int iRow,
+                                                         int iCol,
+                                                         String initialValue) {
                 // Rows are 0-based internally but 1-based in the UI
-                CellValue<Long> cv = new CellValue<Long>( (long) iRow + 1,
-                                                          iRow,
-                                                          iCol );
+                CellValue<BigDecimal> cv = new CellValue<BigDecimal>( new BigDecimal( iRow + 1 ),
+                                                                      iRow,
+                                                                      iCol );
                 return cv;
             }
 
             @Override
             public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? null : ((Long) value.getValue()).toString());
+                return (value.getValue() == null ? null : ((BigDecimal) value.getValue()).toPlainString());
             }
 
         },
@@ -177,18 +177,18 @@ public abstract class AbstractCellValueFactory<T> {
     }
 
     // Dates are serialised and de-serialised to locale-independent format
-    private static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat( "dd-MMM-yyyy" );
+    private static final DateTimeFormat  DATE_FORMAT = DateTimeFormat.getFormat( "dd-MMM-yyyy" );
 
     // SuggestionCompletionEngine to aid data-type resolution etc
     protected SuggestionCompletionEngine sce;
 
     public AbstractCellValueFactory(SuggestionCompletionEngine sce) {
-        if(sce==null) {
-            throw new IllegalArgumentException("sce cannot be null");
+        if ( sce == null ) {
+            throw new IllegalArgumentException( "sce cannot be null" );
         }
-        this.sce=sce;
+        this.sce = sce;
     }
-    
+
     /**
      * Make a CellValue applicable for the column
      * 

@@ -39,7 +39,7 @@ import com.google.gwt.user.client.Event;
 public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
     @Override
-    public void deleteRow(int index) {
+    public void removeRowElement(int index) {
         if ( index < 0 ) {
             throw new IllegalArgumentException(
                                                 "Index cannot be less than zero." );
@@ -92,23 +92,8 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     }
 
     @Override
-    public void insertRowBefore(int index,
-                                DynamicDataRow rowData) {
-        if ( index < 0 ) {
-            throw new IllegalArgumentException(
-                                                "Index cannot be less than zero." );
-        }
-        if ( index > data.size() ) {
-            throw new IllegalArgumentException(
-                                                "Index cannot be greater than the number of rows." );
-        }
-        if ( rowData == null ) {
-            throw new IllegalArgumentException( "Row data cannot be null" );
-        }
-        if ( rowData.size() != columns.size() ) {
-            throw new IllegalArgumentException( "rowData contains a different number of columns to the grid" );
-        }
-
+    public void createRowElement(int index,
+                                 DynamicDataRow rowData) {
         TableRowElement newRow = tbody.insertRow( index );
         populateTableRowElement( newRow,
                                  rowData );

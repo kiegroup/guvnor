@@ -131,7 +131,6 @@ public abstract class DecoratedGridWidget<T> extends Composite {
         if ( row == null ) {
             throw new IllegalArgumentException( "row cannot be null" );
         }
-        gridWidget.clearSelection();
         insertRowBefore( null,
                          row );
     }
@@ -176,31 +175,8 @@ public abstract class DecoratedGridWidget<T> extends Composite {
             throw new IllegalArgumentException(
                                                 "DynamicDataRow does not exist in table data." );
         }
-        gridWidget.clearSelection();
-
-        data.remove( index );
+        gridWidget.deleteRow( index );
         sidebarWidget.deleteSelector( index );
-
-        // Partial redraw
-        if ( !gridWidget.isMerged() ) {
-            // Single row when not merged
-            gridWidget.deleteRow( index );
-            gridWidget.assertModelIndexes();
-        } else {
-            // Affected rows when merged
-            gridWidget.deleteRow( index );
-
-            if ( data.size() > 0 ) {
-                gridWidget.assertModelMerging();
-                int minRedrawRow = findMinRedrawRow( index - 1 );
-                int maxRedrawRow = findMaxRedrawRow( index - 1 ) + 1;
-                if ( maxRedrawRow > data.size() - 1 ) {
-                    maxRedrawRow = data.size() - 1;
-                }
-                gridWidget.redrawRows( minRedrawRow,
-                                       maxRedrawRow );
-            }
-        }
 
         assertDimensions();
 
@@ -258,7 +234,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      * @return
      */
     public DecoratedGridSidebarWidget<T> getSidebarWidget() {
-       return sidebarWidget;
+        return sidebarWidget;
     }
 
     /**
@@ -297,23 +273,10 @@ public abstract class DecoratedGridWidget<T> extends Composite {
             throw new IllegalArgumentException( "columnData contains a different number of rows to the grid" );
         }
 
-        // Add column definition
-        columns.add( index,
-                     newColumn );
-        reindexColumns();
-
-        // Add column data
-        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
-            CellValue< ? > cv = columnData.get( iRow );
-            data.get( iRow ).add( index,
-                                  cv );
-        }
-        gridWidget.assertModelIndexes();
+        gridWidget.insertColumnBefore(index, newColumn, columnData, bRedraw);
 
         // Redraw
         if ( bRedraw ) {
-            gridWidget.redrawColumns( index,
-                                      columns.size() - 1 );
             headerWidget.redraw();
             assertDimensions();
         }
@@ -347,41 +310,10 @@ public abstract class DecoratedGridWidget<T> extends Composite {
             throw new IllegalArgumentException( "newRow contains a different number of columns to the grid" );
         }
 
-        // Find rows that need to be (re)drawn
-        int minRedrawRow = index;
-        int maxRedrawRow = index;
-        if ( gridWidget.isMerged() ) {
-            if ( index < data.size() ) {
-                minRedrawRow = findMinRedrawRow( index );
-                maxRedrawRow = findMaxRedrawRow( index ) + 1;
-            } else {
-                minRedrawRow = findMinRedrawRow( (index > 0 ? index - 1 : index) );
-                maxRedrawRow = index;
-            }
-        }
-
-        data.add( index,
-                  newRow );
+        gridWidget.insertRowBefore( index,
+                                    newRow );
         sidebarWidget.insertSelectorBefore( newRow,
-                                                      index );
-
-        // Partial redraw
-        if ( !gridWidget.isMerged() ) {
-            // Only new row when not merged
-            gridWidget.assertModelIndexes();
-            gridWidget.insertRowBefore( index,
-                                        newRow );
-        } else {
-            // Affected rows when merged
-            gridWidget.assertModelMerging();
-
-            // This row is overwritten by the call to redrawRows()
-            gridWidget.insertRowBefore( index,
-                                        newRow );
-            gridWidget.redrawRows( minRedrawRow,
-                                   maxRedrawRow );
-        }
-
+                                            index );
         assertDimensions();
 
     }
@@ -584,7 +516,6 @@ public abstract class DecoratedGridWidget<T> extends Composite {
     private void deleteColumn(DynamicColumn<T> column,
                               boolean bRedraw) {
 
-        final DynamicData data = gridWidget.getData();
         final List<DynamicColumn<T>> columns = gridWidget.getColumns();
 
         // Lookup UI column
@@ -594,35 +525,14 @@ public abstract class DecoratedGridWidget<T> extends Composite {
                                                 "Column not found in declared columns." );
         }
 
-        // Clear any selections
-        gridWidget.clearSelection();
-
-        // Delete column data
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DynamicDataRow row = data.get( iRow );
-            row.remove( index );
-        }
-
-        // Delete column from grid
-        columns.remove( index );
-        reindexColumns();
-
+        gridWidget.deleteColumn(index, bRedraw);
+        
         // Redraw
         if ( bRedraw ) {
-            gridWidget.assertModelIndexes();
-            gridWidget.redraw();
             headerWidget.redraw();
+            assertDimensions();
         }
 
-    }
-
-    // Re-index columns
-    private void reindexColumns() {
-        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
-        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            DynamicColumn<T> col = columns.get( iCol );
-            col.setColumnIndex( iCol );
-        }
     }
 
     // Set height of outer most Widget and related children

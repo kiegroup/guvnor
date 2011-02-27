@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -674,7 +675,7 @@ public class VerticalDecisionTableWidget extends Composite
 
                 // Update Row Number column values
                 for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-                    data.get( iRow ).get( col.getColumnIndex() ).setValue( (long) iRow + 1 );
+                    data.get( iRow ).get( col.getColumnIndex() ).setValue( new BigDecimal( iRow + 1 ) );
                 }
 
             } else if ( modelColumn instanceof AttributeCol ) {
@@ -692,7 +693,7 @@ public class VerticalDecisionTableWidget extends Composite
                                                      - MAX_ROWS );
                             }
                             data.get( iRow ).get( col.getColumnIndex() )
-                                    .setValue( (long) salience );
+                                    .setValue( new BigDecimal( salience ) );
                         }
                     }
                     // Ensure Salience cells are rendered with the correct Cell

@@ -82,7 +82,7 @@ public abstract class AbstractCellFactory<T> {
         return new DecoratedGridCellValueAdaptor<BigDecimal, T>( new PopupNumericEditCell() );
     }
 
-    // Make a new Cell for a RowNumberCol
+    // Make a new Cell for a Text columns
     protected DecoratedGridCellValueAdaptor<String, T> makeTextCell() {
         return new DecoratedGridCellValueAdaptor<String, T>( new PopupTextEditCell() );
     }
