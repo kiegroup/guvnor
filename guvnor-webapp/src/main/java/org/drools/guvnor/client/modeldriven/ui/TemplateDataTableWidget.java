@@ -102,7 +102,7 @@ public class TemplateDataTableWidget extends Composite
      */
     public void appendRow() {
         DynamicDataRow row = makeNewRow();
-        widget.appendRow( row );
+        widget.insertRowBefore( null, row );
     }
 
     /**
@@ -301,7 +301,7 @@ public class TemplateDataTableWidget extends Composite
                                                                                           initialValue );
                 row.add( cv );
             }
-            widget.appendRow( row );
+            widget.insertRowBefore( null, row );
         }
 
         // Ensure cells are indexed correctly for start-up data

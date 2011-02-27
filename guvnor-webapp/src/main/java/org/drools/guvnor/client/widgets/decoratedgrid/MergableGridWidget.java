@@ -172,6 +172,7 @@ public abstract class MergableGridWidget<T> extends Widget
                                    true );
 
     }
+
     /**
      * Add a handler for SelectedCellChangeEvents
      */
@@ -292,18 +293,19 @@ public abstract class MergableGridWidget<T> extends Widget
     /**
      * Delete a column
      * 
-     * @param index
-     *            Index of column to delete
+     * @param column
+     *            Column to delete
      * @param bRedraw
      *            Should grid be redrawn
      */
-    public void deleteColumn(int index,
+    public void deleteColumn(DynamicColumn<T> column,
                              boolean bRedraw) {
-        if ( index < 0 ) {
-            throw new IllegalArgumentException( "index cannot be less than zero." );
-        }
-        if ( index > columns.size() - 1 ) {
-            throw new IllegalArgumentException( "index cannot be greater than the number of columns." );
+
+        //Find index of column
+        int index = columns.indexOf( column );
+        if ( index == -1 ) {
+            throw new IllegalArgumentException(
+                                                "Column not found in declared columns." );
         }
 
         // Clear any selections
@@ -328,21 +330,23 @@ public abstract class MergableGridWidget<T> extends Widget
     }
 
     /**
-     * Delete the row at the given index. Partial redraw.
+     * Delete the given row. Partial redraw.
      * 
-     * @param index
+     * @param row
      */
-    public void deleteRow(int index) {
-        if ( index < 0 ) {
-            throw new IllegalArgumentException( "index cannot be less than zero." );
-        }
-        if ( index > data.size() - 1 ) {
+    public void deleteRow(DynamicDataRow row) {
+        
+        //Find index of row
+        int index = data.indexOf( row );
+        if ( index == -1 ) {
             throw new IllegalArgumentException(
-                                                "index cannot exceed the number of rows in data." );
+                                                "DynamicDataRow does not exist in table data." );
         }
 
+        // Clear any selections
         clearSelection();
 
+        //Delete row data
         data.remove( index );
 
         // Partial redraw
@@ -502,9 +506,8 @@ public abstract class MergableGridWidget<T> extends Widget
     /**
      * Insert a column before another
      * 
-     * @param index
-     *            Index of column to insert; if equal to the number of columns
-     *            the column will be appended to the end
+     * @param columnBefore
+     *            The column before which the new column should be inserted
      * @param newColumn
      *            Column definition
      * @param columnData
@@ -512,17 +515,11 @@ public abstract class MergableGridWidget<T> extends Widget
      * @param bRedraw
      *            Should grid be redrawn
      */
-    public void insertColumnBefore(int index,
+    public void insertColumnBefore(DynamicColumn<T> columnBefore,
                                    DynamicColumn<T> newColumn,
                                    List<CellValue< ? >> columnData,
                                    boolean bRedraw) {
 
-        if ( index < 0 ) {
-            throw new IllegalArgumentException( "index cannot be less than zero" );
-        }
-        if ( index > columns.size() ) {
-            throw new IllegalArgumentException( "index cannot be greater than the number of columns" );
-        }
         if ( newColumn == null ) {
             throw new IllegalArgumentException( "newColumn cannot be null" );
         }
@@ -532,6 +529,20 @@ public abstract class MergableGridWidget<T> extends Widget
         if ( columnData.size() != data.size() ) {
             throw new IllegalArgumentException( "columnData contains a different number of rows to the grid" );
         }
+
+        //Find index of new column
+        int index = columns.size();
+        if ( columnBefore != null ) {
+            index = columns.indexOf( columnBefore );
+            if ( index == -1 ) {
+                throw new IllegalArgumentException(
+                                                    "columnBefore does not exist in table data." );
+            }
+            index++;
+        }
+
+        // Clear any selections
+        clearSelection();
 
         // Add column definition
         columns.add( index,
@@ -549,7 +560,7 @@ public abstract class MergableGridWidget<T> extends Widget
         // Redraw
         if ( bRedraw ) {
             redrawColumns( index,
-                                      columns.size() - 1 );
+                           columns.size() - 1 );
         }
 
     }
@@ -557,23 +568,14 @@ public abstract class MergableGridWidget<T> extends Widget
     /**
      * Insert the given row before the provided index. Partial redraw.
      * 
-     * @param index
-     *            The index of the row before which the new row should be
-     *            inserted
+     * @param rowBefore
+     *            The row before which the new row should be inserted
      * @param rowData
      *            The row of data to insert
      */
-    public void insertRowBefore(int index,
+    public void insertRowBefore(DynamicDataRow rowBefore,
                                          DynamicDataRow rowData) {
 
-        if ( index < 0 ) {
-            throw new IllegalArgumentException(
-                                                "Index cannot be less than zero." );
-        }
-        if ( index > data.size() ) {
-            throw new IllegalArgumentException(
-                                                "Index cannot be greater than the number of rows." );
-        }
         if ( rowData == null ) {
             throw new IllegalArgumentException( "Row data cannot be null" );
         }
@@ -581,6 +583,17 @@ public abstract class MergableGridWidget<T> extends Widget
             throw new IllegalArgumentException( "rowData contains a different number of columns to the grid" );
         }
 
+        //Find index of row
+        int index = data.size();
+        if ( rowBefore != null ) {
+            index = data.indexOf( rowBefore );
+            if ( index == -1 ) {
+                throw new IllegalArgumentException(
+                                                    "rowBefore does not exist in table data." );
+            }
+        }
+        
+        // Clear any selections
         clearSelection();
 
         // Find rows that need to be (re)drawn

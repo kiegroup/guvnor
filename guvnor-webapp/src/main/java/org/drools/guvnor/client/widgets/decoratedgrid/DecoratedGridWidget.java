@@ -105,34 +105,10 @@ public abstract class DecoratedGridWidget<T> extends Composite {
     public void appendColumn(DynamicColumn<T> column,
                              List<CellValue< ? >> columnData,
                              boolean bRedraw) {
-        DynamicData data = gridWidget.getData();
-        if ( column == null ) {
-            throw new IllegalArgumentException(
-                                                "Column cannot be null." );
-        }
-        if ( columnData == null ) {
-            throw new IllegalArgumentException( "columnData cannot be null" );
-        }
-        if ( columnData.size() != data.size() ) {
-            throw new IllegalArgumentException( "columnData contains a different number of rows to the grid" );
-        }
         insertColumnBefore( null,
                             column,
                             columnData,
                             bRedraw );
-    }
-
-    /**
-     * Append a row to the end of the grid
-     * 
-     * @param row
-     */
-    public void appendRow(DynamicDataRow row) {
-        if ( row == null ) {
-            throw new IllegalArgumentException( "row cannot be null" );
-        }
-        insertRowBefore( null,
-                         row );
     }
 
     /**
@@ -156,8 +132,10 @@ public abstract class DecoratedGridWidget<T> extends Composite {
             throw new IllegalArgumentException(
                                                 "Column cannot be null." );
         }
-        deleteColumn( column,
-                      true );
+        gridWidget.deleteColumn( column,
+                                 true );
+        headerWidget.redraw();
+        assertDimensions();
     }
 
     /**
@@ -169,17 +147,9 @@ public abstract class DecoratedGridWidget<T> extends Composite {
         if ( row == null ) {
             throw new IllegalArgumentException( "row cannot be null" );
         }
-        DynamicData data = gridWidget.getData();
-        int index = data.indexOf( row );
-        if ( index == -1 ) {
-            throw new IllegalArgumentException(
-                                                "DynamicDataRow does not exist in table data." );
-        }
-        gridWidget.deleteRow( index );
-        sidebarWidget.deleteSelector( index );
-
+        sidebarWidget.deleteSelector( row );
+        gridWidget.deleteRow( row );
         assertDimensions();
-
     }
 
     /**
@@ -251,71 +221,44 @@ public abstract class DecoratedGridWidget<T> extends Composite {
                                    List<CellValue< ? >> columnData,
                                    boolean bRedraw) {
 
-        final DynamicData data = gridWidget.getData();
-        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
-
-        int index = columns.size();
-        if ( columnBefore != null ) {
-            index = columns.indexOf( columnBefore );
-            if ( index == -1 ) {
-                throw new IllegalArgumentException(
-                                                    "columnBefore does not exist in table data." );
-            }
-            index++;
-        }
         if ( newColumn == null ) {
             throw new IllegalArgumentException( "newColumn cannot be null" );
         }
         if ( columnData == null ) {
             throw new IllegalArgumentException( "columnData cannot be null" );
         }
-        if ( columnData.size() != data.size() ) {
-            throw new IllegalArgumentException( "columnData contains a different number of rows to the grid" );
-        }
-
-        gridWidget.insertColumnBefore(index, newColumn, columnData, bRedraw);
+        gridWidget.insertColumnBefore( columnBefore,
+                                       newColumn,
+                                       columnData,
+                                       bRedraw );
 
         // Redraw
         if ( bRedraw ) {
             headerWidget.redraw();
             assertDimensions();
         }
-
     }
 
     /**
      * Insert a row before that specified
      * 
      * @param rowBefore
+     *            Row before which the new row will be inserted, or null in
+     *            which case the row will be appended to the end
      * @param newRow
+     *            New row to be inserted
      */
     public void insertRowBefore(DynamicDataRow rowBefore,
                                 DynamicDataRow newRow) {
 
-        final DynamicData data = gridWidget.getData();
-        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
-
-        int index = data.size();
-        if ( rowBefore != null ) {
-            index = data.indexOf( rowBefore );
-            if ( index == -1 ) {
-                throw new IllegalArgumentException(
-                                                    "rowBefore does not exist in table data." );
-            }
-        }
         if ( newRow == null ) {
             throw new IllegalArgumentException( "newRow cannot be null" );
         }
-        if ( newRow.size() != columns.size() ) {
-            throw new IllegalArgumentException( "newRow contains a different number of columns to the grid" );
-        }
 
-        gridWidget.insertRowBefore( index,
+        gridWidget.insertRowBefore( rowBefore,
                                     newRow );
-        sidebarWidget.insertSelectorBefore( newRow,
-                                            index );
+        sidebarWidget.insertSelector( newRow );
         assertDimensions();
-
     }
 
     /**
@@ -480,7 +423,6 @@ public abstract class DecoratedGridWidget<T> extends Composite {
         }
         gridWidget.redraw();
         sidebarWidget.redraw();
-
     }
 
     //Ensure the selected cell is visible
@@ -508,29 +450,6 @@ public abstract class DecoratedGridWidget<T> extends Composite {
         if ( ce.getOffsetY() + ce.getHeight() > scrollHeight + scrollPanel.getScrollPosition() ) {
             int delta = ce.getOffsetY() + ce.getHeight() - scrollPanel.getScrollPosition() - scrollHeight;
             scrollPanel.setScrollPosition( scrollPanel.getScrollPosition() + delta );
-        }
-
-    }
-
-    // Delete column from table with optional redraw
-    private void deleteColumn(DynamicColumn<T> column,
-                              boolean bRedraw) {
-
-        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
-
-        // Lookup UI column
-        int index = columns.indexOf( column );
-        if ( index == -1 ) {
-            throw new IllegalArgumentException(
-                                                "Column not found in declared columns." );
-        }
-
-        gridWidget.deleteColumn(index, bRedraw);
-        
-        // Redraw
-        if ( bRedraw ) {
-            headerWidget.redraw();
-            assertDimensions();
         }
 
     }

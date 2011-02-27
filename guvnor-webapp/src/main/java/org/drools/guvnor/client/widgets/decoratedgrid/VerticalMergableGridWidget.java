@@ -39,17 +39,11 @@ import com.google.gwt.user.client.Event;
 public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
     @Override
-    public void removeRowElement(int index) {
-        if ( index < 0 ) {
-            throw new IllegalArgumentException(
-                                                "Index cannot be less than zero." );
-        }
-        if ( index > data.size() ) {
-            throw new IllegalArgumentException(
-                                                "Index cannot be greater than the number of rows." );
-        }
-
-        tbody.deleteRow( index );
+    public void createRowElement(int index,
+                                 DynamicDataRow rowData) {
+        TableRowElement newRow = tbody.insertRow( index );
+        populateTableRowElement( newRow,
+                                 rowData );
         fixRowStyles( index );
     }
 
@@ -89,15 +83,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                 tre.removeChild( tce );
             }
         }
-    }
-
-    @Override
-    public void createRowElement(int index,
-                                 DynamicDataRow rowData) {
-        TableRowElement newRow = tbody.insertRow( index );
-        populateTableRowElement( newRow,
-                                 rowData );
-        fixRowStyles( index );
     }
 
     @Override
@@ -303,6 +288,21 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                                 tbody.getChild( iRow ) );
         }
         fixRowStyles( startRedrawIndex );
+    }
+
+    @Override
+    public void removeRowElement(int index) {
+        if ( index < 0 ) {
+            throw new IllegalArgumentException(
+                                                "Index cannot be less than zero." );
+        }
+        if ( index > data.size() ) {
+            throw new IllegalArgumentException(
+                                                "Index cannot be greater than the number of rows." );
+        }
+
+        tbody.deleteRow( index );
+        fixRowStyles( index );
     }
 
     @Override

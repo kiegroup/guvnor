@@ -88,6 +88,15 @@ public class VerticalDecisionTableWidget extends Composite
         initWidget( widget );
     }
 
+    /**
+     * Add a column to the table, at the appropriate position determined by the
+     * column subclass: RowNumberCol, Metadata columns, Attribute columns,
+     * Condition columns and lastly Action columns. Condition Ccolumns are
+     * further grouped by Pattern.
+     * 
+     * @param modelColumn
+     *            The Decision Table column to insert
+     */
     public void addColumn(DTColumnConfig modelColumn) {
         if ( modelColumn == null ) {
             throw new IllegalArgumentException(
@@ -97,23 +106,34 @@ public class VerticalDecisionTableWidget extends Composite
                    true );
     }
 
+    /**
+     * Append an empty row to the end of the table
+     */
     public void appendRow() {
-        DynamicDataRow row = makeNewRow();
-        widget.appendRow( row );
-        updateSystemControlledColumnValues();
-        redrawSystemControlledColumns();
+        insertRowBefore( null );
     }
 
+    /**
+     * Delete the given column
+     * 
+     * @param modelColumn
+     *            The Decision Table column to delete
+     */
     public void deleteColumn(DTColumnConfig modelColumn) {
         if ( modelColumn == null ) {
             throw new IllegalArgumentException(
                                                 "modelColumn cannot be null." );
         }
-
         DynamicColumn<DTColumnConfig> col = getDynamicColumn( modelColumn );
         widget.deleteColumn( col );
     }
 
+    /**
+     * Delete the given row
+     * 
+     * @param The
+     *            Decision Table row to delete
+     */
     public void deleteRow(DynamicDataRow row) {
         if ( row == null ) {
             throw new IllegalArgumentException( "row cannot be null" );
@@ -141,11 +161,15 @@ public class VerticalDecisionTableWidget extends Composite
         return this.sce;
     }
 
+    /**
+     * Insert an empty row before the given row
+     * 
+     * @param rowBefore
+     *            The row before which the new (empty) row will be inserted. If
+     *            this value is null the row will be appended to the end of the
+     *            table
+     */
     public void insertRowBefore(DynamicDataRow rowBefore) {
-        if ( rowBefore == null ) {
-            throw new IllegalArgumentException( "rowBefore cannot be null" );
-        }
-
         DynamicDataRow newRow = makeNewRow();
         widget.insertRowBefore( rowBefore,
                                 newRow );

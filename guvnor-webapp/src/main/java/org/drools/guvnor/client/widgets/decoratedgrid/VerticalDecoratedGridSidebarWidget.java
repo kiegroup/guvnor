@@ -17,7 +17,6 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.ArrayList;
 
-
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableElement;
@@ -60,21 +59,8 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             sinkEvents( Event.getTypeInt( "click" ) );
         }
 
-        // Add a new row
-        private void appendSelector(DynamicDataRow row) {
-            insertSelectorBefore( row,
-                                  widgets.size() );
-        }
-
         // Delete a row at the given index
         private void deleteSelector(int index) {
-            if ( index < 0 ) {
-                throw new IllegalArgumentException( "index cannot be less than zero" );
-            }
-            if ( index > widgets.size()) {
-                throw new IllegalArgumentException( "index cannot be greate than the number of rows" );
-            }
-
             Widget widget = widgets.get( index );
             remove( widget );
             getBody().<TableSectionElement> cast().deleteRow( index );
@@ -100,32 +86,9 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             return trClasses;
         }
 
-        // Redraw entire sidebar
-        private void redraw() {
-            //Remove existing
-            int totalRows = widgets.size();
-            for ( int iRow = 0; iRow < totalRows; iRow++ ) {
-                deleteSelector( 0 );
-            }
-            //Add selector for each row
-            for(DynamicDataRow row : grid.getGridWidget().getData()) {
-                appendSelector( row );
-            }
-            
-        }
-
         // Insert a new row before the given index
-        private void insertSelectorBefore(DynamicDataRow row,
-                                          int index) {
-            if ( row == null ) {
-                throw new IllegalArgumentException( "row cannot be null" );
-            }
-            if ( index < 0 ) {
-                throw new IllegalArgumentException( "index cannot be less than zero" );
-            }
-            if ( index > widgets.size() ) {
-                throw new IllegalArgumentException( "index cannot be greate than the number of rows" );
-            }
+        private void insertSelector(DynamicDataRow row,
+                                    int index) {
 
             Element tre = DOM.createTR();
             Element tce = DOM.createTD();
@@ -182,6 +145,21 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             } );
             hp.add( fp );
             return hp;
+        }
+
+        // Redraw entire sidebar
+        private void redraw() {
+            //Remove existing
+            int totalRows = widgets.size();
+            for ( int iRow = 0; iRow < totalRows; iRow++ ) {
+                deleteSelector( 0 );
+            }
+            //Add selector for each row
+            for ( DynamicDataRow row : grid.getGridWidget().getData() ) {
+                insertSelector( row,
+                                widgets.size() );
+            }
+
         }
 
     }
@@ -274,30 +252,30 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
     }
 
     @Override
-    public void appendSelector(DynamicDataRow row) {
-        if ( row == null ) {
-            throw new IllegalArgumentException( "row cannot be null" );
+    public void deleteSelector(DynamicDataRow row) {
+        int index = grid.getGridWidget().getData().indexOf( row );
+        if ( index == -1 ) {
+            throw new IllegalArgumentException( "row does not exist in table data." );
         }
-        selectors.appendSelector( row );
+        selectors.deleteSelector( index );
     }
 
     @Override
-    public void deleteSelector(int index) {
-        // Argument validation performed in the following
-        selectors.deleteSelector( index );
+    public void insertSelector(DynamicDataRow row) {
+        if ( row == null ) {
+            throw new IllegalArgumentException( "row cannot be null" );
+        }
+        int index = grid.getGridWidget().getData().indexOf( row );
+        if ( index == -1 ) {
+            throw new IllegalArgumentException( "row does not exist in table data." );
+        }
+        selectors.insertSelector( row,
+                                  index );
     }
 
     @Override
     public void redraw() {
         selectors.redraw();
-    }
-
-    @Override
-    public void insertSelectorBefore(DynamicDataRow row,
-                                     int index) {
-        // Argument validation performed in the following
-        selectors.insertSelectorBefore( row,
-                                        index );
     }
 
     @Override

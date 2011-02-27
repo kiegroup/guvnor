@@ -33,8 +33,7 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite {
     protected HasRows                             hasRows;
 
     // Resources
-    protected static final DecisionTableResources resource = GWT
-                                                                   .create( DecisionTableResources.class );
+    protected static final DecisionTableResources resource = GWT.create( DecisionTableResources.class );
     protected static final DecisionTableStyle     style    = resource.cellTableStyle();
 
     /**
@@ -59,37 +58,25 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite {
     }
 
     /**
-     * Append a selector widget to the sidebar. A selector widget can implement
-     * any row-level operation, such as selecting, inserting new (positional)
-     * etc.
+     * Delete a Selector for the given row.
+     * 
+     * @param row
+     */
+    public abstract void deleteSelector(DynamicDataRow row);
+
+    /**
+     * Insert a Selector for the given row.
      * 
      * @param row
      *            The row for which the selector will be added
      */
-    public abstract void appendSelector(DynamicDataRow row);
-
-    /**
-     * Delete a Selector at the given index.
-     * 
-     * @param index
-     */
-    public abstract void deleteSelector(int index);
+    public abstract void insertSelector(DynamicDataRow row);
 
     /**
      * Redraw the sidebar, this involves clearing any content before calling to
      * addSelector for each row in the grid's data
      */
     public abstract void redraw();
-
-    /**
-     * Insert a Selector before the given index.
-     * 
-     * @param row
-     *            The row for which the selector will be added
-     * @param index
-     */
-    public abstract void insertSelectorBefore(DynamicDataRow row,
-                                              int index);
 
     /**
      * Resize the sidebar.
