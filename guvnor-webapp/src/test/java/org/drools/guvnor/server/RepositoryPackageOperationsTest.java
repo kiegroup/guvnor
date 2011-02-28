@@ -113,7 +113,7 @@ public class RepositoryPackageOperationsTest {
     public void testRenamePackage() throws SerializationException {
         Session session = mock( Session.class );
         when( this.rulesRepository.getSession() ).thenReturn( session );
-        repositoryPackageOperations.renamePackage( "old", 
+        this.repositoryPackageOperations.renamePackage( "old", 
                                                    "new" );
         verify( this.rulesRepository ).renamePackage( "old",
                                                       "new" );
@@ -123,8 +123,14 @@ public class RepositoryPackageOperationsTest {
     public void testExportPackages() throws PathNotFoundException, IOException, RepositoryException {
         Session session = mock( Session.class );
         when( this.rulesRepository.getSession() ).thenReturn( session );
-        repositoryPackageOperations.exportPackages( "packageName" );
+        this.repositoryPackageOperations.exportPackages( "packageName" );
         verify(this.rulesRepository ).dumpPackageFromRepositoryXml("packageName"); 
+    }
+    
+    @Test
+    public void testImportPackages(){
+        this.repositoryPackageOperations.importPackages(new byte[]{},false);
+        verify(this.rulesRepository).importPackageToRepository(new byte[]{},false);
     }
 
 }
