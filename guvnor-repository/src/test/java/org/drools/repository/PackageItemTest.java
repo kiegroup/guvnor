@@ -17,11 +17,8 @@
 package org.drools.repository;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -888,6 +885,71 @@ public class PackageItemTest {
                 dependencies[0]);
     }
 
+    @Test
+    public void testVersionedAssetItemIterator() throws Exception {
+        PackageItem pkg = getRepo().createPackage( "testVersionedAssetItemIterator", "" );
+        getRepo().save();
+
+        AssetItem item = pkg.addAsset( "testVersionedAssetItemIteratorAsset1", "" );
+        item.updateFormat( "xyz" );
+        item.checkin( "la" );
+
+        item = pkg.addAsset( "testVersionedAssetItemIteratorAsset2", "wee" );
+        item.updateFormat( "xyz" );
+        item.checkin( "la" );
+
+        item = pkg.addAsset( "testVersionedAssetItemIteratorAsset3", "wee" );
+        item.updateFormat( "ABC" );
+        item.checkin( "la" );
+        item.checkout();
+        item.checkin("version 1");
+        item.checkout();
+        item.checkin("version 2");
+        item.checkout();
+        item.checkin("version 3");
+        
+        Thread.sleep( 150 );
+        
+        String[] dependencies = pkg.getDependencies();
+        assertEquals(dependencies.length, 3);
+/*        assertEquals(
+                "/drools:repository/drools:package_area/testDependencies/assets/testDependenciesAsset1?version=LATEST",
+                dependencies[0]);*/
+
+        AssetItemIterator it2 = pkg.listAssetsByFormat( new String[] {"xyz", "ABC"} );
+        List list2 = iteratorToList( it2 );
+        assertEquals(3, list2.size());
+        assertTrue(list2.get( 0 ) instanceof AssetItem);
+        assertTrue(list2.get( 1 ) instanceof AssetItem);
+        assertTrue(list2.get( 2 ) instanceof AssetItem);
+        
+        it2 = pkg.listAssetsByFormat( new String[] {"ABC"} );
+        list2 = iteratorToList( it2 );
+        assertEquals(1, list2.size());
+        assertTrue(list2.get( 0 ) instanceof AssetItem);
+        
+        pkg.updateDependency("/drools:repository/drools:package_area/testVersionedAssetItemIterator/assets/testVersionedAssetItemIteratorAsset3?version=2");
+        pkg.checkin("Update dependency");
+        
+        it2 = pkg.listAssetsByFormat( new String[] {"ABC"} );
+        assertTrue(it2 instanceof VersionedAssetItemIterator);
+        ((VersionedAssetItemIterator)it2).setEnableGetHistoricalVersionBasedOnDependency(true);
+        list2 = iteratorToList( it2 );
+        assertEquals(1, list2.size());
+        AssetItem ai = (AssetItem)list2.get(0);
+        assertEquals("2", Long.toString( ai.getVersionNumber() ));
+        assertEquals("version 1", ai.getCheckinComment());
+        
+        it2 = pkg.listAssetsByFormat( new String[] {"ABC"} );
+        assertTrue(it2 instanceof VersionedAssetItemIterator);
+        //((VersionedAssetItemIterator)it2).setEnableGetHistoricalBasedOnDependency(true);
+        list2 = iteratorToList( it2 );
+        assertEquals(1, list2.size());
+        ai = (AssetItem)list2.get(0);
+        assertEquals("4", Long.toString( ai.getVersionNumber() ));
+        assertEquals("version 3", ai.getCheckinComment());        
+    }
+    
     static class MockAssetItem extends AssetItem {
         private long version;
 

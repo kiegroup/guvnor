@@ -100,10 +100,10 @@ public class DependencyWidget extends Composite {
     private Widget dependencyTip() {
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( new HTML( "<small><i>"
-                          + "Edit dependency version to build a package against specific versions of Asset"
+                          + "Edit dependency version to build a package against specific versions of Assets"
                           + "</i></small>" ) );
         InfoPopup pop = new InfoPopup( "Edit Dependency",
-                "Edit dependency version to build a package against specific versions of Asset" );
+                "Edit dependency version to build a package against specific versions of Assets" );
         hp.add( pop );
         return hp;
     }

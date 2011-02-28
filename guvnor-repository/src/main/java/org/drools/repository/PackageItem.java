@@ -385,11 +385,16 @@ public class PackageItem extends VersionableItem {
      * @return String[] The dependency path.
      */
     public String[] getDependencies() {
-        Iterator<AssetItem> assets = getAssets();
         List<String> result = new ArrayList<String>();
-
-        while(assets.hasNext()) {
-            result.add(encodeDependencyPath(assets.next().getPath()));
+        try {
+            Node content = getVersionContentNode();
+            Iterator<AssetItem> assets = new AssetItemIterator( content.getNode( ASSET_FOLDER_NAME ).getNodes(),
+                                                        this.rulesRepository);
+            while(assets.hasNext()) {
+                result.add(encodeDependencyPath(assets.next().getPath()));
+            }
+        } catch ( RepositoryException e ) {
+            throw new RulesRepositoryException( e );
         }
 
         String[] existingDependencies = getStringPropertyArray( DEPENDENCIES_PROPERTY_NAME );
@@ -426,7 +431,7 @@ public class PackageItem extends VersionableItem {
         }
     }
 
-    private String encodeDependencyPath(String dependencyPath) {
+    public static String encodeDependencyPath(String dependencyPath) {
         if(dependencyPath.indexOf("?version=") < 0) {
             //Default version is LATEST
             return dependencyPath + "?version="+"LATEST";
@@ -435,12 +440,16 @@ public class PackageItem extends VersionableItem {
         return dependencyPath;
     }
 
-    private String[] decodeDependencyPath(String dependencyPath) {
+    public static String[] decodeDependencyPath(String dependencyPath) {
         if(dependencyPath.indexOf("?version=") >=0) {
             return dependencyPath.split("\\?version=");
         } else {
             return new String[]{dependencyPath, "LATEST"};
         }
+    }
+    
+    public static String parseDependencyAssetName(String dependencyPath) {
+        return dependencyPath.substring(dependencyPath.lastIndexOf("/")+1);
     }
 
     // The following should be kept for reference on how to add a reference that
@@ -595,8 +604,9 @@ public class PackageItem extends VersionableItem {
     public Iterator<AssetItem> getAssets() {
         try {
             Node content = getVersionContentNode();
-            return new AssetItemIterator( content.getNode( ASSET_FOLDER_NAME ).getNodes(),
-                                                        this.rulesRepository );
+            return new VersionedAssetItemIterator( content.getNode( ASSET_FOLDER_NAME ).getNodes(),
+                                                        this.rulesRepository,
+                                                        this.getDependencies());
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
@@ -646,7 +656,8 @@ public class PackageItem extends VersionableItem {
                 log.debug("SQL is " + sql);
                 log.debug(it.getClass().getName());
             }
-            return new AssetItemIterator(it, this.rulesRepository);
+            //return new AssetItemIterator(it, this.rulesRepository);
+            return new VersionedAssetItemIterator(it, this.rulesRepository, this.getDependencies());
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
         }

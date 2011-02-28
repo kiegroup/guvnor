@@ -335,6 +335,73 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         assertTrue( drl.indexOf( "declare Album" ) > -1 );
 
     }
+    
+    @Test
+    public void testSimplePackageWithDeclaredTypesUsingDependency() throws Exception {
+        RulesRepository repo = getRulesRepository();
+
+        PackageItem pkg = repo.createPackage( "testSimplePackageWithDeclaredTypesUsingDependency",
+                                              "" );
+
+        DroolsHeader.updateDroolsHeader( "import java.util.HashMap",
+                                                  pkg );
+
+        AssetItem rule1 = pkg.addAsset( "rule_1",
+                                        "" );
+        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateContent( "rule 'rule1' \n dialect 'mvel' \n when Album() \n then \nAlbum a = new Album(); \n end" );
+        rule1.checkin( "" );
+
+        AssetItem model = pkg.addAsset( "model",
+                                        "qed" );
+        model.updateFormat( AssetFormats.DRL_MODEL );
+
+        model.updateContent( "declare Album\n genre1: String \n end" );
+        model.checkin( "version 0" );
+        model.updateContent( "declare Album\n genre2: String \n end" );
+        model.checkin( "version 1" );
+        model.updateContent( "declare Album\n genre3: String \n end" );
+        model.checkin( "version 2" );        
+        repo.save();
+
+        ContentPackageAssembler asm = new ContentPackageAssembler( pkg );
+        assertFalse( asm.getErrors().toString(),
+                     asm.hasErrors() );
+
+        assertNotNull( asm.getBinaryPackage() );
+        Package bin = asm.getBinaryPackage();
+        assertEquals( pkg.getName(),
+                      bin.getName() );
+        assertTrue( bin.isValid() );
+
+        asm = new ContentPackageAssembler( pkg,
+                                           false );
+        String drl = asm.getDRL();
+
+        assertTrue( drl.indexOf( "genre2" ) == -1 );
+        assertTrue( drl.indexOf( "genre3" ) > -1 );
+        
+        pkg.updateDependency("/drools:repository/drools:package_area/testSimplePackageWithDeclaredTypesUsingDependency/assets/model?version=2");
+        pkg.checkin("Update dependency");
+        
+        ContentPackageAssembler asm2 = new ContentPackageAssembler( pkg );
+        assertFalse( asm2.getErrors().toString(),
+                     asm2.hasErrors() );
+
+        assertNotNull( asm2.getBinaryPackage() );
+        Package bin2 = asm2.getBinaryPackage();
+        assertEquals( pkg.getName(),
+                      bin2.getName() );
+        assertTrue( bin2.isValid() );
+
+        asm2 = new ContentPackageAssembler( pkg,
+                                           false );
+        String drl2 = asm2.getDRL();
+
+        assertTrue( drl2.indexOf( "genre2" ) > -1 );
+        assertTrue( drl2.indexOf( "genre3" ) == -1 );
+
+    }
 
     @Test
     public void testSimplePackageBuildNoErrors() throws Exception {
@@ -652,6 +719,93 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         assertEquals( -1,
                       drl.indexOf( "garbage" ) );
 
+    }
+    
+    @Test
+    public void testShowSourceUsingDependency() throws Exception {
+        RulesRepository repo = getRulesRepository();
+
+        //first, setup the package correctly:
+        PackageItem pkg = repo.createPackage( "testShowSourceUsingDependency",
+                                              "" );
+
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
+                                                  pkg );
+        repo.save();
+
+        AssetItem func = pkg.addAsset( "func",
+                                       "" );
+        func.updateFormat( AssetFormats.FUNCTION );
+        func.updateContent( "function void foo() { System.out.println(version 1); }" );
+        func.checkin( "version 1" );        
+        func.updateContent( "function void foo() { System.out.println(version 2); }" );
+        func.checkin( "version 2" ); 
+
+        AssetItem dsl = pkg.addAsset( "myDSL",
+                                      "" );
+        dsl.updateFormat( AssetFormats.DSL );
+        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz1()" );
+        dsl.checkin( "version 1" );
+        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz2()" );
+        dsl.checkin( "version 2" );
+        
+        AssetItem rule = pkg.addAsset( "rule1", "" );
+        rule.updateFormat( AssetFormats.DRL );
+        rule.updateContent( "rule 'foo' when Goo() then end" );
+        rule.checkin( "version 1" );
+        rule.updateContent( "rule 'foo' when Eoo() then end" );
+        rule.checkin( "version 2" );
+        
+        AssetItem rule2 = pkg.addAsset( "rule2",
+                                        "" );
+        rule2.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
+        rule2.updateContent( "when \n foo \n then \n call a func" );
+        rule2.checkin( "version 1" );
+        rule2.updateContent( "when \n foo \n then \n call a func" );
+        rule2.checkin( "version 2" );
+        
+        AssetItem rule3 = pkg.addAsset( "model1",
+                                        "" );
+        rule3.updateFormat( AssetFormats.DRL_MODEL );
+        rule3.updateContent( "garbage" );
+        rule3.updateDisabled( true );
+        rule3.checkin( "version 1" );
+        rule3.updateContent( "declare Album\n genre1: String \n end" );
+        rule3.checkin( "version 2" );
+        
+        repo.save();
+        
+        //NOTE: dont use version=0. Version 0 is the root node. 
+        pkg.updateDependency("/drools:repository/drools:package_area/testShowSourceUsingDependency/assets/func?version=1");
+        pkg.updateDependency("/drools:repository/drools:package_area/testShowSourceUsingDependency/assets/myDSL?version=1");
+        pkg.updateDependency("/drools:repository/drools:package_area/testShowSourceUsingDependency/assets/rule1?version=1");
+        pkg.updateDependency("/drools:repository/drools:package_area/testShowSourceUsingDependency/assets/rule2?version=1");
+        pkg.updateDependency("/drools:repository/drools:package_area/testShowSourceUsingDependency/assets/model1?version=1");
+        pkg.checkin("Update dependency");
+
+        ContentPackageAssembler asm = new ContentPackageAssembler( pkg,
+                                                                   false );
+        String drl = asm.getDRL();
+
+        assertNotNull( drl );
+
+        assertContains( "import com.billasurf.Board\n global com.billasurf.Person customer",
+                        drl );
+        assertContains( "package testShowSource",
+                        drl );
+        assertContains( "function void foo() { System.out.println(version 1); }",
+                        drl );
+        assertContains( "foo();",
+                        drl );
+        assertContains( "FooBarBaz1()",
+                        drl );
+        assertContains( "rule 'foo' when Goo() then end",
+                        drl );
+
+        assertEquals( -1,
+                      drl.indexOf( "garbage" ) );
+        assertEquals( -1,
+                drl.indexOf( "Album" ) );
     }
 
     @Test

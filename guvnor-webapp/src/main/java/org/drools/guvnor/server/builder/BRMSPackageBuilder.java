@@ -40,6 +40,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.VersionedAssetItemIterator;
 import org.drools.rule.MapBackedClassLoader;
 import org.drools.util.ChainedProperties;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
@@ -157,6 +158,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
     public static List<DSLTokenizedMappingFile> getDSLMappingFiles(PackageItem pkg, DSLErrorEvent err) {
         List<DSLTokenizedMappingFile> result = new ArrayList<DSLTokenizedMappingFile>();
         AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DSL} );
+        ((VersionedAssetItemIterator)it).setEnableGetHistoricalVersionBasedOnDependency(true);
         while ( it.hasNext() ) {
             AssetItem item = it.next();
             if ( !item.getDisabled() ) {
@@ -188,6 +190,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
     public static List<JarInputStream> getJars(PackageItem pkg) {
         List<JarInputStream> result = new ArrayList<JarInputStream>();
         AssetItemIterator ait = pkg.listAssetsByFormat( new String[]{AssetFormats.MODEL} );
+        ((VersionedAssetItemIterator)ait).setEnableGetHistoricalVersionBasedOnDependency(true);        
         while ( ait.hasNext() ) {
             AssetItem item = (AssetItem) ait.next();
             if ( item.getBinaryContentAttachment() != null ) {
