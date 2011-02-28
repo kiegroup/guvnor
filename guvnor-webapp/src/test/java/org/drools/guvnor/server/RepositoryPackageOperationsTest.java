@@ -17,11 +17,20 @@ import javax.jcr.Session;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
 public class RepositoryPackageOperationsTest {
+
+    private final RulesRepository             rulesRepository   = mock( RulesRepository.class );
+    private final RepositoryPackageOperations packageOperations = new RepositoryPackageOperations();
+
+    @Before
+    public void setUp() {
+        packageOperations.setRulesRepository( rulesRepository );
+    }
 
     @Test
     public void testPackageNameSorting() {
@@ -41,9 +50,7 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testLoadGlobalPackageAndDependenciesAreNotFetched() {
-        RulesRepository rulesRepository = mock( RulesRepository.class );
-        RepositoryPackageOperations packageOperations = new RepositoryPackageOperations();
-        packageOperations.setRulesRepository( rulesRepository );
+
         PackageItem packageItem = mock( PackageItem.class );
         when( rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         when( packageItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
@@ -55,9 +62,6 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testLoadGlobalPackageAndIsSnapshot() {
-        RulesRepository rulesRepository = mock( RulesRepository.class );
-        RepositoryPackageOperations packageOperations = new RepositoryPackageOperations();
-        packageOperations.setRulesRepository( rulesRepository );
         PackageItem packageItem = mock( PackageItem.class );
         when( rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         when( packageItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
@@ -72,9 +76,6 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testLoadGlobalPackageAndIsNotSnapshot() {
-        RulesRepository rulesRepository = mock( RulesRepository.class );
-        RepositoryPackageOperations packageOperations = new RepositoryPackageOperations();
-        packageOperations.setRulesRepository( rulesRepository );
         PackageItem packageItem = mock( PackageItem.class );
         when( rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         when( packageItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
@@ -87,9 +88,6 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testCopyPackage() throws SerializationException {
-        RulesRepository rulesRepository = mock( RulesRepository.class );
-        RepositoryPackageOperations packageOperations = new RepositoryPackageOperations();
-        packageOperations.setRulesRepository( rulesRepository );
         Session session = mock( Session.class );
         when( rulesRepository.getSession() ).thenReturn( session );
         packageOperations.copyPackage( "from",
@@ -100,9 +98,6 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testRemovePackage() throws SerializationException {
-        RulesRepository rulesRepository = mock( RulesRepository.class );
-        RepositoryPackageOperations packageOperations = new RepositoryPackageOperations();
-        packageOperations.setRulesRepository( rulesRepository );
         Session session = mock( Session.class );
         when( rulesRepository.getSession() ).thenReturn( session );
         PackageItem packageItem = mock( PackageItem.class );
@@ -114,9 +109,6 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testRenamePackage() throws SerializationException {
-        RulesRepository rulesRepository = mock( RulesRepository.class );
-        RepositoryPackageOperations packageOperations = new RepositoryPackageOperations();
-        packageOperations.setRulesRepository( rulesRepository );
         Session session = mock( Session.class );
         when( rulesRepository.getSession() ).thenReturn( session );
         packageOperations.renamePackage( "old",
