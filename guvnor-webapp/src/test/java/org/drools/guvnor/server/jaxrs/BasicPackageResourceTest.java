@@ -31,7 +31,6 @@ import javax.xml.bind.Marshaller;
 import static org.junit.Assert.*;
 import static org.jboss.resteasy.test.TestPortProvider.*;
 
-
 public class BasicPackageResourceTest extends RestTestingBase {
 
     @Before @Override
@@ -322,7 +321,8 @@ public class BasicPackageResourceTest extends RestTestingBase {
 
     @Test
     public void testUpdatePackageFromJAXB() throws Exception {
-        org.drools.guvnor.server.jaxrs.jaxb.Package p = createTestPackage("TestCreatePackageFromJAXB");
+        Package p = createTestPackage("TestCreatePackageFromJAXB");
+        p.setDescription("Updated description.");
         JAXBContext context = JAXBContext.newInstance(p.getClass());
         Marshaller marshaller = context.createMarshaller();
         StringWriter sw = new StringWriter();
@@ -348,20 +348,31 @@ public class BasicPackageResourceTest extends RestTestingBase {
 
     }
 
-    @Ignore @Test
+    @Test
     public void testUpdatePackageFromAtom() throws Exception {
-        Package p = createTestPackage("TestCreatePackageFromAtom");
+        Package p = createTestPackage("org.drools.guvnor.server.jaxrs.test1");
         Entry e = toPackageEntry(p);
-        e.setTitle("TestAtomPackageCreation");
         e.addAuthor("Test McTesty");
 
-        URL url = new URL(generateBaseUrl() + "/packages/TestCreatePackageFromAtom");
+        URL url = new URL(generateBaseUrl() + "/packages/org.drools.guvnor.server.jaxrs.test1");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
+        conn.setRequestMethod("PUT");
         conn.setRequestProperty("Content-type", MediaType.APPLICATION_ATOM_XML);
         conn.setRequestProperty("Content-Length", Integer.toString(e.toString().getBytes().length));
         conn.setDoOutput(true);
         e.writeTo(conn.getOutputStream());
+
+        if (conn.getResponseCode() == -1) {
+            conn.disconnect();
+            url = new URL(generateBaseUrl() + "/packages/org.drools.guvnor.server.jaxrs.test1");
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("PUT");
+            conn.setRequestProperty("Content-type", MediaType.APPLICATION_ATOM_XML);
+            conn.setRequestProperty("Content-Length", Integer.toString(e.toString().getBytes().length));
+            conn.setDoOutput(true);
+            e.writeTo(conn.getOutputStream());
+
+        }
 
         assertEquals(204, conn.getResponseCode());
         conn.disconnect();
@@ -372,13 +383,20 @@ public class BasicPackageResourceTest extends RestTestingBase {
         //TODO:  implement test
     }
 
-    @Ignore @Test
+    @Test
     public void testArchivePackage() throws Exception {
         //TODO: Not sure how to get package archiving working, currently breaking as a package is not an asset */
-        URL url = new URL(generateBaseUrl() + "/packages/TestCreatePackageFromJAXB");
+        URL url = new URL(generateBaseUrl() + "/packages/TestCreatePackageFromAtom");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("DELETE");
         connection.connect();
-        assertEquals (200, connection.getResponseCode());
+
+        /* Make sure the package is gone */
+        url = new URL(generateBaseUrl() + "/packages/TestCreatePackageFromAtom");
+        connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals (500, connection.getResponseCode());
     }
 }

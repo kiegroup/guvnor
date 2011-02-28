@@ -111,13 +111,7 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry getPackageAsEntryByName(@PathParam("packageName") String packageName) {
-        Entry ret = null;
-        if (repository.containsPackage(packageName) &&
-                !repository.isPackageArchived(packageName))
-            ret = ToPackageEntry(repository.loadPackage(packageName), uriInfo);
-        else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
-        return ret;
+        return ToPackageEntry(repository.loadPackage(packageName), uriInfo);
     }
 
     @GET
@@ -125,17 +119,11 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getAssetsAsAtom(@PathParam("packageName") String packageName) {
         Feed feed = new Feed();
-        if (repository.containsPackage(packageName) &&
-                !repository.isPackageArchived(packageName))
-        {
-            PackageItem p = repository.loadPackage(packageName);
-            feed.setTitle(p.getTitle() + "-asset-feed");
-            Iterator<AssetItem> iter = p.getAssets();
-            while (iter.hasNext())
-                feed.getEntries().add(ToAssetEntry(iter.next(), uriInfo));
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
-
+        PackageItem p = repository.loadPackage(packageName);
+        feed.setTitle(p.getTitle() + "-asset-feed");
+        Iterator<AssetItem> iter = p.getAssets();
+        while (iter.hasNext())
+            feed.getEntries().add(ToAssetEntry(iter.next(), uriInfo));
         return feed;
     }
 
@@ -143,21 +131,20 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     @Consumes (MediaType.APPLICATION_ATOM_XML)
     public void updatePackageFromAtom (@PathParam("packageName") String packageName, Entry entry) {
-        if (repository.containsPackage(packageName)) {
-            PackageItem p = repository.loadPackage(packageName);
-            Service.changeAssetPackage(p.getUUID(), entry.getTitle(), entry.getSummary());
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
+        PackageItem p = repository.loadPackage(packageName);
+        p.checkout();
+        p.updateTitle(entry.getTitle());
+        p.updateDescription(entry.getSummary());
+        /* TODO: add more updates to package item from JSON */
+        p.checkin("Update from ATOM.");
+        repository.save();
     }
 
     @DELETE
     @Path("{packageName}")
     public void archivePackage (@PathParam("packageName") String packageName) {
-        if (repository.containsPackage(packageName)) {
-            PackageItem p = repository.loadPackage(packageName);
-            Service.archiveAsset(p.getUUID());
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
+        PackageItem p = repository.loadPackage(packageName);
+        Service.removePackage(p.getUUID());
     }
 
     @GET
@@ -174,13 +161,7 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public org.drools.guvnor.server.jaxrs.jaxb.Package getPackageAsJAXB(@PathParam("packageName") String packageName) {
-        Package ret = null;
-        if (repository.containsPackage(packageName) &&
-                !repository.isPackageArchived(packageName))
-            ret = ToPackage(repository.loadPackage(packageName), uriInfo);
-        else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
-        return ret;
+        return ToPackage(repository.loadPackage(packageName), uriInfo);
     }
 
     @GET
@@ -188,18 +169,12 @@ public class PackageResource extends Resource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<Asset> getAssetsAsJAXB(@PathParam("packageName") String packageName) {
         List<Asset> ret = Collections.EMPTY_LIST;
-        if (repository.containsPackage(packageName) &&
-                !repository.isPackageArchived(packageName))
-        {
-            PackageItem p = repository.loadPackage(packageName);
-            Iterator<AssetItem> iter = p.getAssets();
-            if (iter.hasNext())
-                ret = new ArrayList<Asset>();
-            while (iter.hasNext())
-                ret.add(ToAsset(iter.next(), uriInfo));
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
-
+        PackageItem p = repository.loadPackage(packageName);
+        Iterator<AssetItem> iter = p.getAssets();
+        if (iter.hasNext())
+            ret = new ArrayList<Asset>();
+        while (iter.hasNext())
+            ret.add(ToAsset(iter.next(), uriInfo));
         return ret;
     }
 
@@ -207,43 +182,29 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     @Consumes ({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public void updatePackageFromJAXB (@PathParam("packageName") String packageName, Package p) {
-        if (repository.containsPackage(packageName)) {
-            PackageItem item = repository.loadPackage(packageName);
-            item.checkout();
-            item.updateDescription(p.getDescription());
-            item.updateTitle(p.getTitle());
-            /* TODO: add more updates to package item from JSON */
-            item.checkin(p.getCheckInComment());
-            repository.save();
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
+        PackageItem item = repository.loadPackage(packageName);
+        item.checkout();
+        item.updateDescription(p.getDescription());
+        item.updateTitle(p.getTitle());
+        /* TODO: add more updates to package item from JSON */
+        item.checkin(p.getCheckInComment());
+        repository.save();
     }
 
     @GET
     @Path("{packageName}/binary")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public byte[] getBinaryPackageByName(@PathParam("packageName") String packageName) throws SerializationException {
-        byte [] ret = null;
-        if (repository.containsPackage(packageName)) {
-            PackageItem p = repository.loadPackage(packageName);
-            Service.buildPackage(p.getUUID(), true);
-            ret = repository.loadPackage(packageName).getCompiledPackageBytes();
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
-        return ret;
+        PackageItem p = repository.loadPackage(packageName);
+        Service.buildPackage(p.getUUID(), true);
+        return repository.loadPackage(packageName).getCompiledPackageBytes();
     }
 
     @GET
     @Path("{packageName}/source")
     @Produces(MediaType.TEXT_PLAIN)
     public String getSourcePackageByName(@PathParam("packageName") String packageName) {
-        String ret = null;
-        if (repository.containsPackage(packageName)) {
-            PackageItem p = repository.loadPackage(packageName);
-            ret = p.getExternalSource();
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
-        return ret;
+        return repository.loadPackage(packageName).getExternalSource();
     }
 
     @GET
@@ -251,19 +212,15 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry getAssetByIdAsAtom(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
         Entry ret = null;
-        if (repository.containsPackage(packageName)) {
-            PackageItem item = repository.loadPackage(packageName);
-            Iterator<AssetItem> iter = item.getAssets();
-            while (iter.hasNext()) {
-                AssetItem a = iter.next();
-                if (a.getName().equals(name)) {
-                    ret = ToAssetEntry(a, uriInfo);
-                    break;
-                }
+        PackageItem item = repository.loadPackage(packageName);
+        Iterator<AssetItem> iter = item.getAssets();
+        while (iter.hasNext()) {
+            AssetItem a = iter.next();
+            if (a.getName().equals(name)) {
+                ret = ToAssetEntry(a, uriInfo);
+                break;
             }
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
-
+        }
         return ret;
     }
 
@@ -272,19 +229,15 @@ public class PackageResource extends Resource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Asset getAssetByIdAsJaxB(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
         Asset ret = null;
-        if (repository.containsPackage(packageName)) {
-            PackageItem item = repository.loadPackage(packageName);
-            Iterator<AssetItem> iter = item.getAssets();
-            while (iter.hasNext()) {
-                AssetItem a = iter.next();
-                if (a.getName().equals(name)) {
-                    ret = ToAsset(a, uriInfo);
-                    break;
-                }
+        PackageItem item = repository.loadPackage(packageName);
+        Iterator<AssetItem> iter = item.getAssets();
+        while (iter.hasNext()) {
+            AssetItem a = iter.next();
+            if (a.getName().equals(name)) {
+                ret = ToAsset(a, uriInfo);
+                break;
             }
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
-
+        }
         return ret;
     }
 
@@ -293,18 +246,15 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream getBinaryAssetById(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
         InputStream ret = null;
-        if (repository.containsPackage(packageName)) {
-            PackageItem item = repository.loadPackage(packageName);
-            Iterator<AssetItem> iter = item.getAssets();
-            while (iter.hasNext()) {
-                AssetItem a = iter.next();
-                if (a.getName().equals(name)) {
-                    ret = a.getBinaryContentAttachment();
-                    break;
-                }
+        PackageItem item = repository.loadPackage(packageName);
+        Iterator<AssetItem> iter = item.getAssets();
+        while (iter.hasNext()) {
+            AssetItem a = iter.next();
+            if (a.getName().equals(name)) {
+                ret = a.getBinaryContentAttachment();
+                break;
             }
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
+        }
         return ret;
     }
 
@@ -336,27 +286,23 @@ public class PackageResource extends Resource {
     public void updateAssetFromAtom(@PathParam ("packageName") String packageName, @PathParam("name") String name, Entry assetEntry)
     {
         AssetItem ai = null;
-
-        if (repository.containsPackage(packageName)) {
-            PackageItem item = repository.loadPackage(packageName);
-            Iterator<AssetItem> iter = item.getAssets();
-            while (iter.hasNext()) {
-                AssetItem a = iter.next();
-                if (a.getName().equals(name)) {
-                    ai = a;
-                    break;
-                }
+        PackageItem item = repository.loadPackage(packageName);
+        Iterator<AssetItem> iter = item.getAssets();
+        while (iter.hasNext()) {
+            AssetItem a = iter.next();
+            if (a.getName().equals(name)) {
+                ai = a;
+                break;
             }
+        }
 
-            /* Update asset */
-            ai.checkout();
-            ai.updateTitle(assetEntry.getTitle());
-            ai.updateDescription(assetEntry.getSummary());
-            ai.updateContent(assetEntry.getContent().getText());
-            ai.checkin("Check-in (summary): " + assetEntry.getSummary());
-            repository.save();
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
+        /* Update asset */
+        ai.checkout();
+        ai.updateTitle(assetEntry.getTitle());
+        ai.updateDescription(assetEntry.getSummary());
+        ai.updateContent(assetEntry.getContent().getText());
+        ai.checkin("Check-in (summary): " + assetEntry.getSummary());
+        repository.save();
     }
 
     @PUT
@@ -365,44 +311,38 @@ public class PackageResource extends Resource {
     public void updateAssetFromJAXB(@PathParam ("packageName") String packageName, @PathParam("name") String name, Asset asset)
     {
         AssetItem ai = null;
-        if (repository.containsPackage(packageName)) {
-            PackageItem pi = repository.loadPackage(packageName);
-            Iterator<AssetItem> iter = pi.getAssets();
-            while (iter.hasNext()) {
-                AssetItem item = iter.next();
-                if (item.getName().equals(name)) {
-                    ai = item;
-                    break;
-                }
+        PackageItem pi = repository.loadPackage(packageName);
+        Iterator<AssetItem> iter = pi.getAssets();
+        while (iter.hasNext()) {
+            AssetItem item = iter.next();
+            if (item.getName().equals(name)) {
+                ai = item;
+                break;
             }
+        }
 
-            /* Update asset */
-            ai.checkout();
-            ai.updateTitle(asset.getMetadata().getTitle());
-            ai.updateDescription(asset.getDescription());
-            ai.checkin(asset.getCheckInComment());
-            repository.save();
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
+        /* Update asset */
+        ai.checkout();
+        ai.updateTitle(asset.getMetadata().getTitle());
+        ai.updateDescription(asset.getDescription());
+        ai.checkin(asset.getCheckInComment());
+        repository.save();
     }
 
     @DELETE
     @Path("{packageName}/asset/{name}/")
     public void deleteAsset(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
         AssetItem asset = null;
-        if (repository.containsPackage(packageName)) {
-            PackageItem item = repository.loadPackage(packageName);
-            Iterator<AssetItem> iter = item.getAssets();
-            while (iter.hasNext()) {
-                AssetItem a = iter.next();
-                if (a.getName().equals(name)) {
-                    asset = a;
-                    break;
-                }
+        PackageItem item = repository.loadPackage(packageName);
+        Iterator<AssetItem> iter = item.getAssets();
+        while (iter.hasNext()) {
+            AssetItem a = iter.next();
+            if (a.getName().equals(name)) {
+                asset = a;
+                break;
             }
-            Service.archiveAsset(asset.getUUID());
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
+        }
+        AssetService.archiveAsset(asset.getUUID());
     }
 }
 

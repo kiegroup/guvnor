@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 
 import static org.jboss.resteasy.test.TestPortProvider.generateBaseUrl;
 import static org.junit.Assert.assertEquals;
@@ -37,7 +38,7 @@ public class CategoryResourceTest extends RestTestingBase {
 
     @Test
     public void testGetAssetsByCategoryAsAtom() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category));
+        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8"));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -49,7 +50,7 @@ public class CategoryResourceTest extends RestTestingBase {
 
     @Test
     public void testGetAssetsByCategoryAsJson() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category));
+        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8"));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
@@ -62,7 +63,7 @@ public class CategoryResourceTest extends RestTestingBase {
 
     @Test
     public void testGetAssetsByCategoryAsJaxb() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category));
+        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8"));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
@@ -74,7 +75,7 @@ public class CategoryResourceTest extends RestTestingBase {
 
     @Test
     public void testGetAssetsByCategoryAndPageAsAtom() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category) + "/page/0");
+        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -86,7 +87,7 @@ public class CategoryResourceTest extends RestTestingBase {
 
     @Test
     public void testGetAssetsByCategoryAndPageAsJson() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category) + "/page/0");
+        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
@@ -99,7 +100,7 @@ public class CategoryResourceTest extends RestTestingBase {
 
     @Test
     public void testGetAssetsByCategoryAndPageAsJaxb() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category) + "/page/0");
+        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
