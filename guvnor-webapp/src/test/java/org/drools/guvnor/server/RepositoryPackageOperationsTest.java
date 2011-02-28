@@ -5,16 +5,21 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.jcr.Session;
+
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
+
+import com.google.gwt.user.client.rpc.SerializationException;
 
 public class RepositoryPackageOperationsTest {
 
@@ -78,7 +83,19 @@ public class RepositoryPackageOperationsTest {
         when( packageItem.getSnapshotName() ).thenReturn( "snapshotName123" );
         assertFalse( packageOperations.loadGlobalPackage().isSnapshot );
         assertNull( packageOperations.loadGlobalPackage().snapshotName );
+    }
 
+    @Test
+    public void testCopyPackage() throws SerializationException {
+        RulesRepository rulesRepository = mock( RulesRepository.class );
+        RepositoryPackageOperations packageOperations = new RepositoryPackageOperations();
+        packageOperations.setRulesRepository( rulesRepository );
+        Session session = mock( Session.class );
+        when( rulesRepository.getSession() ).thenReturn( session );
+        packageOperations.copyPackage( "from",
+                                       "to" );
+        verify( rulesRepository ).copyPackage( "from",
+                                               "to" );
     }
 
 }
