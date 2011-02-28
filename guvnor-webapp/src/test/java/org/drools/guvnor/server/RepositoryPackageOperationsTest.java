@@ -24,12 +24,12 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 public class RepositoryPackageOperationsTest {
 
-    private final RulesRepository             rulesRepository   = mock( RulesRepository.class );
-    private final RepositoryPackageOperations packageOperations = new RepositoryPackageOperations();
+    private final RulesRepository             rulesRepository             = mock( RulesRepository.class );
+    private final RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
 
     @Before
     public void setUp() {
-        packageOperations.setRulesRepository( rulesRepository );
+        repositoryPackageOperations.setRulesRepository( rulesRepository );
     }
 
     @Test
@@ -40,8 +40,7 @@ public class RepositoryPackageOperationsTest {
         List<PackageConfigData> ls = new ArrayList<PackageConfigData>();
         ls.add( c2 );
         ls.add( c1 );
-        RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
-        repositoryPackageOperations.sortPackages( ls );
+        this.repositoryPackageOperations.sortPackages( ls );
         assertEquals( c1,
                       ls.get( 0 ) );
         assertEquals( c2,
@@ -52,24 +51,24 @@ public class RepositoryPackageOperationsTest {
     public void testLoadGlobalPackageAndDependenciesAreNotFetched() {
 
         PackageItem packageItem = mock( PackageItem.class );
-        when( rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
+        when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         when( packageItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
         when( packageItem.getCreatedDate() ).thenReturn( GregorianCalendar.getInstance() );
         when( packageItem.getDependencies() ).thenReturn( new String[]{"dependency"} );
-        assertNull( packageOperations.loadGlobalPackage().dependencies );
+        assertNull( this.repositoryPackageOperations.loadGlobalPackage().dependencies );
 
     }
 
     @Test
     public void testLoadGlobalPackageAndIsSnapshot() {
         PackageItem packageItem = mock( PackageItem.class );
-        when( rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
+        when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         when( packageItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
         when( packageItem.getCreatedDate() ).thenReturn( GregorianCalendar.getInstance() );
         when( packageItem.isSnapshot() ).thenReturn( true );
         when( packageItem.getSnapshotName() ).thenReturn( "snapshotName123" );
-        assertTrue( packageOperations.loadGlobalPackage().isSnapshot );
-        assertEquals( packageOperations.loadGlobalPackage().snapshotName,
+        assertTrue( this.repositoryPackageOperations.loadGlobalPackage().isSnapshot );
+        assertEquals( this.repositoryPackageOperations.loadGlobalPackage().snapshotName,
                       "snapshotName123" );
 
     }
@@ -77,21 +76,21 @@ public class RepositoryPackageOperationsTest {
     @Test
     public void testLoadGlobalPackageAndIsNotSnapshot() {
         PackageItem packageItem = mock( PackageItem.class );
-        when( rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
+        when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         when( packageItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
         when( packageItem.getCreatedDate() ).thenReturn( GregorianCalendar.getInstance() );
         when( packageItem.isSnapshot() ).thenReturn( false );
         when( packageItem.getSnapshotName() ).thenReturn( "snapshotName123" );
-        assertFalse( packageOperations.loadGlobalPackage().isSnapshot );
-        assertNull( packageOperations.loadGlobalPackage().snapshotName );
+        assertFalse( this.repositoryPackageOperations.loadGlobalPackage().isSnapshot );
+        assertNull( this.repositoryPackageOperations.loadGlobalPackage().snapshotName );
     }
 
     @Test
     public void testCopyPackage() throws SerializationException {
         Session session = mock( Session.class );
-        when( rulesRepository.getSession() ).thenReturn( session );
-        packageOperations.copyPackage( "from",
-                                       "to" );
+        when( this.rulesRepository.getSession() ).thenReturn( session );
+        repositoryPackageOperations.copyPackage( "from",
+                                                 "to" );
         verify( rulesRepository ).copyPackage( "from",
                                                "to" );
     }
@@ -99,10 +98,10 @@ public class RepositoryPackageOperationsTest {
     @Test
     public void testRemovePackage() throws SerializationException {
         Session session = mock( Session.class );
-        when( rulesRepository.getSession() ).thenReturn( session );
+        when( this.rulesRepository.getSession() ).thenReturn( session );
         PackageItem packageItem = mock( PackageItem.class );
-        when( rulesRepository.loadPackageByUUID( "uuid" ) ).thenReturn( packageItem );
-        packageOperations.removePackage( "uuid" );
+        when( this.rulesRepository.loadPackageByUUID( "uuid" ) ).thenReturn( packageItem );
+        this.repositoryPackageOperations.removePackage( "uuid" );
         verify( packageItem ).remove();
         verify( rulesRepository ).save();
     }
@@ -110,11 +109,11 @@ public class RepositoryPackageOperationsTest {
     @Test
     public void testRenamePackage() throws SerializationException {
         Session session = mock( Session.class );
-        when( rulesRepository.getSession() ).thenReturn( session );
-        packageOperations.renamePackage( "old",
-                                         "new" );
-        verify( rulesRepository ).renamePackage( "old",
-                                                 "new" );
+        when( this.rulesRepository.getSession() ).thenReturn( session );
+        repositoryPackageOperations.renamePackage( "old",
+                                                   "new" );
+        verify( this.rulesRepository ).renamePackage( "old",
+                                                      "new" );
     }
 
 }
