@@ -20,6 +20,7 @@ package org.drools.guvnor.server.jaxrs;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
+import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
@@ -31,6 +32,8 @@ public class Resource {
     @Context UriInfo uriInfo;
 
     static ServiceImplementation Service = RepositoryServiceServlet.getService();
+
+    static RepositoryAssetService AssetService = RepositoryServiceServlet.getAssetService();
 
     RulesRepository repository;
 

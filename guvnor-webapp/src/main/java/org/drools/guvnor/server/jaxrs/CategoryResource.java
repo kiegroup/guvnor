@@ -30,6 +30,7 @@ import org.drools.repository.AssetItemPageResult;
 import org.jboss.seam.annotations.Name;
 
 import javax.ws.rs.*;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,29 +43,36 @@ import static org.drools.guvnor.server.jaxrs.Translator.*;
 @Path("/categories")
 public class CategoryResource extends Resource {
 
+    static final String Encoding = "UTF-8";
+
     final int pageSize = 10;
+
 
     @GET
     @Path("{categoryName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getAssetsAsAtom(@PathParam("categoryName") String encoded) {
-        String decoded = URLDecoder.decode(encoded);
-        UriBuilder builder = uriInfo.getAbsolutePathBuilder();
         Feed ret = new Feed();
-        ret.setTitle(encoded);
-        AssetItemPageResult result = repository.findAssetsByCategory(
-                decoded, 0, pageSize);
-        List<AssetItem> assets = result.assets;
-        for (AssetItem item : assets) {
-            Entry e = ToAssetEntry(item, uriInfo);
-            ret.getEntries().add(e);
-        }
+        try {
+            String decoded = URLDecoder.decode(encoded, Encoding);
+            UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+            ret.setTitle(encoded);
+            AssetItemPageResult result = repository.findAssetsByCategory(
+                    decoded, 0, pageSize);
+            List<AssetItem> assets = result.assets;
+            for (AssetItem item : assets) {
+                Entry e = ToAssetEntry(item, uriInfo);
+                ret.getEntries().add(e);
+            }
 
-        if (result.hasNext) {
-            Link l = new Link();
-            l.setRel("next-page");
-            l.setHref(builder.path("/" + encoded + "/page/1").build());
-            ret.getLinks().add(l);
+            if (result.hasNext) {
+                Link l = new Link();
+                l.setRel("next-page");
+                l.setHref(builder.path("/" + encoded + "/page/1").build());
+                ret.getLinks().add(l);
+            }
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException (e);
         }
 
         return ret;
@@ -74,15 +82,20 @@ public class CategoryResource extends Resource {
     @Path("{categoryName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<Asset> getAssetsAsJAXB(@PathParam("categoryName") String encoded) {
-        String decoded = URLDecoder.decode(encoded);
         Collection<Asset> ret = Collections.EMPTY_LIST;
-        AssetItemPageResult result = repository.findAssetsByCategory(decoded, 0, pageSize);
-        List<AssetItem> assets = result.assets;
-        if (assets.size() > 0) {
-            ret = new ArrayList<Asset>();
-            for (AssetItem item : assets) {
-                ret.add(ToAsset(item, uriInfo));
+
+        try {
+            String decoded = URLDecoder.decode(encoded, Encoding);
+            AssetItemPageResult result = repository.findAssetsByCategory(decoded, 0, pageSize);
+            List<AssetItem> assets = result.assets;
+            if (assets.size() > 0) {
+                ret = new ArrayList<Asset>();
+                for (AssetItem item : assets) {
+                    ret.add(ToAsset(item, uriInfo));
+                }
             }
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException (e);
         }
 
         return ret;
@@ -92,24 +105,29 @@ public class CategoryResource extends Resource {
     @Path("{categoryName}/page/{page}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getAssetsAsAtom(@PathParam("categoryName") String encoded, @PathParam ("page") String page) {
-        String decoded = URLDecoder.decode(encoded);
-        int p = new Integer(page).intValue();
         Feed ret = new Feed();
-        ret.setTitle(decoded);
-        AssetItemPageResult result = repository.findAssetsByCategory(
-                decoded, p, pageSize);
-        List<AssetItem> assets = result.assets;
-        for (AssetItem item : assets) {
-            Entry e = ToAssetEntry(item, uriInfo);
-            ret.getEntries().add(e);
-        }
 
-        if (result.hasNext) {
-            Link l = new Link();
-            l.setRel("next-page");
-            UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-            l.setHref(builder.path("/" + encoded + "/page/" + ++p).build());
-            ret.getLinks().add(l);
+        try {
+            String decoded = URLDecoder.decode(encoded, Encoding);
+            int p = new Integer(page).intValue();
+            ret.setTitle(decoded);
+            AssetItemPageResult result = repository.findAssetsByCategory(
+                    decoded, p, pageSize);
+            List<AssetItem> assets = result.assets;
+            for (AssetItem item : assets) {
+                Entry e = ToAssetEntry(item, uriInfo);
+                ret.getEntries().add(e);
+            }
+
+            if (result.hasNext) {
+                Link l = new Link();
+                l.setRel("next-page");
+                UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+                l.setHref(builder.path("/" + encoded + "/page/" + ++p).build());
+                ret.getLinks().add(l);
+            }
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException (e);
         }
 
         return ret;
@@ -120,17 +138,22 @@ public class CategoryResource extends Resource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<Asset> getAssetsAsJAXBIndex(@PathParam("categoryName") String encoded, @PathParam("page") String page)
     {
-        String decoded = URLDecoder.decode(encoded);
-        int p = new Integer(page).intValue();
         Collection<Asset> ret = Collections.EMPTY_LIST;
-        AssetItemPageResult result = repository.findAssetsByCategory(
-            decoded, p, pageSize);
-        List<AssetItem> assets = result.assets;
-        if (assets.size() > 0) {
-            ret = new ArrayList<Asset>();
-            for (AssetItem item : assets) {
-                ret.add(ToAsset(item, uriInfo));
+
+        try {
+            String decoded = URLDecoder.decode(encoded, Encoding);
+            int p = new Integer(page).intValue();
+            AssetItemPageResult result = repository.findAssetsByCategory(
+                decoded, p, pageSize);
+            List<AssetItem> assets = result.assets;
+            if (assets.size() > 0) {
+                ret = new ArrayList<Asset>();
+                for (AssetItem item : assets) {
+                    ret.add(ToAsset(item, uriInfo));
+                }
             }
+        } catch (UnsupportedEncodingException e) {
+           throw new RuntimeException (e);
         }
 
         return ret;
