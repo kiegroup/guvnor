@@ -25,7 +25,6 @@ import org.drools.builder.ResourceConfiguration;
 import org.drools.builder.ResourceType;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
@@ -100,7 +99,7 @@ public class VerifierRunner {
     }
 
     private void addHeaderToVerifier() {
-        StringBuffer header = new StringBuffer();
+        StringBuilder header = new StringBuilder();
         header.append( "package " + packageItem.getName() + "\n" );
         header.append( DroolsHeader.getDroolsHeader( packageItem ) + "\n" );
 
@@ -114,15 +113,16 @@ public class VerifierRunner {
         while ( assets.hasNext() ) {
             AssetItem asset = assets.next();
             if ( !asset.isArchived() && !asset.getDisabled() ) {
-                if(resourceType == ResourceType.DTABLE) {
+                if ( resourceType == ResourceType.DTABLE ) {
                     DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
                     dtableconfiguration.setInputType( DecisionTableInputType.XLS );
-                     
+
                     verifier.addResourcesToVerify( ResourceFactory.newByteArrayResource( asset.getBinaryContentAsBytes() ),
-                            resourceType, (ResourceConfiguration) dtableconfiguration );
+                                                   resourceType,
+                                                   (ResourceConfiguration) dtableconfiguration );
                 } else {
                     verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( asset.getContent() ) ),
-                                               resourceType );
+                                                   resourceType );
                 }
             }
         }

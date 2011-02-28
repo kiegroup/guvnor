@@ -17,18 +17,17 @@
 package org.drools.guvnor.client;
 
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.util.Format;
-import org.drools.guvnor.client.messages.Constants;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.core.client.GWT;
 
 /**
  * Simple widget to show who is logged in, and a link to logout.
@@ -45,7 +44,7 @@ public class LoggedInUserInfo extends Composite {
     }
 
     public void setUserName(String userName) {
-        StringBuffer content = new StringBuffer();
+        StringBuilder content = new StringBuilder();
         content.append( Format.format( "<div class='{0}'>",
                                        GuvnorResources.INSTANCE.headerCss().headerUserInfoClass() ) );
 
