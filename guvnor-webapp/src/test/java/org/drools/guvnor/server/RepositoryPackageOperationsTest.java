@@ -8,10 +8,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -110,10 +113,18 @@ public class RepositoryPackageOperationsTest {
     public void testRenamePackage() throws SerializationException {
         Session session = mock( Session.class );
         when( this.rulesRepository.getSession() ).thenReturn( session );
-        repositoryPackageOperations.renamePackage( "old",
+        repositoryPackageOperations.renamePackage( "old", 
                                                    "new" );
         verify( this.rulesRepository ).renamePackage( "old",
                                                       "new" );
+    }
+
+    @Test
+    public void testExportPackages() throws PathNotFoundException, IOException, RepositoryException {
+        Session session = mock( Session.class );
+        when( this.rulesRepository.getSession() ).thenReturn( session );
+        repositoryPackageOperations.exportPackages( "packageName" );
+        verify(this.rulesRepository ).dumpPackageFromRepositoryXml("packageName"); 
     }
 
 }
