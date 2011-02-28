@@ -31,10 +31,7 @@ import javax.xml.bind.Marshaller;
 import static org.junit.Assert.*;
 import static org.jboss.resteasy.test.TestPortProvider.*;
 
-/**
- *
- * @author awaterma
- */
+
 public class BasicPackageResourceTest extends RestTestingBase {
 
     @Before @Override
