@@ -16,18 +16,18 @@
 
 package org.drools.ide.common.server.rules;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
-
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
@@ -56,12 +56,12 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
         RulesRepository repo = getRulesRepository();
         PackageItem item = repo.createPackage( "testLoader",
                                                "to test the loader" );
-        ServiceImplementation.updateDroolsHeader( "import java.util.Date",
+        DroolsHeader.updateDroolsHeader( "import java.util.Date",
                                                   item );
         repo.save();
 
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
-        String header = ServiceImplementation.getDroolsHeader( item );
+        String header = DroolsHeader.getDroolsHeader( item );
 
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
         assertNotNull( engine );
@@ -74,12 +74,12 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
         RulesRepository repo = getRulesRepository();
         PackageItem item = repo.createPackage( "testLoaderWithComplexFields",
                                                "to test the loader" );
-        ServiceImplementation.updateDroolsHeader( "import org.drools.guvnor.server.rules.Agent",
+        DroolsHeader.updateDroolsHeader( "import org.drools.guvnor.server.rules.Agent",
                                                   item );
         repo.save();
 
         BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
-        String header = ServiceImplementation.getDroolsHeader( item );
+        String header = DroolsHeader.getDroolsHeader( item );
 
         SuggestionCompletionEngine engine = loader.getSuggestionEngine( item );
         assertNotNull( engine );
@@ -141,7 +141,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
         RulesRepository repo = getRulesRepository();
         PackageItem item = repo.createPackage( "testLoader2",
                                                "to test the loader for fact templates" );
-        ServiceImplementation.updateDroolsHeader( "import java.util.Date\ntemplate Person\njava.lang.String name\nDate birthDate\nend",
+        DroolsHeader.updateDroolsHeader( "import java.util.Date\ntemplate Person\njava.lang.String name\nDate birthDate\nend",
                                                   item );
         repo.save();
 
@@ -282,13 +282,13 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
         assertNotNull( loader.getSuggestionEngine( item ) );
         assertFalse( loader.hasErrors() );
 
-        ServiceImplementation.updateDroolsHeader( "gooble de gook",
+        DroolsHeader.updateDroolsHeader( "gooble de gook",
                                                   item );
         loader = new BRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item );
         assertTrue( loader.hasErrors() );
 
-        ServiceImplementation.updateDroolsHeader( "import foo.bar; \nglobal goo.Bar baz;",
+        DroolsHeader.updateDroolsHeader( "import foo.bar; \nglobal goo.Bar baz;",
                                                   item );
         loader = new BRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item );

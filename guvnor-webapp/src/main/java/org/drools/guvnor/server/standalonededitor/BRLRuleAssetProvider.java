@@ -23,6 +23,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -66,7 +67,7 @@ public class BRLRuleAssetProvider
         } catch ( Exception e ) {
             //if something failed, delete the generated assets
             for ( RuleAsset ruleAsset : assets ) {
-                this.getService().removeAsset( ruleAsset.uuid );
+                this.getAssetService().removeAsset( ruleAsset.uuid );
             }
 
             if ( e instanceof DetailedSerializationException ) {
@@ -102,8 +103,8 @@ public class BRLRuleAssetProvider
         return metaData;
     }
 
-    private ServiceImplementation getService() {
-        return RepositoryServiceServlet.getService();
+    private RepositoryAssetService getAssetService() {
+        return RepositoryServiceServlet.getAssetService();
     }
 
 }

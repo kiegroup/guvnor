@@ -48,6 +48,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -138,9 +139,9 @@ public class PackageEditor extends PrettyFormLayout {
 
         endSection();
 
-/*        startSection(constants.BuildAndValidate());
+        startSection(constants.BuildAndValidate());
         addRow(new DependencyWidget(this.conf));
-        endSection();*/
+        endSection();
         
         if ( !conf.isSnapshot ) {
             startSection( constants.BuildAndValidate() );
@@ -227,7 +228,7 @@ public class PackageEditor extends PrettyFormLayout {
             }
         };
         
-        RepositoryServiceFactory.getService().listAssetsWithPackageName(this.conf.name, new String[]{AssetFormats.SPRING_CONTEXT}, 0,
+        RepositoryServiceFactory.getAssetService().listAssetsWithPackageName(this.conf.name, new String[]{AssetFormats.SPRING_CONTEXT}, 0,
                                                                         -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, callBack);
         
         status = new HTML();
@@ -366,7 +367,7 @@ public class PackageEditor extends PrettyFormLayout {
 
     private String getDateString(Date d) {
         if ( d != null ) {
-            return d.toLocaleString();
+            return DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(d);
         } else {
             return "";
         }

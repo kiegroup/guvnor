@@ -85,7 +85,7 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
                                                                  formatIsRegistered,
                                                                  pager.getPageStart(),
                                                                  pageSize );
-                repositoryService.findAssetPage( request,
+                assetService.findAssetPage( request,
                                                  new GenericCallback<PageResponse<AssetPageRow>>() {
                                                      public void onSuccess(PageResponse<AssetPageRow> response) {
                                                          updateRowCount( response.getTotalRowSize(),

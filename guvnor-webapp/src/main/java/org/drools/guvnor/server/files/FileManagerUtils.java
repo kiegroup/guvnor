@@ -46,6 +46,7 @@ import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.ClassicDRLImporter;
 import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -329,14 +330,14 @@ public class FileManagerUtils {
 
         if ( existing ) {
             pkg = repository.loadPackage( packageName );
-            ServiceImplementation.updateDroolsHeader( ClassicDRLImporter.mergeLines( ServiceImplementation.getDroolsHeader( pkg ),
+            DroolsHeader.updateDroolsHeader( ClassicDRLImporter.mergeLines( DroolsHeader.getDroolsHeader( pkg ),
                                                                                      imp.getPackageHeader() ),
                                                       pkg );
             existing = true;
         } else {
             pkg = repository.createPackage( packageName,
                                             "<imported>" );
-            ServiceImplementation.updateDroolsHeader( imp.getPackageHeader(),
+            DroolsHeader.updateDroolsHeader( imp.getPackageHeader(),
                                                       pkg );
         }
 
@@ -401,7 +402,7 @@ public class FileManagerUtils {
 
         AssetItem item = pkg.loadAsset( assetName );
         ContentHandler handler = ContentManager.getHandler( item.getFormat() );//new AssetContentFormatHandler();
-        StringBuffer buf = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
         if ( handler.isRuleAsset() ) {
 
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
@@ -415,8 +416,8 @@ public class FileManagerUtils {
                                                                         } ) );
             ((IRuleAsset) handler).assembleDRL( builder,
                                                 item,
-                                                buf );
-            out.write( buf.toString().getBytes() );
+                                                stringBuilder );
+            out.write( stringBuilder.toString().getBytes() );
             return item.getName() + ".drl";
         } else {
             out.write( item.getContent().getBytes() );

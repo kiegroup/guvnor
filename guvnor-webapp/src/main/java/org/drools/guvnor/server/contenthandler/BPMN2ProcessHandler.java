@@ -225,16 +225,16 @@ public class BPMN2ProcessHandler extends ContentHandler
         // This can not work, no binary data in RuleAsset
     }
     
-    public void assembleProcessSource(PortableObject assetContent, StringBuffer buf) {
+    public void assembleProcessSource(PortableObject assetContent, StringBuilder stringBuilder) {
         RuleFlowContentModel content = (RuleFlowContentModel) assetContent;
         if(content.getXml() != null && content.getXml().length() > 0) {
-            buf.append(content.getXml());
+            stringBuilder.append(content.getXml());
         } else if(content.getJson() != null && content.getJson().length() > 0) {
             // convert the json to xml
             try {
                 String xml = BPMN2ProcessHandler.serialize("http://localhost:8080/designer/uuidRepository?profile=drools&action=toXML",
                         content.getJson());
-                buf.append(StringEscapeUtils.escapeXml(xml));
+                stringBuilder.append(StringEscapeUtils.escapeXml(xml));
             } catch (IOException e) {
                 log.error("Exception converting to xml: " + e.getMessage());
             }

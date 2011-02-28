@@ -61,51 +61,12 @@ public class DependencyWidget extends Composite {
     public DependencyWidget(final PackageConfigData conf) {
         this.conf = conf;
         layout = new FormStyleLayout();
-
-/*
-        VerticalPanel header = new VerticalPanel();
-        Label caption = new Label( "Dependencies" );
-        caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
-        header.add( caption );
-        header.add( howToTurnOn() );
-
-        layout.addAttribute( "",
-        		header );
-
-        layout.addHeader( images.statusLarge(),
-                      header );
-
-        VerticalPanel vp = new VerticalPanel();
-        vp.setHeight( "100%" );
-        vp.setWidth( "100%" );
-
-        //pf.startSection();
-        layout.addRow( vp );
-        //pf.endSection();
-*/
-        refresh();
-        initWidget( layout );
-    }
-
-    private Widget howToTurnOn() {
-        HorizontalPanel hp = new HorizontalPanel();
-        hp.add( new HTML( "<small><i>"
-                          + constants.TipAuthEnable()
-                          + "</i></small>" ) );
-        InfoPopup pop = new InfoPopup( constants.EnablingAuthorization(),
-                                       constants.EnablingAuthPopupTip() );
-        hp.add( pop );
-        return hp;
-    }
-
-    private void refresh() {
-        layout.clear();
         
         VerticalPanel header = new VerticalPanel();
         Label caption = new Label( "Dependencies" );
         caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
         header.add( caption );
-        header.add( howToTurnOn() );
+        header.add( dependencyTip() );
 
         layout.addAttribute( "",
                 header );
@@ -119,8 +80,8 @@ public class DependencyWidget extends Composite {
 
         //pf.startSection();
         layout.addRow( vp );
-        table = new DependenciesPagedTable(conf.dependencies, 
-        		null, null, new OpenItemCommand() {
+        table = new DependenciesPagedTable(conf.uuid, 
+                null, null, new OpenItemCommand() {
 
             public void open(String path) {
                 showEditor( path );
@@ -134,6 +95,17 @@ public class DependencyWidget extends Composite {
 
         layout.addRow( table );
         initWidget( layout );
+    }
+
+    private Widget dependencyTip() {
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add( new HTML( "<small><i>"
+                          + "Edit dependency version to build a package against specific versions of Assets"
+                          + "</i></small>" ) );
+        InfoPopup pop = new InfoPopup( "Edit Dependency",
+                "Edit dependency version to build a package against specific versions of Assets" );
+        hp.add( pop );
+        return hp;
     }
     
     public static String[] parseDependencyPath(String dependencyPath) {
@@ -158,25 +130,21 @@ public class DependencyWidget extends Composite {
 				+ "</i>"));
 */
 		editor.addAttribute("Dependency Path: ", new Label(parseDependencyPath(dependencyPath)[0]));
-		//editor.addAttribute("Is Imported from Global: ", new Label("No"));
 		final VersionChooser versionChoose = new VersionChooser( 
 				parseDependencyPath(dependencyPath)[1],
 				conf.uuid,
 				parseDependencyAssetName(parseDependencyPath(dependencyPath)[0]),
                 new Command() {
                     public void execute() {
-                        refresh();                        
+                        table.refresh();                        
                     }				    
 				});
 		editor.addAttribute("Dependency Version: ",  versionChoose);
-
 
 		HorizontalPanel hp = new HorizontalPanel();
 		Button save = new Button("Use selected version"); 
 		hp.add(save);
         save.addClickHandler(new ClickHandler() {
-            private Object archiveCommand;
-
             public void onClick(ClickEvent w) {
                 String selectedVersion = versionChoose.getSelectedVersionName();
                 if (Window.confirm("Are you sure you want to use version: " + selectedVersion  + " as dependency?")) {
@@ -188,7 +156,7 @@ public class DependencyWidget extends Composite {
                             new GenericCallback<Void>() {
                                 public void onSuccess(Void v) {
                                     editor.hide();
-                                    refresh();
+                                    table.refresh();
                                 }
                             });
                 }

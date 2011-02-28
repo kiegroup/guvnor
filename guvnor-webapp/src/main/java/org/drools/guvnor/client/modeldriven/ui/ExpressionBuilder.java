@@ -481,7 +481,8 @@ public class ExpressionBuilder extends RuleModellerWidget
 
     private ClickableLabel createWidgetForExpression(String text) {
         ClickableLabel label = new ClickableLabel( text,
-                                                   slch );
+                                                   slch,
+                                                   !this.readOnly);        
         return label;
     }
 }

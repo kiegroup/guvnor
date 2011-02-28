@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -57,7 +57,7 @@ public class ModelContentHandlerTest extends GuvnorTestBase {
         ModelContentHandler modelContentHandler = new ModelContentHandler();
         modelContentHandler.onAttachmentAdded( asset );
 
-        String header = ServiceImplementation.getDroolsHeader( pacakge );
+        String header = DroolsHeader.getDroolsHeader( pacakge );
         assertTrue( header.indexOf( "package-info.class" ) == -1 );
     }
 
@@ -68,7 +68,7 @@ public class ModelContentHandlerTest extends GuvnorTestBase {
                                               "for test" );
         AssetItem asset = pkg.addAsset( "testModelRemovedAsset",
                                         "description" );
-        ServiceImplementation.updateDroolsHeader( "import something.Else\n",
+        DroolsHeader.updateDroolsHeader( "import something.Else\n",
                                                   pkg );
 
         InputStream is = this.getClass().getResourceAsStream( "domain.objects-1.1.8.jar" );
@@ -77,12 +77,12 @@ public class ModelContentHandlerTest extends GuvnorTestBase {
         ModelContentHandler modelContentHandler = new ModelContentHandler();
         modelContentHandler.onAttachmentAdded( asset );
 
-        String header = ServiceImplementation.getDroolsHeader( pkg );
+        String header = DroolsHeader.getDroolsHeader( pkg );
         assertTrue( header.length() > 0 );
 
         modelContentHandler.onAttachmentRemoved( asset );
 
-        header = ServiceImplementation.getDroolsHeader( pkg );
+        header = DroolsHeader.getDroolsHeader( pkg );
         assertEquals( "import something.Else",
                       header.trim() );
 

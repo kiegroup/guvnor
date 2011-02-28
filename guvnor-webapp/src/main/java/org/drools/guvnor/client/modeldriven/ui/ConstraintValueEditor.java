@@ -141,6 +141,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                                                                    constraint );
                                                                }
                                                            } );
+                            ((Button)constraintWidget).setEnabled(!this.readOnly);
                             break;
                         }
                     }
@@ -149,13 +150,16 @@ public class ConstraintValueEditor extends DirtyableComposite {
                         constraintWidget = new EnumDropDownLabel( this.pattern,
                                                                   this.fieldName,
                                                                   this.sce,
-                                                                  this.constraint );
-                        ((EnumDropDownLabel) constraintWidget).setOnValueChangeCommand( new Command() {
+                                                                  this.constraint, !this.readOnly);
+                        if (!this.readOnly){
+                        	((EnumDropDownLabel) constraintWidget).setOnValueChangeCommand( new Command() {
 
-                            public void execute() {
-                                executeOnValueChangeCommand();
-                            }
-                        } );
+                                public void execute() {
+                                    executeOnValueChangeCommand();
+                                }
+                            } );
+                        }
+                        
                     } else if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) ) {
 
                         DatePickerLabel datePicker = new DatePickerLabel( constraint.getValue() );
@@ -264,17 +268,23 @@ public class ConstraintValueEditor extends DirtyableComposite {
      * An editor for the retval "formula" (expression).
      */
     private Widget returnValueEditor() {
-        TextBox box = new BoundTextBox( constraint );
+    	TextBox box = new BoundTextBox( constraint );
+    	
+    	if ( this.readOnly ) {
+            return new SmallLabel( box.getText() );
+        }
+    	
         String msg = constants.FormulaEvaluateToAValue();
         Image img = new Image( images.functionAssets() );
         img.setTitle( msg );
-        box.setTitle( msg );
+        box.setTitle( msg );        
         box.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
                 executeOnValueChangeCommand();
             }
         } );
+        
         Widget ed = widgets( img,
                              box );
         return ed;
@@ -285,7 +295,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
             throw new IllegalArgumentException( "Expected SingleFieldConstraint, but " + constraint.getClass().getName() + " found." );
         }
         ExpressionBuilder builder = new ExpressionBuilder( this.modeller,
-                                                           ((SingleFieldConstraint) this.constraint).getExpressionValue() );
+                                                           ((SingleFieldConstraint) this.constraint).getExpressionValue(), this.readOnly );
         builder.addExpressionTypeChangeHandler( new ExpressionTypeChangeHandler() {
 
             public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {

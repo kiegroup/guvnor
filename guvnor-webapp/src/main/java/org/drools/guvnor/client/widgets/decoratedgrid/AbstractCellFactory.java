@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.drools.guvnor.client.decisiontable.cells.PopupDateEditCell;
@@ -31,8 +32,8 @@ import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
  */
 public abstract class AbstractCellFactory<T> {
 
-    // The containing DecoratedGridWidget to which cells will send their updates
-    protected DecoratedGridWidget<T>     grid;
+    // The containing MergableGridWidget to which cells will send their updates
+    protected MergableGridWidget<T>     grid;
 
     protected SuggestionCompletionEngine sce;
 
@@ -42,10 +43,10 @@ public abstract class AbstractCellFactory<T> {
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
      * @param grid
-     *            DecoratedGridWidget to which cells will send their updates
+     *            MergableGridWidget to which cells will send their updates
      */
     public AbstractCellFactory(SuggestionCompletionEngine sce,
-                               DecoratedGridWidget<T> grid) {
+                               MergableGridWidget<T> grid) {
 
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
@@ -77,11 +78,11 @@ public abstract class AbstractCellFactory<T> {
     }
 
     // Make a new Cell for Numeric columns
-    protected DecoratedGridCellValueAdaptor<Long, T> makeNumericCell() {
-        return new DecoratedGridCellValueAdaptor<Long, T>( new PopupNumericEditCell() );
+    protected DecoratedGridCellValueAdaptor<BigDecimal, T> makeNumericCell() {
+        return new DecoratedGridCellValueAdaptor<BigDecimal, T>( new PopupNumericEditCell() );
     }
 
-    // Make a new Cell for a RowNumberCol
+    // Make a new Cell for a Text columns
     protected DecoratedGridCellValueAdaptor<String, T> makeTextCell() {
         return new DecoratedGridCellValueAdaptor<String, T>( new PopupTextEditCell() );
     }

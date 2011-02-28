@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
@@ -66,19 +66,20 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
             if ( formats.contains( assetItem.getFormat() ) && !assetItem.getDisabled() && !assetItem.isArchived() ) {
 
                 String drl = getDRL( assetItem );
-                
+
                 if ( drl != null ) {
 
                     List<String> categories = new ArrayList<String>();
-                    
+
                     for ( CategoryItem categoryItem : assetItem.getCategories() ) {
                         categories.add( categoryItem.getName() );
                     }
-                    
+
                     List<DrlRuleParser> ruleDataList = DrlRuleParser.findRulesDataFromDrl( drl );
-                    
+
                     for ( DrlRuleParser ruleData : ruleDataList ) {
-                        ruleData.getOtherInformation().put( "Categories", categories );
+                        ruleData.getOtherInformation().put( "Categories",
+                                                            categories );
                         ruleData.getMetadata().addAll( createMetaData( assetItem ) );
                         rules.add( ruleData );
                     }
@@ -86,16 +87,16 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
             }
         }
 
-        String header = ServiceImplementation.getDroolsHeader( packageItem );
+        String header = DroolsHeader.getDroolsHeader( packageItem );
         List<String> globals = DrlPackageParser.findGlobals( header );
 
         // Get And Fill Package Data
         return new DrlPackageParser( packageItem.getName(),
-                                   packageItem.getDescription(),
-                                   rules,
-                                   globals,
-                                   createMetaData( packageItem ),
-                                   new HashMap<String, List<String>>() );
+                                     packageItem.getDescription(),
+                                     rules,
+                                     globals,
+                                     createMetaData( packageItem ),
+                                     new HashMap<String, List<String>>() );
 
     }
 
@@ -120,11 +121,11 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
     private static String getDRL(AssetItem item) {
         ContentHandler handler = ContentManager.getHandler( item.getFormat() );
 
-        if ( ! handler.isRuleAsset() ) {
+        if ( !handler.isRuleAsset() ) {
             return null;
         }
- 
-        StringBuffer buffer = new StringBuffer();
+
+        StringBuilder stringBuilder = new StringBuilder();
         BRMSPackageBuilder builder = new BRMSPackageBuilder();
         // now we load up the DSL files
         builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(),
@@ -134,8 +135,10 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
                                                                             // ignore at this point...
                                                                         }
                                                                     } ) );
-        ((IRuleAsset) handler).assembleDRL( builder, item, buffer );
+        ((IRuleAsset) handler).assembleDRL( builder,
+                                            item,
+                                            stringBuilder );
 
-        return buffer.toString();
+        return stringBuilder.toString();
     }
 }

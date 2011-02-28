@@ -15,17 +15,23 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -34,7 +40,10 @@ import com.google.gwt.user.client.ui.Widget;
  * render "rows" and "columns" (e.g. some may transpose the normal meaning to
  * provide a horizontal implementation of normally vertical tabular data)
  */
-public abstract class MergableGridWidget<T> extends Widget {
+public abstract class MergableGridWidget<T> extends Widget
+    implements
+    ValueUpdater<Object>,
+    HasSelectedCellChangeHandlers {
 
     /**
      * Container for a cell's extents
@@ -73,38 +82,66 @@ public abstract class MergableGridWidget<T> extends Widget {
 
     }
 
+    // Enum to support keyboard navigation
+    public enum MOVE_DIRECTION {
+        LEFT, RIGHT, UP, DOWN, NONE
+    }
+
+    //GWT disable text selection in an HTMLTable. 
+    //event.stopPropogation() doesn't prevent text selection
+    private native static void disableTextSelectInternal(Element e,
+                                                         boolean disable)/*-{
+        if (disable) {
+        e.ondrag = function () { return false; };
+        e.onselectstart = function () { return false; };
+        e.style.MozUserSelect="none"
+        } else {
+        e.ondrag = null;
+        e.onselectstart = null;
+        e.style.MozUserSelect="text"
+        }
+    }-*/;
+
+    // Selections store the actual grid data selected (irrespective of
+    // merged cells). So a merged cell spanning 2 rows is stored as 2
+    // selections. Selections are ordered by row number so we can
+    // iterate top to bottom.
+    protected TreeSet<CellValue< ? extends Comparable< ? >>> selections           = new TreeSet<CellValue< ? extends Comparable< ? >>>(
+                                                                                                                                        new Comparator<CellValue< ? extends Comparable< ? >>>() {
+
+                                                                                                                                            public int compare(CellValue< ? extends Comparable< ? >> o1,
+                                                                                                                                                               CellValue< ? extends Comparable< ? >> o2) {
+                                                                                                                                                return o1.getPhysicalCoordinate().getRow()
+                                                                                                                                                       - o2.getPhysicalCoordinate().getRow();
+                                                                                                                                            }
+
+                                                                                                                                        } );
+
     // TABLE elements
-    protected TableElement                        table;
-    protected TableSectionElement                 tbody;
+    protected TableElement                                   table;
+
+    protected TableSectionElement                            tbody;
 
     // Resources
-    protected static final DecisionTableResources resource = GWT
-                                                                   .create( DecisionTableResources.class );
-
-    protected static final DecisionTableStyle     style    = resource.cellTableStyle();
+    protected static final DecisionTableResources            resource             = GWT.create( DecisionTableResources.class );
+    protected static final DecisionTableStyle                style                = resource.cellTableStyle();
 
     // Data and columns to render
-    protected DynamicData                         data;
-    protected List<DynamicColumn<T>>              columns;
+    protected List<DynamicColumn<T>>                         columns              = new ArrayList<DynamicColumn<T>>();
+    protected DynamicData                                    data                 = new DynamicData();
+
+    //Properties for multi-cell selection
+    protected CellValue< ? >                                 rangeOriginCell;
+    protected CellValue< ? >                                 rangeExtentCell;
+
+    protected MOVE_DIRECTION                                 rangeDirection       = MOVE_DIRECTION.NONE;
+    protected boolean                                        bDragOperationPrimed = false;
+    protected boolean                                        isMerged             = false;
 
     /**
      * A grid of cells.
-     * 
-     * @param data
-     * @param columns
      */
-    public MergableGridWidget(final DynamicData data,
-                              final List<DynamicColumn<T>> columns) {
-        if ( data == null ) {
-            throw new IllegalArgumentException( "data cannot be null" );
-        }
-        if ( columns == null ) {
-            throw new IllegalArgumentException( "columns cannot be null" );
-        }
-
-        this.data = data;
-        this.columns = columns;
-
+    public MergableGridWidget() {
         style.ensureInjected();
 
         // Create some elements to contain the grid
@@ -122,19 +159,218 @@ public abstract class MergableGridWidget<T> extends Widget {
         // doing this, but I copied CellTable<?, ?>'s lead
         sinkEvents( Event.getTypeInt( "click" )
                     | Event.getTypeInt( "dblclick" )
-                    | Event.getTypeInt( "mouseover" )
+                    | Event.getTypeInt( "mousedown" )
+                    | Event.getTypeInt( "mouseup" )
+                    | Event.getTypeInt( "mousemove" )
                     | Event.getTypeInt( "mouseout" )
                     | Event.getTypeInt( "change" )
                     | Event.getTypeInt( "keypress" )
                     | Event.getTypeInt( "keydown" ) );
+
+        //Prevent text selection
+        disableTextSelectInternal( table,
+                                   true );
+
     }
 
     /**
-     * Delete the row at the given index. Partial redraw.
-     * 
-     * @param index
+     * Add a handler for SelectedCellChangeEvents
      */
-    public abstract void deleteRow(int index);
+    public HandlerRegistration addSelectedCellChangeHandler(SelectedCellChangeHandler handler) {
+        return addHandler( handler,
+                           SelectedCellChangeEvent.getType() );
+    }
+
+    /**
+     * Ensure indexes in the model are correct
+     */
+    // Here lays a can of worms! Each cell in the Decision Table has three
+    // coordinates: (1) The physical coordinate, (2) The coordinate relating to
+    // the HTML table element and (3) The coordinate mapping a HTML table
+    // element back to the physical coordinate. For example a cell could have
+    // the (1) physical coordinate (0,0) which equates to (2) HTML element (0,1)
+    // in which case the cell at physical coordinate (0,1) would have a (3)
+    // mapping back to (0,0).
+    public void assertModelIndexes() {
+
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            int colCount = 0;
+            for ( int iCol = 0; iCol < row.size(); iCol++ ) {
+
+                int newRow = iRow;
+                int newCol = colCount;
+                CellValue< ? extends Comparable< ? >> indexCell = row.get( iCol );
+
+                // Don't index hidden columns; indexing is used to
+                // map between HTML elements and the data behind
+                DynamicColumn<T> column = columns.get( iCol );
+                if ( column.isVisible() ) {
+
+                    if ( indexCell.getRowSpan() != 0 ) {
+                        newRow = iRow;
+                        newCol = colCount++;
+
+                        CellValue< ? extends Comparable< ? >> cell = data.get(
+                                                                               newRow ).get( newCol );
+                        cell.setPhysicalCoordinate( new Coordinate( iRow,
+                                                                    iCol ) );
+
+                    } else {
+                        DynamicDataRow priorRow = data.get( iRow - 1 );
+                        CellValue< ? extends Comparable< ? >> priorCell = priorRow
+                                .get( iCol );
+                        Coordinate priorHtmlCoordinate = priorCell
+                                .getHtmlCoordinate();
+                        newRow = priorHtmlCoordinate.getRow();
+                        newCol = priorHtmlCoordinate.getCol();
+                    }
+                }
+                indexCell.setCoordinate( new Coordinate( iRow,
+                                                         iCol ) );
+                indexCell.setHtmlCoordinate( new Coordinate( newRow,
+                                                             newCol ) );
+            }
+        }
+    }
+
+    /**
+     * Ensure merging is reflected in the entire model
+     */
+    public void assertModelMerging() {
+
+        //Remove merging first as it initialises all coordinates
+        removeModelMerging();
+
+        final int minRowIndex = 0;
+        final int maxRowIndex = data.size() - 1;
+
+        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+            for ( int iRow = minRowIndex; iRow <= maxRowIndex; iRow++ ) {
+
+                int rowSpan = 1;
+                CellValue< ? > cell1 = data.get( iRow ).get( iCol );
+                if ( iRow
+                     + rowSpan < data.size() ) {
+
+                    CellValue< ? > cell2 = data.get( iRow
+                                                     + rowSpan ).get( iCol );
+
+                    // Don't merge empty cells
+                    if ( isMerged
+                         && !cell1.isEmpty()
+                         && !cell2.isEmpty() ) {
+                        while ( cell1.getValue().equals( cell2.getValue() )
+                                && iRow
+                                   + rowSpan < maxRowIndex ) {
+                            cell2.setRowSpan( 0 );
+                            rowSpan++;
+                            cell2 = data.get( iRow
+                                              + rowSpan ).get( iCol );
+                        }
+                        if ( cell1.getValue().equals( cell2.getValue() ) ) {
+                            cell2.setRowSpan( 0 );
+                            rowSpan++;
+                        }
+                    }
+                    cell1.setRowSpan( rowSpan );
+                    iRow = iRow
+                           + rowSpan
+                           - 1;
+                } else {
+                    cell1.setRowSpan( rowSpan );
+                }
+            }
+        }
+
+        // Set indexes after merging has been corrected
+        assertModelIndexes();
+    }
+
+    public abstract void createRowElement(int index,
+                                          DynamicDataRow rowData);
+
+    /**
+     * Delete a column
+     * 
+     * @param column
+     *            Column to delete
+     * @param bRedraw
+     *            Should grid be redrawn
+     */
+    public void deleteColumn(DynamicColumn<T> column,
+                             boolean bRedraw) {
+
+        //Find index of column
+        int index = columns.indexOf( column );
+        if ( index == -1 ) {
+            throw new IllegalArgumentException(
+                                                "Column not found in declared columns." );
+        }
+
+        // Clear any selections
+        clearSelection();
+
+        // Delete column data
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            row.remove( index );
+        }
+
+        // Delete column from grid
+        columns.remove( index );
+        reindexColumns();
+
+        // Redraw
+        if ( bRedraw ) {
+            assertModelIndexes();
+            redraw();
+        }
+
+    }
+
+    /**
+     * Delete the given row. Partial redraw.
+     * 
+     * @param row
+     */
+    public void deleteRow(DynamicDataRow row) {
+        
+        //Find index of row
+        int index = data.indexOf( row );
+        if ( index == -1 ) {
+            throw new IllegalArgumentException(
+                                                "DynamicDataRow does not exist in table data." );
+        }
+
+        // Clear any selections
+        clearSelection();
+
+        //Delete row data
+        data.remove( index );
+
+        // Partial redraw
+        if ( !isMerged() ) {
+            // Single row when not merged
+            removeRowElement( index );
+            assertModelIndexes();
+        } else {
+            // Affected rows when merged
+            removeRowElement( index );
+
+            if ( data.size() > 0 ) {
+                assertModelMerging();
+                int minRedrawRow = findMinRedrawRow( index - 1 );
+                int maxRedrawRow = findMaxRedrawRow( index - 1 ) + 1;
+                if ( maxRedrawRow > data.size() - 1 ) {
+                    maxRedrawRow = data.size() - 1;
+                }
+                redrawRows( minRedrawRow,
+                                       maxRedrawRow );
+            }
+        }
+
+    }
 
     /**
      * Remove styling indicating a selected state
@@ -144,13 +380,69 @@ public abstract class MergableGridWidget<T> extends Widget {
     public abstract void deselectCell(CellValue< ? extends Comparable< ? >> cell);
 
     /**
-     * Resize a column
+     * Extend selection from the first cell selected to the cell specified
      * 
-     * @param col
-     * @param width
+     * @param end
+     *            Extent of selection
      */
-    public abstract void resizeColumn(DynamicColumn< ? > col,
-                                      int width);
+    public void extendSelection(Coordinate end) {
+        if ( rangeOriginCell == null ) {
+            throw new IllegalArgumentException( "origin has not been set. Unable to extend selection" );
+        }
+        if ( end == null ) {
+            throw new IllegalArgumentException( "end cannot be null" );
+        }
+        clearSelection();
+        CellValue< ? > endCell = data.get( end );
+        selectRange( rangeOriginCell,
+                     endCell );
+        if ( rangeOriginCell.getCoordinate().getRow() > endCell.getCoordinate().getRow() ) {
+            rangeExtentCell = selections.first();
+            rangeDirection = MOVE_DIRECTION.UP;
+        } else {
+            rangeExtentCell = selections.last();
+            rangeDirection = MOVE_DIRECTION.DOWN;
+        }
+    }
+
+    /**
+     * Extend selection in the specified direction
+     * 
+     * @param dir
+     *            Direction to extend the selection
+     */
+    public void extendSelection(MOVE_DIRECTION dir) {
+        if ( selections.size() > 0 ) {
+            CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
+            Coordinate nc = getNextCell( activeCell.getCoordinate(),
+                                         dir );
+            if ( nc != null ) {
+                clearSelection();
+                rangeDirection = dir;
+                rangeExtentCell = data.get( nc );
+                selectRange( rangeOriginCell,
+                             rangeExtentCell );
+            }
+        }
+    }
+
+    /**
+     * Return grid's columns
+     * 
+     * @return columns
+     */
+    public List<DynamicColumn<T>> getColumns() {
+        return columns;
+    }
+
+    /**
+     * Return grid's data
+     * 
+     * @return data
+     */
+    public DynamicData getData() {
+        return data;
+    }
 
     /**
      * Retrieve the extents of a cell
@@ -189,21 +481,187 @@ public abstract class MergableGridWidget<T> extends Widget {
     }
 
     /**
+     * Return a set of selected cells
+     * 
+     * @return The selected cells
+     */
+    public TreeSet<CellValue< ? extends Comparable< ? >>> getSelectedCells() {
+        return this.selections;
+    }
+
+    /**
+     * Retrieve the selected cells
+     * 
+     * @return The selected cells
+     */
+    public TreeSet<CellValue< ? extends Comparable< ? >>> getSelections() {
+        return this.selections;
+    }
+
+    /**
      * Hide a column
      */
     public abstract void hideColumn(int index);
 
     /**
+     * Insert a column before another
+     * 
+     * @param columnBefore
+     *            The column before which the new column should be inserted
+     * @param newColumn
+     *            Column definition
+     * @param columnData
+     *            Data for column
+     * @param bRedraw
+     *            Should grid be redrawn
+     */
+    public void insertColumnBefore(DynamicColumn<T> columnBefore,
+                                   DynamicColumn<T> newColumn,
+                                   List<CellValue< ? >> columnData,
+                                   boolean bRedraw) {
+
+        if ( newColumn == null ) {
+            throw new IllegalArgumentException( "newColumn cannot be null" );
+        }
+        if ( columnData == null ) {
+            throw new IllegalArgumentException( "columnData cannot be null" );
+        }
+        if ( columnData.size() != data.size() ) {
+            throw new IllegalArgumentException( "columnData contains a different number of rows to the grid" );
+        }
+
+        //Find index of new column
+        int index = columns.size();
+        if ( columnBefore != null ) {
+            index = columns.indexOf( columnBefore );
+            if ( index == -1 ) {
+                throw new IllegalArgumentException(
+                                                    "columnBefore does not exist in table data." );
+            }
+            index++;
+        }
+
+        // Clear any selections
+        clearSelection();
+
+        // Add column definition
+        columns.add( index,
+                     newColumn );
+        reindexColumns();
+
+        // Add column data
+        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
+            CellValue< ? > cv = columnData.get( iRow );
+            data.get( iRow ).add( index,
+                                  cv );
+        }
+        assertModelIndexes();
+
+        // Redraw
+        if ( bRedraw ) {
+            redrawColumns( index,
+                           columns.size() - 1 );
+        }
+
+    }
+
+    /**
      * Insert the given row before the provided index. Partial redraw.
      * 
-     * @param index
-     *            The index of the row before which the new row should be
-     *            inserted
+     * @param rowBefore
+     *            The row before which the new row should be inserted
      * @param rowData
      *            The row of data to insert
      */
-    public abstract void insertRowBefore(int index,
-                                         DynamicDataRow rowData);
+    public void insertRowBefore(DynamicDataRow rowBefore,
+                                         DynamicDataRow rowData) {
+
+        if ( rowData == null ) {
+            throw new IllegalArgumentException( "Row data cannot be null" );
+        }
+        if ( rowData.size() != columns.size() ) {
+            throw new IllegalArgumentException( "rowData contains a different number of columns to the grid" );
+        }
+
+        //Find index of row
+        int index = data.size();
+        if ( rowBefore != null ) {
+            index = data.indexOf( rowBefore );
+            if ( index == -1 ) {
+                throw new IllegalArgumentException(
+                                                    "rowBefore does not exist in table data." );
+            }
+        }
+        
+        // Clear any selections
+        clearSelection();
+
+        // Find rows that need to be (re)drawn
+        int minRedrawRow = index;
+        int maxRedrawRow = index;
+        if ( isMerged() ) {
+            if ( index < data.size() ) {
+                minRedrawRow = findMinRedrawRow( index );
+                maxRedrawRow = findMaxRedrawRow( index ) + 1;
+            } else {
+                minRedrawRow = findMinRedrawRow( (index > 0 ? index - 1 : index) );
+                maxRedrawRow = index;
+            }
+        }
+
+        data.add( index,
+                  rowData );
+
+        // Partial redraw
+        if ( !isMerged() ) {
+            // Only new row when not merged
+            assertModelIndexes();
+            createRowElement( index,
+                              rowData );
+        } else {
+            // Affected rows when merged
+            assertModelMerging();
+
+            // This row is overwritten by the call to redrawRows()
+            createRowElement( index,
+                              rowData );
+            redrawRows( minRedrawRow,
+                        maxRedrawRow );
+        }
+
+    }
+
+    /**
+     * Return the state of merging
+     * 
+     * @return
+     */
+    public boolean isMerged() {
+        return isMerged;
+    }
+
+    /**
+     * Move the selected cell
+     * 
+     * @param dir
+     *            Direction to move the selection
+     * @return Dimensions of the newly selected cell
+     */
+    public CellExtents moveSelection(MOVE_DIRECTION dir) {
+        CellExtents ce = null;
+        if ( selections.size() > 0 ) {
+            CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
+            Coordinate nc = getNextCell( activeCell.getCoordinate(),
+                                         dir );
+            if ( nc == null ) {
+                nc = activeCell.getCoordinate();
+            }
+            startSelecting( nc );
+            rangeDirection = dir;
+            ce = getSelectedCellExtents( data.get( nc ) );
+        }
+        return ce;
+    }
 
     /**
      * Redraw the whole table
@@ -240,6 +698,17 @@ public abstract class MergableGridWidget<T> extends Widget {
     public abstract void redrawRows(int startRedrawIndex,
                                     int endRedrawIndex);
 
+    public abstract void removeRowElement(int index);
+
+    /**
+     * Resize a column
+     * 
+     * @param col
+     * @param width
+     */
+    public abstract void resizeColumn(DynamicColumn< ? > col,
+                                      int width);
+
     /**
      * Add styling to cell to indicate a selected state
      * 
@@ -248,8 +717,346 @@ public abstract class MergableGridWidget<T> extends Widget {
     public abstract void selectCell(CellValue< ? extends Comparable< ? >> cell);
 
     /**
+     * Select a range of cells
+     * 
+     * @param startCell
+     *            The first cell to select
+     * @param endCell
+     *            The last cell to select
+     */
+    public void selectRange(CellValue< ? > startCell,
+                             CellValue< ? > endCell) {
+        int col = startCell.getCoordinate().getCol();
+
+        //Ensure startCell precedes endCell
+        if ( startCell.getCoordinate().getRow() > endCell.getCoordinate().getRow() ) {
+            CellValue< ? > swap = startCell;
+            startCell = endCell;
+            endCell = swap;
+        }
+
+        //Ensure startCell is at the top of a merged cell
+        while ( startCell.getRowSpan() == 0 ) {
+            startCell = data.get( startCell.getCoordinate().getRow() - 1 ).get( col );
+        }
+
+        //Ensure endCell is at the bottom of a merged cell
+        while ( endCell.getRowSpan() == 0 ) {
+            endCell = data.get( endCell.getCoordinate().getRow() - 1 ).get( col );
+        }
+        endCell = data.get( endCell.getCoordinate().getRow() + endCell.getRowSpan() - 1 ).get( col );
+
+        //Select range
+        for ( int iRow = startCell.getCoordinate().getRow(); iRow <= endCell
+                .getCoordinate().getRow(); iRow++ ) {
+            CellValue< ? > cell = data.get( iRow ).get( col );
+            selections.add( cell );
+
+            // Redraw selected cell
+            cell.setSelected( true );
+            selectCell( cell );
+        }
+
+        //Set extent of selected range according to the direction of selection
+        switch ( rangeDirection ) {
+            case DOWN :
+                this.rangeExtentCell = this.selections.last();
+                break;
+            case UP :
+                this.rangeExtentCell = this.selections.first();
+                break;
+        }
+    }
+
+    /**
      * Show a column
      */
     public abstract void showColumn(int index);
+
+    /**
+     * Select a single cell. If the cell is merged the selection is extended to
+     * include all merged cells.
+     * 
+     * @param start
+     *            The physical coordinate of the cell
+     */
+    public void startSelecting(Coordinate start) {
+        if ( start == null ) {
+            throw new IllegalArgumentException( "start cannot be null" );
+        }
+        clearSelection();
+        CellValue< ? > startCell = data.get( start );
+        selectRange( startCell,
+                     startCell );
+        rangeOriginCell = startCell;
+        rangeExtentCell = null;
+    }
+
+    /**
+     * Toggle the state of DecoratedGridWidget merging.
+     * 
+     * @return The state of merging after completing this call
+     */
+    public boolean toggleMerging() {
+        if ( !isMerged ) {
+            isMerged = true;
+            clearSelection();
+            assertModelMerging();
+            redraw();
+        } else {
+            isMerged = false;
+            clearSelection();
+            removeModelMerging();
+            redraw();
+        }
+        return isMerged;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.google.gwt.cell.client.ValueUpdater#update(java.lang.Object)
+     */
+    public void update(Object value) {
+
+        // Update underlying data
+        for ( CellValue< ? extends Comparable< ? >> cell : getSelectedCells() ) {
+            Coordinate c = cell.getCoordinate();
+            if ( !columns.get( c.getCol() ).isSystemControlled() ) {
+                data.set( c,
+                          value );
+            }
+        }
+
+        // Partial redraw
+        assertModelMerging();
+        int baseRowIndex = getSelectedCells().first().getPhysicalCoordinate()
+                .getRow();
+        int minRedrawRow = findMinRedrawRow( baseRowIndex );
+        int maxRedrawRow = findMaxRedrawRow( baseRowIndex );
+
+        // When merged cells become unmerged (if their value is
+        // cleared need to ensure the re-draw range is at least
+        // as large as the selection range
+        if ( maxRedrawRow < getSelectedCells().last().getPhysicalCoordinate()
+                .getRow() ) {
+            maxRedrawRow = getSelectedCells().last().getPhysicalCoordinate()
+                    .getRow();
+        }
+        redrawRows( minRedrawRow,
+                               maxRedrawRow );
+
+        //Re-select applicable cells, following change to merge
+        selectRange( getSelectedCells().first(),
+                                getSelectedCells().last() );
+
+    }
+
+    //Clear all selections
+    private void clearSelection() {
+        // De-select any previously selected cells
+        for ( CellValue< ? extends Comparable< ? >> cell : this.selections ) {
+            cell.setSelected( false );
+            deselectCell( cell );
+        }
+
+        // Clear collection
+        selections.clear();
+        rangeDirection = MOVE_DIRECTION.NONE;
+    }
+
+    // Given a base row find the maximum row that needs to be re-rendered based
+    // upon each columns merged cells; where each merged cell passes through the
+    // base row
+    private int findMaxRedrawRow(int baseRowIndex) {
+
+        if ( data.size() == 0 ) {
+            return 0;
+        }
+
+        // These should never happen, but it's a safe-guard
+        if ( baseRowIndex < 0 ) {
+            baseRowIndex = 0;
+        }
+        if ( baseRowIndex > data.size() - 1 ) {
+            baseRowIndex = data.size() - 1;
+        }
+
+        int maxRedrawRow = baseRowIndex;
+        DynamicDataRow baseRow = data.get( baseRowIndex );
+        for ( int iCol = 0; iCol < baseRow.size(); iCol++ ) {
+            int iRow = baseRowIndex;
+            CellValue< ? extends Comparable< ? >> cell = baseRow.get( iCol );
+            while ( cell.getRowSpan() != 1
+                    && iRow < data.size() - 1 ) {
+                iRow++;
+                DynamicDataRow row = data.get( iRow );
+                cell = row.get( iCol );
+            }
+            maxRedrawRow = (iRow > maxRedrawRow ? iRow : maxRedrawRow);
+        }
+        return maxRedrawRow;
+    }
+
+    // Given a base row find the minimum row that needs to be re-rendered based
+    // upon each columns merged cells; where each merged cell passes through the
+    // base row
+    private int findMinRedrawRow(int baseRowIndex) {
+
+        if ( data.size() == 0 ) {
+            return 0;
+        }
+
+        // These should never happen, but it's a safe-guard
+        if ( baseRowIndex < 0 ) {
+            baseRowIndex = 0;
+        }
+        if ( baseRowIndex > data.size() - 1 ) {
+            baseRowIndex = data.size() - 1;
+        }
+
+        int minRedrawRow = baseRowIndex;
+        DynamicDataRow baseRow = data.get( baseRowIndex );
+        for ( int iCol = 0; iCol < baseRow.size(); iCol++ ) {
+            int iRow = baseRowIndex;
+            CellValue< ? extends Comparable< ? >> cell = baseRow.get( iCol );
+            while ( cell.getRowSpan() != 1
+                    && iRow > 0 ) {
+                iRow--;
+                DynamicDataRow row = data.get( iRow );
+                cell = row.get( iCol );
+            }
+            minRedrawRow = (iRow < minRedrawRow ? iRow : minRedrawRow);
+        }
+        return minRedrawRow;
+    }
+
+    //Get the next cell when selection moves in the specified direction
+    private Coordinate getNextCell(Coordinate c,
+                                   MOVE_DIRECTION dir) {
+        int step = 0;
+        Coordinate nc = null;
+        switch ( dir ) {
+            case LEFT :
+
+                // Move left
+                step = c.getCol() > 0 ? 1 : 0;
+                if ( step > 0 ) {
+                    nc = new Coordinate( c.getRow(),
+                                         c.getCol()
+                                                 - step );
+
+                    // Skip hidden columns
+                    while ( nc.getCol() > 0
+                            && !columns.get( nc.getCol() ).isVisible() ) {
+                        nc = new Coordinate( c.getRow(),
+                                             nc.getCol()
+                                                     - step );
+                    }
+
+                    //Move to top of a merged cells
+                    CellValue< ? > newCell = data.get( nc );
+                    while ( newCell.getRowSpan() == 0 ) {
+                        nc = new Coordinate( nc.getRow() - 1,
+                                             nc.getCol() );
+                        newCell = data.get( nc );
+                    }
+
+                }
+                break;
+            case RIGHT :
+
+                // Move right
+                step = c.getCol() < columns.size() - 1 ? 1 : 0;
+                if ( step > 0 ) {
+                    nc = new Coordinate( c.getRow(),
+                                         c.getCol()
+                                                 + step );
+
+                    // Skip hidden columns
+                    while ( nc.getCol() < columns.size() - 2
+                            && !columns.get( nc.getCol() ).isVisible() ) {
+                        nc = new Coordinate( c.getRow(),
+                                             nc.getCol()
+                                                     + step );
+                    }
+
+                    //Move to top of a merged cells
+                    CellValue< ? > newCell = data.get( nc );
+                    while ( newCell.getRowSpan() == 0 ) {
+                        nc = new Coordinate( nc.getRow() - 1,
+                                             nc.getCol() );
+                        newCell = data.get( nc );
+                    }
+
+                }
+                break;
+            case UP :
+
+                // Move up
+                step = c.getRow() > 0 ? 1 : 0;
+                if ( step > 0 ) {
+                    nc = new Coordinate( c.getRow()
+                                                 - step,
+                                         c.getCol() );
+
+                    //Move to top of a merged cells
+                    CellValue< ? > newCell = data.get( nc );
+                    while ( newCell.getRowSpan() == 0 ) {
+                        nc = new Coordinate( nc.getRow() - step,
+                                             nc.getCol() );
+                        newCell = data.get( nc );
+                    }
+
+                }
+                break;
+            case DOWN :
+
+                // Move down
+                step = c.getRow() < data.size() - 1 ? 1 : 0;
+                if ( step > 0 ) {
+                    nc = new Coordinate( c.getRow()
+                                                 + step,
+                                         c.getCol() );
+
+                    //Move to top of a merged cells
+                    CellValue< ? > newCell = data.get( nc );
+                    while ( newCell.getRowSpan() == 0 && nc.getRow() < data.size() - 1 ) {
+                        nc = new Coordinate( nc.getRow() + step,
+                                             nc.getCol() );
+                        newCell = data.get( nc );
+                    }
+
+                }
+        }
+        return nc;
+    }
+
+    // Re-index columns
+    private void reindexColumns() {
+        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+            DynamicColumn<T> col = columns.get( iCol );
+            col.setColumnIndex( iCol );
+        }
+    }
+
+    //Remove merging from model
+    private void removeModelMerging() {
+
+        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                CellValue< ? > cell = data.get( iRow ).get( iCol );
+                Coordinate c = new Coordinate( iRow,
+                                               iCol );
+                cell.setCoordinate( c );
+                cell.setHtmlCoordinate( c );
+                cell.setPhysicalCoordinate( c );
+                cell.setRowSpan( 1 );
+            }
+        }
+
+        // Set indexes after merging has been corrected
+        assertModelIndexes();
+    }
 
 }

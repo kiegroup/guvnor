@@ -44,6 +44,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -159,7 +160,7 @@ public class SnapshotView extends Composite {
                       new Label( constants.SnapshotCreatedOn() ) );
         ft.setWidget( 3,
                       1,
-                      new Label( parentConf.lastModified.toLocaleString() ) );
+                      new Label( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(parentConf.lastModified)));
         ft.getFlexCellFormatter().setHorizontalAlignment( 4,
                                                           0,
                                                           HasHorizontalAlignment.ALIGN_RIGHT );

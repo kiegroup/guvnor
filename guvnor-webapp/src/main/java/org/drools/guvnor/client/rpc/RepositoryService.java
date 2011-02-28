@@ -165,6 +165,8 @@ public interface RepositoryService
 
     public void updateDependency(String uuid, String dependencyPath);
 
+    public String[] getDependencies(String uuid);
+ 
     /**
      * This returns the global packages.
      */
@@ -174,42 +176,6 @@ public interface RepositoryService
      * This returns a list of archived packages.
      */
     public PackageConfigData[] listArchivedPackages();
-
-    /**
-     * This loads up all the stuff for a rule asset based on the UUID (always
-     * latest and editable version).
-     */
-    public RuleAsset loadRuleAsset(String UUID) throws SerializationException;
-
-    public RuleAsset[] loadRuleAssets(String[] UUIDs) throws SerializationException;
-
-    /**
-     * This will load the history of the given asset, in a summary format
-     * suitable for display in a table.
-     */
-    public TableDataResult loadAssetHistory(String uuid) throws SerializationException;
-
-    /**
-     * This will load the history of the given asset, in a summary format
-     * suitable for display in a table.
-     */
-    public TableDataResult loadAssetHistory(String packageUUID, String assetName) throws SerializationException;
-
-    /**
-     * This will load all archived assets, in a summary format suitable for
-     * display in a table.
-     * 
-     * @deprecated in favor of {@link loadArchivedAssets(PageRequest)}
-     */
-    public TableDataResult loadArchivedAssets(int skip,
-                                              int numRows) throws SerializationException;
-
-    /**
-     * This will load all archived assets, in a summary format suitable for
-     * display in a table.
-     */
-
-    public PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) throws SerializationException;
 
     /**
      * This checks in a new version of an asset.
@@ -264,60 +230,6 @@ public interface RepositoryService
     public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException;
 
     /**
-     * Supports filtering and pagination.
-     * 
-     * @param request
-     *            never null, contains filter and pagination values
-     * @return never null, contains the {@link List} of {@link AssetPageRow}
-     * @throws SerializationException
-     */
-    public PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request) throws SerializationException;
-
-    /**
-     * Given a format, this will return assets that match. It can also be used
-     * for "pagination" by passing in start and finish row numbers.
-     * 
-     * @param packageUUID
-     *            The package uuid to search inside.
-     * @param format
-     *            The format to filter on. If this is empty - it will look for
-     *            all non "known" asset types (ie "misc" stuff).
-     * @param numRows
-     *            The number of rows to return. -1 means all.
-     * @param startRow
-     *            The starting row number if paging - if numRows is -1 then this
-     *            is ignored.
-     * @deprecated by {@link #findAssetPage(AssetPageRequest)}
-     */
-    public TableDataResult listAssets(String packageUUID,
-                                      String formats[],
-                                      int skip,
-                                      int numRows,
-                                      String tableConfig) throws SerializationException;
-
-    /**
-     * Given a format, this will return assets that match. It can also be used
-     * for "pagination" by passing in start and finish row numbers.
-     * 
-     * @param packageName
-     *            The name of package to search inside.
-     * @param format
-     *            The format to filter on. If this is empty - it will look for
-     *            all non "known" asset types (ie "misc" stuff).
-     * @param numRows
-     *            The number of rows to return. -1 means all.
-     * @param startRow
-     *            The starting row number if paging - if numRows is -1 then this
-     *            is ignored.
-     * @deprecated by {@link #findAssetPage(AssetPageRequest)}
-     */
-    public TableDataResult listAssetsWithPackageName(String packageName,
-                                                     String formats[],
-                                                     int skip,
-                                                     int numRows,
-                                                     String tableConfig) throws SerializationException;
-
-    /**
      * Returns a list of valid states.
      */
     public String[] listStates() throws SerializationException;
@@ -365,37 +277,6 @@ public interface RepositoryService
     public void changeState(String uuid,
                             String newState,
                             boolean wholePackage);
-
-    /**
-     * This moves an asset to the given target package.
-     */
-    public void changeAssetPackage(String uuid,
-                                   String newPackage,
-                                   String comment);
-
-    /**
-     * Prompt an asset into Global area.
-     * 
-     * @param assetUUID
-     *            The source assetID.
-     */
-    public void promoteAssetToGlobalArea(String assetUUID);
-
-    /**
-     * Copies an asset into a new destination package.
-     * 
-     * @param assetUUID
-     *            The source assetID.
-     * @param newPackage
-     *            The destination package (may be the same as the current source
-     *            package, but in that case the asset has to have a different
-     *            name).
-     * @param newName
-     *            The new name of the asset.
-     */
-    public String copyAsset(String assetUUID,
-                            String newPackage,
-                            String newName);
 
     /**
      * Copy the package (everything).
@@ -512,55 +393,10 @@ public interface RepositoryService
     public String buildPackageSource(String packageUUID) throws SerializationException;
 
     /**
-     * This will return the effective source for an asset (in DRL). Used as an
-     * aid for debugging.
-     */
-    public String buildAssetSource(RuleAsset asset) throws SerializationException;
-
-    /**
-     * This will build the asset and return any build results (errors). This is
-     * only to report on the results - it will generally not store any state or
-     * apply any changed.
-     */
-    public BuilderResult buildAsset(RuleAsset asset) throws SerializationException;
-
-    /**
-     * Rename an asset.
-     */
-    public String renameAsset(String uuid,
-                              String newName);
-
-    /**
      * Rename a category - taking in the full path, and just the new name.
      */
     public void renameCategory(String fullPathAndName,
                                String newName);
-
-    public void archiveAsset(String uuid);
-
-    public void unArchiveAsset(String uuid);
-
-    /**
-     * Archive assets based on uuid
-     * 
-     * @param uuids
-     */
-    public void archiveAssets(String[] uuids,
-                              boolean value);
-
-    /**
-     * Remove an asset based on uuid
-     * 
-     * @param uuid
-     */
-    public void removeAsset(String uuid);
-
-    /**
-     * Remove assets based on uuid
-     * 
-     * @param uuids
-     */
-    public void removeAssets(String[] uuids);
 
     /**
      * Permanently remove a package (delete it).
@@ -654,31 +490,13 @@ public interface RepositoryService
                                            String expression);
 
     /**
-     * This will quickly return a list of assets
-     * 
-     * @deprecated in favour of {@link quickFindAsset(QueryPageRequest)}
-     */
-    public TableDataResult quickFindAsset(String searchText,
-                                          boolean searchArchived,
-                                          int skip,
-                                          int numRows) throws SerializationException;
-
-    /**
      * Runs a full text search using JCR.
      * 
-     * @param text
-     * @param seekArchived
-     * @param skip
-     * @param numRows
+     * @param request
      * @return
      * @throws SerializationException
-     * 
-     * @deprecated in favour of {@link queryFullText(QueryPageRequest)}
      */
-    public TableDataResult queryFullText(String text,
-                                         boolean seekArchived,
-                                         int skip,
-                                         int numRows) throws SerializationException;
+    public PageResponse<QueryPageRow> queryFullText(QueryPageRequest request) throws SerializationException;
 
     /**
      * Run a meta data search. All dates are in format as configured for the
@@ -706,6 +524,17 @@ public interface RepositoryService
                                          boolean seekArchived,
                                          int skip,
                                          int numRows) throws SerializationException;
+
+    /**
+     * Run a meta data search. All dates are in format as configured for the
+     * system. Pass in null and they will not be included in the search (that
+     * applies to any field).
+     * 
+     * @param request
+     * @return
+     * @throws SerializationException
+     */
+    public PageResponse<QueryPageRow> queryMetaData(QueryMetadataPageRequest request) throws SerializationException;
 
     /**
      * @return A map of username : list of permission types for display reasons.
@@ -750,28 +579,6 @@ public interface RepositoryService
      * create new user.
      */
     public void createUser(String userName);
-
-    /**
-     * Returns the lockers user name
-     * 
-     * @param uuid
-     * @return Lockers user name or null if there is no lock.
-     */
-    public String getAssetLockerUserName(String uuid);
-
-    /**
-     * Locks the asset, if a lock already exists this over writes it.
-     * 
-     * @param uuid
-     */
-    public void lockAsset(String uuid);
-
-    /**
-     * Unlocks the asset.
-     * 
-     * @param uuid
-     */
-    public void unLockAsset(String uuid);
 
     /**
      * Installs the sample repository, wiping out what was already there.
@@ -828,34 +635,6 @@ public interface RepositoryService
      * Load the data for a given inbox for the currently logged in user.
      */
     public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request) throws DetailedSerializationException;
-
-    /**
-     * Runs a full text search using JCR.
-     * 
-     * @param request
-     * @return
-     * @throws SerializationException
-     */
-    public PageResponse<QueryPageRow> queryFullText(QueryPageRequest request) throws SerializationException;
-
-    /**
-     * Run a meta data search. All dates are in format as configured for the
-     * system. Pass in null and they will not be included in the search (that
-     * applies to any field).
-     * 
-     * @param request
-     * @return
-     * @throws SerializationException
-     */
-    public PageResponse<QueryPageRow> queryMetaData(QueryMetadataPageRequest request) throws SerializationException;
-
-    /**
-     * This will quickly return a list of assets
-     * 
-     * @param queryRequest
-     *            The parameters for the search
-     */
-    public PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest queryRequest) throws SerializationException;
 
     /**
      * Returns the Spring context elements specified by

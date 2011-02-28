@@ -135,7 +135,7 @@ public class VersionBrowser extends Composite {
      */
     protected void loadHistoryData() {
 
-        RepositoryServiceFactory.getService().loadAssetHistory( this.uuid,
+        RepositoryServiceFactory.getAssetService().loadAssetHistory( this.uuid,
                                                                 new GenericCallback<TableDataResult>() {
 
                                                                     public void onSuccess(TableDataResult table) {
@@ -220,7 +220,7 @@ public class VersionBrowser extends Composite {
 
         LoadingPopup.showMessage( constants.LoadingVersionFromHistory() );
 
-        RepositoryServiceFactory.getService().loadRuleAsset( versionUUID,
+        RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
                                                              new GenericCallback<RuleAsset>() {
 
                                                                  public void onSuccess(RuleAsset asset) {

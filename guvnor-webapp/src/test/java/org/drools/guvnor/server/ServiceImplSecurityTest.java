@@ -66,6 +66,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetAnalyst() throws Exception {
         try {
             ServiceImplementation impl = getServiceImplementation();
+            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             impl.getRulesRepository().createPackage( "testLoadRuleAssetAnalystPack1",
                                            "desc" );
             impl.createCategory( "",
@@ -118,9 +119,9 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             //now lets see if we can access this asset with the permissions
             @SuppressWarnings("unused")
-            RuleAsset asset = impl.loadRuleAsset( uuid1 );
+            RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid1 );
             try {
-                asset = impl.loadRuleAsset( uuid2 );
+                asset = assetRepositoryService.loadRuleAsset( uuid2 );
                 fail( "Did not catch expected exception" );
             } catch ( AuthorizationException e ) {
             }
@@ -133,6 +134,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetPackageReadonly() throws Exception {
         try {
             ServiceImplementation impl = getServiceImplementation();
+            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             String package1Name = "testLoadRuleAssetPackageReadonlyPack1";
             @SuppressWarnings("unused")
             String package1Uuid = impl.createPackage( package1Name,
@@ -186,11 +188,12 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "roleBasedPermissionManager",
                                               testManager );
 
+            
             //now lets see if we can access this asset with the permissions
             @SuppressWarnings("unused")
-            RuleAsset asset = impl.loadRuleAsset( uuid1 );
+            RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid1 );
             try {
-                asset = impl.loadRuleAsset( uuid2 );
+                asset = assetRepositoryService.loadRuleAsset( uuid2 );
                 fail( "Did not catch expected exception" );
             } catch ( AuthorizationException e ) {
             }
@@ -205,6 +208,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetNoCategory() throws Exception {
         try {
             ServiceImplementation impl = getServiceImplementation();
+            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             impl.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryPack1",
                                            "desc" );
             impl.createCategory( "",
@@ -244,7 +248,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                               testManager );
 
             // now lets see if we can access this asset with the permissions
-            RuleAsset asset = impl.loadRuleAsset( uuid );
+            RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid );
             assertNotNull( asset );
         } finally {
             Lifecycle.endApplication();
@@ -258,6 +262,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetNoCategoryPackageAdmin() throws Exception {
         try {
             ServiceImplementation impl = getServiceImplementation();
+            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             PackageItem packageItem = impl.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryPackageAdminPack1",
                                                                      "desc" );
             String packageName = packageItem.getName();
@@ -303,8 +308,9 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "roleBasedPermissionManager",
                                               testManager );
 
+            
             //now lets see if we can access this asset with the permissions
-            RuleAsset asset = impl.loadRuleAsset( uuid );
+            RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid );
             assertNotNull( asset );
         } finally {
             Lifecycle.endApplication();
@@ -318,6 +324,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetNoCategoryAnalystNegative() throws Exception {
         try {
             ServiceImplementation impl = getServiceImplementation();
+            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             PackageItem packageItem = impl.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryAnalystPack1",
                                                                      "desc" );
             @SuppressWarnings("unused")
@@ -370,12 +377,13 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "roleBasedPermissionManager",
                                               testManager );
 
+            
             //now lets see if we can access this asset with the permissions
             @SuppressWarnings("unused")
-            RuleAsset asset2 = impl.loadRuleAsset( uuid2 );
+            RuleAsset asset2 = assetRepositoryService.loadRuleAsset( uuid2 );
             try {
                 @SuppressWarnings("unused")
-                RuleAsset asset1 = impl.loadRuleAsset( uuid1 );
+                RuleAsset asset1 = assetRepositoryService.loadRuleAsset( uuid1 );
                 fail( "Did not catch expected exception" );
             } catch ( AuthorizationException e ) {
             }
@@ -391,6 +399,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetNoCategoryAnalystPositive() throws Exception {
         try {
             ServiceImplementation impl = getServiceImplementation();
+            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             PackageItem packageItem = impl.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryAnalystPositivePack1",
                                                                      "desc" );
             @SuppressWarnings("unused")
@@ -444,10 +453,11 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "roleBasedPermissionManager",
                                               testManager );
 
+           
             //now lets see if we can access this asset with the permissions
             //RuleAsset asset2 = impl.loadRuleAsset(uuid2);
             @SuppressWarnings("unused")
-            RuleAsset asset1 = impl.loadRuleAsset( uuid1 );
+            RuleAsset asset1 = assetRepositoryService.loadRuleAsset( uuid1 );
         } finally {
             Lifecycle.endApplication();
         }
@@ -460,6 +470,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             String category1 = "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryCat";
 
             ServiceImplementation impl = getServiceImplementation();
+            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             PackageItem packageItem = impl.getRulesRepository().createPackage( "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
                                                                      "desc" );
             @SuppressWarnings("unused")
@@ -504,11 +515,12 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "roleBasedPermissionManager",
                                               testManager );
 
+            
             // now lets see if we can access this asset with the permissions
             @SuppressWarnings("unused")
             RuleAsset asset = null;
             try {
-                asset = impl.loadRuleAsset( uuid );
+                asset = assetRepositoryService.loadRuleAsset( uuid );
             } catch ( AuthorizationException e ) {
                 fail( "User has permissions for the category" );
             }
@@ -526,6 +538,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixed() throws Exception {
         try {
             ServiceImplementation impl = getServiceImplementation();
+            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             PackageItem packageItem = impl.getRulesRepository().createPackage( "testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack",
                                                                      "desc" );
             String packageUuid = packageItem.getUUID();
@@ -573,9 +586,10 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "roleBasedPermissionManager",
                                               testManager );
 
+            
             //now lets see if we can access this asset with the permissions
             try {
-                RuleAsset asset = impl.loadRuleAsset( uuid );
+                RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid );
                 fail( "Did not catch expected exception" );
             } catch ( AuthorizationException e ) {
             }
@@ -633,6 +647,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testCheckinWithPackageReadonly() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
+        RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
         String packageUuid = impl.createPackage( "testCheckinWithPackageReadonlyPack",
                                                  "desc" );
         impl.createCategory( "/",
@@ -646,7 +661,8 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           "testCheckinWithPackageReadonlyCat",
                                           "testCheckinWithPackageReadonlyPack",
                                           AssetFormats.DRL );
-        RuleAsset asset = impl.loadRuleAsset( uuid );
+        
+        RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid );
         assertNotNull( asset.metaData.lastModifiedDate );
         asset.metaData.coverage = "boo";
         asset.content = new RuleContentText();
@@ -696,6 +712,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testCheckinPackageDeveloper() throws Exception {
         //try {
         ServiceImplementation impl = getServiceImplementation();
+        RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
         String packageName = "testCheckinPackageDeveloperPack1";
         @SuppressWarnings("unused")
         String packageUuid = impl.createPackage( packageName,
@@ -711,7 +728,8 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           "testCheckinPackageDeveloperCat1",
                                           "testCheckinPackageDeveloperPack1",
                                           AssetFormats.DRL );
-        RuleAsset asset = impl.loadRuleAsset( uuid );
+        
+        RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid );
         assertNotNull( asset.metaData.lastModifiedDate );
         asset.metaData.coverage = "boo";
         asset.content = new RuleContentText();
@@ -760,6 +778,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyFilter() throws Exception {
         try {
             ServiceImplementation impl = getServiceImplementation();
+            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             String package3Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack3";
             @SuppressWarnings("unused")
             String package3Uuid = impl.createPackage( package3Name,
@@ -813,8 +832,8 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             testManager.create();
             Contexts.getSessionContext().set( "roleBasedPermissionManager",
                                               testManager );
-
-            TableDataResult result = impl.queryFullText( "testLoadRuleAssetWithRoleBasedAuthrozation",
+            
+            TableDataResult result = assetRepositoryService.queryFullText( "testLoadRuleAssetWithRoleBasedAuthrozation",
                                                          true,
                                                          0,
                                                          -1 );

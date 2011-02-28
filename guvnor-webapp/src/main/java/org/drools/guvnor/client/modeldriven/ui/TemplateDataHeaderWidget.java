@@ -117,18 +117,17 @@ public class TemplateDataHeaderWidget extends
         }
 
         // Child Widgets used in this Widget
-        private List<HeaderSorter>                      sorters    = new ArrayList<HeaderSorter>();
+        private List<HeaderSorter>                      sorters       = new ArrayList<HeaderSorter>();
 
         // UI Components
-        private Element[]                               rowHeaders = new Element[2];
-
-        private List<DynamicColumn<TemplateDataColumn>> columns    = new ArrayList<DynamicColumn<TemplateDataColumn>>();
+        private Element[]                               headerRows    = new Element[2];
+        private List<DynamicColumn<TemplateDataColumn>> headerColumns = new ArrayList<DynamicColumn<TemplateDataColumn>>();
 
         // Constructor
         private HeaderWidget() {
-            for ( int iRow = 0; iRow < rowHeaders.length; iRow++ ) {
-                rowHeaders[iRow] = DOM.createTR();
-                getBody().appendChild( rowHeaders[iRow] );
+            for ( int iRow = 0; iRow < headerRows.length; iRow++ ) {
+                headerRows[iRow] = DOM.createTR();
+                getBody().appendChild( headerRows[iRow] );
             }
             getBody().getParentElement().<TableElement> cast()
                     .setCellSpacing( 0 );
@@ -171,14 +170,15 @@ public class TemplateDataHeaderWidget extends
             sorters.clear();
 
             // Extracting visible columns makes life easier
-            columns.clear();
-            for ( int iCol = 0; iCol < grid.getColumns().size(); iCol++ ) {
-                DynamicColumn<TemplateDataColumn> col = grid.getColumns().get( iCol );
-                columns.add( col );
+            headerColumns.clear();
+            final List<DynamicColumn<TemplateDataColumn>> columns = grid.getGridWidget().getColumns();
+            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+                DynamicColumn<TemplateDataColumn> col = columns.get( iCol );
+                headerColumns.add( col );
             }
 
             // Draw rows
-            for ( int iRow = 0; iRow < rowHeaders.length; iRow++ ) {
+            for ( int iRow = 0; iRow < headerRows.length; iRow++ ) {
                 redrawHeaderRow( iRow );
             }
 
@@ -200,7 +200,7 @@ public class TemplateDataHeaderWidget extends
             Element tre = DOM.createTR();
             switch ( iRow ) {
                 case 0 :
-                    for ( DynamicColumn<TemplateDataColumn> col : columns ) {
+                    for ( DynamicColumn<TemplateDataColumn> col : headerColumns ) {
                         tce = DOM.createTD();
                         tce.addClassName( style.headerText() );
                         tre.appendChild( tce );
@@ -211,7 +211,7 @@ public class TemplateDataHeaderWidget extends
 
                 case 1 :
                     // Sorters
-                    for ( DynamicColumn<TemplateDataColumn> col : columns ) {
+                    for ( DynamicColumn<TemplateDataColumn> col : headerColumns ) {
                         final HeaderSorter shp = new HeaderSorter( col );
                         final DynamicColumn<TemplateDataColumn> sortableColumn = col;
                         shp.addClickHandler( new ClickHandler() {
@@ -237,8 +237,8 @@ public class TemplateDataHeaderWidget extends
             }
 
             getBody().replaceChild( tre,
-                                    rowHeaders[iRow] );
-            rowHeaders[iRow] = tre;
+                                    headerRows[iRow] );
+            headerRows[iRow] = tre;
         }
 
         // Update sort order. The column clicked becomes the primary sort column
@@ -254,7 +254,8 @@ public class TemplateDataHeaderWidget extends
                 column.setSortIndex( 0 );
                 column.setSortDirection( SortDirection.ASCENDING );
                 int sortIndex = 1;
-                for ( DynamicColumn<TemplateDataColumn> sortableColumn : grid.getColumns() ) {
+                final List<DynamicColumn<TemplateDataColumn>> columns = grid.getGridWidget().getColumns();
+                for ( DynamicColumn<TemplateDataColumn> sortableColumn : columns ) {
                     if ( !sortableColumn.equals( column ) ) {
                         if ( sortableColumn.getSortDirection() != SortDirection.NONE ) {
                             sortableColumn.setSortIndex( sortIndex );
@@ -302,17 +303,17 @@ public class TemplateDataHeaderWidget extends
         // This is also set in the ColumnResizeEvent handler, however it makes
         // resizing columns in the header more simple too
         resizeColumn.setWidth( resizeColumnWidth );
-        int resizeColumnIndex = widget.columns.indexOf( resizeColumn );
+        int resizeColumnIndex = widget.headerColumns.indexOf( resizeColumn );
 
         // Row 0 (General\Fact Type)
-        tce = widget.rowHeaders[0].getChild( resizeColumnIndex )
+        tce = widget.headerRows[0].getChild( resizeColumnIndex )
                 .<TableCellElement> cast();
         div = tce.getFirstChild().<DivElement> cast();
         div.getStyle().setWidth( resizeColumnWidth,
                                  Unit.PX );
 
         // Row 1 (Sorters)
-        tce = widget.rowHeaders[1].getChild( resizeColumnIndex )
+        tce = widget.headerRows[1].getChild( resizeColumnIndex )
                 .<TableCellElement> cast();
         div = tce.getFirstChild().<DivElement> cast();
         div.getStyle().setWidth( resizeColumnWidth,
@@ -320,7 +321,7 @@ public class TemplateDataHeaderWidget extends
 
         // Fire event to any interested consumers
         ColumnResizeEvent.fire( this,
-                                widget.columns.get( resizeColumnIndex ),
+                                widget.headerColumns.get( resizeColumnIndex ),
                                 resizeColumnWidth );
     }
 
@@ -336,15 +337,15 @@ public class TemplateDataHeaderWidget extends
     protected ResizerInformation getResizerInformation(int mx) {
         boolean isPrimed = false;
         ResizerInformation resizerInfo = new ResizerInformation();
-        for ( int iCol = 0; iCol < widget.rowHeaders[0].getChildCount(); iCol++ ) {
-            TableCellElement tce = widget.rowHeaders[0].getChild(
+        for ( int iCol = 0; iCol < widget.headerRows[0].getChildCount(); iCol++ ) {
+            TableCellElement tce = widget.headerRows[0].getChild(
                                                                   iCol ).<TableCellElement> cast();
             int cx = tce.getAbsoluteRight();
             if ( Math.abs( mx
                            - cx ) <= 5 ) {
                 isPrimed = true;
                 resizerInfo.setResizePrimed( isPrimed );
-                resizerInfo.setResizeColumn( widget.columns.get( iCol ) );
+                resizerInfo.setResizeColumn( widget.headerColumns.get( iCol ) );
                 resizerInfo.setResizeColumnLeft( tce.getAbsoluteLeft() );
                 break;
             }
@@ -363,8 +364,8 @@ public class TemplateDataHeaderWidget extends
     // needs resizing however the mouse could be over any
     // row
     private void setCursorType(Cursor cursor) {
-        for ( int iRow = 0; iRow < widget.rowHeaders.length; iRow++ ) {
-            TableRowElement tre = widget.rowHeaders[iRow]
+        for ( int iRow = 0; iRow < widget.headerRows.length; iRow++ ) {
+            TableRowElement tre = widget.headerRows[iRow]
                         .<TableRowElement> cast();
             for ( int iCol = 0; iCol < tre.getCells().getLength(); iCol++ ) {
                 TableCellElement tce = tre.getCells().getItem( iCol );

@@ -75,7 +75,7 @@ public class GuvnorAPIServlet extends HttpServlet {
             ServletOutputStream outputStream = response.getOutputStream();
             
             try {
-                RuleAsset asset = RepositoryServiceServlet.getService().loadRuleAsset( uuid );
+                RuleAsset asset = RepositoryServiceServlet.getAssetService().loadRuleAsset( uuid );
                 if ( asset.content != null ) {
                     response.setContentType( "application/json" );
                     String content = null;

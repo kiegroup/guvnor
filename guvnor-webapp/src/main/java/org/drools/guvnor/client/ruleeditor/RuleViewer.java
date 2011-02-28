@@ -169,8 +169,15 @@ public class RuleViewer extends GuvnorEditor {
 
         // for designer we need to give it more playing room
         if ( editor.getClass().getName().equals( "org.drools.guvnor.client.processeditor.BusinessProcessEditor" ) ) {
-            editor.setWidth( "1100px" );
-            editor.setHeight( "480px" );
+            if(this.ruleViewerSettings.isStandalone()) {
+                // standalone bigger dimensions"
+                editor.setWidth( "1600px" );
+                editor.setHeight( "1000px" );
+            } else {
+                // normal dimensions inside guvnor
+                editor.setWidth( "1100px" );
+                editor.setHeight( "480px" );
+            }
         }
 
         toolbar = new ActionToolbar( getConfiguration(),
@@ -216,7 +223,7 @@ public class RuleViewer extends GuvnorEditor {
 
         // the action widgets (checkin/close etc).
         if ( readOnly
-             || asset.isreadonly ) {
+             || asset.isreadonly || this.ruleViewerSettings.isStandalone()) {
             toolbar.setVisible( false );
         } else {
             toolbar.setPromtToGlobalCommand( new Command() {
@@ -255,7 +262,7 @@ public class RuleViewer extends GuvnorEditor {
                 public void execute() {
                     onSave();
                     LoadingPopup.showMessage( constants.CalculatingSource() );
-                    RepositoryServiceFactory.getService().buildAssetSource( asset,
+                    RepositoryServiceFactory.getAssetService().buildAssetSource( asset,
                                                                             new GenericCallback<String>() {
 
                                                                                 public void onSuccess(String src) {
@@ -276,7 +283,7 @@ public class RuleViewer extends GuvnorEditor {
                 public void execute() {
                     onSave();
                     LoadingPopup.showMessage( constants.ValidatingItemPleaseWait() );
-                    RepositoryServiceFactory.getService().buildAsset( asset,
+                    RepositoryServiceFactory.getAssetService().buildAsset( asset,
                                                                       new GenericCallback<BuilderResult>() {
 
                                                                           public void onSuccess(BuilderResult results) {
@@ -466,7 +473,7 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     private void doArchive() {
-        RepositoryServiceFactory.getService().archiveAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().archiveAsset( asset.uuid,
                                                             new GenericCallback<Void>() {
                                                                 public void onSuccess(Void o) {
                                                                     if ( archiveCommand != null ) {
@@ -537,7 +544,7 @@ public class RuleViewer extends GuvnorEditor {
 
     public void refreshDataAndView() {
         LoadingPopup.showMessage( constants.RefreshingItem() );
-        RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
                                                                      asset = asset_;
@@ -557,7 +564,7 @@ public class RuleViewer extends GuvnorEditor {
     private void refreshMetaWidgetOnly(final boolean showBusy) {
 
         if ( showBusy ) LoadingPopup.showMessage( constants.RefreshingItem() );
-        RepositoryServiceFactory.getService().loadRuleAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
                                                                      asset.metaData = asset_.metaData;
@@ -645,7 +652,7 @@ public class RuleViewer extends GuvnorEditor {
                 if ( !NewAssetWizard.validatePathPerJSR170( name ) ) {
                     return;
                 }
-                RepositoryServiceFactory.getService().copyAsset( asset.uuid,
+                RepositoryServiceFactory.getAssetService().copyAsset( asset.uuid,
                                                                  sel.getSelectedPackage(),
                                                                  name,
                                                                  new GenericCallback<String>() {
@@ -692,7 +699,7 @@ public class RuleViewer extends GuvnorEditor {
             return;
         }
         if ( Window.confirm( constants.PromoteAreYouSure() ) ) {
-            RepositoryServiceFactory.getService().promoteAssetToGlobalArea( asset.uuid,
+            RepositoryServiceFactory.getAssetService().promoteAssetToGlobalArea( asset.uuid,
                                                                             new GenericCallback<Void>() {
                                                                                 public void onSuccess(Void data) {
                                                                                     Window.alert( constants.Promoted() );

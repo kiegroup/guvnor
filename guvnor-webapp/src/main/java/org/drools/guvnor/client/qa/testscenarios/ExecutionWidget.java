@@ -30,6 +30,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -102,22 +103,24 @@ public class ExecutionWidget extends Composite {
 
     private HorizontalPanel simulDate() {
         HorizontalPanel horizontalPanel = new HorizontalPanel();
-        final String format = "dd-MMM-YYYY"; //NON-NLS
+        final String format = "yyyy-MM-dd HH:mm"; //NON-NLS
         final TextBox textBox = new TextBox();
         if ( executionTrace.getScenarioSimulatedDate() == null ) {
             textBox.setText( "<" + format + ">" );
         } else {
-            textBox.setText( executionTrace.getScenarioSimulatedDate().toLocaleString() );
+            textBox.setText( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(executionTrace.getScenarioSimulatedDate()));
         }
         final SmallLabel dateHint = new SmallLabel();
         textBox.addKeyUpHandler( new KeyUpHandler() {
 
             public void onKeyUp(KeyUpEvent event) {
                 try {
-                    Date d = new Date( textBox.getText() );
-                    dateHint.setText( d.toLocaleString() );
+                    String exampleDate = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(new Date());
+                    String suggestedDate = textBox.getText() + exampleDate.substring(textBox.getText().length());
+                    Date d = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).parse(suggestedDate);
+                    dateHint.setText( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(d) );
                 } catch ( Exception e ) {
-                    dateHint.setText( "..." );
+                    dateHint.setText( "..."  );
                 }
             }
         } );
@@ -129,9 +132,10 @@ public class ExecutionWidget extends Composite {
                     textBox.setText( constants.currentDateAndTime() );
                 } else {
                     try {
-                        Date date = new Date( textBox.getText() );
-                        executionTrace.setScenarioSimulatedDate( date );
-                        textBox.setText( date.toLocaleString() );
+                        //Date d1 = new Date();
+                        Date d = DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).parse(textBox.getText());
+                        executionTrace.setScenarioSimulatedDate( d );
+                        textBox.setText( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(d) );
                         dateHint.setText( "" );
                     } catch ( Exception e ) {
                         ErrorPopup.showMessage( Format.format( constants.BadDateFormatPleaseTryAgainTryTheFormatOf0(),

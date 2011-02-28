@@ -29,7 +29,7 @@ public class MetaDataMapperTest {
         assertEquals("", data.coverage);
         TestBean bean = new TestBean();
         
-        MetaDataMapper mapper = new MetaDataMapper();
+        MetaDataMapper mapper = MetaDataMapper.getInstance();
         mapper.copyToMetaData( data, bean );
         
         assertEquals("42", data.publisher);

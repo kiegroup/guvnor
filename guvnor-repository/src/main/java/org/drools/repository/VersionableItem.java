@@ -869,8 +869,14 @@ public abstract class VersionableItem extends Item {
      */
     public boolean isArchived() {
         try {
-            return this.node.getProperty(CONTENT_PROPERTY_ARCHIVE_FLAG)
-                    .getBoolean();
+            Node ruleNode = getVersionContentNode();
+            return ruleNode.getProperty( CONTENT_PROPERTY_ARCHIVE_FLAG ).getBoolean();
+
+/*            return this.node.getProperty(CONTENT_PROPERTY_ARCHIVE_FLAG)
+                    .getBoolean();*/
+        } catch ( PathNotFoundException e ) {
+            // doesn't have this property
+            return false;
         } catch (RepositoryException e) {
             log.error("Unable to check this asset");
             throw new RulesRepositoryException(e);

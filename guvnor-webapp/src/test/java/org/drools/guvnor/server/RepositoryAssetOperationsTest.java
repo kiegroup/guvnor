@@ -45,162 +45,189 @@ public class RepositoryAssetOperationsTest {
 
     @Test
     public void testRenameAsset() {
-        RulesRepository rulesRepository = Mockito.mock(RulesRepository.class);
+        RulesRepository rulesRepository = Mockito.mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository(rulesRepository);
-        when(rulesRepository.renameAsset("uuid", "newname")).thenReturn("uuid");
-        assertEquals(repositoryAssetOperations.renameAsset("uuid", "newname"),
-                "uuid");
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        when( rulesRepository.renameAsset( "uuid",
+                                           "newname" ) ).thenReturn( "uuid" );
+        assertEquals( repositoryAssetOperations.renameAsset( "uuid",
+                                                             "newname" ),
+                      "uuid" );
     }
 
     @Test
     public void testLoadAssetHistoryIsNull() throws SerializationException {
-        RulesRepository rulesRepository = mock(RulesRepository.class);
+        RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository(rulesRepository);
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
 
-        AssetItem assetItem = mock(AssetItem.class);
+        AssetItem assetItem = mock( AssetItem.class );
 
-        AssetHistoryIterator assetHistoryIterator = mock(AssetHistoryIterator.class);
-        when(assetItem.getHistory()).thenReturn(assetHistoryIterator);
+        AssetHistoryIterator assetHistoryIterator = mock( AssetHistoryIterator.class );
+        when( assetItem.getHistory() ).thenReturn( assetHistoryIterator );
+        Calendar calendar = GregorianCalendar.getInstance();
+        when( assetItem.getLastModified() ).thenReturn( calendar );
 
-        assertNull(repositoryAssetOperations.loadAssetHistory(assetItem));
+        TableDataResult result = repositoryAssetOperations.loadAssetHistory( assetItem );
+        assertNotNull( result );
+        assertEquals( "LATEST", result.data[0].values[0] );
     }
 
     @Test
     public void testLoadAssetHistoryAndHistoryDoesNotExistsAndNullIsReturned()
-            throws SerializationException {
-        RulesRepository rulesRepository = mock(RulesRepository.class);
+                                                                              throws SerializationException {
+        RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository(rulesRepository);
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
 
         AssetItem assetItem = initializeAssetItemMockForLoadAssetHistory();
 
-        AssetHistoryIterator assetHistoryIterator = mock(AssetHistoryIterator.class);
-        when(assetItem.getHistory()).thenReturn(assetHistoryIterator);
-        when(assetHistoryIterator.hasNext()).thenReturn(true, false);
-        AssetItem historicalAssetItem = initializeAssetItemHistoryMockForLoadAssetHistory(assetHistoryIterator);
-        when(historicalAssetItem.getVersionNumber()).thenReturn(1324567L);
+        AssetHistoryIterator assetHistoryIterator = mock( AssetHistoryIterator.class );
+        when( assetItem.getHistory() ).thenReturn( assetHistoryIterator );
+        when( assetHistoryIterator.hasNext() ).thenReturn( true,
+                                                           false );
+        AssetItem historicalAssetItem = initializeAssetItemHistoryMockForLoadAssetHistory( assetHistoryIterator );
+        when( historicalAssetItem.getVersionNumber() ).thenReturn( 1324567L );
+        Calendar calendar = GregorianCalendar.getInstance();
+        when( historicalAssetItem.getLastModified() ).thenReturn( calendar );
 
-        assertNull(repositoryAssetOperations.loadAssetHistory(assetItem));
+        assertNotNull( repositoryAssetOperations.loadAssetHistory( assetItem ) );
 
     }
 
     @Test
     public void testLoadAssetHistoryAndHistoryExists()
-            throws SerializationException {
-        RulesRepository rulesRepository = mock(RulesRepository.class);
+                                                      throws SerializationException {
+        RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository(rulesRepository);
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
 
         AssetItem assetItem = initializeAssetItemMockForLoadAssetHistory();
 
-        AssetHistoryIterator assetHistoryIterator = mock(AssetHistoryIterator.class);
-        when(assetItem.getHistory()).thenReturn(assetHistoryIterator);
-        when(assetHistoryIterator.hasNext()).thenReturn(true, false);
+        AssetHistoryIterator assetHistoryIterator = mock( AssetHistoryIterator.class );
+        when( assetItem.getHistory() ).thenReturn( assetHistoryIterator );
+        when( assetHistoryIterator.hasNext() ).thenReturn( true,
+                                                           false );
 
-        AssetItem historicalAssetItem = initializeAssetItemHistoryMockForLoadAssetHistory(assetHistoryIterator);
-        when(historicalAssetItem.getVersionNumber()).thenReturn(123456L);
+        AssetItem historicalAssetItem = initializeAssetItemHistoryMockForLoadAssetHistory( assetHistoryIterator );
+        when( historicalAssetItem.getVersionNumber() ).thenReturn( 123456L );
 
         Calendar calendar = GregorianCalendar.getInstance();
-        when(historicalAssetItem.getLastModified()).thenReturn(calendar);
+        when( historicalAssetItem.getLastModified() ).thenReturn( calendar );
 
         TableDataResult tableDataResult = repositoryAssetOperations
-                .loadAssetHistory(assetItem);
-        assertNotNull(tableDataResult);
+                .loadAssetHistory( assetItem );
+        assertNotNull( tableDataResult );
         TableDataRow[] tableDataRow = tableDataResult.data;
-        assertNotNull(tableDataRow);
-        assertEquals(tableDataRow.length, 1);
+        assertNotNull( tableDataRow );
+        assertEquals( tableDataRow.length,
+                      1 );
     }
 
     private AssetItem initializeAssetItemMockForLoadAssetHistory() {
-        AssetItem assetItem = mock(AssetItem.class);
-        when(assetItem.getVersionNumber()).thenReturn(1324567L);
+        AssetItem assetItem = mock( AssetItem.class );
+        when( assetItem.getVersionNumber() ).thenReturn( 1324567L );
         return assetItem;
     }
 
     private AssetItem initializeAssetItemHistoryMockForLoadAssetHistory(
-            AssetHistoryIterator assetHistoryIterator) {
-        AssetItem historicalAssetItem = mock(AssetItem.class);
-        when(assetHistoryIterator.next()).thenReturn(historicalAssetItem);
+                                                                        AssetHistoryIterator assetHistoryIterator) {
+        AssetItem historicalAssetItem = mock( AssetItem.class );
+        when( assetHistoryIterator.next() ).thenReturn( historicalAssetItem );
         return historicalAssetItem;
     }
 
     @Test
     public void testLoadArchivedAssetsReturnOne() throws SerializationException {
-        RulesRepository rulesRepository = mock(RulesRepository.class);
+        RulesRepository rulesRepository = mock( RulesRepository.class );
 
-        AssetItemIterator assetItemIterator = mock(AssetItemIterator.class);
-        when(assetItemIterator.hasNext()).thenReturn(true, false);
-        initializeAssetItemMockForLoadArchivedAssets(rulesRepository,
-                assetItemIterator);
+        AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
+        when( assetItemIterator.hasNext() ).thenReturn( true,
+                                                        false );
+        initializeAssetItemMockForLoadArchivedAssets( rulesRepository,
+                                                      assetItemIterator );
 
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository(rulesRepository);
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
 
         TableDataResult loadArchivedAssets = repositoryAssetOperations
-                .loadArchivedAssets(0, 1);
-        assertEquals(loadArchivedAssets.data.length, 1);
+                .loadArchivedAssets( 0,
+                                     1 );
+        assertEquals( loadArchivedAssets.data.length,
+                      1 );
     }
 
     @Test
     public void testLoadArchivedAssetsReturnLessThanIsAvailable()
-            throws SerializationException {
-        RulesRepository rulesRepository = mock(RulesRepository.class);
+                                                                 throws SerializationException {
+        RulesRepository rulesRepository = mock( RulesRepository.class );
 
-        AssetItemIterator assetItemIterator = mock(AssetItemIterator.class);
-        when(assetItemIterator.hasNext()).thenReturn(true, true, true, false);
-        initializeAssetItemMockForLoadArchivedAssets(rulesRepository,
-                assetItemIterator);
+        AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
+        when( assetItemIterator.hasNext() ).thenReturn( true,
+                                                        true,
+                                                        true,
+                                                        false );
+        initializeAssetItemMockForLoadArchivedAssets( rulesRepository,
+                                                      assetItemIterator );
 
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository(rulesRepository);
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
 
         TableDataResult loadArchivedAssets = repositoryAssetOperations
-                .loadArchivedAssets(0, 2);
-        assertEquals(loadArchivedAssets.data.length, 2);
+                .loadArchivedAssets( 0,
+                                     2 );
+        assertEquals( loadArchivedAssets.data.length,
+                      2 );
     }
 
     private void initializeAssetItemMockForLoadArchivedAssets(
-            RulesRepository rulesRepository, AssetItemIterator assetItemIterator) {
-        AssetItem assetItem = mock(AssetItem.class);
-        when(assetItem.getLastModified()).thenReturn(
-                GregorianCalendar.getInstance());
-        when(assetItemIterator.next()).thenReturn(assetItem);
-        when(rulesRepository.findArchivedAssets())
-                .thenReturn(assetItemIterator);
+                                                              RulesRepository rulesRepository,
+                                                              AssetItemIterator assetItemIterator) {
+        AssetItem assetItem = mock( AssetItem.class );
+        when( assetItem.getLastModified() ).thenReturn(
+                                                        GregorianCalendar.getInstance() );
+        when( assetItemIterator.next() ).thenReturn( assetItem );
+        when( rulesRepository.findArchivedAssets() )
+                .thenReturn( assetItemIterator );
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testFindAssetPageFormatInListAndFormatIsRegisteredIsNotSupported()
-            throws SerializationException {
-        RulesRepository rulesRepository = mock(RulesRepository.class);
+                                                                                  throws SerializationException {
+        RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository(rulesRepository);
-        AssetPageRequest assetPageRequest = new AssetPageRequest("uuid",
-                Arrays.asList("formatInList"), true, 0, 10);
-        repositoryAssetOperations.findAssetPage(assetPageRequest);
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+                                                                  Arrays.asList( "formatInList" ),
+                                                                  true,
+                                                                  0,
+                                                                  10 );
+        repositoryAssetOperations.findAssetPage( assetPageRequest );
     }
 
     @Test
     public void testFindAssetPageFormatInList() throws SerializationException {
-        RulesRepository rulesRepository = mock(RulesRepository.class);
+        RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository(rulesRepository);
-        AssetPageRequest assetPageRequest = new AssetPageRequest("uuid",
-                Arrays.asList("formatInList"), null, 1, 2);
-        PackageItem packageItem = mock(PackageItem.class);
-        when(rulesRepository.loadPackageByUUID(Mockito.anyString()))
-                .thenReturn(packageItem);
-        AssetItemIterator assetItemIterator = mock(AssetItemIterator.class);
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+                                                                  Arrays.asList( "formatInList" ),
+                                                                  null,
+                                                                  1,
+                                                                  2 );
+        PackageItem packageItem = mock( PackageItem.class );
+        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) )
+                .thenReturn( packageItem );
+        AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
 
-        when(packageItem.listAssetsByFormat(assetPageRequest.getFormatInList()))
-                .thenReturn(assetItemIterator);
+        when( packageItem.listAssetsByFormat( assetPageRequest.getFormatInList() ) )
+                .thenReturn( assetItemIterator );
         PageResponse<AssetPageRow> pageResponse = repositoryAssetOperations
-                .findAssetPage(assetPageRequest);
-        assertNotNull(pageResponse);
-        assertEquals(pageResponse.getStartRowIndex(), 1);
-        verify(packageItem).listAssetsByFormat(
-                assetPageRequest.getFormatInList());
+                .findAssetPage( assetPageRequest );
+        assertNotNull( pageResponse );
+        assertEquals( pageResponse.getStartRowIndex(),
+                      1 );
+        verify( packageItem ).listAssetsByFormat(
+                                                  assetPageRequest.getFormatInList() );
     }
 }

@@ -51,27 +51,27 @@ public class DecisionTableXLSHandler extends ContentHandler
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
-                            StringBuffer buf) {
+                            StringBuilder stringBuilder) {
         // TODO Auto-generated method stub
 
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
-                            StringBuffer buf) {
-        buf.append( getRawDRL( asset ) );
+                            StringBuilder stringBuilder) {
+        stringBuilder.append( getRawDRL( asset ) );
     }
 
     public void compile(BRMSPackageBuilder builder,
                         AssetItem asset,
                         ErrorLogger logger) throws DroolsParserException,
                                            IOException {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
 
         assembleDRL( builder,
                      asset,
-                     buf );
-        builder.addPackageFromDrl( new StringReader( buf.toString() ) );
+                     stringBuilder );
+        builder.addPackageFromDrl( new StringReader( stringBuilder.toString() ) );
 
     }
 
@@ -79,12 +79,12 @@ public class DecisionTableXLSHandler extends ContentHandler
                         RuleAsset asset,
                         ErrorLogger logger) throws DroolsParserException,
                                            IOException {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder stringBuilder = new StringBuilder();
 
         assembleDRL( builder,
                      asset,
-                     buf );
-        builder.addPackageFromDrl( new StringReader( buf.toString() ) );
+                     stringBuilder );
+        builder.addPackageFromDrl( new StringReader( stringBuilder.toString() ) );
     }
 
     public String getRawDRL(AssetItem asset) {

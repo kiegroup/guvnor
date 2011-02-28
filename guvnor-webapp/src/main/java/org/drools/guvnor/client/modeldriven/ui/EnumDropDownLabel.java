@@ -51,29 +51,32 @@ public class EnumDropDownLabel extends Composite {
     public EnumDropDownLabel(FactPattern pattern,
                              String fieldName,
                              SuggestionCompletionEngine sce,
-                             BaseSingleFieldConstraint constraint) {
-        this.textWidget = getTextLabel();
+                             BaseSingleFieldConstraint constraint, boolean enabled) {
+        this.textWidget = getTextLabel(enabled);        
         this.enumDropDown = getEnumDropDown( constraint,
                                              sce,
                                              pattern,
                                              fieldName );
-
+        this.enumDropDown.setEnabled(enabled);
         panel.add( textWidget );
 
         initWidget( panel );
 
     }
 
-    private Label getTextLabel() {
+    private Label getTextLabel(boolean enabled) {
         Label label = new Label();
         label.setStyleName( "x-form-field" );
-        label.addClickHandler(new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                showPopup();
-
-            }
-        });
+        if (enabled){
+	        label.addClickHandler(new ClickHandler() {
+	
+	            public void onClick(ClickEvent event) {
+	                showPopup();
+	
+	            }
+	        });
+        }
+        
         if ( label.getText() == null && "".equals( label.getText() ) ) {
             label.setText( constants.Value() );
         }

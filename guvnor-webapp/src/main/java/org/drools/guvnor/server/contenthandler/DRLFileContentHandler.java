@@ -111,7 +111,7 @@ public class DRLFileContentHandler extends PlainTextContentHandler
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
-                            StringBuffer buf) {
+                            StringBuilder stringBuilder) {
 
         String content = ((RuleContentText) asset.content).content;
 
@@ -122,14 +122,14 @@ public class DRLFileContentHandler extends PlainTextContentHandler
                                            content );
         }
 
-        buf.append( content );
+        stringBuilder.append( content );
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
-                            StringBuffer buf) {
+                            StringBuilder stringBuilder) {
         String content = getRawDRL( asset );
-        buf.append( content );
+        stringBuilder.append( content );
     }
 
     public String getRawDRL(AssetItem asset) {

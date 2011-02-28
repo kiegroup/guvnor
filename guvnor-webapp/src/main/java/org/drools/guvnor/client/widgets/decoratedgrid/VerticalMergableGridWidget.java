@@ -15,10 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
-import java.util.List;
 import java.util.Set;
-
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget.MOVE_DIRECTION;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
@@ -26,6 +23,7 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableRowElement;
@@ -40,29 +38,12 @@ import com.google.gwt.user.client.Event;
  */
 public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
-    protected DecoratedGridWidget<T> grid;
-
-    public VerticalMergableGridWidget(final DecoratedGridWidget<T> grid,
-                                      final DynamicData data,
-                                      final List<DynamicColumn<T>> columns) {
-        super( data,
-               columns );
-        this.grid = grid;
-    }
-
     @Override
-    public void deleteRow(int index) {
-        if ( index < 0 ) {
-            throw new IllegalArgumentException(
-                                                "Index cannot be less than zero." );
-        }
-        if ( index > grid.getData().size() ) {
-            throw new IllegalArgumentException(
-                                                "Index cannot be greater than the number of rows." );
-        }
-
-        grid.getSidebarWidget().deleteSelector( index );
-        tbody.deleteRow( index );
+    public void createRowElement(int index,
+                                 DynamicDataRow rowData) {
+        TableRowElement newRow = tbody.insertRow( index );
+        populateTableRowElement( newRow,
+                                 rowData );
         fixRowStyles( index );
     }
 
@@ -91,8 +72,8 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             throw new IllegalArgumentException( "index cannot be greater than the number of rows" );
         }
 
-        for ( int iRow = 0; iRow < grid.getData().size(); iRow++ ) {
-            DynamicDataRow rowData = grid.getData().get( iRow );
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow rowData = data.get( iRow );
             CellValue< ? extends Comparable< ? >> cell = rowData.get( index );
 
             if ( cell.getRowSpan() > 0 ) {
@@ -105,37 +86,11 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     }
 
     @Override
-    public void insertRowBefore(int index,
-                                DynamicDataRow rowData) {
-        if ( index < 0 ) {
-            throw new IllegalArgumentException(
-                                                "Index cannot be less than zero." );
-        }
-        if ( index > grid.getData().size() ) {
-            throw new IllegalArgumentException(
-                                                "Index cannot be greater than the number of rows." );
-        }
-        if ( rowData == null ) {
-            throw new IllegalArgumentException( "Row data cannot be null" );
-        }
-        if ( rowData.size() != columns.size() ) {
-            throw new IllegalArgumentException( "rowData contains a different number of columns to the grid" );
-        }
-
-        grid.getSidebarWidget().insertSelectorBefore( rowData,
-                                                        index );
-        TableRowElement newRow = tbody.insertRow( index );
-        populateTableRowElement( newRow,
-                                 rowData );
-        fixRowStyles( index );
-    }
-
-    @Override
     public void onBrowserEvent(Event event) {
 
         String eventType = event.getType();
 
-        // Get the event target.
+        // Get the event target
         EventTarget eventTarget = event.getEventTarget();
         if ( !Element.is( eventTarget ) ) {
             return;
@@ -143,13 +98,13 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         Element target = event.getEventTarget().cast();
 
         // Find the cell where the event occurred.
-        TableCellElement tableCell = findNearestParentCell( target );
-        if ( tableCell == null ) {
+        TableCellElement eventTableCell = findNearestParentCell( target );
+        if ( eventTableCell == null ) {
             return;
         }
-        int htmlCol = tableCell.getCellIndex();
+        int htmlCol = eventTableCell.getCellIndex();
 
-        Element trElem = tableCell.getParentElement();
+        Element trElem = eventTableCell.getParentElement();
         if ( trElem == null ) {
             return;
         }
@@ -157,68 +112,64 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         int htmlRow = tr.getSectionRowIndex();
 
         // Convert HTML coordinates to physical coordinates
-        DynamicDataRow htmlRowData = data.get( htmlRow );
-        CellValue< ? extends Comparable< ? >> htmlCell = htmlRowData.get( htmlCol );
-        Coordinate c = htmlCell.getPhysicalCoordinate();
-        CellValue< ? extends Comparable< ? >> physicalCell = data.get( c.getRow() ).get( c.getCol() );
+        CellValue< ? > htmlCell = data.get( htmlRow ).get( htmlCol );
+        Coordinate eventPhysicalCoordinate = htmlCell.getPhysicalCoordinate();
+        CellValue< ? > eventPhysicalCell = data.get( eventPhysicalCoordinate.getRow() ).get( eventPhysicalCoordinate.getCol() );
 
-        // Select range
-        if ( eventType.equals( "click" ) ) {
-            grid.startSelecting( c );
-        }
+        //Event handlers
+        if ( eventType.equals( "mousedown" ) ) {
+            handleMousedownEvent( event,
+                                  eventPhysicalCoordinate );
+            return;
 
-        // Keyboard navigation
-        if ( eventType.equals( "keydown" ) ) {
-            if ( event.getKeyCode() == KeyCodes.KEY_DELETE ) {
-                grid.update( null );
-            } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT
-                        || (event.getKeyCode() == KeyCodes.KEY_TAB && !event
-                                .getShiftKey()) ) {
-                grid.moveSelection( MOVE_DIRECTION.RIGHT );
-                event.preventDefault();
-            } else if ( event.getKeyCode() == KeyCodes.KEY_LEFT
-                        || (event.getKeyCode() == KeyCodes.KEY_TAB && event
-                                .getShiftKey()) ) {
-                grid.moveSelection( MOVE_DIRECTION.LEFT );
-                event.preventDefault();
-            } else if ( event.getKeyCode() == KeyCodes.KEY_UP ) {
-                grid.moveSelection( MOVE_DIRECTION.UP );
-                event.preventDefault();
-            } else if ( event.getKeyCode() == KeyCodes.KEY_DOWN ) {
-                grid.moveSelection( MOVE_DIRECTION.DOWN );
-                event.preventDefault();
-            }
-        }
-        // Enter key is a special case; as the selected cell needs to be
-        // sent events and not the cell that GWT deemed the target for
-        // events.
-        if ( eventType.equals( "keydown" ) ) {
+        } else if ( eventType.equals( "mousemove" ) ) {
+            handleMousemoveEvent( event,
+                                  eventPhysicalCoordinate );
+            return;
+
+        } else if ( eventType.equals( "mouseup" ) ) {
+            handleMouseupEvent( event,
+                                eventPhysicalCoordinate );
+            return;
+
+        } else if ( eventType.equals( "keydown" ) ) {
+            handleKeyboardNavigationEvent( event );
+
             if ( event.getKeyCode() == KeyCodes.KEY_ENTER ) {
 
-                physicalCell = grid.getSelections().first();
-                c = physicalCell.getCoordinate();
-                tableCell = tbody.getRows()
-                        .getItem( physicalCell.getHtmlCoordinate().getRow() )
-                        .getCells()
-                        .getItem( physicalCell.getHtmlCoordinate().getCol() );
+                // Enter key is a special case; as the selected cell needs to be
+                // sent events and not the cell that GWT deemed the target for
+                // events.
+                switch ( rangeDirection ) {
+                    case UP :
+                        eventPhysicalCell = getSelections().first();
+                        break;
+
+                    case DOWN :
+                        eventPhysicalCell = getSelections().last();
+                        break;
+                }
+                eventPhysicalCoordinate = eventPhysicalCell.getCoordinate();
+                eventTableCell = tbody.getRows()
+                            .getItem( eventPhysicalCell.getHtmlCoordinate().getRow() )
+                            .getCells()
+                            .getItem( eventPhysicalCell.getHtmlCoordinate().getCol() );
             }
         }
 
         // Pass event and physical cell to Cell Widget for handling
-        Cell<CellValue< ? extends Comparable< ? >>> cellWidget = grid
-                .getColumns().get( c.getCol() ).getCell();
+        Cell<CellValue< ? extends Comparable< ? >>> cellWidget = columns.get( eventPhysicalCoordinate.getCol() ).getCell();
 
-        // Implementations of AbstractCell aren't forced to initialise
-        // consumed events
+        // Implementations of AbstractCell aren't forced to initialise consumed events
         Set<String> consumedEvents = cellWidget.getConsumedEvents();
         if ( consumedEvents != null
              && consumedEvents.contains( eventType ) ) {
-            Context context = new Context( c.getRow(),
-                                           c.getCol(),
-                                           c );
+            Context context = new Context( eventPhysicalCoordinate.getRow(),
+                                           eventPhysicalCoordinate.getCol(),
+                                           eventPhysicalCoordinate );
             cellWidget.onBrowserEvent( context,
-                                       tableCell.getFirstChildElement(),
-                                       physicalCell,
+                                       eventTableCell.getFirstChildElement(),
+                                       eventPhysicalCell,
                                        event,
                                        null );
         }
@@ -227,17 +178,11 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     @Override
     public void redraw() {
 
-        // Prepare sidebar
-        grid.getSidebarWidget().initialise();
-
         TableSectionElement nbody = Document.get().createTBodyElement();
 
-        for ( int iRow = 0; iRow < grid.getData().size(); iRow++ ) {
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
 
-            // Add a selector for each row
-            DynamicDataRow rowData = grid.getData().get( iRow );
-            grid.getSidebarWidget().appendSelector( rowData );
-
+            DynamicDataRow rowData = data.get( iRow );
             TableRowElement tre = Document.get().createTRElement();
             tre.setClassName( getRowStyle( iRow ) );
 
@@ -260,14 +205,14 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             throw new IllegalArgumentException(
                                                 "index cannot be less than zero." );
         }
-        if ( index > grid.getColumns().size() ) {
+        if ( index > columns.size() ) {
             throw new IllegalArgumentException(
                                                 "index cannot be greater than the number of defined columns." );
         }
 
-        for ( int iRow = 0; iRow < grid.getData().size(); iRow++ ) {
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             TableRowElement tre = tbody.getRows().getItem( iRow );
-            DynamicDataRow rowData = grid.getData().get( iRow );
+            DynamicDataRow rowData = data.get( iRow );
             redrawTableRowElement( rowData,
                                    tre,
                                    index,
@@ -283,7 +228,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             throw new IllegalArgumentException(
                                                 "startRedrawIndex cannot be less than zero." );
         }
-        if ( startRedrawIndex > grid.getColumns().size() ) {
+        if ( startRedrawIndex > columns.size() ) {
             throw new IllegalArgumentException(
                                                 "startRedrawIndex cannot be greater than the number of defined columns." );
         }
@@ -291,7 +236,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             throw new IllegalArgumentException(
                                                 "endRedrawIndex cannot be less than zero." );
         }
-        if ( endRedrawIndex > grid.getColumns().size() ) {
+        if ( endRedrawIndex > columns.size() ) {
             throw new IllegalArgumentException(
                                                 "endRedrawIndex cannot be greater than the number of defined columns." );
         }
@@ -300,9 +245,9 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                                                 "startRedrawIndex cannot be greater than endRedrawIndex." );
         }
 
-        for ( int iRow = 0; iRow < grid.getData().size(); iRow++ ) {
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             TableRowElement tre = tbody.getRows().getItem( iRow );
-            DynamicDataRow rowData = grid.getData().get( iRow );
+            DynamicDataRow rowData = data.get( iRow );
             redrawTableRowElement( rowData,
                                    tre,
                                    startRedrawIndex,
@@ -317,7 +262,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             throw new IllegalArgumentException(
                                                 "startRedrawIndex cannot be less than zero." );
         }
-        if ( startRedrawIndex > grid.getData().size() ) {
+        if ( startRedrawIndex > data.size() ) {
             throw new IllegalArgumentException(
                                                 "startRedrawIndex cannot be greater than the number of rows in the table." );
         }
@@ -325,7 +270,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             throw new IllegalArgumentException(
                                                 "endRedrawIndex cannot be less than zero." );
         }
-        if ( endRedrawIndex > grid.getData().size() ) {
+        if ( endRedrawIndex > data.size() ) {
             throw new IllegalArgumentException(
                                                 "endRedrawIndex cannot be greater than the number of rows in the table." );
         }
@@ -336,13 +281,28 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
         for ( int iRow = startRedrawIndex; iRow <= endRedrawIndex; iRow++ ) {
             TableRowElement newRow = Document.get().createTRElement();
-            DynamicDataRow rowData = grid.getData().get( iRow );
+            DynamicDataRow rowData = data.get( iRow );
             populateTableRowElement( newRow,
                                      rowData );
             tbody.replaceChild( newRow,
                                 tbody.getChild( iRow ) );
         }
         fixRowStyles( startRedrawIndex );
+    }
+
+    @Override
+    public void removeRowElement(int index) {
+        if ( index < 0 ) {
+            throw new IllegalArgumentException(
+                                                "Index cannot be less than zero." );
+        }
+        if ( index > data.size() ) {
+            throw new IllegalArgumentException(
+                                                "Index cannot be greater than the number of rows." );
+        }
+
+        tbody.deleteRow( index );
+        fixRowStyles( index );
     }
 
     @Override
@@ -357,7 +317,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
         col.setWidth( width );
         int iCol = col.getColumnIndex();
-        for ( DynamicDataRow row : grid.getData() ) {
+        for ( DynamicDataRow row : data ) {
             CellValue< ? extends Comparable< ? >> cell = row
                     .get( iCol );
             Coordinate c = cell.getHtmlCoordinate();
@@ -369,9 +329,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                     .setWidth( width,
                                Unit.PX );
         }
-
-        // Resizing columns can cause the scrollbar to appear
-        grid.assertDimensions();
 
     }
 
@@ -401,8 +358,8 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             throw new IllegalArgumentException( "index cannot be greater than the number of rows" );
         }
 
-        for ( int iRow = 0; iRow < grid.getData().size(); iRow++ ) {
-            DynamicDataRow rowData = grid.getData().get( iRow );
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow rowData = data.get( iRow );
             TableCellElement tce = makeTableCellElement( index,
                                                          rowData );
             if ( tce != null ) {
@@ -452,6 +409,96 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         return trClasses;
     }
 
+    //Handle "Key Down" events relating to keyboard navigation
+    private void handleKeyboardNavigationEvent(Event event) {
+        if ( event.getKeyCode() == KeyCodes.KEY_DELETE ) {
+            update( null );
+            return;
+
+        } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT
+                    || (event.getKeyCode() == KeyCodes.KEY_TAB && !event
+                            .getShiftKey()) ) {
+            CellExtents ce = moveSelection( MOVE_DIRECTION.RIGHT );
+            SelectedCellChangeEvent.fire( this,
+                                          ce );
+            event.preventDefault();
+            return;
+
+        } else if ( event.getKeyCode() == KeyCodes.KEY_LEFT
+                    || (event.getKeyCode() == KeyCodes.KEY_TAB && event
+                            .getShiftKey()) ) {
+            CellExtents ce = moveSelection( MOVE_DIRECTION.LEFT );
+            SelectedCellChangeEvent.fire( this,
+                                          ce );
+            event.preventDefault();
+            return;
+
+        } else if ( event.getKeyCode() == KeyCodes.KEY_UP ) {
+            if ( event.getShiftKey() ) {
+                extendSelection( MOVE_DIRECTION.UP );
+            } else {
+                CellExtents ce = moveSelection( MOVE_DIRECTION.UP );
+                SelectedCellChangeEvent.fire( this,
+                                              ce );
+            }
+            event.preventDefault();
+            return;
+
+        } else if ( event.getKeyCode() == KeyCodes.KEY_DOWN ) {
+            if ( event.getShiftKey() ) {
+                extendSelection( MOVE_DIRECTION.DOWN );
+            } else {
+                CellExtents ce = moveSelection( MOVE_DIRECTION.DOWN );
+                SelectedCellChangeEvent.fire( this,
+                                              ce );
+            }
+            event.preventDefault();
+            return;
+
+        }
+
+    }
+
+    //Handle "Mouse Down" events
+    private void handleMousedownEvent(Event event,
+                                      Coordinate eventCoordinate) {
+        if ( event.getButton() == NativeEvent.BUTTON_LEFT ) {
+
+            if ( event.getShiftKey() ) {
+
+                // Shift-click range selection
+                extendSelection( eventCoordinate );
+                return;
+
+            } else {
+
+                //Start of potential mouse-drag select operation
+                startSelecting( eventCoordinate );
+                bDragOperationPrimed = true;
+                return;
+            }
+        }
+    }
+
+    //Handle "Mouse Move" events
+    private void handleMousemoveEvent(Event event,
+                                      Coordinate eventCoordinate) {
+        if ( event.getButton() == NativeEvent.BUTTON_LEFT ) {
+
+            if ( bDragOperationPrimed ) {
+                extendSelection( eventCoordinate );
+                return;
+            }
+
+        }
+    }
+
+    //Handle "Mouse Up" events
+    private void handleMouseupEvent(Event event,
+                                    Coordinate eventCoordinate) {
+        bDragOperationPrimed = false;
+    }
+
     // Build a TableCellElement
     private TableCellElement makeTableCellElement(int iCol,
                                                   DynamicDataRow rowData) {
@@ -462,7 +509,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         TableCellElement tce = null;
 
         // Column to render the column
-        DynamicColumn< ? > column = grid.getColumns().get( iCol );
+        DynamicColumn< ? > column = columns.get( iCol );
 
         CellValue< ? extends Comparable< ? >> cellData = rowData.get( iCol );
         int rowSpan = cellData.getRowSpan();
@@ -508,9 +555,10 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     private TableRowElement populateTableRowElement(TableRowElement tre,
                                                     DynamicDataRow rowData) {
 
-        tre.getStyle().setHeight( style.rowHeight(), Unit.PX );
-        for ( int iCol = 0; iCol < grid.getColumns().size(); iCol++ ) {
-            if ( grid.getColumns().get( iCol ).isVisible() ) {
+        tre.getStyle().setHeight( style.rowHeight(),
+                                  Unit.PX );
+        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+            if ( columns.get( iCol ).isVisible() ) {
                 TableCellElement tce = makeTableCellElement( iCol,
                                                              rowData );
                 if ( tce != null ) {
@@ -536,7 +584,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         for ( int iCol = startColIndex; iCol <= endColIndex; iCol++ ) {
 
             // Only redraw visible columns
-            DynamicColumn< ? > column = grid.getColumns().get( iCol );
+            DynamicColumn< ? > column = columns.get( iCol );
             if ( column.isVisible() ) {
 
                 int maxColumnIndex = tre.getCells().getLength() - 1;

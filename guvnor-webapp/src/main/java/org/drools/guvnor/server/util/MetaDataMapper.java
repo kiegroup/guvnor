@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.server.util;
 
-
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -35,45 +33,55 @@ import org.drools.repository.RulesRepositoryException;
  * AssetItem is not a remotable instance, but MetaData is.
  */
 public class MetaDataMapper {
+    private static MetaDataMapper instance = new MetaDataMapper();
 
-    
+    private MetaDataMapper() {
+    }
+
+    public static MetaDataMapper getInstance() {
+        return instance;
+    }
+
     private Map writeMappingsForClass = new HashMap();
 
     private Map readMappipngsForClass = new HashMap();
-    
-    public void copyFromMetaData(MetaData data, Object target) {
+
+    public void copyFromMetaData(MetaData data,
+                                 Object target) {
         Map writeMappings = getWriteMappings( data,
-                          target );
-        
+                                              target );
+
         for ( Iterator iter = writeMappings.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry e = (Map.Entry) iter.next();
             Field f = (Field) e.getKey();
             Method m = (Method) e.getValue();
 
             try {
-                m.invoke( target, new Object[] {f.get( data )} ) ;
+                m.invoke( target,
+                          new Object[]{f.get( data )} );
             } catch ( IllegalArgumentException e1 ) {
-                throw new RulesRepositoryException(e1);
+                throw new RulesRepositoryException( e1 );
             } catch ( IllegalAccessException e1 ) {
-                throw new RulesRepositoryException(e1);
+                throw new RulesRepositoryException( e1 );
             } catch ( InvocationTargetException e1 ) {
-                throw new RulesRepositoryException(e1);
+                throw new RulesRepositoryException( e1 );
             }
 
         }
-        
+
     }
 
     private Map getWriteMappings(MetaData data,
                                   Object target) {
-        if (!this.writeMappingsForClass.containsKey( target.getClass() )) {
+        if ( !this.writeMappingsForClass.containsKey( target.getClass() ) ) {
             Map writeMappings = loadWriteMappings( data,
                                                     target.getClass() );
-            writeMappingsForClass.put( target.getClass(), writeMappings );
+            writeMappingsForClass.put( target.getClass(),
+                                       writeMappings );
         }
         return (Map) writeMappingsForClass.get( target.getClass() );
     }
-    
+
     private Map loadWriteMappings(MetaData data,
                                   Class bean) {
         Map mappings = new HashMap();
@@ -85,10 +93,10 @@ public class MetaDataMapper {
 
             name = "update" + name;
 
-
             Method m;
             try {
-                m = bean.getMethod( name, new Class[] {f.getType()} );
+                m = bean.getMethod( name,
+                                    new Class[]{f.getType()} );
                 mappings.put( f,
                                   m );
             } catch ( SecurityException e ) {
@@ -105,7 +113,7 @@ public class MetaDataMapper {
     public void copyToMetaData(MetaData data,
                                Object source) {
         Map readMappings = getReadMappings( data,
-                         source );
+                                            source );
 
         for ( Iterator iter = readMappings.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry e = (Map.Entry) iter.next();
@@ -113,13 +121,15 @@ public class MetaDataMapper {
             Method m = (Method) e.getValue();
 
             try {
-                f.set( data, m.invoke( source, null ) );
+                f.set( data,
+                       m.invoke( source,
+                                 null ) );
             } catch ( IllegalArgumentException e1 ) {
-                throw new RulesRepositoryException(e1);
+                throw new RulesRepositoryException( e1 );
             } catch ( IllegalAccessException e1 ) {
-                throw new RulesRepositoryException(e1);
+                throw new RulesRepositoryException( e1 );
             } catch ( InvocationTargetException e1 ) {
-                throw new RulesRepositoryException(e1);
+                throw new RulesRepositoryException( e1 );
             }
 
         }
@@ -128,15 +138,16 @@ public class MetaDataMapper {
 
     private Map getReadMappings(MetaData data,
                                  Object source) {
-        if (!this.readMappipngsForClass.containsKey( source.getClass() )) {
-            this.readMappipngsForClass.put( source.getClass(), loadReadMappings( data,
+        if ( !this.readMappipngsForClass.containsKey( source.getClass() ) ) {
+            this.readMappipngsForClass.put( source.getClass(),
+                                            loadReadMappings( data,
                                                                                  source.getClass() ) );
         }
         return (Map) this.readMappipngsForClass.get( source.getClass() );
     }
 
     private Map loadReadMappings(MetaData data,
-                            Class bean) {
+                                 Class bean) {
 
         Map mappings = new HashMap();
         Field fields[] = data.getClass().getFields();
@@ -153,9 +164,9 @@ public class MetaDataMapper {
 
             Method m;
             try {
-                m = bean.getMethod( name, null );
-                if (f.getType() == m.getReturnType())
-                {
+                m = bean.getMethod( name,
+                                    null );
+                if ( f.getType() == m.getReturnType() ) {
                     mappings.put( f,
                                   m );
                 }

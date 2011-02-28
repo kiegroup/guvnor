@@ -55,7 +55,7 @@ public class WorkingSetSelectorPopup {
         pop.setTitle(constants.SelectWorkingSets());
         Grid g = buildDoubleList(null);
 
-        RepositoryServiceFactory.getService().listAssets(asset.metaData.packageUUID,
+        RepositoryServiceFactory.getAssetService().listAssets(asset.metaData.packageUUID,
                 new String[] { AssetFormats.WORKING_SET }, 0, -1, "workingsetList",
                 new GenericCallback<TableDataResult>() {
 

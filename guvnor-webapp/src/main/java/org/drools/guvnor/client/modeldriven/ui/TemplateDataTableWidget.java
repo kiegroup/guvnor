@@ -23,6 +23,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
+import org.drools.guvnor.client.widgets.decoratedgrid.DynamicData;
 import org.drools.guvnor.client.widgets.decoratedgrid.DynamicDataRow;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasColumns;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
@@ -69,7 +70,7 @@ public class TemplateDataTableWidget extends Composite
         widget.setSidebarWidget( sidebar );
 
         this.cellFactory = new TemplateDataCellFactory( sce,
-                                                        widget );
+                                                        widget.getGridWidget() );
         this.cellValueFactory = new TemplateDataCellValueFactory( sce );
 
         initWidget( widget );
@@ -90,7 +91,7 @@ public class TemplateDataTableWidget extends Composite
     // Add column to table with optional redraw
     private void addColumn(TemplateDataColumn modelColumn,
                            boolean bRedraw) {
-        int index = widget.getColumns().size();
+        int index = widget.getGridWidget().getColumns().size();
         insertColumnBefore( modelColumn,
                             index,
                             bRedraw );
@@ -101,7 +102,7 @@ public class TemplateDataTableWidget extends Composite
      */
     public void appendRow() {
         DynamicDataRow row = makeNewRow();
-        widget.appendRow( row );
+        widget.insertRowBefore( null, row );
     }
 
     /**
@@ -131,7 +132,7 @@ public class TemplateDataTableWidget extends Composite
     // cannot be found
     private DynamicColumn<TemplateDataColumn> getDynamicColumn(TemplateDataColumn modelCol) {
         DynamicColumn<TemplateDataColumn> column = null;
-        List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
+        List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
         for ( DynamicColumn<TemplateDataColumn> dc : columns ) {
             if ( dc.getModelColumn().equals( modelCol ) ) {
                 column = dc;
@@ -157,8 +158,8 @@ public class TemplateDataTableWidget extends Composite
                                                           index );
 
         // Add column and data to grid
-        if ( index < widget.getColumns().size() ) {
-            DynamicColumn<TemplateDataColumn> columnBefore = widget.getColumns().get( index );
+        if ( index < widget.getGridWidget().getColumns().size() ) {
+            DynamicColumn<TemplateDataColumn> columnBefore = widget.getGridWidget().getColumns().get( index );
             widget.insertColumnBefore( columnBefore,
                                        column,
                                        columnData,
@@ -190,7 +191,7 @@ public class TemplateDataTableWidget extends Composite
     // Make a row of data for insertion into a DecoratedGridWidget
     private List<CellValue< ? >> makeColumnData(TemplateDataColumn column,
                                                 int colIndex) {
-        int dataSize = this.widget.getData().size();
+        int dataSize = this.widget.getGridWidget().getData().size();
         List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( column,
@@ -205,7 +206,7 @@ public class TemplateDataTableWidget extends Composite
     // Construct a new row for insertion into a DecoratedGridWidget
     private DynamicDataRow makeNewRow() {
         DynamicDataRow row = new DynamicDataRow();
-        List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
+        List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             TemplateDataColumn col = columns.get( iCol ).getModelColumn();
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( col,
@@ -234,10 +235,11 @@ public class TemplateDataTableWidget extends Composite
     public void scrapeData(TemplateModel model) {
         model.clearRows();
 
-        List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
+        final DynamicData data = widget.getGridWidget().getData();
+        final List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
         int columnCount = columns.size();
 
-        for ( DynamicDataRow row : widget.getData() ) {
+        for ( DynamicDataRow row : data ) {
 
             String[] rowData = new String[columnCount];
 
@@ -280,11 +282,12 @@ public class TemplateDataTableWidget extends Composite
 
         //Set row data
         String[][] data = model.getTableAsArray();
+        final List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
         for ( int iRow = 0; iRow < data.length; iRow++ ) {
             DynamicDataRow row = new DynamicDataRow();
             String[] rowData = data[iRow];
-            for ( int iCol = 0; iCol < widget.getColumns().size(); iCol++ ) {
-                TemplateDataColumn col = widget.getColumns().get( iCol ).getModelColumn();
+            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+                TemplateDataColumn col = columns.get( iCol ).getModelColumn();
 
                 //Underlying Template model uses empty Strings as null values; which is quite different in the MergedGrid world
                 String initialValue = rowData[iCol];
@@ -298,11 +301,11 @@ public class TemplateDataTableWidget extends Composite
                                                                                           initialValue );
                 row.add( cv );
             }
-            widget.appendRow( row );
+            widget.insertRowBefore( null, row );
         }
 
         // Ensure cells are indexed correctly for start-up data
-        widget.assertModelIndexes();
+        widget.getGridWidget().assertModelIndexes();
 
         // Draw header first as the size of child Elements depends upon it
         widget.getHeaderWidget().redraw();

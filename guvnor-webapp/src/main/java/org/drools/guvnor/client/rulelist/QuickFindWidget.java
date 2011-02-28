@@ -146,7 +146,7 @@ public class QuickFindWidget extends Composite {
                                                                     searchArchived,
                                                                     0,
                                                                     5 );
-        RepositoryServiceFactory.getService().quickFindAsset( queryRequest,
+        RepositoryServiceFactory.getAssetService().quickFindAsset( queryRequest,
                                                               new GenericCallback<PageResponse<QueryPageRow>>() {
 
                                                                   public void onSuccess(PageResponse<QueryPageRow> result) {

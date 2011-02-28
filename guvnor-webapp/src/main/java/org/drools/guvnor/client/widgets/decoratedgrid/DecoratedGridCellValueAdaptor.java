@@ -17,7 +17,6 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.Set;
 
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
@@ -27,7 +26,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 /**
  * A Cell that casts values to whatever is appropriate for the wrapped Cell
  * 
- *
+ * 
  * @param <T>
  *            The data-type required by the wrapped cell
  * @param <C>
@@ -37,9 +36,9 @@ public class DecoratedGridCellValueAdaptor<T, C> extends
         AbstractCell<CellValue< ? extends Comparable< ? >>> {
 
     // Really we want AbstractCell<?> but that leads to generics hell
-    private AbstractCell<T>          cell;
+    private AbstractCell<T>         cell;
 
-    protected DecoratedGridWidget<C> grid;
+    protected MergableGridWidget<C> grid;
 
     /**
      * @param cell
@@ -120,11 +119,11 @@ public class DecoratedGridCellValueAdaptor<T, C> extends
     }
 
     /**
-     * Inject a DecoratedGridWidget to handle value updates
+     * Inject a MergableGridWidget to handle value updates
      * 
      * @param manager
      */
-    public void setDecoratedGridWidget(DecoratedGridWidget<C> grid) {
+    public void setMergableGridWidget(MergableGridWidget<C> grid) {
         this.grid = grid;
     }
 

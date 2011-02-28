@@ -25,12 +25,11 @@ import java.util.jar.JarInputStream;
 import java.util.regex.Pattern;
 
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-
 
 /**
  * This is used for handling jar models for the rules.
@@ -57,26 +56,28 @@ public class ModelContentHandler extends ContentHandler
     public void onAttachmentAdded(AssetItem asset) throws IOException {
 
         PackageItem pkg = asset.getPackage();
-        StringBuilder header = createNewHeader( ServiceImplementation.getDroolsHeader( pkg ) );
+        StringBuilder header = createNewHeader( DroolsHeader.getDroolsHeader( pkg ) );
 
         Set<String> imports = getImportsFromJar( asset.getBinaryContentAttachment() );
 
         for ( String importLine : imports ) {
-            Pattern pattern = Pattern.compile("\\b" + importLine.replace(".", "\\.") + "\\b");
-            if (!pattern.matcher(header).find()) {
+            Pattern pattern = Pattern.compile( "\\b" + importLine.replace( ".",
+                                                                           "\\." ) + "\\b" );
+            if ( !pattern.matcher( header ).find() ) {
                 header.append( importLine ).append( "\n" );
             }
         }
 
-        ServiceImplementation.updateDroolsHeader(header.toString(), pkg);
-        pkg.checkin("Imports setup automatically on model import.");
+        DroolsHeader.updateDroolsHeader( header.toString(),
+                                         pkg );
+        pkg.checkin( "Imports setup automatically on model import." );
 
     }
 
     public void onAttachmentRemoved(AssetItem item) throws IOException {
 
         PackageItem pkg = item.getPackage();
-        StringBuilder header = createNewHeader( ServiceImplementation.getDroolsHeader( pkg ) );
+        StringBuilder header = createNewHeader( DroolsHeader.getDroolsHeader( pkg ) );
 
         Set<String> imports = getImportsFromJar( item.getBinaryContentAttachment() );
 
@@ -87,7 +88,7 @@ public class ModelContentHandler extends ContentHandler
                                              importLineWithLineEnd );
         }
 
-        ServiceImplementation.updateDroolsHeader( header.toString(),
+        DroolsHeader.updateDroolsHeader( header.toString(),
                                                   pkg );
 
         pkg.checkin( "Imports removed automatically on model archiving." );

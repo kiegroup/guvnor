@@ -135,7 +135,7 @@ public class DSLRuleContentHandler extends ContentHandler
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
-                            StringBuffer buf) {
+                            StringBuilder stringBuilder) {
         RuleContentText text = (RuleContentText) asset.content;
         String source = text.content;
 
@@ -144,17 +144,17 @@ public class DSLRuleContentHandler extends ContentHandler
                          null );
 
         DefaultExpander expander = builder.getDSLExpander();
-        buf.append( expander.expand( source ) );
+        stringBuilder.append( expander.expand( source ) );
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
-                            StringBuffer buf) {
+                            StringBuilder stringBuilder) {
         //add the rule keyword if its 'stand alone'
         String source = getRawDRL( asset );
 
         DefaultExpander expander = builder.getDSLExpander();
-        buf.append( expander.expand( source ) );
+        stringBuilder.append( expander.expand( source ) );
 
     }
 

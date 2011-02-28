@@ -30,8 +30,8 @@
     margin: 0px;
     text-align: center;
     outline: none;
-    border-bottom: borderWidth solid #C8C8C8;
-    background-color: green;
+    border-bottom: borderWidth solid #b9b9b9;
+    background-color: #b9b9b9;
 }
 
 .cellTableCell:HOVER {
