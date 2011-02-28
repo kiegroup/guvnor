@@ -18,6 +18,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -96,6 +97,21 @@ public class RepositoryPackageOperationsTest {
                                        "to" );
         verify( rulesRepository ).copyPackage( "from",
                                                "to" );
+    }
+    
+    
+    @Test
+    public void testRemovePackage() throws SerializationException {
+        RulesRepository rulesRepository = mock( RulesRepository.class );
+        RepositoryPackageOperations packageOperations = new RepositoryPackageOperations();
+        packageOperations.setRulesRepository( rulesRepository );
+        Session session = mock( Session.class );
+        when( rulesRepository.getSession() ).thenReturn( session );
+        PackageItem packageItem = mock(PackageItem.class);
+        when(rulesRepository.loadPackageByUUID( "uuid" )).thenReturn( packageItem );
+        packageOperations.removePackage( "uuid" );
+        verify(packageItem).remove();
+        verify( rulesRepository).save();
     }
 
 }
