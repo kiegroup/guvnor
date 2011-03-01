@@ -2,6 +2,7 @@ package org.drools.guvnor.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -173,6 +174,16 @@ public class RepositoryPackageOperationsTest {
                                                          "description",
                                                          "parentNode" );
 
+    }
+
+    @Test
+    public void testLoadPackageConfigWithDependencies() {
+        PackageItem packageItem = mock( PackageItem.class );
+        when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
+        when( packageItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
+        when( packageItem.getCreatedDate() ).thenReturn( GregorianCalendar.getInstance() );
+        when( packageItem.getDependencies() ).thenReturn( new String[]{"dependency"} );
+        assertNotNull( this.repositoryPackageOperations.loadPackageConfig( packageItem ).dependencies );
     }
 
 }
