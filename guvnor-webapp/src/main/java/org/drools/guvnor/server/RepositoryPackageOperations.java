@@ -346,8 +346,8 @@ public class RepositoryPackageOperations {
 
         return validateBRMSSuggestionCompletionLoaderResponse( loader );
     }
-    
-    BRMSSuggestionCompletionLoader createBRMSSuggestionCompletionLoader(){
+
+    BRMSSuggestionCompletionLoader createBRMSSuggestionCompletionLoader() {
         return new BRMSSuggestionCompletionLoader();
     }
 
@@ -608,8 +608,8 @@ public class RepositoryPackageOperations {
         // load package
         PackageItem item = getRulesRepository().loadPackage( packageName );
 
-        ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                   false );
+        ContentPackageAssembler asm = createContentPackageAssembler( item,
+                                                                     false );
 
         List<String> result = new ArrayList<String>();
         try {
@@ -630,7 +630,13 @@ public class RepositoryPackageOperations {
         }
     }
 
-    private void parseRulesToPackageList(ContentPackageAssembler asm,
+    ContentPackageAssembler createContentPackageAssembler(final PackageItem packageItem,
+                                                          boolean compile) {
+        return new ContentPackageAssembler( packageItem,
+                                            compile );
+    }
+
+    void parseRulesToPackageList(ContentPackageAssembler asm,
                                          List<String> result) throws DroolsParserException {
         int count = 0;
         StringTokenizer stringTokenizer = new StringTokenizer( asm.getDRL(),

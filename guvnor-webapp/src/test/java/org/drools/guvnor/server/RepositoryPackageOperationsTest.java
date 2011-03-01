@@ -1,5 +1,6 @@
 package org.drools.guvnor.server;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -23,7 +24,9 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
@@ -313,6 +316,48 @@ public class RepositoryPackageOperationsTest {
         verify( this.rulesRepository ).copyPackageSnapshot( packageName,
                                                             snapshotName,
                                                             newSnapshotName );
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testListRulesInPackageAndtDRLMissing() throws DroolsParserException,
+                                                      SerializationException {
+        RepositoryPackageOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
+        final String packageName = "packageName";
+        PackageItem packageItem = mock( PackageItem.class );
+        when( this.rulesRepository.loadPackage( packageName ) ).thenReturn( packageItem );
+        ContentPackageAssembler contentPackageAssembler = mock( ContentPackageAssembler.class );
+        doReturn( contentPackageAssembler ).when( localRepositoryPackageOperations ).createContentPackageAssembler( packageItem,
+                                                                                                                    false );
+        //doNothing().when( localRepositoryPackageOperations ).parseRulesToPackageList( contentPackageAssembler, new ArrayList<String>() );
+        when( contentPackageAssembler.getDRL() ).thenReturn( null );
+        assertArrayEquals( localRepositoryPackageOperations.listRulesInPackage( packageName ),
+                           new String[]{} );
+        verify( localRepositoryPackageOperations,
+                never() ).parseRulesToPackageList( Mockito.any( ContentPackageAssembler.class ),
+                                                   Mockito.anyList() );
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testListRulesInPackageAndtDRLIsNotMissing() throws DroolsParserException,
+                                                           SerializationException {
+        RepositoryPackageOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
+        final String packageName = "packageName";
+        PackageItem packageItem = mock( PackageItem.class );
+        when( this.rulesRepository.loadPackage( packageName ) ).thenReturn( packageItem );
+        ContentPackageAssembler contentPackageAssembler = mock( ContentPackageAssembler.class );
+        doReturn( contentPackageAssembler ).when( localRepositoryPackageOperations ).createContentPackageAssembler( packageItem,
+                                                                                                                    false );
+        doNothing().when( localRepositoryPackageOperations ).parseRulesToPackageList( contentPackageAssembler,
+                                                                                      new ArrayList<String>() );
+        when( contentPackageAssembler.getDRL() ).thenReturn( "DRL" );
+        assertArrayEquals( localRepositoryPackageOperations.listRulesInPackage( packageName ),
+                           new String[]{} );
+        verify( localRepositoryPackageOperations ).parseRulesToPackageList( Mockito.any( ContentPackageAssembler.class ),
+                                                                            Mockito.anyList() );
+
     }
 
     private void initSpyingAndMockingOnSuggestionCompletionLoader(RepositoryPackageOperations localRepositoryPackageOperations) {
