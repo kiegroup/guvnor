@@ -56,9 +56,7 @@ public class RepositoryPackageOperationsTest {
 
         PackageItem packageItem = mock( PackageItem.class );
         when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
-        when( packageItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
-        when( packageItem.getCreatedDate() ).thenReturn( GregorianCalendar.getInstance() );
-        when( packageItem.getDependencies() ).thenReturn( new String[]{"dependency"} );
+        prepareMockForPackageConfigDataFactory( packageItem );
         assertNull( this.repositoryPackageOperations.loadGlobalPackage().dependencies );
 
     }
@@ -67,8 +65,7 @@ public class RepositoryPackageOperationsTest {
     public void testLoadGlobalPackageAndIsSnapshot() {
         PackageItem packageItem = mock( PackageItem.class );
         when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
-        when( packageItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
-        when( packageItem.getCreatedDate() ).thenReturn( GregorianCalendar.getInstance() );
+        preparePackageItemMockDates( packageItem );
         when( packageItem.isSnapshot() ).thenReturn( true );
         when( packageItem.getSnapshotName() ).thenReturn( "snapshotName123" );
         assertTrue( this.repositoryPackageOperations.loadGlobalPackage().isSnapshot );
@@ -81,8 +78,7 @@ public class RepositoryPackageOperationsTest {
     public void testLoadGlobalPackageAndIsNotSnapshot() {
         PackageItem packageItem = mock( PackageItem.class );
         when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
-        when( packageItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
-        when( packageItem.getCreatedDate() ).thenReturn( GregorianCalendar.getInstance() );
+        preparePackageItemMockDates( packageItem );
         when( packageItem.isSnapshot() ).thenReturn( false );
         when( packageItem.getSnapshotName() ).thenReturn( "snapshotName123" );
         assertFalse( this.repositoryPackageOperations.loadGlobalPackage().isSnapshot );
@@ -91,8 +87,7 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testCopyPackage() throws SerializationException {
-        Session session = mock( Session.class );
-        when( this.rulesRepository.getSession() ).thenReturn( session );
+        initSession();
         repositoryPackageOperations.copyPackage( "from",
                                                  "to" );
         verify( rulesRepository ).copyPackage( "from",
@@ -101,8 +96,7 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testRemovePackage() throws SerializationException {
-        Session session = mock( Session.class );
-        when( this.rulesRepository.getSession() ).thenReturn( session );
+        initSession();
         PackageItem packageItem = mock( PackageItem.class );
         when( this.rulesRepository.loadPackageByUUID( "uuid" ) ).thenReturn( packageItem );
         this.repositoryPackageOperations.removePackage( "uuid" );
@@ -112,8 +106,7 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testRenamePackage() throws SerializationException {
-        Session session = mock( Session.class );
-        when( this.rulesRepository.getSession() ).thenReturn( session );
+        initSession();
         this.repositoryPackageOperations.renamePackage( "old",
                                                         "new" );
         verify( this.rulesRepository ).renamePackage( "old",
@@ -124,8 +117,7 @@ public class RepositoryPackageOperationsTest {
     public void testExportPackages() throws PathNotFoundException,
                                     IOException,
                                     RepositoryException {
-        Session session = mock( Session.class );
-        when( this.rulesRepository.getSession() ).thenReturn( session );
+        initSession();
         this.repositoryPackageOperations.exportPackages( "packageName" );
         verify( this.rulesRepository ).dumpPackageFromRepositoryXml( "packageName" );
     }
@@ -140,8 +132,7 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testCreatePackage() {
-        Session session = mock( Session.class );
-        when( this.rulesRepository.getSession() ).thenReturn( session );
+        initSession();
         PackageItem packageItem = mock( PackageItem.class );
         when( packageItem.getUUID() ).thenReturn( "uuid" );
         when( this.rulesRepository.createPackage( "name",
@@ -159,8 +150,7 @@ public class RepositoryPackageOperationsTest {
 
     @Test
     public void testSubCreatePackage() throws SerializationException {
-        Session session = mock( Session.class );
-        when( this.rulesRepository.getSession() ).thenReturn( session );
+        initSession();
         PackageItem packageItem = mock( PackageItem.class );
         when( packageItem.getUUID() ).thenReturn( "uuid" );
         when( this.rulesRepository.createSubPackage( "name",
@@ -180,10 +170,23 @@ public class RepositoryPackageOperationsTest {
     public void testLoadPackageConfigWithDependencies() {
         PackageItem packageItem = mock( PackageItem.class );
         when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
+        prepareMockForPackageConfigDataFactory( packageItem );
+        assertNotNull( this.repositoryPackageOperations.loadPackageConfig( packageItem ).dependencies );
+    }
+
+    private void initSession() {
+        Session session = mock( Session.class );
+        when( this.rulesRepository.getSession() ).thenReturn( session );
+    }
+
+    private void prepareMockForPackageConfigDataFactory(PackageItem packageItem) {
+        preparePackageItemMockDates( packageItem );
+        when( packageItem.getDependencies() ).thenReturn( new String[]{"dependency"} );
+    }
+
+    private void preparePackageItemMockDates(PackageItem packageItem) {
         when( packageItem.getLastModified() ).thenReturn( GregorianCalendar.getInstance() );
         when( packageItem.getCreatedDate() ).thenReturn( GregorianCalendar.getInstance() );
-        when( packageItem.getDependencies() ).thenReturn( new String[]{"dependency"} );
-        assertNotNull( this.repositoryPackageOperations.loadPackageConfig( packageItem ).dependencies );
     }
 
 }
