@@ -132,5 +132,16 @@ public class RepositoryPackageOperationsTest {
         this.repositoryPackageOperations.importPackages(new byte[]{},false);
         verify(this.rulesRepository).importPackageToRepository(new byte[]{},false);
     }
+    
+    @Test public void testCreatePackage(){
+        Session session = mock( Session.class );
+        when( this.rulesRepository.getSession() ).thenReturn( session );
+        PackageItem packageItem = mock(PackageItem.class);
+        when(packageItem.getUUID()).thenReturn( "uuid" );
+        when(this.rulesRepository.createPackage( "name", "description",  new String[]{"workspace"} )).thenReturn(packageItem);
+        assertEquals(this.repositoryPackageOperations.createPackage( "name", "description", new String[]{"workspace"} ), "uuid");
+        verify(this.rulesRepository).createPackage( "name", "description",  new String[]{"workspace"} );
+        
+    }
 
 }
