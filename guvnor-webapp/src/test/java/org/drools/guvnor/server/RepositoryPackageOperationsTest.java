@@ -30,6 +30,7 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -230,6 +231,50 @@ public class RepositoryPackageOperationsTest {
         verify( packageItem ).checkin( packageConfigData.description );
         verify( localRepositoryPackageOperations ).handleArchivedForSavePackage( packageConfigData,
                                                                                    packageItem );
+    }
+
+    @Test
+    public void testCreatePackageSnapshotAndReplacingExisting() {
+        initSession();
+        final String packageName = "packageName";
+        final String snapshotName = "snapshotName";
+        final String comment = "comment";
+
+        PackageItem packageItem = mock( PackageItem.class );
+        when( this.rulesRepository.loadPackageSnapshot( packageName,
+                                                        snapshotName ) ).thenReturn( packageItem );
+        this.repositoryPackageOperations.createPackageSnapshot( packageName,
+                                                                snapshotName,
+                                                                true,
+                                                                comment );
+        verify( this.rulesRepository ).removePackageSnapshot( packageName,
+                                                              snapshotName );
+        verify( this.rulesRepository ).createPackageSnapshot( packageName,
+                                                              snapshotName );
+        verify( packageItem ).updateCheckinComment( comment );
+
+    }
+
+    @Test
+    public void testCreatePackageSnapshotAndNotReplacingExisting() {
+        initSession();
+        final String packageName = "packageName";
+        final String snapshotName = "snapshotName";
+        final String comment = "comment";
+
+        PackageItem packageItem = mock( PackageItem.class );
+        when( this.rulesRepository.loadPackageSnapshot( packageName,
+                                                        snapshotName ) ).thenReturn( packageItem );
+        this.repositoryPackageOperations.createPackageSnapshot( packageName,
+                                                                snapshotName,
+                                                                false,
+                                                                comment );
+        verify( this.rulesRepository,
+                Mockito.never() ).removePackageSnapshot( packageName,
+                                                              snapshotName );
+        verify( this.rulesRepository ).createPackageSnapshot( packageName,
+                                                              snapshotName );
+        verify( packageItem ).updateCheckinComment( comment );
 
     }
 
