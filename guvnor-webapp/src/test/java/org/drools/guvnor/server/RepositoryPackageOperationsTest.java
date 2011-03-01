@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -270,12 +271,48 @@ public class RepositoryPackageOperationsTest {
                                                                 false,
                                                                 comment );
         verify( this.rulesRepository,
-                Mockito.never() ).removePackageSnapshot( packageName,
+                never() ).removePackageSnapshot( packageName,
                                                               snapshotName );
         verify( this.rulesRepository ).createPackageSnapshot( packageName,
                                                               snapshotName );
         verify( packageItem ).updateCheckinComment( comment );
 
+    }
+
+    @Test
+    public void testCopyOrRemoveSnapshotAndRemoving() throws SerializationException {
+        initSession();
+        final String packageName = "packageName";
+        final String snapshotName = "snapshotName";
+        final String newSnapshotName = "newSnapshotName";
+        this.repositoryPackageOperations.copyOrRemoveSnapshot( packageName,
+                                                               snapshotName,
+                                                               true,
+                                                               newSnapshotName );
+        verify( this.rulesRepository ).removePackageSnapshot( packageName,
+                                                              snapshotName );
+        verify( this.rulesRepository,
+                Mockito.never() ).copyPackageSnapshot( packageName,
+                                                       snapshotName,
+                                                       newSnapshotName );
+    }
+
+    @Test
+    public void testCopyOrRemoveSnapshotAndCopying() throws SerializationException {
+        initSession();
+        final String packageName = "packageName";
+        final String snapshotName = "snapshotName";
+        final String newSnapshotName = "newSnapshotName";
+        this.repositoryPackageOperations.copyOrRemoveSnapshot( packageName,
+                                                               snapshotName,
+                                                               false,
+                                                               newSnapshotName );
+        verify( this.rulesRepository,
+                Mockito.never() ).removePackageSnapshot( packageName,
+                                                              snapshotName );
+        verify( this.rulesRepository ).copyPackageSnapshot( packageName,
+                                                            snapshotName,
+                                                            newSnapshotName );
     }
 
     private void initSpyingAndMockingOnSuggestionCompletionLoader(RepositoryPackageOperations localRepositoryPackageOperations) {
