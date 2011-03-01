@@ -341,13 +341,17 @@ public class RepositoryPackageOperations {
                                             packageLastModified );
         }
 
-        BRMSSuggestionCompletionLoader loader = new BRMSSuggestionCompletionLoader();
+        BRMSSuggestionCompletionLoader loader = createBRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item );
 
         return validateBRMSSuggestionCompletionLoaderResponse( loader );
     }
+    
+    BRMSSuggestionCompletionLoader createBRMSSuggestionCompletionLoader(){
+        return new BRMSSuggestionCompletionLoader();
+    }
 
-    private void updateCategoryRules(PackageConfigData data,
+    void updateCategoryRules(PackageConfigData data,
                                      PackageItem item) {
         KeyValueTO keyValueTO = convertMapToCsv( data.catRules );
         item.updateCategoryRules( keyValueTO.getKeys(),
@@ -394,7 +398,7 @@ public class RepositoryPackageOperations {
         }
     }
 
-    private void handleArchivedForSavePackage(PackageConfigData data,
+    void handleArchivedForSavePackage(PackageConfigData data,
                                               PackageItem item) {
         for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {
             AssetItem assetItem = iter.next();
@@ -405,7 +409,7 @@ public class RepositoryPackageOperations {
         }
     }
 
-    private void handleUnarchivedForSavePackage(PackageConfigData data,
+    void handleUnarchivedForSavePackage(PackageConfigData data,
                                                 PackageItem item,
                                                 Calendar packageLastModified) {
         for ( Iterator<AssetItem> iter = item.getAssets(); iter.hasNext(); ) {

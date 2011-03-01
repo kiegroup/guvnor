@@ -5,12 +5,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -19,6 +23,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
+import org.drools.guvnor.server.util.DroolsHeader;
+import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Before;
@@ -172,6 +179,95 @@ public class RepositoryPackageOperationsTest {
         when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         prepareMockForPackageConfigDataFactory( packageItem );
         assertNotNull( this.repositoryPackageOperations.loadPackageConfig( packageItem ).dependencies );
+    }
+
+    @Test
+    public void testSavePackageArhived() throws SerializationException {
+        RepositoryPackageOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
+
+        PackageConfigData packageConfigData = createPackageConfigData( false );
+        PackageItem packageItem = mock( PackageItem.class );
+        Calendar calendar = GregorianCalendar.getInstance();
+        when( packageItem.getLastModified() ).thenReturn( calendar );
+        initDroolsHeaderCheck( packageItem );
+        when( packageItem.isArchived() ).thenReturn( true );
+        when( this.rulesRepository.loadPackage( packageConfigData.name ) ).thenReturn( packageItem );
+        doNothing().when( localRepositoryPackageOperations ).updateCategoryRules( packageConfigData,
+                                                                                  packageItem );
+        doNothing().when( localRepositoryPackageOperations ).handleUnarchivedForSavePackage( packageConfigData,
+                                                                                             packageItem,
+                                                                                             calendar );
+        initSpyingAndMockingOnSuggestionCompletionLoader( localRepositoryPackageOperations );
+        localRepositoryPackageOperations.savePackage( packageConfigData );
+        verify( packageItem ).updateExternalURI( packageConfigData.externalURI );
+        verify( packageItem ).updateDescription( packageConfigData.description );
+        verify( packageItem ).archiveItem( packageConfigData.archived );
+        verify( packageItem ).checkin( packageConfigData.description );
+        verify( localRepositoryPackageOperations ).handleUnarchivedForSavePackage( packageConfigData,
+                                                                                   packageItem,
+                                                                                   calendar );
+    }
+
+    @Test
+    public void testSavePackageUnarhived() throws SerializationException {
+        RepositoryPackageOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
+
+        PackageConfigData packageConfigData = createPackageConfigData( true );
+
+        PackageItem packageItem = mock( PackageItem.class );
+        initDroolsHeaderCheck( packageItem );
+        when( packageItem.isArchived() ).thenReturn( false );
+        when( this.rulesRepository.loadPackage( packageConfigData.name ) ).thenReturn( packageItem );
+        doNothing().when( localRepositoryPackageOperations ).updateCategoryRules( packageConfigData,
+                                                                                  packageItem );
+        doNothing().when( localRepositoryPackageOperations ).handleArchivedForSavePackage( packageConfigData,
+                                                                                             packageItem );
+        initSpyingAndMockingOnSuggestionCompletionLoader( localRepositoryPackageOperations );
+        localRepositoryPackageOperations.savePackage( packageConfigData );
+        verify( packageItem ).updateExternalURI( packageConfigData.externalURI );
+        verify( packageItem ).updateDescription( packageConfigData.description );
+        verify( packageItem ).archiveItem( packageConfigData.archived );
+        verify( packageItem ).checkin( packageConfigData.description );
+        verify( localRepositoryPackageOperations ).handleArchivedForSavePackage( packageConfigData,
+                                                                                   packageItem );
+
+    }
+
+    private void initSpyingAndMockingOnSuggestionCompletionLoader(RepositoryPackageOperations localRepositoryPackageOperations) {
+        BRMSSuggestionCompletionLoader suggestionCompletionLoader = mock( BRMSSuggestionCompletionLoader.class );
+        doReturn( suggestionCompletionLoader ).when( localRepositoryPackageOperations ).createBRMSSuggestionCompletionLoader();
+    }
+
+    private PackageConfigData createPackageConfigData(boolean isArchived) {
+        PackageConfigData packageConfigData = new PackageConfigData();
+        packageConfigData.name = "name";
+        packageConfigData.header = "header";
+        packageConfigData.archived = isArchived;
+        packageConfigData.description = "description";
+        packageConfigData.externalURI = "externalUri";
+        return packageConfigData;
+    }
+
+    private RepositoryPackageOperations initSpyingOnRealRepositoryPackageOperations() {
+        RepositoryPackageOperations localRepositoryPackageOperations;
+        localRepositoryPackageOperations = spy( this.repositoryPackageOperations );
+        localRepositoryPackageOperations.setRulesRepository( rulesRepository );
+        initSession();
+        return localRepositoryPackageOperations;
+    }
+
+    private void initDroolsHeaderCheck(PackageItem packageItem) {
+        AssetItem assetItem = mock( AssetItem.class );
+        when( packageItem.containsAsset( "drools" ) ).thenReturn( false );
+        when( packageItem.addAsset( "drools",
+                                    "" ) ).thenReturn( assetItem );
+        DroolsHeader.updateDroolsHeader( "expected",
+                                         packageItem );
+        verify( packageItem ).addAsset( "drools",
+                                        "" );
+        verify( assetItem ).updateFormat( "package" );
+        verify( assetItem ).updateContent( "expected" );
+        verify( assetItem ).checkin( "" );
     }
 
     private void initSession() {
