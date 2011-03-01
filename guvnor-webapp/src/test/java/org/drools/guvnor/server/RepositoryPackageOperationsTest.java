@@ -113,35 +113,66 @@ public class RepositoryPackageOperationsTest {
     public void testRenamePackage() throws SerializationException {
         Session session = mock( Session.class );
         when( this.rulesRepository.getSession() ).thenReturn( session );
-        this.repositoryPackageOperations.renamePackage( "old", 
-                                                   "new" );
+        this.repositoryPackageOperations.renamePackage( "old",
+                                                        "new" );
         verify( this.rulesRepository ).renamePackage( "old",
                                                       "new" );
     }
 
     @Test
-    public void testExportPackages() throws PathNotFoundException, IOException, RepositoryException {
+    public void testExportPackages() throws PathNotFoundException,
+                                    IOException,
+                                    RepositoryException {
         Session session = mock( Session.class );
         when( this.rulesRepository.getSession() ).thenReturn( session );
         this.repositoryPackageOperations.exportPackages( "packageName" );
-        verify(this.rulesRepository ).dumpPackageFromRepositoryXml("packageName"); 
+        verify( this.rulesRepository ).dumpPackageFromRepositoryXml( "packageName" );
     }
-    
+
     @Test
-    public void testImportPackages(){
-        this.repositoryPackageOperations.importPackages(new byte[]{},false);
-        verify(this.rulesRepository).importPackageToRepository(new byte[]{},false);
+    public void testImportPackages() {
+        this.repositoryPackageOperations.importPackages( new byte[]{},
+                                                         false );
+        verify( this.rulesRepository ).importPackageToRepository( new byte[]{},
+                                                                  false );
     }
-    
-    @Test public void testCreatePackage(){
+
+    @Test
+    public void testCreatePackage() {
         Session session = mock( Session.class );
         when( this.rulesRepository.getSession() ).thenReturn( session );
-        PackageItem packageItem = mock(PackageItem.class);
-        when(packageItem.getUUID()).thenReturn( "uuid" );
-        when(this.rulesRepository.createPackage( "name", "description",  new String[]{"workspace"} )).thenReturn(packageItem);
-        assertEquals(this.repositoryPackageOperations.createPackage( "name", "description", new String[]{"workspace"} ), "uuid");
-        verify(this.rulesRepository).createPackage( "name", "description",  new String[]{"workspace"} );
-        
+        PackageItem packageItem = mock( PackageItem.class );
+        when( packageItem.getUUID() ).thenReturn( "uuid" );
+        when( this.rulesRepository.createPackage( "name",
+                                                  "description",
+                                                  new String[]{"workspace"} ) ).thenReturn( packageItem );
+        assertEquals( this.repositoryPackageOperations.createPackage( "name",
+                                                                      "description",
+                                                                      new String[]{"workspace"} ),
+                      "uuid" );
+        verify( this.rulesRepository ).createPackage( "name",
+                                                      "description",
+                                                      new String[]{"workspace"} );
+
+    }
+
+    @Test
+    public void testSubCreatePackage() throws SerializationException {
+        Session session = mock( Session.class );
+        when( this.rulesRepository.getSession() ).thenReturn( session );
+        PackageItem packageItem = mock( PackageItem.class );
+        when( packageItem.getUUID() ).thenReturn( "uuid" );
+        when( this.rulesRepository.createSubPackage( "name",
+                                                     "description",
+                                                     "parentNode" ) ).thenReturn( packageItem );
+        assertEquals( this.repositoryPackageOperations.createSubPackage( "name",
+                                                                         "description",
+                                                                         "parentNode" ),
+                      "uuid" );
+        verify( this.rulesRepository ).createSubPackage( "name",
+                                                         "description",
+                                                         "parentNode" );
+
     }
 
 }
