@@ -2207,4 +2207,6 @@ public interface Constants
     String UpdateSelectedWorkspace();
 
     String CommunicationError();
+    
+    String groupCells();
 }

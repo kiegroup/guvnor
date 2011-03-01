@@ -34,6 +34,10 @@ public interface DecisionTableResources extends ClientBundle {
         String cellTableCellSelected();
 
         String cellTableCellDiv();
+        
+        String cellTableGroupDiv();
+        
+        String cellTableTextDiv();
 
         String headerRowBottom();
 

@@ -50,6 +50,12 @@ public class CellValue<T extends Comparable<T>>
     private Coordinate mapDataToHtml;
     private boolean    isSelected;
 
+    //TODO Inner class?
+    private boolean    isGroupable;      // Can cell be grouped
+    private boolean    isGrouped;        // Is cell grouped
+    private boolean    hasMultipleValues; // Does the grouped cell represent multiple values
+    private int        mergedRowSpan;    // The row span of the merged cell before grouping
+
     public CellValue(T value,
                      int row,
                      int col) {
@@ -77,71 +83,6 @@ public class CellValue<T extends Comparable<T>>
         return this.value.compareTo( cv.value );
     }
 
-    public T getValue() {
-        return this.value;
-    }
-
-    public void setHtmlCoordinate(Coordinate c) {
-        if ( c == null ) {
-            throw new IllegalArgumentException( "Coordinate cannot be null." );
-        }
-        this.mapDataToHtml = c;
-    }
-
-    @SuppressWarnings("unchecked")
-    public void setValue(Object value) {
-        this.value = (T) value;
-    }
-
-    public Coordinate getCoordinate() {
-        return this.coordinate;
-    }
-
-    public Coordinate getHtmlCoordinate() {
-        return new Coordinate( this.mapDataToHtml );
-    }
-
-    public Coordinate getPhysicalCoordinate() {
-        return new Coordinate( this.mapHtmlToData );
-    }
-
-    public int getRowSpan() {
-        return this.rowSpan;
-    }
-
-    public boolean isEmpty() {
-        return this.value == null;
-    }
-
-    public void setCoordinate(Coordinate coordinate) {
-        if ( coordinate == null ) {
-            throw new IllegalArgumentException( "Coordinate cannot be null." );
-        }
-        this.coordinate = coordinate;
-    }
-
-    public void setPhysicalCoordinate(Coordinate c) {
-        if ( c == null ) {
-            throw new IllegalArgumentException( "Coordinate cannot be null." );
-        }
-        this.mapHtmlToData = c;
-    }
-
-    public void setRowSpan(int rowSpan) {
-        if ( rowSpan < 0 ) {
-            throw new IllegalArgumentException( "rowSpan cannot be less than zero." );
-        }
-        this.rowSpan = rowSpan;
-    }
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    public void setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-    }
-
     @Override
     @SuppressWarnings("rawtypes")
     // Used by calls to DynamicDataRow.equals()
@@ -162,31 +103,123 @@ public class CellValue<T extends Comparable<T>>
                                 that.mapHtmlToData )
                 && nullOrEqual( this.mapDataToHtml,
                                 that.mapDataToHtml )
-                && this.isSelected == that.isSelected;
+                && this.isSelected == that.isSelected
+                && this.isGroupable == that.isGroupable
+                && this.isGrouped == that.isGrouped
+                && this.mergedRowSpan == that.mergedRowSpan;
+    }
+
+    public Coordinate getCoordinate() {
+        return this.coordinate;
+    }
+
+    public Coordinate getHtmlCoordinate() {
+        return new Coordinate( this.mapDataToHtml );
+    }
+
+    public int getMergedRowSpan() {
+        return mergedRowSpan;
+    }
+
+    public Coordinate getPhysicalCoordinate() {
+        return new Coordinate( this.mapHtmlToData );
+    }
+
+    public int getRowSpan() {
+        return this.rowSpan;
+    }
+
+    public T getValue() {
+        return this.value;
     }
 
     @Override
+    // Used by calls to DynamicDataRow.equals()
     public int hashCode() {
         int hash = 1;
-        hash = hash
-               * 31
-               + (value == null ? 0 : value.hashCode());
-        hash = hash
-               * 31
-               + rowSpan;
-        hash = hash
-               * 31
-               + (coordinate == null ? 0 : coordinate.hashCode());
-        hash = hash
-               * 31
-                + (mapHtmlToData == null ? 0 : mapHtmlToData.hashCode());
-        hash = hash
-               * 31
-                + (mapDataToHtml == null ? 0 : mapDataToHtml.hashCode());
-        hash = hash
-               * 31
-               + ((Boolean) isSelected).hashCode();
+        hash = hash * 31 + (value == null ? 0 : value.hashCode());
+        hash = hash * 31 + rowSpan;
+        hash = hash * 31 + (coordinate == null ? 0 : coordinate.hashCode());
+        hash = hash * 31 + (mapHtmlToData == null ? 0 : mapHtmlToData.hashCode());
+        hash = hash * 31 + (mapDataToHtml == null ? 0 : mapDataToHtml.hashCode());
+        hash = hash * 31 + ((Boolean) isSelected).hashCode();
+        hash = hash * 31 + ((Boolean) isGroupable).hashCode();
+        hash = hash * 31 + ((Boolean) isGrouped).hashCode();
+        hash = hash * 31 + mergedRowSpan;
         return hash;
+    }
+
+    public boolean hasMultipleValues() {
+        return hasMultipleValues;
+    }
+
+    public boolean isEmpty() {
+        return this.value == null;
+    }
+
+    public boolean isGroupable() {
+        return this.isGroupable;
+    }
+
+    public boolean isGrouped() {
+        return isGrouped;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setCoordinate(Coordinate coordinate) {
+        if ( coordinate == null ) {
+            throw new IllegalArgumentException( "Coordinate cannot be null." );
+        }
+        this.coordinate = coordinate;
+    }
+
+    public void setGroupable(boolean isGroupable) {
+        this.isGroupable = isGroupable;
+    }
+
+    public void setGrouped(boolean isGrouped) {
+        this.isGrouped = isGrouped;
+    }
+
+    public void setHasMultipleValues(boolean hasMultipleValues) {
+        this.hasMultipleValues = hasMultipleValues;
+    }
+
+    public void setHtmlCoordinate(Coordinate c) {
+        if ( c == null ) {
+            throw new IllegalArgumentException( "Coordinate cannot be null." );
+        }
+        this.mapDataToHtml = c;
+    }
+
+    public void setMergedRowSpan(int mergedRowSpan) {
+        this.mergedRowSpan = mergedRowSpan;
+    }
+
+    public void setPhysicalCoordinate(Coordinate c) {
+        if ( c == null ) {
+            throw new IllegalArgumentException( "Coordinate cannot be null." );
+        }
+        this.mapHtmlToData = c;
+    }
+
+    public void setRowSpan(int rowSpan) {
+        if ( rowSpan < 0 ) {
+            throw new IllegalArgumentException( "rowSpan cannot be less than zero." );
+        }
+        this.rowSpan = rowSpan;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setValue(Object value) {
+        this.value = (T) value;
     }
 
     // Check whether two objects are equal or both null

@@ -21,8 +21,32 @@ import java.util.ArrayList;
  * A row of data in the Decision Table
  */
 public class DynamicDataRow extends
-        ArrayList<CellValue<? extends Comparable<?>>> {
+        ArrayList<CellValue< ? extends Comparable< ? >>> {
 
     private static final long serialVersionUID = -7816621427456956740L;
+
+    private int               groupLevel;
+
+    public void clearGrouping() {
+        this.groupLevel = 0;
+    }
+
+    public void decreaseGroupingLevel() {
+        groupLevel--;
+    }
+
+    public int getGroupLevel() {
+        return groupLevel;
+    }
+
+    public void increaseGroupingLevel() {
+        groupLevel++;
+    }
+
+    public boolean isGrouped() {
+        return this.groupLevel > 0;
+    }
+    
+    
 
 }

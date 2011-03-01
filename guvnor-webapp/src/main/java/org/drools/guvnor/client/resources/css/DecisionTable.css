@@ -44,8 +44,19 @@
 }
 
 .cellTableCellDiv {
-    overflow: hidden;
+    position: relative;
+    height: 100%;
 }
+
+.cellTableGroupDiv {
+    position: absolute;
+}	
+
+.cellTableTextDiv {
+	height: 100%;
+    width: 100%;
+    position: absolute;
+}	
 
 .cellTableEvenRow {
     background: #f8f8f8;
