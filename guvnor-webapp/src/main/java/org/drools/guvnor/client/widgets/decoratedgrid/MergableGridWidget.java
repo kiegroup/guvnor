@@ -206,6 +206,7 @@ public abstract class MergableGridWidget<T> extends Widget
     // mapping back to (0,0).
     public void assertModelIndexes() {
 
+        int iVisibleRow = 0;
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             DynamicDataRow row = data.get( iRow );
 
@@ -222,7 +223,7 @@ public abstract class MergableGridWidget<T> extends Widget
                 if ( column.isVisible() ) {
 
                     if ( indexCell.getRowSpan() != 0 ) {
-                        newRow = iRow;
+                        newRow = iVisibleRow;
                         newCol = colCount++;
 
                         CellValue< ? extends Comparable< ? >> cell = data.get( newRow ).get( newCol );
@@ -241,6 +242,9 @@ public abstract class MergableGridWidget<T> extends Widget
                                                          iCol ) );
                 indexCell.setHtmlCoordinate( new Coordinate( newRow,
                                                              newCol ) );
+            }
+            if ( !row.isGrouped() ) {
+                iVisibleRow++;
             }
         }
     }
@@ -795,6 +799,15 @@ public abstract class MergableGridWidget<T> extends Widget
         }
         endCell = data.get( endCell.getCoordinate().getRow() + endCell.getRowSpan() - 1 ).get( col );
 
+        //Ensure endCell is at the end of a grouped block
+        if ( endCell.hasMultipleValues() ) {
+            endCell = data.get( endCell.getCoordinate().getRow() + 1 ).get( col );
+            while ( endCell.getRowSpan() == 0 ) {
+                endCell = data.get( endCell.getCoordinate().getRow() + 1 ).get( col );
+            }
+            endCell = data.get( endCell.getCoordinate().getRow() - 1 ).get( col );
+        }
+
         //Select range
         for ( int iRow = startCell.getCoordinate().getRow(); iRow <= endCell
                 .getCoordinate().getRow(); iRow++ ) {
@@ -893,8 +906,10 @@ public abstract class MergableGridWidget<T> extends Widget
             maxRedrawRow = getSelectedCells().last().getPhysicalCoordinate()
                     .getRow();
         }
-        redrawRows( minRedrawRow,
-                               maxRedrawRow );
+        //TODO Partial redraw
+        redraw();
+        //redrawRows( minRedrawRow,
+        //                       maxRedrawRow );
 
         //Re-select applicable cells, following change to merge
         selectRange( getSelectedCells().first(),
@@ -931,7 +946,6 @@ public abstract class MergableGridWidget<T> extends Widget
         }
 
         assertModelMerging();
-        //TODO indexing needs to consider collapsed cells
 
         //TODO Partial redraw
         redraw();
@@ -1154,6 +1168,15 @@ public abstract class MergableGridWidget<T> extends Widget
         int iEndRowIndex = cell2.getCoordinate().getRow();
         int iColIndex = cell1.getCoordinate().getCol();
 
+        //Any rows that are grouped need row span of zero
+        for ( int iRow = iStartRowIndex; iRow < iEndRowIndex; iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            if ( row.isGrouped() ) {
+                row.get( iColIndex ).setRowSpan( 0 );
+            }
+        }
+
+        //If this is a single cell exit
         if ( iEndRowIndex - iStartRowIndex == 1 ) {
             cell1.setGroupable( false );
             return;
@@ -1161,11 +1184,15 @@ public abstract class MergableGridWidget<T> extends Widget
 
         cell1.setGroupable( true );
 
+        //Determine whether the top cell of a merged cell overlaps a grouped section
         CellValue< ? > topSectionCell = null;
         if ( !data.get( iStartRowIndex ).isGrouped() ) {
             topSectionCell = cell1;
         }
 
+        //Determine the first cell within a merged cell that is at the end of a grouped section.
+        //If a merged cell extends beyond a grouped section the merged cell needs to be split
+        //and the portion extending beyond the grouped section becomes a merged cell
         CellValue< ? > bottomSectionCell = null;
         for ( int iRow = iStartRowIndex; iRow < iEndRowIndex; iRow++ ) {
             DynamicDataRow row = data.get( iRow );
@@ -1177,6 +1204,7 @@ public abstract class MergableGridWidget<T> extends Widget
             bottomSectionCell = null;
         }
 
+        //If the top of the merged cell is above a merged section calculate corresponding row span
         if ( topSectionCell != null ) {
             int rowSpan = 0;
             for ( int iRow = topSectionCell.getCoordinate().getRow(); iRow < iEndRowIndex; iRow++ ) {
@@ -1189,6 +1217,7 @@ public abstract class MergableGridWidget<T> extends Widget
             topSectionCell.setRowSpan( rowSpan );
         }
 
+        //If the merged cell is split calculate the corresponding row span for the portion below the grouped block
         if ( bottomSectionCell != null ) {
             int rowSpan = 0;
             for ( int iRow = bottomSectionCell.getCoordinate().getRow(); iRow < iEndRowIndex; iRow++ ) {
