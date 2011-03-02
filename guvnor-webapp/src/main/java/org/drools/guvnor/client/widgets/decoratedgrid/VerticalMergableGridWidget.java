@@ -548,7 +548,11 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                 DivElement divGroup = DivElement.as( de );
                 divGroup.setTitle( messages.groupCells() );
                 divGroup.addClassName( style.cellTableGroupDiv() );
-                divGroup.setInnerHTML( selectorUngroupedCellsHtml );
+                if(cellData.isGrouped()) {
+                    divGroup.setInnerHTML( selectorUngroupedCellsHtml );
+                } else {
+                    divGroup.setInnerHTML( selectorGroupedCellsHtml );
+                }
                 div.appendChild( divGroup );
             }
             //<------

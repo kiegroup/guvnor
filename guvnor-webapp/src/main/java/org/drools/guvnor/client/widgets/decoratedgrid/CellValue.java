@@ -54,7 +54,6 @@ public class CellValue<T extends Comparable<T>>
     private boolean    isGroupable;      // Can cell be grouped
     private boolean    isGrouped;        // Is cell grouped
     private boolean    hasMultipleValues; // Does the grouped cell represent multiple values
-    private int        mergedRowSpan;    // The row span of the merged cell before grouping
 
     public CellValue(T value,
                      int row,
@@ -105,8 +104,7 @@ public class CellValue<T extends Comparable<T>>
                                 that.mapDataToHtml )
                 && this.isSelected == that.isSelected
                 && this.isGroupable == that.isGroupable
-                && this.isGrouped == that.isGrouped
-                && this.mergedRowSpan == that.mergedRowSpan;
+                && this.isGrouped == that.isGrouped;
     }
 
     public Coordinate getCoordinate() {
@@ -115,10 +113,6 @@ public class CellValue<T extends Comparable<T>>
 
     public Coordinate getHtmlCoordinate() {
         return new Coordinate( this.mapDataToHtml );
-    }
-
-    public int getMergedRowSpan() {
-        return mergedRowSpan;
     }
 
     public Coordinate getPhysicalCoordinate() {
@@ -145,7 +139,6 @@ public class CellValue<T extends Comparable<T>>
         hash = hash * 31 + ((Boolean) isSelected).hashCode();
         hash = hash * 31 + ((Boolean) isGroupable).hashCode();
         hash = hash * 31 + ((Boolean) isGrouped).hashCode();
-        hash = hash * 31 + mergedRowSpan;
         return hash;
     }
 
@@ -193,10 +186,6 @@ public class CellValue<T extends Comparable<T>>
             throw new IllegalArgumentException( "Coordinate cannot be null." );
         }
         this.mapDataToHtml = c;
-    }
-
-    public void setMergedRowSpan(int mergedRowSpan) {
-        this.mergedRowSpan = mergedRowSpan;
     }
 
     public void setPhysicalCoordinate(Coordinate c) {

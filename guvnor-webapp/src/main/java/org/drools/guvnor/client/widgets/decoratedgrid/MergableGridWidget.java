@@ -130,7 +130,7 @@ public abstract class MergableGridWidget<T> extends Widget
     protected static final DecisionTableResources            resource                   = GWT.create( DecisionTableResources.class );
     protected static final DecisionTableStyle                style                      = resource.cellTableStyle();
 
-    private static final ImageResource                       selectorGroupedCells       = resource.selectorAdd();
+    private static final ImageResource                       selectorGroupedCells       = resource.selectorDelete();
     private static final ImageResource                       selectorUngroupedCells     = resource.selectorAdd();
     protected static final String                            selectorGroupedCellsHtml   = makeImageHtml( selectorGroupedCells );
     protected static final String                            selectorUngroupedCellsHtml = makeImageHtml( selectorUngroupedCells );
@@ -444,13 +444,12 @@ public abstract class MergableGridWidget<T> extends Widget
             CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
             Coordinate nc = getNextCell( activeCell.getCoordinate(),
                                          dir );
-            if ( nc != null ) {
-                clearSelection();
-                rangeDirection = dir;
-                rangeExtentCell = data.get( nc );
-                selectRange( rangeOriginCell,
+            clearSelection();
+            rangeDirection = dir;
+            rangeExtentCell = data.get( nc );
+            selectRange( rangeOriginCell,
                              rangeExtentCell );
-            }
+
         }
     }
 
@@ -708,9 +707,6 @@ public abstract class MergableGridWidget<T> extends Widget
             CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
             Coordinate nc = getNextCell( activeCell.getCoordinate(),
                                          dir );
-            if ( nc == null ) {
-                nc = activeCell.getCoordinate();
-            }
             startSelecting( nc );
             rangeDirection = dir;
             ce = getSelectedCellExtents( data.get( nc ) );
@@ -794,23 +790,11 @@ public abstract class MergableGridWidget<T> extends Widget
         }
 
         //Ensure endCell is at the bottom of a merged cell
-        while ( endCell.getRowSpan() == 0 ) {
-            endCell = data.get( endCell.getCoordinate().getRow() - 1 ).get( col );
-        }
-        endCell = data.get( endCell.getCoordinate().getRow() + endCell.getRowSpan() - 1 ).get( col );
-
-        //Ensure endCell is at the end of a grouped block
-        if ( endCell.hasMultipleValues() ) {
-            endCell = data.get( endCell.getCoordinate().getRow() + 1 ).get( col );
-            while ( endCell.getRowSpan() == 0 ) {
-                endCell = data.get( endCell.getCoordinate().getRow() + 1 ).get( col );
-            }
-            endCell = data.get( endCell.getCoordinate().getRow() - 1 ).get( col );
-        }
+        Coordinate nc = findMergedCellExtent( endCell.getCoordinate() );
+        endCell = data.get( nc );
 
         //Select range
-        for ( int iRow = startCell.getCoordinate().getRow(); iRow <= endCell
-                .getCoordinate().getRow(); iRow++ ) {
+        for ( int iRow = startCell.getCoordinate().getRow(); iRow <= endCell.getCoordinate().getRow(); iRow++ ) {
             CellValue< ? > cell = data.get( iRow ).get( col );
             selections.add( cell );
 
@@ -922,11 +906,9 @@ public abstract class MergableGridWidget<T> extends Widget
 
         int groupedColumnIndex = startCell.getCoordinate().getCol();
         int startRow = startCell.getCoordinate().getRow();
-        int rowSpan = startCell.getRowSpan();
-        int endRow = startRow + rowSpan;
+        int endRow = findMergedCellExtent( startCell.getCoordinate() ).getRow();
 
         startCell.setGrouped( true );
-        startCell.setMergedRowSpan( rowSpan );
 
         //Check for multiple values across grouped rows
         DynamicDataRow row = data.get( startRow );
@@ -940,7 +922,7 @@ public abstract class MergableGridWidget<T> extends Widget
         }
 
         //Collapse rows
-        for ( int iRow = startRow + 1; iRow < endRow; iRow++ ) {
+        for ( int iRow = startRow + 1; iRow <= endRow; iRow++ ) {
             row = data.get( iRow );
             row.increaseGroupingLevel();
         }
@@ -1047,9 +1029,11 @@ public abstract class MergableGridWidget<T> extends Widget
 
     //Get the next cell when selection moves in the specified direction
     private Coordinate getNextCell(Coordinate c,
-                                   MOVE_DIRECTION dir) {
+                                    MOVE_DIRECTION dir) {
+
         int step = 0;
-        Coordinate nc = null;
+        Coordinate nc = c;
+
         switch ( dir ) {
             case LEFT :
 
@@ -1140,8 +1124,31 @@ public abstract class MergableGridWidget<T> extends Widget
                                              nc.getCol() );
                         newCell = data.get( nc );
                     }
+                    if ( newCell.getRowSpan() == 0 && nc.getRow() == data.size() - 1 ) {
+                        nc = c;
+                    }
 
                 }
+        }
+        return nc;
+    }
+
+    private Coordinate findMergedCellExtent(Coordinate c) {
+        if(c.getRow()==data.size()-1) {
+            return c;
+        }
+        Coordinate nc = new Coordinate( c.getRow() + 1,
+                                        c.getCol() );
+        CellValue< ? > newCell = data.get( nc );
+        while ( newCell.getRowSpan() == 0 && nc.getRow() < data.size() - 1 ) {
+            nc = new Coordinate( nc.getRow() + 1,
+                                     nc.getCol() );
+            newCell = data.get( nc );
+        }
+        if ( newCell.getRowSpan() != 0 ) {
+            nc = new Coordinate( nc.getRow() - 1,
+                                     nc.getCol() );
+            newCell = data.get( nc );
         }
         return nc;
     }
@@ -1150,7 +1157,7 @@ public abstract class MergableGridWidget<T> extends Widget
                                        int endRow,
                                        int iCol) {
         if ( endRow - startRow > 1 ) {
-            for ( int iRow = startRow; iRow < endRow - 1; iRow++ ) {
+            for ( int iRow = startRow; iRow < endRow; iRow++ ) {
                 CellValue< ? > cell1 = data.get( iRow ).get( iCol );
                 CellValue< ? > cell2 = data.get( iRow + 1 ).get( iCol );
                 if ( !equalOrNull( cell1.getValue(),
@@ -1182,8 +1189,6 @@ public abstract class MergableGridWidget<T> extends Widget
             return;
         }
 
-        cell1.setGroupable( true );
-
         //Determine whether the top cell of a merged cell overlaps a grouped section
         CellValue< ? > topSectionCell = null;
         if ( !data.get( iStartRowIndex ).isGrouped() ) {
@@ -1214,6 +1219,8 @@ public abstract class MergableGridWidget<T> extends Widget
                     rowSpan++;
                 }
             }
+            boolean isGroupable = true;
+            topSectionCell.setGroupable( isGroupable);
             topSectionCell.setRowSpan( rowSpan );
         }
 
@@ -1227,7 +1234,8 @@ public abstract class MergableGridWidget<T> extends Widget
                     rowSpan++;
                 }
             }
-            bottomSectionCell.setGroupable( rowSpan > 1 );
+            boolean isGroupable = iEndRowIndex - bottomSectionCell.getCoordinate().getRow() > 1;
+            bottomSectionCell.setGroupable( isGroupable );
             bottomSectionCell.setRowSpan( rowSpan );
         }
 
@@ -1241,24 +1249,26 @@ public abstract class MergableGridWidget<T> extends Widget
         }
     }
 
+    //Remove all grouping throughout the model
     private void removeModelGrouping() {
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             DynamicDataRow row = data.get( iRow );
             row.clearGrouping();
             for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
                 CellValue< ? > cell = row.get( iCol );
+                cell.setGrouped( false );
                 cell.setGroupable( false );
                 cell.setHasMultipleValues( false );
             }
         }
     }
 
+    //Remove grouping by expanding applicable rows
     private void removeModelGrouping(CellValue< ? > startCell) {
 
         int groupedColumnIndex = startCell.getCoordinate().getCol();
         int startRow = startCell.getCoordinate().getRow();
-        int rowSpan = startCell.getMergedRowSpan();
-        int endRow = startRow + rowSpan;
+        int endRow = findMergedCellExtent( startCell.getCoordinate() ).getRow();
 
         startCell.setGrouped( false );
 
@@ -1271,7 +1281,7 @@ public abstract class MergableGridWidget<T> extends Widget
         }
 
         //Expand rows
-        for ( int iRow = startRow + 1; iRow < endRow; iRow++ ) {
+        for ( int iRow = startRow + 1; iRow <= endRow; iRow++ ) {
             row = data.get( iRow );
             row.decreaseGroupingLevel();
         }

@@ -33,6 +33,9 @@ public class DynamicDataRow extends
 
     public void decreaseGroupingLevel() {
         groupLevel--;
+        if ( groupLevel < 0 ) {
+            groupLevel = 0;
+        }
     }
 
     public int getGroupLevel() {
@@ -46,7 +49,5 @@ public class DynamicDataRow extends
     public boolean isGrouped() {
         return this.groupLevel > 0;
     }
-    
-    
 
 }
