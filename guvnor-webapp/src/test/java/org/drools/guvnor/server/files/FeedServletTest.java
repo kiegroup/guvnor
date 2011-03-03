@@ -41,16 +41,6 @@ import org.junit.Test;
 
 public class FeedServletTest extends GuvnorTestBase {
 
-    @Before
-    public void setUp() {
-        setUpSeamAndRepository();
-    }
-
-    @After
-    public void tearDown() {
-        tearAllDown();
-    }
-
     @Test
     public void testPackageFeed() throws Exception {
         RulesRepository repo = getRulesRepository();

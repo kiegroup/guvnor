@@ -32,17 +32,6 @@ import org.junit.Test;
 
 public class ModelContentHandlerTest extends GuvnorTestBase {
 
-    @Before
-    public void setUp() {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() {
-        tearAllDown();
-    }
-
     @Test
     public void testModelAttached() throws Exception {
         RulesRepository repo = getRulesRepository();

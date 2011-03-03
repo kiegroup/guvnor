@@ -65,17 +65,6 @@ import org.mvel2.MVEL;
  */
 public class ContentPackageAssemblerTest extends GuvnorTestBase {
 
-    @Before
-    public void setUp() {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() {
-        tearAllDown();
-    }
-
     /**
      * Test package configuration errors,
      * including header, functions, DSL files.

@@ -53,17 +53,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class PopulateDataTest extends GuvnorTestBase {
 
-    @Before
-    public void setUp() {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() {
-        tearAllDown();
-    }
-
     @Test
     public void testPopulate() throws Exception {
         ServiceImplementation serv = getServiceImplementation();

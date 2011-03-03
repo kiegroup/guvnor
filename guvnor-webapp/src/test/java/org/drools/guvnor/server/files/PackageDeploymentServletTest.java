@@ -55,14 +55,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
 
     @Before
     public void setup() {
-        setUpSeamAndRepository();
         setUpFileManagerUtils();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        tearAllDown();
     }
 
     @Test

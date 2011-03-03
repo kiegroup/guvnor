@@ -28,16 +28,6 @@ import org.junit.Test;
 
 public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
 
-    @Before
-    public void setup() {
-        setUpSeamAndRepository();
-    }
-
-    @After
-    public void tearDown() {
-        tearAllDown();
-    }
-
     private RoleBasedPermissionStore getStore() throws Exception {
         RoleBasedPermissionStore store = new RoleBasedPermissionStore();
 

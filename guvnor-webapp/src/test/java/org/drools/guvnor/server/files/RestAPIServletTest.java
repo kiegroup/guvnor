@@ -44,13 +44,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Before
     public void setup() {
-        setUpSeamAndRepository();
         setUpFileManagerUtils();
-    }
-
-    @After
-    public void teardown() {
-        tearAllDown();
     }
 
     @Test

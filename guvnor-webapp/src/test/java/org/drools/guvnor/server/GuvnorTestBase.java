@@ -31,38 +31,38 @@ import org.drools.repository.RulesRepository;
 import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
-public class GuvnorTestBase {
+public abstract class GuvnorTestBase {
 
-    private RulesRepository repository;
+    private static RulesRepository repository;
 
-    protected ServiceImplementation getServiceImplementation() {
-        return (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
-    }
-    
-    protected RepositoryAssetService getRepositoryAssetService() {
-        return (RepositoryAssetService) Component.getInstance( "org.drools.guvnor.client.rpc.AssetService" );
-    }
+    // ************************************************************************
+    // Lifecycle methods
+    // ************************************************************************
 
-    protected RulesRepository getRulesRepository() {
-        if ( repository == null ) {
-            repository = new RulesRepository( getSession() );
-        }
-
-        return repository;
-    }
-
-    protected Session getSession() {
-        return TestEnvironmentSessionHelper.getSession( true );
-    }
-
-    protected void setUpSeamAndRepository() {
-
+    @Before
+    public void setUpGuvnorTestBase() {
         setUpSeam();
+        setUpRepository();
+        setUpMockIdentity();
+    }
 
+    protected void setUpSeam() {
+        System.setProperty( KeyStoreHelper.PROP_SIGN,
+                "false" );
+        Map<String, Object> application = new HashMap<String, Object>();
+        Lifecycle.beginApplication(application);
+        Lifecycle.beginCall();
+    }
+
+    protected void setUpRepository() {
         ServiceImplementation serviceImplementation = new ServiceImplementation();
         serviceImplementation.setRulesRepository( getRulesRepository() );
-        
+
         RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
         repositoryAssetService.setRulesRepository( getRulesRepository() );
 
@@ -74,23 +74,11 @@ public class GuvnorTestBase {
                                           repositoryAssetService );
     }
 
-    public void setUpSeam() {
-        System.setProperty( KeyStoreHelper.PROP_SIGN,
-                            "false" );
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication(application);
-        Lifecycle.beginCall();
-    }
-
-    protected void setUpFileManagerUtils() {
-        Contexts.getSessionContext().set( "fileManager",
-                                          getFileManagerUtils() );
-    }
-
-    protected FileManagerUtils getFileManagerUtils() {
-        FileManagerUtils fileManager = new FileManagerUtils();
-        fileManager.setRepository( getRulesRepository() );
-        return fileManager;
+    protected RulesRepository getRulesRepository() {
+        if ( repository == null ) {
+            repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
+        }
+        return repository;
     }
 
     protected void setUpMockIdentity() {
@@ -107,11 +95,8 @@ public class GuvnorTestBase {
         mockIdentity.create();
     }
 
-    public WebDAVImpl getWebDAVImpl() throws Exception {
-        return new WebDAVImpl( getRulesRepository() );
-    }
-
-    protected void tearAllDown() {
+    @After
+    public void tearDownGuvnorTestBase() {
         repository = null;
         Contexts.removeFromAllContexts( "repository" );
         Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.RepositoryService" );
@@ -124,11 +109,37 @@ public class GuvnorTestBase {
         if ( Contexts.getConversationContext() != null ) Contexts.getConversationContext().flush();
 
         if ( Contexts.isApplicationContextActive() ) {
-
             Lifecycle.endApplication();
         }
 
         MailboxService.getInstance().stop();
         TestEnvironmentSessionHelper.shutdown();
     }
+
+    // ************************************************************************
+    // Helper methods
+    // ************************************************************************
+
+    protected ServiceImplementation getServiceImplementation() {
+        return (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
+    }
+
+    protected RepositoryAssetService getRepositoryAssetService() {
+        return (RepositoryAssetService) Component.getInstance( "org.drools.guvnor.client.rpc.AssetService" );
+    }
+
+    protected void setUpFileManagerUtils() {
+        Contexts.getSessionContext().set( "fileManager", getFileManagerUtils() );
+    }
+
+    protected FileManagerUtils getFileManagerUtils() {
+        FileManagerUtils fileManager = new FileManagerUtils();
+        fileManager.setRepository( getRulesRepository() );
+        return fileManager;
+    }
+
+    public WebDAVImpl getWebDAVImpl() throws Exception {
+        return new WebDAVImpl( getRulesRepository() );
+    }
+
 }

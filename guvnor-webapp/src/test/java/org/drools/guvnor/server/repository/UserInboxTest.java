@@ -31,16 +31,6 @@ import org.junit.Test;
 
 public class UserInboxTest extends GuvnorTestBase {
 
-    @Before
-    public void setup() {
-        setUpSeamAndRepository();
-    }
-
-    @After
-    public void teardown() {
-        tearAllDown();
-    }
-
     @Test
     public void testInboxen() throws Exception {
         RulesRepository repo = getRulesRepository();

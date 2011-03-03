@@ -35,17 +35,6 @@ import org.junit.Test;
 
 public class ContentHandlerTest extends GuvnorTestBase {
 
-    @Before
-    public void setup() {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        tearAllDown();
-    }
-
     @Test
     public void testContentFormat() {
         assertTrue( ContentManager.getHandler( AssetFormats.DRL ) instanceof DRLFileContentHandler );

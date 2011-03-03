@@ -40,17 +40,6 @@ import org.junit.Test;
 
 public class FactModelContentHandlerTest extends GuvnorTestBase {
 
-    @Before
-    public void setup() {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        tearAllDown();
-    }
-
     @Test
     public void testToDrl() {
 

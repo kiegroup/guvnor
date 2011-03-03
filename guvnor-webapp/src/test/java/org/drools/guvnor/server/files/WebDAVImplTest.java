@@ -43,17 +43,6 @@ import org.junit.Test;
 
 public class WebDAVImplTest extends GuvnorTestBase {
 
-    @Before
-    public void setUp() {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() {
-        tearAllDown();
-    }
-
     @Test
     public void testPath() {
         WebDAVImpl imp = new WebDAVImpl( new File( "" ) );

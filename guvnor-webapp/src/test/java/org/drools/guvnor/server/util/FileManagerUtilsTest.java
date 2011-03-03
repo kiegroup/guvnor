@@ -48,17 +48,6 @@ import org.junit.Test;
 
 public class FileManagerUtilsTest extends GuvnorTestBase {
 
-    @Before
-    public void setUp() throws Exception {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        tearAllDown();
-    }
-
     @Test
     public void testAttachFile() throws Exception {
 

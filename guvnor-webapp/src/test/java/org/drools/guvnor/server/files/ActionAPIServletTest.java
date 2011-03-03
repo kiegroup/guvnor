@@ -39,17 +39,6 @@ public class ActionAPIServletTest extends GuvnorTestBase {
     private final String compilationPath = "http://foo/action/compile";
     private final String snapshotPath    = "http://foo/action/snapshot";
 
-    @Before
-    public void setUp() {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() {
-        tearAllDown();
-    }
-
     /*
      * Modeled after testPost in RestAPIServletTest.
      */

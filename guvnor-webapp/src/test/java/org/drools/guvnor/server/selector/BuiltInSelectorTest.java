@@ -29,17 +29,6 @@ import org.junit.Test;
 
 public class BuiltInSelectorTest extends GuvnorTestBase {
 
-    @Before
-    public void setup() {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void teardown() {
-        tearAllDown();
-    }
-
     @Test
     public void testBuiltInSelector() throws Exception {
         ServiceImplementation impl = getServiceImplementation();

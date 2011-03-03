@@ -31,16 +31,6 @@ import org.junit.Test;
 
 public class EventsTest extends GuvnorTestBase {
 
-    @Before
-    public void setup() {
-        setUpSeamAndRepository();
-    }
-
-    @After
-    public void teardown() {
-        tearAllDown();
-    }
-
     @Test
     public void testLoadSave() throws Exception {
         System.setProperty( "guvnor.saveEventListener",

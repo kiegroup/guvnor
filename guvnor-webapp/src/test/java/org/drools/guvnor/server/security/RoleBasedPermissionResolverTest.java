@@ -31,17 +31,6 @@ import org.junit.Test;
 
 public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
-    @Before
-    public void setup() {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void teardown() {
-        tearAllDown();
-    }
-
     @Test
     public void testCategoryBasedPermissionAnalyst() throws Exception {
         //NOTE: Have to have this call, otherwise this test will fail others tests. Seems to be related to

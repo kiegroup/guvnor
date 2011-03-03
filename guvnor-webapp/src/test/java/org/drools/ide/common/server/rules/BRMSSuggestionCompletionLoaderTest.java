@@ -40,16 +40,6 @@ import org.junit.Test;
 
 public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
 
-    @Before
-    public void setup() {
-        setUpSeamAndRepository();
-    }
-
-    @After
-    public void teardown() {
-        tearAllDown();
-    }
-
     @Test
     public void testLoader() throws Exception {
 

@@ -118,7 +118,9 @@ import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -128,17 +130,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * This is really a collection of integration tests.
  */
 public class ServiceImplementationTest extends GuvnorTestBase {
-
-    @Before
-    public void setUp() {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() {
-        tearAllDown();
-    }
 
     @Test
     @Ignore("this test fail intermittently")
@@ -3841,8 +3832,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
-    public void testListUserPermisisonsPagedResults() throws Exception {
+    public void testListUserPermissionsPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
 
@@ -3874,8 +3864,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
-    public void testListUserPermisisonsFullResults() throws Exception {
+    public void testListUserPermissionsFullResults() throws Exception {
 
         //Setup data
         ServiceImplementation impl = getServiceImplementation();
@@ -3896,7 +3885,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testShowLogPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;

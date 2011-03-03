@@ -51,17 +51,6 @@ import org.junit.Test;
 
 public class ServiceImplSecurityTest extends GuvnorTestBase {
 
-    @Before
-    public void setUp() {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-    }
-
-    @After
-    public void tearDown() {
-        tearAllDown();
-    }
-
     @Test
     public void testLoadRuleAssetAnalyst() throws Exception {
         try {

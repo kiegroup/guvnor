@@ -28,16 +28,6 @@ import static org.junit.Assert.*;
 
 public class RepositoryServletTest extends GuvnorTestBase {
 
-    @Before
-    public void setUp() throws Exception {
-        setUpSeam();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        tearAllDown();
-    }
-
     @Test
     public void testAllowUser() throws Exception {
         setUpMockIdentity(getMockIdentity());

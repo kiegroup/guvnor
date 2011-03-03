@@ -38,17 +38,8 @@ public class VerifierRunnerTest extends GuvnorTestBase {
 
     @Before
     public void setUp() throws Exception {
-        setUpSeamAndRepository();
-
         serviceImplementation = getServiceImplementation();
-
-        packageItem = serviceImplementation.getRulesRepository().createPackage( "VerifierRunnerTest",
-                                                                                "" );
-    }
-
-    @After
-    public void tearDown() {
-        tearAllDown();
+        packageItem = serviceImplementation.getRulesRepository().createPackage( "VerifierRunnerTest", "" );
     }
 
     @Test

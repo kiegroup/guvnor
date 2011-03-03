@@ -37,17 +37,8 @@ public class VerificationServiceImplementationTest extends GuvnorTestBase {
 
     @Before
     public void setUp() {
-        setUpSeamAndRepository();
-        setUpMockIdentity();
-
         serviceImplementation = getServiceImplementation();
-
         verificationService = new VerificationServiceImplementation();
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        tearAllDown();
     }
 
     @Test
