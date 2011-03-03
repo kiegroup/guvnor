@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 public class TestEnvironmentSessionHelper {
 
     public static final Logger log = LoggerFactory.getLogger( TestEnvironmentSessionHelper.class );
+
     public static Repository   repository;
 
     public static synchronized Session getSession() {
@@ -106,9 +107,8 @@ public class TestEnvironmentSessionHelper {
     public static synchronized void shutdown() {
         try {
             RulesRepositoryConfigurator.getInstance( null ).shutdown();
-        } catch ( Exception exception ) {
-            System.err.println( "Could not shut down repository." );
-            exception.printStackTrace();
+        } catch ( Exception e ) {
+            log.error("Could not shut down repository.", e);
         }
         repository = null;
     }
