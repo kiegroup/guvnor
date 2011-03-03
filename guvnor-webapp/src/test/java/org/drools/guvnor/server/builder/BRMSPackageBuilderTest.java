@@ -106,45 +106,41 @@ public class BRMSPackageBuilderTest {
         assertTrue(builder.hasErrors());
         builder.clearErrors();
         assertFalse(builder.hasErrors());
-
-
     }
 
     @Test
     public void testGeneratedBeans() throws Exception {
 
-            JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
-            List<JarInputStream> l = new ArrayList<JarInputStream>();
-            l.add( jis );
-            BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, new Properties() );
+        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        List<JarInputStream> l = new ArrayList<JarInputStream>();
+        l.add( jis );
+        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, new Properties() );
 
-            PackageDescr pc = new PackageDescr("foo.bar");
-            builder.addPackage( pc );
+        PackageDescr pc = new PackageDescr("foo.bar");
+        builder.addPackage( pc );
 
-            String header = "import com.billasurf.Person\n import com.billasurf.Board\n declare GenBean \n name: String \n end";
-            builder.addPackageFromDrl( new StringReader(header) );
-            assertFalse(builder.hasErrors());
+        String header = "import com.billasurf.Person\n import com.billasurf.Board\n declare GenBean \n name: String \n end";
+        builder.addPackageFromDrl( new StringReader(header) );
+        assertFalse(builder.hasErrors());
 
-            JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
-            assertEquals(JavaDialectConfiguration.ECLIPSE, javaConf.getCompiler());
+        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
+        assertEquals(JavaDialectConfiguration.ECLIPSE, javaConf.getCompiler());
 
-            String ruleAtom = "rule foo \n when \n Person() \n GenBean(name=='mike')\n then \n System.out.println(42); end";
-            builder.addPackageFromDrl( new StringReader(ruleAtom) );
-            if (builder.hasErrors()) {
-                System.err.println(builder.getErrors().getErrors()[0].getMessage());
-            }
-            assertFalse(builder.hasErrors());
+        String ruleAtom = "rule foo \n when \n Person() \n GenBean(name=='mike')\n then \n System.out.println(42); end";
+        builder.addPackageFromDrl( new StringReader(ruleAtom) );
+        if (builder.hasErrors()) {
+            System.err.println(builder.getErrors().getErrors()[0].getMessage());
+        }
+        assertFalse(builder.hasErrors());
 
-            ruleAtom = "rule foo2 \n when \n Person() \n then \n System.out.println(42); end";
-            builder.addPackageFromDrl( new StringReader(ruleAtom) );
-            if (builder.hasErrors()) {
-                System.err.println(builder.getErrors().getErrors()[0].getMessage());
-            }
-            assertFalse(builder.hasErrors());
+        ruleAtom = "rule foo2 \n when \n Person() \n then \n System.out.println(42); end";
+        builder.addPackageFromDrl( new StringReader(ruleAtom) );
+        if (builder.hasErrors()) {
+            System.err.println(builder.getErrors().getErrors()[0].getMessage());
+        }
+        assertFalse(builder.hasErrors());
 
-            assertEquals("foo.bar", builder.getPackage().getName());
-
-
+        assertEquals("foo.bar", builder.getPackage().getName());
     }
 
     @Test
