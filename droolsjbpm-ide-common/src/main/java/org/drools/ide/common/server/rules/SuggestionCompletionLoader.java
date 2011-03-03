@@ -573,7 +573,7 @@ public class SuggestionCompletionLoader
                 methodInfos);
     }
 
-    String getShortNameOfClass(final String clazz) {
+    public String getShortNameOfClass(final String clazz) {
         return clazz.substring(clazz.lastIndexOf('.') + 1);
     }
 
@@ -581,7 +581,7 @@ public class SuggestionCompletionLoader
      * This will remove the unneeded "fields" that come from java.lang.Object
      * these are really not needed for the modeller.
      */
-    String[] removeIrrelevantFields(Collection<String> fields) {
+    public String[] removeIrrelevantFields(Collection<String> fields) {
         final List<String> result = new ArrayList<String>();
         for (String field : fields) {
             if (!(field.equals("class") || field.equals("hashCode") || field.equals("toString"))) {

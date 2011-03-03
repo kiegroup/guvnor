@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.ide.common.server.rules;
+package org.drools.guvnor.server.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -30,6 +30,7 @@ import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -64,7 +65,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
         RulesRepository repo = getRulesRepository();
         PackageItem item = repo.createPackage( "testLoaderWithComplexFields",
                                                "to test the loader" );
-        DroolsHeader.updateDroolsHeader( "import org.drools.guvnor.server.rules.Agent",
+        DroolsHeader.updateDroolsHeader( "import org.drools.guvnor.server.util.Agent",
                                                   item );
         repo.save();
 
