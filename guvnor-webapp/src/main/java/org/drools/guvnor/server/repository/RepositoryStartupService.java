@@ -17,11 +17,13 @@
 package org.drools.guvnor.server.repository;
 
 
-
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import org.drools.repository.*;
+import org.drools.repository.events.CheckinEvent;
+import org.drools.repository.events.StorageEventManager;
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -29,18 +31,10 @@ import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import org.drools.repository.*;
-import org.drools.repository.events.StorageEventManager;
-import org.drools.repository.events.CheckinEvent;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 
 /**
@@ -52,9 +46,9 @@ import org.slf4j.LoggerFactory;
 public class RepositoryStartupService {
 
     private static final Logger log = LoggerFactory.getLogger(RepositoryStartupService.class);
-    private static final String ADMIN                     = "admin";
-    private static final String ADMIN_USER_PROPERTY       = "org.drools.repository.admin.username";
-    private static final String ADMIN_PASSWORD_PROPERTY   = "org.drools.repository.admin.password";
+    private static final String ADMIN                     = "logInAdmin";
+    private static final String ADMIN_USER_PROPERTY       = "org.drools.repository.logInAdmin.username";
+    private static final String ADMIN_PASSWORD_PROPERTY   = "org.drools.repository.logInAdmin.password";
     private static final String MAILMAN                   = "mailman";
     private static final String MAILMAN_USER_PROPERTY     = "org.drools.repository.mailman.username";
     private static final String MAILMAN_PASSWORD_PROPERTY = "org.drools.repository.mailman.password";
@@ -81,7 +75,7 @@ public class RepositoryStartupService {
     }
     
     @Create
-    public void create() {
+    public void create() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         repository = getRepositoryInstance();
         String username = ADMIN;
         if (properties.containsKey(ADMIN_USER_PROPERTY)) {

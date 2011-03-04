@@ -18,15 +18,7 @@ package org.drools.guvnor.client.util;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.guvnor.client.admin.ArchivedAssetManager;
-import org.drools.guvnor.client.admin.BackupManager;
-import org.drools.guvnor.client.admin.CategoryManager;
-import org.drools.guvnor.client.admin.LogViewer;
-import org.drools.guvnor.client.admin.PermissionViewer;
-import org.drools.guvnor.client.admin.RepoConfigManager;
-import org.drools.guvnor.client.admin.RuleVerifierManager;
-import org.drools.guvnor.client.admin.StateManager;
-import org.drools.guvnor.client.admin.WorkspaceManager;
+import org.drools.guvnor.client.admin.*;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -41,13 +33,7 @@ import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.qa.AnalysisView;
 import org.drools.guvnor.client.qa.ScenarioPackageView;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.PushClient;
-import org.drools.guvnor.client.rpc.PushResponse;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.ServerPushNotification;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
@@ -81,6 +67,7 @@ public class TabOpener {
     private static final String           ARCHMAN               = "archman";
     private static final String           CATMAN                = "catman";
     private static final String           WORKSPACES            = "workspaces";
+    private static final String           PERSPECTIVES_MANAGER  = "perspectivesManager";
 
     private final ExplorerViewCenterPanel explorerViewCenterPanel;
 
@@ -383,8 +370,22 @@ public class TabOpener {
                                                                                                          new WorkspaceManager(),
                                                                                                          WORKSPACES );
                 break;
+            case 10:
+                openPerspectivesManager();
+                break;
         }
 
+    }
+
+    private void openPerspectivesManager() {
+        if (!explorerViewCenterPanel.showIfOpen(PERSPECTIVES_MANAGER)) {
+            PerspectivesManagerView perspectivesManagerView = new PerspectivesManagerViewImpl();
+            new PerspectivesManager(GWT.<ConfigurationServiceAsync>create(ConfigurationService.class),
+                    perspectivesManagerView);
+            explorerViewCenterPanel.addTab(constants.PerspectivesConfiguration(),
+                    perspectivesManagerView,
+                    PERSPECTIVES_MANAGER);
+        }
     }
 
     /**

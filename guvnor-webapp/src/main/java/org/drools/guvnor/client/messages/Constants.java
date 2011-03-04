@@ -16,9 +16,11 @@
 
 package org.drools.guvnor.client.messages;
 
-import java.util.Date;
+import com.google.gwt.core.client.GWT;
 
 import com.google.gwt.i18n.client.Messages;
+
+import java.util.Date;
 
 /**
  * This uses GWT to provide client side compile time resolving of locales. See:
@@ -32,6 +34,8 @@ import com.google.gwt.i18n.client.Messages;
 public interface Constants
     extends
     Messages {
+
+    Constants INSTANCE = GWT.create(Constants.class);
 
     String ActionColumnConfigurationInsertingANewFact();
 
@@ -2056,7 +2060,7 @@ public interface Constants
 
     String SelectWorkingSets();
 
-    String ErrorLoadingRules();;
+    String ErrorLoadingRules();
 
     String AElementToDelInCollectionList();
 
@@ -2219,9 +2223,37 @@ public interface Constants
     String LoadingWorkspaces();
 
     String UpdateSelectedWorkspace();
+    
+    String CommunicationError();   
 
-    String CommunicationError();
+    String AuthorPerspective();
 
+    String FailedToLoadPerspectiveUnknownId0(String perspectiveId);
+
+    String Runtime();
+
+    String PerspectivesConfiguration();
+
+    String PleaseSelectAPerspective();
+
+    String NewPerspective();
+
+    String EditPerspective();
+
+    String RemovePerspective();
+
+    String FailedToLoadPerspective();
+
+    String NameCanNotBeEmpty();
+
+    String UrlCanNotBeEmpty();
+
+    String Url();
+
+    String Save();
+
+    String CurrentPerspectives();     
+    
     String groupCells();
 
     String negatePattern();

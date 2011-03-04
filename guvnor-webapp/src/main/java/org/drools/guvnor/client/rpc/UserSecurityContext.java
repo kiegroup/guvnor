@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,6 @@
 
 package org.drools.guvnor.client.rpc;
 
-import java.util.Set;
-import java.util.Map;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -27,12 +24,21 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class UserSecurityContext implements IsSerializable {
 
-    public String userName;
+    private String userName;
 
 
-    public UserSecurityContext() {}
+    public UserSecurityContext() {
+    }
+
     public UserSecurityContext(String userName) {
         this.userName = userName;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 }

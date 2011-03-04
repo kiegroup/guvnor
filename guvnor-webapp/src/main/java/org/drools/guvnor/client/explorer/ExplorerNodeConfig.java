@@ -40,8 +40,8 @@ import com.google.gwt.user.client.ui.TreeItem;
  */
 public class ExplorerNodeConfig {
 
-    private static Constants   constants                   = ((Constants) GWT.create( Constants.class ));
-    private static Images      images                      = (Images) GWT.create( Images.class );
+    private static Constants constants = GWT.create(Constants.class);
+    private static Images images = GWT.create(Images.class);
 
     // Browse
     public static final String FIND_ID                     = "find";
@@ -178,25 +178,6 @@ public class ExplorerNodeConfig {
                 buildDeploymentTree( tn, c );
             }
         }
-    }
-
-    public static Tree getAdminStructure(Map<TreeItem, String> itemWidgets) {
-        Tree tree = new Tree();
-        tree.setAnimationEnabled( true );
-
-        Object[][] adminStructure =
-                new Object[][]{{constants.Category(), images.categorySmall(), "0"}, {constants.Status(), images.statusSmall(), "2"}, {constants.Archive(), images.backupSmall(), "1"}, {constants.EventLog(), images.eventLogSmall(), "4"}, {constants.UserPermission(), images.userPermissionsSmall(), "5"}, {constants.Workspaces(), images.emptyPackage(), "9"}, {constants.ImportExport(), images.saveEdit(), "3"},
-                        {constants.RulesVerification(), images.ruleVerification(), "7"}, {constants.RepositoryConfiguration(), images.config(), "8"}, {constants.About(), images.information(), "6"}};
-
-        for ( int i = 0; i < adminStructure.length; i++ ) {
-
-            Object[] packageData = adminStructure[i];
-            TreeItem localChildNode = new TreeItem( Util.getHeader( (ImageResource) packageData[1], (String) packageData[0] ) );
-            itemWidgets.put( localChildNode, (String) packageData[2] );
-
-            tree.addItem( localChildNode );
-        }
-        return tree;
     }
 
     public static void setupBrowseTree(Tree tree, Map<TreeItem, String> itemWidgets) {

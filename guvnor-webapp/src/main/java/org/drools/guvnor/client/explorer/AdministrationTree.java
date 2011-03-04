@@ -27,29 +27,28 @@ import com.google.gwt.user.client.ui.TreeItem;
 
 public class AdministrationTree extends AbstractTree {
 
-    private static Constants constants = GWT.create( Constants.class );
-    private static Images    images    = (Images) GWT.create( Images.class );
+    private static Constants constants = GWT.create(Constants.class);
+    private static Images images = GWT.create(Images.class);
 
     public AdministrationTree() {
         this.name = constants.Administration();
         this.image = images.rules();
 
-        //Add Selection listener
-        mainTree.addSelectionHandler( this );
+        mainTree.addSelectionHandler(this);
     }
 
     @Override
     protected Tree createTree() {
-        return ExplorerNodeConfig.getAdminStructure( itemWidgets );
+        return new AdminTree(itemWidgets);
     }
 
     // Show the associated widget in the deck panel
     public void onSelection(SelectionEvent<TreeItem> event) {
         TabOpener tabOpener = TabOpener.getInstance();
         TreeItem item = event.getSelectedItem();
-        String widgetID = itemWidgets.get( item );
+        String widgetID = itemWidgets.get(item);
 
-        int id = Integer.parseInt( widgetID );
-        tabOpener.openAdministrationSelection( id );
+        int id = Integer.parseInt(widgetID);
+        tabOpener.openAdministrationSelection(id);
     }
 }

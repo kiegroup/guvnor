@@ -10,6 +10,7 @@
   <inherits name="pl.balon.gwt.diagrams.Diagrams"/>
   <inherits name="org.cobogw.gwt.user.User"/>
   <inherits name="org.drools.ide.common.Common"/>
+  <inherits name="com.google.gwt.activity.Activity"/>
 
   <!-- Here we put different locales (translations)
    There are of the form values="xx_YY" - which match to Constants_xx_YY.properties which contain the content.
@@ -52,5 +53,9 @@
 
 
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />
+
+  <replace-with class="org.drools.guvnor.client.explorer.ClientFactoryImpl">
+    <when-type-is class="org.drools.guvnor.client.explorer.ClientFactory"/>
+  </replace-with>
 
 </module>

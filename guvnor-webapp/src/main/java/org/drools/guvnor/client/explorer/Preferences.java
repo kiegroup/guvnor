@@ -26,13 +26,13 @@ import java.util.Map;
  */
 public class Preferences {
 
-    static final Preferences    INSTANCE = new Preferences();
+    public static final Preferences    INSTANCE = new Preferences();
     private Map<String, String> prefs;
 
     private Preferences() {
     }
 
-    void loadPrefs(Capabilities caps) {
+    public void loadPrefs(Capabilities caps) {
         this.prefs = caps.prefs;
     }
 

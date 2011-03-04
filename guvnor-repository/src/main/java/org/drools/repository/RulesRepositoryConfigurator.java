@@ -22,12 +22,13 @@ public class RulesRepositoryConfigurator {
      */
     public static final String PROPERTIES_FILE = "/drools_repository.properties";
     public static final String CONFIGURATOR_CLASS = "org.drools.repository.configurator";
-    
+
     private static JCRRepositoryConfigurator jcrRepositoryConfigurator = null;
     private static Repository jcrRepository = null;
     private static RulesRepositoryConfigurator rulesRepositoryConfigurator = null;
 
-    private RulesRepositoryConfigurator() {}
+    private RulesRepositoryConfigurator() {
+    }
 
     public Repository getJCRRepository() throws RepositoryException {
         return jcrRepository;
@@ -41,7 +42,7 @@ public class RulesRepositoryConfigurator {
      * @throws RepositoryException
      */
     public synchronized static RulesRepositoryConfigurator getInstance(Properties properties) throws RepositoryException {
-        if (rulesRepositoryConfigurator == null ) {
+        if (rulesRepositoryConfigurator == null) {
             log.info("Creating an instance of the RulesRepositoryConfigurator.");
             rulesRepositoryConfigurator = new RulesRepositoryConfigurator();
 
@@ -53,16 +54,16 @@ public class RulesRepositoryConfigurator {
                     try {
                         properties.load(propStream);
                     } catch (IOException ioe) {
-                        throw new RepositoryException (ioe);
+                        throw new RepositoryException(ioe);
                     } finally {
                         try {
                             propStream.close();
                         } catch (IOException ioe) {
-                            throw new RepositoryException (ioe);
+                            throw new RepositoryException(ioe);
                         }
                     }
                 } else {
-                    throw new RepositoryException ("Cannot load properties from " + PROPERTIES_FILE);
+                    throw new RepositoryException("Cannot load properties from " + PROPERTIES_FILE);
                 }
             }
 
@@ -74,7 +75,7 @@ public class RulesRepositoryConfigurator {
                 jcrRepositoryConfigurator = (JCRRepositoryConfigurator) clazz.newInstance();
                 jcrRepository = jcrRepositoryConfigurator.getJCRRepository(properties);
             } catch (Exception ex) {
-                throw new RepositoryException (ex);
+                throw new RepositoryException(ex);
             }
         }
         return rulesRepositoryConfigurator;
@@ -101,12 +102,14 @@ public class RulesRepositoryConfigurator {
             Workspace ws = session.getWorkspace();
 
             //no need to set it up again, skip it if it has.
-            boolean registered = RulesRepositoryAdministrator.isNamespaceRegistered( session );
+            boolean registered = RulesRepositoryAdministrator.isNamespaceRegistered(session);
 
             if (!registered) {
                 ws.getNamespaceRegistry().registerNamespace("drools", RulesRepository.DROOLS_URI);
 
                 //Note, the order in which they are registered actually does matter !
+
+                jcrRepositoryConfigurator.registerNodeTypesFromCndFile("/node_type_definitions/configuration_node_type.cnd", session, ws);
                 jcrRepositoryConfigurator.registerNodeTypesFromCndFile("/node_type_definitions/tag_node_type.cnd", session, ws);
                 jcrRepositoryConfigurator.registerNodeTypesFromCndFile("/node_type_definitions/state_node_type.cnd", session, ws);
                 jcrRepositoryConfigurator.registerNodeTypesFromCndFile("/node_type_definitions/versionable_node_type.cnd", session, ws);
@@ -114,6 +117,8 @@ public class RulesRepositoryConfigurator {
 
                 jcrRepositoryConfigurator.registerNodeTypesFromCndFile("/node_type_definitions/rule_node_type.cnd", session, ws);
                 jcrRepositoryConfigurator.registerNodeTypesFromCndFile("/node_type_definitions/rulepackage_node_type.cnd", session, ws);
+
+
             }
 
             // Setup the rule repository node
@@ -123,15 +128,15 @@ public class RulesRepositoryConfigurator {
             Node packageAreaNode = RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.RULE_PACKAGE_AREA, "nt:folder");
 
             // Setup the global area
-            if (!packageAreaNode.hasNode(RulesRepository.RULE_GLOBAL_AREA)){
+            if (!packageAreaNode.hasNode(RulesRepository.RULE_GLOBAL_AREA)) {
                 Node globalAreaNode = RulesRepository.addNodeIfNew(packageAreaNode, RulesRepository.RULE_GLOBAL_AREA, PackageItem.RULE_PACKAGE_TYPE_NAME);
-                globalAreaNode.addNode( PackageItem.ASSET_FOLDER_NAME,  "drools:versionableAssetFolder" );
-                globalAreaNode.setProperty( PackageItem.TITLE_PROPERTY_NAME,  RulesRepository.RULE_GLOBAL_AREA);
-                globalAreaNode.setProperty( AssetItem.DESCRIPTION_PROPERTY_NAME, "the global area that holds sharable assets");
-                globalAreaNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME,    PackageItem.PACKAGE_FORMAT);
+                globalAreaNode.addNode(PackageItem.ASSET_FOLDER_NAME, "drools:versionableAssetFolder");
+                globalAreaNode.setProperty(PackageItem.TITLE_PROPERTY_NAME, RulesRepository.RULE_GLOBAL_AREA);
+                globalAreaNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME, "the global area that holds sharable assets");
+                globalAreaNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME, PackageItem.PACKAGE_FORMAT);
                 globalAreaNode.setProperty(PackageItem.CREATOR_PROPERTY_NAME, session.getUserID());
                 Calendar lastModified = Calendar.getInstance();
-                globalAreaNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME,    lastModified);
+                globalAreaNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME, lastModified);
             }
 
             // Setup the Snapshot area
@@ -143,14 +148,17 @@ public class RulesRepositoryConfigurator {
             //Setup the State area
             RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.STATE_AREA, "nt:folder");
 
+            Node configurationArea = RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.CONFIGURATION_AREA, "nt:folder");
+            RulesRepository.addNodeIfNew(configurationArea, RulesRepository.PERSPECTIVES_CONFIGURATION_AREA, "nt:folder");
+
             //and we need the "Draft" state
-            RulesRepository.addNodeIfNew( repositoryNode.getNode( RulesRepository.STATE_AREA ), StateItem.DRAFT_STATE_NAME, StateItem.STATE_NODE_TYPE_NAME );
+            RulesRepository.addNodeIfNew(repositoryNode.getNode(RulesRepository.STATE_AREA), StateItem.DRAFT_STATE_NAME, StateItem.STATE_NODE_TYPE_NAME);
 
             //Setup the schema area
             RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.SCHEMA_AREA, "nt:folder");
 
             //Setup the workspace area
-            RulesRepository.addNodeIfNew(repositoryNode.getNode( RulesRepository.SCHEMA_AREA ), RulesRepository.WORKSPACE_AREA, "nt:folder");
+            RulesRepository.addNodeIfNew(repositoryNode.getNode(RulesRepository.SCHEMA_AREA), RulesRepository.WORKSPACE_AREA, "nt:folder");
 
             session.save();
         } catch (Exception e) {

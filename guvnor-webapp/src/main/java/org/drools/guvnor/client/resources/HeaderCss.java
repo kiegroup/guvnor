@@ -18,13 +18,21 @@ package org.drools.guvnor.client.resources;
 import com.google.gwt.resources.client.CssResource;
 
 public interface HeaderCss
-    extends
-    CssResource {
+        extends
+        CssResource {
 
     @ClassName("header")
-    String headerClass();
+    String mainClass();
 
-    @ClassName("headerUserInfo")
-    String headerUserInfoClass();
+    @ClassName("userInfo")
+    String userInfoClass();
 
+    @ClassName("perspectives")
+    String perspectivesClass();
+
+    @ClassName("controls")
+    String controlsClass();
+
+    @ClassName("logo")
+    String logoClass();
 }

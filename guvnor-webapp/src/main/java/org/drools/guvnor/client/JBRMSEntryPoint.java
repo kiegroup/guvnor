@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,109 +16,157 @@
 
 package org.drools.guvnor.client;
 
+import com.google.gwt.activity.shared.ActivityManager;
+import com.google.gwt.activity.shared.ActivityMapper;
+import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootLayoutPanel;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.explorer.ExplorerLayoutManager;
+import org.drools.guvnor.client.explorer.*;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
+import org.drools.guvnor.client.rpc.ConfigurationService;
+import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.ruleeditor.StandaloneEditorManager;
-import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.CapabilitiesManager;
 
-import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
+import java.util.Collection;
 
 /**
  * This is the main launching/entry point for the JBRMS web console.
  * It essentially sets the initial layout.
- *
+ * <p/>
  * If you hadn't noticed, this is using GWT from google. Refer to GWT docs
  * if GWT is new to you (it is quite a different way of building web apps).
  */
 public class JBRMSEntryPoint
-    implements
-    EntryPoint {
+        implements
+        EntryPoint {
 
-    private LoggedInUserInfo loggedInUserInfo;
+    private PerspectivesPanel perspectivesPanel;
 
     public void onModuleLoad() {
-
-        GuvnorResources.INSTANCE.headerCss().ensureInjected();
-        RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
-
-        loggedInUserInfo = new LoggedInUserInfo();
-        loggedInUserInfo.setVisible( false );
-        checkLoggedIn();
+        loadStyles();
+        checkLogIn();
     }
 
-    /**
-     * Creates the main view of Guvnor.
-     * The path used to invoke guvnor is used to identify the 
-     * view to show:
-     * If the path contains "StandaloneEditor.html" then the StandaloneGuidedEditorManager is used
-     * to render the view.
-     * If not, the default view (created by ExplorerLayoutManager) is shown.
-     * @return Guvnor's main view.
-     */
-    private Panel createMain() {
-        if ( Window.Location.getPath().contains( "StandaloneEditor.html" ) ) {
-            return (new StandaloneEditorManager().getBaseLayout());
-        }
-        return (new ExplorerLayoutManager( loggedInUserInfo )).getBaseLayout();
+    private void loadStyles() {
+        GuvnorResources.INSTANCE.headerCss().ensureInjected();
+        RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
     }
 
     /**
      * Check if user is logged in, if not, then show prompt.
      * If it is, then we show the app, in all its glory !
      */
-    private void checkLoggedIn() {
-        RepositoryServiceFactory.getSecurityService().getCurrentUser( new GenericCallback<UserSecurityContext>() {
-            public void onSuccess(UserSecurityContext ctx) {
-                if ( ctx.userName != null ) {
-                    showMain();
-                    loggedInUserInfo.setUserName( ctx.userName );
-                    loggedInUserInfo.setVisible( true );
+    private void checkLogIn() {
+        RepositoryServiceFactory.getSecurityService().getCurrentUser(new GenericCallback<UserSecurityContext>() {
+            public void onSuccess(UserSecurityContext userSecurityContext) {
+                String userName = userSecurityContext.getUserName();
+                if (userName != null) {
+                    showMain(userName);
                 } else {
-                    final LoginWidget lw = new LoginWidget();
-                    lw.setLoggedInEvent( new Command() {
-                        public void execute() {
-                            showMain();
-                            loggedInUserInfo.setUserName( lw.getUserName() );
-                            loggedInUserInfo.setVisible( true );
-                        }
-                    } );
-                    lw.show();
+                    logIn();
                 }
             }
-        } );
+        });
     }
 
-    private void showMain() {
-        Window.setStatus( ((Constants) GWT.create( Constants.class )).LoadingUserPermissions() );
-
-        CapabilitiesManager.getInstance().refreshAllowedCapabilities( new Command() {
-
+    private void logIn() {
+        final LoginWidget loginWidget = new LoginWidget();
+        loginWidget.setLoggedInEvent(new Command() {
             public void execute() {
-                Window.setStatus( " " );
-                RootLayoutPanel.get().add( createMain() );
+                showMain(loginWidget.getUserName());
             }
-        } );
-
-        // Setup a history handler to reselect the associate menu item
-        final ValueChangeHandler<String> historyHandler = new ValueChangeHandler<String>() {
-            public void onValueChange(ValueChangeEvent<String> event) {
-                //TODO: Handle History
-            }
-        };
-        History.addValueChangeHandler( historyHandler );
+        });
+        loginWidget.show();
     }
+
+    private void showMain(final String userName) {
+
+        Window.setStatus(Constants.INSTANCE.LoadingUserPermissions());
+
+        CapabilitiesManager.getInstance().refreshAllowedCapabilities(new Command() {
+            public void execute() {
+
+                Preferences.INSTANCE.loadPrefs(CapabilitiesManager.getInstance().getCapabilities());
+
+                Window.setStatus(" ");
+
+                createMain();
+
+                perspectivesPanel.setUserName(userName);
+            }
+        });
+    }
+
+    /**
+     * Creates the main view of Guvnor.
+     * The path used to invoke guvnor is used to identify the
+     * view to show:
+     * If the path contains "StandaloneEditor.html" then the StandaloneGuidedEditorManager is used
+     * to render the view.
+     * If not, the default view is shown.
+     */
+    private void createMain() {
+        if (Window.Location.getPath().contains("StandaloneEditor.html")) {
+            RootLayoutPanel.get().add(new StandaloneEditorManager().getBaseLayout());
+        } else {
+
+            ClientFactory clientFactory = new ClientFactoryImpl(); //GWT.create(ClientFactory.class);
+            EventBus eventBus = clientFactory.getEventBus();
+            PlaceController placeController = clientFactory.getPlaceController();
+            Perspective defaultPlace = new AuthorPerspectivePlace();
+
+            perspectivesPanel = new PerspectivesPanel(clientFactory.getPerspectivesPanelView(hideTitle()), placeController);
+
+            loadPerspectives();
+
+            // TODo: Hide the dropdown if the default one is the only one -Rikkola-
+
+            ActivityMapper activityMapper = new GuvnorActivityMapper(clientFactory);
+            ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
+            activityManager.setDisplay(perspectivesPanel);
+
+            GuvnorPlaceHistoryMapper historyMapper = GWT.create(GuvnorPlaceHistoryMapper.class);
+            PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
+            historyHandler.register(placeController, eventBus, defaultPlace);
+
+            historyHandler.handleCurrentHistory();
+
+            RootLayoutPanel.get().add(perspectivesPanel.getView());
+        }
+    }
+
+    private void loadPerspectives() {
+        ConfigurationServiceAsync configurationServiceAsync = GWT.create(ConfigurationService.class);
+
+        PerspectiveLoader perspectiveLoader = new PerspectiveLoader(configurationServiceAsync);
+        perspectiveLoader.loadPerspectives(new LoadPerspectives() {
+            public void loadPerspectives(Collection<Perspective> perspectives) {
+                for (Perspective perspective : perspectives) {
+                    perspectivesPanel.addPerspective(perspective);
+                }
+            }
+        });
+    }
+
+    private boolean hideTitle() {
+        String parameter = Window.Location.getParameter("nochrome");
+
+        if (parameter == null) {
+            return true;
+        } else {
+            return parameter.equals("true");
+        }
+    }
+
 }

@@ -271,7 +271,7 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
     }
 
-    //admin: everything
+    //logInAdmin: everything
     @Test
     public void testPackageBasedPermissionAdmin() throws Exception {
         String package1Name = "testPackageBasedPermissionAdminPackageName1";
@@ -306,7 +306,7 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
     }
 
-    //Package.admin: everything for that package, including creating snapshots for that package.
+    //Package.logInAdmin: everything for that package, including creating snapshots for that package.
     @Test
     public void testPackageBasedPermissionPackageAdmin() throws Exception {
         String packageName = "testPackageBasedPermissionPackageAdminPackageName";
@@ -341,7 +341,7 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
     }
 
-    //Package.admin: everything for that package, including creating snapshots for that package.
+    //Package.logInAdmin: everything for that package, including creating snapshots for that package.
     @Test
     public void testPackageBasedWebDavPermissionPackageAdmin() throws Exception {
         String packageName = "testPackageBasedWebDavPermissionPackageAdmin";

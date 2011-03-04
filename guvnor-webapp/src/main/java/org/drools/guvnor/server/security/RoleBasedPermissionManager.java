@@ -17,7 +17,6 @@
 package org.drools.guvnor.server.security;
 
 
-
 import java.util.List;
 import java.io.Serializable;
 
@@ -38,34 +37,28 @@ import org.jboss.seam.security.Identity;
 @AutoCreate
 @Name("roleBasedPermissionManager")
 public class RoleBasedPermissionManager implements Serializable {
-    
-//    @In 
+
+    //    @In
     List<RoleBasedPermission> permissions;
-    
-//    @Unwrap
+
+    //    @Unwrap
     public List<RoleBasedPermission> getRoleBasedPermission() {
         return permissions;
     }
-    
+
     @Create
     public void create() {
-        String userName = "";
-        if (Contexts.isApplicationContextActive()) {
-            userName = Identity.instance().getCredentials().getUsername();
-        }
-
-        RoleBasedPermissionStore pbps = (RoleBasedPermissionStore) Component
+        RoleBasedPermissionStore roleBasedPermissionStore = (RoleBasedPermissionStore) Component
                 .getInstance("org.drools.guvnor.server.security.RoleBasedPermissionStore");
-        permissions = pbps.getRoleBasedPermissionsByUserName(Identity
+        permissions = roleBasedPermissionStore.getRoleBasedPermissionsByUserName(Identity
                 .instance().getCredentials().getUsername());
 
     }
-    
+
     @Destroy
     public void close() {
-            
-    }
-    
 
-    
+    }
+
+
 }

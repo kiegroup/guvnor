@@ -21,12 +21,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -107,6 +102,10 @@ public class RulesRepository {
      * The name of the state area of the repository
      */
     public final static String  STATE_AREA            = "drools:state_area";
+
+
+    public final static String CONFIGURATION_AREA = "drools:configuration_area";
+    public final static String PERSPECTIVES_CONFIGURATION_AREA = "drools:perspectives_configuration_area";
 
     /**
      * The name of the schema area within the JCR repository
@@ -1643,6 +1642,68 @@ public class RulesRepository {
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
+    }
+
+    public IFramePerspectiveConfigurationItem createPerspectivesConfiguration(String name, String url) {
+        try {
+            Node folderNode = getPerspectivesConfigurationArea();
+
+            Node configurationNode = folderNode.addNode(name, IFramePerspectiveConfigurationItem.CONFIGURATION_NODE_TYPE_NAME);
+
+            configurationNode.setProperty(IFramePerspectiveConfigurationItem.TITLE_PROPERTY_NAME, name);
+            configurationNode.setProperty(IFramePerspectiveConfigurationItem.URL_PROPERTY_NAME, url);
+
+            save();
+
+            return new IFramePerspectiveConfigurationItem(configurationNode);
+
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
+        }
+    }
+
+    private Node getPerspectivesConfigurationArea() throws RepositoryException {
+        return this.session.getRootNode().getNode(String.format("%s/%s/%s", RULES_REPOSITORY_NAME, CONFIGURATION_AREA, PERSPECTIVES_CONFIGURATION_AREA));
+    }
+
+    public IFramePerspectiveConfigurationItem loadPerspectivesConfiguration(String uuid) {
+        try {
+
+            Node configurationPackageNode = this.session.getNodeByIdentifier(uuid);
+
+            return new IFramePerspectiveConfigurationItem(configurationPackageNode);
+
+        } catch (Exception e) {
+            log.error("Unable to load a rule perspective by UUID. ", e);
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            } else {
+                throw new RulesRepositoryException("Unable to load a Guvnor perspective configuration. ", e);
+            }
+        }
+    }
+
+    public Collection<IFramePerspectiveConfigurationItem> listPerspectiveConfigurations() {
+        List<IFramePerspectiveConfigurationItem> perspectiveConfigurationItems = new ArrayList<IFramePerspectiveConfigurationItem>();
+        NodeIterator iterator;
+        try {
+            Node areaNode;
+            try {
+                areaNode = getPerspectivesConfigurationArea();
+            } catch (RulesRepositoryException e) {
+                // Repository is not set up yet.
+                return Collections.emptyList();
+            }
+
+            iterator = areaNode.getNodes();
+
+            while (iterator.hasNext()) {
+                perspectiveConfigurationItems.add(new IFramePerspectiveConfigurationItem(iterator.nextNode()));
+            }
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
+        }
+        return perspectiveConfigurationItems;
     }
 
     /**

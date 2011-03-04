@@ -22,12 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
@@ -117,7 +112,9 @@ public class PermissionManager {
 
     /** The root node of the repository */
     public static Node getRootNode(RulesRepository repo) throws RepositoryException {
-        return repo.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
+        Session session = repo.getSession();
+        Node rootNode = session.getRootNode();
+        return rootNode.getNode(RulesRepository.RULES_REPOSITORY_NAME);
     }
 
     /**
