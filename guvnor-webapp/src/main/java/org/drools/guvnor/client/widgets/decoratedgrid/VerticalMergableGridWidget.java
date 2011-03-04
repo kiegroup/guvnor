@@ -17,6 +17,8 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.Set;
 
+import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.dom.client.DivElement;
@@ -38,44 +40,6 @@ import com.google.gwt.user.client.Event;
  * columns and rows as rows. Supports merging of cells between rows.
  */
 public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
-
-    @Override
-    public void deselectCell(CellValue< ? extends Comparable< ? >> cell) {
-        if ( cell == null ) {
-            throw new IllegalArgumentException( "cell cannot be null" );
-        }
-
-        Coordinate hc = cell.getHtmlCoordinate();
-        TableRowElement tre = tbody.getRows().getItem( hc.getRow() )
-                .<TableRowElement> cast();
-        TableCellElement tce = tre.getCells().getItem( hc.getCol() )
-                .<TableCellElement> cast();
-
-        String cellSelectedStyle = style.cellTableCellSelected();
-        tce.removeClassName( cellSelectedStyle );
-    }
-
-    @Override
-    public void hideColumn(int index) {
-        if ( index < 0 ) {
-            throw new IllegalArgumentException( "index cannot be less than zero" );
-        }
-        if ( index > columns.size() ) {
-            throw new IllegalArgumentException( "index cannot be greater than the number of rows" );
-        }
-
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DynamicDataRow rowData = data.get( iRow );
-            CellValue< ? extends Comparable< ? >> cell = rowData.get( index );
-
-            if ( cell.getRowSpan() > 0 ) {
-                Coordinate hc = cell.getHtmlCoordinate();
-                TableRowElement tre = tbody.getRows().getItem( hc.getRow() );
-                TableCellElement tce = tre.getCells().getItem( hc.getCol() );
-                tre.removeChild( tce );
-            }
-        }
-    }
 
     @Override
     public void onBrowserEvent(Event event) {
@@ -139,11 +103,11 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                 // events.
                 switch ( rangeDirection ) {
                     case UP :
-                        eventPhysicalCell = getSelections().first();
+                        eventPhysicalCell = getSelectedCells().first();
                         break;
 
                     case DOWN :
-                        eventPhysicalCell = getSelections().last();
+                        eventPhysicalCell = getSelectedCells().last();
                         break;
                 }
                 eventPhysicalCoordinate = eventPhysicalCell.getCoordinate();
@@ -189,14 +153,12 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
 
             DynamicDataRow rowData = data.get( iRow );
-            if ( !rowData.isGrouped() ) {
 
-                TableRowElement tre = Document.get().createTRElement();
-                tre.setClassName( getRowStyle( iRow ) );
-                populateTableRowElement( tre,
+            TableRowElement tre = Document.get().createTRElement();
+            tre.setClassName( getRowStyle( iRow ) );
+            populateTableRowElement( tre,
                                          rowData );
-                nbody.appendChild( tre );
-            }
+            nbody.appendChild( tre );
         }
 
         // Update table to DOM
@@ -256,37 +218,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     }
 
     @Override
-    public void redrawRows(int startRedrawIndex,
-                           int endRedrawIndex) {
-        if ( startRedrawIndex < 0 ) {
-            throw new IllegalArgumentException( "startRedrawIndex cannot be less than zero." );
-        }
-        if ( startRedrawIndex > data.size() ) {
-            throw new IllegalArgumentException( "startRedrawIndex cannot be greater than the number of rows in the table." );
-        }
-        if ( endRedrawIndex < 0 ) {
-            throw new IllegalArgumentException( "endRedrawIndex cannot be less than zero." );
-        }
-        if ( endRedrawIndex > data.size() ) {
-            throw new IllegalArgumentException( "endRedrawIndex cannot be greater than the number of rows in the table." );
-        }
-        if ( startRedrawIndex > endRedrawIndex ) {
-            throw new IllegalArgumentException( "startRedrawIndex cannot be greater than endRedrawIndex." );
-        }
-
-        for ( int iRow = startRedrawIndex; iRow <= endRedrawIndex; iRow++ ) {
-            DynamicDataRow rowData = data.get( iRow );
-            TableRowElement newRow = Document.get().createTRElement();
-            populateTableRowElement( newRow,
-                                         rowData );
-            tbody.replaceChild( newRow,
-                                    tbody.getChild( iRow ) );
-        }
-
-        fixRowStyles( startRedrawIndex );
-    }
-
-    @Override
     public void resizeColumn(DynamicColumn< ? > col,
                              int width) {
         if ( col == null ) {
@@ -311,49 +242,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                                Unit.PX );
         }
 
-    }
-
-    @Override
-    public void selectCell(CellValue< ? extends Comparable< ? >> cell) {
-        if ( cell == null ) {
-            throw new IllegalArgumentException( "cell cannot be null" );
-        }
-
-        Coordinate hc = cell.getHtmlCoordinate();
-        TableRowElement tre = tbody.getRows().getItem( hc.getRow() )
-                .<TableRowElement> cast();
-        TableCellElement tce = tre.getCells().getItem( hc.getCol() )
-                .<TableCellElement> cast();
-
-        String cellSelectedStyle = style.cellTableCellSelected();
-        tce.addClassName( cellSelectedStyle );
-        tce.focus();
-    }
-
-    @Override
-    public void showColumn(int index) {
-        if ( index < 0 ) {
-            throw new IllegalArgumentException( "index cannot be less than zero" );
-        }
-        if ( index > columns.size() ) {
-            throw new IllegalArgumentException( "index cannot be greater than the number of rows" );
-        }
-
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DynamicDataRow rowData = data.get( iRow );
-            TableCellElement tce = makeTableCellElement( index,
-                                                         rowData );
-            if ( tce != null ) {
-
-                CellValue< ? extends Comparable< ? >> cell = rowData.get( index );
-                Coordinate hc = cell.getHtmlCoordinate();
-
-                TableRowElement tre = tbody.getRows().getItem( hc.getRow() );
-                TableCellElement ntce = tre.insertCell( hc.getCol() );
-                tre.replaceChild( tce,
-                                  ntce );
-            }
-        }
     }
 
     // Find the cell that contains the element. Note that the TD element is not
@@ -487,6 +375,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     }
 
     // Build a TableCellElement
+    @SuppressWarnings("rawtypes")
     private TableCellElement makeTableCellElement(int iCol,
                                                   DynamicDataRow rowData) {
 
@@ -523,32 +412,34 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             tce.setRowSpan( rowSpan );
 
             // Render the cell and set inner HTML
-            if ( cellData.hasMultipleValues() ) {
-                tce.getStyle().setBackgroundColor( "#90a0b0" );
-            } else {
-                Coordinate c = cellData.getCoordinate();
-                Context context = new Context( c.getRow(),
+            if ( cellData instanceof GroupedCellValue ) {
+                GroupedCellValue gcv = (GroupedCellValue) cellData;
+                if ( gcv.hasMultipleValues() ) {
+                    tce.getStyle().setBackgroundColor( "#90a0b0" );
+                }
+            }
+            Coordinate c = cellData.getCoordinate();
+            Context context = new Context( c.getRow(),
                                                c.getCol(),
                                                c );
-                SafeHtmlBuilder cellBuilder = new SafeHtmlBuilder();
-                column.render( context,
+            SafeHtmlBuilder cellBuilder = new SafeHtmlBuilder();
+            column.render( context,
                                rowData,
                                cellBuilder );
-                divText.setInnerHTML( cellBuilder.toSafeHtml().asString() );
-            }
+            divText.setInnerHTML( cellBuilder.toSafeHtml().asString() );
 
             // Construct the table
             tce.appendChild( div );
             div.appendChild( divText );
             tce.setTabIndex( 0 );
-            
+
             //---->
-            if ( cellData.isGroupable() ) {
+            if ( rowSpan > 1 || cellData.isGrouped() ) {
                 Element de = DOM.createDiv();
                 DivElement divGroup = DivElement.as( de );
                 divGroup.setTitle( messages.groupCells() );
                 divGroup.addClassName( style.cellTableGroupDiv() );
-                if(cellData.isGrouped()) {
+                if ( cellData.isGrouped() ) {
                     divGroup.setInnerHTML( selectorUngroupedCellsHtml );
                 } else {
                     divGroup.setInnerHTML( selectorGroupedCellsHtml );
@@ -628,12 +519,52 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     }
 
     @Override
+    protected void createEmptyRowElement(int index) {
+        tbody.insertRow( index );
+        fixRowStyles( index );
+    }
+
+    @Override
     protected void createRowElement(int index,
                                     DynamicDataRow rowData) {
-        TableRowElement newRow = tbody.insertRow( index );
-        populateTableRowElement( newRow,
+        TableRowElement tre = tbody.insertRow( index );
+        populateTableRowElement( tre,
                                  rowData );
         fixRowStyles( index );
+    }
+
+    @Override
+    protected void redrawRows(int startRedrawIndex,
+                              int endRedrawIndex) {
+        if ( startRedrawIndex < 0 ) {
+            throw new IllegalArgumentException( "startRedrawIndex cannot be less than zero." );
+        }
+        if ( startRedrawIndex > data.size() ) {
+            throw new IllegalArgumentException( "startRedrawIndex cannot be greater than the number of rows in the table." );
+        }
+        if ( endRedrawIndex < 0 ) {
+            throw new IllegalArgumentException( "endRedrawIndex cannot be less than zero." );
+        }
+        if ( endRedrawIndex > data.size() ) {
+            throw new IllegalArgumentException( "endRedrawIndex cannot be greater than the number of rows in the table." );
+        }
+        if ( startRedrawIndex > endRedrawIndex ) {
+            throw new IllegalArgumentException( "startRedrawIndex cannot be greater than endRedrawIndex." );
+        }
+
+        //Redraw replacement rows
+        for ( int iRow = startRedrawIndex; iRow <= endRedrawIndex; iRow++ ) {
+
+            DynamicDataRow rowData = data.get( iRow );
+
+            TableRowElement tre = Document.get().createTRElement();
+            populateTableRowElement( tre,
+                                         rowData );
+            tbody.replaceChild( tre,
+                                    tbody.getChild( iRow ) );
+        }
+
+        fixRowStyles( startRedrawIndex );
     }
 
     @Override
@@ -644,9 +575,89 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         if ( index > data.size() ) {
             throw new IllegalArgumentException( "Index cannot be greater than the number of rows." );
         }
-
         tbody.deleteRow( index );
         fixRowStyles( index );
+    }
+
+    @Override
+    void deselectCell(CellValue< ? extends Comparable< ? >> cell) {
+        if ( cell == null ) {
+            throw new IllegalArgumentException( "cell cannot be null" );
+        }
+
+        Coordinate hc = cell.getHtmlCoordinate();
+        TableRowElement tre = tbody.getRows().getItem( hc.getRow() )
+                .<TableRowElement> cast();
+        TableCellElement tce = tre.getCells().getItem( hc.getCol() )
+                .<TableCellElement> cast();
+
+        String cellSelectedStyle = style.cellTableCellSelected();
+        tce.removeClassName( cellSelectedStyle );
+    }
+
+    @Override
+    void hideColumn(int index) {
+        if ( index < 0 ) {
+            throw new IllegalArgumentException( "index cannot be less than zero" );
+        }
+        if ( index > columns.size() ) {
+            throw new IllegalArgumentException( "index cannot be greater than the number of rows" );
+        }
+
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow rowData = data.get( iRow );
+            CellValue< ? extends Comparable< ? >> cell = rowData.get( index );
+
+            if ( cell.getRowSpan() > 0 ) {
+                Coordinate hc = cell.getHtmlCoordinate();
+                TableRowElement tre = tbody.getRows().getItem( hc.getRow() );
+                TableCellElement tce = tre.getCells().getItem( hc.getCol() );
+                tre.removeChild( tce );
+            }
+        }
+    }
+
+    @Override
+    void selectCell(CellValue< ? extends Comparable< ? >> cell) {
+        if ( cell == null ) {
+            throw new IllegalArgumentException( "cell cannot be null" );
+        }
+
+        Coordinate hc = cell.getHtmlCoordinate();
+        TableRowElement tre = tbody.getRows().getItem( hc.getRow() )
+                .<TableRowElement> cast();
+        TableCellElement tce = tre.getCells().getItem( hc.getCol() )
+                .<TableCellElement> cast();
+
+        String cellSelectedStyle = style.cellTableCellSelected();
+        tce.addClassName( cellSelectedStyle );
+        tce.focus();
+    }
+
+    @Override
+    void showColumn(int index) {
+        if ( index < 0 ) {
+            throw new IllegalArgumentException( "index cannot be less than zero" );
+        }
+        if ( index > columns.size() ) {
+            throw new IllegalArgumentException( "index cannot be greater than the number of rows" );
+        }
+
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow rowData = data.get( iRow );
+            TableCellElement tce = makeTableCellElement( index,
+                                                         rowData );
+            if ( tce != null ) {
+
+                CellValue< ? extends Comparable< ? >> cell = rowData.get( index );
+                Coordinate hc = cell.getHtmlCoordinate();
+
+                TableRowElement tre = tbody.getRows().getItem( hc.getRow() );
+                TableCellElement ntce = tre.insertCell( hc.getCol() );
+                tre.replaceChild( tce,
+                                  ntce );
+            }
+        }
     }
 
 }

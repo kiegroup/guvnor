@@ -25,29 +25,4 @@ public class DynamicDataRow extends
 
     private static final long serialVersionUID = -7816621427456956740L;
 
-    private int               groupLevel;
-
-    public void clearGrouping() {
-        this.groupLevel = 0;
-    }
-
-    public void decreaseGroupingLevel() {
-        groupLevel--;
-        if ( groupLevel < 0 ) {
-            groupLevel = 0;
-        }
-    }
-
-    public int getGroupLevel() {
-        return groupLevel;
-    }
-
-    public void increaseGroupingLevel() {
-        groupLevel++;
-    }
-
-    public boolean isGrouped() {
-        return this.groupLevel > 0;
-    }
-
 }
