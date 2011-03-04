@@ -3,11 +3,9 @@ package org.drools.guvnor.server;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.IFramePerspectiveConfiguration;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.IFramePerspectiveConfigurationItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +22,10 @@ public class ConfigurationServiceImplementationTest extends GuvnorTestBase {
     private RulesRepository rulesRepository;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUpGuvnorTestBase() {
+        setUpSeam();
+        setUpRepository();
+        rulesRepository = spy(getRulesRepository());
         createConfigurationService();
     }
 
@@ -34,97 +35,94 @@ public class ConfigurationServiceImplementationTest extends GuvnorTestBase {
         configurationService = configurationServiceImplementation;
     }
 
-    protected RulesRepository getRulesRepository() {
-        return mock(RulesRepository.class);
-    }
+    @Test
+    public void testLoadList() throws Exception {
+        setUpMockIdentity();
+        String authorUuid = save("Author", "http://localhost:8080/guvnor");
+        String runtimeUuid = save("Runtime", "http://localhost:8080/runtime");
+        String manualUuid = save("Manual", "http://localhost:8080/manual");
 
+        Collection<IFramePerspectiveConfiguration> configurations = configurationService.loadPerspectiveConfigurations();
+
+        assertEquals(3, configurations.size());
+        assertConfigurationsContains(authorUuid, "Author", "http://localhost:8080/guvnor", configurations);
+        assertConfigurationsContains(runtimeUuid, "Runtime", "http://localhost:8080/runtime", configurations);
+        assertConfigurationsContains(manualUuid, "Manual", "http://localhost:8080/manual", configurations);
+    }
 
     @Test(expected = SerializationException.class)
     public void testNullUuidLoad() throws Exception {
-//        setUpIdentity().logInAdmin();
+        setUpMockIdentity();
         configurationService.load(null);
     }
 
     @Test(expected = RulesRepositoryException.class)
     public void testNotFound() throws Exception {
-//        setUpIdentity().logInAdmin();
-        setUpLoadForEmptyRepository();
+        setUpMockIdentity();
         configurationService.load("ThereIsNothingInTheRepositoryWithThisId");
     }
 
     @Test
     public void testSaveNew() throws Exception {
-//        setUpIdentity().logInAdmin();
-
-        setUpSave("mockUuid", "Author", "http://jboss.org/drools");
-
-
-        IFramePerspectiveConfiguration configuration = new IFramePerspectiveConfiguration();
-        configuration.setName("Author");
-        configuration.setUrl("http://jboss.org/drools");
-
-        String uuid = configurationService.save(configuration);
+        setUpMockIdentity();
+        String uuid = save("Author", "http://jboss.org/drools");
 
         verify(rulesRepository).createPerspectivesConfiguration("Author", "http://jboss.org/drools");
 
-        assertEquals("mockUuid", uuid);
+        assertNotNull(uuid);
     }
 
     @Test
     public void testLoad() throws Exception {
-//        setUpIdentity().logInAdmin();
-        setUpLoad("yetAnotherMock", "Runtime", "http://jboss.com/brms");
+        setUpMockIdentity();
+        String uuid = save("Runtime", "http://jboss.com/brms");
 
-        IFramePerspectiveConfiguration configuration = configurationService.load("yetAnotherMock");
+        IFramePerspectiveConfiguration configuration = configurationService.load(uuid);
 
-        verify(rulesRepository).loadPerspectivesConfiguration("yetAnotherMock");
+        verify(rulesRepository).loadPerspectivesConfiguration(uuid);
 
-        assertEquals("yetAnotherMock", configuration.getUuid());
+        assertEquals(uuid, configuration.getUuid());
         assertEquals("Runtime", configuration.getName());
         assertEquals("http://jboss.com/brms", configuration.getUrl());
     }
 
     @Test
     public void testModify() throws Exception {
-//        setUpIdentity().logInAdmin();
-        setUpSave("modifyMockUuid", "newName", "http://jboss.org/guvnor");
-        setUpLoad("modifyMockUuid", "oldName", "http://jboss.org/oldUrl");
+        setUpMockIdentity();
+        String uuid = save("oldName", "http://jboss.org/oldUrl");
 
-        IFramePerspectiveConfiguration configuration = configurationService.load("modifyMockUuid");
+        IFramePerspectiveConfiguration configuration = configurationService.load(uuid);
         configuration.setName("newName");
         configuration.setUrl("http://jboss.org/guvnor");
 
         String saveUuid = configurationService.save(configuration);
 
-        verify(rulesRepository, never()).createPerspectivesConfiguration(anyString(), anyString());
+        verify(rulesRepository, never()).createPerspectivesConfiguration("newName", "http://jboss.org/guvnor");
 
-        assertEquals("modifyMockUuid", saveUuid);
+        assertEquals(uuid, saveUuid);
     }
 
     @Test
     public void testRemove() throws Exception {
-//        setUpIdentity().logInAdmin();
+        setUpMockIdentity();
+        String uuid = save("drools site", "http://drools.org");
 
-        IFramePerspectiveConfigurationItem perspectiveConfigurationItem = createConfigurationItem("test-uuid", "drools site", "http://drools.org");
-        setUpLoad("test-uuid", perspectiveConfigurationItem);
+        configurationService.remove(uuid);
 
-        configurationService.remove("test-uuid");
-        verify(perspectiveConfigurationItem).remove();
+        try {
+            configurationService.load(uuid);
+            fail("Item was not removed.");
+        } catch (RulesRepositoryException e) {
+            //Expected
+        }
     }
 
-    @Test
-    public void testLoadList() throws Exception {
-        IFramePerspectiveConfigurationItem author = createConfigurationItem("auth-1234-1234", "Author", "http://localhost:8080/guvnor");
-        IFramePerspectiveConfigurationItem runtime = createConfigurationItem("runt-1234-1234", "Runtime", "http://localhost:8080/runtime");
-        IFramePerspectiveConfigurationItem manual = createConfigurationItem("manu-1234-1234", "Manual", "http://localhost:8080/manual");
-        setUpLoadList(author, runtime, manual);
+    private String save(String name, String url) {
+        IFramePerspectiveConfiguration configuration = new IFramePerspectiveConfiguration();
+        configuration.setName(name);
+        configuration.setUrl(url);
 
-        Collection<IFramePerspectiveConfiguration> configurations = configurationService.loadPerspectiveConfigurations();
-
-        assertEquals(3, configurations.size());
-        assertConfigurationsContains("auth-1234-1234", "Author", "http://localhost:8080/guvnor", configurations);
-        assertConfigurationsContains("runt-1234-1234", "Runtime", "http://localhost:8080/runtime", configurations);
-        assertConfigurationsContains("manu-1234-1234", "Manual", "http://localhost:8080/manual", configurations);
+        return configurationService.save(configuration);
     }
 
     private void assertConfigurationsContains(String uuid, String name, String url, Collection<IFramePerspectiveConfiguration> configurations) {
@@ -153,57 +151,5 @@ public class ConfigurationServiceImplementationTest extends GuvnorTestBase {
     @Test(expected = IllegalStateException.class)
     public void testOnlyAdminHasPermissionToRemove() throws Exception {
         configurationService.remove("test-uuid");
-    }
-
-    private void setUpSave(String returnUuid, String name, String url) {
-        IFramePerspectiveConfigurationItem perspectiveConfigurationItem = mock(IFramePerspectiveConfigurationItem.class);
-        when(perspectiveConfigurationItem.getUuid()).thenReturn(returnUuid);
-        perspectiveConfigurationItem.setName(name);
-        perspectiveConfigurationItem.setUrl(url);
-
-        when(
-                rulesRepository.createPerspectivesConfiguration(name, url)
-        ).thenReturn(
-                perspectiveConfigurationItem
-        );
-    }
-
-
-    private void setUpLoadForEmptyRepository() {
-        setUpLoad(any(String.class), null);
-    }
-
-    private void setUpLoad(String uuid, String name, String url) {
-        IFramePerspectiveConfigurationItem perspectiveConfigurationItem = createConfigurationItem(
-                uuid,
-                name,
-                url
-        );
-        setUpLoad(uuid, perspectiveConfigurationItem);
-    }
-
-    private void setUpLoad(String uuid, IFramePerspectiveConfigurationItem perspectiveConfigurationItem) {
-        when(
-                rulesRepository.loadPerspectivesConfiguration(uuid)
-        ).thenReturn(
-                perspectiveConfigurationItem
-        );
-    }
-
-    private void setUpLoadList(IFramePerspectiveConfigurationItem... perspectiveConfigurationItems) {
-        when(
-                rulesRepository.listPerspectiveConfigurations()
-        ).thenReturn(
-                Arrays.asList(perspectiveConfigurationItems)
-        );
-    }
-
-
-    private IFramePerspectiveConfigurationItem createConfigurationItem(String uuid, String name, String url) {
-        IFramePerspectiveConfigurationItem perspectiveConfigurationItem = mock(IFramePerspectiveConfigurationItem.class);
-        when(perspectiveConfigurationItem.getUuid()).thenReturn(uuid);
-        when(perspectiveConfigurationItem.getName()).thenReturn(name);
-        when(perspectiveConfigurationItem.getUrl()).thenReturn(url);
-        return perspectiveConfigurationItem;
     }
 }
