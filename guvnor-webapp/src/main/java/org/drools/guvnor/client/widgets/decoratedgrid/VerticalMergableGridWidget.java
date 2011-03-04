@@ -559,9 +559,9 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
             TableRowElement tre = Document.get().createTRElement();
             populateTableRowElement( tre,
-                                         rowData );
+                                     rowData );
             tbody.replaceChild( tre,
-                                    tbody.getChild( iRow ) );
+                                tbody.getChild( iRow ) );
         }
 
         fixRowStyles( startRedrawIndex );

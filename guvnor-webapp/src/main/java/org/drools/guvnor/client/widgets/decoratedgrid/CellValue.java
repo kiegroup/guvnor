@@ -46,11 +46,101 @@ import java.util.List;
 public class CellValue<T extends Comparable<T>>
     implements
         Comparable<CellValue<T>> {
+    /**
+     * A grouped cell, containing a list of grouped cells. If a cell spanning
+     * three rows is grouped, the normal CellValue is replaced with a
+     * GroupedCellValue (within a GroupedDynamicDataRow). In addition to the
+     * GroupedCellValue's value the new GroupedCellValue contains a list of the
+     * original three cells.
+     */
+    class GroupedCellValue extends CellValue<T> {
+
+        //Grouped cells
+        private List<CellValue<T>> groupedCells = new ArrayList<CellValue<T>>();
+
+        // Does the grouped cell hold multiple values
+        private boolean            hasMultipleValues;
+
+        /**
+         * Constructor, nothing to see here, move on
+         * 
+         * @param value
+         * @param row
+         * @param col
+         */
+        private GroupedCellValue(T value,
+                                 int row,
+                                 int col) {
+            super( value,
+                   row,
+                   col );
+        }
+
+        /**
+         * When the value is set ensure the value of all enclosed, or grouped,
+         * cells is also updated.
+         */
+        @Override
+        public void setValue(Object value) {
+            for ( CellValue<T> cell : this.groupedCells ) {
+                cell.setValue( value );
+            }
+            super.setValue( value );
+            this.hasMultipleValues = checkForMultipleValues();
+        }
+
+        //Check whether the cell contains multiple values
+        private boolean checkForMultipleValues() {
+            boolean hasMultipleValues = false;
+            T value1 = super.getValue();
+            for ( CellValue<T> cell : this.groupedCells ) {
+                if ( cell instanceof CellValue.GroupedCellValue ) {
+                    GroupedCellValue gcv = (GroupedCellValue) cell;
+                    hasMultipleValues = hasMultipleValues || gcv.checkForMultipleValues();
+                }
+                T value2 = cell.getValue();
+                hasMultipleValues = hasMultipleValues || !equalOrNull( value1,
+                                                                       value2 );
+            }
+            return hasMultipleValues;
+        }
+
+        /**
+         * Add a cell to the group of cells
+         * 
+         * @param cell
+         */
+        void addCellToGroup(CellValue<T> cell) {
+            this.groupedCells.add( cell );
+            this.hasMultipleValues = checkForMultipleValues();
+        }
+
+        /**
+         * Get the list of cells grouped
+         * 
+         * @return
+         */
+        List<CellValue<T>> getGroupedCells() {
+            return this.groupedCells;
+        }
+
+        /**
+         * Does this grouped cell contain multiple values
+         * 
+         * @return
+         */
+        boolean hasMultipleValues() {
+            return hasMultipleValues;
+        }
+
+    }
+
     private T          value;
     private int        rowSpan = 1;
     private Coordinate coordinate;
     private Coordinate mapHtmlToData;
     private Coordinate mapDataToHtml;
+
     private boolean    isSelected;
 
     private boolean    isGrouped;    // Is cell grouped (which icon to render)
@@ -93,14 +183,14 @@ public class CellValue<T extends Comparable<T>>
             return false;
         }
         CellValue that = (CellValue) obj;
-        return nullOrEqual( this.value,
+        return equalOrNull( this.value,
                             that.value )
                 && this.rowSpan == that.rowSpan
-                && nullOrEqual( this.coordinate,
+                && equalOrNull( this.coordinate,
                                 that.coordinate )
-                && nullOrEqual( this.mapHtmlToData,
+                && equalOrNull( this.mapHtmlToData,
                                 that.mapHtmlToData )
-                && nullOrEqual( this.mapDataToHtml,
+                && equalOrNull( this.mapDataToHtml,
                                 that.mapDataToHtml )
                 && this.isSelected == that.isSelected
                 && this.isGrouped == that.isGrouped;
@@ -193,91 +283,31 @@ public class CellValue<T extends Comparable<T>>
         this.value = (T) value;
     }
 
-    // Check whether two objects are equal or both null
-    private boolean nullOrEqual(Object thisAttr,
-                                Object thatAttr) {
-        if ( thisAttr == null
-             && thatAttr == null ) {
+    //Check whether two values are equal or both null
+    private boolean equalOrNull(Object o1,
+                                Object o2) {
+        if ( o1 == null && o2 == null ) {
             return true;
         }
-        if ( thisAttr == null
-             && thatAttr != null ) {
+        if ( o1 != null && o2 == null ) {
             return false;
         }
-        return thisAttr.equals( thatAttr );
+        if ( o1 == null && o2 != null ) {
+            return false;
+        }
+        return o1.equals( o2 );
     }
 
+    /**
+     * Convert a CellValue into a GroupedCellValue object
+     * 
+     * @return
+     */
     GroupedCellValue convertToGroupedCell() {
         GroupedCellValue groupedCell = new GroupedCellValue( this.getValue(),
                                                              this.getCoordinate().getRow(),
                                                              this.getCoordinate().getCol() );
         return groupedCell;
-    }
-
-    public class GroupedCellValue extends CellValue<T> {
-
-        private List<CellValue<T>> groupedCells = new ArrayList<CellValue<T>>();
-        private boolean            hasMultipleValues;                           // Does the grouped cell represent multiple values
-
-        private GroupedCellValue(T value,
-                                 int row,
-                                 int col) {
-            super( value,
-                   row,
-                   col );
-        }
-
-        public void addCellToGroup(CellValue<T> cell) {
-            this.groupedCells.add( cell );
-            this.hasMultipleValues = checkForMultipleValues();
-        }
-
-        public boolean hasMultipleValues() {
-            return hasMultipleValues;
-        }
-
-        public List<CellValue<T>> getGroupedCells() {
-            return this.groupedCells;
-        }
-
-        @Override
-        public void setValue(Object value) {
-            for ( CellValue<T> cell : this.groupedCells ) {
-                cell.setValue( value );
-            }
-            super.setValue( value );
-            this.hasMultipleValues = checkForMultipleValues();
-        }
-
-        private boolean checkForMultipleValues() {
-            boolean hasMultipleValues = false;
-            T value1 = super.getValue();
-            for ( CellValue<T> cell : this.groupedCells ) {
-                if ( cell instanceof CellValue.GroupedCellValue ) {
-                    GroupedCellValue gcv = (GroupedCellValue) cell;
-                    hasMultipleValues = hasMultipleValues || gcv.checkForMultipleValues();
-                }
-                T value2 = cell.getValue();
-                hasMultipleValues = hasMultipleValues || !equalOrNull( value1,
-                                                                       value2 );
-            }
-            return hasMultipleValues;
-        }
-
-        private boolean equalOrNull(Object o1,
-                                    Object o2) {
-            if ( o1 == null && o2 == null ) {
-                return true;
-            }
-            if ( o1 != null && o2 == null ) {
-                return false;
-            }
-            if ( o1 == null && o2 != null ) {
-                return false;
-            }
-            return o1.equals( o2 );
-        }
-
     }
 
 }

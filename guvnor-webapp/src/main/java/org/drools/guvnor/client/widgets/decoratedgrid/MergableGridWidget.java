@@ -29,6 +29,7 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
@@ -532,8 +533,21 @@ public abstract class MergableGridWidget<T> extends Widget
      */
     public void update(Object value) {
 
-        // Update underlying data
-        for ( CellValue< ? extends Comparable< ? >> cell : getSelectedCells() ) {
+        boolean bUngroupCells = false;
+        TreeSet<CellValue< ? extends Comparable< ? >>> selections = getSelectedCells();
+
+        //If selections span multiple cells, any of which are grouped we should ungroup them
+        if ( selections.size() > 1 ) {
+            for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
+                if ( cell instanceof GroupedCellValue ) {
+                    bUngroupCells = true;
+                    break;
+                }
+            }
+        }
+
+        // Update underlying data (update before ungrouping as selections would need to be expanded too)
+        for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
             Coordinate c = cell.getCoordinate();
             if ( !columns.get( c.getCol() ).isSystemControlled() ) {
                 data.set( c,
@@ -541,10 +555,19 @@ public abstract class MergableGridWidget<T> extends Widget
             }
         }
 
+        //Ungroup if applicable
+        if ( bUngroupCells ) {
+            for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
+                if ( cell instanceof GroupedCellValue ) {
+                    removeModelGrouping( cell,
+                                         false );
+                }
+            }
+        }
+
         // Partial redraw
         assertModelMerging();
-        int baseRowIndex = getSelectedCells().first().getPhysicalCoordinate()
-                .getRow();
+        int baseRowIndex = selections.first().getCoordinate().getRow();
         int minRedrawRow = findMinRedrawRow( baseRowIndex );
         int maxRedrawRow = findMaxRedrawRow( baseRowIndex );
 
@@ -556,42 +579,82 @@ public abstract class MergableGridWidget<T> extends Widget
             maxRedrawRow = getSelectedCells().last().getPhysicalCoordinate()
                     .getRow();
         }
-        redrawRows( minRedrawRow,
-                    maxRedrawRow );
+        Coordinate selection = selections.first().getCoordinate();
+        clearSelection();
+        //redrawRows( minRedrawRow,
+        //            maxRedrawRow );
+        redraw();
 
         //Re-select applicable cells, following change to merge
-        selectRange( getSelectedCells().first(),
-                                getSelectedCells().last() );
+        startSelecting( selection );
+    }
 
+    private boolean hasMultipleValues(int startRowIndex,
+                                      int endRowIndex,
+                                      int colIndex) {
+        Object value1 = data.get( startRowIndex ).get( colIndex ).getValue();
+        for ( int iRow = startRowIndex + 1; iRow <= endRowIndex; iRow++ ) {
+            Object value2 = data.get( iRow ).get( colIndex ).getValue();
+            if ( !equalOrNull( value1,
+                               value2 ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //Check whether two values are equal or both null
+    private boolean equalOrNull(Object o1,
+                                Object o2) {
+        if ( o1 == null && o2 == null ) {
+            return true;
+        }
+        if ( o1 != null && o2 == null ) {
+            return false;
+        }
+        if ( o1 == null && o2 != null ) {
+            return false;
+        }
+        return o1.equals( o2 );
     }
 
     //Apply grouping by collapsing applicable rows
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private void applyModelGrouping(CellValue< ? > startCell) {
+    private void applyModelGrouping(CellValue< ? > startCell,
+                                    boolean bRedraw) {
 
-        int startRow = startCell.getCoordinate().getRow();
-        int endRow = findMergedCellExtent( startCell.getCoordinate() ).getRow();
-        int groupedColIndex = startCell.getCoordinate().getCol();
+        int startRowIndex = startCell.getCoordinate().getRow();
+        int endRowIndex = findMergedCellExtent( startCell.getCoordinate() ).getRow();
+        int colIndex = startCell.getCoordinate().getCol();
 
         GroupedCellValue groupedCell;
-        DynamicDataRow row = data.get( startRow );
+        DynamicDataRow row = data.get( startRowIndex );
         GroupedDynamicDataRow groupedRow = new GroupedDynamicDataRow();
         for ( int iCol = 0; iCol < row.size(); iCol++ ) {
-            groupedCell = row.get( iCol ).convertToGroupedCell();
-            groupedCell.setGrouped( (iCol == groupedColIndex) );
-            groupedRow.add( groupedCell );
+            if ( iCol == colIndex || hasMultipleValues( startRowIndex,
+                                                        endRowIndex,
+                                                        iCol ) ) {
+                groupedCell = row.get( iCol ).convertToGroupedCell();
+                groupedCell.setGrouped( (iCol == colIndex) );
+                groupedRow.add( groupedCell );
+            } else {
+                groupedRow.add( row.get( iCol ) );
+            }
         }
-        for ( int iRow = startRow; iRow <= endRow; iRow++ ) {
-            DynamicDataRow childRow = data.get( startRow );
+        for ( int iRow = startRowIndex; iRow <= endRowIndex; iRow++ ) {
+            DynamicDataRow childRow = data.get( startRowIndex );
             groupedRow.addChildRow( childRow );
             data.remove( childRow );
         }
         data.remove( row );
-        data.add( startRow,
+        data.add( startRowIndex,
                   groupedRow );
 
         assertModelMerging();
-        redraw();
+
+        if ( bRedraw ) {
+            redraw();
+        }
 
     }
 
@@ -877,7 +940,8 @@ public abstract class MergableGridWidget<T> extends Widget
 
     //Remove grouping by expanding applicable rows
     @SuppressWarnings("rawtypes")
-    private void removeModelGrouping(CellValue< ? > startCell) {
+    private void removeModelGrouping(CellValue< ? > startCell,
+                                     boolean bRedraw) {
 
         int startRow = startCell.getCoordinate().getRow();
 
@@ -900,7 +964,9 @@ public abstract class MergableGridWidget<T> extends Widget
                      expandedRow );
 
         assertModelMerging();
-        redraw();
+        if ( bRedraw ) {
+            redraw();
+        }
     }
 
     //Remove merging from model
@@ -1001,11 +1067,32 @@ public abstract class MergableGridWidget<T> extends Widget
                     boolean bMerge = false;
                     boolean cell1HasMultipleValues = false;
                     boolean cell2HasMultipleValues = false;
+                    boolean cell1IsGrouped = false;
+                    boolean cell2IsGrouped = false;
+
                     if ( cell1 instanceof GroupedCellValue ) {
                         cell1HasMultipleValues = ((GroupedCellValue) cell1).hasMultipleValues();
+                        cell1IsGrouped = true;
                     }
                     if ( cell2 instanceof GroupedCellValue ) {
                         cell2HasMultipleValues = ((GroupedCellValue) cell2).hasMultipleValues();
+                        cell2IsGrouped = true;
+                    }
+                    if ( !cell1HasMultipleValues && cell2HasMultipleValues ) {
+                        bMerge = true;
+                    }
+                    if ( cell1HasMultipleValues && !cell2HasMultipleValues ) {
+                        bMerge = true;
+                    }
+                    if ( cell1IsGrouped && cell2IsGrouped ) {
+                        bMerge = true;
+                    }
+                    if ( !cell1HasMultipleValues && !cell2HasMultipleValues ) {
+                        if ( cell1IsGrouped && !cell2IsGrouped ) {
+                            bMerge = true;
+                        } else if ( !cell1IsGrouped && cell2IsGrouped ) {
+                            bMerge = true;
+                        }
                     }
                     if ( cell1.isEmpty() && !cell2.isEmpty() ) {
                         bMerge = true;
@@ -1014,10 +1101,6 @@ public abstract class MergableGridWidget<T> extends Widget
                     } else if ( cell1.isEmpty() && cell2.isEmpty() ) {
                         cell1 = cell2;
                     } else if ( !cell1.getValue().equals( cell2.getValue() ) ) {
-                        bMerge = true;
-                    } else if ( cell1HasMultipleValues && !cell2HasMultipleValues ) {
-                        bMerge = true;
-                    } else if ( !cell1HasMultipleValues && cell2HasMultipleValues ) {
                         bMerge = true;
                     }
                     if ( bMerge ) {
@@ -1157,9 +1240,11 @@ public abstract class MergableGridWidget<T> extends Widget
 
         clearSelection();
         if ( startCell.isGrouped() ) {
-            removeModelGrouping( startCell );
+            removeModelGrouping( startCell,
+                                 true );
         } else {
-            applyModelGrouping( startCell );
+            applyModelGrouping( startCell,
+                                true );
         }
 
     }

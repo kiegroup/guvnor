@@ -36,13 +36,15 @@ public class GroupedDynamicDataRow extends DynamicDataRow {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     public boolean addChildRow(DynamicDataRow childRow) {
-        for(int iCol=0;iCol<childRow.size(); iCol++) {
-            GroupedCellValue gcv = (GroupedCellValue) this.get(iCol);
-            gcv.addCellToGroup( childRow.get(iCol) );
+        for ( int iCol = 0; iCol < childRow.size(); iCol++ ) {
+            if ( this.get( iCol ) instanceof GroupedCellValue ) {
+                GroupedCellValue gcv = (GroupedCellValue) this.get( iCol );
+                gcv.addCellToGroup( childRow.get( iCol ) );
+            }
         }
         return this.groupedRows.add( childRow );
     }
-    
+
     public List<DynamicDataRow> getChildRows() {
         return this.groupedRows;
     }
