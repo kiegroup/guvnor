@@ -29,7 +29,6 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
@@ -48,7 +47,8 @@ import com.google.gwt.user.client.ui.Widget;
 public abstract class MergableGridWidget<T> extends Widget
     implements
     ValueUpdater<Object>,
-    HasSelectedCellChangeHandlers {
+    HasSelectedCellChangeHandlers,
+    HasRowGroupingChangeHandlers {
 
     /**
      * Container for a cell's extents
@@ -189,6 +189,14 @@ public abstract class MergableGridWidget<T> extends Widget
     }
 
     /**
+     * Add a handler for RowGroupingChangeEvents
+     */
+    public HandlerRegistration addRowGroupingChangeHandler(RowGroupingChangeHandler handler) {
+        return addHandler( handler,
+                           RowGroupingChangeEvent.getType() );
+    }
+
+    /**
      * Add a handler for SelectedCellChangeEvents
      */
     public HandlerRegistration addSelectedCellChangeHandler(SelectedCellChangeHandler handler) {
@@ -268,6 +276,17 @@ public abstract class MergableGridWidget<T> extends Widget
         // Clear any selections
         clearSelection();
 
+        //Expand any merged cells in colum
+        boolean bRedrawSidebar = false;
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            CellValue< ? > cv = data.get( iRow ).get( index );
+            if ( cv.isGrouped() ) {
+                removeModelGrouping( cv,
+                                     false );
+                bRedrawSidebar = true;
+            }
+        }
+
         // Delete column data
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             DynamicDataRow row = data.get( iRow );
@@ -282,6 +301,9 @@ public abstract class MergableGridWidget<T> extends Widget
         if ( bRedraw ) {
             assertModelIndexes();
             redraw();
+            if ( bRedrawSidebar ) {
+                RowGroupingChangeEvent.fire( this );
+            }
         }
 
     }
@@ -522,6 +544,7 @@ public abstract class MergableGridWidget<T> extends Widget
             removeModelGrouping();
             removeModelMerging();
             redraw();
+            RowGroupingChangeEvent.fire( this );
         }
         return isMerged;
     }
@@ -589,35 +612,6 @@ public abstract class MergableGridWidget<T> extends Widget
         startSelecting( selection );
     }
 
-    private boolean hasMultipleValues(int startRowIndex,
-                                      int endRowIndex,
-                                      int colIndex) {
-        Object value1 = data.get( startRowIndex ).get( colIndex ).getValue();
-        for ( int iRow = startRowIndex + 1; iRow <= endRowIndex; iRow++ ) {
-            Object value2 = data.get( iRow ).get( colIndex ).getValue();
-            if ( !equalOrNull( value1,
-                               value2 ) ) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    //Check whether two values are equal or both null
-    private boolean equalOrNull(Object o1,
-                                Object o2) {
-        if ( o1 == null && o2 == null ) {
-            return true;
-        }
-        if ( o1 != null && o2 == null ) {
-            return false;
-        }
-        if ( o1 == null && o2 != null ) {
-            return false;
-        }
-        return o1.equals( o2 );
-    }
-
     //Apply grouping by collapsing applicable rows
     @SuppressWarnings({"rawtypes", "unchecked"})
     private void applyModelGrouping(CellValue< ? > startCell,
@@ -654,6 +648,7 @@ public abstract class MergableGridWidget<T> extends Widget
 
         if ( bRedraw ) {
             redraw();
+            RowGroupingChangeEvent.fire( this );
         }
 
     }
@@ -669,6 +664,21 @@ public abstract class MergableGridWidget<T> extends Widget
         // Clear collection
         selections.clear();
         rangeDirection = MOVE_DIRECTION.NONE;
+    }
+
+    //Check whether two values are equal or both null
+    private boolean equalOrNull(Object o1,
+                                Object o2) {
+        if ( o1 == null && o2 == null ) {
+            return true;
+        }
+        if ( o1 != null && o2 == null ) {
+            return false;
+        }
+        if ( o1 == null && o2 != null ) {
+            return false;
+        }
+        return o1.equals( o2 );
     }
 
     //Expand a grouped row and return a list of expanded rows
@@ -897,6 +907,20 @@ public abstract class MergableGridWidget<T> extends Widget
         return nc;
     }
 
+    private boolean hasMultipleValues(int startRowIndex,
+                                      int endRowIndex,
+                                      int colIndex) {
+        Object value1 = data.get( startRowIndex ).get( colIndex ).getValue();
+        for ( int iRow = startRowIndex + 1; iRow <= endRowIndex; iRow++ ) {
+            Object value2 = data.get( iRow ).get( colIndex ).getValue();
+            if ( !equalOrNull( value1,
+                               value2 ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //Merge between the two provided cells
     private void mergeCells(CellValue< ? > cell1,
                             CellValue< ? > cell2) {
@@ -966,6 +990,7 @@ public abstract class MergableGridWidget<T> extends Widget
         assertModelMerging();
         if ( bRedraw ) {
             redraw();
+            RowGroupingChangeEvent.fire( this );
         }
     }
 

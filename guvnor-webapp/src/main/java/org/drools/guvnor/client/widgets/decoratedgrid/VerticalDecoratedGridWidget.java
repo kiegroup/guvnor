@@ -17,8 +17,6 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -81,60 +79,6 @@ public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
             }
 
         };
-    }
-
-    /**
-     * Set the Header Widget and attach resize handlers to GridWidget to support
-     * column resizing and to resize GridWidget's ScrollPanel when header
-     * resizes.
-     */
-    public void setHeaderWidget(DecoratedGridHeaderWidget<T> headerWidget) {
-        if ( headerWidget == null ) {
-            throw new IllegalArgumentException( "headerWidget cannot be null" );
-        }
-        this.headerWidget = headerWidget;
-        headerWidget.addColumnResizeHandler( new ColumnResizeHandler() {
-
-            public void onColumnResize(ColumnResizeEvent event) {
-                // Resizing columns can cause the scrollbar to appear
-                assertDimensions();
-                gridWidget.resizeColumn( event.getColumn(),
-                                         event.getWidth() );
-            }
-
-        } );
-        this.headerWidget.addResizeHandler( new ResizeHandler() {
-
-            public void onResize(ResizeEvent event) {
-                scrollPanel.setHeight( (height - event.getHeight())
-                                       + "px" );
-                assertDimensions();
-            }
-        } );
-
-        bodyPanel.add( headerWidget );
-        bodyPanel.add( scrollPanel );
-    }
-
-    /**
-     * Set the Sidebar Widget and attach resize handlers to SidebarWidget to
-     * resize the Sidebar when header resizes.
-     */
-    public void setSidebarWidget(final DecoratedGridSidebarWidget<T> sidebarWidget) {
-        if ( sidebarWidget == null ) {
-            throw new IllegalArgumentException( "sidebarWidget cannot be null" );
-        }
-        this.sidebarWidget = sidebarWidget;
-        this.headerWidget.addResizeHandler( new ResizeHandler() {
-
-            public void onResize(ResizeEvent event) {
-                sidebarWidget.resizeSidebar( event.getHeight() );
-            }
-
-        } );
-
-        this.mainPanel.add( sidebarWidget );
-        this.mainPanel.add( bodyPanel );
     }
 
 }

@@ -82,8 +82,6 @@ public class ColumnResizeEvent extends GwtEvent<ColumnResizeHandler> {
         this.width = width;
     }
 
-    // The instance knows its BeforeSelectionHandler is of type I, but the TYPE
-    // field itself does not, so we have to do an unsafe cast here.
     @Override
     public final Type<ColumnResizeHandler> getAssociatedType() {
         return TYPE;

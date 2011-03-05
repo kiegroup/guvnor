@@ -27,6 +27,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -83,7 +85,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
 
         initWidget( mainPanel );
 
-        //Add handler for when the selected cell changes
+        //Add handler for when the selected cell changes, to ensure the cell is visible
         gridWidget.addSelectedCellChangeHandler( new SelectedCellChangeHandler() {
 
             public void onSelectedCellChange(SelectedCellChangeEvent event) {
@@ -321,12 +323,40 @@ public abstract class DecoratedGridWidget<T> extends Composite {
     }
 
     /**
-     * Set the "Header" for the DecoratedGridWidget and perform any
-     * initialisation, such as registering event handlers.
+     * Set the Header Widget and attach resize handlers to GridWidget to support
+     * column resizing and to resize GridWidget's ScrollPanel when header
+     * resizes.
      * 
      * @param headerWidget
      */
-    public abstract void setHeaderWidget(DecoratedGridHeaderWidget<T> headerWidget);
+    public void setHeaderWidget(DecoratedGridHeaderWidget<T> headerWidget) {
+        if ( headerWidget == null ) {
+            throw new IllegalArgumentException( "headerWidget cannot be null" );
+        }
+        this.headerWidget = headerWidget;
+        headerWidget.addColumnResizeHandler( new ColumnResizeHandler() {
+
+            public void onColumnResize(ColumnResizeEvent event) {
+
+                // Resizing columns can cause the scrollbar to appear
+                assertDimensions();
+                gridWidget.resizeColumn( event.getColumn(),
+                                         event.getWidth() );
+            }
+
+        } );
+        this.headerWidget.addResizeHandler( new ResizeHandler() {
+
+            public void onResize(ResizeEvent event) {
+                scrollPanel.setHeight( (height - event.getHeight())
+                                       + "px" );
+                assertDimensions();
+            }
+        } );
+
+        bodyPanel.add( headerWidget );
+        bodyPanel.add( scrollPanel );
+    }
 
     /**
      * This should be used instead of setHeight(String) and setWidth(String) as
@@ -350,12 +380,37 @@ public abstract class DecoratedGridWidget<T> extends Composite {
     }
 
     /**
-     * Set the "Sidebar" for the DecoratedGridWidget and perform any
-     * initialisation, such as registering event handlers.
+     * Set the SidebarWidget and attach a ResizeEvent handler to the Sidebar for
+     * when the header changes size and the Sidebar needs to be redrawn to align
+     * correctly. Also attach a RowGroupingChangeEvent handler to the
+     * MergableGridWidget so the Sidebar can redraw itself when rows are merged,
+     * grouped, ungrouped or unmerged.
      * 
      * @param sidebarWidget
      */
-    public abstract void setSidebarWidget(final DecoratedGridSidebarWidget<T> sidebarWidget);
+    public void setSidebarWidget(final DecoratedGridSidebarWidget<T> sidebarWidget) {
+        if ( sidebarWidget == null ) {
+            throw new IllegalArgumentException( "sidebarWidget cannot be null" );
+        }
+        this.sidebarWidget = sidebarWidget;
+        this.headerWidget.addResizeHandler( new ResizeHandler() {
+
+            public void onResize(ResizeEvent event) {
+                sidebarWidget.resizeSidebar( event.getHeight() );
+            }
+
+        } );
+        this.gridWidget.addRowGroupingChangeHandler( new RowGroupingChangeHandler() {
+
+            public void onRowGroupingChange(RowGroupingChangeEvent event) {
+                sidebarWidget.redraw();
+            }
+
+        } );
+
+        this.mainPanel.add( sidebarWidget );
+        this.mainPanel.add( bodyPanel );
+    }
 
     /**
      * Sort data based upon information stored in Columns

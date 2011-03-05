@@ -55,6 +55,7 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite {
         this.grid = grid;
         this.hasRows = hasRows;
         style.ensureInjected();
+
     }
 
     /**

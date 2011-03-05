@@ -75,8 +75,6 @@ public class SelectedCellChangeEvent extends GwtEvent<SelectedCellChangeHandler>
         this.cellExtents=cellExtents;
     }
 
-    // The instance knows its BeforeSelectionHandler is of type I, but the TYPE
-    // field itself does not, so we have to do an unsafe cast here.
     @Override
     public final Type<SelectedCellChangeHandler> getAssociatedType() {
         return TYPE;
