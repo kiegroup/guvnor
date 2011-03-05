@@ -558,6 +558,7 @@ public abstract class MergableGridWidget<T> extends Widget
 
         boolean bUngroupCells = false;
         TreeSet<CellValue< ? extends Comparable< ? >>> selections = getSelectedCells();
+        Coordinate selection = selections.first().getCoordinate();
 
         //If selections span multiple cells, any of which are grouped we should ungroup them
         if ( selections.size() > 1 ) {
@@ -583,7 +584,7 @@ public abstract class MergableGridWidget<T> extends Widget
             for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
                 if ( cell instanceof GroupedCellValue ) {
                     removeModelGrouping( cell,
-                                         false );
+                                         true );
                 }
             }
         }
@@ -597,16 +598,13 @@ public abstract class MergableGridWidget<T> extends Widget
         // When merged cells become unmerged (if their value is
         // cleared need to ensure the re-draw range is at least
         // as large as the selection range
-        if ( maxRedrawRow < getSelectedCells().last().getPhysicalCoordinate()
+        if ( maxRedrawRow < getSelectedCells().last().getCoordinate()
                 .getRow() ) {
-            maxRedrawRow = getSelectedCells().last().getPhysicalCoordinate()
+            maxRedrawRow = getSelectedCells().last().getCoordinate()
                     .getRow();
         }
-        Coordinate selection = selections.first().getCoordinate();
-        clearSelection();
-        //redrawRows( minRedrawRow,
-        //            maxRedrawRow );
-        redraw();
+        redrawRows( minRedrawRow,
+                    maxRedrawRow );
 
         //Re-select applicable cells, following change to merge
         startSelecting( selection );
@@ -621,20 +619,17 @@ public abstract class MergableGridWidget<T> extends Widget
         int endRowIndex = findMergedCellExtent( startCell.getCoordinate() ).getRow();
         int colIndex = startCell.getCoordinate().getCol();
 
+        //Delete grouped rows replacing with a single "grouped" row
         GroupedCellValue groupedCell;
         DynamicDataRow row = data.get( startRowIndex );
         GroupedDynamicDataRow groupedRow = new GroupedDynamicDataRow();
         for ( int iCol = 0; iCol < row.size(); iCol++ ) {
-            if ( iCol == colIndex || hasMultipleValues( startRowIndex,
-                                                        endRowIndex,
-                                                        iCol ) ) {
-                groupedCell = row.get( iCol ).convertToGroupedCell();
-                groupedCell.setGrouped( (iCol == colIndex) );
-                groupedRow.add( groupedCell );
-            } else {
-                groupedRow.add( row.get( iCol ) );
-            }
+            groupedCell = row.get( iCol ).convertToGroupedCell();
+            groupedCell.setGrouped( (iCol == colIndex) );
+            groupedRow.add( groupedCell );
         }
+
+        //Add individual cells to "grouped" row
         for ( int iRow = startRowIndex; iRow <= endRowIndex; iRow++ ) {
             DynamicDataRow childRow = data.get( startRowIndex );
             groupedRow.addChildRow( childRow );
@@ -971,9 +966,9 @@ public abstract class MergableGridWidget<T> extends Widget
 
         startCell.setGrouped( false );
 
+        //Check if rows need to be recursively expanded
         boolean bRecursive = true;
         DynamicDataRow row = data.get( startRow );
-
         for ( int iCol = 0; iCol < row.size(); iCol++ ) {
             CellValue< ? > cv = row.get( iCol );
             if ( cv instanceof GroupedCellValue ) {
@@ -981,6 +976,7 @@ public abstract class MergableGridWidget<T> extends Widget
             }
         }
 
+        //Delete "grouped" row and replace with individual rows
         List<DynamicDataRow> expandedRow = expandGroupedRow( row,
                                                              bRecursive );
         data.remove( startRow );
@@ -1088,47 +1084,18 @@ public abstract class MergableGridWidget<T> extends Widget
                     cell1.setRowSpan( 1 );
                     cell2 = data.get( iRow ).get( iCol );
 
-                    //Don't merge if either cell is empty
-                    boolean bMerge = false;
-                    boolean cell1HasMultipleValues = false;
-                    boolean cell2HasMultipleValues = false;
-                    boolean cell1IsGrouped = false;
-                    boolean cell2IsGrouped = false;
-
-                    if ( cell1 instanceof GroupedCellValue ) {
-                        cell1HasMultipleValues = ((GroupedCellValue) cell1).hasMultipleValues();
-                        cell1IsGrouped = true;
-                    }
-                    if ( cell2 instanceof GroupedCellValue ) {
-                        cell2HasMultipleValues = ((GroupedCellValue) cell2).hasMultipleValues();
-                        cell2IsGrouped = true;
-                    }
-                    if ( !cell1HasMultipleValues && cell2HasMultipleValues ) {
-                        bMerge = true;
-                    }
-                    if ( cell1HasMultipleValues && !cell2HasMultipleValues ) {
-                        bMerge = true;
-                    }
-                    if ( cell1IsGrouped && cell2IsGrouped ) {
-                        bMerge = true;
-                    }
-                    if ( !cell1HasMultipleValues && !cell2HasMultipleValues ) {
-                        if ( cell1IsGrouped && !cell2IsGrouped ) {
-                            bMerge = true;
-                        } else if ( !cell1IsGrouped && cell2IsGrouped ) {
-                            bMerge = true;
+                    //Merge if both cells contain the same value and neither is grouped
+                    boolean bSplit = true;
+                    if ( !cell1.isEmpty() && !cell2.isEmpty() ) {
+                        if ( cell1.getValue().equals( cell2.getValue() ) ) {
+                            bSplit = false;
+                            if ( cell1.isGrouped() || cell2.isGrouped() ) {
+                                bSplit = true;
+                            }
                         }
                     }
-                    if ( cell1.isEmpty() && !cell2.isEmpty() ) {
-                        bMerge = true;
-                    } else if ( !cell1.isEmpty() && cell2.isEmpty() ) {
-                        bMerge = true;
-                    } else if ( cell1.isEmpty() && cell2.isEmpty() ) {
-                        cell1 = cell2;
-                    } else if ( !cell1.getValue().equals( cell2.getValue() ) ) {
-                        bMerge = true;
-                    }
-                    if ( bMerge ) {
+
+                    if ( bSplit ) {
                         mergeCells( cell1,
                                     cell2 );
                         cell1 = cell2;
@@ -1270,6 +1237,7 @@ public abstract class MergableGridWidget<T> extends Widget
         } else {
             applyModelGrouping( startCell,
                                 true );
+            assertModelMerging();
         }
 
     }

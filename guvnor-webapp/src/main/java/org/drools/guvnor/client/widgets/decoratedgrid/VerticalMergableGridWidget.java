@@ -591,8 +591,11 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         TableCellElement tce = tre.getCells().getItem( hc.getCol() )
                 .<TableCellElement> cast();
 
-        String cellSelectedStyle = style.cellTableCellSelected();
-        tce.removeClassName( cellSelectedStyle );
+        //Merging, grouping etc could have led to the selected HTML cell disappearing
+        if ( tce != null ) {
+            String cellSelectedStyle = style.cellTableCellSelected();
+            tce.removeClassName( cellSelectedStyle );
+        }
     }
 
     @Override
