@@ -87,7 +87,7 @@ public class PackagesTree extends AbstractTree
         packageRootNode.setState( true );
         packageRootNode.setUserObject( "rootNode" );
 
-        RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
+        RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
             public void onSuccess(PackageConfigData[] packageConfigDatas) {
                 PackageHierarchy packageHierarchy = new PackageHierarchy();
 
@@ -105,7 +105,7 @@ public class PackagesTree extends AbstractTree
 
     private void setupGlobalNode(final Tree root,
                                  final Map<TreeItem, String> itemWidgets) {
-        RepositoryServiceFactory.getService().loadGlobalPackage( new GenericCallback<PackageConfigData>() {
+        RepositoryServiceFactory.getPackageService().loadGlobalPackage( new GenericCallback<PackageConfigData>() {
             public void onSuccess(PackageConfigData value) {
                 TreeItem globalRootNode = ExplorerNodeConfig.getPackageItemStructure( constants.GlobalArea(),
                                                                                       value.uuid,

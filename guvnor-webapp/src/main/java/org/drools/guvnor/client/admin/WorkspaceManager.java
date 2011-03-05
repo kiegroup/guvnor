@@ -170,7 +170,7 @@ public class WorkspaceManager extends Composite {
         }
         
         LoadingPopup.showMessage( constants.LoadingWorkspaces() );
-        RepositoryServiceFactory.getService().listPackages(selectedWorkspaceName,  new GenericCallback<PackageConfigData[]>() {
+        RepositoryServiceFactory.getPackageService().listPackages(selectedWorkspaceName,  new GenericCallback<PackageConfigData[]>() {
             public void onSuccess(PackageConfigData[] packageConfigData) {
                 selectedModulesListBox.clear();
                 for ( PackageConfigData p : packageConfigData) {
@@ -181,7 +181,7 @@ public class WorkspaceManager extends Composite {
         } );
         
         LoadingPopup.showMessage( constants.LoadingWorkspaces() );
-        RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
+        RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
             public void onSuccess(PackageConfigData[] packageConfigData) {
                 availableModulesListBox.clear();
                 for ( PackageConfigData p : packageConfigData) {

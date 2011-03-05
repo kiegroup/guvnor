@@ -34,6 +34,7 @@ public interface RepositoryService
     extends
     RemoteService {
 
+
     /**
      * @param categoryPath
      *            A "/" delimited path to a category.
@@ -130,18 +131,6 @@ public interface RepositoryService
     public void clearRulesRepository();
 
     /**
-     * This returns a list of packages where rules may be added. Only the UUID
-     * and the name need to be populated.
-     */
-    public PackageConfigData[] listPackages();
-
-    /**
-     * This returns a list of packages where rules may be added. Only the UUID
-     * and the name need to be populated.
-     */
-    public PackageConfigData[] listPackages(String workspace);
-
-    /**
      * This returns a list of workspaces
      */
     public String[] listWorkspaces();
@@ -168,16 +157,6 @@ public interface RepositoryService
     public String[] getDependencies(String uuid);
  
     /**
-     * This returns the global packages.
-     */
-    public PackageConfigData loadGlobalPackage();
-
-    /**
-     * This returns a list of archived packages.
-     */
-    public PackageConfigData[] listArchivedPackages();
-
-    /**
      * This checks in a new version of an asset.
      * 
      * @return the UUID of the asset you are checking in, null if there was some
@@ -192,42 +171,6 @@ public interface RepositoryService
     public void restoreVersion(String versionUUID,
                                String assetUUID,
                                String comment);
-
-    /**
-     * This creates a package of the given name, and checks it in.
-     * 
-     * @return UUID of the created item.
-     */
-    public String createPackage(String name,
-                                String description) throws SerializationException;
-
-    /**
-     * This creates a package of the given name, and checks it in.
-     * 
-     * @return UUID of the created item.
-     */
-    public String createSubPackage(String name,
-                                   String description,
-                                   String parentPackage) throws SerializationException;
-
-    /**
-     * Loads a package by its uuid.
-     * 
-     * @return Well, its pretty obvious if you think about it for a minute.
-     *         Really.
-     */
-    public PackageConfigData loadPackageConfig(String uuid);
-
-    /**
-     * Saves the package config data in place (does not create a new version of
-     * anything).
-     * 
-     * @return A ValidatedReponse, with any errors to be reported. No payload is
-     *         in the response. If there are any errors, the user should be
-     *         given the option to review them, and correct them if needed (but
-     *         a save will not be prevented this way - as its not an exception).
-     */
-    public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException;
 
     /**
      * Returns a list of valid states.
@@ -278,59 +221,7 @@ public interface RepositoryService
                             String newState,
                             boolean wholePackage);
 
-    /**
-     * Copy the package (everything).
-     * 
-     * @param sourcePackageName
-     * @param destPackageName
-     */
-    public void copyPackage(String sourcePackageName,
-                            String destPackageName) throws SerializationException;
-
-    /**
-     * This will load a list of snapshots for the given package. Snapshots are
-     * created by taking a labelled copy of a package, at a point in time, for
-     * instance for deployment.
-     */
-    public SnapshotInfo[] listSnapshots(String packageName);
-
-    /**
-     * Create a package snapshot for deployment.
-     * 
-     * @param packageName
-     *            THe name of the package to copy.
-     * @param snapshotName
-     *            The name of the snapshot. Has to be unique unless existing one
-     *            is to be replaced.
-     * @param replaceExisting
-     *            Replace the existing one (must be true to replace an existing
-     *            snapshot of the same name).
-     * @param comment
-     *            A comment to be added to the copied one.
-     */
-    public void createPackageSnapshot(String packageName,
-                                      String snapshotName,
-                                      boolean replaceExisting,
-                                      String comment);
-
-    /**
-     * This alters an existing snapshot, it can be used to copy or delete it.
-     * 
-     * @param packageName
-     *            The package name that we are dealing with.
-     * @param snapshotName
-     *            The snapshot name (this must exist)
-     * @param delete
-     *            true if the snapshotName is to be removed.
-     * @param newSnapshotName
-     *            The name of the target snapshot that the contents will be
-     *            copied to.
-     */
-    public void copyOrRemoveSnapshot(String packageName,
-                                     String snapshotName,
-                                     boolean delete,
-                                     String newSnapshotName) throws SerializationException;
-
+ 
     /**
      * This will remove a category. A category must have no current assets
      * linked to it, or else it will not be able to be removed.
@@ -351,46 +242,9 @@ public interface RepositoryService
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException;
 
     /**
-     * Build the package (may be a snapshot) and return the result.
-     * 
-     * This will then store the result in the package as an attachment.
-     * 
-     * if a non null selectorName is passed in it will lookup a selector as
-     * configured in the systems selectors.properties file. This will then apply
-     * the filter to the package being built.
-     */
-    public BuilderResult buildPackage(String packageUUID,
-                                      boolean force,
-                                      String buildMode,
-                                      String operator,
-                                      String statusDescriptionValue,
-                                      boolean enableStatusSelector,
-                                      String categoryOperator,
-                                      String category,
-                                      boolean enableCategorySelector,
-                                      String customSelectorName) throws SerializationException;
-
-    /**
-     * This method will ZIP the jars that compose the Model of our Domain in the
-     * Package
-     */
-
-    /**
      * return custom selector names
      */
     public String[] getCustomSelectors() throws SerializationException;
-
-    /**
-     * This will return the effective DRL for a package. This would be the
-     * equivalent if all the rules were written by hand in the one file. It may
-     * not actually be compiled this way in the implementation, so this is for
-     * display and debugging assistance only.
-     * 
-     * It should still generate
-     * 
-     * @throws SerializationException
-     */
-    public String buildPackageSource(String packageUUID) throws SerializationException;
 
     /**
      * Rename a category - taking in the full path, and just the new name.
@@ -398,41 +252,7 @@ public interface RepositoryService
     public void renameCategory(String fullPathAndName,
                                String newName);
 
-    /**
-     * Permanently remove a package (delete it).
-     * 
-     * @param uuid
-     *            of the package.
-     */
-    public void removePackage(String uuid);
-
-    /**
-     * Rename a package.
-     */
-    public String renamePackage(String uuid,
-                                String newName);
-
-    /**
-     * This will force a rebuild of all snapshots binary data. No errors are
-     * expected, as there will be no change. If there are errors, an expert will
-     * need to look at them.
-     */
-    public void rebuildSnapshots() throws SerializationException;
-
-    /**
-     * This will force a rebuild of all packages binary data. No errors are
-     * expected, as there will be no change. If there are errors, an expert will
-     * need to look at them.
-     */
-    public void rebuildPackages() throws SerializationException;
-
-    /**
-     * This will list the rules available in a package. This has an upper limit
-     * of what it will return (it just doesn't make sense to show a list of 20K
-     * items !).
-     */
-    public String[] listRulesInPackage(String packageName) throws SerializationException;
-
+   
     /**
      * 
      * @param packageName
@@ -450,14 +270,7 @@ public interface RepositoryService
      */
     public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException;
 
-    /**
-     * List the fact types (class names) in the scope of a given package. This
-     * may not include things on the "system" classpath, but only things
-     * specifically scoped to the package (eg in jars that have been uploaded to
-     * it as an asset).
-     */
-    public String[] listTypesInPackage(String packageUUID) throws SerializationException;
-
+   
     /**
      * This will list the last N log entryies logged by the server. For
      * debugging purposes in the GUI.
@@ -580,12 +393,7 @@ public interface RepositoryService
      */
     public void createUser(String userName);
 
-    /**
-     * Installs the sample repository, wiping out what was already there.
-     * Generally shouldn't call this unless it is new !
-     */
-    public void installSampleRepository() throws SerializationException;
-
+  
     /**
      * Return a list of discussion items for a given asset...
      */

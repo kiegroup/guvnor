@@ -76,7 +76,7 @@ public class QATree extends AbstractTree
     public void onOpen(OpenEvent<TreeItem> event) {
         final TreeItem node = event.getTarget();
         if ( ExplorerNodeConfig.TEST_SCENARIOS_ROOT_ID.equals( itemWidgets.get( node ) ) ) {
-            RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
+            RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
                 public void onSuccess(PackageConfigData[] conf) {
                     node.removeItems();
                     removeTestScenarioIDs( itemWidgets );
@@ -94,7 +94,7 @@ public class QATree extends AbstractTree
                 }
             } );
         } else if ( ExplorerNodeConfig.ANALYSIS_ROOT_ID.equals( itemWidgets.get( node ) ) ) {
-            RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
+            RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
                 public void onSuccess(PackageConfigData[] conf) {
                     node.removeItems();
                     removeAnalysisIDs( itemWidgets );

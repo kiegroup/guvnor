@@ -56,20 +56,21 @@ public class PopulateDataTest extends GuvnorTestBase {
     @Test
     public void testPopulate() throws Exception {
         ServiceImplementation serv = getServiceImplementation();
-
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         createCategories( serv );
         createStates( serv );
-        createPackages( serv );
+        createPackages( repositoryPackageService );
         createModel( serv );
 
         createSomeRules( serv );
-        createPackageSnapshots( serv );
+        
+        createPackageSnapshots( repositoryPackageService );
 
         createPermissions( serv );
 
         PackageItem pkg = serv.getRulesRepository().loadPackage( "com.billasurf.manufacturing.plant" );
 
-        serv.buildPackage( pkg.getUUID(),
+        repositoryPackageService.buildPackage( pkg.getUUID(),
                            true );
 
     }
@@ -140,7 +141,7 @@ public class PopulateDataTest extends GuvnorTestBase {
 
     }
 
-    private void createPackageSnapshots(ServiceImplementation serv) {
+    private void createPackageSnapshots(RepositoryPackageService serv) {
         serv.createPackageSnapshot( "com.billasurf.manufacturing",
                                     "TEST",
                                     false,
@@ -190,7 +191,7 @@ public class PopulateDataTest extends GuvnorTestBase {
                                    AssetFormats.DSL );
     }
 
-    private void createPackages(ServiceImplementation serv) throws SerializationException {
+    private void createPackages(RepositoryPackageService serv) throws SerializationException {
         String uuid = serv.createPackage( "com.billasurf.manufacturing",
                                           "Rules for manufacturing." );
 

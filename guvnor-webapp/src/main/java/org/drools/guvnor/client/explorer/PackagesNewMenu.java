@@ -174,7 +174,7 @@ public class PackagesNewMenu {
             public void execute() {
                 if (Window.confirm(constants.RebuildConfirmWarning())) {
                     LoadingPopup.showMessage(constants.RebuildingPackageBinaries());
-                    RepositoryServiceFactory.getService().rebuildPackages(new GenericCallback<Void>() {
+                    RepositoryServiceFactory.getPackageService().rebuildPackages(new GenericCallback<Void>() {
                         public void onSuccess(Void data) {
                             LoadingPopup.close();
                         }

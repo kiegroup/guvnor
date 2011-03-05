@@ -269,7 +269,7 @@ public class ScenarioWidget extends Composite
                     Scheduler scheduler = Scheduler.get();
                     scheduler.scheduleDeferred( new Command() {
                         public void execute() {
-                            RepositoryServiceFactory.getService().listRulesInPackage( packageName,
+                            RepositoryServiceFactory.getPackageService().listRulesInPackage( packageName,
                                                                                       createGenericCallback( horizontalPanel,
                                                                                                              ruleNameTextBox,
                                                                                                              busy,

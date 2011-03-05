@@ -49,7 +49,7 @@ public class RestTestingBase {
         Service = Resource.Service;
         Service.clearRulesRepository();
         try {
-            Service.installSampleRepository();
+            Resource.PackageService.installSampleRepository();
         } catch (Exception e) {
             e.printStackTrace();
         }

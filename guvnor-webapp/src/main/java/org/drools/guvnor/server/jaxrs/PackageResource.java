@@ -97,13 +97,13 @@ public class PackageResource extends Resource {
     @POST
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     public void createPackageFromAtom (Entry entry) {
-        Service.createPackage(entry.getTitle(),entry.getSummary());
+        PackageService.createPackage(entry.getTitle(),entry.getSummary());
     }
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public void createPackageFromJAXB (Package p) {
-        Service.createPackage(p.getTitle(), p.getDescription());
+        PackageService.createPackage(p.getTitle(), p.getDescription());
     }
 
 
@@ -144,7 +144,7 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     public void archivePackage (@PathParam("packageName") String packageName) {
         PackageItem p = repository.loadPackage(packageName);
-        Service.removePackage(p.getUUID());
+        PackageService.removePackage(p.getUUID());
     }
 
     @GET
@@ -196,7 +196,7 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public byte[] getBinaryPackageByName(@PathParam("packageName") String packageName) throws SerializationException {
         PackageItem p = repository.loadPackage(packageName);
-        Service.buildPackage(p.getUUID(), true);
+        PackageService.buildPackage(p.getUUID(), true);
         return repository.loadPackage(packageName).getCompiledPackageBytes();
     }
 

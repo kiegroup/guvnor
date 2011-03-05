@@ -59,7 +59,7 @@ public class RulePackageSelector extends Composite {
     }
 
     private void loadPackageList() {
-        RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
+        RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
 
             public void onSuccess(PackageConfigData[] list) {
                 for ( int i = 0; i < list.length; i++ ) {

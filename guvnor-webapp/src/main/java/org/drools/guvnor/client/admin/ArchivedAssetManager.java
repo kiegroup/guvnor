@@ -161,7 +161,7 @@ public class ArchivedAssetManager extends Composite {
     }
 
     private void deletePackage(final String uuid) {
-        RepositoryServiceFactory.getService().removePackage( uuid,
+        RepositoryServiceFactory.getPackageService().removePackage( uuid,
                                                              new GenericCallback<java.lang.Void>() {
                                                                  public void onSuccess(Void data) {
                                                                      Window.alert( constants.PackageDeleted() );
@@ -172,11 +172,11 @@ public class ArchivedAssetManager extends Composite {
     }
 
     private void restorePackage(String uuid) {
-        RepositoryServiceFactory.getService().loadPackageConfig( uuid,
+        RepositoryServiceFactory.getPackageService().loadPackageConfig( uuid,
                                                                  new GenericCallback<PackageConfigData>() {
                                                                      public void onSuccess(PackageConfigData cf) {
                                                                          cf.archived = false;
-                                                                         RepositoryServiceFactory.getService().savePackage( cf,
+                                                                         RepositoryServiceFactory.getPackageService().savePackage( cf,
                                                                                                                             new GenericCallback<ValidatedResponse>() {
                                                                                                                                 public void onSuccess(ValidatedResponse data) {
                                                                                                                                     Window.alert( constants.PackageRestored() );
@@ -191,7 +191,7 @@ public class ArchivedAssetManager extends Composite {
 
     private ListBox loadPackages() {
 
-        RepositoryServiceFactory.getService().listArchivedPackages( new GenericCallback<PackageConfigData[]>() {
+        RepositoryServiceFactory.getPackageService().listArchivedPackages( new GenericCallback<PackageConfigData[]>() {
             public void onSuccess(PackageConfigData[] configs) {
                 for ( int i = 0; i < configs.length; i++ ) {
                     packages.addItem( configs[i].name,

@@ -243,7 +243,7 @@ public class PackageHeaderWidget extends Composite {
         final ListBox factList = new ListBox();
         factList.addItem( constants.loadingList() );
 
-        RepositoryServiceFactory.getService().listTypesInPackage( this.conf.uuid, createGenericCallbackForListTypesInPackage( global, factList ) );
+        RepositoryServiceFactory.getPackageService().listTypesInPackage( this.conf.uuid, createGenericCallbackForListTypesInPackage( global, factList ) );
 
         InfoPopup info = new InfoPopup( constants.TypesInThePackage(), constants.IfNoTypesTip() );
 

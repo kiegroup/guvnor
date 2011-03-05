@@ -151,7 +151,7 @@ public class ExplorerNodeConfig {
     }
 
     private static void deploymentListPackages(final TreeItem root) {
-        RepositoryServiceFactory.getService().listPackages( new GenericCallback<PackageConfigData[]>() {
+        RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
             public void onSuccess(PackageConfigData[] values) {
                 PackageHierarchy ph = new PackageHierarchy();
 
@@ -280,7 +280,7 @@ public class ExplorerNodeConfig {
 
             private void newRepoDialogIfShowAdminAndPathMatches(final String path) {
                 if ( path.equals( "/" ) && CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_ADMIN ) ) {
-                    RepositoryServiceFactory.getService().listPackages( createGenericCallbackForListPackages() );
+                    RepositoryServiceFactory.getPackageService().listPackages( createGenericCallbackForListPackages() );
                 }
             }
 

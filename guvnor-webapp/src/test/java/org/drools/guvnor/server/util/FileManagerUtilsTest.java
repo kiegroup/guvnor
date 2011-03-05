@@ -36,6 +36,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.Snapshot;
 import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.repository.AssetItem;
@@ -145,7 +146,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
     public void testGetPackageBinaryAndSource() throws Exception {
 
         RulesRepository repo = getRulesRepository();
-        ServiceImplementation impl = getServiceImplementation();
+        RepositoryPackageService impl = getRepositoryPackageService();
 
         long before = System.currentTimeMillis();
         Thread.sleep( 20 );

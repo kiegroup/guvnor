@@ -30,6 +30,7 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
@@ -206,7 +207,7 @@ public class SnapshotView extends Composite {
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.add( new Label( "Compare to:" ) );
 
-        RepositoryServiceFactory.getService().listSnapshots( this.parentConf.name,
+        RepositoryServiceFactory.getPackageService().listSnapshots( this.parentConf.name,
                                                              new GenericCallback<SnapshotInfo[]>() {
                                                                  public void onSuccess(SnapshotInfo[] info) {
                                                                      for ( int i = 0; i < info.length; i++ ) {
@@ -245,7 +246,7 @@ public class SnapshotView extends Composite {
                 if ( Window.confirm( Format.format( constants.SnapshotDeleteConfirm(),
                                                     snapshotName,
                                                     pkgName ) ) ) {
-                    RepositoryServiceFactory.getService().copyOrRemoveSnapshot( pkgName,
+                    RepositoryServiceFactory.getPackageService().copyOrRemoveSnapshot( pkgName,
                                                                                 snapshotName,
                                                                                 true,
                                                                                 null,
@@ -265,7 +266,7 @@ public class SnapshotView extends Composite {
 
     private Button getCopyButton(final String snapshotName,
                                  final String packageName) {
-        final RepositoryServiceAsync serv = RepositoryServiceFactory.getService();
+        final PackageServiceAsync serv = RepositoryServiceFactory.getPackageService();
         Button btn = new Button( constants.Copy() );
         btn.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
@@ -280,7 +281,7 @@ public class SnapshotView extends Composite {
 
     private GenericCallback<SnapshotInfo[]> createGenericCallback(final String snapshotName,
                                                                   final String packageName,
-                                                                  final RepositoryServiceAsync serv) {
+                                                                  final PackageServiceAsync serv) {
         return new GenericCallback<SnapshotInfo[]>() {
             public void onSuccess(final SnapshotInfo[] snaps) {
                 final FormStylePopup copy = new FormStylePopup( images.snapshot(),
@@ -469,7 +470,7 @@ public class SnapshotView extends Composite {
     public static void rebuildBinaries() {
         if ( Window.confirm( constants.SnapshotRebuildWarning() ) ) {
             LoadingPopup.showMessage( constants.RebuildingSnapshotsPleaseWaitThisMayTakeSomeTime() );
-            RepositoryServiceFactory.getService().rebuildSnapshots( new GenericCallback<java.lang.Void>() {
+            RepositoryServiceFactory.getPackageService().rebuildSnapshots( new GenericCallback<java.lang.Void>() {
                 public void onSuccess(Void v) {
                     LoadingPopup.close();
                     Window.alert( constants.SnapshotsWereRebuiltSuccessfully() );

@@ -512,7 +512,7 @@ public class PackageEditor extends PrettyFormLayout {
         ok.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                RepositoryServiceFactory.getService().renamePackage( conf.uuid,
+                RepositoryServiceFactory.getPackageService().renamePackage( conf.uuid,
                                                                      name.getText(),
                                                                      new GenericCallback<String>() {
                                                                          public void onSuccess(String data) {
@@ -551,7 +551,7 @@ public class PackageEditor extends PrettyFormLayout {
                     return;
                 }
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getService().copyPackage( conf.name,
+                RepositoryServiceFactory.getPackageService().copyPackage( conf.name,
                                                                    name.getText(),
                                                                    new GenericCallback<Void>() {
                                                                        public void onSuccess(Void data) {
@@ -571,7 +571,7 @@ public class PackageEditor extends PrettyFormLayout {
     private void doSaveAction(final Command refresh) {
         LoadingPopup.showMessage( constants.SavingPackageConfigurationPleaseWait() );
 
-        RepositoryServiceFactory.getService().savePackage( this.conf,
+        RepositoryServiceFactory.getPackageService().savePackage( this.conf,
                                                            new GenericCallback<ValidatedResponse>() {
                                                                public void onSuccess(ValidatedResponse data) {
                                                                    previousResponse = data;
@@ -596,7 +596,7 @@ public class PackageEditor extends PrettyFormLayout {
      */
     public void reload() {
         LoadingPopup.showMessage( constants.RefreshingPackageData() );
-        RepositoryServiceFactory.getService().loadPackageConfig( this.conf.uuid,
+        RepositoryServiceFactory.getPackageService().loadPackageConfig( this.conf.uuid,
                                                                  new GenericCallback<PackageConfigData>() {
                                                                      public void onSuccess(PackageConfigData data) {
                                                                          LoadingPopup.close();

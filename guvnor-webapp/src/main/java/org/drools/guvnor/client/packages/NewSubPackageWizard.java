@@ -151,7 +151,7 @@ public class NewSubPackageWizard extends FormStylePopup {
                                         String parentPackage,
                                         final Command refresh) {
         LoadingPopup.showMessage( constants.CreatingPackagePleaseWait() );
-        RepositoryServiceFactory.getService().createSubPackage( name,
+        RepositoryServiceFactory.getPackageService().createSubPackage( name,
                                                                 descr,
                                                                 parentPackage,
                                                                 new GenericCallback<String>() {

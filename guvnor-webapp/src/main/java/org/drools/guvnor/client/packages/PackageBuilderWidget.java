@@ -290,7 +290,7 @@ public class PackageBuilderWidget extends Composite {
         Scheduler scheduler = Scheduler.get();
         scheduler.scheduleDeferred( new Command() {
             public void execute() {
-                RepositoryServiceFactory.getService().buildPackage( conf.uuid,
+                RepositoryServiceFactory.getPackageService().buildPackage( conf.uuid,
                                                                     true,
                                                                     buildMode,
                                                                     statusOperator,
@@ -331,7 +331,7 @@ public class PackageBuilderWidget extends Composite {
         Scheduler scheduler = Scheduler.get();
         scheduler.scheduleDeferred( new Command() {
             public void execute() {
-                RepositoryServiceFactory.getService().buildPackageSource( uuid,
+                RepositoryServiceFactory.getPackageService().buildPackageSource( uuid,
                                                                           new GenericCallback<java.lang.String>() {
                                                                               public void onSuccess(String content) {
                                                                                   showSource( content,
@@ -544,7 +544,7 @@ public class PackageBuilderWidget extends Composite {
         final String newSnapshotText = constants.NEW()
                                        + ": ";
 
-        RepositoryServiceFactory.getService().listSnapshots( packageName,
+        RepositoryServiceFactory.getPackageService().listSnapshots( packageName,
                                                              new GenericCallback<SnapshotInfo[]>() {
                                                                  public void onSuccess(SnapshotInfo[] result) {
                                                                      for ( int i = 0; i < result.length; i++ ) {
@@ -606,7 +606,7 @@ public class PackageBuilderWidget extends Composite {
                 }
 
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getService().createPackageSnapshot( packageName,
+                RepositoryServiceFactory.getPackageService().createPackageSnapshot( packageName,
                                                                              name,
                                                                              replace,
                                                                              comment.getText(),

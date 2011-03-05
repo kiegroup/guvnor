@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Map;
+
+import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 
@@ -43,7 +45,7 @@ public class ActionsAPIServlet extends RepositoryServlet {
         final HttpServletResponse res) throws ServletException, IOException
     {
         final RulesRepository repository = RestAPIServlet.getRepository();
-        final ServiceImplementation service = RepositoryServiceServlet.getService();
+        final RepositoryPackageService service = RepositoryServiceServlet.getPackageService();
 
         doAuthorizedAction(req, res, new A() {
             public void a() throws Exception {

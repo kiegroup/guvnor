@@ -36,6 +36,7 @@ import org.drools.core.util.FileManager;
 import org.drools.definition.KnowledgePackage;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.io.ResourceChangeScannerConfiguration;
 import org.drools.io.ResourceFactory;
@@ -63,7 +64,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
     public void testLoadingRules() throws Exception {
         RulesRepository repo = getRulesRepository();
 
-        ServiceImplementation impl = new ServiceImplementation();
+        RepositoryPackageService impl = new RepositoryPackageService();
         impl.setRulesRepository( repo );
 
         PackageItem pkg = repo.createPackage( "testPDSGetPackage",
@@ -303,7 +304,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
     public void testScenariosAndChangeSet() throws Exception {
         RulesRepository repo = getRulesRepository();
 
-        ServiceImplementation impl = getServiceImplementation();
+        RepositoryPackageService impl = getRepositoryPackageService();
 
         repo.createPackage( "testScenariosURL",
                             "" );

@@ -117,7 +117,7 @@ public class SpringContextElementsBrowser extends Composite {
         final TreeItem rootItem = new TreeItem(constants.Packages());
 
         //Global Area Data
-        RepositoryServiceFactory.getService().loadGlobalPackage(new AsyncCallback<PackageConfigData>()   {
+        RepositoryServiceFactory.getPackageService().loadGlobalPackage(new AsyncCallback<PackageConfigData>()   {
 
             public void onFailure(Throwable caught) {
                 ErrorPopup.showMessage("Error listing Global Area information!");
@@ -129,7 +129,7 @@ public class SpringContextElementsBrowser extends Composite {
         });
 
         //Packages Data
-        RepositoryServiceFactory.getService().listPackages(new AsyncCallback<PackageConfigData[]>()    {
+        RepositoryServiceFactory.getPackageService().listPackages(new AsyncCallback<PackageConfigData[]>()    {
 
             public void onFailure(Throwable caught) {
                 ErrorPopup.showMessage("Error listing package information!");
@@ -177,7 +177,7 @@ public class SpringContextElementsBrowser extends Composite {
         
         packageItem.addItem(leafItem);
 
-        RepositoryServiceFactory.getService().listSnapshots(packageConfigData.name, new AsyncCallback<SnapshotInfo[]>()    {
+        RepositoryServiceFactory.getPackageService().listSnapshots(packageConfigData.name, new AsyncCallback<SnapshotInfo[]>()    {
 
             public void onFailure(Throwable caught) {
                 ErrorPopup.showMessage("Error listing snapshots information!");
@@ -186,7 +186,7 @@ public class SpringContextElementsBrowser extends Composite {
             public void onSuccess(SnapshotInfo[] result) {
                 for (int j = 0; j < result.length; j++) {
                     final SnapshotInfo snapshotInfo = result[j];
-                    RepositoryServiceFactory.getService().loadPackageConfig(snapshotInfo.uuid, new AsyncCallback<PackageConfigData>()    {
+                    RepositoryServiceFactory.getPackageService().loadPackageConfig(snapshotInfo.uuid, new AsyncCallback<PackageConfigData>()    {
 
                         public void onFailure(Throwable caught) {
                             ErrorPopup.showMessage("Error listing snapshots information!");

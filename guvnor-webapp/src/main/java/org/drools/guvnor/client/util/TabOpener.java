@@ -239,7 +239,7 @@ public class TabOpener {
 
         if ( !explorerViewCenterPanel.showIfOpen( uuid ) ) {
             LoadingPopup.showMessage( constants.LoadingPackageInformation() );
-            RepositoryServiceFactory.getService().loadPackageConfig( uuid,
+            RepositoryServiceFactory.getPackageService().loadPackageConfig( uuid,
                                                                      new GenericCallback<PackageConfigData>() {
                                                                          public void onSuccess(PackageConfigData conf) {
                                                                              PackageEditor ed = new PackageEditor( conf,
@@ -280,7 +280,7 @@ public class TabOpener {
         if ( !explorerViewCenterPanel.showIfOpen( snap.name
                                                   + snap.uuid ) ) {
             LoadingPopup.showMessage( constants.LoadingSnapshot() );
-            RepositoryServiceFactory.getService().loadPackageConfig( snap.uuid,
+            RepositoryServiceFactory.getPackageService().loadPackageConfig( snap.uuid,
                                                                      new GenericCallback<PackageConfigData>() {
                                                                          public void onSuccess(PackageConfigData conf) {
                                                                              explorerViewCenterPanel.addTab( Format.format( constants.SnapshotLabel(),

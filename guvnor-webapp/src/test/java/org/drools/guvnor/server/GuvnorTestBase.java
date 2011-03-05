@@ -65,6 +65,9 @@ public abstract class GuvnorTestBase {
 
         RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
         repositoryAssetService.setRulesRepository( getRulesRepository() );
+        
+        RepositoryPackageService repositoryPackageService = new RepositoryPackageService();
+        repositoryPackageService.setRulesRepository( getRulesRepository() );
 
         Contexts.getSessionContext().set( "repository",
                                           repository );
@@ -72,6 +75,8 @@ public abstract class GuvnorTestBase {
                                           serviceImplementation );
         Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.AssetService",
                                           repositoryAssetService );
+        Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.PackageService",
+                                          repositoryPackageService );
     }
 
     protected RulesRepository getRulesRepository() {
@@ -101,6 +106,7 @@ public abstract class GuvnorTestBase {
         Contexts.removeFromAllContexts( "repository" );
         Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.RepositoryService" );
         Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.AssetService" );
+        Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.PackageService" );
         Contexts.removeFromAllContexts( "fileManager" );
         if ( Contexts.getApplicationContext() != null ) Contexts.getApplicationContext().flush();
         if ( Contexts.getEventContext() != null ) Contexts.getEventContext().flush();
@@ -126,6 +132,10 @@ public abstract class GuvnorTestBase {
 
     protected RepositoryAssetService getRepositoryAssetService() {
         return (RepositoryAssetService) Component.getInstance( "org.drools.guvnor.client.rpc.AssetService" );
+    }
+    
+    protected RepositoryPackageService getRepositoryPackageService() {
+        return (RepositoryPackageService) Component.getInstance( "org.drools.guvnor.client.rpc.PackageService" );
     }
 
     protected void setUpFileManagerUtils() {

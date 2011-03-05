@@ -155,7 +155,7 @@ public class NewPackageWizard extends FormStylePopup {
                                      final String descr,
                                      final Command refresh) {
         LoadingPopup.showMessage( constants.CreatingPackagePleaseWait() );
-        RepositoryServiceFactory.getService().createPackage( name,
+        RepositoryServiceFactory.getPackageService().createPackage( name,
                                                              descr,
                                                              new GenericCallback<java.lang.String>() {
                                                                  public void onSuccess(String uuid) {

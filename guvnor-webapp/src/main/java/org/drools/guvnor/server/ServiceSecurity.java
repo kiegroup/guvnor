@@ -33,61 +33,71 @@ public class ServiceSecurity {
 
     protected void checkSecurityIsPackageNameTypeAdmin(String packageName) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( packageName ), RoleTypes.PACKAGE_ADMIN );
+            Identity.instance().checkPermission( new PackageNameType( packageName ),
+                                                 RoleTypes.PACKAGE_ADMIN );
         }
     }
 
     protected void checkSecurityIsPackageDeveloper(String packageUUID) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( packageUUID ), RoleTypes.PACKAGE_DEVELOPER );
+            Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
+                                                 RoleTypes.PACKAGE_DEVELOPER );
         }
     }
 
     protected void checkSecurityIsPackageDeveloper(RuleAsset asset) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ), RoleTypes.PACKAGE_DEVELOPER );
+            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
+                                                 RoleTypes.PACKAGE_DEVELOPER );
         }
     }
 
     protected void checkSecurityIsPackageReadOnly(String packageName) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( packageName ), RoleTypes.PACKAGE_READONLY );
+            Identity.instance().checkPermission( new PackageNameType( packageName ),
+                                                 RoleTypes.PACKAGE_READONLY );
         }
     }
 
     protected void checkSecurityIsPackageDeveloper(AssetItem item) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( item.getPackage().getUUID() ), RoleTypes.PACKAGE_DEVELOPER );
+            Identity.instance().checkPermission( new PackageUUIDType( item.getPackage().getUUID() ),
+                                                 RoleTypes.PACKAGE_DEVELOPER );
         }
     }
 
     protected void checkSecurityIsPackageAdmin(String uuid) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( uuid ), RoleTypes.PACKAGE_ADMIN );
+            Identity.instance().checkPermission( new PackageUUIDType( uuid ),
+                                                 RoleTypes.PACKAGE_ADMIN );
         }
     }
 
     protected void checkSecurityIsAdmin() {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new AdminType(), RoleTypes.ADMIN );
+            Identity.instance().checkPermission( new AdminType(),
+                                                 RoleTypes.ADMIN );
         }
     }
 
     protected void checkSecurityNameTypePackageReadOnly(PackageItem item) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( item.getName() ), RoleTypes.PACKAGE_READONLY );
+            Identity.instance().checkPermission( new PackageNameType( item.getName() ),
+                                                 RoleTypes.PACKAGE_READONLY );
         }
     }
 
     protected void checkSecurityIsPackageDeveloperForName(String initialPackage) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( initialPackage ), RoleTypes.PACKAGE_DEVELOPER );
+            Identity.instance().checkPermission( new PackageNameType( initialPackage ),
+                                                 RoleTypes.PACKAGE_DEVELOPER );
         }
     }
 
     protected void checkSecurityAssetPackagePackageReadOnly(AssetItem item) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( item.getPackage().getUUID() ), RoleTypes.PACKAGE_READONLY );
+            Identity.instance().checkPermission( new PackageUUIDType( item.getPackage().getUUID() ),
+                                                 RoleTypes.PACKAGE_READONLY );
         }
     }
 }

@@ -59,7 +59,7 @@ public class NewRepoDialog extends FormStylePopup {
             public void onClick(ClickEvent event) {
                 if ( !Window.confirm( constants.AboutToInstallSampleRepositoryAreYouSure() ) ) return;
                 LoadingPopup.showMessage( constants.ImportingAndProcessing() );
-                RepositoryServiceFactory.getService().installSampleRepository( new GenericCallback<java.lang.Void>() {
+                RepositoryServiceFactory.getPackageService().installSampleRepository( new GenericCallback<java.lang.Void>() {
                     public void onSuccess(Void v) {
                         Window.alert( constants.RepositoryInstalledSuccessfully() );
                         hide();

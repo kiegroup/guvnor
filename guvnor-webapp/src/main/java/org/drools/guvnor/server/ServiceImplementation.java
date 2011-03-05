@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
 import javax.jcr.ItemExistsException;
@@ -49,8 +48,6 @@ import org.drools.base.ClassTypeResolver;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalRuleBase;
 import org.drools.common.InternalWorkingMemory;
-import org.drools.compiler.DrlParser;
-import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
@@ -86,18 +83,15 @@ import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
 import org.drools.guvnor.client.rpc.SnapshotDiff;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
-import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
@@ -117,8 +111,6 @@ import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
@@ -206,247 +198,6 @@ public class ServiceImplementation
 
     public static Backchannel getBackchannel() {
         return backchannel;
-    }
-
-    /**
-     * Role-based Authorization check: This method only returns packages that
-     * the user has permission to access. User has permission to access the
-     * particular package when: The user has a package.readonly role or higher
-     * (i.e., package.admin, package.developer) to this package.
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PackageConfigData[] listPackages() {
-        return listPackages( null );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PackageConfigData[] listPackages(String workspace) {
-        RepositoryFilter pf = new PackageFilter();
-        return repositoryPackageOperations.listPackages( false,
-                                                         workspace,
-                                                         pf );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PackageConfigData[] listArchivedPackages() {
-        return listArchivedPackages( null );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PackageConfigData[] listArchivedPackages(String workspace) {
-        RepositoryFilter pf = new PackageFilter();
-        return repositoryPackageOperations.listPackages( true,
-                                                         workspace,
-                                                         pf );
-    }
-
-    public PackageConfigData loadGlobalPackage() {
-        return repositoryPackageOperations.loadGlobalPackage();
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void rebuildPackages() throws SerializationException {
-        Iterator<PackageItem> pkit = getRulesRepository().listPackages();
-        StringBuilder errs = new StringBuilder();
-        while ( pkit.hasNext() ) {
-            PackageItem pkg = pkit.next();
-            try {
-                BuilderResult res = this.buildPackage( pkg.getUUID(),
-                                                       true );
-                if ( res != null ) {
-                    errs.append( "Unable to build package name [" + pkg.getName() + "]\n" );
-                    StringBuilder buf = new StringBuilder();
-                    for ( int i = 0; i < res.getLines().size(); i++ ) {
-                        buf.append( res.getLines().get( i ).toString() );
-                        buf.append( '\n' );
-                    }
-                    log.warn( buf.toString() );
-                }
-            } catch ( Exception e ) {
-                log.error( "An error occurred building package [" + pkg.getName() + "]\n" );
-                errs.append( "An error occurred building package [" + pkg.getName() + "]\n" );
-            }
-        }
-
-        if ( errs.toString().length() > 0 ) {
-            throw new DetailedSerializationException( "Unable to rebuild all packages.",
-                                                      errs.toString() );
-        }
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public String buildPackageSource(String packageUUID) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
-        return repositoryPackageOperations.buildPackageSource( packageUUID );
-    }
-
-    @WebRemote
-    public void copyPackage(String sourcePackageName,
-                            String destPackageName) throws SerializationException {
-        serviceSecurity.checkSecurityIsAdmin();
-        repositoryPackageOperations.copyPackage( sourcePackageName,
-                                                 destPackageName );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void removePackage(String uuid) {
-        serviceSecurity.checkSecurityIsPackageAdmin( uuid );
-        repositoryPackageOperations.removePackage( uuid );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public String renamePackage(String uuid,
-                                String newName) {
-        serviceSecurity.checkSecurityIsPackageAdmin( uuid );
-
-        return repositoryPackageOperations.renamePackage( uuid,
-                                                          newName );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public byte[] exportPackages(String packageName) {
-        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
-        return repositoryPackageOperations.exportPackages( packageName );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    // TODO: Not working. GUVNOR-475
-    public void importPackages(byte[] byteArray,
-                               boolean importAsNew) {
-        repositoryPackageOperations.importPackages( byteArray,
-                                                    importAsNew );
-    }
-
-    @WebRemote
-    public String createPackage(String name,
-                                String description,
-                                String[] workspace) throws RulesRepositoryException {
-        serviceSecurity.checkSecurityIsAdmin();
-        return repositoryPackageOperations.createPackage( name,
-                                                          description,
-                                                          workspace );
-    }
-
-    @WebRemote
-    public String createPackage(String name,
-                                String description) throws RulesRepositoryException {
-        return createPackage( name,
-                              description,
-                              new String[]{} );
-    }
-
-    @WebRemote
-    public String createSubPackage(String name,
-                                   String description,
-                                   String parentNode) throws SerializationException {
-        serviceSecurity.checkSecurityIsAdmin();
-        return repositoryPackageOperations.createSubPackage( name,
-                                                             description,
-                                                             parentNode );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PackageConfigData loadPackageConfig(String uuid) {
-        PackageItem packageItem = getRulesRepository().loadPackageByUUID( uuid );
-        // the uuid passed in is the uuid of that deployment bundle, not the
-        // package uudi.
-        // we have to figure out the package name.
-        serviceSecurity.checkSecurityNameTypePackageReadOnly( packageItem );
-        return repositoryPackageOperations.loadPackageConfig( packageItem );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( data.uuid );
-        return repositoryPackageOperations.savePackage( data );
-
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public BuilderResult buildPackage(String packageUUID,
-                                      boolean force) throws SerializationException {
-        return buildPackage( packageUUID,
-                             force,
-                             null,
-                             null,
-                             null,
-                             false,
-                             null,
-                             null,
-                             false,
-                             null );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public BuilderResult buildPackage(String packageUUID,
-                                      boolean force,
-                                      String buildMode,
-                                      String statusOperator,
-                                      String statusDescriptionValue,
-                                      boolean enableStatusSelector,
-                                      String categoryOperator,
-                                      String category,
-                                      boolean enableCategorySelector,
-                                      String customSelectorName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
-        return repositoryPackageOperations.buildPackage( packageUUID,
-                                                         force,
-                                                         buildMode,
-                                                         statusOperator,
-                                                         statusDescriptionValue,
-                                                         enableStatusSelector,
-                                                         categoryOperator,
-                                                         category,
-                                                         enableCategorySelector,
-                                                         customSelectorName );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void createPackageSnapshot(String packageName,
-                                      String snapshotName,
-                                      boolean replaceExisting,
-                                      String comment) {
-        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
-        repositoryPackageOperations.createPackageSnapshot( packageName,
-                                                           snapshotName,
-                                                           replaceExisting,
-                                                           comment );
-
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void copyOrRemoveSnapshot(String packageName,
-                                     String snapshotName,
-                                     boolean delete,
-                                     String newSnapshotName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
-        repositoryPackageOperations.copyOrRemoveSnapshot( packageName,
-                                                          snapshotName,
-                                                          delete,
-                                                          newSnapshotName );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public String[] listRulesInPackage(String packageName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnly( packageName );
-        return repositoryPackageOperations.listRulesInPackage( packageName );
     }
 
     @WebRemote
@@ -1097,25 +848,6 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public SnapshotInfo[] listSnapshots(String packageName) {
-        serviceSecurity.checkSecurityIsPackageDeveloper( packageName );
-
-        String[] snaps = getRulesRepository().listPackageSnapshots( packageName );
-        SnapshotInfo[] res = new SnapshotInfo[snaps.length];
-        for ( int i = 0; i < snaps.length; i++ ) {
-            PackageItem snap = getRulesRepository().loadPackageSnapshot( packageName,
-                                                                         snaps[i] );
-            SnapshotInfo info = new SnapshotInfo();
-            res[i] = info;
-            info.comment = snap.getCheckinComment();
-            info.name = snaps[i];
-            info.uuid = snap.getUUID();
-        }
-        return res;
-    }
-
-    @WebRemote
     public void clearRulesRepository() {
         serviceSecurity.checkSecurityIsAdmin();
 
@@ -1162,35 +894,10 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    public void rebuildSnapshots() throws SerializationException {
-        serviceSecurity.checkSecurityIsAdmin();
-
-        Iterator<PackageItem> pkit = getRulesRepository().listPackages();
-        while ( pkit.hasNext() ) {
-            PackageItem pkg = pkit.next();
-            String[] snaps = getRulesRepository().listPackageSnapshots( pkg.getName() );
-            for ( String snapName : snaps ) {
-                PackageItem snap = getRulesRepository().loadPackageSnapshot( pkg.getName(),
-                                                                             snapName );
-                BuilderResult res = this.buildPackage( snap.getUUID(),
-                                                       true );
-                if ( res != null ) {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for ( int i = 0; i < res.getLines().size(); i++ ) {
-                        stringBuilder.append( res.getLines().get( i ).toString() );
-                        stringBuilder.append( '\n' );
-                    }
-                    throw new DetailedSerializationException( "Unable to rebuild snapshot [" + snapName,
-                                                              stringBuilder.toString() + "]" );
-                }
-            }
-        }
-    }
-
-    @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] listRulesInGlobalArea() throws SerializationException {
-        return listRulesInPackage( RulesRepository.RULE_GLOBAL_AREA );
+        serviceSecurity.checkSecurityIsPackageReadOnly( RulesRepository.RULE_GLOBAL_AREA );
+        return repositoryPackageOperations.listRulesInPackage( RulesRepository.RULE_GLOBAL_AREA );
     }
 
     @Restrict("#{identity.loggedIn}")
@@ -1294,45 +1001,6 @@ public class ServiceImplementation
         } finally {
             Thread.currentThread().setContextClassLoader( originalCL );
         }
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public String[] listTypesInPackage(String packageUUID) throws SerializationException {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
-                                                 RoleTypes.PACKAGE_READONLY );
-        }
-
-        PackageItem pkg = this.getRulesRepository().loadPackageByUUID( packageUUID );
-        List<String> res = new ArrayList<String>();
-        AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.MODEL, AssetFormats.DRL_MODEL} );
-
-        JarInputStream jis = null;
-
-        try {
-            while ( it.hasNext() ) {
-                AssetItem asset = (AssetItem) it.next();
-                if ( !asset.isArchived() ) {
-                    if ( asset.getFormat().equals( AssetFormats.MODEL ) ) {
-                        jis = typesForModel( res,
-                                             asset );
-                    } else {
-                        typesForOthers( res,
-                                        asset );
-                    }
-
-                }
-            }
-            return res.toArray( new String[res.size()] );
-        } catch ( IOException e ) {
-            log.error( "Unable to read the jar files in the package: " + e.getMessage() );
-            throw new DetailedSerializationException( "Unable to read the jar files in the package.",
-                                                      e.getMessage() );
-        } finally {
-            IOUtils.closeQuietly( jis );
-        }
-
     }
 
     /**
@@ -1534,14 +1202,6 @@ public class ServiceImplementation
     }
 
     @Restrict("#{identity.loggedIn}")
-    public void installSampleRepository() throws SerializationException {
-        checkIfADMIN();
-        getRulesRepository().importRepository( this.getClass().getResourceAsStream( "/mortgage-sample-repository.xml" ) );
-        this.rebuildPackages();
-        this.rebuildSnapshots();
-    }
-
-    @Restrict("#{identity.loggedIn}")
     public List<DiscussionRecord> addToDiscussionForAsset(String assetId,
                                                           String comment) {
         RulesRepository repo = getRulesRepository();
@@ -1565,7 +1225,7 @@ public class ServiceImplementation
 
     @Restrict("#{identity.loggedIn}")
     public void clearAllDiscussionsForAsset(final String assetId) {
-        checkIfADMIN();
+        serviceSecurity.checkSecurityIsAdmin();
         RulesRepository repo = getRulesRepository();
         AssetItem asset = repo.loadAssetByUUID( assetId );
         asset.updateStringProperty( "",
@@ -2249,37 +1909,6 @@ public class ServiceImplementation
         return h;
     }
 
-    private void typesForOthers(List<String> res,
-                                AssetItem asset) {
-        // its delcared model
-        DrlParser parser = new DrlParser();
-        try {
-            PackageDescr desc = parser.parse( asset.getContent() );
-            List<TypeDeclarationDescr> types = desc.getTypeDeclarations();
-            for ( TypeDeclarationDescr typeDeclarationDescr : types ) {
-                res.add( typeDeclarationDescr.getTypeName() );
-            }
-        } catch ( DroolsParserException e ) {
-            log.error( "An error occurred parsing rule: " + e.getMessage() );
-
-        }
-    }
-
-    private JarInputStream typesForModel(List<String> res,
-                                         AssetItem asset) throws IOException {
-        JarInputStream jis;
-        jis = new JarInputStream( asset.getBinaryContentAttachment() );
-        JarEntry entry = null;
-        while ( (entry = jis.getNextJarEntry()) != null ) {
-            if ( !entry.isDirectory() ) {
-                if ( entry.getName().endsWith( ".class" ) ) {
-                    res.add( ModelContentHandler.convertPathToName( entry.getName() ) );
-                }
-            }
-        }
-        return jis;
-    }
-
     /**
      * Pushes a message back to (all) clients.
      */
@@ -2291,13 +1920,6 @@ public class ServiceImplementation
 
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
-    }
-
-    private void checkIfADMIN() {
-        if ( Contexts.isApplicationContextActive() ) {
-            Identity.instance().checkPermission( new AdminType(),
-                                                 RoleTypes.ADMIN );
-        }
     }
 
     private boolean isAssetArchivedOrRestored(AssetItem right,
