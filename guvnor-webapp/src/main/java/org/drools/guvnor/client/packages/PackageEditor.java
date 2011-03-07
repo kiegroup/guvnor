@@ -114,6 +114,11 @@ public class PackageEditor extends PrettyFormLayout {
 		if (historicalReadOnly) {
 			actionToolBar.setVisible(false);
 		} else {
+			actionToolBar.setSaveChangesCommand(new Command() {
+				public void execute() {
+					doSave(null);
+				}
+			});
 			actionToolBar.setArchiveCommand(new Command() {
 				public void execute() {
 					doArchive();
@@ -169,7 +174,7 @@ public class PackageEditor extends PrettyFormLayout {
             save.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    doSaveAction( null );
+                    doSave( null );
                 }
             } );
             addAttribute( "",
@@ -546,7 +551,7 @@ public class PackageEditor extends PrettyFormLayout {
 
     }
 
-    private void doSaveAction(final Command refresh) {
+    private void doSave(final Command refresh) {
         LoadingPopup.showMessage( constants.SavingPackageConfigurationPleaseWait() );
 
         RepositoryServiceFactory.getPackageService().savePackage( this.conf,
@@ -618,7 +623,7 @@ public class PackageEditor extends PrettyFormLayout {
 				refreshPackageList.execute();
 			}
 		};
-		doSaveAction(ref);
+		doSave(ref);
 	}
 	
     private Widget getVersionNumberLabel() {

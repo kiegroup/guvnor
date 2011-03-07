@@ -28,7 +28,7 @@ public class PackageActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showSaveAndCloseButton() {
-        return true;
+        return false;
     }
 
     public boolean showCopyButton() {
