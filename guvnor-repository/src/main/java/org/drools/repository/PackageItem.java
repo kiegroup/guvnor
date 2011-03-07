@@ -114,17 +114,9 @@ public class PackageItem extends VersionableItem {
     /**
      * Return the name of the package.
      */
-    public String getName() {
-        try {
-            if (isSnapshot()) {
-                return this.node.getParent().getName();
-            } else {
-                return super.getName();
-            }
-        } catch (RepositoryException e) {
-            throw new RulesRepositoryException( e );
-        }
-    }
+	public String getName() {
+		return super.getName();
+	}
 
     /**
      * @return true if this package is actually a snapshot.
@@ -173,7 +165,11 @@ public class PackageItem extends VersionableItem {
      * If it is not, it will just return the name of the package, so use wisely !
      */
     public String getSnapshotName() {
-            return super.getName();
+        try {
+        	return this.node.getName();
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException( e );
+        }
     }
 
     /**
