@@ -544,7 +544,7 @@ public class RuleViewer extends GuvnorEditor {
 
     public void refreshDataAndView() {
         LoadingPopup.showMessage( constants.RefreshingItem() );
-        RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().loadRuleAssetByUUID( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
                                                                      asset = asset_;
@@ -564,7 +564,7 @@ public class RuleViewer extends GuvnorEditor {
     private void refreshMetaWidgetOnly(final boolean showBusy) {
 
         if ( showBusy ) LoadingPopup.showMessage( constants.RefreshingItem() );
-        RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().loadRuleAssetByUUID( asset.uuid,
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
                                                                      asset.metaData = asset_.metaData;

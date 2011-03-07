@@ -45,6 +45,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.VersionableItem;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -101,7 +102,7 @@ public class RepositoryAssetService
      */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public RuleAsset loadRuleAsset(String uuid) throws SerializationException {
+    public RuleAsset loadRuleAssetByUUID(String uuid) throws SerializationException {
 
         long time = System.currentTimeMillis();
 
@@ -145,10 +146,12 @@ public class RepositoryAssetService
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadAssetHistory(String uuid) throws SerializationException {
-        AssetItem assetItem = getRulesRepository().loadAssetByUUID( uuid );
-        serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
-        return repositoryAssetOperations.loadAssetHistory( assetItem );
+    public TableDataResult loadItemHistory(String uuid) throws SerializationException {
+       	//VersionableItem assetItem = getRulesRepository().loadAssetByUUID( uuid );
+       	VersionableItem assetItem = getRulesRepository().loadItemByUUID( uuid );
+
+       	//serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
+        return repositoryAssetOperations.loadItemHistory( assetItem );
     }
 
     /**
@@ -161,7 +164,7 @@ public class RepositoryAssetService
         PackageItem pi = getRulesRepository().loadPackageByUUID( packageUUID );
         AssetItem assetItem = pi.loadAsset( assetName );
         serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
-        return repositoryAssetOperations.loadAssetHistory( assetItem );
+        return repositoryAssetOperations.loadItemHistory( assetItem );
     }
 
     @WebRemote
@@ -467,7 +470,7 @@ public class RepositoryAssetService
         Collection<RuleAsset> assets = new HashSet<RuleAsset>();
 
         for ( String uuid : uuids ) {
-            assets.add( loadRuleAsset( uuid ) );
+            assets.add( loadRuleAssetByUUID( uuid ) );
         }
 
         return assets.toArray( new RuleAsset[assets.size()] );

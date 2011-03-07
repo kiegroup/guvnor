@@ -24,7 +24,6 @@ public class DependenciesPageRow extends AbstractPageRow {
 
     private String dependencyPath;
 	private String dependencyVersion;
-	private boolean isImportedFromGlobal;
 	
 	
     public String getDependencyPath() {
@@ -39,11 +38,4 @@ public class DependenciesPageRow extends AbstractPageRow {
 	public void setDependencyVersion(String dependencyVersion) {
 		this.dependencyVersion = dependencyVersion;
 	}
-	public boolean isImportedFromGlobal() {
-		return isImportedFromGlobal;
-	}
-	public void setImportedFromGlobal(boolean isImportedFromGlobal) {
-		this.isImportedFromGlobal = isImportedFromGlobal;
-	}
-
 }

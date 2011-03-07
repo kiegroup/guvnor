@@ -25,8 +25,9 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.PackageEditor;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
@@ -60,18 +61,16 @@ public class VersionBrowser extends Composite {
     private Image         refresh;
     private FlexTable     layout;
     private String        uuid;
-    private MetaData      metaData;
     private Command       refreshCommand;
+    private boolean       isPackage;
 
     public VersionBrowser(String uuid,
-                          MetaData data,
+    		              boolean isPackage,
                           Command ref) {
-
         this.uuid = uuid;
-        this.metaData = data;
         this.refreshCommand = ref;
+        this.isPackage = isPackage;
 
-        this.uuid = uuid;
         HorizontalPanel wrapper = new HorizontalPanel();
 
         ClickHandler clickHandler = new ClickHandler() {
@@ -135,7 +134,7 @@ public class VersionBrowser extends Composite {
      */
     protected void loadHistoryData() {
 
-        RepositoryServiceFactory.getAssetService().loadAssetHistory( this.uuid,
+        RepositoryServiceFactory.getAssetService().loadItemHistory( this.uuid,
                                                                 new GenericCallback<TableDataResult>() {
 
                                                                     public void onSuccess(TableDataResult table) {
@@ -220,12 +219,38 @@ public class VersionBrowser extends Composite {
 
         LoadingPopup.showMessage( constants.LoadingVersionFromHistory() );
 
-        RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
+        if(isPackage) {
+            RepositoryServiceFactory.getPackageService().loadPackageConfig( versionUUID,
+                    new GenericCallback<PackageConfigData>() {
+                        public void onSuccess(PackageConfigData conf) {
+                            final FormStylePopup pop = new FormStylePopup( images.snapshot(),
+                            		Format.format( constants.VersionNumber0Of1(),
+                                            "" + conf.versionNumber,
+                                            conf.name ),
+                                    new Integer( 800 ) );
+
+
+                        	
+                            PackageEditor ed = new PackageEditor( conf,
+                            		                              true,
+                                                                  null,
+                                                                  null );
+                            ed.setWidth( "100%" );
+                            ed.setHeight( "100%" );
+                            //pop.addRow( restore );
+                            pop.addRow( ed );
+                            pop.show();
+                            
+                            //LoadingPopup.close();
+                        }
+                    } );
+        } else {
+            RepositoryServiceFactory.getAssetService().loadRuleAssetByUUID( versionUUID,
                                                              new GenericCallback<RuleAsset>() {
 
                                                                  public void onSuccess(RuleAsset asset) {
                                                                      asset.isreadonly = true;
-                                                                     asset.metaData.name = metaData.name;
+                                                                     //asset.metaData.name = metaData.name;
                                                                      final FormStylePopup pop = new FormStylePopup( images.snapshot(),
                                                                                                                     Format.format( constants.VersionNumber0Of1(),
                                                                                                                                    "" + asset.metaData.versionNumber,
@@ -258,6 +283,7 @@ public class VersionBrowser extends Composite {
                                                                      pop.show();
                                                                  }
                                                              } );
+        }
     }
 
     private void restore(Widget w,

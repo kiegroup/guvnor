@@ -45,7 +45,7 @@ public class NewRuleAssetProvider implements RuleAssetProvider {
             //creates a new empty asset with the given name and format in the
             //given package.
             String ruleUUID = this.getService().createNewRule(assetName, "created by standalone editor", categoryName, packageName, this.assetFormat);
-            RuleAsset newRule = this.getAssetService().loadRuleAsset(ruleUUID);
+            RuleAsset newRule = this.getAssetService().loadRuleAssetByUUID(ruleUUID);
 
             return new RuleAsset[]{newRule};
         } catch (SerializationException ex) {

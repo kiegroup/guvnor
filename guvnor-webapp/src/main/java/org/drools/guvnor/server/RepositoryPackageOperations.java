@@ -306,11 +306,6 @@ public class RepositoryPackageOperations {
     }
 
     public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( data.uuid ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
-        }
-
         log.info( "USER:" + getCurrentUserName() + " SAVING package [" + data.name + "]" );
 
         PackageItem item = getRulesRepository().loadPackage( data.name );
@@ -604,7 +599,6 @@ public class RepositoryPackageOperations {
     }
 
     protected String[] listRulesInPackage(String packageName) throws SerializationException {
-
         // load package
         PackageItem item = getRulesRepository().loadPackage( packageName );
 

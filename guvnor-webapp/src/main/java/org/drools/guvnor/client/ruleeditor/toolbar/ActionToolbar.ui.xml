@@ -84,6 +84,9 @@
                   <gwt:MenuItem ui:field="copy">
                     <ui:text from="{i18n.Copy}" />
                   </gwt:MenuItem>
+                  <gwt:MenuItem ui:field="rename">
+                    <ui:text from="{i18n.Rename}" />
+                  </gwt:MenuItem>
                   <gwt:MenuItem ui:field="promoteToGlobal">
                     <ui:text from="{i18n.PromoteToGlobal}" />
                   </gwt:MenuItem>

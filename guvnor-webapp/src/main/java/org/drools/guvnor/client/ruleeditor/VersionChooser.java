@@ -19,19 +19,13 @@ package org.drools.guvnor.client.ruleeditor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
@@ -39,21 +33,14 @@ import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+
 
 /**
  * This widget shows a list of versions.
@@ -66,7 +53,6 @@ public class VersionChooser extends Composite {
 
     private String        packageUUID;
     private String        assetName;
-    private Command       refreshCommand;
     private ListBox versionChooser;
     private List<TableDataRow> versionInfo = new ArrayList<TableDataRow>();
     private String currentVersion;
@@ -78,7 +64,6 @@ public class VersionChooser extends Composite {
             Command ref) {
         this.packageUUID = pacakgeUUID;
         this.assetName = assetName;
-        this.refreshCommand = ref;
         this.currentVersion = currentVersion;
 
         VerticalPanel verticalPanel = new VerticalPanel();
@@ -177,7 +162,7 @@ public class VersionChooser extends Composite {
     private void showVersion(final String versionUUID) {
         LoadingPopup.showMessage( constants.LoadingVersionFromHistory() );
 
-        RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
+        RepositoryServiceFactory.getAssetService().loadRuleAssetByUUID( versionUUID,
                                                              new GenericCallback<RuleAsset>() {
 
                                                                  public void onSuccess(RuleAsset asset) {

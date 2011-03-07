@@ -17,4 +17,5 @@
 
 // what it contains
 + * (drools:versionableNodeType)
-  ignore
+// It has an on-parent-version setting of version
+version

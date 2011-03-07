@@ -170,7 +170,7 @@ public class FileManagerUtils {
     }
 
     /**
-     * Load up the approproate package version.
+     * Load up the appropriate package version.
      * @param packageName The name of the package.
      * @param packageVersion The version (if it is a snapshot).
      * @param isLatest true if the latest package binary will be used (ie NOT a snapshot).

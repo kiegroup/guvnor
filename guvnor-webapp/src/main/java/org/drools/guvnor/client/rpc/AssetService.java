@@ -128,15 +128,15 @@ public interface AssetService extends RemoteService{
      * This loads up all the stuff for a rule asset based on the UUID (always
      * latest and editable version).
      */
-    public RuleAsset loadRuleAsset(String UUID) throws SerializationException;
+    public RuleAsset loadRuleAssetByUUID(String UUID) throws SerializationException;
 
     public RuleAsset[] loadRuleAssets(String[] UUIDs) throws SerializationException;
 
     /**
-     * This will load the history of the given asset, in a summary format
+     * This will load the history of the given asset or package, in a summary format
      * suitable for display in a table.
      */
-    public TableDataResult loadAssetHistory(String uuid) throws SerializationException;
+    public TableDataResult loadItemHistory(String uuid) throws SerializationException;
 
     /**
      * This will load the history of the given asset, in a summary format

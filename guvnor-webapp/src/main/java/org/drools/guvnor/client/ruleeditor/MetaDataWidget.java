@@ -232,7 +232,7 @@ public class MetaDataWidget extends Composite {
 
         if ( !readOnly ) {
             addRow( new VersionBrowser( this.uuid,
-                                        this.data,
+            		                    false,
                                         fullRefreshView ) );
         }
 

@@ -41,6 +41,10 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.ruleeditor.VersionBrowser;
+import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
+import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.ruleeditor.toolbar.PackageActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
@@ -74,25 +78,69 @@ public class PackageEditor extends PrettyFormLayout {
     private static Images       images    = GWT.create( Images.class );
 
     private PackageConfigData   conf;
-    private HTML                status;
+    ActionToolbar actionToolBar;
     protected ValidatedResponse previousResponse;
+    private boolean historicalReadOnly = false;
     private Command             close;
     private Command             refreshPackageList;
 
     public PackageEditor(PackageConfigData data,
                          Command close,
                          Command refreshPackageList) {
-        this.conf = data;
-        this.close = close;
-        this.refreshPackageList = refreshPackageList;
-
-        setWidth( "100%" );
-        refreshWidgets();
+        this(data, false, close, refreshPackageList);
     }
+    
+	public PackageEditor(PackageConfigData data, 
+			boolean historicalReadOnly, 
+			Command close,
+			Command refreshPackageList) {
+		this.conf = data;
+		this.historicalReadOnly = historicalReadOnly;
+		this.close = close;
+		this.refreshPackageList = refreshPackageList;
 
+		setWidth("100%");
+		refreshWidgets();
+	}
+    
     private void refreshWidgets() {
         clear();
-
+        
+        startSection(constants.BuildAndValidate());
+        actionToolBar = new ActionToolbar(getConfiguration(), conf.state);
+        addRow( actionToolBar );
+        //addAttribute("", actionTool );  
+        endSection();        
+		if (historicalReadOnly) {
+			actionToolBar.setVisible(false);
+		} else {
+			actionToolBar.setArchiveCommand(new Command() {
+				public void execute() {
+					doArchive();
+				}
+			});
+			actionToolBar.setCopyCommand(new Command() {
+				public void execute() {
+					doCopy();
+				}
+			});
+			actionToolBar.setRenameCommand(new Command() {
+				public void execute() {
+					doRename();
+				}
+			});
+			actionToolBar.setChangeStatusCommand(new Command() {
+				public void execute() {
+					showStatusChanger();
+				}
+			});
+			actionToolBar.setViewSourceCommand(new Command() {
+				public void execute() {
+					PackageBuilderWidget.doBuildSource(conf.uuid, conf.name);
+				}
+			});
+		}
+     
         FlexTable headerWidgets = new FlexTable();
         headerWidgets.setWidget( 0,
                                  0,
@@ -100,19 +148,10 @@ public class PackageEditor extends PrettyFormLayout {
         headerWidgets.setWidget( 0,
                                  1,
                                  new Label( this.conf.name ) );
-        if ( !conf.isSnapshot ) {
-
-            headerWidgets.setWidget( 1,
-                                     0,
-                                     modifyWidgets() );
-            headerWidgets.getFlexCellFormatter().setColSpan( 1,
-                                                             0,
-                                                             2 );
-        }
 
         addHeader( images.packageLarge(),
                    headerWidgets );
-
+        
         startSection( constants.ConfigurationSection() );
 
         addRow( warnings() );
@@ -125,7 +164,7 @@ public class PackageEditor extends PrettyFormLayout {
         addAttribute( "",
                       getShowCatRules() );
 
-        if ( !conf.isSnapshot ) {
+        if ( !conf.isSnapshot && !historicalReadOnly) {
             Button save = new Button( constants.SaveAndValidateConfiguration() );
             save.addClickHandler( new ClickHandler() {
 
@@ -140,7 +179,7 @@ public class PackageEditor extends PrettyFormLayout {
         endSection();
 
         startSection(constants.BuildAndValidate());
-        addRow(new DependencyWidget(this.conf));
+        addRow(new DependencyWidget(this.conf, historicalReadOnly));
         endSection();
         
         if ( !conf.isSnapshot ) {
@@ -168,9 +207,6 @@ public class PackageEditor extends PrettyFormLayout {
                                                     conf.name );
             }
         } );
-
-        addAttribute( constants.ShowPackageSource() + ":",
-                      buildSource );
 
         HTML html0 = new HTML( "<a href='" + getDocumentationDownload( this.conf ) + "' target='_blank'>" + getDocumentationDownload( this.conf ) + "</a>" );
         addAttribute( constants.URLForDocumention(),
@@ -230,30 +266,14 @@ public class PackageEditor extends PrettyFormLayout {
         
         RepositoryServiceFactory.getAssetService().listAssetsWithPackageName(this.conf.name, new String[]{AssetFormats.SPRING_CONTEXT}, 0,
                                                                         -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, callBack);
+        addAttribute( constants.CurrentVersionNumber(),
+                getVersionNumberLabel() );
+		if (!historicalReadOnly) {
+			VersionBrowser vb = new VersionBrowser(conf.uuid, true, null);
+			addAttribute("", vb);
+		}
         
-        status = new HTML();
-        HorizontalPanel statusBar = new HorizontalPanel();
-        Image editState = new ImageButton( images.edit() );
-        editState.setTitle( constants.ChangeStatusDot() );
-        editState.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                showStatusChanger( (Widget) event.getSource() );
-            }
-
-        } );
-        statusBar.add( status );
-
-        if ( !this.conf.isSnapshot ) {
-            statusBar.add( editState );
-        }
-
-        setState( conf.state );
-        addAttribute( constants.Status() + ":",
-                      statusBar );
-
         endSection();
-
     }
 
     private Widget createHPanel(Widget widget, String popUpText) {
@@ -438,67 +458,25 @@ public class PackageEditor extends PrettyFormLayout {
         return uri;
     }
 
-    protected void showStatusChanger(Widget w) {
+    protected void showStatusChanger() {
         final StatusChangePopup pop = new StatusChangePopup( conf.uuid,
                                                              true );
         pop.setChangeStatusEvent( new Command() {
             public void execute() {
-                setState( pop.getState() );
+            	actionToolBar.setState( pop.getState() );
             }
         } );
 
         pop.show();
 
     }
-
+/*
     private void setState(String state) {
         status.setHTML( "<b>" + state + "</b>" );
     }
+*/
 
-    /**
-     * This will get the save widgets.
-     */
-    private Widget modifyWidgets() {
-
-        HorizontalPanel horiz = new HorizontalPanel();
-
-        Button copy = new Button( constants.Copy() );
-        copy.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                showCopyDialog();
-            }
-        } );
-        horiz.add( copy );
-
-        Button rename = new Button( constants.Rename() );
-        rename.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                showRenameDialog();
-            }
-        } );
-        horiz.add( rename );
-
-        Button archive = new Button( constants.Archive() );
-        archive.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.AreYouSureYouWantToArchiveRemoveThisPackage() ) ) {
-                    conf.archived = true;
-                    Command ref = new Command() {
-                        public void execute() {
-                            close.execute();
-                            refreshPackageList.execute();
-                        }
-                    };
-                    doSaveAction( ref );
-                }
-            }
-        } );
-        horiz.add( archive );
-
-        return horiz;
-    }
-
-    private void showRenameDialog() {
+    private void doRename() {
         final FormStylePopup pop = new FormStylePopup( images.newWiz(),
                                                        constants.RenameThePackage() );
         pop.addRow( new HTML( constants.RenamePackageTip() ) );
@@ -532,7 +510,7 @@ public class PackageEditor extends PrettyFormLayout {
     /**
      * Will show a copy dialog for copying the whole package.
      */
-    private void showCopyDialog() {
+    private void doCopy() {
         final FormStylePopup pop = new FormStylePopup( images.newWiz(),
                                                        constants.CopyThePackage() );
         pop.addRow( new HTML( constants.CopyThePackageTip() ) );
@@ -626,5 +604,34 @@ public class PackageEditor extends PrettyFormLayout {
 
         return box;
     }
+    
+	private ActionToolbarButtonsConfigurationProvider getConfiguration() {
+		return new PackageActionToolbarButtonsConfigurationProvider();
 
+	}
+
+	private void doArchive() {
+		conf.archived = true;
+		Command ref = new Command() {
+			public void execute() {
+				close.execute();
+				refreshPackageList.execute();
+			}
+		};
+		doSaveAction(ref);
+	}
+	
+    private Widget getVersionNumberLabel() {
+        if ( conf.versionNumber == 0 ) {
+            return new SmallLabel( constants.NotCheckedInYet() );
+        } else {
+            return readOnlyText( Long.toString( conf.versionNumber ) );
+        }
+    }
+    
+    private Label readOnlyText(String text) {
+        SmallLabel lbl = new SmallLabel( text );
+        lbl.setWidth( "100%" );
+        return lbl;
+    }
 }

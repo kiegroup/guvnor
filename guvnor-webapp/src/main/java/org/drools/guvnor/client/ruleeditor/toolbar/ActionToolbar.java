@@ -57,7 +57,10 @@ public class ActionToolbar extends Composite {
 
     @UiField
     MenuItem copy;
-
+    
+    @UiField
+    MenuItem rename;
+    
     @UiField
     MenuItem promoteToGlobal;
 
@@ -113,6 +116,7 @@ public class ActionToolbar extends Composite {
         verify.setVisible(actionToolbarButtonsConfigurationProvider.showVerifyButton());
         viewSource.setVisible(actionToolbarButtonsConfigurationProvider.showViewSourceButton());
         copy.setVisible(actionToolbarButtonsConfigurationProvider.showCopyButton());
+        rename.setVisible(actionToolbarButtonsConfigurationProvider.showRenameButton());
         promoteToGlobal.setVisible(actionToolbarButtonsConfigurationProvider.showPromoteToGlobalButton());
         archive.setVisible(actionToolbarButtonsConfigurationProvider.showArchiveButton());
         delete.setVisible(actionToolbarButtonsConfigurationProvider.showDeleteButton());
@@ -166,7 +170,7 @@ public class ActionToolbar extends Composite {
         archive.setCommand(new Command() {
 
             public void execute() {
-                if (Window.confirm(constants.AreYouSureYouWantToArchiveThisItem() + "\n" + constants.ArchiveThisAssetThisWillNotPermanentlyDeleteIt())) {
+                if (Window.confirm(constants.AreYouSureYouWantToArchiveThisItem())) {
                     archiveCommand.execute();
                 }
             }
@@ -176,7 +180,11 @@ public class ActionToolbar extends Composite {
     public void setCopyCommand(Command command) {
         copy.setCommand(command);
     }
-
+    
+    public void setRenameCommand(Command command) {
+        rename.setCommand(command);
+    }
+    
     public void setDeleteCommand(final Command deleteCommand) {
         delete.setCommand(new Command() {
 

@@ -440,6 +440,47 @@ public class RulesRepository {
         }
     }
 
+    /**
+     * Loads a RulePackage for the specified package name and version. Will throw an
+     * exception if the specified rule package does not exist.
+     *
+     * @param name  the name of the package to load
+     * @param versionNumber  
+     * @return a RulePackageItem object
+     */
+    public PackageItem loadPackage(String name, long versionNumber) throws RulesRepositoryException {
+        try {
+            Node folderNode = this.getAreaNode( RULE_PACKAGE_AREA );
+            Node rulePackageNode = folderNode.getNode( name );
+
+            PackageItem item = new PackageItem( this, rulePackageNode );
+            
+            PackageHistoryIterator it = item.getHistory();
+
+            while ( it.hasNext() ) {
+            	PackageItem historical = it.next();
+                long version = historical.getVersionNumber();
+                if ( version == versionNumber ) {
+                    return historical;
+                }
+            }           
+            throw new RulesRepositoryException(
+                    "Unable to load a rule package with version: " + versionNumber);
+        } catch ( RepositoryException e ) {
+            //the Global package should always exist. In case it is not (eg, when
+            //an old db was imported to repo), we create it.
+            if (RULE_GLOBAL_AREA.equals(name)) {
+                log.info("Creating Global area as it does not exist yet.");
+                return createPackage(RULE_GLOBAL_AREA,
+                        "the global area that holds sharable assets");
+            } else {
+                log.error("Unable to load a rule package. ", e);
+                throw new RulesRepositoryException(
+                        "Unable to load a rule package. ", e);
+            }
+        }
+    }
+    
     public StateItem loadState(String name) throws RulesRepositoryException {
         try {
             Node folderNode = this.getAreaNode( STATE_AREA );
@@ -662,7 +703,38 @@ public class RulesRepository {
             }
         }
     }
-
+    
+    /**
+     * Similar to above. Loads a RulePackage or an AssetItem for the specified uuid.
+     *
+     * @param uuid the uuid of the package or asset to load
+     * @return a VersionableItem object
+     * @throws RulesRepositoryException
+     */
+	public VersionableItem loadItemByUUID(String uuid)
+			throws RulesRepositoryException {
+		try {
+			Node rulePackageNode = this.session.getNodeByIdentifier(uuid);
+			if (rulePackageNode.getPrimaryNodeType().getName()
+					.equals(PackageItem.RULE_PACKAGE_TYPE_NAME)) {
+				return new PackageItem(this, rulePackageNode);
+			} else if (rulePackageNode.getPrimaryNodeType().getName()
+					.equals(AssetItem.RULE_NODE_TYPE_NAME)) {
+				return new AssetItem(this, rulePackageNode);
+			}
+			throw new RulesRepositoryException(
+					"Unable to load a rule package. ");
+		} catch (Exception e) {
+			log.error("Unable to load a rule package by UUID. ", e);
+			if (e instanceof RuntimeException) {
+				throw (RuntimeException) e;
+			} else {
+				throw new RulesRepositoryException(
+						"Unable to load a rule package. ", e);
+			}
+		}
+	}
+	
     /**
      * This will restore the historical version, save, and check it in as a new
      * version with the given comment.

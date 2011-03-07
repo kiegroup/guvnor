@@ -36,10 +36,10 @@ public interface AssetServiceAsync {
     public void buildAssetSource(org.drools.guvnor.client.rpc.RuleAsset p0, AsyncCallback<java.lang.String> cb);
     public void buildAsset(org.drools.guvnor.client.rpc.RuleAsset p0, AsyncCallback<org.drools.guvnor.client.rpc.BuilderResult> cb);
     public void renameAsset(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.String> cb);
-    public void loadRuleAsset(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.RuleAsset> cb);
+    public void loadRuleAssetByUUID(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.RuleAsset> cb);
     public void loadRuleAssets(java.lang.String[] p0, AsyncCallback<org.drools.guvnor.client.rpc.RuleAsset[]> cb);
+    public void loadItemHistory(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadAssetHistory(java.lang.String p0, java.lang.String p1, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
-    public void loadAssetHistory(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadArchivedAssets(int p0, int p1, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadArchivedAssets(org.drools.guvnor.client.rpc.PageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.AdminArchivedPageRow>> cb);
     public void findAssetPage(org.drools.guvnor.client.rpc.AssetPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.AssetPageRow>> cb);

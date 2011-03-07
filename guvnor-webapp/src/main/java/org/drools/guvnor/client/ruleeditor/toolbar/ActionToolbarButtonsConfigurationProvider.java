@@ -25,6 +25,7 @@ public interface ActionToolbarButtonsConfigurationProvider {
     public boolean showSaveButton();
     public boolean showSaveAndCloseButton();
     public boolean showCopyButton();
+    public boolean showRenameButton();
     public boolean showPromoteToGlobalButton();
     public boolean showArchiveButton();
     public boolean showDeleteButton();

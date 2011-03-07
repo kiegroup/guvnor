@@ -1050,8 +1050,6 @@ public interface Constants
 
     String Rename();
 
-    String AreYouSureYouWantToArchiveRemoveThisPackage();
-
     String RenameThePackage();
 
     String RenamePackageTip();

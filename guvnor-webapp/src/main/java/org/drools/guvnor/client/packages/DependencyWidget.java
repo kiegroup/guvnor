@@ -30,6 +30,7 @@ import org.drools.guvnor.client.ruleeditor.VersionChooser;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import org.drools.guvnor.client.widgets.tables.DependenciesPagedTable;
+import org.drools.guvnor.client.widgets.tables.DependenciesPagedTableReadOnly;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.FontWeight;
@@ -57,9 +58,11 @@ public class DependencyWidget extends Composite {
     private DependenciesPagedTable table;
 
     private PackageConfigData conf;
+    private boolean readonly = false;
     
-    public DependencyWidget(final PackageConfigData conf) {
+    public DependencyWidget(final PackageConfigData conf, boolean readonly) {
         this.conf = conf;
+        this.readonly = readonly;
         layout = new FormStyleLayout();
         
         VerticalPanel header = new VerticalPanel();
@@ -80,20 +83,23 @@ public class DependencyWidget extends Composite {
 
         //pf.startSection();
         layout.addRow( vp );
-        table = new DependenciesPagedTable(conf.uuid, 
-                null, null, new OpenItemCommand() {
+		if (readonly) {
+			table = new DependenciesPagedTableReadOnly(conf.uuid, null);
 
-            public void open(String path) {
-                showEditor( path );
-            }
+			layout.addRow(table);
+		} else {
+			table = new DependenciesPagedTable(conf.uuid,
+					new OpenItemCommand() {
+						public void open(String path) {
+							showEditor(path);
+						}
+						public void open(MultiViewRow[] rows) {
+							// Do nothing, unsupported
+						}
+					});
 
-            public void open(MultiViewRow[] rows) {
-                // Do nothing, unsupported
-            }
-
-        } );
-
-        layout.addRow( table );
+			layout.addRow(table);
+		}
         initWidget( layout );
     }
 

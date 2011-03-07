@@ -280,6 +280,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return getPackageService().listRulesInPackage( p0 );
     }
 
+    public org.drools.guvnor.client.rpc.TableDataResult loadItemHistory(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
+         return getAssetService().loadItemHistory( p0);
+    }
+
     public org.drools.guvnor.client.rpc.SnapshotInfo[] listSnapshots(java.lang.String p0) {
         return getPackageService().listSnapshots( p0 );
     }
@@ -366,8 +370,8 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                               p1 );
     }
 
-    public org.drools.guvnor.client.rpc.RuleAsset loadRuleAsset(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return getAssetService().loadRuleAsset( p0 );
+    public org.drools.guvnor.client.rpc.RuleAsset loadRuleAssetByUUID(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
+        return getAssetService().loadRuleAssetByUUID( p0 );
     }
 
     public org.drools.guvnor.client.rpc.RuleAsset[] loadRuleAssets(java.lang.String[] p0) throws com.google.gwt.user.client.rpc.SerializationException {
@@ -381,7 +385,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
 
     public org.drools.guvnor.client.rpc.TableDataResult loadAssetHistory(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return getAssetService().loadAssetHistory( p0 );
+        return getAssetService().loadItemHistory( p0 );
     }
 
     public org.drools.guvnor.client.rpc.PageResponse loadArchivedAssets(org.drools.guvnor.client.rpc.PageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {

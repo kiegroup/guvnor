@@ -18,6 +18,7 @@ package org.drools.repository;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.InvalidItemStateException;
@@ -227,7 +228,9 @@ public abstract class VersionableItem extends Item {
      * @throws RulesRepositoryException
      */
     public abstract VersionableItem getSucceedingVersion() throws RulesRepositoryException;
-
+    
+    public abstract Iterator getHistory();
+    
     /**
      * Gets the Title of the versionable node.  See the Dublin Core documentation for more
      * explanation: http://dublincore.org/documents/dces/
@@ -516,11 +519,7 @@ public abstract class VersionableItem extends Item {
      * if it is in fact a version !
      */
     public String getName() {
-        try {
-            return getVersionContentNode().getName();
-        } catch (RepositoryException e) {
-            throw new RulesRepositoryException(e);
-        }
+        return getTitle();
     }
 
     /**

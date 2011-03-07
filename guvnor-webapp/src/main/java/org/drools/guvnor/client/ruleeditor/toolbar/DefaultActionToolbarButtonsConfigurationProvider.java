@@ -51,7 +51,11 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     public boolean showCopyButton() {
         return true;
     }
-
+    
+    public boolean showRenameButton() {
+        return false;
+    }
+    
     public boolean showPromoteToGlobalButton() {
         return true;
     }

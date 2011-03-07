@@ -102,11 +102,11 @@ public class PrettyFormLayout extends Composite {
         this.sectionName = null;
     }
 
-    public void addRow(final Widget versionBrowser) {
+    public void addRow(final Widget widget) {
         int row = currentTable.getRowCount();
         currentTable.setWidget( row,
                                 0,
-                                versionBrowser );
+                                widget );
         currentTable.getFlexCellFormatter().setColSpan( row,
                                                         0,
                                                         2 );

@@ -68,7 +68,7 @@ public class RepositoryAssetOperationsTest {
         Calendar calendar = GregorianCalendar.getInstance();
         when( assetItem.getLastModified() ).thenReturn( calendar );
 
-        TableDataResult result = repositoryAssetOperations.loadAssetHistory( assetItem );
+        TableDataResult result = repositoryAssetOperations.loadItemHistory( assetItem );
         assertNotNull( result );
         assertEquals( "LATEST", result.data[0].values[0] );
     }
@@ -91,7 +91,7 @@ public class RepositoryAssetOperationsTest {
         Calendar calendar = GregorianCalendar.getInstance();
         when( historicalAssetItem.getLastModified() ).thenReturn( calendar );
 
-        assertNotNull( repositoryAssetOperations.loadAssetHistory( assetItem ) );
+        assertNotNull( repositoryAssetOperations.loadItemHistory( assetItem ) );
 
     }
 
@@ -116,7 +116,7 @@ public class RepositoryAssetOperationsTest {
         when( historicalAssetItem.getLastModified() ).thenReturn( calendar );
 
         TableDataResult tableDataResult = repositoryAssetOperations
-                .loadAssetHistory( assetItem );
+                .loadItemHistory( assetItem );
         assertNotNull( tableDataResult );
         TableDataRow[] tableDataRow = tableDataResult.data;
         assertNotNull( tableDataRow );

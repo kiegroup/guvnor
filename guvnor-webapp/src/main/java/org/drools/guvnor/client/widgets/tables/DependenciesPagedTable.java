@@ -32,13 +32,10 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextHeader;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
@@ -56,17 +53,9 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
         UiBinder<Widget, DependenciesPagedTable> {
     }
 
-    @UiField()
-    protected Button                                   createNewDependencyButton;
-
-    @UiField()
-    protected Button                                   deleteSelectedDependencyButton;
-
     private static DependenciesPagedTableBinder         uiBinder  = GWT.create( DependenciesPagedTableBinder.class );
 
     // Commands for UI
-    private Command                                    newDependencyCommand;
-    private Command                                    deleteDependencyCommand;
     private OpenItemCommand                            openSelectedCommand;
 
     // Other stuff
@@ -77,12 +66,8 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
     private final String uuid;
 
     public DependenciesPagedTable(String theUuid,
-    		Command newDependencyCommand,
-            Command deleteDependencyCommand,
             OpenItemCommand openSelectedCommand) {
         super( PAGE_SIZE );
-        this.newDependencyCommand = newDependencyCommand;
-        this.deleteDependencyCommand = deleteDependencyCommand;
         this.openSelectedCommand = openSelectedCommand;
         this.uuid = theUuid;
         
@@ -134,6 +119,7 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
                              sortableHeaderGroup );
 
         // Add "Open" button column
+
         Column<DependenciesPageRow, String> openColumn = new Column<DependenciesPageRow, String>( new ButtonCell() ) {
             public String getValue(DependenciesPageRow row) {
                 return constants.Open();
@@ -146,10 +132,11 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
             	openSelectedCommand.open( DependencyWidget.encodeDependencyPath(row.getDependencyPath(), row.getDependencyVersion()) );
             }
         } );
+
         columnPicker.addColumn( openColumn,
                                 new TextHeader( constants.Open() ),
                                 true );
-
+        
         cellTable.setWidth( "100%" );
         columnPickerButton = columnPicker.createToggleButton();
     }
@@ -186,16 +173,6 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
     @Override
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
-    }
-
-    @UiHandler("createNewDependencyButton")
-    void createNewDependency(ClickEvent e) {
-        newDependencyCommand.execute();
-    }
-
-    @UiHandler("deleteSelectedDependencyButton")
-    void deleteSelectedDependency(ClickEvent e) {
-        deleteDependencyCommand.execute();
     }
 
     @UiHandler("refreshButton")

@@ -18,6 +18,7 @@ package org.drools.guvnor.server.jaxrs;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DroolsParserException;
+import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.files.RepositoryServlet;
 import org.drools.guvnor.server.jaxrs.jaxb.*;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
@@ -199,14 +200,40 @@ public class PackageResource extends Resource {
         PackageService.buildPackage(p.getUUID(), true);
         return repository.loadPackage(packageName).getCompiledPackageBytes();
     }
-
+    
+    @GET
+    @Path("{packageName}/versions/{versionNumber}/binary")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public byte[] getHistoryBinaryPackageByName(@PathParam("packageName") String packageName,
+    		@PathParam("versionNumber") long versionNumber) throws SerializationException {
+        PackageItem p = repository.loadPackage(packageName, versionNumber);
+        PackageService.buildPackage(p.getUUID(), true);
+        return repository.loadPackage(packageName).getCompiledPackageBytes();
+    }
+    
     @GET
     @Path("{packageName}/source")
     @Produces(MediaType.TEXT_PLAIN)
     public String getSourcePackageByName(@PathParam("packageName") String packageName) {
-        return repository.loadPackage(packageName).getExternalSource();
+    	PackageItem item = repository.loadPackage( packageName );
+        ContentPackageAssembler asm = new ContentPackageAssembler( item,
+                                                                   false );
+        String drl = asm.getDRL();
+        return drl;
     }
-
+    
+    @GET
+    @Path("{packageName}/versions/{versionNumber}/source")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getHistorySourcePackageByName(@PathParam("packageName") String packageName,
+    		@PathParam("versionNumber") long versionNumber) {
+    	PackageItem item = repository.loadPackage( packageName,  versionNumber);
+        ContentPackageAssembler asm = new ContentPackageAssembler( item,
+                                                                   false );
+        String drl = asm.getDRL();
+        return drl;
+    }
+    
     @GET
     @Path("{packageName}/asset/{name}")
     @Produces(MediaType.APPLICATION_ATOM_XML)

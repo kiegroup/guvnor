@@ -19,6 +19,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
@@ -153,9 +154,10 @@ public class RepositoryAssetOperations {
         return result;
     }
 
-    protected TableDataResult loadAssetHistory(final AssetItem assetItem)
+    protected TableDataResult loadItemHistory(final VersionableItem item)
                                                                          throws SerializationException {
-        AssetHistoryIterator it = assetItem.getHistory();
+        Iterator<VersionableItem> it = item.getHistory();
+        //AssetHistoryIterator it = assetItem.getHistory();
 
         // MN Note: this uses the lazy iterator, but then loads the whole lot
         // up, and returns it.
@@ -174,31 +176,31 @@ public class RepositoryAssetOperations {
         // historical versions, look at this nasty bit of code.
         List<TableDataRow> result = new ArrayList<TableDataRow>();
         while ( it.hasNext() ) {
-            AssetItem historical = (AssetItem) it.next();
+        	VersionableItem historical = (VersionableItem) it.next();
             long versionNumber = historical.getVersionNumber();
-            if ( isHistory( assetItem,
+            if ( isHistory( item,
                             versionNumber ) ) {
                 result.add( createHistoricalRow( result,
                                                  historical,
-                                                 isLatestVersion( assetItem,
+                                                 isLatestVersion( item,
                                                                   versionNumber ) ) );
             }
         }
 
         if ( result.size() == 0 ) {
-            //NOTE, the term of LATEST version is defined as the preceding version node of the current node. 
+            //NOTE, the term "LATEST version" is defined as the preceding version node of the current node. 
             //It is a frozen history node, its content is same as the current node. 
             //If there is no historical node, we return the current node, and refer the current node 
             //as the LATEST version node. 
             final DateFormat dateFormatter = DateFormat.getInstance();
             TableDataRow tableDataRow = new TableDataRow();
-            tableDataRow.id = assetItem.getUUID();
+            tableDataRow.id = item.getUUID();
             tableDataRow.values = new String[4];
             tableDataRow.values[0] = "LATEST";
             tableDataRow.values[1] = "";
-            tableDataRow.values[2] = dateFormatter.format( assetItem
+            tableDataRow.values[2] = dateFormatter.format( item
                     .getLastModified().getTime() );
-            tableDataRow.values[3] = assetItem.getStateDescription();
+            tableDataRow.values[3] = item.getStateDescription();
             result.add( tableDataRow );
         }
         TableDataResult table = new TableDataResult();
@@ -207,20 +209,20 @@ public class RepositoryAssetOperations {
         return table;
     }
 
-    private boolean isHistory(AssetItem item,
+    private boolean isHistory(VersionableItem item,
                               long versionNumber) {
         //return versionNumber != 0 && versionNumber != item.getVersionNumber();
         //we do return the LATEST version as part of the history. 
         return versionNumber != 0;
     }
 
-    private boolean isLatestVersion(AssetItem item,
+    private boolean isLatestVersion(VersionableItem item,
                                     long versionNumber) {
         return versionNumber == item.getVersionNumber();
     }
 
     private TableDataRow createHistoricalRow(List<TableDataRow> result,
-                                             AssetItem historical,
+    		VersionableItem historical,
                                              boolean isLatestVersion) {
         final DateFormat dateFormatter = DateFormat.getInstance();
         TableDataRow tableDataRow = new TableDataRow();

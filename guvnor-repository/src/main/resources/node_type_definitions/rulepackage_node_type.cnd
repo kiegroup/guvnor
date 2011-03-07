@@ -19,7 +19,8 @@
 // Multiple assets are children of one physical package definition
 // these folders contain the actual assets
 + * (drools:versionableAssetFolder)
-  ignore
+// It has an on-parent-version setting of copy
+copy
 
 // this is for storing misc header info as pertains to rules, specifically imports
 - drools:header (string)

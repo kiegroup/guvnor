@@ -50,6 +50,7 @@ public class PackageConfigData implements IsSerializable {
     public HashMap<String,String> catRules;
     public String[] workspaces;
     public String[] dependencies;
+    public long versionNumber;
     
     public PackageConfigData[] subPackages;
 

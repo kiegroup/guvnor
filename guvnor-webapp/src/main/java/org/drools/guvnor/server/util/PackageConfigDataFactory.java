@@ -45,6 +45,7 @@ public class PackageConfigDataFactory {
         data.lasContributor = item.getLastContributor();
         data.state = item.getStateDescription();
         data.isSnapshot = item.isSnapshot();
+        data.versionNumber = item.getVersionNumber();
         return data;
     }
 

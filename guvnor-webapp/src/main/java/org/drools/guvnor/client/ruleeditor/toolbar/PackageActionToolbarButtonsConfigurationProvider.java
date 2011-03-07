@@ -16,22 +16,27 @@
 
 package org.drools.guvnor.client.ruleeditor.toolbar;
 
-public class StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider implements ActionToolbarButtonsConfigurationProvider {
+public class PackageActionToolbarButtonsConfigurationProvider
+        implements
+        ActionToolbarButtonsConfigurationProvider {
+
+    public PackageActionToolbarButtonsConfigurationProvider() {
+    }
 
     public boolean showSaveButton() {
-        return false;
+        return true;
     }
 
     public boolean showSaveAndCloseButton() {
-        return false;
+        return true;
     }
 
     public boolean showCopyButton() {
-        return false;
+        return true;
     }
     
     public boolean showRenameButton() {
-        return false;
+        return true;
     }
     
     public boolean showPromoteToGlobalButton() {
@@ -39,7 +44,7 @@ public class StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showArchiveButton() {
-        return false;
+        return true;
     }
 
     public boolean showDeleteButton() {
@@ -47,7 +52,7 @@ public class StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showChangeStatusButton() {
-        return false;
+        return true;
     }
 
     public boolean showSelectWorkingSetsButton() {
@@ -55,19 +60,18 @@ public class StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showValidateButton() {
-        return true;
+    	return false;
     }
 
     public boolean showVerifyButton() {
-        return true;
+    	return false;
     }
 
     public boolean showViewSourceButton() {
         return true;
     }
-    
-    public boolean showStateLabel() {
-        return false;
-    }
 
+    public boolean showStateLabel() {
+        return true;
+    }
 }

@@ -128,7 +128,7 @@ public class TabOpener {
 
     private void loadRuleAsset(final String uuid,
                                final boolean[] loading) {
-        RepositoryServiceFactory.getAssetService().loadRuleAsset( uuid,
+        RepositoryServiceFactory.getAssetService().loadRuleAssetByUUID( uuid,
                                                              createGenericCallback( uuid,
                                                                                     loading ) );
     }

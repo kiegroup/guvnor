@@ -623,11 +623,12 @@ public class PackageItem extends VersionableItem {
      */
     public AssetItemIterator queryAssets(String fieldPredicates, boolean seekArchived) {
         try {
-
-
-            String sql = "SELECT * FROM " + AssetItem.RULE_NODE_TYPE_NAME;
-
-
+        	String sql;
+        	if(isHistoricalVersion()) {
+        		sql = "SELECT * FROM nt:frozenNode";
+        	} else {
+        		sql =  "SELECT * FROM " + AssetItem.RULE_NODE_TYPE_NAME;
+        	}
 
             sql += " WHERE jcr:path LIKE '" + getVersionContentNode().getPath() + "/" + ASSET_FOLDER_NAME + "[%]/%'";
             if ( fieldPredicates.length() > 0 ) {
@@ -640,9 +641,8 @@ public class PackageItem extends VersionableItem {
             }
 
 
-            //sql = "SELECT * FROM drools:assetNodeType ORDER BY drools:title";
             sql += " ORDER BY " + AssetItem.TITLE_PROPERTY_NAME;
-
+            
             Query q = node.getSession().getWorkspace().getQueryManager().createQuery( sql, Query.SQL );
 
 
@@ -656,8 +656,9 @@ public class PackageItem extends VersionableItem {
                 log.debug("SQL is " + sql);
                 log.debug(it.getClass().getName());
             }
+
             //return new AssetItemIterator(it, this.rulesRepository);
-            return new VersionedAssetItemIterator(it, this.rulesRepository, this.getDependencies());
+            return new VersionedAssetItemIterator(it, this.rulesRepository, this.getDependencies());            
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException(e);
         }
@@ -758,7 +759,16 @@ public class PackageItem extends VersionableItem {
             return "";
         }
     }
-
+    
+    /**
+     * 
+     * @return An iterator over the nodes history.
+     */
+    public PackageHistoryIterator getHistory() {
+        return new PackageHistoryIterator( this.rulesRepository,
+                                         this.node );
+    }
+    
     @Override
     public PackageItem getPrecedingVersion() throws RulesRepositoryException {
         try {
