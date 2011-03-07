@@ -56,6 +56,8 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
         HasResizeHandlers,
     HasColumnResizeHandlers {
 
+    private static final int MIN_COLUMN_WIDTH = 16;
+
     /**
      * Container class for information relating to re-size operations
      */
@@ -149,7 +151,7 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
                                int mx = event.getClientX();
                                if ( resizerInfo.isResizing ) {
                                    if ( mx
-                                        - resizerInfo.resizeColumnLeft < 10 ) {
+                                        - resizerInfo.resizeColumnLeft < MIN_COLUMN_WIDTH ) {
                                        return;
                                    }
                                    setResizerDimensions( event.getX() );

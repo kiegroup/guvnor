@@ -85,6 +85,12 @@ public interface DecisionTableResources
     @Source("../resources/images/delete_item_small.gif")
     ImageResource selectorDelete();
 
+    @Source("../resources/images/collapse.gif")
+    ImageResource collapse();
+
+    @Source("../resources/images/expand.gif")
+    ImageResource expand();
+    
     @Source({"css/DecisionTable.css"})
     DecisionTableStyle cellTableStyle();
 

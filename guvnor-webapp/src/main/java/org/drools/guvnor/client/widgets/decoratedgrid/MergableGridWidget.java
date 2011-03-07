@@ -132,8 +132,8 @@ public abstract class MergableGridWidget<T> extends Widget
     protected static final DecisionTableResources            resource                   = GWT.create( DecisionTableResources.class );
     protected static final DecisionTableStyle                style                      = resource.cellTableStyle();
 
-    private static final ImageResource                       selectorGroupedCells       = resource.selectorDelete();
-    private static final ImageResource                       selectorUngroupedCells     = resource.selectorAdd();
+    private static final ImageResource                       selectorGroupedCells       = resource.collapse();
+    private static final ImageResource                       selectorUngroupedCells     = resource.expand();
     protected static final String                            selectorGroupedCellsHtml   = makeImageHtml( selectorGroupedCells );
     protected static final String                            selectorUngroupedCellsHtml = makeImageHtml( selectorUngroupedCells );
 
