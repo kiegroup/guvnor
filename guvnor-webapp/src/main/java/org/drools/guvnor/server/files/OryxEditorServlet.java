@@ -55,7 +55,7 @@ public class OryxEditorServlet extends HttpServlet {
         log.debug("Successful login");
         
         try {
-            RuleAsset asset = RepositoryServiceServlet.getAssetService().loadRuleAssetByUUID(uuid);
+            RuleAsset asset = RepositoryServiceServlet.getAssetService().loadRuleAsset(uuid);
             if (asset.content != null) {
                 response.setContentType("application/xml");
                 String content = asset.content.toString();

@@ -40,7 +40,7 @@ public class UUIDRuleAssetProvider implements RuleAssetProvider {
             
             for (int i = 0; i < assetsUUIDs.length; i++) {
                 String uuid = assetsUUIDs[i];
-                assets[i] = this.getAssetService().loadRuleAssetByUUID(uuid);
+                assets[i] = this.getAssetService().loadRuleAsset(uuid);
             }
             
             return assets;

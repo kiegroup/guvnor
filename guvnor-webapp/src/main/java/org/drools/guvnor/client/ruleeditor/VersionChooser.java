@@ -162,7 +162,7 @@ public class VersionChooser extends Composite {
     private void showVersion(final String versionUUID) {
         LoadingPopup.showMessage( constants.LoadingVersionFromHistory() );
 
-        RepositoryServiceFactory.getAssetService().loadRuleAssetByUUID( versionUUID,
+        RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
                                                              new GenericCallback<RuleAsset>() {
 
                                                                  public void onSuccess(RuleAsset asset) {

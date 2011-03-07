@@ -245,7 +245,7 @@ public class VersionBrowser extends Composite {
                         }
                     } );
         } else {
-            RepositoryServiceFactory.getAssetService().loadRuleAssetByUUID( versionUUID,
+            RepositoryServiceFactory.getAssetService().loadRuleAsset( versionUUID,
                                                              new GenericCallback<RuleAsset>() {
 
                                                                  public void onSuccess(RuleAsset asset) {

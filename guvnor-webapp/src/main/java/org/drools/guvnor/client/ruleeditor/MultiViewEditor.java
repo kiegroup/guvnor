@@ -195,7 +195,7 @@ public class MultiViewEditor extends GuvnorEditor {
                                                                content,
                                                                assets.get( row.uuid )  );
                                } else {
-                                   RepositoryServiceFactory.getAssetService().loadRuleAssetByUUID( row.uuid,
+                                   RepositoryServiceFactory.getAssetService().loadRuleAsset( row.uuid,
                                                                                         new GenericCallback<RuleAsset>() {
 
                                                                                             public void onSuccess(final RuleAsset asset) {

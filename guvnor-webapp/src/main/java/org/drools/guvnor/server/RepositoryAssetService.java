@@ -102,7 +102,7 @@ public class RepositoryAssetService
      */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public RuleAsset loadRuleAssetByUUID(String uuid) throws SerializationException {
+    public RuleAsset loadRuleAsset(String uuid) throws SerializationException {
 
         long time = System.currentTimeMillis();
 
@@ -470,7 +470,7 @@ public class RepositoryAssetService
         Collection<RuleAsset> assets = new HashSet<RuleAsset>();
 
         for ( String uuid : uuids ) {
-            assets.add( loadRuleAssetByUUID( uuid ) );
+            assets.add( loadRuleAsset( uuid ) );
         }
 
         return assets.toArray( new RuleAsset[assets.size()] );
