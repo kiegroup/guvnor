@@ -380,8 +380,8 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                                    p1 );
     }
 
-    public org.drools.guvnor.client.rpc.TableDataResult loadAssetHistory(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return getAssetService().loadAssetHistory( p0 );
+    public org.drools.guvnor.client.rpc.TableDataResult loadItemHistory(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
+        return getAssetService().loadItemHistory( p0 );
     }
 
     public org.drools.guvnor.client.rpc.PageResponse loadArchivedAssets(org.drools.guvnor.client.rpc.PageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
