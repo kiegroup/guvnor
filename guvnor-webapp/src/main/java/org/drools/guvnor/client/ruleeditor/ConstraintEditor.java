@@ -73,11 +73,8 @@ public class ConstraintEditor extends Composite {
     }
 
     private String getI18NText(String s) {
-        try {
-            return constants.getString("constraint." + getConstraintName() + "." + s);
-        } catch (MissingResourceException e) {
-            return s;
-        }
+        // TODO use a switch to return the correct i18n text from the messages
+        return s;
     }
 
     public ConstraintConfiguration getConstraintConfiguration() {
