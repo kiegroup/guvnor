@@ -641,8 +641,15 @@ public abstract class MergableGridWidget<T> extends Widget
 
         assertModelMerging();
 
+        //Partial redraw
         if ( bRedraw ) {
-            redraw();
+            int minRedrawRow = findMinRedrawRow( startRowIndex - (startRowIndex > 0 ? 1 : 0) );
+            int maxRedrawRow = findMaxRedrawRow( startRowIndex + (startRowIndex < data.size() - 1 ? 1 : 0) );
+            for ( int iRow = 0; iRow < groupedRow.getChildRows().size() - 1; iRow++ ) {
+                deleteRowElement( startRowIndex );
+            }
+            redrawRows( minRedrawRow,
+                        maxRedrawRow );
             RowGroupingChangeEvent.fire( this );
         }
 
@@ -962,13 +969,13 @@ public abstract class MergableGridWidget<T> extends Widget
     private void removeModelGrouping(CellValue< ? > startCell,
                                      boolean bRedraw) {
 
-        int startRow = startCell.getCoordinate().getRow();
+        int startRowIndex = startCell.getCoordinate().getRow();
 
         startCell.setGrouped( false );
 
         //Check if rows need to be recursively expanded
         boolean bRecursive = true;
-        DynamicDataRow row = data.get( startRow );
+        DynamicDataRow row = data.get( startRowIndex );
         for ( int iCol = 0; iCol < row.size(); iCol++ ) {
             CellValue< ? > cv = row.get( iCol );
             if ( cv instanceof GroupedCellValue ) {
@@ -979,15 +986,25 @@ public abstract class MergableGridWidget<T> extends Widget
         //Delete "grouped" row and replace with individual rows
         List<DynamicDataRow> expandedRow = expandGroupedRow( row,
                                                              bRecursive );
-        data.remove( startRow );
-        data.addAll( startRow,
+        data.remove( startRowIndex );
+        data.addAll( startRowIndex,
                      expandedRow );
 
         assertModelMerging();
+
+        //Partial redraw
         if ( bRedraw ) {
-            redraw();
+            int minRedrawRow = findMinRedrawRow( startRowIndex - (startRowIndex > 0 ? 1 : 0) );
+            int maxRedrawRow = findMaxRedrawRow( startRowIndex + (startRowIndex < data.size() - 2 ? 1 : 0) );
+            for ( int iRow = 0; iRow < expandedRow.size() - 1; iRow++ ) {
+                createEmptyRowElement( startRowIndex );
+
+            }
+            redrawRows( minRedrawRow,
+                        maxRedrawRow );
             RowGroupingChangeEvent.fire( this );
         }
+
     }
 
     //Remove merging from model
@@ -1023,6 +1040,8 @@ public abstract class MergableGridWidget<T> extends Widget
 
     protected abstract void createRowElement(int index,
                                              DynamicDataRow rowData);
+
+    protected abstract void deleteRowElement(int index);
 
     //Check whether "Grouping" widget has been clicked
     protected boolean isGroupWidgetClicked(Event event,
@@ -1089,8 +1108,17 @@ public abstract class MergableGridWidget<T> extends Widget
                     if ( !cell1.isEmpty() && !cell2.isEmpty() ) {
                         if ( cell1.getValue().equals( cell2.getValue() ) ) {
                             bSplit = false;
-                            if ( cell1.isGrouped() || cell2.isGrouped() ) {
-                                bSplit = true;
+                            if ( cell1 instanceof GroupedCellValue ) {
+                                GroupedCellValue gcv = (GroupedCellValue) cell1;
+                                if ( gcv.hasMultipleValues() ) {
+                                    bSplit = true;
+                                }
+                            }
+                            if ( cell2 instanceof GroupedCellValue ) {
+                                GroupedCellValue gcv = (GroupedCellValue) cell2;
+                                if ( gcv.hasMultipleValues() ) {
+                                    bSplit = true;
+                                }
                             }
                         }
                     }

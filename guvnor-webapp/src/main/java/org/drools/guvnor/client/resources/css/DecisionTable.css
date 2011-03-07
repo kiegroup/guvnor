@@ -1,12 +1,12 @@
 @CHARSET "UTF-8";
 
 /* CellTable body */
-@def rowHeight 24px;
-@def rowHeaderHeight 24px;
-@def rowHeaderSorterHeight 16px;
-@def rowHeaderSplitterHeight 8px;
-@def sidebarWidth 48px;
-@def borderWidth 1px;
+@def rowHeight  24px ;
+@def rowHeaderHeight  24px ;
+@def rowHeaderSorterHeight  16px ;
+@def rowHeaderSplitterHeight  8px ;
+@def sidebarWidth  48px ;
+@def borderWidth  1px ;
 
 .cellTable {
     cursor: default;
@@ -34,6 +34,10 @@
     background-color: #b9b9b9;
 }
 
+.cellTableCellMultipleValues {
+    background-color: #e09090;
+}
+
 .cellTableCell:HOVER {
     padding: 0px;
     margin: 0px;
@@ -50,13 +54,13 @@
 
 .cellTableGroupDiv {
     position: absolute;
-}	
+}
 
 .cellTableTextDiv {
-	height: 100%;
+    height: 100%;
     width: 100%;
     position: absolute;
-}	
+}
 
 .cellTableEvenRow {
     background: #f8f8f8;
@@ -114,4 +118,3 @@
     border-right: 1px solid grey;
     border-bottom: borderWidth solid #C8C8C8;
 }
-

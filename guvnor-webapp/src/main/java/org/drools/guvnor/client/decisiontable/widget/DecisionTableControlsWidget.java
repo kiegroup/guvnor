@@ -15,28 +15,31 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * Simple container for controls to manipulate a Decision Table
  */
 public class DecisionTableControlsWidget extends Composite {
 
-    private Panel panel = new HorizontalPanel();
+    private Panel                    panel    = new HorizontalPanel();
 
-    public DecisionTableControlsWidget(final VerticalDecisionTableWidget dtable) {
+    // Resources
+    protected static final Constants messages = GWT.create( Constants.class );
+
+    public DecisionTableControlsWidget(final HasRows dtable) {
 
         // Add row button
-        Button btnAddRow = new Button( "Add Row",
+        Button btnAddRow = new Button( messages.AddRow(),
                                        new ClickHandler() {
 
                                            public void onClick(ClickEvent event) {
@@ -45,49 +48,8 @@ public class DecisionTableControlsWidget extends Composite {
                                        } );
         panel.add( btnAddRow );
 
-        final TextBox txtRows = new TextBox();
-        panel.add(txtRows);
-        
-        final TextBox txtCols = new TextBox();
-        panel.add(txtCols);
-        
-        Button btnMakeGrid = new Button( "Make grid",
-                                         new ClickHandler() {
-
-                                             public void onClick(ClickEvent event) {
-                                                 int rows = Integer.valueOf( txtRows.getText());
-                                                 int cols = Integer.valueOf( txtCols.getText());
-                                                 
-                                                 GuidedDecisionTable model = makeModel( rows,
-                                                                                        cols );
-                                                 dtable.setModel( model );
-                                             }
-                                         } );
-        panel.add( btnMakeGrid );
-
         initWidget( panel );
 
-    }
-
-    private GuidedDecisionTable makeModel(int rows,
-                                          int cols) {
-        GuidedDecisionTable model = new GuidedDecisionTable();
-        for ( int iCol = 0; iCol < cols; iCol++ ) {
-            AttributeCol ac = new AttributeCol();
-            ac.setAttribute( "col" + iCol );
-            model.getAttributeCols().add( ac );
-        }
-        cols += model.INTERNAL_ELEMENTS;
-        String[][] data = new String[rows][cols];
-        for ( int iRow = 0; iRow < rows; iRow++ ) {
-            String[] row = new String[cols];
-            for ( int iCol = 0; iCol < cols; iCol++ ) {
-                row[iCol] = "(" + iRow + "," + iCol + ")";
-            }
-            data[iRow] = row;
-        }
-        model.setData( data );
-        return model;
     }
 
 }

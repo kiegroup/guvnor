@@ -26,6 +26,7 @@ import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableRowElement;
@@ -131,12 +132,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
             //The element containing the cell's HTML is nested inside two DIVs
             Element parent = eventTableCell.getFirstChildElement().getFirstChildElement();
-            cellWidget.onBrowserEvent( context,
-                                       parent,
-                                       eventPhysicalCell,
-                                       event,
-                                       null );
-
             cellWidget.onBrowserEvent( context,
                                        parent,
                                        eventPhysicalCell,
@@ -382,6 +377,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         String cellStyle = style.cellTableCell();
         String divStyle = style.cellTableCellDiv();
         String cellSelectedStyle = style.cellTableCellSelected();
+        String cellMultipleValuesStyle = style.cellTableCellMultipleValues();
         TableCellElement tce = null;
 
         // Column to render the column
@@ -415,7 +411,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             if ( cellData instanceof GroupedCellValue ) {
                 GroupedCellValue gcv = (GroupedCellValue) cellData;
                 if ( gcv.hasMultipleValues() ) {
-                    tce.getStyle().setBackgroundColor( "#90a0b0" );
+                    tce.addClassName( cellMultipleValuesStyle );
                 }
             }
             Coordinate c = cellData.getCoordinate();
@@ -433,7 +429,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             div.appendChild( divText );
             tce.setTabIndex( 0 );
 
-            //---->
             if ( rowSpan > 1 || cellData.isGrouped() ) {
                 Element de = DOM.createDiv();
                 DivElement divGroup = DivElement.as( de );
@@ -446,7 +441,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                 }
                 div.appendChild( divGroup );
             }
-            //<------
 
         }
         return tce;
@@ -531,6 +525,12 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         populateTableRowElement( tre,
                                  rowData );
         fixRowStyles( index );
+    }
+
+    @Override
+    protected void deleteRowElement(int index) {
+        Node tre = tbody.getChild( index );
+        tbody.removeChild( tre );
     }
 
     @Override

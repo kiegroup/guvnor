@@ -7,9 +7,13 @@ import com.google.gwt.resources.client.ImageResource;
 /**
  * Resources for the Decision Table.
  */
-public interface DecisionTableResources extends ClientBundle {
+public interface DecisionTableResources
+    extends
+    ClientBundle {
 
-    public interface DecisionTableStyle extends CssResource {
+    public interface DecisionTableStyle
+        extends
+        CssResource {
 
         int rowHeight();
 
@@ -20,7 +24,7 @@ public interface DecisionTableResources extends ClientBundle {
         int rowHeaderSorterHeight();
 
         int sidebarWidth();
-        
+
         int borderWidth();
 
         String cellTable();
@@ -33,10 +37,12 @@ public interface DecisionTableResources extends ClientBundle {
 
         String cellTableCellSelected();
 
+        String cellTableCellMultipleValues();
+
         String cellTableCellDiv();
-        
+
         String cellTableGroupDiv();
-        
+
         String cellTableTextDiv();
 
         String headerRowBottom();
@@ -79,7 +85,7 @@ public interface DecisionTableResources extends ClientBundle {
     @Source("../resources/images/delete_item_small.gif")
     ImageResource selectorDelete();
 
-    @Source({ "css/DecisionTable.css" })
+    @Source({"css/DecisionTable.css"})
     DecisionTableStyle cellTableStyle();
 
 };
