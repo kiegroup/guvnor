@@ -52,7 +52,7 @@ public abstract class GenericCallback<T> implements AsyncCallback<T> {
         url = url.substring(0, url.lastIndexOf('/'));
 
         FormStylePopup pop = new FormStylePopup();
-        String m = Format.format(((Constants) GWT.create(Constants.class)).SessionExpiredMessage(), url);
+        String m = ((Constants) GWT.create(Constants.class)).SessionExpiredMessage(url);
         pop.addRow(new HTML(m));
         pop.show();
         LoadingPopup.close();

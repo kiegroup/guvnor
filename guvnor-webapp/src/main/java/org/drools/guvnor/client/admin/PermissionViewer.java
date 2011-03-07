@@ -145,8 +145,7 @@ public class PermissionViewer extends Composite {
             public void execute() {
                 final String userName = table.getSelectionModel().getSelectedObject().getUserName();
                 if ( userName != null
-                        && Window.confirm( Format.format( constants.AreYouSureYouWantToDeleteUser0(),
-                                                          userName ) ) ) {
+                        && Window.confirm( constants.AreYouSureYouWantToDeleteUser0( userName ) ) ) {
                     RepositoryServiceFactory.getService().deleteUser( userName,
                                                                          new GenericCallback<java.lang.Void>() {
                                                                              public void onSuccess(Void a) {
@@ -183,8 +182,7 @@ public class PermissionViewer extends Composite {
                                                                        new GenericCallback<Map<String, List<String>>>() {
                                                                            public void onSuccess(final Map<String, List<String>> perms) {
                                                                                final FormStylePopup editor = new FormStylePopup( images.management(),
-                                                                                                                                 Format.format( constants.EditUser0(),
-                                                                                                                                                userName ) );
+                                                                                                                                 constants.EditUser0( userName ) );
                                                                                editor.addRow( new HTML( "<i>"
                                                                                                         + constants.UserAuthenticationTip()
                                                                                                         + "</i>" ) );
@@ -285,8 +283,7 @@ public class PermissionViewer extends Composite {
                                                        constants.RemovePermission(),
                                                        new ClickHandler() {
                                                            public void onClick(ClickEvent w) {
-                                                               if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemovePermission0(),
-                                                                                                   p ) ) ) {
+                                                               if ( Window.confirm( constants.AreYouSureYouWantToRemovePermission0( p ) ) ) {
                                                                    permList.remove( p );
                                                                    if ( permList.size() == 0 ) {
                                                                        perms.remove( permType );

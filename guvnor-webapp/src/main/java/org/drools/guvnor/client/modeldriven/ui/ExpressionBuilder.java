@@ -457,8 +457,7 @@ public class ExpressionBuilder extends RuleModellerWidget
             public void onClick(ClickEvent event) {
                 String var = varName.getText();
                 if ( getModeller().isVariableNameUsed( var ) ) {
-                    Window.alert( Format.format( constants.TheVariableName0IsAlreadyTaken(),
-                                                 var ) );
+                    Window.alert( constants.TheVariableName0IsAlreadyTaken( var ) );
                     return;
                 }
                 expression.setBinding( var );

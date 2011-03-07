@@ -59,7 +59,7 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
         ActionGlobalCollectionAdd gca = (ActionGlobalCollectionAdd) action;
         SimplePanel sp = new SimplePanel();
         sp.setStyleName("model-builderInner-Background"); //NON-NLS
-        sp.add(new SmallLabel("&nbsp;" + Format.format(constants.AddXToListY(), gca.factName, gca.globalName)));
+        sp.add(new SmallLabel("&nbsp;" + constants.AddXToListY(gca.factName, gca.globalName)));
 
         if (this.readOnly) {
             this.layout.addStyleName("editor-disabled-widget");

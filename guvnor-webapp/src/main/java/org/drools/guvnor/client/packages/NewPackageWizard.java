@@ -231,8 +231,7 @@ public class NewPackageWizard extends FormStylePopup {
                     LoadingPopup.close();
                     packageNamePopup.show();
                 } else {
-                    ErrorPopup.showMessage( Format.format( constants.UnableToImportIntoThePackage0(),
-                                                           event.getResults() ) );
+                    ErrorPopup.showMessage( constants.UnableToImportIntoThePackage0( event.getResults() ) );
                 }
                 LoadingPopup.close();
             }

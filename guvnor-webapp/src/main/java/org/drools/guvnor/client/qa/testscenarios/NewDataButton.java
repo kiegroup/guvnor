@@ -148,8 +148,7 @@ public class NewDataButton extends TestScenarioButton {
                             Window.alert( constants.YouMustEnterAValidFactName() );
                         } else {
                             if ( scenario.isFactNameReserved( factName ) ) {
-                                Window.alert( Format.format( constants.TheFactName0IsAlreadyInUsePleaseChooseAnotherName(),
-                                                             factName ) );
+                                Window.alert( constants.TheFactName0IsAlreadyInUsePleaseChooseAnotherName( factName ) );
                             } else {
                                 scenario.insertBetween( previousEx,
                                                         getFixture() );

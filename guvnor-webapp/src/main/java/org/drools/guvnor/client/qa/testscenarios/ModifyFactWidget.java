@@ -34,7 +34,6 @@ public class ModifyFactWidget extends FactWidget {
                scenario,
                parent,
                executionTrace,
-               Format.format( constants.modifyForScenario(),
-                              factType ) );
+               constants.modifyForScenario( factType ) );
     }
 }

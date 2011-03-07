@@ -138,8 +138,7 @@ public class ExecutionWidget extends Composite {
                         textBox.setText( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(d) );
                         dateHint.setText( "" );
                     } catch ( Exception e ) {
-                        ErrorPopup.showMessage( Format.format( constants.BadDateFormatPleaseTryAgainTryTheFormatOf0(),
-                                                               format ) );
+                        ErrorPopup.showMessage( constants.BadDateFormatPleaseTryAgainTryTheFormatOf0( format ) );
                     }
                 }
             }

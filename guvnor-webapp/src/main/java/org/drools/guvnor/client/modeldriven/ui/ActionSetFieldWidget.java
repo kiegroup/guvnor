@@ -194,8 +194,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
 
         String descFact = (type != null) ? type + " <b>[" + model.variable + "]</b>" : model.variable;
 
-        String sl = Format.format( constants.setterLabel(),
-                                   new String[]{HumanReadable.getActionDisplayName( modifyType ), descFact} );
+        String sl = constants.setterLabel( HumanReadable.getActionDisplayName( modifyType ), descFact );
         return new ClickableLabel( sl,
                                    clk,
                                    !this.readOnly );//HumanReadable.getActionDisplayName(modifyType) + " value of <b>[" + model.variable + "]</b>", clk);

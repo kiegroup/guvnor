@@ -34,8 +34,7 @@ public class GlobalFactWidget extends FactWidget {
                sc,
                parent,
                executionTrace,
-               Format.format( constants.globalForScenario(),
-                              factType ) );
+               constants.globalForScenario( factType ) );
     }
 
 }

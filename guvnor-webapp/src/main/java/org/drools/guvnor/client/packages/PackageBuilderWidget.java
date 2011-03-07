@@ -349,8 +349,7 @@ public class PackageBuilderWidget extends Composite {
                                   String name) {
         Constants constants = GWT.create( Constants.class );
         final FormStylePopup pop = new FormStylePopup( images.viewSource(),
-                                                       Format.format( constants.ViewingSourceFor0(),
-                                                                      name ),
+                                                        constants.ViewingSourceFor0( name ),
                                                        new Integer( 600 ) );
 
         String[] rows = content.split( "\n" );
@@ -612,8 +611,7 @@ public class PackageBuilderWidget extends Composite {
                                                                              comment.getText(),
                                                                              new GenericCallback<java.lang.Void>() {
                                                                                  public void onSuccess(Void v) {
-                                                                                     Window.alert( Format.format( constants.TheSnapshotCalled0WasSuccessfullyCreated(),
-                                                                                                                  name ) );
+                                                                                     Window.alert( constants.TheSnapshotCalled0WasSuccessfullyCreated( name ) );
                                                                                      form.hide();
                                                                                      if ( refreshCmd != null ) {
                                                                                          refreshCmd.execute();

@@ -68,32 +68,28 @@ public class FactPatternWidget extends RuleModellerWidget {
     private Connectives        connectives;
     private PopupCreator       popupCreator;
     private boolean            bindable;
-    private String             customLabel;
+    private boolean            isAll0WithLabel;
     private boolean            readOnly;
 
     public FactPatternWidget(RuleModeller mod, IPattern p, boolean canBind) {
-        this( mod, p, null, canBind, null );
+        this( mod, p, false, canBind, null );
     }
 
-    public FactPatternWidget(RuleModeller mod, IPattern p, String customLabel, boolean canBind) {
-        this( mod, p, null, canBind, null );
+    public FactPatternWidget(RuleModeller mod, IPattern p, boolean isAll0WithLabel, boolean canBind) {
+        this( mod, p, isAll0WithLabel, canBind, null );
     }
 
     /**
      * Creates a new FactPatternWidget
-     * @param mod
-     * @param p
-     * @param customLabel
      * @param canBind
      * @param readOnly if the widget should be in RO mode. If this parameter
      * is null, the readOnly attribute is calculated.
      */
-
     public FactPatternWidget(RuleModeller ruleModeller, IPattern pattern, boolean canBind, Boolean readOnly) {
-        this( ruleModeller, pattern, null, canBind, readOnly );
+        this( ruleModeller, pattern, false, canBind, readOnly );
     }
 
-    public FactPatternWidget(RuleModeller mod, IPattern p, String customLabel, boolean canBind, Boolean readOnly) {
+    public FactPatternWidget(RuleModeller mod, IPattern p, boolean isAll0WithLabel, boolean canBind, Boolean readOnly) {
         super( mod );
         this.pattern = (FactPattern) p;
         this.bindable = canBind;
@@ -108,7 +104,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         this.popupCreator.setModeller( mod );
         this.popupCreator.setPattern( pattern );
 
-        this.customLabel = customLabel;
+        this.isAll0WithLabel = isAll0WithLabel;
 
         //if readOnly == null, the RO attribute is calculated.
         if ( readOnly == null ) {
@@ -434,22 +430,25 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         String patternName = (pattern.boundName != null) ? pattern.getFactType() + " <b>[" + pattern.boundName + "]</b>" : pattern.getFactType();
 
-        String desc = this.getCustomLabel();
-        if ( desc == null ) {
+        String desc;
+        if ( isAll0WithLabel ) {
+            desc = constants.All0with(patternName);
+        } else {
             if ( pattern.constraintList != null && pattern.constraintList.constraints.length > 0 ) {
-                desc = Format.format( constants.ThereIsAAn0With(), patternName );
+                desc = constants.ThereIsAAn0With( patternName );
             } else {
-                desc = Format.format( constants.ThereIsAAn0(), patternName );
+                desc = constants.ThereIsAAn0( patternName );
             }
             desc = anA( desc, patternName );
-        } else {
-            desc = Format.format( desc, patternName );
         }
 
         return new ClickableLabel( desc, click, !this.readOnly );
     }
 
-    /** Change to an/a depending on context - only for english */
+    /**
+     * Change to an/a depending on context - only for english
+     * TODO use GWT support for that: http://code.google.com/intl/nl/webtoolkit/doc/latest/DevGuideI18n.html
+     */
     private String anA(String desc, String patternName) {
         if ( desc.startsWith( "There is a/an" ) ) { //NON-NLS
             String vowel = patternName.substring( 0, 1 );
@@ -563,14 +562,6 @@ public class FactPatternWidget extends RuleModellerWidget {
         }
 
         return ab;
-    }
-
-    public String getCustomLabel() {
-        return customLabel;
-    }
-
-    public void setCustomLabel(String customLabel) {
-        this.customLabel = customLabel;
     }
 
     public boolean isDirty() {

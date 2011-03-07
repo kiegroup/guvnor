@@ -99,8 +99,7 @@ public class FactFieldsEditor extends Composite {
 
         editor.setDeleteCommand( new Command() {
             public void execute() {
-                if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemoveTheField0(),
-                                                    fieldMetaModel.name ) ) ) {
+                if ( Window.confirm( constants.AreYouSureYouWantToRemoveTheField0( fieldMetaModel.name ) ) ) {
                     fieldsPanel.remove( editor );
                     fields.remove( fieldMetaModel );
                 }

@@ -115,10 +115,7 @@ public class BulkRunResultViewImpl extends Composite
 
     public void setFailuresOutOfExpectation(int totalFailures,
                                             int grandTotal) {
-
-        failuresOutOfExpectations.setText( Format.format( constants.failuresOutOFExpectations(),
-                                                          totalFailures,
-                                                          grandTotal ) );
+        failuresOutOfExpectations.setText( constants.failuresOutOFExpectations(totalFailures, grandTotal) );
     }
 
     public void setResultsPercent(int i) {
@@ -127,8 +124,7 @@ public class BulkRunResultViewImpl extends Composite
 
     public void setRulesCoveredPercent(int percentCovered) {
         coveredPercentBar.setValue( percentCovered );
-        ruleCoveragePercent.setText( Format.format( constants.RuleCoveragePercent(),
-                                                    percentCovered ) );
+        ruleCoveragePercent.setText( constants.RuleCoveragePercent(percentCovered) );
     }
 
     public void addUncoveredRules(String uncoveredRule) {

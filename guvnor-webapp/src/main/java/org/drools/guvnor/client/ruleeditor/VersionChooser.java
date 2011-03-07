@@ -116,7 +116,7 @@ public class VersionChooser extends Composite {
                                                                         for ( int i = 0; i < rows.length; i++ ) {
                                                                             TableDataRow row = rows[i];                                                     
                                                                             
-                                                                            String s = Format.format( constants.property0ModifiedOn12(),
+                                                                            String s = constants.property0ModifiedOn12(
                                                                                                       row.values[0],
                                                                                                       row.values[2],
                                                                                                       row.values[1] );
@@ -168,8 +168,8 @@ public class VersionChooser extends Composite {
                                                                  public void onSuccess(RuleAsset asset) {
                                                                      asset.isreadonly = true;
                                                                      final FormStylePopup pop = new FormStylePopup( images.snapshot(),
-                                                                                                                    Format.format( constants.VersionNumber0Of1(),
-                                                                                                                                   "" + asset.metaData.versionNumber,
+                                                                                                                    constants.VersionNumber0Of1(
+                                                                                                                                   asset.metaData.versionNumber,
                                                                                                                                    asset.metaData.name ),
                                                                                                                     new Integer( 800 ) );
 

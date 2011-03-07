@@ -42,9 +42,8 @@ public class FiredRulesPanel extends HorizontalPanel {
     }
 
     private HTML createText() {
-        return new HTML( "<i><small>" + Format.format( constants.property0RulesFiredIn1Ms(),
-                                                       executionTrace.getNumberOfRulesFired().toString(),
-                                                       executionTrace.getExecutionTimeResult().toString() ) + "</small></i>" );
+        return new HTML( "<i><small>" + constants.property0RulesFiredIn1Ms(
+                executionTrace.getNumberOfRulesFired(), executionTrace.getExecutionTimeResult() ) + "</small></i>" );
     }
 
     private Button createShowButton() {

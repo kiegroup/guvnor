@@ -210,8 +210,7 @@ public class TabOpener {
 
         if ( blockingAssetName != null ) {
             FormStylePopup popup = new FormStylePopup( images.information(),
-                                                       Format.format( constants.Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview(),
-                                                                      blockingAssetName ) );
+                                                       constants.Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview( blockingAssetName ) );
             popup.show();
             return;
         }
@@ -283,8 +282,7 @@ public class TabOpener {
             RepositoryServiceFactory.getPackageService().loadPackageConfig( snap.uuid,
                                                                      new GenericCallback<PackageConfigData>() {
                                                                          public void onSuccess(PackageConfigData conf) {
-                                                                             explorerViewCenterPanel.addTab( Format.format( constants.SnapshotLabel(),
-                                                                                                                            snap.name ),
+                                                                             explorerViewCenterPanel.addTab( constants.SnapshotLabel( snap.name ),
                                                                                                              new SnapshotView( snap,
                                                                                                                                conf,
                                                                                                                                new Command() {
@@ -538,8 +536,7 @@ public class TabOpener {
 
         if ( !explorerViewCenterPanel.showIfOpen( "scenarios"
                                                   + packageUuid ) ) {
-            String m = Format.format( constants.ScenariosForPackage(),
-                                      packageName );
+            String m = constants.ScenariosForPackage( packageName );
             explorerViewCenterPanel.addTab( m,
                                             new ScenarioPackageView( packageUuid,
                                                                      packageName,
@@ -554,8 +551,7 @@ public class TabOpener {
                                  String packageName) {
         if ( !explorerViewCenterPanel.showIfOpen( "analysis"
                                                   + packageUuid ) ) { // NON-NLS
-            String m = Format.format( constants.AnalysisForPackage(),
-                                      packageName );
+            String m = constants.AnalysisForPackage( packageName );
             explorerViewCenterPanel.addTab( m,
                                             new AnalysisView( packageUuid,
                                                               packageName,

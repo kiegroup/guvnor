@@ -311,9 +311,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                     TextBox otherBox = (TextBox) event.getSource();
 
                     if (!regex.equals("") && !otherBox.getText().matches(regex)) {
-                        Window.alert(Format.format(
-                                constants.TheValue0IsNotValidForThisField(),
-                                otherBox.getText()));
+                        Window.alert(constants.TheValue0IsNotValidForThisField(otherBox.getText()));
                         box.setText(oldValue);
                     } else {
                         oldValue = otherBox.getText();

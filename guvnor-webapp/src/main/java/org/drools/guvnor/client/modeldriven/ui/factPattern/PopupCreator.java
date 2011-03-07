@@ -130,8 +130,7 @@ public class PopupCreator {
             public void onClick(ClickEvent event) {
                 String var = varName.getText();
                 if ( modeller.isVariableNameUsed( var ) ) {
-                    Window.alert( Format.format( constants.TheVariableName0IsAlreadyTaken(),
-                                                 var ) );
+                    Window.alert( constants.TheVariableName0IsAlreadyTaken( var ) );
                     return;
                 }
                 con.setFieldBinding( var );
@@ -139,13 +138,11 @@ public class PopupCreator {
                 popup.hide();
             }
         } );
-        popup.addAttribute( Format.format( constants.BindTheFieldCalled0ToAVariable(),
-                                           con.getFieldName() ),
+        popup.addAttribute( constants.BindTheFieldCalled0ToAVariable( con.getFieldName() ),
                             vn );
         if ( fields != null ) {
             Button sub = new Button( constants.ShowSubFields() );
-            popup.addAttribute( Format.format( constants.ApplyAConstraintToASubFieldOf0(),
-                                               con.getFieldName() ),
+            popup.addAttribute( constants.ApplyAConstraintToASubFieldOf0( con.getFieldName() ),
                                 sub );
             sub.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
@@ -225,8 +222,7 @@ public class PopupCreator {
                                  final String factType,
                                  final FieldConstraint con) {
 
-        String title = (con == null) ? Format.format( constants.ModifyConstraintsFor0(),
-                                                      factType ) : constants.AddSubFieldConstraint();
+        String title = (con == null) ? constants.ModifyConstraintsFor0( factType ) : constants.AddSubFieldConstraint();
         final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
                                                          title );
 
@@ -348,8 +344,7 @@ public class PopupCreator {
                 public void onClick(ClickEvent event) {
                     String var = varTxt.getText();
                     if ( modeller.isVariableNameUsed( var ) ) {
-                        Window.alert( Format.format( constants.TheVariableName0IsAlreadyTaken(),
-                                                     var ) );
+                        Window.alert( constants.TheVariableName0IsAlreadyTaken( var ) );
                         return;
                     }
                     pattern.boundName = varTxt.getText();

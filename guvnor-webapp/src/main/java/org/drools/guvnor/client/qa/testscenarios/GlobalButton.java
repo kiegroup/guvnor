@@ -105,8 +105,7 @@ class GlobalButton extends ImageButton {
                     public void onClick(ClickEvent event) {
                         String text = factTypes.getItemText( factTypes.getSelectedIndex() );
                         if ( scenario.isFactNameReserved( text ) ) {
-                            Window.alert( Format.format( constants.TheName0IsAlreadyInUsePleaseChooseAnotherName(),
-                                                         text ) );
+                            Window.alert( constants.TheName0IsAlreadyInUsePleaseChooseAnotherName( text ) );
                         } else {
                             FactData factData = new FactData( suggestionCompletionEngine.getGlobalVariable( text ),
                                                               text,

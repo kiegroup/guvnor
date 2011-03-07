@@ -116,8 +116,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                          DropDownData.create( c ) ) );
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
             final DatePickerTextBox datePicker = new DatePickerTextBox( field.getExpected() );
-            String m = Format.format( ((Constants) GWT.create( Constants.class )).ValueFor0(),
-                                      field.getFieldName() );
+            String m = ((Constants) GWT.create( Constants.class )).ValueFor0( field.getFieldName() );
             datePicker.setTitle( m );
             datePicker.addValueChanged( new ValueChanged() {
                 public void valueChanged(String newValue) {
@@ -212,8 +211,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                            String initialValue) {
         final TextBox tb = new TextBox();
         tb.setText( initialValue );
-        String m = Format.format( ((Constants) GWT.create( Constants.class )).ValueFor0(),
-                                  fieldName );
+        String m = ((Constants) GWT.create( Constants.class )).ValueFor0( fieldName );
         tb.setTitle( m );
         tb.addChangeHandler( new ChangeHandler() {
 

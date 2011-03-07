@@ -102,7 +102,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
 
             RuleModellerWidget patternWidget = null;
             if (rPattern instanceof FactPattern) {
-                patternWidget = new FactPatternWidget(this.getModeller(), rPattern, constants.All0with(), true, this.readOnly);
+                patternWidget = new FactPatternWidget(this.getModeller(), rPattern, true, true, this.readOnly);
             } else if (rPattern instanceof FromAccumulateCompositeFactPattern) {
                 patternWidget = new FromAccumulateCompositeFactPatternWidget(this.getModeller(), (FromAccumulateCompositeFactPattern) rPattern,this.readOnly);
             } else if (rPattern instanceof FromCollectCompositeFactPattern) {

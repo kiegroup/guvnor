@@ -94,7 +94,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
             if (rPattern instanceof FactPattern) {
                 this.sourcePatternWidget = new FactPatternWidget(
-                        this.getModeller(), rPattern, constants.All0with(),
+                        this.getModeller(), rPattern, true,
                         true, this.readOnly);
             } else if (rPattern instanceof FromAccumulateCompositeFactPattern) {
                 this.sourcePatternWidget = new FromAccumulateCompositeFactPatternWidget(
@@ -111,7 +111,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
                         this.getModeller(),
                         (FromCompositeFactPattern) rPattern, this.readOnly);
             } else {
-                throw new IllegalArgumentException("Unsuported pattern "
+                throw new IllegalArgumentException("Unsupported pattern "
                         + rPattern + " for right side of FROM ACCUMULATE");
             }
 

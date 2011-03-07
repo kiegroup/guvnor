@@ -243,9 +243,7 @@ public class SnapshotView extends Composite {
         Button btn = new Button( constants.Delete() );
         btn.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( Format.format( constants.SnapshotDeleteConfirm(),
-                                                    snapshotName,
-                                                    pkgName ) ) ) {
+                if ( Window.confirm( constants.SnapshotDeleteConfirm(snapshotName, pkgName ) ) ) {
                     RepositoryServiceFactory.getPackageService().copyOrRemoveSnapshot( pkgName,
                                                                                 snapshotName,
                                                                                 true,
@@ -285,8 +283,7 @@ public class SnapshotView extends Composite {
         return new GenericCallback<SnapshotInfo[]>() {
             public void onSuccess(final SnapshotInfo[] snaps) {
                 final FormStylePopup copy = new FormStylePopup( images.snapshot(),
-                                                                Format.format( constants.CopySnapshotText(),
-                                                                               snapshotName ) );
+                                                                constants.CopySnapshotText( snapshotName ) );
                 final List<RadioButton> options = new ArrayList<RadioButton>();
                 VerticalPanel vert = new VerticalPanel();
                 for ( int i = 0; i < snaps.length; i++ ) {
@@ -341,7 +338,7 @@ public class SnapshotView extends Composite {
                                                            new GenericCallback<java.lang.Void>() {
                                                                public void onSuccess(Void v) {
                                                                    copy.hide();
-                                                                   Window.alert( Format.format( constants.CreatedSnapshot0ForPackage1(),
+                                                                   Window.alert( constants.CreatedSnapshot0ForPackage1(
                                                                                                 newNameTextBox.getText(),
                                                                                                 packageName ) );
                                                                }
@@ -358,7 +355,7 @@ public class SnapshotView extends Composite {
                                                                new GenericCallback<java.lang.Void>() {
                                                                    public void onSuccess(Void v) {
                                                                        copy.hide();
-                                                                       Window.alert( Format.format( constants.Snapshot0ForPackage1WasCopiedFrom2(),
+                                                                       Window.alert( constants.Snapshot0ForPackage1WasCopiedFrom2(
                                                                                                     newName,
                                                                                                     packageName,
                                                                                                     snapshotName ) );

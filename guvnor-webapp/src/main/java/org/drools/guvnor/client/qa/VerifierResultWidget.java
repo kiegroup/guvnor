@@ -94,9 +94,7 @@ public class VerifierResultWidget extends Composite {
 
         TreeItem linesItem;
 
-        String summary = Format.format( constants.analysisResultSummary(),
-                                        messageType,
-                                        "" + lines.length );
+        String summary = constants.analysisResultSummary(messageType, lines.length );
 
         String topicHtml = Format.format( "<img src='{0}' /> &nbsp; {1}",
                                           icon.getURL(),

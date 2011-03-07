@@ -227,7 +227,7 @@ public class QueryWidget extends Composite {
                                                                  editEvent );
                     resultsP.add( table );
                 } catch ( IllegalArgumentException e ) {
-                    ErrorPopup.showMessage( Format.format( constants.BadDateFormatPleaseTryAgainTryTheFormatOf0(),
+                    ErrorPopup.showMessage( constants.BadDateFormatPleaseTryAgainTryTheFormatOf0(
                                                            Preferences.getStringPref( "drools.dateformat" ) ) );
                 }
             }

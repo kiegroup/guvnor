@@ -283,16 +283,13 @@ public class DataInputWidget extends DirtyableFlexTable {
 
         public DeleteFactColumnButton(final FactData factData) {
             super( images.deleteItemSmall(),
-                   Format.format( constants.RemoveTheColumnForScenario(),
-                                  factData.getName() ) );
+                    constants.RemoveTheColumnForScenario( factData.getName() ) );
 
             addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     if ( scenario.isFactDataReferenced( factData ) ) {
-                        Window.alert( Format.format( constants.CanTRemoveThisColumnAsTheName0IsBeingUsed(),
-                                                     factData.getName() ) );
-                    } else if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemoveColumn0(),
-                                                               factData.getName() ) ) ) {
+                        Window.alert( constants.CanTRemoveThisColumnAsTheName0IsBeingUsed( factData.getName() ) );
+                    } else if ( Window.confirm( constants.AreYouSureYouWantToRemoveColumn0( factData.getName() ) ) ) {
                         scenario.removeFixture( factData );
                         definitionList.remove( factData );
 
@@ -312,8 +309,7 @@ public class DataInputWidget extends DirtyableFlexTable {
 
             addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemoveRow0(),
-                                                        factName ) ) ) {
+                    if ( Window.confirm( constants.AreYouSureYouWantToRemoveRow0( factName ) ) ) {
                         ScenarioHelper.removeFields( definitionList,
                                                      fieldName );
 

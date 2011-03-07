@@ -349,7 +349,7 @@ public class NewAssetWizard extends FormStylePopup {
                 case '*' :
                 case '\'' :
                 case '\"' :
-                    Window.alert( Format.format( GWT.<Constants> create( Constants.class ).NonValidJCRName(), jsrPath, "" + c ) );
+                    Window.alert( GWT.<Constants> create( Constants.class ).NonValidJCRName(jsrPath, c) );
                     return false;
                 default :
             }

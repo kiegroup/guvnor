@@ -100,9 +100,7 @@ public class SummaryTableViewImpl extends Composite
                                        int total) {
             flexTable.setWidget( summaryTableIndex,
                                  2,
-                                 new SmallLabel( Format.format( constants.TestFailureBulkFailures(),
-                                                                failures,
-                                                                total ) ) );
+                                 new SmallLabel( constants.TestFailureBulkFailures(failures, total) ) );
         }
 
         private void addOpenButton(String uuid) {

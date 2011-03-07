@@ -296,7 +296,7 @@ public class PackageEditor extends PrettyFormLayout {
             for ( Iterator<Entry<String, String>> iterator = conf.catRules.entrySet().iterator(); iterator.hasNext(); ) {
                 Entry<String, String> entry = iterator.next();
                 HorizontalPanel hp = new HorizontalPanel();
-                String m = Format.format( constants.AllRulesForCategory0WillNowExtendTheRule1(),
+                String m = constants.AllRulesForCategory0WillNowExtendTheRule1(
                                           (String) entry.getValue(),
                                           (String) entry.getKey() );
                 hp.add( new SmallLabel( m ) );

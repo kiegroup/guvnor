@@ -243,8 +243,7 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
             public void onClick(ClickEvent event) {
                 String var = varName.getText();
                 if ( getModeller().isVariableNameUsed( var ) && ((model.getBoundName() != null && model.getBoundName().equals( var ) == false) || model.getBoundName() == null) ) {
-                    Window.alert( Format.format( constants.TheVariableName0IsAlreadyTaken(),
-                                                 var ) );
+                    Window.alert( constants.TheVariableName0IsAlreadyTaken( var ) );
                     return;
                 }
                 model.setBoundName( var );

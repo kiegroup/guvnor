@@ -48,10 +48,9 @@ public class LoggedInUserInfo extends Composite {
         content.append( Format.format( "<div class='{0}'>",
                                        GuvnorResources.INSTANCE.headerCss().headerUserInfoClass() ) );
 
-        String m = Format.format( constants.WelcomeUser(),
-                                  userName );
-        content.append( "<small>" + m ); //NON-NLS
-        content.append( "&nbsp;&nbsp;&nbsp;<a href='logout.jsp'>[" + constants.SignOut() + "]</a></small>" ); //NON-NLS
+        String m = constants.WelcomeUser(userName);
+        content.append("<small>").append(m); //NON-NLS
+        content.append("&nbsp;&nbsp;&nbsp;<a href='logout.jsp'>[").append(constants.SignOut()).append("]</a></small>"); //NON-NLS
         content.append( "</div>" ); //NON-NLS
         widgetcontent.setHTML( content.toString() );
 

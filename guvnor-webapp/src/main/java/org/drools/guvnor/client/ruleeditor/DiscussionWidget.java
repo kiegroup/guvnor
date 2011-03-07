@@ -125,9 +125,8 @@ public class DiscussionWidget extends Composite {
     }
 
     private Widget appendComment(DiscussionRecord r) {
-        SmallLabel hrd = new SmallLabel( Format.format( constants.smallCommentBy0On1Small(),
-                                                        r.author,
-                                                        new Date( r.timestamp ).toString() ) );
+        SmallLabel hrd = new SmallLabel( constants.smallCommentBy0On1Small(r.author,
+                                                        new Date( r.timestamp )) );
         hrd.addStyleName( "discussion-header" );
         commentList.add( hrd );
 

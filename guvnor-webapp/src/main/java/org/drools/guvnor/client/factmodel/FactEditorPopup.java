@@ -72,8 +72,7 @@ public class FactEditorPopup {
 
             public void onClick(ClickEvent event) {
                 if ( doesTheNameExist() ) {
-                    Window.alert( Format.format( constants.NameTakenForModel(),
-                                                 name.getText() ) );
+                    Window.alert( constants.NameTakenForModel( name.getText() ) );
                     return;
                 }
 

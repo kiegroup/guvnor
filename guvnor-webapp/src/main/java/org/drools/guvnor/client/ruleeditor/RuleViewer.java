@@ -685,9 +685,7 @@ public class RuleViewer extends GuvnorEditor {
     private void completedCopying(String name,
                                   String pkg,
                                   String newAssetUUID) {
-        Window.alert( Format.format( constants.CreatedANewItemSuccess(),
-                                     name,
-                                     pkg ) );
+        Window.alert( constants.CreatedANewItemSuccess( name, pkg ) );
         if ( editEvent != null ) {
             editEvent.open( newAssetUUID );
         }

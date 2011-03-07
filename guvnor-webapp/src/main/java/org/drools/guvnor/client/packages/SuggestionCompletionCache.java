@@ -89,7 +89,7 @@ public class SuggestionCompletionCache {
 
     public void loadPackage(final String packageName, final Command command) {
 
-        LoadingPopup.showMessage(Format.format(constants.InitialisingInfoFor0PleaseWait(), packageName));
+        LoadingPopup.showMessage(constants.InitialisingInfoFor0PleaseWait(packageName));
 
         RepositoryServiceFactory.getService().loadSuggestionCompletionEngine( packageName, new GenericCallback<SuggestionCompletionEngine>() {
             public void onSuccess(SuggestionCompletionEngine engine) {
@@ -99,7 +99,7 @@ public class SuggestionCompletionCache {
 
             public void onFailure(Throwable t) {
                 LoadingPopup.close();
-                ErrorPopup.showMessage(Format.format(constants.UnableToValidatePackageForSCE(), packageName));
+                ErrorPopup.showMessage(constants.UnableToValidatePackageForSCE(packageName));
                 command.execute();
             }
         });

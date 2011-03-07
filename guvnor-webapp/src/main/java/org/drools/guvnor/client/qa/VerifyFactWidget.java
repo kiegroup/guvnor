@@ -87,13 +87,10 @@ public class VerifyFactWidget extends Composite {
         HorizontalPanel ab = new HorizontalPanel();
         if ( !vf.anonymous ) {
             type = (String) sc.getVariableTypes().get( vf.getName() );
-            ab.add( new SmallLabel( Format.format( constants.scenarioFactTypeHasValues(),
-                                                   type,
-                                                   vf.getName() ) ) );
+            ab.add( new SmallLabel( constants.scenarioFactTypeHasValues( type, vf.getName() ) ) );
         } else {
             type = vf.getName();
-            ab.add( new SmallLabel( Format.format( constants.AFactOfType0HasValues(),
-                                                   vf.getName() ) ) );
+            ab.add( new SmallLabel( constants.AFactOfType0HasValues( vf.getName() ) ) );
         }
         this.showResults = showResults;
 
@@ -193,7 +190,7 @@ public class VerifyFactWidget extends Composite {
                                          constants.RemoveThisFieldExpectation(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
-                                                 if ( Window.confirm( Format.format( constants.AreYouSureYouWantToRemoveThisFieldExpectation(),
+                                                 if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisFieldExpectation(
                                                                                      fld.getFieldName() ) ) ) {
                                                      vf.getFieldValues().remove( fld );
                                                      FlexTable data = render( vf );
@@ -214,8 +211,7 @@ public class VerifyFactWidget extends Composite {
                                     new Image( images.warning() ) );
                     data.setWidget( i,
                                     5,
-                                    new HTML( Format.format( constants.ActualResult(),
-                                                             fld.getActualResult() ) ) );
+                                    new HTML( constants.ActualResult( fld.getActualResult() ) ) );
 
                     data.getCellFormatter().addStyleName( i,
                                                           5,

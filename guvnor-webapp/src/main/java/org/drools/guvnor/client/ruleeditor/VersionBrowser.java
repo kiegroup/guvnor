@@ -167,7 +167,7 @@ public class VersionBrowser extends Composite {
 
                                                                         for ( int i = 0; i < rows.length; i++ ) {
                                                                             TableDataRow row = rows[i];
-                                                                            String s = Format.format( constants.property0ModifiedOn12(),
+                                                                            String s = constants.property0ModifiedOn12(
                                                                                                       row.values[0],
                                                                                                       row.values[2],
                                                                                                       row.values[1] );
@@ -224,8 +224,7 @@ public class VersionBrowser extends Composite {
                     new GenericCallback<PackageConfigData>() {
                         public void onSuccess(PackageConfigData conf) {
                             final FormStylePopup pop = new FormStylePopup( images.snapshot(),
-                            		Format.format( constants.VersionNumber0Of1(),
-                                            "" + conf.versionNumber,
+                            		constants.VersionNumber0Of1( conf.versionNumber,
                                             conf.name ),
                                     new Integer( 800 ) );
 
@@ -252,8 +251,8 @@ public class VersionBrowser extends Composite {
                                                                      asset.isreadonly = true;
                                                                      //asset.metaData.name = metaData.name;
                                                                      final FormStylePopup pop = new FormStylePopup( images.snapshot(),
-                                                                                                                    Format.format( constants.VersionNumber0Of1(),
-                                                                                                                                   "" + asset.metaData.versionNumber,
+                                                                                                                    constants.VersionNumber0Of1(
+                                                                                                                                   asset.metaData.versionNumber,
                                                                                                                                    asset.metaData.name ),
                                                                                                                     new Integer( 800 ) );
 

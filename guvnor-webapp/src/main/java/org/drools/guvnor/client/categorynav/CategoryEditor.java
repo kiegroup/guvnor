@@ -73,8 +73,7 @@ public class CategoryEditor extends FormStylePopup {
         if ( catPath == null ) {
             return ((Constants) GWT.create( Constants.class )).CreateANewTopLevelCategory();
         } else {
-            return Format.format( ((Constants) GWT.create( Constants.class )).CreateNewCategoryUnder0(),
-                                  catPath );
+            return ((Constants) GWT.create( Constants.class )).CreateNewCategoryUnder0(catPath);
         }
     }
 

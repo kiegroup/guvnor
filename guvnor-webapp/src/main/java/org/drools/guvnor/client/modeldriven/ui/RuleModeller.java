@@ -461,8 +461,7 @@ public class RuleModeller extends DirtyableComposite
             positionCbo.addItem( constants.Top(),
                                  "0" );
             for ( int i = 1; i < model.lhs.length; i++ ) {
-                positionCbo.addItem( Format.format( constants.Line0(),
-                                                    i ),
+                positionCbo.addItem( constants.Line0(i),
                                      String.valueOf( i ) );
             }
         } else {
@@ -666,8 +665,7 @@ public class RuleModeller extends DirtyableComposite
             positionCbo.addItem( constants.Top(),
                                  "0" );
             for ( int i = 1; i < model.rhs.length; i++ ) {
-                positionCbo.addItem( Format.format( constants.Line0(),
-                                                    i ),
+                positionCbo.addItem( constants.Line0(i),
                                      String.valueOf( i ) );
             }
         } else {
@@ -718,8 +716,7 @@ public class RuleModeller extends DirtyableComposite
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
 
-            choices.addItem( Format.format( constants.ChangeFieldValuesOf0(),
-                                            v ),
+            choices.addItem( constants.ChangeFieldValuesOf0( v ),
                              "VAR" + v ); //NON-NLS
             cmds.put( "VAR" + v,
                       new Command() { //NON-NLS
@@ -735,8 +732,7 @@ public class RuleModeller extends DirtyableComposite
 
         for ( int i = 0; i < globals.length; i++ ) { //we also do globals here...
             final String v = globals[i];
-            choices.addItem( Format.format( constants.ChangeFieldValuesOf0(),
-                                            v ),
+            choices.addItem( constants.ChangeFieldValuesOf0( v ),
                              "GLOBVAR" + v ); //NON-NLS
             cmds.put( "GLOBVAR" + v,
                       new Command() { //NON-NLS
@@ -752,8 +748,7 @@ public class RuleModeller extends DirtyableComposite
         //RETRACT
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
-            choices.addItem( Format.format( constants.Retract0(),
-                                            v ),
+            choices.addItem( constants.Retract0( v ),
                              "RET" + v ); //NON-NLS
             cmds.put( "RET" + v,
                       new Command() { //NON-NLS
@@ -770,8 +765,7 @@ public class RuleModeller extends DirtyableComposite
         for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
             final String v = iter.next();
 
-            choices.addItem( Format.format( constants.Modify0(),
-                                            v ),
+            choices.addItem( constants.Modify0( v ),
                              "MOD" + v ); //NON-NLS
             cmds.put( "MOD" + v,
                       new Command() { //NON-NLS
@@ -789,8 +783,7 @@ public class RuleModeller extends DirtyableComposite
         //Now inserts:
         for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
             final String item = completions.getFactTypes()[i];
-            choices.addItem( Format.format( constants.InsertFact0(),
-                                            item ),
+            choices.addItem( constants.InsertFact0( item ),
                              "INS" + item ); //NON-NLS
             cmds.put( "INS" + item,
                       new Command() { //NON-NLS
@@ -806,8 +799,7 @@ public class RuleModeller extends DirtyableComposite
 
         for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
             final String item = completions.getFactTypes()[i];
-            choices.addItem( Format.format( constants.LogicallyInsertFact0(),
-                                            item ),
+            choices.addItem(  constants.LogicallyInsertFact0( item ),
                              "LINS" + item ); //NON-NLS
             cmds.put( "LINS" + item,
                       new Command() { //NON-NLS
@@ -828,9 +820,7 @@ public class RuleModeller extends DirtyableComposite
                 for ( int i = 0; i < completions.getGlobalCollections().length; i++ ) {
                     final String glob = completions.getGlobalCollections()[i];
                     final String var = bf;
-                    choices.addItem( Format.format( constants.Append0ToList1(),
-                                                    var,
-                                                    glob ),
+                    choices.addItem( constants.Append0ToList1( var, glob ),
                                      "GLOBCOL" + glob + var ); //NON-NLS
                     cmds.put( "GLOBCOL" + glob + var,
                               new Command() { //NON-NLS
@@ -864,8 +854,7 @@ public class RuleModeller extends DirtyableComposite
                       } );
             for ( int i = 0; i < globals.length; i++ ) { //we also do globals here...
                 final String v = globals[i];
-                choices.addItem( Format.format( constants.CallMethodOn0(),
-                                                v ),
+                choices.addItem( constants.CallMethodOn0( v ),
                                  "GLOBCALL" + v ); //NON-NLS
                 cmds.put( "GLOBCALL" + v,
                           new Command() { //NON-NLS
@@ -883,8 +872,7 @@ public class RuleModeller extends DirtyableComposite
             for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
                 final String v = iter.next();
 
-                choices.addItem( Format.format( constants.CallMethodOn0(),
-                                                v ),
+                choices.addItem( constants.CallMethodOn0( v ),
                                  "CALL" + v ); //NON-NLS
                 cmds.put( "CALL" + v,
                           new Command() { //NON-NLS
@@ -900,8 +888,7 @@ public class RuleModeller extends DirtyableComposite
             for ( Iterator<String> iter = vars2.iterator(); iter.hasNext(); ) {
                 final String v = iter.next();
 
-                choices.addItem( Format.format( constants.CallMethodOn0(),
-                                                v ),
+                choices.addItem( constants.CallMethodOn0( v ),
                                  "CALL" + v ); //NON-NLS
                 cmds.put( "CALL" + v,
                           new Command() { //NON-NLS

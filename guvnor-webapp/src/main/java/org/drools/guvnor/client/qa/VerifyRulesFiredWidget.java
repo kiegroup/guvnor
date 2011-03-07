@@ -105,8 +105,7 @@ public class VerifyRulesFiredWidget extends Composite {
                                     new Image( images.warning() ) );
                     data.setWidget( i,
                                     4,
-                                    new HTML( Format.format( constants.ActualResult(),
-                                                             v.getActualResult() ) ) );
+                                    new HTML( constants.ActualResult(v.getActualResult().toString()) ) );
 
                     data.getCellFormatter().addStyleName( i,
                                                           4,

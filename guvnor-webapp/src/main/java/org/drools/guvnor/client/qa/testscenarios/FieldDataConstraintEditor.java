@@ -114,8 +114,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                          DropDownData.create( c ) ) );
         } else if ( flType != null && flType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
             final DatePickerTextBox datePicker = new DatePickerTextBox( field.getValue() );
-            String m = Format.format( ((Constants) GWT.create( Constants.class )).ValueFor0(),
-                                      field.getName() );
+            String m = ((Constants) GWT.create( Constants.class )).ValueFor0( field.getName() );
             datePicker.setTitle( m );
             datePicker.addValueChanged( new ValueChanged() {
                 public void valueChanged(String newValue) {
@@ -175,8 +174,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                            String initialValue) {
         final TextBox tb = new TextBox();
         tb.setText( initialValue );
-        String m = Format.format( ((Constants) GWT.create( Constants.class )).ValueFor0(),
-                                  fieldName );
+        String m = ((Constants) GWT.create( Constants.class )).ValueFor0( fieldName );
         tb.setTitle( m );
         tb.addChangeHandler( new ChangeHandler() {
 
@@ -257,8 +255,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
             hpanel.add( fieldElement );
             final int index = i;
             Image del = new ImageButton( images.deleteItemSmall(),
-                                         Format.format( constants.AElementToDelInCollectionList(),
-                                                        "tt" ),
+                                         constants.AElementToDelInCollectionList(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
                                                  field.collectionFieldList.remove( index );
@@ -325,8 +322,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
         if ( this.field.collectionFieldList.size() == 0 ) {
             Image add = new ImageButton( images.newItem(),
-                                         Format.format( constants.AElementToAddInCollectionList(),
-                                                        "tt" ),
+                                         constants.AElementToAddInCollectionList(),
                                          new ClickHandler() {
                                              public void onClick(ClickEvent w) {
                                                  FieldData newFieldData = new FieldData();

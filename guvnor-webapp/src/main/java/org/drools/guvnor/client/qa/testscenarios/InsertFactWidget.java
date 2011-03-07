@@ -37,8 +37,7 @@ public class InsertFactWidget extends FactWidget {
                scenario,
                parent,
                executionTrace,
-               Format.format( constants.insertForScenario(),
-                              factType ) );
+               constants.insertForScenario( factType ) );
     }
 
     public void onDelete() {

@@ -103,9 +103,9 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
                                                                                      response.isTotalRowSizeExact() );
                                                                      updateRowData( response.getStartRowIndex(),
                                                                                     response.getPageRowList() );
-                                                                     lhsSnapshotHeader.setValue( Format.format( constants.Older0(),
+                                                                     lhsSnapshotHeader.setValue( constants.Older0(
                                                                                                                 response.getLeftSnapshotName() ) );
-                                                                     rhsSnapshotHeader.setValue( Format.format( constants.Newer0(),
+                                                                     rhsSnapshotHeader.setValue( constants.Newer0(
                                                                                                                 response.getRightSnapshotName() ) );
                                                                  }
                                                              } );

@@ -282,9 +282,7 @@ public class GuidedDecisionTableWidget extends Composite
                                      constants.RemoveThisActionColumn(),
                                      new ClickHandler() {
                                          public void onClick(ClickEvent w) {
-                                             String cm = Format.format(
-                                                                        constants.DeleteActionColumnWarning(),
-                                                                        c.getHeader() );
+                                             String cm = constants.DeleteActionColumnWarning( c.getHeader() );
                                              if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
                                                  dtable.deleteColumn( c );
                                                  dtable.scrapeColumns();
@@ -378,9 +376,7 @@ public class GuidedDecisionTableWidget extends Composite
                                      constants.RemoveThisConditionColumn(),
                                      new ClickHandler() {
                                          public void onClick(ClickEvent w) {
-                                             String cm = Format.format(
-                                                                        constants.DeleteConditionColumnWarning(),
-                                                                        c.getHeader() );
+                                             String cm = constants.DeleteConditionColumnWarning( c.getHeader() );
                                              if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
                                                  dtable.deleteColumn( c );
                                                  dtable.scrapeColumns();
@@ -604,9 +600,7 @@ public class GuidedDecisionTableWidget extends Composite
                                      constants.RemoveThisAttribute(),
                                      new ClickHandler() {
                                          public void onClick(ClickEvent w) {
-                                             String ms = Format.format(
-                                                                        constants.DeleteActionColumnWarning(),
-                                                                        at.getAttribute() );
+                                             String ms = constants.DeleteActionColumnWarning( at.getAttribute() );
                                              if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
                                                  dtable.deleteColumn( at );
                                                  dtable.scrapeColumns();
@@ -623,9 +617,7 @@ public class GuidedDecisionTableWidget extends Composite
                                      constants.RemoveThisMetadata(),
                                      new ClickHandler() {
                                          public void onClick(ClickEvent w) {
-                                             String ms = Format.format(
-                                                                        constants.DeleteActionColumnWarning(),
-                                                                        md.getMetadata() );
+                                             String ms = constants.DeleteActionColumnWarning( md.getMetadata() );
                                              if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
                                                  dtable.deleteColumn( md );
                                                  dtable.scrapeColumns();
@@ -638,8 +630,7 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private void setupColumnsNote() {
-        configureColumnsNote.setVisible( guidedDecisionTable.getAttributeCols()
-                .size() == 0
+        configureColumnsNote.setVisible( guidedDecisionTable.getAttributeCols().size() == 0
                                          && guidedDecisionTable.getConditionCols().size() == 0
                                          && guidedDecisionTable.getActionCols().size() == 0 );
     }

@@ -333,8 +333,7 @@ public class MetaDataWidget extends Composite {
                 }
                 RepositoryServiceFactory.getAssetService().changeAssetPackage( uuid,
                                                                           sel.getSelectedPackage(),
-                                                                          Format.format( constants.MovedFromPackage(),
-                                                                                         pkg ),
+                                                                          constants.MovedFromPackage( pkg ),
                                                                           new GenericCallback<java.lang.Void>() {
                                                                               public void onSuccess(Void v) {
                                                                                   metaDataRefreshView.execute();

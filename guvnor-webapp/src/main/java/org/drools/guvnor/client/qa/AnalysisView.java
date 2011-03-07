@@ -58,8 +58,7 @@ public class AnalysisView extends Composite {
         PrettyFormLayout pf = new PrettyFormLayout();
 
         VerticalPanel vert = new VerticalPanel();
-        String m = Format.format( constants.AnalysingPackage(),
-                                  new String[]{packageName} );
+        String m = constants.AnalysingPackage(packageName);
         vert.add( new HTML( m ) );
         Button run = new Button( constants.RunAnalysis() );
         run.addClickHandler( new ClickHandler() {

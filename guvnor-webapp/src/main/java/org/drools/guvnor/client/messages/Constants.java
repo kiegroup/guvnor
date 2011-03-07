@@ -16,7 +16,9 @@
 
 package org.drools.guvnor.client.messages;
 
-import com.google.gwt.i18n.client.ConstantsWithLookup;
+import java.util.Date;
+
+import com.google.gwt.i18n.client.Messages;
 
 /**
  * This uses GWT to provide client side compile time resolving of locales.
@@ -27,8 +29,7 @@ import com.google.gwt.i18n.client.ConstantsWithLookup;
  * To use this, use <code>GWT.create(Constants.class)</code>.
  */
 public interface Constants
-    extends
-    ConstantsWithLookup {
+    extends Messages {
 
     String ActionColumnConfigurationInsertingANewFact();
 
@@ -68,9 +69,9 @@ public interface Constants
 
     String pleaseChooseABoundFactForThisColumn();
 
-    String setterLabel();
+    String setterLabel(String actionDisplayName, String descFact);
 
-    String statusIs();
+    String statusIs(String status);
 
     String SaveChanges();
 
@@ -104,7 +105,7 @@ public interface Constants
 
     String AssetNameMustNotBeEmpty();
 
-    String CreatedANewItemSuccess();
+    String CreatedANewItemSuccess(String itemName, String packageName);
 
     String CheckInChanges();
 
@@ -164,7 +165,7 @@ public interface Constants
 
     String Cause();
 
-    String AnalysingPackage();
+    String AnalysingPackage(String packageName);
 
     String RunAnalysis();
 
@@ -202,7 +203,7 @@ public interface Constants
 
     String noArchivedPackages();
 
-    String analysisResultSummary();
+    String analysisResultSummary(String messageType, int linesLength);
 
     String Upload();
 
@@ -282,11 +283,11 @@ public interface Constants
 
     String PleaseWait();
 
-    String TestFailureBulkFailures();
+    String TestFailureBulkFailures(int failures, int total);
 
     String Open();
 
-    String failuresOutOFExpectations();
+    String failuresOutOFExpectations(int totalFailures, int grandTotal);
 
     String OverallResult();
 
@@ -294,7 +295,7 @@ public interface Constants
 
     String FailureOverall();
 
-    String RuleCoveragePercent();
+    String RuleCoveragePercent(int percentCovered);
 
     String RulesCovered();
 
@@ -344,7 +345,7 @@ public interface Constants
 
     String CreateANewTopLevelCategory();
 
-    String CreateNewCategoryUnder0();
+    String CreateNewCategoryUnder0(String catPath);
 
     String CategoryWasNotSuccessfullyCreated();
 
@@ -430,7 +431,7 @@ public interface Constants
 
     String AddAnAction();
 
-    String TheValue0IsNotValidForThisField();
+    String TheValue0IsNotValidForThisField(String value);
 
     String AFormula();
 
@@ -478,9 +479,9 @@ public interface Constants
 
     String Analysis();
 
-    String ScenariosForPackage();
+    String ScenariosForPackage(String packageName);
 
-    String AnalysisForPackage();
+    String AnalysisForPackage(String packageName);
 
     String AreYouSureCloseWarningUnsaved();
 
@@ -494,7 +495,7 @@ public interface Constants
 
     String LoadingSnapshot();
 
-    String SnapshotLabel();
+    String SnapshotLabel(String snapshotName);
 
     String WholeNumberInteger();
 
@@ -506,17 +507,13 @@ public interface Constants
 
     String Text();
 
-    String FieldName();
-
-    String AreYouSureYouWantToRemoveTheField0();
+    String AreYouSureYouWantToRemoveTheField0(String fieldName);
 
     String AddNewFactType();
 
     String NewType();
 
     String EnterNewTypeName();
-
-    String TypeNameExistsWarning();
 
     String chooseType();
 
@@ -526,7 +523,7 @@ public interface Constants
 
     String ChangeName();
 
-    String NameTakenForModel();
+    String NameTakenForModel(String name);
 
     String ModelNameChangeWarning();
 
@@ -570,7 +567,7 @@ public interface Constants
 
     String FactAttributes();
 
-    String SessionExpiredMessage();
+    String SessionExpiredMessage(String url);
 
     String DecisionTable();
 
@@ -598,7 +595,7 @@ public interface Constants
 
     String RemoveThisConditionColumn();
 
-    String DeleteConditionColumnWarning();
+    String DeleteConditionColumnWarning(String header);
 
     String Metadata();
 
@@ -622,7 +619,7 @@ public interface Constants
 
     String RemoveThisAttribute();
 
-    String DeleteActionColumnWarning();
+    String DeleteActionColumnWarning(String headerOrAttribute);
 
     String RemoveThisMetadata();
 
@@ -764,7 +761,7 @@ public interface Constants
 
     String LoadingUserPermissions();
 
-    String WelcomeUser();
+    String WelcomeUser(String userName);
 
     String SignOut();
 
@@ -844,7 +841,7 @@ public interface Constants
 
     String YouNeedToPickADifferentPackageToMoveThisTo();
 
-    String MovedFromPackage();
+    String MovedFromPackage(String packageName);
 
     String NotCheckedInYet();
 
@@ -878,7 +875,7 @@ public interface Constants
 
     String emptyNameIsNotAllowed();
 
-    String NonValidJCRName();
+    String NonValidJCRName(String jcrName, char character);
 
     String CreateANewPackage();
 
@@ -916,7 +913,7 @@ public interface Constants
 
     String PackageWasImportedSuccessfully();
 
-    String UnableToImportIntoThePackage0();
+    String UnableToImportIntoThePackage0(String packageName);
 
     String YouDidNotChooseADrlFileToImport();
 
@@ -956,7 +953,7 @@ public interface Constants
 
     String AssemblingPackageSource();
 
-    String ViewingSourceFor0();
+    String ViewingSourceFor0(String fileName);
 
     String ReadOnlySourceNote();
 
@@ -988,7 +985,7 @@ public interface Constants
 
     String YouHaveToEnterOrChoseALabelNameForTheSnapshot();
 
-    String TheSnapshotCalled0WasSuccessfullyCreated();
+    String TheSnapshotCalled0WasSuccessfullyCreated(String snapshotName);
 
     String PackageName();
 
@@ -1026,7 +1023,7 @@ public interface Constants
 
     String Tip();
 
-    String AllRulesForCategory0WillNowExtendTheRule1();
+    String AllRulesForCategory0WillNowExtendTheRule1(String categoryName, String ruleName);
 
     String RemoveThisCategoryRule();
 
@@ -1194,11 +1191,11 @@ public interface Constants
 
     String DeleteSelectedUser();
 
-    String AreYouSureYouWantToDeleteUser0();
+    String AreYouSureYouWantToDeleteUser0(String userName);
 
     String LoadingUsersPermissions();
 
-    String EditUser0();
+    String EditUser0(String userName);
 
     String UserAuthenticationTip();
 
@@ -1212,7 +1209,7 @@ public interface Constants
 
     String RemovePermission();
 
-    String AreYouSureYouWantToRemovePermission0();
+    String AreYouSureYouWantToRemovePermission0(String p);
 
     String AddANewPermission();
 
@@ -1234,15 +1231,15 @@ public interface Constants
 
     String PermissionDetailsTip();
 
-    String TheVariableName0IsAlreadyTaken();
+    String TheVariableName0IsAlreadyTaken(String variableName);
 
-    String BindTheFieldCalled0ToAVariable();
+    String BindTheFieldCalled0ToAVariable(String fieldName);
 
     String BindTheExpressionToAVariable();
 
     String ShowSubFields();
 
-    String ApplyAConstraintToASubFieldOf0();
+    String ApplyAConstraintToASubFieldOf0(String parentFieldName);
 
     String AddFieldsToThisConstraint();
 
@@ -1252,7 +1249,7 @@ public interface Constants
 
     String MultipleFieldConstraint();
 
-    String ModifyConstraintsFor0();
+    String ModifyConstraintsFor0(String factType);
 
     String AddSubFieldConstraint();
 
@@ -1360,7 +1357,7 @@ public interface Constants
 
     String Attribute1();
 
-    String AddXToListY();
+    String AddXToListY(String factName, String globalName);
 
     String RemoveThisAction();
 
@@ -1488,7 +1485,7 @@ public interface Constants
 
     String NewGlobal();
 
-    String TheName0IsAlreadyInUsePleaseChooseAnotherName();
+    String TheName0IsAlreadyInUsePleaseChooseAnotherName(String name);
 
     String GlobalColon();
 
@@ -1498,7 +1495,7 @@ public interface Constants
 
     String YouMustEnterAValidFactName();
 
-    String TheFactName0IsAlreadyInUsePleaseChooseAnotherName();
+    String TheFactName0IsAlreadyInUsePleaseChooseAnotherName(String factName);
 
     String FactName();
 
@@ -1536,25 +1533,25 @@ public interface Constants
 
     String loadingList1();
 
-    String ValueFor0();
+    String ValueFor0(String fieldName);
 
-    String globalForScenario();
+    String globalForScenario(String scenario);
 
-    String modifyForScenario();
+    String modifyForScenario(String scenario);
 
-    String insertForScenario();
+    String insertForScenario(String scenario);
 
     String ChooseAFieldToAdd();
 
     String RemoveThisRow();
 
-    String AreYouSureYouWantToRemoveRow0();
+    String AreYouSureYouWantToRemoveRow0(String factName);
 
-    String RemoveTheColumnForScenario();
+    String RemoveTheColumnForScenario(String factDataName);
 
-    String CanTRemoveThisColumnAsTheName0IsBeingUsed();
+    String CanTRemoveThisColumnAsTheName0IsBeingUsed(String factDataName);
 
-    String AreYouSureYouWantToRemoveColumn0();
+    String AreYouSureYouWantToRemoveColumn0(String factDataName);
 
     String AddAField();
 
@@ -1576,7 +1573,7 @@ public interface Constants
 
     String UseASimulatedDateAndTime();
 
-    String property0RulesFiredIn1Ms();
+    String property0RulesFiredIn1Ms(long numberOfRulesFired, long executionTimeResult);
 
     String ShowRulesFired();
 
@@ -1584,11 +1581,11 @@ public interface Constants
 
     String currentDateAndTime();
 
-    String BadDateFormatPleaseTryAgainTryTheFormatOf0();
+    String BadDateFormatPleaseTryAgainTryTheFormatOf0(String format);
 
-    String scenarioFactTypeHasValues();
+    String scenarioFactTypeHasValues(String type, String fact);
 
-    String AFactOfType0HasValues();
+    String AFactOfType0HasValues(String type);
 
     String AddAFieldToThisExpectation();
 
@@ -1598,11 +1595,11 @@ public interface Constants
 
     String RemoveThisFieldExpectation();
 
-    String AreYouSureYouWantToRemoveThisFieldExpectation();
+    String AreYouSureYouWantToRemoveThisFieldExpectation(String fieldName);
 
     String ExpectRules();
 
-    String ActualResult();
+    String ActualResult(String actualResult);
 
     String firedAtLeastOnce();
 
@@ -1628,7 +1625,7 @@ public interface Constants
 
     String packageConfigurationProblem1();
 
-    String MaxRuleFiringsReachedWarning();
+    String MaxRuleFiringsReachedWarning(int maxRuleFirings);
 
     String Results();
 
@@ -1650,19 +1647,19 @@ public interface Constants
 
     String CommentColon();
 
-    String SnapshotDeleteConfirm();
+    String SnapshotDeleteConfirm(String snapshotName, String packageName);
 
     String SnapshotWasDeleted();
 
-    String CopySnapshotText();
+    String CopySnapshotText(String snapshotName);
 
     String ExistingSnapshots();
 
     String NewSnapshotNameIs();
 
-    String CreatedSnapshot0ForPackage1();
+    String CreatedSnapshot0ForPackage1(String snapshotName, String packageName);
 
-    String Snapshot0ForPackage1WasCopiedFrom2();
+    String Snapshot0ForPackage1WasCopiedFrom2(String newSnapshotName, String packageName, String sourceSnapshotName);
 
     String PleaseEnterANonExistingSnapshotName();
 
@@ -1726,7 +1723,7 @@ public interface Constants
 
     String UnableToGetContentAssistanceForThisRule();
 
-    String UnableToValidatePackageForSCE();
+    String UnableToValidatePackageForSCE(String packageName);
 
     String Detail();
 
@@ -1738,7 +1735,7 @@ public interface Constants
 
     String LoadingVersionFromHistory();
 
-    String VersionNumber0Of1();
+    String VersionNumber0Of1(long versionNumber, String name);
 
     String RestoreThisVersion();
 
@@ -1808,19 +1805,19 @@ public interface Constants
 
     String clickToAddPatterns();
 
-    String ChangeFieldValuesOf0();
+    String ChangeFieldValuesOf0(String varName);
 
-    String Retract0();
+    String Retract0(String varName);
 
-    String Modify0();
+    String Modify0(String varName);
 
-    String InsertFact0();
+    String InsertFact0(String fact);
 
-    String LogicallyInsertFact0();
+    String LogicallyInsertFact0(String fact);
 
-    String Append0ToList1();
+    String Append0ToList1(String varName, String collectionName);
 
-    String CallMethodOn0();
+    String CallMethodOn0(String varName);
 
     String hide();
 
@@ -1830,17 +1827,17 @@ public interface Constants
 
     String PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern();
 
-    String ThereIsAAn0With();
+    String ThereIsAAn0With(String patternName);
 
-    String ThereIsAAn0();
+    String ThereIsAAn0(String patternName);
 
-    String All0with();
+    String All0with(String patternName);
 
     String AddFirstNewField();
 
     String ImportedDRLContainsNoNameForThePackage();
 
-    String InitialisingInfoFor0PleaseWait();
+    String InitialisingInfoFor0PleaseWait(String packageName);
 
     String SavedOK();
 
@@ -1864,7 +1861,7 @@ public interface Constants
 
     String Conditions();
 
-    String smallCommentBy0On1Small();
+    String smallCommentBy0On1Small(String author, Date date);
 
     String AddADiscussionComment();
 
@@ -1892,7 +1889,7 @@ public interface Constants
 
     String Value();
 
-    String property0ModifiedOn12();
+    String property0ModifiedOn12(String propertyName, String arg1, String arg2);
 
     String isContainedInTheFollowingList();
 
@@ -1958,9 +1955,9 @@ public interface Constants
 
     String AssetToImport();
 
-    String Older0();
+    String Older0(String snapshotName);
 
-    String Newer0();
+    String Newer0(String snapshotName);
 
     String TypeAdded();
 
@@ -1986,7 +1983,7 @@ public interface Constants
 
     String Bottom();
 
-    String Line0();
+    String Line0(int i);
 
     String PositionColon();
 
@@ -2008,7 +2005,7 @@ public interface Constants
 
     String Show();
 
-    String Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview();
+    String Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview(String blockingAssetName);
 
     String PromoteToGlobal();
 
@@ -2117,8 +2114,6 @@ public interface Constants
     String ActivateRuleFlowGroup();
 
     String CantRemoveThisBlockAsOneOfTheNamesIsBeingUsed();
-
-    String FillInColumnWithValue();
 
     String LoadTemplateData();
 
