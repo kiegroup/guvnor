@@ -30,7 +30,8 @@ public class FactPattern
 
     public CompositeFieldConstraint constraintList;
     private String       factType;
-    public String       boundName;
+    private String       boundName;
+    private boolean isNegated;
 
     public FactPattern() {
         //this.constraints = new CompositeFieldConstraint();
@@ -41,6 +42,21 @@ public class FactPattern
         //this.constraints = new CompositeFieldConstraint();
     }
 
+    public String getBoundName() {
+        return boundName;
+    }
+
+    public void setBoundName(String boundName) {
+        this.boundName = boundName;
+    }
+
+    public boolean isNegated() {
+        return isNegated;
+    }
+
+    public void setNegated(boolean isNegated) {
+        this.isNegated = isNegated;
+    }
 
     /**
      * This will add a top level constraint.

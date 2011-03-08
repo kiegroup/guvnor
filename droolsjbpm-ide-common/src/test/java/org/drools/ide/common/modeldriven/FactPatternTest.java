@@ -104,7 +104,7 @@ public class FactPatternTest {
     @Test
     public void testIsBound() {
         FactPattern pat = new FactPattern();
-        pat.boundName = "x";
+        pat.setBoundName("x");
         assertTrue(pat.isBound());
         
         pat = new FactPattern();

@@ -207,7 +207,7 @@ public class BRDRLPersistenceTest {
         final RuleModel m = new RuleModel();
         m.name = "Complex Rule";
         final FactPattern pat = new FactPattern("Person");
-        pat.boundName = "p1";
+        pat.setBoundName("p1");
         final SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldBinding("f1");
         con.setFieldName("age");
@@ -229,7 +229,7 @@ public class BRDRLPersistenceTest {
         m.addAttribute(new RuleAttribute("agenda-group", "aGroup"));
 
         final FactPattern pat = new FactPattern("Person");
-        pat.boundName = "p1";
+        pat.setBoundName("p1");
         final SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldBinding("f1");
         con.setFieldName("age");
@@ -366,7 +366,7 @@ public class BRDRLPersistenceTest {
         m.name = "with composite";
 
         FactPattern p1 = new FactPattern("Person");
-        p1.boundName = "p1";
+        p1.setBoundName("p1");
         m.addLhsItem(p1);
 
         FactPattern p = new FactPattern("Goober");

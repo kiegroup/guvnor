@@ -346,8 +346,10 @@ public class BRDRLPersistence implements BRLPersistence {
         }
 
         private void generateFactPattern(FactPattern pattern) {
-            if (pattern.boundName != null) {
-                buf.append(pattern.boundName);
+            if(pattern.isNegated()) {
+                buf.append("not ");
+            } else if (pattern.getBoundName() != null) {
+                buf.append(pattern.getBoundName());
                 buf.append(" : ");
             }
             if (pattern.getFactType() != null) {

@@ -31,7 +31,7 @@ public class ExpressionFormLineTest {
     public void toStringText() {
         ExpressionFormLine efl = new ExpressionFormLine();
         FactPattern fact = new FactPattern("String");
-        fact.boundName = "$v";
+        fact.setBoundName("$v");
         efl.appendPart(new ExpressionVariable(fact));
         efl.appendPart(new ExpressionMethod("size", "int", SuggestionCompletionEngine.TYPE_NUMERIC));
         assertEquals("$v.size()", efl.getText());

@@ -488,12 +488,12 @@ public class GuidedDTDRLPersistenceTest {
         assertEquals( "Person",
                       ((FactPattern) rm.lhs[0]).getFactType() );
         assertEquals( "p1",
-                      ((FactPattern) rm.lhs[0]).boundName );
+                      ((FactPattern) rm.lhs[0]).getBoundName() );
 
         assertEquals( "Cheese",
                       ((FactPattern) rm.lhs[1]).getFactType() );
         assertEquals( "c",
-                      ((FactPattern) rm.lhs[1]).boundName );
+                      ((FactPattern) rm.lhs[1]).getBoundName() );
 
         // examine the first pattern
         FactPattern person = (FactPattern) rm.lhs[0];

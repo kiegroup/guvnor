@@ -51,7 +51,7 @@ public class RuleModel implements PortableObject {
 
             if (this.lhs[i] instanceof FactPattern) {
                 final FactPattern p = (FactPattern) this.lhs[i];
-                if (p.boundName != null && var.equals(p.boundName)) {
+                if (p.getBoundName() != null && var.equals(p.getBoundName())) {
                     return p;
                 }
             }
@@ -66,7 +66,7 @@ public class RuleModel implements PortableObject {
         for (int i = 0; i < this.lhs.length; i++) {
             if (this.lhs[i] instanceof FactPattern) {
                 final FactPattern p = (FactPattern) this.lhs[i];
-                if (p.isBound() && var.equals(p.boundName) ) {
+                if (p.isBound() && var.equals(p.getBoundName()) ) {
                     return p.getFactType();
                 }
                 for (FieldConstraint z : p.getFieldConstraints()) {
@@ -132,8 +132,8 @@ public class RuleModel implements PortableObject {
         for (int i = 0; i < this.lhs.length; i++) {
             if (this.lhs[i] instanceof FactPattern) {
                 final FactPattern p = (FactPattern) this.lhs[i];
-                if (p.boundName != null) {
-                    list.add(p.boundName);
+                if (p.getBoundName() != null) {
+                    list.add(p.getBoundName());
                 }
                 list.addAll(getListFieldBinding(p));
             }
@@ -213,7 +213,7 @@ public class RuleModel implements PortableObject {
             } else {
                 if (this.lhs[i] instanceof FactPattern) {
                     final FactPattern p = (FactPattern) this.lhs[i];
-                    if (p.boundName != null && isBoundFactUsed(p.boundName)) {
+                    if (p.getBoundName() != null && isBoundFactUsed(p.getBoundName())) {
                         return false;
                     }
                 }
@@ -525,11 +525,11 @@ public class RuleModel implements PortableObject {
                         }
                     }
                     if (fact.isBound()) {
-                        result.add(fact.boundName);
+                        result.add(fact.getBoundName());
                     }
                 } else {
                     if (fact.isBound()) {
-                        result.add(fact.boundName);
+                        result.add(fact.getBoundName());
                     }
                 }
 
@@ -548,7 +548,7 @@ public class RuleModel implements PortableObject {
             if (pat instanceof FactPattern) {
                 FactPattern fact = (FactPattern) pat;
                 if (fact.isBound()) {
-                    result.add(fact.boundName);
+                    result.add(fact.getBoundName());
                 }
 
                 for (int j = 0; j < fact.getFieldConstraints().length; j++) {

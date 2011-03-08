@@ -51,19 +51,16 @@ public class GuidedDecisionTable
     private String             parentName;
 
     // No longer used by retained to enable XStream to de-serialise legacy
-    // tables.
-    // See http://xstream.codehaus.org/faq.html#Serialization
+    // tables. See http://xstream.codehaus.org/faq.html#Serialization
     @SuppressWarnings("unused")
     private transient int      descriptionWidth  = -1;
 
     // No longer used by retained to enable XStream to de-serialise legacy
-    // tables.
-    // See http://xstream.codehaus.org/faq.html#Serialization
+    // tables. See http://xstream.codehaus.org/faq.html#Serialization
     @SuppressWarnings("unused")
     private transient String   groupField;
 
-    // metadata defined for table ( will be represented as a column per table
-    // row of DATA
+    // metadata defined for table ( will be represented as a column per table row of DATA
     private RowNumberCol       rowNumberCol;
 
     private DescriptionCol     descriptionCol;

@@ -219,7 +219,8 @@ public class GuidedDTDRLPersistence {
                                                     c.getBoundName() );
                 if ( fp == null ) {
                     fp = new FactPattern( c.getFactType() );
-                    fp.boundName = c.getBoundName();
+                    fp.setBoundName( c.getBoundName() );
+                    fp.setNegated( c.isNegated() );
                     patterns.add( fp );
                 }
 
@@ -303,7 +304,7 @@ public class GuidedDTDRLPersistence {
     private FactPattern findByFactPattern(List<FactPattern> patterns,
                                           String boundName) {
         for ( FactPattern factPattern : patterns ) {
-            if ( factPattern.boundName.equals( boundName ) ) {
+            if ( factPattern.getBoundName().equals( boundName ) ) {
                 return factPattern;
             }
         }

@@ -26,18 +26,18 @@ public class ConditionCol extends DTColumnConfig {
     /**
      * What is displayed at the top
      */
-    private String header;
+    private String            header;
 
     /**
      * The type of the fact - class - eg Driver, Person, Cheese etc.
      */
-    private String factType;
+    private String            factType;
 
     /**
      * The name that this gets referenced as. Multiple columns with the same
      * name mean their constraints will be combined.
      */
-    private String boundName;
+    private String            boundName;
 
     /**
      * The type of the value that is in the cell, eg if it is a formula, or
@@ -45,24 +45,29 @@ public class ConditionCol extends DTColumnConfig {
      * TYPE_LITERAL TYPE_RET_VALUE TYPE_PREDICATE (in this case, the field and
      * operator are ignored).
      */
-    private int constraintValueType;
+    private int               constraintValueType;
 
     /**
      * The field of the fact that this pertains to (if its a predicate, ignore
      * it).
      */
-    private String factField;
+    private String            factField;
 
     /**
      * The operator to use to compare the field with the value (unless its a
      * predicate, in which case this is ignored).
      */
-    private String operator;
+    private String            operator;
+
+    /**
+     * Whether the pattern should be negated
+     */
+    private boolean           isNegated;
 
     /**
      * A comma separated list of valid values. Optional.
      */
-    private String valueList;
+    private String            valueList;
 
     public void setHeader(String header) {
         this.header = header;
@@ -120,23 +125,38 @@ public class ConditionCol extends DTColumnConfig {
         return valueList;
     }
 
+    public boolean isNegated() {
+        return isNegated;
+    }
+
+    public void setNegated(boolean negated) {
+        this.isNegated = negated;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
+        if ( obj == null ) {
             return false;
         }
-        if (!(obj instanceof ConditionCol)) {
+        if ( !(obj instanceof ConditionCol) ) {
             return false;
         }
         ConditionCol that = (ConditionCol) obj;
-        return nullOrEqual(this.header, that.header)
-                && nullOrEqual(this.factType, that.factType)
-                && nullOrEqual(this.boundName, that.boundName)
+        return nullOrEqual( this.header,
+                            that.header )
+                && nullOrEqual( this.factType,
+                                that.factType )
+                && nullOrEqual( this.boundName,
+                                that.boundName )
                 && this.constraintValueType == that.constraintValueType
-                && nullOrEqual(this.factField, that.factField)
-                && nullOrEqual(this.operator, that.operator)
-                && nullOrEqual(this.valueList, that.valueList)
-                && super.equals(obj);
+                && nullOrEqual( this.factField,
+                                that.factField )
+                && nullOrEqual( this.operator,
+                                that.operator )
+                && nullOrEqual( this.valueList,
+                                that.valueList )
+                && this.isNegated == that.isNegated
+                && super.equals( obj );
     }
 
     @Override
@@ -149,18 +169,20 @@ public class ConditionCol extends DTColumnConfig {
         hash = hash * 31 + (factField == null ? 0 : factField.hashCode());
         hash = hash * 31 + (operator == null ? 0 : operator.hashCode());
         hash = hash * 31 + (valueList == null ? 0 : valueList.hashCode());
+        hash = hash * 31 + (new Boolean( isNegated ).hashCode());
         hash = hash * 31 + super.hashCode();
         return hash;
     }
 
-    private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
-        if (thisAttr == null && thatAttr == null) {
+    private boolean nullOrEqual(Object thisAttr,
+                                Object thatAttr) {
+        if ( thisAttr == null && thatAttr == null ) {
             return true;
         }
-        if (thisAttr == null && thatAttr != null) {
+        if ( thisAttr == null && thatAttr != null ) {
             return false;
         }
-        return thisAttr.equals(thatAttr);
+        return thisAttr.equals( thatAttr );
     }
 
 }

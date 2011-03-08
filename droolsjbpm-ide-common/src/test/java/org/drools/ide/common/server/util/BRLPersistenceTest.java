@@ -131,7 +131,7 @@ public class BRLPersistenceTest {
         m.name = "with composite";
 
         FactPattern p1 = new FactPattern("Person");
-        p1.boundName = "p1";
+        p1.setBoundName("p1");
         m.addLhsItem( p1 );
 
         FactPattern p = new FactPattern("Goober");
@@ -277,7 +277,7 @@ public class BRLPersistenceTest {
                                            "true" ) );
 
         final FactPattern pat = new FactPattern("Person");
-        pat.boundName = "p1";
+        pat.setBoundName( "p1" );
         final SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldBinding("f1");
         con.setFieldName("age");

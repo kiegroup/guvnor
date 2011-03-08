@@ -35,7 +35,7 @@ public class CopyExpressionVisitorTest {
     public void testCopy() {
         ExpressionFormLine efl = new ExpressionFormLine();
         FactPattern fp = new FactPattern(SuggestionCompletionEngine.TYPE_OBJECT);
-        fp.boundName = "$o";
+        fp.setBoundName("$o");
         efl.appendPart(new ExpressionVariable(fp));
         ExpressionMethod em = new ExpressionMethod("aMethod", "aClass", "aType");
 
