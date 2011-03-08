@@ -1030,7 +1030,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         RuleModel model = new RuleModel();
         model.name = "rule2";
         FactPattern pattern = new FactPattern( "Person" );
-        pattern.boundName = "p";
+        pattern.setBoundName("p");
         ActionSetField action = new ActionSetField( "p" );
         ActionFieldValue value = new ActionFieldValue( "age",
                                                        "42",
@@ -1058,7 +1058,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         model = new RuleModel();
         model.name = "ruleNODSL";
         pattern = new FactPattern( "Person" );
-        pattern.boundName = "p";
+        pattern.setBoundName("p");
         action = new ActionSetField( "p" );
         value = new ActionFieldValue( "age",
                                       "42",

@@ -2472,7 +2472,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         con.setValue( "name soundslike 'foobar'" );
         pattern.addConstraint( con );
 
-        pattern.boundName = "p";
+        pattern.setBoundName("p");
         ActionSetField action = new ActionSetField( "p" );
         ActionFieldValue value = new ActionFieldValue( "age",
                                                        "42",
@@ -2926,7 +2926,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         m.name = "testBRL";
 
         FactPattern p = new FactPattern( "Person" );
-        p.boundName = "p";
+        p.setBoundName("p");
         SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldName( "name" );
         con.setValue( "mark" );

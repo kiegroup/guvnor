@@ -326,13 +326,13 @@ public class PopupCreator {
      * not be editable.
      */
     private void doBindingEditor(final FormStylePopup popup) {
-        if ( bindable || !(modeller.getModel().isBoundFactUsed( pattern.boundName )) ) {
+        if ( bindable || !(modeller.getModel().isBoundFactUsed( pattern.getBoundName() )) ) {
             HorizontalPanel varName = new HorizontalPanel();
             final TextBox varTxt = new TextBox();
-            if ( pattern.boundName == null ) {
+            if ( pattern.getBoundName() == null ) {
                 varTxt.setText( "" );
             } else {
-                varTxt.setText( pattern.boundName );
+                varTxt.setText( pattern.getBoundName() );
             }
 
             varTxt.setVisibleLength( 6 );
@@ -346,7 +346,7 @@ public class PopupCreator {
                         Window.alert( constants.TheVariableName0IsAlreadyTaken( var ) );
                         return;
                     }
-                    pattern.boundName = varTxt.getText();
+                    pattern.setBoundName( varTxt.getText() );
                     modeller.refreshWidget();
                     popup.hide();
                 }

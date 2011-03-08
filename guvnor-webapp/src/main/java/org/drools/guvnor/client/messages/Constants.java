@@ -21,15 +21,17 @@ import java.util.Date;
 import com.google.gwt.i18n.client.Messages;
 
 /**
- * This uses GWT to provide client side compile time resolving of locales.
- * See: http://code.google.com/docreader/#p=google-web-toolkit-doc-1-5&s=google-web-toolkit-doc-1-5&t=DevGuideInternationalization
- * (for more information).
- *
- * Each method name matches up with a key in Constants.properties (the properties file can still be used on the server).
- * To use this, use <code>GWT.create(Constants.class)</code>.
+ * This uses GWT to provide client side compile time resolving of locales. See:
+ * http://code.google.com/docreader/#p=google-web-toolkit-doc-1-5&s=google-web-
+ * toolkit-doc-1-5&t=DevGuideInternationalization (for more information).
+ * 
+ * Each method name matches up with a key in Constants.properties (the
+ * properties file can still be used on the server). To use this, use
+ * <code>GWT.create(Constants.class)</code>.
  */
 public interface Constants
-    extends Messages {
+    extends
+    Messages {
 
     String ActionColumnConfigurationInsertingANewFact();
 
@@ -69,7 +71,8 @@ public interface Constants
 
     String pleaseChooseABoundFactForThisColumn();
 
-    String setterLabel(String actionDisplayName, String descFact);
+    String setterLabel(String actionDisplayName,
+                       String descFact);
 
     String statusIs(String status);
 
@@ -105,7 +108,8 @@ public interface Constants
 
     String AssetNameMustNotBeEmpty();
 
-    String CreatedANewItemSuccess(String itemName, String packageName);
+    String CreatedANewItemSuccess(String itemName,
+                                  String packageName);
 
     String CheckInChanges();
 
@@ -203,7 +207,8 @@ public interface Constants
 
     String noArchivedPackages();
 
-    String analysisResultSummary(String messageType, int linesLength);
+    String analysisResultSummary(String messageType,
+                                 int linesLength);
 
     String Upload();
 
@@ -283,11 +288,13 @@ public interface Constants
 
     String PleaseWait();
 
-    String TestFailureBulkFailures(int failures, int total);
+    String TestFailureBulkFailures(int failures,
+                                   int total);
 
     String Open();
 
-    String failuresOutOFExpectations(int totalFailures, int grandTotal);
+    String failuresOutOFExpectations(int totalFailures,
+                                     int grandTotal);
 
     String OverallResult();
 
@@ -875,7 +882,8 @@ public interface Constants
 
     String emptyNameIsNotAllowed();
 
-    String NonValidJCRName(String jcrName, char character);
+    String NonValidJCRName(String jcrName,
+                           char character);
 
     String CreateANewPackage();
 
@@ -1023,7 +1031,8 @@ public interface Constants
 
     String Tip();
 
-    String AllRulesForCategory0WillNowExtendTheRule1(String categoryName, String ruleName);
+    String AllRulesForCategory0WillNowExtendTheRule1(String categoryName,
+                                                     String ruleName);
 
     String RemoveThisCategoryRule();
 
@@ -1142,7 +1151,7 @@ public interface Constants
     String NewRuleFlow();
 
     String CreateANewRuleFlow();
-    
+
     String NewBPMN2Process();
 
     String CreateANewBPMN2Process();
@@ -1357,7 +1366,8 @@ public interface Constants
 
     String Attribute1();
 
-    String AddXToListY(String factName, String globalName);
+    String AddXToListY(String factName,
+                       String globalName);
 
     String RemoveThisAction();
 
@@ -1573,7 +1583,8 @@ public interface Constants
 
     String UseASimulatedDateAndTime();
 
-    String property0RulesFiredIn1Ms(long numberOfRulesFired, long executionTimeResult);
+    String property0RulesFiredIn1Ms(long numberOfRulesFired,
+                                    long executionTimeResult);
 
     String ShowRulesFired();
 
@@ -1583,7 +1594,8 @@ public interface Constants
 
     String BadDateFormatPleaseTryAgainTryTheFormatOf0(String format);
 
-    String scenarioFactTypeHasValues(String type, String fact);
+    String scenarioFactTypeHasValues(String type,
+                                     String fact);
 
     String AFactOfType0HasValues(String type);
 
@@ -1647,7 +1659,8 @@ public interface Constants
 
     String CommentColon();
 
-    String SnapshotDeleteConfirm(String snapshotName, String packageName);
+    String SnapshotDeleteConfirm(String snapshotName,
+                                 String packageName);
 
     String SnapshotWasDeleted();
 
@@ -1657,9 +1670,12 @@ public interface Constants
 
     String NewSnapshotNameIs();
 
-    String CreatedSnapshot0ForPackage1(String snapshotName, String packageName);
+    String CreatedSnapshot0ForPackage1(String snapshotName,
+                                       String packageName);
 
-    String Snapshot0ForPackage1WasCopiedFrom2(String newSnapshotName, String packageName, String sourceSnapshotName);
+    String Snapshot0ForPackage1WasCopiedFrom2(String newSnapshotName,
+                                              String packageName,
+                                              String sourceSnapshotName);
 
     String PleaseEnterANonExistingSnapshotName();
 
@@ -1735,7 +1751,8 @@ public interface Constants
 
     String LoadingVersionFromHistory();
 
-    String VersionNumber0Of1(long versionNumber, String name);
+    String VersionNumber0Of1(long versionNumber,
+                             String name);
 
     String RestoreThisVersion();
 
@@ -1815,7 +1832,8 @@ public interface Constants
 
     String LogicallyInsertFact0(String fact);
 
-    String Append0ToList1(String varName, String collectionName);
+    String Append0ToList1(String varName,
+                          String collectionName);
 
     String CallMethodOn0(String varName);
 
@@ -1844,13 +1862,13 @@ public interface Constants
     String Actions();
 
     String ChangeSet();
-    
+
     String ModelSet();
-    
+
     String URLToChangeSetForDeploymentAgents();
 
     String URLToDownloadModelSet();
-    
+
     String URLToDownloadSpringContext();
 
     String FrozenAreas();
@@ -1861,7 +1879,8 @@ public interface Constants
 
     String Conditions();
 
-    String smallCommentBy0On1Small(String author, Date date);
+    String smallCommentBy0On1Small(String author,
+                                   Date date);
 
     String AddADiscussionComment();
 
@@ -1889,7 +1908,9 @@ public interface Constants
 
     String Value();
 
-    String property0ModifiedOn12(String propertyName, String arg1, String arg2);
+    String property0ModifiedOn12(String propertyName,
+                                 String arg1,
+                                 String arg2);
 
     String isContainedInTheFollowingList();
 
@@ -2052,15 +2073,15 @@ public interface Constants
     String MoveUpList();
 
     String MoveDownListMove();
-    
+
     String DescSpringContext();
 
     String WorkingSets();
 
     String SpringContext();
-    
+
     String NewSpringContext();
-    
+
     String NewWorkingSet();
 
     String CreateWorkingSet();
@@ -2172,34 +2193,39 @@ public interface Constants
     String ConstraintsParameters();
 
     String File();
-    
+
     String Edit();
-    
+
     String EmptyValue();
-    
+
     String ManageWorkspaces();
-    
+
     String Workspaces();
-    
+
     String AddWorkspace();
-    
+
     String DeleteSelectedWorkspace();
-    
+
     String CanTHaveAnEmptyWorkspaceName();
-    
+
     String PleaseSelectAWorkspaceToRemove();
-    
+
     String PleaseSelectAWorkspaceToUpdate();
-    
+
     String WorkspaceRemoved();
-    
+
     String WorkspaceUpdated();
-   
+
     String LoadingWorkspaces();
-    
+
     String UpdateSelectedWorkspace();
 
     String CommunicationError();
-    
+
     String groupCells();
+
+    String negatePattern();
+    
+    String negatedPattern();
+    
 }

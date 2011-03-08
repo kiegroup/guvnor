@@ -80,17 +80,17 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         return hp;
     }
 
-    private Constants                  constants                   = ((Constants) GWT.create( Constants.class ));
+    private Constants                   constants                   = ((Constants) GWT.create( Constants.class ));
 
-    private static Images              images                      = (Images) GWT.create( Images.class );
-    private VerticalDecisionTableWidget        dtable;
-    private SuggestionCompletionEngine sce;
-    private ConditionCol               editingCol;
-    private SmallLabel                 patternLabel                = new SmallLabel();
-    private TextBox                    fieldLabel                  = getFieldLabel();
-    private SmallLabel                 operatorLabel               = new SmallLabel();
+    private static Images               images                      = (Images) GWT.create( Images.class );
+    private VerticalDecisionTableWidget dtable;
+    private SuggestionCompletionEngine  sce;
+    private ConditionCol                editingCol;
+    private SmallLabel                  patternLabel                = new SmallLabel();
+    private TextBox                     fieldLabel                  = getFieldLabel();
+    private SmallLabel                  operatorLabel               = new SmallLabel();
 
-    private InfoPopup                  fieldLabelInterpolationInfo = getPredicateHint();
+    private InfoPopup                   fieldLabelInterpolationInfo = getPredicateHint();
 
     /**
      * Pass in a null col and it will create a new one.
@@ -506,6 +506,11 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         pop.addAttribute( constants.name(),
                           binding );
 
+        //Patterns can be negated, i.e. "not Pattern(...)"
+        final CheckBox chkNegated = new CheckBox();
+        pop.addAttribute( constants.negatePattern(),
+                          chkNegated );
+
         Button ok = new Button( constants.OK() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
@@ -529,6 +534,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                 editingCol.setBoundName( fn );
                 editingCol.setFactType( ft );
                 editingCol.setFactField( null );
+                editingCol.setNegated( chkNegated.getValue() );
                 doPatternLabel();
                 pop.hide();
             }

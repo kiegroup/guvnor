@@ -104,8 +104,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                + constants.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();
 
-        DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel(
-                                                                                 constants.DecisionTable() );
+        DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( constants.DecisionTable() );
         disclosurePanel.setWidth( "100%" );
         disclosurePanel.setTitle( constants.DecisionTable() );
 
@@ -113,22 +112,19 @@ public class GuidedDecisionTableWidget extends Composite
         config.setWidth( "100%" );
         disclosurePanel.add( config );
 
-        DecoratedDisclosurePanel conditions = new DecoratedDisclosurePanel(
-                                                                            constants.ConditionColumns() );
+        DecoratedDisclosurePanel conditions = new DecoratedDisclosurePanel( constants.ConditionColumns() );
         conditions.setOpen( false );
         conditions.setWidth( "75%" );
         conditions.add( getConditions() );
         config.add( conditions );
 
-        DecoratedDisclosurePanel actions = new DecoratedDisclosurePanel(
-                                                                         constants.ActionColumns() );
+        DecoratedDisclosurePanel actions = new DecoratedDisclosurePanel( constants.ActionColumns() );
         actions.setOpen( false );
         actions.setWidth( "75%" );
         actions.add( getActions() );
         config.add( actions );
 
-        DecoratedDisclosurePanel options = new DecoratedDisclosurePanel(
-                                                                         constants.Options() );
+        DecoratedDisclosurePanel options = new DecoratedDisclosurePanel( constants.Options() );
         options.setOpen( false );
         options.setWidth( "75%" );
         options.add( getAttributes() );

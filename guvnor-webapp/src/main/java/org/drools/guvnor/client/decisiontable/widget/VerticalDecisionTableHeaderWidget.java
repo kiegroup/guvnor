@@ -417,18 +417,13 @@ public class VerticalDecisionTableHeaderWidget extends
                         // Merging
                         int colSpan = 1;
                         int width = col.getWidth();
-                        while ( iCol
-                                + colSpan < visibleConditionCols.size() ) {
-                            DynamicColumn<DTColumnConfig> mergeCol = visibleConditionCols.get( iCol
-                                                                                               + colSpan );
-                            ConditionCol mergeCondCol = (ConditionCol) mergeCol
-                                    .getModelColumn();
+                        while ( iCol + colSpan < visibleConditionCols.size() ) {
+                            DynamicColumn<DTColumnConfig> mergeCol = visibleConditionCols.get( iCol + colSpan );
+                            ConditionCol mergeCondCol = (ConditionCol) mergeCol.getModelColumn();
 
                             if ( mergeCondCol.getFactType().equals( cc.getFactType() )
-                                 && mergeCondCol.getBoundName().equals(
-                                                                        cc.getBoundName() ) ) {
-                                width = width
-                                        + mergeCol.getWidth();
+                                 && mergeCondCol.getBoundName().equals( cc.getBoundName() ) ) {
+                                width = width + mergeCol.getWidth();
                                 colSpan++;
                             } else {
                                 break;
@@ -436,15 +431,13 @@ public class VerticalDecisionTableHeaderWidget extends
                         }
 
                         // Make cell
-                        iCol = iCol
-                               + colSpan
-                               - 1;
+                        iCol = iCol + colSpan - 1;
                         tce.addClassName( style.headerRowIntermediate() );
-                        tce.appendChild( makeLabel(
-                                                    cc.getFactType()
-                                                            + " ["
-                                                            + cc.getBoundName()
-                                                            + "]",
+                        StringBuilder label = new StringBuilder();
+                        label.append( (cc.isNegated() ? constants.negatedPattern() + " " : "") );
+                        label.append( cc.getFactType() );
+                        label.append( " [" + cc.getBoundName() + "]" );
+                        tce.appendChild( makeLabel( label.toString(),
                                                     width,
                                                     (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
                         tce.<TableCellElement> cast().setColSpan( colSpan );
@@ -460,10 +453,10 @@ public class VerticalDecisionTableHeaderWidget extends
                         tce.addClassName( style.headerRowIntermediate() );
                         tre.appendChild( tce );
                         ConditionCol cc = (ConditionCol) col.getModelColumn();
-                        tce.appendChild( makeLabel( cc.getFactField()
-                                                            + " ["
-                                                            + cc.getOperator()
-                                                            + "]",
+                        StringBuilder label = new StringBuilder();
+                        label.append( cc.getFactField() );
+                        label.append( " [" + cc.getOperator() + "]" );
+                        tce.appendChild( makeLabel( label.toString(),
                                                     col.getWidth(),
                                                     (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
                     }

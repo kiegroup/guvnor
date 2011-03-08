@@ -83,7 +83,7 @@ public class BRDRTPersistenceTest {
         m.rhs = new IAction[0];
 
         FactPattern fp = new FactPattern("Person");
-        fp.boundName = "$p";
+        fp.setBoundName("$p");
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
         sfc.setFieldName("name");
@@ -132,7 +132,7 @@ public class BRDRTPersistenceTest {
         m.rhs = new IAction[1];
 
         FactPattern fp = new FactPattern("Person");
-        fp.boundName = "$p";
+        fp.setBoundName("$p");
 
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
         sfc.setFieldName("name");
@@ -194,7 +194,7 @@ public class BRDRTPersistenceTest {
         m.rhs = new IAction[1];
 
         FactPattern fp = new FactPattern("Person");
-        fp.boundName = "$p";
+        fp.setBoundName("$p");
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
         sfc.setFieldName("name");
@@ -245,7 +245,7 @@ public class BRDRTPersistenceTest {
         m.rhs = new IAction[0];
 
         FactPattern fp = new FactPattern("Person");
-        fp.boundName = "$p";
+        fp.setBoundName("$p");
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
         sfc.setFieldName("name");
@@ -290,7 +290,7 @@ public class BRDRTPersistenceTest {
         m.rhs = new IAction[0];
 
         FactPattern fp = new FactPattern("Person");
-        fp.boundName = "$p";
+        fp.setBoundName("$p");
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
         sfc.setFieldName("name");
@@ -325,7 +325,7 @@ public class BRDRTPersistenceTest {
         m.rhs = new IAction[0];
 
         FactPattern fp = new FactPattern("Person");
-        fp.boundName = "$p";
+        fp.setBoundName("$p");
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
         sfc.setFieldName("name");
