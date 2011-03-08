@@ -18,7 +18,6 @@ package org.drools.guvnor.client.explorer;
 import org.drools.guvnor.client.LoggedInUserInfo;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -33,8 +32,7 @@ public class TitlePanel extends DockPanel {
 
     public TitlePanel(LoggedInUserInfo uif) {
         setVerticalAlignment( DockPanel.ALIGN_MIDDLE );
-        add( new HTML( Format.format( "<div class='header'><img src='{0}' /></div>",
-                                      images.headerLogo().getURL() ) ),
+        add( new HTML( "<div class='header'><img src='" + images.headerLogo().getURL() + "' /></div>" ),
              DockPanel.WEST );
         add( uif,
              DockPanel.EAST );

@@ -33,7 +33,6 @@ import org.drools.guvnor.client.rpc.ServerPushNotification;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.CapabilitiesManager;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
-import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.util.Util;
 
 import com.google.gwt.core.client.GWT;
@@ -178,14 +177,10 @@ public class DiscussionWidget extends Composite {
             } );
         }
 
-        String feedURL = Format.format( "{0}feed/discussion?package={1}&assetName={2}&viewUrl={3}",
-                                        GWT.getModuleBaseURL(),
-                                        asset.metaData.packageName,
-                                        URL.encode( asset.metaData.name ),
-                                        Util.getSelfURL() );
-        hp.add( new HTML( Format.format( "<a href='{0}' target='_blank'><img src='{1}'/></a>",
-                                         feedURL,
-                                         new Image( images.feed() ).getUrl() ) ) );
+        String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + asset.metaData.packageName
+                + "&assetName=" + URL.encode( asset.metaData.name ) + "&viewUrl=" + Util.getSelfURL();
+        hp.add( new HTML( "<a href='" + feedURL + "' target='_blank'><img src='"
+                + new Image( images.feed() ).getUrl() + "'/></a>" ) );
 
         newCommentLayout.add( hp );
 

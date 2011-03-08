@@ -21,7 +21,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
-import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Timer;
@@ -45,8 +44,7 @@ public class LoggedInUserInfo extends Composite {
 
     public void setUserName(String userName) {
         StringBuilder content = new StringBuilder();
-        content.append( Format.format( "<div class='{0}'>",
-                                       GuvnorResources.INSTANCE.headerCss().headerUserInfoClass() ) );
+        content.append("<div class='").append(GuvnorResources.INSTANCE.headerCss().headerUserInfoClass()).append("'>");
 
         String m = constants.WelcomeUser(userName);
         content.append("<small>").append(m); //NON-NLS

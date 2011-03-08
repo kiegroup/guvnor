@@ -21,8 +21,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
-import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.util.PercentageBar;
 import org.drools.guvnor.client.util.ToggleLabel;
 import org.drools.guvnor.client.util.ValueList;

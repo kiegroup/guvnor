@@ -31,7 +31,6 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.CapabilitiesManager;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
-import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -97,9 +96,7 @@ public class MetaDataWidget extends Composite {
 
     private void render() {
         layout.clear();
-        layout.add( new SmallLabel( Format.format( "{0}: [<b>{1}</b>]",
-                constants.Title(),
-                data.name ) ) );
+        layout.add( new SmallLabel( constants.Title() + ": [<b>" + data.name + "</b>]" ) );
         if ( !readOnly ) {
             Image edit = new ImageButton( images.edit(),
                                           constants.RenameThisAsset() );

@@ -17,7 +17,6 @@ package org.drools.guvnor.client.qa;
 
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.util.PercentageBar;
 
 import com.google.gwt.core.client.GWT;

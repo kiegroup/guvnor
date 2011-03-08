@@ -26,7 +26,6 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.FactTypeFilter;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 

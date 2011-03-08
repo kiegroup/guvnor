@@ -17,7 +17,6 @@
 package org.drools.guvnor.client.qa.testscenarios;
 
 import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;

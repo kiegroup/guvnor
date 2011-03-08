@@ -22,7 +22,6 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
-import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -96,9 +95,7 @@ public class VerifierResultWidget extends Composite {
 
         String summary = constants.analysisResultSummary(messageType, lines.length );
 
-        String topicHtml = Format.format( "<img src='{0}' /> &nbsp; {1}",
-                                          icon.getURL(),
-                                          summary );
+        String topicHtml = "<img src='" + icon.getURL() + "' /> &nbsp; " + summary;
 
         linesItem = new VerifierMessageLinesItem( topicHtml,
                                                   lines,

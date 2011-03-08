@@ -123,8 +123,7 @@ public class PercentageBar extends Composite
 
         setColor();
 
-        percentage.setText( Format.format( "{0} %",
-                                           Integer.toString( value ) ) );
+        percentage.setText( Integer.toString( value ) + " %" );
         bar.getStyle().setWidth( value,
                                  Unit.PCT );
 

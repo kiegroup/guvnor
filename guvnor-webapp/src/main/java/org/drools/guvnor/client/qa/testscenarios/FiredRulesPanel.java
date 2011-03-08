@@ -17,7 +17,6 @@ package org.drools.guvnor.client.qa.testscenarios;
 
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 
 import com.google.gwt.core.client.GWT;

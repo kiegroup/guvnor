@@ -19,7 +19,6 @@ package org.drools.guvnor.client.common;
 
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.SessionExpiredException;
-import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;

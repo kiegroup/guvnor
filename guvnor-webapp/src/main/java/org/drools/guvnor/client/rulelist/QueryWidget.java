@@ -31,7 +31,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
-import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.widgets.tables.QueryPagedTable;
 
 import com.google.gwt.core.client.GWT;

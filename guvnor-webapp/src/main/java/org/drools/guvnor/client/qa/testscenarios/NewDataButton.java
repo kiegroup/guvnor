@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;

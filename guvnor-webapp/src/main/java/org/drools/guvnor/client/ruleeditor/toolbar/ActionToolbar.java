@@ -16,7 +16,6 @@
 package org.drools.guvnor.client.ruleeditor.toolbar;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

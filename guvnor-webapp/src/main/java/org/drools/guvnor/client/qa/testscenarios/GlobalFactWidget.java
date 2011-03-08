@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.qa.testscenarios;
 
-import org.drools.guvnor.client.util.Format;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FixtureList;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;

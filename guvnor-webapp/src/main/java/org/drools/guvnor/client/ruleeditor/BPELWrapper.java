@@ -20,7 +20,6 @@ import org.drools.guvnor.client.common.DefaultContentUploadEditor;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.util.Format;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -54,8 +53,8 @@ public class BPELWrapper extends Composite
         Button viewSource = new Button();
         viewSource.setText( constants.OpenEditorInNewWindow() );
 
-        final String url = Format.format( "bpeleditor/BPELEditor.html?uuid={0}&fileName={1}&dirName={2}&servletName={3}&isNew={4}",
-                                          new String[]{uuid, fileName, dirName, servletName, isNew} );
+        final String url = "bpeleditor/BPELEditor.html?uuid=" + uuid + "&fileName=" + fileName + "&dirName=" + dirName
+                + "&servletName=" + servletName + "&isNew=" + isNew;
         viewSource.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 Window.open( url,

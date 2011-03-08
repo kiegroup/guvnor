@@ -34,7 +34,6 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
-import org.drools.guvnor.client.util.Format;
 import org.drools.guvnor.client.util.TabOpener;
 import org.drools.guvnor.client.widgets.tables.BuildPackageErrorsSimpleTable;
 
