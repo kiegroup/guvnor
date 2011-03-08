@@ -235,7 +235,7 @@ public class TemplateDataTableWidget extends Composite
     public void scrapeData(TemplateModel model) {
         model.clearRows();
 
-        final DynamicData data = widget.getGridWidget().getData();
+        final DynamicData data = widget.getGridWidget().getFlattenedData();
         final List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
         int columnCount = columns.size();
 

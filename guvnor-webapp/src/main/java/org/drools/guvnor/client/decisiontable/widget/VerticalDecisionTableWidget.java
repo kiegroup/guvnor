@@ -242,7 +242,7 @@ public class VerticalDecisionTableWidget extends Composite
     public void scrapeData() {
 
         // Copy data
-        final DynamicData data = widget.getGridWidget().getData();
+        final DynamicData data = widget.getGridWidget().getFlattenedData();
         final List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
 
         final int GRID_ROWS = data.size();

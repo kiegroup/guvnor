@@ -361,12 +361,37 @@ public abstract class MergableGridWidget<T> extends Widget
     }
 
     /**
-     * Return grid's data
+     * Return grid's data. Grouping reflected in the UI will be collapsed in the
+     * return value. Use of <code>getFlattenedData()</code> should be used in
+     * preference if the ungrouped data is needed (e.g. when persisting the
+     * model).
      * 
      * @return data
      */
     public DynamicData getData() {
         return data;
+    }
+
+    /**
+     * Return grid's data. Grouping in the data will be expanded and can
+     * therefore can be used prior to populate the underlying data structures
+     * prior to persisting.
+     * 
+     * @return data
+     */
+    public DynamicData getFlattenedData() {
+        DynamicData dataClone = new DynamicData();
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            if ( row instanceof GroupedDynamicDataRow ) {
+                List<DynamicDataRow> expandedRow = expandGroupedRow( row,
+                                                                      true );
+                dataClone.addAll( expandedRow );
+            } else {
+                dataClone.add( row );
+            }
+        }
+        return dataClone;
     }
 
     /**
@@ -989,6 +1014,14 @@ public abstract class MergableGridWidget<T> extends Widget
         data.remove( startRowIndex );
         data.addAll( startRowIndex,
                      expandedRow );
+
+        //If the row is replaced with another grouped row ensure the row can be expanded
+        row = data.get( startRowIndex );
+        for ( CellValue< ? > cell : row ) {
+            if ( cell instanceof GroupedCellValue ) {
+                cell.setGrouped( true );
+            }
+        }
 
         assertModelMerging();
 
