@@ -635,6 +635,8 @@ public class VerticalDecisionTableWidget extends Composite
 
             // Delete old column and redraw
             widget.deleteColumn( origCol );
+            editColIndex = Math.min( widget.getGridWidget().getColumns().size() - 1,
+                                     editColIndex );
             if ( editColIndex > origColIndex ) {
                 int temp = origColIndex;
                 origColIndex = editColIndex;
@@ -1023,6 +1025,7 @@ public class VerticalDecisionTableWidget extends Composite
         col.setValueList( editingCol.getValueList() );
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
+        col.setNegated( editingCol.isNegated() );
     }
 
     // Ensure the Column cell type and corresponding values are correct

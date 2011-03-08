@@ -436,7 +436,11 @@ public class VerticalDecisionTableHeaderWidget extends
                         StringBuilder label = new StringBuilder();
                         label.append( (cc.isNegated() ? constants.negatedPattern() + " " : "") );
                         label.append( cc.getFactType() );
-                        label.append( " [" + cc.getBoundName() + "]" );
+                        if ( !cc.isNegated() ) {
+                            if ( cc.getBoundName() != null && !cc.getBoundName().equals( "" ) ) {
+                                label.append( " [" + cc.getBoundName() + "]" );
+                            }
+                        }
                         tce.appendChild( makeLabel( label.toString(),
                                                     width,
                                                     (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
