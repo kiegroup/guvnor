@@ -26,10 +26,10 @@ import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
-import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -322,8 +322,14 @@ public class GuidedDTDRLPersistence {
                               + GuidedDecisionTable.INTERNAL_ELEMENTS
                               + numOfMeta];
             if ( validCell( cell ) ) {
-                attribs.add( new RuleAttribute( at.getAttribute(),
-                                                cell ) );
+
+                //If instance of "otherwise" column then flag RuleModel as being negated
+                if ( at.getAttribute().equals( GuidedDecisionTable.OTHERWISE_ATTR ) ) {
+                    rm.setNegated( Boolean.valueOf( cell ) );
+                } else {
+                    attribs.add( new RuleAttribute( at.getAttribute(),
+                                                    cell ) );
+                }
             } else if ( at.getDefaultValue() != null ) {
                 attribs.add( new RuleAttribute( at.getAttribute(),
                                                 at.getDefaultValue() ) );

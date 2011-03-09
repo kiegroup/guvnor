@@ -505,16 +505,16 @@ public class GuidedDecisionTableWidget extends Composite
                                                public void onClick(ClickEvent w) {
 
                                                    // show choice of attributes
-                                                   final FormStylePopup pop = new FormStylePopup( images
-                                                                                                          .config(),
+                                                   final FormStylePopup pop = new FormStylePopup( images.config(),
                                                                                                   constants.AddAnOptionToTheRule() );
-                                                   final ListBox list = RuleAttributeWidget
-                                                           .getAttributeList();
+                                                   final ListBox list = RuleAttributeWidget.getAttributeList();
+                                                   
+                                                   //This attribute is only used for Decision Tables
+                                                   list.addItem(GuidedDecisionTable.OTHERWISE_ATTR);
 
                                                    // Remove any attributes
                                                    // already added
-                                                   for ( AttributeCol col : guidedDecisionTable
-                                                           .getAttributeCols() ) {
+                                                   for ( AttributeCol col : guidedDecisionTable.getAttributeCols() ) {
                                                        for ( int iItem = 0; iItem < list.getItemCount(); iItem++ ) {
                                                            if ( list.getItemText( iItem ).equals( col.getAttribute() ) ) {
                                                                list.removeItem( iItem );
@@ -523,8 +523,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                        }
                                                    }
 
-                                                   final Image addbutton = new ImageButton( images
-                                                           .newItem() );
+                                                   final Image addbutton = new ImageButton( images.newItem() );
                                                    final TextBox box = new TextBox();
                                                    box.setVisibleLength( 15 );
 
@@ -533,8 +532,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                    list.addChangeHandler( new ChangeHandler() {
                                                        public void onChange(ChangeEvent event) {
                                                            AttributeCol attr = new AttributeCol();
-                                                           attr.setAttribute( list.getItemText( list
-                                                                   .getSelectedIndex() ) );
+                                                           attr.setAttribute( list.getItemText( list.getSelectedIndex() ) );
                                                            dtable.addColumn( attr );
                                                            dtable.scrapeColumns();
                                                            refreshAttributeWidget();
@@ -549,8 +547,7 @@ public class GuidedDecisionTableWidget extends Composite
 
                                                            String metadata = box.getText();
                                                            if ( !isUnique( metadata ) ) {
-                                                               Window.alert( constants
-                                                                       .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                                                               Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                                                                return;
                                                            }
                                                            MetadataCol met = new MetadataCol();

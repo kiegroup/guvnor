@@ -84,6 +84,8 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                 dataType = DATA_TYPES.DATE;
             } else if ( attrName.equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
                 dataType = DATA_TYPES.DIALECT;
+            } else if ( attrName.equals( GuidedDecisionTable.OTHERWISE_ATTR ) ) {
+                dataType = DATA_TYPES.BOOLEAN;
             }
 
         } else if ( column instanceof ConditionCol ) {

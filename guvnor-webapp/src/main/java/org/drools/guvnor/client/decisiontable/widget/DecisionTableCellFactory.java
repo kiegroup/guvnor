@@ -103,6 +103,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
                 cell = makeDateCell();
             } else if ( attrName.equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
                 cell = makeDialectCell();
+            } else if ( attrName.equals( GuidedDecisionTable.OTHERWISE_ATTR ) ) {
+                cell = makeBooleanCell();
             }
 
         } else if ( column instanceof ConditionCol ) {

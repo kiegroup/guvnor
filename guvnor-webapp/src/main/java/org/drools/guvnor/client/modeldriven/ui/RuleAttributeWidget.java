@@ -56,7 +56,7 @@ public class RuleAttributeWidget extends Composite {
     /**
      * These are the names of all of the rule attributes for this widget
      */
-    public static final String  SALIENCE_ATTR         = "salience";                   // needs to be public
+    public static final String SALIENCE_ATTR         = "salience";                   // needs to be public
     public static final String ENABLED_ATTR          = "enabled";
     public static final String DATE_EFFECTIVE_ATTR   = "date-effective";
     public static final String DATE_EXPIRES_ATTR     = "date-expires";
@@ -68,9 +68,9 @@ public class RuleAttributeWidget extends Composite {
     public static final String LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
     public static final String RULEFLOW_GROUP_ATTR   = "ruleflow-group";
     public static final String DIALECT_ATTR          = "dialect";
-    public static final String  LOCK_LHS              = "freeze_conditions";
-    public static final String  LOCK_RHS              = "freeze_actions";
-
+    public static final String LOCK_LHS              = "freeze_conditions";
+    public static final String LOCK_RHS              = "freeze_actions";
+    
     /**
      * If the rule attribute is represented visually by a checkbox, these are the values that will
      * be stored in the model when checked/unchecked

@@ -44,6 +44,11 @@ public class GuidedDecisionTable
     public static final int    INTERNAL_ELEMENTS = 2;
 
     /**
+     * This attribute is only used for Decision Tables to negate a rule
+     */
+    public static final String OTHERWISE_ATTR    = "otherwise";
+
+    /**
      * The name - obviously.
      */
     private String             tableName;
