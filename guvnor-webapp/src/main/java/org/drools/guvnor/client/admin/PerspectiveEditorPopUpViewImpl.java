@@ -14,6 +14,8 @@ import org.drools.guvnor.client.messages.Constants;
 
 public class PerspectiveEditorPopUpViewImpl extends Popup implements PerspectiveEditorPopUpView {
 
+    private Constants constants = GWT.create( Constants.class );
+
     interface PerspectiveEditorPopUpViewImplBinder
             extends
             UiBinder<Widget, PerspectiveEditorPopUpViewImpl> {
@@ -39,7 +41,7 @@ public class PerspectiveEditorPopUpViewImpl extends Popup implements Perspective
     Button cancelButton;
 
     public PerspectiveEditorPopUpViewImpl() {
-        setTitle(Constants.INSTANCE.PerspectivesConfiguration());
+        setTitle(constants.PerspectivesConfiguration());
         content = uiBinder.createAndBindUi(this);
     }
 
@@ -69,11 +71,11 @@ public class PerspectiveEditorPopUpViewImpl extends Popup implements Perspective
     }
 
     public void showNameCanNotBeEmptyWarning() {
-        ErrorPopup.showMessage(Constants.INSTANCE.NameCanNotBeEmpty());
+        ErrorPopup.showMessage(constants.NameCanNotBeEmpty());
     }
 
     public void showUrlCanNotBeEmptyWarning() {
-        ErrorPopup.showMessage(Constants.INSTANCE.UrlCanNotBeEmpty());
+        ErrorPopup.showMessage(constants.UrlCanNotBeEmpty());
     }
 
     @UiHandler("saveButton")

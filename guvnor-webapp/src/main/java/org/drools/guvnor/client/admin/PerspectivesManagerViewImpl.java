@@ -17,6 +17,8 @@ import java.util.Collection;
 
 public class PerspectivesManagerViewImpl extends Composite implements PerspectivesManagerView {
 
+    private Constants constants = GWT.create( Constants.class );
+
     interface PerspectivesManagerViewImplBinder
             extends
             UiBinder<Widget, PerspectivesManagerViewImpl> {
@@ -94,11 +96,11 @@ public class PerspectivesManagerViewImpl extends Composite implements Perspectiv
     }
 
     public void showNameTakenError(String name) {
-        ErrorPopup.showMessage(Constants.INSTANCE.NameTakenForModel(name));
+        ErrorPopup.showMessage(constants.NameTakenForModel(name));
     }
 
     public void showNoSelectedPerspectiveError() {
-        ErrorPopup.showMessage(Constants.INSTANCE.PleaseSelectAPerspective());
+        ErrorPopup.showMessage(constants.PleaseSelectAPerspective());
     }
 
     @UiHandler("newPerspective")
@@ -111,7 +113,7 @@ public class PerspectivesManagerViewImpl extends Composite implements Perspectiv
         try {
             presenter.onEditPerspective();
         } catch (SerializationException e) {
-            ErrorPopup.showMessage(Constants.INSTANCE.FailedToLoadPerspective());
+            ErrorPopup.showMessage(constants.FailedToLoadPerspective());
         }
     }
 

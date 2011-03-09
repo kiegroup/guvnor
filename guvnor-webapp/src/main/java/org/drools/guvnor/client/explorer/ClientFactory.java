@@ -9,9 +9,9 @@ public interface ClientFactory {
 
     PlaceController getPlaceController();
 
-    RuntimePerspectiveView getRuntimePerspectiveView();
-
     EventBus getEventBus();
 
     PerspectivesPanelView getPerspectivesPanelView(boolean showTitle);
+
+    IFramePerspectiveView getIFramePerspectiveView();
 }

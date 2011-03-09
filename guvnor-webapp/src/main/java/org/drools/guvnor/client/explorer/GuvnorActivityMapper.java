@@ -18,7 +18,7 @@ public class GuvnorActivityMapper implements ActivityMapper {
         if (place instanceof AuthorPerspectivePlace) {
             activity = new AuthorPerspectiveActivity(clientFactory);
         } else if (place instanceof IFramePerspectivePlace) {
-            return new RuntimePerspectiveActivity(clientFactory);
+            return new IFramePerspectiveActivity(clientFactory);
         }
 
         return activity;

@@ -4,18 +4,18 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import org.drools.guvnor.client.explorer.RuntimePerspectiveView.Presenter;
+import org.drools.guvnor.client.explorer.IFramePerspectiveView.Presenter;
 
-public class RuntimePerspectiveActivity extends AbstractActivity implements Presenter {
+public class IFramePerspectiveActivity extends AbstractActivity implements Presenter {
 
     private ClientFactory clientFactory;
 
-    public RuntimePerspectiveActivity(ClientFactory clientFactory) {
+    public IFramePerspectiveActivity(ClientFactory clientFactory) {
         this.clientFactory = clientFactory;
     }
 
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
-        RuntimePerspectiveView view = clientFactory.getRuntimePerspectiveView();
+        IFramePerspectiveView view = clientFactory.getIFramePerspectiveView();
 
         view.setPresenter(this);
 

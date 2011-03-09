@@ -8,6 +8,8 @@ import org.drools.guvnor.client.messages.Constants;
 
 public class AuthorPerspectiveViewImpl extends Composite implements AuthorPerspectiveView {
 
+    private Constants constants = GWT.create( Constants.class );
+
     interface AuthorPerspectiveViewImplBinder
             extends
             UiBinder<Widget, AuthorPerspectiveViewImpl> {
@@ -26,6 +28,6 @@ public class AuthorPerspectiveViewImpl extends Composite implements AuthorPerspe
     }
 
     public String getName() {
-        return Constants.INSTANCE.AuthorPerspective();
+        return constants.AuthorPerspective();
     }
 }

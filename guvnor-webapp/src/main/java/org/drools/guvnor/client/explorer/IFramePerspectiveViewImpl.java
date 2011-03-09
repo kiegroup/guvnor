@@ -2,20 +2,17 @@ package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Frame;
-import com.google.gwt.user.client.ui.Label;
-import org.drools.guvnor.client.explorer.RuntimePerspectiveView;
-import org.drools.guvnor.client.messages.Constants;
 
-public class RuntimePerspectiveViewImpl extends Composite implements RuntimePerspectiveView {
+public class IFramePerspectiveViewImpl extends Composite implements IFramePerspectiveView {
 
     private Frame frame = new Frame("http://localhost:8080/gwt-console");
 
-    public RuntimePerspectiveViewImpl() {
+    public IFramePerspectiveViewImpl() {
         initWidget(frame);
     }
 
     public String getName() {
-        return Constants.INSTANCE.Runtime();
+        return "CCCCCC";
     }
 
     public void setPresenter(Presenter presenter) {

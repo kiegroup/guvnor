@@ -5,6 +5,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 
 public class IFramePerspectivePlace extends Perspective {
 
+
     private String name;
     private String url;
 

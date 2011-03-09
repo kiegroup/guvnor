@@ -8,16 +8,11 @@ public class ClientFactoryImpl implements ClientFactory {
 
     private final EventBus eventBus = new SimpleEventBus();
     private final PlaceController placeController = new PlaceController(eventBus);
-    private final RuntimePerspectiveView runtimePerspectiveView = new RuntimePerspectiveViewImpl();
     private final AuthorPerspectiveView authorPerspectiveView = new AuthorPerspectiveViewImpl();
     private PerspectivesPanelView perspectivesPanelView;
 
     public PlaceController getPlaceController() {
         return placeController;
-    }
-
-    public RuntimePerspectiveView getRuntimePerspectiveView() {
-        return runtimePerspectiveView;
     }
 
     public AuthorPerspectiveView getAuthorPerspectiveView() {
@@ -33,5 +28,9 @@ public class ClientFactoryImpl implements ClientFactory {
             perspectivesPanelView = new PerspectivesPanelViewImpl(showTitle);
         }
         return perspectivesPanelView;
+    }
+
+    public IFramePerspectiveView getIFramePerspectiveView() {
+return new IFramePerspectiveViewImpl();
     }
 }

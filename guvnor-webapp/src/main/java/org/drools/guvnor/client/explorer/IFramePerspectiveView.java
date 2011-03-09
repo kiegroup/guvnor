@@ -1,7 +1,7 @@
 package org.drools.guvnor.client.explorer;
 
 
-public interface RuntimePerspectiveView extends PerspectiveView {
+public interface IFramePerspectiveView extends PerspectiveView {
 
     interface Presenter {
     }

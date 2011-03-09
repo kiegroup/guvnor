@@ -26,14 +26,14 @@ import java.util.Date;
  * This uses GWT to provide client side compile time resolving of locales. See:
  * http://code.google.com/docreader/#p=google-web-toolkit-doc-1-5&s=google-web-
  * toolkit-doc-1-5&t=DevGuideInternationalization (for more information).
- * 
+ * <p/>
  * Each method name matches up with a key in Constants.properties (the
  * properties file can still be used on the server). To use this, use
  * <code>GWT.create(Constants.class)</code>.
  */
 public interface Constants
-    extends
-    Messages {
+        extends
+        Messages {
 
     Constants INSTANCE = GWT.create(Constants.class);
 
@@ -772,7 +772,7 @@ public interface Constants
 
     String LoadingUserPermissions();
 
-    String WelcomeUser(String userName);
+    String WelcomeUser();
 
     String SignOut();
 
@@ -2062,6 +2062,8 @@ public interface Constants
 
     String ErrorLoadingRules();
 
+    ;
+
     String AElementToDelInCollectionList();
 
     String AElementToAddInCollectionList();
@@ -2223,24 +2225,12 @@ public interface Constants
     String LoadingWorkspaces();
 
     String UpdateSelectedWorkspace();
-    
-    String CommunicationError();   
 
-    String AuthorPerspective();
-
-    String FailedToLoadPerspectiveUnknownId0(String perspectiveId);
-
-    String Runtime();
-
-    String PerspectivesConfiguration();
+    String CommunicationError();
 
     String PleaseSelectAPerspective();
 
-    String NewPerspective();
-
-    String EditPerspective();
-
-    String RemovePerspective();
+    String FailedToLoadPerspectiveUnknownId0(String perspectiveId);
 
     String FailedToLoadPerspective();
 
@@ -2248,16 +2238,21 @@ public interface Constants
 
     String UrlCanNotBeEmpty();
 
+    String AuthorPerspective();
+
+    String EditPerspective();
+
+    String RemovePerspective();
+
     String Url();
 
     String Save();
 
-    String CurrentPerspectives();     
-    
     String groupCells();
 
     String negatePattern();
-    
+
     String negatedPattern();
-    
+
+    String PerspectivesConfiguration();
 }

@@ -51,6 +51,7 @@ public class JBRMSEntryPoint
         implements
         EntryPoint {
 
+    private Constants constants = GWT.create(Constants.class);
     private PerspectivesPanel perspectivesPanel;
 
     public void onModuleLoad() {
@@ -92,7 +93,7 @@ public class JBRMSEntryPoint
 
     private void showMain(final String userName) {
 
-        Window.setStatus(Constants.INSTANCE.LoadingUserPermissions());
+        Window.setStatus(constants.LoadingUserPermissions());
 
         CapabilitiesManager.getInstance().refreshAllowedCapabilities(new Command() {
             public void execute() {
@@ -121,7 +122,7 @@ public class JBRMSEntryPoint
             RootLayoutPanel.get().add(new StandaloneEditorManager().getBaseLayout());
         } else {
 
-            ClientFactory clientFactory = new ClientFactoryImpl(); //GWT.create(ClientFactory.class);
+            ClientFactory clientFactory = GWT.create(ClientFactory.class);
             EventBus eventBus = clientFactory.getEventBus();
             PlaceController placeController = clientFactory.getPlaceController();
             Perspective defaultPlace = new AuthorPerspectivePlace();
