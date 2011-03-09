@@ -105,6 +105,10 @@ public class BRXMLPersistence
         this.xt.alias( "variable",
                 ExpressionVariable.class );
         //end ExpressionFormLine
+        
+        //See https://issues.jboss.org/browse/GUVNOR-1115
+        this.xt.aliasPackage( "org.drools.guvnor.client", "org.drools.ide.common.client" );
+
     }
 
     public static BRLPersistence getInstance() {

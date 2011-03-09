@@ -52,7 +52,10 @@ public class ScenarioXMLPersistence {
         xt.alias("expect-field", VerifyField.class);
         xt.alias("expect-rule", VerifyRuleFired.class);
         xt.omitField(ExecutionTrace.class, "rulesFired");
-    }
+
+        //See https://issues.jboss.org/browse/GUVNOR-1115
+        xt.aliasPackage( "org.drools.guvnor.client", "org.drools.ide.common.client" );
+}
 
     public static ScenarioXMLPersistence getInstance() {
         return INSTANCE;

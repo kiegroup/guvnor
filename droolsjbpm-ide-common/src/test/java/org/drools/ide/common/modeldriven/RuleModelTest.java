@@ -245,6 +245,9 @@ public class RuleModelTest {
         xt.alias( "retract",
                   ActionRetractFact.class );
 
+        //See https://issues.jboss.org/browse/GUVNOR-1115
+        xt.aliasPackage( "org.drools.guvnor.client", "org.drools.ide.common.client" );
+
         final String brl = xt.toXML( model );
 
         System.out.println( brl );

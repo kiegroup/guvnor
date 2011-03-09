@@ -41,6 +41,10 @@ public class GuidedDTXMLPersistence {
         xt.alias("set-field-col", ActionSetFieldCol.class);
         xt.alias("retract-fact-column", ActionRetractFactCol.class);
         xt.alias("insert-fact-column", ActionInsertFactCol.class);
+        
+        //See https://issues.jboss.org/browse/GUVNOR-1115
+        xt.aliasField( "attr", AttributeCol.class, "attribute" );
+        xt.aliasPackage( "org.drools.guvnor.client", "org.drools.ide.common.client" );
     }
 
     public static GuidedDTXMLPersistence getInstance() {
