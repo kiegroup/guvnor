@@ -737,5 +737,120 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl.indexOf( "age > \"42\"" ) > 0 );
 
     }
+    
+    @Test
+    public void testLHSNotPattern() {
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+        String[] row = new String[]{"1", "desc", "a", "mike", "33 + 1", "age > 6", "stilton"};
+
+        List<ConditionCol> cols = new ArrayList<ConditionCol>();
+        ConditionCol col = new ConditionCol();
+        col.setBoundName( "p1" );
+        col.setFactType( "Person" );
+        col.setFactField( "name" );
+        col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        col.setOperator( "==" );
+        col.setNegated( true );
+        cols.add( col );
+
+        ConditionCol col2 = new ConditionCol();
+        col2.setBoundName( "p1" );
+        col2.setFactType( "Person" );
+        col2.setFactField( "age" );
+        col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
+        col2.setOperator( "<" );
+        col.setNegated( true );
+        cols.add( col2 );
+
+        ConditionCol col3 = new ConditionCol();
+        col3.setBoundName( "p1" );
+        col3.setFactType( "Person" );
+        col3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
+        col.setNegated( true );
+        cols.add( col3 );
+
+        ConditionCol col4 = new ConditionCol();
+        col4.setBoundName( "c" );
+        col4.setFactType( "Cheese" );
+        col4.setFactField( "type" );
+        col4.setOperator( "==" );
+        col4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cols.add( col4 );
+
+        RuleModel rm = new RuleModel();
+
+        p.doConditions( 1,
+                        cols,
+                        row,
+                        rm );
+        
+        String drl = BRDRLPersistence.getInstance().marshal( rm );
+        
+        assertEquals( 2,
+                      rm.lhs.length );
+
+        assertEquals( "Person",
+                      ((FactPattern) rm.lhs[0]).getFactType() );
+        assertEquals( "p1",
+                      ((FactPattern) rm.lhs[0]).getBoundName() );
+
+        assertEquals( "Cheese",
+                      ((FactPattern) rm.lhs[1]).getFactType() );
+        assertEquals( "c",
+                      ((FactPattern) rm.lhs[1]).getBoundName() );
+        
+        // examine the first pattern
+        FactPattern person = (FactPattern) rm.lhs[0];
+        assertEquals( 3,
+                      person.constraintList.constraints.length );
+        SingleFieldConstraint cons = (SingleFieldConstraint) person.constraintList.constraints[0];
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      cons.getConstraintValueType() );
+        assertEquals( "name",
+                      cons.getFieldName() );
+        assertEquals( "==",
+                      cons.getOperator() );
+        assertEquals( "mike",
+                      cons.getValue() );
+
+        cons = (SingleFieldConstraint) person.constraintList.constraints[1];
+        assertEquals( BaseSingleFieldConstraint.TYPE_RET_VALUE,
+                      cons.getConstraintValueType() );
+        assertEquals( "age",
+                      cons.getFieldName() );
+        assertEquals( "<",
+                      cons.getOperator() );
+        assertEquals( "33 + 1",
+                      cons.getValue() );
+
+        cons = (SingleFieldConstraint) person.constraintList.constraints[2];
+        assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE,
+                      cons.getConstraintValueType() );
+        assertEquals( "age > 6",
+                      cons.getValue() );
+        
+        assertEquals(person.isNegated(), true);
+        
+        assertTrue( drl.indexOf( "not Person(" ) > 0 );
+
+        // examine the second pattern
+        FactPattern cheese = (FactPattern) rm.lhs[1];
+        assertEquals( 1,
+                      cheese.constraintList.constraints.length );
+        cons = (SingleFieldConstraint) cheese.constraintList.constraints[0];
+        assertEquals( "type",
+                      cons.getFieldName() );
+        assertEquals( "==",
+                      cons.getOperator() );
+        assertEquals( "stilton",
+                      cons.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      cons.getConstraintValueType() );
+        
+        assertEquals(cheese.isNegated(), false);
+
+        assertTrue( drl.indexOf( "c : Cheese(" ) > 0 );
+
+    }
 
 }

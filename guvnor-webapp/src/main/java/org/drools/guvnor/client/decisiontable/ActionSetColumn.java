@@ -245,9 +245,10 @@ public class ActionSetColumn extends FormStylePopup {
     private ListBox loadBoundFacts() {
         Set<String> facts = new HashSet<String>();
         for ( int i = 0; i < this.dtable.getModel().getConditionCols().size(); i++ ) {
-            ConditionCol c = (ConditionCol) dtable.getModel()
-                    .getConditionCols().get( i );
-            facts.add( c.getBoundName() );
+            ConditionCol c = (ConditionCol) dtable.getModel().getConditionCols().get( i );
+            if ( !c.isNegated() ) {
+                facts.add( c.getBoundName() );
+            }
         }
 
         ListBox box = new ListBox();

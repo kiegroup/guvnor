@@ -330,13 +330,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
     private void doPatternLabel() {
         if ( this.editingCol.getFactType() != null ) {
-            if ( this.editingCol.isNegated() ) {
-                this.patternLabel.setText( constants.negatedPattern() + " "
-                                           + this.editingCol.getFactType() );
-            } else {
-                this.patternLabel.setText( this.editingCol.getFactType() + " ["
-                                           + this.editingCol.getBoundName() + "]" );
-            }
+            this.patternLabel.setText( (this.editingCol.isNegated() ? constants.negatedPattern() + " " : "")
+                                       + this.editingCol.getFactType() + " ["
+                                       + this.editingCol.getBoundName() + "]" );
         }
         doFieldLabel();
         doOperatorLabel();
@@ -364,14 +360,12 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         for ( int i = 0; i < dtable.getModel().getConditionCols().size(); i++ ) {
             ConditionCol c = dtable.getModel().getConditionCols().get( i );
             if ( !vars.contains( c.getBoundName() ) ) {
-                if ( c.isNegated() ) {
-                    patterns.addItem( constants.negatedPattern() + " " + c.getFactType(),
-                                      c.getFactType() + " not-bound " + c.isNegated() );
-                } else {
-
-                    patterns.addItem( c.getFactType() + " [" + c.getBoundName() + "]",
-                                      c.getFactType() + " " + c.getBoundName() + " " + c.isNegated() );
-                }
+                patterns.addItem( (c.isNegated() ? constants.negatedPattern() + " " : "")
+                                          + c.getFactType()
+                                          + " [" + c.getBoundName() + "]",
+                                  c.getFactType()
+                                          + " " + c.getBoundName()
+                                          + " " + c.isNegated() );
                 vars.add( c.getBoundName() );
             }
         }
@@ -461,10 +455,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                 String[] val = pats.getValue( pats.getSelectedIndex() ).split(
                                                                                "\\s" );
                 editingCol.setFactType( val[0] );
+                editingCol.setBoundName( val[1] );
                 editingCol.setNegated( Boolean.valueOf( val[2] ) );
-                if ( !editingCol.isNegated() ) {
-                    editingCol.setBoundName( val[1] );
-                }
                 editingCol.setFactField( null );
                 doPatternLabel();
                 pop.hide();
@@ -522,11 +514,6 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         //Patterns can be negated, i.e. "not Pattern(...)"
         final CheckBox chkNegated = new CheckBox();
-        chkNegated.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                binding.setEnabled( !chkNegated.getValue() );
-            }
-        } );
         pop.addAttribute( constants.negatePattern(),
                           chkNegated );
 
@@ -536,9 +523,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
                 String ft = types.getItemText( types.getSelectedIndex() );
                 String fn = binding.getText();
-                if ( chkNegated.getValue() ) {
-                    //TODO Check FactType is not already bound
-                } else if ( fn.equals( "" ) ) {
+                if ( fn.equals( "" ) ) {
                     Window.alert( constants.PleaseEnterANameForFact() );
                     return;
                 } else if ( fn.equals( ft ) ) {
@@ -553,8 +538,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                     return;
                 }
                 editingCol.setFactType( ft );
+                editingCol.setBoundName( fn );
                 editingCol.setFactField( null );
-                editingCol.setBoundName( (!chkNegated.getValue() ? fn : "") );
                 editingCol.setNegated( chkNegated.getValue() );
                 doPatternLabel();
                 pop.hide();
