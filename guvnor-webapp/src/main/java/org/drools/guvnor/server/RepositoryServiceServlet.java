@@ -291,6 +291,19 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public void installSampleRepository() throws com.google.gwt.user.client.rpc.SerializationException {
         getPackageService().installSampleRepository();
     }
+    
+    public org.drools.guvnor.client.rpc.SnapshotDiffs compareSnapshots(java.lang.String p0,
+                                                                       java.lang.String p1,
+                                                                       java.lang.String p2) {
+        return getPackageService().compareSnapshots( p0,
+                                              p1,
+                                              p2 );
+    }
+
+    public org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse compareSnapshots(org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest p0) {
+        return getPackageService().compareSnapshots( p0 );
+    }
+
 
     /** PLACE THE FOLLOWING IN RepositoryServiceServlet.java **/
 
@@ -710,18 +723,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
 
     public org.drools.guvnor.client.rpc.PageResponse loadInbox(org.drools.guvnor.client.rpc.InboxPageRequest p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return getService().loadInbox( p0 );
-    }
-
-    public org.drools.guvnor.client.rpc.SnapshotDiffs compareSnapshots(java.lang.String p0,
-                                                                       java.lang.String p1,
-                                                                       java.lang.String p2) {
-        return getService().compareSnapshots( p0,
-                                              p1,
-                                              p2 );
-    }
-
-    public org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse compareSnapshots(org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest p0) {
-        return getService().compareSnapshots( p0 );
     }
 
     public java.lang.String processTemplate(java.lang.String p0,

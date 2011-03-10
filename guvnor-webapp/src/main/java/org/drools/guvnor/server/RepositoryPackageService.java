@@ -30,6 +30,9 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageService;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
+import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
@@ -449,5 +452,28 @@ public class RepositoryPackageService
         this.rebuildPackages();
         this.rebuildSnapshots();
     }
+    
+    /**
+     * @deprecated in favour of {@link compareSnapshots(SnapshotComparisonPageRequest)}
+     */
+    public SnapshotDiffs compareSnapshots(String packageName,
+                                          String firstSnapshotName,
+                                          String secondSnapshotName) {
+        return repositoryPackageOperations.compareSnapshots( packageName,
+                                                             firstSnapshotName,
+                                                             secondSnapshotName );
+    }
+
+    public SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request) {
+        if ( request == null ) {
+            throw new IllegalArgumentException( "request cannot be null" );
+        }
+        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
+            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
+        }
+
+        return repositoryPackageOperations.compareSnapshots( request );
+    }
+
 
 }

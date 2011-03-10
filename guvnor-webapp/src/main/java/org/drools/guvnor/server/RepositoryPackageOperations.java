@@ -43,9 +43,13 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
+import org.drools.guvnor.client.rpc.SnapshotDiff;
+import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
-import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.BuilderResultHelper;
@@ -60,8 +64,6 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.Identity;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -647,6 +649,160 @@ public class RepositoryPackageOperations {
                 }
             }
         }
+    }
+
+    /**
+     * @deprecated in favour of {@link compareSnapshots(SnapshotComparisonPageRequest)}
+     */
+    protected SnapshotDiffs compareSnapshots(String packageName,
+                                             String firstSnapshotName,
+                                             String secondSnapshotName) {
+        SnapshotDiffs diffs = new SnapshotDiffs();
+        List<SnapshotDiff> list = new ArrayList<SnapshotDiff>();
+
+        PackageItem leftPackage = getRulesRepository().loadPackageSnapshot( packageName,
+                                                                            firstSnapshotName );
+        PackageItem rightPackage = getRulesRepository().loadPackageSnapshot( packageName,
+                                                                             secondSnapshotName );
+
+        // Older one has to be on the left.
+        if ( isRightOlderThanLeft( leftPackage,
+                                   rightPackage ) ) {
+            PackageItem temp = leftPackage;
+            leftPackage = rightPackage;
+            rightPackage = temp;
+
+            diffs.leftName = secondSnapshotName;
+            diffs.rightName = firstSnapshotName;
+        } else {
+            diffs.leftName = firstSnapshotName;
+            diffs.rightName = secondSnapshotName;
+        }
+
+        Iterator<AssetItem> leftExistingIter = leftPackage.getAssets();
+        while ( leftExistingIter.hasNext() ) {
+            AssetItem left = leftExistingIter.next();
+            if ( isPackageItemDeleted( rightPackage,
+                                       left ) ) {
+                SnapshotDiff diff = new SnapshotDiff();
+
+                diff.name = left.getName();
+                diff.diffType = SnapshotDiff.TYPE_DELETED;
+                diff.leftUuid = left.getUUID();
+
+                list.add( diff );
+            }
+        }
+
+        Iterator<AssetItem> rightExistingIter = rightPackage.getAssets();
+        while ( rightExistingIter.hasNext() ) {
+            AssetItem right = rightExistingIter.next();
+            AssetItem left = null;
+            if ( right != null && leftPackage.containsAsset( right.getName() ) ) {
+                left = leftPackage.loadAsset( right.getName() );
+            }
+
+            // Asset is deleted or added
+            if ( right == null || left == null ) {
+                SnapshotDiff diff = new SnapshotDiff();
+
+                if ( left == null ) {
+                    diff.name = right.getName();
+                    diff.diffType = SnapshotDiff.TYPE_ADDED;
+                    diff.rightUuid = right.getUUID();
+                }
+
+                list.add( diff );
+            } else if ( isAssetArchivedOrRestored( right,
+                                                   left ) ) { // Has the asset
+                                                              // been archived
+                                                              // or restored
+                SnapshotDiff diff = new SnapshotDiff();
+
+                diff.name = right.getName();
+                diff.leftUuid = left.getUUID();
+                diff.rightUuid = right.getUUID();
+
+                if ( left.isArchived() ) {
+                    diff.diffType = SnapshotDiff.TYPE_RESTORED;
+                } else {
+                    diff.diffType = SnapshotDiff.TYPE_ARCHIVED;
+                }
+
+                list.add( diff );
+            } else if ( isAssetItemUpdated( right,
+                                            left ) ) { // Has the asset been
+                                                       // updated
+                SnapshotDiff diff = new SnapshotDiff();
+
+                diff.name = right.getName();
+                diff.leftUuid = left.getUUID();
+                diff.rightUuid = right.getUUID();
+                diff.diffType = SnapshotDiff.TYPE_UPDATED;
+
+                list.add( diff );
+            }
+        }
+
+        diffs.diffs = list.toArray( new SnapshotDiff[list.size()] );
+        return diffs;
+    }
+
+    private boolean isAssetArchivedOrRestored(AssetItem right,
+                                              AssetItem left) {
+        return right.isArchived() != left.isArchived();
+    }
+
+    private boolean isAssetItemUpdated(AssetItem right,
+                                       AssetItem left) {
+        return right.getLastModified().compareTo( left.getLastModified() ) != 0;
+    }
+
+    private boolean isPackageItemDeleted(PackageItem rightPackage,
+                                         AssetItem left) {
+        return !rightPackage.containsAsset( left.getName() );
+    }
+
+    private boolean isRightOlderThanLeft(PackageItem leftPackage,
+                                         PackageItem rightPackage) {
+        return leftPackage.getLastModified().compareTo( rightPackage.getLastModified() ) > 0;
+    }
+
+    protected SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request) {
+
+        SnapshotComparisonPageResponse response = new SnapshotComparisonPageResponse();
+
+        // Do query (bit of a cheat really!)
+        long start = System.currentTimeMillis();
+        SnapshotDiffs diffs = compareSnapshots( request.getPackageName(),
+                                                request.getFirstSnapshotName(),
+                                                request.getSecondSnapshotName() );
+        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+        // Populate response
+        response.setLeftSnapshotName( diffs.leftName );
+        response.setRightSnapshotName( diffs.rightName );
+        List<SnapshotComparisonPageRow> rowList = new ArrayList<SnapshotComparisonPageRow>();
+
+        int pageStart = request.getStartRowIndex();
+        int numRowsToReturn = (request.getPageSize() == null ? diffs.diffs.length : request.getPageSize());
+        int maxRow = Math.min( numRowsToReturn,
+                               diffs.diffs.length - request.getStartRowIndex() );
+        for ( int i = pageStart; i < pageStart + maxRow; i++ ) {
+            SnapshotComparisonPageRow pr = new SnapshotComparisonPageRow();
+            pr.setDiff( diffs.diffs[i] );
+            rowList.add( pr );
+        }
+        response.setPageRowList( rowList );
+        response.setStartRowIndex( request.getStartRowIndex() );
+        response.setTotalRowSize( diffs.diffs.length );
+        response.setTotalRowSizeExact( true );
+        response.setLastPage( (pageStart + maxRow == diffs.diffs.length) );
+
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Compared Snapshots ('" + request.getFirstSnapshotName() + "') and ('" + request.getSecondSnapshotName() + "') in package ('" + request.getPackageName() + "') in " + methodDuration + " ms." );
+
+        return response;
     }
 
 }

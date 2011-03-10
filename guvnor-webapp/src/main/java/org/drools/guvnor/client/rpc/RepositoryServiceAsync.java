@@ -80,8 +80,6 @@ public interface RepositoryServiceAsync {
     public void subscribe(AsyncCallback cb);
     public void loadInbox(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadInbox(org.drools.guvnor.client.rpc.InboxPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.InboxPageRow>> cb);
-    public void compareSnapshots(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotDiffs> cb);
-    public void compareSnapshots(org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse> cb);
     public void processTemplate(java.lang.String p0, java.util.Map p1, AsyncCallback<java.lang.String> cb);
     public void isHostedMode(AsyncCallback<java.lang.Boolean> cb);
     public void loadSpringContextElementData(AsyncCallback cb);

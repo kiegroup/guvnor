@@ -421,17 +421,6 @@ public interface RepositoryService
     public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException;
 
     /**
-     * Compare two snapshots.
-     * 
-     * @deprecated in favour of {@link compareSnapshots(SnapshotComparisonRequest)}
-     */
-    public SnapshotDiffs compareSnapshots(String packageName,
-                                          String firstSnapshotName,
-                                          String secondSnapshotName);
-
-    public SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request);
-
-    /**
      * Load and process the repository configuration templates.
      */
     public String processTemplate(String name,

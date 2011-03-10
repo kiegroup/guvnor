@@ -42,5 +42,7 @@ public interface PackageServiceAsync {
     public void listSnapshots(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotInfo[]> cb);
     public void listTypesInPackage(java.lang.String p0, AsyncCallback<java.lang.String[]> cb);
     public void installSampleRepository(AsyncCallback cb);
+    public void compareSnapshots(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotDiffs> cb);
+    public void compareSnapshots(org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse> cb);
 
 }

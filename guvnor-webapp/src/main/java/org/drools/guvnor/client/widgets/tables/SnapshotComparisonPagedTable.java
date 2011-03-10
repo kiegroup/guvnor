@@ -95,7 +95,7 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
                 request.setPackageName( packageName );
                 request.setFirstSnapshotName( firstSnapshotName );
                 request.setSecondSnapshotName( secondSnapshotName );
-                repositoryService.compareSnapshots( request,
+                packageService.compareSnapshots( request,
                                                              new GenericCallback<SnapshotComparisonPageResponse>() {
                                                                  public void onSuccess(SnapshotComparisonPageResponse response) {
                                                                      updateRowCount( response.getTotalRowSize(),

@@ -4806,7 +4806,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                                                    0,
                                                                                    PAGE_SIZE );
         SnapshotComparisonPageResponse response;
-        response = impl.compareSnapshots( request );
+        response = repositoryPackageService.compareSnapshots( request );
 
         assertEquals( "FIRST",
                       response.getLeftSnapshotName() );
@@ -4820,7 +4820,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
-        response = impl.compareSnapshots( request );
+        response = repositoryPackageService.compareSnapshots( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -4829,7 +4829,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE * 2 );
-        response = impl.compareSnapshots( request );
+        response = repositoryPackageService.compareSnapshots( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -4933,7 +4933,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                                                    0,
                                                                                    null );
         SnapshotComparisonPageResponse response;
-        response = impl.compareSnapshots( request );
+        response = repositoryPackageService.compareSnapshots( request );
 
         assertEquals( "FIRST",
                       response.getLeftSnapshotName() );
@@ -5337,7 +5337,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       repositoryPackageService.listRulesInPackage( "testSnapshotDiff" ).length );
 
         // Compare the snapshots
-        SnapshotDiffs diffs = impl.compareSnapshots( "testSnapshotDiff",
+        SnapshotDiffs diffs = repositoryPackageService.compareSnapshots( "testSnapshotDiff",
                                                      "FIRST",
                                                      "SECOND" );
         assertEquals( "FIRST",

@@ -213,5 +213,17 @@ public interface PackageService
      * Generally shouldn't call this unless it is new !
      */
     public void installSampleRepository() throws SerializationException;
+    
+    /**
+     * Compare two snapshots.
+     * 
+     * @deprecated in favour of {@link compareSnapshots(SnapshotComparisonRequest)}
+     */
+    public SnapshotDiffs compareSnapshots(String packageName,
+                                          String firstSnapshotName,
+                                          String secondSnapshotName);
+
+    public SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request);
+
 
 }
