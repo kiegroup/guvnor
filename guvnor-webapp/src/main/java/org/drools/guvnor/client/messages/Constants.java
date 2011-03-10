@@ -2246,6 +2246,8 @@ public interface Constants
 
     String Url();
 
+    String CurrentPerspectives();
+
     String Save();
 
     String groupCells();
@@ -2255,4 +2257,6 @@ public interface Constants
     String negatedPattern();
 
     String PerspectivesConfiguration();
+
+    String NewPerspective();
 }
