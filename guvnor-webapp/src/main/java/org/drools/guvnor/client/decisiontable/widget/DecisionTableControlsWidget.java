@@ -16,7 +16,6 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -36,7 +35,7 @@ public class DecisionTableControlsWidget extends Composite {
     // Resources
     protected static final Constants messages = GWT.create( Constants.class );
 
-    public DecisionTableControlsWidget(final HasRows dtable) {
+    public DecisionTableControlsWidget(final AbstractDecisionTableWidget dtable) {
 
         // Add row button
         Button btnAddRow = new Button( messages.AddRow(),
@@ -47,6 +46,16 @@ public class DecisionTableControlsWidget extends Composite {
                                            }
                                        } );
         panel.add( btnAddRow );
+
+        // Otherwise button
+        Button btnOtherwise = new Button( "Otherwise",
+                                          new ClickHandler() {
+
+                                              public void onClick(ClickEvent event) {
+                                                  dtable.appendRow();
+                                              }
+                                          } );
+        panel.add( btnOtherwise );
 
         initWidget( panel );
 

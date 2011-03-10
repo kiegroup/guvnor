@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -46,6 +47,14 @@ import java.util.List;
 public class CellValue<T extends Comparable<T>>
     implements
         Comparable<CellValue<T>> {
+
+    //Possible states of the cell
+    public static enum CellState {
+        SELECTED,
+        GROUPED,
+        OTHERWISE
+    }
+
     /**
      * A grouped cell, containing a list of grouped cells. If a cell spanning
      * three rows is grouped, the normal CellValue is replaced with a
@@ -135,15 +144,12 @@ public class CellValue<T extends Comparable<T>>
 
     }
 
-    private T          value;
-    private int        rowSpan = 1;
-    private Coordinate coordinate;
-    private Coordinate mapHtmlToData;
-    private Coordinate mapDataToHtml;
-
-    private boolean    isSelected;
-
-    private boolean    isGrouped;    // Is cell grouped (which icon to render)
+    private T                  value;
+    private int                rowSpan = 1;
+    private Coordinate         coordinate;
+    private Coordinate         mapHtmlToData;
+    private Coordinate         mapDataToHtml;
+    private EnumSet<CellState> state   = EnumSet.noneOf( CellState.class );
 
     public CellValue(T value,
                      int row,
@@ -155,6 +161,10 @@ public class CellValue<T extends Comparable<T>>
                                              col );
         this.mapDataToHtml = new Coordinate( row,
                                              col );
+    }
+
+    public void addState(CellState state) {
+        this.state.add( state );
     }
 
     // Used for sorting
@@ -192,8 +202,7 @@ public class CellValue<T extends Comparable<T>>
                                 that.mapHtmlToData )
                 && equalOrNull( this.mapDataToHtml,
                                 that.mapDataToHtml )
-                && this.isSelected == that.isSelected
-                && this.isGrouped == that.isGrouped;
+                && this.state.equals( that.state );
     }
 
     public Coordinate getCoordinate() {
@@ -225,8 +234,7 @@ public class CellValue<T extends Comparable<T>>
         hash = hash * 31 + (coordinate == null ? 0 : coordinate.hashCode());
         hash = hash * 31 + (mapHtmlToData == null ? 0 : mapHtmlToData.hashCode());
         hash = hash * 31 + (mapDataToHtml == null ? 0 : mapDataToHtml.hashCode());
-        hash = hash * 31 + ((Boolean) isSelected).hashCode();
-        hash = hash * 31 + ((Boolean) isGrouped).hashCode();
+        hash = hash * 31 + state.hashCode();
         return hash;
     }
 
@@ -235,11 +243,19 @@ public class CellValue<T extends Comparable<T>>
     }
 
     public boolean isGrouped() {
-        return isGrouped;
+        return this.state.contains( CellState.GROUPED );
+    }
+
+    public boolean isOtherwise() {
+        return this.state.contains( CellState.OTHERWISE );
     }
 
     public boolean isSelected() {
-        return isSelected;
+        return this.state.contains( CellState.SELECTED );
+    }
+
+    public void removeState(CellState state) {
+        this.state.remove( state );
     }
 
     public void setCoordinate(Coordinate coordinate) {
@@ -247,10 +263,6 @@ public class CellValue<T extends Comparable<T>>
             throw new IllegalArgumentException( "Coordinate cannot be null." );
         }
         this.coordinate = coordinate;
-    }
-
-    public void setGrouped(boolean isGrouped) {
-        this.isGrouped = isGrouped;
     }
 
     public void setHtmlCoordinate(Coordinate c) {
@@ -272,10 +284,6 @@ public class CellValue<T extends Comparable<T>>
             throw new IllegalArgumentException( "rowSpan cannot be less than zero." );
         }
         this.rowSpan = rowSpan;
-    }
-
-    public void setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
     }
 
     @SuppressWarnings("unchecked")

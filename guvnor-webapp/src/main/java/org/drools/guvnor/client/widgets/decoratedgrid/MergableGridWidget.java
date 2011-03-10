@@ -23,6 +23,7 @@ import java.util.TreeSet;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
+import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue;
 
 import com.google.gwt.cell.client.ValueUpdater;
@@ -650,7 +651,11 @@ public abstract class MergableGridWidget<T> extends Widget
         GroupedDynamicDataRow groupedRow = new GroupedDynamicDataRow();
         for ( int iCol = 0; iCol < row.size(); iCol++ ) {
             groupedCell = row.get( iCol ).convertToGroupedCell();
-            groupedCell.setGrouped( (iCol == colIndex) );
+            if ( iCol == colIndex ) {
+                groupedCell.addState( CellState.GROUPED );
+            } else {
+                groupedCell.removeState( CellState.GROUPED );
+            }
             groupedRow.add( groupedCell );
         }
 
@@ -684,7 +689,7 @@ public abstract class MergableGridWidget<T> extends Widget
     private void clearSelection() {
         // De-select any previously selected cells
         for ( CellValue< ? extends Comparable< ? >> cell : this.selections ) {
-            cell.setSelected( false );
+            cell.removeState( CellState.SELECTED );
             deselectCell( cell );
         }
 
@@ -996,7 +1001,7 @@ public abstract class MergableGridWidget<T> extends Widget
 
         int startRowIndex = startCell.getCoordinate().getRow();
 
-        startCell.setGrouped( false );
+        startCell.removeState( CellState.GROUPED );
 
         //Check if rows need to be recursively expanded
         boolean bRecursive = true;
@@ -1015,15 +1020,26 @@ public abstract class MergableGridWidget<T> extends Widget
         data.addAll( startRowIndex,
                      expandedRow );
 
+        assertModelMerging();
+
         //If the row is replaced with another grouped row ensure the row can be expanded
         row = data.get( startRowIndex );
+        boolean hasCellToExpand = false;
         for ( CellValue< ? > cell : row ) {
             if ( cell instanceof GroupedCellValue ) {
-                cell.setGrouped( true );
+                if ( cell.isGrouped() && cell.getRowSpan() > 0 ) {
+                    hasCellToExpand = true;
+                    break;
+                }
             }
         }
-
-        assertModelMerging();
+        if ( !hasCellToExpand ) {
+            for ( CellValue< ? > cell : row ) {
+                if ( cell instanceof GroupedCellValue && cell.getRowSpan() == 1 ) {
+                    cell.addState( CellState.GROUPED );
+                }
+            }
+        }
 
         //Partial redraw
         if ( bRedraw ) {
@@ -1065,7 +1081,7 @@ public abstract class MergableGridWidget<T> extends Widget
     private void ungroupCells(DynamicDataRow row) {
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             CellValue< ? > cell = row.get( iCol );
-            cell.setGrouped( false );
+            cell.removeState( CellState.GROUPED );
         }
     }
 
@@ -1378,7 +1394,7 @@ public abstract class MergableGridWidget<T> extends Widget
             selections.add( cell );
 
             // Redraw selected cell
-            cell.setSelected( true );
+            cell.addState( CellState.SELECTED );
             selectCell( cell );
         }
 
