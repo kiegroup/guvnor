@@ -4,9 +4,11 @@ import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.IFramePerspectiveConfiguration;
+import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.IFramePerspectiveConfigurationItem;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.Component;
+import org.jboss.seam.contexts.Contexts;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -83,7 +85,18 @@ public class ConfigurationServiceImplementation
     }
 
     protected RulesRepository getRepository() {
-        return (RulesRepository) Component.getInstance("repository");
+        if (Contexts.isApplicationContextActive()) {
+            RulesRepository repo = (RulesRepository) Component.getInstance("repository");
+            return repo;
+        } else {
+            try {
+                RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
+                return repo;
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to get repo to run tests", e);
+            }
+
+        }
     }
 
     private IFramePerspectiveConfiguration configurationItemToConfiguration(IFramePerspectiveConfigurationItem perspectiveConfigurationItem) {
