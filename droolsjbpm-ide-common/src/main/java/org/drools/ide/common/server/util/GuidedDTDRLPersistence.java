@@ -91,6 +91,9 @@ public class GuidedDTDRLPersistence {
             sb.append( "#from row number: "
                        + (i + 1)
                        + "\n" );
+            if ( desc != null && desc.length() > 0 ) {
+                sb.append( "#" + desc + "\n" );
+            }
             String rule = BRDRLPersistence.getInstance().marshal( rm );
             sb.append( rule );
             sb.append( "\n" );
@@ -324,7 +327,7 @@ public class GuidedDTDRLPersistence {
             if ( validCell( cell ) ) {
 
                 //If instance of "otherwise" column then flag RuleModel as being negated
-                if ( at.getAttribute().equals( GuidedDecisionTable.OTHERWISE_ATTR ) ) {
+                if ( at.getAttribute().equals( GuidedDecisionTable.NEGATE_RULE_ATTR ) ) {
                     rm.setNegated( Boolean.valueOf( cell ) );
                 } else {
                     attribs.add( new RuleAttribute( at.getAttribute(),

@@ -46,7 +46,7 @@ public class GuidedDecisionTable
     /**
      * This attribute is only used for Decision Tables to negate a rule
      */
-    public static final String OTHERWISE_ATTR    = "otherwise";
+    public static final String NEGATE_RULE_ATTR    = "negate";
 
     /**
      * The name - obviously.

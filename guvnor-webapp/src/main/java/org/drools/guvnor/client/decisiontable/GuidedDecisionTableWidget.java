@@ -510,7 +510,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                    final ListBox list = RuleAttributeWidget.getAttributeList();
                                                    
                                                    //This attribute is only used for Decision Tables
-                                                   list.addItem(GuidedDecisionTable.OTHERWISE_ATTR);
+                                                   list.addItem(GuidedDecisionTable.NEGATE_RULE_ATTR);
 
                                                    // Remove any attributes
                                                    // already added
