@@ -47,16 +47,6 @@ public class DecisionTableControlsWidget extends Composite {
                                        } );
         panel.add( btnAddRow );
 
-        // Otherwise button
-        Button btnOtherwise = new Button( "Otherwise",
-                                          new ClickHandler() {
-
-                                              public void onClick(ClickEvent event) {
-                                                  dtable.appendRow();
-                                              }
-                                          } );
-        panel.add( btnOtherwise );
-
         initWidget( panel );
 
     }
