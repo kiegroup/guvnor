@@ -5501,7 +5501,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 		
 		//calling updateDependency creates package version 3
 		pkg.updateDependency("func?version=1");
-	
+		pkg.checkin("package version 3");
+		
 		func.updateContent("function void foo() { System.out.println(version 2); }");
 		func.checkin("func version 3");		
 		
