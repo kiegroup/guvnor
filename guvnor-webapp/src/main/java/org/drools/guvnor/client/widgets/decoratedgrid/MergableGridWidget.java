@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
@@ -583,7 +584,6 @@ public abstract class MergableGridWidget<T> extends Widget
     public void update(Object value) {
 
         boolean bUngroupCells = false;
-        TreeSet<CellValue< ? extends Comparable< ? >>> selections = getSelectedCells();
         Coordinate selection = selections.first().getCoordinate();
 
         //If selections span multiple cells, any of which are grouped we should ungroup them
@@ -624,10 +624,8 @@ public abstract class MergableGridWidget<T> extends Widget
         // When merged cells become unmerged (if their value is
         // cleared need to ensure the re-draw range is at least
         // as large as the selection range
-        if ( maxRedrawRow < getSelectedCells().last().getCoordinate()
-                .getRow() ) {
-            maxRedrawRow = getSelectedCells().last().getCoordinate()
-                    .getRow();
+        if ( maxRedrawRow < selections.last().getCoordinate().getRow() ) {
+            maxRedrawRow = selections.last().getCoordinate().getRow();
         }
         redrawRows( minRedrawRow,
                     maxRedrawRow );
@@ -1281,12 +1279,12 @@ public abstract class MergableGridWidget<T> extends Widget
     }
 
     /**
-     * Return a set of selected cells
+     * Return an immutable list of selected cells
      * 
      * @return The selected cells
      */
-    TreeSet<CellValue< ? extends Comparable< ? >>> getSelectedCells() {
-        return this.selections;
+    public List<CellValue< ? >> getSelectedCells() {
+        return Collections.unmodifiableList( new ArrayList<CellValue< ? >>( this.selections ) );
     }
 
     /**

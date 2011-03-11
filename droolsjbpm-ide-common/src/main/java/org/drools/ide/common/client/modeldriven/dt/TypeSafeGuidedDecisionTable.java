@@ -15,6 +15,7 @@
  */
 package org.drools.ide.common.client.modeldriven.dt;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,60 +32,85 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * 
  * This works by taking the column definitions, and combining them with the
  * table of data to produce rule models.
- * 
- * This has been deprecated in preference of {@link TypeSafeGuidedDecisionTable}
- * which supports type-safe values for the Decision Table cell values.
  */
-@Deprecated
-public class GuidedDecisionTable
+public class TypeSafeGuidedDecisionTable
     implements
     PortableObject {
 
-    private static final long  serialVersionUID  = 510l;
+    /**
+     * Holder for cell value and other attributes
+     */
+    public static class DTCellValue<T extends Serializable>
+        implements
+        PortableObject {
+
+        private static final long serialVersionUID = 510l;
+
+        //Type safe value of cell
+        private T                 value;
+
+        //Does this cell represent "all other values" to those explicitly defined for the column
+        private boolean           isOtherwise;
+
+        public T getValue() {
+            return value;
+        }
+
+        public boolean isOtherwise() {
+            return isOtherwise;
+        }
+
+        public void setOtherwise(boolean isOtherwise) {
+            this.isOtherwise = isOtherwise;
+        }
+
+        @SuppressWarnings("unchecked")
+        public void setValue(Object value) {
+            this.value = (T) value;
+        }
+
+    }
+
+    private static final long            serialVersionUID  = 510l;
 
     /**
      * Number of internal elements before ( used for offsets in serialization )
      */
-    public static final int    INTERNAL_ELEMENTS = 2;
+    public static final int              INTERNAL_ELEMENTS = 2;
+
+    /**
+     * This attribute is only used for Decision Tables to negate a rule
+     */
+    public static final String           NEGATE_RULE_ATTR  = "negate";
 
     /**
      * The name - obviously.
      */
-    private String             tableName;
+    private String                       tableName;
 
-    private String             parentName;
-
-    // No longer used by retained to enable XStream to de-serialise legacy
-    // tables. See http://xstream.codehaus.org/faq.html#Serialization
-    @SuppressWarnings("unused")
-    private transient int      descriptionWidth  = -1;
-
-    // No longer used by retained to enable XStream to de-serialise legacy
-    // tables. See http://xstream.codehaus.org/faq.html#Serialization
-    @SuppressWarnings("unused")
-    private transient String   groupField;
+    private String                       parentName;
 
     // metadata defined for table ( will be represented as a column per table row of DATA
-    private RowNumberCol       rowNumberCol;
+    private RowNumberCol                 rowNumberCol;
 
-    private DescriptionCol     descriptionCol;
+    private DescriptionCol               descriptionCol;
 
-    private List<MetadataCol>  metadataCols;
+    private List<MetadataCol>            metadataCols;
 
-    private List<AttributeCol> attributeCols     = new ArrayList<AttributeCol>();
+    private List<AttributeCol>           attributeCols     = new ArrayList<AttributeCol>();
 
-    private List<ConditionCol> conditionCols     = new ArrayList<ConditionCol>();
+    private List<ConditionCol>           conditionCols     = new ArrayList<ConditionCol>();
 
-    private List<ActionCol>    actionCols        = new ArrayList<ActionCol>();
+    private List<ActionCol>              actionCols        = new ArrayList<ActionCol>();
 
     /**
      * First column is always row number. Second column is description.
      * Subsequent ones follow the above column definitions: attributeCols, then
      * conditionCols, then actionCols, in that order, left to right.
      */
-    private String[][]         data              = new String[0][0];
+    private List<List<DTCellValue< ? >>> data;
 
-    public GuidedDecisionTable() {
+    public TypeSafeGuidedDecisionTable() {
     }
 
     public List<ActionCol> getActionCols() {
@@ -99,7 +125,7 @@ public class GuidedDecisionTable
         return conditionCols;
     }
 
-    public String[][] getData() {
+    public List<List<DTCellValue< ? >>> getData() {
         return data;
     }
 
@@ -288,7 +314,7 @@ public class GuidedDecisionTable
         }
     }
 
-    public void setData(String[][] data) {
+    public void setData(List<List<DTCellValue< ? >>> data) {
         this.data = data;
     }
 

@@ -16,18 +16,20 @@
 
 package org.drools.ide.common.server.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
-import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
@@ -38,14 +40,15 @@ import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
+import org.junit.Test;
 
 public class GuidedDTDRLPersistenceTest {
 
     @Test
     public void test2Rules() throws Exception {
-        GuidedDecisionTable dt = new GuidedDecisionTable();
+        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
         dt.setTableName( "michael" );
 
         AttributeCol attr = new AttributeCol();
@@ -112,10 +115,10 @@ public class GuidedDTDRLPersistenceTest {
         set2.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
-        dt.setData( new String[][]{
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", null},
                 new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", ""}
-        } );
+        } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dt );
@@ -132,7 +135,7 @@ public class GuidedDTDRLPersistenceTest {
 
     @Test
     public void testInterpolate() {
-        GuidedDecisionTable dt = new GuidedDecisionTable();
+        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
         dt.setTableName( "michael" );
 
         AttributeCol attr = new AttributeCol();
@@ -199,10 +202,10 @@ public class GuidedDTDRLPersistenceTest {
         set2.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
-        dt.setData( new String[][]{
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "BAM", "6.60", "true", "gooVal1", null},
                 new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "BAM", "6.60", "", "gooVal1", ""}
-        } );
+        } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dt );
@@ -220,7 +223,7 @@ public class GuidedDTDRLPersistenceTest {
 
     @Test
     public void testInOperator() {
-        GuidedDecisionTable dt = new GuidedDecisionTable();
+        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
         dt.setTableName( "michael" );
 
         AttributeCol attr = new AttributeCol();
@@ -287,10 +290,10 @@ public class GuidedDTDRLPersistenceTest {
         set2.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
-        dt.setData( new String[][]{
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "42", "33", "michael, manik", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", null},
                 new String[]{"2", "desc", "", "39", "bob, frank", "age * 0.3", "age > 7", "6.60", "", "gooVal1", ""}
-        } );
+        } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dt );
@@ -344,7 +347,7 @@ public class GuidedDTDRLPersistenceTest {
         RuleAttribute[] orig = rm.attributes;
         p.doAttribs( 0,
                      attributeCols,
-                     row,
+                     RepositoryUpgradeHelper.makeDataRowList( row ),
                      rm );
 
         assertSame( orig,
@@ -359,7 +362,7 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doAttribs( 0,
                      attributeCols,
-                     row,
+                     RepositoryUpgradeHelper.makeDataRowList( row ),
                      rm );
 
         assertEquals( 1,
@@ -372,7 +375,7 @@ public class GuidedDTDRLPersistenceTest {
         row = new String[]{"1", "desc", "a", "b"};
         p.doAttribs( 0,
                      attributeCols,
-                     row,
+                     RepositoryUpgradeHelper.makeDataRowList( row ),
                      rm );
         assertEquals( 2,
                       rm.attributes.length );
@@ -397,7 +400,7 @@ public class GuidedDTDRLPersistenceTest {
         RuleMetadata[] orig = rm.metadataList;
         // RuleAttribute[] orig = rm.attributes;
         p.doMetadata( metadataCols,
-                      row,
+                      RepositoryUpgradeHelper.makeDataRowList( row ),
                       rm );
         // p.doAttribs(0,metadataCols, row, rm);
 
@@ -412,7 +415,7 @@ public class GuidedDTDRLPersistenceTest {
         metadataCols.add( col2 );
 
         p.doMetadata( metadataCols,
-                      row,
+                      RepositoryUpgradeHelper.makeDataRowList( row ),
                       rm );
         // p.doAttribs(0, metadataCols, row, rm);
 
@@ -425,7 +428,7 @@ public class GuidedDTDRLPersistenceTest {
 
         row = new String[]{"1", "desc", "bar1", "bar2"};
         p.doMetadata( metadataCols,
-                      row,
+                      RepositoryUpgradeHelper.makeDataRowList( row ),
                       rm );
         assertEquals( 2,
                       rm.metadataList.length );
@@ -480,7 +483,7 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doConditions( 1,
                         cols,
-                        row,
+                        RepositoryUpgradeHelper.makeDataRowList( row ),
                         rm );
         assertEquals( 2,
                       rm.lhs.length );
@@ -581,7 +584,7 @@ public class GuidedDTDRLPersistenceTest {
         RuleModel rm = new RuleModel();
         p.doActions( 2,
                      cols,
-                     row,
+                     RepositoryUpgradeHelper.makeDataRowList( row ),
                      rm );
         assertEquals( 3,
                       rm.rhs.length );
@@ -637,7 +640,7 @@ public class GuidedDTDRLPersistenceTest {
 
     @Test
     public void testNoConstraints() {
-        GuidedDecisionTable dt = new GuidedDecisionTable();
+        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
         ConditionCol c = new ConditionCol();
         c.setBoundName( "x" );
         c.setFactType( "Context" );
@@ -653,7 +656,7 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[][]{
                 new String[]{"1", "desc", "y", "old"}
         };
-        dt.setData( data );
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
 
         String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
 
@@ -663,9 +666,9 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl.indexOf( "x.setAge" ) > drl.indexOf( "Context( )" ) );
         assertFalse( drl.indexOf( "update( x );" ) > -1 );
 
-        dt.setData( new String[][]{
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "", "old"}
-            } );
+            } ) );
         drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
         assertEquals( -1,
                       drl.indexOf( "Context( )" ) );
@@ -674,7 +677,7 @@ public class GuidedDTDRLPersistenceTest {
 
     @Test
     public void testUpdateModify() {
-        GuidedDecisionTable dt = new GuidedDecisionTable();
+        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
         ConditionCol c = new ConditionCol();
         c.setBoundName( "x" );
         c.setFactType( "Context" );
@@ -691,7 +694,7 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[][]{
                 new String[]{"1", "desc", "y", "old"}
         };
-        dt.setData( data );
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
 
         String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
 
@@ -700,9 +703,9 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl.indexOf( "Context( )" ) > -1 );
         assertTrue( drl.indexOf( "x.setAge" ) > drl.indexOf( "Context( )" ) );
 
-        dt.setData( new String[][]{
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "", "old"}
-            } );
+            } ) );
         drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
         assertEquals( -1,
                       drl.indexOf( "Context( )" ) );
@@ -730,14 +733,14 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doConditions( 1,
                         cols,
-                        row,
+                        RepositoryUpgradeHelper.makeDataRowList( row ),
                         rm );
 
         String drl = BRDRLPersistence.getInstance().marshal( rm );
         assertTrue( drl.indexOf( "age > \"42\"" ) > 0 );
 
     }
-    
+
     @Test
     public void testLHSNotPattern() {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
@@ -781,11 +784,11 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doConditions( 1,
                         cols,
-                        row,
+                        RepositoryUpgradeHelper.makeDataRowList( row ),
                         rm );
-        
+
         String drl = BRDRLPersistence.getInstance().marshal( rm );
-        
+
         assertEquals( 2,
                       rm.lhs.length );
 
@@ -798,7 +801,7 @@ public class GuidedDTDRLPersistenceTest {
                       ((FactPattern) rm.lhs[1]).getFactType() );
         assertEquals( "c",
                       ((FactPattern) rm.lhs[1]).getBoundName() );
-        
+
         // examine the first pattern
         FactPattern person = (FactPattern) rm.lhs[0];
         assertEquals( 3,
@@ -828,9 +831,10 @@ public class GuidedDTDRLPersistenceTest {
                       cons.getConstraintValueType() );
         assertEquals( "age > 6",
                       cons.getValue() );
-        
-        assertEquals(person.isNegated(), true);
-        
+
+        assertEquals( person.isNegated(),
+                      true );
+
         assertTrue( drl.indexOf( "not Person(" ) > 0 );
 
         // examine the second pattern
@@ -846,8 +850,9 @@ public class GuidedDTDRLPersistenceTest {
                       cons.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       cons.getConstraintValueType() );
-        
-        assertEquals(cheese.isNegated(), false);
+
+        assertEquals( cheese.isNegated(),
+                      false );
 
         assertTrue( drl.indexOf( "c : Cheese(" ) > 0 );
 

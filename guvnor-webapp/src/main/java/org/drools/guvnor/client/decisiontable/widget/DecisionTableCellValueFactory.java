@@ -23,7 +23,7 @@ import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
 
 /**
@@ -32,7 +32,7 @@ import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
 public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTColumnConfig> {
 
     // Model used to determine data-types etc for cells
-    private GuidedDecisionTable model;
+    private TypeSafeGuidedDecisionTable model;
 
     /**
      * Construct a Cell Value Factory for a specific Decision Table
@@ -43,14 +43,14 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      *            The Decision Table model to assist data-type derivation
      */
     public DecisionTableCellValueFactory(SuggestionCompletionEngine sce,
-                                         GuidedDecisionTable model) {
+                                         TypeSafeGuidedDecisionTable model) {
         super( sce );
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
         this.model = model;
     }
-
+    
     // Get the Data Type corresponding to a given column
     protected DATA_TYPES getDataType(DTColumnConfig column) {
 
@@ -84,7 +84,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                 dataType = DATA_TYPES.DATE;
             } else if ( attrName.equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
                 dataType = DATA_TYPES.DIALECT;
-            } else if ( attrName.equals( GuidedDecisionTable.NEGATE_RULE_ATTR ) ) {
+            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.NEGATE_RULE_ATTR ) ) {
                 dataType = DATA_TYPES.BOOLEAN;
             }
 

@@ -28,7 +28,6 @@ public class RuleAttribute
     private static final String ENABLED  = "enabled";
     private static final String DURATION = "duration";
     private static final String LOCK_ON_ACTIVE = "lock-on-active";
-
     private static final String AUTO_FOCUS = "auto-focus";
 
     public RuleAttribute(final String name,

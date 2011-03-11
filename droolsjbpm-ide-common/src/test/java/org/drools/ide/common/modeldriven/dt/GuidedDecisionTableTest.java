@@ -32,7 +32,7 @@ import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
 import org.junit.Test;
@@ -98,7 +98,7 @@ public class GuidedDecisionTableTest {
     // }
     @Test
     public void testValueLists() {
-        GuidedDecisionTable dt = new GuidedDecisionTable();
+        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
 
         // add cols for LHS
         ConditionCol c1 = new ConditionCol();
@@ -283,7 +283,7 @@ public class GuidedDecisionTableTest {
             }
         } );
 
-        GuidedDecisionTable dt = new GuidedDecisionTable();
+        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
 
         AttributeCol at = new AttributeCol();
         at.setAttribute( "salience" );
@@ -386,7 +386,7 @@ public class GuidedDecisionTableTest {
             }
         } );
 
-        GuidedDecisionTable dt = new GuidedDecisionTable();
+        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
 
         AttributeCol salienceAttribute = new AttributeCol();
         salienceAttribute.setAttribute( "salience" );
@@ -494,7 +494,7 @@ public class GuidedDecisionTableTest {
 
     @Test
     public void testNoConstraintLists() {
-        GuidedDecisionTable dt = new GuidedDecisionTable();
+        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
 
         // add cols for LHS
         ConditionCol c1 = new ConditionCol();
@@ -525,7 +525,7 @@ public class GuidedDecisionTableTest {
 
     @Test
     public void testNoConstraints() {
-        GuidedDecisionTable dt = new GuidedDecisionTable();
+        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
 
         // add cols for LHS
         RowNumberCol rnc = new RowNumberCol();

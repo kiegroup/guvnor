@@ -41,6 +41,7 @@ import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 
 import com.google.gwt.core.client.GWT;
@@ -71,7 +72,7 @@ public class GuidedDecisionTableWidget extends Composite
     private Constants                   constants = GWT.create( Constants.class );
     private static Images               images    = GWT.create( Images.class );
 
-    private GuidedDecisionTable         guidedDecisionTable;
+    private TypeSafeGuidedDecisionTable         guidedDecisionTable;
     private VerticalPanel               layout;
     private PrettyFormLayout            configureColumnsNote;
     private VerticalPanel               attributeConfigWidget;
@@ -90,7 +91,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     public GuidedDecisionTableWidget(RuleAsset asset) {
 
-        this.guidedDecisionTable = (GuidedDecisionTable) asset.content;
+        this.guidedDecisionTable = (TypeSafeGuidedDecisionTable) asset.content;
         this.packageName = asset.metaData.packageName;
         this.guidedDecisionTable.setTableName( asset.metaData.name );
 
@@ -510,7 +511,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                    final ListBox list = RuleAttributeWidget.getAttributeList();
                                                    
                                                    //This attribute is only used for Decision Tables
-                                                   list.addItem(GuidedDecisionTable.NEGATE_RULE_ATTR);
+                                                   list.addItem(TypeSafeGuidedDecisionTable.NEGATE_RULE_ATTR);
 
                                                    // Remove any attributes
                                                    // already added

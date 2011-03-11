@@ -33,10 +33,13 @@ public abstract class AbstractCellValueFactory<T> {
             @Override
             public CellValue<String> getNewCellValue(int iRow,
                                                      int iCol,
-                                                     String initialValue) {
-                CellValue<String> cv = new CellValue<String>( initialValue,
+                                                     Object initialValue) {
+                CellValue<String> cv = new CellValue<String>( null,
                                                               iRow,
                                                               iCol );
+                if ( initialValue != null ) {
+                    cv.setValue( initialValue.toString() );
+                }
                 return cv;
             }
 
@@ -50,14 +53,18 @@ public abstract class AbstractCellValueFactory<T> {
             @Override
             public CellValue<BigDecimal> getNewCellValue(int iRow,
                                                          int iCol,
-                                                         String initialValue) {
+                                                         Object initialValue) {
                 CellValue<BigDecimal> cv = new CellValue<BigDecimal>( null,
                                                                       iRow,
                                                                       iCol );
                 if ( initialValue != null ) {
-                    try {
-                        cv.setValue( new BigDecimal( initialValue ) );
-                    } catch ( Exception e ) {
+                    if ( initialValue instanceof String ) {
+                        try {
+                            cv.setValue( new BigDecimal( (String) initialValue ) );
+                        } catch ( Exception e ) {
+                        }
+                    } else if ( initialValue instanceof BigDecimal ) {
+                        cv.setValue( (BigDecimal) initialValue );
                     }
                 }
                 return cv;
@@ -73,7 +80,7 @@ public abstract class AbstractCellValueFactory<T> {
             @Override
             public CellValue<BigDecimal> getNewCellValue(int iRow,
                                                          int iCol,
-                                                         String initialValue) {
+                                                         Object initialValue) {
                 // Rows are 0-based internally but 1-based in the UI
                 CellValue<BigDecimal> cv = new CellValue<BigDecimal>( new BigDecimal( iRow + 1 ),
                                                                       iRow,
@@ -92,25 +99,29 @@ public abstract class AbstractCellValueFactory<T> {
             @SuppressWarnings("deprecation")
             public CellValue<Date> getNewCellValue(int iRow,
                                                    int iCol,
-                                                   String initialValue) {
+                                                   Object initialValue) {
                 CellValue<Date> cv = new CellValue<Date>( null,
                                                           iRow,
                                                           iCol );
 
                 if ( initialValue != null ) {
                     Date d;
-                    try {
-                        d = DATE_FORMAT.parse( initialValue );
-                    } catch ( IllegalArgumentException iae ) {
-                        Date nd = new Date();
-                        int year = nd.getYear();
-                        int month = nd.getMonth();
-                        int date = nd.getDate();
-                        d = new Date( year,
-                                        month,
-                                        date );
+                    if ( initialValue instanceof String ) {
+                        try {
+                            d = DATE_FORMAT.parse( (String) initialValue );
+                            cv.setValue( d );
+                        } catch ( IllegalArgumentException iae ) {
+                            Date nd = new Date();
+                            int year = nd.getYear();
+                            int month = nd.getMonth();
+                            int date = nd.getDate();
+                            d = new Date( year,
+                                          month,
+                                          date );
+                        }
+                    } else if ( initialValue instanceof Date ) {
+                        cv.setValue( (Date) initialValue );
                     }
-                    cv.setValue( d );
                 }
                 return cv;
             }
@@ -129,14 +140,18 @@ public abstract class AbstractCellValueFactory<T> {
             @Override
             public CellValue<Boolean> getNewCellValue(int iRow,
                                                       int iCol,
-                                                      String initialValue) {
+                                                      Object initialValue) {
                 CellValue<Boolean> cv = new CellValue<Boolean>( Boolean.FALSE,
                                                                 iRow,
                                                                 iCol );
                 if ( initialValue != null ) {
-                    try {
-                        cv.setValue( Boolean.valueOf( initialValue ) );
-                    } catch ( Exception e ) {
+                    if ( initialValue instanceof String ) {
+                        try {
+                            cv.setValue( Boolean.valueOf( (String) initialValue ) );
+                        } catch ( Exception e ) {
+                        }
+                    } else if ( initialValue instanceof Boolean ) {
+                        cv.setValue( (Boolean) initialValue );
                     }
                 }
                 return cv;
@@ -152,7 +167,7 @@ public abstract class AbstractCellValueFactory<T> {
             @Override
             public CellValue<String> getNewCellValue(int iRow,
                                                      int iCol,
-                                                     String initialValue) {
+                                                     Object initialValue) {
                 CellValue<String> cv = new CellValue<String>( "java",
                                                               iRow,
                                                               iCol );
@@ -170,7 +185,7 @@ public abstract class AbstractCellValueFactory<T> {
         };
         public abstract CellValue< ? > getNewCellValue(int iRow,
                                                        int iCol,
-                                                       String initialValue);
+                                                       Object initialValue);
 
         public abstract String serialiseValue(CellValue< ? > value);
 
@@ -206,7 +221,7 @@ public abstract class AbstractCellValueFactory<T> {
                                                               T column,
                                                               int iRow,
                                                               int iCol,
-                                                              String initialValue) {
+                                                              Object initialValue) {
         DATA_TYPES dataType = getDataType( column );
         CellValue< ? extends Comparable< ? >> cell = dataType.getNewCellValue(
                                                                                iRow,

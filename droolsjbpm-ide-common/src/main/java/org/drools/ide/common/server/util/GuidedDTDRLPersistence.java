@@ -40,7 +40,8 @@ import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 
 /**
@@ -52,14 +53,16 @@ public class GuidedDTDRLPersistence {
         return new GuidedDTDRLPersistence();
     }
 
-    public String marshal(GuidedDecisionTable dt) {
+    public String marshal(TypeSafeGuidedDecisionTable dt) {
 
         StringBuilder sb = new StringBuilder();
 
-        for ( int i = 0; i < dt.getData().length; i++ ) {
-            String[] row = dt.getData()[i];
-            String num = row[0];
-            String desc = row[1];
+        List<List<DTCellValue< ? >>> data = dt.getData();
+
+        for ( int i = 0; i < data.size(); i++ ) {
+            List<DTCellValue< ? >> row = data.get( i );
+            String num = row.get( 0 ).getValue().toString();
+            String desc = row.get( 1 ).getValue().toString();
 
             RuleModel rm = new RuleModel();
             rm.name = getName( dt.getTableName(),
@@ -88,9 +91,7 @@ public class GuidedDTDRLPersistence {
                 rm.parentName = dt.getParentName();
             }
 
-            sb.append( "#from row number: "
-                       + (i + 1)
-                       + "\n" );
+            sb.append( "#from row number: " + (i + 1) + "\n" );
             if ( desc != null && desc.length() > 0 ) {
                 sb.append( "#" + desc + "\n" );
             }
@@ -105,14 +106,13 @@ public class GuidedDTDRLPersistence {
 
     void doActions(int condAndAttrs,
                    List<ActionCol> actionCols,
-                   String[] row,
+                   List<DTCellValue< ? >> row,
                    RuleModel rm) {
         List<LabelledAction> actions = new ArrayList<LabelledAction>();
         for ( int i = 0; i < actionCols.size(); i++ ) {
             ActionCol c = actionCols.get( i );
-            String cell = row[condAndAttrs
-                              + i
-                              + GuidedDecisionTable.INTERNAL_ELEMENTS];
+            int index = i + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + condAndAttrs;
+            String cell = row.get( index ).getValue().toString();
             if ( !validCell( cell ) ) {
                 cell = c.getDefaultValue();
             }
@@ -163,10 +163,8 @@ public class GuidedDTDRLPersistence {
                             a.action = new ActionUpdateField( sf.getBoundName() );
                         }
                         actions.add( a );
-                    } else if ( sf.isUpdate()
-                                && !(a.action instanceof ActionUpdateField) ) {
-                        // lets swap it out for an update as the user has asked
-                        // for it.
+                    } else if ( sf.isUpdate() && !(a.action instanceof ActionUpdateField) ) {
+                        // lets swap it out for an update as the user has asked for it.
                         ActionSetField old = (ActionSetField) a.action;
                         ActionUpdateField update = new ActionUpdateField( sf.getBoundName() );
                         update.fieldValues = old.fieldValues;
@@ -199,16 +197,15 @@ public class GuidedDTDRLPersistence {
 
     void doConditions(int numOfAttributesAndMeta,
                       List<ConditionCol> conditionCols,
-                      String[] row,
+                      List<DTCellValue< ? >> row,
                       RuleModel rm) {
 
         List<FactPattern> patterns = new ArrayList<FactPattern>();
 
         for ( int i = 0; i < conditionCols.size(); i++ ) {
             ConditionCol c = (ConditionCol) conditionCols.get( i );
-            String cell = row[i
-                              + GuidedDecisionTable.INTERNAL_ELEMENTS
-                              + numOfAttributesAndMeta];
+            int index = i + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + numOfAttributesAndMeta;
+            String cell = row.get( index ).toString();
 
             if ( !validCell( cell ) ) {
                 // try default value
@@ -288,20 +285,15 @@ public class GuidedDTDRLPersistence {
             if ( t.startsWith( "\"" ) ) {
                 res += t;
             } else {
-                res += "\""
-                       + t
-                       + "\"";
+                res += "\"" + t + "\"";
             }
             if ( st.hasMoreTokens() ) res += ", ";
         }
-        return "("
-               + res
-               + ")";
+        return "(" + res + ")";
     }
 
     private boolean no(String operator) {
-        return operator == null
-               || "".equals( operator );
+        return operator == null || "".equals( operator );
     }
 
     private FactPattern findByFactPattern(List<FactPattern> patterns,
@@ -316,18 +308,17 @@ public class GuidedDTDRLPersistence {
 
     void doAttribs(int numOfMeta,
                    List<AttributeCol> attributeCols,
-                   String[] row,
+                   List<DTCellValue< ? >> row,
                    RuleModel rm) {
         List<RuleAttribute> attribs = new ArrayList<RuleAttribute>();
         for ( int j = 0; j < attributeCols.size(); j++ ) {
             AttributeCol at = attributeCols.get( j );
-            String cell = row[j
-                              + GuidedDecisionTable.INTERNAL_ELEMENTS
-                              + numOfMeta];
+            int index = j + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + numOfMeta;
+            String cell = row.get( index ).toString();
             if ( validCell( cell ) ) {
 
                 //If instance of "otherwise" column then flag RuleModel as being negated
-                if ( at.getAttribute().equals( GuidedDecisionTable.NEGATE_RULE_ATTR ) ) {
+                if ( at.getAttribute().equals( TypeSafeGuidedDecisionTable.NEGATE_RULE_ATTR ) ) {
                     rm.setNegated( Boolean.valueOf( cell ) );
                 } else {
                     attribs.add( new RuleAttribute( at.getAttribute(),
@@ -344,7 +335,7 @@ public class GuidedDTDRLPersistence {
     }
 
     void doMetadata(List<MetadataCol> metadataCols,
-                    String[] row,
+                    List<DTCellValue< ? >> row,
                     RuleModel rm) {
 
         // setup temp list
@@ -352,8 +343,8 @@ public class GuidedDTDRLPersistence {
 
         for ( int j = 0; j < metadataCols.size(); j++ ) {
             MetadataCol meta = metadataCols.get( j );
-            String cell = row[j
-                              + GuidedDecisionTable.INTERNAL_ELEMENTS];
+            int index = j + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS;
+            String cell = row.get( index ).toString();
             if ( validCell( cell ) ) {
                 metadataList.add( new RuleMetadata( meta.getMetadata(),
                                                     cell ) );
@@ -366,15 +357,11 @@ public class GuidedDTDRLPersistence {
 
     String getName(String tableName,
                    String num) {
-        return "Row "
-               + num
-               + " "
-               + tableName;
+        return "Row " + num + " " + tableName;
     }
 
     boolean validCell(String c) {
-        return (c != null)
-               && (!c.trim().equals( "" ));
+        return (c != null) && (!c.trim().equals( "" ));
     }
 
     private class LabelledAction {

@@ -22,6 +22,8 @@ import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 
 import com.thoughtworks.xstream.XStream;
@@ -29,38 +31,62 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class GuidedDTXMLPersistence {
 
-    private XStream                     xt;
+    private XStream                       xt;
     private static GuidedDTXMLPersistence INSTANCE = new GuidedDTXMLPersistence();
 
     private GuidedDTXMLPersistence() {
-        xt = new XStream(new DomDriver());
-        xt.alias("decision-table", GuidedDecisionTable.class);
-        xt.alias("metadata-column", MetadataCol.class);
-        xt.alias("attribute-column", AttributeCol.class);
-        xt.alias("condition-column", ConditionCol.class);
-        xt.alias("set-field-col", ActionSetFieldCol.class);
-        xt.alias("retract-fact-column", ActionRetractFactCol.class);
-        xt.alias("insert-fact-column", ActionInsertFactCol.class);
-        
+        xt = new XStream( new DomDriver() );
+        xt.alias( "decision-table",
+                  GuidedDecisionTable.class );
+        xt.alias( "metadata-column",
+                  MetadataCol.class );
+        xt.alias( "attribute-column",
+                  AttributeCol.class );
+        xt.alias( "condition-column",
+                  ConditionCol.class );
+        xt.alias( "set-field-col",
+                  ActionSetFieldCol.class );
+        xt.alias( "retract-fact-column",
+                  ActionRetractFactCol.class );
+        xt.alias( "insert-fact-column",
+                  ActionInsertFactCol.class );
+
         //See https://issues.jboss.org/browse/GUVNOR-1115
-        xt.aliasField( "attr", AttributeCol.class, "attribute" );
-        xt.aliasPackage( "org.drools.guvnor.client", "org.drools.ide.common.client" );
+        xt.aliasField( "attr",
+                       AttributeCol.class,
+                       "attribute" );
+        xt.aliasPackage( "org.drools.guvnor.client",
+                         "org.drools.ide.common.client" );
+
+        xt.alias( "decision-table",
+                  TypeSafeGuidedDecisionTable.class );
+        xt.alias( "value",
+                  DTCellValue.class );
     }
 
     public static GuidedDTXMLPersistence getInstance() {
         return INSTANCE;
     }
 
-    public String marshal(GuidedDecisionTable dt) {
-        return xt.toXML(dt);
+    public String marshal(TypeSafeGuidedDecisionTable dt) {
+        return xt.toXML( dt );
     }
 
-    public GuidedDecisionTable unmarshal(String xml) {
-        if (xml == null || xml.trim().equals("")) {
-            return new GuidedDecisionTable();
+    public TypeSafeGuidedDecisionTable unmarshal(String xml) {
+        if ( xml == null || xml.trim().equals( "" ) ) {
+            return new TypeSafeGuidedDecisionTable();
         }
-        return (GuidedDecisionTable) xt.fromXML(xml);
-    }
 
+        //Upgrade DTModel to new class
+        Object model = xt.fromXML( xml );
+        TypeSafeGuidedDecisionTable newDTModel;
+        if ( model instanceof GuidedDecisionTable ) {
+            GuidedDecisionTable legacyDTModel = (GuidedDecisionTable) model;
+            newDTModel = RepositoryUpgradeHelper.convertGuidedDTModel( legacyDTModel );
+        } else {
+            newDTModel = (TypeSafeGuidedDecisionTable) model;
+        }
+        return newDTModel;
+    }
 
 }
