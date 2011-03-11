@@ -150,8 +150,8 @@ public class BPMN2ProcessHandler extends ContentHandler
             HttpURLConnection connection = (HttpURLConnection) new URL( serializeUrl ).openConnection();
             connection.setRequestMethod( "POST" );
             connection.setRequestProperty( "Content-Type",
-                                           "application/x-www-form-urlencoded" );
-            connection.setFixedLengthStreamingMode( bytes.length );
+                                           "application/x-www-form-urlencoded;charset=UTF-8" );
+            //connection.setFixedLengthStreamingMode( bytes.length );
             connection.setDoOutput( true );
             out = connection.getOutputStream();
             out.write( bytes );

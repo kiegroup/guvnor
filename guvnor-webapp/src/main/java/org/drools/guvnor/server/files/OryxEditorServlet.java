@@ -58,6 +58,7 @@ public class OryxEditorServlet extends HttpServlet {
             RuleAsset asset = RepositoryServiceServlet.getAssetService().loadRuleAsset(uuid);
             if (asset.content != null) {
                 response.setContentType("application/xml");
+                response.setCharacterEncoding("UTF-8");
                 String content = asset.content.toString();
                 if (asset.content instanceof RuleFlowContentModel) {
                     content = ((RuleFlowContentModel) asset.content).getXml();
@@ -65,8 +66,8 @@ public class OryxEditorServlet extends HttpServlet {
                     content = asset.content.toString();
                 }
                 if(content != null) {
-                    response.setContentLength(content.length());
-                    response.getOutputStream().write(content.getBytes());
+                    //response.setContentLength(content.length());
+                    response.getOutputStream().write(content.getBytes("UTF-8"));
                     response.getOutputStream().close();
                 } else {
                     setDefaultResponse(response);
@@ -84,6 +85,7 @@ public class OryxEditorServlet extends HttpServlet {
     
     private void setDefaultResponse(HttpServletResponse response) throws ServletException {
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         String result = "";
         response.setContentLength(result.length());
         try {

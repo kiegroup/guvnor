@@ -91,5 +91,4 @@ public class BusinessProcessEditor extends DirtyableComposite
 
     public void onAfterSave() {
     }
-
 }
