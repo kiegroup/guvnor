@@ -183,7 +183,7 @@ public class ContentPackageAssembler {
     Properties loadConfProperties(PackageItem pkg) throws IOException {
         Properties bigHappyProperties = new Properties();
         AssetItemIterator iter = pkg.listAssetsByFormat( new String[]{"properties", "conf"} );
-        ((VersionedAssetItemIterator)iter).setEnableGetHistoricalVersionBasedOnDependency(true);
+        ((VersionedAssetItemIterator)iter).setReturnAssetsWithVersionSpecifiedByDependencies(true);
         while ( iter.hasNext() ) {
             AssetItem conf = iter.next();
             conf.getContent();
@@ -223,7 +223,7 @@ public class ContentPackageAssembler {
 
         StringBuilder includedAssets = new StringBuilder( "Following assets have been included in package build: " );
         Iterator<AssetItem> drls = packageItem.listAssetsByFormat( new String[]{AssetFormats.DRL} );
-        ((VersionedAssetItemIterator)drls).setEnableGetHistoricalVersionBasedOnDependency(true);
+        ((VersionedAssetItemIterator)drls).setReturnAssetsWithVersionSpecifiedByDependencies(true);
 
         while ( drls.hasNext() ) {
             AssetItem asset = (AssetItem) drls.next();
@@ -233,7 +233,7 @@ public class ContentPackageAssembler {
             }
         }
         Iterator<AssetItem> it = packageItem.getAssets();
-        ((VersionedAssetItemIterator)it).setEnableGetHistoricalVersionBasedOnDependency(true);
+        ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionSpecifiedByDependencies(true);
         while ( it.hasNext() ) {
             AssetItem asset = (AssetItem) it.next();
             if ( !asset.getFormat().equals( AssetFormats.DRL ) && !asset.isArchived() && (selector.isAssetAllowed( asset )) ) {
@@ -313,7 +313,7 @@ public class ContentPackageAssembler {
 
         // finally, any functions we will load at this point.
         AssetItemIterator it = this.packageItem.listAssetsByFormat( new String[]{AssetFormats.FUNCTION} );
-        ((VersionedAssetItemIterator)it).setEnableGetHistoricalVersionBasedOnDependency(true);
+        ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionSpecifiedByDependencies(true);
 
         // Adds the function DRLs as one string because they might be calling each others.
         StringBuilder stringBuilder = new StringBuilder();
@@ -328,7 +328,7 @@ public class ContentPackageAssembler {
         if ( builder.hasErrors() ) {
             builder.clearErrors();
             it = this.packageItem.listAssetsByFormat( new String[]{AssetFormats.FUNCTION} );
-            ((VersionedAssetItemIterator)it).setEnableGetHistoricalVersionBasedOnDependency(true);
+            ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionSpecifiedByDependencies(true);
            
             while ( it.hasNext() ) {
                 AssetItem func = it.next();
@@ -347,7 +347,7 @@ public class ContentPackageAssembler {
 
     private void loadDeclaredTypes() {
         AssetItemIterator it = this.packageItem.listAssetsByFormat( new String[]{AssetFormats.DRL_MODEL} );
-        ((VersionedAssetItemIterator)it).setEnableGetHistoricalVersionBasedOnDependency(true);
+        ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionSpecifiedByDependencies(true);
         while ( it.hasNext() ) {
             AssetItem as = it.next();
             if ( !as.getDisabled() ) {
@@ -482,7 +482,7 @@ public class ContentPackageAssembler {
 
         // do the functions and declared types.
         AssetItemIterator it = this.packageItem.listAssetsByFormat( new String[]{AssetFormats.FUNCTION, AssetFormats.DRL_MODEL} );
-        ((VersionedAssetItemIterator)it).setEnableGetHistoricalVersionBasedOnDependency(true);
+        ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionSpecifiedByDependencies(true);
         while ( it.hasNext() ) {
             AssetItem func = it.next();
             if ( !func.isArchived() && !func.getDisabled() ) {
@@ -492,7 +492,7 @@ public class ContentPackageAssembler {
 
         // now the rules
         Iterator<AssetItem> iter = packageItem.getAssets();
-        ((VersionedAssetItemIterator)iter).setEnableGetHistoricalVersionBasedOnDependency(true);
+        ((VersionedAssetItemIterator)iter).setReturnAssetsWithVersionSpecifiedByDependencies(true);
         while ( iter.hasNext() ) {
             AssetItem asset = (AssetItem) iter.next();
             if ( !asset.isArchived() && !asset.getDisabled() ) {

@@ -19,7 +19,8 @@
 // Multiple assets are children of one physical package definition
 // these folders contain the actual assets
 + * (drools:versionableAssetFolder)
-// It has an on-parent-version setting of copy
+// Set OPV to copy. All child nodes of packageNodeType are converted into frozen nodes and copied into the version store
+//When a node is restored from a previous version via the Node.restore() method, all properties marked with the COPY attribute are restored and all child nodes attached the node are replaced with the versioned nodes.
 copy
 
 // this is for storing misc header info as pertains to rules, specifically imports

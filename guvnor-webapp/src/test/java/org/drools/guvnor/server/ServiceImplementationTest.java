@@ -5398,8 +5398,10 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testGetHistoryPackageSource() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
+        //Package version 1(Initial version)
         PackageItem pkg = impl.getRulesRepository().createPackage( "testGetHistoryPackageSource", "" );
         
+        //Package version 2	
         DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer1",
         		pkg );
 
@@ -5428,10 +5430,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 		rule3.updateContent("declare Album1\n genre1: String \n end");
 		rule3.checkin("version 1");		
 		
-		//impl.buildPackage(pkg.getUUID(), true);		
-		pkg.checkin("version1");
+		pkg.checkin("version2");
 		
-		
+		//Package version 3
         DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer2",
         		pkg );		
 		func.updateContent("function void foo() { System.out.println(version 2); }");
@@ -5445,7 +5446,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 		rule3.updateContent("declare Album2\n genre2: String \n end");
 		rule3.checkin("version 2");
 		//impl.buildPackage(pkg.getUUID(), true);
-		pkg.checkin("version2");
+		pkg.checkin("version3");
 		
 		//Verify the latest version
     	PackageItem item = impl.getRulesRepository().loadPackage( "testGetHistoryPackageSource");
@@ -5455,7 +5456,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         
         System.out.println(drl);
         
-        assertEquals("version2", item.getCheckinComment());
+        assertEquals("version3", item.getCheckinComment());
         assertTrue(drl.indexOf("global com.billasurf.Person customer2") >= 0);
         assertTrue(drl.indexOf("System.out.println(version 2)") >= 0);
         assertTrue(drl.indexOf("FooBarBaz2()") >= 0);
@@ -5464,7 +5465,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue(drl.indexOf("declare Album2") >= 0);
         //assertEquals(12, item.getCompiledPackageBytes().length);
         
-        //Verify the version 2
+        //Verify version 2
     	PackageItem item2 = impl.getRulesRepository().loadPackage( "testGetHistoryPackageSource", 2);
         ContentPackageAssembler asm2 = new ContentPackageAssembler( item2,
                                                                    false );
@@ -5472,13 +5473,56 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         
         System.out.println(drl2);
         
-        assertEquals("version1", item2.getCheckinComment());
+        assertEquals("version2", item2.getCheckinComment());
         assertTrue(drl2.indexOf("global com.billasurf.Person customer1") >= 0);
         assertTrue(drl2.indexOf("System.out.println(version 1)") >= 0);
         assertTrue(drl2.indexOf("FooBarBaz1()") >= 0);
         assertTrue(drl2.indexOf("rule 'foo' when Goo1() then end") >= 0);
         assertTrue(drl2.indexOf("foo") >= 0);
         assertTrue(drl2.indexOf("declare Album1") >= 0);
+    }
+    
+    @Test
+    public void testDependencyHistoryPackage() throws Exception {
+        ServiceImplementation impl = getServiceImplementation();
+        //Package version 1
+        PackageItem pkg = impl.getRulesRepository().createPackage( "testDependencyHistoryPackage", "" );
+
+		AssetItem func = pkg.addAsset("func", "");
+		func.updateFormat(AssetFormats.FUNCTION);
+		func.updateContent("function void foo() { System.out.println(version 1); }");
+		func.checkin("func version 1");
+		func.updateContent("function void foo() { System.out.println(version 2); }");
+		func.checkin("func version 2");
+		
+        //Package version 2		
+		pkg.checkout();
+		pkg.checkin("package version 2");
+		
+		//calling updateDependency creates package version 3
+		pkg.updateDependency("func?version=1");
+	
+		func.updateContent("function void foo() { System.out.println(version 2); }");
+		func.checkin("func version 3");		
+		
+	    //Package version 4		
+		pkg.checkout();
+		pkg.checkin("package version 4");
+		
+		//Verify the latest version
+    	PackageItem item = impl.getRulesRepository().loadPackage( "testDependencyHistoryPackage");      
+        assertEquals("package version 4", item.getCheckinComment());
+        assertEquals("func?version=1", item.getDependencies()[0]);
+         
+        //Verify version 2
+    	item = impl.getRulesRepository().loadPackage( "testDependencyHistoryPackage", 2);      
+        assertEquals("package version 2", item.getCheckinComment());
+        assertEquals("func?version=2", item.getDependencies()[0]);
+        
+        //Verify version 3
+    	item = impl.getRulesRepository().loadPackage( "testDependencyHistoryPackage", 3);      
+        assertEquals("package version 3", item.getCheckinComment());
+        assertEquals("func?version=1", item.getDependencies()[0]);
     }
 
 }

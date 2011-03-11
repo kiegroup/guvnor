@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.jcr.Binary;
@@ -374,79 +375,76 @@ public class PackageItem extends VersionableItem {
         }
     }
 
+	/**
+	 * To avoid updating dependency attribute for every asset operation like
+	 * adding/renaming/deleting etc, we calculate dependency path on the fly.
+	 * 
+	 * @return String[] The dependency path.
+	 */
+	public String[] getDependencies() {
+		Map<String, String> result = new HashMap<String, String>();
+		try {
+			Node content = getVersionContentNode();
+			Iterator<AssetItem> assets = new AssetItemIterator(content.getNode(
+					ASSET_FOLDER_NAME).getNodes(), this.rulesRepository);
+			while (assets.hasNext()) {
+				AssetItem asset = assets.next();
 
-    /**
-     * To avoid updating dependency attribute for every asset operation like adding/renaming/deleting etc, we calculate dependency
-     * path on the fly.
-     * @return String[] The dependency path.
-     */
-    public String[] getDependencies() {
-        List<String> result = new ArrayList<String>();
-        try {
-            Node content = getVersionContentNode();
-            Iterator<AssetItem> assets = new AssetItemIterator( content.getNode( ASSET_FOLDER_NAME ).getNodes(),
-                                                        this.rulesRepository);
-            while(assets.hasNext()) {
-                result.add(encodeDependencyPath(assets.next().getPath()));
-            }
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
-        }
+				result.put(asset.getName(),	encodeDependencyPath(
+								asset.getName(),
+								isHistoricalVersion() ? Long.toString(asset.getVersionNumber()) : "LATEST"));
+			}
+		} catch (RepositoryException e) {
+			throw new RulesRepositoryException(e);
+		}
 
-        String[] existingDependencies = getStringPropertyArray( DEPENDENCIES_PROPERTY_NAME );
-        for(String existingDependency : existingDependencies) {
-            String path = decodeDependencyPath(existingDependency)[0];
-            int index = result.indexOf(encodeDependencyPath(path));
+		String[] existingDependencies = getStringPropertyArray(DEPENDENCIES_PROPERTY_NAME);
+		for (String existingDependency : existingDependencies) {
+			String path = decodeDependencyPath(existingDependency)[0];
+			if (result.containsKey(path)) {
+				result.put(path, existingDependency);
+			}
+		}
 
-            if(index != -1) {
-                result.set(index, existingDependency);
-            }
-        }
+		return result.values().toArray(new String[result.size()]);
+	}
 
-        return result.toArray(new String[result.size()]);
-    }
+	public void updateDependency(String dependencyPath) {
+		String[] existingDependencies = getStringPropertyArray(DEPENDENCIES_PROPERTY_NAME);
+		boolean found = false;
+		for (int i = 0; i < existingDependencies.length; i++) {
+			if (decodeDependencyPath(existingDependencies[i])[0]
+					.equals(decodeDependencyPath(dependencyPath)[0])) {
+				found = true;
+				existingDependencies[i] = dependencyPath;
+				this.updateStringArrayProperty(existingDependencies,
+						DEPENDENCIES_PROPERTY_NAME, false);
+				break;
+			}
+		}
+		if (!found) {
+			String[] newDependencies = new String[existingDependencies.length + 1];
+			for (int i = 0; i < existingDependencies.length; i++) {
+				newDependencies[i] = existingDependencies[i];
+			}
+			newDependencies[existingDependencies.length] = dependencyPath;
+			this.updateStringArrayProperty(newDependencies,
+					DEPENDENCIES_PROPERTY_NAME, false);
+		}
+	}
 
-    public void updateDependency(String dependencyPath) {
-        String[] existingDependencies = getStringPropertyArray( DEPENDENCIES_PROPERTY_NAME );
-        boolean found = false;
-        for(int i=0;i<existingDependencies.length;i++) {
-            if(decodeDependencyPath(existingDependencies[i])[0].equals(decodeDependencyPath(dependencyPath)[0])) {
-                found = true;
-                existingDependencies[i] = dependencyPath;
-                this.updateStringArrayProperty( existingDependencies, DEPENDENCIES_PROPERTY_NAME, false );
-                break;
-            }
-        }
-        if(!found) {
-            String[] newDependencies = new String[existingDependencies.length +1];
-            for(int i =0; i< existingDependencies.length ; i++)  {
-                newDependencies[i] = existingDependencies[i];
-            }
-            newDependencies[existingDependencies.length] = dependencyPath;
-            this.updateStringArrayProperty( newDependencies, DEPENDENCIES_PROPERTY_NAME, false );
-        }
-    }
+	public static String encodeDependencyPath(String dependencyPath,
+			String dependencyVersion) {
+		return dependencyPath + "?version=" + dependencyVersion;
+	}
 
-    public static String encodeDependencyPath(String dependencyPath) {
-        if(dependencyPath.indexOf("?version=") < 0) {
-            //Default version is LATEST
-            return dependencyPath + "?version="+"LATEST";
-        }
-
-        return dependencyPath;
-    }
-
-    public static String[] decodeDependencyPath(String dependencyPath) {
-        if(dependencyPath.indexOf("?version=") >=0) {
-            return dependencyPath.split("\\?version=");
-        } else {
-            return new String[]{dependencyPath, "LATEST"};
-        }
-    }
-    
-    public static String parseDependencyAssetName(String dependencyPath) {
-        return dependencyPath.substring(dependencyPath.lastIndexOf("/")+1);
-    }
+	public static String[] decodeDependencyPath(String dependencyPath) {
+		if (dependencyPath.indexOf("?version=") >= 0) {
+			return dependencyPath.split("\\?version=");
+		} else {
+			return new String[] { dependencyPath, "LATEST" };
+		}
+	}
 
     // The following should be kept for reference on how to add a reference that
     //is either locked to a version or follows head - FOR SHARING ASSETS

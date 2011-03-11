@@ -449,7 +449,10 @@ public class AssetItem extends CategorisableItem {
 
             returnString.append( "Archived: " ).append( this.isArchived() ).append( "\n" );
             returnString.append( "------\n" );
-
+            
+            returnString.append( "Version: " ).append( this.getVersionNumber() ).append( "\n" );
+            returnString.append( "------\n" );
+            
             returnString.append( "Date Effective: " ).append( this.getDateEffective() ).append( "\n" );
             returnString.append( "Date Expired: " ).append( this.getDateExpired() ).append( "\n" );
             returnString.append( "------\n" );

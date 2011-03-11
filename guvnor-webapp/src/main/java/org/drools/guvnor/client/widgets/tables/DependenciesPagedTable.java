@@ -81,8 +81,8 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
                                 final List<DependenciesPageRow> dependencyList = new ArrayList<DependenciesPageRow>();
                                 for(String dependency: dependencies) {
                                     DependenciesPageRow row = new DependenciesPageRow();
-                                    row.setDependencyPath(DependencyWidget.parseDependencyPath(dependency)[0]);
-                                    row.setDependencyVersion(DependencyWidget.parseDependencyPath(dependency)[1]);
+                                    row.setDependencyPath(DependencyWidget.decodeDependencyPath(dependency)[0]);
+                                    row.setDependencyVersion(DependencyWidget.decodeDependencyPath(dependency)[1]);
                                     dependencyList.add(row);
                                 }
                                 updateRowCount( dependencyList.size(), true );
