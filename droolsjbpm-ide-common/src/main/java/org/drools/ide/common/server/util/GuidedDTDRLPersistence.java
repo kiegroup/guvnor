@@ -112,10 +112,16 @@ public class GuidedDTDRLPersistence {
         for ( int i = 0; i < actionCols.size(); i++ ) {
             ActionCol c = actionCols.get( i );
             int index = i + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + condAndAttrs;
-            String cell = row.get( index ).getValue().toString();
+
+            Object cv = row.get( index ).getValue();
+            String cell = null;
+            if ( cv != null ) {
+                cell = cv.toString();
+            }
             if ( !validCell( cell ) ) {
                 cell = c.getDefaultValue();
             }
+
             if ( validCell( cell ) ) {
                 if ( c instanceof ActionInsertFactCol ) {
                     ActionInsertFactCol ac = (ActionInsertFactCol) c;
@@ -205,10 +211,13 @@ public class GuidedDTDRLPersistence {
         for ( int i = 0; i < conditionCols.size(); i++ ) {
             ConditionCol c = (ConditionCol) conditionCols.get( i );
             int index = i + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + numOfAttributesAndMeta;
-            String cell = row.get( index ).toString();
 
+            Object cv = row.get( index ).getValue();
+            String cell = null;
+            if ( cv != null ) {
+                cell = cv.toString();
+            }
             if ( !validCell( cell ) ) {
-                // try default value
                 cell = c.getDefaultValue();
             }
 
@@ -314,7 +323,13 @@ public class GuidedDTDRLPersistence {
         for ( int j = 0; j < attributeCols.size(); j++ ) {
             AttributeCol at = attributeCols.get( j );
             int index = j + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + numOfMeta;
-            String cell = row.get( index ).toString();
+
+            Object cv = row.get( index ).getValue();
+            String cell = null;
+            if ( cv != null ) {
+                cell = cv.toString();
+            }
+
             if ( validCell( cell ) ) {
 
                 //If instance of "otherwise" column then flag RuleModel as being negated
@@ -344,7 +359,13 @@ public class GuidedDTDRLPersistence {
         for ( int j = 0; j < metadataCols.size(); j++ ) {
             MetadataCol meta = metadataCols.get( j );
             int index = j + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS;
-            String cell = row.get( index ).toString();
+
+            Object cv = row.get( index ).getValue();
+            String cell = null;
+            if ( cv != null ) {
+                cell = cv.toString();
+            }
+
             if ( validCell( cell ) ) {
                 metadataList.add( new RuleMetadata( meta.getMetadata(),
                                                     cell ) );

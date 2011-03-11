@@ -58,7 +58,7 @@ public class GuidedDTXMLPersistence {
         xt.aliasPackage( "org.drools.guvnor.client",
                          "org.drools.ide.common.client" );
 
-        xt.alias( "decision-table",
+        xt.alias( "dtable",
                   TypeSafeGuidedDecisionTable.class );
         xt.alias( "value",
                   DTCellValue.class );
