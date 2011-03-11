@@ -51,7 +51,6 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.CategoryPageRequest;
@@ -78,9 +77,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
-import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
@@ -101,6 +97,7 @@ import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.Discussion;
+import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
@@ -156,32 +153,34 @@ public class ServiceImplementation
     RepositoryService {
 
     @In
-    private RulesRepository             repository;
+    private RulesRepository              repository;
 
-    private static final long           serialVersionUID            = 510l;
+    private static final long            serialVersionUID             = 510l;
 
-    private static final LoggingHelper  log                         = LoggingHelper.getLogger( ServiceImplementation.class );
+    private static final LoggingHelper   log                          = LoggingHelper.getLogger( ServiceImplementation.class );
 
     /**
      * Used for a simple cache of binary packages to avoid serialization from
      * the database - for test scenarios.
      */
-    public static Map<String, RuleBase> ruleBaseCache               = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
+    public static Map<String, RuleBase>  ruleBaseCache                = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
 
     /**
      * This is used for pushing messages back to the client.
      */
-    private static Backchannel          backchannel                 = new Backchannel();
-    private ServiceSecurity             serviceSecurity             = new ServiceSecurity();
+    private static Backchannel           backchannel                  = new Backchannel();
+    private ServiceSecurity              serviceSecurity              = new ServiceSecurity();
 
-    private RepositoryAssetOperations   repositoryAssetOperations   = new RepositoryAssetOperations();
-    private RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
+    private RepositoryAssetOperations    repositoryAssetOperations    = new RepositoryAssetOperations();
+    private RepositoryPackageOperations  repositoryPackageOperations  = new RepositoryPackageOperations();
+    private RepositoryCategoryOperations repositoryCategoryOperations = new RepositoryCategoryOperations();
 
     /* This is called also by Seam AND Hosted mode */
     @Create
     public void create() {
         repositoryAssetOperations.setRulesRepository( getRulesRepository() );
         repositoryPackageOperations.setRulesRepository( getRulesRepository() );
+        repositoryCategoryOperations.setRulesRepository( getRulesRepository() );
     }
 
     /* This is called in hosted mode when creating "by hand" */
@@ -239,21 +238,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] loadChildCategories(String categoryPath) {
-        List<String> resultList = new ArrayList<String>();
-        CategoryFilter filter = new CategoryFilter();
-
-        CategoryItem item = getRulesRepository().loadCategory( categoryPath );
-        List children = item.getChildTags();
-        for ( int i = 0; i < children.size(); i++ ) {
-            String childCategoryName = ((CategoryItem) children.get( i )).getName();
-            if ( filter.acceptNavigate( categoryPath,
-                                        childCategoryName ) ) {
-                resultList.add( childCategoryName );
-            }
-        }
-
-        String[] resultArr = resultList.toArray( new String[resultList.size()] );
-        return resultArr;
+        return repositoryCategoryOperations.loadChildCategories( categoryPath );
     }
 
     @WebRemote
@@ -261,26 +246,17 @@ public class ServiceImplementation
                                   String name,
                                   String description) {
         serviceSecurity.checkSecurityIsAdmin();
-
-        log.info( "USER:" + getCurrentUserName() + " CREATING cateogory: [" + name + "] in path [" + path + "]" );
-
-        if ( path == null || "".equals( path ) ) {
-            path = "/";
-        }
-        path = cleanHTML( path );
-
-        getRulesRepository().loadCategory( path ).addCategory( name,
-                                                               description );
-        getRulesRepository().save();
-        return Boolean.TRUE;
+        return repositoryCategoryOperations.createCategory( path,
+                                                            name,
+                                                            description );
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void renameCategory(String fullPathAndName,
                                String newName) {
-        getRulesRepository().renameCategory( fullPathAndName,
-                                             newName );
+        repositoryCategoryOperations.renameCategory( fullPathAndName,
+                                                     newName );
     }
 
     /**
@@ -298,24 +274,10 @@ public class ServiceImplementation
                                                      int skip,
                                                      int numRows,
                                                      String tableConfig) throws SerializationException {
-
-        // First check the user has permission to access this categoryPath.
-        if ( Contexts.isSessionContextActive() ) {
-            if ( !Identity.instance().hasPermission( new CategoryPathType( categoryPath ),
-                                                     RoleTypes.ANALYST_READ ) ) {
-
-                TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-                return handler.loadRuleListTable( new AssetItemPageResult() );
-            }
-        }
-
-        AssetItemPageResult result = getRulesRepository().findAssetsByCategory( categoryPath,
-                                                                                false,
-                                                                                skip,
-                                                                                numRows );
-        TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-        return handler.loadRuleListTable( result );
-
+        return repositoryCategoryOperations.loadRuleListForCategories( categoryPath,
+                                                                       skip,
+                                                                       numRows,
+                                                                       tableConfig );
     }
 
     @WebRemote
@@ -328,65 +290,21 @@ public class ServiceImplementation
             throw new IllegalArgumentException( "pageSize cannot be less than zero." );
         }
 
-        PageResponse<CategoryPageRow> response = new PageResponse<CategoryPageRow>();
-
         // Role-based Authorization check: This method only returns rules that
         // the user has permission to access. The user is considered to has
         // permission to access the particular category when: The user has
         // ANALYST_READ role or higher (i.e., ANALYST) to this category
-        if ( Contexts.isSessionContextActive() ) {
-            if ( !Identity.instance().hasPermission( new CategoryPathType( request.getCategoryPath() ),
-                                                     RoleTypes.ANALYST_READ ) ) {
-                return response;
-            }
+        if ( !serviceSecurity.isSecurityIsAnalystRead( new CategoryPathType( request.getCategoryPath() ) ) ) {
+            return new PageResponse<CategoryPageRow>();
         }
 
-        // Do query
-        long start = System.currentTimeMillis();
-
-        // NOTE: Filtering is handled in repository.findAssetsByCategory()
-        int numRowsToReturn = (request.getPageSize() == null ? -1 : request.getPageSize());
-        AssetItemPageResult result = getRulesRepository().findAssetsByCategory( request.getCategoryPath(),
-                                                                                false,
-                                                                                request.getStartRowIndex(),
-                                                                                numRowsToReturn );
-        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-
-        // Populate response
-        boolean bHasMoreRows = result.hasNext;
-        List<CategoryPageRow> rowList = fillCategoryPageRows( request,
-                                                              result );
-        response.setStartRowIndex( request.getStartRowIndex() );
-        response.setPageRowList( rowList );
-        response.setLastPage( !bHasMoreRows );
-
-        // Fix Total Row Size
-        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request,
-                                              response,
-                                              -1,
-                                              rowList.size(),
-                                              bHasMoreRows );
-
-        long methodDuration = System.currentTimeMillis() - start;
-        log.debug( "Searched for Assest with Category (" + request.getCategoryPath() + ") in " + methodDuration + " ms." );
-        return response;
+        return repositoryCategoryOperations.loadRuleListForCategories( request );
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void removeCategory(String categoryPath) throws SerializationException {
-        log.info( "USER:" + getCurrentUserName() + " REMOVING CATEGORY path: [" + categoryPath + "]" );
-
-        try {
-            getRulesRepository().loadCategory( categoryPath ).remove();
-            getRulesRepository().save();
-        } catch ( RulesRepositoryException e ) {
-            log.info( "Unable to remove category [" + categoryPath + "]. It is probably still used: " + e.getMessage() );
-
-            throw new DetailedSerializationException( "Unable to remove category. It is probably still used.",
-                                                      e.getMessage() );
-        }
+        repositoryCategoryOperations.removeCategory( categoryPath );
     }
 
     /**
@@ -727,7 +645,7 @@ public class ServiceImplementation
     public String createState(String name) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " CREATING state: [" + name + "]" );
         try {
-            name = cleanHTML( name );
+            name = HtmlCleaner.cleanHTML( name );
             String uuid = getRulesRepository().createState( name ).getNode().getUUID();
             getRulesRepository().save();
             return uuid;
@@ -1325,12 +1243,6 @@ public class ServiceImplementation
         }
     }
 
-    public String cleanHTML(String s) {
-        return s.replace( "<",
-                          "&lt;" ).replace( ">",
-                                            "&gt;" );
-    }
-
     /**
      * Load and process the repository configuration templates.
      */
@@ -1882,13 +1794,6 @@ public class ServiceImplementation
         return row;
     }
 
-    private void populatePageRowBaseProperties(AssetItem assetItem,
-                                               AbstractAssetPageRow row) {
-        row.setUuid( assetItem.getUUID() );
-        row.setFormat( assetItem.getFormat() );
-        row.setName( assetItem.getName() );
-    }
-
     private List<StatePageRow> fillStatePageRows(StatePageRequest request,
                                                  AssetItemPageResult result) {
         List<StatePageRow> rowList = new ArrayList<StatePageRow>();
@@ -1905,35 +1810,9 @@ public class ServiceImplementation
 
     private StatePageRow makeStatePageRow(AssetItem assetItem) {
         StatePageRow row = new StatePageRow();
-        populatePageRowBaseProperties( assetItem,
-                                       row );
-        row.setDescription( assetItem.getDescription() );
-        row.setAbbreviatedDescription( StringUtils.abbreviate( assetItem.getDescription(),
-                                                               80 ) );
-        row.setLastModified( assetItem.getLastModified().getTime() );
-        row.setStateName( assetItem.getState().getName() );
-        row.setPackageName( assetItem.getPackageName() );
-        return row;
-    }
-
-    private List<CategoryPageRow> fillCategoryPageRows(CategoryPageRequest request,
-                                                       AssetItemPageResult result) {
-        List<CategoryPageRow> rowList = new ArrayList<CategoryPageRow>();
-
-        // Filtering and skipping records to the required page is handled in
-        // repository.findAssetsByState() so we only need to simply copy
-        Iterator<AssetItem> it = result.assets.iterator();
-        while ( it.hasNext() ) {
-            AssetItem assetItem = (AssetItem) it.next();
-            rowList.add( makeCategoryPageRow( assetItem ) );
-        }
-        return rowList;
-    }
-
-    private CategoryPageRow makeCategoryPageRow(AssetItem assetItem) {
-        CategoryPageRow row = new CategoryPageRow();
-        populatePageRowBaseProperties( assetItem,
-                                       row );
+        row.setUuid( assetItem.getUUID() );
+        row.setFormat( assetItem.getFormat() );
+        row.setName( assetItem.getName() );
         row.setDescription( assetItem.getDescription() );
         row.setAbbreviatedDescription( StringUtils.abbreviate( assetItem.getDescription(),
                                                                80 ) );

@@ -252,14 +252,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     }
 
-    @Test
-    @Ignore
-    public void testCleanHTML() {
-        ServiceImplementation impl = new ServiceImplementation();
-        assertEquals( "&lt;script&gt;",
-                      impl.cleanHTML( "<script>" ) );
-    }
-
     @Ignore
     @Test
     public void testDeleteUnversionedRule() throws Exception {
@@ -1131,7 +1123,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         @SuppressWarnings("unused")
         String uuid = repositoryPackageService.createPackage( "testCreateArchivedPackage",
-                                          "this is a new package" );
+                                                              "this is a new package" );
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         PackageItem item = impl.getRulesRepository().loadPackage( "testCreateArchivedPackage" );
         TableDataResult td = repositoryAssetService.loadArchivedAssets( 0,
@@ -1164,7 +1156,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         PackageConfigData[] pkgs = repositoryPackageService.listPackages();
         String uuid = repositoryPackageService.createPackage( "testCreatePackage",
-                                          "this is a new package" );
+                                                              "this is a new package" );
         assertNotNull( uuid );
 
         PackageItem item = impl.getRulesRepository().loadPackage( "testCreatePackage" );
@@ -1183,13 +1175,13 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         pkgs = repositoryPackageService.listPackages();
 
         repositoryPackageService.copyPackage( "testCreatePackage",
-                          "testCreatePackage_COPY" );
+                                              "testCreatePackage_COPY" );
 
         assertEquals( pkgs.length + 1,
                       repositoryPackageService.listPackages().length );
         try {
             repositoryPackageService.copyPackage( "testCreatePackage",
-                              "testCreatePackage_COPY" );
+                                                  "testCreatePackage_COPY" );
         } catch ( RulesRepositoryException e ) {
             assertNotNull( e.getMessage() );
         }
@@ -1227,9 +1219,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         Thread.sleep( 100 );
 
         repositoryPackageService.createPackageSnapshot( RulesRepository.DEFAULT_PACKAGE,
-                                    "TEST SNAP 2.0",
-                                    false,
-                                    "ya" );
+                                                        "TEST SNAP 2.0",
+                                                        false,
+                                                        "ya" );
         PackageItem loaded = impl.getRulesRepository().loadPackageSnapshot( RulesRepository.DEFAULT_PACKAGE,
                                                                             "TEST SNAP 2.0" );
 
@@ -1248,7 +1240,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String uuid = repositoryPackageService.createPackage( "testArchiveAndUnarchivePackageAndHeader",
-                                          "a desc" );
+                                                              "a desc" );
         PackageConfigData data = repositoryPackageService.loadPackageConfig( uuid );
         PackageItem it = impl.getRulesRepository().loadPackageByUUID( uuid );
         data.archived = true;
@@ -1294,7 +1286,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         RepositoryService impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String uuid = repositoryPackageService.createPackage( "testPackageConfSave",
-                                          "a desc" );
+                                                              "a desc" );
         PackageConfigData data = repositoryPackageService.loadPackageConfig( uuid );
 
         data.description = "new desc";
@@ -1337,7 +1329,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "ya" );
         String pkgUUID = repositoryPackageService.createPackage( "testListByFormat",
-                                             "used for listing by format." );
+                                                                 "used for listing by format." );
 
         String uuid = impl.createNewRule( "testListByFormat",
                                           "x",
@@ -1487,7 +1479,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "qkfnd" );
         repositoryPackageService.createPackage( "testQuickFind",
-                            "for testing quick find." );
+                                                "for testing quick find." );
         String uuid = impl.createNewRule( "testQuickFindmyRule1",
                                           "desc",
                                           cat,
@@ -1543,7 +1535,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                            "for testing search." );
+                                                "for testing search." );
         @SuppressWarnings("unused")
         String uuid = impl.createNewRule( "testTextRule1",
                                           "desc",
@@ -1627,7 +1619,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       match );
 
         String packagUUID = repositoryPackageService.createPackage( "testStatus",
-                                                "description" );
+                                                                    "description" );
         String ruleUUID = impl.createNewRule( "testStatus",
                                               "desc",
                                               null,
@@ -1685,9 +1677,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                  "d" );
         }
         String sourcePkgId = repositoryPackageService.createPackage( "sourcePackage",
-                                                 "description" );
+                                                                     "description" );
         String destPkgId = repositoryPackageService.createPackage( "targetPackage",
-                                               "description" );
+                                                                   "description" );
 
         String cat = impl.loadChildCategories( "/" )[0];
 
@@ -1764,7 +1756,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              "snapshotTesting",
                              "y" );
         repositoryPackageService.createPackage( "testSnapshot",
-                            "d" );
+                                                "d" );
         @SuppressWarnings("unused")
         String uuid = impl.createNewRule( "testSnapshotRule",
                                           "",
@@ -1773,9 +1765,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                           AssetFormats.DRL );
 
         repositoryPackageService.createPackageSnapshot( "testSnapshot",
-                                    "X",
-                                    false,
-                                    "ya" );
+                                                        "X",
+                                                        false,
+                                                        "ya" );
         SnapshotInfo[] snaps = repositoryPackageService.listSnapshots( "testSnapshot" );
         assertEquals( 1,
                       snaps.length );
@@ -1789,39 +1781,39 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       confSnap.name );
 
         repositoryPackageService.createPackageSnapshot( "testSnapshot",
-                                    "Y",
-                                    false,
-                                    "we" );
+                                                        "Y",
+                                                        false,
+                                                        "we" );
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshot" ).length );
         repositoryPackageService.createPackageSnapshot( "testSnapshot",
-                                    "X",
-                                    true,
-                                    "we" );
+                                                        "X",
+                                                        true,
+                                                        "we" );
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshot" ).length );
 
         repositoryPackageService.copyOrRemoveSnapshot( "testSnapshot",
-                                   "X",
-                                   false,
-                                   "Q" );
+                                                       "X",
+                                                       false,
+                                                       "Q" );
         assertEquals( 3,
                       repositoryPackageService.listSnapshots( "testSnapshot" ).length );
 
         try {
             repositoryPackageService.copyOrRemoveSnapshot( "testSnapshot",
-                                       "X",
-                                       false,
-                                       "" );
+                                                           "X",
+                                                           false,
+                                                           "" );
             fail( "should not be able to copy snapshot to empty detination" );
         } catch ( SerializationException e ) {
             assertNotNull( e.getMessage() );
         }
 
         repositoryPackageService.copyOrRemoveSnapshot( "testSnapshot",
-                                   "X",
-                                   true,
-                                   null );
+                                                       "X",
+                                                       true,
+                                                       null );
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshot" ).length );
 
@@ -1859,13 +1851,13 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         item.checkin( "" );
 
         BuilderResult res = repositoryPackageService.buildPackage( pkg.getUUID(),
-                                               true );
+                                                                   true );
         assertNull( res );
 
         repositoryPackageService.createPackageSnapshot( "testSnapshotRebuild",
-                                    "SNAP",
-                                    false,
-                                    "" );
+                                                        "SNAP",
+                                                        false,
+                                                        "" );
 
         PackageItem snap = repo.loadPackageSnapshot( "testSnapshotRebuild",
                                                      "SNAP" );
@@ -1885,9 +1877,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         item.checkin( "" );
 
         repositoryPackageService.createPackageSnapshot( "testSnapshotRebuild",
-                                    "SNAP2",
-                                    false,
-                                    "" );
+                                                        "SNAP2",
+                                                        false,
+                                                        "" );
 
         try {
             repositoryPackageService.rebuildSnapshots();
@@ -1962,7 +1954,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "ya" );
         String pkgUUID = repositoryPackageService.createPackage( "testRemoveAsset",
-                                             "" );
+                                                                 "" );
         @SuppressWarnings("unused")
         String uuid = impl.createNewRule( "testRemoveAsset",
                                           "x",
@@ -2044,7 +2036,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         fis.read( byteArray );
 
         repositoryPackageService.importPackages( byteArray,
-                             true );
+                                                 true );
 
         PackageItem item = impl.getRulesRepository().loadPackage( "testExportPackage" );
         assertNotNull( item );
@@ -2101,7 +2093,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "ya" );
         String pkgUUID = repositoryPackageService.createPackage( "testArchiveAsset",
-                                             "" );
+                                                                 "" );
         @SuppressWarnings("unused")
         String uuid = impl.createNewRule( "testArchiveAsset",
                                           "x",
@@ -2178,7 +2170,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "ya" );
         String pkgUUID = repositoryPackageService.createPackage( packageName,
-                                             "" );
+                                                                 "" );
         @SuppressWarnings("unused")
         String uuid = impl.createNewRule( packageName,
                                           "x",
@@ -2370,7 +2362,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RulesRepository repo = impl.getRulesRepository();
-        
 
         // create our package
         PackageItem pkg = repo.createPackage( "testBinaryPackageCompile",
@@ -2385,7 +2376,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         repo.save();
 
         BuilderResult result = repositoryPackageService.buildPackage( pkg.getUUID(),
-                                                  true );
+                                                                      true );
         assertNull( result );
 
         pkg = repo.loadPackage( "testBinaryPackageCompile" );
@@ -2413,15 +2404,15 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       p.getAge() );
 
         repositoryPackageService.createPackageSnapshot( "testBinaryPackageCompile",
-                                    "SNAP1",
-                                    false,
-                                    "" );
+                                                        "SNAP1",
+                                                        false,
+                                                        "" );
 
         rule1.updateContent( "rule 'rule1' \n when p:PersonX() \n then System.err.println(42); \n end" );
         rule1.checkin( "" );
 
         result = repositoryPackageService.buildPackage( pkg.getUUID(),
-                                    true );
+                                                        true );
         assertNotNull( result );
         assertEquals( 1,
                       result.getLines().size() );
@@ -2436,7 +2427,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         pkg = repo.loadPackageSnapshot( "testBinaryPackageCompile",
                                         "SNAP1" );
         result = repositoryPackageService.buildPackage( pkg.getUUID(),
-                                    true );
+                                                        true );
         assertNull( result );
 
     }
@@ -2472,7 +2463,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         con.setValue( "name soundslike 'foobar'" );
         pattern.addConstraint( con );
 
-        pattern.setBoundName("p");
+        pattern.setBoundName( "p" );
         ActionSetField action = new ActionSetField( "p" );
         ActionFieldValue value = new ActionFieldValue( "age",
                                                        "42",
@@ -2487,7 +2478,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         repo.save();
 
         BuilderResult result = repositoryPackageService.buildPackage( pkg.getUUID(),
-                                                  true );
+                                                                      true );
         if ( result != null ) {
             for ( int i = 0; i < result.getLines().size(); i++ ) {
                 System.err.println( result.getLines().get( i ).getMessage() );
@@ -2528,16 +2519,16 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       p.getAge() );
 
         repositoryPackageService.createPackageSnapshot( "testBinaryPackageCompileBRL",
-                                    "SNAP1",
-                                    false,
-                                    "" );
+                                                        "SNAP1",
+                                                        false,
+                                                        "" );
 
         pattern.setFactType( "PersonX" );
         rule2.updateContent( BRXMLPersistence.getInstance().marshal( model ) );
         rule2.checkin( "" );
 
         result = repositoryPackageService.buildPackage( pkg.getUUID(),
-                                    true );
+                                                        true );
         assertNotNull( result );
         assertTrue( result.getLines().size() > 0 );
         // assertEquals(2, results.length);
@@ -2552,7 +2543,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         pkg = repo.loadPackageSnapshot( "testBinaryPackageCompileBRL",
                                         "SNAP1" );
         result = repositoryPackageService.buildPackage( pkg.getUUID(),
-                                    true );
+                                                        true );
         assertNull( result );
 
         // check that the rule name in the model is being set
@@ -2853,7 +2844,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         repositoryPackageService.createPackage( "testBuildAssetMultipleFunctionsCallingEachOther",
-                            "" );
+                                                "" );
         impl.createCategory( "/",
                              "funkytest",
                              "" );
@@ -2926,7 +2917,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         m.name = "testBRL";
 
         FactPattern p = new FactPattern( "Person" );
-        p.setBoundName("p");
+        p.setBoundName( "p" );
         SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldName( "name" );
         con.setValue( "mark" );
@@ -3107,7 +3098,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         ServiceImplementation.ruleBaseCache.remove( "XXX" );
 
         BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),
-                                                   true );
+                                                                       true );
         assertNull( results );
 
         pkg = repo.loadPackage( "testBinaryPackageUpToDate" );
@@ -3126,7 +3117,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
 
         repositoryPackageService.buildPackage( pkg.getUUID(),
-                           false );
+                                               false );
 
         assertTrue( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
         assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
@@ -3137,7 +3128,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertFalse( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
         assertFalse( pkg.isBinaryUpToDate() );
         repositoryPackageService.buildPackage( pkg.getUUID(),
-                           false );
+                                               false );
         assertTrue( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
         assertTrue( pkg.isBinaryUpToDate() );
 
@@ -3786,7 +3777,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         impl.checkinVersion( ass );
 
         BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),
-                                                   true );
+                                                                       true );
         assertNull( results );
 
         pkg = repo.loadPackage( "testGuidedDTCompile" );
@@ -3981,7 +3972,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                            "for testing search." );
+                                                "for testing search." );
 
         impl.createNewRule( "testTextRule1",
                                           "desc",
@@ -4035,7 +4026,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                            "for testing search." );
+                                                "for testing search." );
 
         impl.createNewRule( "testTextRule1",
                                           "desc",
@@ -4082,7 +4073,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                            "for testing search." );
+                                                "for testing search." );
 
         impl.createNewRule( "testTextRule1",
                                           "desc",
@@ -4137,7 +4128,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                            "for testing search." );
+                                                "for testing search." );
 
         impl.createNewRule( "testTextRule1",
                                           "desc",
@@ -4288,7 +4279,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "testCategoryDescription" );
         repositoryPackageService.createPackage( "testCategoryPackage",
-                            "testCategoryPackageDescription" );
+                                                "testCategoryPackageDescription" );
 
         impl.createNewRule( "testTextRule1",
                             "testCategoryRule1",
@@ -4339,7 +4330,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "testCategoryDescription" );
         repositoryPackageService.createPackage( "testCategoryPackage",
-                            "testCategoryPackageDescription" );
+                                                "testCategoryPackageDescription" );
 
         impl.createNewRule( "testTextRule1",
                             "testCategoryRule1",
@@ -4385,7 +4376,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "testCategoryDescription" );
         repositoryPackageService.createPackage( "testCategoryPackage",
-                            "testCategoryPackageDescription" );
+                                                "testCategoryPackageDescription" );
         impl.createState( status );
 
         uuid = impl.createNewRule( "testTextRule1",
@@ -4450,7 +4441,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              cat,
                              "testCategoryDescription" );
         repositoryPackageService.createPackage( "testCategoryPackage",
-                            "testCategoryPackageDescription" );
+                                                "testCategoryPackageDescription" );
         impl.createState( status );
 
         uuid = impl.createNewRule( "testTextRule1",
@@ -4723,7 +4714,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              "snapshotDiffTestingCategory",
                              "snapshotDiffTestingCategoryDescription" );
         String packageUuid = repositoryPackageService.createPackage( "snapshotDiffTestingPackage",
-                                                 "snapshotDiffTestingPackageDescription" );
+                                                                     "snapshotDiffTestingPackageDescription" );
         assertNotNull( packageUuid );
 
         // Create some rules
@@ -4759,9 +4750,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         // Create a snapshot called FIRST for the package
         repositoryPackageService.createPackageSnapshot( "snapshotDiffTestingPackage",
-                                    "FIRST",
-                                    false,
-                                    "First snapshot" );
+                                                        "FIRST",
+                                                        false,
+                                                        "First snapshot" );
         assertEquals( 1,
                       repositoryPackageService.listSnapshots( "snapshotDiffTestingPackage" ).length );
         assertEquals( 4,
@@ -4791,9 +4782,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         // Create a snapshot called SECOND for the package
         repositoryPackageService.createPackageSnapshot( "snapshotDiffTestingPackage",
-                                    "SECOND",
-                                    false,
-                                    "Second snapshot" );
+                                                        "SECOND",
+                                                        false,
+                                                        "Second snapshot" );
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "snapshotDiffTestingPackage" ).length );
         assertEquals( 4,
@@ -4850,7 +4841,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              "snapshotDiffTestingCategory",
                              "snapshotDiffTestingCategoryDescription" );
         String packageUuid = repositoryPackageService.createPackage( "snapshotDiffTestingPackage",
-                                                 "snapshotDiffTestingPackageDescription" );
+                                                                     "snapshotDiffTestingPackageDescription" );
         assertNotNull( packageUuid );
 
         // Create some rules
@@ -4886,9 +4877,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         // Create a snapshot called FIRST for the package
         repositoryPackageService.createPackageSnapshot( "snapshotDiffTestingPackage",
-                                    "FIRST",
-                                    false,
-                                    "First snapshot" );
+                                                        "FIRST",
+                                                        false,
+                                                        "First snapshot" );
         assertEquals( 1,
                       repositoryPackageService.listSnapshots( "snapshotDiffTestingPackage" ).length );
         assertEquals( 4,
@@ -4918,9 +4909,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         // Create a snapshot called SECOND for the package
         repositoryPackageService.createPackageSnapshot( "snapshotDiffTestingPackage",
-                                    "SECOND",
-                                    false,
-                                    "Second snapshot" );
+                                                        "SECOND",
+                                                        false,
+                                                        "Second snapshot" );
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "snapshotDiffTestingPackage" ).length );
         assertEquals( 4,
@@ -5264,7 +5255,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                              "snapshotDiffTesting",
                              "y" );
         String packageUuid = repositoryPackageService.createPackage( "testSnapshotDiff",
-                                                 "d" );
+                                                                     "d" );
 
         assertNotNull( packageUuid );
 
@@ -5300,9 +5291,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         // Create a snapshot called FIRST for the package
         repositoryPackageService.createPackageSnapshot( "testSnapshotDiff",
-                                    "FIRST",
-                                    false,
-                                    "ya" );
+                                                        "FIRST",
+                                                        false,
+                                                        "ya" );
         assertEquals( 1,
                       repositoryPackageService.listSnapshots( "testSnapshotDiff" ).length );
         assertEquals( 4,
@@ -5328,9 +5319,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         // Create a snapshot called SECOND for the package
         repositoryPackageService.createPackageSnapshot( "testSnapshotDiff",
-                                    "SECOND",
-                                    false,
-                                    "we" );
+                                                        "SECOND",
+                                                        false,
+                                                        "we" );
         assertEquals( 2,
                       repositoryPackageService.listSnapshots( "testSnapshotDiff" ).length );
         assertEquals( 4,
@@ -5338,8 +5329,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         // Compare the snapshots
         SnapshotDiffs diffs = repositoryPackageService.compareSnapshots( "testSnapshotDiff",
-                                                     "FIRST",
-                                                     "SECOND" );
+                                                                         "FIRST",
+                                                                         "SECOND" );
         assertEquals( "FIRST",
                       diffs.leftName );
         assertEquals( "SECOND",
@@ -5394,136 +5385,155 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertEquals( 2,
                       result.length );
     }
-    
+
     @Test
     public void testGetHistoryPackageSource() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         //Package version 1(Initial version)
-        PackageItem pkg = impl.getRulesRepository().createPackage( "testGetHistoryPackageSource", "" );
-        
+        PackageItem pkg = impl.getRulesRepository().createPackage( "testGetHistoryPackageSource",
+                                                                   "" );
+
         //Package version 2	
         DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer1",
-        		pkg );
+                                         pkg );
 
-		AssetItem func = pkg.addAsset("func", "");
-		func.updateFormat(AssetFormats.FUNCTION);
-		func.updateContent("function void foo() { System.out.println(version 1); }");
-		func.checkin("version 1");
+        AssetItem func = pkg.addAsset( "func",
+                                       "" );
+        func.updateFormat( AssetFormats.FUNCTION );
+        func.updateContent( "function void foo() { System.out.println(version 1); }" );
+        func.checkin( "version 1" );
 
-		AssetItem dsl = pkg.addAsset("myDSL", "");
-		dsl.updateFormat(AssetFormats.DSL);
-		dsl.updateContent("[then]call a func=foo();\n[when]foo=FooBarBaz1()");
-		dsl.checkin("version 1");
+        AssetItem dsl = pkg.addAsset( "myDSL",
+                                      "" );
+        dsl.updateFormat( AssetFormats.DSL );
+        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz1()" );
+        dsl.checkin( "version 1" );
 
-		AssetItem rule = pkg.addAsset("rule1", "");
-		rule.updateFormat(AssetFormats.DRL);
-		rule.updateContent("rule 'foo' when Goo1() then end");
-		rule.checkin("version 1");
+        AssetItem rule = pkg.addAsset( "rule1",
+                                       "" );
+        rule.updateFormat( AssetFormats.DRL );
+        rule.updateContent( "rule 'foo' when Goo1() then end" );
+        rule.checkin( "version 1" );
 
-		AssetItem rule2 = pkg.addAsset("rule2", "");
-		rule2.updateFormat(AssetFormats.DSL_TEMPLATE_RULE);
-		rule2.updateContent("when \n foo \n then \n call a func");
-		rule2.checkin("version 1");
+        AssetItem rule2 = pkg.addAsset( "rule2",
+                                        "" );
+        rule2.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
+        rule2.updateContent( "when \n foo \n then \n call a func" );
+        rule2.checkin( "version 1" );
 
-		AssetItem rule3 = pkg.addAsset("model1", "");
-		rule3.updateFormat(AssetFormats.DRL_MODEL);
-		rule3.updateContent("declare Album1\n genre1: String \n end");
-		rule3.checkin("version 1");		
-		
-		pkg.checkin("version2");
-		
-		//Package version 3
+        AssetItem rule3 = pkg.addAsset( "model1",
+                                        "" );
+        rule3.updateFormat( AssetFormats.DRL_MODEL );
+        rule3.updateContent( "declare Album1\n genre1: String \n end" );
+        rule3.checkin( "version 1" );
+
+        pkg.checkin( "version2" );
+
+        //Package version 3
         DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer2",
-        		pkg );		
-		func.updateContent("function void foo() { System.out.println(version 2); }");
-		func.checkin("version 2");		
-		dsl.updateContent("[then]call a func=foo();\n[when]foo=FooBarBaz2()");
-		dsl.checkin("version 2");		
-		rule.updateContent("rule 'foo' when Goo2() then end");
-		rule.checkin("version 2");		
-		rule2.updateContent("when \n foo \n then \n call a func");
-		rule2.checkin("version 2");		
-		rule3.updateContent("declare Album2\n genre2: String \n end");
-		rule3.checkin("version 2");
-		//impl.buildPackage(pkg.getUUID(), true);
-		pkg.checkin("version3");
-		
-		//Verify the latest version
-    	PackageItem item = impl.getRulesRepository().loadPackage( "testGetHistoryPackageSource");
+                                         pkg );
+        func.updateContent( "function void foo() { System.out.println(version 2); }" );
+        func.checkin( "version 2" );
+        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz2()" );
+        dsl.checkin( "version 2" );
+        rule.updateContent( "rule 'foo' when Goo2() then end" );
+        rule.checkin( "version 2" );
+        rule2.updateContent( "when \n foo \n then \n call a func" );
+        rule2.checkin( "version 2" );
+        rule3.updateContent( "declare Album2\n genre2: String \n end" );
+        rule3.checkin( "version 2" );
+        //impl.buildPackage(pkg.getUUID(), true);
+        pkg.checkin( "version3" );
+
+        //Verify the latest version
+        PackageItem item = impl.getRulesRepository().loadPackage( "testGetHistoryPackageSource" );
         ContentPackageAssembler asm = new ContentPackageAssembler( item,
                                                                    false );
-        String drl = asm.getDRL();        
-        
-        System.out.println(drl);
-        
-        assertEquals("version3", item.getCheckinComment());
-        assertTrue(drl.indexOf("global com.billasurf.Person customer2") >= 0);
-        assertTrue(drl.indexOf("System.out.println(version 2)") >= 0);
-        assertTrue(drl.indexOf("FooBarBaz2()") >= 0);
-        assertTrue(drl.indexOf("rule 'foo' when Goo2() then end") >= 0);
-        assertTrue(drl.indexOf("foo") >= 0);
-        assertTrue(drl.indexOf("declare Album2") >= 0);
+        String drl = asm.getDRL();
+
+        System.out.println( drl );
+
+        assertEquals( "version3",
+                      item.getCheckinComment() );
+        assertTrue( drl.indexOf( "global com.billasurf.Person customer2" ) >= 0 );
+        assertTrue( drl.indexOf( "System.out.println(version 2)" ) >= 0 );
+        assertTrue( drl.indexOf( "FooBarBaz2()" ) >= 0 );
+        assertTrue( drl.indexOf( "rule 'foo' when Goo2() then end" ) >= 0 );
+        assertTrue( drl.indexOf( "foo" ) >= 0 );
+        assertTrue( drl.indexOf( "declare Album2" ) >= 0 );
         //assertEquals(12, item.getCompiledPackageBytes().length);
-        
+
         //Verify version 2
-    	PackageItem item2 = impl.getRulesRepository().loadPackage( "testGetHistoryPackageSource", 2);
+        PackageItem item2 = impl.getRulesRepository().loadPackage( "testGetHistoryPackageSource",
+                                                                   2 );
         ContentPackageAssembler asm2 = new ContentPackageAssembler( item2,
-                                                                   false );
-        String drl2 = asm2.getDRL();        
-        
-        System.out.println(drl2);
-        
-        assertEquals("version2", item2.getCheckinComment());
-        assertTrue(drl2.indexOf("global com.billasurf.Person customer1") >= 0);
-        assertTrue(drl2.indexOf("System.out.println(version 1)") >= 0);
-        assertTrue(drl2.indexOf("FooBarBaz1()") >= 0);
-        assertTrue(drl2.indexOf("rule 'foo' when Goo1() then end") >= 0);
-        assertTrue(drl2.indexOf("foo") >= 0);
-        assertTrue(drl2.indexOf("declare Album1") >= 0);
+                                                                    false );
+        String drl2 = asm2.getDRL();
+
+        System.out.println( drl2 );
+
+        assertEquals( "version2",
+                      item2.getCheckinComment() );
+        assertTrue( drl2.indexOf( "global com.billasurf.Person customer1" ) >= 0 );
+        assertTrue( drl2.indexOf( "System.out.println(version 1)" ) >= 0 );
+        assertTrue( drl2.indexOf( "FooBarBaz1()" ) >= 0 );
+        assertTrue( drl2.indexOf( "rule 'foo' when Goo1() then end" ) >= 0 );
+        assertTrue( drl2.indexOf( "foo" ) >= 0 );
+        assertTrue( drl2.indexOf( "declare Album1" ) >= 0 );
     }
-    
+
     @Test
     public void testDependencyHistoryPackage() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         //Package version 1
-        PackageItem pkg = impl.getRulesRepository().createPackage( "testDependencyHistoryPackage", "" );
+        PackageItem pkg = impl.getRulesRepository().createPackage( "testDependencyHistoryPackage",
+                                                                   "" );
 
-		AssetItem func = pkg.addAsset("func", "");
-		func.updateFormat(AssetFormats.FUNCTION);
-		func.updateContent("function void foo() { System.out.println(version 1); }");
-		func.checkin("func version 1");
-		func.updateContent("function void foo() { System.out.println(version 2); }");
-		func.checkin("func version 2");
-		
+        AssetItem func = pkg.addAsset( "func",
+                                       "" );
+        func.updateFormat( AssetFormats.FUNCTION );
+        func.updateContent( "function void foo() { System.out.println(version 1); }" );
+        func.checkin( "func version 1" );
+        func.updateContent( "function void foo() { System.out.println(version 2); }" );
+        func.checkin( "func version 2" );
+
         //Package version 2		
-		pkg.checkout();
-		pkg.checkin("package version 2");
-		
-		//calling updateDependency creates package version 3
-		pkg.updateDependency("func?version=1");
-		pkg.checkin("package version 3");
-		
-		func.updateContent("function void foo() { System.out.println(version 2); }");
-		func.checkin("func version 3");		
-		
-	    //Package version 4		
-		pkg.checkout();
-		pkg.checkin("package version 4");
-		
-		//Verify the latest version
-    	PackageItem item = impl.getRulesRepository().loadPackage( "testDependencyHistoryPackage");      
-        assertEquals("package version 4", item.getCheckinComment());
-        assertEquals("func?version=1", item.getDependencies()[0]);
-         
+        pkg.checkout();
+        pkg.checkin( "package version 2" );
+
+        //calling updateDependency creates package version 3
+        pkg.updateDependency( "func?version=1" );
+        pkg.checkin( "package version 3" );
+
+        func.updateContent( "function void foo() { System.out.println(version 2); }" );
+        func.checkin( "func version 3" );
+
+        //Package version 4		
+        pkg.checkout();
+        pkg.checkin( "package version 4" );
+
+        //Verify the latest version
+        PackageItem item = impl.getRulesRepository().loadPackage( "testDependencyHistoryPackage" );
+        assertEquals( "package version 4",
+                      item.getCheckinComment() );
+        assertEquals( "func?version=1",
+                      item.getDependencies()[0] );
+
         //Verify version 2
-    	item = impl.getRulesRepository().loadPackage( "testDependencyHistoryPackage", 2);      
-        assertEquals("package version 2", item.getCheckinComment());
-        assertEquals("func?version=2", item.getDependencies()[0]);
-        
+        item = impl.getRulesRepository().loadPackage( "testDependencyHistoryPackage",
+                                                      2 );
+        assertEquals( "package version 2",
+                      item.getCheckinComment() );
+        assertEquals( "func?version=2",
+                      item.getDependencies()[0] );
+
         //Verify version 3
-    	item = impl.getRulesRepository().loadPackage( "testDependencyHistoryPackage", 3);      
-        assertEquals("package version 3", item.getCheckinComment());
-        assertEquals("func?version=1", item.getDependencies()[0]);
+        item = impl.getRulesRepository().loadPackage( "testDependencyHistoryPackage",
+                                                      3 );
+        assertEquals( "package version 3",
+                      item.getCheckinComment() );
+        assertEquals( "func?version=1",
+                      item.getDependencies()[0] );
     }
 
 }
