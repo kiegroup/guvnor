@@ -81,7 +81,11 @@ public class RepositoryUpgradeHelper {
         List<DTCellValue< ? >> row = new ArrayList<DTCellValue< ? >>();
         for ( int iCol = 0; iCol < oldRow.length; iCol++ ) {
 
-            //TODO Set dcv to correct typed value, currently all String
+            //The original model was purely String based. Conversion to typed fields
+            //occurs when the Model is re-saved in Guvnor. Ideally the conversion 
+            //should occur here but that requires reference to a SuggestionCompletionEngine
+            //which requires RepositoryServices. I did not want to make a dependency between
+            //common IDE classes and the Repository
             DTCellValue<String> dcv = new DTCellValue<String>();
             dcv.setValue( oldRow[iCol] );
             row.add( dcv );

@@ -63,7 +63,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     HasSystemControlledColumns {
 
     // Decision Table data
-    protected TypeSafeGuidedDecisionTable                model;
+    protected TypeSafeGuidedDecisionTable         model;
     protected DecoratedGridWidget<DTColumnConfig> widget;
     protected SuggestionCompletionEngine          sce;
     protected DecisionTableCellFactory            cellFactory;
@@ -224,6 +224,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 model.getActionCols().add( tc );
 
             }
+            modelCol.setWidth( column.getWidth() );
+            modelCol.setHideColumn( !column.isVisible() );
         }
     }
 
@@ -245,13 +247,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
             DynamicDataRow dataRow = data.get( iRow );
             List<DTCellValue< ? >> row = new ArrayList<DTCellValue< ? >>();
             for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-                CellValue< ? > cv = dataRow.get( iCol );
 
-                //TODO Set dcv to correct typed value, currently all String
-                DTCellValue<String> dcv = new DTCellValue<String>();
+                //Values put back into the Model are type-safe
+                CellValue< ? > cv = dataRow.get( iCol );
                 DTColumnConfig column = columns.get( iCol ).getModelColumn();
-                dcv.setValue( cellValueFactory.serialiseValue( column,
-                                                               cv ) );
+                DTCellValue< ? > dcv = cellValueFactory.convertToDTModelCell( column,
+                                                                              cv );
                 row.add( dcv );
             }
             grid.add( row );
