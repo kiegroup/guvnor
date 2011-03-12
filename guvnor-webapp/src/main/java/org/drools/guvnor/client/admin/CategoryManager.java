@@ -127,7 +127,7 @@ public class CategoryManager extends Composite {
         String name = Window.prompt( constants.CategoryNewNamePleaseEnter(),
                                      "" );
         if ( name != null ) {
-            RepositoryServiceFactory.getService().renameCategory( explorer.getSelectedPath(),
+            RepositoryServiceFactory.getCategoryService().renameCategory( explorer.getSelectedPath(),
                                                                   name,
                                                                   new GenericCallback<java.lang.Void>() {
                                                                       public void onSuccess(Void v) {
@@ -140,7 +140,7 @@ public class CategoryManager extends Composite {
 
     private void deleteSelected() {
         if ( Window.confirm( constants.AreYouSureYouWantToDeleteCategory() + explorer.getSelectedPath() ) ) {
-            RepositoryServiceFactory.getService().removeCategory( explorer.getSelectedPath(),
+            RepositoryServiceFactory.getCategoryService().removeCategory( explorer.getSelectedPath(),
                                                                   new GenericCallback<java.lang.Void>() {
 
                                                                       public void onSuccess(Void v) {

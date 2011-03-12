@@ -62,7 +62,7 @@ public class CategoryPagedTable extends AbstractAssetPagedTable<CategoryPageRow>
                 request.setCategoryPath( categoryName );
                 request.setStartRowIndex( pager.getPageStart() );
                 request.setPageSize( pageSize );
-                repositoryService.loadRuleListForCategories( request,
+                CategoryService.loadRuleListForCategories( request,
                                                              new GenericCallback<PageResponse<CategoryPageRow>>() {
                                                                  public void onSuccess(PageResponse<CategoryPageRow> response) {
                                                                      updateRowCount( response.getTotalRowSize(),

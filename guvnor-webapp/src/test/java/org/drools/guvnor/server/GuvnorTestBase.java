@@ -18,8 +18,6 @@ package org.drools.guvnor.server;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.jcr.Session;
-
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.guvnor.server.files.WebDAVImpl;
@@ -32,9 +30,7 @@ import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 public abstract class GuvnorTestBase {
 
@@ -53,9 +49,9 @@ public abstract class GuvnorTestBase {
 
     protected void setUpSeam() {
         System.setProperty( KeyStoreHelper.PROP_SIGN,
-                "false" );
+                            "false" );
         Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication(application);
+        Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
     }
 
@@ -65,9 +61,12 @@ public abstract class GuvnorTestBase {
 
         RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
         repositoryAssetService.setRulesRepository( getRulesRepository() );
-        
+
         RepositoryPackageService repositoryPackageService = new RepositoryPackageService();
         repositoryPackageService.setRulesRepository( getRulesRepository() );
+
+        RepositoryCategoryService repositoryCategoryService = new RepositoryCategoryService();
+        repositoryCategoryService.setRulesRepository( getRulesRepository() );
 
         Contexts.getSessionContext().set( "repository",
                                           repository );
@@ -77,6 +76,8 @@ public abstract class GuvnorTestBase {
                                           repositoryAssetService );
         Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.PackageService",
                                           repositoryPackageService );
+        Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.CategoryService",
+                                          repositoryCategoryService );
     }
 
     protected RulesRepository getRulesRepository() {
@@ -88,11 +89,11 @@ public abstract class GuvnorTestBase {
 
     protected void setUpMockIdentity() {
         MockIdentity mockIdentity = new MockIdentity();
-        mockIdentity.setIsLoggedIn(true);
+        mockIdentity.setIsLoggedIn( true );
         RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
         resolver.setEnableRoleBasedAuthorization( false );
         mockIdentity.addPermissionResolver( new RoleBasedPermissionResolver() );
-        setUpMockIdentity(mockIdentity);
+        setUpMockIdentity( mockIdentity );
     }
 
     public void setUpMockIdentity(MockIdentity mockIdentity) {
@@ -107,6 +108,7 @@ public abstract class GuvnorTestBase {
         Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.RepositoryService" );
         Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.AssetService" );
         Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.PackageService" );
+        Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.CategoryService" );
         Contexts.removeFromAllContexts( "fileManager" );
         if ( Contexts.getApplicationContext() != null ) Contexts.getApplicationContext().flush();
         if ( Contexts.getEventContext() != null ) Contexts.getEventContext().flush();
@@ -133,13 +135,18 @@ public abstract class GuvnorTestBase {
     protected RepositoryAssetService getRepositoryAssetService() {
         return (RepositoryAssetService) Component.getInstance( "org.drools.guvnor.client.rpc.AssetService" );
     }
-    
+
     protected RepositoryPackageService getRepositoryPackageService() {
         return (RepositoryPackageService) Component.getInstance( "org.drools.guvnor.client.rpc.PackageService" );
     }
 
+    protected RepositoryCategoryService getRepositoryCategoryService() {
+        return (RepositoryCategoryService) Component.getInstance( "org.drools.guvnor.client.rpc.CategoryService" );
+    }
+
     protected void setUpFileManagerUtils() {
-        Contexts.getSessionContext().set( "fileManager", getFileManagerUtils() );
+        Contexts.getSessionContext().set( "fileManager",
+                                          getFileManagerUtils() );
     }
 
     protected FileManagerUtils getFileManagerUtils() {

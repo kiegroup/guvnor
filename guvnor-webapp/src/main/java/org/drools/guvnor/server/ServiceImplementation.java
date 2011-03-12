@@ -53,8 +53,6 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rpc.CategoryPageRequest;
-import org.drools.guvnor.client.rpc.CategoryPageRow;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.InboxIncomingPageRow;
@@ -153,34 +151,32 @@ public class ServiceImplementation
     RepositoryService {
 
     @In
-    private RulesRepository              repository;
+    private RulesRepository             repository;
 
-    private static final long            serialVersionUID             = 510l;
+    private static final long           serialVersionUID            = 510l;
 
-    private static final LoggingHelper   log                          = LoggingHelper.getLogger( ServiceImplementation.class );
+    private static final LoggingHelper  log                         = LoggingHelper.getLogger( ServiceImplementation.class );
 
     /**
      * Used for a simple cache of binary packages to avoid serialization from
      * the database - for test scenarios.
      */
-    public static Map<String, RuleBase>  ruleBaseCache                = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
+    public static Map<String, RuleBase> ruleBaseCache               = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
 
     /**
      * This is used for pushing messages back to the client.
      */
-    private static Backchannel           backchannel                  = new Backchannel();
-    private ServiceSecurity              serviceSecurity              = new ServiceSecurity();
+    private static Backchannel          backchannel                 = new Backchannel();
+    private ServiceSecurity             serviceSecurity             = new ServiceSecurity();
 
-    private RepositoryAssetOperations    repositoryAssetOperations    = new RepositoryAssetOperations();
-    private RepositoryPackageOperations  repositoryPackageOperations  = new RepositoryPackageOperations();
-    private RepositoryCategoryOperations repositoryCategoryOperations = new RepositoryCategoryOperations();
+    private RepositoryAssetOperations   repositoryAssetOperations   = new RepositoryAssetOperations();
+    private RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
 
     /* This is called also by Seam AND Hosted mode */
     @Create
     public void create() {
         repositoryAssetOperations.setRulesRepository( getRulesRepository() );
         repositoryPackageOperations.setRulesRepository( getRulesRepository() );
-        repositoryCategoryOperations.setRulesRepository( getRulesRepository() );
     }
 
     /* This is called in hosted mode when creating "by hand" */
@@ -233,78 +229,6 @@ public class ServiceImplementation
             module.removeWorkspace( workspace );
             module.checkin( "Remove workspace" );
         }
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public String[] loadChildCategories(String categoryPath) {
-        return repositoryCategoryOperations.loadChildCategories( categoryPath );
-    }
-
-    @WebRemote
-    public Boolean createCategory(String path,
-                                  String name,
-                                  String description) {
-        serviceSecurity.checkSecurityIsAdmin();
-        return repositoryCategoryOperations.createCategory( path,
-                                                            name,
-                                                            description );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void renameCategory(String fullPathAndName,
-                               String newName) {
-        repositoryCategoryOperations.renameCategory( fullPathAndName,
-                                                     newName );
-    }
-
-    /**
-     * loadRuleListForCategories
-     *
-     * Role-based Authorization check: This method only returns rules that the user has
-     * permission to access. The user is considered to has permission to access the particular category when:
-     * The user has ANALYST_READ role or higher (i.e., ANALYST) to this category
-     * 
-     * @deprecated in favour of {@link loadRuleListForCategories(CategoryPageRequest)}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadRuleListForCategories(String categoryPath,
-                                                     int skip,
-                                                     int numRows,
-                                                     String tableConfig) throws SerializationException {
-        return repositoryCategoryOperations.loadRuleListForCategories( categoryPath,
-                                                                       skip,
-                                                                       numRows,
-                                                                       tableConfig );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PageResponse<CategoryPageRow> loadRuleListForCategories(CategoryPageRequest request) throws SerializationException {
-        if ( request == null ) {
-            throw new IllegalArgumentException( "request cannot be null" );
-        }
-        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
-            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
-        }
-
-        // Role-based Authorization check: This method only returns rules that
-        // the user has permission to access. The user is considered to has
-        // permission to access the particular category when: The user has
-        // ANALYST_READ role or higher (i.e., ANALYST) to this category
-        if ( !serviceSecurity.isSecurityIsAnalystRead( new CategoryPathType( request.getCategoryPath() ) ) ) {
-            return new PageResponse<CategoryPageRow>();
-        }
-
-        return repositoryCategoryOperations.loadRuleListForCategories( request );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void removeCategory(String categoryPath) throws SerializationException {
-        repositoryCategoryOperations.removeCategory( categoryPath );
     }
 
     /**
