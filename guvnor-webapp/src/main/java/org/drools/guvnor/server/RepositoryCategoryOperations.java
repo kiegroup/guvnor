@@ -59,6 +59,7 @@ public class RepositoryCategoryOperations {
         return repository;
     }
 
+    @SuppressWarnings("rawtypes")
     protected String[] loadChildCategories(String categoryPath) {
         List<String> resultList = new ArrayList<String>();
         CategoryFilter filter = new CategoryFilter();
