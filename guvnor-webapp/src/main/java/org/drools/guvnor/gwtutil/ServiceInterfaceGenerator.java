@@ -17,12 +17,15 @@ package org.drools.guvnor.gwtutil;
 
 import java.lang.reflect.Method;
 
-import org.drools.guvnor.client.rpc.AssetService;
+public class ServiceInterfaceGenerator {
 
-public class RepositoryAssetGenerator {
-
-    public static void main(String[] args) throws Exception {
-        Class cls = AssetService.class;
+    /**
+     * Generated service interface from given interface. This can be used in GWT servlet end-point.
+     * @param cls Class from generate
+     * @param serviceMethodName service method name e.x getService()
+     */
+    public static void generate(final Class cls,
+                                final String serviceMethodName) {
         String line = "";
         Method[] methods = cls.getMethods();
         for ( int i = 0; i < methods.length; i++ ) {
@@ -33,7 +36,7 @@ public class RepositoryAssetGenerator {
                 String retType = typeName( meth.getReturnType().getName() );
                 line += "public " + retType + " " + meth.getName() + "(";
                 Class params[] = meth.getParameterTypes();
-                String body = "getAssetService()." + meth.getName() + "(";
+                String body = serviceMethodName + "." + meth.getName() + "(";
                 for ( int j = 0; j < params.length; j++ ) {
                     String type = params[j].getName();
                     type = typeName( type );
@@ -73,4 +76,5 @@ public class RepositoryAssetGenerator {
         }
         return type;
     }
+
 }
