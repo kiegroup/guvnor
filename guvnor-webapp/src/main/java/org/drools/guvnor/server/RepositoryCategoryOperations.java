@@ -101,6 +101,10 @@ public class RepositoryCategoryOperations {
                                              newName );
     }
 
+    /**
+     * loadRuleListForCategories
+     * @deprecated in favour of {@link loadRuleListForCategories(CategoryPageRequest)}
+     */
     protected TableDataResult loadRuleListForCategories(String categoryPath,
                                                         int skip,
                                                         int numRows,

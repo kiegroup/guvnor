@@ -16,19 +16,31 @@
 package org.drools.guvnor.server;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import javax.jcr.RangeIterator;
 import javax.jcr.Session;
 
+import org.drools.guvnor.client.rpc.CategoryPageRequest;
+import org.drools.guvnor.client.rpc.CategoryPageRow;
+import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import com.google.gwt.user.client.rpc.SerializationException;
 
 public class RepositoryCategoryOperationsTest {
 
@@ -91,6 +103,33 @@ public class RepositoryCategoryOperationsTest {
                                                      "new" );
         verify( rulesRepository ).renameCategory( "orig",
                                                   "new" );
+    }
+
+    @Test
+    public void testLoadRuleListForCategories() throws SerializationException {
+        CategoryPageRequest categoryPageRequest = new CategoryPageRequest( "/path",
+                                                                           0,
+                                                                           new Integer( 10 ) );
+        RangeIterator rangeIterator = mock( RangeIterator.class );
+        when( rangeIterator.hasNext() ).thenReturn( false );
+        when( rangeIterator.getPosition() ).thenReturn( 1L );
+        AssetItemPageResult assetItemPageResult = new AssetItemPageResult( Arrays.asList( mock( AssetItem.class,
+                                                                                                Mockito.RETURNS_MOCKS ) ),
+                                                                           rangeIterator );
+        when( rulesRepository.findAssetsByCategory( categoryPageRequest.getCategoryPath(),
+                                                    false,
+                                                    categoryPageRequest.getStartRowIndex(),
+                                                    10 ) ).thenReturn( assetItemPageResult );
+        PageResponse<CategoryPageRow> loadRuleListForCategories = repositoryCategoryOperations.loadRuleListForCategories( categoryPageRequest );
+        assertNotNull( loadRuleListForCategories );
+        assertEquals( loadRuleListForCategories.getStartRowIndex(),
+                      categoryPageRequest.getStartRowIndex() );
+        assertNotNull( loadRuleListForCategories.getPageRowList() );
+        assertEquals( loadRuleListForCategories.getPageRowList().size(),
+                      1 );
+        assertEquals( loadRuleListForCategories.isLastPage(),
+                      true );
+
     }
 
     private void initSession() {
