@@ -55,15 +55,42 @@ public class RepositoryCategoryOperationsTest {
     }
 
     @Test
-    public void testCreateCategory() {
+    public void testCreateCategoryWhenIncludingHtml() {
+        testAndVerifyCreateCategory( "<path>",
+                                     "&lt;path&gt;" );
+    }
+
+    @Test
+    public void testCreateCategoryWhenPathIsNull() {
+        testAndVerifyCreateCategory( null,
+                                     "/" );
+    }
+
+    @Test
+    public void testCreateCategoryWhenPathIsEmpty() {
+        testAndVerifyCreateCategory( "",
+                                     "/" );
+    }
+
+    public void testAndVerifyCreateCategory(final String createPath,
+                                            final String loadPath) {
         initSession();
         CategoryItem categoryItem = mock( CategoryItem.class );
-        when( rulesRepository.loadCategory( "path" ) ).thenReturn( categoryItem );
-        repositoryCategoryOperations.createCategory( "path",
+        when( rulesRepository.loadCategory( loadPath ) ).thenReturn( categoryItem );
+        repositoryCategoryOperations.createCategory( createPath,
                                                      "name",
                                                      "description" );
+        verify( rulesRepository ).loadCategory( loadPath );
         verify( categoryItem ).addCategory( "name",
                                             "description" );
+    }
+
+    @Test
+    public void testRenameCategory() {
+        repositoryCategoryOperations.renameCategory( "orig",
+                                                     "new" );
+        verify( rulesRepository ).renameCategory( "orig",
+                                                  "new" );
     }
 
     private void initSession() {
