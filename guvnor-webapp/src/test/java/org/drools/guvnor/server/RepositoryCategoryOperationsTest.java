@@ -17,10 +17,13 @@ package org.drools.guvnor.server;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.jcr.Session;
 
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RulesRepository;
@@ -49,5 +52,22 @@ public class RepositoryCategoryOperationsTest {
         when( categoryItem.getChildTags() ).thenReturn( childTags );
         assertArrayEquals( repositoryCategoryOperations.loadChildCategories( "categorypath" ),
                            new String[]{"categoryNodeName"} );
+    }
+
+    @Test
+    public void testCreateCategory() {
+        initSession();
+        CategoryItem categoryItem = mock( CategoryItem.class );
+        when( rulesRepository.loadCategory( "path" ) ).thenReturn( categoryItem );
+        repositoryCategoryOperations.createCategory( "path",
+                                                     "name",
+                                                     "description" );
+        verify( categoryItem ).addCategory( "name",
+                                            "description" );
+    }
+
+    private void initSession() {
+        Session session = mock( Session.class );
+        when( this.rulesRepository.getSession() ).thenReturn( session );
     }
 }
