@@ -67,7 +67,7 @@ public class RepositoryCategoryOperationsTest {
     }
 
     @Test
-    public void testCreateCategoryWhenIncludingHtml() {
+    public void testCreateCategoryWhenPathIncludingHtml() {
         testAndVerifyCreateCategory( "<path>",
                                      "&lt;path&gt;" );
     }
@@ -130,6 +130,18 @@ public class RepositoryCategoryOperationsTest {
         assertEquals( loadRuleListForCategories.isLastPage(),
                       true );
 
+    }
+
+    @Test
+    public void testRemoveCategory() throws SerializationException {
+        initSession();
+        CategoryItem categoryItem = mock( CategoryItem.class );
+        when( rulesRepository.loadCategory( "/path" ) ).thenReturn( categoryItem );
+
+        repositoryCategoryOperations.removeCategory( "/path" );
+        verify( rulesRepository ).loadCategory( "/path" );
+        verify( categoryItem ).remove();
+        verify( rulesRepository ).save();
     }
 
     private void initSession() {
