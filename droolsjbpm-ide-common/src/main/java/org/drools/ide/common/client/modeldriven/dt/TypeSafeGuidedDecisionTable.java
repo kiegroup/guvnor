@@ -73,7 +73,7 @@ public class TypeSafeGuidedDecisionTable
      * Subsequent ones follow the above column definitions: attributeCols, then
      * conditionCols, then actionCols, in that order, left to right.
      */
-    private List<List<DTCellValue>> data;
+    private List<List<DTCellValue>> data              = new ArrayList<List<DTCellValue>>();
 
     public TypeSafeGuidedDecisionTable() {
     }
