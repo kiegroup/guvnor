@@ -82,6 +82,7 @@ public class PackageEditor extends PrettyFormLayout {
     private boolean historicalReadOnly = false;
     private Command             close;
     private Command             refreshPackageList;
+    private HorizontalPanel packageConfigurationValidationResult = new HorizontalPanel();;
 
     public PackageEditor(PackageConfigData data,
                          Command close,
@@ -158,7 +159,8 @@ public class PackageEditor extends PrettyFormLayout {
         
         startSection( constants.ConfigurationSection() );
 
-        addRow( warnings() );
+        addRow( packageConfigurationValidationResult );
+
         addAttribute( constants.Configuration(),
                       header() );
         addAttribute( constants.DescriptionColon(),
@@ -173,7 +175,7 @@ public class PackageEditor extends PrettyFormLayout {
             save.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    doSave( null );
+                	doValidatePackageConfiguration( null );
                 }
             } );
             addAttribute( "",
@@ -397,13 +399,15 @@ public class PackageEditor extends PrettyFormLayout {
         }
     }
 
-    private Widget warnings() {
+    private void showValidatePackageConfigurationResult() {
+    	packageConfigurationValidationResult.clear();
+    	
         if ( this.previousResponse != null && this.previousResponse.hasErrors ) {
             Image img = new Image( images.warning() );
-            HorizontalPanel h = new HorizontalPanel();
-            h.add( img );
+            //HorizontalPanel h = new HorizontalPanel();
+            packageConfigurationValidationResult.add( img );
             HTML msg = new HTML( "<b>" + constants.ThereWereErrorsValidatingThisPackageConfiguration() + "</b>" ); //NON-NLS
-            h.add( msg );
+            packageConfigurationValidationResult.add( msg );
             Button show = new Button( constants.ViewErrors() );
             show.addClickHandler( new ClickHandler() {
 
@@ -413,10 +417,12 @@ public class PackageEditor extends PrettyFormLayout {
                     wid.show();
                 }
             } );
-            h.add( show );
-            return h;
+            packageConfigurationValidationResult.add( show );
         } else {
-            return new SimplePanel();
+            Image img = new Image( images.greenTick() );
+            packageConfigurationValidationResult.add( img );
+            HTML msg = new HTML( "<b>" + "Package validated successfully" + "</b>" ); //NON-NLS
+            packageConfigurationValidationResult.add( msg );
         }
     }
 
@@ -572,7 +578,23 @@ public class PackageEditor extends PrettyFormLayout {
                                                                }
                                                            } );
     }
+    
+    private void doValidatePackageConfiguration(final Command refresh) {
+        final HorizontalPanel busy = new HorizontalPanel();
+        busy.add( new Label( constants.ValidatingAndBuildingPackagePleaseWait() ) );
+        busy.add( new Image( images.redAnime() ) );
 
+        packageConfigurationValidationResult.add( busy );
+
+        RepositoryServiceFactory.getPackageService().validatePackageConfiguration( this.conf,
+                                                           new GenericCallback<ValidatedResponse>() {
+                                                               public void onSuccess(ValidatedResponse data) {
+                                                                   previousResponse = data;
+                                                                   showValidatePackageConfigurationResult();
+                                                                }
+                                                           } );
+    }
+    
     /**
      * Will refresh all the data.
      */

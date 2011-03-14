@@ -275,10 +275,16 @@ public class RepositoryPackageService
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
+    public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageDeveloper( data.uuid );
+        return repositoryPackageOperations.validatePackageConfiguration( data );
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
     public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloper( data.uuid );
         return repositoryPackageOperations.savePackage( data );
-
     }
 
     @WebRemote

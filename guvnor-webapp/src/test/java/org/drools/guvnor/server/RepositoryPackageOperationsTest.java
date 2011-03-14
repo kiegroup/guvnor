@@ -236,6 +236,30 @@ public class RepositoryPackageOperationsTest {
         verify( localRepositoryPackageOperations ).handleArchivedForSavePackage( packageConfigData,
                                                                                    packageItem );
     }
+    
+    @Test
+    public void testValidatePackageConfiguration() throws SerializationException {
+        RepositoryPackageOperations localRepositoryPackageOperations = initSpyingOnRealRepositoryPackageOperations();
+
+        PackageConfigData packageConfigData = createPackageConfigData( true );
+
+        PackageItem packageItem = mock( PackageItem.class );
+        initDroolsHeaderCheck( packageItem );
+        when( packageItem.isArchived() ).thenReturn( false );
+        when( this.rulesRepository.loadPackage( packageConfigData.name ) ).thenReturn( packageItem );
+        doNothing().when( localRepositoryPackageOperations ).updateCategoryRules( packageConfigData,
+                                                                                  packageItem );
+        doNothing().when( localRepositoryPackageOperations ).handleArchivedForSavePackage( packageConfigData,
+                                                                                             packageItem );
+        initSpyingAndMockingOnSuggestionCompletionLoader( localRepositoryPackageOperations );
+        localRepositoryPackageOperations.validatePackageConfiguration( packageConfigData );
+        verify( packageItem, never() ).updateExternalURI( "");
+        verify( packageItem, never() ).updateDescription( packageConfigData.description );
+        verify( packageItem, never() ).archiveItem( packageConfigData.archived );
+        verify( packageItem, never() ).checkin( packageConfigData.description );
+        verify( localRepositoryPackageOperations, never() ).handleArchivedForSavePackage( packageConfigData,
+                                                                                   packageItem );
+    }
 
     @Test
     public void testCreatePackageSnapshotAndReplacingExisting() {

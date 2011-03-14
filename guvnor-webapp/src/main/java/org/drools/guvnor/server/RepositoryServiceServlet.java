@@ -240,7 +240,11 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public org.drools.guvnor.client.rpc.PackageConfigData loadPackageConfig(java.lang.String p0) {
         return getPackageService().loadPackageConfig( p0 );
     }
-
+    
+    public org.drools.guvnor.client.rpc.ValidatedResponse validatePackageConfiguration(org.drools.guvnor.client.rpc.PackageConfigData p0) throws com.google.gwt.user.client.rpc.SerializationException {
+        return getPackageService().validatePackageConfiguration( p0 );
+    }
+    
     public org.drools.guvnor.client.rpc.ValidatedResponse savePackage(org.drools.guvnor.client.rpc.PackageConfigData p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return getPackageService().savePackage( p0 );
     }

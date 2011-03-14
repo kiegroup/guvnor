@@ -306,6 +306,19 @@ public class RepositoryPackageOperations {
         }
         return data;
     }
+    
+    public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException {
+        log.info( "USER:" + getCurrentUserName() + " validatePackageConfiguration package [" + data.name + "]" );
+
+        PackageItem item = getRulesRepository().loadPackage( data.name );
+
+        ServiceImplementation.ruleBaseCache.remove( data.uuid );
+
+        BRMSSuggestionCompletionLoader loader = createBRMSSuggestionCompletionLoader();
+        loader.getSuggestionEngine(item, data.header);
+
+        return validateBRMSSuggestionCompletionLoaderResponse( loader );
+    }
 
     public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " SAVING package [" + data.name + "]" );

@@ -70,7 +70,17 @@ public interface PackageService
      *         Really.
      */
     public PackageConfigData loadPackageConfig(String uuid);
-
+    
+    /**
+     * Validate package configuration
+     * 
+     * @return A ValidatedReponse, with any errors to be reported. No payload is
+     *         in the response. If there are any errors, the user should be
+     *         given the option to review them, and correct them if needed (but
+     *         a save will not be prevented this way - as its not an exception).
+     */
+    public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException;
+    
     /**
      * Saves the package config data in place (does not create a new version of
      * anything).
