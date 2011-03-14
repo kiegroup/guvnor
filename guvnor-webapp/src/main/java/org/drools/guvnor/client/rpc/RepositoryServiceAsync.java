@@ -53,8 +53,6 @@ public interface RepositoryServiceAsync {
     public void changeState(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);
     public void loadSuggestionCompletionEngine(java.lang.String p0, AsyncCallback<org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine> cb);
     public void getCustomSelectors(AsyncCallback<java.lang.String[]> cb);
-    public void runScenario(java.lang.String p0, org.drools.ide.common.client.modeldriven.testing.Scenario p1, AsyncCallback<org.drools.guvnor.client.rpc.SingleScenarioResult> cb);
-    public void runScenariosInPackage(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.BulkTestRunResult> cb);
     public void showLog(org.drools.guvnor.client.rpc.PageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.LogPageRow>> cb);
     public void showLog(AsyncCallback<org.drools.guvnor.client.rpc.LogEntry[]> cb);
     public void cleanLog(AsyncCallback cb);

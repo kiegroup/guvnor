@@ -199,27 +199,6 @@ public interface RepositoryService
      * return custom selector names
      */
     public String[] getCustomSelectors() throws SerializationException;
-
-   
-
-   
-    /**
-     * 
-     * @param packageName
-     *            The package name the scenario is to be run in.
-     * @param scenario
-     *            The scenario to run.
-     * @return The scenario, with the results fields populated.
-     * @throws SerializationException
-     */
-    public SingleScenarioResult runScenario(String packageName,
-                                            Scenario scenario) throws SerializationException;
-
-    /**
-     * This should be pretty obvious what it does !
-     */
-    public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException;
-
    
     /**
      * This will list the last N log entryies logged by the server. For

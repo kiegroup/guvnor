@@ -3160,6 +3160,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
+        
 
         System.out.println( "create package" );
         PackageItem pkg = repo.createPackage( "testScenarioRun",
@@ -3206,14 +3208,14 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                   "42" ) );
         sc.getGlobals().add( cheese );
 
-        ScenarioRunResult res = impl.runScenario( pkg.getName(),
+        ScenarioRunResult res = repositoryPackageService.runScenario( pkg.getName(),
                                                   sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
-        res = impl.runScenario( pkg.getName(),
+        res = repositoryPackageService.runScenario( pkg.getName(),
                                 sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
@@ -3221,7 +3223,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( vr.wasSuccessful() );
 
         ServiceImplementation.ruleBaseCache.clear();
-        res = impl.runScenario( pkg.getName(),
+        res = repositoryPackageService.runScenario( pkg.getName(),
                                 sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
@@ -3237,7 +3239,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         ServiceImplementation.ruleBaseCache.clear();
         pkg.updateBinaryUpToDate( false );
         repo.save();
-        res = impl.runScenario( pkg.getName(),
+        res = repositoryPackageService.runScenario( pkg.getName(),
                                 sc ).result;
         assertNotNull( res.getErrors() );
         assertNull( res.getScenario() );
@@ -3275,6 +3277,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     public void testRunScenarioWithGeneratedBeans() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         PackageItem pkg = repo.createPackage( "testScenarioRunWithGeneratedBeans",
                                               "" );
@@ -3313,7 +3316,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                   "==" ) );
         sc.getFixtures().add( vf );
 
-        SingleScenarioResult res_ = impl.runScenario( pkg.getName(),
+        SingleScenarioResult res_ = repositoryPackageService.runScenario( pkg.getName(),
                                                       sc );
         assertTrue( res_.auditLog.size() > 0 );
 
@@ -3335,6 +3338,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     public void testRunPackageScenariosWithDeclaredFacts() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         PackageItem pkg = repo.createPackage( "testScenarioRunBulkWithDeclaredFacts",
                                               "" );
@@ -3410,7 +3414,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         scenario2.updateContent( ScenarioXMLPersistence.getInstance().marshal( sc ) );
         scenario2.checkin( "" );
 
-        BulkTestRunResult result = impl.runScenariosInPackage( pkg.getUUID() );
+        BulkTestRunResult result = repositoryPackageService.runScenariosInPackage( pkg.getUUID() );
         assertNull( result.getResult() );
 
         assertEquals( 50,
@@ -3449,6 +3453,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     public void testRunScenarioWithJar() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         // create our package
         PackageItem pkg = repo.createPackage( "testRunScenarioWithJar",
@@ -3491,7 +3496,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                   "==" ) );
         sc.getFixtures().add( vf );
 
-        ScenarioRunResult res = impl.runScenario( pkg.getName(),
+        ScenarioRunResult res = repositoryPackageService.runScenario( pkg.getName(),
                                                   sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
@@ -3499,7 +3504,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
-        res = impl.runScenario( pkg.getName(),
+        res = repositoryPackageService.runScenario( pkg.getName(),
                                 sc ).result;
 
         assertNull( res.getErrors() );
@@ -3510,7 +3515,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         ServiceImplementation.ruleBaseCache.clear();
 
-        res = impl.runScenario( pkg.getName(),
+        res = repositoryPackageService.runScenario( pkg.getName(),
                                 sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
@@ -3524,6 +3529,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     public void testRunScenarioWithJarThatHasSourceFiles() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         // create our package
         PackageItem pkg = repo.createPackage( "testRunScenarioWithJarThatHasSourceFiles",
@@ -3558,7 +3564,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         ScenarioRunResult res = null;
         try {
-            res = impl.runScenario( pkg.getName(),
+            res = repositoryPackageService.runScenario( pkg.getName(),
                                     sc ).result;
         } catch ( ClassFormatError e ) {
             fail( "Probably failed when loading a source file instead of class file. " + e );
@@ -3568,7 +3574,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertNotNull( res.getScenario() );
         assertTrue( vr.wasSuccessful() );
 
-        res = impl.runScenario( pkg.getName(),
+        res = repositoryPackageService.runScenario( pkg.getName(),
                                 sc ).result;
 
         assertNull( res.getErrors() );
@@ -3577,7 +3583,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         ServiceImplementation.ruleBaseCache.clear();
 
-        res = impl.runScenario( pkg.getName(),
+        res = repositoryPackageService.runScenario( pkg.getName(),
                                 sc ).result;
 
         assertNull( res.getErrors() );
@@ -3591,6 +3597,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     public void testRunPackageScenarios() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         PackageItem pkg = repo.createPackage( "testScenarioRunBulk",
                                               "" );
@@ -3675,7 +3682,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         //love you
         long time = System.currentTimeMillis();
-        BulkTestRunResult result = impl.runScenariosInPackage( pkg.getUUID() );
+        BulkTestRunResult result = repositoryPackageService.runScenariosInPackage( pkg.getUUID() );
         System.err.println( "Time taken for runScenariosInPackage " + (System.currentTimeMillis() - time) );
         assertNull( result.getResult() );
 
@@ -5170,7 +5177,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       cfgs.length );
         assertTrue( cfgs[0].name.equals( "mortgages" ) || cfgs[1].name.equals( "mortgages" ) );
         String puuid = (cfgs[0].name.equals( "mortgages" )) ? cfgs[0].uuid : cfgs[1].uuid;
-        BulkTestRunResult res = serv.runScenariosInPackage( puuid );
+        BulkTestRunResult res = repositoryPackageService.runScenariosInPackage( puuid );
         assertEquals( null,
                       res.getResult() );
     }

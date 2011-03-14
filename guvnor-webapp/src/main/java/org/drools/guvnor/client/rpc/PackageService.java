@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.rpc;
 
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -224,6 +226,24 @@ public interface PackageService
                                           String secondSnapshotName);
 
     public SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request);
+    
+    /**
+     * 
+     * @param packageName
+     *            The package name the scenario is to be run in.
+     * @param scenario
+     *            The scenario to run.
+     * @return The scenario, with the results fields populated.
+     * @throws SerializationException
+     */
+    public SingleScenarioResult runScenario(String packageName,
+                                            Scenario scenario) throws SerializationException;
+
+    /**
+     * This should be pretty obvious what it does !
+     */
+    public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException;
+
 
 
 }

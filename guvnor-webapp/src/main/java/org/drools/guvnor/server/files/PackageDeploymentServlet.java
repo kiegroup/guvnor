@@ -37,6 +37,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.FormData;
@@ -280,6 +281,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     private void doRunScenarios(PackageDeploymentURIHelper helper,
                                 ByteArrayOutputStream out) throws IOException {
         ServiceImplementation serv = RepositoryServiceServlet.getService();
+        RepositoryPackageService packageService = RepositoryServiceServlet.getPackageService();
         PackageItem pkg;
         if ( helper.isLatest() ) {
             pkg = serv.getRulesRepository().loadPackage( helper.getPackageName() );
@@ -288,7 +290,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                                                                  helper.getVersion() );
         }
         try {
-            BulkTestRunResult result = serv.runScenariosInPackage( pkg );
+            BulkTestRunResult result = packageService.runScenariosInPackage( pkg );
             out.write( result.toString().getBytes() );
         } catch ( DetailedSerializationException e ) {
             log.error( "Unable to run scenarios.", e );

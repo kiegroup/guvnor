@@ -342,6 +342,17 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse compareSnapshots(org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest p0) {
         return getPackageService().compareSnapshots( p0 );
     }
+    
+    public org.drools.guvnor.client.rpc.SingleScenarioResult runScenario(java.lang.String p0,
+                                                                         org.drools.ide.common.client.modeldriven.testing.Scenario p1) throws com.google.gwt.user.client.rpc.SerializationException {
+        return getPackageService().runScenario( p0,
+                                         p1 );
+    }
+
+    public org.drools.guvnor.client.rpc.BulkTestRunResult runScenariosInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
+        return getPackageService().runScenariosInPackage( p0 );
+    }
+
 
 
     /** PLACE THE FOLLOWING IN RepositoryServiceServlet.java **/
@@ -617,17 +628,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
 
     public java.lang.String[] getCustomSelectors() throws com.google.gwt.user.client.rpc.SerializationException {
         return getService().getCustomSelectors();
-    }
-
-
-    public org.drools.guvnor.client.rpc.SingleScenarioResult runScenario(java.lang.String p0,
-                                                                         org.drools.ide.common.client.modeldriven.testing.Scenario p1) throws com.google.gwt.user.client.rpc.SerializationException {
-        return getService().runScenario( p0,
-                                         p1 );
-    }
-
-    public org.drools.guvnor.client.rpc.BulkTestRunResult runScenariosInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return getService().runScenariosInPackage( p0 );
     }
 
     public org.drools.guvnor.client.rpc.PageResponse showLog(org.drools.guvnor.client.rpc.PageRequest p0) {
