@@ -6,7 +6,7 @@
 
 
 
-<bookinfo id="book-drools_guvnor">
+<bookinfo id="book-drools_guvnor" xml:base="./">
 	<title>Drools Guvnor</title>
 	<subtitle>For users and administrators of Drools Guvnor</subtitle>
 	<productname>Drools Guvnor</productname>

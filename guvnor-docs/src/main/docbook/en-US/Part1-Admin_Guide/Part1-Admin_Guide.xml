@@ -3,7 +3,7 @@
 <!ENTITY % BOOK_ENTITIES SYSTEM "../Drools_Guvnor.ent">
 %BOOK_ENTITIES;
 ]>
-<part>
+<part xml:base="./" >
    <title>Administration Guide</title>
 
    <partintro>

@@ -3,7 +3,7 @@
 <!ENTITY % BOOK_ENTITIES SYSTEM "Drools_Guvnor.ent">
 %BOOK_ENTITIES;
 ]>
-<chapter>
+<chapter xml:base="./">
    <title>Introduction</title>
 
    <para>
