@@ -32,10 +32,10 @@
 	
 	<authorgroup>
      <author>
-       <orgname><ulink url="http://www.jboss.org/drools/team.html">The JBoss Drools team</ulink></orgname>
+       <affiliation><orgname><ulink url="http://www.jboss.org/drools/team.html">The JBoss Drools team</ulink></orgname></affiliation>
      </author>
    </authorgroup>
-   
+
 	<!-- xi:include href="Legal_Notice.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /> -->
 </bookinfo>
 
