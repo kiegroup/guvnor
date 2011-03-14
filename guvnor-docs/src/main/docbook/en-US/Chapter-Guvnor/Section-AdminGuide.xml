@@ -6,62 +6,9 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Administration guide</title>
 
-  <para>This chapter covers installation and administration issues of the
-  Guvnor.</para>
 
-  <para>The Guvnor is a web application that can run in multiple environments,
-  and be configured to suit most situations. There is also some initial setup
-  of data, and export/import functions covered.</para>
 
-  <section>
-    <title>Installation</title>
 
-    <para>Installation for most people is very simple. The Guvnor application
-    is deployed as a .war file, which can be deployed in application servers
-    or servlet containers with little or no configuration if you are happy
-    with the defaults.</para>
-
-    <para>When you have downloaded the Guvnor distribution (which you can get
-    from http://www.jboss.org/drools), you need to rename drools-5.1.0-guvnor.war 
-    to guvnor-webapp.war. Copy the WAR file into the deployment directory of you
-    app server, and then start your app server. If you need to customize some
-    settings, you can first "explode" (unzip) the war file, and change any
-    configuration settings, and then either zip it up, or deploy it
-    "exploded". (Note in the JBoss Application Server you will need to make
-    sure the exploded folder name ends in ".war")</para>
-
-    <para>Once the guvnor-webapp.war has been placed in the deployment
-    directory, and the application server started, you should navigate to
-    http://localhost/guvnor-webapp and check that Guvnor appears. (Obviously
-    substitute the URL for what your application server is configured
-    to).</para>
-
-    <para>Once that shows up, you are deployed and ready to go!</para>
-
-    <section>
-      <title>Supported and recommended platforms</title>
-
-      <para>Guvnor is capable of running in any application server that
-      supports Java SE5 (JEE 5 is not required) - this includes servlet
-      containers like tomcat.</para>
-
-      <para>It is actively tested/developed on JBoss app server platforms,
-      which are recommended if you are able to use them, or don't have any
-      existing infrastructure. However, it is possible to use any
-      container/app server, in some cases with minor configuration tweaks
-      (consult the wiki for specific tips - many in the community have been
-      able to make it run on various platforms).</para>
-
-      <para>You can download the JBoss app server from www.jboss.com
-      for any common operating system.</para>
-
-      <para>Deployment on a JBoss app server: If you are installing a new JBoss
-      application server, copy the WAR to [app server
-      directory]/server/default/deploy. Start up the server by
-      running run.sh or run.bat in the [app server directory]/bin
-      directory.</para>
-    </section>
-  </section>
 
   <section>
     <title>Database configuration</title>
