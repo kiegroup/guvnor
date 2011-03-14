@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "../Drools_Guvnor.ent">
+%BOOK_ENTITIES;
+]>
+
+<chapter>
+   <title>Security - Authentication and basic access</title>
+
+   <para>
+   Please note that giving someone access to Guvnor indicates a level of trust. Being able to editing and
+   build rules is providing a great deal of power to a user. Thus you should not open up Guvnor to your entire
+   organization - but instead to a select few. Use https (http with TLS/SSL) where ever possible, even
+   internally in a companies network this is a good idea. Use this power wisely - this not a "run of the
+   mill" application that provides read/write access to a database, but something much more power. Just
+   imagine you are spider man - with great power comes great responsibility (of course even more so for super
+   man).
+   </para>
+
+   <para>
+   Security is configured by using the <filename>components.xml</filename> file in the war file. To customize
+   this, you will need to unzip the WAR file, and locate the <filename>components.xml</filename> file which is
+   in the <filename>WEB-INF</filename> directory.
+   </para>
+
+   <para>
+   The JAAS standard is used as the underlying authentication and authorization mechanism, the upshot of which
+   means its very flexible and able to integrate into most existing environments.
+   </para>
+
+   <para>
+   Out of the box, Guvnor shows a login screen, but no security credentials are enforced - the user name is
+   used, but no password check is performed. To enforce authentication, you need to configure it to use an
+   appropriate user directory, you may have Active Directory or similar already.
+   </para>
+
+   <para>
+   In the <filename>components.xml</filename> file, you should located a security configuration section like
+   the following:
+   </para>
+
+    <programlisting language="XML"><![CDATA[<!-- SECURITY CONFIGURATION -->
+    
+<!-- default (will take any username, useful if you want to keep track of users but not authenticate -->
+<security:identity authenticate-method="#{defaultAuthenticator.authenticate}"/>
+
+<!-- NO authentication. This will bypass the login screen when you hit the app. Everyone is "guest" -->
+<!-- <security:identity authenticate-method="#{nilAuthenticator.authenticate}"/> -->]]></programlisting>
+
+   <para>
+   As you can see from above, the 2 "out of the box" options are pass through - which means any user is
+   allowed in, or bypassed, in which case there is no login screen (e.g. you may be securing access to the app
+   via a web server anyway).
+   </para>
+
+   <section>
+      <title>Using your containers security and LDAP</title>
+
+      <para>
+      Every application server supports advanced configurations which
+      can work with your existing security infrastructure. The case of JBoss
+      AS will be shown here as an example.
+      </para>
+
+      <programlisting language="XML"><![CDATA[<security:identity authenticate-method="#{authenticator.authenticate}"
+   jaas-config-name="other"/>]]></programlisting>
+
+      <para>
+      This will use the "other" jaas config in JBoss AS. If you look in
+      <filename>jboss-as/server/default/conf</filename> you will see a <filename>login-config.xml</filename>
+      file. This file contains various configs. If you use "other" like the one above, then it will look for
+      users.properties and roles.properties in the conf directory for usernames and passwords to authenticate
+      against (this is fine for a fixed small number of users).
+      </para>
+
+      <para>
+      LDAP is perhaps the most popular choice for larger enterprises, so
+      following is an example that works with Active Directory. You can get
+      much more information on how to configure JBoss AS for all scenarios
+      with LDAP from <ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=LdapLoginModule"/>
+      and <ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=LdapExtLoginModule"/>.
+      </para>
+
+      <programlisting language="XML"><![CDATA[<application-policy name="brms">
+   <authentication>
+      <login-module code="org.jboss.security.auth.spi.LdapExtLoginModule" flag="required" >
+         <!--
+            Some AD configurations may require searching against
+            the Global Catalog on port 3268 instead of the usual
+            port 389.  This is most likely when the AD forest
+            includes multiple domains.
+         -->
+         <module-option name="java.naming.provider.url">ldap://ldap.jboss.org:389</module-option>
+         <module-option name="bindDN">JBOSS\someadmin</module-option>
+         <module-option name="bindCredential">password</module-option>
+         <module-option name="baseCtxDN">cn=Users,dc=jboss,dc=org</module-option>
+         <module-option name="baseFilter">(sAMAccountName={0})</module-option>
+
+         <module-option name="rolesCtxDN">cn=Users,dc=jboss,dc=org</module-option>
+         <module-option name="roleFilter">(sAMAccountName={0})</module-option>
+         <module-option name="roleAttributeID">memberOf</module-option>
+         <module-option name="roleAttributeIsDN">true</module-option>
+         <module-option name="roleNameAttributeID">cn</module-option>
+
+         <module-option name="roleRecursion">-1</module-option>
+         <module-option name="searchScope">ONELEVEL_SCOPE</module-option>
+      </login-module>
+   </authentication>
+</application-policy>]]></programlisting>
+
+      <para>
+      To use the above, you would put <literal>jaas-config-name="brms"</literal> in the
+      <code>security:identity</code> tag in the <filename>components.xml</filename> for Guvnor.
+      </para>
+
+      <para>
+      Similar configuration examples can be found for other directory services.
+      </para>
+
+      <para>
+      LDAP isn't the final word, you can use JDBC against a database of user name, or you can write your own
+      login module to use any sort of weird and wonderful authentication and authorization systems that you
+      may have to deal with (that would be an extreme case, but its possible). Refer to JBoss AS documentation
+      (or documentation for your existing application server).
+      </para>
+    </section>
+</chapter>

@@ -102,7 +102,7 @@
    files. Open the <filename>conf/props/modeshape-users.properties</filename> file and add the mailman user,
    so the file looks like:
   	</para>
-  	<programlisting language="txt">admin=admin
+  	<programlisting>admin=admin
 guest=guest
 mailman=mailman</programlisting>
 
@@ -111,7 +111,7 @@ mailman=mailman</programlisting>
    so the file looks like:
   	</para>
   	
-  	<programlisting language="txt">admin=connect,readonly,readwrite
+  	<programlisting>admin=connect,readonly,readwrite
 guest=connect,readonly
 mailman=connect,readonly,readwrite</programlisting>
 
