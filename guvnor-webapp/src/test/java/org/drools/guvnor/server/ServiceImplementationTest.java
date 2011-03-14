@@ -2869,6 +2869,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         repositoryCategoryService.createCategory( "/",
                                                   "funkytest",
                                                   "" );
+
         String uuidt1 = impl.createNewRule( "t1",
                                             "",
                                             "funkytest",
