@@ -58,7 +58,7 @@ public class GuidedDTXMLPersistenceTest {
 
         dt.getConditionCols().add( new ConditionCol() );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{new String[]{"hola"}} ) );
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{new String[]{"1", "hola"}} ) );
         dt.setTableName( "blah" );
 
         String xml = GuidedDTXMLPersistence.getInstance().marshal( dt );

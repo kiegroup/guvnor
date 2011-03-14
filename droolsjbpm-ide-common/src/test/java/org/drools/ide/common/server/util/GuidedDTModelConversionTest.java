@@ -18,6 +18,7 @@ package org.drools.ide.common.server.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -236,10 +237,13 @@ public class GuidedDTModelConversionTest {
         assertEquals( row.size(),
                       array.length );
 
-        for ( int iCol = 0; iCol < row.size(); iCol++ ) {
+        BigDecimal newRowNum = row.get(0).getNumericValue();
+        BigDecimal oldRowNum = new BigDecimal(array[0]);
+        assertEquals( newRowNum, oldRowNum );
+        
+        for ( int iCol = 1; iCol < row.size(); iCol++ ) {
             DTCellValue cell = row.get( iCol );
             String v1 = cell.getStringValue();
-
             String v2 = array[iCol];
             assertTrue( isEqualOrNull( v1,
                                        v2 ) );
