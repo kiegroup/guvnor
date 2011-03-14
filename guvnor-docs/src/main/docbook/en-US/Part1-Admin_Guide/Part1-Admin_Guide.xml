@@ -16,7 +16,7 @@
       </para>
    </partintro>
 
-  <xi:include href="Chapter-Installation.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
-  <xi:include href="Chapter-Database_config.xml" xmlns:xi="http://www.w3.org/2001/XInclude"/>
-  
+  <xi:include href="Chapter-Installation.xml"                  xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="Chapter-Database_config.xml"               xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="Chapter-Switch_jackrabbit_modeshape.xml"   xmlns:xi="http://www.w3.org/2001/XInclude"/>
 </part>
