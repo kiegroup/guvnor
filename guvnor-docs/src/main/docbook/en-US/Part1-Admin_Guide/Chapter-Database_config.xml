@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "../Drools_Guvnor.ent">
+%BOOK_ENTITIES;
+]>
+<chapter>
+         
+   <title>Database configuration</title>
+
+   <para>
+   Guvnor uses the JCR standard for storing assets such as rules. The default implementation is Apache
+   Jackrabbit, <ulink url="http://jackrabbit.apache.org" />. This includes an out of the box storage
+   engine/database, which you can use as is, or configure to use an existing RDBMS if needed.
+    </para>
+
+    <section>
+      <title>Changing the location of the data store</title>
+
+      <para>
+      Assuming you are using on of the JBoss platforms, running Guvnor for the first time will create a
+      database in the <filename>bin/</filename> directory of the application server. There will be a
+      <filename>repository.xml</filename> file, and a <filename>repository</filename> directory that are
+      automatically created.
+      </para>
+
+      <para>
+      The location of the data store should be a secure location, that is backed up. The default location may
+      not be suitable for this, so the easiest way is to set a more suitable location. If you want to change
+      this, please make sure you have stopped Guvnor (i.e. stopped the app server or un-deployed the
+      application).
+      </para>
+
+      <para>
+      To change the location, unzip the WAR file, and locate the <filename>components.xml</filename> file in
+      the <filename>WEB-INF</filename> directory. This is a JBoss Seam configuration file (Seam is the
+      framework used) which allows various parts of the system to be customized. When you have located the
+      <filename>components.xml</filename> file, you should see something like the following:
+      </para>
+
+      <programlisting language="XML"><![CDATA[<component name="repositoryConfiguration">
+   <!--
+   *** This is for configuring the "home" directory for the repository storage. the directory must exist. ***
+   <property name="homeDirectory">/home/michael/RulesRepository_001</property>
+   -->  
+   ...
+</component>]]></programlisting>
+
+      <para>Find the component with a name of <literal>repositoryConfiguration</literal> and
+      the property with the name of <literal>homeDirectory</literal>.</para>
+
+      <para>If you un-comment this (as in the example above it is commented
+      out), you can set whatever path you need for the repository data to be
+      stored in. You can also use this to move the repository around. In that
+      case, when you have set the location in the <filename>components.xml</filename> you can
+      simply move the <filename>repository.xml</filename> AND the repository directory to the new
+      location that you set in the <filename>components.xml</filename>.</para>
+
+      <para>If there is no repository at the location specified (or in the
+      default location) then Guvnor will create a new empty one.</para>
+
+      <para>There are many more options which can be configured in the
+      <filename>repository.xml</filename>, but for the most part, it is not recommended to change
+      the defaults.</para>
+    </section>
+
+    <section>
+      <title>Configuring Guvnor to use an external RDBMS</title>
+
+      <para>In some cases it may be a requirement that you use an external
+      RDBMS, such as Oracle, MySQL, or Microsoft SQL Server as the data store
+      - this is permitted. In this case, the easiest thing to do is to start
+      up Guvnor with defaults (or with a suitable home directory as specified
+      above) to let it generate the default <filename>repository.xml</filename> scaffolding.</para>
+
+      <para>Locate the <filename>repository.xml</filename> file that was generated, and open it -
+      it will be annotated with comments describing many of the different
+      options. From here on, you will need to know a little about Jackrabbit
+      Persistence managers, <ulink url="http://wiki.apache.org/jackrabbit/PersistenceManagerFAQ" />.
+      </para>
+
+      <para>There are a few persistence managers, some are database specific
+      (eg Oracle). There is a SimpleDBPersistenceManager which works with any
+      database that supports JDBC - you also specify the database type, so it
+      uses the specific DDL to create the table structure (all major databases
+      are supported).</para>
+
+      <para>Guvnor will create the tables the first time it is started up if
+      it is running against a fresh (empty) RDBMS - so its important to note
+      that the user credentials supplied have permissions to create tables (at
+      least initially, on first run, after that they could be locked
+      down).</para>
+    </section>
+
+    <section>
+      <title>Searching and indexing, Version storage</title>
+
+      <para>Jackrabbit has a separate storage area for version storage (as
+      over time, the number of old versions will increase, yet it should not
+      slow down the performance of the main data store). The version storage
+      also has its own persistence manage configuration in the <filename>repository.xml</filename>,
+      but for most purposes you can use the same database as the main storage
+      (just with a different schema object prefix - ie in your database, all
+      the version data will be prefixed with <literal>version_</literal> but otherwise in the
+      same tablespace). See the <filename>repository.xml</filename> for more details of
+      this.</para>
+
+      <para>Lucene is used to provide indexing across the semi structured
+      data, and across versions. This indexing is generally best stored on a
+      filesystem, local to Guvnor (as per the default in the <filename>repository.xml</filename>) -
+      in most cases the default is fine.</para>
+    </section>
+</chapter>
