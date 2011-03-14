@@ -60,7 +60,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
@@ -78,7 +77,6 @@ public class PackageEditor extends PrettyFormLayout {
 
     private PackageConfigData   conf;
     ActionToolbar actionToolBar;
-    protected ValidatedResponse previousResponse;
     private boolean historicalReadOnly = false;
     private Command             close;
     private Command             refreshPackageList;
@@ -159,6 +157,7 @@ public class PackageEditor extends PrettyFormLayout {
         
         startSection( constants.ConfigurationSection() );
 
+        packageConfigurationValidationResult.clear();
         addRow( packageConfigurationValidationResult );
 
         addAttribute( constants.Configuration(),
@@ -399,10 +398,10 @@ public class PackageEditor extends PrettyFormLayout {
         }
     }
 
-    private void showValidatePackageConfigurationResult() {
+    private void showValidatePackageConfigurationResult(final ValidatedResponse validatedResponse) {
     	packageConfigurationValidationResult.clear();
     	
-        if ( this.previousResponse != null && this.previousResponse.hasErrors ) {
+        if ( validatedResponse != null && validatedResponse.hasErrors ) {
             Image img = new Image( images.warning() );
             packageConfigurationValidationResult.add( img );
             HTML msg = new HTML( "<b>" + constants.ThereWereErrorsValidatingThisPackageConfiguration() + "</b>" ); //NON-NLS
@@ -410,8 +409,8 @@ public class PackageEditor extends PrettyFormLayout {
             Button show = new Button( constants.ViewErrors() );
             show.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    ValidationMessageWidget wid = new ValidationMessageWidget( previousResponse.errorHeader,
-                                                                               previousResponse.errorMessage );
+                    ValidationMessageWidget wid = new ValidationMessageWidget( validatedResponse.errorHeader,
+                    		validatedResponse.errorMessage );
                     wid.show();
                 }
             } );
@@ -558,9 +557,8 @@ public class PackageEditor extends PrettyFormLayout {
         LoadingPopup.showMessage( constants.SavingPackageConfigurationPleaseWait() );
 
         RepositoryServiceFactory.getPackageService().savePackage( this.conf,
-                                                           new GenericCallback<ValidatedResponse>() {
-                                                               public void onSuccess(ValidatedResponse data) {
-                                                                   previousResponse = data;
+                                                           new GenericCallback<Void>() {
+                                                               public void onSuccess(Void data) {
                                                                    reload();
                                                                    LoadingPopup.showMessage( constants.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache() );
 
@@ -587,8 +585,7 @@ public class PackageEditor extends PrettyFormLayout {
         RepositoryServiceFactory.getPackageService().validatePackageConfiguration( this.conf,
                                                            new GenericCallback<ValidatedResponse>() {
                                                                public void onSuccess(ValidatedResponse data) {
-                                                                   previousResponse = data;
-                                                                   showValidatePackageConfigurationResult();
+                                                                   showValidatePackageConfigurationResult(data);
                                                                 }
                                                            } );
     }
