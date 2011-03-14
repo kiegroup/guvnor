@@ -90,7 +90,7 @@ public interface PackageService
      *         given the option to review them, and correct them if needed (but
      *         a save will not be prevented this way - as its not an exception).
      */
-    public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException;
+    public void savePackage(PackageConfigData data) throws SerializationException;
 
     /**
      * Create a package snapshot for deployment.

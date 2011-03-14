@@ -171,7 +171,7 @@ public class PackageEditor extends PrettyFormLayout {
                       getShowCatRules() );
 
         if ( !conf.isSnapshot && !historicalReadOnly) {
-            Button save = new Button( constants.SaveAndValidateConfiguration() );
+            Button save = new Button( constants.ValidateConfiguration() );
             save.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
@@ -404,13 +404,11 @@ public class PackageEditor extends PrettyFormLayout {
     	
         if ( this.previousResponse != null && this.previousResponse.hasErrors ) {
             Image img = new Image( images.warning() );
-            //HorizontalPanel h = new HorizontalPanel();
             packageConfigurationValidationResult.add( img );
             HTML msg = new HTML( "<b>" + constants.ThereWereErrorsValidatingThisPackageConfiguration() + "</b>" ); //NON-NLS
             packageConfigurationValidationResult.add( msg );
             Button show = new Button( constants.ViewErrors() );
             show.addClickHandler( new ClickHandler() {
-
                 public void onClick(ClickEvent event) {
                     ValidationMessageWidget wid = new ValidationMessageWidget( previousResponse.errorHeader,
                                                                                previousResponse.errorMessage );
@@ -421,7 +419,7 @@ public class PackageEditor extends PrettyFormLayout {
         } else {
             Image img = new Image( images.greenTick() );
             packageConfigurationValidationResult.add( img );
-            HTML msg = new HTML( "<b>" + "Package validated successfully" + "</b>" ); //NON-NLS
+            HTML msg = new HTML( "<b>" + constants.PackageValidatedSuccessfully() + "</b>" ); //NON-NLS
             packageConfigurationValidationResult.add( msg );
         }
     }

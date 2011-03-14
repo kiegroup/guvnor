@@ -320,7 +320,7 @@ public class RepositoryPackageOperations {
         return validateBRMSSuggestionCompletionLoaderResponse( loader );
     }
 
-    public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException {
+    public void savePackage(PackageConfigData data) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " SAVING package [" + data.name + "]" );
 
         PackageItem item = getRulesRepository().loadPackage( data.name );
@@ -350,11 +350,6 @@ public class RepositoryPackageOperations {
                                             item,
                                             packageLastModified );
         }
-
-        BRMSSuggestionCompletionLoader loader = createBRMSSuggestionCompletionLoader();
-        loader.getSuggestionEngine( item );
-
-        return validateBRMSSuggestionCompletionLoaderResponse( loader );
     }
 
     BRMSSuggestionCompletionLoader createBRMSSuggestionCompletionLoader() {

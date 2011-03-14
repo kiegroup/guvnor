@@ -1301,7 +1301,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         data.header = "wa";
         data.externalURI = "new URI";
 
-        ValidatedResponse res = repositoryPackageService.savePackage( data );
+        ValidatedResponse res = repositoryPackageService.validatePackageConfiguration( data );
         assertNotNull( res );
         assertTrue( res.hasErrors );
         assertNotNull( res.errorMessage );
@@ -1315,7 +1315,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       data.externalURI );
 
         data.header = "";
-        res = repositoryPackageService.savePackage( data );
+        res = repositoryPackageService.validatePackageConfiguration( data );
         if ( res.hasErrors ) {
             System.out.println( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );
             System.out.println( res.errorMessage );
