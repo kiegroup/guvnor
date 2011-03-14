@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE bookinfo PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "Drools_Guvnor.ent">
+%BOOK_ENTITIES;
+]>
+
+
+
+<bookinfo id="book-drools_guvnor">
+	<title>Drools Guvnor</title>
+	<subtitle>For users and administrators of Drools Guvnor</subtitle>
+	<productname>Drools Guvnor</productname>
+	<productnumber>5.2</productnumber>
+	<edition>1</edition>
+	<pubsnumber>1</pubsnumber>
+   <releaseinfo>5.2.0-SNAPSHOT</releaseinfo>
+	
+	<abstract>
+		<para>
+        This manual provides complete documentation for Drools Guvnor.
+        </para>
+   </abstract>
+
+	<corpauthor>
+		<inlinemediaobject>
+			<imageobject>
+				<imagedata fileref="images/droolsGuvnorLogo.png" format="PNG" />
+			</imageobject>
+         <textobject><phrase>Drools Guvnor</phrase></textobject>
+		</inlinemediaobject>
+	</corpauthor>
+	
+	<authorgroup>
+     <author>
+       <orgname><ulink url="http://www.jboss.org/drools/team.html">The JBoss Drools team</ulink></orgname>
+     </author>
+   </authorgroup>
+   
+	<!-- xi:include href="Legal_Notice.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /> -->
+</bookinfo>
+
