@@ -26,10 +26,11 @@ import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
+import org.drools.ide.common.client.modeldriven.dt.DTDataTypes;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
 import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable.DTCellValue;
 
 /**
  * A Factory to create CellValues applicable to given columns.
@@ -65,44 +66,98 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      *            UI CellValue to convert into Model CellValue
      * @return
      */
-    public DTCellValue< ? > convertToDTModelCell(DTColumnConfig column,
+    public DTCellValue convertToDTModelCell(DTColumnConfig column,
                                                  CellValue< ? > cell) {
-        DATA_TYPES dt = getDataType( column );
-        DTCellValue< ? > dtCell = null;
+        DTDataTypes dt = getDataType( column );
+        DTCellValue dtCell = null;
 
         switch ( dt ) {
             case BOOLEAN :
-                dtCell = new DTCellValue<Boolean>();
-                dtCell.setValue( cell.getValue() );
+                dtCell = new DTCellValue();
+                dtCell.setBooleanValue( (Boolean) cell.getValue() );
                 break;
             case DATE :
-                dtCell = new DTCellValue<Date>();
-                dtCell.setValue( cell.getValue() );
+                dtCell = new DTCellValue();
+                dtCell.setDateValue( (Date) cell.getValue() );
                 break;
             case DIALECT :
-                dtCell = new DTCellValue<String>();
-                dtCell.setValue( cell.getValue() );
+                dtCell = new DTCellValue();
+                dtCell.setStringValue( (String) cell.getValue() );
                 break;
             case NUMERIC :
-                dtCell = new DTCellValue<BigDecimal>();
-                dtCell.setValue( cell.getValue() );
+                dtCell = new DTCellValue();
+                dtCell.setNumericValue( (BigDecimal) cell.getValue() );
                 break;
             case ROW_NUMBER :
-                dtCell = new DTCellValue<BigDecimal>();
-                dtCell.setValue( cell.getValue() );
+                dtCell = new DTCellValue();
+                dtCell.setNumericValue( (BigDecimal) cell.getValue() );
                 break;
             default :
-                dtCell = new DTCellValue<String>();
-                dtCell.setValue( cell.getValue() );
+                dtCell = new DTCellValue();
+                dtCell.setStringValue( (String) cell.getValue() );
         }
         dtCell.setOtherwise( cell.isOtherwise() );
         return dtCell;
     }
 
-    // Derive the Data Type for a Condition or Action column
-    private DATA_TYPES makeNewCellDataType(DTColumnConfig col) {
+    /**
+     * Make a CellValue applicable for the column
+     * 
+     * @param column
+     *            The model column
+     * @param iRow
+     *            Row coordinate for initialisation
+     * @param iCol
+     *            Column coordinate for initialisation
+     * @param dcv
+     *            The Model cell containing the value
+     * @return A CellValue
+     */
+    public CellValue< ? extends Comparable< ? >> getCellValue(DTColumnConfig column,
+                                                              int iRow,
+                                                              int iCol,
+                                                              DTCellValue dcv) {
+        DTDataTypes dataType = getDataType( column );
+        CellValue< ? extends Comparable< ? >> cell = null;
 
-        DATA_TYPES dataType = DATA_TYPES.STRING;
+        switch ( dataType ) {
+            case BOOLEAN :
+                cell = makeNewBooleanCellValue( iRow,
+                                                iCol,
+                                                dcv.getBooleanValue() );
+                break;
+            case DATE :
+                cell = makeNewDateCellValue( iRow,
+                                             iCol,
+                                             dcv.getDateValue() );
+                break;
+            case DIALECT :
+                cell = makeNewDialectCellValue( iRow,
+                                                iCol,
+                                                dcv.getStringValue() );
+                break;
+            case NUMERIC :
+                cell = makeNewNumericCellValue( iRow,
+                                                iCol,
+                                                dcv.getNumericValue() );
+                break;
+            case ROW_NUMBER :
+                cell = makeNewRowNumberCellValue( iRow,
+                                                  iCol );
+                break;
+            default :
+                cell = makeNewStringCellValue( iRow,
+                                               iCol,
+                                               dcv.getStringValue() );
+        }
+
+        return cell;
+    }
+
+    // Derive the Data Type for a Condition or Action column
+    private DTDataTypes makeNewCellDataType(DTColumnConfig col) {
+
+        DTDataTypes dataType = DTDataTypes.STRING;
 
         // Columns with lists of values, enums etc are always Text (for now)
         String[] vals = model.getValueList( col,
@@ -110,53 +165,53 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         if ( vals.length == 0 ) {
             if ( model.isNumeric( col,
                                   sce ) ) {
-                dataType = DATA_TYPES.NUMERIC;
+                dataType = DTDataTypes.NUMERIC;
             } else if ( model.isBoolean( col,
                                          sce ) ) {
-                dataType = DATA_TYPES.BOOLEAN;
+                dataType = DTDataTypes.BOOLEAN;
             } else if ( model.isDate( col,
                                       sce ) ) {
-                dataType = DATA_TYPES.DATE;
+                dataType = DTDataTypes.DATE;
             }
         }
         return dataType;
     }
 
     // Get the Data Type corresponding to a given column
-    protected DATA_TYPES getDataType(DTColumnConfig column) {
+    protected DTDataTypes getDataType(DTColumnConfig column) {
 
-        DATA_TYPES dataType = DATA_TYPES.STRING;
+        DTDataTypes dataType = DTDataTypes.STRING;
 
         if ( column instanceof RowNumberCol ) {
-            dataType = DATA_TYPES.ROW_NUMBER;
+            dataType = DTDataTypes.ROW_NUMBER;
 
         } else if ( column instanceof AttributeCol ) {
             AttributeCol attrCol = (AttributeCol) column;
             String attrName = attrCol.getAttribute();
             if ( attrName.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 if ( attrCol.isUseRowNumber() ) {
-                    dataType = DATA_TYPES.ROW_NUMBER;
+                    dataType = DTDataTypes.ROW_NUMBER;
                 } else {
-                    dataType = DATA_TYPES.NUMERIC;
+                    dataType = DTDataTypes.NUMERIC;
                 }
             } else if ( attrName.equals( RuleAttributeWidget.ENABLED_ATTR ) ) {
-                dataType = DATA_TYPES.BOOLEAN;
+                dataType = DTDataTypes.BOOLEAN;
             } else if ( attrName.equals( RuleAttributeWidget.NO_LOOP_ATTR ) ) {
-                dataType = DATA_TYPES.BOOLEAN;
+                dataType = DTDataTypes.BOOLEAN;
             } else if ( attrName.equals( RuleAttributeWidget.DURATION_ATTR ) ) {
-                dataType = DATA_TYPES.NUMERIC;
+                dataType = DTDataTypes.NUMERIC;
             } else if ( attrName.equals( RuleAttributeWidget.AUTO_FOCUS_ATTR ) ) {
-                dataType = DATA_TYPES.BOOLEAN;
+                dataType = DTDataTypes.BOOLEAN;
             } else if ( attrName.equals( RuleAttributeWidget.LOCK_ON_ACTIVE_ATTR ) ) {
-                dataType = DATA_TYPES.BOOLEAN;
+                dataType = DTDataTypes.BOOLEAN;
             } else if ( attrName.equals( RuleAttributeWidget.DATE_EFFECTIVE_ATTR ) ) {
-                dataType = DATA_TYPES.DATE;
+                dataType = DTDataTypes.DATE;
             } else if ( attrName.equals( RuleAttributeWidget.DATE_EXPIRES_ATTR ) ) {
-                dataType = DATA_TYPES.DATE;
+                dataType = DTDataTypes.DATE;
             } else if ( attrName.equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
-                dataType = DATA_TYPES.DIALECT;
+                dataType = DTDataTypes.DIALECT;
             } else if ( attrName.equals( TypeSafeGuidedDecisionTable.NEGATE_RULE_ATTR ) ) {
-                dataType = DATA_TYPES.BOOLEAN;
+                dataType = DTDataTypes.BOOLEAN;
             }
 
         } else if ( column instanceof ConditionCol ) {

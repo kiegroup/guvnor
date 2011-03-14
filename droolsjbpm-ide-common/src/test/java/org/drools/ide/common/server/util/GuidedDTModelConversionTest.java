@@ -27,10 +27,10 @@ import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable.DTCellValue;
 import org.junit.Test;
 
 public class GuidedDTModelConversionTest {
@@ -231,15 +231,15 @@ public class GuidedDTModelConversionTest {
 
     }
 
-    private void isRowEquivalent(List<DTCellValue< ? >> row,
+    private void isRowEquivalent(List<DTCellValue> row,
                                     String[] array) {
         assertEquals( row.size(),
                       array.length );
 
         for ( int iCol = 0; iCol < row.size(); iCol++ ) {
-            DTCellValue< ? > cell = row.get( iCol );
-            Object o = cell.getValue();
-            String v1 = (String) o;
+            DTCellValue cell = row.get( iCol );
+            String v1 = cell.getStringValue();
+
             String v2 = array[iCol];
             assertTrue( isEqualOrNull( v1,
                                        v2 ) );

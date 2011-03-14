@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,12 +39,12 @@ import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -242,16 +241,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
         final List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
 
         final int GRID_ROWS = data.size();
-        List<List<DTCellValue< ? >>> grid = new ArrayList<List<DTCellValue< ? >>>();
+        List<List<DTCellValue>> grid = new ArrayList<List<DTCellValue>>();
         for ( int iRow = 0; iRow < GRID_ROWS; iRow++ ) {
             DynamicDataRow dataRow = data.get( iRow );
-            List<DTCellValue< ? >> row = new ArrayList<DTCellValue< ? >>();
+            List<DTCellValue> row = new ArrayList<DTCellValue>();
             for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
 
                 //Values put back into the Model are type-safe
                 CellValue< ? > cv = dataRow.get( iCol );
                 DTColumnConfig column = columns.get( iCol ).getModelColumn();
-                DTCellValue< ? > dcv = cellValueFactory.convertToDTModelCell( column,
+                DTCellValue dcv = cellValueFactory.convertToDTModelCell( column,
                                                                               cv );
                 row.add( dcv );
             }
@@ -755,8 +754,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
     private void assertConditionColumnGrouping(TypeSafeGuidedDecisionTable model) {
 
         class ConditionColData {
-            ConditionCol   col;
-            Serializable[] data;
+            ConditionCol  col;
+            DTCellValue[] data;
         }
 
         // Offset into Model's data array
@@ -779,10 +778,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
             // Make a ConditionColData object
             ConditionColData ccd = new ConditionColData();
             int colIndex = DATA_COLUMN_OFFSET + iCol;
-            ccd.data = new Serializable[DATA_ROWS];
+            ccd.data = new DTCellValue[DATA_ROWS];
             for ( int iRow = 0; iRow < DATA_ROWS; iRow++ ) {
-                List<DTCellValue< ? >> row = model.getData().get( iRow );
-                ccd.data[iRow] = row.get( colIndex ).getValue();
+                List<DTCellValue> row = model.getData().get( iRow );
+                ccd.data[iRow] = row.get( colIndex );
             }
             ccd.col = col;
             groupCols.add( ccd );
@@ -797,9 +796,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 model.getConditionCols().add( ccd.col );
                 int colIndex = DATA_COLUMN_OFFSET + iCol;
                 for ( int iRow = 0; iRow < DATA_ROWS; iRow++ ) {
-                    List<DTCellValue< ? >> row = model.getData().get( iRow );
-                    Serializable s = ccd.data[iRow];
-                    row.get( colIndex ).setValue( s );
+                    List<DTCellValue> row = model.getData().get( iRow );
+                    row.set( colIndex,
+                             ccd.data[iRow] );
                 }
                 iCol++;
             }
@@ -956,12 +955,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                 int colIndex) {
         int dataSize = model.getData().size();
         List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
+
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
-            List<DTCellValue< ? >> row = model.getData().get( iRow );
+            List<DTCellValue> row = model.getData().get( iRow );
+            DTCellValue dcv = row.get( colIndex );
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( column,
                                                                                       iRow,
                                                                                       colIndex,
-                                                                                      row.get( colIndex ).getValue() );
+                                                                                      dcv );
             columnData.add( cv );
         }
         return columnData;
@@ -1034,8 +1035,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             row.set( column.getColumnIndex(),
                      cellValueFactory.getCellValue( editColumn,
                                                     iRow,
-                                                    column.getColumnIndex(),
-                                                    null ) );
+                                                    column.getColumnIndex() ) );
         }
 
         // Setting CellValues mashes the indexes

@@ -18,9 +18,9 @@ package org.drools.ide.common.server.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable.DTCellValue;
 
 /**
  * Helper class to upgrade model used for Guided Decision Table
@@ -60,11 +60,11 @@ public class RepositoryUpgradeHelper {
      * @param oldData
      * @return New data
      */
-    public static List<List<DTCellValue< ? >>> makeDataLists(String[][] oldData) {
-        List<List<DTCellValue< ? >>> newData = new ArrayList<List<DTCellValue< ? >>>();
+    public static List<List<DTCellValue>> makeDataLists(String[][] oldData) {
+        List<List<DTCellValue>> newData = new ArrayList<List<DTCellValue>>();
         for ( int iRow = 0; iRow < oldData.length; iRow++ ) {
             String[] oldRow = oldData[iRow];
-            List<DTCellValue< ? >> newRow = makeDataRowList( oldRow );
+            List<DTCellValue> newRow = makeDataRowList( oldRow );
             newData.add( newRow );
         }
         return newData;
@@ -77,8 +77,8 @@ public class RepositoryUpgradeHelper {
      * @param oldRow
      * @return New row
      */
-    public static List<DTCellValue< ? >> makeDataRowList(String[] oldRow) {
-        List<DTCellValue< ? >> row = new ArrayList<DTCellValue< ? >>();
+    public static List<DTCellValue> makeDataRowList(String[] oldRow) {
+        List<DTCellValue> row = new ArrayList<DTCellValue>();
         for ( int iCol = 0; iCol < oldRow.length; iCol++ ) {
 
             //The original model was purely String based. Conversion to typed fields
@@ -86,8 +86,8 @@ public class RepositoryUpgradeHelper {
             //should occur here but that requires reference to a SuggestionCompletionEngine
             //which requires RepositoryServices. I did not want to make a dependency between
             //common IDE classes and the Repository
-            DTCellValue<String> dcv = new DTCellValue<String>();
-            dcv.setValue( oldRow[iCol] );
+            DTCellValue dcv = new DTCellValue();
+            dcv.setStringValue( oldRow[iCol] );
             row.add( dcv );
         }
         return row;

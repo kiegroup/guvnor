@@ -2866,16 +2866,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         repositoryPackageService.createPackage( "testBuildAssetMultipleFunctionsCallingEachOther",
                                                 "" );
-<<<<<<< HEAD
         repositoryCategoryService.createCategory( "/",
                                                   "funkytest",
                                                   "" );
-=======
-        impl.createCategory( "/",
-                             "funkytest",
-                             "" );
->>>>>>> dtable: otherwise: Made GuidedDecisionTable type-safe 
-
         String uuidt1 = impl.createNewRule( "t1",
                                             "",
                                             "funkytest",
@@ -5445,17 +5438,11 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testGetHistoryPackageSource() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
-<<<<<<< HEAD
         //Package version 1(Initial version)
         PackageItem pkg = impl.getRulesRepository().createPackage( "testGetHistoryPackageSource",
                                                                    "" );
 
         //Package version 2	
-=======
-        PackageItem pkg = impl.getRulesRepository().createPackage( "testGetHistoryPackageSource",
-                                                                   "" );
-
->>>>>>> dtable: otherwise: Made GuidedDecisionTable type-safe 
         DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer1",
                                          pkg );
 
@@ -5489,15 +5476,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         rule3.updateContent( "declare Album1\n genre1: String \n end" );
         rule3.checkin( "version 1" );
 
-<<<<<<< HEAD
         pkg.checkin( "version2" );
 
         //Package version 3
-=======
-        //impl.buildPackage(pkg.getUUID(), true);		
-        pkg.checkin( "version1" );
-
->>>>>>> dtable: otherwise: Made GuidedDecisionTable type-safe 
         DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer2",
                                          pkg );
         func.updateContent( "function void foo() { System.out.println(version 2); }" );
@@ -5511,11 +5492,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         rule3.updateContent( "declare Album2\n genre2: String \n end" );
         rule3.checkin( "version 2" );
         //impl.buildPackage(pkg.getUUID(), true);
-<<<<<<< HEAD
         pkg.checkin( "version3" );
-=======
-        pkg.checkin( "version2" );
->>>>>>> dtable: otherwise: Made GuidedDecisionTable type-safe 
 
         //Verify the latest version
         PackageItem item = impl.getRulesRepository().loadPackage( "testGetHistoryPackageSource" );
@@ -5525,11 +5502,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         System.out.println( drl );
 
-<<<<<<< HEAD
         assertEquals( "version3",
-=======
-        assertEquals( "version2",
->>>>>>> dtable: otherwise: Made GuidedDecisionTable type-safe 
                       item.getCheckinComment() );
         assertTrue( drl.indexOf( "global com.billasurf.Person customer2" ) >= 0 );
         assertTrue( drl.indexOf( "System.out.println(version 2)" ) >= 0 );
@@ -5539,11 +5512,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( drl.indexOf( "declare Album2" ) >= 0 );
         //assertEquals(12, item.getCompiledPackageBytes().length);
 
-<<<<<<< HEAD
         //Verify version 2
-=======
-        //Verify the version 2
->>>>>>> dtable: otherwise: Made GuidedDecisionTable type-safe 
         PackageItem item2 = impl.getRulesRepository().loadPackage( "testGetHistoryPackageSource",
                                                                    2 );
         ContentPackageAssembler asm2 = new ContentPackageAssembler( item2,
@@ -5552,11 +5521,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         System.out.println( drl2 );
 
-<<<<<<< HEAD
         assertEquals( "version2",
-=======
-        assertEquals( "version1",
->>>>>>> dtable: otherwise: Made GuidedDecisionTable type-safe 
                       item2.getCheckinComment() );
         assertTrue( drl2.indexOf( "global com.billasurf.Person customer1" ) >= 0 );
         assertTrue( drl2.indexOf( "System.out.println(version 1)" ) >= 0 );
@@ -5564,7 +5529,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( drl2.indexOf( "rule 'foo' when Goo1() then end" ) >= 0 );
         assertTrue( drl2.indexOf( "foo" ) >= 0 );
         assertTrue( drl2.indexOf( "declare Album1" ) >= 0 );
-<<<<<<< HEAD
     }
 
     @Test
@@ -5619,8 +5583,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       item.getCheckinComment() );
         assertEquals( "func?version=1",
                       item.getDependencies()[0] );
-=======
->>>>>>> dtable: otherwise: Made GuidedDecisionTable type-safe 
     }
 
 }

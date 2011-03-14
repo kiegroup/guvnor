@@ -102,7 +102,8 @@ public class TemplateDataTableWidget extends Composite
      */
     public void appendRow() {
         DynamicDataRow row = makeNewRow();
-        widget.insertRowBefore( null, row );
+        widget.insertRowBefore( null,
+                                row );
     }
 
     /**
@@ -196,8 +197,7 @@ public class TemplateDataTableWidget extends Composite
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( column,
                                                                                       iRow,
-                                                                                      colIndex,
-                                                                                      null );
+                                                                                      colIndex );
             columnData.add( cv );
         }
         return columnData;
@@ -211,8 +211,7 @@ public class TemplateDataTableWidget extends Composite
             TemplateDataColumn col = columns.get( iCol ).getModelColumn();
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( col,
                                                                                       0,
-                                                                                      iCol,
-                                                                                      null );
+                                                                                      iCol );
             row.add( cv );
         }
         return row;
@@ -246,8 +245,8 @@ public class TemplateDataTableWidget extends Composite
             for ( int iCol = 0; iCol < columnCount; iCol++ ) {
                 CellValue< ? > cv = row.get( iCol );
                 DynamicColumn<TemplateDataColumn> column = columns.get( iCol );
-                String serialisedValue = cellValueFactory.serialiseValue( column.getModelColumn(),
-                                                                          cv );
+                String serialisedValue = cellValueFactory.convertValueToString( column.getModelColumn(),
+                                                                                cv );
                 rowData[iCol] = serialisedValue;
             }
             model.addRow( rowData );
@@ -301,7 +300,8 @@ public class TemplateDataTableWidget extends Composite
                                                                                           initialValue );
                 row.add( cv );
             }
-            widget.insertRowBefore( null, row );
+            widget.insertRowBefore( null,
+                                    row );
         }
 
         // Ensure cells are indexed correctly for start-up data

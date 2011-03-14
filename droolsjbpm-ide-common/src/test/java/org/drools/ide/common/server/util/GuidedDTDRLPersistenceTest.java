@@ -331,10 +331,10 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         assertEquals( "Row 42 XXX",
                       p.getName( "XXX",
-                                 "42" ) );
+                                 42 ) );
         assertEquals( "Row 42 YYY",
                       p.getName( "YYY",
-                                 "42" ) );
+                                 42 ) );
     }
 
     @Test

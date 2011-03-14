@@ -16,6 +16,8 @@
 
 package org.drools.ide.common.server.util;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -40,9 +42,9 @@ import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 
 /**
  * This takes care of converting GuidedDT object to DRL (via the RuleModel).
@@ -57,12 +59,12 @@ public class GuidedDTDRLPersistence {
 
         StringBuilder sb = new StringBuilder();
 
-        List<List<DTCellValue< ? >>> data = dt.getData();
+        List<List<DTCellValue>> data = dt.getData();
 
         for ( int i = 0; i < data.size(); i++ ) {
-            List<DTCellValue< ? >> row = data.get( i );
-            String num = row.get( 0 ).getValue().toString();
-            String desc = row.get( 1 ).getValue().toString();
+            List<DTCellValue> row = data.get( i );
+            BigDecimal num = row.get( 0 ).getNumericValue();
+            String desc = row.get( 1 ).getStringValue();
 
             RuleModel rm = new RuleModel();
             rm.name = getName( dt.getTableName(),
@@ -106,18 +108,15 @@ public class GuidedDTDRLPersistence {
 
     void doActions(int condAndAttrs,
                    List<ActionCol> actionCols,
-                   List<DTCellValue< ? >> row,
+                   List<DTCellValue> row,
                    RuleModel rm) {
         List<LabelledAction> actions = new ArrayList<LabelledAction>();
         for ( int i = 0; i < actionCols.size(); i++ ) {
             ActionCol c = actionCols.get( i );
             int index = i + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + condAndAttrs;
 
-            Object cv = row.get( index ).getValue();
-            String cell = null;
-            if ( cv != null ) {
-                cell = cv.toString();
-            }
+            String cell = convertDTCellValueToString( row.get( index ) );
+
             if ( !validCell( cell ) ) {
                 cell = c.getDefaultValue();
             }
@@ -203,7 +202,7 @@ public class GuidedDTDRLPersistence {
 
     void doConditions(int numOfAttributesAndMeta,
                       List<ConditionCol> conditionCols,
-                      List<DTCellValue< ? >> row,
+                      List<DTCellValue> row,
                       RuleModel rm) {
 
         List<FactPattern> patterns = new ArrayList<FactPattern>();
@@ -212,11 +211,8 @@ public class GuidedDTDRLPersistence {
             ConditionCol c = (ConditionCol) conditionCols.get( i );
             int index = i + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + numOfAttributesAndMeta;
 
-            Object cv = row.get( index ).getValue();
-            String cell = null;
-            if ( cv != null ) {
-                cell = cv.toString();
-            }
+            String cell = convertDTCellValueToString( row.get( index ) );
+
             if ( !validCell( cell ) ) {
                 cell = c.getDefaultValue();
             }
@@ -317,18 +313,14 @@ public class GuidedDTDRLPersistence {
 
     void doAttribs(int numOfMeta,
                    List<AttributeCol> attributeCols,
-                   List<DTCellValue< ? >> row,
+                   List<DTCellValue> row,
                    RuleModel rm) {
         List<RuleAttribute> attribs = new ArrayList<RuleAttribute>();
         for ( int j = 0; j < attributeCols.size(); j++ ) {
             AttributeCol at = attributeCols.get( j );
             int index = j + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + numOfMeta;
 
-            Object cv = row.get( index ).getValue();
-            String cell = null;
-            if ( cv != null ) {
-                cell = cv.toString();
-            }
+            String cell = convertDTCellValueToString( row.get( index ) );
 
             if ( validCell( cell ) ) {
 
@@ -350,7 +342,7 @@ public class GuidedDTDRLPersistence {
     }
 
     void doMetadata(List<MetadataCol> metadataCols,
-                    List<DTCellValue< ? >> row,
+                    List<DTCellValue> row,
                     RuleModel rm) {
 
         // setup temp list
@@ -360,11 +352,7 @@ public class GuidedDTDRLPersistence {
             MetadataCol meta = metadataCols.get( j );
             int index = j + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS;
 
-            Object cv = row.get( index ).getValue();
-            String cell = null;
-            if ( cv != null ) {
-                cell = cv.toString();
-            }
+            String cell = convertDTCellValueToString( row.get( index ) );
 
             if ( validCell( cell ) ) {
                 metadataList.add( new RuleMetadata( meta.getMetadata(),
@@ -377,8 +365,8 @@ public class GuidedDTDRLPersistence {
     }
 
     String getName(String tableName,
-                   String num) {
-        return "Row " + num + " " + tableName;
+                   Number num) {
+        return "Row " + num.longValue() + " " + tableName;
     }
 
     boolean validCell(String c) {
@@ -388,6 +376,24 @@ public class GuidedDTDRLPersistence {
     private class LabelledAction {
         String  boundName;
         IAction action;
+    }
+
+    private String convertDTCellValueToString(DTCellValue dcv) {
+        switch ( dcv.getDataType() ) {
+            case BOOLEAN :
+                return dcv.getBooleanValue().toString();
+            case DATE :
+                SimpleDateFormat sdf = new SimpleDateFormat( "dd-mmm-yyyy" );
+                return sdf.format( dcv.getDateValue() );
+            case DIALECT :
+                return dcv.getStringValue();
+            case NUMERIC :
+                return dcv.getNumericValue().toPlainString();
+            case ROW_NUMBER :
+                return dcv.getNumericValue().toPlainString();
+            default :
+                return dcv.getStringValue();
+        }
     }
 
 }
