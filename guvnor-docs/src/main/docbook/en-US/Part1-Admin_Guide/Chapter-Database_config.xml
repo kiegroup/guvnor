@@ -3,7 +3,7 @@
 <!ENTITY % BOOK_ENTITIES SYSTEM "../Drools_Guvnor.ent">
 %BOOK_ENTITIES;
 ]>
-<chapter xml:base="../">
+<chapter xml:base="../" id="chap-database_configuration">
          
    <title>Database configuration</title>
 

@@ -22,5 +22,6 @@
   <xi:include href="Chapter-Security_authentication_access.xml"         xmlns:xi="http://www.w3.org/2001/XInclude"/>
   <xi:include href="Chapter-Fine_grained_permissions_and_security.xml"  xmlns:xi="http://www.w3.org/2001/XInclude"/>
   <xi:include href="Chapter-Data_Management.xml"                        xmlns:xi="http://www.w3.org/2001/XInclude"/>
+  <xi:include href="Chapter-Architecture.xml"                           xmlns:xi="http://www.w3.org/2001/XInclude"/>
   
 </part>
