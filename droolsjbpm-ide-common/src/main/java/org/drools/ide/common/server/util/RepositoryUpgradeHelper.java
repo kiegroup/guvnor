@@ -15,6 +15,7 @@
  */
 package org.drools.ide.common.server.util;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,14 +73,19 @@ public class RepositoryUpgradeHelper {
 
     /**
      * Convert a single dimension array of Strings to a List with type-safe
-     * entries
+     * entries. The first entry is converted into a numerical row number
      * 
      * @param oldRow
      * @return New row
      */
     public static List<DTCellValue> makeDataRowList(String[] oldRow) {
         List<DTCellValue> row = new ArrayList<DTCellValue>();
-        for ( int iCol = 0; iCol < oldRow.length; iCol++ ) {
+
+        DTCellValue rowDcv = new DTCellValue();
+        rowDcv.setNumericValue( new BigDecimal( oldRow[0] ) );
+        row.add( rowDcv );
+
+        for ( int iCol = 1; iCol < oldRow.length; iCol++ ) {
 
             //The original model was purely String based. Conversion to typed fields
             //occurs when the Model is re-saved in Guvnor. Ideally the conversion 
