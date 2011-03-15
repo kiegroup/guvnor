@@ -25,16 +25,30 @@ import com.google.gwt.user.client.ui.Image;
  * Really just an image, but tacks on the image-Button style name.
  */
 public class ImageButton extends Image {
-
+	ImageResource img;
+	ImageResource disabledImg;
+	
     public @UiConstructor
     ImageButton(ImageResource img) {
         super( img );
+        this.img = img;
+        this.disabledImg = img;
+        setStyleName( "image-Button" );
+    }
+    
+    public
+    ImageButton(ImageResource img, ImageResource disabledImg) {
+        super( img );
+        this.img = img;
+        this.disabledImg = disabledImg;
         setStyleName( "image-Button" );
     }
 
     public ImageButton(ImageResource img,
                        String tooltip) {
         super( img );
+        this.img = img;
+        this.disabledImg = img;
         setStyleName( "image-Button" );
         setTitle( tooltip );
     }
@@ -46,5 +60,12 @@ public class ImageButton extends Image {
               tooltip );
         this.addClickHandler( action );
     }
-
+    
+    public void setEnabled(boolean enabled) {
+    	if(enabled) {
+    		super.setResource(img);
+    	} else {
+     	    super.setResource(disabledImg);   		
+    	}
+    }
 }

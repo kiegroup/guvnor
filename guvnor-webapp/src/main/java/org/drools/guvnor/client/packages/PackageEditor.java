@@ -77,7 +77,7 @@ public class PackageEditor extends PrettyFormLayout {
 
     private PackageConfigData   conf;
     ActionToolbar actionToolBar;
-    private boolean historicalReadOnly = false;
+    private boolean isHistoricalReadOnly = false;
     private Command             close;
     private Command             refreshPackageList;
     private HorizontalPanel packageConfigurationValidationResult = new HorizontalPanel();;
@@ -93,7 +93,7 @@ public class PackageEditor extends PrettyFormLayout {
 			Command close,
 			Command refreshPackageList) {
 		this.conf = data;
-		this.historicalReadOnly = historicalReadOnly;
+		this.isHistoricalReadOnly = historicalReadOnly;
 		this.close = close;
 		this.refreshPackageList = refreshPackageList;
 
@@ -108,7 +108,7 @@ public class PackageEditor extends PrettyFormLayout {
         actionToolBar = new ActionToolbar(getConfiguration(), conf.state);
         addRow( actionToolBar );
         endSection();        
-		if (historicalReadOnly) {
+		if (isHistoricalReadOnly) {
 			actionToolBar.setVisible(false);
 		} else {
 			actionToolBar.setSaveChangesCommand(new Command() {
@@ -163,12 +163,12 @@ public class PackageEditor extends PrettyFormLayout {
                       header() );
         addAttribute( constants.DescriptionColon(),
                       description() );
-        addAttribute( constants.CategoryRules(),
-                      getAddCatRules() );
-        addAttribute( "",
-                      getShowCatRules() );
+		if (!isHistoricalReadOnly) {
+			addAttribute(constants.CategoryRules(), getAddCatRules());
+		}
+        addAttribute( "", getShowCatRules() );
 
-        if ( !conf.isSnapshot && !historicalReadOnly) {
+        if ( !conf.isSnapshot && !isHistoricalReadOnly) {
             Button save = new Button( constants.ValidateConfiguration() );
             save.addClickHandler( new ClickHandler() {
 
@@ -183,10 +183,10 @@ public class PackageEditor extends PrettyFormLayout {
         endSection();
 
         startSection(constants.BuildAndValidate());
-        addRow(new DependencyWidget(this.conf, historicalReadOnly));
+        addRow(new DependencyWidget(this.conf, isHistoricalReadOnly));
         endSection();
         
-        if ( !conf.isSnapshot && !historicalReadOnly) {
+        if ( !conf.isSnapshot && !isHistoricalReadOnly) {
             startSection( constants.BuildAndValidate() );
             addRow( new PackageBuilderWidget( this.conf ) );
             endSection();
@@ -272,7 +272,7 @@ public class PackageEditor extends PrettyFormLayout {
                                                                         -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, callBack);
         addAttribute( constants.CurrentVersionNumber(),
                 getVersionNumberLabel() );
-		if (!historicalReadOnly) {
+		if (!isHistoricalReadOnly) {
 			VersionBrowser vb = new VersionBrowser(conf.uuid, true, null);
 			addAttribute("", vb);
 		}
@@ -605,9 +605,7 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private Widget header() {
-
-        return new PackageHeaderWidget( this.conf );
-
+        return new PackageHeaderWidget( this.conf, isHistoricalReadOnly );
     }
 
     private Widget description() {
@@ -621,6 +619,9 @@ public class PackageEditor extends PrettyFormLayout {
             }
         } );
         box.setWidth( "400px" );
+        if(isHistoricalReadOnly) {
+        	box.setEnabled(false);
+        }
 
         return box;
     }
