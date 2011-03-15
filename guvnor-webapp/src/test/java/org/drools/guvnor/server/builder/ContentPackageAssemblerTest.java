@@ -370,7 +370,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         assertTrue( drl.indexOf( "genre2" ) == -1 );
         assertTrue( drl.indexOf( "genre3" ) > -1 );
         
-        pkg.updateDependency("/drools:repository/drools:package_area/testSimplePackageWithDeclaredTypesUsingDependency/assets/model?version=2");
+        pkg.updateDependency("model?version=2");
         pkg.checkin("Update dependency");
         
         ContentPackageAssembler asm2 = new ContentPackageAssembler( pkg );
@@ -765,11 +765,11 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         repo.save();
         
         //NOTE: dont use version=0. Version 0 is the root node. 
-        pkg.updateDependency("/drools:repository/drools:package_area/testShowSourceUsingDependency/assets/func?version=1");
-        pkg.updateDependency("/drools:repository/drools:package_area/testShowSourceUsingDependency/assets/myDSL?version=1");
-        pkg.updateDependency("/drools:repository/drools:package_area/testShowSourceUsingDependency/assets/rule1?version=1");
-        pkg.updateDependency("/drools:repository/drools:package_area/testShowSourceUsingDependency/assets/rule2?version=1");
-        pkg.updateDependency("/drools:repository/drools:package_area/testShowSourceUsingDependency/assets/model1?version=1");
+        pkg.updateDependency("func?version=1");
+        pkg.updateDependency("myDSL?version=1");
+        pkg.updateDependency("rule1?version=1");
+        pkg.updateDependency("rule2?version=1");
+        pkg.updateDependency("model1?version=1");
         pkg.checkin("Update dependency");
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg,

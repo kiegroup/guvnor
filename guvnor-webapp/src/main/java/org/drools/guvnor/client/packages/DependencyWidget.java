@@ -106,15 +106,15 @@ public class DependencyWidget extends Composite {
     private Widget dependencyTip() {
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( new HTML( "<small><i>"
-                          + "Edit dependency version to build a package against specific versions of Assets"
+                          + "This shows exact version numbers of assets that this package contains."
                           + "</i></small>" ) );
         InfoPopup pop = new InfoPopup( "Edit Dependency",
-                "Edit dependency version to build a package against specific versions of Assets" );
+                "Edit dependency version to build a package against specific versions of assets" );
         hp.add( pop );
         return hp;
     }
     
-    public static String[] parseDependencyPath(String dependencyPath) {
+    public static String[] decodeDependencyPath(String dependencyPath) {
     	if(dependencyPath.indexOf("?version=") >=0) {
     		return dependencyPath.split("\\?version=");
     	} else {
@@ -125,21 +125,17 @@ public class DependencyWidget extends Composite {
     public static String encodeDependencyPath(String dependencyPath, String dependencyVersion) {
     	return dependencyPath + "?version=" + dependencyVersion;
     }
-    
-    public static String parseDependencyAssetName(String dependencyPath) {
-    	return dependencyPath.substring(dependencyPath.lastIndexOf("/")+1);
-    }
-    
+       
     private void showEditor(final String dependencyPath) {
 		final FormStylePopup editor = new FormStylePopup(images.management(), "Edit Dependency");
 /*		editor.addRow(new HTML("<i>" + "Choose the version you want to depend on"
 				+ "</i>"));
 */
-		editor.addAttribute("Dependency Path: ", new Label(parseDependencyPath(dependencyPath)[0]));
+		editor.addAttribute("Dependency Path: ", new Label(decodeDependencyPath(dependencyPath)[0]));
 		final VersionChooser versionChoose = new VersionChooser( 
-				parseDependencyPath(dependencyPath)[1],
+				decodeDependencyPath(dependencyPath)[1],
 				conf.uuid,
-				parseDependencyAssetName(parseDependencyPath(dependencyPath)[0]),
+				decodeDependencyPath(dependencyPath)[0],
                 new Command() {
                     public void execute() {
                         table.refresh();                        
@@ -157,7 +153,7 @@ public class DependencyWidget extends Composite {
                     RepositoryServiceFactory.getService().updateDependency(
                             conf.uuid,
                             encodeDependencyPath(DependencyWidget
-                                    .parseDependencyPath(dependencyPath)[0],
+                                    .decodeDependencyPath(dependencyPath)[0],
                                     selectedVersion),
                             new GenericCallback<Void>() {
                                 public void onSuccess(Void v) {

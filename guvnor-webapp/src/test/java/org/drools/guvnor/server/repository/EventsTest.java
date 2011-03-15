@@ -20,13 +20,11 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class EventsTest extends GuvnorTestBase {
@@ -53,7 +51,7 @@ public class EventsTest extends GuvnorTestBase {
         asset = pkg.addAsset( "testLoadSaveEventDT",
                               "" );
         asset.updateFormat( AssetFormats.DECISION_TABLE_GUIDED );
-        GuidedDecisionTable gt = new GuidedDecisionTable();
+        TypeSafeGuidedDecisionTable gt = new TypeSafeGuidedDecisionTable();
         asset.updateContent( GuidedDTXMLPersistence.getInstance().marshal( gt ) );
         asset.checkin( "" );
     }

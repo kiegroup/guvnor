@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt.DTDataTypes;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 
@@ -27,160 +28,11 @@ import com.google.gwt.i18n.client.DateTimeFormat;
  */
 public abstract class AbstractCellValueFactory<T> {
 
-    // Recognised data-types
-    public enum DATA_TYPES {
-        STRING() {
-            @Override
-            public CellValue<String> getNewCellValue(int iRow,
-                                                     int iCol,
-                                                     String initialValue) {
-                CellValue<String> cv = new CellValue<String>( initialValue,
-                                                              iRow,
-                                                              iCol );
-                return cv;
-            }
-
-            @Override
-            public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? null : (String) value.getValue());
-            }
-
-        },
-        NUMERIC() {
-            @Override
-            public CellValue<BigDecimal> getNewCellValue(int iRow,
-                                                         int iCol,
-                                                         String initialValue) {
-                CellValue<BigDecimal> cv = new CellValue<BigDecimal>( null,
-                                                                      iRow,
-                                                                      iCol );
-                if ( initialValue != null ) {
-                    try {
-                        cv.setValue( new BigDecimal( initialValue ) );
-                    } catch ( Exception e ) {
-                    }
-                }
-                return cv;
-            }
-
-            @Override
-            public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? null : ((BigDecimal) value.getValue()).toPlainString());
-            }
-
-        },
-        ROW_NUMBER() {
-            @Override
-            public CellValue<BigDecimal> getNewCellValue(int iRow,
-                                                         int iCol,
-                                                         String initialValue) {
-                // Rows are 0-based internally but 1-based in the UI
-                CellValue<BigDecimal> cv = new CellValue<BigDecimal>( new BigDecimal( iRow + 1 ),
-                                                                      iRow,
-                                                                      iCol );
-                return cv;
-            }
-
-            @Override
-            public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? null : ((BigDecimal) value.getValue()).toPlainString());
-            }
-
-        },
-        DATE() {
-            @Override
-            @SuppressWarnings("deprecation")
-            public CellValue<Date> getNewCellValue(int iRow,
-                                                   int iCol,
-                                                   String initialValue) {
-                CellValue<Date> cv = new CellValue<Date>( null,
-                                                          iRow,
-                                                          iCol );
-
-                if ( initialValue != null ) {
-                    Date d;
-                    try {
-                        d = DATE_FORMAT.parse( initialValue );
-                    } catch ( IllegalArgumentException iae ) {
-                        Date nd = new Date();
-                        int year = nd.getYear();
-                        int month = nd.getMonth();
-                        int date = nd.getDate();
-                        d = new Date( year,
-                                        month,
-                                        date );
-                    }
-                    cv.setValue( d );
-                }
-                return cv;
-            }
-
-            @Override
-            public String serialiseValue(CellValue< ? > value) {
-                String result = null;
-                if ( value.getValue() != null ) {
-                    result = DATE_FORMAT.format( (Date) value.getValue() );
-                }
-                return result;
-            }
-
-        },
-        BOOLEAN() {
-            @Override
-            public CellValue<Boolean> getNewCellValue(int iRow,
-                                                      int iCol,
-                                                      String initialValue) {
-                CellValue<Boolean> cv = new CellValue<Boolean>( Boolean.FALSE,
-                                                                iRow,
-                                                                iCol );
-                if ( initialValue != null ) {
-                    try {
-                        cv.setValue( Boolean.valueOf( initialValue ) );
-                    } catch ( Exception e ) {
-                    }
-                }
-                return cv;
-            }
-
-            @Override
-            public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? null : ((Boolean) value.getValue()).toString());
-            }
-
-        },
-        DIALECT() {
-            @Override
-            public CellValue<String> getNewCellValue(int iRow,
-                                                     int iCol,
-                                                     String initialValue) {
-                CellValue<String> cv = new CellValue<String>( "java",
-                                                              iRow,
-                                                              iCol );
-                if ( initialValue != null ) {
-                    cv.setValue( initialValue );
-                }
-                return cv;
-            }
-
-            @Override
-            public String serialiseValue(CellValue< ? > value) {
-                return (value.getValue() == null ? null : (String) value.getValue());
-            }
-
-        };
-        public abstract CellValue< ? > getNewCellValue(int iRow,
-                                                       int iCol,
-                                                       String initialValue);
-
-        public abstract String serialiseValue(CellValue< ? > value);
-
-    }
-
     // Dates are serialised and de-serialised to locale-independent format
-    private static final DateTimeFormat  DATE_FORMAT = DateTimeFormat.getFormat( "dd-MMM-yyyy" );
+    protected static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat( "dd-MMM-yyyy" );
 
     // SuggestionCompletionEngine to aid data-type resolution etc
-    protected SuggestionCompletionEngine sce;
+    protected SuggestionCompletionEngine  sce;
 
     public AbstractCellValueFactory(SuggestionCompletionEngine sce) {
         if ( sce == null ) {
@@ -190,7 +42,55 @@ public abstract class AbstractCellValueFactory<T> {
     }
 
     /**
-     * Make a CellValue applicable for the column
+     * Make an empty CellValue applicable for the column
+     * 
+     * @param column
+     *            The model column
+     * @param iRow
+     *            Row coordinate for initialisation
+     * @param iCol
+     *            Column coordinate for initialisation
+     * @return A CellValue
+     */
+    public CellValue< ? extends Comparable< ? >> getCellValue(T column,
+                                                              int iRow,
+                                                              int iCol) {
+        DTDataTypes dataType = getDataType( column );
+        CellValue< ? extends Comparable< ? >> cell = null;
+
+        switch ( dataType ) {
+            case BOOLEAN :
+                cell = makeNewBooleanCellValue( iRow,
+                                                iCol );
+                break;
+            case DATE :
+                cell = makeNewDateCellValue( iRow,
+                                             iCol );
+                break;
+            case DIALECT :
+                cell = makeNewDialectCellValue( iRow,
+                                                iCol );
+                break;
+            case NUMERIC :
+                cell = makeNewNumericCellValue( iRow,
+                                                iCol );
+                break;
+            case ROW_NUMBER :
+                cell = makeNewRowNumberCellValue( iRow,
+                                                  iCol );
+                break;
+            default :
+                cell = makeNewStringCellValue( iRow,
+                                               iCol );
+        }
+
+        return cell;
+    }
+
+    /**
+     * Make a CellValue applicable for the column. This is used by legacy UI
+     * Models (Template Data Editor and legacy Guided Decision Tables) that
+     * store values in a two-dimensional array of Strings.
      * 
      * @param column
      *            The model column
@@ -202,36 +102,180 @@ public abstract class AbstractCellValueFactory<T> {
      *            The initial value of the cell
      * @return A CellValue
      */
+    @SuppressWarnings("deprecation")
     public CellValue< ? extends Comparable< ? >> getCellValue(
                                                               T column,
                                                               int iRow,
                                                               int iCol,
                                                               String initialValue) {
-        DATA_TYPES dataType = getDataType( column );
-        CellValue< ? extends Comparable< ? >> cell = dataType.getNewCellValue(
-                                                                               iRow,
-                                                                               iCol,
-                                                                               initialValue );
+        DTDataTypes dataType = getDataType( column );
+        CellValue< ? extends Comparable< ? >> cell = null;
+
+        switch ( dataType ) {
+            case BOOLEAN :
+                Boolean b = Boolean.FALSE;
+                try {
+                    b = Boolean.valueOf( initialValue );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewBooleanCellValue( iRow,
+                                                iCol,
+                                                b );
+                break;
+            case DATE :
+                Date d = null;
+                Date nd = new Date();
+                int year = nd.getYear();
+                int month = nd.getMonth();
+                int date = nd.getDate();
+                d = new Date( year,
+                              month,
+                              date );
+                try {
+                    d = DATE_FORMAT.parse( initialValue );
+                } catch ( IllegalArgumentException iae ) {
+                }
+                cell = makeNewDateCellValue( iRow,
+                                             iCol,
+                                             d );
+                break;
+            case DIALECT :
+                String s = null;
+                if ( initialValue.equals( "java" ) || initialValue.equals( "mvel" ) ) {
+                    s = initialValue;
+                }
+                cell = makeNewDialectCellValue( iRow,
+                                                iCol,
+                                                s );
+                break;
+            case NUMERIC :
+                BigDecimal bd = null;
+                try {
+                    bd = new BigDecimal( initialValue );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewNumericCellValue( iRow,
+                                                iCol,
+                                                bd );
+                break;
+            case ROW_NUMBER :
+                cell = makeNewRowNumberCellValue( iRow,
+                                                  iCol );
+                break;
+            default :
+                cell = makeNewStringCellValue( iRow,
+                                               iCol,
+                                               initialValue );
+        }
+
         return cell;
     }
 
-    /**
-     * Serialise value to a String
-     * 
-     * @param column
-     *            The model column
-     * @param cv
-     *            CellValue for which value will be serialised
-     * @return String representation of value
-     */
-    public String serialiseValue(T column,
-                                 CellValue< ? > cv) {
-        DATA_TYPES dataType = getDataType( column );
-        return dataType.serialiseValue( cv );
+    // Get the Data Type corresponding to a given column
+    protected abstract DTDataTypes getDataType(T column);
 
+    protected CellValue<Boolean> makeNewBooleanCellValue(int iRow,
+                                                         int iCol) {
+        CellValue<Boolean> cv = new CellValue<Boolean>( Boolean.FALSE,
+                                                        iRow,
+                                                        iCol );
+        return cv;
     }
 
-    // Get the Data Type corresponding to a given column
-    protected abstract DATA_TYPES getDataType(T column);
+    protected CellValue<Boolean> makeNewBooleanCellValue(int iRow,
+                                                         int iCol,
+                                                         Boolean initialValue) {
+        CellValue<Boolean> cv = makeNewBooleanCellValue( iRow,
+                                                         iCol );
+        if ( initialValue != null ) {
+            cv.setValue( initialValue );
+        }
+        return cv;
+    }
+
+    protected CellValue<Date> makeNewDateCellValue(int iRow,
+                                                   int iCol) {
+        CellValue<Date> cv = new CellValue<Date>( null,
+                                                  iRow,
+                                                  iCol );
+        return cv;
+    }
+
+    protected CellValue<Date> makeNewDateCellValue(int iRow,
+                                                   int iCol,
+                                                   Date initialValue) {
+        CellValue<Date> cv = makeNewDateCellValue( iRow,
+                                                   iCol );
+        if ( initialValue != null ) {
+            cv.setValue( initialValue );
+        }
+        return cv;
+    }
+
+    protected CellValue<String> makeNewDialectCellValue(int iRow,
+                                                        int iCol) {
+        CellValue<String> cv = new CellValue<String>( "java",
+                                                      iRow,
+                                                      iCol );
+        return cv;
+    }
+
+    protected CellValue<String> makeNewDialectCellValue(int iRow,
+                                                        int iCol,
+                                                        String initialValue) {
+        CellValue<String> cv = makeNewDialectCellValue( iRow,
+                                                        iCol );
+        if ( initialValue != null ) {
+            cv.setValue( initialValue );
+        }
+        return cv;
+    }
+
+    protected CellValue<BigDecimal> makeNewNumericCellValue(int iRow,
+                                                            int iCol) {
+        CellValue<BigDecimal> cv = new CellValue<BigDecimal>( null,
+                                                              iRow,
+                                                              iCol );
+        return cv;
+    }
+
+    protected CellValue<BigDecimal> makeNewNumericCellValue(int iRow,
+                                                            int iCol,
+                                                            BigDecimal initialValue) {
+        CellValue<BigDecimal> cv = makeNewNumericCellValue( iRow,
+                                                            iCol );
+        if ( initialValue != null ) {
+            cv.setValue( (BigDecimal) initialValue );
+        }
+        return cv;
+    }
+
+    protected CellValue<BigDecimal> makeNewRowNumberCellValue(int iRow,
+                                                              int iCol) {
+        // Rows are 0-based internally but 1-based in the UI
+        CellValue<BigDecimal> cv = new CellValue<BigDecimal>( new BigDecimal( iRow + 1 ),
+                                                              iRow,
+                                                              iCol );
+        return cv;
+    }
+
+    protected CellValue<String> makeNewStringCellValue(int iRow,
+                                                       int iCol) {
+        CellValue<String> cv = new CellValue<String>( null,
+                                                      iRow,
+                                                      iCol );
+        return cv;
+    }
+
+    protected CellValue<String> makeNewStringCellValue(int iRow,
+                                                       int iCol,
+                                                       Object initialValue) {
+        CellValue<String> cv = makeNewStringCellValue( iRow,
+                                                       iCol );
+        if ( initialValue != null ) {
+            cv.setValue( initialValue.toString() );
+        }
+        return cv;
+    }
 
 }

@@ -104,18 +104,15 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                 // events.
                 switch ( rangeDirection ) {
                     case UP :
-                        eventPhysicalCell = getSelectedCells().first();
+                        eventPhysicalCell = selections.first();
                         break;
 
                     case DOWN :
-                        eventPhysicalCell = getSelectedCells().last();
+                        eventPhysicalCell = selections.last();
                         break;
                 }
                 eventPhysicalCoordinate = eventPhysicalCell.getCoordinate();
-                eventTableCell = tbody.getRows()
-                            .getItem( eventPhysicalCell.getHtmlCoordinate().getRow() )
-                            .getCells()
-                            .getItem( eventPhysicalCell.getHtmlCoordinate().getCol() );
+                eventTableCell = tbody.getRows().getItem( eventPhysicalCell.getHtmlCoordinate().getRow() ).getCells().getItem( eventPhysicalCell.getHtmlCoordinate().getCol() );
             }
         }
 
@@ -124,8 +121,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
         // Implementations of AbstractCell aren't forced to initialise consumed events
         Set<String> consumedEvents = cellWidget.getConsumedEvents();
-        if ( consumedEvents != null
-             && consumedEvents.contains( eventType ) ) {
+        if ( consumedEvents != null && consumedEvents.contains( eventType ) ) {
             Context context = new Context( eventPhysicalCoordinate.getRow(),
                                            eventPhysicalCoordinate.getCol(),
                                            eventPhysicalCoordinate );

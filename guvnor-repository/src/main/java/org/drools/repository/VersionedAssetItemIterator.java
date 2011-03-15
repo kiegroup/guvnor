@@ -19,7 +19,12 @@ package org.drools.repository;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.ValueFormatException;
 
 
 /**
@@ -32,8 +37,8 @@ import javax.jcr.NodeIterator;
  */
 public class VersionedAssetItemIterator extends AssetItemIterator {
     Map<String, String> dependencyVersionMap = new HashMap<String, String>();
-    private boolean enableGetHistoricalVersionBasedOnDependency = false;
-    
+    private boolean returnAssetsWithVersionSpecifiedByDependencies = false;
+           
     public VersionedAssetItemIterator(NodeIterator nodes,
                             RulesRepository repo,
                             String[] dependencies) {
@@ -42,38 +47,59 @@ public class VersionedAssetItemIterator extends AssetItemIterator {
         for(String dependency : dependencies) {
             String[] decodedPath = PackageItem.decodeDependencyPath(dependency);
             if(!"LATEST".equals(decodedPath[1])) {
-                dependencyVersionMap.put(PackageItem.parseDependencyAssetName(decodedPath[0]), decodedPath[1]);
+                dependencyVersionMap.put(decodedPath[0], decodedPath[1]);
             }
         }        
     }
 
     public AssetItem next() {
         AssetItem ai = super.next();
-        if(enableGetHistoricalVersionBasedOnDependency && dependencyVersionMap.get(ai.getName()) != null) {
+        if(returnAssetsWithVersionSpecifiedByDependencies && dependencyVersionMap.get(ai.getName()) != null) {
             String version = dependencyVersionMap.get(ai.getName());
-            AssetItem historicalAsset = loadAssetWithVersion(ai, version);
-            if(historicalAsset !=null) {
-                return historicalAsset;
-            }
+            return loadAssetWithVersion(ai, version);
         }
         return ai;
     }
     
-    public void setEnableGetHistoricalVersionBasedOnDependency(boolean flag) {
-        this.enableGetHistoricalVersionBasedOnDependency = flag;
+    public void setReturnAssetsWithVersionSpecifiedByDependencies(boolean flag) {
+        this.returnAssetsWithVersionSpecifiedByDependencies = flag;
     }
     
     protected AssetItem loadAssetWithVersion(final AssetItem assetItem,
             String version) {
-        AssetHistoryIterator it = assetItem.getHistory();
-
-        while (it.hasNext()) {
-            AssetItem historical = (AssetItem) it.next();
-            String versionNumber = Long.toString(historical.getVersionNumber());
-            if (version.equals(versionNumber)) {
-                return historical;
-            }
-        }
-        return null;
+    	long requiredVersion = Long.parseLong(version);
+		if (assetItem.isHistoricalVersion()) {			
+			long currentVersion = assetItem.getVersionNumber();
+			if(requiredVersion == currentVersion) {
+				return assetItem;
+			} else {
+				Node frozenNode = assetItem.getNode();
+				try {
+					Node headNode = frozenNode.getSession().getNodeByIdentifier(
+							frozenNode.getProperty("jcr:frozenUuid")
+									.getString());
+					AssetHistoryIterator historyIterator = new AssetHistoryIterator(
+							assetItem.getRulesRepository(), headNode);
+					while (historyIterator.hasNext()) {
+						AssetItem historical = historyIterator.next();
+						if (requiredVersion == historical.getVersionNumber()) {
+							return historical;
+						}
+					}
+				} catch (RepositoryException e) {
+					throw new RulesRepositoryException("Unable to load AssetItem[" + assetItem.getName() + "] with specificed version[" + version + "]", e);
+				}
+			}	
+		} else {
+			AssetHistoryIterator it = assetItem.getHistory();
+			while (it.hasNext()) {
+				AssetItem historical = (AssetItem) it.next();
+				if (requiredVersion == historical.getVersionNumber()) {
+					return historical;
+				}
+			}
+		}
+		
+		throw new RulesRepositoryException("Unable to load AssetItem[" + assetItem.getName() + "] with specificed version[" + version + "]");
     }
 }

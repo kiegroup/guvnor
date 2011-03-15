@@ -35,33 +35,6 @@ public interface RepositoryService
     RemoteService {
 
 
-    /**
-     * @param categoryPath
-     *            A "/" delimited path to a category.
-     * @param callback
-     */
-    public String[] loadChildCategories(String categoryPath);
-
-    /**
-     * Return a a 2d array/grid of results for rules.
-     * 
-     * @param A
-     *            "/" delimited path to a category.
-     *            
-     * @deprecated in favour of {@link loadRuleListForCategories(CategoryPageRequest)}
-     */
-    public TableDataResult loadRuleListForCategories(String categoryPath,
-                                                     int skip,
-                                                     int numRows,
-                                                     String tableConfig) throws SerializationException;
-
-    /**
-     * Return a list of Assets by category.
-     * 
-     * @param request
-     *            Request specific details
-     */
-    public PageResponse<CategoryPageRow> loadRuleListForCategories(CategoryPageRequest request) throws SerializationException;
 
     /**
      * Return a a 2d array/grid of results for rules.
@@ -92,13 +65,6 @@ public interface RepositoryService
      * @deprecated in favour of {@link AbstractPagedTable}
      */
     public TableConfig loadTableConfig(String listName);
-
-    /**
-     * This will create a new category at the specified path.
-     */
-    public Boolean createCategory(String path,
-                                  String name,
-                                  String description);
 
     /**
      * Creates a brand new rule with the initial category. Return the UUID of
@@ -223,18 +189,6 @@ public interface RepositoryService
 
  
     /**
-     * This will remove a category. A category must have no current assets
-     * linked to it, or else it will not be able to be removed.
-     * 
-     * @param categoryPath
-     *            The full path to the category. Any sub categories will also be
-     *            removed.
-     * @throws SerializationException
-     *             For when it all goes horribly wrong.
-     */
-    public void removeCategory(String categoryPath) throws SerializationException;
-
-    /**
      * Loads up the SuggestionCompletionEngine for the given package. As this
      * doesn't change that often, its safe to cache. However, if a change is
      * made to a package, should blow away the cache.
@@ -245,31 +199,6 @@ public interface RepositoryService
      * return custom selector names
      */
     public String[] getCustomSelectors() throws SerializationException;
-
-    /**
-     * Rename a category - taking in the full path, and just the new name.
-     */
-    public void renameCategory(String fullPathAndName,
-                               String newName);
-
-   
-    /**
-     * 
-     * @param packageName
-     *            The package name the scenario is to be run in.
-     * @param scenario
-     *            The scenario to run.
-     * @return The scenario, with the results fields populated.
-     * @throws SerializationException
-     */
-    public SingleScenarioResult runScenario(String packageName,
-                                            Scenario scenario) throws SerializationException;
-
-    /**
-     * This should be pretty obvious what it does !
-     */
-    public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException;
-
    
     /**
      * This will list the last N log entryies logged by the server. For

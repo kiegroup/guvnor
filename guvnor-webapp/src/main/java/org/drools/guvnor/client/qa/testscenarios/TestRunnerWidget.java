@@ -79,7 +79,7 @@ public class TestRunnerWidget extends Composite {
 
             public void onClick(ClickEvent event) {
                 LoadingPopup.showMessage( constants.BuildingAndRunningScenario() );
-                RepositoryServiceFactory.getService().runScenario( parent.getMetaData().packageName,
+                RepositoryServiceFactory.getPackageService().runScenario( parent.getMetaData().packageName,
                                                                    parent.getScenario(),
                                                                    new GenericCallback<SingleScenarioResult>() {
                                                                        public void onSuccess(SingleScenarioResult data) {

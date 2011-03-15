@@ -1009,7 +1009,7 @@ public interface Constants
 
     String CategoryRules();
 
-    String SaveAndValidateConfiguration();
+    String ValidateConfiguration();
 
     String BuildAndValidate();
 
@@ -2259,4 +2259,6 @@ public interface Constants
     String PerspectivesConfiguration();
 
     String NewPerspective();
+    
+    String PackageValidatedSuccessfully();
 }

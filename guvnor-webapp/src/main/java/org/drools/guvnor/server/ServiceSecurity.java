@@ -31,6 +31,15 @@ import org.jboss.seam.security.Identity;
  */
 public class ServiceSecurity {
 
+    protected boolean isSecurityIsAnalystRead(final Object target) {
+        if ( Contexts.isSessionContextActive() ) {
+            return !Identity.instance().hasPermission( target,
+                                                       RoleTypes.ANALYST_READ );
+
+        }
+        return true;
+    }
+
     protected void checkSecurityIsPackageNameTypeAdmin(String packageName) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( packageName ),

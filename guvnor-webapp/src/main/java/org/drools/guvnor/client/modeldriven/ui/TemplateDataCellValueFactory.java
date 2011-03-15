@@ -15,8 +15,13 @@
  */
 package org.drools.guvnor.client.modeldriven.ui;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
 import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellValueFactory;
+import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt.DTDataTypes;
 
 /**
  * A Factory to create CellValues applicable to given columns.
@@ -33,8 +38,62 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
         super( sce );
     }
 
+    /**
+     * Serialise value to a String
+     * 
+     * @param column
+     *            The model column
+     * @param cv
+     *            CellValue for which value will be serialised
+     * @return String representation of value
+     */
+    public String convertValueToString(TemplateDataColumn column,
+                                       CellValue< ? > cv) {
+        DTDataTypes dataType = getDataType( column );
+
+        switch ( dataType ) {
+            case BOOLEAN :
+                return convertBooleanValueToString( cv );
+            case DATE :
+                return convertDateValueToString( cv );
+            case DIALECT :
+                return convertStringValueToString( cv );
+            case NUMERIC :
+                return convertNumericValueToString( cv );
+            case ROW_NUMBER :
+                return convertNumericValueToString( cv );
+            default :
+                return convertStringValueToString( cv );
+        }
+
+    }
+
+    //Convert a Boolean value to a String
+    private String convertBooleanValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : ((Boolean) value.getValue()).toString());
+    }
+
+    //Convert a Date value to a String
+    private String convertDateValueToString(CellValue< ? > value) {
+        String result = null;
+        if ( value.getValue() != null ) {
+            result = DATE_FORMAT.format( (Date) value.getValue() );
+        }
+        return result;
+    }
+
+    //Convert a BigDecimal value to a String
+    private String convertNumericValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : ((BigDecimal) value.getValue()).toPlainString());
+    }
+
+    //TODO Convert a String value to a String
+    private String convertStringValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : (String) value.getValue());
+    }
+
     // Get the Data Type corresponding to a given column
-    protected DATA_TYPES getDataType(TemplateDataColumn column) {
+    protected DTDataTypes getDataType(TemplateDataColumn column) {
 
         // Columns with lists of values, enums etc are always Text (for now)
         String[] vals = null;
@@ -44,20 +103,20 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
             vals = sce.getEnumValues( factType,
                                       factField );
             if ( vals != null && vals.length > 0 ) {
-                return DATA_TYPES.STRING;
+                return DTDataTypes.STRING;
             }
         }
 
         //Otherwise use data type extracted from model
         String dataType = column.getDataType();
         if ( dataType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-            return DATA_TYPES.BOOLEAN;
+            return DTDataTypes.BOOLEAN;
         } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            return DATA_TYPES.DATE;
+            return DTDataTypes.DATE;
         } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            return DATA_TYPES.NUMERIC;
+            return DTDataTypes.NUMERIC;
         } else {
-            return DATA_TYPES.STRING;
+            return DTDataTypes.STRING;
         }
     }
 

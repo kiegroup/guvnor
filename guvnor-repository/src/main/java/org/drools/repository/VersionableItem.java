@@ -112,12 +112,14 @@ public abstract class VersionableItem extends Item {
      * This will return true if the current entity is actually a
      * historical version (which means is effectively read only).
      */
-    public boolean isHistoricalVersion() throws RepositoryException {
-        return this.node.getPrimaryNodeType().getName().equals( "nt:version" ) || node.getPrimaryNodeType().getName().equals( "nt:frozenNode" );
+    public boolean isHistoricalVersion() {
+    	try {
+            return this.node.getPrimaryNodeType().getName().equals( "nt:version" ) || node.getPrimaryNodeType().getName().equals( "nt:frozenNode" );
+    	} catch (RepositoryException e) {
+    		//ignore
+    	}
+    	return false;
     }
-
-
-
 
     /**
      * @return the predecessor node of this node in the version history, or null if no predecessor version exists

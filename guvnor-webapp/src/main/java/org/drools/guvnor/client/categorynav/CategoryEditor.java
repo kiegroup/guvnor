@@ -95,7 +95,7 @@ public class CategoryEditor extends FormStylePopup {
         if ( "".equals( this.name.getText() ) ) {
             ErrorPopup.showMessage( constants.CanNotHaveAnEmptyCategoryName() );
         } else {
-            RepositoryServiceFactory.getService().createCategory( path,
+            RepositoryServiceFactory.getCategoryService().createCategory( path,
                                                                   name.getText(),
                                                                   description.getText(),
                                                                   cb );

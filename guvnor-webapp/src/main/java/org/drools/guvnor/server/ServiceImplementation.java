@@ -51,11 +51,8 @@ import org.drools.common.InternalWorkingMemory;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rpc.CategoryPageRequest;
-import org.drools.guvnor.client.rpc.CategoryPageRow;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.InboxIncomingPageRow;
@@ -78,9 +75,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.rpc.ScenarioRunResult;
 import org.drools.guvnor.client.rpc.SingleScenarioResult;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
-import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
@@ -101,6 +95,7 @@ import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.Discussion;
+import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
@@ -233,159 +228,6 @@ public class ServiceImplementation
             PackageItem module = getRulesRepository().loadPackage( moduleName );
             module.removeWorkspace( workspace );
             module.checkin( "Remove workspace" );
-        }
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public String[] loadChildCategories(String categoryPath) {
-        List<String> resultList = new ArrayList<String>();
-        CategoryFilter filter = new CategoryFilter();
-
-        CategoryItem item = getRulesRepository().loadCategory( categoryPath );
-        List children = item.getChildTags();
-        for ( int i = 0; i < children.size(); i++ ) {
-            String childCategoryName = ((CategoryItem) children.get( i )).getName();
-            if ( filter.acceptNavigate( categoryPath,
-                                        childCategoryName ) ) {
-                resultList.add( childCategoryName );
-            }
-        }
-
-        String[] resultArr = resultList.toArray( new String[resultList.size()] );
-        return resultArr;
-    }
-
-    @WebRemote
-    public Boolean createCategory(String path,
-                                  String name,
-                                  String description) {
-        serviceSecurity.checkSecurityIsAdmin();
-
-        log.info( "USER:" + getCurrentUserName() + " CREATING cateogory: [" + name + "] in path [" + path + "]" );
-
-        if ( path == null || "".equals( path ) ) {
-            path = "/";
-        }
-        path = cleanHTML( path );
-
-        getRulesRepository().loadCategory( path ).addCategory( name,
-                                                               description );
-        getRulesRepository().save();
-        return Boolean.TRUE;
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void renameCategory(String fullPathAndName,
-                               String newName) {
-        getRulesRepository().renameCategory( fullPathAndName,
-                                             newName );
-    }
-
-    /**
-     * loadRuleListForCategories
-     *
-     * Role-based Authorization check: This method only returns rules that the user has
-     * permission to access. The user is considered to has permission to access the particular category when:
-     * The user has ANALYST_READ role or higher (i.e., ANALYST) to this category
-     * 
-     * @deprecated in favour of {@link loadRuleListForCategories(CategoryPageRequest)}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadRuleListForCategories(String categoryPath,
-                                                     int skip,
-                                                     int numRows,
-                                                     String tableConfig) throws SerializationException {
-
-        // First check the user has permission to access this categoryPath.
-        if ( Contexts.isSessionContextActive() ) {
-            if ( !Identity.instance().hasPermission( new CategoryPathType( categoryPath ),
-                                                     RoleTypes.ANALYST_READ ) ) {
-
-                TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-                return handler.loadRuleListTable( new AssetItemPageResult() );
-            }
-        }
-
-        AssetItemPageResult result = getRulesRepository().findAssetsByCategory( categoryPath,
-                                                                                false,
-                                                                                skip,
-                                                                                numRows );
-        TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-        return handler.loadRuleListTable( result );
-
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public PageResponse<CategoryPageRow> loadRuleListForCategories(CategoryPageRequest request) throws SerializationException {
-        if ( request == null ) {
-            throw new IllegalArgumentException( "request cannot be null" );
-        }
-        if ( request.getPageSize() != null && request.getPageSize() < 0 ) {
-            throw new IllegalArgumentException( "pageSize cannot be less than zero." );
-        }
-
-        PageResponse<CategoryPageRow> response = new PageResponse<CategoryPageRow>();
-
-        // Role-based Authorization check: This method only returns rules that
-        // the user has permission to access. The user is considered to has
-        // permission to access the particular category when: The user has
-        // ANALYST_READ role or higher (i.e., ANALYST) to this category
-        if ( Contexts.isSessionContextActive() ) {
-            if ( !Identity.instance().hasPermission( new CategoryPathType( request.getCategoryPath() ),
-                                                     RoleTypes.ANALYST_READ ) ) {
-                return response;
-            }
-        }
-
-        // Do query
-        long start = System.currentTimeMillis();
-
-        // NOTE: Filtering is handled in repository.findAssetsByCategory()
-        int numRowsToReturn = (request.getPageSize() == null ? -1 : request.getPageSize());
-        AssetItemPageResult result = getRulesRepository().findAssetsByCategory( request.getCategoryPath(),
-                                                                                false,
-                                                                                request.getStartRowIndex(),
-                                                                                numRowsToReturn );
-        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-
-        // Populate response
-        boolean bHasMoreRows = result.hasNext;
-        List<CategoryPageRow> rowList = fillCategoryPageRows( request,
-                                                              result );
-        response.setStartRowIndex( request.getStartRowIndex() );
-        response.setPageRowList( rowList );
-        response.setLastPage( !bHasMoreRows );
-
-        // Fix Total Row Size
-        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request,
-                                              response,
-                                              -1,
-                                              rowList.size(),
-                                              bHasMoreRows );
-
-        long methodDuration = System.currentTimeMillis() - start;
-        log.debug( "Searched for Assest with Category (" + request.getCategoryPath() + ") in " + methodDuration + " ms." );
-        return response;
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void removeCategory(String categoryPath) throws SerializationException {
-        log.info( "USER:" + getCurrentUserName() + " REMOVING CATEGORY path: [" + categoryPath + "]" );
-
-        try {
-            getRulesRepository().loadCategory( categoryPath ).remove();
-            getRulesRepository().save();
-        } catch ( RulesRepositoryException e ) {
-            log.info( "Unable to remove category [" + categoryPath + "]. It is probably still used: " + e.getMessage() );
-
-            throw new DetailedSerializationException( "Unable to remove category. It is probably still used.",
-                                                      e.getMessage() );
         }
     }
 
@@ -727,7 +569,7 @@ public class ServiceImplementation
     public String createState(String name) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " CREATING state: [" + name + "]" );
         try {
-            name = cleanHTML( name );
+            name = HtmlCleaner.cleanHTML( name );
             String uuid = getRulesRepository().createState( name ).getNode().getUUID();
             getRulesRepository().save();
             return uuid;
@@ -901,104 +743,6 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public List<DiscussionRecord> loadDiscussionForAsset(String assetId) {
         return new Discussion().fromString( getRulesRepository().loadAssetByUUID( assetId ).getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public SingleScenarioResult runScenario(String packageName,
-                                            Scenario scenario) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( packageName );
-
-        return runScenario( packageName,
-                            scenario,
-                            null );
-
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
-        PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
-        return runScenariosInPackage( item );
-    }
-
-    public BulkTestRunResult runScenariosInPackage(PackageItem item) throws DetailedSerializationException,
-                                                                    SerializationException {
-        ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
-        ClassLoader cl = null;
-
-        try {
-            if ( item.isBinaryUpToDate() && ServiceImplementation.ruleBaseCache.containsKey( item.getUUID() ) ) {
-                RuleBase rb = ServiceImplementation.ruleBaseCache.get( item.getUUID() );
-                AbstractRuleBase arb = (AbstractRuleBase) rb;
-                // load up the existing class loader from before
-                cl = arb.getConfiguration().getClassLoader();
-                Thread.currentThread().setContextClassLoader( cl );
-            } else {
-                // load up the classloader we are going to use
-                List<JarInputStream> jars = BRMSPackageBuilder.getJars( item );
-                cl = BRMSPackageBuilder.createClassLoader( jars );
-                Thread.currentThread().setContextClassLoader( cl );
-
-                // we have to build the package, and try again.
-                if ( item.isBinaryUpToDate() ) {
-                    ServiceImplementation.ruleBaseCache.put( item.getUUID(),
-                                                             loadRuleBase( item,
-                                                                           cl ) );
-                } else {
-                    BuilderResult result = repositoryPackageOperations.buildPackage( item,
-                                                                                     false );
-                    if ( result == null || result.getLines().size() == 0 ) {
-                        ServiceImplementation.ruleBaseCache.put( item.getUUID(),
-                                                                 loadRuleBase( item,
-                                                                               cl ) );
-                    } else {
-                        return new BulkTestRunResult( result,
-                                                      null,
-                                                      0,
-                                                      null );
-                    }
-                }
-            }
-
-            AssetItemIterator it = item.listAssetsByFormat( new String[]{AssetFormats.TEST_SCENARIO} );
-            List<ScenarioResultSummary> resultSummaries = new ArrayList<ScenarioResultSummary>();
-            RuleBase rb = ruleBaseCache.get( item.getUUID() );
-            Package bin = rb.getPackages()[0];
-
-            RuleCoverageListener coverage = new RuleCoverageListener( expectedRules( bin ) );
-
-            while ( it.hasNext() ) {
-                AssetItem as = it.next();
-                if ( !as.getDisabled() ) {
-                    RuleAsset asset = repositoryAssetOperations.loadAsset( as );
-                    Scenario sc = (Scenario) asset.content;
-                    runScenario( item.getName(),
-                                 sc,
-                                 coverage );// runScenario(sc, res,
-                                            // workingMemory).scenario;
-
-                    int[] totals = sc.countFailuresTotal();
-                    resultSummaries.add( new ScenarioResultSummary( totals[0],
-                                                                    totals[1],
-                                                                    asset.metaData.name,
-                                                                    asset.metaData.description,
-                                                                    asset.uuid ) );
-                }
-            }
-
-            ScenarioResultSummary[] summaries = resultSummaries.toArray( new ScenarioResultSummary[resultSummaries.size()] );
-
-            BulkTestRunResult result = new BulkTestRunResult( null,
-                                                              resultSummaries.toArray( summaries ),
-                                                              coverage.getPercentCovered(),
-                                                              coverage.getUnfiredRules() );
-            return result;
-
-        } finally {
-            Thread.currentThread().setContextClassLoader( originalCL );
-        }
     }
 
     /**
@@ -1325,12 +1069,6 @@ public class ServiceImplementation
         }
     }
 
-    public String cleanHTML(String s) {
-        return s.replace( "<",
-                          "&lt;" ).replace( ">",
-                                            "&gt;" );
-    }
-
     /**
      * Load and process the repository configuration templates.
      */
@@ -1580,193 +1318,6 @@ public class ServiceImplementation
         return null;
     }
 
-    private SingleScenarioResult runScenario(String packageName,
-                                             Scenario scenario,
-                                             RuleCoverageListener coverage) throws SerializationException {
-        PackageItem item = this.getRulesRepository().loadPackage( packageName );
-        SingleScenarioResult result = null;
-        // nasty classloader needed to make sure we use the same tree the whole
-        // time.
-        ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
-        try {
-            final RuleBase rb = loadCacheRuleBase( item );
-
-            ClassLoader cl = ((InternalRuleBase) ServiceImplementation.ruleBaseCache.get( item.getUUID() )).getRootClassLoader();
-            Thread.currentThread().setContextClassLoader( cl );
-            result = runScenario( scenario,
-                                  item,
-                                  cl,
-                                  rb,
-                                  coverage );
-        } catch ( Exception e ) {
-            if ( e instanceof DetailedSerializationException ) {
-                DetailedSerializationException err = (DetailedSerializationException) e;
-                result = new SingleScenarioResult();
-                if ( err.getErrs() != null ) {
-                    result.result = new ScenarioRunResult( err.getErrs(),
-                                                           null );
-                } else {
-                    throw err;
-                }
-            }
-        } finally {
-            Thread.currentThread().setContextClassLoader( originalCL );
-        }
-        return result;
-    }
-
-    /*
-     * Set the Rule base in a cache
-     */
-    private RuleBase loadCacheRuleBase(PackageItem item) throws DetailedSerializationException {
-        RuleBase rb = null;
-        if ( item.isBinaryUpToDate() && ServiceImplementation.ruleBaseCache.containsKey( item.getUUID() ) ) {
-            rb = ServiceImplementation.ruleBaseCache.get( item.getUUID() );
-        } else {
-            // load up the classloader we are going to use
-            List<JarInputStream> jars = BRMSPackageBuilder.getJars( item );
-            ClassLoader buildCl = BRMSPackageBuilder.createClassLoader( jars );
-
-            // we have to build the package, and try again.
-            if ( item.isBinaryUpToDate() ) {
-                rb = loadRuleBase( item,
-                                   buildCl );
-                ServiceImplementation.ruleBaseCache.put( item.getUUID(),
-                                                         rb );
-            } else {
-                BuilderResult result = repositoryPackageOperations.buildPackage( item,
-                                                                                 false );
-                if ( result == null || result.getLines().size() == 0 ) {
-                    rb = loadRuleBase( item,
-                                       buildCl );
-                    ServiceImplementation.ruleBaseCache.put( item.getUUID(),
-                                                             rb );
-                } else throw new DetailedSerializationException( "Build error",
-                                                                 result.getLines() );
-            }
-
-        }
-        return rb;
-    }
-
-    private RuleBase loadRuleBase(PackageItem item,
-                                  ClassLoader cl) throws DetailedSerializationException {
-        try {
-            return deserKnowledgebase( item,
-                                       cl );
-        } catch ( ClassNotFoundException e ) {
-            log.error( "Unable to load rule base.",
-                       e );
-            throw new DetailedSerializationException( "A required class was not found.",
-                                                      e.getMessage() );
-        } catch ( Exception e ) {
-            log.error( "Unable to load rule base.",
-                       e );
-            log.info( "...but trying to rebuild binaries..." );
-            try {
-                BuilderResult res = repositoryPackageOperations.buildPackage( item,
-                                                                              true );
-                if ( res != null && res.getLines().size() > 0 ) {
-                    log.error( "There were errors when rebuilding the knowledgebase." );
-                    throw new DetailedSerializationException( "There were errors when rebuilding the knowledgebase.",
-                                                              "" );
-                }
-            } catch ( Exception e1 ) {
-                log.error( "Unable to rebuild the rulebase: " + e.getMessage() );
-                throw new DetailedSerializationException( "Unable to rebuild the rulebase.",
-                                                          e.getMessage() );
-            }
-            try {
-                return deserKnowledgebase( item,
-                                           cl );
-            } catch ( Exception e2 ) {
-                log.error( "Unable to reload knowledgebase: " + e.getMessage() );
-                throw new DetailedSerializationException( "Unable to reload knowledgebase.",
-                                                          e.getMessage() );
-            }
-
-        }
-    }
-
-    private RuleBase deserKnowledgebase(PackageItem item,
-                                        ClassLoader cl) throws IOException,
-                                                       ClassNotFoundException {
-        RuleBase rb = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( cl ) );
-        Package bin = (Package) DroolsStreamUtils.streamIn( item.getCompiledPackageBytes(),
-                                                            cl );
-        rb.addPackage( bin );
-        return rb;
-    }
-
-    private SingleScenarioResult runScenario(Scenario scenario,
-                                             PackageItem item,
-                                             ClassLoader cl,
-                                             RuleBase rb,
-                                             RuleCoverageListener coverage) throws DetailedSerializationException {
-
-        // RuleBase rb = ruleBaseCache.get(item.getUUID());
-        Package bin = rb.getPackages()[0];
-
-        Set<String> imps = bin.getImports().keySet();
-        Set<String> allImps = new HashSet<String>( imps );
-        if ( bin.getGlobals() != null ) {
-            for ( Iterator iterator = bin.getGlobals().keySet().iterator(); iterator.hasNext(); ) {
-                allImps.add( bin.getGlobals().get( iterator.next() ) );
-            }
-        }
-        allImps.add( bin.getName() + ".*" ); // need this for Generated beans to
-        // work
-
-        ClassTypeResolver res = new ClassTypeResolver( allImps,
-                                                       cl );
-        SessionConfiguration sessionConfiguration = new SessionConfiguration();
-        sessionConfiguration.setClockType( ClockType.PSEUDO_CLOCK );
-        sessionConfiguration.setKeepReference( false );
-        InternalWorkingMemory workingMemory = (InternalWorkingMemory) rb.newStatefulSession( sessionConfiguration,
-                                                                                             null );
-        if ( coverage != null ) workingMemory.addEventListener( coverage );
-        try {
-            AuditLogReporter logger = new AuditLogReporter( workingMemory );
-            new ScenarioRunner( scenario,
-                                res,
-                                workingMemory );
-            SingleScenarioResult r = new SingleScenarioResult();
-            r.auditLog = logger.buildReport();
-            r.result = new ScenarioRunResult( null,
-                                              scenario );
-            return r;
-        } catch ( ClassNotFoundException e ) {
-            log.error( "Unable to load a required class.",
-                       e );
-            throw new DetailedSerializationException( "Unable to load a required class.",
-                                                      e.getMessage() );
-        } catch ( ConsequenceException e ) {
-            String messageShort = "There was an error executing the consequence of rule [" + e.getRule().getName() + "]";
-            String messageLong = e.getMessage();
-            if ( e.getCause() != null ) {
-                messageLong += "\nCAUSED BY " + e.getCause().getMessage();
-            }
-
-            log.error( messageShort + ": " + messageLong,
-                       e );
-            throw new DetailedSerializationException( messageShort,
-                                                      messageLong );
-        } catch ( Exception e ) {
-            log.error( "Unable to run the scenario.",
-                       e );
-            throw new DetailedSerializationException( "Unable to run the scenario.",
-                                                      e.getMessage() );
-        }
-    }
-
-    private HashSet<String> expectedRules(Package bin) {
-        HashSet<String> h = new HashSet<String>();
-        for ( int i = 0; i < bin.getRules().length; i++ ) {
-            h.add( bin.getRules()[i].getName() );
-        }
-        return h;
-    }
-
     /**
      * Pushes a message back to (all) clients.
      */
@@ -1882,13 +1433,6 @@ public class ServiceImplementation
         return row;
     }
 
-    private void populatePageRowBaseProperties(AssetItem assetItem,
-                                               AbstractAssetPageRow row) {
-        row.setUuid( assetItem.getUUID() );
-        row.setFormat( assetItem.getFormat() );
-        row.setName( assetItem.getName() );
-    }
-
     private List<StatePageRow> fillStatePageRows(StatePageRequest request,
                                                  AssetItemPageResult result) {
         List<StatePageRow> rowList = new ArrayList<StatePageRow>();
@@ -1905,35 +1449,9 @@ public class ServiceImplementation
 
     private StatePageRow makeStatePageRow(AssetItem assetItem) {
         StatePageRow row = new StatePageRow();
-        populatePageRowBaseProperties( assetItem,
-                                       row );
-        row.setDescription( assetItem.getDescription() );
-        row.setAbbreviatedDescription( StringUtils.abbreviate( assetItem.getDescription(),
-                                                               80 ) );
-        row.setLastModified( assetItem.getLastModified().getTime() );
-        row.setStateName( assetItem.getState().getName() );
-        row.setPackageName( assetItem.getPackageName() );
-        return row;
-    }
-
-    private List<CategoryPageRow> fillCategoryPageRows(CategoryPageRequest request,
-                                                       AssetItemPageResult result) {
-        List<CategoryPageRow> rowList = new ArrayList<CategoryPageRow>();
-
-        // Filtering and skipping records to the required page is handled in
-        // repository.findAssetsByState() so we only need to simply copy
-        Iterator<AssetItem> it = result.assets.iterator();
-        while ( it.hasNext() ) {
-            AssetItem assetItem = (AssetItem) it.next();
-            rowList.add( makeCategoryPageRow( assetItem ) );
-        }
-        return rowList;
-    }
-
-    private CategoryPageRow makeCategoryPageRow(AssetItem assetItem) {
-        CategoryPageRow row = new CategoryPageRow();
-        populatePageRowBaseProperties( assetItem,
-                                       row );
+        row.setUuid( assetItem.getUUID() );
+        row.setFormat( assetItem.getFormat() );
+        row.setName( assetItem.getName() );
         row.setDescription( assetItem.getDescription() );
         row.setAbbreviatedDescription( StringUtils.abbreviate( assetItem.getDescription(),
                                                                80 ) );

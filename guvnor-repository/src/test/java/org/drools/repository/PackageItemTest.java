@@ -876,17 +876,39 @@ public class PackageItemTest {
         assertEquals(dependencies.length, 0);
 
         AssetItem rule = item.addAsset("testDependenciesAsset1", "w");
-        rule.checkin("goo");
-
+        rule.checkout();
+        rule.checkin("version 1");
+        rule.checkout();
+        rule.checkin("version 2");
+        rule.checkout();
+        rule.checkin("version 3");
+        
         dependencies = item.getDependencies();
         assertEquals(dependencies.length, 1);
         assertEquals(
-                "/drools:repository/drools:package_area/testDependencies/assets/testDependenciesAsset1?version=LATEST",
+                "testDependenciesAsset1?version=LATEST",
+                dependencies[0]);
+        
+
+        item.updateDependency("testDependenciesAsset1?version=LATEST");
+        item.checkin("Update dependency");
+        dependencies = item.getDependencies();
+        assertEquals(
+                "testDependenciesAsset1?version=LATEST",
+                dependencies[0]);
+        
+
+        item.updateDependency("testDependenciesAsset1?version=2");
+        item.checkin("Update dependency");
+        dependencies = item.getDependencies();
+        assertEquals(
+                "testDependenciesAsset1?version=2",
                 dependencies[0]);
     }
 
     @Test
     public void testVersionedAssetItemIterator() throws Exception {
+    	//Package version 1(Initial version)
         PackageItem pkg = getRepo().createPackage( "testVersionedAssetItemIterator", "" );
         getRepo().save();
 
@@ -900,54 +922,101 @@ public class PackageItemTest {
 
         item = pkg.addAsset( "testVersionedAssetItemIteratorAsset3", "wee" );
         item.updateFormat( "ABC" );
-        item.checkin( "la" );
-        item.checkout();
-        item.checkin("version 1");
+        item.checkin( "version 1" );
         item.checkout();
         item.checkin("version 2");
         item.checkout();
         item.checkin("version 3");
+        item.checkout();
+        item.checkin("version 4");
         
-        Thread.sleep( 150 );
+        //Thread.sleep( 150 );
         
+    	//Create package version 2       
+        pkg.updateDependency("testVersionedAssetItemIteratorAsset3?version=2");
+        pkg.checkin("Update dependency");
+
+
+        //create package version 3       
+        pkg.checkout();
+        pkg.checkin("version 3");
+        
+        item.checkout();
+        item.checkin("version 5");        
+        
+        //Verify package Latest version         
+        pkg = getRepo().loadPackage("testVersionedAssetItemIterator");
         String[] dependencies = pkg.getDependencies();
         assertEquals(dependencies.length, 3);
-/*        assertEquals(
-                "/drools:repository/drools:package_area/testDependencies/assets/testDependenciesAsset1?version=LATEST",
-                dependencies[0]);*/
 
-        AssetItemIterator it2 = pkg.listAssetsByFormat( new String[] {"xyz", "ABC"} );
-        List list2 = iteratorToList( it2 );
-        assertEquals(3, list2.size());
-        assertTrue(list2.get( 0 ) instanceof AssetItem);
-        assertTrue(list2.get( 1 ) instanceof AssetItem);
-        assertTrue(list2.get( 2 ) instanceof AssetItem);
+        AssetItemIterator it = pkg.listAssetsByFormat( new String[] {"xyz", "ABC"} );
+        List list = iteratorToList( it );
+        assertEquals(3, list.size());
+        assertTrue(list.get( 0 ) instanceof AssetItem);
+        assertTrue(list.get( 1 ) instanceof AssetItem);
+        assertTrue(list.get( 2 ) instanceof AssetItem);
         
-        it2 = pkg.listAssetsByFormat( new String[] {"ABC"} );
-        list2 = iteratorToList( it2 );
-        assertEquals(1, list2.size());
-        assertTrue(list2.get( 0 ) instanceof AssetItem);
+        //verify that iterator returns the correct version of assets. By default, the iterator 
+        //return the latest versions. 
+        it = pkg.listAssetsByFormat( new String[] {"ABC"} );
+        assertTrue(it instanceof VersionedAssetItemIterator);
+        list = iteratorToList( it );
+        assertEquals(1, list.size());
+        AssetItem ai = (AssetItem)list.get(0);
+        assertEquals(5, ai.getVersionNumber());
+        assertEquals("version 5", ai.getCheckinComment());            
         
-        pkg.updateDependency("/drools:repository/drools:package_area/testVersionedAssetItemIterator/assets/testVersionedAssetItemIteratorAsset3?version=2");
-        pkg.checkin("Update dependency");
+        //verify that iterator returns the correct version of assets. The version is specified by dependency.        
+        it = pkg.listAssetsByFormat( new String[] {"ABC"} );
+        assertTrue(it instanceof VersionedAssetItemIterator);
+        ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionSpecifiedByDependencies(true);
+        list = iteratorToList( it );
+        assertEquals(1, list.size());
+        ai = (AssetItem)list.get(0);
+        assertEquals(2, ai.getVersionNumber());
+        assertEquals("version 2", ai.getCheckinComment());
+ 
         
-        it2 = pkg.listAssetsByFormat( new String[] {"ABC"} );
-        assertTrue(it2 instanceof VersionedAssetItemIterator);
-        ((VersionedAssetItemIterator)it2).setEnableGetHistoricalVersionBasedOnDependency(true);
-        list2 = iteratorToList( it2 );
-        assertEquals(1, list2.size());
-        AssetItem ai = (AssetItem)list2.get(0);
-        assertEquals("2", Long.toString( ai.getVersionNumber() ));
-        assertEquals("version 1", ai.getCheckinComment());
+        //Verify historical package version 2
+        PackageHistoryIterator historyIterator = pkg.getHistory();
+        PackageItem historicalPackage = null;
+        while ( historyIterator.hasNext() ) {
+        	PackageItem historical = historyIterator.next();
+            long version = historical.getVersionNumber();
+            if ( version == 2 ) {
+            	historicalPackage = historical;
+                break;
+            }
+        }
         
-        it2 = pkg.listAssetsByFormat( new String[] {"ABC"} );
-        assertTrue(it2 instanceof VersionedAssetItemIterator);
-        //((VersionedAssetItemIterator)it2).setEnableGetHistoricalBasedOnDependency(true);
-        list2 = iteratorToList( it2 );
-        assertEquals(1, list2.size());
-        ai = (AssetItem)list2.get(0);
-        assertEquals("4", Long.toString( ai.getVersionNumber() ));
-        assertEquals("version 3", ai.getCheckinComment());        
+        it = historicalPackage.listAssetsByFormat( new String[] {"xyz", "ABC"} );
+        list = iteratorToList( it );
+        assertEquals(3, list.size());
+        assertTrue(list.get( 0 ) instanceof AssetItem);
+        assertTrue(list.get( 1 ) instanceof AssetItem);
+        assertTrue(list.get( 2 ) instanceof AssetItem);
+        
+        //verify that iterator returns the correct version of assets. When package version 2 was created,
+        //asset testVersionedAssetItemIteratorAsset3 was at version 4
+        it = historicalPackage.listAssetsByFormat( new String[] {"ABC"} );
+        assertTrue(it instanceof VersionedAssetItemIterator);
+        //((VersionedAssetItemIterator)it).setReturnAssetsWithVersionSpecifiedByDependencies(true);
+        list = iteratorToList( it );
+        assertEquals(1, list.size());
+        ai = (AssetItem)list.get(0);
+        assertEquals(4, ai.getVersionNumber());
+        assertEquals("version 4", ai.getCheckinComment());           
+        
+        //verify that iterator returns the correct version of assets. The version is specified by dependency,
+        //which is version 2.
+        it = historicalPackage.listAssetsByFormat( new String[] {"ABC"} );
+        assertTrue(it instanceof VersionedAssetItemIterator);
+        ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionSpecifiedByDependencies(true);
+        list = iteratorToList( it );
+        assertEquals(1, list.size());
+        ai = (AssetItem)list.get(0);
+        assertEquals(2, ai.getVersionNumber());
+        assertEquals("version 2", ai.getCheckinComment()); 
     }
     
     static class MockAssetItem extends AssetItem {

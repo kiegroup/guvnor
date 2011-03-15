@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.jar.JarInputStream;
 
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
@@ -67,8 +66,8 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
             }
         });
     }
-
-    public SuggestionCompletionEngine getSuggestionEngine(PackageItem pkg) {
+    
+    public SuggestionCompletionEngine getSuggestionEngine(PackageItem pkg, String droolsHeader) {
 
         StringBuilder buf = new StringBuilder();
         AssetItemIterator it = pkg.listAssetsByFormat(new String[]{AssetFormats.DRL_MODEL});
@@ -78,10 +77,14 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
             buf.append('\n');
         }
 
-        return super.getSuggestionEngine(DroolsHeader.getDroolsHeader(pkg) + "\n" + buf.toString(),
+        return super.getSuggestionEngine(droolsHeader + "\n" + buf.toString(),
                 getJars(pkg),
                 getDSLMappingFiles(pkg),
                 getDataEnums(pkg));
+    }
+    
+    public SuggestionCompletionEngine getSuggestionEngine(PackageItem pkg) {
+    	return getSuggestionEngine(pkg, DroolsHeader.getDroolsHeader(pkg));
     }
 
     private List<String> getDataEnums(PackageItem pkg) {

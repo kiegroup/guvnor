@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.rpc;
 
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -68,7 +70,17 @@ public interface PackageService
      *         Really.
      */
     public PackageConfigData loadPackageConfig(String uuid);
-
+    
+    /**
+     * Validate package configuration
+     * 
+     * @return A ValidatedReponse, with any errors to be reported. No payload is
+     *         in the response. If there are any errors, the user should be
+     *         given the option to review them, and correct them if needed (but
+     *         a save will not be prevented this way - as its not an exception).
+     */
+    public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException;
+    
     /**
      * Saves the package config data in place (does not create a new version of
      * anything).
@@ -78,7 +90,7 @@ public interface PackageService
      *         given the option to review them, and correct them if needed (but
      *         a save will not be prevented this way - as its not an exception).
      */
-    public ValidatedResponse savePackage(PackageConfigData data) throws SerializationException;
+    public void savePackage(PackageConfigData data) throws SerializationException;
 
     /**
      * Create a package snapshot for deployment.
@@ -224,6 +236,24 @@ public interface PackageService
                                           String secondSnapshotName);
 
     public SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request);
+    
+    /**
+     * 
+     * @param packageName
+     *            The package name the scenario is to be run in.
+     * @param scenario
+     *            The scenario to run.
+     * @return The scenario, with the results fields populated.
+     * @throws SerializationException
+     */
+    public SingleScenarioResult runScenario(String packageName,
+                                            Scenario scenario) throws SerializationException;
+
+    /**
+     * This should be pretty obvious what it does !
+     */
+    public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException;
+
 
 
 }

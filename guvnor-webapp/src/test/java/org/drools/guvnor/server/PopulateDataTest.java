@@ -57,7 +57,7 @@ public class PopulateDataTest extends GuvnorTestBase {
     public void testPopulate() throws Exception {
         ServiceImplementation serv = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        createCategories( serv );
+        createCategories( getRepositoryCategoryService() );
         createStates( serv );
         createPackages( repositoryPackageService );
         createModel( serv );
@@ -215,54 +215,54 @@ public class PopulateDataTest extends GuvnorTestBase {
         serv.createState( "Pending" );
     }
 
-    private void createCategories(ServiceImplementation serv) {
-        serv.createCategory( "/",
+    private void createCategories(RepositoryCategoryService repositoryCategoryService) {
+        repositoryCategoryService.createCategory( "/",
                              "HR",
                              "" );
-        serv.createCategory( "/",
+        repositoryCategoryService.createCategory( "/",
                              "Sales",
                              "" );
-        serv.createCategory( "/",
+        repositoryCategoryService.createCategory( "/",
                              "Manufacturing",
                              "" );
-        serv.createCategory( "/",
+        repositoryCategoryService.createCategory( "/",
                              "Finance",
                              "" );
 
-        serv.createCategory( "HR",
+        repositoryCategoryService.createCategory( "HR",
                              "Leave",
                              "" );
-        serv.createCategory( "HR",
+        repositoryCategoryService.createCategory( "HR",
                              "Training",
                              "" );
-        serv.createCategory( "Sales",
+        repositoryCategoryService.createCategory( "Sales",
                              "Promotions",
                              "" );
-        serv.createCategory( "Sales",
+        repositoryCategoryService.createCategory( "Sales",
                              "Old promotions",
                              "" );
-        serv.createCategory( "Sales",
+        repositoryCategoryService.createCategory( "Sales",
                              "Boogie boards",
                              "" );
-        serv.createCategory( "Sales",
+        repositoryCategoryService.createCategory( "Sales",
                              "Surf boards",
                              "" );
-        serv.createCategory( "Sales",
+        repositoryCategoryService.createCategory( "Sales",
                              "Surf wear",
                              "" );
-        serv.createCategory( "Manufacturing",
+        repositoryCategoryService.createCategory( "Manufacturing",
                              "Surf wear",
                              "" );
-        serv.createCategory( "Manufacturing",
+        repositoryCategoryService.createCategory( "Manufacturing",
                              "Boards",
                              "" );
-        serv.createCategory( "Finance",
+        repositoryCategoryService.createCategory( "Finance",
                              "Employees",
                              "" );
-        serv.createCategory( "Finance",
+        repositoryCategoryService.createCategory( "Finance",
                              "Payables",
                              "" );
-        serv.createCategory( "Finance",
+        repositoryCategoryService.createCategory( "Finance",
                              "Receivables",
                              "" );
     }

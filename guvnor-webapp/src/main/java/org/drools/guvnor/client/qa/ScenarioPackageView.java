@@ -97,7 +97,7 @@ public class ScenarioPackageView extends Composite {
      */
     private void runAllScenarios(String uuid) {
         LoadingPopup.showMessage( constants.BuildingAndRunningScenarios() );
-        RepositoryServiceFactory.getService().runScenariosInPackage( uuid,
+        RepositoryServiceFactory.getPackageService().runScenariosInPackage( uuid,
                                                                      new GenericCallback<BulkTestRunResult>() {
                                                                          public void onSuccess(BulkTestRunResult d) {
                                                                              BulkRunResultViewImpl view = new BulkRunResultViewImpl();

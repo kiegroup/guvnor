@@ -19,7 +19,7 @@ package org.drools.guvnor.client.categorynav;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -51,15 +51,15 @@ public class CategoryExplorerWidget extends Composite
     SelectionHandler<TreeItem>,
     OpenHandler<TreeItem> {
 
-    private static Images          images        = (Images) GWT.create( Images.class );
-    private static Constants       constants     = ((Constants) GWT.create( Constants.class ));
+    private static Images         images          = (Images) GWT.create( Images.class );
+    private static Constants      constants       = ((Constants) GWT.create( Constants.class ));
 
-    private Tree                   navTreeWidget = new Tree();
-    private VerticalPanel          panel         = new VerticalPanel();
-    private RepositoryServiceAsync service       = RepositoryServiceFactory.getService();
-    private CategorySelectHandler  categorySelectHandler;
-    private String                 selectedPath;
-    private Panel                  emptyCategories;
+    private Tree                  navTreeWidget   = new Tree();
+    private VerticalPanel         panel           = new VerticalPanel();
+    private CategoryServiceAsync  categoryService = RepositoryServiceFactory.getCategoryService();
+    private CategorySelectHandler categorySelectHandler;
+    private String                selectedPath;
+    private Panel                 emptyCategories;
 
     public void setTreeSize(String width) {
         navTreeWidget.setWidth( width );
@@ -116,34 +116,34 @@ public class CategoryExplorerWidget extends Composite
         Scheduler scheduler = Scheduler.get();
         scheduler.scheduleDeferred( new Command() {
             public void execute() {
-                service.loadChildCategories( "/",
-                                             new GenericCallback<String[]>() {
+                categoryService.loadChildCategories( "/",
+                                                     new GenericCallback<String[]>() {
 
-                                                 public void onSuccess(String[] categories) {
-                                                     selectedPath = null;
-                                                     navTreeWidget.removeItems();
+                                                         public void onSuccess(String[] categories) {
+                                                             selectedPath = null;
+                                                             navTreeWidget.removeItems();
 
-                                                     TreeItem root = new TreeItem();
-                                                     root.setHTML( "<img src='" + new Image( images.desc() ).getUrl() + "'/>" );
-                                                     navTreeWidget.addItem( root );
+                                                             TreeItem root = new TreeItem();
+                                                             root.setHTML( "<img src='" + new Image( images.desc() ).getUrl() + "'/>" );
+                                                             navTreeWidget.addItem( root );
 
-                                                     if ( categories.length == 0 ) {
-                                                         showEmptyTree();
-                                                     } else {
-                                                         hideEmptyTree();
-                                                     }
-                                                     for ( int i = 0; i < categories.length; i++ ) {
-                                                         TreeItem it = new TreeItem();
-                                                         it.setHTML( "<img src='" + new Image( images.categorySmall() ).getUrl() + "'/>" + h( categories[i] ) );
-                                                         it.setUserObject( categories[i] );
-                                                         it.addItem( new PendingItem() );
-                                                         root.addItem( it );
-                                                     }
+                                                             if ( categories.length == 0 ) {
+                                                                 showEmptyTree();
+                                                             } else {
+                                                                 hideEmptyTree();
+                                                             }
+                                                             for ( int i = 0; i < categories.length; i++ ) {
+                                                                 TreeItem it = new TreeItem();
+                                                                 it.setHTML( "<img src='" + new Image( images.categorySmall() ).getUrl() + "'/>" + h( categories[i] ) );
+                                                                 it.setUserObject( categories[i] );
+                                                                 it.addItem( new PendingItem() );
+                                                                 root.addItem( it );
+                                                             }
 
-                                                     root.setState( true );
-                                                 }
+                                                             root.setState( true );
+                                                         }
 
-                                             } );
+                                                     } );
             }
         } );
 
@@ -179,26 +179,26 @@ public class CategoryExplorerWidget extends Composite
         //walk back up to build a tree
         this.selectedPath = getPath( item );
 
-        service.loadChildCategories( selectedPath,
-                                     new GenericCallback<String[]>() {
+        categoryService.loadChildCategories( selectedPath,
+                                             new GenericCallback<String[]>() {
 
-                                         public void onSuccess(String[] list) {
-                                             TreeItem child = root.getChild( 0 );
-                                             if ( child instanceof PendingItem ) {
-                                                 // root.removeItem( child );
-                                                 child.setVisible( false );
-                                             }
-                                             for ( int i = 0; i < list.length; i++ ) {
-                                                 TreeItem it = new TreeItem();
-                                                 it.setHTML( "<img src='" + images.categorySmall() + "'/>" + list[i] );
-                                                 it.setUserObject( list[i] );
-                                                 it.addItem( new PendingItem() );
+                                                 public void onSuccess(String[] list) {
+                                                     TreeItem child = root.getChild( 0 );
+                                                     if ( child instanceof PendingItem ) {
+                                                         // root.removeItem( child );
+                                                         child.setVisible( false );
+                                                     }
+                                                     for ( int i = 0; i < list.length; i++ ) {
+                                                         TreeItem it = new TreeItem();
+                                                         it.setHTML( "<img src='" + images.categorySmall() + "'/>" + list[i] );
+                                                         it.setUserObject( list[i] );
+                                                         it.addItem( new PendingItem() );
 
-                                                 root.addItem( it );
-                                             }
-                                         }
+                                                         root.addItem( it );
+                                                     }
+                                                 }
 
-                                     } );
+                                             } );
 
     }
 

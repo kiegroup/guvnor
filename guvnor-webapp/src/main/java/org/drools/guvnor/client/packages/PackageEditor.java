@@ -60,7 +60,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
@@ -78,10 +77,10 @@ public class PackageEditor extends PrettyFormLayout {
 
     private PackageConfigData   conf;
     ActionToolbar actionToolBar;
-    protected ValidatedResponse previousResponse;
     private boolean historicalReadOnly = false;
     private Command             close;
     private Command             refreshPackageList;
+    private HorizontalPanel packageConfigurationValidationResult = new HorizontalPanel();;
 
     public PackageEditor(PackageConfigData data,
                          Command close,
@@ -158,7 +157,9 @@ public class PackageEditor extends PrettyFormLayout {
         
         startSection( constants.ConfigurationSection() );
 
-        addRow( warnings() );
+        packageConfigurationValidationResult.clear();
+        addRow( packageConfigurationValidationResult );
+
         addAttribute( constants.Configuration(),
                       header() );
         addAttribute( constants.DescriptionColon(),
@@ -169,11 +170,11 @@ public class PackageEditor extends PrettyFormLayout {
                       getShowCatRules() );
 
         if ( !conf.isSnapshot && !historicalReadOnly) {
-            Button save = new Button( constants.SaveAndValidateConfiguration() );
+            Button save = new Button( constants.ValidateConfiguration() );
             save.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    doSave( null );
+                	doValidatePackageConfiguration( null );
                 }
             } );
             addAttribute( "",
@@ -397,26 +398,28 @@ public class PackageEditor extends PrettyFormLayout {
         }
     }
 
-    private Widget warnings() {
-        if ( this.previousResponse != null && this.previousResponse.hasErrors ) {
+    private void showValidatePackageConfigurationResult(final ValidatedResponse validatedResponse) {
+    	packageConfigurationValidationResult.clear();
+    	
+        if ( validatedResponse != null && validatedResponse.hasErrors ) {
             Image img = new Image( images.warning() );
-            HorizontalPanel h = new HorizontalPanel();
-            h.add( img );
+            packageConfigurationValidationResult.add( img );
             HTML msg = new HTML( "<b>" + constants.ThereWereErrorsValidatingThisPackageConfiguration() + "</b>" ); //NON-NLS
-            h.add( msg );
+            packageConfigurationValidationResult.add( msg );
             Button show = new Button( constants.ViewErrors() );
             show.addClickHandler( new ClickHandler() {
-
                 public void onClick(ClickEvent event) {
-                    ValidationMessageWidget wid = new ValidationMessageWidget( previousResponse.errorHeader,
-                                                                               previousResponse.errorMessage );
+                    ValidationMessageWidget wid = new ValidationMessageWidget( validatedResponse.errorHeader,
+                    		validatedResponse.errorMessage );
                     wid.show();
                 }
             } );
-            h.add( show );
-            return h;
+            packageConfigurationValidationResult.add( show );
         } else {
-            return new SimplePanel();
+            Image img = new Image( images.greenTick() );
+            packageConfigurationValidationResult.add( img );
+            HTML msg = new HTML( "<b>" + constants.PackageValidatedSuccessfully() + "</b>" ); //NON-NLS
+            packageConfigurationValidationResult.add( msg );
         }
     }
 
@@ -554,9 +557,8 @@ public class PackageEditor extends PrettyFormLayout {
         LoadingPopup.showMessage( constants.SavingPackageConfigurationPleaseWait() );
 
         RepositoryServiceFactory.getPackageService().savePackage( this.conf,
-                                                           new GenericCallback<ValidatedResponse>() {
-                                                               public void onSuccess(ValidatedResponse data) {
-                                                                   previousResponse = data;
+                                                           new GenericCallback<Void>() {
+                                                               public void onSuccess(Void data) {
                                                                    reload();
                                                                    LoadingPopup.showMessage( constants.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache() );
 
@@ -572,7 +574,22 @@ public class PackageEditor extends PrettyFormLayout {
                                                                }
                                                            } );
     }
+    
+    private void doValidatePackageConfiguration(final Command refresh) {
+        final HorizontalPanel busy = new HorizontalPanel();
+        busy.add( new Label( constants.ValidatingAndBuildingPackagePleaseWait() ) );
+        busy.add( new Image( images.redAnime() ) );
 
+        packageConfigurationValidationResult.add( busy );
+
+        RepositoryServiceFactory.getPackageService().validatePackageConfiguration( this.conf,
+                                                           new GenericCallback<ValidatedResponse>() {
+                                                               public void onSuccess(ValidatedResponse data) {
+                                                                   showValidatePackageConfigurationResult(data);
+                                                                }
+                                                           } );
+    }
+    
     /**
      * Will refresh all the data.
      */

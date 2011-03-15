@@ -29,7 +29,7 @@ import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
 
 /**
@@ -40,7 +40,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
     private static String[]     DIALECTS = {"java", "mvel"};
 
     // Model used to determine data-types etc for cells
-    private GuidedDecisionTable model;
+    private TypeSafeGuidedDecisionTable model;
 
     /**
      * Construct a Cell Factory for a specific Decision Table
@@ -54,7 +54,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
      */
     public DecisionTableCellFactory(SuggestionCompletionEngine sce,
                                     MergableGridWidget<DTColumnConfig> grid,
-                                    GuidedDecisionTable model) {
+                                    TypeSafeGuidedDecisionTable model) {
         super( sce,
                grid );
         if ( model == null ) {
@@ -103,7 +103,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
                 cell = makeDateCell();
             } else if ( attrName.equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
                 cell = makeDialectCell();
-            } else if ( attrName.equals( GuidedDecisionTable.NEGATE_RULE_ATTR ) ) {
+            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.NEGATE_RULE_ATTR ) ) {
                 cell = makeBooleanCell();
             }
 

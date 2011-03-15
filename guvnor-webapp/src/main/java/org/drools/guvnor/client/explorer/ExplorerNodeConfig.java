@@ -229,7 +229,7 @@ public class ExplorerNodeConfig {
 
     private static void doCategoryNode(final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets) {
         infanticide( treeItem );
-        RepositoryServiceFactory.getService().loadChildCategories( path, createGenericCallbackForLoadChildCategories( treeItem, path, itemWidgets ) );
+        RepositoryServiceFactory.getCategoryService().loadChildCategories( path, createGenericCallbackForLoadChildCategories( treeItem, path, itemWidgets ) );
     }
 
     private static GenericCallback<String[]> createGenericCallbackForLoadChildCategories(final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets) {

@@ -24,13 +24,11 @@ import static org.junit.Assert.assertTrue;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class ContentHandlerTest extends GuvnorTestBase {
@@ -95,7 +93,7 @@ public class ContentHandlerTest extends GuvnorTestBase {
         AssetItem asset = pkg.addAsset( "testEmptyDT",
                                         "" );
         asset.updateFormat( AssetFormats.DECISION_TABLE_GUIDED );
-        GuidedDecisionTable gt = new GuidedDecisionTable();
+        TypeSafeGuidedDecisionTable gt = new TypeSafeGuidedDecisionTable();
         asset.updateContent( GuidedDTXMLPersistence.getInstance().marshal( gt ) );
         asset.checkin( "" );
 

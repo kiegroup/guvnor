@@ -31,7 +31,11 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * 
  * This works by taking the column definitions, and combining them with the
  * table of data to produce rule models.
+ * 
+ * This has been deprecated in preference of {@link TypeSafeGuidedDecisionTable}
+ * which supports type-safe values for the Decision Table cell values.
  */
+@Deprecated
 public class GuidedDecisionTable
     implements
     PortableObject {
@@ -42,11 +46,6 @@ public class GuidedDecisionTable
      * Number of internal elements before ( used for offsets in serialization )
      */
     public static final int    INTERNAL_ELEMENTS = 2;
-
-    /**
-     * This attribute is only used for Decision Tables to negate a rule
-     */
-    public static final String NEGATE_RULE_ATTR    = "negate";
 
     /**
      * The name - obviously.

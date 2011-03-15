@@ -27,6 +27,7 @@
   </actionCols>
   <data>
     <string-array>
+      <string>1</string>
       <string>hola</string>
     </string-array>
   </data>
