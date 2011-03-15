@@ -11,7 +11,7 @@
    Please note that giving someone access to Guvnor indicates a level of trust. Being able to editing and
    build rules is providing a great deal of power to a user. Thus you should not open up Guvnor to your entire
    organization - but instead to a select few. Use https (http with TLS/SSL) where ever possible, even
-   internally in a companies network this is a good idea. Use this power wisely - this not a "run of the
+   internally in a company network this is a good idea. Use this power wisely - this not a "run of the
    mill" application that provides read/write access to a database, but something much more power. Just
    imagine you are spider man - with great power comes great responsibility (of course even more so for super
    man).
@@ -66,17 +66,17 @@
    jaas-config-name="other"/>]]></programlisting>
 
       <para>
-      This will use the "other" jaas config in JBoss AS. If you look in
+      This will use the <literal>other</literal> JAAS config in JBoss AS. If you look in
       <filename>jboss-as/server/default/conf</filename> you will see a <filename>login-config.xml</filename>
-      file. This file contains various configs. If you use "other" like the one above, then it will look for
-      users.properties and roles.properties in the conf directory for usernames and passwords to authenticate
-      against (this is fine for a fixed small number of users).
+      file. This file contains various configurations. If you use <literal>other</literal> like the one above,
+      then it will look for <filename>users.properties</filename> and <filename>roles.properties</filename> in
+      the <filename>conf/</filename> directory for usernames and passwords to authenticate against. This
+      is maintainable only for a fixed small number of users.
       </para>
 
       <para>
-      LDAP is perhaps the most popular choice for larger enterprises, so
-      following is an example that works with Active Directory. You can get
-      much more information on how to configure JBoss AS for all scenarios
+      LDAP is perhaps the most popular choice for larger enterprises.  Here is an example that works
+      with Active Directory. You can get much more information on how to configure JBoss AS for all scenarios
       with LDAP from <ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=LdapLoginModule"/>
       and <ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=LdapExtLoginModule"/>.
       </para>
