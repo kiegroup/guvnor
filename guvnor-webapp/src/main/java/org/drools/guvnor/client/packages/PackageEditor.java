@@ -107,7 +107,6 @@ public class PackageEditor extends PrettyFormLayout {
         startSection(constants.BuildAndValidate());
         actionToolBar = new ActionToolbar(getConfiguration(), conf.state);
         addRow( actionToolBar );
-        //addAttribute("", actionTool );  
         endSection();        
 		if (historicalReadOnly) {
 			actionToolBar.setVisible(false);
@@ -187,7 +186,7 @@ public class PackageEditor extends PrettyFormLayout {
         addRow(new DependencyWidget(this.conf, historicalReadOnly));
         endSection();
         
-        if ( !conf.isSnapshot ) {
+        if ( !conf.isSnapshot && !historicalReadOnly) {
             startSection( constants.BuildAndValidate() );
             addRow( new PackageBuilderWidget( this.conf ) );
             endSection();

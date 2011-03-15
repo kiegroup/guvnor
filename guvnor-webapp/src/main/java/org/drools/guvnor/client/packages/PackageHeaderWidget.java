@@ -88,7 +88,7 @@ public class PackageHeaderWidget extends Composite {
         HorizontalPanel importCols = new HorizontalPanel();
         importCols.add( importList );
         VerticalPanel importActions = new VerticalPanel();
-        importActions.add( new ImageButton( images.newItem() ) {
+        ImageButton newItemButton =  new ImageButton( images.newItem() ) {
             {
                 addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent event) {
@@ -96,7 +96,11 @@ public class PackageHeaderWidget extends Composite {
                     }
                 } );
             }
-        } );
+        } ;
+        Button b =new Button("My button");
+        //b.setEnabled(false);
+        
+        importActions.add(b);
         importActions.add( new ImageButton( images.trash() ) {
             {
                 addClickHandler( new ClickHandler() {
