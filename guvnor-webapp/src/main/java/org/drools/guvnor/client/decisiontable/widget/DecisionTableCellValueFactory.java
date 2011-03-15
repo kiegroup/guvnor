@@ -120,6 +120,11 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         DTDataTypes dataType = getDataType( column );
         CellValue< ? extends Comparable< ? >> cell = null;
 
+        //If this is a legacy Decision Table values are always String 
+        //so ensure that the appropriate DTCellValue field is populated
+        assertDTCellValue( dataType,
+                           dcv );
+
         switch ( dataType ) {
             case BOOLEAN :
                 cell = makeNewBooleanCellValue( iRow,
@@ -152,6 +157,46 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         }
 
         return cell;
+    }
+
+    //If the Decision Table model has been converted from the legacy text based
+    //class then all values are held in the DTCellValue's StringValue. This
+    //function attempts to set the correct DTCellValue property based on
+    //the DTCellValue's data type.
+    private void assertDTCellValue(DTDataTypes dataType,
+                                   DTCellValue dcv) {
+        String text = dcv.getStringValue();
+        if ( text == null ) {
+            return;
+        }
+        switch ( dataType ) {
+            case BOOLEAN :
+                dcv.setBooleanValue( Boolean.valueOf( text ) );
+                dcv.setStringValue( null );
+                break;
+            case DATE :
+                try {
+                    dcv.setDateValue( DATE_FORMAT.parse( text ) );
+                    dcv.setStringValue( null );
+                } catch ( IllegalArgumentException e ) {
+                }
+                break;
+            case NUMERIC :
+                try {
+                    dcv.setNumericValue( new BigDecimal( text ) );
+                    dcv.setStringValue( null );
+                } catch ( NumberFormatException e ) {
+                }
+                break;
+            case ROW_NUMBER :
+                try {
+                    dcv.setNumericValue( new BigDecimal( text ) );
+                    dcv.setStringValue( null );
+                } catch ( NumberFormatException e ) {
+                }
+                break;
+        }
+
     }
 
     // Derive the Data Type for a Condition or Action column
