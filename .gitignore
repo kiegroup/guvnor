@@ -8,3 +8,6 @@
 /*.ipr
 /*.iws
 /*.iml
+
+.DS_Store
+/guvnor-docs/src/main/docbook/tmp/
