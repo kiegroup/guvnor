@@ -67,17 +67,9 @@ public abstract class AbstractCellValueFactory<T> {
                 cell = makeNewDateCellValue( iRow,
                                              iCol );
                 break;
-            case DIALECT :
-                cell = makeNewDialectCellValue( iRow,
-                                                iCol );
-                break;
             case NUMERIC :
                 cell = makeNewNumericCellValue( iRow,
                                                 iCol );
-                break;
-            case ROW_NUMBER :
-                cell = makeNewRowNumberCellValue( iRow,
-                                                  iCol );
                 break;
             default :
                 cell = makeNewStringCellValue( iRow,
@@ -139,15 +131,6 @@ public abstract class AbstractCellValueFactory<T> {
                                              iCol,
                                              d );
                 break;
-            case DIALECT :
-                String s = null;
-                if ( initialValue.equals( "java" ) || initialValue.equals( "mvel" ) ) {
-                    s = initialValue;
-                }
-                cell = makeNewDialectCellValue( iRow,
-                                                iCol,
-                                                s );
-                break;
             case NUMERIC :
                 BigDecimal bd = null;
                 try {
@@ -157,10 +140,6 @@ public abstract class AbstractCellValueFactory<T> {
                 cell = makeNewNumericCellValue( iRow,
                                                 iCol,
                                                 bd );
-                break;
-            case ROW_NUMBER :
-                cell = makeNewRowNumberCellValue( iRow,
-                                                  iCol );
                 break;
             default :
                 cell = makeNewStringCellValue( iRow,

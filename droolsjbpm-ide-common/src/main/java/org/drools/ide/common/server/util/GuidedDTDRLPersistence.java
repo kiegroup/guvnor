@@ -388,14 +388,9 @@ public class GuidedDTDRLPersistence {
                 SimpleDateFormat sdf = new SimpleDateFormat( "dd-mmm-yyyy" );
                 Date dateValue = dcv.getDateValue();
                 return (dateValue == null ? null : sdf.format( dcv.getDateValue() ));
-            case DIALECT :
-                return dcv.getStringValue();
             case NUMERIC :
                 BigDecimal bdValue = dcv.getNumericValue();
                 return (bdValue == null ? null : bdValue.toPlainString());
-            case ROW_NUMBER :
-                BigDecimal rnValue = dcv.getNumericValue();
-                return (rnValue == null ? null : rnValue.toPlainString());
             default :
                 return dcv.getStringValue();
         }

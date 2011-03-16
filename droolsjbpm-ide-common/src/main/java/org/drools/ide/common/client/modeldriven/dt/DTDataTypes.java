@@ -25,9 +25,7 @@ public enum DTDataTypes
 
     STRING,
     NUMERIC,
-    ROW_NUMBER,
     DATE,
-    BOOLEAN,
-    DIALECT
+    BOOLEAN
 
 }

@@ -21,7 +21,9 @@ import java.util.Date;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
- * Holder for cell value and other attributes
+ * Holder for cell value and other attributes. This is serialised by GWT RPC and
+ * therefore does not contain a single property of type Serializable (that would
+ * have been ideal). Instead the concrete data types are included separately.
  */
 public class DTCellValue
     implements
@@ -77,6 +79,7 @@ public class DTCellValue
         this.valueNumeric = value;
         this.dataType = DTDataTypes.NUMERIC;
     }
+
 
     public void setOtherwise(boolean isOtherwise) {
         this.isOtherwise = isOtherwise;

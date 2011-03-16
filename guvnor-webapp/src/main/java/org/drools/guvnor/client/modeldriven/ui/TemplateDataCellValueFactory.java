@@ -56,11 +56,7 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
                 return convertBooleanValueToString( cv );
             case DATE :
                 return convertDateValueToString( cv );
-            case DIALECT :
-                return convertStringValueToString( cv );
             case NUMERIC :
-                return convertNumericValueToString( cv );
-            case ROW_NUMBER :
                 return convertNumericValueToString( cv );
             default :
                 return convertStringValueToString( cv );
@@ -87,7 +83,7 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
         return (value.getValue() == null ? null : ((BigDecimal) value.getValue()).toPlainString());
     }
 
-    //TODO Convert a String value to a String
+    //Convert a String value to a String
     private String convertStringValueToString(CellValue< ? > value) {
         return (value.getValue() == null ? null : (String) value.getValue());
     }
