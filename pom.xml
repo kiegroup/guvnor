@@ -17,6 +17,11 @@
   <description>
     Guvnor is the web application and repository to govern Drools and jBPM assets.
   </description>
+  
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.jboss.org/browse/GUVNOR</url>
+  </issueManagement>
 
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
