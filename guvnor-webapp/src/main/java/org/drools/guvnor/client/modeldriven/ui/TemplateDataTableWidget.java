@@ -195,7 +195,7 @@ public class TemplateDataTableWidget extends Composite
         int dataSize = this.widget.getGridWidget().getData().size();
         List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( column,
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( column,
                                                                                       iRow,
                                                                                       colIndex );
             columnData.add( cv );
@@ -209,7 +209,7 @@ public class TemplateDataTableWidget extends Composite
         List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             TemplateDataColumn col = columns.get( iCol ).getModelColumn();
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( col,
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
                                                                                       0,
                                                                                       iCol );
             row.add( cv );
@@ -234,7 +234,7 @@ public class TemplateDataTableWidget extends Composite
     public void scrapeData(TemplateModel model) {
         model.clearRows();
 
-        final DynamicData data = widget.getGridWidget().getFlattenedData();
+        final DynamicData<TemplateDataColumn> data = widget.getGridWidget().getData().getFlattenedData();
         final List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
         int columnCount = columns.size();
 
@@ -294,7 +294,7 @@ public class TemplateDataTableWidget extends Composite
                     initialValue = null;
                 }
 
-                CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( col,
+                CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
                                                                                           iRow,
                                                                                           iCol,
                                                                                           initialValue );
@@ -305,7 +305,7 @@ public class TemplateDataTableWidget extends Composite
         }
 
         // Ensure cells are indexed correctly for start-up data
-        widget.getGridWidget().assertModelIndexes();
+        widget.getGridWidget().getData().assertModelIndexes();
 
         // Draw header first as the size of child Elements depends upon it
         widget.getHeaderWidget().redraw();

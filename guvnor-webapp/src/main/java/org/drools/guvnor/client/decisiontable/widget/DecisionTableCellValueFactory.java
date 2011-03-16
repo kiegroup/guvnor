@@ -67,7 +67,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      * @return
      */
     public DTCellValue convertToDTModelCell(DTColumnConfig column,
-                                                 CellValue< ? > cell) {
+                                            CellValue< ? > cell) {
         DTDataTypes dt = getDataType( column );
         DTCellValue dtCell = null;
 
@@ -105,7 +105,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      *            The Model cell containing the value
      * @return A CellValue
      */
-    public CellValue< ? extends Comparable< ? >> getCellValue(DTColumnConfig column,
+    public CellValue< ? extends Comparable< ? >> makeCellValue(DTColumnConfig column,
                                                               int iRow,
                                                               int iCol,
                                                               DTCellValue dcv) {
@@ -191,7 +191,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     }
 
     // Derive the Data Type for a Condition or Action column
-    private DTDataTypes makeNewCellDataType(DTColumnConfig col) {
+    private DTDataTypes derieveDataType(DTColumnConfig col) {
 
         DTDataTypes dataType = DTDataTypes.STRING;
 
@@ -245,13 +245,13 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
             }
 
         } else if ( column instanceof ConditionCol ) {
-            dataType = makeNewCellDataType( column );
+            dataType = derieveDataType( column );
 
         } else if ( column instanceof ActionSetFieldCol ) {
-            dataType = makeNewCellDataType( column );
+            dataType = derieveDataType( column );
 
         } else if ( column instanceof ActionInsertFactCol ) {
-            dataType = makeNewCellDataType( column );
+            dataType = derieveDataType( column );
 
         }
 

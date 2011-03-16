@@ -52,7 +52,7 @@ public abstract class AbstractCellValueFactory<T> {
      *            Column coordinate for initialisation
      * @return A CellValue
      */
-    public CellValue< ? extends Comparable< ? >> getCellValue(T column,
+    public CellValue< ? extends Comparable< ? >> makeCellValue(T column,
                                                               int iRow,
                                                               int iCol) {
         DTDataTypes dataType = getDataType( column );
@@ -78,78 +78,7 @@ public abstract class AbstractCellValueFactory<T> {
 
         return cell;
     }
-
-    /**
-     * Make a CellValue applicable for the column. This is used by legacy UI
-     * Models (Template Data Editor and legacy Guided Decision Tables) that
-     * store values in a two-dimensional array of Strings.
-     * 
-     * @param column
-     *            The model column
-     * @param iRow
-     *            Row coordinate for initialisation
-     * @param iCol
-     *            Column coordinate for initialisation
-     * @param initialValue
-     *            The initial value of the cell
-     * @return A CellValue
-     */
-    @SuppressWarnings("deprecation")
-    public CellValue< ? extends Comparable< ? >> getCellValue(
-                                                              T column,
-                                                              int iRow,
-                                                              int iCol,
-                                                              String initialValue) {
-        DTDataTypes dataType = getDataType( column );
-        CellValue< ? extends Comparable< ? >> cell = null;
-
-        switch ( dataType ) {
-            case BOOLEAN :
-                Boolean b = Boolean.FALSE;
-                try {
-                    b = Boolean.valueOf( initialValue );
-                } catch ( Exception e ) {
-                }
-                cell = makeNewBooleanCellValue( iRow,
-                                                iCol,
-                                                b );
-                break;
-            case DATE :
-                Date d = null;
-                Date nd = new Date();
-                int year = nd.getYear();
-                int month = nd.getMonth();
-                int date = nd.getDate();
-                d = new Date( year,
-                              month,
-                              date );
-                try {
-                    d = DATE_FORMAT.parse( initialValue );
-                } catch ( IllegalArgumentException iae ) {
-                }
-                cell = makeNewDateCellValue( iRow,
-                                             iCol,
-                                             d );
-                break;
-            case NUMERIC :
-                BigDecimal bd = null;
-                try {
-                    bd = new BigDecimal( initialValue );
-                } catch ( Exception e ) {
-                }
-                cell = makeNewNumericCellValue( iRow,
-                                                iCol,
-                                                bd );
-                break;
-            default :
-                cell = makeNewStringCellValue( iRow,
-                                               iCol,
-                                               initialValue );
-        }
-
-        return cell;
-    }
-
+    
     // Get the Data Type corresponding to a given column
     protected abstract DTDataTypes getDataType(T column);
 
