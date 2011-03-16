@@ -32,6 +32,7 @@ import com.google.gwt.core.client.GWT;
 public class HumanReadable {
 
     public static Map<String, String> operatorDisplayMap = new HashMap<String, String>();
+    public static Map<String, String> operatorExtensionDisplayMap = new HashMap<String, String>();
     public static Map<String, String> ceDisplayMap = new HashMap<String, String>();
     public static Map<String, String> actionDisplayMap = new HashMap<String, String>();
     public static final String[] CONDITIONAL_ELEMENTS = new String[] {"not", "exists", "or"};
@@ -47,7 +48,6 @@ public class HumanReadable {
         operatorDisplayMap.put( "<=", constants.lessThanOrEqualTo());
         operatorDisplayMap.put( ">", constants.greaterThan());
         operatorDisplayMap.put( ">=", constants.greaterThanOrEqualTo());
-
         operatorDisplayMap.put( "|| ==", constants.orEqualTo());
         operatorDisplayMap.put( "|| !=", constants.orNotEqualTo());
         operatorDisplayMap.put( "&& !=", constants.andNotEqualTo());
@@ -56,7 +56,6 @@ public class HumanReadable {
         operatorDisplayMap.put( "|| >", constants.orGreaterThan());
         operatorDisplayMap.put( "|| <", constants.orLessThan());
         operatorDisplayMap.put( "&& <", constants.andLessThan());
-
         operatorDisplayMap.put( "|| >=", constants.orGreaterThanOrEqualTo());
         operatorDisplayMap.put( "|| <=", constants.orLessThanOrEqualTo());
         operatorDisplayMap.put( "&& >=", constants.andGreaterThanOrEqualTo());
@@ -67,15 +66,15 @@ public class HumanReadable {
         operatorDisplayMap.put( "|| matches", constants.orMatches());
         operatorDisplayMap.put( "|| excludes", constants.orExcludes());
         operatorDisplayMap.put( "&& excludes", constants.andExcludes());
-
         operatorDisplayMap.put( "soundslike", constants.soundsLike());
-
         operatorDisplayMap.put("in", constants.isContainedInTheFollowingList());
+        operatorDisplayMap.put("== null", constants.isEqualToNull());
+        operatorDisplayMap.put("!= null", constants.isNotEqualToNull());
+        
 
         ceDisplayMap.put( "not", constants.ThereIsNo());
         ceDisplayMap.put( "exists", constants.ThereExists());
         ceDisplayMap.put( "or", constants.AnyOf1());
-
         ceDisplayMap.put( "from", constants.From());
         ceDisplayMap.put( "from accumulate", constants.FromAccumulate());
         ceDisplayMap.put( "from collect", constants.FromCollect());

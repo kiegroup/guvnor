@@ -331,8 +331,8 @@ public class FactPatternWidget extends RuleModellerWidget {
             } else {
                 inner.setWidget( row, 0 + col, fieldLabel( constraint, showBinding, tabs * 20 ) );
             }
-            inner.setWidget( row, 1 + col, operatorDropDown( constraint ) );
             inner.setWidget( row, 2 + col, valueEditor( constraint, constraint.getFieldType() ) );
+            inner.setWidget( row, 1 + col, operatorDropDown( constraint, inner, row, 2 + col ) );
             inner.setWidget( row, 3 + col, connectives.connectives( constraint, constraint.getFieldType() ) );
 
             if ( ebContainer != null && ebContainer.getWidgetCount() > 0 ) {
@@ -462,7 +462,6 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private Widget valueEditor(final SingleFieldConstraint c, String factType) {
-        //String type = this.modeller.getSuggestionCompletions().getFieldType( factType, c.fieldName );
         ConstraintValueEditor constraintValueEditor = new ConstraintValueEditor( pattern, c.getFieldName(), c, this.getModeller(), c.getFieldType(), this.readOnly );
         constraintValueEditor.setOnValueChangeCommand( new Command() {
             public void execute() {
@@ -472,11 +471,15 @@ public class FactPatternWidget extends RuleModellerWidget {
         return constraintValueEditor;
     }
 
-    private Widget operatorDropDown(final SingleFieldConstraint c) {
-        return operatorDropDown( c, connectives.getCompletions().getFieldType( pattern.getFactType(), c.getFieldName() ) );
+    private Widget operatorDropDown(final SingleFieldConstraint c, String type) {
+        return operatorDropDown( c, type, null, -1, -1 );
+    }
+    
+    private Widget operatorDropDown(final SingleFieldConstraint c, DirtyableFlexTable inner, int row, int col) {
+        return operatorDropDown( c, connectives.getCompletions().getFieldType( pattern.getFactType(), c.getFieldName() ), inner, row, col);
     }
 
-    private Widget operatorDropDown(final SingleFieldConstraint c, String type) {
+    private Widget operatorDropDown(final SingleFieldConstraint c, String type, final DirtyableFlexTable inner, final int row, final int col) {
         if ( !this.readOnly ) {
             String[] ops = connectives.getCompletions().getOperatorCompletions( type );
             final ListBox box = new ListBox();
@@ -485,6 +488,10 @@ public class FactPatternWidget extends RuleModellerWidget {
                 String op = ops[i];
                 box.addItem( HumanReadable.getOperatorDisplayName( op ), op );
                 if ( op.equals( c.getOperator() ) ) {
+                    if(HumanReadable.getOperatorDisplayName( op ).equals(constants.isEqualToNull()) || HumanReadable.getOperatorDisplayName( op ).equals(constants.isNotEqualToNull())) {
+                        inner.getWidget(row, col).setVisible(false);
+                        ( (ConstraintValueEditor) inner.getWidget(row, col)).getConstraint().setValue("");
+                    }
                     box.setSelectedIndex( i + 1 );
                 }
 
@@ -494,10 +501,23 @@ public class FactPatternWidget extends RuleModellerWidget {
 
                 public void onChange(ChangeEvent event) {
                     setModified( true );
-                    c.setOperator( box.getValue( box.getSelectedIndex() ) );
+                    String selected = box.getValue( box.getSelectedIndex());
+                    String selectedText = box.getItemText( box.getSelectedIndex() );
+                    c.setOperator( selected );
                     if ( c.getOperator().equals( "" ) ) {
                         c.setOperator( null );
                     }
+                    if( selectedText.equals(constants.isEqualToNull()) || selectedText.equals(constants.isNotEqualToNull())) {
+                        if(inner != null) {
+                            inner.getWidget(row, col).setVisible(false);
+                            ( (ConstraintValueEditor) inner.getWidget(row, col)).getConstraint().setValue("");
+                        }
+                     } else {
+                        if(inner != null) {
+                            inner.getWidget(row, col).setVisible(true);
+                        }
+                    }
+                    
                     getModeller().makeDirty();
                 }
             } );

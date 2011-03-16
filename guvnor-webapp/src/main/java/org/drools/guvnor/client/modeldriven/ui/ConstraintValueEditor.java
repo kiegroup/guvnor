@@ -108,6 +108,10 @@ public class ConstraintValueEditor extends DirtyableComposite {
         refreshEditor();
         initWidget( panel );
     }
+    
+    public BaseSingleFieldConstraint getConstraint() {
+        return constraint;
+    }
 
     private void refreshEditor() {
         panel.clear();

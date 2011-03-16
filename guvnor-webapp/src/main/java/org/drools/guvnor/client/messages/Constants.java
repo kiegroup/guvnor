@@ -709,6 +709,10 @@ public interface Constants
     String isEqualTo();
 
     String isNotEqualTo();
+    
+    String isEqualToNull();
+
+    String isNotEqualToNull();
 
     String isLessThan();
 
