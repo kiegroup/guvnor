@@ -41,6 +41,12 @@
     </repository>
   </repositories>
 
+  <scm>
+    <connection>scm:git:git@github.com:droolsjbpm/guvnor.git</connection>
+    <developerConnection>scm:git:git@github.com:droolsjbpm/guvnor.git</developerConnection>
+    <url>https://github.com/droolsjbpm/guvnor</url>
+  </scm>
+
   <modules>
     <module>guvnor-repository-connector</module>
     <module>guvnor-repository</module>
