@@ -489,13 +489,10 @@ public abstract class MergableGridWidget<T> extends Widget
         if ( !data.isMerged() ) {
             clearSelection();
             data.setMerged(true);
-//TODO            data.assertModelMerging();
             redraw();
         } else {
             clearSelection();
             data.setMerged(false);
-//TODO            data.removeModelGrouping();
-//TODO            data.removeModelMerging();
             redraw();
             RowGroupingChangeEvent.fire( this );
         }
