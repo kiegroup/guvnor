@@ -53,7 +53,6 @@ import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.QueryPageRowFactory;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
-import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.CategoryItem;
@@ -664,7 +663,7 @@ public class RepositoryAssetOperations {
 
         String userName;
         if ( Contexts.isApplicationContextActive() ) {
-            userName = Identity.instance().getUsername();
+            userName = Identity.instance().getCredentials().getUsername();
         } else {
             userName = "anonymous";
         }
@@ -714,7 +713,7 @@ public class RepositoryAssetOperations {
         meta.packageUUID = item.getPackage().getUUID();
         meta.setBinary( item.isBinary() );
 
-        List categories = item.getCategories();
+        List<CategoryItem> categories = item.getCategories();
         fillMetaCategories( meta,
                             categories );
         meta.dateEffective = calendarToDate( item.getDateEffective() );
@@ -736,14 +735,16 @@ public class RepositoryAssetOperations {
 
         meta.createdDate = calendarToDate( item.getCreatedDate() );
         meta.lastModifiedDate = calendarToDate( item.getLastModified() );
-
-        meta.hasPreceedingVersion = item.getPrecedingVersion() != null;
-        meta.hasSucceedingVersion = item.getSucceedingVersion() != null;
+        
+        //problematic implementation of getPrecedingVersion and getPrecedingVersion().
+        //commented out temporarily as this is used by the front end. 
+        //meta.hasPreceedingVersion = item.getPrecedingVersion() != null;
+        //meta.hasSucceedingVersion = item.getPrecedingVersion() != null;
         return meta;
     }
 
     private void fillMetaCategories(MetaData meta,
-                                    List categories) {
+                                    List<CategoryItem> categories) {
         meta.categories = new String[categories.size()];
         for ( int i = 0; i < meta.categories.length; i++ ) {
             CategoryItem cat = (CategoryItem) categories.get( i );

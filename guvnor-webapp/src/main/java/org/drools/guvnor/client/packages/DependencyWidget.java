@@ -58,11 +58,11 @@ public class DependencyWidget extends Composite {
     private DependenciesPagedTable table;
 
     private PackageConfigData conf;
-    private boolean readonly = false;
+    private boolean isHistoricalReadOnly = false;
     
-    public DependencyWidget(final PackageConfigData conf, boolean readonly) {
+    public DependencyWidget(final PackageConfigData conf, boolean isHistoricalReadOnly) {
         this.conf = conf;
-        this.readonly = readonly;
+        this.isHistoricalReadOnly = isHistoricalReadOnly;
         layout = new FormStyleLayout();
         
         VerticalPanel header = new VerticalPanel();
@@ -82,31 +82,27 @@ public class DependencyWidget extends Composite {
         vp.setWidth( "100%" );
 
         //pf.startSection();
-        layout.addRow( vp );
-		if (readonly) {
-			table = new DependenciesPagedTableReadOnly(conf.uuid, null);
+		layout.addRow(vp);
 
-			layout.addRow(table);
-		} else {
-			table = new DependenciesPagedTable(conf.uuid,
-					new OpenItemCommand() {
-						public void open(String path) {
-							showEditor(path);
-						}
-						public void open(MultiViewRow[] rows) {
-							// Do nothing, unsupported
-						}
-					});
+		table = new DependenciesPagedTable(conf.uuid, new OpenItemCommand() {
+			public void open(String path) {
+				showEditor(path);
+			}
 
-			layout.addRow(table);
-		}
-        initWidget( layout );
+			public void open(MultiViewRow[] rows) {
+				// Do nothing, unsupported
+			}
+		});
+
+		layout.addRow(table);
+
+		initWidget(layout);
     }
 
     private Widget dependencyTip() {
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( new HTML( "<small><i>"
-                          + "This shows exact version numbers of assets that this package contains."
+                          + "This shows exact versions of assets that this package contains."
                           + "</i></small>" ) );
         InfoPopup pop = new InfoPopup( "Edit Dependency",
                 "Edit dependency version to build a package against specific versions of assets" );
@@ -144,9 +140,9 @@ public class DependencyWidget extends Composite {
 		editor.addAttribute("Dependency Version: ",  versionChoose);
 
 		HorizontalPanel hp = new HorizontalPanel();
-		Button save = new Button("Use selected version"); 
-		hp.add(save);
-        save.addClickHandler(new ClickHandler() {
+		Button useSelectedVersionButton = new Button("Use selected version"); 
+		hp.add(useSelectedVersionButton);
+        useSelectedVersionButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent w) {
                 String selectedVersion = versionChoose.getSelectedVersionName();
                 if (Window.confirm("Are you sure you want to use version: " + selectedVersion  + " as dependency?")) {
@@ -164,6 +160,7 @@ public class DependencyWidget extends Composite {
                 }
             }
         });
+        useSelectedVersionButton.setEnabled(!isHistoricalReadOnly);
 		
 		Button cancel = new Button(constants.Cancel());
 		hp.add(cancel);
