@@ -79,11 +79,10 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
      *            The initial value of the cell
      * @return A CellValue
      */
-    @SuppressWarnings("deprecation")
     public CellValue< ? extends Comparable< ? >> makeCellValue(TemplateDataColumn column,
-                                                              int iRow,
-                                                              int iCol,
-                                                              String initialValue) {
+                                                               int iRow,
+                                                               int iCol,
+                                                               String initialValue) {
         DTDataTypes dataType = getDataType( column );
         CellValue< ? extends Comparable< ? >> cell = null;
 
@@ -100,16 +99,12 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
                 break;
             case DATE :
                 Date d = null;
-                Date nd = new Date();
-                int year = nd.getYear();
-                int month = nd.getMonth();
-                int date = nd.getDate();
-                d = new Date( year,
-                              month,
-                              date );
                 try {
-                    d = DATE_FORMAT.parse( initialValue );
-                } catch ( IllegalArgumentException iae ) {
+                    if ( DATE_CONVERTOR == null ) {
+                        throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
+                    }
+                    d = DATE_CONVERTOR.parse( initialValue );
+                } catch ( Exception e ) {
                 }
                 cell = makeNewDateCellValue( iRow,
                                              iCol,
@@ -143,7 +138,10 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
     private String convertDateValueToString(CellValue< ? > value) {
         String result = null;
         if ( value.getValue() != null ) {
-            result = DATE_FORMAT.format( (Date) value.getValue() );
+            if ( DATE_CONVERTOR == null ) {
+                throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
+            }
+            result = DATE_CONVERTOR.format( (Date) value.getValue() );
         }
         return result;
     }

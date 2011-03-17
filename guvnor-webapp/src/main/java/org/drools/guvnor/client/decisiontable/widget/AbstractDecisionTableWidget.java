@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
+import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
@@ -287,6 +288,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                          this.model );
         this.cellValueFactory = new DecisionTableCellValueFactory( sce,
                                                                    this.model );
+        
+        //Date converter is injected so a GWT compatible one can be used here and another in testing
+        this.cellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
 
         widget.getGridWidget().getData().clear();
         widget.getGridWidget().getColumns().clear();
@@ -909,12 +913,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
         DynamicData<DTColumnConfig> data = widget.getGridWidget().getData();
         List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DTCellValue dcv = new DTCellValue();
-            dcv.setStringValue( modelColumn.getDefaultValue() );
+            DTCellValue dcv = new DTCellValue( modelColumn.getDefaultValue() );
             CellValue< ? > cell = cellValueFactory.makeCellValue( modelColumn,
-                                                                 iRow,
-                                                                 index,
-                                                                 dcv );
+                                                                  iRow,
+                                                                  index,
+                                                                  dcv );
             columnData.add( cell );
         }
 
@@ -962,9 +965,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
             List<DTCellValue> row = model.getData().get( iRow );
             DTCellValue dcv = row.get( colIndex );
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( column,
-                                                                                      iRow,
-                                                                                      colIndex,
-                                                                                      dcv );
+                                                                                       iRow,
+                                                                                       colIndex,
+                                                                                       dcv );
             columnData.add( cv );
         }
         return columnData;
@@ -976,12 +979,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
         List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             DTColumnConfig col = columns.get( iCol ).getModelColumn();
-            DTCellValue dcv = new DTCellValue();
-            dcv.setStringValue( col.getDefaultValue() );
+            DTCellValue dcv = new DTCellValue( col.getDefaultValue() );
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
-                                                                                      0,
-                                                                                      iCol,
-                                                                                      dcv );
+                                                                                       0,
+                                                                                       iCol,
+                                                                                       dcv );
             row.add( cv );
         }
         return row;
@@ -1038,8 +1040,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
             DynamicDataRow row = data.get( iRow );
             row.set( column.getColumnIndex(),
                      cellValueFactory.makeCellValue( editColumn,
-                                                    iRow,
-                                                    column.getColumnIndex() ) );
+                                                     iRow,
+                                                     column.getColumnIndex() ) );
         }
 
         // Setting CellValues mashes the indexes

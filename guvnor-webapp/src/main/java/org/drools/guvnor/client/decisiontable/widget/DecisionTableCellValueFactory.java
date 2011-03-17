@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
+import org.drools.guvnor.client.util.DateConverter;
 import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellValueFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -73,20 +74,16 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
 
         switch ( dt ) {
             case BOOLEAN :
-                dtCell = new DTCellValue();
-                dtCell.setBooleanValue( (Boolean) cell.getValue() );
+                dtCell = new DTCellValue( (Boolean) cell.getValue() );
                 break;
             case DATE :
-                dtCell = new DTCellValue();
-                dtCell.setDateValue( (Date) cell.getValue() );
+                dtCell = new DTCellValue( (Date) cell.getValue() );
                 break;
             case NUMERIC :
-                dtCell = new DTCellValue();
-                dtCell.setNumericValue( (BigDecimal) cell.getValue() );
+                dtCell = new DTCellValue( (BigDecimal) cell.getValue() );
                 break;
             default :
-                dtCell = new DTCellValue();
-                dtCell.setStringValue( (String) cell.getValue() );
+                dtCell = new DTCellValue( (String) cell.getValue() );
         }
         dtCell.setOtherwise( cell.isOtherwise() );
         return dtCell;
@@ -106,9 +103,9 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      * @return A CellValue
      */
     public CellValue< ? extends Comparable< ? >> makeCellValue(DTColumnConfig column,
-                                                              int iRow,
-                                                              int iCol,
-                                                              DTCellValue dcv) {
+                                                               int iRow,
+                                                               int iCol,
+                                                               DTCellValue dcv) {
         DTDataTypes dataType = getDataType( column );
         CellValue< ? extends Comparable< ? >> cell = null;
 
@@ -169,22 +166,30 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         String text = dcv.getStringValue();
         switch ( dataType ) {
             case BOOLEAN :
-                dcv.setStringValue( null );
                 dcv.setBooleanValue( (text == null ? null : Boolean.valueOf( text )) );
                 break;
             case DATE :
+                Date d = null;
                 try {
-                    dcv.setStringValue( null );
-                    dcv.setDateValue( (text == null ? null : DATE_FORMAT.parse( text )) );
+                    if ( text != null ) {
+                        if ( DATE_CONVERTOR == null ) {
+                            throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
+                        }
+                        d = DATE_CONVERTOR.parse( text );
+                    }
                 } catch ( IllegalArgumentException e ) {
                 }
+                dcv.setDateValue( d );
                 break;
             case NUMERIC :
+                BigDecimal bd = null;
                 try {
-                    dcv.setStringValue( null );
-                    dcv.setNumericValue( (text == null ? null : new BigDecimal( text )) );
+                    if ( text != null ) {
+                        bd = new BigDecimal( text );
+                    }
                 } catch ( NumberFormatException e ) {
                 }
+                dcv.setNumericValue( bd );
                 break;
         }
 

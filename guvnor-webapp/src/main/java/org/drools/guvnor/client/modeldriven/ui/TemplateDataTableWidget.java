@@ -18,6 +18,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridSidebarWidget;
@@ -72,6 +73,9 @@ public class TemplateDataTableWidget extends Composite
         this.cellFactory = new TemplateDataCellFactory( sce,
                                                         widget.getGridWidget() );
         this.cellValueFactory = new TemplateDataCellValueFactory( sce );
+
+        //Date converter is injected so a GWT compatible one can be used here and another in testing
+        this.cellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
 
         initWidget( widget );
     }
@@ -196,8 +200,8 @@ public class TemplateDataTableWidget extends Composite
         List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( column,
-                                                                                      iRow,
-                                                                                      colIndex );
+                                                                                       iRow,
+                                                                                       colIndex );
             columnData.add( cv );
         }
         return columnData;
@@ -210,8 +214,8 @@ public class TemplateDataTableWidget extends Composite
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             TemplateDataColumn col = columns.get( iCol ).getModelColumn();
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
-                                                                                      0,
-                                                                                      iCol );
+                                                                                       0,
+                                                                                       iCol );
             row.add( cv );
         }
         return row;
@@ -295,9 +299,9 @@ public class TemplateDataTableWidget extends Composite
                 }
 
                 CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
-                                                                                          iRow,
-                                                                                          iCol,
-                                                                                          initialValue );
+                                                                                           iRow,
+                                                                                           iCol,
+                                                                                           initialValue );
                 row.add( cv );
             }
             widget.insertRowBefore( null,
