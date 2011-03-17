@@ -36,7 +36,7 @@ public class CategoryResourceTest extends RestTestingBase {
         dispatcher.getRegistry().addPerRequestResource(CategoryResource.class);
     }
 
-    @Test
+    @Test @Ignore
     public void testGetAssetsByCategoryAsAtom() throws Exception {
         URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8"));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -48,7 +48,7 @@ public class CategoryResourceTest extends RestTestingBase {
         //logger.log(LogLevel, GetContent(connection));
     }
 
-    @Test
+    @Test @Ignore
     public void testGetAssetsByCategoryAsJson() throws Exception {
         URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8"));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -61,7 +61,7 @@ public class CategoryResourceTest extends RestTestingBase {
 
     }
 
-    @Test
+    @Test @Ignore
     public void testGetAssetsByCategoryAsJaxb() throws Exception {
         URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8"));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -73,7 +73,7 @@ public class CategoryResourceTest extends RestTestingBase {
         //logger.log(LogLevel, GetContent(connection));
     }
 
-    @Test
+    @Test @Ignore
     public void testGetAssetsByCategoryAndPageAsAtom() throws Exception {
         URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -85,7 +85,7 @@ public class CategoryResourceTest extends RestTestingBase {
         //logger.log(LogLevel, GetContent(connection));
     }
 
-    @Test
+    @Test @Ignore
     public void testGetAssetsByCategoryAndPageAsJson() throws Exception {
         URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -98,7 +98,7 @@ public class CategoryResourceTest extends RestTestingBase {
 
     }
 
-    @Test
+    @Test @Ignore
     public void testGetAssetsByCategoryAndPageAsJaxb() throws Exception {
         URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
