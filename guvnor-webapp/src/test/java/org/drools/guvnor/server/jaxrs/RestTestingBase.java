@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.server.jaxrs;
 
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.jaxrs.jaxb.*;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
@@ -35,25 +36,8 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RestTestingBase {
-
-    protected Logger logger;
-
-    protected static Level LogLevel = Level.INFO;
-
+public class RestTestingBase extends GuvnorTestBase {
     protected static Dispatcher dispatcher;
-
-    protected static ServiceImplementation Service;
-
-    static {
-        Service = Resource.Service;
-        Service.clearRulesRepository();
-        try {
-            Resource.PackageService.installSampleRepository();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @BeforeClass
     public static void Initialize() {
@@ -62,7 +46,7 @@ public class RestTestingBase {
             dispatcher = deployment.getDispatcher();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }       
     }
 
     @AfterClass
@@ -83,11 +67,6 @@ public class RestTestingBase {
         }
 
         return ret.toString();
-    }
-
-    @Before
-    public void setUp() throws Exception {
-        logger = Logger.getLogger(getClass().getSimpleName());
     }
 
     protected Package createTestPackage(String title) {

@@ -41,7 +41,9 @@ public class AssetMetadata {
     private String format;
 
     private boolean disabled;
-
+    
+    private String state;
+    
     @XmlElement
     public String getUuid() {
         return Uuid;
@@ -121,5 +123,14 @@ public class AssetMetadata {
 
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
-    }
+    }    
+    
+    @XmlElement
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}  
 }

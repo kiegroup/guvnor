@@ -31,8 +31,8 @@ public class CategoryResourceTest extends RestTestingBase {
     private String category = "Home Mortgage";
 
     @Before @Override
-    public void setUp() throws Exception {
-        super.setUp();
+    public void setUpGuvnorTestBase() {
+        super.setUpGuvnorTestBase();
         dispatcher.getRegistry().addPerRequestResource(CategoryResource.class);
     }
 
@@ -45,7 +45,7 @@ public class CategoryResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class CategoryResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, GetContent(connection));
 
     }
 
@@ -70,7 +70,7 @@ public class CategoryResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class CategoryResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, GetContent(connection));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class CategoryResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, GetContent(connection));
 
     }
 
@@ -107,6 +107,6 @@ public class CategoryResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, GetContent(connection));
     }
 }

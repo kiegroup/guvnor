@@ -31,6 +31,8 @@ public class PackageMetadata {
     private Date lastModified;
 
     private String lastContributor;
+    
+    private String state;
 
     @XmlElement
     public String getUuid() {
@@ -67,4 +69,13 @@ public class PackageMetadata {
     public void setLastContributor(String lastContributor) {
         this.lastContributor = lastContributor;
     }
+    
+    @XmlElement
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}      
 }
