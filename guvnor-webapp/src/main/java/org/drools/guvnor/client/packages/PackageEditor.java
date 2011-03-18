@@ -456,30 +456,35 @@ public class PackageEditor extends PrettyFormLayout {
     }
     
     static String getVersionFeed(PackageConfigData conf) {
-    	String hurl = GWT.getModuleBaseURL() + "packages/" + conf.name + "/versions";
+    	String hurl = getRESTBaseURL() + "packages/" + conf.name + "/versions";
         return hurl;
-    }
-    
-    String getPackageBinaryURL(PackageConfigData conf) {
-    	String url;
-    	if(isHistoricalReadOnly) {
-    		url = GWT.getModuleBaseURL() + "packages/" + conf.name + 
-        	"/versions/" + conf.versionNumber + "/source"; 		
-    	} else {
-    		url = GWT.getModuleBaseURL() + "packages/" + conf.name + "/source";   		
-    	}
-        return url;
     }
     
     String getPackageSourceURL(PackageConfigData conf) {
     	String url;
     	if(isHistoricalReadOnly) {
-    		url = GWT.getModuleBaseURL() + "packages/" + conf.name + 
-        	"/versions/" + conf.versionNumber + "/binary"; 		
+    		url = getRESTBaseURL() + "packages/" + conf.name + 
+        	"/versions/" + conf.versionNumber + "/source"; 		
     	} else {
-    		url = GWT.getModuleBaseURL() + "packages/" + conf.name + "/binary";   		
+    		url = getRESTBaseURL() + "packages/" + conf.name + "/source";   		
     	}
         return url;
+    }
+    
+    String getPackageBinaryURL(PackageConfigData conf) {
+    	String url;
+    	if(isHistoricalReadOnly) {
+    		url = getRESTBaseURL() + "packages/" + conf.name + 
+        	"/versions/" + conf.versionNumber + "/binary"; 		
+    	} else {
+    		url = getRESTBaseURL() + "packages/" + conf.name + "/binary";   		
+    	}
+        return url;
+    }
+    
+    static String getRESTBaseURL() {
+    	String url = GWT.getModuleBaseURL();
+    	return url.replaceFirst("org.drools.guvnor.Guvnor", "rest");
     }
     
     /**
