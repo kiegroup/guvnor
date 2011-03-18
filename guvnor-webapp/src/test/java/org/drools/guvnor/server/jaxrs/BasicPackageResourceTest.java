@@ -159,6 +159,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
         assertNotNull(in);
 		Document<Feed> doc = abdera.getParser().parse(in);
 		Feed feed = doc.getRoot();
+		assertEquals("/packages", feed.getBaseUri().getPath());
 		assertEquals("Packages", feed.getTitle());
 		
 		List<Entry> entries = feed.getEntries();
@@ -225,6 +226,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
         assertNotNull(in);
 		Document<Entry> doc = abdera.getParser().parse(in);
 		Entry entry = doc.getRoot();
+		assertEquals("/packages/restPackage1", entry.getBaseUri().getPath());		
 		assertEquals("restPackage1", entry.getTitle());
 		assertEquals("this is package restPackage1", entry.getSummary());
 		assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
@@ -246,7 +248,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
     }
 
     /* Package Creation */
-    @Test
+    @Test @Ignore
     public void testCreatePackageFromJAXB() throws Exception {
         Package p = createTestPackage("TestCreatePackageFromJAXB");
         JAXBContext context = JAXBContext.newInstance(p.getClass());
@@ -545,38 +547,43 @@ public class BasicPackageResourceTest extends RestTestingBase {
     }
     
     @Test
-    public void testGetPackageVersionForAtom() throws MalformedURLException, IOException {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/versions/1");
+    public void testGetHistoricalPackageForAtom() throws MalformedURLException, IOException {
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/versions/2");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        System.out.println(GetContent(connection));
+        //System.out.println(GetContent(connection));
         
-/*        InputStream in = connection.getInputStream();
+        InputStream in = connection.getInputStream();
         assertNotNull(in);
-		Document<Feed> doc = abdera.getParser().parse(in);
-		Feed feed = doc.getRoot();
-		assertEquals("Version history of restPackage1", feed.getTitle());
+		Document<Entry> doc = abdera.getParser().parse(in);
+		Entry entry = doc.getRoot();
+		assertEquals("/packages/restPackage1/versions/2", entry.getBaseUri().getPath());
+		assertEquals("restPackage1", entry.getTitle());
+		assertEquals("this is package restPackage1", entry.getSummary());
+		assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
+		assertEquals("/packages/restPackage1/versions/2/binary", entry.getContentSrc().getPath());
 		
-		List<Entry> entries = feed.getEntries();
-		assertEquals(3, entries.size());
-
-		Map<String, Entry> entriesMap = new HashMap<String, Entry>();
-		for(Entry entry : entries){
-			entriesMap.put(entry.getTitle(), entry);
+		List<Link> links = entry.getLinks();
+		assertEquals(6, links.size());
+		Map<String, Link> linksMap = new HashMap<String, Link>();
+		for(Link link : links){
+			linksMap.put(link.getTitle(), link);
 		}
 		
-		assertEquals("/packages/restPackage1/versions/1", entriesMap.get("1").getLinks().get(0).getHref().getPath());		
-		assertEquals("/packages/restPackage1/versions/2", entriesMap.get("2").getLinks().get(0).getHref().getPath());		
-		assertEquals("/packages/restPackage1/versions/3", entriesMap.get("3").getLinks().get(0).getHref().getPath());		
-*/    }    
+		assertEquals("/packages/restPackage1/versions/2/assets/drools", linksMap.get("drools").getHref().getPath());		
+		assertEquals("/packages/restPackage1/versions/2/assets/func", linksMap.get("func").getHref().getPath());		
+		assertEquals("/packages/restPackage1/versions/2/assets/myDSL", linksMap.get("myDSL").getHref().getPath());		
+		assertEquals("/packages/restPackage1/versions/2/assets/rule1", linksMap.get("rule1").getHref().getPath());		
+		assertEquals("/packages/restPackage1/versions/2/assets/rule2", linksMap.get("rule2").getHref().getPath());		
+		assertEquals("/packages/restPackage1/versions/2/assets/model1", linksMap.get("model1").getHref().getPath());   }    
 
     @Test
     public void testGetHistoricalPackageSource() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/versions/1/source");
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/versions/2/source");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.WILDCARD);
@@ -589,9 +596,9 @@ public class BasicPackageResourceTest extends RestTestingBase {
        
         assertTrue( result.indexOf( "package restPackage1" ) >= 0 );
         assertTrue( result.indexOf( "import com.billasurf.Board" ) >= 0 );
-        assertTrue( result.indexOf( "global com.billasurf.Person customer2" ) >= 0 );
-        assertTrue( result.indexOf( "function void foo() { System.out.println(version 2); }" ) >= 0 );
-        assertTrue( result.indexOf( "declare Album2" ) >= 0 );
+        assertTrue( result.indexOf( "global com.billasurf.Person customer1" ) >= 0 );
+        assertTrue( result.indexOf( "function void foo() { System.out.println(version 1); }" ) >= 0 );
+        assertTrue( result.indexOf( "declare Album1" ) >= 0 );
     }
     
     @Test @Ignore

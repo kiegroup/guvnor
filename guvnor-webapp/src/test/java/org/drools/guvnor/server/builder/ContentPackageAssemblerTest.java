@@ -711,11 +711,11 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
     }
     
     @Test
-    public void testShowSourceUsingDependency() throws Exception {
+    public void testShowSourceUsingSpecifiedDependencies() throws Exception {
         RulesRepository repo = getRulesRepository();
 
         //first, setup the package correctly:
-        PackageItem pkg = repo.createPackage( "testShowSourceUsingDependency",
+        PackageItem pkg = repo.createPackage( "testShowSourceUsingSpecifiedDependencies",
                                               "" );
 
         DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
@@ -789,6 +789,84 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         assertContains( "FooBarBaz1()",
                         drl );
         assertContains( "rule 'foo' when Goo() then end",
+                        drl );
+
+        assertEquals( -1,
+                      drl.indexOf( "garbage" ) );
+        assertEquals( -1,
+                drl.indexOf( "Album" ) );
+    }
+    
+    @Test
+    public void testShowSourceForHistoricalPackage() throws Exception {
+        RulesRepository repo = getRulesRepository();
+        PackageItem pkg = repo.createPackage( "testShowSourceForHistoricalPackage", "" );
+
+        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
+                                                  pkg );
+        repo.save();
+
+        AssetItem func = pkg.addAsset( "func", "" );
+        func.updateFormat( AssetFormats.FUNCTION );
+        func.updateContent( "function void foo() { System.out.println(version 1); }" );
+        func.checkin( "version 1" );        
+        func.updateContent( "function void foo() { System.out.println(version 2); }" );
+        func.checkin( "version 2" ); 
+
+        AssetItem dsl = pkg.addAsset( "myDSL", "" );
+        dsl.updateFormat( AssetFormats.DSL );
+        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz1()" );
+        dsl.checkin( "version 1" );
+        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz2()" );
+        dsl.checkin( "version 2" );
+        
+        AssetItem rule = pkg.addAsset( "rule1", "" );
+        rule.updateFormat( AssetFormats.DRL );
+        rule.updateContent( "rule 'foo' when Goo() then end" );
+        rule.checkin( "version 1" );
+        rule.updateContent( "rule 'foo' when Eoo() then end" );
+        rule.checkin( "version 2" );
+        
+        AssetItem rule2 = pkg.addAsset( "rule2",
+                                        "" );
+        rule2.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
+        rule2.updateContent( "when \n foo \n then \n call a func" );
+        rule2.checkin( "version 1" );
+        rule2.updateContent( "when \n foo \n then \n call a func" );
+        rule2.checkin( "version 2" );
+        
+        AssetItem rule3 = pkg.addAsset( "model1",
+                                        "" );
+        rule3.updateFormat( AssetFormats.DRL_MODEL );
+        rule3.updateContent( "garbage" );
+        rule3.updateDisabled( true );
+        rule3.checkin( "version 1" );
+        rule3.updateContent( "declare Album\n genre1: String \n end" );
+        rule3.checkin( "version 2" );
+        
+        repo.save();
+        pkg.checkin("Version 2");
+        pkg.checkout();
+        pkg.checkin("Version 3");
+        
+        PackageItem historicalPackage = repo.loadPackage("testShowSourceForHistoricalPackage", 2);
+
+        ContentPackageAssembler asm = new ContentPackageAssembler( historicalPackage,
+                                                                   false );
+        String drl = asm.getDRL();
+
+        assertNotNull( drl );
+        System.out.println(drl);
+
+        assertContains( "import com.billasurf.Board\n global com.billasurf.Person customer",
+                        drl );
+        assertContains( "package testShowSource",
+                        drl );
+        assertContains( "function void foo() { System.out.println(version 2); }",
+                        drl );
+        assertContains( "FooBarBaz2()",
+                        drl );
+        assertContains( "rule 'foo' when Eoo() then end",
                         drl );
 
         assertEquals( -1,

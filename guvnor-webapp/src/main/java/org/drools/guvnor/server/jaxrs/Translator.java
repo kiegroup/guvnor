@@ -108,7 +108,14 @@ public class Translator {
     public static Entry ToPackageEntry(PackageItem p, UriInfo uriInfo) {
         Content c = new Content();
         c.setType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
-        c.setSrc(uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("binary").build());
+        UriBuilder base;
+        if(p.isHistoricalVersion()) {
+        	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
+        } else {
+        	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName());
+        }
+
+        c.setSrc(base.clone().path("binary").build());       	
         
         //NOTE: Entry extension is not supported in RESTEasy. We need to either use Abdera or get extension 
         //supported in RESTEasy
@@ -117,29 +124,29 @@ public class Translator {
         metadata.setCreated(p.getCreatedDate().getTime());
         metadata.setLastModified(p.getLastModified().getTime());
         metadata.setLastContributor(p.getLastContributor());
-        c.setJAXBObject(metadata);*/
-
+        //c.setJAXBObject(metadata);
+*/
         Entry e =new Entry();
         e.setTitle(p.getTitle());
         e.setSummary(p.getDescription());
         e.setContent(c);
         e.setPublished(new Date(p.getLastModified().getTimeInMillis()));
-        e.setBase((uriInfo.getBaseUriBuilder().path("packages").path(p.getName())).build());
+        e.setBase(base.clone().build());
 
         Link l = new Link();
-        l.setHref((uriInfo.getBaseUriBuilder().path("packages").path(p.getName())).build());
+        l.setHref(base.build());
         l.setRel("self");
         e.setId(l.getHref());
-        
+/*        
         Map extensions = e.getExtensionAttributes();
         QName METADATA = new QName("", "metadata");
-        extensions.put(METADATA, "aaa");
+        extensions.put(METADATA, metadata);*/
         
         Iterator<AssetItem> i = p.getAssets();
         while (i.hasNext()) {
             AssetItem item = i.next();
             Link link = new Link();
-            link.setHref((uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("assets").path(item.getName())).build());
+            link.setHref((base.clone().path("assets").path(item.getName())).build());
             link.setTitle(item.getTitle());
             link.setRel("asset");
             e.getLinks().add(link);

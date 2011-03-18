@@ -158,7 +158,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
     public static List<DSLTokenizedMappingFile> getDSLMappingFiles(PackageItem pkg, DSLErrorEvent err) {
         List<DSLTokenizedMappingFile> result = new ArrayList<DSLTokenizedMappingFile>();
         AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DSL} );
-        ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionSpecifiedByDependencies(true);
+        ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionsSpecifiedByDependencies(true);
         while ( it.hasNext() ) {
             AssetItem item = it.next();
             if ( !item.getDisabled() ) {
@@ -190,7 +190,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
     public static List<JarInputStream> getJars(PackageItem pkg) {
         List<JarInputStream> result = new ArrayList<JarInputStream>();
         AssetItemIterator ait = pkg.listAssetsByFormat( new String[]{AssetFormats.MODEL} );
-        ((VersionedAssetItemIterator)ait).setReturnAssetsWithVersionSpecifiedByDependencies(true);        
+        ((VersionedAssetItemIterator)ait).setReturnAssetsWithVersionsSpecifiedByDependencies(true);        
         while ( ait.hasNext() ) {
             AssetItem item = (AssetItem) ait.next();
             if ( item.getBinaryContentAttachment() != null ) {

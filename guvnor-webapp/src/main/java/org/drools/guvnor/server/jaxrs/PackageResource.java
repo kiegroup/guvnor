@@ -71,6 +71,7 @@ public class PackageResource extends Resource {
     public Feed getPackagesAsFeed() {
         Feed f = new Feed();
         f.setTitle("Packages");
+        f.setBase(uriInfo.getBaseUriBuilder().path("packages").build());
         PackageIterator iter = repository.listPackages();
         while (iter.hasNext()) {
             try {
