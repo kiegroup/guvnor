@@ -182,19 +182,35 @@ public class PackageResource extends Resource {
         while (it.hasNext()) {
             try {
                 PackageItem historicalPackage = it.next();
-                Entry e = new Entry();
-                e.setTitle(Long.toString(historicalPackage.getVersionNumber()));                                
-                Link l = new Link();
-                //l.setHref(builder.path(item.getName()).build());
-                l.setHref(uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(historicalPackage.getVersionNumber())).build());
-                e.getLinks().add(l);
-                f.getEntries().add(e);
+				if (historicalPackage.getVersionNumber() != 0) {
+					Entry e = new Entry();
+					e.setTitle(Long.toString(historicalPackage
+							.getVersionNumber()));
+					Link l = new Link();
+					// l.setHref(builder.path(item.getName()).build());
+					l.setHref(uriInfo
+							.getBaseUriBuilder()
+							.path("packages")
+							.path(p.getName())
+							.path("versions")
+							.path(Long.toString(historicalPackage.getVersionNumber())).build());
+					e.getLinks().add(l);
+					f.getEntries().add(e);
+				}
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
         
         return f;
+    }
+
+    @GET
+    @Path("{packageName}/versions/{versionNumber}")
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+    public Entry getHistoryPackageAsEntry(@PathParam("packageName") String packageName,
+    		@PathParam("versionNumber") long versionNumber) throws SerializationException {
+        return ToPackageEntry(repository.loadPackage(packageName, versionNumber), uriInfo);
     }
     
     @GET
@@ -212,7 +228,7 @@ public class PackageResource extends Resource {
     @Produces(MediaType.TEXT_PLAIN)
     public String getHistoryPackageSource(@PathParam("packageName") String packageName,
     		@PathParam("versionNumber") long versionNumber) {
-    	PackageItem item = repository.loadPackage( packageName,  versionNumber);
+    	PackageItem item = repository.loadPackage(packageName,  versionNumber);
         ContentPackageAssembler asm = new ContentPackageAssembler( item,
                                                                    false );
         String drl = asm.getDRL();
