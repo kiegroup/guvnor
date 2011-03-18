@@ -16,55 +16,52 @@
 
 package org.drools.guvnor.server.security;
 
-import static org.drools.guvnor.client.security.Capabilities.SHOW_CREATE_NEW_ASSET;
-import static org.drools.guvnor.client.security.Capabilities.SHOW_CREATE_NEW_PACKAGE;
-import static org.drools.guvnor.client.security.Capabilities.SHOW_DEPLOYMENT;
-import static org.drools.guvnor.client.security.Capabilities.SHOW_DEPLOYMENT_NEW;
-import static org.drools.guvnor.client.security.Capabilities.SHOW_PACKAGE_VIEW;
-import static org.drools.guvnor.client.security.Capabilities.SHOW_QA;
-import static org.drools.guvnor.client.security.Capabilities.all;
+import org.drools.guvnor.client.configurations.Capability;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-import org.drools.guvnor.client.security.Capabilities;
+import static org.drools.guvnor.client.configurations.Capability.*;
 
 /**
  * Load up the capabilities from a given list of roles.
  */
 public class CapabilityCalculator {
 
-    public Capabilities calcCapabilities(List<RoleBasedPermission> permissions, Map<String, String> features) {
-        if ( permissions.size() == 0 ) {
-            return Capabilities.all( features );
+    public List<Capability> calcCapabilities(List<RoleBasedPermission> permissions) {
+        if (permissions.size() == 0) {
+            return grantAllCapabilities();
         }
-        Capabilities caps = new Capabilities();
-        for ( RoleBasedPermission roleBasedPermission : permissions ) {
+        List<Capability> capabilities = new ArrayList<Capability>();
+        for (RoleBasedPermission roleBasedPermission : permissions) {
             String role = roleBasedPermission.getRole();
             if ( role.equals( RoleType.ADMIN.getName() ) ) {
-                return all( features );
+                return grantAllCapabilities();
             } else if ( role.equals( RoleType.PACKAGE_ADMIN.getName() ) ) {
-                addCap( caps, SHOW_PACKAGE_VIEW );
-                addCap( caps, SHOW_CREATE_NEW_ASSET );
-                addCap( caps, SHOW_CREATE_NEW_PACKAGE );
-                addCap( caps, SHOW_DEPLOYMENT );
-                addCap( caps, SHOW_DEPLOYMENT_NEW );
-                addCap( caps, SHOW_QA );
+                capabilities.add( SHOW_PACKAGE_VIEW );
+                capabilities.add( SHOW_CREATE_NEW_ASSET );
+                capabilities.add( SHOW_CREATE_NEW_PACKAGE );
+                capabilities.add( SHOW_DEPLOYMENT );
+                capabilities.add( SHOW_DEPLOYMENT_NEW );
+                capabilities.add( SHOW_QA );
             } else if ( role.equals( RoleType.PACKAGE_DEVELOPER.getName() ) ) {
-                addCap( caps, SHOW_PACKAGE_VIEW );
-                addCap( caps, SHOW_CREATE_NEW_ASSET );
-                addCap( caps, SHOW_QA );
+                capabilities.add( SHOW_PACKAGE_VIEW );
+                capabilities.add( SHOW_CREATE_NEW_ASSET );
+                capabilities.add( SHOW_QA );
             } else if ( role.equals( RoleType.PACKAGE_READONLY.getName() ) ) {
-                addCap( caps, SHOW_PACKAGE_VIEW );
+                capabilities.add( SHOW_PACKAGE_VIEW );
             }
         }
-        caps.prefs = features;
-        return caps;
-
+        return capabilities;
     }
 
-    private void addCap(Capabilities caps, Integer cap) {
-        if ( !caps.list.contains( cap ) ) caps.list.add( cap );
+    /**
+     * Grants all capabilities.
+     * Only used for when there is basically no login.
+     */
+    public static List<Capability> grantAllCapabilities() {
+        return Arrays.asList(Capability.values());
     }
 
 }

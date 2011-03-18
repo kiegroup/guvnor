@@ -27,8 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
+import org.drools.guvnor.client.configurations.Capability;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.AuthorizationException;
@@ -53,8 +52,15 @@ public class SecurityServiceImplTest {
     public void testCapabilities() {
         SecurityServiceImpl impl = new SecurityServiceImpl();
 
-        Capabilities c = impl.getUserCapabilities();
-        assertTrue( c.list.size() > 1 );
+        List<Capability> userCapabilities = impl.getUserCapabilities();
+
+        assertTrue(userCapabilities.contains(Capability.SHOW_ADMIN));
+        assertTrue(userCapabilities.contains(Capability.SHOW_CREATE_NEW_ASSET));
+        assertTrue(userCapabilities.contains(Capability.SHOW_CREATE_NEW_PACKAGE));
+        assertTrue(userCapabilities.contains(Capability.SHOW_DEPLOYMENT));
+        assertTrue(userCapabilities.contains(Capability.SHOW_DEPLOYMENT_NEW));
+        assertTrue(userCapabilities.contains(Capability.SHOW_PACKAGE_VIEW));
+        assertTrue(userCapabilities.contains(Capability.SHOW_QA));
     }
 
     @Test
@@ -92,8 +98,8 @@ public class SecurityServiceImplTest {
         Contexts.getSessionContext().set( "roleBasedPermissionManager",
                                           testManager );
 
-        Capabilities c = impl.getUserCapabilities();
-        assertTrue( c.list.size() == 1 );
+        List<Capability> c = impl.getUserCapabilities();
+        assertTrue(c.contains(Capability.SHOW_PACKAGE_VIEW));
 
         //now lets give them no permissions
         pbps.clear();
@@ -125,28 +131,17 @@ public class SecurityServiceImplTest {
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
 
-        Capabilities c = impl.getUserCapabilities();
-        assertTrue( c.list.size() > 1 );
+        List<Capability> userCapabilities = impl.getUserCapabilities();
+
+        assertTrue(userCapabilities.contains(Capability.SHOW_ADMIN));
+        assertTrue(userCapabilities.contains(Capability.SHOW_CREATE_NEW_ASSET));
+        assertTrue(userCapabilities.contains(Capability.SHOW_CREATE_NEW_PACKAGE));
+        assertTrue(userCapabilities.contains(Capability.SHOW_DEPLOYMENT));
+        assertTrue(userCapabilities.contains(Capability.SHOW_DEPLOYMENT_NEW));
+        assertTrue(userCapabilities.contains(Capability.SHOW_PACKAGE_VIEW));
+        assertTrue(userCapabilities.contains(Capability.SHOW_QA));
 
         Lifecycle.endApplication();
-
-    }
-
-    @Test
-    public void testPreferences() throws Exception {
-        SecurityServiceImpl impl = new SecurityServiceImpl();
-        assertNotNull( SecurityServiceImpl.PREFERENCES );
-        assertEquals( 7,
-                      SecurityServiceImpl.PREFERENCES.size() );
-        assertTrue( SecurityServiceImpl.PREFERENCES.containsKey( "visual-ruleflow" ) );
-        assertTrue( SecurityServiceImpl.PREFERENCES.containsKey( "verifier" ) );
-        assertTrue( SecurityServiceImpl.PREFERENCES.containsKey( "flex-bpel-editor" ) );
-        assertEquals( "true",
-                      SecurityServiceImpl.PREFERENCES.get( "verifier" ) );
-        assertEquals("true", SecurityServiceImpl.PREFERENCES.get("oryx-bpmn-editor"));
-        Capabilities caps = impl.getUserCapabilities();
-        assertSame( SecurityServiceImpl.PREFERENCES,
-                    caps.prefs );
 
     }
 

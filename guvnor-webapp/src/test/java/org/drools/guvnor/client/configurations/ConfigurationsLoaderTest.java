@@ -13,14 +13,20 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package org.drools.guvnor.gwtutil;
 
-public class GenerateAllServiceInterfaces {
+package org.drools.guvnor.client.configurations;
 
-    public static void main(String[] args) {
-        RepositoryAssetServiceInterfaceGenerator.generate();
-        RepositoryCategoryServiceInterfaceGenerator.generate();
-        RepositoryPackageServiceInterfaceGenerator.generate();
-        ServiceImplementationServiceInterfaceGenerator.generate();
+import org.junit.Test;
+
+public class ConfigurationsLoaderTest {
+
+    @Test
+    public void testLoadPreferences() throws Exception {
+
+    }
+
+    @Test
+    public void testLoadUserCapabilities() throws Exception {
+
     }
 }

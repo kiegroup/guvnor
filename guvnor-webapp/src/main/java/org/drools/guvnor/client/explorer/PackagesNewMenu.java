@@ -23,6 +23,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.NewPackageWizard;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.util.Util;
 
 
@@ -101,7 +102,7 @@ public class PackagesNewMenu {
             }
         });
 
-        if (Preferences.getBooleanPref("flex-bpel-editor")) {
+        if (ApplicationPreferences.showFlewBPELEditor()) {
             createNewMenu.addItem(Util.getHeader(images.modelAsset(), constants.NewBPELPackage()),
                     true,
                     new Command() {

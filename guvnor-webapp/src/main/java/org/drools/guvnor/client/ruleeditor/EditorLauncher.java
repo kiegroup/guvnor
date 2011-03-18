@@ -28,7 +28,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.decisiontable.DecisionTableXLSWidget;
 import org.drools.guvnor.client.decisiontable.GuidedDecisionTableWidget;
-import org.drools.guvnor.client.explorer.Preferences;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.factmodel.FactModelsWidget;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.modeldriven.ui.RuleModellerWidgetFactory;
@@ -85,7 +85,7 @@ public class EditorLauncher {
                                      new RuleModellerWidgetFactory() );
         } else if ( asset.getMetaData().getFormat().equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
             return new RuleValidatorWrapper( new DSLRuleEditor( asset ) );
-        } else if ( asset.getMetaData().getFormat().equals( AssetFormats.BPEL_PACKAGE ) && Preferences.getBooleanPref( "flex-bpel-editor" ) ) {
+        } else if ( asset.getMetaData().getFormat().equals( AssetFormats.BPEL_PACKAGE ) && ApplicationPreferences.showFlewBPELEditor() ) {
             return new BPELWrapper( asset,
                                     viewer );
         } else if ( asset.getMetaData().getFormat().equals( AssetFormats.MODEL ) ) {

@@ -16,17 +16,7 @@
 
 package org.drools.guvnor.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Collection;
-
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.IFramePerspectiveConfiguration;
 import org.drools.repository.RulesRepository;
@@ -34,7 +24,11 @@ import org.drools.repository.RulesRepositoryException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.util.Collection;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class ConfigurationServiceImplementationTest extends GuvnorTestBase {
 
@@ -136,6 +130,14 @@ public class ConfigurationServiceImplementationTest extends GuvnorTestBase {
         } catch (RulesRepositoryException e) {
             //Expected
         }
+    }
+
+    @Test
+    public void testLoadApplicationPreferences() throws Exception {
+        setUpMockIdentity();
+        Map<String, String> preferences = configurationService.loadPreferences();
+
+        assertNotNull(preferences);
     }
 
     private String save(String name, String url) {

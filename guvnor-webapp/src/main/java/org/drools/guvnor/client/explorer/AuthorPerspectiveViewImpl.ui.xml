@@ -13,7 +13,7 @@
 
   <gwt:SplitLayoutPanel>
     <gwt:west size="250">
-      <guvnor:NavigationPanel/>
+      <guvnor:NavigationPanelViewImpl/>
     </gwt:west>
     <gwt:center>
       <guvnor:ExplorerViewCenterPanel/>

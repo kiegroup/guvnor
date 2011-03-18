@@ -17,10 +17,11 @@
 package org.drools.guvnor.client.rpc;
 
 
-import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.configurations.Capability;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.RemoteService;
+
+import java.util.List;
 
 /**
  * Contains methods for authenticating/authorising from the front end.
@@ -32,5 +33,5 @@ public interface SecurityServiceAsync {
 
     public void getCurrentUser(AsyncCallback<UserSecurityContext> cb);
 
-    public void getUserCapabilities(AsyncCallback<Capabilities> caps);
+    public void getUserCapabilities(AsyncCallback<List<Capability>> capabilities);
 }

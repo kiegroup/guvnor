@@ -13,127 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.drools.guvnor.client.explorer;
 
-import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.client.security.CapabilitiesManager;
+import org.drools.guvnor.client.explorer.NavigationPanelView.Presenter;
 
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.StackLayoutPanel;
+public class NavigationPanel implements Presenter {
 
-/**
- * Navigation panel for the west area.
- */
-public class NavigationPanel extends Composite {
 
-    private StackLayoutPanel layout = new StackLayoutPanel( Unit.EM );
-
-    public NavigationPanel() {
-        initWidget( layout );
-
-        addCategoriesPanel();
-
-        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
-            addPackagesPanel();
-        }
-
-        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_QA ) ) {
-            addQAPanel();
-        }
-
-        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_DEPLOYMENT,
-                                                           Capabilities.SHOW_DEPLOYMENT_NEW ) ) {
-            addDeploymentPanel();
-        }
-
-        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_ADMIN ) ) {
-            addAdminPanel();
-        }
+    public NavigationPanel(NavigationPanelView view) {
+        // TODO: Generated code -Rikkola-
     }
-
-    private void addAdminPanel() {
-        DockLayoutPanel adminDockLayoutPanel = new DockLayoutPanel( Unit.EM );
-        AdministrationTree deploymentTreeItem = new AdministrationTree();
-        ScrollPanel adminTreeItemPanel = new ScrollPanel( deploymentTreeItem );
-
-        adminDockLayoutPanel.add( adminTreeItemPanel );
-
-        layout.add( adminDockLayoutPanel,
-                    deploymentTreeItem.getHeaderHTML(),
-                    2 );
-    }
-
-    private void addDeploymentPanel() {
-        DockLayoutPanel deploymentDockLayoutPanel = new DockLayoutPanel( Unit.EM );
-        DeploymentTree deploymentTreeItem = new DeploymentTree();
-        ScrollPanel deploymentTreeItemPanel = new ScrollPanel( deploymentTreeItem );
-
-        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
-            deploymentDockLayoutPanel.addNorth( DeploymentNewMenu.getMenu( deploymentTreeItem ),
-                                                2 );
-        }
-
-        deploymentDockLayoutPanel.add( deploymentTreeItemPanel );
-
-        layout.add( deploymentDockLayoutPanel,
-                    deploymentTreeItem.getHeaderHTML(),
-                    2 );
-    }
-
-    private void addQAPanel() {
-        DockLayoutPanel qaDockLayoutPanel = new DockLayoutPanel( Unit.EM );
-        QATree qaTreeItem = new QATree();
-        ScrollPanel qaTreeItemPanel = new ScrollPanel( qaTreeItem );
-
-        qaDockLayoutPanel.add( qaTreeItemPanel );
-
-        layout.add( qaDockLayoutPanel,
-                    qaTreeItem.getHeaderHTML(),
-                    2 );
-    }
-
-    private void addPackagesPanel() {
-        DockLayoutPanel packageDockLayoutPanel = new DockLayoutPanel( Unit.EM );
-        final PackagesTree packagesTreeItem = new PackagesTree();
-        ScrollPanel packagesTreeItemPanel = new ScrollPanel( packagesTreeItem );
-
-        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
-            packageDockLayoutPanel.addNorth( PackagesNewMenu.getMenu( packagesTreeItem ),
-                                             2 );
-        }
-        packageDockLayoutPanel.add( packagesTreeItemPanel );
-
-        layout.add( packageDockLayoutPanel,
-                    packagesTreeItem.getHeaderHTML(),
-                    2 );
-
-        //lazy loaded to easy startup wait time.
-        DeferredCommand.addCommand( new Command() {
-            public void execute() {
-                packagesTreeItem.loadPackageList();
-            }
-        } );
-    }
-
-    private void addCategoriesPanel() {
-        DockLayoutPanel browseDockLayoutPanel = new DockLayoutPanel( Unit.EM );
-        BrowseTree categoriesTreeItem = new BrowseTree();
-        ScrollPanel categoriesTreeItemPanel = new ScrollPanel( categoriesTreeItem );
-
-        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
-            browseDockLayoutPanel.addNorth( RulesNewMenu.getMenu( categoriesTreeItem ),
-                                            2 );
-        }
-        browseDockLayoutPanel.add( categoriesTreeItemPanel );
-
-        layout.add( browseDockLayoutPanel,
-                    categoriesTreeItem.getHeaderHTML(),
-                    2 );
-    }
-
 }

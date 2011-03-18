@@ -19,6 +19,7 @@ package org.drools.guvnor.client;
 import java.util.Collection;
 
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.configurations.ConfigurationsLoader;
 import org.drools.guvnor.client.explorer.AuthorPerspectivePlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.GuvnorActivityMapper;
@@ -27,7 +28,6 @@ import org.drools.guvnor.client.explorer.LoadPerspectives;
 import org.drools.guvnor.client.explorer.Perspective;
 import org.drools.guvnor.client.explorer.PerspectiveLoader;
 import org.drools.guvnor.client.explorer.PerspectivesPanel;
-import org.drools.guvnor.client.explorer.Preferences;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.OperatorsResource;
@@ -37,7 +37,6 @@ import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.ruleeditor.StandaloneEditorManager;
-import org.drools.guvnor.client.security.CapabilitiesManager;
 
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
@@ -86,16 +85,16 @@ public class JBRMSEntryPoint
      * show the app, in all its glory !
      */
     private void checkLogIn() {
-        RepositoryServiceFactory.getSecurityService().getCurrentUser( new GenericCallback<UserSecurityContext>() {
+        RepositoryServiceFactory.getSecurityService().getCurrentUser(new GenericCallback<UserSecurityContext>() {
             public void onSuccess(UserSecurityContext userSecurityContext) {
                 String userName = userSecurityContext.getUserName();
-                if ( userName != null ) {
-                    showMain( userName );
+                if (userName != null) {
+                    showMain(userName);
                 } else {
                     logIn();
                 }
             }
-        } );
+        });
     }
 
     private void logIn() {
@@ -112,18 +111,31 @@ public class JBRMSEntryPoint
 
         Window.setStatus( constants.LoadingUserPermissions() );
 
-        CapabilitiesManager.getInstance().refreshAllowedCapabilities( new Command() {
+        loadConfigurations(userName);
+    }
+
+    private void loadConfigurations(final String userName) {
+        ConfigurationsLoader.loadPreferences(new Command() {
             public void execute() {
+                loadUserCapabilities(userName);
+            }
+        });
+    }
 
-                Preferences.INSTANCE.loadPrefs( CapabilitiesManager.getInstance().getCapabilities() );
+    private void loadUserCapabilities(final String userName) {
+        ConfigurationsLoader.loadUserCapabilities(new Command() {
+            public void execute() {
+                setUpMain(userName);
+            }
+        });
+    }
 
-                Window.setStatus( " " );
+    private void setUpMain(String userName) {
+        Window.setStatus(" ");
 
                 createMain();
 
-                perspectivesPanel.setUserName( userName );
-            }
-        } );
+        perspectivesPanel.setUserName(userName);
     }
 
     /**

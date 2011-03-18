@@ -17,9 +17,11 @@
 package org.drools.guvnor.client.rpc;
 
 
-import org.drools.guvnor.client.security.Capabilities;
+import org.drools.guvnor.client.configurations.Capability;
 
 import com.google.gwt.user.client.rpc.RemoteService;
+
+import java.util.List;
 
 /**
  * Contains methods for authenticating/authorising from the front end.
@@ -36,8 +38,8 @@ public interface SecurityService extends RemoteService {
 
     /**
      * @return This returns the current user's name if they are logged in. If not
-     * then null is returned (inside a context). Will also return some other handy stuff for
-     * changing the GUI based on security context.
+     *         then null is returned (inside a context). Will also return some other handy stuff for
+     *         changing the GUI based on security context.
      */
     public UserSecurityContext getCurrentUser();
 
@@ -46,6 +48,5 @@ public interface SecurityService extends RemoteService {
      * This will return the capabilities which determine what is shown in the GUI.
      * Based on the users roles and permissions.
      */
-    public Capabilities getUserCapabilities();
-
+    public List<Capability> getUserCapabilities();
 }

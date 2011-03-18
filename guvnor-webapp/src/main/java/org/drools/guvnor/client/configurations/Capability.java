@@ -13,14 +13,17 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package org.drools.guvnor.gwtutil;
 
-public class GenerateAllServiceInterfaces {
+package org.drools.guvnor.client.configurations;
 
-    public static void main(String[] args) {
-        RepositoryAssetServiceInterfaceGenerator.generate();
-        RepositoryCategoryServiceInterfaceGenerator.generate();
-        RepositoryPackageServiceInterfaceGenerator.generate();
-        ServiceImplementationServiceInterfaceGenerator.generate();
-    }
+public enum Capability {
+    SHOW_PACKAGE_VIEW,  //(show status list view as well) if they have any package perms
+    SHOW_CREATE_NEW_ASSET,//if they have any package perms not read only
+    SHOW_CREATE_NEW_PACKAGE, //if they are package logInAdmin
+    SHOW_ADMIN, //if they are logInAdmin, package logInAdmin??
+    SHOW_QA, //if they have any package perms
+    SHOW_DEPLOYMENT,  //if they are package logInAdmin??
+    SHOW_DEPLOYMENT_NEW //can create a new depl, rename etc...
+    ;
+
 }

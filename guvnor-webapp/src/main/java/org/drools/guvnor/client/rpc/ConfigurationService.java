@@ -19,8 +19,10 @@ package org.drools.guvnor.client.rpc;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.client.rpc.SerializationException;
+import org.drools.guvnor.client.common.GenericCallback;
 
 import java.util.Collection;
+import java.util.Map;
 
 
 @RemoteServiceRelativePath("configurationService")
@@ -33,4 +35,6 @@ public interface ConfigurationService extends RemoteService {
     Collection<IFramePerspectiveConfiguration> loadPerspectiveConfigurations();
 
     void remove(String uuid);
+
+    Map<String, String> loadPreferences();
 }

@@ -19,7 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.drools.guvnor.client.explorer.Preferences;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.util.DateConverter;
 
 /**
@@ -30,7 +30,7 @@ public class JVMDateConverter
     implements
     DateConverter {
 
-    private static final String           DATE_FORMAT = Preferences.getStringPref( "drools.dateformat" );
+    private static final String           DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
     private static final SimpleDateFormat FORMATTER   = new SimpleDateFormat( DATE_FORMAT );
 

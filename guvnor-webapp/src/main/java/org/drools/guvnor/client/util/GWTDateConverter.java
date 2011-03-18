@@ -17,7 +17,7 @@ package org.drools.guvnor.client.util;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.explorer.Preferences;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 
@@ -28,7 +28,7 @@ public class GWTDateConverter
     implements
     DateConverter {
 
-    private final static String         DATE_FORMAT = Preferences.getStringPref( "drools.dateformat" );
+    private final static String         DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
     private final static DateTimeFormat FORMATTER   = DateTimeFormat.getFormat( DATE_FORMAT );
 

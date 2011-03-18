@@ -13,14 +13,32 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package org.drools.guvnor.gwtutil;
 
-public class GenerateAllServiceInterfaces {
+package org.drools.guvnor.client.explorer;
 
-    public static void main(String[] args) {
-        RepositoryAssetServiceInterfaceGenerator.generate();
-        RepositoryCategoryServiceInterfaceGenerator.generate();
-        RepositoryPackageServiceInterfaceGenerator.generate();
-        ServiceImplementationServiceInterfaceGenerator.generate();
+import org.junit.Before;
+
+import static org.mockito.Mockito.mock;
+
+import org.drools.guvnor.client.explorer.NavigationPanelView.Presenter;
+
+public class NavigationPanelTest {
+
+    private NavigationPanelView view;
+    private Presenter presenter;
+
+    @Before
+    public void setUp() throws Exception {
+        view = mock(NavigationPanelView.class);
+
+        presenter = new NavigationPanel(view);
     }
+
+
+
+
+    // Test list
+
+    // Test if permissions ok and visible
+
 }

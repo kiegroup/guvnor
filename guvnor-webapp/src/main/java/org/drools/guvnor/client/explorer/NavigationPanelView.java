@@ -13,14 +13,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package org.drools.guvnor.gwtutil;
 
-public class GenerateAllServiceInterfaces {
+package org.drools.guvnor.client.explorer;
 
-    public static void main(String[] args) {
-        RepositoryAssetServiceInterfaceGenerator.generate();
-        RepositoryCategoryServiceInterfaceGenerator.generate();
-        RepositoryPackageServiceInterfaceGenerator.generate();
-        ServiceImplementationServiceInterfaceGenerator.generate();
+interface NavigationPanelView {
+    interface Presenter {
+
     }
 }

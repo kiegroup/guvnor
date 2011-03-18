@@ -18,10 +18,10 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.decisiontable.cells.PopupDateEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupNumericEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
-import org.drools.guvnor.client.explorer.Preferences;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 import com.google.gwt.core.client.GWT;
@@ -33,7 +33,7 @@ import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
  */
 public abstract class AbstractCellFactory<T> {
 
-    private static final String          DATE_FORMAT = Preferences.getStringPref( "drools.dateformat" );
+    private static final String          DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
     // The containing MergableGridWidget to which cells will send their updates
     protected MergableGridWidget<T>      grid;

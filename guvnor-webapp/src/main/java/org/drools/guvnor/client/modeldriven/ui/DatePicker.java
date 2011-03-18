@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ValueChanged;
-import org.drools.guvnor.client.explorer.Preferences;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -39,7 +39,7 @@ abstract class DatePicker extends DirtyableComposite {
     // Format that the text box uses.
     protected String              visualFormat          = "";
     // Format that the system uses.
-    protected final static String defaultFormat         = Preferences.getStringPref( "drools.dateformat" );
+    protected final static String defaultFormat         = ApplicationPreferences.getDroolsDateFormat();
     protected DateTimeFormat      visualFormatFormatter = null;
 
     protected List<ValueChanged>  valueChangeds         = new ArrayList<ValueChanged>();

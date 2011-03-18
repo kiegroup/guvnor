@@ -35,6 +35,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
@@ -46,8 +47,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
-import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.client.security.CapabilitiesManager;
+import org.drools.guvnor.client.configurations.Capability;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
 import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
@@ -298,7 +298,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private boolean showAttributes() {
-        if ( !CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
+        if ( !UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_PACKAGE_VIEW) ) {
             return false;
         }
 
@@ -560,7 +560,7 @@ public class RuleModeller extends DirtyableComposite
                       } );
         }
 
-        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
+        if ( UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_PACKAGE_VIEW) ) {
             choices.addItem( ".................." );
             choices.addItem( constants.FreeFormDrl(),
                              "FF" );
@@ -840,7 +840,7 @@ public class RuleModeller extends DirtyableComposite
             }
         }
 
-        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
+        if ( UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_PACKAGE_VIEW) ) {
             choices.addItem( constants.AddFreeFormDrl(),
                              "FF" ); //NON-NLS
             cmds.put( "FF",

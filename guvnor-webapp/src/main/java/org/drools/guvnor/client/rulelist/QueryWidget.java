@@ -26,7 +26,7 @@ import java.util.Map;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.explorer.Preferences;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
@@ -235,7 +235,7 @@ public class QueryWidget extends Composite {
                     resultsP.add( table );
                 } catch ( IllegalArgumentException e ) {
                     ErrorPopup.showMessage( constants.BadDateFormatPleaseTryAgainTryTheFormatOf0(
-                                                           Preferences.getStringPref( "drools.dateformat" ) ) );
+                                                           ApplicationPreferences.getDroolsDateFormat() ) );
                 }
             }
 

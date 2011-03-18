@@ -23,6 +23,7 @@ import org.drools.guvnor.client.rpc.IFramePerspectiveConfiguration;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 public class ConfigurationServiceAsyncMock implements ConfigurationServiceAsync {
 
@@ -50,6 +51,10 @@ public class ConfigurationServiceAsyncMock implements ConfigurationServiceAsync 
 
     public void loadPerspectiveConfigurations(AsyncCallback<Collection<IFramePerspectiveConfiguration>> async) {
         async.onSuccess(result);
+    }
+
+    public void loadPreferences(AsyncCallback<Map<String, String>> preferences) {
+        //TODO: Generated code -Rikkola-
     }
 
     public void remove(String uuid, AsyncCallback<Void> async) {

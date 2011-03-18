@@ -24,13 +24,13 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Artifact;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.security.Capabilities;
-import org.drools.guvnor.client.security.CapabilitiesManager;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 
 import com.google.gwt.core.client.GWT;
@@ -239,13 +239,13 @@ public class MetaDataWidget extends Composite {
     }
 
     private void addRow(VersionBrowser versionBrowser) {
-        this.currentSection.addRow( versionBrowser );
+        this.currentSection.addRow(versionBrowser);
     }
 
     private void addAttribute(String string,
                               Widget editable) {
-        this.currentSection.addAttribute( string,
-                                          editable );
+        this.currentSection.addAttribute(string,
+                editable);
     }
 
     private void endSection(boolean collapsed) {
@@ -262,7 +262,7 @@ public class MetaDataWidget extends Composite {
     }
 
     private Widget packageEditor(final String packageName) {
-        if ( this.readOnly || !CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
+        if ( this.readOnly || !UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_PACKAGE_VIEW) ) {
             return readOnlyText( packageName );
         } else {
             HorizontalPanel horiz = new HorizontalPanel();

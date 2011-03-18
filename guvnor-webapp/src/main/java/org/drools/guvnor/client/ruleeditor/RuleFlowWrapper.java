@@ -20,7 +20,7 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.explorer.Preferences;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -69,7 +69,7 @@ public class RuleFlowWrapper extends Composite
         VerticalPanel panel = new VerticalPanel();
         panel.add( uploadWidget );
 
-        if ( Preferences.getBooleanPref( "visual-ruleflow" ) ) {
+        if ( ApplicationPreferences.showVisualRuleFlow()) {
             initRuleflowViewer();
 
             if ( ruleFlowViewer != null && parameterPanel != null ) {
