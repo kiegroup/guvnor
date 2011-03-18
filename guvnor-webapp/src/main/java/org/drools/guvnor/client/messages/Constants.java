@@ -2261,4 +2261,8 @@ public interface Constants
     String NewPerspective();
     
     String PackageValidatedSuccessfully();
+    
+    String VersionFeed();
+    
+    String Dependencies();
 }
