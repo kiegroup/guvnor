@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -145,12 +146,14 @@ public class CellValueFactoryTests {
     }
 
     @Test
-    public void testConversionDataTypes() {
+    public void testDataTypes() {
 
-        @SuppressWarnings("deprecation")
-        Date dob = new Date( 2000,
-                             1,
-                             1 );
+        Calendar cdob = Calendar.getInstance();
+        cdob.clear();
+        cdob.set( 2000,
+                  0,
+                  1 );
+        Date dob = cdob.getTime();
 
         DTCellValue dcv1 = new DTCellValue( Boolean.TRUE );
         DTCellValue dcv2 = new DTCellValue( dob );
@@ -175,7 +178,7 @@ public class CellValueFactoryTests {
     }
 
     @Test
-    public void testEmptyValues() {
+    public void testEmptyCells() {
 
         CellValue< ? extends Comparable< ? >> cell1 = factory.makeCellValue( at1,
                                                                              0,
@@ -221,12 +224,14 @@ public class CellValueFactoryTests {
     }
 
     @Test
-    public void testWithValues() {
+    public void testTypedValues() {
 
-        @SuppressWarnings("deprecation")
-        Date dob = new Date( 2000,
-                             1,
-                             1 );
+        Calendar cdob = Calendar.getInstance();
+        cdob.clear();
+        cdob.set( 2000,
+                  0,
+                  1 );
+        Date dob = cdob.getTime();
 
         DTCellValue dcv1 = new DTCellValue( 1 );
         DTCellValue dcv2 = new DTCellValue( Boolean.TRUE );
@@ -234,6 +239,86 @@ public class CellValueFactoryTests {
         DTCellValue dcv4 = new DTCellValue( 11 );
         DTCellValue dcv5 = new DTCellValue( dob );
         DTCellValue dcv6 = new DTCellValue( Boolean.TRUE );
+        DTCellValue dcv7 = new DTCellValue( "Mike" );
+        DTCellValue dcv8 = new DTCellValue( "Mike" );
+
+        CellValue< ? extends Comparable< ? >> cell1 = factory.makeCellValue( at1,
+                                                                             0,
+                                                                             0,
+                                                                             dcv1 );
+        CellValue< ? extends Comparable< ? >> cell2 = factory.makeCellValue( at2,
+                                                                             0,
+                                                                             1,
+                                                                             dcv2 );
+        CellValue< ? extends Comparable< ? >> cell3 = factory.makeCellValue( c1,
+                                                                             0,
+                                                                             2,
+                                                                             dcv3 );
+        CellValue< ? extends Comparable< ? >> cell4 = factory.makeCellValue( c2,
+                                                                             0,
+                                                                             3,
+                                                                             dcv4 );
+        CellValue< ? extends Comparable< ? >> cell5 = factory.makeCellValue( c3,
+                                                                             0,
+                                                                             4,
+                                                                             dcv5 );
+        CellValue< ? extends Comparable< ? >> cell6 = factory.makeCellValue( c4,
+                                                                             0,
+                                                                             4,
+                                                                             dcv6 );
+        CellValue< ? extends Comparable< ? >> cell7 = factory.makeCellValue( a1,
+                                                                             0,
+                                                                             5,
+                                                                             dcv7 );
+        CellValue< ? extends Comparable< ? >> cell8 = factory.makeCellValue( a2,
+                                                                             0,
+                                                                             6,
+                                                                             dcv8 );
+
+        assertTrue( cell1.getValue() instanceof BigDecimal );
+        assertTrue( cell2.getValue() instanceof Boolean );
+        assertTrue( cell3.getValue() instanceof String );
+        assertTrue( cell4.getValue() instanceof BigDecimal );
+        assertTrue( cell5.getValue() instanceof Date );
+        assertTrue( cell6.getValue() instanceof Boolean );
+        assertTrue( cell7.getValue() instanceof String );
+        assertTrue( cell8.getValue() instanceof String );
+
+        assertEquals( cell1.getValue(),
+                      new BigDecimal( 1 ) );
+        assertEquals( cell2.getValue(),
+                      Boolean.TRUE );
+        assertEquals( cell3.getValue(),
+                      "Michael" );
+        assertEquals( cell4.getValue(),
+                      new BigDecimal( 11 ) );
+        assertEquals( cell5.getValue(),
+                      dob );
+        assertEquals( cell6.getValue(),
+                      Boolean.TRUE );
+        assertEquals( cell7.getValue(),
+                      "Mike" );
+        assertEquals( cell8.getValue(),
+                      "Mike" );
+
+    }
+
+    @Test
+    public void testStringValues() {
+
+        Calendar cdob = Calendar.getInstance();
+        cdob.clear();
+        cdob.set( 2000,
+                  0,
+                  1 );
+        Date dob = cdob.getTime();
+
+        DTCellValue dcv1 = new DTCellValue( "1" );
+        DTCellValue dcv2 = new DTCellValue( "true" );
+        DTCellValue dcv3 = new DTCellValue( "Michael" );
+        DTCellValue dcv4 = new DTCellValue( "11" );
+        DTCellValue dcv5 = new DTCellValue( "01-JAN-2000" );
+        DTCellValue dcv6 = new DTCellValue( "true" );
         DTCellValue dcv7 = new DTCellValue( "Mike" );
         DTCellValue dcv8 = new DTCellValue( "Mike" );
 
