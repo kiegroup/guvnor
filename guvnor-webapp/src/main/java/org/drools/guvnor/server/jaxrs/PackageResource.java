@@ -187,6 +187,7 @@ public class PackageResource extends Resource {
 					Entry e = new Entry();
 					e.setTitle(Long.toString(historicalPackage
 							.getVersionNumber()));
+					e.setUpdated(historicalPackage.getLastModified().getTime());
 					Link l = new Link();
 					// l.setHref(builder.path(item.getName()).build());
 					l.setHref(uriInfo

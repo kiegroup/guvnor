@@ -542,8 +542,11 @@ public class BasicPackageResourceTest extends RestTestingBase {
 		}
 		
 		assertEquals("/packages/restPackage1/versions/1", entriesMap.get("1").getLinks().get(0).getHref().getPath());		
+		assertTrue(entriesMap.get("1").getUpdated() != null);		
 		assertEquals("/packages/restPackage1/versions/2", entriesMap.get("2").getLinks().get(0).getHref().getPath());		
+		assertTrue(entriesMap.get("2").getUpdated() != null);		
 		assertEquals("/packages/restPackage1/versions/3", entriesMap.get("3").getLinks().get(0).getHref().getPath());		
+		assertTrue(entriesMap.get("3").getUpdated() != null);		
     }
     
     @Test
