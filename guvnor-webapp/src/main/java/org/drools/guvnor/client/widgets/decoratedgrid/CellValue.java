@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.drools.guvnor.client.widgets.decoratedgrid.data.Coordinate;
+
 /**
  * This is a wrapper around a value. The wrapper provides additional information
  * required to use the vanilla value in a Decision Table with merge
@@ -62,7 +64,7 @@ public class CellValue<T extends Comparable<T>>
      * GroupedCellValue's value the new GroupedCellValue contains a list of the
      * original three cells.
      */
-    class GroupedCellValue extends CellValue<T> {
+    public class GroupedCellValue extends CellValue<T> {
 
         //Grouped cells
         private List<CellValue<T>> groupedCells = new ArrayList<CellValue<T>>();
@@ -77,12 +79,21 @@ public class CellValue<T extends Comparable<T>>
          * @param row
          * @param col
          */
-        private GroupedCellValue(T value,
+        public GroupedCellValue(T value,
                                  int row,
                                  int col) {
             super( value,
                    row,
                    col );
+        }
+
+        /**
+         * Does this grouped cell contain multiple values
+         * 
+         * @return
+         */
+        public boolean hasMultipleValues() {
+            return hasMultipleValues;
         }
 
         /**
@@ -119,7 +130,7 @@ public class CellValue<T extends Comparable<T>>
          * 
          * @param cell
          */
-        void addCellToGroup(CellValue<T> cell) {
+        public void addCellToGroup(CellValue<T> cell) {
             this.groupedCells.add( cell );
             this.hasMultipleValues = checkForMultipleValues();
         }
@@ -131,15 +142,6 @@ public class CellValue<T extends Comparable<T>>
          */
         List<CellValue<T>> getGroupedCells() {
             return this.groupedCells;
-        }
-
-        /**
-         * Does this grouped cell contain multiple values
-         * 
-         * @return
-         */
-        boolean hasMultipleValues() {
-            return hasMultipleValues;
         }
 
     }
@@ -180,6 +182,18 @@ public class CellValue<T extends Comparable<T>>
             }
         }
         return this.value.compareTo( cv.value );
+    }
+
+    /**
+     * Convert a CellValue into a GroupedCellValue object
+     * 
+     * @return
+     */
+    public GroupedCellValue convertToGroupedCell() {
+        GroupedCellValue groupedCell = new GroupedCellValue( this.getValue(),
+                                                             this.getCoordinate().getRow(),
+                                                             this.getCoordinate().getCol() );
+        return groupedCell;
     }
 
     @Override
@@ -304,18 +318,6 @@ public class CellValue<T extends Comparable<T>>
             return false;
         }
         return o1.equals( o2 );
-    }
-
-    /**
-     * Convert a CellValue into a GroupedCellValue object
-     * 
-     * @return
-     */
-    GroupedCellValue convertToGroupedCell() {
-        GroupedCellValue groupedCell = new GroupedCellValue( this.getValue(),
-                                                             this.getCoordinate().getRow(),
-                                                             this.getCoordinate().getCol() );
-        return groupedCell;
     }
 
 }

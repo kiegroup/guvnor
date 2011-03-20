@@ -22,6 +22,8 @@ import java.util.List;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget.CellExtents;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicData;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;

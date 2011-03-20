@@ -26,6 +26,10 @@ import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.Coordinate;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicData;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.GroupedDynamicDataRow;
 
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;

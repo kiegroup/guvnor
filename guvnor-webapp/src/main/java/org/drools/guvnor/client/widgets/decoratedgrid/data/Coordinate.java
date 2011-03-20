@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.decoratedgrid;
+package org.drools.guvnor.client.widgets.decoratedgrid.data;
 
 /**
  * A coordinate
@@ -23,13 +23,13 @@ public class Coordinate {
     private int col;
     private String displayString;
 
-    Coordinate(Coordinate c) {
+    public Coordinate(Coordinate c) {
         this.row = c.row;
         this.col = c.col;
         this.displayString = "(R" + c.row + ",C" + c.col + ")";
     }
 
-    Coordinate(int row, int col) {
+    public Coordinate(int row, int col) {
         this.row = row;
         this.col = col;
         this.displayString = "(R" + row + ",C" + col + ")";

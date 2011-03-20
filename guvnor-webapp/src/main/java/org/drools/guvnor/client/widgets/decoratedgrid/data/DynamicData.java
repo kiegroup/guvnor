@@ -13,11 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.widgets.decoratedgrid;
+package org.drools.guvnor.client.widgets.decoratedgrid.data;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue;
 
@@ -26,11 +27,69 @@ import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue
  */
 public class DynamicData<T> extends ArrayList<DynamicDataRow> {
 
-    private static final long serialVersionUID = -3710491920672816057L;
+    private boolean       isMerged       = false;
 
-    private boolean           isMerged         = false;
+    private List<Boolean> visibleColumns = new ArrayList<Boolean>();
 
-    private List<Boolean>     visibleColumns   = new ArrayList<Boolean>();
+    private static final long serialVersionUID = 5061393855340039472L;
+
+    /**
+     * Add column to data
+     * 
+     * @param index
+     * @param columnData
+     */
+    public void addColumn(int index,
+                          List<CellValue< ? >> columnData,
+                          boolean isVisible) {
+        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
+            CellValue< ? > cv = columnData.get( iRow );
+            get( iRow ).add( index,
+                                  cv );
+        }
+        visibleColumns.add( index,
+                            isVisible );
+        assertModelIndexes();
+    }
+
+    /**
+     * Apply grouping by collapsing applicable rows
+     * 
+     * @param startCell
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void applyModelGrouping(CellValue< ? > startCell) {
+
+        int startRowIndex = startCell.getCoordinate().getRow();
+        int endRowIndex = findMergedCellExtent( startCell.getCoordinate() ).getRow();
+        int colIndex = startCell.getCoordinate().getCol();
+
+        //Delete grouped rows replacing with a single "grouped" row
+        GroupedCellValue groupedCell;
+        DynamicDataRow row = get( startRowIndex );
+        GroupedDynamicDataRow groupedRow = new GroupedDynamicDataRow();
+        for ( int iCol = 0; iCol < row.size(); iCol++ ) {
+            groupedCell = row.get( iCol ).convertToGroupedCell();
+            if ( iCol == colIndex ) {
+                groupedCell.addState( CellState.GROUPED );
+            } else {
+                groupedCell.removeState( CellState.GROUPED );
+            }
+            groupedRow.add( groupedCell );
+        }
+
+        //Add individual cells to "grouped" row
+        for ( int iRow = startRowIndex; iRow <= endRowIndex; iRow++ ) {
+            DynamicDataRow childRow = get( startRowIndex );
+            groupedRow.addChildRow( childRow );
+            remove( childRow );
+        }
+        remove( row );
+        add( startRowIndex,
+                  groupedRow );
+
+        assertModelMerging();
+    }
 
     /**
      * Ensure indexes in the model are correct
@@ -47,7 +106,7 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
         if ( size() == 0 ) {
             return;
         }
-
+        
         for ( int iRow = 0; iRow < size(); iRow++ ) {
             DynamicDataRow row = get( iRow );
 
@@ -87,6 +146,109 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
     }
 
     /**
+     * Ensure merging is reflected in the entire model
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void assertModelMerging() {
+
+        if ( size() == 0 ) {
+            return;
+        }
+
+        //Remove merging first as it initialises all coordinates
+        removeModelMerging();
+
+        final int COLUMNS = get( 0 ).size();
+
+        //Only apply merging if merged
+        if ( isMerged ) {
+
+            int minRowIndex = 0;
+            int maxRowIndex = size();
+
+            //Add an empty row to the end of the data to simplify detection of merged cells that run to the end of the table
+            DynamicDataRow blankRow = new DynamicDataRow();
+            for ( int iCol = 0; iCol < COLUMNS; iCol++ ) {
+                CellValue cv = new CellValue( null,
+                                              maxRowIndex,
+                                              iCol );
+                blankRow.add( cv );
+            }
+            add( blankRow );
+            maxRowIndex++;
+
+            //Look in columns for cells with identical values
+            for ( int iCol = 0; iCol < COLUMNS; iCol++ ) {
+                CellValue< ? > cell1 = get( minRowIndex ).get( iCol );
+                CellValue< ? > cell2 = null;
+                for ( int iRow = minRowIndex + 1; iRow < maxRowIndex; iRow++ ) {
+                    cell1.setRowSpan( 1 );
+                    cell2 = get( iRow ).get( iCol );
+
+                    //Merge if both cells contain the same value and neither is grouped
+                    boolean bSplit = true;
+                    if ( !cell1.isEmpty() && !cell2.isEmpty() ) {
+                        if ( cell1.getValue().equals( cell2.getValue() ) ) {
+                            bSplit = false;
+                            if ( cell1 instanceof GroupedCellValue ) {
+                                GroupedCellValue gcv = (GroupedCellValue) cell1;
+                                if ( gcv.hasMultipleValues() ) {
+                                    bSplit = true;
+                                }
+                            }
+                            if ( cell2 instanceof GroupedCellValue ) {
+                                GroupedCellValue gcv = (GroupedCellValue) cell2;
+                                if ( gcv.hasMultipleValues() ) {
+                                    bSplit = true;
+                                }
+                            }
+                        }
+                    }
+
+                    if ( bSplit ) {
+                        mergeCells( cell1,
+                                    cell2 );
+                        cell1 = cell2;
+                    }
+
+                }
+            }
+
+            //Remove dummy blank row
+            remove( blankRow );
+
+        }
+
+        // Set indexes after merging has been corrected
+        assertModelIndexes();
+
+    }
+
+    /**
+     * Delete column data
+     * 
+     * @param index
+     */
+    public void deleteColumn(int index) {
+        for ( int iRow = 0; iRow < size(); iRow++ ) {
+            DynamicDataRow row = get( iRow );
+            row.remove( index );
+        }
+        visibleColumns.remove( index );
+        assertModelIndexes();
+    }
+
+    /**
+     * Get the CellValue at the given coordinate
+     * 
+     * @param c
+     * @return
+     */
+    public CellValue< ? extends Comparable< ? >> get(Coordinate c) {
+        return get( c.getRow() ).get( c.getCol() );
+    }
+
+    /**
      * Return grid's data. Grouping in the data will be expanded and can
      * therefore can be used prior to populate the underlying data structures
      * prior to persisting.
@@ -106,6 +268,112 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
             }
         }
         return dataClone;
+    }
+
+    /**
+     * Return the state of merging
+     * 
+     * @return
+     */
+    public boolean isMerged() {
+        return isMerged;
+    }
+
+    /**
+     * Remove grouping by expanding applicable rows
+     * 
+     * @param startCell
+     * @return
+     */
+    @SuppressWarnings("rawtypes")
+    public List<DynamicDataRow> removeModelGrouping(CellValue< ? > startCell) {
+
+        int startRowIndex = startCell.getCoordinate().getRow();
+
+        startCell.removeState( CellState.GROUPED );
+
+        //Check if rows need to be recursively expanded
+        boolean bRecursive = true;
+        DynamicDataRow row = get( startRowIndex );
+        for ( int iCol = 0; iCol < row.size(); iCol++ ) {
+            CellValue< ? > cv = row.get( iCol );
+            if ( cv instanceof GroupedCellValue ) {
+                bRecursive = !(bRecursive ^ ((GroupedCellValue) cv).hasMultipleValues());
+            }
+        }
+
+        //Delete "grouped" row and replace with individual rows
+        List<DynamicDataRow> expandedRow = expandGroupedRow( row,
+                                                             bRecursive );
+        remove( startRowIndex );
+        addAll( startRowIndex,
+                     expandedRow );
+
+        assertModelMerging();
+
+        //If the row is replaced with another grouped row ensure the row can be expanded
+        row = get( startRowIndex );
+        boolean hasCellToExpand = false;
+        for ( CellValue< ? > cell : row ) {
+            if ( cell instanceof GroupedCellValue ) {
+                if ( cell.isGrouped() && cell.getRowSpan() > 0 ) {
+                    hasCellToExpand = true;
+                    break;
+                }
+            }
+        }
+        if ( !hasCellToExpand ) {
+            for ( CellValue< ? > cell : row ) {
+                if ( cell instanceof GroupedCellValue && cell.getRowSpan() == 1 ) {
+                    cell.addState( CellState.GROUPED );
+                }
+            }
+        }
+        return expandedRow;
+    }
+
+    /**
+     * Set the value at the specified coordinate
+     * 
+     * @param c
+     * @param value
+     */
+    public void set(Coordinate c,
+                    Object value) {
+        if ( c == null ) {
+            throw new IllegalArgumentException( "c cannot be null" );
+        }
+        get( c.getRow() ).get( c.getCol() ).setValue( value );
+    }
+
+    /**
+     * Set whether a columns is Visible
+     * 
+     * @param index
+     *            index of column
+     * @param isVisible
+     *            True if the column is visible
+     */
+    public void setColumnVisibility(int index,
+                                    boolean isVisible) {
+        this.visibleColumns.set( index,
+                                 isVisible );
+    }
+
+    /**
+     * Set whether the grid's data is merged or not. Clearing merging within the
+     * data also clears grouping
+     * 
+     * @param isMerged
+     */
+    public void setMerged(boolean isMerged) {
+        this.isMerged = isMerged;
+        if ( isMerged ) {
+            assertModelMerging();
+        } else {
+            removeModelGrouping();
+            removeModelMerging();
+        }
     }
 
     //Expand a grouped row and return a list of expanded rows
@@ -187,176 +455,6 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
     }
 
     /**
-     * Add column to data
-     * 
-     * @param index
-     * @param columnData
-     */
-    void addColumn(int index,
-                   List<CellValue< ? >> columnData,
-                   boolean isVisible) {
-        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
-            CellValue< ? > cv = columnData.get( iRow );
-            get( iRow ).add( index,
-                                  cv );
-        }
-        visibleColumns.add( index,
-                            isVisible );
-        assertModelIndexes();
-    }
-
-    /**
-     * Apply grouping by collapsing applicable rows
-     * 
-     * @param startCell
-     */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    void applyModelGrouping(CellValue< ? > startCell) {
-
-        int startRowIndex = startCell.getCoordinate().getRow();
-        int endRowIndex = findMergedCellExtent( startCell.getCoordinate() ).getRow();
-        int colIndex = startCell.getCoordinate().getCol();
-
-        //Delete grouped rows replacing with a single "grouped" row
-        GroupedCellValue groupedCell;
-        DynamicDataRow row = get( startRowIndex );
-        GroupedDynamicDataRow groupedRow = new GroupedDynamicDataRow();
-        for ( int iCol = 0; iCol < row.size(); iCol++ ) {
-            groupedCell = row.get( iCol ).convertToGroupedCell();
-            if ( iCol == colIndex ) {
-                groupedCell.addState( CellState.GROUPED );
-            } else {
-                groupedCell.removeState( CellState.GROUPED );
-            }
-            groupedRow.add( groupedCell );
-        }
-
-        //Add individual cells to "grouped" row
-        for ( int iRow = startRowIndex; iRow <= endRowIndex; iRow++ ) {
-            DynamicDataRow childRow = get( startRowIndex );
-            groupedRow.addChildRow( childRow );
-            remove( childRow );
-        }
-        remove( row );
-        add( startRowIndex,
-                  groupedRow );
-
-        assertModelMerging();
-    }
-
-    /**
-     * Ensure merging is reflected in the entire model
-     */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    void assertModelMerging() {
-
-        if ( size() == 0 ) {
-            return;
-        }
-
-        //Remove merging first as it initialises all coordinates
-        removeModelMerging();
-
-        final int COLUMNS = get( 0 ).size();
-
-        //Only apply merging if merged
-        if ( isMerged ) {
-
-            int minRowIndex = 0;
-            int maxRowIndex = size();
-
-            //Add an empty row to the end of the data to simplify detection of merged cells that run to the end of the table
-            DynamicDataRow blankRow = new DynamicDataRow();
-            for ( int iCol = 0; iCol < COLUMNS; iCol++ ) {
-                CellValue cv = new CellValue( null,
-                                              maxRowIndex,
-                                              iCol );
-                blankRow.add( cv );
-            }
-            add( blankRow );
-            maxRowIndex++;
-
-            //Look in columns for cells with identical values
-            for ( int iCol = 0; iCol < COLUMNS; iCol++ ) {
-                CellValue< ? > cell1 = get( minRowIndex ).get( iCol );
-                CellValue< ? > cell2 = null;
-                for ( int iRow = minRowIndex + 1; iRow < maxRowIndex; iRow++ ) {
-                    cell1.setRowSpan( 1 );
-                    cell2 = get( iRow ).get( iCol );
-
-                    //Merge if both cells contain the same value and neither is grouped
-                    boolean bSplit = true;
-                    if ( !cell1.isEmpty() && !cell2.isEmpty() ) {
-                        if ( cell1.getValue().equals( cell2.getValue() ) ) {
-                            bSplit = false;
-                            if ( cell1 instanceof GroupedCellValue ) {
-                                GroupedCellValue gcv = (GroupedCellValue) cell1;
-                                if ( gcv.hasMultipleValues() ) {
-                                    bSplit = true;
-                                }
-                            }
-                            if ( cell2 instanceof GroupedCellValue ) {
-                                GroupedCellValue gcv = (GroupedCellValue) cell2;
-                                if ( gcv.hasMultipleValues() ) {
-                                    bSplit = true;
-                                }
-                            }
-                        }
-                    }
-
-                    if ( bSplit ) {
-                        mergeCells( cell1,
-                                    cell2 );
-                        cell1 = cell2;
-                    }
-
-                }
-            }
-
-            //Remove dummy blank row
-            remove( blankRow );
-
-        }
-
-        // Set indexes after merging has been corrected
-        assertModelIndexes();
-
-    }
-
-    /**
-     * Delete column data
-     * 
-     * @param index
-     */
-    void deleteColumn(int index) {
-        for ( int iRow = 0; iRow < size(); iRow++ ) {
-            DynamicDataRow row = get( iRow );
-            row.remove( index );
-        }
-        visibleColumns.remove( index );
-        assertModelIndexes();
-    }
-
-    /**
-     * Get the CellValue at the given coordinate
-     * 
-     * @param c
-     * @return
-     */
-    CellValue< ? extends Comparable< ? >> get(Coordinate c) {
-        return this.get( c.getRow() ).get( c.getCol() );
-    }
-
-    /**
-     * Return the state of merging
-     * 
-     * @return
-     */
-    boolean isMerged() {
-        return isMerged;
-    }
-
-    /**
      * Remove all grouping throughout the model
      */
     void removeModelGrouping() {
@@ -373,59 +471,6 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
             }
         }
 
-    }
-
-    /**
-     * Remove grouping by expanding applicable rows
-     * 
-     * @param startCell
-     * @return
-     */
-    @SuppressWarnings("rawtypes")
-    List<DynamicDataRow> removeModelGrouping(CellValue< ? > startCell) {
-
-        int startRowIndex = startCell.getCoordinate().getRow();
-
-        startCell.removeState( CellState.GROUPED );
-
-        //Check if rows need to be recursively expanded
-        boolean bRecursive = true;
-        DynamicDataRow row = get( startRowIndex );
-        for ( int iCol = 0; iCol < row.size(); iCol++ ) {
-            CellValue< ? > cv = row.get( iCol );
-            if ( cv instanceof GroupedCellValue ) {
-                bRecursive = !(bRecursive ^ ((GroupedCellValue) cv).hasMultipleValues());
-            }
-        }
-
-        //Delete "grouped" row and replace with individual rows
-        List<DynamicDataRow> expandedRow = expandGroupedRow( row,
-                                                             bRecursive );
-        remove( startRowIndex );
-        addAll( startRowIndex,
-                     expandedRow );
-
-        assertModelMerging();
-
-        //If the row is replaced with another grouped row ensure the row can be expanded
-        row = get( startRowIndex );
-        boolean hasCellToExpand = false;
-        for ( CellValue< ? > cell : row ) {
-            if ( cell instanceof GroupedCellValue ) {
-                if ( cell.isGrouped() && cell.getRowSpan() > 0 ) {
-                    hasCellToExpand = true;
-                    break;
-                }
-            }
-        }
-        if ( !hasCellToExpand ) {
-            for ( CellValue< ? > cell : row ) {
-                if ( cell instanceof GroupedCellValue && cell.getRowSpan() == 1 ) {
-                    cell.addState( CellState.GROUPED );
-                }
-            }
-        }
-        return expandedRow;
     }
 
     /**
@@ -450,49 +495,5 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
         // Set indexes after merging has been corrected
         assertModelIndexes();
     }
-
-    /**
-     * Set the value at the specified coordinate
-     * 
-     * @param c
-     * @param value
-     */
-    void set(Coordinate c,
-                    Object value) {
-        if ( c == null ) {
-            throw new IllegalArgumentException( "c cannot be null" );
-        }
-        this.get( c.getRow() ).get( c.getCol() ).setValue( value );
-    }
-
-    /**
-     * Set whether a columns is Visible
-     * 
-     * @param index
-     *            index of column
-     * @param isVisible
-     *            True if the column is visible
-     */
-    void setColumnVisibility(int index,
-                                    boolean isVisible) {
-        this.visibleColumns.set( index,
-                                 isVisible );
-    }
-
-    /**
-     * Set whether the grid's data is merged or not. Clearing merging within the
-     * data also clears grouping
-     * 
-     * @param isMerged
-     */
-    void setMerged(boolean isMerged) {
-        this.isMerged = isMerged;
-        if ( isMerged ) {
-            assertModelMerging();
-        } else {
-            removeModelGrouping();
-            removeModelMerging();
-        }
-    }
-
+    
 }

@@ -18,6 +18,8 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 import java.util.Set;
 
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.Coordinate;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;

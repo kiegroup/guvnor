@@ -17,6 +17,7 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;

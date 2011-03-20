@@ -1,5 +1,7 @@
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
+import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
+
 /**
  * Row operations for consumers of DecoratedGridWidget
  */

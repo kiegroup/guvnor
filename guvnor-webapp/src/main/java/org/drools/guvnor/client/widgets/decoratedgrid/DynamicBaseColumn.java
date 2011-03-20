@@ -16,6 +16,8 @@
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
 
+import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.FieldUpdater;

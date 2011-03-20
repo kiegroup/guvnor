@@ -24,12 +24,12 @@ import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
-import org.drools.guvnor.client.widgets.decoratedgrid.DynamicData;
-import org.drools.guvnor.client.widgets.decoratedgrid.DynamicDataRow;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasColumns;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridWidget;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicData;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
@@ -92,15 +92,6 @@ public class TemplateDataTableWidget extends Composite
                    true );
     }
 
-    // Add column to table with optional redraw
-    private void addColumn(TemplateDataColumn modelColumn,
-                           boolean bRedraw) {
-        int index = widget.getGridWidget().getColumns().size();
-        insertColumnBefore( modelColumn,
-                            index,
-                            bRedraw );
-    }
-
     /**
      * Append a row to the end of the table
      */
@@ -133,50 +124,6 @@ public class TemplateDataTableWidget extends Composite
         widget.deleteRow( row );
     }
 
-    // Retrieves the DynamicColumn relating to the Model column or null if it
-    // cannot be found
-    private DynamicColumn<TemplateDataColumn> getDynamicColumn(TemplateDataColumn modelCol) {
-        DynamicColumn<TemplateDataColumn> column = null;
-        List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
-        for ( DynamicColumn<TemplateDataColumn> dc : columns ) {
-            if ( dc.getModelColumn().equals( modelCol ) ) {
-                column = dc;
-                break;
-            }
-        }
-        return column;
-    }
-
-    // Insert a new model column at the specified index
-    private void insertColumnBefore(TemplateDataColumn modelColumn,
-                                    int index,
-                                    boolean bRedraw) {
-
-        // Create new column for grid
-        DynamicColumn<TemplateDataColumn> column = new DynamicColumn<TemplateDataColumn>( modelColumn,
-                                                                                          cellFactory.getCell( modelColumn ),
-                                                                                          index );
-        column.setVisible( true );
-
-        // Create column data
-        List<CellValue< ? >> columnData = makeColumnData( modelColumn,
-                                                          index );
-
-        // Add column and data to grid
-        if ( index < widget.getGridWidget().getColumns().size() ) {
-            DynamicColumn<TemplateDataColumn> columnBefore = widget.getGridWidget().getColumns().get( index );
-            widget.insertColumnBefore( columnBefore,
-                                       column,
-                                       columnData,
-                                       bRedraw );
-        } else {
-            widget.appendColumn( column,
-                                 columnData,
-                                 bRedraw );
-        }
-
-    }
-
     /**
      * Insert a row before that provided
      * 
@@ -191,48 +138,6 @@ public class TemplateDataTableWidget extends Composite
         DynamicDataRow newRow = makeNewRow();
         widget.insertRowBefore( rowBefore,
                                 newRow );
-    }
-
-    // Make a row of data for insertion into a DecoratedGridWidget
-    private List<CellValue< ? >> makeColumnData(TemplateDataColumn column,
-                                                int colIndex) {
-        int dataSize = this.widget.getGridWidget().getData().size();
-        List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
-        for ( int iRow = 0; iRow < dataSize; iRow++ ) {
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( column,
-                                                                                       iRow,
-                                                                                       colIndex );
-            columnData.add( cv );
-        }
-        return columnData;
-    }
-
-    // Construct a new row for insertion into a DecoratedGridWidget
-    private DynamicDataRow makeNewRow() {
-        DynamicDataRow row = new DynamicDataRow();
-        List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
-        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            TemplateDataColumn col = columns.get( iCol ).getModelColumn();
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
-                                                                                       0,
-                                                                                       iCol );
-            row.add( cv );
-        }
-        return row;
-    }
-
-    /**
-     * Set column visibility
-     */
-    public void setColumnVisibility(TemplateDataColumn modelColumn,
-                                    boolean isVisible) {
-        if ( modelColumn == null ) {
-            throw new IllegalArgumentException( "modelColumn cannot be null" );
-        }
-
-        DynamicColumn<TemplateDataColumn> col = getDynamicColumn( modelColumn );
-        widget.setColumnVisibility( col.getColumnIndex(),
-                                            isVisible );
     }
 
     public void scrapeData(TemplateModel model) {
@@ -256,6 +161,20 @@ public class TemplateDataTableWidget extends Composite
             model.addRow( rowData );
         }
 
+    }
+
+    /**
+     * Set column visibility
+     */
+    public void setColumnVisibility(TemplateDataColumn modelColumn,
+                                    boolean isVisible) {
+        if ( modelColumn == null ) {
+            throw new IllegalArgumentException( "modelColumn cannot be null" );
+        }
+
+        DynamicColumn<TemplateDataColumn> col = getDynamicColumn( modelColumn );
+        widget.setColumnVisibility( col.getColumnIndex(),
+                                            isVisible );
     }
 
     /**
@@ -341,6 +260,87 @@ public class TemplateDataTableWidget extends Composite
                             height );
         widget.setPixelSize( width,
                              height );
+    }
+
+    // Add column to table with optional redraw
+    private void addColumn(TemplateDataColumn modelColumn,
+                           boolean bRedraw) {
+        int index = widget.getGridWidget().getColumns().size();
+        insertColumnBefore( modelColumn,
+                            index,
+                            bRedraw );
+    }
+
+    // Retrieves the DynamicColumn relating to the Model column or null if it
+    // cannot be found
+    private DynamicColumn<TemplateDataColumn> getDynamicColumn(TemplateDataColumn modelCol) {
+        DynamicColumn<TemplateDataColumn> column = null;
+        List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
+        for ( DynamicColumn<TemplateDataColumn> dc : columns ) {
+            if ( dc.getModelColumn().equals( modelCol ) ) {
+                column = dc;
+                break;
+            }
+        }
+        return column;
+    }
+
+    // Insert a new model column at the specified index
+    private void insertColumnBefore(TemplateDataColumn modelColumn,
+                                    int index,
+                                    boolean bRedraw) {
+
+        // Create new column for grid
+        DynamicColumn<TemplateDataColumn> column = new DynamicColumn<TemplateDataColumn>( modelColumn,
+                                                                                          cellFactory.getCell( modelColumn ),
+                                                                                          index );
+        column.setVisible( true );
+
+        // Create column data
+        List<CellValue< ? >> columnData = makeColumnData( modelColumn,
+                                                          index );
+
+        // Add column and data to grid
+        if ( index < widget.getGridWidget().getColumns().size() ) {
+            DynamicColumn<TemplateDataColumn> columnBefore = widget.getGridWidget().getColumns().get( index );
+            widget.insertColumnBefore( columnBefore,
+                                       column,
+                                       columnData,
+                                       bRedraw );
+        } else {
+            widget.appendColumn( column,
+                                 columnData,
+                                 bRedraw );
+        }
+
+    }
+
+    // Make a row of data for insertion into a DecoratedGridWidget
+    private List<CellValue< ? >> makeColumnData(TemplateDataColumn column,
+                                                int colIndex) {
+        int dataSize = this.widget.getGridWidget().getData().size();
+        List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
+        for ( int iRow = 0; iRow < dataSize; iRow++ ) {
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( column,
+                                                                                       iRow,
+                                                                                       colIndex );
+            columnData.add( cv );
+        }
+        return columnData;
+    }
+
+    // Construct a new row for insertion into a DecoratedGridWidget
+    private DynamicDataRow makeNewRow() {
+        DynamicDataRow row = new DynamicDataRow();
+        List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
+        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+            TemplateDataColumn col = columns.get( iCol ).getModelColumn();
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
+                                                                                       0,
+                                                                                       iCol );
+            row.add( cv );
+        }
+        return row;
     }
 
 }

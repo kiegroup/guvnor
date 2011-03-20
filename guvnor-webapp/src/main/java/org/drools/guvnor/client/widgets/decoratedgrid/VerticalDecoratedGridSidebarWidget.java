@@ -17,6 +17,8 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.ArrayList;
 
+import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
+
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.dom.client.TableElement;

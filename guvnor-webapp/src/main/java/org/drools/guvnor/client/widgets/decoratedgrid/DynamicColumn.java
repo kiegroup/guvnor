@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
+import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
