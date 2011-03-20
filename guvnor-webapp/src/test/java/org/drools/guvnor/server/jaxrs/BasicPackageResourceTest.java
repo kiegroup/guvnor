@@ -26,6 +26,7 @@ import java.util.Map;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -34,22 +35,31 @@ import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
+import org.jboss.resteasy.plugins.providers.atom.AbderaEntryProvider;
+import org.jboss.resteasy.plugins.providers.atom.AbderaFeedProvider;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.namespace.QName;
 
 import static org.junit.Assert.*;
 import static org.jboss.resteasy.test.TestPortProvider.*;
 
 public class BasicPackageResourceTest extends RestTestingBase {
     private Abdera abdera = new Abdera();
-   
+    String NS = "";
+    QName METADATA = new QName(NS, "metadata");
+    QName VALUE = new QName(NS, "value");    
+    QName ARCHIVED = new QName(NS, "archived");
+
     @Before @Override
     public void setUpGuvnorTestBase() {
         super.setUpGuvnorTestBase();
         dispatcher.getRegistry().addPerRequestResource(PackageResource.class);
+        dispatcher.getProviderFactory().registerProvider(AbderaEntryProvider.class);
+        dispatcher.getProviderFactory().registerProvider(AbderaFeedProvider.class);
         
         ServiceImplementation impl = getServiceImplementation();
         //Package version 1(Initial version)
@@ -220,7 +230,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        System.out.println(GetContent(connection));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -228,8 +238,9 @@ public class BasicPackageResourceTest extends RestTestingBase {
 		Entry entry = doc.getRoot();
 		assertEquals("/packages/restPackage1", entry.getBaseUri().getPath());		
 		assertEquals("restPackage1", entry.getTitle());
+		assertTrue(entry.getPublished() != null);
 		assertEquals("this is package restPackage1", entry.getSummary());
-		assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
+		//assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
 		assertEquals("/packages/restPackage1/binary", entry.getContentSrc().getPath());
 		
 		List<Link> links = entry.getLinks();
@@ -245,6 +256,11 @@ public class BasicPackageResourceTest extends RestTestingBase {
 		assertEquals("/packages/restPackage1/assets/rule1", linksMap.get("rule1").getHref().getPath());		
 		assertEquals("/packages/restPackage1/assets/rule2", linksMap.get("rule2").getHref().getPath());		
 		assertEquals("/packages/restPackage1/assets/model1", linksMap.get("model1").getHref().getPath());
+		
+		ExtensibleElement metadataExtension  = entry.getExtension(METADATA); 
+        ExtensibleElement archivedExtension = metadataExtension.getExtension(ARCHIVED);     
+		//assertEquals("metadata_type_lifecycle", metadataExtension.getAttributeValue("type"));       
+		assertEquals("false", archivedExtension.getSimpleExtension(VALUE)); 
     }
 
     /* Package Creation */

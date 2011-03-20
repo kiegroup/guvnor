@@ -20,6 +20,7 @@ import static org.drools.guvnor.server.jaxrs.Translator.ToAsset;
 import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntry;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackage;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntry;
+import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntryAbdera;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -140,8 +141,8 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Entry getPackageAsEntry(@PathParam("packageName") String packageName) {
-        return ToPackageEntry(repository.loadPackage(packageName), uriInfo);
+    public org.apache.abdera.model.Entry getPackageAsEntry(@PathParam("packageName") String packageName) {
+        return ToPackageEntryAbdera(repository.loadPackage(packageName), uriInfo);
     }
 
     @GET
@@ -174,8 +175,7 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/versions")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Feed getPackageVersions(@PathParam("packageName") String packageName) throws SerializationException {
-   
+    public Feed getPackageVersionsAsFeed(@PathParam("packageName") String packageName) throws SerializationException { 
     	PackageItem p = repository.loadPackage(packageName);
         PackageHistoryIterator it = p.getHistory();        
         Feed f = new Feed();
@@ -189,7 +189,6 @@ public class PackageResource extends Resource {
 							.getVersionNumber()));
 					e.setUpdated(historicalPackage.getLastModified().getTime());
 					Link l = new Link();
-					// l.setHref(builder.path(item.getName()).build());
 					l.setHref(uriInfo
 							.getBaseUriBuilder()
 							.path("packages")
@@ -210,31 +209,31 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/versions/{versionNumber}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Entry getHistoryPackageAsEntry(@PathParam("packageName") String packageName,
+    public Entry getHistoricalPackageAsEntry(@PathParam("packageName") String packageName,
     		@PathParam("versionNumber") long versionNumber) throws SerializationException {
         return ToPackageEntry(repository.loadPackage(packageName, versionNumber), uriInfo);
     }
     
     @GET
-    @Path("{packageName}/versions/{versionNumber}/binary")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public byte[] getHistoryPackageBinary(@PathParam("packageName") String packageName,
-    		@PathParam("versionNumber") long versionNumber) throws SerializationException {
-        PackageItem p = repository.loadPackage(packageName, versionNumber);
-        PackageService.buildPackage(p.getUUID(), true);
-        return repository.loadPackage(packageName).getCompiledPackageBytes();
-    }
-    
-    @GET
     @Path("{packageName}/versions/{versionNumber}/source")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getHistoryPackageSource(@PathParam("packageName") String packageName,
+    public String getHistoricalPackageSource(@PathParam("packageName") String packageName,
     		@PathParam("versionNumber") long versionNumber) {
     	PackageItem item = repository.loadPackage(packageName,  versionNumber);
         ContentPackageAssembler asm = new ContentPackageAssembler( item,
                                                                    false );
         String drl = asm.getDRL();
         return drl;
+    }    
+    
+    @GET
+    @Path("{packageName}/versions/{versionNumber}/binary")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public byte[] getHistoricalPackageBinary(@PathParam("packageName") String packageName,
+    		@PathParam("versionNumber") long versionNumber) throws SerializationException {
+        PackageItem p = repository.loadPackage(packageName, versionNumber);
+        PackageService.buildPackage(p.getUUID(), true);
+        return repository.loadPackage(packageName).getCompiledPackageBytes();
     }
     
     @GET

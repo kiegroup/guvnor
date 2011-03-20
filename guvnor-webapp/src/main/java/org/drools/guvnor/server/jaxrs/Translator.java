@@ -16,6 +16,10 @@
 
 package org.drools.guvnor.server.jaxrs;
 
+import org.apache.abdera.Abdera;
+import org.apache.abdera.factory.Factory;
+import org.apache.abdera.model.Content.Type;
+import org.apache.abdera.model.ExtensibleElement;
 import org.drools.guvnor.server.jaxrs.jaxb.*;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.repository.AssetItem;
@@ -34,7 +38,10 @@ import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Link;
 
 public class Translator {
-
+    public static String NS = "";
+    public static QName METADATA = new QName(NS, "metadata");
+    static QName VALUE = new QName(NS, "value");
+    
     public static Asset ToAsset(AssetItem a, UriInfo uriInfo) {
         AssetMetadata metadata = new AssetMetadata();
         metadata.setUuid(a.getUUID());
@@ -105,18 +112,67 @@ public class Translator {
         return ret;
     }
     
-    public static Entry ToPackageEntry(PackageItem p, UriInfo uriInfo) {
-        Content c = new Content();
-        c.setType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+    public static org.apache.abdera.model.Entry ToPackageEntryAbdera(PackageItem p, UriInfo uriInfo) {
         UriBuilder base;
         if(p.isHistoricalVersion()) {
         	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
         } else {
         	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName());
         }
-
-        c.setSrc(base.clone().path("binary").build());       	
         
+        Factory factory = Abdera.getNewFactory();
+
+        org.apache.abdera.model.Entry e = factory.getAbdera().newEntry();
+        e.setTitle(p.getTitle());
+        e.setSummary(p.getDescription());
+        e.setPublished(new Date(p.getLastModified().getTimeInMillis()));
+        e.setBaseUri(base.clone().build().toString());       
+        e.addContributor(p.getLastContributor());
+
+        e.setId(base.clone().build().toString());
+        
+        Iterator<AssetItem> i = p.getAssets();
+        while (i.hasNext()) {
+            AssetItem item = i.next();
+            org.apache.abdera.model.Link l = factory.newLink();
+            l.setHref((base.clone().path("assets").path(item.getName())).build().toString());
+            l.setTitle(item.getTitle());
+            l.setRel("asset");
+            e.addLink(l);
+        }
+
+        //generate meta data
+        ExtensibleElement extension = e.addExtension(METADATA);
+       	QName extQName = new QName(NS, "archived");
+        ExtensibleElement childExtension = extension.addExtension(extQName);
+        //childExtension.setAttributeValue("type", ArtifactsRepository.METADATA_TYPE_STRING);
+        childExtension.addSimpleExtension(VALUE, p.isArchived()?"true":"false");
+        
+       	extQName = new QName(NS, "UUID");
+        childExtension = extension.addExtension(extQName);
+        childExtension.addSimpleExtension(VALUE, p.getUUID());
+       	
+       	extQName = new QName(NS, "state");
+        childExtension = extension.addExtension(extQName);
+        childExtension.addSimpleExtension(VALUE, p.getState()== null?"" : p.getState().getName());
+
+        org.apache.abdera.model.Content content = factory.newContent();
+        content.setSrc(base.clone().path("binary").build().toString());
+        content.setMimeType("application/octet-stream");
+        content.setContentType(Type.MEDIA);
+		e.setContentElement(content);
+
+		return e;
+    }
+    
+    public static Entry ToPackageEntry(PackageItem p, UriInfo uriInfo) {
+        UriBuilder base;
+        if(p.isHistoricalVersion()) {
+        	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
+        } else {
+        	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName());
+        }        
+
         //NOTE: Entry extension is not supported in RESTEasy. We need to either use Abdera or get extension 
         //supported in RESTEasy
 /*        PackageMetadata metadata = new PackageMetadata();
@@ -129,18 +185,13 @@ public class Translator {
         Entry e =new Entry();
         e.setTitle(p.getTitle());
         e.setSummary(p.getDescription());
-        e.setContent(c);
         e.setPublished(new Date(p.getLastModified().getTimeInMillis()));
         e.setBase(base.clone().build());
 
-        Link l = new Link();
+/*        Link l = new Link();
         l.setHref(base.build());
-        l.setRel("self");
-        e.setId(l.getHref());
-/*        
-        Map extensions = e.getExtensionAttributes();
-        QName METADATA = new QName("", "metadata");
-        extensions.put(METADATA, metadata);*/
+        l.setRel("self");*/
+        e.setId(base.clone().build());
         
         Iterator<AssetItem> i = p.getAssets();
         while (i.hasNext()) {
@@ -151,7 +202,12 @@ public class Translator {
             link.setRel("asset");
             e.getLinks().add(link);
         }
-
+        
+        Content c = new Content();
+        c.setType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+        c.setSrc(base.clone().path("binary").build());       	
+        e.setContent(c);
+        
         return e;
     }
     
