@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
-import org.drools.guvnor.client.util.DateConverter;
 import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellValueFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;

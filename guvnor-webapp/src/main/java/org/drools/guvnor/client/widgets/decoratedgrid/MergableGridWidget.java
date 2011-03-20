@@ -145,7 +145,7 @@ public abstract class MergableGridWidget<T> extends Widget
 
     // Data and columns to render
     protected List<DynamicColumn<T>> columns              = new ArrayList<DynamicColumn<T>>();
-    protected DynamicData<T>         data                 = new DynamicData<T>( columns );
+    protected DynamicData<T>         data                 = new DynamicData<T>();
 
     //Properties for multi-cell selection
     protected CellValue< ? >         rangeOriginCell;
@@ -223,9 +223,6 @@ public abstract class MergableGridWidget<T> extends Widget
                                                 "Column not found in declared columns." );
         }
 
-        // Clear any selections
-        clearSelection();
-
         //Expand any merged cells in colum
         boolean bRedrawSidebar = false;
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
@@ -237,19 +234,17 @@ public abstract class MergableGridWidget<T> extends Widget
             }
         }
 
-        // Delete column data
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DynamicDataRow row = data.get( iRow );
-            row.remove( index );
-        }
+        // Clear any selections
+        clearSelection();
 
         // Delete column from grid
         columns.remove( index );
         reindexColumns();
 
+        data.deleteColumn( index );
+
         // Redraw
         if ( bRedraw ) {
-            data.assertModelIndexes();
             redraw();
             if ( bRedrawSidebar ) {
                 RowGroupingChangeEvent.fire( this );
@@ -377,13 +372,9 @@ public abstract class MergableGridWidget<T> extends Widget
                      newColumn );
         reindexColumns();
 
-        // Add column data
-        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
-            CellValue< ? > cv = columnData.get( iRow );
-            data.get( iRow ).add( index,
-                                  cv );
-        }
-        data.assertModelIndexes();
+        data.addColumn( index,
+                        columnData,
+                        newColumn.isVisible() );
 
         // Redraw
         if ( bRedraw ) {
@@ -488,11 +479,11 @@ public abstract class MergableGridWidget<T> extends Widget
     public boolean toggleMerging() {
         if ( !data.isMerged() ) {
             clearSelection();
-            data.setMerged(true);
+            data.setMerged( true );
             redraw();
         } else {
             clearSelection();
-            data.setMerged(false);
+            data.setMerged( false );
             redraw();
             RowGroupingChangeEvent.fire( this );
         }
@@ -606,7 +597,6 @@ public abstract class MergableGridWidget<T> extends Widget
         }
         return o1.equals( o2 );
     }
-
 
     // Given a base row find the maximum row that needs to be re-rendered based
     // upon each columns merged cells; where each merged cell passes through the
@@ -1067,7 +1057,6 @@ public abstract class MergableGridWidget<T> extends Widget
         rangeExtentCell = null;
     }
 
-    
     /**
      * Group a merged cell. If the cell is not merged across at least two rows
      * or the cell is not the top of the merged range no action is taken.
@@ -1088,12 +1077,14 @@ public abstract class MergableGridWidget<T> extends Widget
 
         clearSelection();
         if ( startCell.isGrouped() ) {
-            removeModelGrouping( startCell, true);
+            removeModelGrouping( startCell,
+                                 true );
         } else {
-            applyModelGrouping( startCell, true);
+            applyModelGrouping( startCell,
+                                true );
             data.assertModelMerging();
         }
-        
+
     }
 
 }

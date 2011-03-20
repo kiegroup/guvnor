@@ -26,15 +26,11 @@ import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue
  */
 public class DynamicData<T> extends ArrayList<DynamicDataRow> {
 
-    private static final long      serialVersionUID = -3710491920672816057L;
+    private static final long serialVersionUID = -3710491920672816057L;
 
-    private boolean                isMerged         = false;
+    private boolean           isMerged         = false;
 
-    private List<DynamicColumn<T>> columns;
-
-    public DynamicData(List<DynamicColumn<T>> columns) {
-        this.columns = columns;
-    }
+    private List<Boolean>     visibleColumns   = new ArrayList<Boolean>();
 
     /**
      * Ensure indexes in the model are correct
@@ -48,6 +44,10 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
     // mapping back to (0,0).
     public void assertModelIndexes() {
 
+        if ( size() == 0 ) {
+            return;
+        }
+
         for ( int iRow = 0; iRow < size(); iRow++ ) {
             DynamicDataRow row = get( iRow );
 
@@ -60,8 +60,7 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
 
                 // Don't index hidden columns; indexing is used to
                 // map between HTML elements and the data behind
-                DynamicColumn<T> column = columns.get( iCol );
-                if ( column.isVisible() ) {
+                if ( visibleColumns.get( iCol ) ) {
 
                     if ( indexCell.getRowSpan() != 0 ) {
                         newRow = iRow;
@@ -95,7 +94,7 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
      * @return data
      */
     public DynamicData<T> getFlattenedData() {
-        DynamicData<T> dataClone = new DynamicData<T>( this.columns );
+        DynamicData<T> dataClone = new DynamicData<T>();
         for ( int iRow = 0; iRow < size(); iRow++ ) {
             DynamicDataRow row = get( iRow );
             if ( row instanceof GroupedDynamicDataRow ) {
@@ -181,13 +180,36 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
 
     //Initialise cell parameters when ungrouped
     private void ungroupCells(DynamicDataRow row) {
-        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+        for ( int iCol = 0; iCol < row.size(); iCol++ ) {
             CellValue< ? > cell = row.get( iCol );
             cell.removeState( CellState.GROUPED );
         }
     }
 
-    //Apply grouping by collapsing applicable rows
+    /**
+     * Add column to data
+     * 
+     * @param index
+     * @param columnData
+     */
+    void addColumn(int index,
+                   List<CellValue< ? >> columnData,
+                   boolean isVisible) {
+        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
+            CellValue< ? > cv = columnData.get( iRow );
+            get( iRow ).add( index,
+                                  cv );
+        }
+        visibleColumns.add( index,
+                            isVisible );
+        assertModelIndexes();
+    }
+
+    /**
+     * Apply grouping by collapsing applicable rows
+     * 
+     * @param startCell
+     */
     @SuppressWarnings({"rawtypes", "unchecked"})
     void applyModelGrouping(CellValue< ? > startCell) {
 
@@ -228,8 +250,14 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
     @SuppressWarnings({"unchecked", "rawtypes"})
     void assertModelMerging() {
 
+        if ( size() == 0 ) {
+            return;
+        }
+
         //Remove merging first as it initialises all coordinates
         removeModelMerging();
+
+        final int COLUMNS = get( 0 ).size();
 
         //Only apply merging if merged
         if ( isMerged ) {
@@ -239,7 +267,7 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
 
             //Add an empty row to the end of the data to simplify detection of merged cells that run to the end of the table
             DynamicDataRow blankRow = new DynamicDataRow();
-            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+            for ( int iCol = 0; iCol < COLUMNS; iCol++ ) {
                 CellValue cv = new CellValue( null,
                                               maxRowIndex,
                                               iCol );
@@ -249,7 +277,7 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
             maxRowIndex++;
 
             //Look in columns for cells with identical values
-            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+            for ( int iCol = 0; iCol < COLUMNS; iCol++ ) {
                 CellValue< ? > cell1 = get( minRowIndex ).get( iCol );
                 CellValue< ? > cell2 = null;
                 for ( int iRow = minRowIndex + 1; iRow < maxRowIndex; iRow++ ) {
@@ -296,7 +324,22 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
     }
 
     /**
+     * Delete column data
+     * 
+     * @param index
+     */
+    void deleteColumn(int index) {
+        for ( int iRow = 0; iRow < size(); iRow++ ) {
+            DynamicDataRow row = get( iRow );
+            row.remove( index );
+        }
+        visibleColumns.remove( index );
+        assertModelIndexes();
+    }
+
+    /**
      * Get the CellValue at the given coordinate
+     * 
      * @param c
      * @return
      */
@@ -313,7 +356,9 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
         return isMerged;
     }
 
-    //Remove all grouping throughout the model
+    /**
+     * Remove all grouping throughout the model
+     */
     void removeModelGrouping() {
 
         for ( int iRow = 0; iRow < size(); iRow++ ) {
@@ -330,7 +375,12 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
 
     }
 
-    //Remove grouping by expanding applicable rows
+    /**
+     * Remove grouping by expanding applicable rows
+     * 
+     * @param startCell
+     * @return
+     */
     @SuppressWarnings("rawtypes")
     List<DynamicDataRow> removeModelGrouping(CellValue< ? > startCell) {
 
@@ -378,13 +428,15 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
         return expandedRow;
     }
 
-    //Remove merging from model
+    /**
+     * Remove merging from model
+     */
     void removeModelMerging() {
 
         for ( int iRow = 0; iRow < size(); iRow++ ) {
             DynamicDataRow row = get( iRow );
 
-            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+            for ( int iCol = 0; iCol < row.size(); iCol++ ) {
                 CellValue< ? > cell = row.get( iCol );
                 Coordinate c = new Coordinate( iRow,
                                                iCol );
@@ -399,6 +451,12 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
         assertModelIndexes();
     }
 
+    /**
+     * Set the value at the specified coordinate
+     * 
+     * @param c
+     * @param value
+     */
     void set(Coordinate c,
                     Object value) {
         if ( c == null ) {
@@ -407,6 +465,26 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
         this.get( c.getRow() ).get( c.getCol() ).setValue( value );
     }
 
+    /**
+     * Set whether a columns is Visible
+     * 
+     * @param index
+     *            index of column
+     * @param isVisible
+     *            True if the column is visible
+     */
+    void setColumnVisibility(int index,
+                                    boolean isVisible) {
+        this.visibleColumns.set( index,
+                                 isVisible );
+    }
+
+    /**
+     * Set whether the grid's data is merged or not. Clearing merging within the
+     * data also clears grouping
+     * 
+     * @param isMerged
+     */
     void setMerged(boolean isMerged) {
         this.isMerged = isMerged;
         if ( isMerged ) {
