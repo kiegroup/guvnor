@@ -25,7 +25,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue
 /**
  * A simple container for rows of data.
  */
-public class DynamicData<T> extends ArrayList<DynamicDataRow> {
+public class DynamicData extends ArrayList<DynamicDataRow> {
 
     private boolean           isMerged         = false;
 
@@ -40,7 +40,7 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
      * @param columnData
      */
     public void addColumn(int index,
-                          List<CellValue< ? >> columnData,
+                          List<CellValue< ? extends Comparable<?>>> columnData,
                           boolean isVisible) {
         for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
             CellValue< ? > cv = columnData.get( iRow );
@@ -59,7 +59,7 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
      */
     public DynamicDataRow addRow() {
         DynamicDataRow row = new DynamicDataRow();
-        add(row);
+        add( row );
         return row;
     }
 
@@ -299,8 +299,8 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
      * 
      * @return data
      */
-    public DynamicData<T> getFlattenedData() {
-        DynamicData<T> dataClone = new DynamicData<T>();
+    public DynamicData getFlattenedData() {
+        DynamicData dataClone = new DynamicData();
         for ( int iRow = 0; iRow < size(); iRow++ ) {
             DynamicDataRow row = get( iRow );
             if ( row instanceof GroupedDynamicDataRow ) {

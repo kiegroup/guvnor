@@ -238,7 +238,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     public void scrapeData() {
 
         // Copy data
-        final DynamicData<DTColumnConfig> data = widget.getGridWidget().getData().getFlattenedData();
+        final DynamicData data = widget.getGridWidget().getData().getFlattenedData();
         final List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
 
         final int GRID_ROWS = data.size();
@@ -297,7 +297,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         // Dummy rows because the underlying DecoratedGridWidget expects there
         // to be enough rows to receive the columns data
-        final DynamicData<DTColumnConfig> data = widget.getGridWidget().getData();
+        final DynamicData data = widget.getGridWidget().getData();
         for ( int iRow = 0; iRow < model.getData().size(); iRow++ ) {
             data.addRow();
         }
@@ -625,7 +625,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                    editColumn.getFactField() )
                  && origColumn.getConstraintValueType() == editColumn.getConstraintValueType() ) {
 
-                final DynamicData<DTColumnConfig> data = widget.getGridWidget().getData();
+                final DynamicData data = widget.getGridWidget().getData();
                 for ( int iRow = 0; iRow < data.size(); iRow++ ) {
                     DynamicDataRow row = data.get( iRow );
                     CellValue< ? > oldCell = row.get( origColIndex );
@@ -691,7 +691,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     public void updateSystemControlledColumnValues() {
 
-        final DynamicData<DTColumnConfig> data = widget.getGridWidget().getData();
+        final DynamicData data = widget.getGridWidget().getData();
         final List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
 
         for ( DynamicColumn<DTColumnConfig> col : columns ) {
@@ -910,8 +910,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         DynamicColumn<DTColumnConfig> columnBefore = widget.getGridWidget().getColumns().get( index );
 
         // Create column data
-        DynamicData<DTColumnConfig> data = widget.getGridWidget().getData();
-        List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
+        DynamicData data = widget.getGridWidget().getData();
+        List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             DTCellValue dcv = new DTCellValue( modelColumn.getDefaultValue() );
             CellValue< ? > cell = cellValueFactory.makeCellValue( modelColumn,
@@ -956,10 +956,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Make a row of data for insertion into a DecoratedGridWidget
-    private List<CellValue< ? >> makeColumnData(DTColumnConfig column,
-                                                int colIndex) {
+    private List<CellValue< ? extends Comparable< ? >>> makeColumnData(DTColumnConfig column,
+                                                                       int colIndex) {
         int dataSize = model.getData().size();
-        List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
+        List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
 
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
             List<DTCellValue> row = model.getData().get( iRow );
@@ -1034,7 +1034,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     // Ensure the Column cell type and corresponding values are correct
     private void updateCellsForDataType(final DTColumnConfig editColumn,
                                         final DynamicColumn<DTColumnConfig> column) {
-        DynamicData<DTColumnConfig> data = widget.getGridWidget().getData();
+        DynamicData data = widget.getGridWidget().getData();
         column.setCell( cellFactory.getCell( editColumn ) );
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             DynamicDataRow row = data.get( iRow );
@@ -1052,7 +1052,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     private boolean updateCellsForOptionValueList(final DTColumnConfig editColumn,
                                                   final DynamicColumn<DTColumnConfig> column) {
         boolean bRedrawRequired = false;
-        DynamicData<DTColumnConfig> data = widget.getGridWidget().getData();
+        DynamicData data = widget.getGridWidget().getData();
         List<String> vals = Arrays.asList( model.getValueList( editColumn,
                                                                sce ) );
         column.setCell( cellFactory.getCell( editColumn ) );

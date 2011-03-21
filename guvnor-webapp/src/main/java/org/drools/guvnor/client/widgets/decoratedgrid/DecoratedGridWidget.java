@@ -107,7 +107,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      *            Redraw the grid after the column has been appended
      */
     public void appendColumn(DynamicColumn<T> column,
-                             List<CellValue< ? >> columnData,
+                             List<CellValue< ? extends Comparable<?>>> columnData,
                              boolean bRedraw) {
         insertColumnBefore( null,
                             column,
@@ -222,7 +222,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      */
     public void insertColumnBefore(DynamicColumn<T> columnBefore,
                                    DynamicColumn<T> newColumn,
-                                   List<CellValue< ? >> columnData,
+                                   List<CellValue< ? extends Comparable<?>>> columnData,
                                    boolean bRedraw) {
 
         if ( newColumn == null ) {
@@ -423,7 +423,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      */
     public void sort() {
 
-        final DynamicData<T> data = gridWidget.getData();
+        final DynamicData data = gridWidget.getData();
         final List<DynamicColumn<T>> columns = gridWidget.getColumns();
 
         final DynamicColumn< ? >[] sortOrderList = new DynamicColumn[columns.size()];

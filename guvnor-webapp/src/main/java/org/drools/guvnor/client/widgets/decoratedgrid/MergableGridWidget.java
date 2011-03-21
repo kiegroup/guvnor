@@ -149,7 +149,7 @@ public abstract class MergableGridWidget<T> extends Widget
 
     // Data and columns to render
     protected List<DynamicColumn<T>> columns              = new ArrayList<DynamicColumn<T>>();
-    protected DynamicData<T>         data                 = new DynamicData<T>();
+    protected DynamicData            data                 = new DynamicData();
 
     //Properties for multi-cell selection
     protected CellValue< ? >         rangeOriginCell;
@@ -317,7 +317,7 @@ public abstract class MergableGridWidget<T> extends Widget
      * 
      * @return data
      */
-    public DynamicData<T> getData() {
+    public DynamicData getData() {
         return data;
     }
 
@@ -344,7 +344,7 @@ public abstract class MergableGridWidget<T> extends Widget
      */
     public void insertColumnBefore(DynamicColumn<T> columnBefore,
                                    DynamicColumn<T> newColumn,
-                                   List<CellValue< ? >> columnData,
+                                   List<CellValue< ? extends Comparable<?>>> columnData,
                                    boolean bRedraw) {
 
         if ( newColumn == null ) {

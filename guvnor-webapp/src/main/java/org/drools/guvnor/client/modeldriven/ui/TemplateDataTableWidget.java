@@ -143,7 +143,7 @@ public class TemplateDataTableWidget extends Composite
     public void scrapeData(TemplateModel model) {
         model.clearRows();
 
-        final DynamicData<TemplateDataColumn> data = widget.getGridWidget().getData().getFlattenedData();
+        final DynamicData data = widget.getGridWidget().getData().getFlattenedData();
         final List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
         int columnCount = columns.size();
 
@@ -297,8 +297,8 @@ public class TemplateDataTableWidget extends Composite
         column.setVisible( true );
 
         // Create column data
-        List<CellValue< ? >> columnData = makeColumnData( modelColumn,
-                                                          index );
+        List<CellValue< ? extends Comparable< ? >>> columnData = makeColumnData( modelColumn,
+                                                                                 index );
 
         // Add column and data to grid
         if ( index < widget.getGridWidget().getColumns().size() ) {
@@ -316,10 +316,10 @@ public class TemplateDataTableWidget extends Composite
     }
 
     // Make a row of data for insertion into a DecoratedGridWidget
-    private List<CellValue< ? >> makeColumnData(TemplateDataColumn column,
-                                                int colIndex) {
+    private List<CellValue< ? extends Comparable< ? >>> makeColumnData(TemplateDataColumn column,
+                                                                       int colIndex) {
         int dataSize = this.widget.getGridWidget().getData().size();
-        List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
+        List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( column,
                                                                                        iRow,
