@@ -6,35 +6,34 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
   xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
 
-	<title>Drools Guvnor</title>
-	<subtitle>For users and administrators of Drools Guvnor</subtitle>
-	<productname>Drools Guvnor</productname>
-	<productnumber>5.2</productnumber>
-	<edition>1</edition>
-	<pubsnumber>1</pubsnumber>
-   <releaseinfo>5.2.0-SNAPSHOT</releaseinfo>
-	
-	<abstract>
-		<para>
-        This manual provides complete documentation for Drools Guvnor.
-        </para>
-   </abstract>
+  <title>Guvnor Manual</title>
+  <subtitle>For users and administrators of Guvnor</subtitle>
+  <productname>Guvnor</productname>
+  <productnumber>5.2</productnumber>
+  <edition>1</edition>
+  <pubsnumber>1</pubsnumber>
+  <releaseinfo>5.2.0-SNAPSHOT</releaseinfo>
+
+  <abstract>
+    <para>
+    This manual provides complete documentation for Guvnor.
+    </para>
+  </abstract>
 
 	<corpauthor>
 		<inlinemediaobject>
 			<imageobject>
 				<imagedata fileref="images/droolsGuvnorLogo.png" format="PNG" />
 			</imageobject>
-         <textobject><phrase>Drools Guvnor</phrase></textobject>
+         <textobject><phrase>Guvnor</phrase></textobject>
 		</inlinemediaobject>
 	</corpauthor>
 	
-	<authorgroup>
-     <author>
-       <affiliation><orgname><ulink url="http://www.jboss.org/drools/team.html">The JBoss Drools team</ulink></orgname></affiliation>
-     </author>
-   </authorgroup>
+  <authorgroup>
+    <author>
+      <affiliation><orgname><ulink url="http://www.jboss.org/drools/team.html">The JBoss Drools team</ulink></orgname></affiliation>
+    </author>
+  </authorgroup>
 
 	<!-- xi:include href="Legal_Notice.xml" xmlns:xi="http://www.w3.org/2001/XInclude" /> -->
 </bookinfo>
-
