@@ -384,7 +384,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
         //logger.log(LogLevel, GetContent(connection));
     }
 
-    @Test @Ignore
+    @Test
     public void testCreatePackageFromAtom() throws Exception {
         Package p = createTestPackage("TestCreatePackageFromAtom");
         Entry e = toPackageEntry(p);
