@@ -554,7 +554,20 @@ public class AssetItem extends CategorisableItem {
      * 
      * @return An iterator over the nodes history.
      */
-    public AssetHistoryIterator getHistory() {
+    public AssetHistoryIterator getHistory() {    	
+        if(isHistoricalVersion()) {
+			Node frozenNode = getNode();
+			try {
+				Node headNode = frozenNode.getSession().getNodeByIdentifier(
+						frozenNode.getProperty("jcr:frozenUuid")
+								.getString());
+				return new AssetHistoryIterator( this.rulesRepository,
+						headNode );
+			} catch (RepositoryException e) {
+				throw new RulesRepositoryException(e);
+			}     	
+        } 
+        
         return new AssetHistoryIterator( this.rulesRepository,
                                          this.node );
     }

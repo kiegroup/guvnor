@@ -16,28 +16,46 @@
 
 package org.drools.guvnor.server.jaxrs;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
-import org.drools.guvnor.server.files.RepositoryServlet;
-import org.drools.guvnor.server.jaxrs.jaxb.*;
-import org.drools.guvnor.server.jaxrs.jaxb.Package;
-import org.jboss.resteasy.plugins.providers.atom.*;
+import static org.drools.guvnor.server.jaxrs.Translator.ToAsset;
+import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntry;
+import static org.drools.guvnor.server.jaxrs.Translator.ToPackage;
+import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntry;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-
-import org.drools.repository.*;
-import org.jboss.seam.annotations.Name;
-
-import javax.ws.rs.*;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import static org.drools.guvnor.server.jaxrs.Translator.*;
+import org.drools.compiler.DroolsParserException;
+import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.files.RepositoryServlet;
+import org.drools.guvnor.server.jaxrs.jaxb.Asset;
+import org.drools.guvnor.server.jaxrs.jaxb.Package;
+import org.drools.repository.AssetItem;
+import org.drools.repository.PackageHistoryIterator;
+import org.drools.repository.PackageItem;
+import org.drools.repository.PackageIterator;
+import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.jboss.resteasy.plugins.providers.atom.Link;
+import org.jboss.seam.annotations.Name;
+
+import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Contract:  Package names and asset names within a package namespace
@@ -51,8 +69,9 @@ public class PackageResource extends Resource {
     @GET
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getPackagesAsFeed() {
-        UriBuilder builder = uriInfo.getAbsolutePathBuilder();
         Feed f = new Feed();
+        f.setTitle("Packages");
+        f.setBase(uriInfo.getBaseUriBuilder().path("packages").build());
         PackageIterator iter = repository.listPackages();
         while (iter.hasNext()) {
             try {
@@ -60,7 +79,8 @@ public class PackageResource extends Resource {
                 Entry e = new Entry();
                 e.setTitle(item.getName());                                
                 Link l = new Link();
-                l.setHref(builder.path("/packages/ " + item.getName()).build());
+                //l.setHref(builder.path(item.getName()).build());
+                l.setHref(uriInfo.getBaseUriBuilder().path("packages").path(item.getName()).build());
                 e.getLinks().add(l);
                 f.getEntries().add(e);
             } catch (Exception e) {
@@ -69,6 +89,16 @@ public class PackageResource extends Resource {
         }
 
         return f;
+    }
+    
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Collection<Package> getPackagesAsJAXB() {
+        List<Package> ret = new ArrayList<Package>();
+        PackageIterator iter = repository.listPackages();
+        while (iter.hasNext())
+            ret.add(ToPackage(iter.next(), uriInfo));
+        return ret;
     }
 
     @POST
@@ -107,14 +137,106 @@ public class PackageResource extends Resource {
         PackageService.createPackage(p.getTitle(), p.getDescription());
     }
 
-
     @GET
     @Path("{packageName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Entry getPackageAsEntryByName(@PathParam("packageName") String packageName) {
+    public Entry getPackageAsEntry(@PathParam("packageName") String packageName) {
         return ToPackageEntry(repository.loadPackage(packageName), uriInfo);
     }
 
+    @GET
+    @Path("{packageName}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public org.drools.guvnor.server.jaxrs.jaxb.Package getPackageAsJAXB(@PathParam("packageName") String packageName) {
+        return ToPackage(repository.loadPackage(packageName), uriInfo);
+    }
+        
+    @GET
+    @Path("{packageName}/source")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getPackageSource(@PathParam("packageName") String packageName) {
+    	PackageItem item = repository.loadPackage( packageName );
+        ContentPackageAssembler asm = new ContentPackageAssembler( item,
+                                                                   false );
+        String drl = asm.getDRL();
+        return drl;
+    }
+
+    @GET
+    @Path("{packageName}/binary")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public byte[] getPackageBinary(@PathParam("packageName") String packageName) throws SerializationException {
+        PackageItem p = repository.loadPackage(packageName);
+        PackageService.buildPackage(p.getUUID(), true);
+        return repository.loadPackage(packageName).getCompiledPackageBytes();
+    }
+    
+    @GET
+    @Path("{packageName}/versions")
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+    public Feed getPackageVersions(@PathParam("packageName") String packageName) throws SerializationException {
+   
+    	PackageItem p = repository.loadPackage(packageName);
+        PackageHistoryIterator it = p.getHistory();        
+        Feed f = new Feed();
+        f.setTitle("Version history of " + p.getName());
+        while (it.hasNext()) {
+            try {
+                PackageItem historicalPackage = it.next();
+				if (historicalPackage.getVersionNumber() != 0) {
+					Entry e = new Entry();
+					e.setTitle(Long.toString(historicalPackage
+							.getVersionNumber()));
+					e.setUpdated(historicalPackage.getLastModified().getTime());
+					Link l = new Link();
+					// l.setHref(builder.path(item.getName()).build());
+					l.setHref(uriInfo
+							.getBaseUriBuilder()
+							.path("packages")
+							.path(p.getName())
+							.path("versions")
+							.path(Long.toString(historicalPackage.getVersionNumber())).build());
+					e.getLinks().add(l);
+					f.getEntries().add(e);
+				}
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        return f;
+    }
+
+    @GET
+    @Path("{packageName}/versions/{versionNumber}")
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+    public Entry getHistoryPackageAsEntry(@PathParam("packageName") String packageName,
+    		@PathParam("versionNumber") long versionNumber) throws SerializationException {
+        return ToPackageEntry(repository.loadPackage(packageName, versionNumber), uriInfo);
+    }
+    
+    @GET
+    @Path("{packageName}/versions/{versionNumber}/binary")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public byte[] getHistoryPackageBinary(@PathParam("packageName") String packageName,
+    		@PathParam("versionNumber") long versionNumber) throws SerializationException {
+        PackageItem p = repository.loadPackage(packageName, versionNumber);
+        PackageService.buildPackage(p.getUUID(), true);
+        return repository.loadPackage(packageName).getCompiledPackageBytes();
+    }
+    
+    @GET
+    @Path("{packageName}/versions/{versionNumber}/source")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getHistoryPackageSource(@PathParam("packageName") String packageName,
+    		@PathParam("versionNumber") long versionNumber) {
+    	PackageItem item = repository.loadPackage(packageName,  versionNumber);
+        ContentPackageAssembler asm = new ContentPackageAssembler( item,
+                                                                   false );
+        String drl = asm.getDRL();
+        return drl;
+    }
+    
     @GET
     @Path("{packageName}/assets")
     @Produces(MediaType.APPLICATION_ATOM_XML)
@@ -149,23 +271,6 @@ public class PackageResource extends Resource {
     }
 
     @GET
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Collection<Package> getPackagesAsJAXB() {
-        List<Package> ret = new ArrayList<Package>();
-        PackageIterator iter = repository.listPackages();
-        while (iter.hasNext())
-            ret.add(ToPackage(iter.next(), uriInfo));
-        return ret;
-    }
-
-    @GET
-    @Path("{packageName}")
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public org.drools.guvnor.server.jaxrs.jaxb.Package getPackageAsJAXB(@PathParam("packageName") String packageName) {
-        return ToPackage(repository.loadPackage(packageName), uriInfo);
-    }
-
-    @GET
     @Path("{packageName}/assets")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<Asset> getAssetsAsJAXB(@PathParam("packageName") String packageName) {
@@ -191,51 +296,9 @@ public class PackageResource extends Resource {
         item.checkin(p.getCheckInComment());
         repository.save();
     }
-
+       
     @GET
-    @Path("{packageName}/binary")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public byte[] getBinaryPackageByName(@PathParam("packageName") String packageName) throws SerializationException {
-        PackageItem p = repository.loadPackage(packageName);
-        PackageService.buildPackage(p.getUUID(), true);
-        return repository.loadPackage(packageName).getCompiledPackageBytes();
-    }
-    
-    @GET
-    @Path("{packageName}/versions/{versionNumber}/binary")
-    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public byte[] getHistoryBinaryPackageByName(@PathParam("packageName") String packageName,
-    		@PathParam("versionNumber") long versionNumber) throws SerializationException {
-        PackageItem p = repository.loadPackage(packageName, versionNumber);
-        PackageService.buildPackage(p.getUUID(), true);
-        return repository.loadPackage(packageName).getCompiledPackageBytes();
-    }
-    
-    @GET
-    @Path("{packageName}/source")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getSourcePackageByName(@PathParam("packageName") String packageName) {
-    	PackageItem item = repository.loadPackage( packageName );
-        ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                   false );
-        String drl = asm.getDRL();
-        return drl;
-    }
-    
-    @GET
-    @Path("{packageName}/versions/{versionNumber}/source")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String getHistorySourcePackageByName(@PathParam("packageName") String packageName,
-    		@PathParam("versionNumber") long versionNumber) {
-    	PackageItem item = repository.loadPackage( packageName,  versionNumber);
-        ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                   false );
-        String drl = asm.getDRL();
-        return drl;
-    }
-    
-    @GET
-    @Path("{packageName}/asset/{name}")
+    @Path("{packageName}/assets/{name}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry getAssetByIdAsAtom(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
         Entry ret = null;
@@ -252,7 +315,7 @@ public class PackageResource extends Resource {
     }
 
     @GET
-    @Path("{packageName}/asset/{name}")
+    @Path("{packageName}/assets/{name}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Asset getAssetByIdAsJaxB(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
         Asset ret = null;
@@ -269,7 +332,7 @@ public class PackageResource extends Resource {
     }
 
     @GET
-    @Path("{packageName}/asset/{name}/binary")
+    @Path("{packageName}/assets/{name}/binary")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream getBinaryAssetById(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
         InputStream ret = null;
@@ -287,7 +350,7 @@ public class PackageResource extends Resource {
 
 
     @GET
-    @Path("{packageName}/asset/{name}/source")
+    @Path("{packageName}/assets/{name}/source")
     @Produces(MediaType.TEXT_PLAIN)
     public String getSourceAssetById(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
         String ret = null;
@@ -308,7 +371,7 @@ public class PackageResource extends Resource {
     }
 
     @PUT
-    @Path("{packageName}/asset/{name}")
+    @Path("{packageName}/assets/{name}")
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     public void updateAssetFromAtom(@PathParam ("packageName") String packageName, @PathParam("name") String name, Entry assetEntry)
     {
@@ -333,7 +396,7 @@ public class PackageResource extends Resource {
     }
 
     @PUT
-    @Path("{packageName}/asset/{name}")
+    @Path("{packageName}/assets/{name}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public void updateAssetFromJAXB(@PathParam ("packageName") String packageName, @PathParam("name") String name, Asset asset)
     {
@@ -357,7 +420,7 @@ public class PackageResource extends Resource {
     }
 
     @DELETE
-    @Path("{packageName}/asset/{name}/")
+    @Path("{packageName}/assets/{name}/")
     public void deleteAsset(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
         AssetItem asset = null;
         PackageItem item = repository.loadPackage(packageName);

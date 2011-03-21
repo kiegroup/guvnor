@@ -18,10 +18,9 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.drools.guvnor.client.util.DateConverter;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.DTDataTypes;
-
-import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
  * A Factory to create CellValues applicable to given columns.
@@ -29,16 +28,26 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 public abstract class AbstractCellValueFactory<T> {
 
     // Dates are serialised and de-serialised to locale-independent format
-    protected static final DateTimeFormat DATE_FORMAT = DateTimeFormat.getFormat( "dd-MMM-yyyy" );
+    protected static DateConverter       DATE_CONVERTOR = null;
 
     // SuggestionCompletionEngine to aid data-type resolution etc
-    protected SuggestionCompletionEngine  sce;
+    protected SuggestionCompletionEngine sce;
 
     public AbstractCellValueFactory(SuggestionCompletionEngine sce) {
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
         this.sce = sce;
+    }
+
+    /**
+     * Override the default, GWT-centric, Date conversion utility class. Only
+     * use to hook-in a JVM Compatible implementation for tests
+     * 
+     * @param dc
+     */
+    public void injectDateConvertor(DateConverter dc) {
+        DATE_CONVERTOR = dc;
     }
 
     /**
@@ -52,9 +61,9 @@ public abstract class AbstractCellValueFactory<T> {
      *            Column coordinate for initialisation
      * @return A CellValue
      */
-    public CellValue< ? extends Comparable< ? >> getCellValue(T column,
-                                                              int iRow,
-                                                              int iCol) {
+    public CellValue< ? extends Comparable< ? >> makeCellValue(T column,
+                                                               int iRow,
+                                                               int iCol) {
         DTDataTypes dataType = getDataType( column );
         CellValue< ? extends Comparable< ? >> cell = null;
 
@@ -67,105 +76,13 @@ public abstract class AbstractCellValueFactory<T> {
                 cell = makeNewDateCellValue( iRow,
                                              iCol );
                 break;
-            case DIALECT :
-                cell = makeNewDialectCellValue( iRow,
-                                                iCol );
-                break;
             case NUMERIC :
                 cell = makeNewNumericCellValue( iRow,
                                                 iCol );
-                break;
-            case ROW_NUMBER :
-                cell = makeNewRowNumberCellValue( iRow,
-                                                  iCol );
                 break;
             default :
                 cell = makeNewStringCellValue( iRow,
                                                iCol );
-        }
-
-        return cell;
-    }
-
-    /**
-     * Make a CellValue applicable for the column. This is used by legacy UI
-     * Models (Template Data Editor and legacy Guided Decision Tables) that
-     * store values in a two-dimensional array of Strings.
-     * 
-     * @param column
-     *            The model column
-     * @param iRow
-     *            Row coordinate for initialisation
-     * @param iCol
-     *            Column coordinate for initialisation
-     * @param initialValue
-     *            The initial value of the cell
-     * @return A CellValue
-     */
-    @SuppressWarnings("deprecation")
-    public CellValue< ? extends Comparable< ? >> getCellValue(
-                                                              T column,
-                                                              int iRow,
-                                                              int iCol,
-                                                              String initialValue) {
-        DTDataTypes dataType = getDataType( column );
-        CellValue< ? extends Comparable< ? >> cell = null;
-
-        switch ( dataType ) {
-            case BOOLEAN :
-                Boolean b = Boolean.FALSE;
-                try {
-                    b = Boolean.valueOf( initialValue );
-                } catch ( Exception e ) {
-                }
-                cell = makeNewBooleanCellValue( iRow,
-                                                iCol,
-                                                b );
-                break;
-            case DATE :
-                Date d = null;
-                Date nd = new Date();
-                int year = nd.getYear();
-                int month = nd.getMonth();
-                int date = nd.getDate();
-                d = new Date( year,
-                              month,
-                              date );
-                try {
-                    d = DATE_FORMAT.parse( initialValue );
-                } catch ( IllegalArgumentException iae ) {
-                }
-                cell = makeNewDateCellValue( iRow,
-                                             iCol,
-                                             d );
-                break;
-            case DIALECT :
-                String s = null;
-                if ( initialValue.equals( "java" ) || initialValue.equals( "mvel" ) ) {
-                    s = initialValue;
-                }
-                cell = makeNewDialectCellValue( iRow,
-                                                iCol,
-                                                s );
-                break;
-            case NUMERIC :
-                BigDecimal bd = null;
-                try {
-                    bd = new BigDecimal( initialValue );
-                } catch ( Exception e ) {
-                }
-                cell = makeNewNumericCellValue( iRow,
-                                                iCol,
-                                                bd );
-                break;
-            case ROW_NUMBER :
-                cell = makeNewRowNumberCellValue( iRow,
-                                                  iCol );
-                break;
-            default :
-                cell = makeNewStringCellValue( iRow,
-                                               iCol,
-                                               initialValue );
         }
 
         return cell;
@@ -272,7 +189,7 @@ public abstract class AbstractCellValueFactory<T> {
                                                        Object initialValue) {
         CellValue<String> cv = makeNewStringCellValue( iRow,
                                                        iCol );
-        if ( initialValue != null ) {
+        if ( initialValue != null && !initialValue.equals( "" ) ) {
             cv.setValue( initialValue.toString() );
         }
         return cv;

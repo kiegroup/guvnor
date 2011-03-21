@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
+import org.drools.guvnor.client.util.DateConverter;
 import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellValueFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -67,34 +68,22 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      * @return
      */
     public DTCellValue convertToDTModelCell(DTColumnConfig column,
-                                                 CellValue< ? > cell) {
+                                            CellValue< ? > cell) {
         DTDataTypes dt = getDataType( column );
         DTCellValue dtCell = null;
 
         switch ( dt ) {
             case BOOLEAN :
-                dtCell = new DTCellValue();
-                dtCell.setBooleanValue( (Boolean) cell.getValue() );
+                dtCell = new DTCellValue( (Boolean) cell.getValue() );
                 break;
             case DATE :
-                dtCell = new DTCellValue();
-                dtCell.setDateValue( (Date) cell.getValue() );
-                break;
-            case DIALECT :
-                dtCell = new DTCellValue();
-                dtCell.setStringValue( (String) cell.getValue() );
+                dtCell = new DTCellValue( (Date) cell.getValue() );
                 break;
             case NUMERIC :
-                dtCell = new DTCellValue();
-                dtCell.setNumericValue( (BigDecimal) cell.getValue() );
-                break;
-            case ROW_NUMBER :
-                dtCell = new DTCellValue();
-                dtCell.setNumericValue( (BigDecimal) cell.getValue() );
+                dtCell = new DTCellValue( (BigDecimal) cell.getValue() );
                 break;
             default :
-                dtCell = new DTCellValue();
-                dtCell.setStringValue( (String) cell.getValue() );
+                dtCell = new DTCellValue( (String) cell.getValue() );
         }
         dtCell.setOtherwise( cell.isOtherwise() );
         return dtCell;
@@ -113,12 +102,17 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      *            The Model cell containing the value
      * @return A CellValue
      */
-    public CellValue< ? extends Comparable< ? >> getCellValue(DTColumnConfig column,
-                                                              int iRow,
-                                                              int iCol,
-                                                              DTCellValue dcv) {
+    public CellValue< ? extends Comparable< ? >> makeCellValue(DTColumnConfig column,
+                                                               int iRow,
+                                                               int iCol,
+                                                               DTCellValue dcv) {
         DTDataTypes dataType = getDataType( column );
         CellValue< ? extends Comparable< ? >> cell = null;
+
+        //If this is a legacy Decision Table values are always String 
+        //so ensure that the appropriate DTCellValue field is populated
+        assertDTCellValue( dataType,
+                           dcv );
 
         switch ( dataType ) {
             case BOOLEAN :
@@ -131,31 +125,78 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                                              iCol,
                                              dcv.getDateValue() );
                 break;
-            case DIALECT :
-                cell = makeNewDialectCellValue( iRow,
-                                                iCol,
-                                                dcv.getStringValue() );
-                break;
             case NUMERIC :
-                cell = makeNewNumericCellValue( iRow,
-                                                iCol,
-                                                dcv.getNumericValue() );
-                break;
-            case ROW_NUMBER :
-                cell = makeNewRowNumberCellValue( iRow,
-                                                  iCol );
+                if ( column instanceof RowNumberCol ) {
+                    cell = makeNewRowNumberCellValue( iRow,
+                                                      iCol );
+                } else {
+                    cell = makeNewNumericCellValue( iRow,
+                                                    iCol,
+                                                    dcv.getNumericValue() );
+                }
                 break;
             default :
                 cell = makeNewStringCellValue( iRow,
                                                iCol,
                                                dcv.getStringValue() );
+                if ( column instanceof AttributeCol ) {
+                    AttributeCol ac = (AttributeCol) column;
+                    if ( ac.getAttribute().equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
+                        cell = makeNewDialectCellValue( iRow,
+                                                        iCol,
+                                                        dcv.getStringValue() );
+                    }
+                }
         }
 
         return cell;
     }
 
+    //If the Decision Table model has been converted from the legacy text based
+    //class then all values are held in the DTCellValue's StringValue. This
+    //function attempts to set the correct DTCellValue property based on
+    //the DTCellValue's data type.
+    private void assertDTCellValue(DTDataTypes dataType,
+                                   DTCellValue dcv) {
+        //If already converted exit
+        if ( dcv.getDataType().equals( dataType ) ) {
+            return;
+        }
+
+        String text = dcv.getStringValue();
+        switch ( dataType ) {
+            case BOOLEAN :
+                dcv.setBooleanValue( (text == null ? null : Boolean.valueOf( text )) );
+                break;
+            case DATE :
+                Date d = null;
+                try {
+                    if ( text != null ) {
+                        if ( DATE_CONVERTOR == null ) {
+                            throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
+                        }
+                        d = DATE_CONVERTOR.parse( text );
+                    }
+                } catch ( IllegalArgumentException e ) {
+                }
+                dcv.setDateValue( d );
+                break;
+            case NUMERIC :
+                BigDecimal bd = null;
+                try {
+                    if ( text != null ) {
+                        bd = new BigDecimal( text );
+                    }
+                } catch ( NumberFormatException e ) {
+                }
+                dcv.setNumericValue( bd );
+                break;
+        }
+
+    }
+
     // Derive the Data Type for a Condition or Action column
-    private DTDataTypes makeNewCellDataType(DTColumnConfig col) {
+    private DTDataTypes derieveDataType(DTColumnConfig col) {
 
         DTDataTypes dataType = DTDataTypes.STRING;
 
@@ -183,17 +224,13 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         DTDataTypes dataType = DTDataTypes.STRING;
 
         if ( column instanceof RowNumberCol ) {
-            dataType = DTDataTypes.ROW_NUMBER;
+            dataType = DTDataTypes.NUMERIC;
 
         } else if ( column instanceof AttributeCol ) {
             AttributeCol attrCol = (AttributeCol) column;
             String attrName = attrCol.getAttribute();
             if ( attrName.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
-                if ( attrCol.isUseRowNumber() ) {
-                    dataType = DTDataTypes.ROW_NUMBER;
-                } else {
-                    dataType = DTDataTypes.NUMERIC;
-                }
+                dataType = DTDataTypes.NUMERIC;
             } else if ( attrName.equals( RuleAttributeWidget.ENABLED_ATTR ) ) {
                 dataType = DTDataTypes.BOOLEAN;
             } else if ( attrName.equals( RuleAttributeWidget.NO_LOOP_ATTR ) ) {
@@ -208,20 +245,18 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                 dataType = DTDataTypes.DATE;
             } else if ( attrName.equals( RuleAttributeWidget.DATE_EXPIRES_ATTR ) ) {
                 dataType = DTDataTypes.DATE;
-            } else if ( attrName.equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
-                dataType = DTDataTypes.DIALECT;
             } else if ( attrName.equals( TypeSafeGuidedDecisionTable.NEGATE_RULE_ATTR ) ) {
                 dataType = DTDataTypes.BOOLEAN;
             }
 
         } else if ( column instanceof ConditionCol ) {
-            dataType = makeNewCellDataType( column );
+            dataType = derieveDataType( column );
 
         } else if ( column instanceof ActionSetFieldCol ) {
-            dataType = makeNewCellDataType( column );
+            dataType = derieveDataType( column );
 
         } else if ( column instanceof ActionInsertFactCol ) {
-            dataType = makeNewCellDataType( column );
+            dataType = derieveDataType( column );
 
         }
 

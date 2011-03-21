@@ -177,7 +177,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             HorizontalPanel hp = new HorizontalPanel();
             hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
             hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
-            setIconImage( grid.getGridWidget().isMerged() );
+            setIconImage( grid.getGridWidget().getData().isMerged() );
             hp.add( icon );
             hp.setWidth( "100%" );
             hp.setHeight( "100%" );

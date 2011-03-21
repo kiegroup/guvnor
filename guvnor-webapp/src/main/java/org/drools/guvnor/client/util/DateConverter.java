@@ -13,19 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ide.common.client.modeldriven.dt;
+package org.drools.guvnor.client.util;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+import java.util.Date;
 
 /**
- * Explicit DataTypes handled by the Mergable Grid Widgets
+ * Interface for different Date Conversion implementations.
+ * 
+ * See @{link GWTDateConverter} and @{link JVMDateConverter}
  */
-public enum DTDataTypes
-        implements PortableObject {
+public interface DateConverter {
 
-    STRING,
-    NUMERIC,
-    DATE,
-    BOOLEAN
+    /**
+     * Convert a Date into a String
+     * 
+     * @param date
+     * @return
+     */
+    String format(Date date);
+
+    /**
+     * Convert a String into a Date
+     * 
+     * @param text
+     * @return
+     */
+    Date parse(String text);
 
 }

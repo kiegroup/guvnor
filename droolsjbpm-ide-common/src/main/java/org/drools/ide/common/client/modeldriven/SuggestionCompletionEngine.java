@@ -56,10 +56,10 @@ public class SuggestionCompletionEngine implements PortableObject {
     private static final String[]         COMPARABLE_CONNECTIVES = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >="};
     private static final String[]         COLLECTION_CONNECTIVES = new String[]{"|| ==", "|| !=", "&& !=", "|| contains", "&& contains", "|| excludes", "&& excludes"};
 
-    private static final String[]         STANDARD_OPERATORS     = new String[]{"==", "!="};
-    private static final String[]         COMPARABLE_OPERATORS   = new String[]{"==", "!=", "<", ">", "<=", ">="};
-    private static final String[]         STRING_OPERATORS       = new String[]{"==", "!=", "matches", "soundslike"};
-    private static final String[]         COLLECTION_OPERATORS   = new String[]{"contains", "excludes", "==", "!="};
+    private static final String[]         STANDARD_OPERATORS     = new String[]{"==", "!=", "== null", "!= null"};
+    private static final String[]         COMPARABLE_OPERATORS   = new String[]{"==", "!=", "<", ">", "<=", ">=", "== null", "!= null"};
+    private static final String[]         STRING_OPERATORS       = new String[]{"==", "!=", "matches", "soundslike", "== null", "!= null"};
+    private static final String[]         COLLECTION_OPERATORS   = new String[]{"contains", "excludes", "==", "!=", "== null", "!= null"};
 
     /** The top level conditional elements (first order logic) */
     private static final String[]         CONDITIONAL_ELEMENTS   = new String[]{"not", "exists", "or"};

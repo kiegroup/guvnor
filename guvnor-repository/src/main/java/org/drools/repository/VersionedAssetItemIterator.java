@@ -37,7 +37,7 @@ import javax.jcr.ValueFormatException;
  */
 public class VersionedAssetItemIterator extends AssetItemIterator {
     Map<String, String> dependencyVersionMap = new HashMap<String, String>();
-    private boolean returnAssetsWithVersionSpecifiedByDependencies = false;
+    private boolean returnAssetsWithVersionsSpecifiedByDependencies = false;
            
     public VersionedAssetItemIterator(NodeIterator nodes,
                             RulesRepository repo,
@@ -54,15 +54,15 @@ public class VersionedAssetItemIterator extends AssetItemIterator {
 
     public AssetItem next() {
         AssetItem ai = super.next();
-        if(returnAssetsWithVersionSpecifiedByDependencies && dependencyVersionMap.get(ai.getName()) != null) {
+        if(returnAssetsWithVersionsSpecifiedByDependencies && dependencyVersionMap.get(ai.getName()) != null) {
             String version = dependencyVersionMap.get(ai.getName());
             return loadAssetWithVersion(ai, version);
         }
         return ai;
     }
     
-    public void setReturnAssetsWithVersionSpecifiedByDependencies(boolean flag) {
-        this.returnAssetsWithVersionSpecifiedByDependencies = flag;
+    public void setReturnAssetsWithVersionsSpecifiedByDependencies(boolean flag) {
+        this.returnAssetsWithVersionsSpecifiedByDependencies = flag;
     }
     
     protected AssetItem loadAssetWithVersion(final AssetItem assetItem,

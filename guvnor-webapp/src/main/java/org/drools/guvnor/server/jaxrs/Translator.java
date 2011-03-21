@@ -27,6 +27,7 @@ import java.util.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
 
 import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
@@ -75,6 +76,7 @@ public class Translator {
         metadata.setCreated(p.getCreatedDate().getTime());
         metadata.setLastModified(p.getLastModified().getTime());
         metadata.setLastContributor(p.getLastContributor());
+        metadata.setState((p.getState() != null) ? p.getState().getName() : "");
 
         Package ret = new Package();
         ret.setMetadata(metadata);
@@ -89,7 +91,7 @@ public class Translator {
         builder = uriInfo.getBaseUriBuilder();
         ret.setSourceLink(
                 builder.path("/packages/" + p.getName() + "/source").build());
-        ret.setSnapshot(p.getSnapshotName());
+        //ret.setSnapshot(p.getSnapshotName());
         ret.setVersion(p.getVersionNumber());
         Iterator<AssetItem> iter = p.getAssets();
         Set<URI> assets = new HashSet<URI>();
@@ -105,34 +107,46 @@ public class Translator {
     
     public static Entry ToPackageEntry(PackageItem p, UriInfo uriInfo) {
         Content c = new Content();
-        c.setType(MediaType.APPLICATION_XML_TYPE);
-        PackageMetadata metadata = new PackageMetadata();
+        c.setType(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+        UriBuilder base;
+        if(p.isHistoricalVersion()) {
+        	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
+        } else {
+        	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName());
+        }
+
+        c.setSrc(base.clone().path("binary").build());       	
+        
+        //NOTE: Entry extension is not supported in RESTEasy. We need to either use Abdera or get extension 
+        //supported in RESTEasy
+/*        PackageMetadata metadata = new PackageMetadata();
         metadata.setUuid(p.getUUID());
         metadata.setCreated(p.getCreatedDate().getTime());
         metadata.setLastModified(p.getLastModified().getTime());
         metadata.setLastContributor(p.getLastContributor());
-        c.setJAXBObject(metadata);
-
+        //c.setJAXBObject(metadata);
+*/
         Entry e =new Entry();
         e.setTitle(p.getTitle());
         e.setSummary(p.getDescription());
         e.setContent(c);
         e.setPublished(new Date(p.getLastModified().getTimeInMillis()));
-        e.setRights(p.getRights());
+        e.setBase(base.clone().build());
 
         Link l = new Link();
-        UriBuilder builder = uriInfo.getBaseUriBuilder();
-        l.setHref(builder.path("/packages/" + p.getName()).build());
+        l.setHref(base.build());
         l.setRel("self");
-
         e.setId(l.getHref());
+/*        
+        Map extensions = e.getExtensionAttributes();
+        QName METADATA = new QName("", "metadata");
+        extensions.put(METADATA, metadata);*/
         
         Iterator<AssetItem> i = p.getAssets();
         while (i.hasNext()) {
             AssetItem item = i.next();
             Link link = new Link();
-            builder = uriInfo.getBaseUriBuilder();
-            link.setHref(builder.path("/packages/" + p.getName() + "/asset/" + item.getName()).build());
+            link.setHref((base.clone().path("assets").path(item.getName())).build());
             link.setTitle(item.getTitle());
             link.setRel("asset");
             e.getLinks().add(link);
@@ -157,6 +171,7 @@ public class Translator {
         metadata.setDisabled(a.getDisabled());
         metadata.setFormat(a.getFormat());
         metadata.setNote(a.getContent());
+        metadata.setState((a.getState() != null) ? a.getState().getName() : "");
         content.setJAXBObject(metadata);
         e.setContent(content);
 

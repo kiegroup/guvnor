@@ -20,6 +20,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
@@ -164,7 +167,8 @@ public class RepositoryAssetService
         PackageItem pi = getRulesRepository().loadPackageByUUID( packageUUID );
         AssetItem assetItem = pi.loadAsset( assetName );
         serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
-        return repositoryAssetOperations.loadItemHistory( assetItem );
+        
+        return repositoryAssetOperations.loadItemHistory( assetItem );        
     }
 
     @WebRemote

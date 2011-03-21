@@ -907,9 +907,9 @@ public class PackageItemTest {
     }
 
     @Test
-    public void testVersionedAssetItemIterator() throws Exception {
+    public void testListAssetsByFormatForHistoricalPackage() throws Exception {
     	//Package version 1(Initial version)
-        PackageItem pkg = getRepo().createPackage( "testVersionedAssetItemIterator", "" );
+        PackageItem pkg = getRepo().createPackage( "testListAssetsByFormatForHistoricalPackage", "" );
         getRepo().save();
 
         AssetItem item = pkg.addAsset( "testVersionedAssetItemIteratorAsset1", "" );
@@ -930,22 +930,20 @@ public class PackageItemTest {
         item.checkout();
         item.checkin("version 4");
         
-        //Thread.sleep( 150 );
-        
     	//Create package version 2       
         pkg.updateDependency("testVersionedAssetItemIteratorAsset3?version=2");
         pkg.checkin("Update dependency");
 
-
-        //create package version 3       
+        //Create package version 3       
         pkg.checkout();
         pkg.checkin("version 3");
         
         item.checkout();
         item.checkin("version 5");        
         
+        
         //Verify package Latest version         
-        pkg = getRepo().loadPackage("testVersionedAssetItemIterator");
+        pkg = getRepo().loadPackage("testListAssetsByFormatForHistoricalPackage");
         String[] dependencies = pkg.getDependencies();
         assertEquals(dependencies.length, 3);
 
@@ -969,7 +967,7 @@ public class PackageItemTest {
         //verify that iterator returns the correct version of assets. The version is specified by dependency.        
         it = pkg.listAssetsByFormat( new String[] {"ABC"} );
         assertTrue(it instanceof VersionedAssetItemIterator);
-        ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionSpecifiedByDependencies(true);
+        ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionsSpecifiedByDependencies(true);
         list = iteratorToList( it );
         assertEquals(1, list.size());
         ai = (AssetItem)list.get(0);
@@ -978,7 +976,8 @@ public class PackageItemTest {
  
         
         //Verify historical package version 2
-        PackageHistoryIterator historyIterator = pkg.getHistory();
+        PackageItem historicalPackage = getRepo().loadPackage("testListAssetsByFormatForHistoricalPackage", 2);
+/*        PackageHistoryIterator historyIterator = pkg.getHistory();
         PackageItem historicalPackage = null;
         while ( historyIterator.hasNext() ) {
         	PackageItem historical = historyIterator.next();
@@ -987,7 +986,7 @@ public class PackageItemTest {
             	historicalPackage = historical;
                 break;
             }
-        }
+        }*/
         
         it = historicalPackage.listAssetsByFormat( new String[] {"xyz", "ABC"} );
         list = iteratorToList( it );
@@ -1011,7 +1010,7 @@ public class PackageItemTest {
         //which is version 2.
         it = historicalPackage.listAssetsByFormat( new String[] {"ABC"} );
         assertTrue(it instanceof VersionedAssetItemIterator);
-        ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionSpecifiedByDependencies(true);
+        ((VersionedAssetItemIterator)it).setReturnAssetsWithVersionsSpecifiedByDependencies(true);
         list = iteratorToList( it );
         assertEquals(1, list.size());
         ai = (AssetItem)list.get(0);

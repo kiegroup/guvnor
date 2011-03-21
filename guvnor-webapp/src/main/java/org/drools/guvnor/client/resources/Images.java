@@ -166,7 +166,10 @@ public interface Images
 
     @Source("images/new_item.gif")
     ImageResource newItem();
-
+    
+    @Source("images/new_item_disabled.gif")
+    ImageResource newItemDisabled();
+    
     @Source("images/delete_item_small.gif")
     ImageResource deleteItemSmall();
 
@@ -238,6 +241,9 @@ public interface Images
 
     @Source("images/trash.gif")
     ImageResource trash();
+    
+    @Source("images/trash_disabled.gif")
+    ImageResource trashDisabled();
 
     @Source("images/home_icon.gif")
     ImageResource homeIcon();

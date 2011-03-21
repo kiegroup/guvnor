@@ -16,11 +16,9 @@
 
 package org.drools.guvnor.client.messages;
 
-import com.google.gwt.core.client.GWT;
+import java.util.Date;
 
 import com.google.gwt.i18n.client.Messages;
-
-import java.util.Date;
 
 /**
  * This uses GWT to provide client side compile time resolving of locales. See:
@@ -34,8 +32,6 @@ import java.util.Date;
 public interface Constants
         extends
         Messages {
-
-    Constants INSTANCE = GWT.create(Constants.class);
 
     String ActionColumnConfigurationInsertingANewFact();
 
@@ -709,6 +705,10 @@ public interface Constants
     String isEqualTo();
 
     String isNotEqualTo();
+    
+    String isEqualToNull();
+
+    String isNotEqualToNull();
 
     String isLessThan();
 
@@ -2261,4 +2261,8 @@ public interface Constants
     String NewPerspective();
     
     String PackageValidatedSuccessfully();
+    
+    String VersionFeed();
+    
+    String Dependencies();
 }

@@ -81,8 +81,7 @@ public class RepositoryUpgradeHelper {
     public static List<DTCellValue> makeDataRowList(String[] oldRow) {
         List<DTCellValue> row = new ArrayList<DTCellValue>();
 
-        DTCellValue rowDcv = new DTCellValue();
-        rowDcv.setNumericValue( new BigDecimal( oldRow[0] ) );
+        DTCellValue rowDcv = new DTCellValue( new BigDecimal( oldRow[0] ) );
         row.add( rowDcv );
 
         for ( int iCol = 1; iCol < oldRow.length; iCol++ ) {
@@ -92,8 +91,7 @@ public class RepositoryUpgradeHelper {
             //should occur here but that requires reference to a SuggestionCompletionEngine
             //which requires RepositoryServices. I did not want to make a dependency between
             //common IDE classes and the Repository
-            DTCellValue dcv = new DTCellValue();
-            dcv.setStringValue( oldRow[iCol] );
+            DTCellValue dcv = new DTCellValue( oldRow[iCol] );
             row.add( dcv );
         }
         return row;

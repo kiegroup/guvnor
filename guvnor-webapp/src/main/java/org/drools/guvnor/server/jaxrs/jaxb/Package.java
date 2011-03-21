@@ -33,7 +33,7 @@ public class Package {
 
     private String checkInComment;
 
-    private String snapshot;
+    //private String snapshot;
 
     private Category category;
 
@@ -60,7 +60,7 @@ public class Package {
     public void setSourceLink(URI sourceLink) {
         this.sourceLink = sourceLink;
     }
-
+/*
     @XmlElement()
     public String getSnapshot() {
         return snapshot;
@@ -68,7 +68,7 @@ public class Package {
 
     public void setSnapshot(String snapshot) {
         this.snapshot = snapshot;
-    }
+    }*/
 
     @XmlElement()
     public Category getCategory() {

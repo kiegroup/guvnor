@@ -77,7 +77,7 @@ public class PackageEditor extends PrettyFormLayout {
 
     private PackageConfigData   conf;
     ActionToolbar actionToolBar;
-    private boolean historicalReadOnly = false;
+    private boolean isHistoricalReadOnly = false;
     private Command             close;
     private Command             refreshPackageList;
     private HorizontalPanel packageConfigurationValidationResult = new HorizontalPanel();;
@@ -93,7 +93,7 @@ public class PackageEditor extends PrettyFormLayout {
 			Command close,
 			Command refreshPackageList) {
 		this.conf = data;
-		this.historicalReadOnly = historicalReadOnly;
+		this.isHistoricalReadOnly = historicalReadOnly;
 		this.close = close;
 		this.refreshPackageList = refreshPackageList;
 
@@ -107,9 +107,8 @@ public class PackageEditor extends PrettyFormLayout {
         startSection(constants.BuildAndValidate());
         actionToolBar = new ActionToolbar(getConfiguration(), conf.state);
         addRow( actionToolBar );
-        //addAttribute("", actionTool );  
         endSection();        
-		if (historicalReadOnly) {
+		if (isHistoricalReadOnly) {
 			actionToolBar.setVisible(false);
 		} else {
 			actionToolBar.setSaveChangesCommand(new Command() {
@@ -164,12 +163,12 @@ public class PackageEditor extends PrettyFormLayout {
                       header() );
         addAttribute( constants.DescriptionColon(),
                       description() );
-        addAttribute( constants.CategoryRules(),
-                      getAddCatRules() );
-        addAttribute( "",
-                      getShowCatRules() );
+		if (!isHistoricalReadOnly) {
+			addAttribute(constants.CategoryRules(), getAddCatRules());
+		}
+        addAttribute( "", getShowCatRules() );
 
-        if ( !conf.isSnapshot && !historicalReadOnly) {
+        if ( !conf.isSnapshot && !isHistoricalReadOnly) {
             Button save = new Button( constants.ValidateConfiguration() );
             save.addClickHandler( new ClickHandler() {
 
@@ -183,11 +182,13 @@ public class PackageEditor extends PrettyFormLayout {
 
         endSection();
 
-        startSection(constants.BuildAndValidate());
-        addRow(new DependencyWidget(this.conf, historicalReadOnly));
-        endSection();
+        if(isHistoricalReadOnly) {
+            startSection(constants.Dependencies());
+            addRow(new DependencyWidget(this.conf, isHistoricalReadOnly));
+            endSection();
+        }
         
-        if ( !conf.isSnapshot ) {
+        if ( !conf.isSnapshot && !isHistoricalReadOnly) {
             startSection( constants.BuildAndValidate() );
             addRow( new PackageBuilderWidget( this.conf ) );
             endSection();
@@ -218,12 +219,12 @@ public class PackageEditor extends PrettyFormLayout {
                       createHPanel( html0,
                          constants.URLDocumentionDescription() ) );
 
-        HTML html = new HTML( "<a href='" + getSourceDownload( this.conf ) + "' target='_blank'>" + getSourceDownload( this.conf ) + "</a>" );
+        HTML html = new HTML( "<a href='" + getPackageSourceURL( this.conf ) + "' target='_blank'>" + getPackageSourceURL( this.conf ) + "</a>" );
         addAttribute( constants.URLForPackageSource(),
                       createHPanel( html,
                          constants.URLSourceDescription() ) );
 
-        HTML html2 = new HTML( "<a href='" + getBinaryDownload( this.conf ) + "' target='_blank'>" + getBinaryDownload( this.conf ) + "</a>" );
+        HTML html2 = new HTML( "<a href='" + getPackageBinaryURL( this.conf ) + "' target='_blank'>" + getPackageBinaryURL( this.conf ) + "</a>" );
         addAttribute( constants.URLForPackageBinary(),
                       createHPanel( html2,
                          constants.UseThisUrlInTheRuntimeAgentToFetchAPreCompiledBinary() ) );
@@ -271,9 +272,12 @@ public class PackageEditor extends PrettyFormLayout {
         
         RepositoryServiceFactory.getAssetService().listAssetsWithPackageName(this.conf.name, new String[]{AssetFormats.SPRING_CONTEXT}, 0,
                                                                         -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, callBack);
+        addAttribute( constants.VersionFeed(),
+        		new HTML( "<a href='" + getVersionFeed(this.conf ) + "' target='_blank'><img src='"
+                + new Image( images.feed() ).getUrl() + "'/></a>" ) );
         addAttribute( constants.CurrentVersionNumber(),
                 getVersionNumberLabel() );
-		if (!historicalReadOnly) {
+		if (!isHistoricalReadOnly) {
 			VersionBrowser vb = new VersionBrowser(conf.uuid, true, null);
 			addAttribute("", vb);
 		}
@@ -451,6 +455,38 @@ public class PackageEditor extends PrettyFormLayout {
         return makeLink( conf ) + "/SpringContext/" + name;
     }
     
+    static String getVersionFeed(PackageConfigData conf) {
+    	String hurl = getRESTBaseURL() + "packages/" + conf.name + "/versions";
+        return hurl;
+    }
+    
+    String getPackageSourceURL(PackageConfigData conf) {
+    	String url;
+    	if(isHistoricalReadOnly) {
+    		url = getRESTBaseURL() + "packages/" + conf.name + 
+        	"/versions/" + conf.versionNumber + "/source"; 		
+    	} else {
+    		url = getRESTBaseURL() + "packages/" + conf.name + "/source";   		
+    	}
+        return url;
+    }
+    
+    String getPackageBinaryURL(PackageConfigData conf) {
+    	String url;
+    	if(isHistoricalReadOnly) {
+    		url = getRESTBaseURL() + "packages/" + conf.name + 
+        	"/versions/" + conf.versionNumber + "/binary"; 		
+    	} else {
+    		url = getRESTBaseURL() + "packages/" + conf.name + "/binary";   		
+    	}
+        return url;
+    }
+    
+    static String getRESTBaseURL() {
+    	String url = GWT.getModuleBaseURL();
+    	return url.replaceFirst("org.drools.guvnor.Guvnor", "rest");
+    }
+    
     /**
      * Get a download link for the binary package.
      */
@@ -606,9 +642,7 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private Widget header() {
-
-        return new PackageHeaderWidget( this.conf );
-
+        return new PackageHeaderWidget( this.conf, isHistoricalReadOnly );
     }
 
     private Widget description() {
@@ -622,6 +656,9 @@ public class PackageEditor extends PrettyFormLayout {
             }
         } );
         box.setWidth( "400px" );
+        if(isHistoricalReadOnly) {
+        	box.setEnabled(false);
+        }
 
         return box;
     }

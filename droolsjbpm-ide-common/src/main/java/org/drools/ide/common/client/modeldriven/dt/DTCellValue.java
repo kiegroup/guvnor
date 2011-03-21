@@ -21,7 +21,9 @@ import java.util.Date;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
- * Holder for cell value and other attributes
+ * Holder for cell value and other attributes. This is serialised by GWT RPC and
+ * therefore does not contain a single property of type Serializable (that would
+ * have been ideal). Instead the concrete data types are included separately.
  */
 public class DTCellValue
     implements
@@ -38,6 +40,37 @@ public class DTCellValue
 
     //Does this cell represent "all other values" to those explicitly defined for the column
     private boolean           isOtherwise;
+
+    public DTCellValue() {
+    }
+
+    public DTCellValue(BigDecimal value) {
+        setNumericValue( value );
+    }
+
+    public DTCellValue(Boolean value) {
+        setBooleanValue( value );
+    }
+
+    public DTCellValue(Date value) {
+        setDateValue( value );
+    }
+
+    public DTCellValue(double value) {
+        setNumericValue( new BigDecimal( value ) );
+    }
+
+    public DTCellValue(int value) {
+        setNumericValue( new BigDecimal( value ) );
+    }
+
+    public DTCellValue(long value) {
+        setNumericValue( new BigDecimal( value ) );
+    }
+
+    public DTCellValue(String value) {
+        setStringValue( value );
+    }
 
     public Boolean getBooleanValue() {
         return valueBoolean;
@@ -64,16 +97,19 @@ public class DTCellValue
     }
 
     public void setBooleanValue(Boolean value) {
+        clearValues();
         this.valueBoolean = value;
         this.dataType = DTDataTypes.BOOLEAN;
     }
 
     public void setDateValue(Date value) {
+        clearValues();
         this.valueDate = value;
         this.dataType = DTDataTypes.DATE;
     }
 
     public void setNumericValue(BigDecimal value) {
+        clearValues();
         this.valueNumeric = value;
         this.dataType = DTDataTypes.NUMERIC;
     }
@@ -83,8 +119,16 @@ public class DTCellValue
     }
 
     public void setStringValue(String value) {
+        clearValues();
         this.valueString = value;
         this.dataType = DTDataTypes.STRING;
+    }
+
+    private void clearValues() {
+        this.valueBoolean = null;
+        this.valueDate = null;
+        this.valueNumeric = null;
+        this.valueString = null;
     }
 
 }

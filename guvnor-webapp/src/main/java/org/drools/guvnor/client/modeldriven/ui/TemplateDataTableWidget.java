@@ -18,6 +18,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridSidebarWidget;
@@ -72,6 +73,9 @@ public class TemplateDataTableWidget extends Composite
         this.cellFactory = new TemplateDataCellFactory( sce,
                                                         widget.getGridWidget() );
         this.cellValueFactory = new TemplateDataCellValueFactory( sce );
+
+        //Date converter is injected so a GWT compatible one can be used here and another in testing
+        this.cellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
 
         initWidget( widget );
     }
@@ -195,9 +199,9 @@ public class TemplateDataTableWidget extends Composite
         int dataSize = this.widget.getGridWidget().getData().size();
         List<CellValue< ? >> columnData = new ArrayList<CellValue< ? >>();
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( column,
-                                                                                      iRow,
-                                                                                      colIndex );
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( column,
+                                                                                       iRow,
+                                                                                       colIndex );
             columnData.add( cv );
         }
         return columnData;
@@ -209,9 +213,9 @@ public class TemplateDataTableWidget extends Composite
         List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             TemplateDataColumn col = columns.get( iCol ).getModelColumn();
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( col,
-                                                                                      0,
-                                                                                      iCol );
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
+                                                                                       0,
+                                                                                       iCol );
             row.add( cv );
         }
         return row;
@@ -234,7 +238,7 @@ public class TemplateDataTableWidget extends Composite
     public void scrapeData(TemplateModel model) {
         model.clearRows();
 
-        final DynamicData data = widget.getGridWidget().getFlattenedData();
+        final DynamicData<TemplateDataColumn> data = widget.getGridWidget().getData().getFlattenedData();
         final List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
         int columnCount = columns.size();
 
@@ -294,10 +298,10 @@ public class TemplateDataTableWidget extends Composite
                     initialValue = null;
                 }
 
-                CellValue< ? extends Comparable< ? >> cv = cellValueFactory.getCellValue( col,
-                                                                                          iRow,
-                                                                                          iCol,
-                                                                                          initialValue );
+                CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
+                                                                                           iRow,
+                                                                                           iCol,
+                                                                                           initialValue );
                 row.add( cv );
             }
             widget.insertRowBefore( null,
@@ -305,7 +309,7 @@ public class TemplateDataTableWidget extends Composite
         }
 
         // Ensure cells are indexed correctly for start-up data
-        widget.getGridWidget().assertModelIndexes();
+        widget.getGridWidget().getData().assertModelIndexes();
 
         // Draw header first as the size of child Elements depends upon it
         widget.getHeaderWidget().redraw();

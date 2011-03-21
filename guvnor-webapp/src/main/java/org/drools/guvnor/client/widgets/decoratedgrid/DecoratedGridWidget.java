@@ -297,13 +297,13 @@ public abstract class DecoratedGridWidget<T> extends Composite {
         if ( isVisible
              && !columns.get( index ).isVisible() ) {
             columns.get( index ).setVisible( isVisible );
-            gridWidget.assertModelIndexes();
+            gridWidget.getData().assertModelIndexes();
             gridWidget.showColumn( index );
             headerWidget.redraw();
         } else if ( !isVisible
                     && columns.get( index ).isVisible() ) {
             columns.get( index ).setVisible( isVisible );
-            gridWidget.assertModelIndexes();
+            gridWidget.getData().assertModelIndexes();
             gridWidget.hideColumn( index );
             headerWidget.redraw();
         }
@@ -417,7 +417,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      */
     public void sort() {
 
-        final DynamicData data = gridWidget.getData();
+        final DynamicData<T> data = gridWidget.getData();
         final List<DynamicColumn<T>> columns = gridWidget.getColumns();
 
         final DynamicColumn< ? >[] sortOrderList = new DynamicColumn[columns.size()];
@@ -470,7 +470,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
         }
                           } );
 
-        gridWidget.assertModelMerging();
+        gridWidget.getData().assertModelMerging();
 
         // Request dependent children update cell values accordingly
         if ( hasSystemControlledColumns != null ) {

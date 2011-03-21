@@ -58,9 +58,11 @@ public class PackageHeaderWidget extends Composite {
     private SimplePanel       layout;
     private ListBox           importList;
     private ListBox           globalList;
+    private boolean isHistoricalReadOnly = false;
 
-    public PackageHeaderWidget(PackageConfigData conf) {
+    public PackageHeaderWidget(PackageConfigData conf, boolean isHistoricalReadOnly) {
         this.conf = conf;
+        this.isHistoricalReadOnly = isHistoricalReadOnly;
         layout = new SimplePanel();
         render();
 
@@ -88,30 +90,44 @@ public class PackageHeaderWidget extends Composite {
         HorizontalPanel importCols = new HorizontalPanel();
         importCols.add( importList );
         VerticalPanel importActions = new VerticalPanel();
-        importActions.add( new ImageButton( images.newItem() ) {
-            {
-                addClickHandler( new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        showTypeQuestion( (Widget) event.getSource(), t, false, constants.FactTypesJarTip() );
-                    }
-                } );
-            }
-        } );
-        importActions.add( new ImageButton( images.trash() ) {
-            {
-                addClickHandler( new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisFactType() ) ) {
-                            int i = importList.getSelectedIndex();
-                            importList.removeItem( i );
-                            t.imports.remove( i );
-                            updateHeader( t );
+        if(isHistoricalReadOnly) {
+            ImageButton newItemButton =  new ImageButton( images.newItem(), images.newItemDisabled());
+            newItemButton.setEnabled(false);
+            importActions.add(newItemButton);          	
+            
+            ImageButton trashButton = new ImageButton( images.trash(), images.trashDisabled() );            	
+            trashButton.setEnabled(false); 
+            importActions.add( trashButton );
+         } else {
+			ImageButton newItemButton = new ImageButton(images.newItem(), images.newItemDisabled()) {
+				{
+					addClickHandler(new ClickHandler() {
+						public void onClick(ClickEvent event) {
+							showTypeQuestion((Widget) event.getSource(), t,
+									false, constants.FactTypesJarTip());
+						}
+					});
+				}
+			};
+            importActions.add(newItemButton);        	
+            
+            ImageButton trashButton = new ImageButton( images.trash(), images.trashDisabled() ) {
+                {
+                    addClickHandler( new ClickHandler() {
+                        public void onClick(ClickEvent event) {
+                            if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisFactType() ) ) {
+                                int i = importList.getSelectedIndex();
+                                importList.removeItem( i );
+                                t.imports.remove( i );
+                                updateHeader( t );
+                            }
                         }
-                    }
-                } );
-            }
-        } );
-
+                    } );
+                }
+            };            	
+            importActions.add( trashButton );
+        }
+        
         importCols.add( importActions );
         imports.add( importCols );
 
@@ -122,29 +138,42 @@ public class PackageHeaderWidget extends Composite {
         HorizontalPanel globalCols = new HorizontalPanel();
         globalCols.add( globalList );
         VerticalPanel globalActions = new VerticalPanel();
-        globalActions.add( new ImageButton( images.newItem() ) {
-            {
-                addClickHandler( new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        showTypeQuestion( (Widget) event.getSource(), t, true, constants.GlobalTypesAreClassesFromJarFilesThatHaveBeenUploadedToTheCurrentPackage() );
-                    }
-                } );
-            }
-        } );
-        globalActions.add( new ImageButton( images.trash() ) {
-            {
-                addClickHandler( new ClickHandler() {
-                    public void onClick(ClickEvent event) {
-                        if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisGlobal() ) ) {
-                            int i = globalList.getSelectedIndex();
-                            globalList.removeItem( i );
-                            t.globals.remove( i );
-                            updateHeader( t );
+        if(isHistoricalReadOnly) {
+            ImageButton newItemButton =  new ImageButton( images.newItem(), images.newItemDisabled());
+            newItemButton.setEnabled(false);
+            globalActions.add(newItemButton);          	
+            
+            ImageButton trashButton = new ImageButton( images.trash(), images.trashDisabled() );            	
+            trashButton.setEnabled(false); 
+            globalActions.add( trashButton );
+        } else {
+			ImageButton newItemButton = new ImageButton( images.newItem(), images.newItemDisabled() ) {
+	            {
+	                addClickHandler( new ClickHandler() {
+	                    public void onClick(ClickEvent event) {
+	                        showTypeQuestion( (Widget) event.getSource(), t, true, constants.GlobalTypesAreClassesFromJarFilesThatHaveBeenUploadedToTheCurrentPackage() );
+	                    }
+	                } );
+	            }
+	        } ;
+	        globalActions.add(newItemButton);        	
+            
+            ImageButton trashButton = new ImageButton( images.trash(), images.trashDisabled() ) {
+                {
+                    addClickHandler( new ClickHandler() {
+                        public void onClick(ClickEvent event) {
+                            if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisGlobal() ) ) {
+                                int i = globalList.getSelectedIndex();
+                                globalList.removeItem( i );
+                                t.globals.remove( i );
+                                updateHeader( t );
+                            }
                         }
-                    }
-                } );
-            }
-        } );
+                    } );
+                }
+            };   	
+            globalActions.add( trashButton );
+        }       
         globalCols.add( globalActions );
         globals.add( globalCols );
 
@@ -176,6 +205,9 @@ public class PackageHeaderWidget extends Composite {
         VerticalPanel main = new VerticalPanel();
 
         final TextArea area = new TextArea();
+        if(isHistoricalReadOnly) {
+        	area.setEnabled(false);
+        }
         area.setWidth( "100%" );
         area.setVisibleLines( 8 );
 
