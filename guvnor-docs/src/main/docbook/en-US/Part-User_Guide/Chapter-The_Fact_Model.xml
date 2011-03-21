@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<chapter version="5.0"
+         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
+         xml:base="../" xmlns="http://docbook.org/ns/docbook" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
+    <title>The fact model (object model)</title>
+
+    <para>For any rule base application, a fact model is needed to drive the
+    rules. The fact model typically overlaps with the applications domain
+    model, but in general it will be decoupled from it (as it makes the rules
+    easier to manage over time).</para>
+
+    <para>There are 2 ways to to do this: you can upload jar files containing
+    classes which your application and the rules both use, or you can use
+    models that are declared along with the rules.</para>
+
+    <figure>
+      <title>Choosing a model type</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/ModelChooseType.png"
+                     format="PNG" scalefit="1"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>When a jar is uploaded, it will add import statements to the package
+    configuration (you can then review and change them).</para>
+
+    <para>Using declared models, you will see an editor like the
+    following:</para>
+
+    <figure>
+      <title>Choosing a model type</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/ModelEdit.png"
+                     format="PNG" scalefit="1"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>In here you can define types, and add fields (each field has a
+    type). The type of a field is suggested by a list (but this list is not
+    exhaustive):</para>
+
+    <figure>
+      <title>Choosing a model type</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/ModelChooseFieldType.png"
+                     format="PNG" scalefit="1"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>These fact models can be used like normal fact objects, however the
+    way you create them is different (as they are not on your applications
+    classpath). To create these objects, they are available from the RuleBase
+    instance. <programlisting language="java">
+          // Retrieve the generated fact type
+        FactType cheeseFact = ruleBase.getFactType( "org.drools.generatedbeans.Cheese" );
+
+        // Create a new Fact instance
+        Object cheese = cheeseFact.newInstance();
+
+        cheeseFact.set( cheese,
+                        "type",
+                        "stilton" );
+
+</programlisting> The "cheese" object above can then be inserted into working
+    memory just like a normal pojo based fact.</para>
+
+    <para>Note that the namespace of the declared type is the package
+    namespace where it was declared (in the above case
+    "org.drools.generatedbeans").</para>
+
+    <para>Why would you chose declared types over jar files: generally this
+    reinforces the fact that the model "belongs" to the rulebase, rather then
+    the application, and allows the model to have a lifecycle separate from
+    the application. It also removed the hassle of keeping jar files in sync
+    between rules and the applications that use the rules.</para>
+  </chapter>
