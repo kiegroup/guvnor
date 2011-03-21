@@ -6,12 +6,11 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Creating a business user view</title>
 
-  <para>In most cases not all users will want to see all the functionality
-  described here. You could have a subset of users who you only want to let
-  view or edit certain sets of rules, without getting confused by all the
-  other stuff. In this case you can use fine grained authorization (see the
-  Admin Guide on how to initialize this). By setting permissions on a per
-  category basis, users that only have category permissions will see a
-  limited subset of functionality, and only items that are tagged with those
-  categories.</para>
+  <para>
+  In most cases not all users will want to see all the functionality described here. You could have a subset
+  of users who you only want to let view or edit certain sets of rules, without getting confused by all the
+  other stuff. In this case you can use fine grained authorization (see the Admin Guide on how to initialize
+  this). By setting permissions on a per category basis, users that only have category permissions will see a
+  limited subset of functionality, and only items that are tagged with those categories.
+  </para>
 </chapter>

@@ -6,46 +6,44 @@
          xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:ns="http://docbook.org/ns/docbook">
   <title>Eclipse Guvnor integration</title>
 
-  <para>The Eclipse Guvnor tools (EGT) provide the ability to push/pull
-  artifacts from the Guvnor repository server and the developers workspace
-  in eclipse. It is therefore possible for artifacts to be both managed via
-  Guvnor as well as in traditional developer friendly SCM systems (such as
-  subversion). The Guvnor repository is not intended as a Source Code
-  Management (SCM) solution, and the EGT are not intended to be Eclipse
-  “team provider” extensions or replacements. Rather, the Guvnor repository
-  is a location where certain artifacts (such as rules and SOA policy
-  definitions) are controlled (“governed”) by policies defined by the
-  deployment environment. The purpose of the EGT is then to enable access to
-  resources held by the Guvnor repository, so they can be used in
-  development. Thus, limited capabilities for reading, writing, adding, and
-  removing Guvnor repository resources are provided in the EGT.</para>
+  <para>
+  The Eclipse Guvnor tools (EGT) provide the ability to push/pull artifacts from the Guvnor repository server
+  and the developers workspace in eclipse. It is therefore possible for artifacts to be both managed via
+  Guvnor as well as in traditional developer friendly SCM systems (such as subversion). The Guvnor repository
+  is not intended as a Source Code Management (SCM) solution, and the EGT are not intended to be Eclipse “team
+  provider” extensions or replacements. Rather, the Guvnor repository is a location where certain artifacts
+  (such as rules and SOA policy definitions) are controlled (“governed”) by policies defined by the deployment
+  environment. The purpose of the EGT is then to enable access to resources held by the Guvnor repository, so
+  they can be used in development. Thus, limited capabilities for reading, writing, adding, and removing
+  Guvnor repository resources are provided in the EGT.
+  </para>
 
   <section>
     <title>Source Code and Plug-in Details</title>
 
-    <para>The source code for the EGT is available at: <code>
-    http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-eclipse/
-    </code> EGT consist of two plug-ins: org.guvnor.tools org.eclipse.webdav
-    and requires Eclipse 3.3.x. The current Eclipse Drools plug-ins are also
-    useful for viewing Guvnor repository resources such as rule definitions,
-    but not required for operation of the EGT.</para>
+    <para>
+    The source code for the EGT is available at: 
+    <ulink url="http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-eclipse/" />. EGT consist of 
+    two plug-ins: org.guvnor.tools org.eclipse.webdav and requires Eclipse 3.3.x. The current Eclipse Drools
+    plug-ins are also useful for viewing Guvnor repository resources such as rule definitions, but not
+    required for operation of the EGT.
+    </para>
   </section>
 
   <section>
     <title>Functionality Overview</title>
 
-    <para>Views and Perspective: The EGT contains two views – Repository
-    Explorer and Version History – that will be the center of most
-    interaction with Guvnor. Eclipse standard views such as Properties and
-    the Resource Navigator are also useful. While each of these views can be
-    opened and positioned independently within an Eclipse workbench, the
-    Guvnor perspective provides a convenient method of getting a suggested
-    layout. In the Eclipse workbench menu, choose Window, Open Perspective,
-    Other to get the perspective list:</para>
+    <para>
+    Views and Perspective: The EGT contains two views – Repository Explorer and Version History – that will be
+    the center of most interaction with Guvnor. Eclipse standard views such as Properties and the Resource
+    Navigator are also useful. While each of these views can be opened and positioned independently within an
+    Eclipse workbench, the Guvnor perspective provides a convenient method of getting a suggested layout. In
+    the Eclipse workbench menu, choose Window, Open Perspective, Other to get the perspective list and then
+    choose "Guvnor Repository Exploring."
+    </para>
 
     <figure>
       <title>Views and perspectives</title>
-
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="images/Chapter-Guvnor/EGT1.png"
@@ -54,12 +52,12 @@
       </mediaobject>
     </figure>
 
-    <para>and then choose “Guvnor Repository Exploring.” This opens the
-    Guvnor perspective:</para>
+    <para>
+    This opens the Guvnor perspective.
+    </para>
 
     <figure>
       <title>Views and perspectives</title>
-
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="images/Chapter-Guvnor/EGT2.png"
@@ -68,29 +66,27 @@
       </mediaobject>
     </figure>
 
-    <para>On the left side is the Guvnor Repository Explorer and the Eclipse
-    Properties views, the Guvnor Resource History view is on the bottom, and
-    the Eclipse Resource Navigator is on the right side. The purpose of the
-    Guvnor Repository Explorer is to enable access to Guvnor repository
-    resources in a standard tree format, and the Guvnor Resource History
-    view shows revisions of specific resources available in the
-    repository.</para>
+    <para>
+    On the left side is the Guvnor Repository Explorer and the Eclipse Properties views, the Guvnor Resource
+    History view is on the bottom, and the Eclipse Resource Navigator is on the right side. The purpose of the
+    Guvnor Repository Explorer is to enable access to Guvnor repository resources in a standard tree format,
+    and the Guvnor Resource History view shows revisions of specific resources available in the repository.
+    </para>
   </section>
 
   <section>
     <title>Guvnor Connection Wizard</title>
 
-    <para>After opening the Guvnor perspective, the first task is to make a
-    connection to a Guvnor repository. This is handled by the Guvnor
-    Connection wizard. This wizard appears in a number of places within the
-    EGT (as detailed below), but in this section we will cover only the two
-    most basic entry points. The Guvnor Connection wizard can be started
-    using the Eclipse menu: File , New , Other , Guvnor , Guvnor repository
-    location, or in the Guvnor Explorer using the drop-down menu:</para>
+    <para>
+    After opening the Guvnor perspective, the first task is to make a connection to a Guvnor repository. This
+    is handled by the Guvnor Connection wizard. This wizard appears in a number of places within the EGT (as
+    detailed below), but in this section we will cover only the two most basic entry points. The Guvnor
+    Connection wizard can be started using the Eclipse menu: File , New , Other , Guvnor , Guvnor repository
+    location, or in the Guvnor Explorer using the drop-down menu:
+    </para>
 
     <figure>
       <title>Connection wizard</title>
-
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="images/Chapter-Guvnor/EGT3.png"
@@ -103,7 +99,6 @@
 
     <figure>
       <title>Connection wizard</title>
-
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="images/Chapter-Guvnor/EGT4.png"
@@ -112,12 +107,12 @@
       </mediaobject>
     </figure>
 
-    <para>Choosing either of these will start the Guvnor connection
-    wizard:</para>
+    <para>
+    Choosing either of these will start the Guvnor connection wizard:
+    </para>
 
     <figure>
       <title>Connection wizard</title>
-
       <mediaobject>
         <imageobject>
           <imagedata align="center" fileref="images/Chapter-Guvnor/EGT5.png"
@@ -126,25 +121,24 @@
       </mediaobject>
     </figure>
 
-    <para>Default values appear in the Location, Port, and Repository
-    fields. (See the “Guvnor Preferences” section below for details about
-    how to change these default values.) Of course, any of these fields can
-    be edited by typing in the corresponding text box. Drag-and-drop or
-    paste into the Location field of a typical Guvnor repository URL such
-    as:
-    <code>http://localhost:8080/guvnor-webapp/org.drools.guvnor.Guvnor/webdav</code>
-    Results in the URL being parsed into the respective fields as well. The
-    authentication information (user name and password) can optionally be
-    stored in the Eclipse workbench's key-ring file based on the selection
-    of "Save user name and password." If the authentication information is
-    not stored in the key-ring, then the EGT uses session authentication,
-    which means that the credentials supplied are used only for the lifetime
-    of the Eclipse workbench instance.</para>
+    <para>
+    Default values appear in the Location, Port, and Repository fields. (See <xref linkend="sect-guvnor-plugin-prefences" />
+    for details about how to change these default values.) Of course, any of these fields can be edited
+    by typing in the corresponding text box. Drag-and-drop or paste into the Location field of a typical
+    Guvnor repository URL such as:
+    <ulink url="http://localhost:8080/guvnor-webapp/org.drools.guvnor.Guvnor/webdav" /> 
+    results in the URL being parsed into the respective fields as well. The authentication information (user
+    name and password) can optionally be stored in the Eclipse workbench's key-ring file based on the
+    selection of "Save user name and password." If the authentication information is not stored in the
+    key-ring, then the EGT uses session authentication, which means that the credentials supplied are used
+    only for the lifetime of the Eclipse workbench instance.
+    </para>
 
-    <para>If authentication information is not stored in the key-ring or the
-    authentication information (key-ring or session) is not valid, the EGT
-    will prompt for authentication information when it has to access the
-    Guvnor repository:</para>
+    <para>
+    If authentication information is not stored in the key-ring or the authentication information (key-ring or
+    session) is not valid, the EGT will prompt for authentication information when it has to access the Guvnor
+    repository:
+    </para>
 
     <figure>
       <title>Login</title>
@@ -271,16 +265,23 @@
     are two method of getting local copies of Guvnor repository
     resources:</para>
 
-    <para>1. Drag-and-drop from the Guvnor Repository Explorer, as described
-    above.</para>
-
-    <para>2. Using the “import from Guvnor” wizard, as described
-    below.</para>
+    <orderedlist>
+      <listitem>
+        <para>
+        Drag-and-drop from the Guvnor Repository Explorer, as described above.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+        Using the “import from Guvnor” wizard, as described below.
+        </para>
+      </listitem>
+    </orderedlist>
 
     <para>When local copies of Guvnor repository files are created, the EGT
     sets an association between the local copy and the master file in the
     repository. (This information is kept in the (normally) hidden
-    “.guvnorinfo” folder in the local project and, like all metadata, should
+    <filename>.guvnorinfo</filename> folder in the local project and, like all metadata, should
     not be changed by end users.) This association allows for operations
     such as update and commit in synchronization with the master copy held
     in the Guvnor repository. The EGT decorates local resources associated
@@ -291,7 +292,6 @@
 
     <figure>
       <title>Navigator</title>
-
       <mediaobject>
         <imageobject>
           <imagedata align="center"
@@ -301,20 +301,18 @@
       </mediaobject>
     </figure>
 
-    <para>Note the Guvnor icon decorator on the top right of the file
-    images, and the Guvnor revision details appended to the file names. (The
-    presence/location of these can be changed. See “Guvnor Preferences”
-    below for details.) Here we see that, for example, “simpleRule.drl” is
-    associated with a Guvnor repository resource and the local copy is based
-    on revision 3, with a 7-15-2008, 15:37:34 date/time stamp. The file
-    “deleteTest.txt,” however, is not associated with a Guvnor repository
-    file. Further details about the association can be found in the standard
-    Eclipse properties page, via the context menu “Properties”
-    selection:</para>
+    <para>
+    Note the Guvnor icon decorator on the top right of the file images, and the Guvnor revision details
+    appended to the file names. (The presence/location of these can be changed. See <xref linkend="sect-guvnor-plugin-prefences" />
+    for details.) Here we see that, for example, <filename>simpleRule.drl</filename> is associated with a
+    Guvnor repository resource and the local copy is based on revision 3, with a 7-15-2008, 15:37:34 date/time
+    stamp. The file <filename>deleteTest.txt</filename>, however, is not associated with a Guvnor repository
+    file. Further details about the association can be found in the standard Eclipse properties page, via the
+    context menu “Properties” selection:
+    </para>
 
     <figure>
       <title>Properties</title>
-
       <mediaobject>
         <imageobject>
           <imagedata align="center"
@@ -588,7 +586,7 @@
     </figure>
   </section>
 
-  <section>
+  <section id="sect-guvnor-plugin-prefences">
     <title>Guvnor plugin Preferences</title>
 
     <para>The EGT provides a preference page in the “Guvnor”

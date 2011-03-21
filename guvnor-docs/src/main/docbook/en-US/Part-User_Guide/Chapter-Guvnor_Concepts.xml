@@ -14,7 +14,7 @@
       they are all classed as "assets". An asset is anything that can be
       stored as a version in the repository. This includes decision tables,
       models, DSLs and more. Sometimes the word "rule" will be used to really
-      mean "asset" (ie the things you can do also apply to the other asset
+      mean "asset" (i.e. the things you can do also apply to the other asset
       types). You can think of asset as a lot like a file in a folder. Assets
       are grouped together for viewing, or to make a package for deployment
       etc.</para>
@@ -171,7 +171,7 @@
           <para>"By:" - who made the last change.</para>
 
           <para>"Note:" - this is the comment made when the asset was last
-          updated (ie why a change was made)</para>
+          updated (i.e. why a change was made)</para>
 
           <para>"Version:" - this is a number which is incremented by 1 each
           time a change is checked in (saved).</para>
@@ -249,11 +249,11 @@
         <para>B: This shows a pattern which is declaring that the rule is
         looking for a "Driver" fact (the fields are listed below, in this case
         just "age"). Clicking in the fact name (Driver) will popup a list of
-        options to add to the fact declaration: you can add more fields (eg their
+        options to add to the fact declaration: you can add more fields (e.g. their
         "location"), or you can assign a variable name to the fact (which you
         can use later on if needs be). As well as adding more fields to this
-        pattern - you can add "multiple field" constraints - ie constraints
-        that span across fields (eg age &gt; 42 or risk &gt; 2). The popup
+        pattern - you can add "multiple field" constraints - i.e. constraints
+        that span across fields (e.g. age &gt; 42 or risk &gt; 2). The popup
         dialog shows the options.</para>
 
         <para>C: The small triangle indicates you can remove something. In
@@ -400,7 +400,7 @@
         <section>
           <title>Augmenting with DSL sentences</title>
 
-          <para>If the package the rule is part of has a dsl configuration,
+          <para>If the package the rule is part of has a DSL configuration,
           when when you add conditions or actions, then it will provide a list
           of "DSL Sentences" which you can choose from - when you choose one,
           it will add a row to the rule - where the DSL specifies values come
@@ -446,6 +446,7 @@
           Conditional Elements, literal values, and formulas.
           The rule has 4 "top level" Patterns and 1 Action.
           The "top level" Patterns are:
+          </para>
           <orderedlist spacing="compact">
             <listitem>
                 <para>
@@ -457,13 +458,13 @@
                     formula restriction (i.e. car.brand).
                     Finally, we are setting a variable name ($p) to the Person
                     Fact Type. You can then use this variable in other Patterns.
-                    <note>
+                  </para>
+                      <note>
                         <para>
                         The generated DRL from this Pattern will be:
-                        <code>$p : Person( birthDate &lt; "19-Dec-1982" , eval( car.brand == "Ford" &amp;&amp; salary &gt; (2500 * 4.1) ))</code>
                         </para>
+                        <programlisting><![CDATA[$p : Person( birthDate < "19-Dec-1982" , eval( car.brand == "Ford" && salary > (2500 * 4.1) ))]]></programlisting>
                     </note>
-                </para>
             </listitem>
             <listitem>
                 <para>
@@ -473,13 +474,13 @@
                     The left side of the from is a regular Fact Pattern and the
                     right side is an Expression Builder that let us inspect
                     variable's fields.
+                    </para>
                     <note>
                         <para>
                         The generated DRL from this Pattern will be:
                         <code>Address( street == "Elm St." ) from $p.addresses</code>
                         </para>
                     </note>
-                </para>
             </listitem>
             <listitem>
                 <para>
@@ -488,13 +489,13 @@
                     content is a regular Fact Pattern (on Person). In this
                     Fact Pattern you can see how variables ($p) could be used
                     inside a formula value.
+                </para>
                     <note>
                         <para>
                         The generated DRL from this Pattern will be:
                         <code>not Person( salary == ( $p.salary * 2 ) )</code>
                         </para>
                     </note>
-                </para>
             </listitem>
             <listitem>
                 <para>
@@ -511,6 +512,7 @@
                     Basically, this Conditional Element will count the addresses
                     having a zip code of 43240 from the Person's list of
                     addresses.
+                </para>
                     <note>
                         <para>
                         The generated DRL from this Pattern will be:
@@ -519,10 +521,9 @@
                         count($a)) </code>
                         </para>
                     </note>
-                </para>
             </listitem>
           </orderedlist>
-          </para>
+
           <figure>
             <title>Adding Patterns</title>
 
@@ -626,10 +627,10 @@
           </mediaobject>
         </figure>
 
-        <para>To use a spreadsheet, you upload an xls (and can download the
+        <para>To use a spreadsheet, you upload an XLS file (and can download the
         current version, as per the picture above). To create a new decision
         table, when you launch the rule wizard, you will get an option to
-        create one (after that point, you can upload the xls file).</para>
+        create one (after that point, you can upload the XLS file).</para>
       </section>
 
       <section>
@@ -697,7 +698,7 @@
         <para>Rule flows: Rule flows allow you to visually describe the steps
         taken - so not all rules are evaluated at once, but there is a flow of
         logic. Rule flows are not covered in this chapter on the Guvnor, but you
-        can use the IDE to graphically draw ruleflows, and upload the .rfm
+        can use the IDE to graphically draw ruleflows, and upload the <filename>.rfm</filename>
         file to the Guvnor.</para>
 
         <para>Similar to spreadsheets, you upload/download ruleflow files (the
@@ -706,9 +707,9 @@
       </section>
 
       <section>
-        <title>Technical rules (drl)</title>
+        <title>Technical rules (DRL)</title>
 
-        <para>Technical (drl) rules are stored as text - they can be managed
+        <para>Technical (DRL) rules are stored as text - they can be managed
         in the Guvnor. A DRL can either be a whole chunk of rules, or an
         individual rule. if its an individual rule, no package statement or
         imports are required (in fact, you can skip the "rule" statement
@@ -787,13 +788,15 @@
 
         <para>Getting data lists from external data sources: It is possible to
         have the Guvnor call a piece of code which will load a list of Strings.
-        To do this, you will need a bit of code that returns a java.util.List
+        To do this, you will need a bit of code that returns a <code>java.util.List</code>
         (of String's) to be on the classpath of the Guvnor. Instead of
         specifying a list of values in the Guvnor itself - the code can return
         the list of Strings (you can use the "=" inside the strings if you
         want to use a different display value to the rule value, as normal).
         For example, in the 'Person.age' line above, you could change it to:
+      </para>
         <programlisting> 'Person.age' : (new com.yourco.DataHelper()).getListOfAges()</programlisting>
+        <para>
         This assumes you have a class called "DataHelper" which has a method
         "getListOfAges()" which returns a List of strings (and is on the
         classpath). You can of course mix these "dynamic" enumerations with
@@ -818,13 +821,11 @@
         "engineType" of "Petrol" or "Diesel". Now, obviously the choice type
         for fuel must be dependent on the engine type (so for Petrol we have
         ULP and PULP, and for Diesel we have BIO and NORMAL). We can express
-        this dependency in an enumerattion as:</para>
+        this dependency in an enumeration as:</para>
 
-        <programlisting>
- 'Vehicle.engineType' : ['Petrol', 'Diesel']
- 'Vehicle.fuelType[engineType=Petrol]' : ['ULP', 'PULP' ]
- 'Vehicle.fuelType[engineType=Diesel]' : ['BIO', 'NORMAL' ]  
-</programlisting>
+        <programlisting>'Vehicle.engineType' : ['Petrol', 'Diesel']
+'Vehicle.fuelType[engineType=Petrol]' : ['ULP', 'PULP' ]
+'Vehicle.fuelType[engineType=Diesel]' : ['BIO', 'NORMAL' ]</programlisting>
 
         <para>This shows how it is possible to make the choices dependent on
         other field values. Note that once you pick the engineType, the choice
@@ -834,13 +835,12 @@
         to load their enumeration data entirely from external data source
         (such as a relational database). To do this, you can implement a class
         that returns a Map. The key of the map is a string (which is the
-        Fact.field name as shown above), and the value is a java.util.List of
+        Fact.field name as shown above), and the value is a <code>java.util.List</code> of
         Strings.</para>
 
-        <programlisting language="java">
-public class SampleDataSource2 {
+        <programlisting language="Java"><![CDATA[public class SampleDataSource2 {
 
-  public Map&lt;String&gt;, List&lt;String&gt;&gt; loadData() {
+  public Map<String>, List<String> loadData() {
     Map data = new HashMap();
 
     List d = new ArrayList();
@@ -851,13 +851,11 @@ public class SampleDataSource2 {
     return data;
  }
 
-}
-</programlisting>
+}]]></programlisting>
 
-        <para>And in the enumeration in the brms, you put:</para>
+        <para>And in the enumeration in the BRMS, you put:</para>
 
-        <programlisting language="java">=(new SampleDataSource2()).loadData()
-</programlisting>
+        <programlisting language="Java"><![CDATA[=(new SampleDataSource2()).loadData()]]></programlisting>
 
         <para>The "=" tells it to load the data by executing your code.</para>
 
@@ -871,9 +869,10 @@ public class SampleDataSource2 {
         etc...</para>
 
         <para>Well the above can be addressed in the following fashion:
-        <programlisting>
-      'Fact.field[dependentField1, dependentField2]' : '(new com.yourco.DataHelper()).getListOfAges("@{dependentField1}", "@{dependentField2}")'
-    </programlisting> Similar to above, but note that we have just specified
+        </para>
+        <programlisting>'Fact.field[dependentField1, dependentField2]' : '(new com.yourco.DataHelper()).getListOfAges("@{dependentField1}", "@{dependentField2}")'</programlisting> 
+        <para>
+        Similar to above, but note that we have just specified
         what fields are needed, and also on the right of the ":" there are
         quotes around the expression. This expression will then be evaluated,
         only when needed, substituting the values from the fields specified.
@@ -911,7 +910,6 @@ public class SampleDataSource2 {
 
       <figure>
         <title>Asset status</title>
-
         <mediaobject>
           <imageobject>
             <imagedata align="center"
@@ -927,7 +925,6 @@ public class SampleDataSource2 {
 
       <figure>
         <title>Asset status</title>
-
         <mediaobject>
           <imageobject>
             <imagedata align="center"
@@ -984,7 +981,11 @@ public class SampleDataSource2 {
       packages, and then "expand" them, to show lists of each "type" of asset
       (there are many assets, so some of them are grouped together):</para>
 
-      <para>The asset types: <itemizedlist>
+      <para>
+      The asset types: 
+      </para>
+        
+        <itemizedlist>
           <listitem>
             <para>Business assets: this shows a list of all "business rule"
             types, which include decision tables, business rules etc.
@@ -993,7 +994,7 @@ public class SampleDataSource2 {
 
           <listitem>
             <para>Technical assets: this is a list of items that would be
-            considered technical (eg DRL rules, data enumerations and rule
+            considered technical (e.g. DRL rules, data enumerations and rule
             flows).</para>
           </listitem>
 
@@ -1017,11 +1018,10 @@ public class SampleDataSource2 {
             <para>WorkingSets: Working Sets let you create subsets of package's
             Fact Types and apply constraints to their fields.</para>
           </listitem>
-        </itemizedlist></para>
+        </itemizedlist>
 
-      <para><figure>
+      <figure>
           <title>Creating new assets</title>
-
           <mediaobject>
             <imageobject>
               <imagedata align="center"
@@ -1029,13 +1029,15 @@ public class SampleDataSource2 {
                          format="PNG" scalefit="1"></imagedata>
             </imageobject>
           </mediaobject>
-        </figure> From the package explorer you can create new rules, or new
+        </figure> 
+        <para>
+        From the package explorer you can create new rules, or new
       assets. Some assets you can only create from the package explorer. The
       above picture shows the icons which launch wizards for this purpose. If
       you hover the mouse over them, a tooltip will tell you what they
       do.</para>
 
-      <para><figure>
+      <figure>
           <title>Package configuration</title>
 
           <mediaobject>
@@ -1045,17 +1047,18 @@ public class SampleDataSource2 {
                          format="PNG" scalefit="1"></imagedata>
             </imageobject>
           </mediaobject>
-        </figure>One of the most critical things you need to do is configure
-      packages. This is mostly importing the classes used by the rules, and
-      globals variables. Once you make a change, you need to save it, and that
-      package is then configured and ready to be built. For example, you may
-      add a model which has a class called "com.something.Hello", you would
-      then add "import com.something.Hello" in your package configuration and
-      save the change.</para>
+        </figure>
 
-      <para><figure>
+      <para>
+      One of the most critical things you need to do is configure packages. This is mostly importing the
+      classes used by the rules, and globals variables. Once you make a change, you need to save it, and that
+      package is then configured and ready to be built. For example, you may add a model which has a class
+      called <code>com.something.Hello</code>, you would then add <code>import com.something.Hello</code> in
+      your package configuration and save the change.
+      </para>
+
+      <figure>
           <title>Package building</title>
-
           <mediaobject>
             <imageobject>
               <imagedata align="center"
@@ -1063,44 +1066,51 @@ public class SampleDataSource2 {
                          format="PNG" scalefit="1"></imagedata>
             </imageobject>
           </mediaobject>
-        </figure>Finally you would "build" a package. Any errors caught are
-      then shown at this point. If the build was successful, then you will
-      have the option to create a snapshot for deployment. You can also view
-      the "drl" that this package results in. WARNING: in cases of large
-      numbers of rules, all these operations can take some time.</para>
+        </figure>
+
+      <para>
+      Finally you would "build" a package. Any errors caught are then shown at this point. If the build was
+      successful, then you will have the option to create a snapshot for deployment. You can also view the DRL
+      that this package results in. 
+      </para>
+      
+      <warning>
+        <para>
+        In cases of large numbers of rules, all these operations can take some time.
+        </para>
+      </warning>
 
       <para>It is optional at this stage to enter the name of a "selector" -
       see the admin section for details on how to configure custom selectors
-      for your system (if you need them - selecters allow you to filter down
+      for your system (if you need them - selectors allow you to filter down
       what you build into a package - if you don't know what they are for, you
       probably don't need to use them).</para>
 
       <section>
-        <title>Importing drl packages</title>
+        <title>Importing DRL packages</title>
 
-        <para>It is also possible to create a package by importing an existing
-        "drl" file. When you choose to create a new package, you can choose an
-        option to upload a .drl file. The Guvnor will then attempt to understand
-        that drl, break create a package for you. The rules in it will be
-        stored as individual assets (but still as drl text content). Note that
-        to actually build the package, you will need to upload an appropriate
-        model (as a jar) to validate against, as a separate step.</para>
+        <para>
+        It is also possible to create a package by importing an existing DRL file. When you choose to create a
+        new package, you can choose an option to upload a <filename>.drl</filename> file. The Guvnor will then
+        attempt to understand that DRL, break create a package for you. The rules in it will be stored as
+        individual assets (but still as DRL text content). Note that to actually build the package, you will
+        need to upload an appropriate model (as a JAR) to validate against, as a separate step.
+        </para>
       </section>
     </section>
 
     <section>
       <title>Version management</title>
 
-      <para>Both assets and whole packages of assets are "versioned" in the
-      Guvnor, but the mechanism is slightly different. Individual assets are
-      saved a bit like a version of a file in a source control system.
-      However, packages of assets are versioned "on demand" by taking a
-      snapshot (typically which is used for deployment). The next section
-      talks about deployment management and snapshots.</para>
+      <para>
+      Both assets and whole packages of assets are "versioned" in the Guvnor, but the mechanism is slightly
+      different. Individual assets are saved a bit like a version of a file in a source control system.
+      However, packages of assets are versioned "on demand" by taking a snapshot (typically which is used for
+      deployment). The next section talks about deployment management and snapshots.
+      </para>
 
       <figure>
         <title>Asset versions</title>
-
         <mediaobject>
           <imageobject>
             <imagedata align="center"
@@ -1124,7 +1134,8 @@ public class SampleDataSource2 {
       <para>URLs are central to how built packages are provided. The Guvnor
       provides packages via URLs (for download and use by the Knowledge
       Agent). These URLs take the form of:
-      http://&lt;server&gt;/guvnor-webapp/org.drools.guvnor.Guvnor/package/&lt;packageName&gt;/&lt;packageVersion&gt;</para>
+      </para>
+      <synopsis>http://&lt;server&gt;/guvnor-webapp/org.drools.guvnor.Guvnor/package/&lt;packageName&gt;/&lt;packageVersion&gt;</synopsis>
 
       <para>&lt;packageName&gt; is the name you gave the package.
       &lt;packageVersion&gt; is either the name of a snapshot, or "LATEST" (if

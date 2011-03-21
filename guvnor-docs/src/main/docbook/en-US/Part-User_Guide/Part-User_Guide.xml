@@ -18,7 +18,6 @@
   <xi:include href="Chapter-Creating_business_view.xml" />
   <xi:include href="Chapter-The_Fact_Model.xml" />
   <xi:include href="Chapter-Working_Sets.xml" />
-
   <xi:include href="Chapter-Business_User_Perspective.xml" />
   <xi:include href="Chapter-Advanced_Config_Options_in_Rule_Package.xml" />
   <xi:include href="Chapter-Deployment.xml" />

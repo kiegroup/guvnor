@@ -15,7 +15,7 @@
   main login screen.</para>
 
   <para>You can also consult the wiki:
-  http://wiki.jboss.org/wiki/Wiki.jsp?page=RulesRepository for some
+  <ulink url="http://wiki.jboss.org/wiki/Wiki.jsp?page=RulesRepository" /> for some
   tutorials and user tips (it IS a wiki, so you can even contribute your own
   tips and examples and even upload files if you desire !).</para>
 
@@ -69,7 +69,7 @@
     etc. The preferred browser for most platforms is firefox, it is widely
     available and free, if you have any choice at all, Firefox is the
     preferred platform, followed by safari on mac. IE6 users can experience
-    some poor perforamnce, and as this is a dangerously insecure browser IE7
+    some poor performance, and as this is a dangerously insecure browser IE7
     or a superior browser (such as Google Chrome, Firefox, Safari) is
     recommended.</para>
   </section>
@@ -83,9 +83,10 @@
 
     <itemizedlist>
       <listitem>
-        <para>Once deployed, go to "http://&lt;your
-        server&gt;/guvnor-webapp/" (This will show the initial info screen -
-        or login screen depending on the configuration).</para>
+        <para>
+        Once deployed, go to <ulink url="http://localhost:8080/guvnor-webapp/"/> This will show the initial
+        info screen or login screen depending on the configuration.
+        </para>
       </listitem>
 
       <listitem>
@@ -104,10 +105,10 @@
       </listitem>
 
       <listitem>
-        <para>To upload a model, use a jar which has the fact model (API)
+        <para>To upload a model, use a JAR which has the fact model (API)
         that you will be using in your rules and your code (go and make one
         now if you need to !). When you are in the model editor screen, you
-        can upload a jar file, choose the package name from the list that
+        can upload a JAR file, choose the package name from the list that
         you created in the previous step.</para>
       </listitem>
 
@@ -121,7 +122,7 @@
         <para>At this point, the package is configured and ready to go (you
         generally won't have to go through that step very often).</para>
 
-        <para>(Note that you can also import an existing drl package - it
+        <para>(Note that you can also import an existing DRL package - it
         will store the rules in the repository as individual assets).</para>
       </listitem>
     </itemizedlist>

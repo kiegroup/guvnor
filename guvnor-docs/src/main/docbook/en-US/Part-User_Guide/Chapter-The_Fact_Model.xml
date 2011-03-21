@@ -27,7 +27,7 @@
       </mediaobject>
     </figure>
 
-    <para>When a jar is uploaded, it will add import statements to the package
+    <para>When a JAR is uploaded, it will add import statements to the package
     configuration (you can then review and change them).</para>
 
     <para>Using declared models, you will see an editor like the
@@ -64,27 +64,29 @@
     <para>These fact models can be used like normal fact objects, however the
     way you create them is different (as they are not on your applications
     classpath). To create these objects, they are available from the RuleBase
-    instance. <programlisting language="java">
-          // Retrieve the generated fact type
-        FactType cheeseFact = ruleBase.getFactType( "org.drools.generatedbeans.Cheese" );
+    instance. 
+  </para>
+    <programlisting language="Java"><![CDATA[// Retrieve the generated fact type
+FactType cheeseFact = ruleBase.getFactType( "org.drools.generatedbeans.Cheese" );
 
-        // Create a new Fact instance
-        Object cheese = cheeseFact.newInstance();
+// Create a new Fact instance
+Object cheese = cheeseFact.newInstance();
 
-        cheeseFact.set( cheese,
-                        "type",
-                        "stilton" );
+cheeseFact.set( cheese, "type", "stilton" );]]></programlisting>
 
-</programlisting> The "cheese" object above can then be inserted into working
-    memory just like a normal pojo based fact.</para>
+    <para>                    
+    The "cheese" object above can then be inserted into working
+    memory just like a normal POJO based fact.</para>
 
     <para>Note that the namespace of the declared type is the package
     namespace where it was declared (in the above case
-    "org.drools.generatedbeans").</para>
+    <code>org.drools.generatedbeans</code>).</para>
 
-    <para>Why would you chose declared types over jar files: generally this
-    reinforces the fact that the model "belongs" to the rulebase, rather then
-    the application, and allows the model to have a lifecycle separate from
-    the application. It also removed the hassle of keeping jar files in sync
-    between rules and the applications that use the rules.</para>
-  </chapter>
+  <para>
+  Why would you chose declared types over JAR files: generally this reinforces the fact that the model
+  "belongs" to the rulebase, rather then the application, and allows the model to have a lifecycle separate
+  from the application. It also removed the hassle of keeping jar files in sync between rules and the
+  applications that use the rules.
+  </para>
+
+</chapter>
