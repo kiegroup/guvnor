@@ -23,12 +23,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
+import org.apache.abdera.protocol.Response.ResponseType;
+import org.apache.abdera.protocol.client.AbderaClient;
+import org.apache.abdera.protocol.client.ClientResponse;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
@@ -385,20 +389,36 @@ public class BasicPackageResourceTest extends RestTestingBase {
     }
 
     @Test
-    public void testCreatePackageFromAtom() throws Exception {
-        Package p = createTestPackage("TestCreatePackageFromAtom");
-        Entry e = toPackageEntry(p);
-        e.setTitle("TestAtomPackageCreation");
+    public void testCreateAndDeletePackageFromAtom() throws Exception {
+    	Abdera abdera = new Abdera();
+    	AbderaClient client = new AbderaClient(abdera);
+    	Entry entry = abdera.newEntry();		
+    	entry.setTitle("testCreatePackageFromAtom");
+    	entry.setSummary("desc for testCreatePackageFromAtom");
+    	
+    	ClientResponse resp = client.post(generateBaseUrl() + "/packages", entry);
+        //System.out.println(GetContent(resp.getInputStream()));
 
-        URL url = new URL(generateBaseUrl() + "/packages");
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-type", MediaType.APPLICATION_ATOM_XML);
-        conn.setRequestProperty("Content-Length", Integer.toString(e.toString().getBytes().length));
-        conn.setDoOutput(true);
-        e.writeTo(conn.getOutputStream());
-        assertEquals(204, conn.getResponseCode());
-        conn.disconnect();
+		assertEquals(ResponseType.SUCCESS, resp.getType());
+
+		Document<Entry> doc = resp.getDocument();
+		Entry returnedEntry = doc.getRoot();
+		assertEquals("/packages/testCreatePackageFromAtom", returnedEntry.getBaseUri().getPath());
+		assertEquals("testCreatePackageFromAtom", returnedEntry.getTitle());
+		assertEquals("desc for testCreatePackageFromAtom", returnedEntry.getSummary());
+		
+		//Roll back changes. 
+		resp = client.delete(generateBaseUrl() + "/packages/testCreatePackageFromAtom");
+		assertEquals(ResponseType.SUCCESS, resp.getType());
+
+		//Verify the package is indeed deleted
+        URL url = new URL(generateBaseUrl() + "/packages/testCreatePackageFromAtom");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        //System.out.println(GetContent(connection));
+        assertEquals (500, connection.getResponseCode());
     }
 
     private Entry toPackageEntry (Package p) throws Exception {
@@ -515,23 +535,6 @@ public class BasicPackageResourceTest extends RestTestingBase {
         //TODO:  implement test
     }
 
-    @Test
-    public void testArchivePackage() throws Exception {
-        //TODO: Not sure how to get package archiving working, currently breaking as a package is not an asset */
-        URL url = new URL(generateBaseUrl() + "/packages/TestCreatePackageFromAtom");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("DELETE");
-        connection.connect();
-
-        /* Make sure the package is gone */
-        url = new URL(generateBaseUrl() + "/packages/TestCreatePackageFromAtom");
-        connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-        connection.connect();
-        assertEquals (500, connection.getResponseCode());
-    }
-    
     @Test
     public void testGetPackageVersionsForAtom() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/versions");

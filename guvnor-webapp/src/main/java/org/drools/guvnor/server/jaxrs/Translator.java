@@ -20,8 +20,10 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Content.Type;
 import org.apache.abdera.model.ExtensibleElement;
-import org.drools.guvnor.server.jaxrs.jaxb.*;
+import org.drools.guvnor.server.jaxrs.jaxb.Asset;
+import org.drools.guvnor.server.jaxrs.jaxb.AssetMetadata;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
+import org.drools.guvnor.server.jaxrs.jaxb.PackageMetadata;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
@@ -175,22 +177,19 @@ public class Translator {
 
         //NOTE: Entry extension is not supported in RESTEasy. We need to either use Abdera or get extension 
         //supported in RESTEasy
-/*        PackageMetadata metadata = new PackageMetadata();
-        metadata.setUuid(p.getUUID());
-        metadata.setCreated(p.getCreatedDate().getTime());
-        metadata.setLastModified(p.getLastModified().getTime());
-        metadata.setLastContributor(p.getLastContributor());
+        //PackageMetadata metadata = new PackageMetadata();
+        //metadata.setUuid(p.getUUID());
+        //metadata.setCreated(p.getCreatedDate().getTime());
+        //metadata.setLastModified(p.getLastModified().getTime());
+        //metadata.setLastContributor(p.getLastContributor());
         //c.setJAXBObject(metadata);
-*/
+
         Entry e =new Entry();
         e.setTitle(p.getTitle());
         e.setSummary(p.getDescription());
         e.setPublished(new Date(p.getLastModified().getTimeInMillis()));
         e.setBase(base.clone().build());
 
-/*        Link l = new Link();
-        l.setHref(base.build());
-        l.setRel("self");*/
         e.setId(base.clone().build());
         
         Iterator<AssetItem> i = p.getAssets();

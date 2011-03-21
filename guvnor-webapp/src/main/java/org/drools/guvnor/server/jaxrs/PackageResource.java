@@ -24,6 +24,7 @@ import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntryAbdera;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,6 +41,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.drools.compiler.DroolsParserException;
@@ -105,7 +107,7 @@ public class PackageResource extends Resource {
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Entry createPackageFromInputAndReturnAsEntry(InputStream is, @Context UriInfo uriInfo) throws IOException,
+    public Entry createPackageFromDRLAndReturnAsEntry(InputStream is, @Context UriInfo uriInfo) throws IOException,
             DroolsParserException
     {
         /* Passes the DRL to the FileManagerUtils and has it import the asset as a package */
@@ -117,7 +119,7 @@ public class PackageResource extends Resource {
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Package createPackageFromInputAndReturnAsJaxB(InputStream is, @Context UriInfo uriInfo) throws IOException,
+    public Package createPackageFromDRLAndReturnAsJaxB(InputStream is, @Context UriInfo uriInfo) throws IOException,
             DroolsParserException
     {
         /* Passes the DRL to the FileManagerUtils and has it import the asset as a package */
@@ -128,9 +130,13 @@ public class PackageResource extends Resource {
 
     @POST
     @Consumes(MediaType.APPLICATION_ATOM_XML)
-    public void createPackageFromAtom (Entry entry) {
-        PackageService.createPackage(entry.getTitle(),entry.getSummary());
-    }
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+	public Response createPackageFromAtom(Entry entry, @Context UriInfo uriInfo) {
+		PackageService.createPackage(entry.getTitle(), entry.getSummary());
+		URI uri = uriInfo.getBaseUriBuilder().path("packages").path(entry.getTitle()).build();
+		entry.setBase(uri);
+		return Response.created(uri).entity(entry).build();
+	}
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -142,7 +148,7 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public org.apache.abdera.model.Entry getPackageAsEntry(@PathParam("packageName") String packageName) {
-        return ToPackageEntryAbdera(repository.loadPackage(packageName), uriInfo);
+		return ToPackageEntryAbdera(repository.loadPackage(packageName), uriInfo);
     }
 
     @GET
@@ -261,14 +267,14 @@ public class PackageResource extends Resource {
         p.checkin("Update from ATOM.");
         repository.save();
     }
-
+    
     @DELETE
     @Path("{packageName}")
-    public void archivePackage (@PathParam("packageName") String packageName) {
+    public void deletePackage (@PathParam("packageName") String packageName) {
         PackageItem p = repository.loadPackage(packageName);
         PackageService.removePackage(p.getUUID());
     }
-
+    
     @GET
     @Path("{packageName}/assets")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

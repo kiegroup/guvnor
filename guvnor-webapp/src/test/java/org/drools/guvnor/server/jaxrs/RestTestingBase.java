@@ -29,6 +29,7 @@ import org.mvel2.util.StringAppender;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.Date;
@@ -57,7 +58,18 @@ public class RestTestingBase extends GuvnorTestBase {
             e.printStackTrace();
         }
     }
+    
+    public static String GetContent (InputStream is) throws IOException {
+        StringAppender ret = new StringAppender();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            ret.append(line + "\n");
+        }
 
+        return ret.toString();
+    }
+    
     public static String GetContent (HttpURLConnection connection) throws IOException {
         StringAppender ret = new StringAppender();
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
