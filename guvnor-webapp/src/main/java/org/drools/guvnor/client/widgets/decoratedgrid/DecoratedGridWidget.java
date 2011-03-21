@@ -249,19 +249,19 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      * @param rowBefore
      *            Row before which the new row will be inserted, or null in
      *            which case the row will be appended to the end
-     * @param newRow
-     *            New row to be inserted
+     * @param rowData
+     *            New row data
      */
     public void insertRowBefore(DynamicDataRow rowBefore,
-                                DynamicDataRow newRow) {
+                                List<CellValue< ? extends Comparable< ? >>> rowData) {
 
-        if ( newRow == null ) {
-            throw new IllegalArgumentException( "newRow cannot be null" );
+        if ( rowData == null ) {
+            throw new IllegalArgumentException( "rowData cannot be null" );
         }
 
-        gridWidget.insertRowBefore( rowBefore,
-                                    newRow );
-        sidebarWidget.insertSelector( newRow );
+        DynamicDataRow row = gridWidget.insertRowBefore( rowBefore,
+                                                         rowData );
+        sidebarWidget.insertSelector( row );
         assertDimensions();
     }
 
@@ -299,14 +299,16 @@ public abstract class DecoratedGridWidget<T> extends Composite {
         if ( isVisible
              && !columns.get( index ).isVisible() ) {
             columns.get( index ).setVisible( isVisible );
-            gridWidget.getData().setColumnVisibility( index, isVisible );
+            gridWidget.getData().setColumnVisibility( index,
+                                                      isVisible );
             gridWidget.getData().assertModelIndexes();
             gridWidget.showColumn( index );
             headerWidget.redraw();
         } else if ( !isVisible
                     && columns.get( index ).isVisible() ) {
             columns.get( index ).setVisible( isVisible );
-            gridWidget.getData().setColumnVisibility( index, isVisible );
+            gridWidget.getData().setColumnVisibility( index,
+                                                      isVisible );
             gridWidget.getData().assertModelIndexes();
             gridWidget.hideColumn( index );
             headerWidget.redraw();

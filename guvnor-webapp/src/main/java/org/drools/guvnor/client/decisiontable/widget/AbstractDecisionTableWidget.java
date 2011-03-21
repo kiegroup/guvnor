@@ -164,9 +164,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
      *            table
      */
     public void insertRowBefore(DynamicDataRow rowBefore) {
-        DynamicDataRow newRow = makeNewRow();
+        List<CellValue< ? extends Comparable< ? >>> rowData = makeRowData();
         widget.insertRowBefore( rowBefore,
-                                newRow );
+                                rowData );
         updateSystemControlledColumnValues();
         redrawSystemControlledColumns();
     }
@@ -288,7 +288,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                          this.model );
         this.cellValueFactory = new DecisionTableCellValueFactory( sce,
                                                                    this.model );
-        
+
         //Date converter is injected so a GWT compatible one can be used here and another in testing
         this.cellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
 
@@ -299,7 +299,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // to be enough rows to receive the columns data
         final DynamicData<DTColumnConfig> data = widget.getGridWidget().getData();
         for ( int iRow = 0; iRow < model.getData().size(); iRow++ ) {
-            data.add( new DynamicDataRow() );
+            data.addRow();
         }
 
         // Static columns, Row#
@@ -974,8 +974,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Construct a new row for insertion into a DecoratedGridWidget
-    private DynamicDataRow makeNewRow() {
-        DynamicDataRow row = new DynamicDataRow();
+    private List<CellValue< ? extends Comparable< ? >>> makeRowData() {
+        List<CellValue< ? extends Comparable< ? >>> rowData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             DTColumnConfig col = columns.get( iCol ).getModelColumn();
@@ -984,9 +984,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                                                        0,
                                                                                        iCol,
                                                                                        dcv );
-            row.add( cv );
+            rowData.add( cv );
         }
-        return row;
+        return rowData;
     }
 
     // Copy values from one (transient) model column into another

@@ -132,6 +132,15 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                     cell = makeNewNumericCellValue( iRow,
                                                     iCol,
                                                     dcv.getNumericValue() );
+                    if ( column instanceof AttributeCol ) {
+                        AttributeCol at = (AttributeCol) column;
+                        if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
+                            if ( at.isUseRowNumber() ) {
+                                cell = makeNewRowNumberCellValue( iRow,
+                                                                  iCol );
+                            }
+                        }
+                    }
                 }
                 break;
             default :

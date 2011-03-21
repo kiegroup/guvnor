@@ -396,8 +396,8 @@ public abstract class MergableGridWidget<T> extends Widget
      * @param rowData
      *            The row of data to insert
      */
-    public void insertRowBefore(DynamicDataRow rowBefore,
-                                         DynamicDataRow rowData) {
+    public DynamicDataRow insertRowBefore(DynamicDataRow rowBefore,
+                                          List<CellValue< ? extends Comparable< ? >>> rowData) {
 
         if ( rowData == null ) {
             throw new IllegalArgumentException( "Row data cannot be null" );
@@ -432,15 +432,15 @@ public abstract class MergableGridWidget<T> extends Widget
             }
         }
 
-        data.add( index,
-                  rowData );
+        DynamicDataRow row = data.addRow( index,
+                                          rowData );
 
         // Partial redraw
         if ( !data.isMerged() ) {
             // Only new row when not merged
             data.assertModelIndexes();
             createRowElement( index,
-                              rowData );
+                              row );
         } else {
             // Affected rows when merged
             data.assertModelMerging();
@@ -448,6 +448,7 @@ public abstract class MergableGridWidget<T> extends Widget
             redrawRows( minRedrawRow,
                         maxRedrawRow );
         }
+        return row;
 
     }
 

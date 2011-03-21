@@ -30,7 +30,7 @@ public class DynamicDataRow
 
     private List<CellValue< ? extends Comparable< ? >>> rowData;
 
-    public DynamicDataRow() {
+    DynamicDataRow() {
         rowData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
     }
 
@@ -52,11 +52,11 @@ public class DynamicDataRow
         return rowData.size();
     }
 
-    public boolean add(CellValue< ? extends Comparable< ? >> cell) {
+    boolean add(CellValue< ? extends Comparable< ? >> cell) {
         return rowData.add( cell );
     }
 
-    public void add(int index,
+    void add(int index,
              CellValue< ? extends Comparable< ? >> cell) {
         rowData.add( index,
                      cell );

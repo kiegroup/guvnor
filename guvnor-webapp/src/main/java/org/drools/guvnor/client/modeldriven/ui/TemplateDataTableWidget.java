@@ -96,9 +96,9 @@ public class TemplateDataTableWidget extends Composite
      * Append a row to the end of the table
      */
     public void appendRow() {
-        DynamicDataRow row = makeNewRow();
+        List<CellValue< ? extends Comparable< ? >>> rowData = makeRowData();
         widget.insertRowBefore( null,
-                                row );
+                                rowData );
     }
 
     /**
@@ -135,9 +135,9 @@ public class TemplateDataTableWidget extends Composite
             throw new IllegalArgumentException( "rowBefore cannot be null" );
         }
 
-        DynamicDataRow newRow = makeNewRow();
+        List<CellValue< ? extends Comparable< ? >>> rowData = makeRowData();
         widget.insertRowBefore( rowBefore,
-                                newRow );
+                                rowData );
     }
 
     public void scrapeData(TemplateModel model) {
@@ -206,7 +206,7 @@ public class TemplateDataTableWidget extends Composite
         String[][] data = model.getTableAsArray();
         final List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
         for ( int iRow = 0; iRow < data.length; iRow++ ) {
-            DynamicDataRow row = new DynamicDataRow();
+            List<CellValue< ? extends Comparable< ? >>> row = new ArrayList<CellValue< ? extends Comparable< ? >>>();
             String[] rowData = data[iRow];
             for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
                 TemplateDataColumn col = columns.get( iCol ).getModelColumn();
@@ -330,8 +330,8 @@ public class TemplateDataTableWidget extends Composite
     }
 
     // Construct a new row for insertion into a DecoratedGridWidget
-    private DynamicDataRow makeNewRow() {
-        DynamicDataRow row = new DynamicDataRow();
+    private List<CellValue< ? extends Comparable< ? >>> makeRowData() {
+        List<CellValue< ? extends Comparable< ? >>> row = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             TemplateDataColumn col = columns.get( iCol ).getModelColumn();
@@ -342,5 +342,4 @@ public class TemplateDataTableWidget extends Composite
         }
         return row;
     }
-
 }

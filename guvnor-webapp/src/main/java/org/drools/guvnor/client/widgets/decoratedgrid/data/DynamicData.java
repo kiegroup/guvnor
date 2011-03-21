@@ -27,9 +27,9 @@ import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue
  */
 public class DynamicData<T> extends ArrayList<DynamicDataRow> {
 
-    private boolean       isMerged       = false;
+    private boolean           isMerged         = false;
 
-    private List<Boolean> visibleColumns = new ArrayList<Boolean>();
+    private List<Boolean>     visibleColumns   = new ArrayList<Boolean>();
 
     private static final long serialVersionUID = 5061393855340039472L;
 
@@ -50,6 +50,50 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
         visibleColumns.add( index,
                             isVisible );
         assertModelIndexes();
+    }
+
+    /**
+     * Add an empty row of data to the end of the table
+     * 
+     * @return DynamicDataRow The newly created row
+     */
+    public DynamicDataRow addRow() {
+        DynamicDataRow row = new DynamicDataRow();
+        add(row);
+        return row;
+    }
+
+    /**
+     * Add a row of data at the specified index
+     * 
+     * @param index
+     * @param rowData
+     * @return DynamicDataRow The newly created row
+     */
+    public DynamicDataRow addRow(int index,
+                                 List<CellValue< ? extends Comparable< ? >>> rowData) {
+        DynamicDataRow row = new DynamicDataRow();
+        for ( CellValue< ? extends Comparable< ? >> cell : rowData ) {
+            row.add( cell );
+        }
+        add( index,
+             row );
+        return row;
+    }
+
+    /**
+     * Add a row of data at the end of the table
+     * 
+     * @param rowData
+     * @return DynamicDataRow The newly created row
+     */
+    public DynamicDataRow addRow(List<CellValue< ? extends Comparable< ? >>> rowData) {
+        DynamicDataRow row = new DynamicDataRow();
+        for ( CellValue< ? extends Comparable< ? >> cell : rowData ) {
+            row.add( cell );
+        }
+        add( row );
+        return row;
     }
 
     /**
@@ -106,7 +150,7 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
         if ( size() == 0 ) {
             return;
         }
-        
+
         for ( int iRow = 0; iRow < size(); iRow++ ) {
             DynamicDataRow row = get( iRow );
 
@@ -495,5 +539,5 @@ public class DynamicData<T> extends ArrayList<DynamicDataRow> {
         // Set indexes after merging has been corrected
         assertModelIndexes();
     }
-    
+
 }
