@@ -23,7 +23,7 @@
               <groupId>org.jboss.maven.plugins</groupId>
               <artifactId>maven-jdocbook-plugin</artifactId>
               <configuration>
-                  <sourceDocumentName>Drools_Guvnor.xml</sourceDocumentName>
+                  <sourceDocumentName>Guvnor_Manual.xml</sourceDocumentName>
               </configuration>
           </plugin>
       </plugins>
