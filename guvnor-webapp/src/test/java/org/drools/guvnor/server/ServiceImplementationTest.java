@@ -84,6 +84,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.TableDisplayHandler;
@@ -2816,7 +2817,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         BuilderResult result = repositoryAssetService.buildAsset( rule );
         assertNull( result );
 
-        ServiceImplementation.ruleBaseCache.clear();
+        RuleBaseCache.getInstance().clearCache();
 
         // try it with a bad rule
         RuleContentText text = new RuleContentText();
@@ -3116,8 +3117,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         repo.save();
 
         assertFalse( pkg.isBinaryUpToDate() );
-        assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
-        ServiceImplementation.ruleBaseCache.remove( "XXX" );
+        assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
+        RuleBaseCache.getInstance().remove( "XXX" );
 
         BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                                        true );
@@ -3130,19 +3131,19 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertTrue( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
         assertTrue( pkg.isBinaryUpToDate() );
-        assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
+        assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RuleAsset asset = repositoryAssetService.loadRuleAsset( rule1.getUUID() );
         impl.checkinVersion( asset );
 
         assertFalse( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
-        assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
+        assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
 
         repositoryPackageService.buildPackage( pkg.getUUID(),
                                                false );
 
         assertTrue( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
-        assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
+        assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
 
         PackageConfigData config = repositoryPackageService.loadPackageConfig( pkg.getUUID() );
         repositoryPackageService.savePackage( config );
@@ -3163,7 +3164,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         RulesRepository repo = impl.getRulesRepository();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        
 
         System.out.println( "create package" );
         PackageItem pkg = repo.createPackage( "testScenarioRun",
@@ -3211,22 +3211,22 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         sc.getGlobals().add( cheese );
 
         ScenarioRunResult res = repositoryPackageService.runScenario( pkg.getName(),
-                                                  sc ).result;
+                                                                      sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
-        ServiceImplementation.ruleBaseCache.clear();
+        RuleBaseCache.getInstance().clearCache();
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
@@ -3238,11 +3238,11 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         rule1.updateContent( "Junk" );
         rule1.checkin( "" );
 
-        ServiceImplementation.ruleBaseCache.clear();
+        RuleBaseCache.getInstance().clearCache();
         pkg.updateBinaryUpToDate( false );
         repo.save();
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
         assertNotNull( res.getErrors() );
         assertNull( res.getScenario() );
 
@@ -3319,7 +3319,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         sc.getFixtures().add( vf );
 
         SingleScenarioResult res_ = repositoryPackageService.runScenario( pkg.getName(),
-                                                      sc );
+                                                                          sc );
         assertTrue( res_.auditLog.size() > 0 );
 
         String[] logEntry = res_.auditLog.get( 0 );
@@ -3499,7 +3499,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         sc.getFixtures().add( vf );
 
         ScenarioRunResult res = repositoryPackageService.runScenario( pkg.getName(),
-                                                  sc ).result;
+                                                                      sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
 
@@ -3507,7 +3507,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( vr.wasSuccessful() );
 
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
 
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
@@ -3515,10 +3515,10 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
-        ServiceImplementation.ruleBaseCache.clear();
+        RuleBaseCache.getInstance().clearCache();
 
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
@@ -3567,7 +3567,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         ScenarioRunResult res = null;
         try {
             res = repositoryPackageService.runScenario( pkg.getName(),
-                                    sc ).result;
+                                                        sc ).result;
         } catch ( ClassFormatError e ) {
             fail( "Probably failed when loading a source file instead of class file. " + e );
         }
@@ -3577,16 +3577,16 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( vr.wasSuccessful() );
 
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
 
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vr.wasSuccessful() );
 
-        ServiceImplementation.ruleBaseCache.clear();
+        RuleBaseCache.getInstance().clearCache();
 
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
 
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );

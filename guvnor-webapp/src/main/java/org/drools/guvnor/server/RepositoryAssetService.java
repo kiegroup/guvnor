@@ -20,9 +20,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
@@ -36,6 +33,7 @@ import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
@@ -150,10 +148,10 @@ public class RepositoryAssetService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadItemHistory(String uuid) throws SerializationException {
-       	//VersionableItem assetItem = getRulesRepository().loadAssetByUUID( uuid );
-       	VersionableItem assetItem = getRulesRepository().loadItemByUUID( uuid );
+        //VersionableItem assetItem = getRulesRepository().loadAssetByUUID( uuid );
+        VersionableItem assetItem = getRulesRepository().loadItemByUUID( uuid );
 
-       	//serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
+        //serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
         return repositoryAssetOperations.loadItemHistory( assetItem );
     }
 
@@ -167,8 +165,8 @@ public class RepositoryAssetService
         PackageItem pi = getRulesRepository().loadPackageByUUID( packageUUID );
         AssetItem assetItem = pi.loadAsset( assetName );
         serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
-        
-        return repositoryAssetOperations.loadItemHistory( assetItem );        
+
+        return repositoryAssetOperations.loadItemHistory( assetItem );
     }
 
     @WebRemote
@@ -506,8 +504,7 @@ public class RepositoryAssetService
             item.archiveItem( archive );
             PackageItem pkg = item.getPackage();
             pkg.updateBinaryUpToDate( false );
-            //TODO: Centralized cache
-            ServiceImplementation.ruleBaseCache.remove( pkg.getUUID() );
+            RuleBaseCache.getInstance().remove( pkg.getUUID() );
             if ( archive ) {
                 item.checkin( "archived" );
             } else {
@@ -535,7 +532,7 @@ public class RepositoryAssetService
     public String getAssetLockerUserName(String uuid) {
         return repositoryAssetOperations.getAssetLockerUserName( uuid );
     }
-    
+
     //TODO: Backchannel has to be refactored. This is really bad.
     private void push(String messageType,
                       String message) {

@@ -23,14 +23,11 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.jar.JarInputStream;
 
 import javax.jcr.ItemExistsException;
@@ -39,20 +36,8 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.drools.ClockType;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.SessionConfiguration;
-import org.drools.base.ClassTypeResolver;
-import org.drools.common.AbstractRuleBase;
-import org.drools.common.InternalRuleBase;
-import org.drools.common.InternalWorkingMemory;
-import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.InboxIncomingPageRow;
@@ -72,16 +57,13 @@ import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.ScenarioResultSummary;
-import org.drools.guvnor.client.rpc.ScenarioRunResult;
-import org.drools.guvnor.client.rpc.SingleScenarioResult;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
-import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
+import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.repository.MailboxService;
@@ -103,7 +85,6 @@ import org.drools.guvnor.server.util.QueryPageRowFactory;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
@@ -117,10 +98,6 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.repository.security.PermissionManager;
-import org.drools.rule.Package;
-import org.drools.runtime.rule.ConsequenceException;
-import org.drools.testframework.RuleCoverageListener;
-import org.drools.testframework.ScenarioRunner;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -156,12 +133,6 @@ public class ServiceImplementation
     private static final long           serialVersionUID            = 510l;
 
     private static final LoggingHelper  log                         = LoggingHelper.getLogger( ServiceImplementation.class );
-
-    /**
-     * Used for a simple cache of binary packages to avoid serialization from
-     * the database - for test scenarios.
-     */
-    public static Map<String, RuleBase> ruleBaseCache               = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
 
     /**
      * This is used for pushing messages back to the client.
@@ -478,7 +449,7 @@ public class ServiceImplementation
         if ( !(asset.metaData.format.equals( AssetFormats.TEST_SCENARIO )) || asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
             PackageItem pkg = repoAsset.getPackage();
             pkg.updateBinaryUpToDate( false );
-            ServiceImplementation.ruleBaseCache.remove( pkg.getUUID() );
+            RuleBaseCache.getInstance().remove( pkg.getUUID() );
         }
         repoAsset.checkin( meta.checkinComment );
 

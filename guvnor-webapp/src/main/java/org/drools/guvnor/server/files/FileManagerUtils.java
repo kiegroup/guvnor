@@ -34,9 +34,9 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
@@ -264,7 +264,7 @@ public class FileManagerUtils {
             if ( MigrateRepository.needsRuleflowMigration( repository ) ) {
                 MigrateRepository.migrateRuleflows( repository );
             }
-            ServiceImplementation.ruleBaseCache.clear();
+            RuleBaseCache.getInstance().clearCache();
         } catch ( RepositoryException e ) {
             e.printStackTrace();
             throw new RulesRepositoryException( e );
@@ -304,9 +304,8 @@ public class FileManagerUtils {
      */
     @Restrict("#{identity.loggedIn}")
     public String importClassicDRL(InputStream drlStream,
-                                 String packageName) throws IOException,
-                                                    DroolsParserException
-    {
+                                   String packageName) throws IOException,
+                                                      DroolsParserException {
         ClassicDRLImporter imp = new ClassicDRLImporter( drlStream );
         PackageItem pkg = null;
 
