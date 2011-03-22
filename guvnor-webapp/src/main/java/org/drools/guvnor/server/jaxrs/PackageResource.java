@@ -258,7 +258,7 @@ public class PackageResource extends Resource {
     @PUT
     @Path("{packageName}")
     @Consumes (MediaType.APPLICATION_ATOM_XML)
-    public void updatePackageFromAtom (@PathParam("packageName") String packageName, Entry entry) {
+    public void updatePackageFromAtom (@PathParam("packageName") String packageName, org.apache.abdera.model.Entry entry) {
         PackageItem p = repository.loadPackage(packageName);
         p.checkout();
         p.updateTitle(entry.getTitle());

@@ -500,10 +500,16 @@ public class BasicPackageResourceTest extends RestTestingBase {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testUpdatePackageFromAtom() throws Exception {
-        Package p = createTestPackage("org.drools.guvnor.server.jaxrs.test1");
-        Entry e = toPackageEntry(p);
+        Abdera a = new Abdera();
+        Entry e = a.newEntry();
+        e.setTitle("testUpdatePackageFromAtom");
+        org.apache.abdera.model.Link l = a.getNewFactory().newLink();
+        l.setHref(generateBaseUrl() + "/packages/" + "testUpdatePackageFromAtom");
+        l.setRel("self");
+        e.addLink(l);
+        e.setSummary("desc for testUpdatePackageFromAtom");
         e.addAuthor("Test McTesty");
 
         URL url = new URL(generateBaseUrl() + "/packages/org.drools.guvnor.server.jaxrs.test1");
