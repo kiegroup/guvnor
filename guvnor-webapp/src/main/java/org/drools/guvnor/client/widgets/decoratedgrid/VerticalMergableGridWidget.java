@@ -17,6 +17,7 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.Set;
 
+import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
@@ -123,6 +124,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
         // Implementations of AbstractCell aren't forced to initialise consumed events
         Set<String> consumedEvents = cellWidget.getConsumedEvents();
+        //TODO Add eventType filters (so "otherwise" cells do not receive double-click, or enter)        
         if ( consumedEvents != null && consumedEvents.contains( eventType ) ) {
             Context context = new Context( eventPhysicalCoordinate.getRow(),
                                            eventPhysicalCoordinate.getCol(),
@@ -274,6 +276,9 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     //Handle "Key Down" events relating to keyboard navigation
     private void handleKeyboardNavigationEvent(Event event) {
         if ( event.getKeyCode() == KeyCodes.KEY_DELETE ) {
+            for ( CellValue< ? > cell : selections ) {
+                cell.removeState( CellState.OTHERWISE );
+            }
             update( null );
             return;
 
@@ -414,12 +419,12 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             }
             Coordinate c = cellData.getCoordinate();
             Context context = new Context( c.getRow(),
-                                               c.getCol(),
-                                               c );
+                                           c.getCol(),
+                                           c );
             SafeHtmlBuilder cellBuilder = new SafeHtmlBuilder();
             column.render( context,
-                               rowData,
-                               cellBuilder );
+                           rowData,
+                           cellBuilder );
             divText.setInnerHTML( cellBuilder.toSafeHtml().asString() );
 
             // Construct the table
@@ -438,6 +443,11 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                     divGroup.setInnerHTML( selectorGroupedCellsHtml );
                 }
                 div.appendChild( divGroup );
+            }
+
+            //TODO Sort out - Custom cell decoraters for "selected", "multiple-values" and "otherwise"
+            if ( cellData.isOtherwise() ) {
+                tce.getStyle().setBackgroundColor( "#60f070" );
             }
 
         }

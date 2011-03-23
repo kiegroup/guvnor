@@ -102,15 +102,19 @@ public abstract class MergableGridWidget<T> extends Widget
     //event.stopPropogation() doesn't prevent text selection
     private native static void disableTextSelectInternal(Element e,
                                                          boolean disable)/*-{
-        if (disable) {
-        e.ondrag = function () { return false; };
-        e.onselectstart = function () { return false; };
-        e.style.MozUserSelect="none"
-        } else {
-        e.ondrag = null;
-        e.onselectstart = null;
-        e.style.MozUserSelect="text"
-        }
+		if (disable) {
+			e.ondrag = function() {
+				return false;
+			};
+			e.onselectstart = function() {
+				return false;
+			};
+			e.style.MozUserSelect = "none"
+		} else {
+			e.ondrag = null;
+			e.onselectstart = null;
+			e.style.MozUserSelect = "text"
+		}
     }-*/;
 
     // Selections store the actual grid data selected (irrespective of
@@ -344,7 +348,7 @@ public abstract class MergableGridWidget<T> extends Widget
      */
     public void insertColumnBefore(DynamicColumn<T> columnBefore,
                                    DynamicColumn<T> newColumn,
-                                   List<CellValue< ? extends Comparable<?>>> columnData,
+                                   List<CellValue< ? extends Comparable< ? >>> columnData,
                                    boolean bRedraw) {
 
         if ( newColumn == null ) {
@@ -506,8 +510,10 @@ public abstract class MergableGridWidget<T> extends Widget
         Coordinate selection = selections.first().getCoordinate();
 
         //If selections span multiple cells, any of which are grouped we should ungroup them
+        //Also take the opportunity of iterating multiple selections to clear the "otherwise" state
         if ( selections.size() > 1 ) {
             for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
+                cell.removeState( CellState.OTHERWISE );
                 if ( cell instanceof GroupedCellValue ) {
                     bUngroupCells = true;
                     break;

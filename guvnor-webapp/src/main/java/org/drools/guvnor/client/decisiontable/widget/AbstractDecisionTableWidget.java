@@ -31,10 +31,13 @@ import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasColumns;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasSystemControlledColumns;
+import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
@@ -1067,11 +1070,52 @@ public abstract class AbstractDecisionTableWidget extends Composite
         return bRedrawRequired;
     }
 
+    /**
+     * Mark a cell as containing the magical "otherwise" value. The magical
+     * "otherwise" value has the meaning of all values other than those
+     * explicitly defined for this column. Only a single cell for any one
+     * Condition Column can only exhibit the "otherwise" property. Furthermore
+     * the column must be defined to contain literals and the equals operator.
+     */
     public void makeOtherwiseCell() {
+
+        //Check only one cell is selected
         List<CellValue< ? >> selections = this.widget.getGridWidget().getSelectedCells();
-        for ( CellValue< ? > cell : selections ) {
-            cell.addState( CellState.OTHERWISE );
+        if ( selections.size() != 1 ) {
+            return;
         }
+
+        //Check the column is of the correct type
+        MergableGridWidget<DTColumnConfig> grid = widget.getGridWidget();
+        CellValue< ? > cell = selections.get( 0 );
+        Coordinate c = cell.getCoordinate();
+        int iCol = c.getCol();
+        DynamicColumn<DTColumnConfig> column = grid.getColumns().get( iCol );
+        if ( !(column.getModelColumn() instanceof ConditionCol) ) {
+            return;
+        }
+
+        //Check column contains literal values and uses the equals operator
+        ConditionCol cc = (ConditionCol) column.getModelColumn();
+        if(cc.getConstraintValueType()!=BaseSingleFieldConstraint.TYPE_LITERAL) {
+            return;
+        }
+        //TODO We should be able to support other operators too
+        if(!cc.getOperator().equals("==")) {
+            return;
+        }
+        
+        //Check the column does not already have an "otherwise" cell
+        DynamicData data = grid.getData();
+        for ( DynamicDataRow row : data ) {
+            if ( row.get( iCol ).isOtherwise() ) {
+                return;
+            }
+        }
+
+        //Set "otherwise" property on cell
+        cell.addState( CellState.OTHERWISE );
+        grid.update( null );
     }
 
 }
