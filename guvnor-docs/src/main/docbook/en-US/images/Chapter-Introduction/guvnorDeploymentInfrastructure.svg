@@ -3904,7 +3904,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.2833333"
-     inkscape:cx="427.7983"
+     inkscape:cx="429.35674"
      inkscape:cy="317.77584"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -3939,7 +3939,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -4398,7 +4398,7 @@
            style="font-size:20px;font-weight:bold;text-align:center;text-anchor:middle;-inkscape-font-specification:Arial Bold" /></flowRegion><flowPara
          id="flowPara5276-7-5">Mortgage</flowPara><flowPara
          id="flowPara4138-4">marketing website</flowPara></flowRoot>    <path
-       style="fill:#8ae234;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       style="fill:#fcaf3e;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 220,982.36218 20,-20 0,10 70,0 0,-10 20,20 -20,20.00002 0,-10 -70,0 0,10 z"
        id="path4085-2-2-8"
        inkscape:connector-curvature="0" />
