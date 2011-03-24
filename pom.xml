@@ -65,6 +65,7 @@
       </activation>
       <modules>
         <module>guvnor-docs</module>
+        <module>guvnor-distribution</module>
       </modules>
     </profile>
   </profiles>
