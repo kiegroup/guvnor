@@ -508,6 +508,30 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                               p1,
                                               p2 );
     }
+    
+    public void changeState(java.lang.String p0,
+                            java.lang.String p1,
+                            boolean p2) {
+        getAssetService().changeState( p0,
+                                  p1,
+                                  p2 );
+    }
+    
+    public java.util.List loadDiscussionForAsset(java.lang.String p0) {
+        return getAssetService().loadDiscussionForAsset( p0 );
+    }
+
+    public java.util.List addToDiscussionForAsset(java.lang.String p0,
+                                                  java.lang.String p1) {
+        return getAssetService().addToDiscussionForAsset( p0,
+                                                     p1 );
+    }
+
+    public void clearAllDiscussionsForAsset(java.lang.String p0) {
+        getAssetService().clearAllDiscussionsForAsset( p0 );
+    }
+
+
 
     /** PLACE THE FOLLOWING IN RepositoryServiceServlet.java **/
 
@@ -618,14 +642,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         getService().removeState( p0 );
     }
 
-    public void changeState(java.lang.String p0,
-                            java.lang.String p1,
-                            boolean p2) {
-        getService().changeState( p0,
-                                  p1,
-                                  p2 );
-    }
-
     public org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine loadSuggestionCompletionEngine(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return getService().loadSuggestionCompletionEngine( p0 );
     }
@@ -706,20 +722,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
 
     public void createUser(java.lang.String p0) {
         getService().createUser( p0 );
-    }
-
-    public java.util.List loadDiscussionForAsset(java.lang.String p0) {
-        return getService().loadDiscussionForAsset( p0 );
-    }
-
-    public java.util.List addToDiscussionForAsset(java.lang.String p0,
-                                                  java.lang.String p1) {
-        return getService().addToDiscussionForAsset( p0,
-                                                     p1 );
-    }
-
-    public void clearAllDiscussionsForAsset(java.lang.String p0) {
-        getService().clearAllDiscussionsForAsset( p0 );
     }
 
     public java.util.List subscribe() {

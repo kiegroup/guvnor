@@ -99,7 +99,7 @@ public class StatusChangePopup extends FormStylePopup {
     /** Apply the state change */
     private void changeState(String newState) {
         LoadingPopup.showMessage( constants.UpdatingStatus() );
-        RepositoryServiceFactory.getService().changeState( uuid,
+        RepositoryServiceFactory.getAssetService().changeState( uuid,
                                                            newStatus,
                                                            isPackage,
                                                            new GenericCallback<java.lang.Void>() {

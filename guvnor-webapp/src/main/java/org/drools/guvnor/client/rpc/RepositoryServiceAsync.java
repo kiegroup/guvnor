@@ -50,7 +50,6 @@ public interface RepositoryServiceAsync {
     public void createState(java.lang.String p0, AsyncCallback<java.lang.String> cb);
     public void renameState(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void removeState(java.lang.String p0, AsyncCallback cb);
-    public void changeState(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);
     public void loadSuggestionCompletionEngine(java.lang.String p0, AsyncCallback<org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine> cb);
     public void getCustomSelectors(AsyncCallback<java.lang.String[]> cb);
     public void showLog(org.drools.guvnor.client.rpc.PageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.LogPageRow>> cb);
@@ -67,9 +66,6 @@ public interface RepositoryServiceAsync {
     public void listAvailablePermissionTypes(AsyncCallback<java.lang.String[]> cb);
     public void deleteUser(java.lang.String p0, AsyncCallback cb);
     public void createUser(java.lang.String p0, AsyncCallback cb);
-    public void loadDiscussionForAsset(java.lang.String p0, AsyncCallback cb);
-    public void addToDiscussionForAsset(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
-    public void clearAllDiscussionsForAsset(java.lang.String p0, AsyncCallback cb);
     public void subscribe(AsyncCallback cb);
     public void loadInbox(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadInbox(org.drools.guvnor.client.rpc.InboxPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.InboxPageRow>> cb);

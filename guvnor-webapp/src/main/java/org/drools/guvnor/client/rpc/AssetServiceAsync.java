@@ -48,6 +48,8 @@ public interface AssetServiceAsync {
     public void copyAsset(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback<java.lang.String> cb);
     public void promoteAssetToGlobalArea(java.lang.String p0, AsyncCallback cb);
     public void changeAssetPackage(String uuid, String newPackage, String comment, AsyncCallback<Void> callback);
-
-
+    public void loadDiscussionForAsset(java.lang.String p0, AsyncCallback cb);
+    public void addToDiscussionForAsset(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
+    public void clearAllDiscussionsForAsset(java.lang.String p0, AsyncCallback cb);
+    public void changeState(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);
 }

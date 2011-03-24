@@ -35,8 +35,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -57,13 +55,15 @@ public class PopulateDataTest extends GuvnorTestBase {
     public void testPopulate() throws Exception {
         ServiceImplementation serv = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
+        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         createCategories( getRepositoryCategoryService() );
         createStates( serv );
         createPackages( repositoryPackageService );
         createModel( serv );
 
-        createSomeRules( serv );
-        
+        createSomeRules( serv,
+                         repositoryAssetService );
+
         createPackageSnapshots( repositoryPackageService );
 
         createPermissions( serv );
@@ -71,7 +71,7 @@ public class PopulateDataTest extends GuvnorTestBase {
         PackageItem pkg = serv.getRulesRepository().loadPackage( "com.billasurf.manufacturing.plant" );
 
         repositoryPackageService.buildPackage( pkg.getUUID(),
-                           true );
+                                               true );
 
     }
 
@@ -157,23 +157,24 @@ public class PopulateDataTest extends GuvnorTestBase {
 
     }
 
-    private void createSomeRules(ServiceImplementation serv) throws SerializationException {
+    private void createSomeRules(ServiceImplementation serv,
+                                 RepositoryAssetService repositoryAssetService) throws SerializationException {
         String uuid = serv.createNewRule( "Surfboard_Colour_Combination",
                                           "allowable combinations for basic boards.",
                                           "Manufacturing/Boards",
                                           "com.billasurf.manufacturing",
                                           AssetFormats.BUSINESS_RULE );
-        serv.changeState( uuid,
-                          "Pending",
-                          false );
+        repositoryAssetService.changeState( uuid,
+                                            "Pending",
+                                            false );
         uuid = serv.createNewRule( "Premium_Colour_Combinations",
                                    "This defines XXX.",
                                    "Manufacturing/Boards",
                                    "com.billasurf.manufacturing",
                                    AssetFormats.BUSINESS_RULE );
-        serv.changeState( uuid,
-                          "Approved",
-                          false );
+        repositoryAssetService.changeState( uuid,
+                                            "Approved",
+                                            false );
         uuid = serv.createNewRule( "Fibreglass supplier selection",
                                    "This defines XXX.",
                                    "Manufacturing/Boards",
@@ -217,54 +218,54 @@ public class PopulateDataTest extends GuvnorTestBase {
 
     private void createCategories(RepositoryCategoryService repositoryCategoryService) {
         repositoryCategoryService.createCategory( "/",
-                             "HR",
-                             "" );
+                                                  "HR",
+                                                  "" );
         repositoryCategoryService.createCategory( "/",
-                             "Sales",
-                             "" );
+                                                  "Sales",
+                                                  "" );
         repositoryCategoryService.createCategory( "/",
-                             "Manufacturing",
-                             "" );
+                                                  "Manufacturing",
+                                                  "" );
         repositoryCategoryService.createCategory( "/",
-                             "Finance",
-                             "" );
+                                                  "Finance",
+                                                  "" );
 
         repositoryCategoryService.createCategory( "HR",
-                             "Leave",
-                             "" );
+                                                  "Leave",
+                                                  "" );
         repositoryCategoryService.createCategory( "HR",
-                             "Training",
-                             "" );
+                                                  "Training",
+                                                  "" );
         repositoryCategoryService.createCategory( "Sales",
-                             "Promotions",
-                             "" );
+                                                  "Promotions",
+                                                  "" );
         repositoryCategoryService.createCategory( "Sales",
-                             "Old promotions",
-                             "" );
+                                                  "Old promotions",
+                                                  "" );
         repositoryCategoryService.createCategory( "Sales",
-                             "Boogie boards",
-                             "" );
+                                                  "Boogie boards",
+                                                  "" );
         repositoryCategoryService.createCategory( "Sales",
-                             "Surf boards",
-                             "" );
+                                                  "Surf boards",
+                                                  "" );
         repositoryCategoryService.createCategory( "Sales",
-                             "Surf wear",
-                             "" );
+                                                  "Surf wear",
+                                                  "" );
         repositoryCategoryService.createCategory( "Manufacturing",
-                             "Surf wear",
-                             "" );
+                                                  "Surf wear",
+                                                  "" );
         repositoryCategoryService.createCategory( "Manufacturing",
-                             "Boards",
-                             "" );
+                                                  "Boards",
+                                                  "" );
         repositoryCategoryService.createCategory( "Finance",
-                             "Employees",
-                             "" );
+                                                  "Employees",
+                                                  "" );
         repositoryCategoryService.createCategory( "Finance",
-                             "Payables",
-                             "" );
+                                                  "Payables",
+                                                  "" );
         repositoryCategoryService.createCategory( "Finance",
-                             "Receivables",
-                             "" );
+                                                  "Receivables",
+                                                  "" );
     }
 
 }

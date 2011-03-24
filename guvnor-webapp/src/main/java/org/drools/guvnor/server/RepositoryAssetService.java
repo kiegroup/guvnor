@@ -19,13 +19,16 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PushResponse;
@@ -37,12 +40,16 @@ import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
+import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
+import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
+import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
+import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
@@ -520,6 +527,121 @@ public class RepositoryAssetService
             throw e;
         }
     }
+    
+    @Restrict("#{identity.loggedIn}")
+    public List<DiscussionRecord> addToDiscussionForAsset(String assetId,
+                                                          String comment) {
+        RulesRepository repo = getRulesRepository();
+        AssetItem asset = repo.loadAssetByUUID( assetId );
+        Discussion dp = new Discussion();
+        List<DiscussionRecord> discussion = dp.fromString( asset.getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
+        discussion.add( new DiscussionRecord( repo.getSession().getUserID(),
+                                              StringEscapeUtils.escapeXml( comment ) ) );
+        asset.updateStringProperty( dp.toString( discussion ),
+                                    Discussion.DISCUSSION_PROPERTY_KEY,
+                                    false );
+        repo.save();
+
+        push( "discussion",
+              assetId );
+
+        MailboxService.getInstance().recordItemUpdated( asset );
+
+        return discussion;
+    }
+
+    @Restrict("#{identity.loggedIn}")
+    public void clearAllDiscussionsForAsset(final String assetId) {
+        serviceSecurity.checkSecurityIsAdmin();
+        RulesRepository repo = getRulesRepository();
+        AssetItem asset = repo.loadAssetByUUID( assetId );
+        asset.updateStringProperty( "",
+                                    "discussion" );
+        repo.save();
+
+        push( "discussion",
+              assetId );
+
+    }
+    
+    @Restrict("#{identity.loggedIn}")
+    public List<DiscussionRecord> loadDiscussionForAsset(String assetId) {
+        return new Discussion().fromString( getRulesRepository().loadAssetByUUID( assetId ).getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
+    }
+    
+    /**
+     * 
+     * Role-based Authorization check: This method can be accessed if user has
+     * following permissions: 1. The user has a Analyst role and this role has
+     * permission to access the category which the asset belongs to. Or. 2. The
+     * user has a package.developer role or higher (i.e., package.admin) and
+     * this role has permission to access the package which the asset belongs
+     * to.
+     */
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void changeState(String uuid,
+                            String newState,
+                            boolean wholePackage) {
+
+        if ( !wholePackage ) {
+            AssetItem asset = getRulesRepository().loadAssetByUUID( uuid );
+
+            // Verify if the user has permission to access the asset through
+            // package based permission.
+            // If failed, then verify if the user has permission to access the
+            // asset through category
+            // based permission
+            if ( Contexts.isSessionContextActive() ) {
+                boolean passed = false;
+
+                try {
+                    Identity.instance().checkPermission( new PackageUUIDType( asset.getPackage().getUUID() ),
+                                                         RoleTypes.PACKAGE_DEVELOPER );
+                } catch ( RuntimeException e ) {
+                    if ( asset.getCategories().size() == 0 ) {
+                        Identity.instance().checkPermission( new CategoryPathType( null ),
+                                                             RoleTypes.ANALYST );
+                    } else {
+                        RuntimeException exception = null;
+
+                        for ( CategoryItem cat : asset.getCategories() ) {
+                            try {
+                                Identity.instance().checkPermission( new CategoryPathType( cat.getName() ),
+                                                                     RoleTypes.ANALYST );
+                                passed = true;
+                            } catch ( RuntimeException re ) {
+                                exception = re;
+                            }
+                        }
+                        if ( !passed ) {
+                            throw exception;
+                        }
+                    }
+                }
+            }
+
+            log.info( "USER:" + getCurrentUserName() + " CHANGING ASSET STATUS. Asset name, uuid: " + "[" + asset.getName() + ", " + asset.getUUID() + "]" + " to [" + newState + "]" );
+            String oldState = asset.getStateDescription();
+            asset.updateState( newState );
+
+            push( "statusChange",
+                  oldState );
+            push( "statusChange",
+                  newState );
+
+            addToDiscussionForAsset( asset.getUUID(),
+                                     oldState + " -> " + newState );
+        } else {
+            serviceSecurity.checkSecurityIsPackageDeveloper( uuid );
+
+            PackageItem pkg = getRulesRepository().loadPackageByUUID( uuid );
+            log.info( "USER:" + getCurrentUserName() + " CHANGING Package STATUS. Asset name, uuid: " + "[" + pkg.getName() + ", " + pkg.getUUID() + "]" + " to [" + newState + "]" );
+            pkg.changeStatus( newState );
+        }
+        getRulesRepository().save();
+    }
+
 
     /*
      * (non-Javadoc)

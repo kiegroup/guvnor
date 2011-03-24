@@ -244,5 +244,35 @@ public interface AssetService extends RemoteService{
     public void changeAssetPackage(String uuid,
                                    String newPackage,
                                    String comment);
+    
+    /**
+     * Return a list of discussion items for a given asset...
+     */
+    public List<DiscussionRecord> loadDiscussionForAsset(String assetId);
 
+    /**
+     * Append a discussion item for the current user.
+     */
+    public List<DiscussionRecord> addToDiscussionForAsset(String assetId,
+                                                          String comment);
+    
+
+    /** Only for admins, they can nuke it from orbit to clear it out */
+    public void clearAllDiscussionsForAsset(String assetId);
+    
+    /**
+     * This will change the state of an asset or package.
+     * 
+     * @param uuid
+     *            The UUID of the asset we are tweaking.
+     * @param newState
+     *            The new state to set. It must be valid in the repo.
+     * @param wholePackage
+     *            true if it is a package we are setting the state of. If this
+     *            is true, UUID must be the status of a package, if false, it
+     *            must be an asset.
+     */
+    public void changeState(String uuid,
+                            String newState,
+                            boolean wholePackage);
 }
