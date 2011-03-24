@@ -145,6 +145,9 @@ public class DependencyWidget extends Composite {
         useSelectedVersionButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent w) {
                 String selectedVersion = versionChoose.getSelectedVersionName();
+                if(selectedVersion == null) {
+                	return;
+                }
                 if (Window.confirm("Are you sure you want to use version: " + selectedVersion  + " as dependency?")) {
                     RepositoryServiceFactory.getService().updateDependency(
                             conf.uuid,

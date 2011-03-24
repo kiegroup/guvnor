@@ -179,29 +179,11 @@ public class RepositoryAssetOperations {
             long versionNumber = historical.getVersionNumber();
             if ( isHistory( item,
                             versionNumber ) ) {
-                result.add( createHistoricalRow( result,
-                                                 historical,
-                                                 isLatestVersion( item,
-                                                                  versionNumber ) ) );
+                result.add( createHistoricalRow(result,
+                                                 historical));
             }
         }
 
-        if ( result.size() == 0 ) {
-            //NOTE, the term "LATEST version" is defined as the preceding version node of the current node. 
-            //It is a frozen history node, its content is same as the current node. 
-            //If there is no historical node, we return the current node, and refer the current node 
-            //as the LATEST version node. 
-            final DateFormat dateFormatter = DateFormat.getInstance();
-            TableDataRow tableDataRow = new TableDataRow();
-            tableDataRow.id = item.getUUID();
-            tableDataRow.values = new String[4];
-            tableDataRow.values[0] = "LATEST";
-            tableDataRow.values[1] = "";
-            tableDataRow.values[2] = dateFormatter.format( item
-                    .getLastModified().getTime() );
-            tableDataRow.values[3] = item.getStateDescription();
-            result.add( tableDataRow );
-        }
         TableDataResult table = new TableDataResult();
         table.data = result.toArray( new TableDataRow[result.size()] );
 
@@ -215,23 +197,13 @@ public class RepositoryAssetOperations {
         return versionNumber != 0;
     }
 
-    private boolean isLatestVersion(VersionableItem item,
-                                    long versionNumber) {
-        return versionNumber == item.getVersionNumber();
-    }
-
     private TableDataRow createHistoricalRow(List<TableDataRow> result,
-    		VersionableItem historical,
-                                             boolean isLatestVersion) {
+    		VersionableItem historical) {
         final DateFormat dateFormatter = DateFormat.getInstance();
         TableDataRow tableDataRow = new TableDataRow();
         tableDataRow.id = historical.getVersionSnapshotUUID();
         tableDataRow.values = new String[4];
-        if ( isLatestVersion ) {
-            tableDataRow.values[0] = "LATEST";
-        } else {
-            tableDataRow.values[0] = Long.toString( historical.getVersionNumber() );
-        }
+        tableDataRow.values[0] = Long.toString( historical.getVersionNumber() );
         tableDataRow.values[1] = historical.getCheckinComment();
         tableDataRow.values[2] = dateFormatter.format( historical
                 .getLastModified().getTime() );
