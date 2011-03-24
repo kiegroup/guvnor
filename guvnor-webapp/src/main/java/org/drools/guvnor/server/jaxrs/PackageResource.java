@@ -21,6 +21,7 @@ import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntry;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackage;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntry;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntryAbdera;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +44,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
 
+import org.apache.abdera.model.ExtensibleElement;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.files.RepositoryServlet;
@@ -261,9 +264,30 @@ public class PackageResource extends Resource {
     public void updatePackageFromAtom (@PathParam("packageName") String packageName, org.apache.abdera.model.Entry entry) {
         PackageItem p = repository.loadPackage(packageName);
         p.checkout();
-        p.updateTitle(entry.getTitle());
-        p.updateDescription(entry.getSummary());
-        /* TODO: add more updates to package item from JSON */
+        //TODO: support rename package. 
+        //p.updateTitle(entry.getTitle());
+       	if(entry.getSummary() != null) {
+            p.updateDescription(entry.getSummary());
+		}
+        //TODO: support LastContributor 
+       	if(entry.getAuthor() != null) {       		
+       	}
+        
+		ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
+		if(metadataExtension != null) {
+            ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);  
+            if(archivedExtension != null) {
+            	p.archiveItem(Boolean.getBoolean(archivedExtension.getSimpleExtension(Translator.VALUE)));
+            }
+            
+            //TODO: Package state is not fully supported yet
+/*            ExtensibleElement stateExtension = metadataExtension.getExtension(Translator.STATE);  
+            if(stateExtension != null) {
+            	p.updateState(stateExtension.getSimpleExtension(Translator.STATE));
+            }   */     
+            
+		}
+
         p.checkin("Update from ATOM.");
         repository.save();
     }

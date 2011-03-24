@@ -42,8 +42,11 @@ import org.jboss.resteasy.plugins.providers.atom.Link;
 public class Translator {
     public static String NS = "";
     public static QName METADATA = new QName(NS, "metadata");
-    static QName VALUE = new QName(NS, "value");
-    
+    public static QName VALUE = new QName(NS, "value");
+    public static QName ARCHIVED = new QName(NS, "archived");
+    public static QName UUID = new QName(NS, "uuid");
+    public static QName STATE = new QName(NS, "state");
+
     public static Asset ToAsset(AssetItem a, UriInfo uriInfo) {
         AssetMetadata metadata = new AssetMetadata();
         metadata.setUuid(a.getUUID());
@@ -145,17 +148,14 @@ public class Translator {
 
         //generate meta data
         ExtensibleElement extension = e.addExtension(METADATA);
-       	QName extQName = new QName(NS, "archived");
-        ExtensibleElement childExtension = extension.addExtension(extQName);
+        ExtensibleElement childExtension = extension.addExtension(ARCHIVED);
         //childExtension.setAttributeValue("type", ArtifactsRepository.METADATA_TYPE_STRING);
         childExtension.addSimpleExtension(VALUE, p.isArchived()?"true":"false");
         
-       	extQName = new QName(NS, "UUID");
-        childExtension = extension.addExtension(extQName);
+        childExtension = extension.addExtension(UUID);
         childExtension.addSimpleExtension(VALUE, p.getUUID());
        	
-       	extQName = new QName(NS, "state");
-        childExtension = extension.addExtension(extQName);
+        childExtension = extension.addExtension(STATE);
         childExtension.addSimpleExtension(VALUE, p.getState()== null?"" : p.getState().getName());
 
         org.apache.abdera.model.Content content = factory.newContent();
