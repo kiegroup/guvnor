@@ -46,7 +46,7 @@ public abstract class AbstractCellValueFactory<T> {
      * 
      * @param dc
      */
-    public void injectDateConvertor(DateConverter dc) {
+    public static void injectDateConvertor(DateConverter dc) {
         DATE_CONVERTOR = dc;
     }
 
@@ -164,15 +164,6 @@ public abstract class AbstractCellValueFactory<T> {
         if ( initialValue != null ) {
             cv.setValue( (BigDecimal) initialValue );
         }
-        return cv;
-    }
-
-    protected CellValue<BigDecimal> makeNewRowNumberCellValue(int iRow,
-                                                              int iCol) {
-        // Rows are 0-based internally but 1-based in the UI
-        CellValue<BigDecimal> cv = new CellValue<BigDecimal>( new BigDecimal( iRow + 1 ),
-                                                              iRow,
-                                                              iCol );
         return cv;
     }
 

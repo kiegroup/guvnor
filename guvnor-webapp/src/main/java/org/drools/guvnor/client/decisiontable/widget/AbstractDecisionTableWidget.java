@@ -35,7 +35,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
-import org.drools.guvnor.client.widgets.tables.SortDirection;
+import org.drools.guvnor.client.widgets.decoratedgrid.data.GroupedDynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
@@ -52,6 +52,7 @@ import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -170,7 +171,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
         List<CellValue< ? extends Comparable< ? >>> rowData = makeRowData();
         widget.insertRowBefore( rowBefore,
                                 rowData );
-        updateSystemControlledColumnValues();
         redrawSystemControlledColumns();
     }
 
@@ -293,7 +293,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                                    this.model );
 
         //Date converter is injected so a GWT compatible one can be used here and another in testing
-        this.cellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
+        DecisionTableCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
+
+        //Setup command to recalculate System Controlled values when rows are added\deleted
+        widget.getGridWidget().getData().setOnRowChangeCommand( new Command() {
+
+            public void execute() {
+                updateSystemControlledColumnValues();
+            }
+
+        } );
 
         widget.getGridWidget().getData().clear();
         widget.getGridWidget().getColumns().clear();
@@ -383,6 +392,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         // Ensure cells are indexed correctly for start-up data
+        updateSystemControlledColumnValues();
         widget.getGridWidget().getData().assertModelIndexes();
 
         // Draw header first as the size of child Elements depends upon it
@@ -692,6 +702,71 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     }
 
+    // Update Row Number column values
+    private void updateRowNumberColumnValues(DynamicData data,
+                                             int iCol) {
+        int iRowNum = 1;
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            if ( row instanceof GroupedDynamicDataRow ) {
+                GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
+
+                //Setting value on a GroupedCellValue causes all children to assume the same value
+                groupedRow.get( iCol ).setValue( new BigDecimal( iRowNum ) );
+                for ( int iGroupedRow = 0; iGroupedRow < groupedRow.getChildRows().size(); iGroupedRow++ ) {
+                    groupedRow.getChildRows().get( iGroupedRow ).get( iCol ).setValue( new BigDecimal( iRowNum ) );
+                    iRowNum++;
+                }
+            } else {
+                row.get( iCol ).setValue( new BigDecimal( iRowNum ) );
+                iRowNum++;
+            }
+        }
+    }
+
+    // Update Salience column values
+    private void updateSalienceColumnValues(DynamicData data,
+                                            int iCol,
+                                            boolean isReverseOrder) {
+
+        if ( !isReverseOrder ) {
+            updateRowNumberColumnValues( data,
+                                         iCol );
+        } else {
+
+            //Get total row count
+            int rowCount = 0;
+            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                DynamicDataRow row = data.get( iRow );
+                if ( row instanceof GroupedDynamicDataRow ) {
+                    GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
+                    rowCount = rowCount + groupedRow.getChildRows().size();
+                } else {
+                    rowCount++;
+                }
+            }
+
+            int iRowNum = 0;
+            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                DynamicDataRow row = data.get( iRow );
+                if ( row instanceof GroupedDynamicDataRow ) {
+                    GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
+
+                    //Setting value on a GroupedCellValue causes all children to assume the same value
+                    groupedRow.get( iCol ).setValue( new BigDecimal( rowCount - iRowNum ) );
+                    for ( int iGroupedRow = 0; iGroupedRow < groupedRow.getChildRows().size(); iGroupedRow++ ) {
+                        groupedRow.getChildRows().get( iGroupedRow ).get( iCol ).setValue( new BigDecimal( rowCount - iRowNum ) );
+                        iRowNum++;
+                    }
+                } else {
+                    row.get( iCol ).setValue( new BigDecimal( rowCount - iRowNum ) );
+                    iRowNum++;
+                }
+            }
+
+        }
+    }
+
     public void updateSystemControlledColumnValues() {
 
         final DynamicData data = widget.getGridWidget().getData();
@@ -702,11 +777,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
             DTColumnConfig modelColumn = col.getModelColumn();
 
             if ( modelColumn instanceof RowNumberCol ) {
-
-                // Update Row Number column values
-                for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-                    data.get( iRow ).get( col.getColumnIndex() ).setValue( new BigDecimal( iRow + 1 ) );
-                }
+                updateRowNumberColumnValues( data,
+                                             col.getColumnIndex() );
 
             } else if ( modelColumn instanceof AttributeCol ) {
 
@@ -714,18 +786,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 AttributeCol attrCol = (AttributeCol) modelColumn;
                 if ( attrCol.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                     if ( attrCol.isUseRowNumber() ) {
-                        col.setSortDirection( SortDirection.NONE );
-                        final int MAX_ROWS = data.size();
-                        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-                            int salience = iRow + 1;
-                            if ( attrCol.isReverseOrder() ) {
-                                salience = Math.abs( iRow
-                                                     - MAX_ROWS );
-                            }
-                            data.get( iRow ).get( col.getColumnIndex() )
-                                    .setValue( new BigDecimal( salience ) );
-                        }
+                        updateSalienceColumnValues( data,
+                                                    col.getColumnIndex(),
+                                                    attrCol.isReverseOrder() );
                     }
+
                     // Ensure Salience cells are rendered with the correct Cell
                     col.setCell( cellFactory.getCell( attrCol ) );
                     col.setSystemControlled( attrCol.isUseRowNumber() );
@@ -1073,17 +1138,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
     /**
      * Mark a cell as containing the magical "otherwise" value. The magical
      * "otherwise" value has the meaning of all values other than those
-     * explicitly defined for this column. Only a single cell for any one
-     * Condition Column can only exhibit the "otherwise" property. Furthermore
-     * the column must be defined to contain literals and the equals operator.
+     * explicitly defined for this column. The column must be defined to contain
+     * literals and the equals operator.
      */
     public void makeOtherwiseCell() {
 
-        //Check only one cell is selected
         List<CellValue< ? >> selections = this.widget.getGridWidget().getSelectedCells();
-        if ( selections.size() != 1 ) {
-            return;
-        }
 
         //Check the column is of the correct type
         MergableGridWidget<DTColumnConfig> grid = widget.getGridWidget();
@@ -1097,24 +1157,19 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Check column contains literal values and uses the equals operator
         ConditionCol cc = (ConditionCol) column.getModelColumn();
-        if(cc.getConstraintValueType()!=BaseSingleFieldConstraint.TYPE_LITERAL) {
+        if ( cc.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_LITERAL ) {
             return;
         }
-        //TODO We should be able to support other operators too
-        if(!cc.getOperator().equals("==")) {
+
+        //Only "equals" supported at the moment
+        if ( !cc.getOperator().equals( "==" ) ) {
             return;
-        }
-        
-        //Check the column does not already have an "otherwise" cell
-        DynamicData data = grid.getData();
-        for ( DynamicDataRow row : data ) {
-            if ( row.get( iCol ).isOtherwise() ) {
-                return;
-            }
         }
 
         //Set "otherwise" property on cell
-        cell.addState( CellState.OTHERWISE );
+        for ( CellValue< ? > cv : selections ) {
+            cv.addState( CellState.OTHERWISE );
+        }
         grid.update( null );
     }
 

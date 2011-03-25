@@ -381,6 +381,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         String divStyle = style.cellTableCellDiv();
         String cellSelectedStyle = style.cellTableCellSelected();
         String cellMultipleValuesStyle = style.cellTableCellMultipleValues();
+        String cellOtherwiseStyle = style.cellTableCellOtherwise();
         TableCellElement tce = null;
 
         // Column to render the column
@@ -390,15 +391,10 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         int rowSpan = cellData.getRowSpan();
         if ( rowSpan > 0 ) {
 
-            // Use Elements rather than Templates as it's easier to set
-            // attributes that need to be dynamic
+            // Use Elements rather than Templates as it's easier to set attributes that need to be dynamic
             tce = Document.get().createTDElement();
             DivElement div = Document.get().createDivElement();
             DivElement divText = Document.get().createDivElement();
-
-            if ( cellData.isSelected() ) {
-                tce.addClassName( cellSelectedStyle );
-            }
             tce.addClassName( cellStyle );
             div.setClassName( divStyle );
             divText.addClassName( style.cellTableTextDiv() );
@@ -410,21 +406,33 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                                       Unit.PX );
             tce.setRowSpan( rowSpan );
 
-            // Render the cell and set inner HTML
+            //Styling depending upon state
+            if ( cellData.isSelected() ) {
+                tce.addClassName( cellSelectedStyle );
+            }
+            if ( cellData.isOtherwise() ) {
+                tce.addClassName( cellOtherwiseStyle );
+            }
             if ( cellData instanceof GroupedCellValue ) {
                 GroupedCellValue gcv = (GroupedCellValue) cellData;
                 if ( gcv.hasMultipleValues() ) {
                     tce.addClassName( cellMultipleValuesStyle );
                 }
             }
-            Coordinate c = cellData.getCoordinate();
-            Context context = new Context( c.getRow(),
-                                           c.getCol(),
-                                           c );
+
+            // Render the cell and set inner HTML
             SafeHtmlBuilder cellBuilder = new SafeHtmlBuilder();
-            column.render( context,
-                           rowData,
-                           cellBuilder );
+            if ( !cellData.isOtherwise() ) {
+                Coordinate c = cellData.getCoordinate();
+                Context context = new Context( c.getRow(),
+                                               c.getCol(),
+                                               c );
+                column.render( context,
+                               rowData,
+                               cellBuilder );
+            } else {
+                cellBuilder.appendEscaped( "<otherwise>" );
+            }
             divText.setInnerHTML( cellBuilder.toSafeHtml().asString() );
 
             // Construct the table
@@ -432,6 +440,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             div.appendChild( divText );
             tce.setTabIndex( 0 );
 
+            //Add on "Grouping" widget, if applicable
             if ( rowSpan > 1 || cellData.isGrouped() ) {
                 Element de = DOM.createDiv();
                 DivElement divGroup = DivElement.as( de );
@@ -443,11 +452,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                     divGroup.setInnerHTML( selectorGroupedCellsHtml );
                 }
                 div.appendChild( divGroup );
-            }
-
-            //TODO Sort out - Custom cell decoraters for "selected", "multiple-values" and "otherwise"
-            if ( cellData.isOtherwise() ) {
-                tce.getStyle().setBackgroundColor( "#60f070" );
             }
 
         }

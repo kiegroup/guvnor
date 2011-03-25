@@ -22,6 +22,8 @@ import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue;
 
+import com.google.gwt.user.client.Command;
+
 /**
  * A simple container for rows of data.
  */
@@ -33,6 +35,8 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
 
     private static final long serialVersionUID = 5061393855340039472L;
 
+    private Command           onRowChangeCommand;
+
     /**
      * Add column to data
      * 
@@ -40,7 +44,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
      * @param columnData
      */
     public void addColumn(int index,
-                          List<CellValue< ? extends Comparable<?>>> columnData,
+                          List<CellValue< ? extends Comparable< ? >>> columnData,
                           boolean isVisible) {
         for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
             CellValue< ? > cv = columnData.get( iRow );
@@ -60,6 +64,12 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
     public DynamicDataRow addRow() {
         DynamicDataRow row = new DynamicDataRow();
         add( row );
+
+        //Execute command if set
+        if ( onRowChangeCommand != null ) {
+            onRowChangeCommand.execute();
+        }
+
         return row;
     }
 
@@ -78,6 +88,12 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
         }
         add( index,
              row );
+
+        //Execute command if set
+        if ( onRowChangeCommand != null ) {
+            onRowChangeCommand.execute();
+        }
+
         return row;
     }
 
@@ -88,12 +104,8 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
      * @return DynamicDataRow The newly created row
      */
     public DynamicDataRow addRow(List<CellValue< ? extends Comparable< ? >>> rowData) {
-        DynamicDataRow row = new DynamicDataRow();
-        for ( CellValue< ? extends Comparable< ? >> cell : rowData ) {
-            row.add( cell );
-        }
-        add( row );
-        return row;
+        return addRow( this.size(),
+                       rowData );
     }
 
     /**
@@ -132,6 +144,11 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
         add( startRowIndex,
                   groupedRow );
 
+        //Execute command if set
+        if ( onRowChangeCommand != null ) {
+            onRowChangeCommand.execute();
+        }
+        
         assertModelMerging();
     }
 
@@ -247,6 +264,20 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
                                 }
                             }
                         }
+                    } else if ( cell1.isOtherwise() && cell2.isOtherwise() ) {
+                        bSplit = false;
+                        if ( cell1 instanceof GroupedCellValue ) {
+                            GroupedCellValue gcv = (GroupedCellValue) cell1;
+                            if ( gcv.hasMultipleValues() ) {
+                                bSplit = true;
+                            }
+                        }
+                        if ( cell2 instanceof GroupedCellValue ) {
+                            GroupedCellValue gcv = (GroupedCellValue) cell2;
+                            if ( gcv.hasMultipleValues() ) {
+                                bSplit = true;
+                            }
+                        }
                     }
 
                     if ( bSplit ) {
@@ -323,6 +354,30 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
         return isMerged;
     }
 
+    @Override
+    public DynamicDataRow remove(int index) {
+        DynamicDataRow row = super.remove( index );
+
+        //Execute command if set
+        if ( onRowChangeCommand != null ) {
+            onRowChangeCommand.execute();
+        }
+
+        return row;
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        boolean result = super.remove( o );
+
+        //Execute command if set
+        if ( onRowChangeCommand != null ) {
+            onRowChangeCommand.execute();
+        }
+
+        return result;
+    }
+
     /**
      * Remove grouping by expanding applicable rows
      * 
@@ -352,6 +407,11 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
         remove( startRowIndex );
         addAll( startRowIndex,
                      expandedRow );
+
+        //Execute command if set
+        if ( onRowChangeCommand != null ) {
+            onRowChangeCommand.execute();
+        }
 
         assertModelMerging();
 
@@ -418,6 +478,18 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
             removeModelGrouping();
             removeModelMerging();
         }
+    }
+
+    /**
+     * Configure a command that can be executed whenever a row is added\deleted.
+     * This allows consumers of DynamicData to ensure column values are within
+     * keeping of their requirements. E.G. A Column containing a Row Number can
+     * be updated etc
+     * 
+     * @param cmd
+     */
+    public void setOnRowChangeCommand(Command cmd) {
+        this.onRowChangeCommand = cmd;
     }
 
     //Expand a grouped row and return a list of expanded rows

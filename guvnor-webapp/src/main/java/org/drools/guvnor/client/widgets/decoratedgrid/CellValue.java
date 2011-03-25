@@ -69,9 +69,6 @@ public class CellValue<T extends Comparable<T>>
         //Grouped cells
         private List<CellValue<T>> groupedCells = new ArrayList<CellValue<T>>();
 
-        // Does the grouped cell hold multiple values
-        private boolean            hasMultipleValues;
-
         /**
          * Constructor, nothing to see here, move on
          * 
@@ -93,7 +90,7 @@ public class CellValue<T extends Comparable<T>>
          * @return
          */
         public boolean hasMultipleValues() {
-            return hasMultipleValues;
+            return checkForMultipleValues();
         }
 
         /**
@@ -106,7 +103,6 @@ public class CellValue<T extends Comparable<T>>
                 cell.setValue( value );
             }
             super.setValue( value );
-            this.hasMultipleValues = checkForMultipleValues();
         }
 
         //Check whether the cell contains multiple values
@@ -132,7 +128,6 @@ public class CellValue<T extends Comparable<T>>
          */
         public void addCellToGroup(CellValue<T> cell) {
             this.groupedCells.add( cell );
-            this.hasMultipleValues = checkForMultipleValues();
         }
 
         /**
@@ -193,6 +188,9 @@ public class CellValue<T extends Comparable<T>>
         GroupedCellValue groupedCell = new GroupedCellValue( this.getValue(),
                                                              this.getCoordinate().getRow(),
                                                              this.getCoordinate().getCol() );
+        if ( this.isOtherwise() ) {
+            groupedCell.addState( CellState.OTHERWISE );
+        }
         return groupedCell;
     }
 

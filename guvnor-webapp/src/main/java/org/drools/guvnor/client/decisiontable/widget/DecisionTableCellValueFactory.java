@@ -272,4 +272,13 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
 
     }
 
+    protected CellValue<BigDecimal> makeNewRowNumberCellValue(int iRow,
+                                                              int iCol) {
+        // Rows are 0-based internally but 1-based in the UI
+        CellValue<BigDecimal> cv = new CellValue<BigDecimal>( new BigDecimal( iRow + 1 ),
+                                                              iRow,
+                                                              iCol );
+        return cv;
+    }
+
 }

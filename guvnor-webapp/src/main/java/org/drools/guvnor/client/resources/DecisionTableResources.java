@@ -38,6 +38,8 @@ public interface DecisionTableResources
         String cellTableCellSelected();
 
         String cellTableCellMultipleValues();
+        
+        String cellTableCellOtherwise();
 
         String cellTableCellDiv();
 

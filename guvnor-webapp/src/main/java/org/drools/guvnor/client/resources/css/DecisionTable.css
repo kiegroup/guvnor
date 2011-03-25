@@ -38,6 +38,10 @@
     background-color: #e09090;
 }
 
+.cellTableCellOtherwise {
+    background-color: #60f070;
+}
+
 .cellTableCell:HOVER {
     padding: 0px;
     margin: 0px;
