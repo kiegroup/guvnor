@@ -527,7 +527,7 @@ public class RepositoryAssetService
             throw e;
         }
     }
-    
+
     @Restrict("#{identity.loggedIn}")
     public List<DiscussionRecord> addToDiscussionForAsset(String assetId,
                                                           String comment) {
@@ -563,12 +563,12 @@ public class RepositoryAssetService
               assetId );
 
     }
-    
+
     @Restrict("#{identity.loggedIn}")
     public List<DiscussionRecord> loadDiscussionForAsset(String assetId) {
         return new Discussion().fromString( getRulesRepository().loadAssetByUUID( assetId ).getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
     }
-    
+
     /**
      * 
      * Role-based Authorization check: This method can be accessed if user has
@@ -642,7 +642,6 @@ public class RepositoryAssetService
         getRulesRepository().save();
     }
 
-
     /*
      * (non-Javadoc)
      * 
@@ -655,12 +654,10 @@ public class RepositoryAssetService
         return repositoryAssetOperations.getAssetLockerUserName( uuid );
     }
 
-    //TODO: Backchannel has to be refactored. This is really bad.
     private void push(String messageType,
                       String message) {
-        Backchannel backchannel = ServiceImplementation.getBackchannel();
-        backchannel.publish( new PushResponse( messageType,
-                                               message ) );
+        Backchannel.getInstance().publish( new PushResponse( messageType,
+                                                             message ) );
     }
 
     private ContentHandler getContentHandler(AssetItem repoAsset) {

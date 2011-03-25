@@ -102,7 +102,6 @@ import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
-import org.jboss.seam.web.Session;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
@@ -133,7 +132,6 @@ public class ServiceImplementation
     /**
      * This is used for pushing messages back to the client.
      */
-    private static Backchannel          backchannel                 = new Backchannel();
     private ServiceSecurity             serviceSecurity             = new ServiceSecurity();
 
     private RepositoryAssetOperations   repositoryAssetOperations   = new RepositoryAssetOperations();
@@ -154,10 +152,6 @@ public class ServiceImplementation
 
     public RulesRepository getRulesRepository() {
         return repository;
-    }
-
-    public static Backchannel getBackchannel() {
-        return backchannel;
     }
 
     @WebRemote
@@ -910,18 +904,6 @@ public class ServiceImplementation
         return response;
     }
 
-    public List<PushResponse> subscribe() {
-        if ( Contexts.isApplicationContextActive() && !Session.instance().isInvalid() ) {
-            try {
-                return backchannel.await( getCurrentUserName() );
-            } catch ( InterruptedException e ) {
-                return new ArrayList<PushResponse>();
-            }
-        } else {
-            return new ArrayList<PushResponse>();
-        }
-    }
-
     /**
      * Load and process the repository configuration templates.
      */
@@ -1176,8 +1158,8 @@ public class ServiceImplementation
      */
     private void push(String messageType,
                       String message) {
-        backchannel.publish( new PushResponse( messageType,
-                                               message ) );
+        Backchannel.getInstance().publish( new PushResponse( messageType,
+                                                             message ) );
     }
 
     private String getCurrentUserName() {
@@ -1312,6 +1294,10 @@ public class ServiceImplementation
         row.setStateName( assetItem.getState().getName() );
         row.setPackageName( assetItem.getPackageName() );
         return row;
+    }
+
+    public List<PushResponse> subscribe() {
+        return Backchannel.getInstance().subscribe();
     }
 
 }

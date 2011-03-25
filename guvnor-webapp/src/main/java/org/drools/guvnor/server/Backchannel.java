@@ -17,6 +17,9 @@
 package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.rpc.PushResponse;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.Identity;
+import org.jboss.seam.web.Session;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,13 +37,18 @@ import java.util.concurrent.CountDownLatch;
  * TODO: convert to executor architecture. Only one instance needed.
  */
 public class Backchannel {
+    private static Backchannel instance = new Backchannel();
+    public static Backchannel getInstance(){
+        return instance;
+    }
+    
     final List<CountDownLatch> waiting = Collections.synchronizedList(new ArrayList<CountDownLatch>());
     final Map<String, List<PushResponse>> mailbox = Collections.synchronizedMap(new HashMap<String, List<PushResponse>>());
     
     private Timer timer;
 
 
-    public Backchannel() {
+    private Backchannel() {
 
         //using a timer to make sure awaiting subs are flushed every now and then, otherwise web threads could be consumed.
         timer = new Timer(true);
@@ -52,7 +60,17 @@ public class Backchannel {
     }
 
 
-
+    public List<PushResponse> subscribe() {
+        if ( Contexts.isApplicationContextActive() && !Session.instance().isInvalid() ) {
+            try {
+                return await( Identity.instance().getCredentials().getUsername() );
+            } catch ( InterruptedException e ) {
+                return new ArrayList<PushResponse>();
+            }
+        } else {
+            return new ArrayList<PushResponse>();
+        }
+    }
 
     public List<PushResponse> await(String userName) throws InterruptedException {
         List<PushResponse> messages = fetchMessageForUser(userName);
