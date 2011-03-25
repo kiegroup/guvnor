@@ -15,14 +15,12 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget.CellExtents;
-import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
 
 import com.google.gwt.core.client.GWT;
@@ -107,7 +105,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      *            Redraw the grid after the column has been appended
      */
     public void appendColumn(DynamicColumn<T> column,
-                             List<CellValue< ? extends Comparable<?>>> columnData,
+                             List<CellValue< ? extends Comparable< ? >>> columnData,
                              boolean bRedraw) {
         insertColumnBefore( null,
                             column,
@@ -222,7 +220,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      */
     public void insertColumnBefore(DynamicColumn<T> columnBefore,
                                    DynamicColumn<T> newColumn,
-                                   List<CellValue< ? extends Comparable<?>>> columnData,
+                                   List<CellValue< ? extends Comparable< ? >>> columnData,
                                    boolean bRedraw) {
 
         if ( newColumn == null ) {
@@ -423,65 +421,19 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      */
     public void sort() {
 
-        final DynamicData data = gridWidget.getData();
-        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
-
-        final DynamicColumn< ? >[] sortOrderList = new DynamicColumn[columns.size()];
-        int index = 0;
+        //Extract list of sort information
+        List<SortConfiguration> sortConfig = new ArrayList<SortConfiguration>();
+        List<DynamicColumn<T>> columns = gridWidget.getColumns();
         for ( DynamicColumn<T> column : columns ) {
-            int sortIndex = column.getSortIndex();
-            if ( sortIndex != -1 ) {
-                sortOrderList[sortIndex] = column;
-                index++;
+            SortConfiguration sc = column.getSortConfiguration();
+            if ( sc.getSortIndex() != -1 ) {
+                sortConfig.add( sc );
             }
         }
-        final int sortedColumnCount = index;
 
-        Collections.sort( data,
-                          new Comparator<DynamicDataRow>() {
+        gridWidget.getData().sort( sortConfig );
 
-                              @SuppressWarnings({"rawtypes", "unchecked"})
-                              public int compare(DynamicDataRow leftRow,
-                                                 DynamicDataRow rightRow) {
-                                  int comparison = 0;
-                                  for ( int index = 0; index < sortedColumnCount; index++ ) {
-                                      DynamicColumn sortableHeader = sortOrderList[index];
-                                      Comparable leftColumnValue = leftRow.get( sortableHeader
-                                              .getColumnIndex() );
-                                      Comparable rightColumnValue = rightRow.get( sortableHeader
-                                              .getColumnIndex() );
-                                      comparison = (leftColumnValue == rightColumnValue) ? 0
-                                          : (leftColumnValue == null) ? -1
-                                              : (rightColumnValue == null) ? 1
-                                                  : leftColumnValue
-                                                          .compareTo( rightColumnValue );
-                                      if ( comparison != 0 ) {
-                                          switch ( sortableHeader.getSortDirection() ) {
-                                              case ASCENDING :
-                            break;
-                        case DESCENDING :
-                            comparison = -comparison;
-                            break;
-                        default :
-                            throw new IllegalStateException(
-                                                             "Sorting can only be enabled for ASCENDING or"
-                                                                     + " DESCENDING, not sortDirection ("
-                                                                     + sortableHeader.getSortDirection()
-                                                                     + ") ." );
-                    }
-                    return comparison;
-                }
-            }
-            return comparison;
-        }
-                          } );
-
-        gridWidget.getData().assertModelMerging();
-
-        // Request dependent children update cell values accordingly
-        if ( hasSystemControlledColumns != null ) {
-            hasSystemControlledColumns.updateSystemControlledColumnValues();
-        }
+        //Redraw whole table
         gridWidget.redraw();
         sidebarWidget.redraw();
     }

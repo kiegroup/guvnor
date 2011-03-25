@@ -16,26 +16,34 @@
 package org.drools.guvnor.client.widgets.decoratedgrid.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue;
+import org.drools.guvnor.client.widgets.decoratedgrid.SortConfiguration;
 
 import com.google.gwt.user.client.Command;
 
 /**
  * A simple container for rows of data.
  */
-public class DynamicData extends ArrayList<DynamicDataRow> {
+public class DynamicData
+    implements
+    Iterable<DynamicDataRow> {
 
-    private boolean           isMerged         = false;
+    private boolean              isMerged         = false;
 
-    private List<Boolean>     visibleColumns   = new ArrayList<Boolean>();
+    private List<Boolean>        visibleColumns   = new ArrayList<Boolean>();
 
-    private static final long serialVersionUID = 5061393855340039472L;
+    private static final long    serialVersionUID = 5061393855340039472L;
 
-    private Command           onRowChangeCommand;
+    private Command              onRowChangeCommand;
+
+    private List<DynamicDataRow> data             = new ArrayList<DynamicDataRow>();
 
     /**
      * Add column to data
@@ -48,7 +56,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
                           boolean isVisible) {
         for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
             CellValue< ? > cv = columnData.get( iRow );
-            get( iRow ).add( index,
+            data.get( iRow ).add( index,
                                   cv );
         }
         visibleColumns.add( index,
@@ -63,7 +71,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
      */
     public DynamicDataRow addRow() {
         DynamicDataRow row = new DynamicDataRow();
-        add( row );
+        data.add( row );
 
         //Execute command if set
         if ( onRowChangeCommand != null ) {
@@ -86,8 +94,8 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
         for ( CellValue< ? extends Comparable< ? >> cell : rowData ) {
             row.add( cell );
         }
-        add( index,
-             row );
+        data.add( index,
+                  row );
 
         //Execute command if set
         if ( onRowChangeCommand != null ) {
@@ -104,7 +112,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
      * @return DynamicDataRow The newly created row
      */
     public DynamicDataRow addRow(List<CellValue< ? extends Comparable< ? >>> rowData) {
-        return addRow( this.size(),
+        return addRow( data.size(),
                        rowData );
     }
 
@@ -122,7 +130,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
 
         //Delete grouped rows replacing with a single "grouped" row
         GroupedCellValue groupedCell;
-        DynamicDataRow row = get( startRowIndex );
+        DynamicDataRow row = data.get( startRowIndex );
         GroupedDynamicDataRow groupedRow = new GroupedDynamicDataRow();
         for ( int iCol = 0; iCol < row.size(); iCol++ ) {
             groupedCell = row.get( iCol ).convertToGroupedCell();
@@ -136,19 +144,19 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
 
         //Add individual cells to "grouped" row
         for ( int iRow = startRowIndex; iRow <= endRowIndex; iRow++ ) {
-            DynamicDataRow childRow = get( startRowIndex );
+            DynamicDataRow childRow = data.get( startRowIndex );
             groupedRow.addChildRow( childRow );
-            remove( childRow );
+            data.remove( childRow );
         }
-        remove( row );
-        add( startRowIndex,
+        data.remove( row );
+        data.add( startRowIndex,
                   groupedRow );
 
         //Execute command if set
         if ( onRowChangeCommand != null ) {
             onRowChangeCommand.execute();
         }
-        
+
         assertModelMerging();
     }
 
@@ -164,12 +172,12 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
     // mapping back to (0,0).
     public void assertModelIndexes() {
 
-        if ( size() == 0 ) {
+        if ( data.size() == 0 ) {
             return;
         }
 
-        for ( int iRow = 0; iRow < size(); iRow++ ) {
-            DynamicDataRow row = get( iRow );
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
 
             int colCount = 0;
             for ( int iCol = 0; iCol < row.size(); iCol++ ) {
@@ -186,12 +194,12 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
                         newRow = iRow;
                         newCol = colCount++;
 
-                        CellValue< ? extends Comparable< ? >> cell = get( newRow ).get( newCol );
+                        CellValue< ? extends Comparable< ? >> cell = data.get( newRow ).get( newCol );
                         cell.setPhysicalCoordinate( new Coordinate( iRow,
                                                                     iCol ) );
 
                     } else {
-                        DynamicDataRow priorRow = get( iRow - 1 );
+                        DynamicDataRow priorRow = data.get( iRow - 1 );
                         CellValue< ? extends Comparable< ? >> priorCell = priorRow.get( iCol );
                         Coordinate priorHtmlCoordinate = priorCell.getHtmlCoordinate();
                         newRow = priorHtmlCoordinate.getRow();
@@ -212,20 +220,20 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void assertModelMerging() {
 
-        if ( size() == 0 ) {
+        if ( data.size() == 0 ) {
             return;
         }
 
         //Remove merging first as it initialises all coordinates
         removeModelMerging();
 
-        final int COLUMNS = get( 0 ).size();
+        final int COLUMNS = data.get( 0 ).size();
 
         //Only apply merging if merged
         if ( isMerged ) {
 
             int minRowIndex = 0;
-            int maxRowIndex = size();
+            int maxRowIndex = data.size();
 
             //Add an empty row to the end of the data to simplify detection of merged cells that run to the end of the table
             DynamicDataRow blankRow = new DynamicDataRow();
@@ -235,16 +243,16 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
                                               iCol );
                 blankRow.add( cv );
             }
-            add( blankRow );
+            data.add( blankRow );
             maxRowIndex++;
 
             //Look in columns for cells with identical values
             for ( int iCol = 0; iCol < COLUMNS; iCol++ ) {
-                CellValue< ? > cell1 = get( minRowIndex ).get( iCol );
+                CellValue< ? > cell1 = data.get( minRowIndex ).get( iCol );
                 CellValue< ? > cell2 = null;
                 for ( int iRow = minRowIndex + 1; iRow < maxRowIndex; iRow++ ) {
                     cell1.setRowSpan( 1 );
-                    cell2 = get( iRow ).get( iCol );
+                    cell2 = data.get( iRow ).get( iCol );
 
                     //Merge if both cells contain the same value and neither is grouped
                     boolean bSplit = true;
@@ -290,7 +298,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
             }
 
             //Remove dummy blank row
-            remove( blankRow );
+            data.remove( blankRow );
 
         }
 
@@ -305,8 +313,8 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
      * @param index
      */
     public void deleteColumn(int index) {
-        for ( int iRow = 0; iRow < size(); iRow++ ) {
-            DynamicDataRow row = get( iRow );
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
             row.remove( index );
         }
         visibleColumns.remove( index );
@@ -320,7 +328,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
      * @return
      */
     public CellValue< ? extends Comparable< ? >> get(Coordinate c) {
-        return get( c.getRow() ).get( c.getCol() );
+        return data.get( c.getRow() ).get( c.getCol() );
     }
 
     /**
@@ -332,14 +340,14 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
      */
     public DynamicData getFlattenedData() {
         DynamicData dataClone = new DynamicData();
-        for ( int iRow = 0; iRow < size(); iRow++ ) {
-            DynamicDataRow row = get( iRow );
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
             if ( row instanceof GroupedDynamicDataRow ) {
                 List<DynamicDataRow> expandedRow = expandGroupedRow( row,
                                                                       true );
-                dataClone.addAll( expandedRow );
+                dataClone.data.addAll( expandedRow );
             } else {
-                dataClone.add( row );
+                dataClone.data.add( row );
             }
         }
         return dataClone;
@@ -354,9 +362,8 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
         return isMerged;
     }
 
-    @Override
     public DynamicDataRow remove(int index) {
-        DynamicDataRow row = super.remove( index );
+        DynamicDataRow row = data.remove( index );
 
         //Execute command if set
         if ( onRowChangeCommand != null ) {
@@ -364,18 +371,6 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
         }
 
         return row;
-    }
-
-    @Override
-    public boolean remove(Object o) {
-        boolean result = super.remove( o );
-
-        //Execute command if set
-        if ( onRowChangeCommand != null ) {
-            onRowChangeCommand.execute();
-        }
-
-        return result;
     }
 
     /**
@@ -393,7 +388,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
 
         //Check if rows need to be recursively expanded
         boolean bRecursive = true;
-        DynamicDataRow row = get( startRowIndex );
+        DynamicDataRow row = data.get( startRowIndex );
         for ( int iCol = 0; iCol < row.size(); iCol++ ) {
             CellValue< ? > cv = row.get( iCol );
             if ( cv instanceof GroupedCellValue ) {
@@ -405,7 +400,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
         List<DynamicDataRow> expandedRow = expandGroupedRow( row,
                                                              bRecursive );
         remove( startRowIndex );
-        addAll( startRowIndex,
+        data.addAll( startRowIndex,
                      expandedRow );
 
         //Execute command if set
@@ -416,7 +411,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
         assertModelMerging();
 
         //If the row is replaced with another grouped row ensure the row can be expanded
-        row = get( startRowIndex );
+        row = data.get( startRowIndex );
         boolean hasCellToExpand = false;
         for ( CellValue< ? > cell : row ) {
             if ( cell instanceof GroupedCellValue ) {
@@ -447,7 +442,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
         if ( c == null ) {
             throw new IllegalArgumentException( "c cannot be null" );
         }
-        get( c.getRow() ).get( c.getCol() ).setValue( value );
+        data.get( c.getRow() ).get( c.getCol() ).setValue( value );
     }
 
     /**
@@ -527,13 +522,13 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
 
     //Find the bottom coordinate of a merged cell
     private Coordinate findMergedCellExtent(Coordinate c) {
-        if ( c.getRow() == size() - 1 ) {
+        if ( c.getRow() == data.size() - 1 ) {
             return c;
         }
         Coordinate nc = new Coordinate( c.getRow() + 1,
                                         c.getCol() );
         CellValue< ? > newCell = get( nc );
-        while ( newCell.getRowSpan() == 0 && nc.getRow() < size() - 1 ) {
+        while ( newCell.getRowSpan() == 0 && nc.getRow() < data.size() - 1 ) {
             nc = new Coordinate( nc.getRow() + 1,
                                      nc.getCol() );
             newCell = get( nc );
@@ -555,7 +550,7 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
 
         //Any rows that are grouped need row span of zero
         for ( int iRow = iStartRowIndex; iRow < iEndRowIndex; iRow++ ) {
-            DynamicDataRow row = get( iRow );
+            DynamicDataRow row = data.get( iRow );
             row.get( iColIndex ).setRowSpan( 0 );
         }
         cell1.setRowSpan( iEndRowIndex - iStartRowIndex );
@@ -575,13 +570,13 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
      */
     void removeModelGrouping() {
 
-        for ( int iRow = 0; iRow < size(); iRow++ ) {
-            DynamicDataRow row = get( iRow );
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
             if ( row instanceof GroupedDynamicDataRow ) {
                 List<DynamicDataRow> expandedRow = expandGroupedRow( row,
-                                                                      true );
+                                                                     true );
                 remove( iRow );
-                addAll( iRow,
+                data.addAll( iRow,
                              expandedRow );
                 iRow = iRow + expandedRow.size() - 1;
             }
@@ -594,8 +589,8 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
      */
     void removeModelMerging() {
 
-        for ( int iRow = 0; iRow < size(); iRow++ ) {
-            DynamicDataRow row = get( iRow );
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
 
             for ( int iCol = 0; iCol < row.size(); iCol++ ) {
                 CellValue< ? > cell = row.get( iCol );
@@ -610,6 +605,88 @@ public class DynamicData extends ArrayList<DynamicDataRow> {
 
         // Set indexes after merging has been corrected
         assertModelIndexes();
+    }
+
+    public int size() {
+        return data.size();
+    }
+
+    public void clear() {
+        data.clear();
+    }
+
+    public DynamicDataRow get(int index) {
+        return data.get( index );
+    }
+
+    public Iterator<DynamicDataRow> iterator() {
+        return data.iterator();
+    }
+
+    public int indexOf(DynamicDataRow row) {
+        return data.indexOf( row );
+    }
+
+    public void sort(final List<SortConfiguration> sortConfig) {
+
+        //Sort Configuration needs to be sorted itself by sortOrder first
+        Collections.sort( sortConfig,
+                          new Comparator<SortConfiguration>() {
+
+                              public int compare(SortConfiguration o1,
+                                                 SortConfiguration o2) {
+                                  Integer si1 = o1.getSortIndex();
+                                  Integer si2 = o2.getSortIndex();
+                                  return si1.compareTo( si2 );
+                              }
+
+                          } );
+
+        //Sort data
+        Collections.sort( data,
+                          new Comparator<DynamicDataRow>() {
+
+                              @SuppressWarnings({"rawtypes", "unchecked"})
+                              public int compare(DynamicDataRow leftRow,
+                                                 DynamicDataRow rightRow) {
+                                  int comparison = 0;
+                                  for ( int index = 0; index < sortConfig.size(); index++ ) {
+                                      SortConfiguration sc = sortConfig.get( index );
+                                      Comparable leftColumnValue = leftRow.get( sc.getColumnIndex() );
+                                      Comparable rightColumnValue = rightRow.get( sc.getColumnIndex() );
+                                      comparison =
+                                              (leftColumnValue == rightColumnValue) ? 0
+                                                  : (leftColumnValue == null) ? -1
+                                                      : (rightColumnValue == null) ? 1
+                                                          : leftColumnValue.compareTo( rightColumnValue );
+                                      if ( comparison != 0 ) {
+                                          switch ( sc.getSortDirection() ) {
+                                              case ASCENDING :
+                            break;
+                        case DESCENDING :
+                            comparison = -comparison;
+                            break;
+                        default :
+                            throw new IllegalStateException(
+                                                             "Sorting can only be enabled for ASCENDING or"
+                                                                     + " DESCENDING, not sortDirection ("
+                                                                     + sc.getSortDirection()
+                                                                     + ") ." );
+                    }
+                    return comparison;
+                }
+            }
+            return comparison;
+        }
+                          } );
+
+        //Execute command if set
+        if ( onRowChangeCommand != null ) {
+            onRowChangeCommand.execute();
+        }
+
+        assertModelMerging();
+
     }
 
 }

@@ -75,7 +75,7 @@ public class TemplateDataTableWidget extends Composite
         this.cellValueFactory = new TemplateDataCellValueFactory( sce );
 
         //Date converter is injected so a GWT compatible one can be used here and another in testing
-        this.cellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
+        TemplateDataCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
 
         initWidget( widget );
     }
