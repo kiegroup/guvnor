@@ -22,7 +22,6 @@ import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntryAbdera;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackage;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntry;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntryAbdera;
-import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
