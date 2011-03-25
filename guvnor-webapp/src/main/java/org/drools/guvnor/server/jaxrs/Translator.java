@@ -46,6 +46,7 @@ public class Translator {
     public static QName ARCHIVED = new QName(NS, "archived");
     public static QName UUID = new QName(NS, "uuid");
     public static QName STATE = new QName(NS, "state");
+    public static QName FORMAT = new QName(NS, "format");
 
     public static Asset ToAsset(AssetItem a, UriInfo uriInfo) {
         AssetMetadata metadata = new AssetMetadata();
@@ -209,7 +210,59 @@ public class Translator {
         
         return e;
     }
-    
+    public static org.apache.abdera.model.Entry ToAssetEntryAbdera(AssetItem a, UriInfo uriInfo) {
+        UriBuilder base;
+        if(a.isHistoricalVersion()) {
+        	base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path("versions").path(Long.toString(a.getVersionNumber()));
+        } else {
+        	base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path(a.getName());
+        }
+        
+        Factory factory = Abdera.getNewFactory();
+
+        org.apache.abdera.model.Entry e = factory.getAbdera().newEntry();
+        e.setTitle(a.getTitle());
+        e.setSummary(a.getDescription());
+        e.setPublished(new Date(a.getLastModified().getTimeInMillis()));
+        e.setBaseUri(base.clone().build().toString());       
+        e.addContributor(a.getLastContributor());
+
+        e.setId(base.clone().build().toString());
+        
+/*        Iterator<AssetItem> i = p.getAssets();
+        while (i.hasNext()) {
+            AssetItem item = i.next();
+            org.apache.abdera.model.Link l = factory.newLink();
+            l.setHref((base.clone().path("assets").path(item.getName())).build().toString());
+            l.setTitle(item.getTitle());
+            l.setRel("asset");
+            e.addLink(l);
+        }*/
+
+        //generate meta data
+        ExtensibleElement extension = e.addExtension(METADATA);
+        ExtensibleElement childExtension = extension.addExtension(ARCHIVED);
+        //childExtension.setAttributeValue("type", ArtifactsRepository.METADATA_TYPE_STRING);
+        childExtension.addSimpleExtension(VALUE, a.isArchived()?"true":"false");
+        
+        childExtension = extension.addExtension(UUID);
+        childExtension.addSimpleExtension(VALUE, a.getUUID());
+       	
+        childExtension = extension.addExtension(STATE);
+        childExtension.addSimpleExtension(VALUE, a.getState()== null?"" : a.getState().getName());
+
+        childExtension = extension.addExtension(FORMAT);
+        childExtension.addSimpleExtension(VALUE, a.getFormat());
+
+        org.apache.abdera.model.Content content = factory.newContent();
+        content.setSrc(base.clone().path("binary").build().toString());
+        content.setMimeType("application/octet-stream");
+        content.setContentType(Type.MEDIA);
+		e.setContentElement(content);
+
+		return e;
+    }
+
     public static Entry ToAssetEntry(AssetItem a, UriInfo uriInfo) {
         Entry e = new Entry();
         e.setTitle(a.getTitle());

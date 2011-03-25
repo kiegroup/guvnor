@@ -18,6 +18,7 @@ package org.drools.guvnor.server.jaxrs;
 
 import static org.drools.guvnor.server.jaxrs.Translator.ToAsset;
 import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntry;
+import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntryAbdera;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackage;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntry;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntryAbdera;
@@ -327,16 +328,16 @@ public class PackageResource extends Resource {
     }
        
     @GET
-    @Path("{packageName}/assets/{name}")
+    @Path("{packageName}/assets/{assetName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Entry getAssetByIdAsAtom(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
-        Entry ret = null;
+    public org.apache.abdera.model.Entry getAssetAsAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
+    	org.apache.abdera.model.Entry ret = null;
         PackageItem item = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
             AssetItem a = iter.next();
-            if (a.getName().equals(name)) {
-                ret = ToAssetEntry(a, uriInfo);
+            if (a.getName().equals(assetName)) {
+                ret = ToAssetEntryAbdera(a, uriInfo);
                 break;
             }
         }
@@ -344,15 +345,15 @@ public class PackageResource extends Resource {
     }
 
     @GET
-    @Path("{packageName}/assets/{name}")
+    @Path("{packageName}/assets/{assetName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Asset getAssetByIdAsJaxB(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
+    public Asset getAssetAsJaxB(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
         Asset ret = null;
         PackageItem item = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
             AssetItem a = iter.next();
-            if (a.getName().equals(name)) {
+            if (a.getName().equals(assetName)) {
                 ret = ToAsset(a, uriInfo);
                 break;
             }
@@ -361,15 +362,15 @@ public class PackageResource extends Resource {
     }
 
     @GET
-    @Path("{packageName}/assets/{name}/binary")
+    @Path("{packageName}/assets/{assetName}/binary")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public InputStream getBinaryAssetById(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
+    public InputStream getAssetBinary(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
         InputStream ret = null;
         PackageItem item = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
             AssetItem a = iter.next();
-            if (a.getName().equals(name)) {
+            if (a.getName().equals(assetName)) {
                 ret = a.getBinaryContentAttachment();
                 break;
             }
@@ -379,16 +380,16 @@ public class PackageResource extends Resource {
 
 
     @GET
-    @Path("{packageName}/assets/{name}/source")
+    @Path("{packageName}/assets/{assetName}/source")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getSourceAssetById(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
+    public String getAssetSource(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
         String ret = null;
         if (repository.containsPackage(packageName)) {
             PackageItem item = repository.loadPackage(packageName);
             Iterator<AssetItem> iter = item.getAssets();
             while (iter.hasNext()) {
                 AssetItem a = iter.next();
-                if (a.getName().equals(name)) {
+                if (a.getName().equals(assetName)) {
                     ret = a.getContent();
                     break;
                 }
@@ -400,16 +401,16 @@ public class PackageResource extends Resource {
     }
 
     @PUT
-    @Path("{packageName}/assets/{name}")
+    @Path("{packageName}/assets/{assetName}")
     @Consumes(MediaType.APPLICATION_ATOM_XML)
-    public void updateAssetFromAtom(@PathParam ("packageName") String packageName, @PathParam("name") String name, Entry assetEntry)
+    public void updateAssetFromAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName, Entry assetEntry)
     {
         AssetItem ai = null;
         PackageItem item = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
             AssetItem a = iter.next();
-            if (a.getName().equals(name)) {
+            if (a.getName().equals(assetName)) {
                 ai = a;
                 break;
             }
@@ -425,16 +426,16 @@ public class PackageResource extends Resource {
     }
 
     @PUT
-    @Path("{packageName}/assets/{name}")
+    @Path("{packageName}/assets/{assetName}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void updateAssetFromJAXB(@PathParam ("packageName") String packageName, @PathParam("name") String name, Asset asset)
+    public void updateAssetFromJAXB(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName, Asset asset)
     {
         AssetItem ai = null;
         PackageItem pi = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = pi.getAssets();
         while (iter.hasNext()) {
             AssetItem item = iter.next();
-            if (item.getName().equals(name)) {
+            if (item.getName().equals(assetName)) {
                 ai = item;
                 break;
             }
@@ -449,14 +450,14 @@ public class PackageResource extends Resource {
     }
 
     @DELETE
-    @Path("{packageName}/assets/{name}/")
-    public void deleteAsset(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
+    @Path("{packageName}/assets/{assetName}/")
+    public void deleteAsset(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
         AssetItem asset = null;
         PackageItem item = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
             AssetItem a = iter.next();
-            if (a.getName().equals(name)) {
+            if (a.getName().equals(assetName)) {
                 asset = a;
                 break;
             }
