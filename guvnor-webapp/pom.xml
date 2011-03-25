@@ -16,7 +16,6 @@
   <name>Guvnor web application</name>
 
   <build>
-    <finalName>guvnor-webapp</finalName>
     <plugins>
       <plugin>
         <!--use -Dgwt.compiler.skip=true to skip GWT compiler-->
@@ -249,7 +248,7 @@
       <groupId>javax.el</groupId>
       <artifactId>el-ri</artifactId>
     </dependency>
-      <!-- REST dependencies -->
+    <!-- REST dependencies -->
     <dependency>
         <groupId>javax.ws.rs</groupId>
         <artifactId>jsr311-api</artifactId>

@@ -32,9 +32,10 @@
           </execution>
         </executions>
         <configuration>
+          <finalName>guvnor-${pom.version}</finalName>
           <descriptors>
-            <descriptor>src/main/assembly/assembly-guvnor-jbossas-5_1.xml</descriptor>
-            <descriptor>src/main/assembly/assembly-guvnor-jbossas-6_0.xml</descriptor>
+            <descriptor>src/main/assembly/assembly-guvnor-jboss-as-5_1.xml</descriptor>
+            <descriptor>src/main/assembly/assembly-guvnor-jboss-as-6_0.xml</descriptor>
           </descriptors>
         </configuration>
       </plugin>
