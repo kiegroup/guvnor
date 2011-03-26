@@ -510,11 +510,15 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
     
     public void changeState(java.lang.String p0,
-                            java.lang.String p1,
-                            boolean p2) {
+                            java.lang.String p1) {
         getAssetService().changeState( p0,
-                                  p1,
-                                  p2 );
+                                  p1);
+    }
+    
+    public void changePackageState(java.lang.String p0,
+                            java.lang.String p1) {
+        getAssetService().changePackageState( p0,
+                                  p1 );
     }
     
     public java.util.List loadDiscussionForAsset(java.lang.String p0) {

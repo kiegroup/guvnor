@@ -51,5 +51,6 @@ public interface AssetServiceAsync {
     public void loadDiscussionForAsset(java.lang.String p0, AsyncCallback cb);
     public void addToDiscussionForAsset(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void clearAllDiscussionsForAsset(java.lang.String p0, AsyncCallback cb);
-    public void changeState(java.lang.String p0, java.lang.String p1, boolean p2, AsyncCallback cb);
+    public void changeState(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
+    public void changePackageState(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
 }

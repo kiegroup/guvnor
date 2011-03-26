@@ -1649,8 +1649,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertEquals( StateItem.DRAFT_STATE_NAME,
                       asset.metaData.status );
         repositoryAssetService.changeState( ruleUUID,
-                          "testState",
-                          false );
+                                            "testState" );
         asset = repositoryAssetService.loadRuleAsset( ruleUUID );
         assertEquals( "testState",
                       asset.metaData.status );
@@ -1659,9 +1658,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       asset.metaData.status );
 
         impl.createState( "testState2" );
-        repositoryAssetService.changeState( packagUUID,
-                          "testState2",
-                          true );
+        repositoryAssetService.changePackageState( packagUUID,
+                                                   "testState2" );
 
         PackageConfigData pkg = repositoryPackageService.loadPackageConfig( packagUUID );
         assertEquals( "testState2",
@@ -2326,7 +2324,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       dr.size() );
 
         List<DiscussionRecord> dr_ = repositoryAssetService.addToDiscussionForAsset( rule1.getUUID(),
-                                                                   "This is a note" );
+                                                                                     "This is a note" );
         assertEquals( 1,
                       dr_.size() );
         assertNotNull( dr_.get( 0 ).author );
@@ -2334,7 +2332,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       dr_.get( 0 ).note );
         Thread.sleep( 100 );
         repositoryAssetService.addToDiscussionForAsset( rule1.getUUID(),
-                                      "This is a note2" );
+                                                        "This is a note2" );
 
         List<DiscussionRecord> d_ = repositoryAssetService.loadDiscussionForAsset( rule1.getUUID() );
         assertEquals( 2,
@@ -2350,7 +2348,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         rule1.checkin( "" );
 
         repositoryAssetService.addToDiscussionForAsset( rule1.getUUID(),
-                                      "This is a note2" );
+                                                        "This is a note2" );
         d_ = repositoryAssetService.loadDiscussionForAsset( rule1.getUUID() );
         assertEquals( 3,
                       d_.size() );
@@ -2366,7 +2364,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       d_.size() );
 
         repositoryAssetService.addToDiscussionForAsset( rule1.getUUID(),
-                                      "This is a note2" );
+                                                        "This is a note2" );
         d_ = repositoryAssetService.loadDiscussionForAsset( rule1.getUUID() );
         assertEquals( 1,
                       d_.size() );
@@ -4425,8 +4423,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                    "testCategoryPackage",
                                    AssetFormats.DRL );
         repositoryAssetService.changeState( uuid,
-                          status,
-                          false );
+                                            status );
 
         uuid = impl.createNewRule( "testTextRule2",
                                    "testCategoryRule2",
@@ -4434,8 +4431,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                    "testCategoryPackage",
                                    AssetFormats.DRL );
         repositoryAssetService.changeState( uuid,
-                          status,
-                          false );
+                                            status );
 
         uuid = impl.createNewRule( "testTextRule3",
                                    "testCategoryRule3",
@@ -4443,8 +4439,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                    "testCategoryPackage",
                                    AssetFormats.DRL );
         repositoryAssetService.changeState( uuid,
-                          status,
-                          false );
+                                            status );
 
         StatePageRequest request = new StatePageRequest( status,
                                                          0,
@@ -4492,8 +4487,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                    "testCategoryPackage",
                                    AssetFormats.DRL );
         repositoryAssetService.changeState( uuid,
-                          status,
-                          false );
+                                            status );
 
         uuid = impl.createNewRule( "testTextRule2",
                                    "testCategoryRule2",
@@ -4501,8 +4495,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                    "testCategoryPackage",
                                    AssetFormats.DRL );
         repositoryAssetService.changeState( uuid,
-                          status,
-                          false );
+                                            status );
 
         uuid = impl.createNewRule( "testTextRule3",
                                    "testCategoryRule3",
@@ -4510,8 +4503,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                    "testCategoryPackage",
                                    AssetFormats.DRL );
         repositoryAssetService.changeState( uuid,
-                          status,
-                          false );
+                                            status );
 
         StatePageRequest request = new StatePageRequest( status,
                                                          0,

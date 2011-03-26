@@ -22,15 +22,18 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -43,11 +46,13 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.IValidating;
+import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.AssetFormatHelper;
 import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.AssetPageRowPopulator;
 import org.drools.guvnor.server.util.BuilderResultHelper;
+import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.QueryPageRowFactory;
@@ -175,12 +180,12 @@ public class RepositoryAssetOperations {
         // historical versions, look at this nasty bit of code.
         List<TableDataRow> result = new ArrayList<TableDataRow>();
         while ( it.hasNext() ) {
-        	VersionableItem historical = (VersionableItem) it.next();
+            VersionableItem historical = (VersionableItem) it.next();
             long versionNumber = historical.getVersionNumber();
             if ( isHistory( item,
                             versionNumber ) ) {
-                result.add( createHistoricalRow(result,
-                                                 historical));
+                result.add( createHistoricalRow( result,
+                                                 historical ) );
             }
         }
 
@@ -198,7 +203,7 @@ public class RepositoryAssetOperations {
     }
 
     private TableDataRow createHistoricalRow(List<TableDataRow> result,
-    		VersionableItem historical) {
+                                             VersionableItem historical) {
         final DateFormat dateFormatter = DateFormat.getInstance();
         TableDataRow tableDataRow = new TableDataRow();
         tableDataRow.id = historical.getVersionSnapshotUUID();
@@ -707,7 +712,7 @@ public class RepositoryAssetOperations {
 
         meta.createdDate = calendarToDate( item.getCreatedDate() );
         meta.lastModifiedDate = calendarToDate( item.getLastModified() );
-        
+
         //problematic implementation of getPrecedingVersion and getPrecedingVersion().
         //commented out temporarily as this is used by the front end. 
         //meta.hasPreceedingVersion = item.getPrecedingVersion() != null;
@@ -729,6 +734,44 @@ public class RepositoryAssetOperations {
             return null;
         }
         return createdDate.getTime();
+    }
+
+    protected void clearAllDiscussionsForAsset(final String assetId) {
+        RulesRepository repo = getRulesRepository();
+        AssetItem asset = repo.loadAssetByUUID( assetId );
+        asset.updateStringProperty( "",
+                                    "discussion" );
+        repo.save();
+
+        push( "discussion",
+              assetId );
+    }
+
+    protected List<DiscussionRecord> addToDiscussionForAsset(String assetId,
+                                                             String comment) {
+        RulesRepository repo = getRulesRepository();
+        AssetItem asset = repo.loadAssetByUUID( assetId );
+        Discussion dp = new Discussion();
+        List<DiscussionRecord> discussion = dp.fromString( asset.getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
+        discussion.add( new DiscussionRecord( repo.getSession().getUserID(),
+                                              StringEscapeUtils.escapeXml( comment ) ) );
+        asset.updateStringProperty( dp.toString( discussion ),
+                                    Discussion.DISCUSSION_PROPERTY_KEY,
+                                    false );
+        repo.save();
+
+        push( "discussion",
+              assetId );
+
+        MailboxService.getInstance().recordItemUpdated( asset );
+
+        return discussion;
+    }
+
+    private void push(String messageType,
+                      String message) {
+        Backchannel.getInstance().publish( new PushResponse( messageType,
+                                                             message ) );
     }
 
 }

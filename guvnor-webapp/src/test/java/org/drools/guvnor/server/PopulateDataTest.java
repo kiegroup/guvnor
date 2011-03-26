@@ -165,16 +165,14 @@ public class PopulateDataTest extends GuvnorTestBase {
                                           "com.billasurf.manufacturing",
                                           AssetFormats.BUSINESS_RULE );
         repositoryAssetService.changeState( uuid,
-                                            "Pending",
-                                            false );
+                                            "Pending");
         uuid = serv.createNewRule( "Premium_Colour_Combinations",
                                    "This defines XXX.",
                                    "Manufacturing/Boards",
                                    "com.billasurf.manufacturing",
                                    AssetFormats.BUSINESS_RULE );
         repositoryAssetService.changeState( uuid,
-                                            "Approved",
-                                            false );
+                                            "Approved");
         uuid = serv.createNewRule( "Fibreglass supplier selection",
                                    "This defines XXX.",
                                    "Manufacturing/Boards",
