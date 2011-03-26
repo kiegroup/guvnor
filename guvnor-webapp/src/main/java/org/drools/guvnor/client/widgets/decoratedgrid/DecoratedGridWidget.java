@@ -299,7 +299,6 @@ public abstract class DecoratedGridWidget<T> extends Composite {
             columns.get( index ).setVisible( isVisible );
             gridWidget.getData().setColumnVisibility( index,
                                                       isVisible );
-            gridWidget.getData().assertModelIndexes();
             gridWidget.showColumn( index );
             headerWidget.redraw();
         } else if ( !isVisible
@@ -307,7 +306,6 @@ public abstract class DecoratedGridWidget<T> extends Composite {
             columns.get( index ).setVisible( isVisible );
             gridWidget.getData().setColumnVisibility( index,
                                                       isVisible );
-            gridWidget.getData().assertModelIndexes();
             gridWidget.hideColumn( index );
             headerWidget.redraw();
         }

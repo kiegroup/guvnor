@@ -279,19 +279,17 @@ public abstract class MergableGridWidget<T> extends Widget
         clearSelection();
 
         //Delete row data
-        data.remove( index );
+        data.deleteRow( index );
 
         // Partial redraw
         if ( !data.isMerged() ) {
             // Single row when not merged
             removeRowElement( index );
-            data.assertModelIndexes();
         } else {
             // Affected rows when merged
             removeRowElement( index );
 
             if ( data.size() > 0 ) {
-                data.assertModelMerging();
                 int minRedrawRow = findMinRedrawRow( index - 1 );
                 int maxRedrawRow = findMaxRedrawRow( index - 1 ) + 1;
                 if ( maxRedrawRow > data.size() - 1 ) {
@@ -442,12 +440,10 @@ public abstract class MergableGridWidget<T> extends Widget
         // Partial redraw
         if ( !data.isMerged() ) {
             // Only new row when not merged
-            data.assertModelIndexes();
             createRowElement( index,
                               row );
         } else {
             // Affected rows when merged
-            data.assertModelMerging();
             createEmptyRowElement( index );
             redrawRows( minRedrawRow,
                         maxRedrawRow );
@@ -542,7 +538,6 @@ public abstract class MergableGridWidget<T> extends Widget
         }
 
         // Partial redraw
-        data.assertModelMerging();
         int baseRowIndex = selections.first().getCoordinate().getRow();
         int minRedrawRow = findMinRedrawRow( baseRowIndex );
         int maxRedrawRow = findMaxRedrawRow( baseRowIndex );
@@ -979,7 +974,6 @@ public abstract class MergableGridWidget<T> extends Widget
         } else {
             applyModelGrouping( startCell,
                                 true );
-            data.assertModelMerging();
         }
 
     }

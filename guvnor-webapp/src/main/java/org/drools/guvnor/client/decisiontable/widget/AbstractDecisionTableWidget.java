@@ -391,9 +391,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                  false );
         }
 
-        // Ensure cells are indexed correctly for start-up data
+        // Ensure System Controlled values are correctly initialised
         updateSystemControlledColumnValues();
-        widget.getGridWidget().getData().assertModelIndexes();
 
         // Draw header first as the size of child Elements depends upon it
         widget.getHeaderWidget().redraw();
@@ -495,7 +494,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
                              editColumn );
 
         if ( bRedrawColumn ) {
-            widget.getGridWidget().redrawColumn( column.getColumnIndex() );
+            int maxColumnIndex = widget.getGridWidget().getColumns().size() - 1;
+            widget.getGridWidget().redrawColumns( column.getColumnIndex(),
+                                                  maxColumnIndex );
         }
         if ( bRedrawHeader ) {
             // Schedule redraw event after column has been redrawn
@@ -572,7 +573,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
                              editColumn );
 
         if ( bRedrawColumn ) {
-            widget.getGridWidget().redrawColumn( column.getColumnIndex() );
+            int maxColumnIndex = widget.getGridWidget().getColumns().size() - 1;
+            widget.getGridWidget().redrawColumns( column.getColumnIndex(),
+                                                  maxColumnIndex );
         }
         if ( bRedrawHeader ) {
             // Schedule redraw event after column has been redrawn
@@ -656,7 +659,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 origColIndex = editColIndex;
                 editColIndex = temp;
             }
-            widget.getGridWidget().getData().assertModelIndexes();
             widget.getGridWidget().redrawColumns( editColIndex,
                                                   origColIndex );
 
@@ -689,7 +691,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
                              editColumn );
 
         if ( bRedrawColumn ) {
-            widget.getGridWidget().redrawColumn( column.getColumnIndex() );
+            int maxColumnIndex = widget.getGridWidget().getColumns().size() - 1;
+            widget.getGridWidget().redrawColumns( column.getColumnIndex(),
+                                                  maxColumnIndex );
         }
         if ( bRedrawHeader ) {
             // Schedule redraw event after column has been redrawn
@@ -1102,6 +1106,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
     // Ensure the Column cell type and corresponding values are correct
     private void updateCellsForDataType(final DTColumnConfig editColumn,
                                         final DynamicColumn<DTColumnConfig> column) {
+
+        //Grouping needs to be removed
+        if ( widget.getGridWidget().getData().isMerged() ) {
+            widget.getGridWidget().toggleMerging();
+        }
+
         DynamicData data = widget.getGridWidget().getData();
         column.setCell( cellFactory.getCell( editColumn ) );
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
@@ -1112,8 +1122,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                      column.getColumnIndex() ) );
         }
 
-        // Setting CellValues mashes the indexes
-        widget.getGridWidget().getData().assertModelIndexes();
     }
 
     // Ensure the values in a column are within the Value List

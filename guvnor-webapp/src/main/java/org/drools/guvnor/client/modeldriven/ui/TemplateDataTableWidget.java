@@ -227,9 +227,6 @@ public class TemplateDataTableWidget extends Composite
                                     row );
         }
 
-        // Ensure cells are indexed correctly for start-up data
-        widget.getGridWidget().getData().assertModelIndexes();
-
         // Draw header first as the size of child Elements depends upon it
         widget.getHeaderWidget().redraw();
 

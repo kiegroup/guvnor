@@ -61,7 +61,8 @@ public class DynamicData
         }
         visibleColumns.add( index,
                             isVisible );
-        assertModelIndexes();
+
+        assertModelMerging();
     }
 
     /**
@@ -78,6 +79,7 @@ public class DynamicData
             onRowChangeCommand.execute();
         }
 
+        assertModelMerging();
         return row;
     }
 
@@ -102,6 +104,7 @@ public class DynamicData
             onRowChangeCommand.execute();
         }
 
+        assertModelMerging();
         return row;
     }
 
@@ -160,9 +163,271 @@ public class DynamicData
         assertModelMerging();
     }
 
+    public void clear() {
+        data.clear();
+    }
+
     /**
-     * Ensure indexes in the model are correct
+     * Delete column data
+     * 
+     * @param index
      */
+    public void deleteColumn(int index) {
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            row.remove( index );
+        }
+        visibleColumns.remove( index );
+        assertModelMerging();
+    }
+
+    public DynamicDataRow deleteRow(int index) {
+        DynamicDataRow row = data.remove( index );
+
+        //Execute command if set
+        if ( onRowChangeCommand != null ) {
+            onRowChangeCommand.execute();
+        }
+
+        assertModelMerging();
+        return row;
+    }
+
+    /**
+     * Get the CellValue at the given coordinate
+     * 
+     * @param c
+     * @return
+     */
+    public CellValue< ? extends Comparable< ? >> get(Coordinate c) {
+        return data.get( c.getRow() ).get( c.getCol() );
+    }
+
+    public DynamicDataRow get(int index) {
+        return data.get( index );
+    }
+
+    /**
+     * Return grid's data. Grouping in the data will be expanded and can
+     * therefore can be used prior to populate the underlying data structures
+     * prior to persisting.
+     * 
+     * @return data
+     */
+    public DynamicData getFlattenedData() {
+        DynamicData dataClone = new DynamicData();
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            if ( row instanceof GroupedDynamicDataRow ) {
+                List<DynamicDataRow> expandedRow = expandGroupedRow( row,
+                                                                      true );
+                dataClone.data.addAll( expandedRow );
+            } else {
+                dataClone.data.add( row );
+            }
+        }
+        return dataClone;
+    }
+
+    public int indexOf(DynamicDataRow row) {
+        return data.indexOf( row );
+    }
+
+    /**
+     * Return the state of merging
+     * 
+     * @return
+     */
+    public boolean isMerged() {
+        return isMerged;
+    }
+
+    public Iterator<DynamicDataRow> iterator() {
+        return data.iterator();
+    }
+
+    /**
+     * Remove grouping by expanding applicable rows
+     * 
+     * @param startCell
+     * @return
+     */
+    @SuppressWarnings("rawtypes")
+    public List<DynamicDataRow> removeModelGrouping(CellValue< ? > startCell) {
+
+        int startRowIndex = startCell.getCoordinate().getRow();
+
+        startCell.removeState( CellState.GROUPED );
+
+        //Check if rows need to be recursively expanded
+        boolean bRecursive = true;
+        DynamicDataRow row = data.get( startRowIndex );
+        for ( int iCol = 0; iCol < row.size(); iCol++ ) {
+            CellValue< ? > cv = row.get( iCol );
+            if ( cv instanceof GroupedCellValue ) {
+                bRecursive = !(bRecursive ^ ((GroupedCellValue) cv).hasMultipleValues());
+            }
+        }
+
+        //Delete "grouped" row and replace with individual rows
+        List<DynamicDataRow> expandedRow = expandGroupedRow( row,
+                                                             bRecursive );
+        deleteRow( startRowIndex );
+        data.addAll( startRowIndex,
+                     expandedRow );
+
+        //Execute command if set
+        if ( onRowChangeCommand != null ) {
+            onRowChangeCommand.execute();
+        }
+
+        assertModelMerging();
+
+        //If the row is replaced with another grouped row ensure the row can be expanded
+        row = data.get( startRowIndex );
+        boolean hasCellToExpand = false;
+        for ( CellValue< ? > cell : row ) {
+            if ( cell instanceof GroupedCellValue ) {
+                if ( cell.isGrouped() && cell.getRowSpan() > 0 ) {
+                    hasCellToExpand = true;
+                    break;
+                }
+            }
+        }
+        if ( !hasCellToExpand ) {
+            for ( CellValue< ? > cell : row ) {
+                if ( cell instanceof GroupedCellValue && cell.getRowSpan() == 1 ) {
+                    cell.addState( CellState.GROUPED );
+                }
+            }
+        }
+        return expandedRow;
+    }
+
+    /**
+     * Set the value at the specified coordinate
+     * 
+     * @param c
+     * @param value
+     */
+    public void set(Coordinate c,
+                    Object value) {
+        if ( c == null ) {
+            throw new IllegalArgumentException( "c cannot be null" );
+        }
+        data.get( c.getRow() ).get( c.getCol() ).setValue( value );
+        assertModelMerging();
+    }
+
+    /**
+     * Set whether a columns is Visible
+     * 
+     * @param index
+     *            index of column
+     * @param isVisible
+     *            True if the column is visible
+     */
+    public void setColumnVisibility(int index,
+                                    boolean isVisible) {
+        this.visibleColumns.set( index,
+                                 isVisible );
+        assertModelIndexes();
+    }
+
+    /**
+     * Set whether the grid's data is merged or not. Clearing merging within the
+     * data also clears grouping
+     * 
+     * @param isMerged
+     */
+    public void setMerged(boolean isMerged) {
+        this.isMerged = isMerged;
+        if ( isMerged ) {
+            assertModelMerging();
+        } else {
+            removeModelGrouping();
+            removeModelMerging();
+        }
+    }
+
+    /**
+     * Configure a command that can be executed whenever a row is added\deleted.
+     * This allows consumers of DynamicData to ensure column values are within
+     * keeping of their requirements. E.G. A Column containing a Row Number can
+     * be updated etc
+     * 
+     * @param cmd
+     */
+    public void setOnRowChangeCommand(Command cmd) {
+        this.onRowChangeCommand = cmd;
+    }
+
+    public int size() {
+        return data.size();
+    }
+
+    public void sort(final List<SortConfiguration> sortConfig) {
+
+        //Sort Configuration needs to be sorted itself by sortOrder first
+        Collections.sort( sortConfig,
+                          new Comparator<SortConfiguration>() {
+
+                              public int compare(SortConfiguration o1,
+                                                 SortConfiguration o2) {
+                                  Integer si1 = o1.getSortIndex();
+                                  Integer si2 = o2.getSortIndex();
+                                  return si1.compareTo( si2 );
+                              }
+
+                          } );
+
+        //Sort data
+        Collections.sort( data,
+                          new Comparator<DynamicDataRow>() {
+
+                              @SuppressWarnings({"rawtypes", "unchecked"})
+                              public int compare(DynamicDataRow leftRow,
+                                                 DynamicDataRow rightRow) {
+                                  int comparison = 0;
+                                  for ( int index = 0; index < sortConfig.size(); index++ ) {
+                                      SortConfiguration sc = sortConfig.get( index );
+                                      Comparable leftColumnValue = leftRow.get( sc.getColumnIndex() );
+                                      Comparable rightColumnValue = rightRow.get( sc.getColumnIndex() );
+                                      comparison =
+                                              (leftColumnValue == rightColumnValue) ? 0
+                                                  : (leftColumnValue == null) ? -1
+                                                      : (rightColumnValue == null) ? 1
+                                                          : leftColumnValue.compareTo( rightColumnValue );
+                                      if ( comparison != 0 ) {
+                                          switch ( sc.getSortDirection() ) {
+                                              case ASCENDING :
+                            break;
+                        case DESCENDING :
+                            comparison = -comparison;
+                            break;
+                        default :
+                            throw new IllegalStateException(
+                                                             "Sorting can only be enabled for ASCENDING or"
+                                                                     + " DESCENDING, not sortDirection ("
+                                                                     + sc.getSortDirection()
+                                                                     + ") ." );
+                    }
+                    return comparison;
+                }
+            }
+            return comparison;
+        }
+                          } );
+
+        //Execute command if set
+        if ( onRowChangeCommand != null ) {
+            onRowChangeCommand.execute();
+        }
+
+        assertModelMerging();
+
+    }
+
     // Here lays a can of worms! Each cell in the Decision Table has three
     // coordinates: (1) The physical coordinate, (2) The coordinate relating to
     // the HTML table element and (3) The coordinate mapping a HTML table
@@ -170,7 +435,7 @@ public class DynamicData
     // the (1) physical coordinate (0,0) which equates to (2) HTML element (0,1)
     // in which case the cell at physical coordinate (0,1) would have a (3)
     // mapping back to (0,0).
-    public void assertModelIndexes() {
+    private void assertModelIndexes() {
 
         if ( data.size() == 0 ) {
             return;
@@ -214,11 +479,9 @@ public class DynamicData
         }
     }
 
-    /**
-     * Ensure merging is reflected in the entire model
-     */
+    //Ensure merging and indexing is reflected in the entire model
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public void assertModelMerging() {
+    private void assertModelMerging() {
 
         if ( data.size() == 0 ) {
             return;
@@ -305,186 +568,6 @@ public class DynamicData
         // Set indexes after merging has been corrected
         assertModelIndexes();
 
-    }
-
-    /**
-     * Delete column data
-     * 
-     * @param index
-     */
-    public void deleteColumn(int index) {
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DynamicDataRow row = data.get( iRow );
-            row.remove( index );
-        }
-        visibleColumns.remove( index );
-        assertModelIndexes();
-    }
-
-    /**
-     * Get the CellValue at the given coordinate
-     * 
-     * @param c
-     * @return
-     */
-    public CellValue< ? extends Comparable< ? >> get(Coordinate c) {
-        return data.get( c.getRow() ).get( c.getCol() );
-    }
-
-    /**
-     * Return grid's data. Grouping in the data will be expanded and can
-     * therefore can be used prior to populate the underlying data structures
-     * prior to persisting.
-     * 
-     * @return data
-     */
-    public DynamicData getFlattenedData() {
-        DynamicData dataClone = new DynamicData();
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DynamicDataRow row = data.get( iRow );
-            if ( row instanceof GroupedDynamicDataRow ) {
-                List<DynamicDataRow> expandedRow = expandGroupedRow( row,
-                                                                      true );
-                dataClone.data.addAll( expandedRow );
-            } else {
-                dataClone.data.add( row );
-            }
-        }
-        return dataClone;
-    }
-
-    /**
-     * Return the state of merging
-     * 
-     * @return
-     */
-    public boolean isMerged() {
-        return isMerged;
-    }
-
-    public DynamicDataRow remove(int index) {
-        DynamicDataRow row = data.remove( index );
-
-        //Execute command if set
-        if ( onRowChangeCommand != null ) {
-            onRowChangeCommand.execute();
-        }
-
-        return row;
-    }
-
-    /**
-     * Remove grouping by expanding applicable rows
-     * 
-     * @param startCell
-     * @return
-     */
-    @SuppressWarnings("rawtypes")
-    public List<DynamicDataRow> removeModelGrouping(CellValue< ? > startCell) {
-
-        int startRowIndex = startCell.getCoordinate().getRow();
-
-        startCell.removeState( CellState.GROUPED );
-
-        //Check if rows need to be recursively expanded
-        boolean bRecursive = true;
-        DynamicDataRow row = data.get( startRowIndex );
-        for ( int iCol = 0; iCol < row.size(); iCol++ ) {
-            CellValue< ? > cv = row.get( iCol );
-            if ( cv instanceof GroupedCellValue ) {
-                bRecursive = !(bRecursive ^ ((GroupedCellValue) cv).hasMultipleValues());
-            }
-        }
-
-        //Delete "grouped" row and replace with individual rows
-        List<DynamicDataRow> expandedRow = expandGroupedRow( row,
-                                                             bRecursive );
-        remove( startRowIndex );
-        data.addAll( startRowIndex,
-                     expandedRow );
-
-        //Execute command if set
-        if ( onRowChangeCommand != null ) {
-            onRowChangeCommand.execute();
-        }
-
-        assertModelMerging();
-
-        //If the row is replaced with another grouped row ensure the row can be expanded
-        row = data.get( startRowIndex );
-        boolean hasCellToExpand = false;
-        for ( CellValue< ? > cell : row ) {
-            if ( cell instanceof GroupedCellValue ) {
-                if ( cell.isGrouped() && cell.getRowSpan() > 0 ) {
-                    hasCellToExpand = true;
-                    break;
-                }
-            }
-        }
-        if ( !hasCellToExpand ) {
-            for ( CellValue< ? > cell : row ) {
-                if ( cell instanceof GroupedCellValue && cell.getRowSpan() == 1 ) {
-                    cell.addState( CellState.GROUPED );
-                }
-            }
-        }
-        return expandedRow;
-    }
-
-    /**
-     * Set the value at the specified coordinate
-     * 
-     * @param c
-     * @param value
-     */
-    public void set(Coordinate c,
-                    Object value) {
-        if ( c == null ) {
-            throw new IllegalArgumentException( "c cannot be null" );
-        }
-        data.get( c.getRow() ).get( c.getCol() ).setValue( value );
-    }
-
-    /**
-     * Set whether a columns is Visible
-     * 
-     * @param index
-     *            index of column
-     * @param isVisible
-     *            True if the column is visible
-     */
-    public void setColumnVisibility(int index,
-                                    boolean isVisible) {
-        this.visibleColumns.set( index,
-                                 isVisible );
-    }
-
-    /**
-     * Set whether the grid's data is merged or not. Clearing merging within the
-     * data also clears grouping
-     * 
-     * @param isMerged
-     */
-    public void setMerged(boolean isMerged) {
-        this.isMerged = isMerged;
-        if ( isMerged ) {
-            assertModelMerging();
-        } else {
-            removeModelGrouping();
-            removeModelMerging();
-        }
-    }
-
-    /**
-     * Configure a command that can be executed whenever a row is added\deleted.
-     * This allows consumers of DynamicData to ensure column values are within
-     * keeping of their requirements. E.G. A Column containing a Row Number can
-     * be updated etc
-     * 
-     * @param cmd
-     */
-    public void setOnRowChangeCommand(Command cmd) {
-        this.onRowChangeCommand = cmd;
     }
 
     //Expand a grouped row and return a list of expanded rows
@@ -575,7 +658,7 @@ public class DynamicData
             if ( row instanceof GroupedDynamicDataRow ) {
                 List<DynamicDataRow> expandedRow = expandGroupedRow( row,
                                                                      true );
-                remove( iRow );
+                deleteRow( iRow );
                 data.addAll( iRow,
                              expandedRow );
                 iRow = iRow + expandedRow.size() - 1;
@@ -605,88 +688,6 @@ public class DynamicData
 
         // Set indexes after merging has been corrected
         assertModelIndexes();
-    }
-
-    public int size() {
-        return data.size();
-    }
-
-    public void clear() {
-        data.clear();
-    }
-
-    public DynamicDataRow get(int index) {
-        return data.get( index );
-    }
-
-    public Iterator<DynamicDataRow> iterator() {
-        return data.iterator();
-    }
-
-    public int indexOf(DynamicDataRow row) {
-        return data.indexOf( row );
-    }
-
-    public void sort(final List<SortConfiguration> sortConfig) {
-
-        //Sort Configuration needs to be sorted itself by sortOrder first
-        Collections.sort( sortConfig,
-                          new Comparator<SortConfiguration>() {
-
-                              public int compare(SortConfiguration o1,
-                                                 SortConfiguration o2) {
-                                  Integer si1 = o1.getSortIndex();
-                                  Integer si2 = o2.getSortIndex();
-                                  return si1.compareTo( si2 );
-                              }
-
-                          } );
-
-        //Sort data
-        Collections.sort( data,
-                          new Comparator<DynamicDataRow>() {
-
-                              @SuppressWarnings({"rawtypes", "unchecked"})
-                              public int compare(DynamicDataRow leftRow,
-                                                 DynamicDataRow rightRow) {
-                                  int comparison = 0;
-                                  for ( int index = 0; index < sortConfig.size(); index++ ) {
-                                      SortConfiguration sc = sortConfig.get( index );
-                                      Comparable leftColumnValue = leftRow.get( sc.getColumnIndex() );
-                                      Comparable rightColumnValue = rightRow.get( sc.getColumnIndex() );
-                                      comparison =
-                                              (leftColumnValue == rightColumnValue) ? 0
-                                                  : (leftColumnValue == null) ? -1
-                                                      : (rightColumnValue == null) ? 1
-                                                          : leftColumnValue.compareTo( rightColumnValue );
-                                      if ( comparison != 0 ) {
-                                          switch ( sc.getSortDirection() ) {
-                                              case ASCENDING :
-                            break;
-                        case DESCENDING :
-                            comparison = -comparison;
-                            break;
-                        default :
-                            throw new IllegalStateException(
-                                                             "Sorting can only be enabled for ASCENDING or"
-                                                                     + " DESCENDING, not sortDirection ("
-                                                                     + sc.getSortDirection()
-                                                                     + ") ." );
-                    }
-                    return comparison;
-                }
-            }
-            return comparison;
-        }
-                          } );
-
-        //Execute command if set
-        if ( onRowChangeCommand != null ) {
-            onRowChangeCommand.execute();
-        }
-
-        assertModelMerging();
-
     }
 
 }

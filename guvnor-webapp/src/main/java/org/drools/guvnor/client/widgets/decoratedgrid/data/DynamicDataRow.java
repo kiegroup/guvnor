@@ -44,6 +44,15 @@ public class DynamicDataRow
 
     public CellValue< ? extends Comparable< ? >> set(int index,
                                                      CellValue< ? extends Comparable< ? >> cell) {
+        
+        Coordinate c = get(index).getCoordinate();
+        Coordinate hc = get(index).getHtmlCoordinate();
+        Coordinate pc = get(index).getPhysicalCoordinate();
+        cell.setCoordinate( c );
+        cell.setHtmlCoordinate( hc );
+        cell.setPhysicalCoordinate( pc );
+        cell.setRowSpan( get(index).getRowSpan() );
+        
         return rowData.set( index,
                             cell );
     }
