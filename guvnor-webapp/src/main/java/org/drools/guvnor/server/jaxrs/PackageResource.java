@@ -135,7 +135,7 @@ public class PackageResource extends Resource {
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML)
 	public Response createPackageFromAtom(Entry entry, @Context UriInfo uriInfo) {
-		PackageService.createPackage(entry.getTitle(), entry.getSummary());
+		repository.createPackage(entry.getTitle(), entry.getSummary());
 		URI uri = uriInfo.getBaseUriBuilder().path("packages").path(entry.getTitle()).build();
 		entry.setBase(uri);
 		return Response.created(uri).entity(entry).build();
@@ -144,7 +144,7 @@ public class PackageResource extends Resource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public void createPackageFromJAXB (Package p) {
-        PackageService.createPackage(p.getTitle(), p.getDescription());
+    	repository.createPackage(p.getTitle(), p.getDescription());
     }
 
     @GET
@@ -177,7 +177,7 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public byte[] getPackageBinary(@PathParam("packageName") String packageName) throws SerializationException {
         PackageItem p = repository.loadPackage(packageName);
-        PackageService.buildPackage(p.getUUID(), true);
+        packageService.buildPackage(p.getUUID(), true);
         return repository.loadPackage(packageName).getCompiledPackageBytes();
     }
     
@@ -241,7 +241,7 @@ public class PackageResource extends Resource {
     public byte[] getHistoricalPackageBinary(@PathParam("packageName") String packageName,
     		@PathParam("versionNumber") long versionNumber) throws SerializationException {
         PackageItem p = repository.loadPackage(packageName, versionNumber);
-        PackageService.buildPackage(p.getUUID(), true);
+        packageService.buildPackage(p.getUUID(), true);
         return repository.loadPackage(packageName).getCompiledPackageBytes();
     }
     
@@ -296,7 +296,7 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     public void deletePackage (@PathParam("packageName") String packageName) {
         PackageItem p = repository.loadPackage(packageName);
-        PackageService.removePackage(p.getUUID());
+        packageService.removePackage(p.getUUID());
     }
     
     @GET
@@ -376,7 +376,6 @@ public class PackageResource extends Resource {
         }
         return ret;
     }
-
 
     @GET
     @Path("{packageName}/assets/{assetName}/source")
@@ -461,7 +460,7 @@ public class PackageResource extends Resource {
                 break;
             }
         }
-        AssetService.archiveAsset(asset.getUUID());
+        assetService.archiveAsset(asset.getUUID());
     }
 }
 

@@ -32,19 +32,21 @@ public class Resource {
     
     @Context UriInfo uriInfo;
 
-    static ServiceImplementation Service = RepositoryServiceServlet.getService();
-    static RepositoryPackageService PackageService = RepositoryServiceServlet.getPackageService();
-
-    static RepositoryAssetService AssetService = RepositoryServiceServlet.getAssetService();
+    ServiceImplementation service = RepositoryServiceServlet.getService();
+    RepositoryPackageService packageService = RepositoryServiceServlet.getPackageService();
+    RepositoryAssetService assetService = RepositoryServiceServlet.getAssetService();
 
     RulesRepository repository;
 
     public Resource() {
-        if (!Contexts.isApplicationContextActive()) {
+        service = RepositoryServiceServlet.getService();
+        packageService = RepositoryServiceServlet.getPackageService();
+        assetService = RepositoryServiceServlet.getAssetService();    	
+/*        if (!Contexts.isApplicationContextActive()) {
             try {
                 repository = new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
             } catch (Exception e) { e.printStackTrace();}
-        } else {
-            repository = Service.getRulesRepository();}
-        }
+        } else {*/
+            repository = service.getRulesRepository();}
+        //}
     }

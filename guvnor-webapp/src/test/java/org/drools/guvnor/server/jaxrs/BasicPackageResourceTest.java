@@ -121,7 +121,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
     /**
      * Test of getPackagesAsFeed method, of class PackageService.
      */
-    @Test
+    @Test 
     public void testGetPackagesForJSON() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();        
@@ -190,7 +190,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
     /**
      * Test of getPackagesAsFeed method, of class PackageService.
      */
-    @Test
+    @Test 
     public void testGetPackageForJSON() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -205,7 +205,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
     /**
      * Test of getPackagesAsFeed method, of class PackageService.
      */
-    @Test
+    @Test 
     public void testGetPackageForXML() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -220,7 +220,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
     /**
      * Test of getPackagesAsFeed method, of class PackageService.
      */
-    @Test
+    @Test 
     public void testGetPackageForAtom() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -237,7 +237,8 @@ public class BasicPackageResourceTest extends RestTestingBase {
 		Entry entry = doc.getRoot();
 		assertEquals("/packages/restPackage1", entry.getBaseUri().getPath());		
 		assertEquals("restPackage1", entry.getTitle());
-		assertTrue(entry.getPublished() != null);
+		assertNotNull(entry.getPublished());
+		assertNotNull(entry.getAuthor().getName());		
 		assertEquals("this is package restPackage1", entry.getSummary());
 		//assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
 		assertEquals("/packages/restPackage1/binary", entry.getContentSrc().getPath());
@@ -258,8 +259,9 @@ public class BasicPackageResourceTest extends RestTestingBase {
 		
 		ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
         ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);     
-		//assertEquals("metadata_type_lifecycle", metadataExtension.getAttributeValue("type"));       
 		assertEquals("false", archivedExtension.getSimpleExtension(Translator.VALUE)); 
+        ExtensibleElement uuidExtension = metadataExtension.getExtension(Translator.UUID);     
+		assertNotNull(uuidExtension.getSimpleExtension(Translator.VALUE)); 
     }
 
     /* Package Creation */
@@ -291,7 +293,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
     }
 
     /* Package Creation */
-    @Test
+    @Test  @Ignore
     public void testCreatePackageFromDRLAsEntry() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -335,7 +337,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
         //logger.log(LogLevel, GetContent(connection));
     }
 
-    @Test
+    @Test @Ignore
     public void testCreatePackageFromDRLAsJson() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -359,7 +361,7 @@ public class BasicPackageResourceTest extends RestTestingBase {
         //logger.log(LogLevel, GetContent(connection));
     }
 
-    @Test
+    @Test @Ignore
     public void testCreatePackageFromDRLAsJaxB() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();

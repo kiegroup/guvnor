@@ -133,7 +133,7 @@ public class Translator {
         e.setSummary(p.getDescription());
         e.setPublished(new Date(p.getLastModified().getTimeInMillis()));
         e.setBaseUri(base.clone().build().toString());       
-        e.addContributor(p.getLastContributor());
+        e.addAuthor(p.getLastContributor());
 
         e.setId(base.clone().build().toString());
         
@@ -225,7 +225,7 @@ public class Translator {
         e.setSummary(a.getDescription());
         e.setPublished(new Date(a.getLastModified().getTimeInMillis()));
         e.setBaseUri(base.clone().build().toString());       
-        e.addContributor(a.getLastContributor());
+        e.addAuthor(a.getLastContributor());
 
         e.setId(base.clone().build().toString());
         

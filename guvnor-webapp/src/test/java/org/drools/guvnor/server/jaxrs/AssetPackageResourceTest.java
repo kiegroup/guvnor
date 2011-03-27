@@ -19,13 +19,19 @@ package org.drools.guvnor.server.jaxrs;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.ExtensibleElement;
+import org.apache.abdera.model.Link;
 import org.apache.abdera.parser.Parser;
+import org.apache.abdera.protocol.client.AbderaClient;
+import org.apache.abdera.protocol.client.ClientResponse;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
+import org.jboss.resteasy.plugins.providers.atom.AbderaEntryProvider;
+import org.jboss.resteasy.plugins.providers.atom.AbderaFeedProvider;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
@@ -33,21 +39,30 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.jboss.resteasy.test.TestPortProvider.generateBaseUrl;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class AssetPackageResourceTest extends RestTestingBase {
+    private Abdera abdera = new Abdera();
 
     @Before @Override
     public void setUpGuvnorTestBase() {
         super.setUpGuvnorTestBase();
         dispatcher.getRegistry().addPerRequestResource(PackageResource.class);
-        
+        dispatcher.getProviderFactory().registerProvider(AbderaEntryProvider.class);
+        dispatcher.getProviderFactory().registerProvider(AbderaFeedProvider.class);
+
         ServiceImplementation impl = getServiceImplementation();
         //Package version 1(Initial version)
         PackageItem pkg = impl.getRulesRepository().createPackage( "restPackage1",
@@ -82,7 +97,7 @@ public class AssetPackageResourceTest extends RestTestingBase {
         rule2.checkin( "version 1" );
 
         AssetItem rule3 = pkg.addAsset( "model1",
-                                        "" );
+                                        "desc for model1" );
         rule3.updateFormat( AssetFormats.DRL_MODEL );
         rule3.updateContent( "declare Album1\n genre1: String \n end" );
         rule3.checkin( "version 1" );
@@ -142,16 +157,38 @@ public class AssetPackageResourceTest extends RestTestingBase {
         //logger.log(LogLevel, GetContent(connection));
     }
 
-    @Test @Ignore
-    public void testGetAssetAsAtom() throws Exception {
+    @Test
+    public void testGetAssetAsAtom() throws Exception {   	
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
-        //assertEquals (200, connection.getResponseCode());
-        //assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        System.out.println(GetContent(connection));
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
+        //System.out.println(GetContent(connection));
+        
+        InputStream in = connection.getInputStream();
+        assertNotNull(in);
+		Document<Entry> doc = abdera.getParser().parse(in);
+		Entry entry = doc.getRoot();
+		assertEquals("/packages/restPackage1/assets/model1", entry.getBaseUri().getPath());		
+		assertEquals("model1", entry.getTitle());
+		assertNotNull(entry.getPublished());
+		assertNotNull(entry.getAuthor().getName());
+		assertEquals("desc for model1", entry.getSummary());
+		//assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
+		assertEquals("/packages/restPackage1/assets/model1/binary", entry.getContentSrc().getPath());
+		
+		ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
+        ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);     
+		assertEquals("false", archivedExtension.getSimpleExtension(Translator.VALUE)); 		
+        ExtensibleElement stateExtension = metadataExtension.getExtension(Translator.STATE);     
+		assertEquals("Draft", stateExtension.getSimpleExtension(Translator.VALUE)); 
+        ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);     
+		assertEquals("model.drl", formatExtension.getSimpleExtension(Translator.VALUE)); 
+        ExtensibleElement uuidExtension = metadataExtension.getExtension(Translator.UUID);     
+		assertNotNull(uuidExtension.getSimpleExtension(Translator.VALUE));         
     }
 
     @Test
@@ -163,7 +200,7 @@ public class AssetPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        System.out.println(GetContent(connection));
     }
 
     @Test
@@ -187,7 +224,9 @@ public class AssetPackageResourceTest extends RestTestingBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        String result = GetContent(connection);
+        assertTrue(result.indexOf("declare Album2")>=0);
+        assertTrue(result.indexOf("genre2: String")>=0);
     }
 
     @Test
