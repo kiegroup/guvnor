@@ -214,8 +214,8 @@ public class ServiceImplementation
                                             description,
                                             initialCategory,
                                             format );
-
-            applyPreBuiltTemplates( ruleName,
+            AssetTemplateCreator assetTemplateCreator = new AssetTemplateCreator();
+            assetTemplateCreator.applyPreBuiltTemplates( ruleName,
                                     format,
                                     asset );
             getRulesRepository().save();
@@ -285,41 +285,6 @@ public class ServiceImplementation
         getRulesRepository().save();
         push( "packageChange",
               pkgName );
-    }
-
-    /**
-     * For some format types, we add some sugar by adding a new template.
-     */
-    private void applyPreBuiltTemplates(String ruleName,
-                                        String format,
-                                        AssetItem asset) {
-        if ( format.equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
-            asset.updateContent( "when\n\nthen\n" );
-        } else if ( format.equals( AssetFormats.FUNCTION ) ) {
-            asset.updateContent( "function <returnType> " + ruleName + "(<args here>) {\n\n\n}" );
-        } else if ( format.equals( AssetFormats.DSL ) ) {
-            asset.updateContent( "[when]Condition sentence template {var}=" + "rule language mapping {var}\n" + "[then]Action sentence template=rule language mapping" );
-        } else if ( format.equals( AssetFormats.DECISION_SPREADSHEET_XLS ) ) {
-            asset.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" ) );
-            asset.updateBinaryContentAttachmentFileName( "SampleDecisionTable.xls" );
-        } else if ( format.equals( AssetFormats.DRL ) ) {
-            asset.updateContent( "when\n\t#conditions\nthen\n\t#actions" );
-        } else if ( format.equals( AssetFormats.ENUMERATION ) ) {
-
-        } else if ( format.equals( AssetFormats.SPRING_CONTEXT ) ) {
-            try {
-                ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-                BufferedInputStream inContent = new BufferedInputStream( this.getClass().getClassLoader().getResourceAsStream( "spring-context-sample.xml" ) );
-                IOUtils.copy( inContent,
-                              outContent );
-
-                asset.updateContent( outContent.toString() );
-            } catch ( IOException ex ) {
-                log.error( "Error reading spring-context-sample.xml",
-                           ex );
-                throw new IllegalArgumentException( "Error reading spring-context-sample.xml" );
-            }
-        }
     }
 
     public void updateDependency(String uuid,
