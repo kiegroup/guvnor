@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.server;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -28,12 +26,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarInputStream;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -61,7 +57,6 @@ import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
-import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -72,7 +67,6 @@ import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
-import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -216,8 +210,8 @@ public class ServiceImplementation
                                             format );
             AssetTemplateCreator assetTemplateCreator = new AssetTemplateCreator();
             assetTemplateCreator.applyPreBuiltTemplates( ruleName,
-                                    format,
-                                    asset );
+                                                         format,
+                                                         asset );
             getRulesRepository().save();
 
             push( "categoryChange",
@@ -552,32 +546,16 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageReadOnly( packageName );
-
-        SuggestionCompletionEngine result = null;
-        ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
+        SuggestionCompletionEngine suggestionCompletionEngine = null;
         try {
-            PackageItem pkg = getRulesRepository().loadPackage( packageName );
-            BRMSSuggestionCompletionLoader loader = null;
-            List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
-            if ( jars != null && !jars.isEmpty() ) {
-                ClassLoader cl = BRMSPackageBuilder.createClassLoader( jars );
-
-                Thread.currentThread().setContextClassLoader( cl );
-
-                loader = new BRMSSuggestionCompletionLoader( cl );
-            } else {
-                loader = new BRMSSuggestionCompletionLoader();
-            }
-
-            result = loader.getSuggestionEngine( pkg );
-
+            PackageItem packageItem = getRulesRepository().loadPackage( packageName );
+            SuggestionCompletionEngineLoaderInitializer suggestionCompletionEngineLoader = new SuggestionCompletionEngineLoaderInitializer();
+            suggestionCompletionEngine = suggestionCompletionEngineLoader.loadFor( packageItem );
         } catch ( RulesRepositoryException e ) {
             log.error( "An error occurred loadSuggestionCompletionEngine: " + e.getMessage() );
             throw new SerializationException( e.getMessage() );
-        } finally {
-            Thread.currentThread().setContextClassLoader( originalCL );
         }
-        return result;
+        return suggestionCompletionEngine;
     }
 
     @WebRemote
