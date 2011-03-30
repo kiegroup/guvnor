@@ -19,7 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.repository.AssetItem;
 
-public class QueryPageRowFactory {
+public class QueryPageRowCreator {
     public static QueryPageRow makeQueryPageRow(AssetItem assetItem) {
         QueryPageRow row = new QueryPageRow();
         row.setUuid( assetItem.getUUID() );

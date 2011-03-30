@@ -35,7 +35,6 @@ import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.client.rpc.InboxIncomingPageRow;
 import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.guvnor.client.rpc.LogEntry;
@@ -57,6 +56,9 @@ import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
+import org.drools.guvnor.server.builder.pagerow.InboxPageRowBuilder;
+import org.drools.guvnor.server.builder.pagerow.QueryFullTextPageRowBuilder;
+import org.drools.guvnor.server.builder.pagerow.QueryMetadataPageRowBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -71,7 +73,6 @@ import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
-import org.drools.guvnor.server.util.QueryPageRowFactory;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -484,6 +485,19 @@ public class ServiceImplementation
                                                                              numRows );
     }
 
+    private boolean checkPackagePermissionHelper(RepositoryFilter filter,
+                                                 AssetItem item,
+                                                 String roleType) {
+        return filter.accept( getConfigDataHelper( item.getPackage().getUUID() ),
+                              roleType );
+    }
+
+    private PackageConfigData getConfigDataHelper(String uuidStr) {
+        PackageConfigData data = new PackageConfigData();
+        data.uuid = uuidStr;
+        return data;
+    }
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String createState(String name) throws SerializationException {
@@ -827,8 +841,9 @@ public class ServiceImplementation
 
             // Populate response
             Iterator<InboxEntry> it = entries.iterator();
-            List<InboxPageRow> rowList = fillInboxPageRows( request,
-                                                            it );
+            InboxPageRowBuilder inboxPageRowFactory = new InboxPageRowBuilder();
+            List<InboxPageRow> rowList = inboxPageRowFactory.createRows( request,
+                                                                             it );
 
             response.setStartRowIndex( request.getStartRowIndex() );
             response.setTotalRowSize( entries.size() );
@@ -912,8 +927,9 @@ public class ServiceImplementation
         // Populate response
         long totalRowsCount = it.getSize();
         PageResponse<QueryPageRow> response = new PageResponse<QueryPageRow>();
-        List<QueryPageRow> rowList = fillQueryFullTextPageRows( request,
-                                                                it );
+        QueryFullTextPageRowBuilder fullTextPageRowFactory = new QueryFullTextPageRowBuilder();
+        List<QueryPageRow> rowList = fullTextPageRowFactory.createRows( request,
+                                                                                 it );
         boolean bHasMoreRows = it.hasNext();
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
@@ -970,8 +986,9 @@ public class ServiceImplementation
         // Populate response
         long totalRowsCount = it.getSize();
         PageResponse<QueryPageRow> response = new PageResponse<QueryPageRow>();
-        List<QueryPageRow> rowList = fillQueryMetadataPageRows( request,
-                                                                it );
+        QueryMetadataPageRowBuilder queryMetadataPageRowFactory = new QueryMetadataPageRowBuilder();
+        List<QueryPageRow> rowList = queryMetadataPageRowFactory.createRows( request,
+                                                                                 it );
         boolean bHasMoreRows = it.hasNext();
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
@@ -1058,13 +1075,6 @@ public class ServiceImplementation
         return cal;
     }
 
-    private boolean checkPackagePermissionHelper(RepositoryFilter filter,
-                                                 AssetItem item,
-                                                 String roleType) {
-        return filter.accept( getConfigDataHelper( item.getPackage().getUUID() ),
-                              roleType );
-    }
-
     private boolean checkCategoryPermissionHelper(RepositoryFilter filter,
                                                   AssetItem item,
                                                   String roleType) {
@@ -1079,12 +1089,6 @@ public class ServiceImplementation
         }
 
         return false;
-    }
-
-    private PackageConfigData getConfigDataHelper(String uuidStr) {
-        PackageConfigData data = new PackageConfigData();
-        data.uuid = uuidStr;
-        return data;
     }
 
     private String isoDate(Date d) {
@@ -1107,108 +1111,6 @@ public class ServiceImplementation
 
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
-    }
-
-    private List<InboxPageRow> fillInboxPageRows(InboxPageRequest request,
-                                                 Iterator<InboxEntry> it) {
-        int skipped = 0;
-        Integer pageSize = request.getPageSize();
-        int startRowIndex = request.getStartRowIndex();
-        List<InboxPageRow> rowList = new ArrayList<InboxPageRow>();
-        while ( it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
-            InboxEntry ie = (InboxEntry) it.next();
-
-            if ( skipped >= startRowIndex ) {
-                rowList.add( makeInboxPageRow( ie,
-                                               request ) );
-            }
-            skipped++;
-        }
-        return rowList;
-    }
-
-    private List<QueryPageRow> fillQueryFullTextPageRows(QueryPageRequest request,
-                                                         AssetItemIterator it) {
-        int skipped = 0;
-        Integer pageSize = request.getPageSize();
-        int startRowIndex = request.getStartRowIndex();
-        RepositoryFilter filter = new PackageFilter();
-
-        List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
-
-        while ( it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
-            AssetItem assetItem = (AssetItem) it.next();
-
-            // Filter surplus assets
-            if ( checkPackagePermissionHelper( filter,
-                                               assetItem,
-                                               RoleTypes.PACKAGE_READONLY ) ) {
-
-                // Cannot use AssetItemIterator.skip() as it skips non-filtered
-                // assets whereas startRowIndex is the index of the
-                // first displayed asset (i.e. filtered)
-                if ( skipped >= startRowIndex ) {
-                    rowList.add( QueryPageRowFactory.makeQueryPageRow( assetItem ) );
-                }
-                skipped++;
-            }
-        }
-        return rowList;
-    }
-
-    private List<QueryPageRow> fillQueryMetadataPageRows(QueryMetadataPageRequest request,
-                                                         AssetItemIterator it) {
-        int skipped = 0;
-        Integer pageSize = request.getPageSize();
-        int startRowIndex = request.getStartRowIndex();
-        RepositoryFilter packageFilter = new PackageFilter();
-        RepositoryFilter categoryFilter = new CategoryFilter();
-        List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
-
-        while ( it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
-            AssetItem assetItem = (AssetItem) it.next();
-
-            // Filter surplus assets
-            if ( checkPackagePermissionHelper( packageFilter,
-                                               assetItem,
-                                               RoleTypes.PACKAGE_READONLY ) || checkCategoryPermissionHelper( categoryFilter,
-                                                                                                              assetItem,
-                                                                                                              RoleTypes.ANALYST_READ ) ) {
-
-                // Cannot use AssetItemIterator.skip() as it skips non-filtered
-                // assets whereas startRowIndex is the index of the
-                // first displayed asset (i.e. filtered)
-                if ( skipped >= startRowIndex ) {
-                    rowList.add( QueryPageRowFactory.makeQueryPageRow( assetItem ) );
-                }
-                skipped++;
-            }
-        }
-        return rowList;
-    }
-
-    private InboxPageRow makeInboxPageRow(InboxEntry ie,
-                                          InboxPageRequest request) {
-        InboxPageRow row = null;
-        if ( request.getInboxName().equals( ExplorerNodeConfig.INCOMING_ID ) ) {
-            InboxIncomingPageRow tr = new InboxIncomingPageRow();
-            tr.setUuid( ie.assetUUID );
-            tr.setFormat( AssetFormats.BUSINESS_RULE );
-            tr.setNote( ie.note );
-            tr.setName( ie.note );
-            tr.setTimestamp( new Date( ie.timestamp ) );
-            tr.setFrom( ie.from );
-            row = tr;
-
-        } else {
-            InboxPageRow tr = new InboxPageRow();
-            tr.setUuid( ie.assetUUID );
-            tr.setNote( ie.note );
-            tr.setName( ie.note );
-            tr.setTimestamp( new Date( ie.timestamp ) );
-            row = tr;
-        }
-        return row;
     }
 
     private List<StatePageRow> fillStatePageRows(StatePageRequest request,

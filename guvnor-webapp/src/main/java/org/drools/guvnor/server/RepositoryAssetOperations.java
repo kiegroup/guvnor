@@ -55,7 +55,7 @@ import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
-import org.drools.guvnor.server.util.QueryPageRowFactory;
+import org.drools.guvnor.server.util.QueryPageRowCreator;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
@@ -612,7 +612,7 @@ public class RepositoryAssetOperations {
                 // assets whereas startRowIndex is the index of the
                 // first displayed asset (i.e. filtered)
                 if ( skipped >= startRowIndex ) {
-                    rowList.add( QueryPageRowFactory.makeQueryPageRow( assetItem ) );
+                    rowList.add( QueryPageRowCreator.makeQueryPageRow( assetItem ) );
                 }
                 skipped++;
             }
