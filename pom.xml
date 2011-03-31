@@ -52,6 +52,7 @@
     <module>guvnor-repository</module>
     <module>droolsjbpm-ide-common</module>
     <module>guvnor-webapp</module>
+    <module>guvnor-bulk-importer</module>
     <!--<module>guvnor-examples</module>--><!-- TODO Add in the default build -->
   </modules>
 
