@@ -244,10 +244,6 @@
       <groupId>javax.el</groupId>
       <artifactId>el-api</artifactId>
     </dependency>
-    <dependency>
-      <groupId>javax.el</groupId>
-      <artifactId>el-ri</artifactId>
-    </dependency>
     <!-- REST dependencies -->
     <dependency>
         <groupId>javax.ws.rs</groupId>
