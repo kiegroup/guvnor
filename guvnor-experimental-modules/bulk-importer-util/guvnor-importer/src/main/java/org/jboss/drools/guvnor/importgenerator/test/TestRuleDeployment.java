@@ -52,7 +52,7 @@ public class TestRuleDeployment {
       try{
         System.out.println("1: Drools method - looking up ["+packSnap+"]");
         HttpClientImpl c=new HttpClientImpl();
-        Package pa=c.fetchPackage(new URL(urlstr));
+        Package pa=c.fetchPackage(new URL(urlstr), false, null, null);
         System.out.println("1: found ["+ pa.getName() +"; clazz="+ pa.getClass().getName() +"]");
         executeRules=true;
       }catch(Exception e){
