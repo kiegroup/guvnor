@@ -42,7 +42,7 @@ import org.drools.runtime.ExecutionResults;
 import org.drools.runtime.StatefulKnowledgeSession;
 import org.drools.runtime.StatelessKnowledgeSession;
 
-public class KagentTest {
+public class KagentTestApp {
   private boolean changeScannerInitialised = false;
   private Map<String, KnowledgeAgent> cache = new HashMap<String, KnowledgeAgent>();
 
@@ -51,7 +51,7 @@ public class KagentTest {
   }
 
   public static void main(String[] args) {
-    new KagentTest().run();
+    new KagentTestApp().run();
   }
 
   public void run() {
