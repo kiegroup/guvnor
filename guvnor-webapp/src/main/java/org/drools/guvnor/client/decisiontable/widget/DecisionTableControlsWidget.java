@@ -30,35 +30,60 @@ import com.google.gwt.user.client.ui.Panel;
  */
 public class DecisionTableControlsWidget extends Composite {
 
-    private Panel                    panel    = new HorizontalPanel();
+    private Panel                       panel    = new HorizontalPanel();
+
+    private Button                      btnAddRow;
+    private Button                      btnOtherwise;
+    private AbstractDecisionTableWidget dtable;
 
     // Resources
-    protected static final Constants messages = GWT.create( Constants.class );
+    protected static final Constants    messages = GWT.create( Constants.class );
 
-    public DecisionTableControlsWidget(final AbstractDecisionTableWidget dtable) {
+    public DecisionTableControlsWidget() {
 
         // Add row button
-        Button btnAddRow = new Button( messages.AddRow(),
+        btnAddRow = new Button( messages.AddRow(),
                                        new ClickHandler() {
 
                                            public void onClick(ClickEvent event) {
-                                               dtable.appendRow();
+                                               if ( dtable != null ) {
+                                                   dtable.appendRow();
+                                               }
                                            }
                                        } );
         panel.add( btnAddRow );
 
-// TODO Otherwise button
-//        Button btnOtherwise = new Button( "Otherwise",
-//                                       new ClickHandler() {
-//
-//                                           public void onClick(ClickEvent event) {
-//                                               dtable.makeOtherwiseCell();
-//                                           }
-//                                       } );
-//        panel.add( btnOtherwise );
+        btnOtherwise = new Button( "Otherwise",
+                                          new ClickHandler() {
+
+                                              public void onClick(ClickEvent event) {
+                                                  if ( dtable != null ) {
+                                                      dtable.makeOtherwiseCell();
+                                                  }
+                                              }
+                                          } );
+        panel.add( btnOtherwise );
 
         initWidget( panel );
 
+    }
+
+    /**
+     * Retrieve "otherwise" button
+     * 
+     * @return
+     */
+    Button getOtherwiseButton() {
+        return this.btnOtherwise;
+    }
+
+    /**
+     * Inject DecisionTable to which these controls relate
+     * 
+     * @param dtable
+     */
+    void setDecisionTableWidget(AbstractDecisionTableWidget dtable) {
+        this.dtable = dtable;
     }
 
 }

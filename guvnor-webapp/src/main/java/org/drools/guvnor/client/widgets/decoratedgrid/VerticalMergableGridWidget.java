@@ -285,18 +285,14 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT
                     || (event.getKeyCode() == KeyCodes.KEY_TAB && !event
                             .getShiftKey()) ) {
-            CellExtents ce = moveSelection( MOVE_DIRECTION.RIGHT );
-            SelectedCellChangeEvent.fire( this,
-                                          ce );
+            moveSelection( MOVE_DIRECTION.RIGHT );
             event.preventDefault();
             return;
 
         } else if ( event.getKeyCode() == KeyCodes.KEY_LEFT
                     || (event.getKeyCode() == KeyCodes.KEY_TAB && event
                             .getShiftKey()) ) {
-            CellExtents ce = moveSelection( MOVE_DIRECTION.LEFT );
-            SelectedCellChangeEvent.fire( this,
-                                          ce );
+            moveSelection( MOVE_DIRECTION.LEFT );
             event.preventDefault();
             return;
 
@@ -304,9 +300,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             if ( event.getShiftKey() ) {
                 extendSelection( MOVE_DIRECTION.UP );
             } else {
-                CellExtents ce = moveSelection( MOVE_DIRECTION.UP );
-                SelectedCellChangeEvent.fire( this,
-                                              ce );
+                moveSelection( MOVE_DIRECTION.UP );
             }
             event.preventDefault();
             return;
@@ -315,9 +309,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             if ( event.getShiftKey() ) {
                 extendSelection( MOVE_DIRECTION.DOWN );
             } else {
-                CellExtents ce = moveSelection( MOVE_DIRECTION.DOWN );
-                SelectedCellChangeEvent.fire( this,
-                                              ce );
+                moveSelection( MOVE_DIRECTION.DOWN );
             }
             event.preventDefault();
             return;
@@ -343,7 +335,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                 return;
 
             } else {
-
+                
                 //Start of potential mouse-drag select operation
                 startSelecting( eventCoordinate );
                 bDragOperationPrimed = true;

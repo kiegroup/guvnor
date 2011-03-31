@@ -72,18 +72,25 @@ public abstract class AbstractDecisionTableWidget extends Composite
     protected SuggestionCompletionEngine          sce;
     protected DecisionTableCellFactory            cellFactory;
     protected DecisionTableCellValueFactory       cellValueFactory;
+    protected DecisionTableControlsWidget         dtableCtrls;
 
     /**
      * Constructor
      * 
      * @param sce
      */
-    public AbstractDecisionTableWidget(SuggestionCompletionEngine sce) {
+    public AbstractDecisionTableWidget(DecisionTableControlsWidget dtableCtrls,
+                                       SuggestionCompletionEngine sce) {
 
+        if ( dtableCtrls == null ) {
+            throw new IllegalArgumentException( "dtableControls cannot be null" );
+        }
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
         this.sce = sce;
+        this.dtableCtrls = dtableCtrls;
+        this.dtableCtrls.setDecisionTableWidget( this );
     }
 
     /**
@@ -172,6 +179,27 @@ public abstract class AbstractDecisionTableWidget extends Composite
         widget.insertRowBefore( rowBefore,
                                 rowData );
         redrawSystemControlledColumns();
+    }
+
+    /**
+     * Mark a cell as containing the magical "otherwise" value. The magical
+     * "otherwise" value has the meaning of all values other than those
+     * explicitly defined for this column. The column must be defined to contain
+     * literals and the equals operator.
+     */
+    public void makeOtherwiseCell() {
+
+        MergableGridWidget<DTColumnConfig> grid = widget.getGridWidget();
+        List<CellValue< ? >> selections = this.widget.getGridWidget().getSelectedCells();
+        CellValue< ? > cell = selections.get( 0 );
+        if ( canAcceptOtherwiseValues( cell ) ) {
+
+            //Set "otherwise" property on cell
+            for ( CellValue< ? > cv : selections ) {
+                cv.addState( CellState.OTHERWISE );
+            }
+            grid.update( null );
+        }
     }
 
     /**
@@ -706,71 +734,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     }
 
-    // Update Row Number column values
-    private void updateRowNumberColumnValues(DynamicData data,
-                                             int iCol) {
-        int iRowNum = 1;
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DynamicDataRow row = data.get( iRow );
-            if ( row instanceof GroupedDynamicDataRow ) {
-                GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
-
-                //Setting value on a GroupedCellValue causes all children to assume the same value
-                groupedRow.get( iCol ).setValue( new BigDecimal( iRowNum ) );
-                for ( int iGroupedRow = 0; iGroupedRow < groupedRow.getChildRows().size(); iGroupedRow++ ) {
-                    groupedRow.getChildRows().get( iGroupedRow ).get( iCol ).setValue( new BigDecimal( iRowNum ) );
-                    iRowNum++;
-                }
-            } else {
-                row.get( iCol ).setValue( new BigDecimal( iRowNum ) );
-                iRowNum++;
-            }
-        }
-    }
-
-    // Update Salience column values
-    private void updateSalienceColumnValues(DynamicData data,
-                                            int iCol,
-                                            boolean isReverseOrder) {
-
-        if ( !isReverseOrder ) {
-            updateRowNumberColumnValues( data,
-                                         iCol );
-        } else {
-
-            //Get total row count
-            int rowCount = 0;
-            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-                DynamicDataRow row = data.get( iRow );
-                if ( row instanceof GroupedDynamicDataRow ) {
-                    GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
-                    rowCount = rowCount + groupedRow.getChildRows().size();
-                } else {
-                    rowCount++;
-                }
-            }
-
-            int iRowNum = 0;
-            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-                DynamicDataRow row = data.get( iRow );
-                if ( row instanceof GroupedDynamicDataRow ) {
-                    GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
-
-                    //Setting value on a GroupedCellValue causes all children to assume the same value
-                    groupedRow.get( iCol ).setValue( new BigDecimal( rowCount - iRowNum ) );
-                    for ( int iGroupedRow = 0; iGroupedRow < groupedRow.getChildRows().size(); iGroupedRow++ ) {
-                        groupedRow.getChildRows().get( iGroupedRow ).get( iCol ).setValue( new BigDecimal( rowCount - iRowNum ) );
-                        iRowNum++;
-                    }
-                } else {
-                    row.get( iCol ).setValue( new BigDecimal( rowCount - iRowNum ) );
-                    iRowNum++;
-                }
-            }
-
-        }
-    }
-
     public void updateSystemControlledColumnValues() {
 
         final DynamicData data = widget.getGridWidget().getData();
@@ -1143,42 +1106,96 @@ public abstract class AbstractDecisionTableWidget extends Composite
         return bRedrawRequired;
     }
 
+    // Update Row Number column values
+    private void updateRowNumberColumnValues(DynamicData data,
+                                             int iCol) {
+        int iRowNum = 1;
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            if ( row instanceof GroupedDynamicDataRow ) {
+                GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
+
+                //Setting value on a GroupedCellValue causes all children to assume the same value
+                groupedRow.get( iCol ).setValue( new BigDecimal( iRowNum ) );
+                for ( int iGroupedRow = 0; iGroupedRow < groupedRow.getChildRows().size(); iGroupedRow++ ) {
+                    groupedRow.getChildRows().get( iGroupedRow ).get( iCol ).setValue( new BigDecimal( iRowNum ) );
+                    iRowNum++;
+                }
+            } else {
+                row.get( iCol ).setValue( new BigDecimal( iRowNum ) );
+                iRowNum++;
+            }
+        }
+    }
+
+    // Update Salience column values
+    private void updateSalienceColumnValues(DynamicData data,
+                                            int iCol,
+                                            boolean isReverseOrder) {
+
+        if ( !isReverseOrder ) {
+            updateRowNumberColumnValues( data,
+                                         iCol );
+        } else {
+
+            //Get total row count
+            int rowCount = 0;
+            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                DynamicDataRow row = data.get( iRow );
+                if ( row instanceof GroupedDynamicDataRow ) {
+                    GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
+                    rowCount = rowCount + groupedRow.getChildRows().size();
+                } else {
+                    rowCount++;
+                }
+            }
+
+            int iRowNum = 0;
+            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                DynamicDataRow row = data.get( iRow );
+                if ( row instanceof GroupedDynamicDataRow ) {
+                    GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
+
+                    //Setting value on a GroupedCellValue causes all children to assume the same value
+                    groupedRow.get( iCol ).setValue( new BigDecimal( rowCount - iRowNum ) );
+                    for ( int iGroupedRow = 0; iGroupedRow < groupedRow.getChildRows().size(); iGroupedRow++ ) {
+                        groupedRow.getChildRows().get( iGroupedRow ).get( iCol ).setValue( new BigDecimal( rowCount - iRowNum ) );
+                        iRowNum++;
+                    }
+                } else {
+                    row.get( iCol ).setValue( new BigDecimal( rowCount - iRowNum ) );
+                    iRowNum++;
+                }
+            }
+
+        }
+    }
+
     /**
-     * Mark a cell as containing the magical "otherwise" value. The magical
-     * "otherwise" value has the meaning of all values other than those
-     * explicitly defined for this column. The column must be defined to contain
-     * literals and the equals operator.
+     * Check whether the selected cell can accept "otherwise" values
+     * 
+     * @param cell
+     * @return true if cell can accept "otherwise" values
      */
-    public void makeOtherwiseCell() {
-
-        List<CellValue< ? >> selections = this.widget.getGridWidget().getSelectedCells();
-
-        //Check the column is of the correct type
-        MergableGridWidget<DTColumnConfig> grid = widget.getGridWidget();
-        CellValue< ? > cell = selections.get( 0 );
+    protected boolean canAcceptOtherwiseValues(CellValue< ? > cell) {
         Coordinate c = cell.getCoordinate();
         int iCol = c.getCol();
-        DynamicColumn<DTColumnConfig> column = grid.getColumns().get( iCol );
+        DynamicColumn<DTColumnConfig> column = widget.getGridWidget().getColumns().get( iCol );
         if ( !(column.getModelColumn() instanceof ConditionCol) ) {
-            return;
+            return false;
         }
 
         //Check column contains literal values and uses the equals operator
         ConditionCol cc = (ConditionCol) column.getModelColumn();
         if ( cc.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_LITERAL ) {
-            return;
+            return false;
         }
 
         //Only "equals" supported at the moment
         if ( !cc.getOperator().equals( "==" ) ) {
-            return;
+            return false;
         }
-
-        //Set "otherwise" property on cell
-        for ( CellValue< ? > cv : selections ) {
-            cv.addState( CellState.OTHERWISE );
-        }
-        grid.update( null );
+        return true;
     }
 
 }

@@ -78,14 +78,12 @@ public class GuidedDTDRLPersistence {
                        dt.getAttributeCols(),
                        row,
                        rm );
-            doConditions( dt.getMetadataCols().size()
-                                  + dt.getAttributeCols().size(),
+            doConditions( dt.getMetadataCols().size() + dt.getAttributeCols().size(),
                           dt.getConditionCols(),
                           row,
+                          data,
                           rm );
-            doActions( dt.getMetadataCols().size()
-                               + dt.getAttributeCols().size()
-                               + dt.getConditionCols().size(),
+            doActions( dt.getMetadataCols().size() + dt.getAttributeCols().size() + dt.getConditionCols().size(),
                        dt.getActionCols(),
                        row,
                        rm );
@@ -204,21 +202,36 @@ public class GuidedDTDRLPersistence {
     void doConditions(int numOfAttributesAndMeta,
                       List<ConditionCol> conditionCols,
                       List<DTCellValue> row,
+                      List<List<DTCellValue>> data,
                       RuleModel rm) {
 
         List<FactPattern> patterns = new ArrayList<FactPattern>();
 
         for ( int i = 0; i < conditionCols.size(); i++ ) {
+
             ConditionCol c = (ConditionCol) conditionCols.get( i );
             int index = i + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + numOfAttributesAndMeta;
 
-            String cell = convertDTCellValueToString( row.get( index ) );
+            DTCellValue dcv = row.get( index );
+            String cell = convertDTCellValueToString( dcv );
+            boolean isOtherwise = dcv.isOtherwise();
+            boolean isValid = isOtherwise;
 
-            if ( !validCell( cell ) ) {
-                cell = c.getDefaultValue();
+            //Otherwise values are automatically valid as they're constructed from the other rules
+            if ( !isOtherwise ) {
+                isValid = validCell( cell );
+                if ( !isValid ) {
+                    cell = c.getDefaultValue();
+                    isValid = validCell( cell );
+                }
             }
 
-            if ( validCell( cell ) ) {
+            //Empty cells are valid if operator is "== null" or "!= null"
+            if ( c.getOperator().equals( "== null" ) || c.getOperator().equals( "!= null" ) ) {
+                isValid = true;
+            }
+
+            if ( isValid ) {
 
                 // get or create the pattern it belongs too
                 FactPattern fp = findByFactPattern( patterns,
@@ -234,27 +247,16 @@ public class GuidedDTDRLPersistence {
                 switch ( c.getConstraintValueType() ) {
                     case BaseSingleFieldConstraint.TYPE_LITERAL :
                     case BaseSingleFieldConstraint.TYPE_RET_VALUE :
-                        SingleFieldConstraint sfc = new SingleFieldConstraint( c.getFactField() );
-                        if ( no( c.getOperator() ) ) {
-
-                            String[] a = cell.split( "\\s" );
-                            if ( a.length > 1 ) {
-                                sfc.setOperator( a[0] );
-                                sfc.setValue( a[1] );
-                            } else {
-                                sfc.setValue( cell );
-                            }
+                        if ( !isOtherwise ) {
+                            SingleFieldConstraint sfc = makeSingleFieldConstraint( c,
+                                                                                   cell );
+                            fp.addConstraint( sfc );
                         } else {
-                            sfc.setOperator( c.getOperator() );
-                            if ( c.getOperator().equals( "in" ) ) {
-                                sfc.setValue( makeInList( cell ) );
-                            } else {
-                                sfc.setValue( cell );
-                            }
-
+                            SingleFieldConstraint sfc = makeSingleFieldConstraint( c,
+                                                                                   data,
+                                                                                   index );
+                            fp.addConstraint( sfc );
                         }
-                        sfc.setConstraintValueType( c.getConstraintValueType() );
-                        fp.addConstraint( sfc );
                         break;
                     case BaseSingleFieldConstraint.TYPE_PREDICATE :
                         SingleFieldConstraint pred = new SingleFieldConstraint();
@@ -394,6 +396,52 @@ public class GuidedDTDRLPersistence {
             default :
                 return dcv.getStringValue();
         }
+    }
+
+    private SingleFieldConstraint makeSingleFieldConstraint(ConditionCol c,
+                                                            String cell) {
+
+        SingleFieldConstraint sfc = new SingleFieldConstraint( c.getFactField() );
+
+        //Condition columns can be defined as having no operator, in which case the operator
+        //is taken from the cell's value. Pretty yucky really if we're to be able to perform
+        //expansion and contraction of decision table columns.... this might have to go.
+        if ( no( c.getOperator() ) ) {
+
+            String[] a = cell.split( "\\s" );
+            if ( a.length > 1 ) {
+                sfc.setOperator( a[0] );
+                sfc.setValue( a[1] );
+            } else {
+                sfc.setValue( cell );
+            }
+        } else {
+
+            sfc.setOperator( c.getOperator() );
+            if ( c.getOperator().equals( "in" ) ) {
+                sfc.setValue( makeInList( cell ) );
+            } else {
+                if ( !c.getOperator().equals( "== null" ) && !c.getOperator().equals( "!= null" ) ) {
+                    sfc.setValue( cell );
+                }
+            }
+
+        }
+        sfc.setConstraintValueType( c.getConstraintValueType() );
+        return sfc;
+    }
+
+    private SingleFieldConstraint makeSingleFieldConstraint(ConditionCol c,
+                                                            List<List<DTCellValue>> data,
+                                                            int index) {
+
+        SingleFieldConstraint sfc = new SingleFieldConstraint( c.getFactField() );
+
+        sfc.setOperator( "otherwise" );
+        //Get column data pass to helper to derive required operator and value
+
+        sfc.setConstraintValueType( c.getConstraintValueType() );
+        return sfc;
     }
 
 }

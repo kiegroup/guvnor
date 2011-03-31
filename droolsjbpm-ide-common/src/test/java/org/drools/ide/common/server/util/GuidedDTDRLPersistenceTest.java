@@ -447,6 +447,8 @@ public class GuidedDTDRLPersistenceTest {
     public void testLHS() {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "a", "mike", "33 + 1", "age > 6", "stilton"};
+        String[][] data = new String[1][];
+        data[0] = row;
 
         List<ConditionCol> cols = new ArrayList<ConditionCol>();
         ConditionCol col = new ConditionCol();
@@ -484,6 +486,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( 1,
                         cols,
                         RepositoryUpgradeHelper.makeDataRowList( row ),
+                        RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
         assertEquals( 2,
                       rm.lhs.length );
@@ -718,6 +721,8 @@ public class GuidedDTDRLPersistenceTest {
     public void testNoOperator() {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "a", "> 42", "33 + 1", "age > 6", "stilton"};
+        String[][] data = new String[1][];
+        data[0] = row;
 
         List<ConditionCol> cols = new ArrayList<ConditionCol>();
 
@@ -734,6 +739,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( 1,
                         cols,
                         RepositoryUpgradeHelper.makeDataRowList( row ),
+                        RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
 
         String drl = BRDRLPersistence.getInstance().marshal( rm );
@@ -745,6 +751,8 @@ public class GuidedDTDRLPersistenceTest {
     public void testLHSNotPattern() {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "a", "mike", "33 + 1", "age > 6", "stilton"};
+        String[][] data = new String[1][];
+        data[0] = row;
 
         List<ConditionCol> cols = new ArrayList<ConditionCol>();
         ConditionCol col = new ConditionCol();
@@ -785,6 +793,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( 1,
                         cols,
                         RepositoryUpgradeHelper.makeDataRowList( row ),
+                        RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
 
         String drl = BRDRLPersistence.getInstance().marshal( rm );

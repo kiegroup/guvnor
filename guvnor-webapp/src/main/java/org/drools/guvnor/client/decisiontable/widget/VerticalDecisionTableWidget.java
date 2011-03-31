@@ -15,20 +15,29 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridSidebarWidget;
+import org.drools.guvnor.client.widgets.decoratedgrid.SelectedCellChangeEvent;
+import org.drools.guvnor.client.widgets.decoratedgrid.SelectedCellChangeHandler;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
+
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * A Vertical Decision Table composed of a VerticalDecoratedGridWidget
  */
 public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
-    public VerticalDecisionTableWidget(SuggestionCompletionEngine sce) {
-        super( sce );
+    public VerticalDecisionTableWidget(DecisionTableControlsWidget ctrls,
+                                       SuggestionCompletionEngine sce) {
+        super( ctrls,
+               sce );
+
+        VerticalPanel vp = new VerticalPanel();
 
         // Construct the widget from which we're composed
         widget = new VerticalDecoratedGridWidget<DTColumnConfig>();
@@ -38,7 +47,20 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         widget.setHeaderWidget( header );
         widget.setSidebarWidget( sidebar );
         widget.setHasSystemControlledColumns( this );
-        initWidget( widget );
+
+        widget.getGridWidget().addSelectedCellChangeHandler( new SelectedCellChangeHandler() {
+
+            public void onSelectedCellChange(SelectedCellChangeEvent event) {
+
+                CellValue< ? > cell = widget.getGridWidget().getData().get( event.getCellSelectionDetail().getCoordinate() );
+                dtableCtrls.getOtherwiseButton().setEnabled( canAcceptOtherwiseValues( cell ) );
+            }
+
+        } );
+
+        vp.add( widget );
+        vp.add( ctrls );
+        initWidget( vp );
     }
 
 }

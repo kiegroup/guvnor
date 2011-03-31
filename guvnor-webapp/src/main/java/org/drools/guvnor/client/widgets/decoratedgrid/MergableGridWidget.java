@@ -57,18 +57,22 @@ public abstract class MergableGridWidget<T> extends Widget
     HasRowGroupingChangeHandlers {
 
     /**
-     * Container for a cell's extents
+     * Container for a details of a selected cell
      */
-    public static class CellExtents {
-        private int offsetX;
-        private int offsetY;
-        private int height;
-        private int width;
+    public static class CellSelectionDetail {
 
-        CellExtents(int offsetX,
-                    int offsetY,
-                    int height,
-                    int width) {
+        private Coordinate c;
+        private int        offsetX;
+        private int        offsetY;
+        private int        height;
+        private int        width;
+
+        CellSelectionDetail(Coordinate c,
+                            int offsetX,
+                            int offsetY,
+                            int height,
+                            int width) {
+            this.c = c;
             this.offsetX = offsetX;
             this.offsetY = offsetY;
             this.height = height;
@@ -89,6 +93,10 @@ public abstract class MergableGridWidget<T> extends Widget
 
         public int getWidth() {
             return width;
+        }
+
+        public Coordinate getCoordinate() {
+            return c;
         }
 
     }
@@ -920,8 +928,7 @@ public abstract class MergableGridWidget<T> extends Widget
      *            The cell for which to retrieve the extents
      * @return
      */
-    CellExtents getSelectedCellExtents(
-                                              CellValue< ? extends Comparable< ? >> cv) {
+    CellSelectionDetail getSelectedCellExtents(CellValue< ? extends Comparable< ? >> cv) {
 
         if ( cv == null ) {
             throw new IllegalArgumentException( "cv cannot be null" );
@@ -942,10 +949,11 @@ public abstract class MergableGridWidget<T> extends Widget
         int offsetY = tce.getOffsetTop();
         int w = tce.getOffsetWidth();
         int h = tce.getOffsetHeight();
-        CellExtents e = new CellExtents( offsetX,
-                                         offsetY,
-                                         h,
-                                         w );
+        CellSelectionDetail e = new CellSelectionDetail( cv.getCoordinate(),
+                                                         offsetX,
+                                                         offsetY,
+                                                         h,
+                                                         w );
         return e;
     }
 
@@ -988,19 +996,15 @@ public abstract class MergableGridWidget<T> extends Widget
      * 
      * @param dir
      *            Direction to move the selection
-     * @return Dimensions of the newly selected cell
      */
-    CellExtents moveSelection(MOVE_DIRECTION dir) {
-        CellExtents ce = null;
+    void moveSelection(MOVE_DIRECTION dir) {
         if ( selections.size() > 0 ) {
             CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
             Coordinate nc = getNextCell( activeCell.getCoordinate(),
                                          dir );
             startSelecting( nc );
             rangeDirection = dir;
-            ce = getSelectedCellExtents( data.get( nc ) );
         }
-        return ce;
     }
 
     /**
@@ -1084,6 +1088,12 @@ public abstract class MergableGridWidget<T> extends Widget
         if ( start == null ) {
             throw new IllegalArgumentException( "start cannot be null" );
         }
+
+        //Raise event signalling change in selection 
+        CellSelectionDetail ce = getSelectedCellExtents( data.get( start ) );
+        SelectedCellChangeEvent.fire( this,
+                                      ce );
+
         clearSelection();
         CellValue< ? > startCell = data.get( start );
         selectRange( startCell,

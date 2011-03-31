@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
-import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget.CellExtents;
+import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget.CellSelectionDetail;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
 
 import com.google.gwt.core.client.GWT;
@@ -89,7 +89,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
         gridWidget.addSelectedCellChangeHandler( new SelectedCellChangeHandler() {
 
             public void onSelectedCellChange(SelectedCellChangeEvent event) {
-                cellSelected( event.getCellExtents() );
+                cellSelected( event.getCellSelectionDetail() );
             }
 
         } );
@@ -437,7 +437,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
     }
 
     //Ensure the selected cell is visible
-    private void cellSelected(CellExtents ce) {
+    private void cellSelected(CellSelectionDetail ce) {
 
         //Left extent
         if ( ce.getOffsetX() < scrollPanel.getHorizontalScrollPosition() ) {
