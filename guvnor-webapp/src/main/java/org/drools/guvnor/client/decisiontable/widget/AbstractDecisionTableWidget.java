@@ -184,14 +184,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
     /**
      * Mark a cell as containing the magical "otherwise" value. The magical
      * "otherwise" value has the meaning of all values other than those
-     * explicitly defined for this column. The column must be defined to contain
-     * literals and the equals operator.
+     * explicitly defined for this column.
      */
     public void makeOtherwiseCell() {
 
         MergableGridWidget<DTColumnConfig> grid = widget.getGridWidget();
-        List<CellValue< ? >> selections = this.widget.getGridWidget().getSelectedCells();
+        List<CellValue< ? >> selections = grid.getSelectedCells();
         CellValue< ? > cell = selections.get( 0 );
+
         if ( canAcceptOtherwiseValues( cell ) ) {
 
             //Set "otherwise" property on cell
@@ -284,6 +284,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 DTColumnConfig column = columns.get( iCol ).getModelColumn();
                 DTCellValue dcv = cellValueFactory.convertToDTModelCell( column,
                                                                               cv );
+                dcv.setOtherwise( cv.isOtherwise() );
                 row.add( dcv );
             }
             grid.add( row );
@@ -648,6 +649,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( !isEqualOrNull( origColumn.getOperator(),
                              editColumn.getOperator() ) ) {
             bRedrawHeader = true;
+
+            //Clear otherwise if column cannot accept them
+            if ( !canAcceptOtherwiseValues( editColumn ) ) {
+                removeOtherwiseStates( column );
+                bRedrawColumn = true;
+            }
         }
 
         if ( !isEqualOrNull( origColumn.getBoundName(),
@@ -843,6 +850,35 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
         }
 
+    }
+
+    /**
+     * Check whether the given column can accept "otherwise" values
+     * 
+     * @param column
+     * @return true if the Column can accept "otherwise" values
+     */
+    private boolean canAcceptOtherwiseValues(DTColumnConfig column) {
+
+        //Check the column type is correct
+        if ( !(column instanceof ConditionCol) ) {
+            return false;
+        }
+        ConditionCol cc = (ConditionCol) column;
+
+        //Check column contains literal values and uses the equals operator
+        if ( cc.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_LITERAL ) {
+            return false;
+        }
+
+        //Check operator is supported
+        if ( cc.getOperator().equals( "==" ) ) {
+            return true;
+        }
+        if ( cc.getOperator().equals( "!=" ) ) {
+            return true;
+        }
+        return false;
     }
 
     // Find the right-most index for an Action column
@@ -1066,6 +1102,23 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setNegated( editingCol.isNegated() );
     }
 
+    //Remove Otherwise state from column cells
+    private void removeOtherwiseStates(final DynamicColumn<DTColumnConfig> column) {
+
+        //Grouping needs to be removed
+        if ( widget.getGridWidget().getData().isMerged() ) {
+            widget.getGridWidget().toggleMerging();
+        }
+
+        DynamicData data = widget.getGridWidget().getData();
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            CellValue< ? > cv = row.get( column.getColumnIndex() );
+            cv.removeState( CellState.OTHERWISE );
+        }
+
+    }
+
     // Ensure the Column cell type and corresponding values are correct
     private void updateCellsForDataType(final DTColumnConfig editColumn,
                                         final DynamicColumn<DTColumnConfig> column) {
@@ -1172,30 +1225,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     /**
-     * Check whether the selected cell can accept "otherwise" values
+     * Check whether the given Cell can accept "otherwise" values
      * 
      * @param cell
-     * @return true if cell can accept "otherwise" values
+     * @return true if the Cell can accept "otherwise" values
      */
     protected boolean canAcceptOtherwiseValues(CellValue< ? > cell) {
         Coordinate c = cell.getCoordinate();
-        int iCol = c.getCol();
-        DynamicColumn<DTColumnConfig> column = widget.getGridWidget().getColumns().get( iCol );
-        if ( !(column.getModelColumn() instanceof ConditionCol) ) {
-            return false;
-        }
-
-        //Check column contains literal values and uses the equals operator
-        ConditionCol cc = (ConditionCol) column.getModelColumn();
-        if ( cc.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_LITERAL ) {
-            return false;
-        }
-
-        //Only "equals" supported at the moment
-        if ( !cc.getOperator().equals( "==" ) ) {
-            return false;
-        }
-        return true;
+        MergableGridWidget<DTColumnConfig> grid = widget.getGridWidget();
+        DynamicColumn<DTColumnConfig> column = grid.getColumns().get( c.getCol() );
+        return canAcceptOtherwiseValues( column.getModelColumn() );
     }
 
 }

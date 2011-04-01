@@ -467,9 +467,10 @@ public class BRDRLPersistence
                     buf.append( constr.getFieldBinding() );
                     buf.append( " : " );
                 }
-                if ( (constr.getOperator() != null && constr.getValue() != null)
-                        || constr.getOperator().equals( "== null" )
-                        || constr.getOperator().equals( "!= null" )
+                if ( (constr.getOperator() != null
+                        && (constr.getValue() != null
+                                || constr.getOperator().equals( "== null" )
+                                || constr.getOperator().equals( "!= null" )))
                         || constr.getFieldBinding() != null
                         || constr.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE
                         || constr instanceof SingleFieldConstraintEBLeftSide ) {
@@ -527,7 +528,7 @@ public class BRDRLPersistence
                     buf.append( " )" );
                     break;
                 case BaseSingleFieldConstraint.TYPE_LITERAL :
-                    if ( operator.equals( "in" ) ) {
+                    if ( operator.equals( "in" ) || operator.equals( "not in" ) ) {
                         buf.append( value );
                     } else {
                         if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {

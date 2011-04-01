@@ -62,6 +62,8 @@ public class DecisionTableControlsWidget extends Composite {
                                                   }
                                               }
                                           } );
+        btnOtherwise.setEnabled( false );
+        
         panel.add( btnOtherwise );
 
         initWidget( panel );

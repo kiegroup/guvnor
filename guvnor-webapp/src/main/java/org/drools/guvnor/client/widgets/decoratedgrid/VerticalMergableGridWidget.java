@@ -124,7 +124,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
         // Implementations of AbstractCell aren't forced to initialise consumed events
         Set<String> consumedEvents = cellWidget.getConsumedEvents();
-        //TODO Add eventType filters (so "otherwise" cells do not receive double-click, or enter)        
         if ( consumedEvents != null && consumedEvents.contains( eventType ) ) {
             Context context = new Context( eventPhysicalCoordinate.getRow(),
                                            eventPhysicalCoordinate.getCol(),
@@ -335,7 +334,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                 return;
 
             } else {
-                
+
                 //Start of potential mouse-drag select operation
                 startSelecting( eventCoordinate );
                 bDragOperationPrimed = true;

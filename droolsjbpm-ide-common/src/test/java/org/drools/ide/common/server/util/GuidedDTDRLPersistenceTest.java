@@ -40,8 +40,11 @@ import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
+import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
+import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.junit.Test;
 
 public class GuidedDTDRLPersistenceTest {
@@ -342,10 +345,14 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "a", ""};
 
+        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        allColumns.add( new RowNumberCol() );
+        allColumns.add( new DescriptionCol() );
         List<AttributeCol> attributeCols = new ArrayList<AttributeCol>();
+
         RuleModel rm = new RuleModel();
         RuleAttribute[] orig = rm.attributes;
-        p.doAttribs( 0,
+        p.doAttribs( allColumns,
                      attributeCols,
                      RepositoryUpgradeHelper.makeDataRowList( row ),
                      rm );
@@ -359,8 +366,9 @@ public class GuidedDTDRLPersistenceTest {
         col2.setAttribute( "agenda-group" );
         attributeCols.add( col1 );
         attributeCols.add( col2 );
+        allColumns.addAll( attributeCols );
 
-        p.doAttribs( 0,
+        p.doAttribs( allColumns,
                      attributeCols,
                      RepositoryUpgradeHelper.makeDataRowList( row ),
                      rm );
@@ -373,7 +381,7 @@ public class GuidedDTDRLPersistenceTest {
                       rm.attributes[0].value );
 
         row = new String[]{"1", "desc", "a", "b"};
-        p.doAttribs( 0,
+        p.doAttribs( allColumns,
                      attributeCols,
                      RepositoryUpgradeHelper.makeDataRowList( row ),
                      rm );
@@ -395,14 +403,19 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "bar", ""};
 
+        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        allColumns.add( new RowNumberCol() );
+        allColumns.add( new DescriptionCol() );
         List<MetadataCol> metadataCols = new ArrayList<MetadataCol>();
+
         RuleModel rm = new RuleModel();
         RuleMetadata[] orig = rm.metadataList;
         // RuleAttribute[] orig = rm.attributes;
-        p.doMetadata( metadataCols,
+        p.doMetadata( allColumns,
+                      metadataCols,
                       RepositoryUpgradeHelper.makeDataRowList( row ),
                       rm );
-        // p.doAttribs(0,metadataCols, row, rm);
+        // p.doAttribs(allColumns, metadataCols, row, rm);
 
         assertSame( orig,
                     rm.metadataList );
@@ -413,11 +426,13 @@ public class GuidedDTDRLPersistenceTest {
         col2.setMetadata( "foo2" );
         metadataCols.add( col1 );
         metadataCols.add( col2 );
+        allColumns.addAll( metadataCols );
 
-        p.doMetadata( metadataCols,
+        p.doMetadata( allColumns,
+                      metadataCols,
                       RepositoryUpgradeHelper.makeDataRowList( row ),
                       rm );
-        // p.doAttribs(0, metadataCols, row, rm);
+        // p.doAttribs(allColumns, metadataCols, row, rm);
 
         assertEquals( 1,
                       rm.metadataList.length );
@@ -427,7 +442,8 @@ public class GuidedDTDRLPersistenceTest {
                       rm.metadataList[0].value );
 
         row = new String[]{"1", "desc", "bar1", "bar2"};
-        p.doMetadata( metadataCols,
+        p.doMetadata( allColumns,
+                      metadataCols,
                       RepositoryUpgradeHelper.makeDataRowList( row ),
                       rm );
         assertEquals( 2,
@@ -450,7 +466,12 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[1][];
         data[0] = row;
 
+        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        allColumns.add( new RowNumberCol() );
+        allColumns.add( new DescriptionCol() );
+        allColumns.add( new MetadataCol() );
         List<ConditionCol> cols = new ArrayList<ConditionCol>();
+
         ConditionCol col = new ConditionCol();
         col.setBoundName( "p1" );
         col.setFactType( "Person" );
@@ -482,8 +503,9 @@ public class GuidedDTDRLPersistenceTest {
         cols.add( col4 );
 
         RuleModel rm = new RuleModel();
+        allColumns.addAll( cols );
 
-        p.doConditions( 1,
+        p.doConditions( allColumns,
                         cols,
                         RepositoryUpgradeHelper.makeDataRowList( row ),
                         RepositoryUpgradeHelper.makeDataLists( data ),
@@ -551,7 +573,13 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "a", "a condition", "actionsetfield1", "actionsetfield2", "retract", "actioninsertfact1", "actioninsertfact2"};
 
+        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        allColumns.add( new RowNumberCol() );
+        allColumns.add( new DescriptionCol() );
+        allColumns.add( new MetadataCol() );
+        allColumns.add( new ConditionCol() );
         List<ActionCol> cols = new ArrayList<ActionCol>();
+
         ActionSetFieldCol asf1 = new ActionSetFieldCol();
         asf1.setBoundName( "a" );
         asf1.setFactField( "field1" );
@@ -585,7 +613,9 @@ public class GuidedDTDRLPersistenceTest {
         cols.add( ins2 );
 
         RuleModel rm = new RuleModel();
-        p.doActions( 2,
+        allColumns.addAll( cols );
+
+        p.doActions( allColumns,
                      cols,
                      RepositoryUpgradeHelper.makeDataRowList( row ),
                      rm );
@@ -724,6 +754,10 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[1][];
         data[0] = row;
 
+        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        allColumns.add( new RowNumberCol() );
+        allColumns.add( new DescriptionCol() );
+        allColumns.add( new MetadataCol() );
         List<ConditionCol> cols = new ArrayList<ConditionCol>();
 
         ConditionCol col2 = new ConditionCol();
@@ -735,8 +769,9 @@ public class GuidedDTDRLPersistenceTest {
         cols.add( col2 );
 
         RuleModel rm = new RuleModel();
+        allColumns.addAll( cols );
 
-        p.doConditions( 1,
+        p.doConditions( allColumns,
                         cols,
                         RepositoryUpgradeHelper.makeDataRowList( row ),
                         RepositoryUpgradeHelper.makeDataLists( data ),
@@ -754,7 +789,12 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[1][];
         data[0] = row;
 
+        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        allColumns.add( new RowNumberCol() );
+        allColumns.add( new DescriptionCol() );
+        allColumns.add( new MetadataCol() );
         List<ConditionCol> cols = new ArrayList<ConditionCol>();
+
         ConditionCol col = new ConditionCol();
         col.setBoundName( "p1" );
         col.setFactType( "Person" );
@@ -789,8 +829,9 @@ public class GuidedDTDRLPersistenceTest {
         cols.add( col4 );
 
         RuleModel rm = new RuleModel();
+        allColumns.addAll( cols );
 
-        p.doConditions( 1,
+        p.doConditions( allColumns,
                         cols,
                         RepositoryUpgradeHelper.makeDataRowList( row ),
                         RepositoryUpgradeHelper.makeDataLists( data ),
