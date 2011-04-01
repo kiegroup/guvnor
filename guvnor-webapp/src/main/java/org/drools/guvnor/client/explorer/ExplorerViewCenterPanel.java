@@ -24,7 +24,6 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
 import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
-import org.drools.guvnor.client.util.TabOpener;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -34,6 +33,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.util.TabOpenerImpl;
 
 /**
  * This is the tab panel manager.
@@ -58,8 +58,11 @@ public class ExplorerViewCenterPanel extends Composite {
                                                    Unit.EM );
         initWidget( tabLayoutPanel );
 
-        TabOpener.initIstance( this );
-        TabOpener.getInstance().openFind();
+
+        TabContainer.init(new TabOpenerImpl(this) {
+        });
+
+        TabContainer.getInstance().openFind();
     }
 
     /**

@@ -262,7 +262,7 @@ public class MetaDataWidget extends Composite {
     }
 
     private Widget packageEditor(final String packageName) {
-        if ( this.readOnly || !UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_PACKAGE_VIEW) ) {
+        if ( this.readOnly || !UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_KNOWLEDGE_BASES_VIEW) ) {
             return readOnlyText( packageName );
         } else {
             HorizontalPanel horiz = new HorizontalPanel();

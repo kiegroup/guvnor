@@ -16,56 +16,74 @@
 
 package org.drools.guvnor.client.util;
 
-import org.drools.guvnor.client.common.HeaderHTML;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.HTML;
 
 public class Util {
+
+
+    interface HeaderTemplate
+            extends
+            SafeHtmlTemplates {
+
+        @Template("{0} {1}")
+        SafeHtml message(ImageResource imageResource, SafeHtml message);
+    }
+
+    private static final HeaderTemplate HEADER_TEMPLATE = GWT.create(HeaderTemplate.class);
 
     /**
      * Get a string representation of the header that includes an image and some
      * text.
-     * 
-     * @param image the {@link ImageResource} to add next to the header
-     * @param text the header text
+     *
+     * @param image the {@link com.google.gwt.resources.client.ImageResource} to add next to the header
+     * @param text  the header text
      * @return the header as a string
      */
-    public static String getHeader(ImageResource image,
-                                   String text) {
-        return AbstractImagePrototype.create( image ).getHTML() + " " + text;
+    public static SafeHtml getHeader(ImageResource image,
+                                     final String text) {
+        return HEADER_TEMPLATE.message(image,
+                new SafeHtml() {
+                    public String asString() {
+                        return text;
+                    }
+                });
     }
 
     /**
      * Get a string representation of the header that includes an image and some
      * text.
-     * 
+     *
      * @param image the {@link ImageResource} to add next to the header
-     * @param text the header text
+     * @param text  the header text
      * @return the header as a string
      */
-    public static HTML getHeaderHTML(ImageResource image,
-                                     String text) {
+    public static StackItemHeaderViewImpl getHeaderHTML(ImageResource image,
+                                                        String text) {
 
-        HeaderHTML headerHTML = new HeaderHTML();
+        StackItemHeaderViewImpl stackItemHeaderViewImpl = new StackItemHeaderViewImpl();
 
-        headerHTML.setText( text );
-        headerHTML.setImageResource( image );
+        stackItemHeaderViewImpl.setText(text);
+        stackItemHeaderViewImpl.setImageResource(image);
 
-        return new HTML( headerHTML.getElement().getString() );
+        return stackItemHeaderViewImpl;
     }
 
     /**
      * The URL that will be used to open up assets in a feed.
-     * (by tacking asset id on the end, of course !). 
+     * (by tacking asset id on the end, of course !).
      */
     public static String getSelfURL() {
         String selfURL = Window.Location.getHref();
-        if ( selfURL.contains( "#" ) ) {
-            selfURL = selfURL.substring( 0,
-                                         selfURL.indexOf( "#" ) );
+        if (selfURL.contains("#")) {
+            selfURL = selfURL.substring(0,
+                    selfURL.indexOf("#"));
         }
         return selfURL;
     }

@@ -256,7 +256,7 @@ public class ExplorerNodeConfig {
         inbox.setState( true );
         root.addItem( inbox );
 
-        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_PACKAGE_VIEW ) ) {
+        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW) ) {
             final TreeItem byStatus = new TreeItem( Util.getHeader( images.statusSmall(), constants.ByStatus() ) );
             itemWidgets.put( byStatus, STATES_ROOT_ID );
             setupStatesStructure( byStatus, itemWidgets );

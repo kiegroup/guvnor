@@ -258,7 +258,7 @@ public class RuleModellerConditionSelectorPopup extends AbstractRuleModellerSele
 
     // Free form DRL
     private void addFreeFormDrl() {
-        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_PACKAGE_VIEW ) ) {
+        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
             choices.addItem( SECTION_SEPARATOR );
             choices.addItem( constants.FreeFormDrl(),
                              "FF" );

@@ -15,9 +15,9 @@
  */
 package org.drools.guvnor.client.qa;
 
+import org.drools.guvnor.client.explorer.TabContainer;
 import org.drools.guvnor.client.qa.SummaryTableView.Presenter;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
-import org.drools.guvnor.client.util.TabOpener;
 
 public class SummaryTable
     implements
@@ -39,7 +39,7 @@ public class SummaryTable
     }
 
     public void openTestScenario(String uuid) {
-        TabOpener.getInstance().openAsset( uuid );
+        TabContainer.getInstance().openAsset( uuid );
     }
 
 }

@@ -63,7 +63,7 @@ public class QuickFindWidget extends Composite {
     private CheckBox         archiveBox;
     private CheckBox         caseSensitiveBox;
 
-    public QuickFindWidget(final OpenItemCommand editEvent) {
+    public QuickFindWidget() {
 
         VerticalPanel container = new VerticalPanel();
         VerticalPanel criteria = new VerticalPanel();
@@ -91,8 +91,7 @@ public class QuickFindWidget extends Composite {
                 resultsP.clear();
                 QueryPagedTable table = new QueryPagedTable( searchBox.getValue(),
                                                              archiveBox.getValue(),
-                                                             caseSensitiveBox.getValue(),
-                                                             editEvent );
+                                                             caseSensitiveBox.getValue() );
                 resultsP.add( table );
             }
         };

@@ -27,6 +27,8 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.explorer.TabContainer;
+import org.drools.guvnor.client.explorer.TabManager;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -35,7 +37,6 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
-import org.drools.guvnor.client.util.TabOpener;
 import org.drools.guvnor.client.widgets.tables.SnapshotComparisonPagedTable;
 
 import com.google.gwt.core.client.GWT;
@@ -84,8 +85,8 @@ public class SnapshotView extends Composite {
     private final OpenItemCommand        openCommand     = new OpenItemCommand() {
 
                                                              public void open(String uuid) {
-                                                                 TabOpener tabOpener = TabOpener.getInstance();
-                                                                 tabOpener.openAsset( uuid );
+                                                                 TabManager tabManager = TabContainer.getInstance();
+                                                                 tabManager.openAsset(uuid);
                                                              }
 
                                                              public void open(MultiViewRow[] rows) {
@@ -415,9 +416,9 @@ public class SnapshotView extends Composite {
                     showAssetList( new String[]{(String) o} );
                 } else if ( uo instanceof SnapshotInfo ) {
                     SnapshotInfo s = (SnapshotInfo) uo;
-                    TabOpener tabOpener = TabOpener.getInstance();
-                    tabOpener.openPackageEditor( s.uuid,
-                                                 null );
+                    TabManager tabManager = TabContainer.getInstance();
+                    tabManager.openPackageEditor(s.uuid,
+                            null);
                 }
             }
         } );
@@ -432,11 +433,11 @@ public class SnapshotView extends Composite {
             keyBuilder.append( assetType );
         }
 
-        TabOpener tabOpener = TabOpener.getInstance();
-        tabOpener.openSnapshotAssetList( snapInfo.name,
-                                         snapInfo.uuid,
-                                         assetTypes,
-                                         keyBuilder.toString() );
+        TabManager tabManager = TabContainer.getInstance();
+        tabManager.openSnapshotAssetList(snapInfo.name,
+                snapInfo.uuid,
+                assetTypes,
+                keyBuilder.toString());
     }
 
     public static void showNewSnapshot(final Command refreshCmd) {

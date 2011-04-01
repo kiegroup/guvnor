@@ -14,34 +14,23 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.explorer.navigation;
 
-import org.drools.guvnor.client.explorer.NavigationPanelView.Presenter;
-import org.junit.Before;
-import org.junit.Test;
+import com.google.gwt.user.client.ui.IsWidget;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-
-public class NavigationPanelTest {
+public class NavigationPanel {
 
     private NavigationPanelView view;
-    private Presenter presenter;
 
-    @Before
-    public void setUp() throws Exception {
-        view = mock(NavigationPanelView.class);
-
-        presenter = new NavigationPanel(view);
+    public NavigationPanel(NavigationPanelView navigationPanelView) {
+        view = navigationPanelView;
     }
 
-    @Test
-    public void testMock() throws Exception {
-        assertTrue(true);
+    public void add(IsWidget header, IsWidget content) {
+        view.add(header, content);
     }
 
-// Test list
-
-    // Test if permissions ok and visible
-
+    public NavigationPanelView getView() {
+        return view;
+    }
 }

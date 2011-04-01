@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.TabContainer;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BuilderResult;
@@ -34,7 +35,6 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
-import org.drools.guvnor.client.util.TabOpener;
 import org.drools.guvnor.client.widgets.tables.BuildPackageErrorsSimpleTable;
 
 import com.google.gwt.core.client.GWT;
@@ -511,7 +511,7 @@ public class PackageBuilderWidget extends Composite {
         BuildPackageErrorsSimpleTable errorsTable = new BuildPackageErrorsSimpleTable( new OpenItemCommand() {
 
             public void open(String key) {
-                TabOpener.getInstance().openAsset( key );
+                TabContainer.getInstance().openAsset( key );
             }
 
             public void open(MultiViewRow[] rows) {

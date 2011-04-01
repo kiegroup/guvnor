@@ -224,7 +224,6 @@ public class VersionBrowser extends Composite {
                                                                                     PackageEditorWrapper ed = new PackageEditorWrapper( conf,
                                                                                                                                         true,
                                                                                                                                         null,
-                                                                                                                                        null,
                                                                                                                                         null );
                                                                                     ed.setWidth( "100%" );
                                                                                     ed.setHeight( "100%" );

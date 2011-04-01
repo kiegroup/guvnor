@@ -16,12 +16,30 @@
 
 package org.drools.guvnor.client.explorer;
 
-import org.drools.guvnor.client.explorer.NavigationPanelView.Presenter;
+public enum TabType {
 
-public class NavigationPanel implements Presenter {
+    // Browse
+    FIND_ID,
+    CATEGORY_ROOT_ID,
+    CATEGORY_ID,
+    STATES_ID,
+    STATES_ROOT_ID,
+//    RECENT_EDITED_ID,
+//    RECENT_VIEWED_ID,
+//    INCOMING_ID,
 
+    // QA
+    TEST_SCENARIOS_ID,
+    TEST_SCENARIOS_ROOT_ID,
+    ANALYSIS_ID,
+    ANALYSIS_ROOT_ID,
 
-    public NavigationPanel(NavigationPanelView view) {
-        // TODO: Generated code -Rikkola-
-    }
+    // Table configurations
+    RULE_LIST_TABLE_ID,
+    PACKAGEVIEW_LIST_TABLE_ID,
+    ARCHIVED_RULE_LIST_TABLE_ID,
+
+    // Package snapshot
+    PACKAGE_SNAPSHOTS
+
 }

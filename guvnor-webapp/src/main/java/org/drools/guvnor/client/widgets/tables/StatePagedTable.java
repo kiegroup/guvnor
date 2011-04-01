@@ -43,18 +43,10 @@ public class StatePagedTable extends AbstractAssetPagedTable<StatePageRow> {
 
     private static final int PAGE_SIZE = 10;
 
-    /**
-     * Constructor
-     * 
-     * @param stateName
-     * @param editEvent
-     */
     public StatePagedTable(
-                           final String stateName,
-                           final OpenItemCommand editEvent) {
-        super( PAGE_SIZE,
-               editEvent );
-        setDataProvider( new AsyncDataProvider<StatePageRow>() {
+            final String stateName) {
+        super(PAGE_SIZE);
+        setDataProvider(new AsyncDataProvider<StatePageRow>() {
             protected void onRangeChanged(HasData<StatePageRow> display) {
                 StatePageRequest request = new StatePageRequest();
                 request.setStateName( stateName );

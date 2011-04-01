@@ -69,19 +69,9 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
     // Other stuff
     private static final int                     PAGE_SIZE = 10;
 
-    /**
-     * Constructor
-     * 
-     * @param packageUuid
-     * @param formatInList
-     * @param formatIsRegistered
-     * @param editEvent
-     */
     public AdminArchivedPagedTable(Command restoreSelectedAssetCommand,
-                                   Command deleteSelectedAssetCommand,
-                                   OpenItemCommand openSelectedCommand) {
-        super( PAGE_SIZE,
-               openSelectedCommand );
+                                   Command deleteSelectedAssetCommand) {
+        super( PAGE_SIZE );
         this.restoreSelectedAssetCommand = restoreSelectedAssetCommand;
         this.deleteSelectedAssetCommand = deleteSelectedAssetCommand;
         setDataProvider( new AsyncDataProvider<AdminArchivedPageRow>() {

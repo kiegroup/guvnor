@@ -14,41 +14,62 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.explorer.navigation;
 
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.MenuBar;
+import org.drools.guvnor.client.explorer.TabContainer;
+import org.drools.guvnor.client.explorer.TabManager;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.util.TabOpener;
+import org.drools.guvnor.client.util.TabOpenerImpl;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 
-public class AdministrationTree extends AbstractTree {
+public class AdministrationTree extends NavigationItemBuilderOld {
 
     private static Constants constants = GWT.create(Constants.class);
     private static Images images = GWT.create(Images.class);
 
     public AdministrationTree() {
-        this.name = constants.Administration();
-        this.image = images.rules();
-
         mainTree.addSelectionHandler(this);
     }
 
-    @Override
-    protected Tree createTree() {
+    public MenuBar createMenu() {
+        return null;
+    }
+
+    public Tree createTree() {
         return new AdminTree(itemWidgets);
+    }
+
+    public String getName() {
+        return constants.Administration();
+    }
+
+    public ImageResource getImage() {
+        return images.rules();
+    }
+
+    public IsWidget createContent() {
+        return this;
+    }
+
+    public void refreshTree() {
+        //TODO: Generated code -Rikkola-
     }
 
     // Show the associated widget in the deck panel
     public void onSelection(SelectionEvent<TreeItem> event) {
-        TabOpener tabOpener = TabOpener.getInstance();
+        TabManager tabManager = TabContainer.getInstance();
         TreeItem item = event.getSelectedItem();
         String widgetID = itemWidgets.get(item);
 
         int id = Integer.parseInt(widgetID);
-        tabOpener.openAdministrationSelection(id);
+        tabManager.openAdministrationSelection(id);
     }
 }

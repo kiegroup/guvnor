@@ -38,21 +38,13 @@ import com.google.gwt.view.client.HasData;
 /**
  * Widget with a table of inbox entries results.
  */
-public class InboxPagedTable extends AbstractAssetPagedTable<InboxPageRow> {
+public class InboxPagedTable extends AbstractAssetPagedTable<InboxPageRow> implements IsInboxPagedTable{
 
     private static final int PAGE_SIZE = 10;
 
-    /**
-     * Constructor
-     * 
-     * @param inboxName
-     * @param editEvent
-     */
     public InboxPagedTable(
-                           final String inboxName,
-                           OpenItemCommand editEvent) {
-        super( PAGE_SIZE,
-               editEvent );
+                           final String inboxName) {
+        super( PAGE_SIZE );
 
         setDataProvider( new AsyncDataProvider<InboxPageRow>() {
             protected void onRangeChanged(HasData<InboxPageRow> display) {

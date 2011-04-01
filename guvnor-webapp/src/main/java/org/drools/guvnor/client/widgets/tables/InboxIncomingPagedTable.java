@@ -26,19 +26,10 @@ import com.google.gwt.user.cellview.client.TextColumn;
 /**
  * Widget with a table of inbox entries results.
  */
-public class InboxIncomingPagedTable extends InboxPagedTable {
+public class InboxIncomingPagedTable extends InboxPagedTable implements IsInboxIncomingPagedTable {
 
-    /**
-     * Constructor
-     * 
-     * @param inboxName
-     * @param editEvent
-     */
-    public InboxIncomingPagedTable(
-                                   final String inboxName,
-                                   OpenItemCommand editEvent) {
-        super( inboxName,
-               editEvent );
+    public InboxIncomingPagedTable(            final String inboxName) {
+        super(inboxName);
     }
 
     @Override
@@ -46,20 +37,20 @@ public class InboxIncomingPagedTable extends InboxPagedTable {
                                        SortableHeaderGroup<InboxPageRow> sortableHeaderGroup) {
 
         // Include general "Inbox" columns
-        super.addAncillaryColumns( columnPicker,
-                                   sortableHeaderGroup );
+        super.addAncillaryColumns(columnPicker,
+                sortableHeaderGroup);
 
         Column<InboxPageRow, String> fromColumn = new TextColumn<InboxPageRow>() {
             public String getValue(InboxPageRow row) {
                 return ((InboxIncomingPageRow) row).getFrom();
             }
         };
-        columnPicker.addColumn( fromColumn,
-                                    new SortableHeader<InboxPageRow, String>(
-                                                                                      sortableHeaderGroup,
-                                                                                      constants.From(),
-                                                                                      fromColumn ),
-                                    true );
+        columnPicker.addColumn(fromColumn,
+                new SortableHeader<InboxPageRow, String>(
+                        sortableHeaderGroup,
+                        constants.From(),
+                        fromColumn),
+                true);
     }
 
 }

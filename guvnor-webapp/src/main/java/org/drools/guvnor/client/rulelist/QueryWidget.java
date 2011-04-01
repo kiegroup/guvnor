@@ -54,13 +54,9 @@ public class QueryWidget extends Composite {
 
     private Constants       constants = ((Constants) GWT.create( Constants.class ));
 
-    private OpenItemCommand editEvent;
-
     private VerticalPanel   layout;
 
-    public QueryWidget(OpenItemCommand editEvent) {
-        this.editEvent = editEvent;
-
+    public QueryWidget() {
         layout = new VerticalPanel();
         doQuickFind();
         doTextSearch();
@@ -74,7 +70,7 @@ public class QueryWidget extends Composite {
         DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( constants.NameSearch() );
         advancedDisclosure.ensureDebugId( "cwDisclosurePanel" );
         advancedDisclosure.setWidth( "100%" );
-        advancedDisclosure.setContent( new QuickFindWidget( editEvent ) );
+        advancedDisclosure.setContent( new QuickFindWidget(  ) );
         advancedDisclosure.setOpen( true );
 
         layout.add( advancedDisclosure );
@@ -114,9 +110,7 @@ public class QueryWidget extends Composite {
                 }
                 resultsP.clear();
                 QueryPagedTable table = new QueryPagedTable( tx.getText(),
-                                                             false,
-                                                             caseSensitiveBox.getValue(),
-                                                             editEvent );
+                                                             false);
                 resultsP.add( table );
             }
 
@@ -145,7 +139,7 @@ public class QueryWidget extends Composite {
 
         VerticalPanel container = new VerticalPanel();
         VerticalPanel criteria = new VerticalPanel();
-
+        
         final Map<String, MetaDataQuery> atts = new HashMap<String, MetaDataQuery>() {
             private static final long serialVersionUID = 510l;
 
@@ -230,8 +224,7 @@ public class QueryWidget extends Composite {
                                                                  getDate( createdBefore ),
                                                                  getDate( lastModAfter ),
                                                                  getDate( lastModBefore ),
-                                                                 false,
-                                                                 editEvent );
+                                                                 false );
                     resultsP.add( table );
                 } catch ( IllegalArgumentException e ) {
                     ErrorPopup.showMessage( constants.BadDateFormatPleaseTryAgainTryTheFormatOf0(
@@ -248,10 +241,10 @@ public class QueryWidget extends Composite {
                 }
             }
         } );
-
+        
         criteria.add( fm );
-        container.add( criteria );
-        container.add( resultsP );
+        container.add(criteria);
+        container.add(resultsP);
         advancedDisclosure.setContent( container );
 
         layout.add( advancedDisclosure );

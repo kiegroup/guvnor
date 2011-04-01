@@ -43,41 +43,20 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
 
     private static final int PAGE_SIZE = 10;
 
-    /**
-     * Constructor
-     * 
-     * @param packageUuid
-     * @param formatInList
-     * @param formatIsRegistered
-     * @param editEvent
-     */
     public AssetPagedTable(String packageUuid,
                            List<String> formatInList,
-                           Boolean formatIsRegistered,
-                           OpenItemCommand editEvent) {
+                           Boolean formatIsRegistered) {
         this( packageUuid,
               formatInList,
               formatIsRegistered,
-              editEvent,
               null );
     }
 
-    /**
-     * Constructor
-     * 
-     * @param packageUuid
-     * @param formatInList
-     * @param formatIsRegistered
-     * @param editEvent
-     * @param feedURL
-     */
     public AssetPagedTable(final String packageUuid,
                            final List<String> formatInList,
                            final Boolean formatIsRegistered,
-                           final OpenItemCommand editEvent,
                            String feedURL) {
         super( PAGE_SIZE,
-               editEvent,
                feedURL );
         setDataProvider( new AsyncDataProvider<AssetPageRow>() {
             protected void onRangeChanged(HasData<AssetPageRow> display) {

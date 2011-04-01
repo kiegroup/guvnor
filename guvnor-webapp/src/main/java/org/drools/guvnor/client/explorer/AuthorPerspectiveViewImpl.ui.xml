@@ -9,14 +9,15 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:guvnor='urn:import:org.drools.guvnor.client.explorer'>
+             xmlns:guvnor-navigation='urn:import:org.drools.guvnor.client.explorer.navigation'
+             xmlns:guvnor-explorer='urn:import:org.drools.guvnor.client.explorer'>
 
   <gwt:SplitLayoutPanel>
     <gwt:west size="250">
-      <guvnor:NavigationPanelViewImpl/>
+      <guvnor-navigation:NavigationPanelViewImpl ui:field="navigationPanel"/>
     </gwt:west>
     <gwt:center>
-      <guvnor:ExplorerViewCenterPanel/>
+      <guvnor-explorer:ExplorerViewCenterPanel/>
     </gwt:center>
   </gwt:SplitLayoutPanel>
 

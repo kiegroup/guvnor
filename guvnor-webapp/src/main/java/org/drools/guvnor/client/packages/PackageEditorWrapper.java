@@ -44,28 +44,24 @@ public class PackageEditorWrapper extends Composite {
     private boolean isHistoricalReadOnly = false;
     private Command closeCommand;
     private Command refreshPackageListCommand;
-    private OpenPackageCommand openPackageCommand;
-    
+
     VerticalPanel layout = new VerticalPanel();
 
     public PackageEditorWrapper(PackageConfigData data,
                             Command closeCommand,
-                            Command refreshPackageListCommand,
-                            OpenPackageCommand openPackageCommand) {
-        this(data, false, closeCommand, refreshPackageListCommand, openPackageCommand);
+                            Command refreshPackageListCommand) {
+        this(data, false, closeCommand, refreshPackageListCommand);
     }
     
 	public PackageEditorWrapper(PackageConfigData data, 
 			boolean isHistoricalReadOnly, 
 			Command closeCommand,
-			Command refreshPackageListCommand,
-			OpenPackageCommand openPackageCommand) {
+			Command refreshPackageListCommand) {
 		this.conf = data;
 		this.isHistoricalReadOnly = isHistoricalReadOnly;
 		this.closeCommand = closeCommand;
 		this.refreshPackageListCommand = refreshPackageListCommand;
-		this.openPackageCommand = openPackageCommand;
-        
+
 	    initWidget(layout);
 	    render();
         setWidth("100%");        
@@ -77,7 +73,6 @@ public class PackageEditorWrapper extends Composite {
                 this.isHistoricalReadOnly,
                 this.closeCommand, 
                 this.refreshPackageListCommand,
-                this.openPackageCommand, 
                 new Command() {
                     public void execute() {
                         refresh();

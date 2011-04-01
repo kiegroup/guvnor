@@ -70,35 +70,33 @@ public class RuleViewer extends GuvnorEditor {
     interface RuleViewerBinder
         extends
         UiBinder<Widget, RuleViewer> {
+
     }
 
     private static RuleViewerBinder                   uiBinder  = GWT.create( RuleViewerBinder.class );
 
     @UiField(provided = true)
     final Widget                                      editor;
-
     final ActionToolbar                               toolbar;
 
     @UiField
     MessageWidget                                     messageWidget;
 
     private Command                                   afterCheckinEvent;
+
     private Command                                   closeCommand;
+
     private Command                                   archiveCommand;
+
     public Command                                    checkedInCommand;
     private final OpenItemCommand                     openItemCommand;
     public Command                                   refreshCommand;
-    
     protected RuleAsset                               asset;
     private boolean                                   readOnly;
     private final RuleViewerSettings                  ruleViewerSettings;
+
     private long                                      lastSaved = System.currentTimeMillis();
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
-
-    /**
-     * @param historicalReadOnly
-     *            true if this is a read only view for historical purposes.
-     */
     public RuleViewer(RuleAsset asset,
                       final OpenItemCommand openItemCommand) {
         this( asset,
@@ -111,7 +109,6 @@ public class RuleViewer extends GuvnorEditor {
               null,
               null );
     }
-
     /**
      * @param historicalReadOnly
      *            true if this is a read only view for historical purposes.
@@ -129,7 +126,6 @@ public class RuleViewer extends GuvnorEditor {
               null,
               null );
     }
-
     /**
      * @param historicalReadOnly
      *            true if this is a read only view for historical purposes.
@@ -188,7 +184,19 @@ public class RuleViewer extends GuvnorEditor {
 
         LoadingPopup.close();
     }
-    
+
+    public void setCloseCommand(Command closeCommand) {
+        this.closeCommand=closeCommand;
+    }
+
+    public void setArchiveCommand(Command archiveCommand) {
+        this.archiveCommand=archiveCommand;
+    }
+
+    public void setCheckedInCommand(Command checkedInCommand) {
+        this.checkedInCommand=checkedInCommand;
+    }
+
     public ActionToolbar getActionToolbar() {
     	return this.toolbar;
     }

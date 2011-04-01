@@ -201,7 +201,7 @@ public class JBRMSEntryPoint
             return parameter.equals( "true" );
         }
     }
-
+    
     //Fade out the "Loading application" pop-up
     private void hideLoadingPopup() {
         final Element e = RootPanel.get( "loading" ).getElement();
@@ -223,5 +223,5 @@ public class JBRMSEntryPoint
         r.run( 500 );
 
     }
-
+    
 }

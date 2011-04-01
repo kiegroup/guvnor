@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer;
 
+import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SnapshotView;
 import org.drools.guvnor.client.resources.Images;
@@ -30,12 +31,12 @@ public class DeploymentNewMenu {
     private static Constants constants = (Constants) GWT.create( Constants.class );
     private static Images    images    = (Images) GWT.create( Images.class );
 
-    public static MenuBar getMenu(final AbstractTree manager) {
+    public static MenuBar getMenu(final NavigationItemBuilderOld manager) {
 
         MenuBar createNewMenu = new MenuBar( true );
 
         createNewMenu.addItem( Util.getHeader( images.snapshotSmall(),
-                                               constants.NewDeploymentSnapshot() ),
+                                               constants.NewDeploymentSnapshot() ).asString(),
                                true,
                                new Command() {
                                    public void execute() {
@@ -49,7 +50,7 @@ public class DeploymentNewMenu {
                                } );
 
         createNewMenu.addItem( Util.getHeader( images.refresh(),
-                                               constants.RebuildAllSnapshotBinaries() ),
+                                               constants.RebuildAllSnapshotBinaries() ).asString(),
                                true,
                                new Command() {
                                    public void execute() {

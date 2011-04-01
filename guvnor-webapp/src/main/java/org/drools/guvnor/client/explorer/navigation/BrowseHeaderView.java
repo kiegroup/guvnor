@@ -14,10 +14,9 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.explorer.navigation;
 
-interface NavigationPanelView {
-    interface Presenter {
+import com.google.gwt.user.client.ui.IsWidget;
 
-    }
+public interface BrowseHeaderView extends IsWidget {
 }

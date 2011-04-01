@@ -27,7 +27,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
 import com.google.gwt.core.client.GWT;
@@ -45,76 +44,74 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class ScenarioPackageView extends Composite {
 
-    private Constants     constants = ((Constants) GWT.create( Constants.class ));
-    private static Images images    = GWT.create( Images.class );
+    private Constants constants = ((Constants) GWT.create(Constants.class));
+    private static Images images = GWT.create(Images.class);
 
     private VerticalPanel layout;
 
     private AssetPagedTable table;
-    
+
     public ScenarioPackageView(final String packageUUID,
                                String packageName,
-                               OpenItemCommand editEvent,
                                ExplorerViewCenterPanel centerPanel) {
 
-        this.table = new AssetPagedTable( packageUUID,
-                                                           Arrays.asList( new String[]{AssetFormats.TEST_SCENARIO}),
-                                                           null,
-                                                           editEvent);
-        
+        this.table = new AssetPagedTable(packageUUID,
+                Arrays.asList(new String[]{AssetFormats.TEST_SCENARIO}),
+                null);
+
         layout = new VerticalPanel();
-        layout.setWidth( "100%" );
+        layout.setWidth("100%");
         PrettyFormLayout pf = new PrettyFormLayout();
 
         VerticalPanel vert = new VerticalPanel();
-        vert.add( new HTML( "<b>" + constants.ScenariosForPackage1() + "</b>" + packageName ) );
-        Button run = new Button( constants.RunAllScenarios() );
-        run.addClickHandler( new ClickHandler() {
+        vert.add(new HTML("<b>" + constants.ScenariosForPackage1() + "</b>" + packageName));
+        Button run = new Button(constants.RunAllScenarios());
+        run.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                runAllScenarios( packageUUID );
+                runAllScenarios(packageUUID);
             }
-        } );
+        });
 
-        vert.add( run );
+        vert.add(run);
 
-        pf.addHeader( images.scenarioLarge(),
-                      vert );
+        pf.addHeader(images.scenarioLarge(),
+                vert);
 
-        layout.add( pf );
-        layout.add( this.table );
+        layout.add(pf);
+        layout.add(this.table);
 
-        initWidget( layout );
+        initWidget(layout);
 
     }
 
     private void refreshShowGrid() {
-        layout.remove( 1 );
-        layout.add( this.table );
+        layout.remove(1);
+        layout.add(this.table);
     }
 
     /**
      * Run all the scenarios, obviously !
      */
     private void runAllScenarios(String uuid) {
-        LoadingPopup.showMessage( constants.BuildingAndRunningScenarios() );
-        RepositoryServiceFactory.getPackageService().runScenariosInPackage( uuid,
-                                                                     new GenericCallback<BulkTestRunResult>() {
-                                                                         public void onSuccess(BulkTestRunResult d) {
-                                                                             BulkRunResultViewImpl view = new BulkRunResultViewImpl();
-                                                                             BulkRunResult w = new BulkRunResult( view );
+        LoadingPopup.showMessage(constants.BuildingAndRunningScenarios());
+        RepositoryServiceFactory.getPackageService().runScenariosInPackage(uuid,
+                new GenericCallback<BulkTestRunResult>() {
+                    public void onSuccess(BulkTestRunResult d) {
+                        BulkRunResultViewImpl view = new BulkRunResultViewImpl();
+                        BulkRunResult w = new BulkRunResult(view);
 
-                                                                             w.setBulkTestRunResult( d );
-                                                                             w.setCloseCommand( new Command() {
-                                                                                 public void execute() {
-                                                                                     refreshShowGrid();
-                                                                                 }
+                        w.setBulkTestRunResult(d);
+                        w.setCloseCommand(new Command() {
+                            public void execute() {
+                                refreshShowGrid();
+                            }
 
-                                                                             } );
-                                                                             layout.remove( 1 );
-                                                                             layout.add( view );
-                                                                             LoadingPopup.close();
-                                                                         }
-                                                                     } );
+                        });
+                        layout.remove(1);
+                        layout.add(view);
+                        LoadingPopup.close();
+                    }
+                });
     }
 
 }

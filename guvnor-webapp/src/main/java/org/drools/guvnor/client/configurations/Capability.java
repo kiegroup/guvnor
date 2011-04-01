@@ -17,7 +17,7 @@
 package org.drools.guvnor.client.configurations;
 
 public enum Capability {
-    SHOW_PACKAGE_VIEW,  //(show status list view as well) if they have any package perms
+    SHOW_KNOWLEDGE_BASES_VIEW,  //(show status list view as well) if they have any package perms
     SHOW_CREATE_NEW_ASSET,//if they have any package perms not read only
     SHOW_CREATE_NEW_PACKAGE, //if they are package logInAdmin
     SHOW_ADMIN, //if they are logInAdmin, package logInAdmin??

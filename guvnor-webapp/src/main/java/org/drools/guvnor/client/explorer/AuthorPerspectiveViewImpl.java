@@ -18,13 +18,16 @@ package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.explorer.navigation.*;
 import org.drools.guvnor.client.messages.Constants;
 
 public class AuthorPerspectiveViewImpl extends Composite implements AuthorPerspectiveView {
 
-    private Constants constants = GWT.create( Constants.class );
+    private Constants constants = GWT.create(Constants.class);
 
     interface AuthorPerspectiveViewImplBinder
             extends
@@ -35,7 +38,15 @@ public class AuthorPerspectiveViewImpl extends Composite implements AuthorPerspe
 
     private Presenter presenter;
 
+    @UiField(provided = true)
+    NavigationPanelViewImpl navigationPanel;
+
     public AuthorPerspectiveViewImpl() {
+        AuthorNavigationViewFactory navigationViewFactory = new AuthorNavigationViewFactoryImpl();
+        AuthorNavigationPanelFactory authorNavigationPanelFactory = new AuthorNavigationPanelFactory(navigationViewFactory);
+        NavigationPanelView view = authorNavigationPanelFactory.createNavigationPanel().getView();
+        // TODO: Remove this hackery! -Rikkola-
+        navigationPanel = (NavigationPanelViewImpl) view;
         initWidget(uiBinder.createAndBindUi(this));
     }
 

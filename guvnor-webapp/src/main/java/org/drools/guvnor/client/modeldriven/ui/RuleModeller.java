@@ -271,7 +271,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private boolean showAttributes() {
-        if ( !UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_PACKAGE_VIEW ) ) {
+        if ( !UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
             return false;
         }
 

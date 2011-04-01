@@ -59,7 +59,7 @@ public class SecurityServiceImplTest {
         assertTrue(userCapabilities.contains(Capability.SHOW_CREATE_NEW_PACKAGE));
         assertTrue(userCapabilities.contains(Capability.SHOW_DEPLOYMENT));
         assertTrue(userCapabilities.contains(Capability.SHOW_DEPLOYMENT_NEW));
-        assertTrue(userCapabilities.contains(Capability.SHOW_PACKAGE_VIEW));
+        assertTrue(userCapabilities.contains(Capability.SHOW_KNOWLEDGE_BASES_VIEW));
         assertTrue(userCapabilities.contains(Capability.SHOW_QA));
     }
 
@@ -99,7 +99,7 @@ public class SecurityServiceImplTest {
                                           testManager );
 
         List<Capability> c = impl.getUserCapabilities();
-        assertTrue(c.contains(Capability.SHOW_PACKAGE_VIEW));
+        assertTrue(c.contains(Capability.SHOW_KNOWLEDGE_BASES_VIEW));
 
         //now lets give them no permissions
         pbps.clear();
@@ -138,7 +138,7 @@ public class SecurityServiceImplTest {
         assertTrue(userCapabilities.contains(Capability.SHOW_CREATE_NEW_PACKAGE));
         assertTrue(userCapabilities.contains(Capability.SHOW_DEPLOYMENT));
         assertTrue(userCapabilities.contains(Capability.SHOW_DEPLOYMENT_NEW));
-        assertTrue(userCapabilities.contains(Capability.SHOW_PACKAGE_VIEW));
+        assertTrue(userCapabilities.contains(Capability.SHOW_KNOWLEDGE_BASES_VIEW));
         assertTrue(userCapabilities.contains(Capability.SHOW_QA));
 
         Lifecycle.endApplication();

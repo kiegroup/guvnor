@@ -33,6 +33,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.StatusChangePopup;
 import org.drools.guvnor.client.common.ValidationMessageWidget;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.explorer.TabContainer;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -71,7 +72,6 @@ public class PackageEditor extends PrettyFormLayout {
     private boolean            isHistoricalReadOnly                 = false;
     private Command            closeCommand;
     private Command            refreshPackageListCommand;
-    private OpenPackageCommand openPackageCommand;
     private Command            refreshCommand;
 
     private HorizontalPanel    packageConfigurationValidationResult = new HorizontalPanel();         ;
@@ -79,13 +79,11 @@ public class PackageEditor extends PrettyFormLayout {
     public PackageEditor(PackageConfigData data,
                          Command closeCommand,
                          Command refreshPackageList,
-                         OpenPackageCommand openPackageCommand,
                          Command refreshCommand) {
         this( data,
               false,
               closeCommand,
               refreshPackageList,
-              openPackageCommand,
               refreshCommand );
     }
 
@@ -93,13 +91,11 @@ public class PackageEditor extends PrettyFormLayout {
                          boolean historicalReadOnly,
                          Command closeCommand,
                          Command refreshPackageList,
-                         OpenPackageCommand openPackageCommand,
                          Command refreshCommand) {
         this.conf = data;
         this.isHistoricalReadOnly = historicalReadOnly;
         this.closeCommand = closeCommand;
         this.refreshPackageListCommand = refreshPackageList;
-        this.openPackageCommand = openPackageCommand;
         this.refreshCommand = refreshCommand;
 
         setWidth( "100%" );
@@ -532,10 +528,8 @@ public class PackageEditor extends PrettyFormLayout {
         if ( closeCommand != null ) {
             closeCommand.execute();
         }
-        if ( openPackageCommand != null ) {
-            openPackageCommand.open( newAssetUUID,
-                                     refreshPackageListCommand );
-        }
+        TabContainer.getInstance().openPackageEditor(newAssetUUID,
+                refreshPackageListCommand);
     }
 
     /**
@@ -577,10 +571,8 @@ public class PackageEditor extends PrettyFormLayout {
     private void completedCopying(String newAssetUUID) {
         Window.alert( constants.PackageCopiedSuccessfully() );
         refreshPackageListCommand.execute();
-        if ( openPackageCommand != null ) {
-            openPackageCommand.open( newAssetUUID,
-                                     refreshPackageListCommand );
-        }
+        TabContainer.getInstance().openPackageEditor(newAssetUUID,
+                refreshPackageListCommand);
     }
 
     private void doSave(final Command refresh) {

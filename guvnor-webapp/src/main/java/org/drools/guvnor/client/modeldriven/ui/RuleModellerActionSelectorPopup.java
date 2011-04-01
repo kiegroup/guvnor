@@ -378,7 +378,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         List<String> vars2 = model.getRhsBoundFacts();
         String[] globals = completions.getGlobalVariables();
 
-        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_PACKAGE_VIEW ) ) {
+        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
             choices.addItem( SECTION_SEPARATOR );
             choices.addItem( constants.AddFreeFormDrl(),
                              "FF" );
