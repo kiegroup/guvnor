@@ -9,11 +9,11 @@
     <version>5.2.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
   <artifactId>guvnor-webapp</artifactId>
   <packaging>war</packaging>
   
   <name>Guvnor web application</name>
+  <description>The web application to create, edit and deploy Drools and jBPM assets.</description>
 
   <build>
     <plugins>

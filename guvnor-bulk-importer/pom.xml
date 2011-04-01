@@ -13,7 +13,6 @@
     TODO Make this module obsolete by providing the functionality in a screen in Guvnor
     https://issues.jboss.org/browse/GUVNOR-1230
   -->
-  <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
   <artifactId>guvnor-bulk-importer</artifactId>
   <name>Guvnor bulk importer</name>
   <description>Bulk imports files into the Guvnor repository</description>
