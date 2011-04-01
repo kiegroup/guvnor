@@ -36,14 +36,17 @@ import com.google.gwt.user.client.ui.ListBox;
  * A drop down for enumerated values
  */
 public class EnumDropDown extends ListBox
-    implements
-    IDirtyable {
+        implements
+        IDirtyable {
+
+
+    private static final Constants constants = GWT.create(Constants.class);
+
     private DropDownValueChanged valueChanged;
 
     public EnumDropDown(final String currentValue,
                         final DropDownValueChanged valueChanged,
                         final DropDownData dropData) {
-        final Constants cs = GWT.create( Constants.class );
 
         this.valueChanged = valueChanged;
         addChangeHandler(new ChangeHandler() {
@@ -54,46 +57,45 @@ public class EnumDropDown extends ListBox
         });
 
         //if we have to do it lazy, we will hit up the server when the widget gets focus
-        if ( dropData.fixedList == null && dropData.queryExpression != null ) {
-            DeferredCommand.addCommand( new Command() {
+        if (dropData.fixedList == null && dropData.queryExpression != null) {
+            DeferredCommand.addCommand(new Command() {
                 public void execute() {
-                    LoadingPopup.showMessage( cs.RefreshingList() );
-                    RepositoryServiceFactory.getService().loadDropDownExpression( dropData.valuePairs,
-                                                                                  dropData.queryExpression,
-                                                                                  new GenericCallback() {
-                                                                                      public void onSuccess(Object data) {
-                                                                                          LoadingPopup.close();
-                                                                                          String[] list = (String[]) data;
+                    LoadingPopup.showMessage(constants.RefreshingList());
+                    RepositoryServiceFactory.getService().loadDropDownExpression(dropData.valuePairs,
+                            dropData.queryExpression,
+                            new GenericCallback<String[]>() {
+                                public void onSuccess(String[] data) {
+                                    LoadingPopup.close();
 
-                                                                                          if ( list.length == 0 ) {
-                                                                                              list = new String[]{cs.UnableToLoadList()};
-                                                                                          }
+                                    if (data.length == 0) {
+                                        data = new String[]{constants.UnableToLoadList()};
+                                    }
 
-                                                                                          fillDropDown( currentValue,
-                                                                                                        list );
-                                                                                      }
+                                    fillDropDown(currentValue,
+                                            data);
+                                }
 
-                                                                                      public void onFailure(Throwable t) {
-                                                                                          LoadingPopup.close();
-                                                                                          //just do an empty drop down...
-                                                                                          fillDropDown( currentValue,
-                                                                                                        new String[]{cs.UnableToLoadList()} );
-                                                                                      }
-                                                                                  } );
+                                public void onFailure(Throwable t) {
+                                    LoadingPopup.close();
+                                    //just do an empty drop down...
+                                    fillDropDown(currentValue,
+                                            new String[]{constants.UnableToLoadList()});
+                                }
+                            });
                 }
-            } );
+            });
 
         } else {
             //otherwise its just a normal one...
-            fillDropDown( currentValue,
-                          dropData.fixedList );
+            fillDropDown(currentValue,
+                    dropData.fixedList);
         }
 
-        if ( currentValue == null || "".equals( currentValue ) ) {
+        if (currentValue == null || "".equals(currentValue)) {
             int ix = getSelectedIndex();
-            if ( ix > -1 ) {
-                valueChanged.valueChanged( getItemText( ix ),
-                                           getValue( ix ) );
+            if (ix > -1) {
+                valueChanged.valueChanged(getItemText(ix),
+                        getValue(ix));
             }
         }
     }
@@ -104,35 +106,37 @@ public class EnumDropDown extends ListBox
 
         clear();
 
-        for ( int i = 0; i < enumeratedValues.length; i++ ) {
+        for (int i = 0; i < enumeratedValues.length; i++) {
             String v = enumeratedValues[i];
             String val;
-            if ( v.indexOf( '=' ) > 0 ) {
+            if (v.indexOf('=') > 0) {
                 //using a mapping
-                String[] splut = ConstraintValueEditorHelper.splitValue( v );
+                String[] splut = ConstraintValueEditorHelper.splitValue(v);
                 String realValue = splut[0];
                 String display = splut[1];
                 val = realValue;
-                addItem( display,
-                         realValue );
+                addItem(display,
+                        realValue);
             } else {
-                addItem( v,
-                         v );
+                addItem(v,
+                        v);
                 val = v;
             }
-            if ( currentValue != null && currentValue.equals( val ) ) {
-                setSelectedIndex( i );
+            if (currentValue != null && currentValue.equals(val)) {
+                setSelectedIndex(i);
                 selected = true;
-                valueChanged.valueChanged( getItemText( getSelectedIndex() ),
-                                           getValue( getSelectedIndex() ) );
+                valueChanged.valueChanged(getItemText(getSelectedIndex()),
+                        getValue(getSelectedIndex()));
             }
         }
 
-        if ( currentValue != null && !"".equals( currentValue ) && !selected ) {
+        if (currentValue != null && !"".equals(currentValue) && !selected) {
             //need to add this value
-            addItem( currentValue,
-                     currentValue );
-            setSelectedIndex( enumeratedValues.length );
+            addItem(currentValue,
+                    currentValue);
+                valueChanged.valueChanged(currentValue,
+                        currentValue);
+            setSelectedIndex(enumeratedValues.length);
         }
     }
 }
