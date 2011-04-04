@@ -40,6 +40,7 @@ import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
@@ -810,14 +811,14 @@ public class GuidedDTDRLPersistenceTest {
         col2.setFactField( "age" );
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         col2.setOperator( "<" );
-        col.setNegated( true );
+        col2.setNegated( true );
         cols.add( col2 );
 
         ConditionCol col3 = new ConditionCol();
         col3.setBoundName( "p1" );
         col3.setFactType( "Person" );
         col3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
-        col.setNegated( true );
+        col3.setNegated( true );
         cols.add( col3 );
 
         ConditionCol col4 = new ConditionCol();
@@ -905,6 +906,115 @@ public class GuidedDTDRLPersistenceTest {
                       false );
 
         assertTrue( drl.indexOf( "c : Cheese(" ) > 0 );
+
+    }
+
+    @Test
+    public void testLHSOtherwisePattern() {
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+        String[][] row = new String[3][];
+        String[][] data = new String[3][];
+        row[0] = new String[]{"1", "desc1", "Michael1", "Michael1"};
+        List<DTCellValue> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        data[0] = row[0];
+
+        row[1] = new String[]{"2", "desc2", "Michael2", "Michael2"};
+        List<DTCellValue> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        data[1] = row[1];
+
+        row[2] = new String[]{"3", "desc3", null, null};
+        List<DTCellValue> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
+        rowDTModel2.get( 2 ).setOtherwise( true );
+        rowDTModel2.get( 3 ).setOtherwise( true );
+        data[2] = row[2];
+
+        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        allColumns.add( new RowNumberCol() );
+        allColumns.add( new DescriptionCol() );
+
+        List<ConditionCol> cols = new ArrayList<ConditionCol>();
+
+        ConditionCol col = new ConditionCol();
+        col.setBoundName( "p1" );
+        col.setFactType( "Person" );
+        col.setFactField( "name" );
+        col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        col.setOperator( "==" );
+        cols.add( col );
+
+        ConditionCol col2 = new ConditionCol();
+        col2.setBoundName( "p2" );
+        col2.setFactType( "Person" );
+        col2.setFactField( "name" );
+        col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        col2.setOperator( "!=" );
+        cols.add( col2 );
+
+        RuleModel rm = new RuleModel();
+        allColumns.addAll( cols );
+
+        p.doConditions( allColumns,
+                        cols,
+                        rowDTModel0,
+                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        rm );
+        String drl0 = BRDRLPersistence.getInstance().marshal( rm );
+
+        assertEquals( 2,
+                      rm.lhs.length );
+        assertEquals( "Person",
+                      ((FactPattern) rm.lhs[0]).getFactType() );
+        assertEquals( "p1",
+                      ((FactPattern) rm.lhs[0]).getBoundName() );
+
+        assertEquals( "Person",
+                      ((FactPattern) rm.lhs[1]).getFactType() );
+        assertEquals( "p2",
+                      ((FactPattern) rm.lhs[1]).getBoundName() );
+        assertTrue( drl0.indexOf( "p1 : Person( name == \"Michael1\" )" ) > 0 );
+        assertTrue( drl0.indexOf( "p2 : Person( name != \"Michael1\" )" ) > 0 );
+
+        p.doConditions( allColumns,
+                        cols,
+                        rowDTModel1,
+                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        rm );
+        String drl1 = BRDRLPersistence.getInstance().marshal( rm );
+
+        assertEquals( 2,
+                      rm.lhs.length );
+        assertEquals( "Person",
+                      ((FactPattern) rm.lhs[0]).getFactType() );
+        assertEquals( "p1",
+                      ((FactPattern) rm.lhs[0]).getBoundName() );
+
+        assertEquals( "Person",
+                      ((FactPattern) rm.lhs[1]).getFactType() );
+        assertEquals( "p2",
+                      ((FactPattern) rm.lhs[1]).getBoundName() );
+        assertTrue( drl1.indexOf( "p1 : Person( name == \"Michael2\" )" ) > 0 );
+        assertTrue( drl1.indexOf( "p2 : Person( name != \"Michael2\" )" ) > 0 );
+
+        p.doConditions( allColumns,
+                        cols,
+                        rowDTModel2,
+                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        rm );
+        String drl2 = BRDRLPersistence.getInstance().marshal( rm );
+
+        assertEquals( 2,
+                      rm.lhs.length );
+        assertEquals( "Person",
+                      ((FactPattern) rm.lhs[0]).getFactType() );
+        assertEquals( "p1",
+                      ((FactPattern) rm.lhs[0]).getBoundName() );
+
+        assertEquals( "Person",
+                      ((FactPattern) rm.lhs[1]).getFactType() );
+        assertEquals( "p2",
+                      ((FactPattern) rm.lhs[1]).getBoundName() );
+        assertTrue( drl2.indexOf( "p1 : Person( name not in ( \"Michael1\", \"Michael2\" )" ) > 0 );
+        assertTrue( drl2.indexOf( "p2 : Person( name in ( \"Michael1\", \"Michael2\" )" ) > 0 );
 
     }
 
