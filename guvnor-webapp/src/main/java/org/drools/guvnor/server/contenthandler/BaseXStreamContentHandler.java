@@ -43,7 +43,7 @@ public abstract class BaseXStreamContentHandler<T extends PortableObject> extend
             try {
                 asset.content = (T) getXStream().fromXML(item.getContent());
             } catch (RulesRepositoryException e) {
-                log.error("error marshalling asset content: " + asset.metaData.name, e);
+                log.error("error marshalling asset content: " + asset.name, e);
                 throw new SerializationException(e.getMessage());
             }
         } else {
@@ -55,7 +55,7 @@ public abstract class BaseXStreamContentHandler<T extends PortableObject> extend
         try {
             repoAsset.updateContent(getXStream().toXML(asset.content));
         } catch (Exception e) {
-            log.error("error marshalling asset content: " + asset.metaData.name, e);
+            log.error("error marshalling asset content: " + asset.name, e);
             throw new SerializationException(e.getMessage());
         }
     }

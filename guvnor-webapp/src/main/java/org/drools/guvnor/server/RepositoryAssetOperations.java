@@ -146,7 +146,7 @@ public class RepositoryAssetOperations {
             result = new BuilderResult();
 
             BuilderResultLine res = new BuilderResultLine();
-            res.setAssetName( asset.metaData.name );
+            res.setAssetName( asset.name );
             res.setAssetFormat( asset.metaData.format );
             res.setMessage( "Unable to validate this asset. (Check log for detailed messages)." );
             res.setUuid( asset.uuid );
@@ -671,6 +671,15 @@ public class RepositoryAssetOperations {
 
         RuleAsset asset = new RuleAsset();
         asset.uuid = item.getUUID();
+        asset.name = item.getName();
+        asset.description = item.getDescription();
+        asset.lastModified = item.getLastModified().getTime();
+        asset.lastContributor = item.getLastContributor();
+        asset.state = (item.getState() != null) ? item.getState().getName() : "";
+        asset.dateCreated = item.getCreatedDate().getTime();
+        asset.checkinComment = item.getCheckinComment();
+        asset.versionNumber = item.getVersionNumber();
+       
         asset.metaData = populateMetaData( item );
         ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
         handler.retrieveAssetContent( asset,

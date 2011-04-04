@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.rpc.Artifact;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
 import com.google.gwt.core.client.Scheduler;
@@ -24,18 +25,18 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
- * This holds the editor and viewer for rule documentation.
+ * This holds the editor and viewer for artifact documentation.
  * It will update the model when the text is changed.
  */
 public class RuleDocumentWidget extends DirtyableComposite {
 
     final VerticalPanel     layout = new VerticalPanel();
 
-    private final RuleAsset asset;
+    private final Artifact artifact;
 
-    public RuleDocumentWidget(final RuleAsset asset,
+    public RuleDocumentWidget(final Artifact artifact,
                               boolean visible) {
-        this.asset = asset;
+        this.artifact = artifact;
 
         initWidget( layout );
 
@@ -45,16 +46,19 @@ public class RuleDocumentWidget extends DirtyableComposite {
     private void initLayout() {
         layout.clear();
 
-        layout.add( new CommentWidget( asset.metaData ) );
+        layout.add( new CommentWidget( artifact ) );
 
-        Scheduler.get().scheduleDeferred( new Command() {
-            public void execute() {
-                layout.add( new DiscussionWidget( asset ) );
-            }
-        } );
+		if (artifact instanceof RuleAsset) {
+	        Scheduler.get().scheduleDeferred( new Command() {
+	            public void execute() {
+	                layout.add( new DiscussionWidget( artifact ) );
+	            }
+	        } );
+		} else {
+			//TODO:
+		}
 
         layout.setWidth( "100%" );
-
     }
 
     public void setVisible(boolean visible) {

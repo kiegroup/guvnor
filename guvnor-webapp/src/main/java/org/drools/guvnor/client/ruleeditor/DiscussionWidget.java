@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.Artifact;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.PushClient;
 import org.drools.guvnor.client.rpc.PushResponse;
@@ -53,7 +54,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
- * Does the discussion panel for assets.
+ * Does the discussion panel for artifacts.
  */
 public class DiscussionWidget extends Composite {
 
@@ -62,7 +63,7 @@ public class DiscussionWidget extends Composite {
 
     private VerticalPanel          commentList      = new VerticalPanel();
     private VerticalPanel          newCommentLayout = new VerticalPanel();
-    private RuleAsset              asset;
+    private Artifact               artifact;
     private ServerPushNotification pushNotify;
     private int                    lastCount        = 0;
 
@@ -72,8 +73,8 @@ public class DiscussionWidget extends Composite {
         PushClient.instance().unsubscribe( pushNotify );
     }
 
-    public DiscussionWidget(final RuleAsset asset) {
-        this.asset = asset;
+    public DiscussionWidget(final Artifact artifact) {
+        this.artifact = artifact;
 
         DecoratedDisclosurePanel discussionPanel = new DecoratedDisclosurePanel( constants.Discussion() );
         discussionPanel.setWidth( "100%" );
@@ -92,7 +93,7 @@ public class DiscussionWidget extends Composite {
 
         pushNotify = new ServerPushNotification() {
             public void messageReceived(PushResponse response) {
-                if ( "discussion".equals( response.messageType ) && asset.uuid.equals( response.message ) ) {
+                if ( "discussion".equals( response.messageType ) && artifact.uuid.equals( response.message ) ) {
                     System.err.println( "Refreshing discussion..." );
                     refreshDiscussion();
                 }
@@ -106,7 +107,7 @@ public class DiscussionWidget extends Composite {
 
     /** Hit up the server */
     public void refreshDiscussion() {
-        RepositoryServiceFactory.getAssetService().loadDiscussionForAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().loadDiscussionForAsset( artifact.uuid,
                                                                       new GenericCallback<List<DiscussionRecord>>() {
                                                                           public void onSuccess(List<DiscussionRecord> result) {
                                                                               updateCommentList( result );
@@ -166,7 +167,7 @@ public class DiscussionWidget extends Composite {
             adminClearAll.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     if ( Window.confirm( constants.EraseAllCommentsWarning() ) ) {
-                        RepositoryServiceFactory.getAssetService().clearAllDiscussionsForAsset( asset.uuid,
+                        RepositoryServiceFactory.getAssetService().clearAllDiscussionsForAsset( artifact.uuid,
                                                                                            new GenericCallback<java.lang.Void>() {
                                                                                                public void onSuccess(Void v) {
                                                                                                    updateCommentList( new ArrayList<DiscussionRecord>() );
@@ -176,9 +177,9 @@ public class DiscussionWidget extends Composite {
                 }
             } );
         }
-
-        String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + asset.metaData.packageName
-                + "&assetName=" + URL.encode( asset.metaData.name ) + "&viewUrl=" + Util.getSelfURL();
+        
+        String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + ((RuleAsset)artifact).metaData.packageName
+                + "&assetName=" + URL.encode( artifact.name ) + "&viewUrl=" + Util.getSelfURL();
         hp.add( new HTML( "<a href='" + feedURL + "' target='_blank'><img src='"
                 + new Image( images.feed() ).getUrl() + "'/></a>" ) );
 
@@ -226,7 +227,7 @@ public class DiscussionWidget extends Composite {
     private void sendNewComment(String text) {
         newCommentLayout.clear();
         newCommentLayout.add( new Image( images.spinner() ) );
-        RepositoryServiceFactory.getAssetService().addToDiscussionForAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().addToDiscussionForAsset( artifact.uuid,
                                                                        text,
                                                                        new GenericCallback<List<DiscussionRecord>>() {
                                                                            public void onSuccess(List<DiscussionRecord> result) {

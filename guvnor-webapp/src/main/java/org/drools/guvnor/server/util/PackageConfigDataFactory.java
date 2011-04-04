@@ -42,7 +42,7 @@ public class PackageConfigDataFactory {
         data.lastModified = item.getLastModified().getTime();
         data.dateCreated = item.getCreatedDate().getTime();
         data.checkinComment = item.getCheckinComment();
-        data.lasContributor = item.getLastContributor();
+        data.lastContributor = item.getLastContributor();
         data.state = item.getStateDescription();
         data.isSnapshot = item.isSnapshot();
         data.versionNumber = item.getVersionNumber();

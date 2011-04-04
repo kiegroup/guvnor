@@ -28,6 +28,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Artifact;
 import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.security.Capabilities;
@@ -46,6 +47,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -54,15 +56,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * This displays the metadata for a versionable asset.
+ * This displays the metadata for a versionable artifact.
  * It also captures edits, but it does not load or save anything itself.
  */
-public class MetaDataWidget extends Composite {
+public class MetaDataWidgetNew extends Composite {
 
     private Constants       constants = GWT.create( Constants.class );
     private static Images   images    = GWT.create( Images.class );
 
-    private Artifact        data;
+    private Artifact        artifact;
     private boolean         readOnly;
     private String          uuid;
     private Command         metaDataRefreshView;
@@ -72,7 +74,7 @@ public class MetaDataWidget extends Composite {
     private FormStyleLayout currentSection;
     private String          currentSectionName;
 
-    public MetaDataWidget(final Artifact d,
+    public MetaDataWidgetNew(final Artifact d,
                           final boolean readOnly,
                           final String uuid,
                           final Command metaDataRefreshView,
@@ -81,7 +83,7 @@ public class MetaDataWidget extends Composite {
         super();
 
         this.uuid = uuid;
-        this.data = d;
+        this.artifact = d;
         this.readOnly = readOnly;
 
         layout.setWidth( "100%" );
@@ -93,12 +95,14 @@ public class MetaDataWidget extends Composite {
     }
 
     public void setMetaData(Artifact data) {
-        this.data = data;
+        this.artifact = data;
     }
 
     private void render() {
         layout.clear();
-        layout.add( new SmallLabel( constants.Title() + ": [<b>" + data.name + "</b>]" ) );
+        //layout.add( new SmallLabel( constants.Title() + ": [<b>" + data.name + "</b>]" ) );
+        startSection( constants.Metadata() );
+        
         if ( !readOnly ) {
             Image edit = new ImageButton( images.edit(),
                                           constants.RenameThisAsset() );
@@ -108,11 +112,11 @@ public class MetaDataWidget extends Composite {
                 }
             } );
             addHeader( images.metadata(),
-                       data.name,
+                       artifact.name,
                        edit );
         } else {
             addHeader( images.assetVersion(),
-                       data.name,
+                       artifact.name,
                        null );
         }
 
@@ -122,8 +126,7 @@ public class MetaDataWidget extends Composite {
     private void addHeader(ImageResource img,
                            String name,
                            Image edit) {
-        startSection( name );
-
+ 
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( new SmallLabel( "<b>" + name + "</b>" ) );
         if ( edit != null ) hp.add( edit );
@@ -132,56 +135,60 @@ public class MetaDataWidget extends Composite {
     }
 
     private void loadData() {
+        if(artifact instanceof RuleAsset) {     	
         addAttribute( constants.CategoriesMetaData(),
                       categories() );
+        }
 
-        addAttribute( constants.ModifiedOnMetaData(),
-                      readOnlyDate( data.lastModified ) );
+        addAttribute( constants.LastModified(),
+                      readOnlyDate( artifact.lastModified ) );
         addAttribute( constants.ModifiedByMetaData(),
-                      readOnlyText( data.lastContributor ) );
+                      readOnlyText( artifact.lastContributor ) );
         addAttribute( constants.NoteMetaData(),
-                      readOnlyText( data.checkinComment ) );
+                      readOnlyText( artifact.checkinComment ) );
 
         if ( !readOnly ) {
             addAttribute( constants.CreatedOnMetaData(),
-                          readOnlyDate( data.dateCreated ) );
+                          readOnlyDate( artifact.dateCreated ) );
         }
-        if(data instanceof RuleAsset) {    
+        if(artifact instanceof RuleAsset) {      	
+        
         addAttribute( constants.CreatedByMetaData(),
-                      readOnlyText( ((RuleAsset)data).metaData.creator ) );
+                      readOnlyText( ((RuleAsset)artifact).metaData.creator ) );
         addAttribute( constants.FormatMetaData(),
-                      new SmallLabel( "<b>" + ((RuleAsset)data).metaData.format + "</b>" ) );
+                      new SmallLabel( "<b>" + ((RuleAsset)artifact).metaData.format + "</b>" ) );
 
         addAttribute( constants.PackageMetaData(),
-                      packageEditor( ((RuleAsset)data).metaData.packageName ) );
+                      packageEditor( ((RuleAsset)artifact).metaData.packageName ) );
 
         addAttribute( constants.IsDisabledMetaData(),
                       editableBoolean( new FieldBooleanBinding() {
                                            public boolean getValue() {
-                                               return ((RuleAsset)data).metaData.disabled;
+                                               return ((RuleAsset)artifact).metaData.disabled;
                                            }
 
                                            public void setValue(boolean val) {
-                                        	   ((RuleAsset)data).metaData.disabled = val;
+                                        	   ((RuleAsset)artifact).metaData.disabled = val;
                                            }
                                        },
                                        constants.DisableTip() ) );
         }
+
         addAttribute( "UUID:",
                       readOnlyText( uuid ) );
 
         endSection(false);
 
-        startSection( constants.OtherMetaData() );
+/*        startSection( constants.OtherMetaData() );
 
         addAttribute( constants.SubjectMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
-                                            return ((RuleAsset)data).metaData.subject;
+                                            return data.subject;
                                         }
 
                                         public void setValue(String val) {
-                                        	((RuleAsset)data).metaData.subject = val;
+                                            data.subject = val;
                                         }
                                     },
                                     constants.AShortDescriptionOfTheSubjectMatter() ) );
@@ -189,11 +196,11 @@ public class MetaDataWidget extends Composite {
         addAttribute( constants.TypeMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
-                                            return ((RuleAsset)data).metaData.type;
+                                            return data.type;
                                         }
 
                                         public void setValue(String val) {
-                                        	((RuleAsset)data).metaData.type = val;
+                                            data.type = val;
                                         }
 
                                     },
@@ -202,11 +209,11 @@ public class MetaDataWidget extends Composite {
         addAttribute( constants.ExternalLinkMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
-                                            return ((RuleAsset)data).metaData.externalRelation;
+                                            return data.externalRelation;
                                         }
 
                                         public void setValue(String val) {
-                                        	((RuleAsset)data).metaData.externalRelation = val;
+                                            data.externalRelation = val;
                                         }
 
                                     },
@@ -215,38 +222,42 @@ public class MetaDataWidget extends Composite {
         addAttribute( constants.SourceMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
-                                            return ((RuleAsset)data).metaData.externalSource;
+                                            return data.externalSource;
                                         }
 
                                         public void setValue(String val) {
-                                        	((RuleAsset)data).metaData.externalSource = val;
+                                            data.externalSource = val;
                                         }
 
                                     },
                                     constants.SourceMetaDataTip() ) );
 
         endSection( true );
-        startSection( constants.VersionHistory() );
-        addAttribute( constants.CurrentVersionNumber(),
-                      getVersionNumberLabel() );
+*/       
+        startSection(constants.VersionHistory());
+        addAttribute(constants.VersionFeed(),
+        		new HTML("<a href='" + getVersionFeed(artifact) + "' target='_blank'><img src='"
+                + new Image(images.feed()).getUrl() + "'/></a>"));
 
-        if ( !readOnly ) {
-            addRow( new VersionBrowser( this.uuid,
-            		                    false,
-                                        fullRefreshView ) );
+        addAttribute(constants.CurrentVersionNumber(),
+                     getVersionNumberLabel());
+
+        if (!readOnly) {
+            addRow(new VersionBrowser(this.uuid,
+            		                  !(artifact instanceof RuleAsset),
+                                      fullRefreshView ));
         }
 
-        endSection( false );
+        endSection(false);
     }
 
-    private void addRow(VersionBrowser versionBrowser) {
-        this.currentSection.addRow( versionBrowser );
+    private void addRow(Widget widget) {
+        this.currentSection.addRow(widget);
     }
 
     private void addAttribute(String string,
-                              Widget editable) {
-        this.currentSection.addAttribute( string,
-                                          editable );
+                              Widget widget) {
+        this.currentSection.addAttribute(string, widget);
     }
 
     private void endSection() {
@@ -254,11 +265,11 @@ public class MetaDataWidget extends Composite {
     }
 
     private void endSection(boolean collapsed) {
-        DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( currentSectionName );
-        advancedDisclosure.setWidth( "100%" );
-        advancedDisclosure.setOpen( collapsed );
-        advancedDisclosure.setContent( this.currentSection );
-        layout.add( advancedDisclosure );
+        DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel(currentSectionName);
+        advancedDisclosure.setWidth("100%");
+        advancedDisclosure.setOpen(collapsed);
+        advancedDisclosure.setContent(this.currentSection);
+        layout.add(advancedDisclosure);
     }
 
     private void startSection(String name) {
@@ -267,20 +278,20 @@ public class MetaDataWidget extends Composite {
     }
 
     private Widget packageEditor(final String packageName) {
-        if ( this.readOnly || !CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
-            return readOnlyText( packageName );
+        if (this.readOnly || !CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW )) {
+            return readOnlyText(packageName);
         } else {
             HorizontalPanel horiz = new HorizontalPanel();
-            horiz.setStyleName( "metadata-Widget" ); //NON-NLS
-            horiz.add( readOnlyText( packageName ) );
-            Image editPackage = new ImageButton( images.edit() );
-            editPackage.addClickHandler( new ClickHandler() {
+            horiz.setStyleName("metadata-Widget"); //NON-NLS
+            horiz.add(readOnlyText(packageName));
+            Image editPackage = new ImageButton(images.edit());
+            editPackage.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent w) {
-                    showEditPackage( packageName,
-                                     w );
+                    showEditPackage(packageName,
+                                    w );
                 }
             } );
-            horiz.add( editPackage );
+            horiz.add(editPackage);
             return horiz;
         }
     }
@@ -289,7 +300,7 @@ public class MetaDataWidget extends Composite {
         final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
                                                        constants.RenameThisItem() );
         final TextBox box = new TextBox();
-        box.setText( data.name );
+        box.setText( artifact.name );
         pop.addAttribute( constants.NewNameAsset(),
                           box );
         Button ok = new Button( constants.RenameItem() );
@@ -350,10 +361,10 @@ public class MetaDataWidget extends Composite {
     }
 
     private Widget getVersionNumberLabel() {
-        if ( data.versionNumber == 0 ) {
+        if ( artifact.versionNumber == 0 ) {
             return new SmallLabel( constants.NotCheckedInYet() );
         } else {
-            return readOnlyText( Long.toString( data.versionNumber ) );
+            return readOnlyText( Long.toString( artifact.versionNumber ) );
         }
 
     }
@@ -373,7 +384,7 @@ public class MetaDataWidget extends Composite {
     }
 
     private Widget categories() {
-        ed = new AssetCategoryEditor( ((RuleAsset)data).metaData,
+        ed = new AssetCategoryEditor( ((RuleAsset)this.artifact).metaData,
                                       this.readOnly );
         return ed;
     }
@@ -447,11 +458,27 @@ public class MetaDataWidget extends Composite {
      * Return the data if it is to be saved.
      */
     public Artifact getData() {
-        return data;
+        return artifact;
     }
 
     public void refresh() {
         render();
+    }
+    
+    static String getVersionFeed(Artifact artifact) {
+    	if(artifact instanceof PackageConfigData) {
+    	    String hurl = getRESTBaseURL() + "packages/" + artifact.name + "/versions";
+            return hurl;    		
+    	} else {
+    	    String hurl = getRESTBaseURL() + "packages/" + ((RuleAsset)artifact).metaData.packageName 
+    	                  + "/assets/" + artifact.name + "/versions";
+            return hurl;     		
+    	}
+    }    
+    
+    static String getRESTBaseURL() {
+    	String url = GWT.getModuleBaseURL();
+    	return url.replaceFirst("org.drools.guvnor.Guvnor", "rest");
     }
 
 }

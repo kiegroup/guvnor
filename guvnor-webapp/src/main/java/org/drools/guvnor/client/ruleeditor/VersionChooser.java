@@ -167,8 +167,8 @@ public class VersionChooser extends Composite {
                                                                      asset.isreadonly = true;
                                                                      final FormStylePopup pop = new FormStylePopup( images.snapshot(),
                                                                                                                     constants.VersionNumber0Of1(
-                                                                                                                                   asset.metaData.versionNumber,
-                                                                                                                                   asset.metaData.name ),
+                                                                                                                                   asset.versionNumber,
+                                                                                                                                   asset.name ),
                                                                                                                     new Integer( 800 ) );
 
                                                                      RuleViewer viewer = new RuleViewer( asset,

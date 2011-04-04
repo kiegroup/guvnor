@@ -37,7 +37,7 @@ public class BPELHandler extends ContentHandler {
 
         if (in != null) {
             RuleContentText text = new RuleContentText();
-            text.content = asset.metaData.name;
+            text.content = asset.name;
             asset.content = text;
         }
 

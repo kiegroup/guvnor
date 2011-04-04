@@ -25,7 +25,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * This contains data for a package configuration.
  *
  */
-public class PackageConfigData implements IsSerializable {
+public class PackageConfigData extends Artifact {
 
     public PackageConfigData() {
     }
@@ -34,23 +34,14 @@ public class PackageConfigData implements IsSerializable {
         this.name = name;
     }
 
-    public String uuid;
     public String header;
     public String externalURI;
-    public String name;
-    public String description;
-    public Date   lastModified;
-    public String lasContributor;
-    public String state;
     public boolean archived = false;
     public boolean isSnapshot = false;
     public String snapshotName;
-    public Date dateCreated;
-    public String checkinComment;
     public HashMap<String,String> catRules;
     public String[] workspaces;
     public String[] dependencies;
-    public long versionNumber;
     
     public PackageConfigData[] subPackages;
 

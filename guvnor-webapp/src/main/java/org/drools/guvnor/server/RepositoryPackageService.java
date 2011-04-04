@@ -767,8 +767,8 @@ public class RepositoryPackageService
                     int[] totals = sc.countFailuresTotal();
                     resultSummaries.add( new ScenarioResultSummary( totals[0],
                                                                     totals[1],
-                                                                    asset.metaData.name,
-                                                                    asset.metaData.description,
+                                                                    asset.name,
+                                                                    asset.description,
                                                                     asset.uuid ) );
                 }
             }

@@ -138,7 +138,7 @@ public class TabOpener {
                         loading[0] = false;
                         RuleViewer ruleViewer = new RuleViewer( ruleAsset,
                                                                 createEditEvent() );
-                        explorerViewCenterPanel.addTab( ruleAsset.metaData.name,
+                        explorerViewCenterPanel.addTab( ruleAsset.name,
                                                         ruleViewer,
                                                         uuid );
                         ruleViewer.setCloseCommand( createCloseCommandForRuleViewer( uuid ) );

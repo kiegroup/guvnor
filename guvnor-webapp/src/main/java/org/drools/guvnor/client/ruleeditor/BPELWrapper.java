@@ -39,7 +39,7 @@ public class BPELWrapper extends Composite
                        RuleViewer viewer) {
 
         final String uuid = asset.uuid;
-        final String fileName = asset.metaData.name;
+        final String fileName = asset.name;
         final String dirName = asset.metaData.packageName;
         final String servletName = "workflowmanager";
         final String isNew = (asset.content == null ? "true" : "false");

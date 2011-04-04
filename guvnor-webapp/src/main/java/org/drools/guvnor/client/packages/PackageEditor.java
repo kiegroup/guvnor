@@ -201,7 +201,7 @@ public class PackageEditor extends PrettyFormLayout {
         }
 
         addAttribute( constants.LastContributor() + ":",
-                      new Label( this.conf.lasContributor ) );
+                      new Label( this.conf.lastContributor ) );
 
         addAttribute( constants.DateCreated(),
                       new Label( getDateString( this.conf.dateCreated ) ) );

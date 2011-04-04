@@ -17,7 +17,7 @@ package org.drools.guvnor.client.ruleeditor;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.rpc.Artifact;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.guvnor.client.util.DecoratedTextArea;
 
@@ -35,7 +35,7 @@ public class CommentWidget extends DirtyableComposite {
     private final DecoratedTextArea        text;
     private final DecoratedDisclosurePanel disclosurePanel;
 
-    public CommentWidget(final MetaData data) {
+    public CommentWidget(final Artifact artifact) {
         text = getTextArea();
         disclosurePanel = getDisclosurePanel();
 
@@ -43,11 +43,11 @@ public class CommentWidget extends DirtyableComposite {
 
         disclosurePanel.addOpenHandler( new OpenHandler<DisclosurePanel>() {
             public void onOpen(OpenEvent<DisclosurePanel> event) {
-                loadData( data );
+                loadData( artifact );
             }
         } );
 
-        if ( isDescriptionUnSet( data ) ) {
+        if ( isDescriptionUnSet( artifact ) ) {
             disclosurePanel.setOpen( true );
         }
 
@@ -69,11 +69,11 @@ public class CommentWidget extends DirtyableComposite {
         return text;
     }
 
-    private boolean isDescriptionUnSet(MetaData data) {
+    private boolean isDescriptionUnSet(Artifact data) {
         return data.description == null || data.description.equals( "" ) || data.description.equals( "<documentation>" );
     }
 
-    private void loadData(final MetaData data) {
+    private void loadData(final Artifact data) {
         text.setText( data.description );
         text.addChangeHandler( new ChangeHandler() {
 

@@ -115,7 +115,15 @@ public class RepositoryAssetService
         AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
         RuleAsset asset = new RuleAsset();
 
-        asset.uuid = uuid;
+        asset.uuid = item.getUUID();
+        asset.name = item.getName();
+        asset.description = item.getDescription();
+        asset.lastModified = item.getLastModified().getTime();
+        asset.lastContributor = item.getLastContributor();
+        asset.state = (item.getState() != null) ? item.getState().getName() : "";
+        asset.dateCreated = item.getCreatedDate().getTime();
+        asset.checkinComment = item.getCheckinComment();
+        asset.versionNumber = item.getVersionNumber();
 
         // load standard meta data
         asset.metaData = repositoryAssetOperations.populateMetaData( item );

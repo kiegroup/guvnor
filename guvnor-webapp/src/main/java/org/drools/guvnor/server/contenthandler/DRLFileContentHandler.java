@@ -117,7 +117,7 @@ public class DRLFileContentHandler extends PlainTextContentHandler
 
         if ( isStandAloneRule( content ) ) {
 
-            content = wrapRuleDeclaration( asset.metaData.name,
+            content = wrapRuleDeclaration( asset.name,
                                            "",
                                            content );
         }

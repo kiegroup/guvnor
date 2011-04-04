@@ -50,7 +50,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * This widget shows a list of versions.
+ * This widget shows a list of versions for packages or assets 
  */
 public class VersionBrowser extends Composite {
 
@@ -245,8 +245,8 @@ public class VersionBrowser extends Composite {
                                                                      //asset.metaData.name = metaData.name;
                                                                      final FormStylePopup pop = new FormStylePopup( images.snapshot(),
                                                                                                                     constants.VersionNumber0Of1(
-                                                                                                                                   asset.metaData.versionNumber,
-                                                                                                                                   asset.metaData.name ),
+                                                                                                                                   asset.versionNumber,
+                                                                                                                                   asset.name ),
                                                                                                                     new Integer( 800 ) );
 
                                                                      Button restore = new Button( constants.RestoreThisVersion() );

@@ -86,6 +86,7 @@ public class BRLRuleAssetProvider
 
         asset.uuid = "mock";
         asset.content = ruleModel;
+        asset.name = ruleModel.name;
         asset.metaData = createMetaData( ruleModel );
 
         return asset;
@@ -94,7 +95,6 @@ public class BRLRuleAssetProvider
     private MetaData createMetaData(RuleModel ruleModel) {
         MetaData metaData = new MetaData();
 
-        metaData.name = ruleModel.name;
         metaData.packageName = packageName;
         metaData.format = AssetFormats.BUSINESS_RULE;
 

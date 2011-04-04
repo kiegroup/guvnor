@@ -519,19 +519,19 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         //create version 1.
         RuleAsset assetWrapper = repositoryAssetService.loadRuleAsset( uuidLink );
-        assertEquals( assetWrapper.metaData.description,
+        assertEquals( assetWrapper.description,
                       "an initial desc" );
-        assetWrapper.metaData.description = "version 1";
+        assetWrapper.description = "version 1";
         String uuidLink1 = impl.checkinVersion( assetWrapper );
 
         //create version 2
         RuleAsset assetWrapper2 = repositoryAssetService.loadRuleAsset( uuidLink );
-        assetWrapper2.metaData.description = "version 2";
+        assetWrapper2.description = "version 2";
         String uuidLink2 = impl.checkinVersion( assetWrapper2 );
 
         //create version head
         RuleAsset assetWrapper3 = repositoryAssetService.loadRuleAsset( uuidLink );
-        assetWrapper3.metaData.description = "version head";
+        assetWrapper3.description = "version head";
         @SuppressWarnings("unused")
         String uuidLink3 = impl.checkinVersion( assetWrapper3 );
 
@@ -556,13 +556,13 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         RuleAsset versionHead = repositoryAssetService.loadRuleAsset( uuidLink );
         assertFalse( version1.metaData.versionNumber == version2.metaData.versionNumber );
         assertFalse( version1.metaData.versionNumber == versionHead.metaData.versionNumber );
-        assertEquals( version1.metaData.description,
+        assertEquals( version1.description,
                       "an initial desc" );
-        assertEquals( version2.metaData.description,
+        assertEquals( version2.description,
                       "version 1" );
-        assertEquals( version3.metaData.description,
+        assertEquals( version3.description,
                       "version 2" );
-        assertEquals( versionHead.metaData.description,
+        assertEquals( versionHead.description,
                       "version head" );
 
         //verify the history info of the original AssetItem
@@ -579,9 +579,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         versionHead = repositoryAssetService.loadRuleAsset( uuid );
         assertFalse( version1.metaData.versionNumber == version2.metaData.versionNumber );
         assertFalse( version1.metaData.versionNumber == versionHead.metaData.versionNumber );
-        assertTrue( version1.metaData.description.equals( "an initial desc" ) );
-        assertTrue( version2.metaData.description.equals( "version 1" ) );
-        assertTrue( versionHead.metaData.description.equals( "version head" ) );
+        assertTrue( version1.description.equals( "an initial desc" ) );
+        assertTrue( version2.description.equals( "version 1" ) );
+        assertTrue( versionHead.description.equals( "version head" ) );
 
         //test restore
         impl.restoreVersion( version1.uuid,
@@ -621,9 +621,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RuleAsset assetWrapper = repositoryAssetService.loadRuleAsset( uuid );
-        assertEquals( assetWrapper.metaData.description,
+        assertEquals( assetWrapper.description,
                       "an initial desc" );
-        assertEquals( assetWrapper.metaData.name,
+        assertEquals( assetWrapper.name,
                       "testCreateNewRuleContains' character" );
 
     }
@@ -722,12 +722,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       asset.uuid );
 
         assertEquals( "description",
-                      asset.metaData.description );
+                      asset.description );
 
         assertNotNull( asset.content );
         assertTrue( asset.content instanceof RuleContentText );
         assertEquals( "testLoadRuleAsset",
-                      asset.metaData.name );
+                      asset.name );
         assertEquals( "testLoadRuleAsset",
                       asset.metaData.title );
         assertEquals( "testLoadRuleAsset",
@@ -933,7 +933,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       es.size() );
         assertEquals( ass.uuid,
                       es.get( 0 ).assetUUID );
-        assertEquals( ass.metaData.name,
+        assertEquals( ass.name,
                       es.get( 0 ).note );
 
         ib.clearAll();
@@ -949,7 +949,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       es.size() );
         assertEquals( ass.uuid,
                       es.get( 0 ).assetUUID );
-        assertEquals( ass.metaData.name,
+        assertEquals( ass.name,
                       es.get( 0 ).note );
 
         assertEquals( 0,
@@ -1757,7 +1757,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertEquals( RulesRepository.DEFAULT_PACKAGE,
                       asset.metaData.packageName );
         assertEquals( "testCopyAsset2",
-                      asset.metaData.name );
+                      asset.name );
     }
 
     @Test

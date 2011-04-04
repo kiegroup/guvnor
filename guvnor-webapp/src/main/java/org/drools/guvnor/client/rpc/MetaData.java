@@ -28,9 +28,6 @@ public class MetaData
     implements
     IsSerializable {
 
-    public String   name                 = "";
-    public String   description          = "";
-
     public String   title                = "";
     public String   status               = "";
 

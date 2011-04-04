@@ -57,7 +57,7 @@ public class RuleFlowWrapper extends Composite
         this.viewer = viewer;
         this.asset = asset;
         initWidgets( asset.uuid,
-                     asset.metaData.name );
+                     asset.name );
     }
 
     protected void initWidgets(final String uuid,

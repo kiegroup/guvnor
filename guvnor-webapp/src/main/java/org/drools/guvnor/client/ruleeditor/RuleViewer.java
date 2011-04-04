@@ -415,7 +415,7 @@ public class RuleViewer extends GuvnorEditor {
 
     private void showSource(String src) {
         PackageBuilderWidget.showSource( src,
-                                         this.asset.metaData.name );
+                                         this.asset.name );
         LoadingPopup.close();
     }
 
@@ -434,7 +434,7 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     private MetaDataWidget createMetaWidget() {
-        return new MetaDataWidget( this.asset.metaData,
+        return new MetaDataWidget( this.asset,
                                    readOnly,
                                    this.asset.uuid,
                                    new Command() {
@@ -567,7 +567,7 @@ public class RuleViewer extends GuvnorEditor {
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
                                                                      asset.metaData = asset_.metaData;
-                                                                     metaWidget.setMetaData( asset.metaData );
+                                                                     metaWidget.setMetaData( asset );
                                                                      metaWidget.refresh();
                                                                      if ( showBusy ) LoadingPopup.close();
                                                                  }

@@ -116,7 +116,7 @@ public class MultiViewEditor extends GuvnorEditor {
         for ( RuleAsset ruleAsset : assets ) {
             MultiViewRow row = new MultiViewRow();
             row.uuid = ruleAsset.uuid;
-            row.name = ruleAsset.metaData.name;
+            row.name = ruleAsset.name;
             row.format = AssetFormats.BUSINESS_RULE;
             rows.add( row );
         }

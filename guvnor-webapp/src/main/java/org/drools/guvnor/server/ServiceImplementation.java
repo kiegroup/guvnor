@@ -375,7 +375,7 @@ public class ServiceImplementation
             }
         }
 
-        log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "] " );
+        log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.name + "] UUID: [" + asset.uuid + "] " );
 
         AssetItem repoAsset = getRulesRepository().loadAssetByUUID( asset.uuid );
         if ( isAssetUpdatedInRepository( asset,

@@ -62,7 +62,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
         this.viewer = viewer;
         this.asset = asset;
         initWidgets( asset.uuid,
-                     asset.metaData.name );
+                     asset.name );
         initAssetHandlers();
     }
 
