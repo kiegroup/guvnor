@@ -69,14 +69,10 @@ import org.drools.spi.AgendaFilter;
 import org.drools.spi.AsyncExceptionHandler;
 import org.drools.spi.FactHandleFactory;
 import org.drools.spi.GlobalResolver;
-import org.drools.spi.PropagationContext;
 import org.drools.time.SessionClock;
 import org.drools.time.TimerService;
 import org.drools.time.impl.JDKTimerService;
 import org.drools.type.DateFormats;
-import org.jbpm.process.instance.ProcessInstanceManager;
-import org.jbpm.process.instance.event.SignalManager;
-import org.jbpm.process.instance.timer.TimerManager;
 
 public class MockWorkingMemory implements InternalWorkingMemory {
                 
@@ -180,11 +176,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public PartitionTaskManager getPartitionTaskManager(RuleBasePartitionId partitionId) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public ProcessInstanceManager getProcessInstanceManager() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -348,16 +339,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
         this.clock = clock;
     }
     
-    public SignalManager getSignalManager() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public TimerManager getTimerManager() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public WorkItemManager getWorkItemManager() {
         // TODO Auto-generated method stub
         return null;
