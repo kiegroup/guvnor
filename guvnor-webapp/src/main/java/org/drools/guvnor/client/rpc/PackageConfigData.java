@@ -16,10 +16,7 @@
 
 package org.drools.guvnor.client.rpc;
 
-import java.util.Date;
 import java.util.HashMap;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * This contains data for a package configuration.

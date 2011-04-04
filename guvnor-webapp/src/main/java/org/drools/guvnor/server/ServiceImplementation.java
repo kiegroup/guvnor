@@ -402,7 +402,7 @@ public class ServiceImplementation
             pkg.updateBinaryUpToDate( false );
             RuleBaseCache.getInstance().remove( pkg.getUUID() );
         }
-        repoAsset.checkin( meta.checkinComment );
+        repoAsset.checkin( asset.checkinComment );
 
         return repoAsset.getUUID();
     }
@@ -1052,7 +1052,7 @@ public class ServiceImplementation
 
     private boolean isAssetUpdatedInRepository(RuleAsset asset,
                                                AssetItem repoAsset) {
-        return asset.metaData.lastModifiedDate.before( repoAsset.getLastModified().getTime() );
+        return asset.lastModified.before( repoAsset.getLastModified().getTime() );
     }
 
     private Calendar dateToCalendar(Date date) {

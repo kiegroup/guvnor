@@ -656,7 +656,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           AssetFormats.DRL );
 
         RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid );
-        assertNotNull( asset.metaData.lastModifiedDate );
+        assertNotNull( asset.lastModified );
         asset.metaData.coverage = "boo";
         asset.content = new RuleContentText();
         ((RuleContentText) asset.content).content = "yeah !";
@@ -725,7 +725,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           AssetFormats.DRL );
 
         RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid );
-        assertNotNull( asset.metaData.lastModifiedDate );
+        assertNotNull( asset.lastModified );
         asset.metaData.coverage = "boo";
         asset.content = new RuleContentText();
         ((RuleContentText) asset.content).content = "yeah !";

@@ -554,8 +554,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         RuleAsset version2 = repositoryAssetService.loadRuleAsset( rows[1].id );
         RuleAsset version3 = repositoryAssetService.loadRuleAsset( rows[2].id );
         RuleAsset versionHead = repositoryAssetService.loadRuleAsset( uuidLink );
-        assertFalse( version1.metaData.versionNumber == version2.metaData.versionNumber );
-        assertFalse( version1.metaData.versionNumber == versionHead.metaData.versionNumber );
+        assertFalse( version1.versionNumber == version2.versionNumber );
+        assertFalse( version1.versionNumber == versionHead.versionNumber );
         assertEquals( version1.description,
                       "an initial desc" );
         assertEquals( version2.description,
@@ -577,8 +577,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         version1 = repositoryAssetService.loadRuleAsset( rows[0].id );
         version2 = repositoryAssetService.loadRuleAsset( rows[1].id );
         versionHead = repositoryAssetService.loadRuleAsset( uuid );
-        assertFalse( version1.metaData.versionNumber == version2.metaData.versionNumber );
-        assertFalse( version1.metaData.versionNumber == versionHead.metaData.versionNumber );
+        assertFalse( version1.versionNumber == version2.versionNumber );
+        assertFalse( version1.versionNumber == versionHead.versionNumber );
         assertTrue( version1.description.equals( "an initial desc" ) );
         assertTrue( version2.description.equals( "version 1" ) );
         assertTrue( versionHead.description.equals( "version head" ) );
@@ -591,7 +591,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         RuleAsset newHead = repositoryAssetService.loadRuleAsset( uuid );
 
         assertEquals( "this was cause of a mistake",
-                      newHead.metaData.checkinComment );
+                      newHead.checkinComment );
     }
 
     //path name contains Apostrophe is no longer a problem with jackrabbit 2.0
@@ -734,7 +734,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       asset.metaData.packageName );
         assertEquals( AssetFormats.DRL,
                       asset.metaData.format );
-        assertNotNull( asset.metaData.createdDate );
+        assertNotNull( asset.dateCreated );
 
         assertEquals( 1,
                       asset.metaData.categories.length );
@@ -748,9 +748,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         asset = repositoryAssetService.loadRuleAsset( uuid );
 
         assertEquals( "whee",
-                      asset.metaData.status );
+                      asset.state );
         assertEquals( "changed state",
-                      asset.metaData.checkinComment );
+                      asset.checkinComment );
 
         uuid = impl.createNewRule( "testBRLFormatSugComp",
                                    "description",
@@ -1004,12 +1004,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         RuleAsset old = repositoryAssetService.loadRuleAsset( rows[0].id );
         RuleAsset newer = repositoryAssetService.loadRuleAsset( rows[1].id );
-        assertFalse( old.metaData.versionNumber == newer.metaData.versionNumber );
+        assertFalse( old.versionNumber == newer.versionNumber );
 
         RuleAsset head = repositoryAssetService.loadRuleAsset( uuid );
 
-        long oldVersion = old.metaData.versionNumber;
-        assertFalse( oldVersion == head.metaData.versionNumber );
+        long oldVersion = old.versionNumber;
+        assertFalse( oldVersion == head.versionNumber );
 
         impl.restoreVersion( old.uuid,
                              head.uuid,
@@ -1018,7 +1018,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         RuleAsset newHead = repositoryAssetService.loadRuleAsset( uuid );
 
         assertEquals( "this was cause of a mistake",
-                      newHead.metaData.checkinComment );
+                      newHead.checkinComment );
 
     }
 
@@ -1051,7 +1051,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
 
-        assertNotNull( asset.metaData.lastModifiedDate );
+        assertNotNull( asset.lastModified );
 
         asset.metaData.coverage = "boo";
         asset.content = new RuleContentText();
@@ -1067,19 +1067,19 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( ib.loadRecentEdited().size() > inbox.size() );
 
         RuleAsset asset2 = repositoryAssetService.loadRuleAsset( uuid );
-        assertNotNull( asset2.metaData.lastModifiedDate );
-        assertTrue( asset2.metaData.lastModifiedDate.after( start ) );
+        assertNotNull( asset2.lastModified );
+        assertTrue( asset2.lastModified.after( start ) );
 
         assertEquals( "boo",
                       asset2.metaData.coverage );
         assertEquals( 1,
-                      asset2.metaData.versionNumber );
+                      asset2.versionNumber );
 
         assertEquals( "yeah !",
                       ((RuleContentText) asset2.content).content );
 
         asset2.metaData.coverage = "ya";
-        asset2.metaData.checkinComment = "checked in";
+        asset2.checkinComment = "checked in";
 
         String cat = asset2.metaData.categories[0];
         asset2.metaData.categories = new String[3];
@@ -1093,9 +1093,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertEquals( "ya",
                       asset2.metaData.coverage );
         assertEquals( 2,
-                      asset2.metaData.versionNumber );
+                      asset2.versionNumber );
         assertEquals( "checked in",
-                      asset2.metaData.checkinComment );
+                      asset2.checkinComment );
         assertEquals( 3,
                       asset2.metaData.categories.length );
         assertEquals( "testCheckinCategory",
@@ -1114,7 +1114,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         serv.checkinVersion( asset3 );
 
         asset3 = repositoryAssetService.loadRuleAsset( asset2.uuid );
-        assertFalse( asset3.metaData.versionNumber == asset2.metaData.versionNumber );
+        assertFalse( asset3.versionNumber == asset2.versionNumber );
 
         String result = serv.checkinVersion( asset2 );
         assertTrue( result.startsWith( "ERR" ) );
@@ -1647,15 +1647,15 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RuleAsset asset = repositoryAssetService.loadRuleAsset( ruleUUID );
         assertEquals( StateItem.DRAFT_STATE_NAME,
-                      asset.metaData.status );
+                      asset.state );
         repositoryAssetService.changeState( ruleUUID,
                                             "testState" );
         asset = repositoryAssetService.loadRuleAsset( ruleUUID );
         assertEquals( "testState",
-                      asset.metaData.status );
+                      asset.state );
         asset = repositoryAssetService.loadRuleAsset( ruleUUID2 );
         assertEquals( StateItem.DRAFT_STATE_NAME,
-                      asset.metaData.status );
+                      asset.state );
 
         impl.createState( "testState2" );
         repositoryAssetService.changePackageState( packagUUID,
@@ -1667,12 +1667,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         asset = repositoryAssetService.loadRuleAsset( ruleUUID2 );
         assertEquals( "testState2",
-                      asset.metaData.status );
+                      asset.state );
 
         impl.checkinVersion( asset );
         asset = repositoryAssetService.loadRuleAsset( asset.uuid );
         assertEquals( "testState2",
-                      asset.metaData.status );
+                      asset.state );
 
     }
 
@@ -5207,12 +5207,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         // create version 4.
         RuleAsset ai = repositoryAssetService.loadRuleAsset( uuid );
-        ai.metaData.checkinComment = "version 4";
+        ai.checkinComment = "version 4";
         impl.checkinVersion( ai );
 
         // create version 5.
         ai = repositoryAssetService.loadRuleAsset( uuid );
-        ai.metaData.checkinComment = "version 5";
+        ai.checkinComment = "version 5";
         impl.checkinVersion( ai );
 
         System.out.println( "old uuid: " + uuid );

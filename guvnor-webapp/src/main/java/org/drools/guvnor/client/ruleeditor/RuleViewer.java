@@ -180,7 +180,7 @@ public class RuleViewer extends GuvnorEditor {
         }
 
         toolbar = new ActionToolbar( getConfiguration(),
-                                     asset.metaData.status );
+                                     asset.state );
 
         initWidget( uiBinder.createAndBindUi( this ) );
 
@@ -484,7 +484,7 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     private void performCheckIn(String comment) {
-        this.asset.metaData.checkinComment = comment;
+        this.asset.checkinComment = comment;
         final boolean[] saved = {false};
 
         if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );

@@ -29,10 +29,4 @@ public class RuleAsset extends Artifact {
     public MetaData       metaData;
     public PortableObject content;
 
-    public boolean        isreadonly = false;
-
-    public long getVersionNumber() {
-        return metaData.versionNumber;
-    }
-
 }

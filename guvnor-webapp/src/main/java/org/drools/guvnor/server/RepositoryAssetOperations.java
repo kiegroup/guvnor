@@ -714,13 +714,9 @@ public class RepositoryAssetOperations {
     MetaData populateMetaData(VersionableItem item) {
         MetaData meta = new MetaData();
 
-        meta.status = (item.getState() != null) ? item.getState().getName() : "";
         MetaDataMapper metaDataMapper = MetaDataMapper.getInstance();
         metaDataMapper.copyToMetaData( meta,
                                        item );
-
-        meta.createdDate = calendarToDate( item.getCreatedDate() );
-        meta.lastModifiedDate = calendarToDate( item.getLastModified() );
 
         //problematic implementation of getPrecedingVersion and getPrecedingVersion().
         //commented out temporarily as this is used by the front end. 

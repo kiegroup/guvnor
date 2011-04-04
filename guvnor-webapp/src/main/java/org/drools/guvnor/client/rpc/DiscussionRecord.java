@@ -18,8 +18,6 @@ package org.drools.guvnor.client.rpc;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import java.io.Serializable;
-import java.util.Calendar;
 import java.util.Date;
 
 /**

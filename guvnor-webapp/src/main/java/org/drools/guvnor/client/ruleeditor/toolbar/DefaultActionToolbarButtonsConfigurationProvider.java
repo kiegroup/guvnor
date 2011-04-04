@@ -61,11 +61,11 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showArchiveButton() {
-        return asset.metaData.versionNumber != 0;
+        return asset.versionNumber != 0;
     }
 
     public boolean showDeleteButton() {
-        return asset.metaData.versionNumber == 0;
+        return asset.versionNumber == 0;
     }
 
     public boolean showChangeStatusButton() {

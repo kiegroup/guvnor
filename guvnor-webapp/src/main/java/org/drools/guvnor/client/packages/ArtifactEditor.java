@@ -119,30 +119,8 @@ public class ArtifactEditor extends GuvnorEditor {
 
         metaWidget = createMetaWidget();
         metaWidget.setVisible( this.ruleViewerSettings.isMetaVisible() );
-/*
-        editor = EditorLauncher.getEditorViewer( asset,
-                                                 this );
 
-        // for designer we need to give it more playing room
-        if ( editor.getClass().getName().equals( "org.drools.guvnor.client.processeditor.BusinessProcessEditor" ) ) {
-            if(this.ruleViewerSettings.isStandalone()) {
-                // standalone bigger dimensions"
-                editor.setWidth( "1600px" );
-                editor.setHeight( "1000px" );
-            } else {
-                // normal dimensions inside guvnor
-                editor.setWidth( "1100px" );
-                editor.setHeight( "480px" );
-            }
-        }*/
-
-/*        toolbar = new ActionToolbar( getConfiguration(),
-                                     asset.metaData.status );
-*/
         initWidget( uiBinder.createAndBindUi( this ) );
-
-        //doWidgets();
-
         LoadingPopup.close();
     }
 

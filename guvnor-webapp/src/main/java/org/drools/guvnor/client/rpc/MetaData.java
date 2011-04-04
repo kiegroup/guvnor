@@ -29,13 +29,13 @@ public class MetaData
     IsSerializable {
 
     public String   title                = "";
-    public String   status               = "";
+    //public String   status               = "";
 
-    public Date     lastModifiedDate;
-    public String   lastContributor      = "";
-    public long     versionNumber;
+    //public Date     lastModifiedDate;
+    //public String   lastContributor      = "";
+    //public long     versionNumber;
 
-    public Date     createdDate;
+    //public Date     createdDate;
 
     public String   packageName          = "";
     public String   packageUUID          = "";
@@ -50,7 +50,7 @@ public class MetaData
     public String   rights               = "";
     public String   coverage             = "";
     public String   publisher            = "";
-    public String   checkinComment       = "";
+    //public String   checkinComment       = "";
 
     private boolean binary               = false;
 
