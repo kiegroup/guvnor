@@ -50,6 +50,7 @@ import org.drools.guvnor.client.rpc.SnapshotDiff;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.BuilderResultHelper;
@@ -306,16 +307,17 @@ public class RepositoryPackageOperations {
         }
         return data;
     }
-    
+
     public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " validatePackageConfiguration package [" + data.name + "]" );
 
         PackageItem item = getRulesRepository().loadPackage( data.name );
 
-        ServiceImplementation.ruleBaseCache.remove( data.uuid );
+        RuleBaseCache.getInstance().remove( data.uuid );
 
         BRMSSuggestionCompletionLoader loader = createBRMSSuggestionCompletionLoader();
-        loader.getSuggestionEngine(item, data.header);
+        loader.getSuggestionEngine( item,
+                                    data.header );
 
         return validateBRMSSuggestionCompletionLoaderResponse( loader );
     }
@@ -338,7 +340,7 @@ public class RepositoryPackageOperations {
         item.updateDescription( data.description );
         item.archiveItem( data.archived );
         item.updateBinaryUpToDate( false );
-        ServiceImplementation.ruleBaseCache.remove( data.uuid );
+        RuleBaseCache.getInstance().remove( data.uuid );
         item.checkin( data.description );
 
         // If package is archived, archive all the assets under it

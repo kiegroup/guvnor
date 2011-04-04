@@ -34,8 +34,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.Date;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class RestTestingBase extends GuvnorTestBase {
     protected static Dispatcher dispatcher;

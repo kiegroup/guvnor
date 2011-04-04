@@ -529,7 +529,6 @@ public class GuidedDecisionTableTest {
 
         // add cols for LHS
         RowNumberCol rnc = new RowNumberCol();
-
         DescriptionCol dc = new DescriptionCol();
 
         MetadataCol mdc = new MetadataCol();

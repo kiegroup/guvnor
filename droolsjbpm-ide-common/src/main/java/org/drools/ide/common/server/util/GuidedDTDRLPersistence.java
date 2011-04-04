@@ -17,9 +17,7 @@
 package org.drools.ide.common.server.util;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -31,6 +29,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
@@ -44,8 +43,10 @@ import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.server.util.GuidedDTDRLOtherwiseHelper.OtherwiseBuilder;
 
 /**
  * This takes care of converting GuidedDT object to DRL (via the RuleModel).
@@ -61,6 +62,7 @@ public class GuidedDTDRLPersistence {
         StringBuilder sb = new StringBuilder();
 
         List<List<DTCellValue>> data = dt.getData();
+        List<DTColumnConfig> allColumns = dt.getAllColumns();
 
         for ( int i = 0; i < data.size(); i++ ) {
             List<DTCellValue> row = data.get( i );
@@ -71,21 +73,20 @@ public class GuidedDTDRLPersistence {
             rm.name = getName( dt.getTableName(),
                                num );
 
-            doMetadata( dt.getMetadataCols(),
+            doMetadata( allColumns,
+                        dt.getMetadataCols(),
                         row,
                         rm );
-            doAttribs( dt.getMetadataCols().size(),
+            doAttribs( allColumns,
                        dt.getAttributeCols(),
                        row,
                        rm );
-            doConditions( dt.getMetadataCols().size()
-                                  + dt.getAttributeCols().size(),
+            doConditions( allColumns,
                           dt.getConditionCols(),
                           row,
+                          data,
                           rm );
-            doActions( dt.getMetadataCols().size()
-                               + dt.getAttributeCols().size()
-                               + dt.getConditionCols().size(),
+            doActions( allColumns,
                        dt.getActionCols(),
                        row,
                        rm );
@@ -107,16 +108,16 @@ public class GuidedDTDRLPersistence {
 
     }
 
-    void doActions(int condAndAttrs,
+    void doActions(List<DTColumnConfig> allColumns,
                    List<ActionCol> actionCols,
                    List<DTCellValue> row,
                    RuleModel rm) {
         List<LabelledAction> actions = new ArrayList<LabelledAction>();
         for ( int i = 0; i < actionCols.size(); i++ ) {
             ActionCol c = actionCols.get( i );
-            int index = i + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + condAndAttrs;
+            int index = allColumns.indexOf( c );
 
-            String cell = convertDTCellValueToString( row.get( index ) );
+            String cell = GuidedDTDRLOtherwiseHelper.convertDTCellValueToString( row.get( index ) );
 
             if ( !validCell( cell ) ) {
                 cell = c.getDefaultValue();
@@ -201,24 +202,39 @@ public class GuidedDTDRLPersistence {
         return null;
     }
 
-    void doConditions(int numOfAttributesAndMeta,
+    void doConditions(List<DTColumnConfig> allColumns,
                       List<ConditionCol> conditionCols,
                       List<DTCellValue> row,
+                      List<List<DTCellValue>> data,
                       RuleModel rm) {
 
         List<FactPattern> patterns = new ArrayList<FactPattern>();
 
         for ( int i = 0; i < conditionCols.size(); i++ ) {
+
             ConditionCol c = (ConditionCol) conditionCols.get( i );
-            int index = i + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + numOfAttributesAndMeta;
+            int index = allColumns.indexOf( c );
 
-            String cell = convertDTCellValueToString( row.get( index ) );
+            DTCellValue dcv = row.get( index );
+            String cell = GuidedDTDRLOtherwiseHelper.convertDTCellValueToString( dcv );
+            boolean isOtherwise = dcv.isOtherwise();
+            boolean isValid = isOtherwise;
 
-            if ( !validCell( cell ) ) {
-                cell = c.getDefaultValue();
+            //Otherwise values are automatically valid as they're constructed from the other rules
+            if ( !isOtherwise ) {
+                isValid = validCell( cell );
+                if ( !isValid ) {
+                    cell = c.getDefaultValue();
+                    isValid = validCell( cell );
+                }
             }
 
-            if ( validCell( cell ) ) {
+            //Empty cells are valid if operator is "== null" or "!= null"
+            if ( c.getOperator() != null && (c.getOperator().equals( "== null" ) || c.getOperator().equals( "!= null" )) ) {
+                isValid = true;
+            }
+
+            if ( isValid ) {
 
                 // get or create the pattern it belongs too
                 FactPattern fp = findByFactPattern( patterns,
@@ -234,27 +250,16 @@ public class GuidedDTDRLPersistence {
                 switch ( c.getConstraintValueType() ) {
                     case BaseSingleFieldConstraint.TYPE_LITERAL :
                     case BaseSingleFieldConstraint.TYPE_RET_VALUE :
-                        SingleFieldConstraint sfc = new SingleFieldConstraint( c.getFactField() );
-                        if ( no( c.getOperator() ) ) {
-
-                            String[] a = cell.split( "\\s" );
-                            if ( a.length > 1 ) {
-                                sfc.setOperator( a[0] );
-                                sfc.setValue( a[1] );
-                            } else {
-                                sfc.setValue( cell );
-                            }
+                        if ( !isOtherwise ) {
+                            FieldConstraint fc = makeSingleFieldConstraint( c,
+                                                                            cell );
+                            fp.addConstraint( fc );
                         } else {
-                            sfc.setOperator( c.getOperator() );
-                            if ( c.getOperator().equals( "in" ) ) {
-                                sfc.setValue( makeInList( cell ) );
-                            } else {
-                                sfc.setValue( cell );
-                            }
-
+                            FieldConstraint fc = makeSingleFieldConstraint( c,
+                                                                            allColumns,
+                                                                            data );
+                            fp.addConstraint( fc );
                         }
-                        sfc.setConstraintValueType( c.getConstraintValueType() );
-                        fp.addConstraint( sfc );
                         break;
                     case BaseSingleFieldConstraint.TYPE_PREDICATE :
                         SingleFieldConstraint pred = new SingleFieldConstraint();
@@ -312,16 +317,16 @@ public class GuidedDTDRLPersistence {
         return null;
     }
 
-    void doAttribs(int numOfMeta,
+    void doAttribs(List<DTColumnConfig> allColumns,
                    List<AttributeCol> attributeCols,
                    List<DTCellValue> row,
                    RuleModel rm) {
         List<RuleAttribute> attribs = new ArrayList<RuleAttribute>();
         for ( int j = 0; j < attributeCols.size(); j++ ) {
             AttributeCol at = attributeCols.get( j );
-            int index = j + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS + numOfMeta;
+            int index = allColumns.indexOf( at );
 
-            String cell = convertDTCellValueToString( row.get( index ) );
+            String cell = GuidedDTDRLOtherwiseHelper.convertDTCellValueToString( row.get( index ) );
 
             if ( validCell( cell ) ) {
 
@@ -342,7 +347,8 @@ public class GuidedDTDRLPersistence {
         }
     }
 
-    void doMetadata(List<MetadataCol> metadataCols,
+    void doMetadata(List<DTColumnConfig> allColumns,
+                    List<MetadataCol> metadataCols,
                     List<DTCellValue> row,
                     RuleModel rm) {
 
@@ -351,9 +357,9 @@ public class GuidedDTDRLPersistence {
 
         for ( int j = 0; j < metadataCols.size(); j++ ) {
             MetadataCol meta = metadataCols.get( j );
-            int index = j + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS;
+            int index = allColumns.indexOf( meta );
 
-            String cell = convertDTCellValueToString( row.get( index ) );
+            String cell = GuidedDTDRLOtherwiseHelper.convertDTCellValueToString( row.get( index ) );
 
             if ( validCell( cell ) ) {
                 metadataList.add( new RuleMetadata( meta.getMetadata(),
@@ -379,21 +385,49 @@ public class GuidedDTDRLPersistence {
         IAction action;
     }
 
-    private String convertDTCellValueToString(DTCellValue dcv) {
-        switch ( dcv.getDataType() ) {
-            case BOOLEAN :
-                Boolean booleanValue = dcv.getBooleanValue();
-                return (booleanValue == null ? null : booleanValue.toString());
-            case DATE :
-                SimpleDateFormat sdf = new SimpleDateFormat( "dd-mmm-yyyy" );
-                Date dateValue = dcv.getDateValue();
-                return (dateValue == null ? null : sdf.format( dcv.getDateValue() ));
-            case NUMERIC :
-                BigDecimal bdValue = dcv.getNumericValue();
-                return (bdValue == null ? null : bdValue.toPlainString());
-            default :
-                return dcv.getStringValue();
+    //Build a normal SingleFieldConstraint for a non-otherwise cell value
+    private FieldConstraint makeSingleFieldConstraint(ConditionCol c,
+                                                      String cell) {
+
+        SingleFieldConstraint sfc = new SingleFieldConstraint( c.getFactField() );
+
+        //Condition columns can be defined as having no operator, in which case the operator
+        //is taken from the cell's value. Pretty yucky really if we're to be able to perform
+        //expansion and contraction of decision table columns.... this might have to go.
+        if ( no( c.getOperator() ) ) {
+
+            String[] a = cell.split( "\\s" );
+            if ( a.length > 1 ) {
+                sfc.setOperator( a[0] );
+                sfc.setValue( a[1] );
+            } else {
+                sfc.setValue( cell );
+            }
+        } else {
+
+            sfc.setOperator( c.getOperator() );
+            if ( c.getOperator().equals( "in" ) ) {
+                sfc.setValue( makeInList( cell ) );
+            } else {
+                if ( !c.getOperator().equals( "== null" ) && !c.getOperator().equals( "!= null" ) ) {
+                    sfc.setValue( cell );
+                }
+            }
+
         }
+        sfc.setConstraintValueType( c.getConstraintValueType() );
+        return sfc;
+    }
+
+    //Build a SingleFieldConstraint for an otherwise cell value
+    private FieldConstraint makeSingleFieldConstraint(ConditionCol c,
+                                                      List<DTColumnConfig> allColumns,
+                                                      List<List<DTCellValue>> data) {
+
+        OtherwiseBuilder builder = GuidedDTDRLOtherwiseHelper.getBuilder( c );
+        return builder.makeFieldConstraint( c,
+                                            allColumns,
+                                            data );
     }
 
 }

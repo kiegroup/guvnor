@@ -15,9 +15,9 @@
     <title>The Knowledge Agent</title>
 
     <para>
-    The knowledge agent is a component which is embedded in the Drools API. To use this, you don't need any
+    The knowledge agent is a component which is embedded in knowledge-api. To use this, you don't need any
     extra components. In fact, if you are using Guvnor, your application should only need to include the
-    drools-api and drools-core dependencies in its classpath (drools and mvel JARs only), and no other rules
+    knowledge-api and drools-core dependencies in its classpath (drools and mvel JARs only), and no other rules
     specific dependencies.
     </para>
 

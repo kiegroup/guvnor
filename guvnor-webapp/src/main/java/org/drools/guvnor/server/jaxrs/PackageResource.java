@@ -18,6 +18,7 @@ package org.drools.guvnor.server.jaxrs;
 
 import static org.drools.guvnor.server.jaxrs.Translator.ToAsset;
 import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntry;
+import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntryAbdera;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackage;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntry;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntryAbdera;
@@ -43,7 +44,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
 
+import org.apache.abdera.model.ExtensibleElement;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.files.RepositoryServlet;
@@ -132,7 +135,7 @@ public class PackageResource extends Resource {
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML)
 	public Response createPackageFromAtom(Entry entry, @Context UriInfo uriInfo) {
-		PackageService.createPackage(entry.getTitle(), entry.getSummary());
+		repository.createPackage(entry.getTitle(), entry.getSummary());
 		URI uri = uriInfo.getBaseUriBuilder().path("packages").path(entry.getTitle()).build();
 		entry.setBase(uri);
 		return Response.created(uri).entity(entry).build();
@@ -141,7 +144,7 @@ public class PackageResource extends Resource {
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public void createPackageFromJAXB (Package p) {
-        PackageService.createPackage(p.getTitle(), p.getDescription());
+    	repository.createPackage(p.getTitle(), p.getDescription());
     }
 
     @GET
@@ -174,7 +177,7 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public byte[] getPackageBinary(@PathParam("packageName") String packageName) throws SerializationException {
         PackageItem p = repository.loadPackage(packageName);
-        PackageService.buildPackage(p.getUUID(), true);
+        packageService.buildPackage(p.getUUID(), true);
         return repository.loadPackage(packageName).getCompiledPackageBytes();
     }
     
@@ -238,7 +241,7 @@ public class PackageResource extends Resource {
     public byte[] getHistoricalPackageBinary(@PathParam("packageName") String packageName,
     		@PathParam("versionNumber") long versionNumber) throws SerializationException {
         PackageItem p = repository.loadPackage(packageName, versionNumber);
-        PackageService.buildPackage(p.getUUID(), true);
+        packageService.buildPackage(p.getUUID(), true);
         return repository.loadPackage(packageName).getCompiledPackageBytes();
     }
     
@@ -258,12 +261,33 @@ public class PackageResource extends Resource {
     @PUT
     @Path("{packageName}")
     @Consumes (MediaType.APPLICATION_ATOM_XML)
-    public void updatePackageFromAtom (@PathParam("packageName") String packageName, Entry entry) {
+    public void updatePackageFromAtom (@PathParam("packageName") String packageName, org.apache.abdera.model.Entry entry) {
         PackageItem p = repository.loadPackage(packageName);
         p.checkout();
-        p.updateTitle(entry.getTitle());
-        p.updateDescription(entry.getSummary());
-        /* TODO: add more updates to package item from JSON */
+        //TODO: support rename package. 
+        //p.updateTitle(entry.getTitle());
+       	if(entry.getSummary() != null) {
+            p.updateDescription(entry.getSummary());
+		}
+        //TODO: support LastContributor 
+       	if(entry.getAuthor() != null) {       		
+       	}
+        
+		ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
+		if(metadataExtension != null) {
+            ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);  
+            if(archivedExtension != null) {
+            	p.archiveItem(Boolean.getBoolean(archivedExtension.getSimpleExtension(Translator.VALUE)));
+            }
+            
+            //TODO: Package state is not fully supported yet
+/*            ExtensibleElement stateExtension = metadataExtension.getExtension(Translator.STATE);  
+            if(stateExtension != null) {
+            	p.updateState(stateExtension.getSimpleExtension(Translator.STATE));
+            }   */     
+            
+		}
+
         p.checkin("Update from ATOM.");
         repository.save();
     }
@@ -272,7 +296,7 @@ public class PackageResource extends Resource {
     @Path("{packageName}")
     public void deletePackage (@PathParam("packageName") String packageName) {
         PackageItem p = repository.loadPackage(packageName);
-        PackageService.removePackage(p.getUUID());
+        packageService.removePackage(p.getUUID());
     }
     
     @GET
@@ -303,16 +327,16 @@ public class PackageResource extends Resource {
     }
        
     @GET
-    @Path("{packageName}/assets/{name}")
+    @Path("{packageName}/assets/{assetName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Entry getAssetByIdAsAtom(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
-        Entry ret = null;
+    public org.apache.abdera.model.Entry getAssetAsAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
+    	org.apache.abdera.model.Entry ret = null;
         PackageItem item = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
             AssetItem a = iter.next();
-            if (a.getName().equals(name)) {
-                ret = ToAssetEntry(a, uriInfo);
+            if (a.getName().equals(assetName)) {
+                ret = ToAssetEntryAbdera(a, uriInfo);
                 break;
             }
         }
@@ -320,15 +344,15 @@ public class PackageResource extends Resource {
     }
 
     @GET
-    @Path("{packageName}/assets/{name}")
+    @Path("{packageName}/assets/{assetName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Asset getAssetByIdAsJaxB(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
+    public Asset getAssetAsJaxB(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
         Asset ret = null;
         PackageItem item = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
             AssetItem a = iter.next();
-            if (a.getName().equals(name)) {
+            if (a.getName().equals(assetName)) {
                 ret = ToAsset(a, uriInfo);
                 break;
             }
@@ -337,15 +361,15 @@ public class PackageResource extends Resource {
     }
 
     @GET
-    @Path("{packageName}/assets/{name}/binary")
+    @Path("{packageName}/assets/{assetName}/binary")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public InputStream getBinaryAssetById(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
+    public InputStream getAssetBinary(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
         InputStream ret = null;
         PackageItem item = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
             AssetItem a = iter.next();
-            if (a.getName().equals(name)) {
+            if (a.getName().equals(assetName)) {
                 ret = a.getBinaryContentAttachment();
                 break;
             }
@@ -353,18 +377,17 @@ public class PackageResource extends Resource {
         return ret;
     }
 
-
     @GET
-    @Path("{packageName}/assets/{name}/source")
+    @Path("{packageName}/assets/{assetName}/source")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getSourceAssetById(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
+    public String getAssetSource(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
         String ret = null;
         if (repository.containsPackage(packageName)) {
             PackageItem item = repository.loadPackage(packageName);
             Iterator<AssetItem> iter = item.getAssets();
             while (iter.hasNext()) {
                 AssetItem a = iter.next();
-                if (a.getName().equals(name)) {
+                if (a.getName().equals(assetName)) {
                     ret = a.getContent();
                     break;
                 }
@@ -376,16 +399,16 @@ public class PackageResource extends Resource {
     }
 
     @PUT
-    @Path("{packageName}/assets/{name}")
+    @Path("{packageName}/assets/{assetName}")
     @Consumes(MediaType.APPLICATION_ATOM_XML)
-    public void updateAssetFromAtom(@PathParam ("packageName") String packageName, @PathParam("name") String name, Entry assetEntry)
+    public void updateAssetFromAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName, Entry assetEntry)
     {
         AssetItem ai = null;
         PackageItem item = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
             AssetItem a = iter.next();
-            if (a.getName().equals(name)) {
+            if (a.getName().equals(assetName)) {
                 ai = a;
                 break;
             }
@@ -401,16 +424,16 @@ public class PackageResource extends Resource {
     }
 
     @PUT
-    @Path("{packageName}/assets/{name}")
+    @Path("{packageName}/assets/{assetName}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void updateAssetFromJAXB(@PathParam ("packageName") String packageName, @PathParam("name") String name, Asset asset)
+    public void updateAssetFromJAXB(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName, Asset asset)
     {
         AssetItem ai = null;
         PackageItem pi = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = pi.getAssets();
         while (iter.hasNext()) {
             AssetItem item = iter.next();
-            if (item.getName().equals(name)) {
+            if (item.getName().equals(assetName)) {
                 ai = item;
                 break;
             }
@@ -425,19 +448,19 @@ public class PackageResource extends Resource {
     }
 
     @DELETE
-    @Path("{packageName}/assets/{name}/")
-    public void deleteAsset(@PathParam ("packageName") String packageName, @PathParam("name") String name) {
+    @Path("{packageName}/assets/{assetName}/")
+    public void deleteAsset(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
         AssetItem asset = null;
         PackageItem item = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
             AssetItem a = iter.next();
-            if (a.getName().equals(name)) {
+            if (a.getName().equals(assetName)) {
                 asset = a;
                 break;
             }
         }
-        AssetService.archiveAsset(asset.getUUID());
+        assetService.archiveAsset(asset.getUUID());
     }
 }
 

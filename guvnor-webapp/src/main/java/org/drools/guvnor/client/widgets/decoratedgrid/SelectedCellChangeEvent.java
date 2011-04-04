@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
-import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget.CellExtents;
+import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget.CellSelectionDetail;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -25,7 +25,7 @@ import com.google.gwt.event.shared.GwtEvent;
 public class SelectedCellChangeEvent extends GwtEvent<SelectedCellChangeHandler> {
 
     // Parameters for the Event
-    private final CellExtents         cellExtents;
+    private final CellSelectionDetail              cellDetails;
 
     /**
      * Handler type.
@@ -38,18 +38,18 @@ public class SelectedCellChangeEvent extends GwtEvent<SelectedCellChangeHandler>
      * 
      * @param source
      *            the source of the handlers
-     * @param cellExtents
-     *            dimensions of selected cell
+     * @param cellDetails
+     *            details of selected cell
      */
     public static void fire(HasSelectedCellChangeHandlers source,
-                            CellExtents cellExtents) {
+                            CellSelectionDetail cellDetails) {
         if ( source == null ) {
             throw new IllegalArgumentException( "source cannot be null" );
         }
-        if ( cellExtents == null ) {
-            throw new IllegalArgumentException( "cellExtents cannot be null" );
+        if ( cellDetails == null ) {
+            throw new IllegalArgumentException( "cellDetails cannot be null" );
         }
-        SelectedCellChangeEvent event = new SelectedCellChangeEvent( cellExtents );
+        SelectedCellChangeEvent event = new SelectedCellChangeEvent( cellDetails );
         source.fireEvent( event );
     }
 
@@ -66,13 +66,13 @@ public class SelectedCellChangeEvent extends GwtEvent<SelectedCellChangeHandler>
      * Creates a value change event.
      * 
      * @param cellExtents
-     *            dimensions of selected cell
+     *            details of selected cell
      */
-    protected SelectedCellChangeEvent(CellExtents cellExtents) {
-        if ( cellExtents == null ) {
-            throw new IllegalArgumentException( "cellExtents cannot be null" );
+    protected SelectedCellChangeEvent(CellSelectionDetail cellDetails) {
+        if ( cellDetails == null ) {
+            throw new IllegalArgumentException( "cellDetails cannot be null" );
         }
-        this.cellExtents=cellExtents;
+        this.cellDetails = cellDetails;
     }
 
     @Override
@@ -81,19 +81,19 @@ public class SelectedCellChangeEvent extends GwtEvent<SelectedCellChangeHandler>
     }
 
     /**
-     * Gets the dimensions of the selected cell
+     * Gets the details of the selected cell
      * 
-     * @return the dimensions
+     * @return the details
      */
-    public CellExtents getCellExtents() {
-        return this.cellExtents;
+    public CellSelectionDetail getCellSelectionDetail() {
+        return this.cellDetails;
     }
 
     @Override
     public String toDebugString() {
         return super.toDebugString()
-               + "cellExtents = "
-               + getCellExtents().toString();
+               + "cellDetails = "
+               + getCellSelectionDetail().toString();
     }
 
     @Override

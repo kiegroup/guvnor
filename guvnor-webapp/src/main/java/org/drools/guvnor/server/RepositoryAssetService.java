@@ -19,9 +19,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
+import java.util.List;
 
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
@@ -29,6 +27,7 @@ import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.AssetService;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PushResponse;
@@ -36,15 +35,19 @@ import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
+import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
+import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
+import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
@@ -141,6 +144,23 @@ public class RepositoryAssetService
 
     }
 
+    private PackageItem handlePackageItem(AssetItem item,
+                                          RuleAsset asset) throws SerializationException {
+        PackageItem pkgItem = item.getPackage();
+
+        ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
+        handler.retrieveAssetContent( asset,
+                                      pkgItem,
+                                      item );
+
+        asset.isreadonly = asset.metaData.hasSucceedingVersion;
+
+        if ( pkgItem.isSnapshot() ) {
+            asset.isreadonly = true;
+        }
+        return pkgItem;
+    }
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public RuleAsset[] loadRuleAssets(String[] uuids) throws SerializationException {
@@ -150,10 +170,10 @@ public class RepositoryAssetService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadItemHistory(String uuid) throws SerializationException {
-       	//VersionableItem assetItem = getRulesRepository().loadAssetByUUID( uuid );
-       	VersionableItem assetItem = getRulesRepository().loadItemByUUID( uuid );
+        //VersionableItem assetItem = getRulesRepository().loadAssetByUUID( uuid );
+        VersionableItem assetItem = getRulesRepository().loadItemByUUID( uuid );
 
-       	//serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
+        //serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
         return repositoryAssetOperations.loadItemHistory( assetItem );
     }
 
@@ -167,8 +187,8 @@ public class RepositoryAssetService
         PackageItem pi = getRulesRepository().loadPackageByUUID( packageUUID );
         AssetItem assetItem = pi.loadAsset( assetName );
         serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
-        
-        return repositoryAssetOperations.loadItemHistory( assetItem );        
+
+        return repositoryAssetOperations.loadItemHistory( assetItem );
     }
 
     @WebRemote
@@ -450,23 +470,6 @@ public class RepositoryAssetService
         }
     }
 
-    private PackageItem handlePackageItem(AssetItem item,
-                                          RuleAsset asset) throws SerializationException {
-        PackageItem pkgItem = item.getPackage();
-
-        ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
-        handler.retrieveAssetContent( asset,
-                                      pkgItem,
-                                      item );
-
-        asset.isreadonly = asset.metaData.hasSucceedingVersion;
-
-        if ( pkgItem.isSnapshot() ) {
-            asset.isreadonly = true;
-        }
-        return pkgItem;
-    }
-
     RuleAsset[] loadRuleAssets(Collection<String> uuids) throws SerializationException {
         if ( uuids == null ) {
             return null;
@@ -506,8 +509,7 @@ public class RepositoryAssetService
             item.archiveItem( archive );
             PackageItem pkg = item.getPackage();
             pkg.updateBinaryUpToDate( false );
-            //TODO: Centralized cache
-            ServiceImplementation.ruleBaseCache.remove( pkg.getUUID() );
+            RuleBaseCache.getInstance().remove( pkg.getUUID() );
             if ( archive ) {
                 item.checkin( "archived" );
             } else {
@@ -524,6 +526,102 @@ public class RepositoryAssetService
         }
     }
 
+    @Restrict("#{identity.loggedIn}")
+    public List<DiscussionRecord> addToDiscussionForAsset(String assetId,
+                                                          String comment) {
+        return repositoryAssetOperations.addToDiscussionForAsset( assetId,
+                                                                  comment );
+    }
+
+    @Restrict("#{identity.loggedIn}")
+    public void clearAllDiscussionsForAsset(final String assetId) {
+        serviceSecurity.checkSecurityIsAdmin();
+        repositoryAssetOperations.clearAllDiscussionsForAsset( assetId );
+    }
+
+    @Restrict("#{identity.loggedIn}")
+    public List<DiscussionRecord> loadDiscussionForAsset(String assetId) {
+        return new Discussion().fromString( getRulesRepository().loadAssetByUUID( assetId ).getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
+    }
+
+    /**
+     * 
+     * Role-based Authorization check: This method can be accessed if user has
+     * following permissions: 1. The user has a Analyst role and this role has
+     * permission to access the category which the asset belongs to. Or. 2. The
+     * user has a package.developer role or higher (i.e., package.admin) and
+     * this role has permission to access the package which the asset belongs
+     * to.
+     */
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void changeState(String uuid,
+                            String newState) {
+        AssetItem asset = getRulesRepository().loadAssetByUUID( uuid );
+
+        // Verify if the user has permission to access the asset through
+        // package based permission.
+        // If failed, then verify if the user has permission to access the
+        // asset through category
+        // based permission
+        if ( Contexts.isSessionContextActive() ) {
+            boolean passed = false;
+
+            try {
+                Identity.instance().checkPermission( new PackageUUIDType( asset.getPackage().getUUID() ),
+                                                         RoleTypes.PACKAGE_DEVELOPER );
+            } catch ( RuntimeException e ) {
+                if ( asset.getCategories().size() == 0 ) {
+                    Identity.instance().checkPermission( new CategoryPathType( null ),
+                                                             RoleTypes.ANALYST );
+                } else {
+                    RuntimeException exception = null;
+
+                    for ( CategoryItem cat : asset.getCategories() ) {
+                        try {
+                            Identity.instance().checkPermission( new CategoryPathType( cat.getName() ),
+                                                                     RoleTypes.ANALYST );
+                            passed = true;
+                        } catch ( RuntimeException re ) {
+                            exception = re;
+                        }
+                    }
+                    if ( !passed ) {
+                        throw exception;
+                    }
+                }
+            }
+        }
+
+        log.info( "USER:" + getCurrentUserName() + " CHANGING ASSET STATUS. Asset name, uuid: " + "[" + asset.getName() + ", " + asset.getUUID() + "]" + " to [" + newState + "]" );
+        String oldState = asset.getStateDescription();
+        asset.updateState( newState );
+
+        push( "statusChange",
+                  oldState );
+        push( "statusChange",
+                  newState );
+
+        addToDiscussionForAsset( asset.getUUID(),
+                                     oldState + " -> " + newState );
+
+        getRulesRepository().save();
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void changePackageState(String uuid,
+                                   String newState) {
+
+        serviceSecurity.checkSecurityIsPackageDeveloper( uuid );
+
+        PackageItem pkg = getRulesRepository().loadPackageByUUID( uuid );
+        log.info( "USER:" + getCurrentUserName() + " CHANGING Package STATUS. Asset name, uuid: " + "[" + pkg.getName() + ", " + pkg.getUUID() + "]" + " to [" + newState + "]" );
+        pkg.changeStatus( newState );
+
+        getRulesRepository().save();
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -535,13 +633,11 @@ public class RepositoryAssetService
     public String getAssetLockerUserName(String uuid) {
         return repositoryAssetOperations.getAssetLockerUserName( uuid );
     }
-    
-    //TODO: Backchannel has to be refactored. This is really bad.
+
     private void push(String messageType,
                       String message) {
-        Backchannel backchannel = ServiceImplementation.getBackchannel();
-        backchannel.publish( new PushResponse( messageType,
-                                               message ) );
+        Backchannel.getInstance().publish( new PushResponse( messageType,
+                                                             message ) );
     }
 
     private ContentHandler getContentHandler(AssetItem repoAsset) {

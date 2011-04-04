@@ -4,19 +4,18 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.droolsjbpm</groupId>
+    <groupId>org.drools</groupId>
     <artifactId>guvnor</artifactId>
     <version>5.2.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.drools</groupId><!-- TODO rename groupId, artifactId, name and description -->
   <artifactId>guvnor-webapp</artifactId>
   <packaging>war</packaging>
   
   <name>Guvnor web application</name>
+  <description>The web application to create, edit and deploy Drools and jBPM assets.</description>
 
   <build>
-    <finalName>guvnor-webapp</finalName>
     <plugins>
       <plugin>
         <!--use -Dgwt.compiler.skip=true to skip GWT compiler-->
@@ -188,7 +187,7 @@
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <version>2.5</version>
-      <scope>provided</scope>
+      <scope>provided</scope><!-- Any servlet container supports  -->
     </dependency>
     <dependency>
       <groupId>pl.balon.gwt</groupId>
@@ -205,7 +204,7 @@
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
+      <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
     </dependency>
     <dependency>
       <groupId>commons-fileupload</groupId>
@@ -244,14 +243,8 @@
     <dependency>
       <groupId>javax.el</groupId>
       <artifactId>el-api</artifactId>
-      <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>javax.el</groupId>
-      <artifactId>el-ri</artifactId>
-      <scope>provided</scope>
-    </dependency>
-      <!-- REST dependencies -->
+    <!-- REST dependencies -->
     <dependency>
         <groupId>javax.ws.rs</groupId>
         <artifactId>jsr311-api</artifactId>

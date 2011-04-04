@@ -140,8 +140,8 @@ public class CellValueFactoryTests {
         dt.getActionCols().add( a2 );
 
         factory = new DecisionTableCellValueFactory( sce,
-                                                                                   dt );
-        factory.injectDateConvertor( JVMDateConverter.getInstance() );
+                                                     dt );
+        DecisionTableCellValueFactory.injectDateConvertor( JVMDateConverter.getInstance() );
 
     }
 

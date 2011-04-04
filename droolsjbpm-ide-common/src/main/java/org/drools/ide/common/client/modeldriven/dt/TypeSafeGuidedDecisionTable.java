@@ -56,11 +56,11 @@ public class TypeSafeGuidedDecisionTable
     private String                  parentName;
 
     // metadata defined for table ( will be represented as a column per table row of DATA
-    private RowNumberCol            rowNumberCol;
+    private RowNumberCol            rowNumberCol      = new RowNumberCol();
 
-    private DescriptionCol          descriptionCol;
+    private DescriptionCol          descriptionCol    = new DescriptionCol();
 
-    private List<MetadataCol>       metadataCols;
+    private List<MetadataCol>       metadataCols      = new ArrayList<MetadataCol>();
 
     private List<AttributeCol>      attributeCols     = new ArrayList<AttributeCol>();
 
@@ -92,6 +92,17 @@ public class TypeSafeGuidedDecisionTable
 
     public List<List<DTCellValue>> getData() {
         return data;
+    }
+
+    public List<DTColumnConfig> getAllColumns() {
+        List<DTColumnConfig> columns = new ArrayList<DTColumnConfig>();
+        columns.add( rowNumberCol );
+        columns.add( descriptionCol );
+        columns.addAll( metadataCols );
+        columns.addAll( attributeCols );
+        columns.addAll( conditionCols );
+        columns.addAll( actionCols );
+        return columns;
     }
 
     public DescriptionCol getDescriptionCol() {

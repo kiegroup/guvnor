@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>guvnor</artifactId>
+    <version>5.2.0-SNAPSHOT</version>
+  </parent>
+
+  <!--
+    TODO Make this module obsolete by providing the functionality in a screen in Guvnor
+    https://issues.jboss.org/browse/GUVNOR-1230
+  -->
+  <artifactId>guvnor-bulk-importer</artifactId>
+  <name>Guvnor bulk importer</name>
+  <description>Bulk imports files into the Guvnor repository</description>
+
+  <properties>
+    <guvnor.server.url>http://localhost:8080/guvnor-${project.version}</guvnor.server.url>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>org.jboss.drools.guvnor.importgenerator.ImportFileGenerator</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>attached</goal>
+                </goals>
+                <configuration>
+                  <descriptorRefs>
+                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                  </descriptorRefs>
+                  <archive>
+                    <manifest>
+                      <mainClass>org.jboss.drools.guvnor.importgenerator.ImportFileGenerator</mainClass>
+                    </manifest>
+                  </archive>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!--<profile>-->
+      <!--<id>gen-brms-import</id>-->
+      <!--<activation>-->
+        <!--<activeByDefault>false</activeByDefault>-->
+      <!--</activation>-->
+      <!--<build>-->
+        <!--<plugins>-->
+          <!--<plugin>-->
+            <!--<groupId>org.codehaus.mojo</groupId>-->
+            <!--<artifactId>exec-maven-plugin</artifactId>-->
+
+            <!--<executions>-->
+              <!--<execution>-->
+                <!--<phase>package</phase> &lt;!&ndash; after compile since we need the class to be on the cp before executing &ndash;&gt;-->
+                <!--<goals>-->
+                  <!--<goal>java</goal>-->
+                <!--</goals>-->
+              <!--</execution>-->
+            <!--</executions>-->
+
+            <!--<configuration>-->
+              <!--<mainClass>org.jboss.drools.guvnor.importgenerator.ImportFileGenerator</mainClass>-->
+              <!--<arguments>-->
+                <!--<argument>-classpath</argument> &lt;!&ndash; bring in the project classpath dependencies below &ndash;&gt;-->
+
+                <!--<argument>-p</argument>-->
+                <!--<argument>${basedir}/my_rules</argument> &lt;!&ndash; directory to start importing from &ndash;&gt;-->
+
+                <!--<argument>-s</argument>-->
+                <!--<argument>my_rules</argument> &lt;!&ndash; directory to start importing from &ndash;&gt;-->
+
+                <!--<argument>-e</argument>-->
+                <!--<argument>[0-9|.]*[.|-]+[SNAPSHOT]+[.|-]*[09|.]*</argument> &lt;!&ndash; matches the version directory if it exists &ndash;&gt;-->
+
+                <!--<argument>-r</argument>-->
+                <!--<argument>true</argument> &lt;!&ndash; recurse sub-directories when looking for rules files &ndash;&gt;-->
+
+                <!--<argument>-u</argument>-->
+                <!--<argument>admin</argument> &lt;!&ndash; user account name to import the rules files as &ndash;&gt;-->
+
+                <!--<argument>-f</argument>-->
+                <!--<argument>drl,xls</argument> &lt;!&ndash; rule file extension to import &ndash;&gt;-->
+
+                <!--<argument>-o</argument>-->
+                <!--<argument>guvnor-import.xml</argument> &lt;!&ndash; import file generated &ndash;&gt;-->
+
+                <!--<argument>-c</argument>-->
+                <!--<argument>functions.drl</argument> &lt;!&ndash; functions file to look for &ndash;&gt;-->
+
+                <!--<argument>-n</argument>-->
+                <!--<argument>1.0.0-SNAPSHOT</argument> &lt;!&ndash; default snapshot name &ndash;&gt;-->
+
+                <!--<argument>-k</argument>-->
+                <!--<argument>${guvnor.server.url}/org.drools.guvnor.Guvnor/package/</argument> &lt;!&ndash; kagent brms server &ndash;&gt;-->
+
+                <!--<argument>-b</argument>-->
+                <!--<argument>${basedir}</argument>-->
+
+                <!--&lt;!&ndash; remove this argument if you don't want to generate a kagent -->
+                  <!--change-set file &ndash;&gt;-->
+                <!--<argument>-w</argument>-->
+                <!--<argument>kagent-changeset.xml</argument> &lt;!&ndash; kagent changeset file output &ndash;&gt;-->
+
+                <!--<argument>-V</argument> &lt;!&ndash; verbose output (v=verbose, V=very verbose &ndash;&gt;-->
+              <!--</arguments>-->
+            <!--</configuration>-->
+          <!--</plugin>-->
+        <!--</plugins>-->
+      <!--</build>-->
+    <!--</profile>-->
+  </profiles>
+
+  <dependencies>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-repository</artifactId>
+    </dependency>
+
+    <!-- for RuleAgent testing -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-decisiontables</artifactId>
+    </dependency>
+    <!-- end RuleAgent testing dependencies -->
+
+    <dependency>
+      <groupId>commons-beanutils</groupId>
+      <artifactId>commons-beanutils</artifactId>
+      <version>1.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>1.6</version>
+    </dependency>
+
+  </dependencies>
+</project>

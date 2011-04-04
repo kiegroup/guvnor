@@ -106,7 +106,7 @@ public class DiscussionWidget extends Composite {
 
     /** Hit up the server */
     public void refreshDiscussion() {
-        RepositoryServiceFactory.getService().loadDiscussionForAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().loadDiscussionForAsset( asset.uuid,
                                                                       new GenericCallback<List<DiscussionRecord>>() {
                                                                           public void onSuccess(List<DiscussionRecord> result) {
                                                                               updateCommentList( result );
@@ -166,7 +166,7 @@ public class DiscussionWidget extends Composite {
             adminClearAll.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     if ( Window.confirm( constants.EraseAllCommentsWarning() ) ) {
-                        RepositoryServiceFactory.getService().clearAllDiscussionsForAsset( asset.uuid,
+                        RepositoryServiceFactory.getAssetService().clearAllDiscussionsForAsset( asset.uuid,
                                                                                            new GenericCallback<java.lang.Void>() {
                                                                                                public void onSuccess(Void v) {
                                                                                                    updateCommentList( new ArrayList<DiscussionRecord>() );
@@ -226,7 +226,7 @@ public class DiscussionWidget extends Composite {
     private void sendNewComment(String text) {
         newCommentLayout.clear();
         newCommentLayout.add( new Image( images.spinner() ) );
-        RepositoryServiceFactory.getService().addToDiscussionForAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().addToDiscussionForAsset( asset.uuid,
                                                                        text,
                                                                        new GenericCallback<List<DiscussionRecord>>() {
                                                                            public void onSuccess(List<DiscussionRecord> result) {

@@ -277,7 +277,7 @@ public class SuggestionCompletionEngineTest {
 
         c = com.getOperatorCompletions( "Person",
                                         "name" );
-        assertEquals( 4,
+        assertEquals( 6,
                       c.length );
         assertEquals( "==",
                       c[0] );
@@ -288,7 +288,7 @@ public class SuggestionCompletionEngineTest {
 
         c = com.getOperatorCompletions( "Person",
                                         "age" );
-        assertEquals( 6,
+        assertEquals( 8,
                       c.length );
         assertEquals( c[0],
                       "==" );
@@ -301,7 +301,7 @@ public class SuggestionCompletionEngineTest {
 
         c = com.getOperatorCompletions( "Person",
                                         "rank" );
-        assertEquals( 6,
+        assertEquals( 8,
                       c.length );
         assertEquals( c[0],
                       "==" );
@@ -348,7 +348,7 @@ public class SuggestionCompletionEngineTest {
         //check that it has default operators for general objects
         c = com.getOperatorCompletions( "Person",
                                         "wankle" );
-        assertEquals( 2,
+        assertEquals( 4,
                       c.length );
 
         assertEquals( "Numeric",

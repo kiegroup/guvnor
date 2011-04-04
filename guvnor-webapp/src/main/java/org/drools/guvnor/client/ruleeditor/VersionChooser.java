@@ -73,7 +73,9 @@ public class VersionChooser extends Composite {
         Button open = new Button( "View selected version" );
         open.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                showVersion( versionChooser.getValue( versionChooser.getSelectedIndex() ) );
+            	if(!constants.NoHistory().equalsIgnoreCase(versionChooser.getValue(versionChooser.getSelectedIndex()))) {
+                    showVersion( versionChooser.getValue( versionChooser.getSelectedIndex() ) );
+            	} 
             }
 
         } );
@@ -90,21 +92,16 @@ public class VersionChooser extends Composite {
         		                                                assetName,
                                                                 new GenericCallback<TableDataResult>() {
                                                                     public void onSuccess(TableDataResult table) {
-                                                                        if ( table == null ) {
-                                                                            //Should not get here
+                                                                        if ( table == null || table.data.length ==0) {
+                                                                            versionChooser.addItem(constants.NoHistory());
+                                                                            versionInfo.add(null);
                                                                             return;
                                                                         }
                                                                         TableDataRow[] rows = table.data;
                                                                         Arrays.sort( rows,
                                                                                      new Comparator<TableDataRow>() {
                                                                                          public int compare(TableDataRow r1,
-                                                                                                            TableDataRow r2) {
-                                                                                             if("LATEST".equals(r2.values[0])) {
-                                                                                                 return 1;
-                                                                                             }
-                                                                                             if("LATEST".equals(r1.values[0])) {
-                                                                                                 return -1;
-                                                                                             }                                                                                             
+                                                                                                            TableDataRow r2) {                                                                                         
                                                                                              Integer v2 = Integer.valueOf( r2.values[0] );
                                                                                              Integer v1 = Integer.valueOf( r1.values[0] );
 
@@ -123,7 +120,7 @@ public class VersionChooser extends Composite {
                                                                                     row.id );
                                                                             versionInfo.add(row);
                                                                         }
-                                                                        selectCurrentVersoin(currentVersion);
+                                                                        selectCurrentVersion(currentVersion);
                                                                     }
                                                                 } );
 
@@ -137,7 +134,7 @@ public class VersionChooser extends Composite {
     	}
     }
     
-    private void selectCurrentVersoin(String currentVersion) {
+    private void selectCurrentVersion(String currentVersion) {
         for(int i=0;i<versionInfo.size(); i++) {
             TableDataRow row = versionInfo.get(i);
             if(row.values[0].equals(currentVersion)) {
@@ -149,10 +146,12 @@ public class VersionChooser extends Composite {
     
     public String getSelectedVersionName() {
         if(versionChooser != null) {
-            return versionInfo.get(versionChooser.getSelectedIndex()).values[0];
-        } else {
-            return null;
-        }
+        	TableDataRow t = versionInfo.get(versionChooser.getSelectedIndex());
+        	if(t != null) {
+        		return t.values[0];
+        	} 
+        } 
+        return null;        
     }
 
     /**

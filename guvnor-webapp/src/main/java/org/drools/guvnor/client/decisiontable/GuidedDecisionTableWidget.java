@@ -71,7 +71,7 @@ public class GuidedDecisionTableWidget extends Composite
     private Constants                   constants = GWT.create( Constants.class );
     private static Images               images    = GWT.create( Images.class );
 
-    private TypeSafeGuidedDecisionTable         guidedDecisionTable;
+    private TypeSafeGuidedDecisionTable guidedDecisionTable;
     private VerticalPanel               layout;
     private PrettyFormLayout            configureColumnsNote;
     private VerticalPanel               attributeConfigWidget;
@@ -81,7 +81,6 @@ public class GuidedDecisionTableWidget extends Composite
     private SuggestionCompletionEngine  sce;
 
     private VerticalDecisionTableWidget dtable;
-    private DecisionTableControlsWidget dtableCtrls;
 
     public GuidedDecisionTableWidget(RuleAsset asset,
                                      RuleViewer viewer) {
@@ -629,16 +628,12 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void setupDecisionTable() {
         if ( dtable == null ) {
-            dtable = new VerticalDecisionTableWidget( getSCE() );
+            dtable = new VerticalDecisionTableWidget( new DecisionTableControlsWidget(), getSCE() );
             dtable.setPixelSize( 1000,
                                  400 );
             dtable.setModel( guidedDecisionTable );
         }
-        if ( dtableCtrls == null ) {
-            dtableCtrls = new DecisionTableControlsWidget( dtable );
-        }
         layout.add( dtable );
-        layout.add( dtableCtrls );
     }
 
     /**

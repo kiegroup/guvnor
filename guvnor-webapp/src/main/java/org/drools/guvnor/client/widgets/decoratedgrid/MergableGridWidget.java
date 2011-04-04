@@ -57,18 +57,22 @@ public abstract class MergableGridWidget<T> extends Widget
     HasRowGroupingChangeHandlers {
 
     /**
-     * Container for a cell's extents
+     * Container for a details of a selected cell
      */
-    public static class CellExtents {
-        private int offsetX;
-        private int offsetY;
-        private int height;
-        private int width;
+    public static class CellSelectionDetail {
 
-        CellExtents(int offsetX,
-                    int offsetY,
-                    int height,
-                    int width) {
+        private Coordinate c;
+        private int        offsetX;
+        private int        offsetY;
+        private int        height;
+        private int        width;
+
+        CellSelectionDetail(Coordinate c,
+                            int offsetX,
+                            int offsetY,
+                            int height,
+                            int width) {
+            this.c = c;
             this.offsetX = offsetX;
             this.offsetY = offsetY;
             this.height = height;
@@ -91,6 +95,10 @@ public abstract class MergableGridWidget<T> extends Widget
             return width;
         }
 
+        public Coordinate getCoordinate() {
+            return c;
+        }
+
     }
 
     // Enum to support keyboard navigation
@@ -102,15 +110,19 @@ public abstract class MergableGridWidget<T> extends Widget
     //event.stopPropogation() doesn't prevent text selection
     private native static void disableTextSelectInternal(Element e,
                                                          boolean disable)/*-{
-        if (disable) {
-        e.ondrag = function () { return false; };
-        e.onselectstart = function () { return false; };
-        e.style.MozUserSelect="none"
-        } else {
-        e.ondrag = null;
-        e.onselectstart = null;
-        e.style.MozUserSelect="text"
-        }
+		if (disable) {
+			e.ondrag = function() {
+				return false;
+			};
+			e.onselectstart = function() {
+				return false;
+			};
+			e.style.MozUserSelect = "none"
+		} else {
+			e.ondrag = null;
+			e.onselectstart = null;
+			e.style.MozUserSelect = "text"
+		}
     }-*/;
 
     // Selections store the actual grid data selected (irrespective of
@@ -275,19 +287,17 @@ public abstract class MergableGridWidget<T> extends Widget
         clearSelection();
 
         //Delete row data
-        data.remove( index );
+        data.deleteRow( index );
 
         // Partial redraw
         if ( !data.isMerged() ) {
             // Single row when not merged
             removeRowElement( index );
-            data.assertModelIndexes();
         } else {
             // Affected rows when merged
             removeRowElement( index );
 
             if ( data.size() > 0 ) {
-                data.assertModelMerging();
                 int minRedrawRow = findMinRedrawRow( index - 1 );
                 int maxRedrawRow = findMaxRedrawRow( index - 1 ) + 1;
                 if ( maxRedrawRow > data.size() - 1 ) {
@@ -344,7 +354,7 @@ public abstract class MergableGridWidget<T> extends Widget
      */
     public void insertColumnBefore(DynamicColumn<T> columnBefore,
                                    DynamicColumn<T> newColumn,
-                                   List<CellValue< ? extends Comparable<?>>> columnData,
+                                   List<CellValue< ? extends Comparable< ? >>> columnData,
                                    boolean bRedraw) {
 
         if ( newColumn == null ) {
@@ -438,12 +448,10 @@ public abstract class MergableGridWidget<T> extends Widget
         // Partial redraw
         if ( !data.isMerged() ) {
             // Only new row when not merged
-            data.assertModelIndexes();
             createRowElement( index,
                               row );
         } else {
             // Affected rows when merged
-            data.assertModelMerging();
             createEmptyRowElement( index );
             redrawRows( minRedrawRow,
                         maxRedrawRow );
@@ -522,6 +530,9 @@ public abstract class MergableGridWidget<T> extends Widget
                 data.set( c,
                           value );
             }
+            if ( value != null ) {
+                cell.removeState( CellState.OTHERWISE );
+            }
         }
 
         //Ungroup if applicable
@@ -535,7 +546,6 @@ public abstract class MergableGridWidget<T> extends Widget
         }
 
         // Partial redraw
-        data.assertModelMerging();
         int baseRowIndex = selections.first().getCoordinate().getRow();
         int minRedrawRow = findMinRedrawRow( baseRowIndex );
         int maxRedrawRow = findMaxRedrawRow( baseRowIndex );
@@ -573,19 +583,6 @@ public abstract class MergableGridWidget<T> extends Widget
             RowGroupingChangeEvent.fire( this );
         }
 
-    }
-
-    //Clear all selections
-    protected void clearSelection() {
-        // De-select any previously selected cells
-        for ( CellValue< ? extends Comparable< ? >> cell : this.selections ) {
-            cell.removeState( CellState.SELECTED );
-            deselectCell( cell );
-        }
-
-        // Clear collection
-        selections.clear();
-        rangeDirection = MOVE_DIRECTION.NONE;
     }
 
     //Check whether two values are equal or both null
@@ -652,7 +649,6 @@ public abstract class MergableGridWidget<T> extends Widget
         if ( newCell.getRowSpan() != 0 ) {
             nc = new Coordinate( nc.getRow() - 1,
                                      nc.getCol() );
-            newCell = data.get( nc );
         }
         return nc;
     }
@@ -826,6 +822,19 @@ public abstract class MergableGridWidget<T> extends Widget
 
     }
 
+    //Clear all selections
+    protected void clearSelection() {
+        // De-select any previously selected cells
+        for ( CellValue< ? extends Comparable< ? >> cell : this.selections ) {
+            cell.removeState( CellState.SELECTED );
+            deselectCell( cell );
+        }
+
+        // Clear collection
+        selections.clear();
+        rangeDirection = MOVE_DIRECTION.NONE;
+    }
+
     protected abstract void createEmptyRowElement(int index);
 
     protected abstract void createRowElement(int index,
@@ -919,8 +928,7 @@ public abstract class MergableGridWidget<T> extends Widget
      *            The cell for which to retrieve the extents
      * @return
      */
-    CellExtents getSelectedCellExtents(
-                                              CellValue< ? extends Comparable< ? >> cv) {
+    CellSelectionDetail getSelectedCellExtents(CellValue< ? extends Comparable< ? >> cv) {
 
         if ( cv == null ) {
             throw new IllegalArgumentException( "cv cannot be null" );
@@ -941,11 +949,41 @@ public abstract class MergableGridWidget<T> extends Widget
         int offsetY = tce.getOffsetTop();
         int w = tce.getOffsetWidth();
         int h = tce.getOffsetHeight();
-        CellExtents e = new CellExtents( offsetX,
-                                         offsetY,
-                                         h,
-                                         w );
+        CellSelectionDetail e = new CellSelectionDetail( cv.getCoordinate(),
+                                                         offsetX,
+                                                         offsetY,
+                                                         h,
+                                                         w );
         return e;
+    }
+
+    /**
+     * Group a merged cell. If the cell is not merged across at least two rows
+     * or the cell is not the top of the merged range no action is taken.
+     * 
+     * @param start
+     *            Coordinate of top of merged group.
+     */
+    void groupCells(Coordinate start) {
+        if ( start == null ) {
+            throw new IllegalArgumentException( "start cannot be null" );
+        }
+        CellValue< ? > startCell = data.get( start );
+
+        //Start cell needs to be top of a merged range
+        if ( startCell.getRowSpan() <= 1 && !startCell.isGrouped() ) {
+            return;
+        }
+
+        clearSelection();
+        if ( startCell.isGrouped() ) {
+            removeModelGrouping( startCell,
+                                 true );
+        } else {
+            applyModelGrouping( startCell,
+                                true );
+        }
+
     }
 
     /**
@@ -958,19 +996,15 @@ public abstract class MergableGridWidget<T> extends Widget
      * 
      * @param dir
      *            Direction to move the selection
-     * @return Dimensions of the newly selected cell
      */
-    CellExtents moveSelection(MOVE_DIRECTION dir) {
-        CellExtents ce = null;
+    void moveSelection(MOVE_DIRECTION dir) {
         if ( selections.size() > 0 ) {
             CellValue< ? > activeCell = (rangeExtentCell == null ? rangeOriginCell : rangeExtentCell);
             Coordinate nc = getNextCell( activeCell.getCoordinate(),
                                          dir );
             startSelecting( nc );
             rangeDirection = dir;
-            ce = getSelectedCellExtents( data.get( nc ) );
         }
-        return ce;
     }
 
     /**
@@ -1054,42 +1088,18 @@ public abstract class MergableGridWidget<T> extends Widget
         if ( start == null ) {
             throw new IllegalArgumentException( "start cannot be null" );
         }
+
+        //Raise event signalling change in selection 
+        CellSelectionDetail ce = getSelectedCellExtents( data.get( start ) );
+        SelectedCellChangeEvent.fire( this,
+                                      ce );
+
         clearSelection();
         CellValue< ? > startCell = data.get( start );
         selectRange( startCell,
                      startCell );
         rangeOriginCell = startCell;
         rangeExtentCell = null;
-    }
-
-    /**
-     * Group a merged cell. If the cell is not merged across at least two rows
-     * or the cell is not the top of the merged range no action is taken.
-     * 
-     * @param start
-     *            Coordinate of top of merged group.
-     */
-    void groupCells(Coordinate start) {
-        if ( start == null ) {
-            throw new IllegalArgumentException( "start cannot be null" );
-        }
-        CellValue< ? > startCell = data.get( start );
-
-        //Start cell needs to be top of a merged range
-        if ( startCell.getRowSpan() <= 1 && !startCell.isGrouped() ) {
-            return;
-        }
-
-        clearSelection();
-        if ( startCell.isGrouped() ) {
-            removeModelGrouping( startCell,
-                                 true );
-        } else {
-            applyModelGrouping( startCell,
-                                true );
-            data.assertModelMerging();
-        }
-
     }
 
 }

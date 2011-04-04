@@ -17,9 +17,6 @@ package org.drools.guvnor.client.widgets.decoratedgrid.data;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,32 +24,11 @@ import org.junit.Test;
 /**
  * Tests for DynamicData
  */
-public class DynamicDataTestsWithMerging {
-
-    private DynamicData                                              data         = new DynamicData();
-
-    private static final List<CellValue< ? extends Comparable< ? >>> EMPTY_COLUMN = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-
-    private List<DynamicDataRow>                                     rows         = new ArrayList<DynamicDataRow>();
+public class DynamicDataTestsWithMerging extends BaseDynamicDataTests {
 
     @Before
     public void setup() {
-        data.clear();
-        rows.clear();
-
-        data.addColumn( 0,
-                        EMPTY_COLUMN,
-                        true );
-        data.addColumn( 1,
-                        EMPTY_COLUMN,
-                        true );
-        data.addColumn( 2,
-                        EMPTY_COLUMN,
-                        true );
-
-        rows.add( makeRow() );
-        rows.add( makeRow() );
-        rows.add( makeRow() );
+        super.setup();
 
         //Setup date to merge
         //[1][-][3]
@@ -214,7 +190,7 @@ public class DynamicDataTestsWithMerging {
                       1 );
         assertEquals( c.getCol(),
                       1 );
-        
+
         c = data.get( 2 ).get( 0 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),
                       2 );
@@ -259,21 +235,6 @@ public class DynamicDataTestsWithMerging {
         cv = data.get( 2 ).get( 2 );
         assertEquals( cv.getRowSpan(),
                       0 );
-    }
-
-    private DynamicDataRow makeRow() {
-        List<CellValue< ? extends Comparable< ? >>> row = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-        row.add( new CellValue<String>( "",
-                                        0,
-                                        0 ) );
-        row.add( new CellValue<String>( "",
-                                        0,
-                                        0 ) );
-        row.add( new CellValue<String>( "",
-                                        0,
-                                        0 ) );
-        return data.addRow( row );
-
     }
 
 }

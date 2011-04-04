@@ -54,6 +54,7 @@ import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
+import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
@@ -175,14 +176,15 @@ public class RepositoryPackageService
                     log.warn( buf.toString() );
                 }
             } catch ( Exception e ) {
+                e.printStackTrace();
                 log.error( "An error occurred building package [" + pkg.getName() + "]\n" );
                 errs.append( "An error occurred building package [" + pkg.getName() + "]\n" );
             }
         }
 
         if ( errs.toString().length() > 0 ) {
-            throw new DetailedSerializationException( "Unable to rebuild all packages.",
-                                                      errs.toString() );
+            //throw new DetailedSerializationException( "Unable to rebuild all packages.",
+                                                      //errs.toString() );
         }
     }
 
@@ -279,7 +281,7 @@ public class RepositoryPackageService
         serviceSecurity.checkSecurityIsPackageDeveloper( data.uuid );
         return repositoryPackageOperations.validatePackageConfiguration( data );
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void savePackage(PackageConfigData data) throws SerializationException {
@@ -530,7 +532,7 @@ public class RepositoryPackageService
         try {
             final RuleBase rb = loadCacheRuleBase( item );
 
-            ClassLoader cl = ((InternalRuleBase) ServiceImplementation.ruleBaseCache.get( item.getUUID() )).getRootClassLoader();
+            ClassLoader cl = ((InternalRuleBase) RuleBaseCache.getInstance().get( item.getUUID() )).getRootClassLoader();
             Thread.currentThread().setContextClassLoader( cl );
             result = runScenario( scenario,
                                   item,
@@ -559,8 +561,8 @@ public class RepositoryPackageService
      */
     private RuleBase loadCacheRuleBase(PackageItem item) throws DetailedSerializationException {
         RuleBase rb = null;
-        if ( item.isBinaryUpToDate() && ServiceImplementation.ruleBaseCache.containsKey( item.getUUID() ) ) {
-            rb = ServiceImplementation.ruleBaseCache.get( item.getUUID() );
+        if ( item.isBinaryUpToDate() && RuleBaseCache.getInstance().contains( item.getUUID() ) ) {
+            rb = RuleBaseCache.getInstance().get( item.getUUID() );
         } else {
             // load up the classloader we are going to use
             List<JarInputStream> jars = BRMSPackageBuilder.getJars( item );
@@ -570,7 +572,7 @@ public class RepositoryPackageService
             if ( item.isBinaryUpToDate() ) {
                 rb = loadRuleBase( item,
                                    buildCl );
-                ServiceImplementation.ruleBaseCache.put( item.getUUID(),
+                RuleBaseCache.getInstance().put( item.getUUID(),
                                                          rb );
             } else {
                 BuilderResult result = repositoryPackageOperations.buildPackage( item,
@@ -578,7 +580,7 @@ public class RepositoryPackageService
                 if ( result == null || result.getLines().size() == 0 ) {
                     rb = loadRuleBase( item,
                                        buildCl );
-                    ServiceImplementation.ruleBaseCache.put( item.getUUID(),
+                    RuleBaseCache.getInstance().put( item.getUUID(),
                                                              rb );
                 } else throw new DetailedSerializationException( "Build error",
                                                                  result.getLines() );
@@ -712,8 +714,8 @@ public class RepositoryPackageService
         ClassLoader cl = null;
 
         try {
-            if ( item.isBinaryUpToDate() && ServiceImplementation.ruleBaseCache.containsKey( item.getUUID() ) ) {
-                RuleBase rb = ServiceImplementation.ruleBaseCache.get( item.getUUID() );
+            if ( item.isBinaryUpToDate() && RuleBaseCache.getInstance().contains( item.getUUID() ) ) {
+                RuleBase rb = RuleBaseCache.getInstance().get( item.getUUID() );
                 AbstractRuleBase arb = (AbstractRuleBase) rb;
                 // load up the existing class loader from before
                 cl = arb.getConfiguration().getClassLoader();
@@ -726,14 +728,14 @@ public class RepositoryPackageService
 
                 // we have to build the package, and try again.
                 if ( item.isBinaryUpToDate() ) {
-                    ServiceImplementation.ruleBaseCache.put( item.getUUID(),
+                    RuleBaseCache.getInstance().put( item.getUUID(),
                                                              loadRuleBase( item,
                                                                            cl ) );
                 } else {
                     BuilderResult result = repositoryPackageOperations.buildPackage( item,
                                                                                      false );
                     if ( result == null || result.getLines().size() == 0 ) {
-                        ServiceImplementation.ruleBaseCache.put( item.getUUID(),
+                        RuleBaseCache.getInstance().put( item.getUUID(),
                                                                  loadRuleBase( item,
                                                                                cl ) );
                     } else {
@@ -747,7 +749,7 @@ public class RepositoryPackageService
 
             AssetItemIterator it = item.listAssetsByFormat( new String[]{AssetFormats.TEST_SCENARIO} );
             List<ScenarioResultSummary> resultSummaries = new ArrayList<ScenarioResultSummary>();
-            RuleBase rb = ServiceImplementation.ruleBaseCache.get( item.getUUID() );
+            RuleBase rb = RuleBaseCache.getInstance().get( item.getUUID() );
             Package bin = rb.getPackages()[0];
 
             RuleCoverageListener coverage = new RuleCoverageListener( expectedRules( bin ) );

@@ -17,48 +17,16 @@ package org.drools.guvnor.client.widgets.decoratedgrid.data;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
-import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Tests for DynamicData
  */
-public class DynamicDataTestsWithoutMerging {
-
-    private DynamicData                                              data         = new DynamicData();
-
-    private static final List<CellValue< ? extends Comparable< ? >>> EMPTY_COLUMN = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-
-    private List<DynamicDataRow>                                     rows         = new ArrayList<DynamicDataRow>();
-
-    @Before
-    public void setup() {
-        data.clear();
-        rows.clear();
-
-        data.addColumn( 0,
-                        EMPTY_COLUMN,
-                        true );
-        data.addColumn( 1,
-                        EMPTY_COLUMN,
-                        true );
-        data.addColumn( 2,
-                        EMPTY_COLUMN,
-                        true );
-
-        rows.add( makeRow() );
-        rows.add( makeRow() );
-        rows.add( makeRow() );
-
-    }
+public class DynamicDataTestsWithoutMerging extends BaseDynamicDataTests {
 
     @Test
     public void testIndexing_DataCoordinates() {
-        data.assertModelIndexes();
 
         Coordinate c;
         c = data.get( 0 ).get( 0 ).getCoordinate();
@@ -112,7 +80,6 @@ public class DynamicDataTestsWithoutMerging {
 
     @Test
     public void testIndexing_HtmlCoordinates() {
-        data.assertModelIndexes();
 
         Coordinate c;
         c = data.get( 0 ).get( 0 ).getHtmlCoordinate();
@@ -166,7 +133,6 @@ public class DynamicDataTestsWithoutMerging {
 
     @Test
     public void testIndexing_PhysicalCoordinates() {
-        data.assertModelIndexes();
 
         Coordinate c;
         c = data.get( 0 ).get( 0 ).getPhysicalCoordinate();
@@ -220,7 +186,6 @@ public class DynamicDataTestsWithoutMerging {
 
     @Test
     public void testIndexing_RowSpans() {
-        data.assertModelIndexes();
 
         CellValue< ? extends Comparable< ? >> cv;
         cv = data.get( 0 ).get( 0 );
@@ -252,21 +217,6 @@ public class DynamicDataTestsWithoutMerging {
         cv = data.get( 2 ).get( 2 );
         assertEquals( cv.getRowSpan(),
                       1 );
-    }
-
-    private DynamicDataRow makeRow() {
-        List<CellValue< ? extends Comparable< ? >>> row = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-        row.add( new CellValue<String>( "",
-                                        0,
-                                        0 ) );
-        row.add( new CellValue<String>( "",
-                                        0,
-                                        0 ) );
-        row.add( new CellValue<String>( "",
-                                        0,
-                                        0 ) );
-        return data.addRow( row );
-
     }
 
 }

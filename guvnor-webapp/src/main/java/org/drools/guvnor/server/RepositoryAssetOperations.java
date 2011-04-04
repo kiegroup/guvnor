@@ -22,15 +22,18 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -43,14 +46,16 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.IValidating;
+import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.AssetFormatHelper;
 import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.AssetPageRowPopulator;
 import org.drools.guvnor.server.util.BuilderResultHelper;
+import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
-import org.drools.guvnor.server.util.QueryPageRowFactory;
+import org.drools.guvnor.server.util.QueryPageRowCreator;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
@@ -175,33 +180,15 @@ public class RepositoryAssetOperations {
         // historical versions, look at this nasty bit of code.
         List<TableDataRow> result = new ArrayList<TableDataRow>();
         while ( it.hasNext() ) {
-        	VersionableItem historical = (VersionableItem) it.next();
+            VersionableItem historical = (VersionableItem) it.next();
             long versionNumber = historical.getVersionNumber();
             if ( isHistory( item,
                             versionNumber ) ) {
                 result.add( createHistoricalRow( result,
-                                                 historical,
-                                                 isLatestVersion( item,
-                                                                  versionNumber ) ) );
+                                                 historical ) );
             }
         }
 
-        if ( result.size() == 0 ) {
-            //NOTE, the term "LATEST version" is defined as the preceding version node of the current node. 
-            //It is a frozen history node, its content is same as the current node. 
-            //If there is no historical node, we return the current node, and refer the current node 
-            //as the LATEST version node. 
-            final DateFormat dateFormatter = DateFormat.getInstance();
-            TableDataRow tableDataRow = new TableDataRow();
-            tableDataRow.id = item.getUUID();
-            tableDataRow.values = new String[4];
-            tableDataRow.values[0] = "LATEST";
-            tableDataRow.values[1] = "";
-            tableDataRow.values[2] = dateFormatter.format( item
-                    .getLastModified().getTime() );
-            tableDataRow.values[3] = item.getStateDescription();
-            result.add( tableDataRow );
-        }
         TableDataResult table = new TableDataResult();
         table.data = result.toArray( new TableDataRow[result.size()] );
 
@@ -215,23 +202,13 @@ public class RepositoryAssetOperations {
         return versionNumber != 0;
     }
 
-    private boolean isLatestVersion(VersionableItem item,
-                                    long versionNumber) {
-        return versionNumber == item.getVersionNumber();
-    }
-
     private TableDataRow createHistoricalRow(List<TableDataRow> result,
-    		VersionableItem historical,
-                                             boolean isLatestVersion) {
+                                             VersionableItem historical) {
         final DateFormat dateFormatter = DateFormat.getInstance();
         TableDataRow tableDataRow = new TableDataRow();
         tableDataRow.id = historical.getVersionSnapshotUUID();
         tableDataRow.values = new String[4];
-        if ( isLatestVersion ) {
-            tableDataRow.values[0] = "LATEST";
-        } else {
-            tableDataRow.values[0] = Long.toString( historical.getVersionNumber() );
-        }
+        tableDataRow.values[0] = Long.toString( historical.getVersionNumber() );
         tableDataRow.values[1] = historical.getCheckinComment();
         tableDataRow.values[2] = dateFormatter.format( historical
                 .getLastModified().getTime() );
@@ -635,7 +612,7 @@ public class RepositoryAssetOperations {
                 // assets whereas startRowIndex is the index of the
                 // first displayed asset (i.e. filtered)
                 if ( skipped >= startRowIndex ) {
-                    rowList.add( QueryPageRowFactory.makeQueryPageRow( assetItem ) );
+                    rowList.add( QueryPageRowCreator.makeQueryPageRow( assetItem ) );
                 }
                 skipped++;
             }
@@ -735,7 +712,7 @@ public class RepositoryAssetOperations {
 
         meta.createdDate = calendarToDate( item.getCreatedDate() );
         meta.lastModifiedDate = calendarToDate( item.getLastModified() );
-        
+
         //problematic implementation of getPrecedingVersion and getPrecedingVersion().
         //commented out temporarily as this is used by the front end. 
         //meta.hasPreceedingVersion = item.getPrecedingVersion() != null;
@@ -757,6 +734,44 @@ public class RepositoryAssetOperations {
             return null;
         }
         return createdDate.getTime();
+    }
+
+    protected void clearAllDiscussionsForAsset(final String assetId) {
+        RulesRepository repo = getRulesRepository();
+        AssetItem asset = repo.loadAssetByUUID( assetId );
+        asset.updateStringProperty( "",
+                                    "discussion" );
+        repo.save();
+
+        push( "discussion",
+              assetId );
+    }
+
+    protected List<DiscussionRecord> addToDiscussionForAsset(String assetId,
+                                                             String comment) {
+        RulesRepository repo = getRulesRepository();
+        AssetItem asset = repo.loadAssetByUUID( assetId );
+        Discussion dp = new Discussion();
+        List<DiscussionRecord> discussion = dp.fromString( asset.getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
+        discussion.add( new DiscussionRecord( repo.getSession().getUserID(),
+                                              StringEscapeUtils.escapeXml( comment ) ) );
+        asset.updateStringProperty( dp.toString( discussion ),
+                                    Discussion.DISCUSSION_PROPERTY_KEY,
+                                    false );
+        repo.save();
+
+        push( "discussion",
+              assetId );
+
+        MailboxService.getInstance().recordItemUpdated( asset );
+
+        return discussion;
+    }
+
+    private void push(String messageType,
+                      String message) {
+        Backchannel.getInstance().publish( new PushResponse( messageType,
+                                                             message ) );
     }
 
 }

@@ -33,7 +33,7 @@ public class ServiceSecurity {
 
     protected boolean isSecurityIsAnalystRead(final Object target) {
         if ( Contexts.isSessionContextActive() ) {
-            return !Identity.instance().hasPermission( target,
+            return Identity.instance().hasPermission( target,
                                                        RoleTypes.ANALYST_READ );
 
         }

@@ -215,8 +215,6 @@ public class SuggestionCompletionLoader
 
             populateDeclaredFactTypes();
 
-            populateFactTemplateTypes();
-
             populateGlobalInfo(jars);
 
         }
@@ -407,45 +405,6 @@ public class SuggestionCompletionLoader
             for (ExternalImportDescrProvider externalImportDescrProvider : this.externalImportDescrProviders) {
                 imports.addAll(externalImportDescrProvider.getImportDescrs());
             }
-        }
-    }
-
-    /**
-     * Iterates over fact templates and add them to the model definition
-     *
-     * @param pkgDescr
-     */
-    private void populateFactTemplateTypes() {
-        for (final Iterator it = pkgDescr.getFactTemplates().iterator(); it.hasNext();) {
-            final FactTemplateDescr templ = (FactTemplateDescr) it.next();
-            final String factType = templ.getName();
-            this.builder.addFactType(factType,
-                    FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS);
-
-
-            final String[] fields = new String[templ.getFields().size()];
-
-            int index = 0;
-            for (final Iterator fieldsIt = templ.getFields().iterator(); fieldsIt.hasNext();) {
-                final FieldTemplateDescr fieldDescr = (FieldTemplateDescr) fieldsIt.next();
-                fields[index++] = fieldDescr.getName();
-                final String fieldType = fieldDescr.getClassType();
-
-                Class fieldTypeClass = null;
-                try {
-                    fieldTypeClass = resolver.resolveType(fieldType);
-                } catch (final ClassNotFoundException e) {
-                    this.errors.add("Fact template field type not found: " + fieldType);
-                }
-                this.builder.addFieldType(factType + "." + fieldDescr.getName(),
-                        translateClassToGenericType(fieldTypeClass),
-                        fieldTypeClass);
-            }
-
-            Arrays.sort(fields);
-            this.builder.addFieldsForType(factType,
-                    fields);
-
         }
     }
 

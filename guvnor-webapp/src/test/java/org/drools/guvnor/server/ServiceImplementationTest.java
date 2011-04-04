@@ -84,6 +84,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.TableDisplayHandler;
@@ -1647,9 +1648,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         RuleAsset asset = repositoryAssetService.loadRuleAsset( ruleUUID );
         assertEquals( StateItem.DRAFT_STATE_NAME,
                       asset.metaData.status );
-        impl.changeState( ruleUUID,
-                          "testState",
-                          false );
+        repositoryAssetService.changeState( ruleUUID,
+                                            "testState" );
         asset = repositoryAssetService.loadRuleAsset( ruleUUID );
         assertEquals( "testState",
                       asset.metaData.status );
@@ -1658,9 +1658,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       asset.metaData.status );
 
         impl.createState( "testState2" );
-        impl.changeState( packagUUID,
-                          "testState2",
-                          true );
+        repositoryAssetService.changePackageState( packagUUID,
+                                                   "testState2" );
 
         PackageConfigData pkg = repositoryPackageService.loadPackageConfig( packagUUID );
         assertEquals( "testState2",
@@ -2308,6 +2307,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Ignore
     public void testDiscussion() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
+        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RulesRepository repo = impl.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testDiscussionFeature",
@@ -2319,22 +2319,22 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         rule1.checkin( "" );
         repo.save();
 
-        List<DiscussionRecord> dr = impl.loadDiscussionForAsset( rule1.getUUID() );
+        List<DiscussionRecord> dr = repositoryAssetService.loadDiscussionForAsset( rule1.getUUID() );
         assertEquals( 0,
                       dr.size() );
 
-        List<DiscussionRecord> dr_ = impl.addToDiscussionForAsset( rule1.getUUID(),
-                                                                   "This is a note" );
+        List<DiscussionRecord> dr_ = repositoryAssetService.addToDiscussionForAsset( rule1.getUUID(),
+                                                                                     "This is a note" );
         assertEquals( 1,
                       dr_.size() );
         assertNotNull( dr_.get( 0 ).author );
         assertEquals( "This is a note",
                       dr_.get( 0 ).note );
         Thread.sleep( 100 );
-        impl.addToDiscussionForAsset( rule1.getUUID(),
-                                      "This is a note2" );
+        repositoryAssetService.addToDiscussionForAsset( rule1.getUUID(),
+                                                        "This is a note2" );
 
-        List<DiscussionRecord> d_ = impl.loadDiscussionForAsset( rule1.getUUID() );
+        List<DiscussionRecord> d_ = repositoryAssetService.loadDiscussionForAsset( rule1.getUUID() );
         assertEquals( 2,
                       d_.size() );
 
@@ -2347,9 +2347,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         rule1.updateContent( "some more content" );
         rule1.checkin( "" );
 
-        impl.addToDiscussionForAsset( rule1.getUUID(),
-                                      "This is a note2" );
-        d_ = impl.loadDiscussionForAsset( rule1.getUUID() );
+        repositoryAssetService.addToDiscussionForAsset( rule1.getUUID(),
+                                                        "This is a note2" );
+        d_ = repositoryAssetService.loadDiscussionForAsset( rule1.getUUID() );
         assertEquals( 3,
                       d_.size() );
 
@@ -2358,14 +2358,14 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertEquals( "This is a note2",
                       d_.get( 1 ).note );
 
-        impl.clearAllDiscussionsForAsset( rule1.getUUID() );
-        d_ = impl.loadDiscussionForAsset( rule1.getUUID() );
+        repositoryAssetService.clearAllDiscussionsForAsset( rule1.getUUID() );
+        d_ = repositoryAssetService.loadDiscussionForAsset( rule1.getUUID() );
         assertEquals( 0,
                       d_.size() );
 
-        impl.addToDiscussionForAsset( rule1.getUUID(),
-                                      "This is a note2" );
-        d_ = impl.loadDiscussionForAsset( rule1.getUUID() );
+        repositoryAssetService.addToDiscussionForAsset( rule1.getUUID(),
+                                                        "This is a note2" );
+        d_ = repositoryAssetService.loadDiscussionForAsset( rule1.getUUID() );
         assertEquals( 1,
                       d_.size() );
     }
@@ -2816,7 +2816,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         BuilderResult result = repositoryAssetService.buildAsset( rule );
         assertNull( result );
 
-        ServiceImplementation.ruleBaseCache.clear();
+        RuleBaseCache.getInstance().clearCache();
 
         // try it with a bad rule
         RuleContentText text = new RuleContentText();
@@ -3116,8 +3116,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         repo.save();
 
         assertFalse( pkg.isBinaryUpToDate() );
-        assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
-        ServiceImplementation.ruleBaseCache.remove( "XXX" );
+        assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
+        RuleBaseCache.getInstance().remove( "XXX" );
 
         BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                                        true );
@@ -3130,19 +3130,19 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertTrue( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
         assertTrue( pkg.isBinaryUpToDate() );
-        assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
+        assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RuleAsset asset = repositoryAssetService.loadRuleAsset( rule1.getUUID() );
         impl.checkinVersion( asset );
 
         assertFalse( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
-        assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
+        assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
 
         repositoryPackageService.buildPackage( pkg.getUUID(),
                                                false );
 
         assertTrue( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
-        assertFalse( ServiceImplementation.ruleBaseCache.containsKey( pkg.getUUID() ) );
+        assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
 
         PackageConfigData config = repositoryPackageService.loadPackageConfig( pkg.getUUID() );
         repositoryPackageService.savePackage( config );
@@ -3163,7 +3163,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         RulesRepository repo = impl.getRulesRepository();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        
 
         System.out.println( "create package" );
         PackageItem pkg = repo.createPackage( "testScenarioRun",
@@ -3211,22 +3210,22 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         sc.getGlobals().add( cheese );
 
         ScenarioRunResult res = repositoryPackageService.runScenario( pkg.getName(),
-                                                  sc ).result;
+                                                                      sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
-        ServiceImplementation.ruleBaseCache.clear();
+        RuleBaseCache.getInstance().clearCache();
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
@@ -3238,11 +3237,11 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         rule1.updateContent( "Junk" );
         rule1.checkin( "" );
 
-        ServiceImplementation.ruleBaseCache.clear();
+        RuleBaseCache.getInstance().clearCache();
         pkg.updateBinaryUpToDate( false );
         repo.save();
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
         assertNotNull( res.getErrors() );
         assertNull( res.getScenario() );
 
@@ -3319,7 +3318,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         sc.getFixtures().add( vf );
 
         SingleScenarioResult res_ = repositoryPackageService.runScenario( pkg.getName(),
-                                                      sc );
+                                                                          sc );
         assertTrue( res_.auditLog.size() > 0 );
 
         String[] logEntry = res_.auditLog.get( 0 );
@@ -3499,7 +3498,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         sc.getFixtures().add( vf );
 
         ScenarioRunResult res = repositoryPackageService.runScenario( pkg.getName(),
-                                                  sc ).result;
+                                                                      sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
 
@@ -3507,7 +3506,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( vr.wasSuccessful() );
 
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
 
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
@@ -3515,10 +3514,10 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( vf.wasSuccessful() );
         assertTrue( vr.wasSuccessful() );
 
-        ServiceImplementation.ruleBaseCache.clear();
+        RuleBaseCache.getInstance().clearCache();
 
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vf.wasSuccessful() );
@@ -3567,7 +3566,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         ScenarioRunResult res = null;
         try {
             res = repositoryPackageService.runScenario( pkg.getName(),
-                                    sc ).result;
+                                                        sc ).result;
         } catch ( ClassFormatError e ) {
             fail( "Probably failed when loading a source file instead of class file. " + e );
         }
@@ -3577,16 +3576,16 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( vr.wasSuccessful() );
 
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
 
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
         assertTrue( vr.wasSuccessful() );
 
-        ServiceImplementation.ruleBaseCache.clear();
+        RuleBaseCache.getInstance().clearCache();
 
         res = repositoryPackageService.runScenario( pkg.getName(),
-                                sc ).result;
+                                                    sc ).result;
 
         assertNull( res.getErrors() );
         assertNotNull( res.getScenario() );
@@ -4407,6 +4406,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         String cat = "testCategory";
         String status = "testStatus";
         String uuid;
@@ -4422,27 +4422,24 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                    cat,
                                    "testCategoryPackage",
                                    AssetFormats.DRL );
-        impl.changeState( uuid,
-                          status,
-                          false );
+        repositoryAssetService.changeState( uuid,
+                                            status );
 
         uuid = impl.createNewRule( "testTextRule2",
                                    "testCategoryRule2",
                                    cat,
                                    "testCategoryPackage",
                                    AssetFormats.DRL );
-        impl.changeState( uuid,
-                          status,
-                          false );
+        repositoryAssetService.changeState( uuid,
+                                            status );
 
         uuid = impl.createNewRule( "testTextRule3",
                                    "testCategoryRule3",
                                    cat,
                                    "testCategoryPackage",
                                    AssetFormats.DRL );
-        impl.changeState( uuid,
-                          status,
-                          false );
+        repositoryAssetService.changeState( uuid,
+                                            status );
 
         StatePageRequest request = new StatePageRequest( status,
                                                          0,
@@ -4473,6 +4470,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         String cat = "testCategory";
         String status = "testStatus";
         String uuid;
@@ -4488,27 +4486,24 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                    cat,
                                    "testCategoryPackage",
                                    AssetFormats.DRL );
-        impl.changeState( uuid,
-                          status,
-                          false );
+        repositoryAssetService.changeState( uuid,
+                                            status );
 
         uuid = impl.createNewRule( "testTextRule2",
                                    "testCategoryRule2",
                                    cat,
                                    "testCategoryPackage",
                                    AssetFormats.DRL );
-        impl.changeState( uuid,
-                          status,
-                          false );
+        repositoryAssetService.changeState( uuid,
+                                            status );
 
         uuid = impl.createNewRule( "testTextRule3",
                                    "testCategoryRule3",
                                    cat,
                                    "testCategoryPackage",
                                    AssetFormats.DRL );
-        impl.changeState( uuid,
-                          status,
-                          false );
+        repositoryAssetService.changeState( uuid,
+                                            status );
 
         StatePageRequest request = new StatePageRequest( status,
                                                          0,

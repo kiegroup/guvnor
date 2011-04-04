@@ -18,6 +18,7 @@ package org.drools.guvnor.client.common;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 import com.google.gwt.core.client.GWT;
@@ -99,15 +100,25 @@ public class StatusChangePopup extends FormStylePopup {
     /** Apply the state change */
     private void changeState(String newState) {
         LoadingPopup.showMessage( constants.UpdatingStatus() );
-        RepositoryServiceFactory.getService().changeState( uuid,
-                                                           newStatus,
-                                                           isPackage,
-                                                           new GenericCallback<java.lang.Void>() {
-                                                               public void onSuccess(Void v) {
-                                                                   changedStatus.execute();
-                                                                   LoadingPopup.close();
-                                                               }
-                                                           } );
+        AssetServiceAsync assetService = RepositoryServiceFactory.getAssetService();
+        if ( isPackage ) {
+            assetService.changePackageState( uuid,
+                                             newStatus,
+                                             createGenericCallbackForChaneState() );
+        } else {
+            assetService.changeState( uuid,
+                                      newStatus,
+                                      createGenericCallbackForChaneState() );
+        }
+    }
+
+    private GenericCallback<Void> createGenericCallbackForChaneState() {
+        return new GenericCallback<java.lang.Void>() {
+            public void onSuccess(Void v) {
+                changedStatus.execute();
+                LoadingPopup.close();
+            }
+        };
     }
 
     /**

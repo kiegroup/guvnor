@@ -17,6 +17,7 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import java.util.Set;
 
+import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
@@ -274,24 +275,23 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     //Handle "Key Down" events relating to keyboard navigation
     private void handleKeyboardNavigationEvent(Event event) {
         if ( event.getKeyCode() == KeyCodes.KEY_DELETE ) {
+            for ( CellValue< ? > cell : selections ) {
+                cell.removeState( CellState.OTHERWISE );
+            }
             update( null );
             return;
 
         } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT
                     || (event.getKeyCode() == KeyCodes.KEY_TAB && !event
                             .getShiftKey()) ) {
-            CellExtents ce = moveSelection( MOVE_DIRECTION.RIGHT );
-            SelectedCellChangeEvent.fire( this,
-                                          ce );
+            moveSelection( MOVE_DIRECTION.RIGHT );
             event.preventDefault();
             return;
 
         } else if ( event.getKeyCode() == KeyCodes.KEY_LEFT
                     || (event.getKeyCode() == KeyCodes.KEY_TAB && event
                             .getShiftKey()) ) {
-            CellExtents ce = moveSelection( MOVE_DIRECTION.LEFT );
-            SelectedCellChangeEvent.fire( this,
-                                          ce );
+            moveSelection( MOVE_DIRECTION.LEFT );
             event.preventDefault();
             return;
 
@@ -299,9 +299,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             if ( event.getShiftKey() ) {
                 extendSelection( MOVE_DIRECTION.UP );
             } else {
-                CellExtents ce = moveSelection( MOVE_DIRECTION.UP );
-                SelectedCellChangeEvent.fire( this,
-                                              ce );
+                moveSelection( MOVE_DIRECTION.UP );
             }
             event.preventDefault();
             return;
@@ -310,9 +308,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             if ( event.getShiftKey() ) {
                 extendSelection( MOVE_DIRECTION.DOWN );
             } else {
-                CellExtents ce = moveSelection( MOVE_DIRECTION.DOWN );
-                SelectedCellChangeEvent.fire( this,
-                                              ce );
+                moveSelection( MOVE_DIRECTION.DOWN );
             }
             event.preventDefault();
             return;
@@ -376,6 +372,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         String divStyle = style.cellTableCellDiv();
         String cellSelectedStyle = style.cellTableCellSelected();
         String cellMultipleValuesStyle = style.cellTableCellMultipleValues();
+        String cellOtherwiseStyle = style.cellTableCellOtherwise();
         TableCellElement tce = null;
 
         // Column to render the column
@@ -385,15 +382,10 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         int rowSpan = cellData.getRowSpan();
         if ( rowSpan > 0 ) {
 
-            // Use Elements rather than Templates as it's easier to set
-            // attributes that need to be dynamic
+            // Use Elements rather than Templates as it's easier to set attributes that need to be dynamic
             tce = Document.get().createTDElement();
             DivElement div = Document.get().createDivElement();
             DivElement divText = Document.get().createDivElement();
-
-            if ( cellData.isSelected() ) {
-                tce.addClassName( cellSelectedStyle );
-            }
             tce.addClassName( cellStyle );
             div.setClassName( divStyle );
             divText.addClassName( style.cellTableTextDiv() );
@@ -405,21 +397,35 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                                       Unit.PX );
             tce.setRowSpan( rowSpan );
 
-            // Render the cell and set inner HTML
+            //Styling depending upon state
+            if ( cellData.isOtherwise() ) {
+                tce.addClassName( cellOtherwiseStyle );
+            }
             if ( cellData instanceof GroupedCellValue ) {
                 GroupedCellValue gcv = (GroupedCellValue) cellData;
                 if ( gcv.hasMultipleValues() ) {
                     tce.addClassName( cellMultipleValuesStyle );
                 }
             }
-            Coordinate c = cellData.getCoordinate();
-            Context context = new Context( c.getRow(),
+            if ( cellData.isSelected() ) {
+                tce.removeClassName( cellMultipleValuesStyle );
+                tce.removeClassName( cellOtherwiseStyle );
+                tce.addClassName( cellSelectedStyle );
+            }
+
+            // Render the cell and set inner HTML
+            SafeHtmlBuilder cellBuilder = new SafeHtmlBuilder();
+            if ( !cellData.isOtherwise() ) {
+                Coordinate c = cellData.getCoordinate();
+                Context context = new Context( c.getRow(),
                                                c.getCol(),
                                                c );
-            SafeHtmlBuilder cellBuilder = new SafeHtmlBuilder();
-            column.render( context,
+                column.render( context,
                                rowData,
                                cellBuilder );
+            } else {
+                cellBuilder.appendEscaped( "<otherwise>" );
+            }
             divText.setInnerHTML( cellBuilder.toSafeHtml().asString() );
 
             // Construct the table
@@ -427,6 +433,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             div.appendChild( divText );
             tce.setTabIndex( 0 );
 
+            //Add on "Grouping" widget, if applicable
             if ( rowSpan > 1 || cellData.isGrouped() ) {
                 Element de = DOM.createDiv();
                 DivElement divGroup = DivElement.as( de );
@@ -578,6 +585,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     }
 
     @Override
+    @SuppressWarnings({"rawtypes"})
     void deselectCell(CellValue< ? extends Comparable< ? >> cell) {
         if ( cell == null ) {
             throw new IllegalArgumentException( "cell cannot be null" );
@@ -592,7 +600,20 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         //Merging, grouping etc could have led to the selected HTML cell disappearing
         if ( tce != null ) {
             String cellSelectedStyle = style.cellTableCellSelected();
+            String cellMultipleValuesStyle = style.cellTableCellMultipleValues();
+            String cellOtherwiseStyle = style.cellTableCellOtherwise();
             tce.removeClassName( cellSelectedStyle );
+
+            //Re-apply applicable styling
+            if ( cell.isOtherwise() ) {
+                tce.addClassName( cellOtherwiseStyle );
+            }
+            if ( cell instanceof GroupedCellValue ) {
+                GroupedCellValue gcv = (GroupedCellValue) cell;
+                if ( gcv.hasMultipleValues() ) {
+                    tce.addClassName( cellMultipleValuesStyle );
+                }
+            }
         }
     }
 
@@ -630,7 +651,13 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         TableCellElement tce = tre.getCells().getItem( hc.getCol() )
                 .<TableCellElement> cast();
 
+        //Cell selected style takes precedence
         String cellSelectedStyle = style.cellTableCellSelected();
+        String cellOtherwiseStyle = style.cellTableCellOtherwise();
+        String cellMultipleValuesStyle = style.cellTableCellMultipleValues();
+
+        tce.removeClassName( cellMultipleValuesStyle );
+        tce.removeClassName( cellOtherwiseStyle );
         tce.addClassName( cellSelectedStyle );
         tce.focus();
     }
