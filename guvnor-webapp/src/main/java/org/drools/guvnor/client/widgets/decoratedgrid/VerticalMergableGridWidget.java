@@ -398,9 +398,6 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             tce.setRowSpan( rowSpan );
 
             //Styling depending upon state
-            if ( cellData.isSelected() ) {
-                tce.addClassName( cellSelectedStyle );
-            }
             if ( cellData.isOtherwise() ) {
                 tce.addClassName( cellOtherwiseStyle );
             }
@@ -409,6 +406,11 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                 if ( gcv.hasMultipleValues() ) {
                     tce.addClassName( cellMultipleValuesStyle );
                 }
+            }
+            if ( cellData.isSelected() ) {
+                tce.removeClassName( cellMultipleValuesStyle );
+                tce.removeClassName( cellOtherwiseStyle );
+                tce.addClassName( cellSelectedStyle );
             }
 
             // Render the cell and set inner HTML
@@ -583,6 +585,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     }
 
     @Override
+    @SuppressWarnings({"rawtypes"})
     void deselectCell(CellValue< ? extends Comparable< ? >> cell) {
         if ( cell == null ) {
             throw new IllegalArgumentException( "cell cannot be null" );
@@ -597,7 +600,20 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         //Merging, grouping etc could have led to the selected HTML cell disappearing
         if ( tce != null ) {
             String cellSelectedStyle = style.cellTableCellSelected();
+            String cellMultipleValuesStyle = style.cellTableCellMultipleValues();
+            String cellOtherwiseStyle = style.cellTableCellOtherwise();
             tce.removeClassName( cellSelectedStyle );
+
+            //Re-apply applicable styling
+            if ( cell.isOtherwise() ) {
+                tce.addClassName( cellOtherwiseStyle );
+            }
+            if ( cell instanceof GroupedCellValue ) {
+                GroupedCellValue gcv = (GroupedCellValue) cell;
+                if ( gcv.hasMultipleValues() ) {
+                    tce.addClassName( cellMultipleValuesStyle );
+                }
+            }
         }
     }
 
@@ -635,7 +651,13 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
         TableCellElement tce = tre.getCells().getItem( hc.getCol() )
                 .<TableCellElement> cast();
 
+        //Cell selected style takes precedence
         String cellSelectedStyle = style.cellTableCellSelected();
+        String cellOtherwiseStyle = style.cellTableCellOtherwise();
+        String cellMultipleValuesStyle = style.cellTableCellMultipleValues();
+
+        tce.removeClassName( cellMultipleValuesStyle );
+        tce.removeClassName( cellOtherwiseStyle );
         tce.addClassName( cellSelectedStyle );
         tce.focus();
     }
