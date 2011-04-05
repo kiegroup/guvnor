@@ -28,8 +28,8 @@
 
 
   <!-- Specify the app entry point class.                   -->
-  <!-- <entry-point class='org.drools.guvnor.client.JBRMS'/> -->
-  <entry-point class='org.drools.guvnor.client.JBRMSEntryPoint'/>
+  <!-- <entry-point class="org.drools.guvnor.client.JBRMS"/> -->
+  <entry-point class="org.drools.guvnor.client.JBRMSEntryPoint"/>
 
   <stylesheet src="js/ext/resources/css/ext-all.css" />
   <script src="js/ext/adapter/ext/ext-base.js" />
