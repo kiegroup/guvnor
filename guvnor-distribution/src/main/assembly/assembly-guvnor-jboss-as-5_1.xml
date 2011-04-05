@@ -4,7 +4,6 @@
 
   <id>jboss-as-5.1</id>
   <formats>
-    <format>dir</format>
     <format>war</format>
   </formats>
 
