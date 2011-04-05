@@ -57,6 +57,7 @@ import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
 import org.drools.guvnor.server.builder.pagerow.InboxPageRowBuilder;
+import org.drools.guvnor.server.builder.pagerow.LogPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QueryFullTextPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QueryMetadataPageRowBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
@@ -608,31 +609,19 @@ public class ServiceImplementation
 
         // Do query
         long start = System.currentTimeMillis();
-        LogEntry[] entries = LoggingHelper.getMessages();
+        LogEntry[] logEntries = LoggingHelper.getMessages();
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
         PageResponse<LogPageRow> response = new PageResponse<LogPageRow>();
         response.setStartRowIndex( request.getStartRowIndex() );
-        response.setTotalRowSize( entries.length );
+        response.setTotalRowSize( logEntries.length );
         response.setTotalRowSizeExact( true );
-
-        int rowNumber = 0;
-        int rowMinNumber = request.getStartRowIndex();
-        int rowMaxNumber = request.getPageSize() == null ? entries.length : Math.min( rowMinNumber + request.getPageSize(),
-                                                                                      entries.length );
-        int resultsSize = (request.getPageSize() == null ? entries.length : request.getPageSize());
-        List<LogPageRow> rowList = new ArrayList<LogPageRow>( resultsSize );
-        for ( rowNumber = rowMinNumber; rowNumber < rowMaxNumber; rowNumber++ ) {
-            LogEntry e = entries[rowNumber];
-            LogPageRow row = new LogPageRow();
-            row.setSeverity( e.severity );
-            row.setMessage( e.message );
-            row.setTimestamp( e.timestamp );
-            rowList.add( row );
-        }
+        LogPageRowBuilder logPageRowBuilder = new LogPageRowBuilder();
+        List<LogPageRow> rowList = logPageRowBuilder.createRows( request, logEntries );
+        
         response.setPageRowList( rowList );
-        response.setLastPage( rowNumber == entries.length );
+        response.setLastPage( (rowList.size() + request.getStartRowIndex()) == logEntries.length );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Retrieved Log Entries in " + methodDuration + " ms." );
