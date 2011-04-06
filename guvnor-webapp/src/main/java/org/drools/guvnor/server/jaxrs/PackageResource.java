@@ -177,8 +177,12 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public byte[] getPackageBinary(@PathParam("packageName") String packageName) throws SerializationException {
         PackageItem p = repository.loadPackage(packageName);
-        packageService.buildPackage(p.getUUID(), true);
-        return repository.loadPackage(packageName).getCompiledPackageBytes();
+        if(p.isBinaryUpToDate()) {
+        	return p.getCompiledPackageBytes();
+        } else {
+            packageService.buildPackage(p.getUUID(), true);
+            return repository.loadPackage(packageName).getCompiledPackageBytes();        	
+        }
     }
     
     @GET
