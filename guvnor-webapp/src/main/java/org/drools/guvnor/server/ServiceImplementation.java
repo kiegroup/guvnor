@@ -31,7 +31,6 @@ import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
@@ -60,6 +59,7 @@ import org.drools.guvnor.server.builder.pagerow.InboxPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.LogPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QueryFullTextPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QueryMetadataPageRowBuilder;
+import org.drools.guvnor.server.builder.pagerow.StatePageRowBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -618,8 +618,9 @@ public class ServiceImplementation
         response.setTotalRowSize( logEntries.length );
         response.setTotalRowSizeExact( true );
         LogPageRowBuilder logPageRowBuilder = new LogPageRowBuilder();
-        List<LogPageRow> rowList = logPageRowBuilder.createRows( request, logEntries );
-        
+        List<LogPageRow> rowList = logPageRowBuilder.createRows( request,
+                                                                 logEntries );
+
         response.setPageRowList( rowList );
         response.setLastPage( (rowList.size() + request.getStartRowIndex()) == logEntries.length );
 
@@ -830,8 +831,8 @@ public class ServiceImplementation
 
             // Populate response
             Iterator<InboxEntry> it = entries.iterator();
-            InboxPageRowBuilder inboxPageRowFactory = new InboxPageRowBuilder();
-            List<InboxPageRow> rowList = inboxPageRowFactory.createRows( request,
+            InboxPageRowBuilder inboxPageRowBuilder = new InboxPageRowBuilder();
+            List<InboxPageRow> rowList = inboxPageRowBuilder.createRows( request,
                                                                              it );
 
             response.setStartRowIndex( request.getStartRowIndex() );
@@ -916,8 +917,8 @@ public class ServiceImplementation
         // Populate response
         long totalRowsCount = it.getSize();
         PageResponse<QueryPageRow> response = new PageResponse<QueryPageRow>();
-        QueryFullTextPageRowBuilder fullTextPageRowFactory = new QueryFullTextPageRowBuilder();
-        List<QueryPageRow> rowList = fullTextPageRowFactory.createRows( request,
+        QueryFullTextPageRowBuilder queryFullTextPageRowBuilder = new QueryFullTextPageRowBuilder();
+        List<QueryPageRow> rowList = queryFullTextPageRowBuilder.createRows( request,
                                                                                  it );
         boolean bHasMoreRows = it.hasNext();
         response.setStartRowIndex( request.getStartRowIndex() );
@@ -975,8 +976,8 @@ public class ServiceImplementation
         // Populate response
         long totalRowsCount = it.getSize();
         PageResponse<QueryPageRow> response = new PageResponse<QueryPageRow>();
-        QueryMetadataPageRowBuilder queryMetadataPageRowFactory = new QueryMetadataPageRowBuilder();
-        List<QueryPageRow> rowList = queryMetadataPageRowFactory.createRows( request,
+        QueryMetadataPageRowBuilder queryMetadataPageRowBuilder = new QueryMetadataPageRowBuilder();
+        List<QueryPageRow> rowList = queryMetadataPageRowBuilder.createRows( request,
                                                                                  it );
         boolean bHasMoreRows = it.hasNext();
         response.setStartRowIndex( request.getStartRowIndex() );
@@ -1025,8 +1026,10 @@ public class ServiceImplementation
         // Populate response
         boolean bHasMoreRows = result.hasNext;
         PageResponse<StatePageRow> response = new PageResponse<StatePageRow>();
-        List<StatePageRow> rowList = fillStatePageRows( request,
-                                                        result );
+        StatePageRowBuilder statePageRowBuilder = new StatePageRowBuilder();
+        List<StatePageRow> rowList = statePageRowBuilder.createRows( request,
+                                                                     result.assets.iterator() );
+
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
         response.setLastPage( !bHasMoreRows );
@@ -1100,34 +1103,6 @@ public class ServiceImplementation
 
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
-    }
-
-    private List<StatePageRow> fillStatePageRows(StatePageRequest request,
-                                                 AssetItemPageResult result) {
-        List<StatePageRow> rowList = new ArrayList<StatePageRow>();
-
-        // Filtering and skipping records to the required page is handled in
-        // repository.findAssetsByState() so we only need to simply copy
-        Iterator<AssetItem> it = result.assets.iterator();
-        while ( it.hasNext() ) {
-            AssetItem assetItem = (AssetItem) it.next();
-            rowList.add( makeStatePageRow( assetItem ) );
-        }
-        return rowList;
-    }
-
-    private StatePageRow makeStatePageRow(AssetItem assetItem) {
-        StatePageRow row = new StatePageRow();
-        row.setUuid( assetItem.getUUID() );
-        row.setFormat( assetItem.getFormat() );
-        row.setName( assetItem.getName() );
-        row.setDescription( assetItem.getDescription() );
-        row.setAbbreviatedDescription( StringUtils.abbreviate( assetItem.getDescription(),
-                                                               80 ) );
-        row.setLastModified( assetItem.getLastModified().getTime() );
-        row.setStateName( assetItem.getState().getName() );
-        row.setPackageName( assetItem.getPackageName() );
-        return row;
     }
 
     public List<PushResponse> subscribe() {
