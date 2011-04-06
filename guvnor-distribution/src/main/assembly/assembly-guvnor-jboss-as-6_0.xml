@@ -20,7 +20,6 @@
         <excludes>
           <exclude>WEB-INF/lib/xercesImpl-*.jar</exclude>
           <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
-          <exclude>WEB-INF/lib/el-api-*.jar</exclude>
           <!-- Start workaround for GUVNOR-1160: MalformedParameterizedTypeException when deploying -->
           <exclude>WEB-INF/lib/javassist-*.jar</exclude>
           <exclude>WEB-INF/lib/jta-*.jar</exclude>

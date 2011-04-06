@@ -243,6 +243,7 @@
     <dependency>
       <groupId>javax.el</groupId>
       <artifactId>el-api</artifactId>
+      <scope>provided</scope><!-- Both tomcat and jetty include this, so it's probably part of the servlet spec -->
     </dependency>
     <!-- REST dependencies -->
     <dependency>

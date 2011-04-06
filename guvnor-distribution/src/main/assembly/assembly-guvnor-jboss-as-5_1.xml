@@ -20,7 +20,6 @@
         <excludes>
           <exclude>WEB-INF/lib/xercesImpl-*.jar</exclude>
           <exclude>WEB-INF/lib/xml-apis-*.jar</exclude>
-          <exclude>WEB-INF/lib/el-api-*.jar</exclude>
         </excludes>
       </unpackOptions>
       <useStrictFiltering>true</useStrictFiltering>
