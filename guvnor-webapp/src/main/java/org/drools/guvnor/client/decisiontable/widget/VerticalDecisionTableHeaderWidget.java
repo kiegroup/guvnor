@@ -348,9 +348,8 @@ public class VerticalDecisionTableHeaderWidget extends
             for ( int iRow = 0; iRow < rowHeaders.length; iRow++ ) {
                 redrawHeaderRow( iRow );
             }
-
+            
             fireResizeEvent();
-
         }
 
         // Redraw a single row obviously
@@ -530,7 +529,7 @@ public class VerticalDecisionTableHeaderWidget extends
 
     // Schedule resize event after header has been drawn or resized
     private void fireResizeEvent() {
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+        Scheduler.get().scheduleFinally( new ScheduledCommand() {
             public void execute() {
                 ResizeEvent.fire( VerticalDecisionTableHeaderWidget.this,
                                   getBody().getClientWidth(),

@@ -172,23 +172,23 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
     private class VerticalSideBarSpacerWidget extends CellPanel {
 
         private Image icon = new Image();
-        private Element div = DOM.createDiv();
         private Element tre = DOM.createTR();
         private Element tce = DOM.createTD();
+        private HorizontalPanel hp = new HorizontalPanel();
         
         @Override
         //TODO - Added
         public void setHeight(String height) {
             super.setHeight( height );
-            DOM.setStyleAttribute( tre, "height", height);
-            DOM.setStyleAttribute( tce, "height", height);
-            DOM.setStyleAttribute( div, "height", height );
+            hp.setHeight( height );
+            //TODO Still not working on IE - and setting hp.setHeight also needs to be less bottom border width
+            //DOM.setStyleAttribute( tre, "height", height);
+            //DOM.setStyleAttribute( tce, "height", height);
         }
 
         private VerticalSideBarSpacerWidget() {
             // Widget stuff
             FocusPanel fp = new FocusPanel();
-            HorizontalPanel hp = new HorizontalPanel();
             hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
             hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
             setIconImage( grid.getGridWidget().getData().isMerged() );

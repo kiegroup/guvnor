@@ -428,7 +428,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         widget.getSidebarWidget().redraw();
 
         // Schedule redraw of grid after sizes of child Elements have been set
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+        Scheduler.get().scheduleFinally( new ScheduledCommand() {
 
             public void execute() {
                 widget.getGridWidget().redraw();
@@ -529,7 +529,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
         if ( bRedrawHeader ) {
             // Schedule redraw event after column has been redrawn
-            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+            Scheduler.get().scheduleFinally( new ScheduledCommand() {
                 public void execute() {
                     widget.getHeaderWidget().redraw();
                 }
@@ -608,7 +608,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
         if ( bRedrawHeader ) {
             // Schedule redraw event after column has been redrawn
-            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+            Scheduler.get().scheduleFinally( new ScheduledCommand() {
                 public void execute() {
                     widget.getHeaderWidget().redraw();
                 }
@@ -732,7 +732,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
         if ( bRedrawHeader ) {
             // Schedule redraw event after column has been redrawn
-            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+            Scheduler.get().scheduleFinally( new ScheduledCommand() {
                 public void execute() {
                     widget.getHeaderWidget().redraw();
                 }

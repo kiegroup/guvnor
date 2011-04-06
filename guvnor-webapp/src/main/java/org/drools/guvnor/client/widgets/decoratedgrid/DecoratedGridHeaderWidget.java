@@ -56,8 +56,6 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
         HasResizeHandlers,
     HasColumnResizeHandlers {
 
-    private static final int MIN_COLUMN_WIDTH = 16;
-
     /**
      * Container class for information relating to re-size operations
      */
@@ -95,17 +93,19 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
 
     }
 
+    private static final int                      MIN_COLUMN_WIDTH = 16;
+
     protected Panel                               panel;
     protected DecoratedGridWidget<T>              grid;
 
     // Resources
-    protected static final DecisionTableResources resource    = GWT
+    protected static final DecisionTableResources resource         = GWT
                                                                             .create( DecisionTableResources.class );
-    protected static final DecisionTableStyle     style       = resource.cellTableStyle();
-    protected static final Constants              constants   = GWT.create( Constants.class );
+    protected static final DecisionTableStyle     style            = resource.cellTableStyle();
+    protected static final Constants              constants        = GWT.create( Constants.class );
 
     // Column resizing
-    private ResizerInformation                    resizerInfo = new ResizerInformation();
+    private ResizerInformation                    resizerInfo      = new ResizerInformation();
     private DivElement                            resizer;
 
     /**
@@ -154,13 +154,12 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
                            public void onMouseMove(MouseMoveEvent event) {
                                int mx = event.getClientX();
                                if ( resizerInfo.isResizing ) {
-                                   if ( mx
-                                        - resizerInfo.resizeColumnLeft < MIN_COLUMN_WIDTH ) {
+                                   if ( mx - resizerInfo.resizeColumnLeft < MIN_COLUMN_WIDTH ) {
+                                       event.preventDefault();
                                        return;
                                    }
                                    setResizerDimensions( event.getX() );
-                                   resizerInfo.resizeColumnWidth = mx
-                                                                   - resizerInfo.resizeColumnLeft;
+                                   resizerInfo.resizeColumnWidth = mx - resizerInfo.resizeColumnLeft;
                                    resizeColumn( resizerInfo.resizeColumn,
                                                  resizerInfo.resizeColumnWidth );
 
@@ -249,6 +248,40 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
     }
 
     /**
+     * Redraw entire header
+     */
+    public abstract void redraw();
+
+    /**
+     * Set scroll position to enable some degree of synchronisation between
+     * DecisionTable and DecisionTableHeader
+     * 
+     * @param position
+     */
+    public abstract void setScrollPosition(int position);
+
+    @Override
+    public void setWidth(String width) {
+        // Set the width of our ScrollPanel too; to prevent the containing
+        // DIV from extending it's width to accommodate the increase in size
+        super.setWidth( width );
+        panel.setWidth( width );
+    }
+
+    // Bit of a hack to ensure the resizer is the correct size. The
+    // Decision Table itself could be contained in an outer most DIV
+    // that hides any overflow however the horizontal scrollbar
+    // would be rendered inside the DIV and hence still be covered
+    // by the resizer.
+    private void setResizerDimensions(int position) {
+        resizer.getStyle().setHeight(
+                                      grid.getSidebarWidget().getOffsetHeight(),
+                                      Unit.PX );
+        resizer.getStyle().setLeft( position,
+                                    Unit.PX );
+    }
+
+    /**
      * Get the Widget that should be wrapped by the scroll panel and resize
      * handlers. The widget renders the actual "header" embedded within the
      * decorations provided by this class: scroll-bars and resizing support.
@@ -269,11 +302,6 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
     protected abstract ResizerInformation getResizerInformation(int mx);
 
     /**
-     * Redraw entire header
-     */
-    public abstract void redraw();
-
-    /**
      * Resize the Header column
      * 
      * @param resizeColumn
@@ -281,34 +309,5 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
      */
     protected abstract void resizeColumn(DynamicColumn<T> resizeColumn,
                                          int resizeColumnWidth);
-
-    // Bit of a hack to ensure the resizer is the correct size. The
-    // Decision Table itself could be contained in an outer most DIV
-    // that hides any overflow however the horizontal scrollbar
-    // would be rendered inside the DIV and hence still be covered
-    // by the resizer.
-    private void setResizerDimensions(int position) {
-        resizer.getStyle().setHeight(
-                                      grid.getSidebarWidget().getOffsetHeight(),
-                                      Unit.PX );
-        resizer.getStyle().setLeft( position,
-                                    Unit.PX );
-    }
-
-    /**
-     * Set scroll position to enable some degree of synchronisation between
-     * DecisionTable and DecisionTableHeader
-     * 
-     * @param position
-     */
-    public abstract void setScrollPosition(int position);
-
-    @Override
-    public void setWidth(String width) {
-        // Set the width of our ScrollPanel too; to prevent the containing
-        // DIV from extending it's width to accommodate the increase in size
-        super.setWidth( width );
-        panel.setWidth( width );
-    }
 
 }

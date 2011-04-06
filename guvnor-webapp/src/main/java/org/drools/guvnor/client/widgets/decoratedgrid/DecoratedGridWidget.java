@@ -471,7 +471,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
                              + "px" );
 
         // The Sidebar and Header sizes are derived from the ScrollPanel
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+        Scheduler.get().scheduleFinally( new ScheduledCommand() {
 
             public void execute() {
                 assertDimensions();
@@ -488,7 +488,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
                               + "px" );
 
         // The Sidebar and Header sizes are derived from the ScrollPanel
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+        Scheduler.get().scheduleFinally( new ScheduledCommand() {
 
             public void execute() {
                 assertDimensions();

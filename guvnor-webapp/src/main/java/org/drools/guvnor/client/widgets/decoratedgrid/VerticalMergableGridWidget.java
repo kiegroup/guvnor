@@ -229,10 +229,13 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             Coordinate c = cell.getHtmlCoordinate();
             TableRowElement tre = tbody.getRows().getItem( c.getRow() );
             TableCellElement tce = tre.getCells().getItem( c.getCol() );
+            DivElement div = tce.getFirstChild().<DivElement> cast();
             DivElement divText = tce.getFirstChild().getFirstChild().<DivElement> cast();
 
-            // Set widths (inner DIV extends to contain Text DIV)
+            // Set widths
             tce.getStyle().setWidth( width,
+                                     Unit.PX );
+            div.getStyle().setWidth( width,
                                      Unit.PX );
             divText.getStyle().setWidth( width,
                                          Unit.PX );
@@ -387,10 +390,13 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             div.setClassName( style.cellTableCellDiv() );
             divText.addClassName( style.cellTableTextDiv() );
 
-            // Set widths (inner DIV extends to contain Text DIV)
-            divText.getStyle().setWidth( column.getWidth(),
+            // Set widths
+            int colWidth = column.getWidth();
+            divText.getStyle().setWidth( colWidth,
                                          Unit.PX );
-            tce.getStyle().setWidth( column.getWidth(),
+            div.getStyle().setWidth( colWidth,
+                                     Unit.PX );
+            tce.getStyle().setWidth( colWidth,
                                      Unit.PX );
 
             // Set heights
