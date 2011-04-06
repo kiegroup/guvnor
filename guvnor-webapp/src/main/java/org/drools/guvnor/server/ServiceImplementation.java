@@ -57,6 +57,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
 import org.drools.guvnor.server.builder.pagerow.InboxPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.LogPageRowBuilder;
+import org.drools.guvnor.server.builder.pagerow.PermissionPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QueryFullTextPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QueryMetadataPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.StatePageRowBuilder;
@@ -704,25 +705,11 @@ public class ServiceImplementation
         response.setTotalRowSize( permissions.size() );
         response.setTotalRowSizeExact( true );
 
-        int rowNumber = 0;
-        int rowMinNumber = request.getStartRowIndex();
-        int rowMaxNumber = request.getPageSize() == null ? permissions.size() : rowMinNumber + request.getPageSize();
-        int resultsSize = (request.getPageSize() == null ? permissions.size() : request.getPageSize());
-        List<PermissionsPageRow> rowList = new ArrayList<PermissionsPageRow>( resultsSize );
-        Iterator<String> mapItr = permissions.keySet().iterator();
-        while ( mapItr.hasNext() && rowNumber < rowMaxNumber ) {
-            String userName = mapItr.next();
-            if ( rowNumber >= rowMinNumber ) {
-                List<String> userPermissions = permissions.get( userName );
-                PermissionsPageRow row = new PermissionsPageRow();
-                row.setUserName( userName );
-                row.setUserPermissions( userPermissions );
-                rowList.add( row );
-            }
-            rowNumber++;
-        }
+        PermissionPageRowBuilder permissionPageRowBuilder = new PermissionPageRowBuilder();
+        List<PermissionsPageRow> rowList = permissionPageRowBuilder.createRows( request,
+                                                                                permissions );
         response.setPageRowList( rowList );
-        response.setLastPage( !mapItr.hasNext() );
+        response.setLastPage( (rowList.size() + request.getStartRowIndex()) == permissions.size() );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Retrieved Log Entries in " + methodDuration + " ms." );
