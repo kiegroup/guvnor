@@ -172,6 +172,18 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
     private class VerticalSideBarSpacerWidget extends CellPanel {
 
         private Image icon = new Image();
+        private Element div = DOM.createDiv();
+        private Element tre = DOM.createTR();
+        private Element tce = DOM.createTD();
+        
+        @Override
+        //TODO - Added
+        public void setHeight(String height) {
+            super.setHeight( height );
+            DOM.setStyleAttribute( tre, "height", height);
+            DOM.setStyleAttribute( tce, "height", height);
+            DOM.setStyleAttribute( div, "height", height );
+        }
 
         private VerticalSideBarSpacerWidget() {
             // Widget stuff
@@ -186,12 +198,8 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             fp.add( hp );
 
             // DOM stuff (put Widget in HTML cell so we can fix the width)
-            getBody().getParentElement().<TableElement> cast()
-                    .setCellSpacing( 0 );
-            getBody().getParentElement().<TableElement> cast()
-                    .setCellPadding( 0 );
-            Element tre = DOM.createTR();
-            Element tce = DOM.createTD();
+            getBody().getParentElement().<TableElement> cast().setCellSpacing( 0 );
+            getBody().getParentElement().<TableElement> cast().setCellPadding( 0 );
             tre.appendChild( tce );
             getBody().appendChild( tre );
             tce.addClassName( style.selectorSpacer() );
@@ -209,6 +217,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
 
             sinkEvents( Event.getTypeInt( "click" ) );
         }
+        
 
         // Set the icon's image accordingly
         private void setIconImage(boolean isMerged) {

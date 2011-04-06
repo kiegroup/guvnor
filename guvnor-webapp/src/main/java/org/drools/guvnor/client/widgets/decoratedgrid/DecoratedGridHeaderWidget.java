@@ -120,11 +120,15 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
         this.grid = grid;
 
         // Container DIV in which the components will live
+        Element tre = DOM.createTR();
+        Element tce = DOM.createTD();
         Element div = DOM.createDiv();
         div.getStyle().setPosition( Position.RELATIVE );
         getBody().getParentElement().<TableElement> cast().setCellSpacing( 0 );
         getBody().getParentElement().<TableElement> cast().setCellPadding( 0 );
-        getBody().appendChild( div );
+        tce.appendChild( div );
+        tre.appendChild( tce );
+        getBody().appendChild( tre );
 
         // Widgets within the container
         panel = new ScrollPanel();

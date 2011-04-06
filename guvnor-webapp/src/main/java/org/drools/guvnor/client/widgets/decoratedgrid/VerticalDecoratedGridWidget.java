@@ -72,10 +72,8 @@ public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
         return new ScrollHandler() {
 
             public void onScroll(ScrollEvent event) {
-                headerWidget.setScrollPosition( scrollPanel
-                        .getHorizontalScrollPosition() );
-                sidebarWidget
-                        .setScrollPosition( scrollPanel.getScrollPosition() );
+                headerWidget.setScrollPosition( scrollPanel.getHorizontalScrollPosition() );
+                sidebarWidget.setScrollPosition( scrollPanel.getScrollPosition() );
             }
 
         };

@@ -80,8 +80,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 this.col = col;
                 hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
                 hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
-                hp.setHeight( style.rowHeaderSorterHeight()
-                              + "px" );
+                hp.setHeight( style.rowHeaderSorterHeight() + "px" );
                 hp.setWidth( "100%" );
                 setIconImage();
                 add( hp );
@@ -89,8 +88,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 // Ensure our icon is updated when the SortDirection changes
                 col.addValueChangeHandler( new ValueChangeHandler<SortConfiguration>() {
 
-                    public void onValueChange(
-                                              ValueChangeEvent<SortConfiguration> event) {
+                    public void onValueChange(ValueChangeEvent<SortConfiguration> event) {
                         setIconImage();
                     }
 
@@ -119,6 +117,8 @@ public class VerticalDecisionTableHeaderWidget extends
                                 hp.add( new Image( resource.smallDownArrow() ) );
                         }
                         break;
+                    default :
+                        hp.add( new Image( resource.emptyArrow() ) );
                 }
             }
 
@@ -146,6 +146,16 @@ public class VerticalDecisionTableHeaderWidget extends
                     this.endHeight = endHeight;
                 }
 
+                // Set row height by setting height of children
+                private void setHeight(int height) {
+                    for ( int i = 0; i < tre.getChildCount(); i++ ) {
+                        tre.getChild( i ).getFirstChild().<DivElement> cast()
+                                .getStyle().setHeight( height,
+                                                       Unit.PX );
+                    }
+                    fireResizeEvent();
+                }
+
                 @Override
                 protected void onComplete() {
                     super.onComplete();
@@ -156,21 +166,6 @@ public class VerticalDecisionTableHeaderWidget extends
                 protected void onUpdate(double progress) {
                     int height = (int) (startHeight + (progress * (endHeight - startHeight)));
                     setHeight( height );
-                }
-
-                // Set row height by setting height of children
-                private void setHeight(int height) {
-                    for ( int i = 0; i < tre.getChildCount(); i++ ) {
-                        tre.getChild( i ).getFirstChild().<DivElement> cast()
-                                .getStyle().setHeight( height,
-                                                       Unit.PX );
-                    }
-
-                    // Decision Table and Sidebar need to know of new height
-                    ResizeEvent.fire( VerticalDecisionTableHeaderWidget.this,
-                                      getBody().getClientWidth(),
-                                      getBody()
-                                              .getClientHeight() );
                 }
 
             }
@@ -359,15 +354,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 redrawHeaderRow( iRow );
             }
 
-            // Schedule resize event after header has been drawn
-            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-                public void execute() {
-                    ResizeEvent.fire( VerticalDecisionTableHeaderWidget.this,
-                                      getBody().getClientWidth(),
-                                      getBody()
-                                              .getClientHeight() );
-                }
-            } );
+            fireResizeEvent();
 
         }
 
@@ -395,8 +382,7 @@ public class VerticalDecisionTableHeaderWidget extends
                     if ( visibleConditionCols.size() > 0 ) {
                         splitter.setRowHeaders( rowHeaders );
                         tce = DOM.createTD();
-                        tce.<TableCellElement> cast().setColSpan(
-                                                                  visibleConditionCols.size() );
+                        tce.<TableCellElement> cast().setColSpan( visibleConditionCols.size() );
                         tce.addClassName( style.headerSplitter() );
                         tre.appendChild( tce );
                         add( splitter,
@@ -534,6 +520,48 @@ public class VerticalDecisionTableHeaderWidget extends
     }
 
     @Override
+    public void redraw() {
+        widget.redraw();
+    }
+
+    @Override
+    public void setScrollPosition(int position) {
+        if ( position < 0 ) {
+            throw new IllegalArgumentException( "position cannot be null" );
+        }
+
+        ((ScrollPanel) this.panel).setHorizontalScrollPosition( position );
+    }
+
+    // Schedule resize event after header has been drawn or resized
+    private void fireResizeEvent() {
+        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+            public void execute() {
+                ResizeEvent.fire( VerticalDecisionTableHeaderWidget.this,
+                                  getBody().getClientWidth(),
+                                  getBody().getClientHeight() );
+            }
+        } );
+
+    }
+
+    // Set the cursor type for all cells on the table as
+    // we only use rowHeader[0] to check which column
+    // needs resizing however the mouse could be over any
+    // row
+    private void setCursorType(Cursor cursor) {
+        for ( int iRow = 0; iRow < widget.rowHeaders.length; iRow++ ) {
+            TableRowElement tre = widget.rowHeaders[iRow]
+                        .<TableRowElement> cast();
+            for ( int iCol = 0; iCol < tre.getCells().getLength(); iCol++ ) {
+                TableCellElement tce = tre.getCells().getItem( iCol );
+                tce.getStyle().setCursor( cursor );
+            }
+        }
+
+    }
+
+    @Override
     protected Widget getHeaderWidget() {
         if ( this.widget == null ) {
             this.widget = new HeaderWidget();
@@ -565,11 +593,6 @@ public class VerticalDecisionTableHeaderWidget extends
         }
 
         return resizerInfo;
-    }
-
-    @Override
-    public void redraw() {
-        widget.redraw();
     }
 
     // Resize the inner DIV in each table cell
@@ -654,31 +677,6 @@ public class VerticalDecisionTableHeaderWidget extends
         ColumnResizeEvent.fire( this,
                                 widget.visibleCols.get( resizeColumnIndex ),
                                 resizeColumnWidth );
-    }
-
-    // Set the cursor type for all cells on the table as
-    // we only use rowHeader[0] to check which column
-    // needs resizing however the mouse could be over any
-    // row
-    private void setCursorType(Cursor cursor) {
-        for ( int iRow = 0; iRow < widget.rowHeaders.length; iRow++ ) {
-            TableRowElement tre = widget.rowHeaders[iRow]
-                        .<TableRowElement> cast();
-            for ( int iCol = 0; iCol < tre.getCells().getLength(); iCol++ ) {
-                TableCellElement tce = tre.getCells().getItem( iCol );
-                tce.getStyle().setCursor( cursor );
-            }
-        }
-
-    }
-
-    @Override
-    public void setScrollPosition(int position) {
-        if ( position < 0 ) {
-            throw new IllegalArgumentException( "position cannot be null" );
-        }
-
-        ((ScrollPanel) this.panel).setHorizontalScrollPosition( position );
     }
 
 }

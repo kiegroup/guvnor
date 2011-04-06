@@ -63,6 +63,9 @@ public interface DecisionTableResources
 
     };
 
+    @Source("../resources/images/emptyArrow.png")
+    ImageResource emptyArrow();
+    
     @Source("../resources/images/downArrow.png")
     ImageResource downArrow();
 

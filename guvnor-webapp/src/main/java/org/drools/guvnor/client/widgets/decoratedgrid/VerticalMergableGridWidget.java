@@ -227,13 +227,14 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             CellValue< ? extends Comparable< ? >> cell = row
                     .get( iCol );
             Coordinate c = cell.getHtmlCoordinate();
-            TableRowElement tre = tbody.getRows().getItem(
-                                                           c.getRow() );
-            TableCellElement tce = tre.getCells().getItem(
-                                                           c.getCol() );
-            tce.getFirstChild().<DivElement> cast().getStyle()
-                    .setWidth( width,
-                               Unit.PX );
+            TableRowElement tre = tbody.getRows().getItem( c.getRow() );
+            TableCellElement tce = tre.getCells().getItem( c.getCol() );
+            tce.getStyle().setWidth( width,
+                                     Unit.PX );
+            tce.getFirstChild().<DivElement> cast().getStyle().setWidth( width,
+                                                                         Unit.PX );
+            tce.getFirstChild().getFirstChild().<DivElement> cast().getStyle().setWidth( width,
+                                                                         Unit.PX );
         }
 
     }
@@ -390,9 +391,15 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             div.setClassName( divStyle );
             divText.addClassName( style.cellTableTextDiv() );
 
-            // Dynamic attributes!
+            // Set widths
             div.getStyle().setWidth( column.getWidth(),
                                      Unit.PX );
+            divText.getStyle().setWidth( column.getWidth(),
+                                         Unit.PX );
+            tce.getStyle().setWidth( column.getWidth(),
+                                     Unit.PX );
+
+            // Set heights
             div.getStyle().setHeight( (style.rowHeight() * rowSpan) - style.borderWidth(),
                                       Unit.PX );
             tce.setRowSpan( rowSpan );

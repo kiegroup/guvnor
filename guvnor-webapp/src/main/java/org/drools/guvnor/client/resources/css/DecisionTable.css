@@ -19,7 +19,6 @@
     padding: 0px;
     margin: 0px;
     font-size: 8pt;
-    text-align: center;
     outline: none;
     border-bottom: borderWidth solid #C8C8C8;
     border-right: 1px dotted grey;
@@ -61,10 +60,11 @@
 }
 
 .cellTableTextDiv {
-    height: 100%;
-    width: 100%;
+    left: 0px;
+    right: 0px;
     position: absolute;
     overflow: hidden;
+    text-align: center;
 }
 
 .cellTableEvenRow {
