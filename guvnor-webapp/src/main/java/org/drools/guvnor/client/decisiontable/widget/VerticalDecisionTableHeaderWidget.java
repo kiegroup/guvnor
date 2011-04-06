@@ -149,9 +149,8 @@ public class VerticalDecisionTableHeaderWidget extends
                 // Set row height by setting height of children
                 private void setHeight(int height) {
                     for ( int i = 0; i < tre.getChildCount(); i++ ) {
-                        tre.getChild( i ).getFirstChild().<DivElement> cast()
-                                .getStyle().setHeight( height,
-                                                       Unit.PX );
+                        tre.getChild( i ).getFirstChild().<DivElement> cast().getStyle().setHeight( height,
+                                                                                                    Unit.PX );
                     }
                     fireResizeEvent();
                 }
@@ -230,8 +229,7 @@ public class VerticalDecisionTableHeaderWidget extends
 
             // Show a row using our animation
             private void showRow(int iRow) {
-                if ( rowHeaders == null
-                     || (rowHeaders.length - 1) < iRow ) {
+                if ( rowHeaders == null || (rowHeaders.length - 1) < iRow ) {
                     return;
                 }
                 TableRowElement tre = rowHeaders[iRow].<TableRowElement> cast();
@@ -259,10 +257,8 @@ public class VerticalDecisionTableHeaderWidget extends
                 rowHeaders[iRow] = DOM.createTR();
                 getBody().appendChild( rowHeaders[iRow] );
             }
-            getBody().getParentElement().<TableElement> cast()
-                    .setCellSpacing( 0 );
-            getBody().getParentElement().<TableElement> cast()
-                    .setCellPadding( 0 );
+            getBody().getParentElement().<TableElement> cast().setCellSpacing( 0 );
+            getBody().getParentElement().<TableElement> cast().setCellPadding( 0 );
         }
 
         // Make default header label
@@ -309,8 +305,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 tce.<TableCellElement> cast().setRowSpan( 4 );
                 tce.addClassName( style.headerRowIntermediate() );
             } else if ( modelCol instanceof ConditionCol ) {
-                tce.appendChild( makeLabel(
-                                            ((ConditionCol) modelCol).getHeader(),
+                tce.appendChild( makeLabel( ((ConditionCol) modelCol).getHeader(),
                                             col.getWidth(),
                                             style.rowHeaderHeight() ) );
             } else if ( modelCol instanceof ActionCol ) {
@@ -574,11 +569,9 @@ public class VerticalDecisionTableHeaderWidget extends
         boolean isPrimed = false;
         ResizerInformation resizerInfo = new ResizerInformation();
         for ( int iCol = 0; iCol < widget.rowHeaders[0].getChildCount(); iCol++ ) {
-            TableCellElement tce = widget.rowHeaders[0].getChild(
-                                                                  iCol ).<TableCellElement> cast();
+            TableCellElement tce = widget.rowHeaders[0].getChild( iCol ).<TableCellElement> cast();
             int cx = tce.getAbsoluteRight();
-            if ( Math.abs( mx
-                           - cx ) <= 5 ) {
+            if ( Math.abs( mx - cx ) <= 5 ) {
                 isPrimed = true;
                 resizerInfo.setResizePrimed( isPrimed );
                 resizerInfo.setResizeColumn( widget.visibleCols.get( iCol ) );
@@ -608,8 +601,7 @@ public class VerticalDecisionTableHeaderWidget extends
         int resizeColumnIndex = widget.visibleCols.indexOf( resizeColumn );
 
         // Row 0 (General\Fact Type)
-        tce = widget.rowHeaders[0].getChild( resizeColumnIndex )
-                .<TableCellElement> cast();
+        tce = widget.rowHeaders[0].getChild( resizeColumnIndex ).<TableCellElement> cast();
         div = tce.getFirstChild().<DivElement> cast();
         div.getStyle().setWidth( resizeColumnWidth,
                                  Unit.PX );
@@ -619,8 +611,7 @@ public class VerticalDecisionTableHeaderWidget extends
         for ( int iCol = 0; iCol < widget.visibleConditionCols.size(); iCol++ ) {
             DynamicColumn<DTColumnConfig> col = widget.visibleConditionCols.get( iCol );
             int colWidth = col.getWidth();
-            conditionColsWidth = conditionColsWidth
-                                 + colWidth;
+            conditionColsWidth = conditionColsWidth + colWidth;
             tce = widget.rowHeaders[3].getChild( iCol ).<TableCellElement> cast();
             div = tce.getFirstChild().<DivElement> cast();
             div.getStyle().setWidth( colWidth,
@@ -636,18 +627,13 @@ public class VerticalDecisionTableHeaderWidget extends
             // Merging
             int colSpan = 1;
             int width = col.getWidth();
-            while ( iCol
-                    + colSpan < widget.visibleConditionCols.size() ) {
-                DynamicColumn<DTColumnConfig> mergeCol = widget.visibleConditionCols.get( iCol
-                                                                                          + colSpan );
-                ConditionCol mergeCondCol = (ConditionCol) mergeCol
-                        .getModelColumn();
+            while ( iCol + colSpan < widget.visibleConditionCols.size() ) {
+                DynamicColumn<DTColumnConfig> mergeCol = widget.visibleConditionCols.get( iCol + colSpan );
+                ConditionCol mergeCondCol = (ConditionCol) mergeCol.getModelColumn();
 
                 if ( mergeCondCol.getFactType().equals( cc.getFactType() )
-                        && mergeCondCol.getBoundName()
-                                .equals( cc.getBoundName() ) ) {
-                    width = width
-                            + mergeCol.getWidth();
+                        && mergeCondCol.getBoundName().equals( cc.getBoundName() ) ) {
+                    width = width + mergeCol.getWidth();
                     colSpan++;
                 } else {
                     break;
@@ -655,11 +641,8 @@ public class VerticalDecisionTableHeaderWidget extends
             }
 
             // Make cell
-            iCol = iCol
-                   + colSpan
-                   - 1;
-            tce = widget.rowHeaders[2].getChild( iColColumn )
-                    .<TableCellElement> cast();
+            iCol = iCol + colSpan - 1;
+            tce = widget.rowHeaders[2].getChild( iColColumn ).<TableCellElement> cast();
             div = tce.getFirstChild().<DivElement> cast();
             div.getStyle().setWidth( width,
                                      Unit.PX );
@@ -667,8 +650,7 @@ public class VerticalDecisionTableHeaderWidget extends
         }
 
         // Row 4 (Sorters)
-        tce = widget.rowHeaders[4].getChild( resizeColumnIndex )
-                .<TableCellElement> cast();
+        tce = widget.rowHeaders[4].getChild( resizeColumnIndex ).<TableCellElement> cast();
         div = tce.getFirstChild().<DivElement> cast();
         div.getStyle().setWidth( resizeColumnWidth,
                                  Unit.PX );

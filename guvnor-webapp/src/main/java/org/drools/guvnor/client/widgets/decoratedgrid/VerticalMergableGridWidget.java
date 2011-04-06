@@ -229,12 +229,13 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             Coordinate c = cell.getHtmlCoordinate();
             TableRowElement tre = tbody.getRows().getItem( c.getRow() );
             TableCellElement tce = tre.getCells().getItem( c.getCol() );
+            DivElement divText = tce.getFirstChild().getFirstChild().<DivElement> cast();
+
+            // Set widths (inner DIV extends to contain Text DIV)
             tce.getStyle().setWidth( width,
                                      Unit.PX );
-            tce.getFirstChild().<DivElement> cast().getStyle().setWidth( width,
-                                                                         Unit.PX );
-            tce.getFirstChild().getFirstChild().<DivElement> cast().getStyle().setWidth( width,
-                                                                         Unit.PX );
+            divText.getStyle().setWidth( width,
+                                         Unit.PX );
         }
 
     }
@@ -369,14 +370,9 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     private TableCellElement makeTableCellElement(int iCol,
                                                   DynamicDataRow rowData) {
 
-        String cellStyle = style.cellTableCell();
-        String divStyle = style.cellTableCellDiv();
-        String cellSelectedStyle = style.cellTableCellSelected();
-        String cellMultipleValuesStyle = style.cellTableCellMultipleValues();
-        String cellOtherwiseStyle = style.cellTableCellOtherwise();
         TableCellElement tce = null;
 
-        // Column to render the column
+        // Column to handle rendering
         DynamicColumn< ? > column = columns.get( iCol );
 
         CellValue< ? extends Comparable< ? >> cellData = rowData.get( iCol );
@@ -387,37 +383,38 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             tce = Document.get().createTDElement();
             DivElement div = Document.get().createDivElement();
             DivElement divText = Document.get().createDivElement();
-            tce.addClassName( cellStyle );
-            div.setClassName( divStyle );
+            tce.addClassName( style.cellTableCell() );
+            div.setClassName( style.cellTableCellDiv() );
             divText.addClassName( style.cellTableTextDiv() );
 
-            // Set widths
-            div.getStyle().setWidth( column.getWidth(),
-                                     Unit.PX );
+            // Set widths (inner DIV extends to contain Text DIV)
             divText.getStyle().setWidth( column.getWidth(),
                                          Unit.PX );
             tce.getStyle().setWidth( column.getWidth(),
                                      Unit.PX );
 
             // Set heights
-            div.getStyle().setHeight( (style.rowHeight() * rowSpan) - style.borderWidth(),
+            int rowHeight = (style.rowHeight() * rowSpan) - style.borderWidth();
+            div.getStyle().setHeight( rowHeight,
                                       Unit.PX );
+            divText.getStyle().setHeight( rowHeight,
+                                          Unit.PX );
             tce.setRowSpan( rowSpan );
 
             //Styling depending upon state
             if ( cellData.isOtherwise() ) {
-                tce.addClassName( cellOtherwiseStyle );
+                tce.addClassName( style.cellTableCellOtherwise() );
             }
             if ( cellData instanceof GroupedCellValue ) {
                 GroupedCellValue gcv = (GroupedCellValue) cellData;
                 if ( gcv.hasMultipleValues() ) {
-                    tce.addClassName( cellMultipleValuesStyle );
+                    tce.addClassName( style.cellTableCellMultipleValues() );
                 }
             }
             if ( cellData.isSelected() ) {
-                tce.removeClassName( cellMultipleValuesStyle );
-                tce.removeClassName( cellOtherwiseStyle );
-                tce.addClassName( cellSelectedStyle );
+                tce.removeClassName( style.cellTableCellMultipleValues() );
+                tce.removeClassName( style.cellTableCellOtherwise() );
+                tce.addClassName( style.cellTableCellSelected() );
             }
 
             // Render the cell and set inner HTML

@@ -25,26 +25,24 @@
 }
 
 .cellTableCellSelected {
-    padding: 0px;
-    margin: 0px;
-    text-align: center;
-    outline: none;
     border-bottom: borderWidth solid #b9b9b9;
     background-color: #b9b9b9;
 }
 
 .cellTableCellMultipleValues {
+    border-bottom: borderWidth solid #e09090;
     background-color: #e09090;
 }
 
 .cellTableCellOtherwise {
+    border-bottom: borderWidth solid #60f070;
     background-color: #60f070;
 }
 
 .cellTableCell:HOVER {
     padding: 0px;
     margin: 0px;
-    text-align: center;
+    font-size: 8pt;
     outline: none;
     border-bottom: borderWidth solid #C8C8C8;
     background-color: #ffff99;
@@ -60,8 +58,6 @@
 }
 
 .cellTableTextDiv {
-    left: 0px;
-    right: 0px;
     position: absolute;
     overflow: hidden;
     text-align: center;
