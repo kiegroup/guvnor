@@ -72,8 +72,7 @@ public class TemplateDataHeaderWidget extends
                 this.col = col;
                 hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
                 hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
-                hp.setHeight( style.rowHeaderSorterHeight()
-                              + "px" );
+                hp.setHeight( style.rowHeaderSorterHeight() + "px" );
                 hp.setWidth( "100%" );
                 setIconImage();
                 add( hp );
@@ -81,8 +80,7 @@ public class TemplateDataHeaderWidget extends
                 // Ensure our icon is updated when the SortDirection changes
                 col.addValueChangeHandler( new ValueChangeHandler<SortConfiguration>() {
 
-                    public void onValueChange(
-                                              ValueChangeEvent<SortConfiguration> event) {
+                    public void onValueChange(ValueChangeEvent<SortConfiguration> event) {
                         setIconImage();
                     }
 
@@ -111,6 +109,8 @@ public class TemplateDataHeaderWidget extends
                                 hp.add( new Image( resource.smallDownArrow() ) );
                         }
                         break;
+                    default :
+                        hp.add( new Image( resource.emptyArrow() ) );
                 }
             }
 
@@ -129,10 +129,8 @@ public class TemplateDataHeaderWidget extends
                 headerRows[iRow] = DOM.createTR();
                 getBody().appendChild( headerRows[iRow] );
             }
-            getBody().getParentElement().<TableElement> cast()
-                    .setCellSpacing( 0 );
-            getBody().getParentElement().<TableElement> cast()
-                    .setCellPadding( 0 );
+            getBody().getParentElement().<TableElement> cast().setCellSpacing( 0 );
+            getBody().getParentElement().<TableElement> cast().setCellPadding( 0 );
         }
 
         // Make default header label
@@ -183,12 +181,11 @@ public class TemplateDataHeaderWidget extends
             }
 
             // Schedule resize event after header has been drawn
-            Scheduler.get().scheduleDeferred( new ScheduledCommand() {
+            Scheduler.get().scheduleFinally( new ScheduledCommand() {
                 public void execute() {
                     ResizeEvent.fire( TemplateDataHeaderWidget.this,
-                                      getBody().getClientWidth(),
-                                      getBody()
-                                              .getClientHeight() );
+                                      getBody().getOffsetWidth(),
+                                      getBody().getOffsetHeight() );
                 }
             } );
 
@@ -205,7 +202,7 @@ public class TemplateDataHeaderWidget extends
                         tce.addClassName( style.headerText() );
                         tre.appendChild( tce );
                         populateTableCellElement( col,
-                                                      tce );
+                                                  tce );
                     }
                     break;
 
@@ -230,7 +227,7 @@ public class TemplateDataHeaderWidget extends
                         tce.addClassName( style.headerRowBottom() );
                         tre.appendChild( tce );
                         add( shp,
-                                 tce );
+                             tce );
                     }
                     break;
 
@@ -306,15 +303,13 @@ public class TemplateDataHeaderWidget extends
         int resizeColumnIndex = widget.headerColumns.indexOf( resizeColumn );
 
         // Row 0 (General\Fact Type)
-        tce = widget.headerRows[0].getChild( resizeColumnIndex )
-                .<TableCellElement> cast();
+        tce = widget.headerRows[0].getChild( resizeColumnIndex ).<TableCellElement> cast();
         div = tce.getFirstChild().<DivElement> cast();
         div.getStyle().setWidth( resizeColumnWidth,
                                  Unit.PX );
 
         // Row 1 (Sorters)
-        tce = widget.headerRows[1].getChild( resizeColumnIndex )
-                .<TableCellElement> cast();
+        tce = widget.headerRows[1].getChild( resizeColumnIndex ).<TableCellElement> cast();
         div = tce.getFirstChild().<DivElement> cast();
         div.getStyle().setWidth( resizeColumnWidth,
                                  Unit.PX );
@@ -338,11 +333,9 @@ public class TemplateDataHeaderWidget extends
         boolean isPrimed = false;
         ResizerInformation resizerInfo = new ResizerInformation();
         for ( int iCol = 0; iCol < widget.headerRows[0].getChildCount(); iCol++ ) {
-            TableCellElement tce = widget.headerRows[0].getChild(
-                                                                  iCol ).<TableCellElement> cast();
+            TableCellElement tce = widget.headerRows[0].getChild( iCol ).<TableCellElement> cast();
             int cx = tce.getAbsoluteRight();
-            if ( Math.abs( mx
-                           - cx ) <= 5 ) {
+            if ( Math.abs( mx - cx ) <= 5 ) {
                 isPrimed = true;
                 resizerInfo.setResizePrimed( isPrimed );
                 resizerInfo.setResizeColumn( widget.headerColumns.get( iCol ) );
@@ -365,8 +358,7 @@ public class TemplateDataHeaderWidget extends
     // row
     private void setCursorType(Cursor cursor) {
         for ( int iRow = 0; iRow < widget.headerRows.length; iRow++ ) {
-            TableRowElement tre = widget.headerRows[iRow]
-                        .<TableRowElement> cast();
+            TableRowElement tre = widget.headerRows[iRow].<TableRowElement> cast();
             for ( int iCol = 0; iCol < tre.getCells().getLength(); iCol++ ) {
                 TableCellElement tce = tre.getCells().getItem( iCol );
                 tce.getStyle().setCursor( cursor );

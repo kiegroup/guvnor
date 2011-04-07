@@ -7,7 +7,8 @@
 @def rowHeaderSplitterHeight  8px ;
 @def sidebarWidth  48px ;
 @def borderWidth  1px ;
-
+@def borderWidthThick  2px ;
+    
 .cellTable {
     cursor: default;
     table-layout: fixed;
@@ -21,7 +22,7 @@
     font-size: 8pt;
     outline: none;
     border-bottom: borderWidth solid #C8C8C8;
-    border-right: 1px dotted grey;
+    border-right: borderWidth dotted grey;
 }
 
 .cellTableCellSelected {
@@ -73,13 +74,13 @@
 
 /* Header */
 .headerRowBottom {
-    border-bottom: 2px solid grey;
-    border-right: 1px dotted grey;
+    border-bottom: borderWidthThick solid grey;
+    border-right: borderWidth dotted grey;
 }
 
 .headerRowIntermediate {
-    border-bottom: 1px solid grey;
-    border-right: 1px dotted grey;
+    border-bottom: borderWidth solid grey;
+    border-right: borderWidth dotted grey;
 }
 
 .headerText {
@@ -87,13 +88,13 @@
     text-align: center;
     color: #4B4A4A;
     text-shadow: 1px 1px 0 #DDDDFF;
-    border-right: 1px dotted grey;
+    border-right: borderWidth dotted grey;
 }
 
 .headerSplitter {
     height: 8px;
     background-color: #a0a0a0;
-    border-right: 1px dotted grey;
+    border-right: borderWidth dotted grey;
 }
 
 .headerResizer {
@@ -109,13 +110,23 @@
 
 .selectorSpacer {
     width: sidebarWidth;
-    border-bottom: 2px solid grey;
-    border-right: 1px solid grey;
+    border-bottom: borderWidthThick solid grey;
+    border-right: borderWidth solid grey;
+}
+
+.selectorSpacerOuterDiv {
+    position: relative;
+}
+
+.selectorSpacerInnerDiv {
+    position: absolute;
+    top: 50%;
+    left: 50%;
 }
 
 .selectorCell {
     width: sidebarWidth;
     text-align: center;
-    border-right: 1px solid grey;
+    border-right: borderWidth solid grey;
     border-bottom: borderWidth solid #C8C8C8;
 }

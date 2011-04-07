@@ -26,6 +26,8 @@ public interface DecisionTableResources
         int sidebarWidth();
 
         int borderWidth();
+        
+        int borderWidthThick();
 
         String cellTable();
 
@@ -58,6 +60,10 @@ public interface DecisionTableResources
         String headerResizer();
 
         String selectorSpacer();
+        
+        String selectorSpacerOuterDiv();
+
+        String selectorSpacerInnerDiv();
 
         String selectorCell();
 

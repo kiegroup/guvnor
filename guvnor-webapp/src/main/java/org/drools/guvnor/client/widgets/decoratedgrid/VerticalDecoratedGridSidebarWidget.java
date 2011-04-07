@@ -29,6 +29,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -54,10 +55,8 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
         private ArrayList<Widget> widgets = new ArrayList<Widget>();
 
         private VerticalSelectorWidget() {
-            getBody().getParentElement().<TableElement> cast()
-                    .setCellSpacing( 0 );
-            getBody().getParentElement().<TableElement> cast()
-                    .setCellPadding( 0 );
+            getBody().getParentElement().<TableElement> cast().setCellSpacing( 0 );
+            getBody().getParentElement().<TableElement> cast().setCellPadding( 0 );
             sinkEvents( Event.getTypeInt( "click" ) );
         }
 
@@ -73,8 +72,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
         // Row styles need to be re-applied after inserting and deleting rows
         private void fixStyles(int iRow) {
             while ( iRow < getBody().getChildCount() ) {
-                TableRowElement tre = getBody().getChild( iRow )
-                        .<TableRowElement> cast();
+                TableRowElement tre = getBody().getChild( iRow ).<TableRowElement> cast();
                 tre.setClassName( getRowStyle( iRow ) );
                 iRow++;
             }
@@ -83,8 +81,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
         // Get style applicable to row
         private String getRowStyle(int iRow) {
             boolean isEven = iRow % 2 == 0;
-            String trClasses = isEven ? style.cellTableEvenRow() : style
-                    .cellTableOddRow();
+            String trClasses = isEven ? style.cellTableEvenRow() : style.cellTableOddRow();
             return trClasses;
         }
 
@@ -171,53 +168,71 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
      */
     private class VerticalSideBarSpacerWidget extends CellPanel {
 
-        private Image icon = new Image();
-        private Element tre = DOM.createTR();
-        private Element tce = DOM.createTD();
-        private HorizontalPanel hp = new HorizontalPanel();
-        
-        @Override
-        //TODO - Added
-        public void setHeight(String height) {
-            super.setHeight( height );
-            hp.setHeight( height );
-            //TODO Still not working on IE - and setting hp.setHeight also needs to be less bottom border width
-            //DOM.setStyleAttribute( tre, "height", height);
-            //DOM.setStyleAttribute( tce, "height", height);
+        private Image   icon     = new Image();
+        private Element tre      = DOM.createTR();
+        private Element tce      = DOM.createTD();
+        private Element outerDiv = DOM.createDiv();
+        private Element innerDiv = DOM.createDiv();
+
+        public void setHeight(int height) {
+            super.setHeight( height + "px" );
+
+            //Height needs to be adjusted for borders
+            String innerPixelHeight = (height - style.borderWidthThick()) + "px";
+            DOM.setStyleAttribute( outerDiv,
+                                   "height",
+                                   innerPixelHeight );
+        }
+
+        private void setPadding(int padding) {
+            getBody().getParentElement().<TableElement> cast().setCellPadding( 0 );
         }
 
         private VerticalSideBarSpacerWidget() {
-            // Widget stuff
-            FocusPanel fp = new FocusPanel();
-            hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
-            hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
-            setIconImage( grid.getGridWidget().getData().isMerged() );
-            hp.add( icon );
-            hp.setWidth( "100%" );
-            hp.setHeight( "100%" );
-            fp.add( hp );
 
-            // DOM stuff (put Widget in HTML cell so we can fix the width)
-            getBody().getParentElement().<TableElement> cast().setCellSpacing( 0 );
-            getBody().getParentElement().<TableElement> cast().setCellPadding( 0 );
-            tre.appendChild( tce );
-            getBody().appendChild( tre );
+            // Create DOM structure. The spacer is constructed of a single cell HTML table 
+            // containing two nested DIVs. These DIVs are used to control the row height 
+            // across all browsers and centre the toggle merging icon.
+            setSpacing( 0 );
+            setPadding( 0 );
+
+            setIconImage( grid.getGridWidget().getData().isMerged() );
+
             tce.addClassName( style.selectorSpacer() );
-            add( fp,
-                 tce );
+            innerDiv.addClassName( style.selectorSpacerInnerDiv() );
+            outerDiv.addClassName( style.selectorSpacerOuterDiv() );
+
+            tre.appendChild( tce );
+            tce.appendChild( outerDiv );
+            outerDiv.appendChild( innerDiv );
+            innerDiv.appendChild( icon.getElement() );
+            getBody().appendChild( tre );
+
+            //This could be moved to CSS if we always knew the icon size
+            innerDiv.getStyle().setHeight( icon.getHeight(),
+                                           Unit.PX );
+            innerDiv.getStyle().setMarginTop( (icon.getHeight() / 2) * -1,
+                                              Unit.PX );
+            innerDiv.getStyle().setWidth( icon.getWidth(),
+                                          Unit.PX );
+            innerDiv.getStyle().setMarginLeft( (icon.getWidth() / 2) * -1,
+                                               Unit.PX );
 
             // Setup event handling
-            fp.addClickHandler( new ClickHandler() {
+            DOM.setEventListener( icon.getElement(),
+                                  new EventListener() {
 
-                public void onClick(ClickEvent event) {
-                    setIconImage( grid.getGridWidget().toggleMerging() );
-                }
+                                      public void onBrowserEvent(Event event) {
+                                          if ( event.getType().equals( "click" ) ) {
+                                              setIconImage( grid.getGridWidget().toggleMerging() );
+                                          }
+                                      }
 
-            } );
+                                  } );
 
-            sinkEvents( Event.getTypeInt( "click" ) );
+            DOM.sinkEvents( icon.getElement(),
+                            Event.getTypeInt( "click" ) );
         }
-        
 
         // Set the icon's image accordingly
         private void setIconImage(boolean isMerged) {
@@ -294,8 +309,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
         if ( height < 0 ) {
             throw new IllegalArgumentException( "height cannot be less than zero" );
         }
-        spacer.setHeight( height
-                          + "px" );
+        spacer.setHeight( height );
     }
 
     @Override

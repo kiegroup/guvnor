@@ -392,19 +392,22 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
 
             // Set widths
             int colWidth = column.getWidth();
-            divText.getStyle().setWidth( colWidth,
-                                         Unit.PX );
             div.getStyle().setWidth( colWidth,
                                      Unit.PX );
+            divText.getStyle().setWidth( colWidth,
+                                         Unit.PX );
             tce.getStyle().setWidth( colWidth,
                                      Unit.PX );
 
-            // Set heights
-            int rowHeight = (style.rowHeight() * rowSpan) - style.borderWidth();
-            div.getStyle().setHeight( rowHeight,
+            // Set heights, it of hackery to make work x-browser
+            int rowHeight = style.rowHeight() * rowSpan;
+            int rowContentHeight = (style.rowHeight() * rowSpan) - style.borderWidth();
+            div.getStyle().setHeight( rowContentHeight,
                                       Unit.PX );
-            divText.getStyle().setHeight( rowHeight,
+            divText.getStyle().setHeight( rowContentHeight,
                                           Unit.PX );
+            tce.getStyle().setHeight( rowHeight,
+                                      Unit.PX );
             tce.setRowSpan( rowSpan );
 
             //Styling depending upon state
