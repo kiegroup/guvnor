@@ -177,7 +177,7 @@ public class MetaDataWidgetNew extends Composite {
         addAttribute( "UUID:",
                       readOnlyText( uuid ) );
 
-        endSection(false);
+        endSection(true);
 
 /*        startSection( constants.OtherMetaData() );
 
@@ -248,7 +248,7 @@ public class MetaDataWidgetNew extends Composite {
                                       fullRefreshView ));
         }
 
-        endSection(false);
+        endSection(true);
     }
 
     private void addRow(Widget widget) {

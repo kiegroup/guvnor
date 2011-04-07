@@ -41,7 +41,6 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
-import org.drools.guvnor.client.ruleeditor.VersionBrowser;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.ruleeditor.toolbar.PackageActionToolbarButtonsConfigurationProvider;
@@ -55,7 +54,6 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -70,25 +68,25 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This is the package editor and viewer for package configuration.
  */
-public class PackageEditor extends PrettyFormLayout {
+public class PackageEditorNew extends PrettyFormLayout {
 
     private Constants           constants = GWT.create( Constants.class );
     private static Images       images    = GWT.create( Images.class );
 
     private PackageConfigData   conf;
-    ActionToolbar actionToolBar;
+    private ActionToolbar actionToolBar;
     private boolean isHistoricalReadOnly = false;
     private Command             close;
     private Command             refreshPackageList;
     private HorizontalPanel packageConfigurationValidationResult = new HorizontalPanel();;
 
-    public PackageEditor(PackageConfigData data,
+    public PackageEditorNew(PackageConfigData data,
                          Command close,
                          Command refreshPackageList) {
         this(data, false, close, refreshPackageList);
     }
     
-	public PackageEditor(PackageConfigData data, 
+	public PackageEditorNew(PackageConfigData data, 
 			boolean historicalReadOnly, 
 			Command close,
 			Command refreshPackageList) {
@@ -103,11 +101,8 @@ public class PackageEditor extends PrettyFormLayout {
     
     private void refreshWidgets() {
         clear();
-        
-        startSection(constants.BuildAndValidate());
-        actionToolBar = new ActionToolbar(getConfiguration(), conf.state);
-        addRow( actionToolBar );
-        endSection();        
+
+        actionToolBar = new ActionToolbar(getConfiguration(), conf.state);    
 		if (isHistoricalReadOnly) {
 			actionToolBar.setVisible(false);
 		} else {
@@ -142,18 +137,7 @@ public class PackageEditor extends PrettyFormLayout {
 				}
 			});
 		}
-     
-        FlexTable headerWidgets = new FlexTable();
-        headerWidgets.setWidget( 0,
-                                 0,
-                                 new HTML( "<b>" + constants.PackageName() + ":</b>" ) ); //NON-NLS
-        headerWidgets.setWidget( 0,
-                                 1,
-                                 new Label( this.conf.name ) );
 
-        addHeader( images.packageLarge(),
-                   headerWidgets );
-        
         startSection( constants.ConfigurationSection() );
 
         packageConfigurationValidationResult.clear();
@@ -161,8 +145,7 @@ public class PackageEditor extends PrettyFormLayout {
 
         addAttribute( constants.Configuration(),
                       header() );
-        addAttribute( constants.DescriptionColon(),
-                      description() );
+
 		if (!isHistoricalReadOnly) {
 			addAttribute(constants.CategoryRules(), getAddCatRules());
 		}
@@ -195,16 +178,7 @@ public class PackageEditor extends PrettyFormLayout {
         }
 
         startSection( constants.InformationAndImportantURLs() );
-        if ( !conf.isSnapshot ) {
-            addAttribute( constants.LastModified() + ":",
-                          new Label( getDateString( conf.lastModified ) ) );
-        }
 
-        addAttribute( constants.LastContributor() + ":",
-                      new Label( this.conf.lastContributor ) );
-
-        addAttribute( constants.DateCreated(),
-                      new Label( getDateString( this.conf.dateCreated ) ) );
         Button buildSource = new Button( constants.ShowPackageSource() );
         buildSource.addClickHandler( new ClickHandler() {
 
@@ -272,16 +246,7 @@ public class PackageEditor extends PrettyFormLayout {
         
         RepositoryServiceFactory.getAssetService().listAssetsWithPackageName(this.conf.name, new String[]{AssetFormats.SPRING_CONTEXT}, 0,
                                                                         -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, callBack);
-        addAttribute( constants.VersionFeed(),
-        		new HTML( "<a href='" + getVersionFeed(this.conf ) + "' target='_blank'><img src='"
-                + new Image( images.feed() ).getUrl() + "'/></a>" ) );
-        addAttribute( constants.CurrentVersionNumber(),
-                getVersionNumberLabel() );
-		if (!isHistoricalReadOnly) {
-			VersionBrowser vb = new VersionBrowser(conf.uuid, true, null);
-			addAttribute("", vb);
-		}
-        
+
         endSection();        
     }
 
@@ -290,6 +255,10 @@ public class PackageEditor extends PrettyFormLayout {
         hPanel.add( widget );
         hPanel.add( new InfoPopup( constants.Tip(), popUpText ) );
         return hPanel;
+    }
+    
+    public ActionToolbar getActionToolbar() {
+    	return this.actionToolBar;
     }
 
     private Widget getShowCatRules() {

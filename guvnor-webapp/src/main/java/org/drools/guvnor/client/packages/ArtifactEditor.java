@@ -19,7 +19,6 @@ package org.drools.guvnor.client.packages;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Artifact;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -41,9 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
  * The generic editor for all types of artifacts. 
  */
 public class ArtifactEditor extends GuvnorEditor {
-
     private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
 
     interface ArtifactEditorBinder
         extends
