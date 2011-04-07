@@ -24,6 +24,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -44,6 +45,9 @@ import com.google.gwt.user.client.Event;
  * columns and rows as rows. Supports merging of cells between rows.
  */
 public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
+
+    //Deferred binding creates an appropriate class depending on browser
+    private CellHeightCalculatorImpl cellHeightCalculator = GWT.create( CellHeightCalculatorImpl.class );
 
     @Override
     public void onBrowserEvent(Event event) {
@@ -151,7 +155,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             TableRowElement tre = Document.get().createTRElement();
             tre.setClassName( getRowStyle( iRow ) );
             populateTableRowElement( tre,
-                                         rowData );
+                                     rowData );
             nbody.appendChild( tre );
         }
 
@@ -399,14 +403,9 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             tce.getStyle().setWidth( colWidth,
                                      Unit.PX );
 
-            // Set heights, it of hackery to make work x-browser
-            int rowHeight = style.rowHeight() * rowSpan;
-            int rowContentHeight = (style.rowHeight() * rowSpan) - style.borderWidth();
-            div.getStyle().setHeight( rowContentHeight,
-                                      Unit.PX );
-            divText.getStyle().setHeight( rowContentHeight,
-                                          Unit.PX );
-            tce.getStyle().setHeight( rowHeight,
+            // Set heights, TD includes border, DIV does not
+            int divHeight = cellHeightCalculator.calculateHeight( rowSpan );
+            div.getStyle().setHeight( divHeight,
                                       Unit.PX );
             tce.setRowSpan( rowSpan );
 
@@ -472,7 +471,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
                                                     DynamicDataRow rowData) {
 
         tre.getStyle().setHeight( style.rowHeight(),
-                                      Unit.PX );
+                                  Unit.PX );
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             if ( columns.get( iCol ).isVisible() ) {
                 TableCellElement tce = makeTableCellElement( iCol,

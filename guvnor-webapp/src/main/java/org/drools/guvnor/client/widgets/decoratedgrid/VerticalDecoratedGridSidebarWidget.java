@@ -92,7 +92,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             Element tre = DOM.createTR();
             Element tce = DOM.createTD();
             tre.setClassName( getRowStyle( widgets.size() ) );
-            tre.getStyle().setHeight( style.rowHeight(),
+            tce.getStyle().setHeight( style.rowHeight(),
                                       Unit.PX );
             tce.addClassName( style.selectorCell() );
             DOM.insertChild( getBody(),
