@@ -53,7 +53,7 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     }
     
     public boolean showRenameButton() {
-        return false;
+        return true;
     }
     
     public boolean showPromoteToGlobalButton() {

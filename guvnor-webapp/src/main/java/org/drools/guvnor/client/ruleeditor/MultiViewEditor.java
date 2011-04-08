@@ -260,8 +260,8 @@ public class MultiViewEditor extends GuvnorEditor {
                                                                                                                 false,
                                                                                                                 individualActionToolbarButtonsConfigurationProvider,
                                                                                                                 ruleViewerSettings );
-                                                                  ruleViewer.setDocoVisible( showDescription );
-                                                                  ruleViewer.setMetaVisible( showMetadata );
+                                                                  //ruleViewer.setDocoVisible( showDescription );
+                                                                  //ruleViewer.setMetaVisible( showMetadata );
 
                                                                   content.add( ruleViewer );
                                                                   ruleViewer.setWidth( "100%" );

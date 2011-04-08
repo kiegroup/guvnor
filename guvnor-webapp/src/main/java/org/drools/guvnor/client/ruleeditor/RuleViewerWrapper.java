@@ -62,6 +62,9 @@ public class RuleViewerWrapper extends GuvnorEditor {
 		this.isHistoricalReadOnly = isHistoricalReadOnly;
 		this.editEvent = event;
 		this.ruleViewerSettings = ruleViewerSettings;
+		this.closeCommand = closeCommand;
+		this.checkedInCommand = checkedInCommand;
+		this.archiveCommand = archiveCommand;		
         
         refreshWidgets();
         setWidth("100%");        

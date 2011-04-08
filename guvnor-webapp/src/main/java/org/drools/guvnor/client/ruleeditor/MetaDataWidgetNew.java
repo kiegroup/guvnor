@@ -102,23 +102,9 @@ public class MetaDataWidgetNew extends Composite {
         layout.clear();
         //layout.add( new SmallLabel( constants.Title() + ": [<b>" + data.name + "</b>]" ) );
         startSection( constants.Metadata() );
-        
-        if ( !readOnly ) {
-            Image edit = new ImageButton( images.edit(),
-                                          constants.RenameThisAsset() );
-            edit.addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent w) {
-                    showRenameAsset( w );
-                }
-            } );
-            addHeader( images.metadata(),
-                       artifact.name,
-                       edit );
-        } else {
-            addHeader( images.assetVersion(),
-                       artifact.name,
-                       null );
-        }
+        addHeader( images.assetVersion(),
+                artifact.name,
+                null );       
 
         loadData();
     }
@@ -294,33 +280,6 @@ public class MetaDataWidgetNew extends Composite {
             horiz.add(editPackage);
             return horiz;
         }
-    }
-
-    private void showRenameAsset(ClickEvent source) {
-        final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
-                                                       constants.RenameThisItem() );
-        final TextBox box = new TextBox();
-        box.setText( artifact.name );
-        pop.addAttribute( constants.NewNameAsset(),
-                          box );
-        Button ok = new Button( constants.RenameItem() );
-        pop.addAttribute( "",
-                          ok );
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent w) {
-                RepositoryServiceFactory.getAssetService().renameAsset( uuid,
-                                                                   box.getText(),
-                                                                   new GenericCallback<java.lang.String>() {
-                                                                       public void onSuccess(String data) {
-                                                                           metaDataRefreshView.execute();
-                                                                           Window.alert( constants.ItemHasBeenRenamed() );
-                                                                           pop.hide();
-                                                                       }
-                                                                   } );
-            }
-        } );
-
-        pop.show();
     }
 
     private void showEditPackage(final String pkg,

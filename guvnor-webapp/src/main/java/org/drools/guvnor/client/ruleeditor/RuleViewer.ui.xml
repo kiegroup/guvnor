@@ -29,11 +29,10 @@
 
   <gwt:HTMLPanel>
     <gwt:VerticalPanel width="100%">
-      <!-- guvnor-toolbar:ActionToolbar ui:field="toolbar"></guvnor-toolbar:ActionToolbar-->
       <guvnor-ruleeditor:MessageWidget
         ui:field="messageWidget"></guvnor-ruleeditor:MessageWidget>
-      <!-- gwt:Widget ui:field="editor"></gwt:Widget-->  
-      <gwt:HTMLPanel>
+      <gwt:Widget ui:field="editor"></gwt:Widget>  
+      <!-- gwt:HTMLPanel>
         <table>
           <tr>
             <td class="{style.editor}">
@@ -41,9 +40,7 @@
             </td>
           </tr>
         </table>
-      </gwt:HTMLPanel>
-      <!-- guvnor-ruleeditor:RuleDocumentWidget
-        ui:field="ruleDocumentWidget"></guvnor-ruleeditor:RuleDocumentWidget-->
+      </gwt:HTMLPanel-->
     </gwt:VerticalPanel>
   </gwt:HTMLPanel>
 

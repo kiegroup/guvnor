@@ -74,16 +74,9 @@ public class RuleViewer extends GuvnorEditor {
 
     private static RuleViewerBinder                   uiBinder  = GWT.create( RuleViewerBinder.class );
 
-    //@UiField(provided = true)
-    final MetaDataWidget                              metaWidget;
-
-    //@UiField(provided = true)
-    final RuleDocumentWidget                          ruleDocumentWidget;
-
     @UiField(provided = true)
     final Widget                                      editor;
 
-    //@UiField(provided = true)
     final ActionToolbar                               toolbar;
 
     @UiField
@@ -168,13 +161,6 @@ public class RuleViewer extends GuvnorEditor {
 
         this.actionToolbarButtonsConfigurationProvider = actionToolbarButtonsConfigurationProvider;
 
-        ruleDocumentWidget = new RuleDocumentWidget( asset,
-                                                     this.ruleViewerSettings.isDocoVisible() );
-
-        metaWidget = createMetaWidget();
-
-        metaWidget.setVisible( this.ruleViewerSettings.isMetaVisible() );
-
         editor = EditorLauncher.getEditorViewer( asset,
                                                  this );
 
@@ -204,16 +190,6 @@ public class RuleViewer extends GuvnorEditor {
     
     public ActionToolbar getActionToolbar() {
     	return this.toolbar;
-    }
-    
-    public void setDocoVisible(boolean docoVisible) {
-        this.ruleViewerSettings.setDocoVisible( docoVisible );
-        this.ruleDocumentWidget.setVisible( docoVisible );
-    }
-
-    public void setMetaVisible(boolean metaVisible) {
-        this.ruleViewerSettings.setMetaVisible( metaVisible );
-        this.metaWidget.setVisible( metaVisible );
     }
 
     @Override
@@ -255,6 +231,11 @@ public class RuleViewer extends GuvnorEditor {
             toolbar.setCopyCommand( new Command() {
                 public void execute() {
                     doCopy();
+                }
+            } );
+            toolbar.setRenameCommand( new Command() {
+                public void execute() {
+                    doRename();
                 }
             } );
             toolbar.setArchiveCommand( new Command() {
@@ -450,23 +431,6 @@ public class RuleViewer extends GuvnorEditor {
                                      asset ).show();
     }
 
-    private MetaDataWidget createMetaWidget() {
-        return new MetaDataWidget( this.asset,
-                                   readOnly,
-                                   this.asset.uuid,
-                                   new Command() {
-                                       public void execute() {
-                                           refreshMetaWidgetOnly();
-                                       }
-                                   },
-                                   new Command() {
-                                       public void execute() {
-                                           refreshDataAndView();
-                                       }
-                                   } );
-
-    }
-
     protected boolean hasDirty() {
         // not sure how to implement this now.
         return false;
@@ -525,10 +489,6 @@ public class RuleViewer extends GuvnorEditor {
                                                                           ((DirtyableComposite) editor).resetDirty();
                                                                       }
 
-                                                                      ruleDocumentWidget.resetDirty();
-
-                                                                      refreshMetaWidgetOnly( false );
-
                                                                       LoadingPopup.close();
                                                                       saved[0] = true;
 
@@ -566,27 +526,6 @@ public class RuleViewer extends GuvnorEditor {
                                                                      asset = asset_;
                                                                      doWidgets();
                                                                      LoadingPopup.close();
-                                                                 }
-                                                             } );
-    }
-
-    /**
-     * This will only refresh the meta data widget if necessary.
-     */
-    public void refreshMetaWidgetOnly() {
-        refreshMetaWidgetOnly( true );
-    }
-
-    private void refreshMetaWidgetOnly(final boolean showBusy) {
-
-        if ( showBusy ) LoadingPopup.showMessage( constants.RefreshingItem() );
-        RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.uuid,
-                                                             new GenericCallback<RuleAsset>() {
-                                                                 public void onSuccess(RuleAsset asset_) {
-                                                                     asset.metaData = asset_.metaData;
-                                                                     metaWidget.setMetaData( asset );
-                                                                     metaWidget.refresh();
-                                                                     if ( showBusy ) LoadingPopup.close();
                                                                  }
                                                              } );
     }
@@ -684,6 +623,52 @@ public class RuleViewer extends GuvnorEditor {
             editEvent.open( newAssetUUID );
         }
     }
+    
+    private void doRename() {
+        final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
+                                                       constants.RenameThisItem() );
+        final TextBox box = new TextBox();
+        box.setText( asset.name );
+        pop.addAttribute( constants.NewNameAsset(),
+                          box );
+        Button ok = new Button( constants.RenameItem() );
+        pop.addAttribute( "",
+                          ok );
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                RepositoryServiceFactory.getAssetService().renameAsset( asset.uuid,
+                                                                   box.getText(),
+                                                                   new GenericCallback<java.lang.String>() {
+                    public void onSuccess(String data) {
+                    	completedRenaming( box.getText(),
+                                          data );
+                        pop.hide();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        if ( t.getMessage().indexOf( "ItemExistsException" ) > -1 ) { // NON-NLS
+                            Window.alert( constants.ThatNameIsInUsePleaseTryAnother() );
+                        } else {
+                            super.onFailure( t );
+                        }
+                    }
+                });
+            }
+        } );
+
+        pop.show();
+    }
+    
+	private void completedRenaming(String name, String newAssetUUID) {
+		Window.alert( constants.ItemHasBeenRenamed() );
+		if (closeCommand != null) {
+			closeCommand.execute();
+		}		
+		if (editEvent != null) {
+			editEvent.open(newAssetUUID);
+		}
+	}
 
     private void doPromptToGlobal() {
         if ( asset.metaData.packageName.equals( "globalArea" ) ) {
@@ -695,7 +680,7 @@ public class RuleViewer extends GuvnorEditor {
                                                                             new GenericCallback<Void>() {
                                                                                 public void onSuccess(Void data) {
                                                                                     Window.alert( constants.Promoted() );
-                                                                                    refreshMetaWidgetOnly();
+                                                                                    refreshDataAndView();
                                                                                 }
 
                                                                                 @Override
