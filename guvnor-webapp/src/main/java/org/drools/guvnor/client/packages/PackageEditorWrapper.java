@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class PackageEditorWrapper extends Composite {
 	private ArtifactEditor artifactEditor;
-	private PackageEditorNew packageEditor;
+	private PackageEditor packageEditor;
 	private ActionToolbar actionToolBar;
     private PackageConfigData conf;
     private boolean isHistoricalReadOnly = false;
@@ -59,7 +59,7 @@ public class PackageEditorWrapper extends Composite {
     
     private void refreshWidgets() {  
     	this.artifactEditor = new ArtifactEditor(conf, null);
-    	this.packageEditor = new PackageEditorNew(conf, this.isHistoricalReadOnly, this.close, this.refreshPackageList);
+    	this.packageEditor = new PackageEditor(conf, this.isHistoricalReadOnly, this.close, this.refreshPackageList);
     	this.actionToolBar = this.packageEditor.getActionToolbar();
     	
     	VerticalPanel vp = new VerticalPanel();
@@ -70,9 +70,8 @@ public class PackageEditorWrapper extends Composite {
         
         ScrollPanel pnl = new ScrollPanel();
         pnl.setWidth("100%");
-        pnl.setTitle("Common");
         pnl.add(this.artifactEditor);
-        tPanel.add(pnl, "Common");        
+        tPanel.add(pnl, "Attributes");        
         tPanel.selectTab(0);                
         
         pnl = new ScrollPanel();
@@ -81,7 +80,9 @@ public class PackageEditorWrapper extends Composite {
         tPanel.add( pnl, "Edit" );        
         tPanel.selectTab(0);        
         
+        tPanel.setHeight("100%");
         vp.add(tPanel);
+        vp.setHeight("100%");
         
         initWidget(vp);
     }

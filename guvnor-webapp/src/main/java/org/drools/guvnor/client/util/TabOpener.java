@@ -28,6 +28,7 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.PackageEditor;
+import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.packages.SnapshotView;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.qa.AnalysisView;
@@ -36,7 +37,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.ruleeditor.RuleViewer;
+import org.drools.guvnor.client.ruleeditor.RuleViewerWrapper;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.rulelist.QueryWidget;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
@@ -136,25 +137,21 @@ public class TabOpener {
                 return new Command() {
                     public void execute() {
                         loading[0] = false;
-                        RuleViewer ruleViewer = new RuleViewer( ruleAsset,
-                                                                createEditEvent() );
+                        //When model is saved update the package view if it is opened.
+                        Command checkInAndArchiveCommand = createCheckInAndArchiveCommandForRuleViewer( ruleAsset );
+                        RuleViewerWrapper ruleViewer = new RuleViewerWrapper( ruleAsset,
+                                                                createEditEvent(),
+                                                                createCloseCommandForRuleViewer( uuid ),
+                                                                ruleAsset.metaData.format.equals( AssetFormats.MODEL )?checkInAndArchiveCommand:null,
+                                                                ruleAsset.metaData.format.equals( AssetFormats.MODEL )?checkInAndArchiveCommand:null                                                         		
+                                                                );
                         explorerViewCenterPanel.addTab( ruleAsset.name,
                                                         ruleViewer,
                                                         uuid );
-                        ruleViewer.setCloseCommand( createCloseCommandForRuleViewer( uuid ) );
-
-                        // When model is saved update the package view if it is
-                        // opened.
-                        if ( ruleAsset.metaData.format.equals( AssetFormats.MODEL ) ) {
-                            Command command = createCheckInAndArchiveCommandForRuleViewer( ruleAsset );
-                            ruleViewer.setCheckedInCommand( command );
-                            ruleViewer.setArchiveCommand( command );
-                        }
-
                         LoadingPopup.close();
                     }
 
-                    private Command createCheckInAndArchiveCommandForRuleViewer(final RuleAsset ruleAsset) {
+					private Command createCheckInAndArchiveCommandForRuleViewer(final RuleAsset ruleAsset) {
                         Command command = new Command() {
                             public void execute() {
                                 PackageEditor packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( ruleAsset.metaData.packageName );
@@ -228,7 +225,7 @@ public class TabOpener {
             RepositoryServiceFactory.getPackageService().loadPackageConfig( uuid,
                                                                      new GenericCallback<PackageConfigData>() {
                                                                          public void onSuccess(PackageConfigData conf) {
-                                                                             PackageEditor ed = new PackageEditor( conf,
+                                                                        	 PackageEditorWrapper ed = new PackageEditorWrapper( conf,
                                                                                                                    new Command() {
                                                                                                                        public void execute() {
                                                                                                                            explorerViewCenterPanel.close( uuid );

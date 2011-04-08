@@ -74,16 +74,16 @@ public class RuleViewer extends GuvnorEditor {
 
     private static RuleViewerBinder                   uiBinder  = GWT.create( RuleViewerBinder.class );
 
-    @UiField(provided = true)
+    //@UiField(provided = true)
     final MetaDataWidget                              metaWidget;
 
-    @UiField(provided = true)
+    //@UiField(provided = true)
     final RuleDocumentWidget                          ruleDocumentWidget;
 
     @UiField(provided = true)
     final Widget                                      editor;
 
-    @UiField(provided = true)
+    //@UiField(provided = true)
     final ActionToolbar                               toolbar;
 
     @UiField
@@ -113,6 +113,9 @@ public class RuleViewer extends GuvnorEditor {
                       final OpenItemCommand event) {
         this( asset,
               event,
+              null,
+              null,
+              null,
               false,
               null,
               null );
@@ -127,6 +130,9 @@ public class RuleViewer extends GuvnorEditor {
                       boolean historicalReadOnly) {
         this( asset,
               event,
+              null,
+              null,
+              null,
               historicalReadOnly,
               null,
               null );
@@ -140,6 +146,9 @@ public class RuleViewer extends GuvnorEditor {
      */
     public RuleViewer(RuleAsset asset,
                       final OpenItemCommand event,
+                      final Command closeCommand,
+          			  final Command checkedInCommand,
+          			  final Command archiveCommand,
                       boolean historicalReadOnly,
                       ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
                       RuleViewerSettings ruleViewerSettings) {
@@ -147,6 +156,9 @@ public class RuleViewer extends GuvnorEditor {
         this.asset = asset;
         this.readOnly = historicalReadOnly
                         && asset.isreadonly;
+        this.closeCommand = closeCommand;
+        this.checkedInCommand = checkedInCommand;
+        this.archiveCommand = archiveCommand;
 
         if ( ruleViewerSettings == null ) {
             this.ruleViewerSettings = new RuleViewerSettings();
@@ -183,12 +195,17 @@ public class RuleViewer extends GuvnorEditor {
                                      asset.state );
 
         initWidget( uiBinder.createAndBindUi( this ) );
+        setWidth( "100%" );
 
         doWidgets();
 
         LoadingPopup.close();
     }
-
+    
+    public ActionToolbar getActionToolbar() {
+    	return this.toolbar;
+    }
+    
     public void setDocoVisible(boolean docoVisible) {
         this.ruleViewerSettings.setDocoVisible( docoVisible );
         this.ruleDocumentWidget.setVisible( docoVisible );
@@ -572,28 +589,6 @@ public class RuleViewer extends GuvnorEditor {
                                                                      if ( showBusy ) LoadingPopup.close();
                                                                  }
                                                              } );
-    }
-
-    /**
-     * This needs to be called to allow the opened viewer to close itself.
-     * 
-     * @param c
-     */
-    public void setCloseCommand(Command c) {
-        this.closeCommand = c;
-    }
-
-    /**
-     * This is called when this viewer saves something.
-     * 
-     * @param c
-     */
-    public void setCheckedInCommand(Command c) {
-        this.checkedInCommand = c;
-    }
-
-    public void setArchiveCommand(Command c) {
-        this.archiveCommand = c;
     }
 
     /**

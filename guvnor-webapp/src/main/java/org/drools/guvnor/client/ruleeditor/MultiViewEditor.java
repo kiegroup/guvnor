@@ -245,9 +245,18 @@ public class MultiViewEditor extends GuvnorEditor {
                                                                   ruleViewerSettings.setDocoVisible( false );
                                                                   ruleViewerSettings.setMetaVisible( false );
                                                                   ruleViewerSettings.setStandalone(true);
-
+                                                                  Command closeCommand = new Command() {
+                                                                      public void execute() {
+                                                                          ruleViews.remove( row.uuid );
+                                                                          rows.remove( row );
+                                                                          doViews();
+                                                                      }
+                                                                  };
                                                                   final RuleViewer ruleViewer = new RuleViewer( asset,
                                                                                                                 editItemEvent,
+                                                                                                                closeCommand,
+                                                                                                                null,
+                                                                                                                null,
                                                                                                                 false,
                                                                                                                 individualActionToolbarButtonsConfigurationProvider,
                                                                                                                 ruleViewerSettings );
@@ -257,16 +266,6 @@ public class MultiViewEditor extends GuvnorEditor {
                                                                   content.add( ruleViewer );
                                                                   ruleViewer.setWidth( "100%" );
                                                                   ruleViewer.setHeight( "100%" );
-
-                                                                  ruleViewer.setCloseCommand( new Command() {
-
-                                                                      public void execute() {
-                                                                          ruleViews.remove( row.uuid );
-                                                                          rows.remove( row );
-                                                                          doViews();
-                                                                      }
-                                                                  } );
-
                                                                   ruleViews.put( row.uuid,
                                                                                  ruleViewer );
 

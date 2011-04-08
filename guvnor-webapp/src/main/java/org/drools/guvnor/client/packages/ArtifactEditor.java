@@ -118,6 +118,7 @@ public class ArtifactEditor extends GuvnorEditor {
         metaWidget.setVisible( this.ruleViewerSettings.isMetaVisible() );
 
         initWidget( uiBinder.createAndBindUi( this ) );
+        setWidth( "100%" );
         LoadingPopup.close();
     }
 
