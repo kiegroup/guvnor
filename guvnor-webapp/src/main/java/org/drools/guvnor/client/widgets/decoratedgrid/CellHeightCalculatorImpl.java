@@ -33,7 +33,8 @@ public class CellHeightCalculatorImpl {
     protected static final DecisionTableStyle     style    = resource.cellTableStyle();
 
     public int calculateHeight(int rowSpan) {
-        return 0;
+        int divHeight = (style.rowHeight()) * rowSpan - style.borderWidth();
+        return divHeight;
     }
 
 }

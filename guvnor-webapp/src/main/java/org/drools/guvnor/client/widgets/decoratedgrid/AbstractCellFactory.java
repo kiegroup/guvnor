@@ -23,7 +23,7 @@ import org.drools.guvnor.client.decisiontable.cells.PopupNumericEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
-import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 
@@ -33,7 +33,7 @@ import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 public abstract class AbstractCellFactory<T> {
 
     // The containing MergableGridWidget to which cells will send their updates
-    protected MergableGridWidget<T>     grid;
+    protected MergableGridWidget<T>      grid;
 
     protected SuggestionCompletionEngine sce;
 
@@ -69,7 +69,8 @@ public abstract class AbstractCellFactory<T> {
 
     // Make a new Cell for Boolean columns
     protected DecoratedGridCellValueAdaptor<Boolean, T> makeBooleanCell() {
-        return new DecoratedGridCellValueAdaptor<Boolean, T>( new CheckboxCell() );
+        CheckboxCellImpl cbc = GWT.create( CheckboxCellImpl.class );
+        return new DecoratedGridCellValueAdaptor<Boolean, T>( cbc );
     }
 
     // Make a new Cell for Date columns
