@@ -21,7 +21,7 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 public class CellHeightCalculatorImplMozilla extends CellHeightCalculatorImpl {
 
     public int calculateHeight(int rowSpan) {
-        int divHeight = (style.rowHeight() - style.borderWidth()) * rowSpan;
+        int divHeight = (style.rowHeight()) * rowSpan - style.borderWidth();
         return divHeight;
     }
 
