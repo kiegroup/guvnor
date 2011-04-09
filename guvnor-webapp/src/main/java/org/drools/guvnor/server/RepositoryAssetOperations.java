@@ -42,6 +42,7 @@ import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.builder.pagerow.ArchivedAssetPageRowBuilder;
+import org.drools.guvnor.server.builder.pagerow.AssetPageRowBuilder;
 import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -51,7 +52,6 @@ import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.AssetFormatHelper;
 import org.drools.guvnor.server.util.AssetLockManager;
-import org.drools.guvnor.server.util.AssetPageRowPopulator;
 import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -495,8 +495,9 @@ public class RepositoryAssetOperations {
         // Populate response
         long totalRowsCount = it.getSize();
         PageResponse<AssetPageRow> response = new PageResponse<AssetPageRow>();
-        List<AssetPageRow> rowList = fillAssetPageRowsForFindAssetPage( request,
-                                                                        it );
+        AssetPageRowBuilder assetPageRowBuilder = new AssetPageRowBuilder();
+        List<AssetPageRow> rowList = assetPageRowBuilder.createRows( request,
+                                                                     it );
         boolean bHasMoreRows = it.hasNext();
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
@@ -579,21 +580,6 @@ public class RepositoryAssetOperations {
                 }
                 skipped++;
             }
-        }
-        return rowList;
-    }
-
-    private List<AssetPageRow> fillAssetPageRowsForFindAssetPage(
-                                                                 AssetPageRequest request,
-                                                                 AssetItemIterator it) {
-        Integer pageSize = request.getPageSize();
-        it.skip( request.getStartRowIndex() );
-        List<AssetPageRow> rowList = new ArrayList<AssetPageRow>();
-
-        while ( it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
-            AssetItem assetItem = (AssetItem) it.next();
-            AssetPageRowPopulator assetPageRowPopulator = new AssetPageRowPopulator();
-            rowList.add( assetPageRowPopulator.makeAssetPageRow( assetItem ) );
         }
         return rowList;
     }
