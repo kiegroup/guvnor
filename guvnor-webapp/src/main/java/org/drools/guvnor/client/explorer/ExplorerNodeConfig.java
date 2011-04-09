@@ -120,7 +120,7 @@ public class ExplorerNodeConfig {
 
         item = new TreeItem( Util.getHeader( images.newFile(), constants.XMLProperties() ) );
         itemWidgets.put( item, AssetFormats.PROPERTIES );
-        item.setUserObject( new String[]{AssetFormats.PROPERTIES} );
+        item.setUserObject( new String[]{AssetFormats.PROPERTIES, AssetFormats.XML} );
         pkg.addItem( item );
 
         item = new TreeItem( Util.getHeader( images.newFile(), constants.OtherAssetsDocumentation() ) );
