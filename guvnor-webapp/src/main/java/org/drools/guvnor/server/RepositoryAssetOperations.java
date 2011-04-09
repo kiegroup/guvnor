@@ -43,6 +43,7 @@ import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.builder.pagerow.ArchivedAssetPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.AssetPageRowBuilder;
+import org.drools.guvnor.server.builder.pagerow.QuickFindPageRowBuilder;
 import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -56,7 +57,6 @@ import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
-import org.drools.guvnor.server.util.QueryPageRowCreator;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
@@ -537,8 +537,9 @@ public class RepositoryAssetOperations {
         // Populate response
         long totalRowsCount = it.getSize();
         PageResponse<QueryPageRow> response = new PageResponse<QueryPageRow>();
-        List<QueryPageRow> rowList = fillQueryPageRows( request,
-                                                        it );
+        QuickFindPageRowBuilder quickFindPageRowBuilder = new QuickFindPageRowBuilder();
+        List<QueryPageRow> rowList = quickFindPageRowBuilder.createRows( request,
+                                                                         it );
         boolean bHasMoreRows = it.hasNext();
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
@@ -555,33 +556,6 @@ public class RepositoryAssetOperations {
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Quick Find) for (" + search + ") in " + methodDuration + " ms." );
         return response;
-    }
-
-    private List<QueryPageRow> fillQueryPageRows(QueryPageRequest request,
-                                                 AssetItemIterator it) {
-        int skipped = 0;
-        Integer pageSize = request.getPageSize();
-        int startRowIndex = request.getStartRowIndex();
-        RepositoryFilter filter = new AssetItemFilter();
-        List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
-
-        while ( it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
-            AssetItem assetItem = (AssetItem) it.next();
-
-            // Filter surplus assets
-            if ( filter.accept( assetItem,
-                                RoleTypes.PACKAGE_READONLY ) ) {
-
-                // Cannot use AssetItemIterator.skip() as it skips non-filtered
-                // assets whereas startRowIndex is the index of the
-                // first displayed asset (i.e. filtered)
-                if ( skipped >= startRowIndex ) {
-                    rowList.add( QueryPageRowCreator.makeQueryPageRow( assetItem ) );
-                }
-                skipped++;
-            }
-        }
-        return rowList;
     }
 
     protected void lockAsset(String uuid) {
