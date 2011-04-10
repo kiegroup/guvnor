@@ -295,9 +295,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return getPackageService().buildPackageSource( p0 );
     }
 
-    public void copyPackage(java.lang.String p0,
+    public String copyPackage(java.lang.String p0,
                             java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
-        getPackageService().copyPackage( p0,
+        return getPackageService().copyPackage( p0,
                                          p1 );
     }
 

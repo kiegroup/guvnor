@@ -57,14 +57,12 @@ public class ArtifactEditor extends GuvnorEditor {
 
     @UiField
     MessageWidget                                     messageWidget;
+    
     private Command                                   closeCommand;
     public Command                                    checkedInCommand;
     protected Artifact                                artifact;
-
     private boolean                                   readOnly;
-
     private final RuleViewerSettings                  ruleViewerSettings;
-
     private long                                      lastSaved = System.currentTimeMillis();
 
     public ArtifactEditor(Artifact artifact,

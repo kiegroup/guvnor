@@ -81,8 +81,9 @@ public class PackageEditor extends PrettyFormLayout {
 
     public PackageEditor(PackageConfigData data,
                          Command closeCommand,
-                         Command refreshPackageList) {
-        this(data, false, closeCommand, refreshPackageList, null);
+                         Command refreshPackageList,
+                         OpenPackageCommand openPackageCommand) {
+        this(data, false, closeCommand, refreshPackageList, openPackageCommand);
     }
     
 	public PackageEditor(PackageConfigData data, 
@@ -480,7 +481,6 @@ public class PackageEditor extends PrettyFormLayout {
         } );
 
         pop.show();
-
     }
 /*
     private void setState(String state) {
@@ -549,12 +549,10 @@ public class PackageEditor extends PrettyFormLayout {
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
                 RepositoryServiceFactory.getPackageService().copyPackage( conf.name,
                                                                    name.getText(),
-                                                                   new GenericCallback<Void>() {
-                                                                       public void onSuccess(Void data) {
-                                                                           refreshPackageListCommand.execute();
-                                                                           Window.alert( constants.PackageCopiedSuccessfully() );
+                                                                   new GenericCallback<String>() {
+                                                                       public void onSuccess(String uuid) {
+                                                                    	   completedCopying(uuid);
                                                                            pop.hide();
-                                                                           LoadingPopup.close();
                                                                        }
                                                                    } );
             }
@@ -562,7 +560,15 @@ public class PackageEditor extends PrettyFormLayout {
 
         pop.show();
     }
-
+    
+	private void completedCopying(String newAssetUUID) {
+		Window.alert( constants.PackageCopiedSuccessfully() );
+		refreshPackageListCommand.execute();
+		if (openPackageCommand != null) {
+			openPackageCommand.open(newAssetUUID, refreshPackageListCommand);
+		}
+	}
+	
     private void doSave(final Command refresh) {
         LoadingPopup.showMessage( constants.SavingPackageConfigurationPleaseWait() );
 

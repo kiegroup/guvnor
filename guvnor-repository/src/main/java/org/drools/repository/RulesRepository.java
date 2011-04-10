@@ -1742,7 +1742,7 @@ public class RulesRepository {
     /**
      * Copy a package to the target name.
      */
-    public void copyPackage(String sourcePackageName,
+    public String copyPackage(String sourcePackageName,
                             String destPackageName) {
         PackageItem source = loadPackage(sourcePackageName);
         String sourcePath;
@@ -1758,6 +1758,7 @@ public class RulesRepository {
                     destPath);
 
             PackageItem newPkg = loadPackage(destPackageName);
+            newPkg.updateTitle(destPackageName);
 
             for (Iterator iter = newPkg.getAssets(); iter.hasNext();) {
                 AssetItem as = (AssetItem) iter.next();
@@ -1766,12 +1767,12 @@ public class RulesRepository {
             }
 
             save();
-
+            
+            return newPkg.getUUID();
         } catch (RepositoryException e) {
             log.error(e.getMessage(), e);
             throw new RulesRepositoryException(e);
         }
-
     }
 
     @Override

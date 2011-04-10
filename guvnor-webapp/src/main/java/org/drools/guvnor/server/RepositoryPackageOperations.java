@@ -202,13 +202,13 @@ public class RepositoryPackageOperations {
         return data;
     }
 
-    protected void copyPackage(String sourcePackageName,
+    protected String copyPackage(String sourcePackageName,
                                String destPackageName) throws SerializationException {
 
         try {
             log.info( "USER:" + getCurrentUserName() + " COPYING package [" + sourcePackageName + "] to  package [" + destPackageName + "]" );
 
-            getRulesRepository().copyPackage( sourcePackageName,
+            return getRulesRepository().copyPackage( sourcePackageName,
                                               destPackageName );
         } catch ( RulesRepositoryException e ) {
             log.error( "Unable to copy package.",

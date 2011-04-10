@@ -167,7 +167,7 @@ public interface PackageService
      * @param sourcePackageName
      * @param destPackageName
      */
-    public void copyPackage(String sourcePackageName,
+    public String copyPackage(String sourcePackageName,
                             String destPackageName) throws SerializationException;
 
     /**

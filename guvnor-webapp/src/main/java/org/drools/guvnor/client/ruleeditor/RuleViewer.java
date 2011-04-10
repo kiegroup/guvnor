@@ -157,8 +157,7 @@ public class RuleViewer extends GuvnorEditor {
 
         this.actionToolbarButtonsConfigurationProvider = actionToolbarButtonsConfigurationProvider;
 
-        editor = EditorLauncher.getEditorViewer( asset,
-                                                 this );
+        editor = EditorLauncher.getEditorViewer( asset, this );
 
         // for designer we need to give it more playing room
         if ( editor.getClass().getName().equals( "org.drools.guvnor.client.processeditor.BusinessProcessEditor" ) ) {
@@ -179,7 +178,7 @@ public class RuleViewer extends GuvnorEditor {
         initWidget( uiBinder.createAndBindUi( this ) );
         setWidth( "100%" );
 
-        doWidgets();
+        initActionToolBar();
 
         LoadingPopup.close();
     }
@@ -207,8 +206,7 @@ public class RuleViewer extends GuvnorEditor {
      * we get the data back from the server, also determines what widgets to
      * load up).
      */
-    private void doWidgets() {
-
+    private void initActionToolBar() {
         // the action widgets (checkin/close etc).
         if ( readOnly
              || asset.isreadonly || this.ruleViewerSettings.isStandalone()) {
@@ -520,7 +518,7 @@ public class RuleViewer extends GuvnorEditor {
                                                              new GenericCallback<RuleAsset>() {
                                                                  public void onSuccess(RuleAsset asset_) {
                                                                      asset = asset_;
-                                                                     doWidgets();
+                                                                     initActionToolBar();
                                                                      LoadingPopup.close();
                                                                  }
                                                              } );

@@ -196,10 +196,10 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    public void copyPackage(String sourcePackageName,
+    public String copyPackage(String sourcePackageName,
                             String destPackageName) throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
-        repositoryPackageOperations.copyPackage( sourcePackageName,
+        return repositoryPackageOperations.copyPackage( sourcePackageName,
                                                  destPackageName );
     }
 
