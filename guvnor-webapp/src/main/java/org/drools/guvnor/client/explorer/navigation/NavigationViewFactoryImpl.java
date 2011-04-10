@@ -18,8 +18,9 @@ package org.drools.guvnor.client.explorer.navigation;
 
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
-public class AuthorNavigationViewFactoryImpl implements AuthorNavigationViewFactory {
+public class NavigationViewFactoryImpl implements NavigationViewFactory {
 
     NavigationPanelView navigationPanelView;
 
@@ -55,10 +56,10 @@ public class AuthorNavigationViewFactoryImpl implements AuthorNavigationViewFact
     }
 
     public RepositoryServiceAsync getRepositoryService() {
-        return null;  //TODO: Generated code -Rikkola-
+        return RepositoryServiceFactory.getService();
     }
 
     public CategoryServiceAsync getCategoryService() {
-        return null;  //TODO: Generated code -Rikkola-
+        return RepositoryServiceFactory.getCategoryService();
     }
 }

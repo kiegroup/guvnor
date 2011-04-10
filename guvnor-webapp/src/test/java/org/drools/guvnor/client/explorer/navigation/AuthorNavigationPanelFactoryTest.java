@@ -16,9 +16,6 @@
 
 package org.drools.guvnor.client.explorer.navigation;
 
-import org.drools.guvnor.client.explorer.navigation.AuthorNavigationPanelFactory;
-import org.drools.guvnor.client.explorer.navigation.AuthorNavigationViewFactory;
-import org.drools.guvnor.client.explorer.navigation.NavigationPanel;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
@@ -29,8 +26,8 @@ public class AuthorNavigationPanelFactoryTest {
 
     @Test
     public void testBasic() throws Exception {
-        AuthorNavigationViewFactory authorNavigationViewFactory = mock(AuthorNavigationViewFactory.class);
-        AuthorNavigationPanelFactory authorNavigationPanelFactory = new AuthorNavigationPanelFactory(authorNavigationViewFactory);
+        NavigationViewFactory navigationViewFactory = mock(NavigationViewFactory.class);
+        AuthorNavigationPanelFactory authorNavigationPanelFactory = new AuthorNavigationPanelFactory(navigationViewFactory);
 
         NavigationPanel navigationPanel = authorNavigationPanelFactory.createNavigationPanel();
 

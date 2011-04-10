@@ -19,6 +19,7 @@ package org.drools.guvnor.client.util;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 
 import com.google.gwt.resources.client.ImageResource;
@@ -33,7 +34,7 @@ public class Util {
             SafeHtmlTemplates {
 
         @Template("{0} {1}")
-        SafeHtml message(ImageResource imageResource, SafeHtml message);
+        SafeHtml message(SafeHtml imageHTML, SafeHtml message);
     }
 
     private static final HeaderTemplate HEADER_TEMPLATE = GWT.create(HeaderTemplate.class);
@@ -48,7 +49,7 @@ public class Util {
      */
     public static SafeHtml getHeader(ImageResource image,
                                      final String text) {
-        return HEADER_TEMPLATE.message(image,
+        return HEADER_TEMPLATE.message(SafeHtmlUtils.fromTrustedString(AbstractImagePrototype.create(image).getHTML()),
                 new SafeHtml() {
                     public String asString() {
                         return text;

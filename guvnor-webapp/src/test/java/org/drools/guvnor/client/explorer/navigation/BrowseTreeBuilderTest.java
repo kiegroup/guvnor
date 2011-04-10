@@ -33,9 +33,9 @@ public class BrowseTreeBuilderTest {
     @Before
     public void setUp() throws Exception {
         builder = new BrowseTreeBuilder();
-        AuthorNavigationViewFactory authorNavigationViewFactory = setUpNavigationFactory();
-        stackItemHeaderView = setUpHeaderView(authorNavigationViewFactory);
-        browseTreeView = setUpContentView(authorNavigationViewFactory);
+        NavigationViewFactory navigationViewFactory = setUpNavigationFactory();
+        stackItemHeaderView = setUpHeaderView(navigationViewFactory);
+        browseTreeView = setUpContentView(navigationViewFactory);
     }
 
     @Test
@@ -92,21 +92,21 @@ public class BrowseTreeBuilderTest {
 //        verify(browseTreeView).addRootCategoryTreeItem();
 //    }
 
-    private AuthorNavigationViewFactory setUpNavigationFactory() {
-        AuthorNavigationViewFactory authorNavigationViewFactory = mock(AuthorNavigationViewFactory.class);
-        builder.setViewFactory(authorNavigationViewFactory);
-        return authorNavigationViewFactory;
+    private NavigationViewFactory setUpNavigationFactory() {
+        NavigationViewFactory navigationViewFactory = mock(NavigationViewFactory.class);
+        builder.setViewFactory(navigationViewFactory);
+        return navigationViewFactory;
     }
 
-    private BrowseTreeView setUpContentView(AuthorNavigationViewFactory authorNavigationViewFactory) {
+    private BrowseTreeView setUpContentView(NavigationViewFactory navigationViewFactory) {
         BrowseTreeView browseTreeView = mock(BrowseTreeView.class);
-        when(authorNavigationViewFactory.getBrowseTreeView()).thenReturn(browseTreeView);
+        when(navigationViewFactory.getBrowseTreeView()).thenReturn(browseTreeView);
         return browseTreeView;
     }
 
-    private BrowseHeaderView setUpHeaderView(AuthorNavigationViewFactory authorNavigationViewFactory) {
+    private BrowseHeaderView setUpHeaderView(NavigationViewFactory navigationViewFactory) {
         BrowseHeaderView stackItemHeaderView = mock(BrowseHeaderView.class);
-        when(authorNavigationViewFactory.getBrowseHeaderView()).thenReturn(stackItemHeaderView);
+        when(navigationViewFactory.getBrowseHeaderView()).thenReturn(stackItemHeaderView);
         return stackItemHeaderView;
     }
 }

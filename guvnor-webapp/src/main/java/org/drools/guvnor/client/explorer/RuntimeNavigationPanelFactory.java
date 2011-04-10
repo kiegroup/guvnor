@@ -14,28 +14,23 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.navigation;
+package org.drools.guvnor.client.explorer;
 
-import org.drools.guvnor.client.rpc.CategoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.explorer.navigation.NavigationPanel;
+import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 
-public interface NavigationViewFactory {
+public class RuntimeNavigationPanelFactory extends NavigationPanelFactory {
 
-    NavigationPanelView getNavigationPanelView();
 
-    BrowseHeaderView getBrowseHeaderView();
+    // TODO: Test this -Rikkola-
 
-    BrowseTreeView getBrowseTreeView();
 
-    AdminTreeView getAdminTreeView();
+    public RuntimeNavigationPanelFactory(NavigationViewFactory navigationViewFactory) {
+    }
 
-    DeploymentTreeView getDeploymentTreeView();
-
-    QATreeView getQATreeView();
-
-    KnowledgeBasesTreeView getKnowledgeBasesTreeView();
-
-    RepositoryServiceAsync getRepositoryService();
-
-    CategoryServiceAsync getCategoryService();
+    @Override
+    public NavigationPanel createNavigationPanel() {
+        return null;  //TODO: Generated code -Rikkola-
+    }
 }

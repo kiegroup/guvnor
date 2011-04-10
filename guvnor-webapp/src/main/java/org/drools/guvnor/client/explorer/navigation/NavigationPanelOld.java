@@ -84,7 +84,7 @@ public class NavigationPanelOld extends Composite {
     }
 
     private void addCategoriesPanel() {
-        addItem(new BrowseTreeOld());
+//        addItem(new BrowseTreeOld());
     }
 
     private void addItem(NavigationItem tree) {

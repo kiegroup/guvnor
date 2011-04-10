@@ -21,8 +21,6 @@ import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
-import org.drools.guvnor.client.explorer.navigation.AuthorNavigationViewFactory;
-import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 
 public class QATreeBuilder extends NavigationItemBuilder {
 
@@ -48,7 +46,7 @@ public class QATreeBuilder extends NavigationItemBuilder {
     }
 
     @Override
-    public void setViewFactory(AuthorNavigationViewFactory navigationViewFactory) {
+    public void setViewFactory(NavigationViewFactory navigationViewFactory) {
         //TODO: Generated code -Rikkola-
     }
 }

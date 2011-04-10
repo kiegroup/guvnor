@@ -20,6 +20,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.ConfigurationsLoaderMock;
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.TabContainer;
 import org.drools.guvnor.client.explorer.TabManager;
 import org.drools.guvnor.client.explorer.navigation.BrowseTreeView.Presenter;
@@ -45,6 +46,7 @@ public class BrowseTreeTest {
     private IsTreeItem incomingInboxTreeItem;
     private IsTreeItem inboxRecentEdited;
     private IsTreeItem inboxRecentViewed;
+    private IsTreeItem rootTreeItem;
 
     @Before
     public void setUp() throws Exception {
@@ -72,7 +74,7 @@ public class BrowseTreeTest {
     private void setUpView() {
         view = mock(BrowseTreeView.class);
         find = mock(IsTreeItem.class);
-        IsTreeItem rootTreeItem = mock(IsTreeItem.class);
+        rootTreeItem = mock(IsTreeItem.class);
         rootCategoryTreeItem = mock(IsTreeItem.class);
         rootStatesTreeItem = mock(IsTreeItem.class);
         incomingInboxTreeItem = mock(IsTreeItem.class);
@@ -98,25 +100,36 @@ public class BrowseTreeTest {
 
     @Test
     public void testFindSelection() throws Exception {
-        presenter.onTreeItemOpen(find);
+        presenter.onTreeItemSelection(find, "find");
 
         verify(tabManager).openFind();
     }
 
     @Test
-    public void testInboxSelection() throws Exception {
+    public void testInboxIncomingSelection() throws Exception {
         presenter.onTreeItemSelection(incomingInboxTreeItem, "title1");
+
+        verify(tabManager).openInboxIncomingPagedTable(ExplorerNodeConfig.INCOMING_ID);
+    }
+
+    @Test
+    public void testInboxRecentEditedSelection() throws Exception {
         presenter.onTreeItemSelection(inboxRecentEdited, "title2");
+
+        verify(tabManager).openInboxPagedTable(ExplorerNodeConfig.RECENT_EDITED_ID);
+    }
+
+    @Test
+    public void testInboxRecentViewedSelection() throws Exception {
         presenter.onTreeItemSelection(inboxRecentViewed, "title3");
 
-        verify(tabManager).openInboxIncomingPagedTable("title1");
-        verify(tabManager).openInboxPagedTable("title2");
-        verify(tabManager).openInboxPagedTable("title3");
+        verify(tabManager).openInboxPagedTable(ExplorerNodeConfig.RECENT_VIEWED_ID);
     }
 
     @Test
     public void testOpenStateSelection() throws Exception {
         setUpStates("title1");
+        categoryServiceAsyncMock.addCategorySelection("/");
         setUpCapabilities(Capability.SHOW_KNOWLEDGE_BASES_VIEW);
 
         IsTreeItem state = mock(IsTreeItem.class);
@@ -124,8 +137,7 @@ public class BrowseTreeTest {
 
         setUpPresenter();
 
-        presenter.onTreeItemSelection(rootStatesTreeItem, "states");
-        verify(view).removeStates();
+        presenter.onTreeItemOpen(rootTreeItem);
         presenter.onTreeItemSelection(state, "title1");
 
         verify(tabManager).openStatePagedTable("title1");
@@ -176,6 +188,7 @@ public class BrowseTreeTest {
         IsTreeItem category1 = mock(IsTreeItem.class);
         when(view.addTreeItem(rootCategoryTreeItem, "categoryName1")).thenReturn(category1);
 
+        presenter.onTreeItemOpen(rootTreeItem);
         presenter.onTreeItemOpen(rootCategoryTreeItem);
         presenter.onTreeItemSelection(category1, "categoryName1");
 
@@ -186,10 +199,10 @@ public class BrowseTreeTest {
     public void testLoadFirstLevelCategories() throws Exception {
         categoryServiceAsyncMock.addCategorySelection("/", "category1", "category2", "category3");
 
+        presenter.onTreeItemOpen(rootTreeItem);
         presenter.onTreeItemOpen(rootCategoryTreeItem);
 
         verify(view).removeCategories(rootCategoryTreeItem);
-
         verifyAddedTreeItemsToCategory(rootCategoryTreeItem, "category1", "category2", "category3");
     }
 
@@ -199,21 +212,28 @@ public class BrowseTreeTest {
         categoryServiceAsyncMock.addCategorySelection("/one", "t1", "t2");
         categoryServiceAsyncMock.addCategorySelection("/one/t2", "a", "b", "c", "d", "e", "f");
 
-
         IsTreeItem oneTreeItem = mock(IsTreeItem.class);
         when(view.addTreeItem(rootCategoryTreeItem, "one")).thenReturn(oneTreeItem);
         IsTreeItem t2TreeItem = mock(IsTreeItem.class);
         when(view.addTreeItem(oneTreeItem, "t2")).thenReturn(t2TreeItem);
 
+        setUpChildren(rootCategoryTreeItem, oneTreeItem);
+        setUpChildren(oneTreeItem, t2TreeItem);
+        setUpChildren(t2TreeItem);
+
+        presenter.onTreeItemOpen(rootTreeItem);
         presenter.onTreeItemOpen(rootCategoryTreeItem);
-
         presenter.onTreeItemOpen(oneTreeItem);
-
         presenter.onTreeItemOpen(t2TreeItem);
 
         verify(view).removeCategories(t2TreeItem);
-
         verifyAddedTreeItemsToCategory(t2TreeItem, "a", "b", "c", "d", "e", "f");
+    }
+
+    private void setUpChildren(IsTreeItem parent, IsTreeItem... children) {
+        ArrayList rootChildList = new ArrayList();
+        rootChildList.addAll(Arrays.asList(children));
+        when(view.getChildren(parent)).thenReturn(rootChildList);
     }
 
     private void setUpCapabilities(Capability... list) {

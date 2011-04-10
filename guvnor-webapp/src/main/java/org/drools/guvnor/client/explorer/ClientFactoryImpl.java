@@ -19,20 +19,27 @@ package org.drools.guvnor.client.explorer;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.place.shared.PlaceController;
+import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
+import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 
 public class ClientFactoryImpl implements ClientFactory {
 
     private final EventBus eventBus = new SimpleEventBus();
     private final PlaceController placeController = new PlaceController(eventBus);
-    private final AuthorPerspectiveView authorPerspectiveView = new AuthorPerspectiveViewImpl();
     private PerspectivesPanelView perspectivesPanelView;
+    private NavigationViewFactoryImpl authorNavigationViewFactory;
 
     public PlaceController getPlaceController() {
         return placeController;
     }
 
-    public AuthorPerspectiveView getAuthorPerspectiveView() {
-        return authorPerspectiveView;
+    public AuthorPerspectiveView getAuthorPerspectiveView(NavigationPanelFactory navigationPanelFactory) {
+        return new AuthorPerspectiveViewImpl(navigationPanelFactory);
+    }
+
+    public RuntimePerspectiveView getRuntimePerspectiveView(NavigationPanelFactory navigationPanelFactory) {
+        return null;  //TODO: Generated code -Rikkola-
     }
 
     public EventBus getEventBus() {
@@ -48,5 +55,12 @@ public class ClientFactoryImpl implements ClientFactory {
 
     public IFramePerspectiveView getIFramePerspectiveView() {
         return new IFramePerspectiveViewImpl();
+    }
+
+    public NavigationViewFactory getNavigationViewFactory() {
+        if (authorNavigationViewFactory == null) {
+            authorNavigationViewFactory = new NavigationViewFactoryImpl();
+        }
+        return authorNavigationViewFactory;
     }
 }

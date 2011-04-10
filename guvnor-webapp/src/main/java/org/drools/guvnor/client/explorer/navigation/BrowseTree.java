@@ -20,15 +20,13 @@ import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.TabContainer;
 import org.drools.guvnor.client.explorer.TabManager;
 import org.drools.guvnor.client.explorer.navigation.BrowseTreeView.Presenter;
 import org.drools.guvnor.client.rpc.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class BrowseTree implements Presenter {
 
@@ -42,6 +40,8 @@ public class BrowseTree implements Presenter {
     private IsTreeItem findRootTreeItem;
     private IsTreeItem inboxRecentlyEditedTreeItem;
     private IsTreeItem inboxRecentlyViewedTreeItem;
+    private IsTreeItem root;
+    private IsTreeItem categoriesRootItem;
 
     public BrowseTree(BrowseTreeView view,
                       RepositoryServiceAsync repositoryService,
@@ -54,7 +54,7 @@ public class BrowseTree implements Presenter {
         if (canShowMenu()) {
             this.view.showMenu();
         }
-        this.view.addRootTreeItem();
+        root = this.view.addRootTreeItem();
         addInbox();
         findRootTreeItem = this.view.addFind();
         if (canShowStates()) {
@@ -78,8 +78,8 @@ public class BrowseTree implements Presenter {
     }
 
     private void addRootCategory() {
-        IsTreeItem item = this.view.addRootCategoryTreeItem();
-        categories.put(item, "/");
+        categoriesRootItem = this.view.addRootCategoryTreeItem();
+        categories.put(categoriesRootItem, "/");
     }
 
     private void addCategoryItem(String categoryName, IsTreeItem treeItem) {
@@ -121,27 +121,36 @@ public class BrowseTree implements Presenter {
     public void onTreeItemSelection(IsTreeItem selectedItem, String title) {
         TabManager tabManager = TabContainer.getInstance();
         if (!tabManager.showIfOpen(title)) {
-            if (selectedItem.equals(statesRootTreeItem)) {
-                addSubStatesToTreeItem();
-            } else if (states.contains(selectedItem)) {
+            if (states.contains(selectedItem)) {
                 tabManager.openStatePagedTable(title);
             } else if (categories.containsKey(selectedItem)) {
                 String categoryPath = categories.get(selectedItem);
                 tabManager.openCategory(title, categoryPath);
             } else if (selectedItem.equals(incomingInboxTreeItem)) {
-                tabManager.openInboxIncomingPagedTable(title);
-            } else if (selectedItem.equals(inboxRecentlyEditedTreeItem) || selectedItem.equals(inboxRecentlyViewedTreeItem)) {
-                tabManager.openInboxPagedTable(title);
+                tabManager.openInboxIncomingPagedTable(ExplorerNodeConfig.INCOMING_ID);
+            } else if (selectedItem.equals(inboxRecentlyEditedTreeItem)) {
+                tabManager.openInboxPagedTable(ExplorerNodeConfig.RECENT_EDITED_ID);
+            } else if (selectedItem.equals(inboxRecentlyViewedTreeItem)) {
+                tabManager.openInboxPagedTable(ExplorerNodeConfig.RECENT_VIEWED_ID);
+            } else if (selectedItem.equals(findRootTreeItem)) {
+                TabContainer.getInstance().openFind();
             }
         }
     }
 
-    public void onTreeItemOpen(IsTreeItem target) {
-        if (categories.containsKey(target)) {
-            view.removeCategories(target);
-            loadCategories(target);
-        } else if (target.equals(findRootTreeItem)) {
-            TabContainer.getInstance().openFind();
+    public void onTreeItemOpen(IsTreeItem openedItem) {
+        if (root.equals(openedItem)) {
+            if (canShowStates()) {
+                addSubStatesToTreeItem();
+            }
+            view.removeCategories(categoriesRootItem);
+            loadCategories(categoriesRootItem);
+        } else if (categories.containsKey(openedItem)) {
+            Collection<IsTreeItem> children = view.getChildren(openedItem);
+            for (IsTreeItem child : children) {
+                view.removeCategories(child);
+                loadCategories(child);
+            }
         }
     }
 

@@ -48,7 +48,7 @@ public class DeploymentTreeBuilder extends NavigationItemBuilder {
     }
 
     @Override
-    public void setViewFactory(AuthorNavigationViewFactory navigationViewFactory) {
+    public void setViewFactory(NavigationViewFactory navigationViewFactory) {
         //TODO: Generated code -Rikkola-
     }
 }

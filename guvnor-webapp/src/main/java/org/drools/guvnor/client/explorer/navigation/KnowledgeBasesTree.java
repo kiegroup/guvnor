@@ -82,6 +82,7 @@ public class KnowledgeBasesTree extends NavigationItemBuilderOld
     }
 
     public IsWidget createContent() {
+        refreshTree();
         return this;
     }
 

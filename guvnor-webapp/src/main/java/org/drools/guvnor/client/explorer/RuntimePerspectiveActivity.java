@@ -16,24 +16,22 @@
 
 package org.drools.guvnor.client.explorer;
 
+import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.PlaceController;
-import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 
-public interface ClientFactory {
+public class RuntimePerspectiveActivity extends AbstractActivity implements RuntimePerspectiveView.Presenter {
+    private ClientFactory clientFactory;
 
-    AuthorPerspectiveView getAuthorPerspectiveView(NavigationPanelFactory navigationPanelFactory);
+    public RuntimePerspectiveActivity(ClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
+    }
 
-    RuntimePerspectiveView getRuntimePerspectiveView(NavigationPanelFactory navigationPanelFactory);
+    public void start(AcceptsOneWidget panel, EventBus eventBus) {
+        NavigationPanelFactory navigationPanelFactory = new RuntimeNavigationPanelFactory(clientFactory.getNavigationViewFactory());
 
-    PlaceController getPlaceController();
-
-    EventBus getEventBus();
-
-    PerspectivesPanelView getPerspectivesPanelView(boolean showTitle);
-
-    IFramePerspectiveView getIFramePerspectiveView();
-
-    NavigationViewFactory getNavigationViewFactory();
+        panel.setWidget(clientFactory.getRuntimePerspectiveView(navigationPanelFactory));
+        //TODO: Generated code -Rikkola-
+    }
 }

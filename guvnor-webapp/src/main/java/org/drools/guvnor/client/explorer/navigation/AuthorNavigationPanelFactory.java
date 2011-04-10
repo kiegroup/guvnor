@@ -18,10 +18,10 @@ package org.drools.guvnor.client.explorer.navigation;
 
 public class AuthorNavigationPanelFactory extends NavigationPanelFactory {
 
-    private final AuthorNavigationViewFactory navigationViewFactory;
+    private final NavigationViewFactory navigationViewFactory;
     private NavigationPanel navigationPanel;
 
-    public AuthorNavigationPanelFactory(AuthorNavigationViewFactory navigationViewFactory) {
+    public AuthorNavigationPanelFactory(NavigationViewFactory navigationViewFactory) {
         this.navigationViewFactory = navigationViewFactory;
     }
 

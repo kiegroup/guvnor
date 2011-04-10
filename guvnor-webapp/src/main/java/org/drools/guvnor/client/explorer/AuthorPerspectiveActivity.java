@@ -21,6 +21,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import org.drools.guvnor.client.explorer.AuthorPerspectiveView.Presenter;
+import org.drools.guvnor.client.explorer.navigation.AuthorNavigationPanelFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 
 public class AuthorPerspectiveActivity extends AbstractActivity implements Presenter {
 
@@ -31,8 +33,9 @@ public class AuthorPerspectiveActivity extends AbstractActivity implements Prese
     }
 
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
-        AuthorPerspectiveView authorPerspectiveView = clientFactory.getAuthorPerspectiveView();
+        NavigationPanelFactory navigationPanelFactory = new AuthorNavigationPanelFactory(clientFactory.getNavigationViewFactory());
 
+        AuthorPerspectiveView authorPerspectiveView = clientFactory.getAuthorPerspectiveView(navigationPanelFactory);
         authorPerspectiveView.setPresenter(this);
 
         panel.setWidget(authorPerspectiveView);

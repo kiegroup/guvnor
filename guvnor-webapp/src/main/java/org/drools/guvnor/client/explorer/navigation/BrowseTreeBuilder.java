@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public class BrowseTreeBuilder extends NavigationItemBuilder {
 
-    private AuthorNavigationViewFactory navigationViewFactory;
+    private NavigationViewFactory navigationViewFactory;
     private BrowseTree browseTree;
 
     @Override
@@ -55,7 +55,7 @@ public class BrowseTreeBuilder extends NavigationItemBuilder {
     }
 
     @Override
-    public void setViewFactory(AuthorNavigationViewFactory navigationViewFactory) {
+    public void setViewFactory(NavigationViewFactory navigationViewFactory) {
         this.navigationViewFactory = navigationViewFactory;
     }
 }

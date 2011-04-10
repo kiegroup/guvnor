@@ -20,13 +20,12 @@ import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.explorer.TabType;
 
+import java.util.Collection;
 import java.util.List;
 
 
 interface BrowseTreeView extends IsWidget {
     interface Presenter {
-
-//        void onOpenFind();
 
         void onTreeItemSelection(IsTreeItem selectedItem, String title);
 
@@ -36,13 +35,9 @@ interface BrowseTreeView extends IsWidget {
 
     IsTreeItem addRootTreeItem();
 
-    //        void onOpenCategory(IsTreeItem treeItem);
-//
-//        void onOpenStatesRoot();
-//
-//        void onSelect(String title, String id, TabType incomingId);
-//
     IsTreeItem addInboxIncomingTreeItem();
+
+    Collection<IsTreeItem> getChildren(IsTreeItem openedItem);
 
     IsTreeItem addInboxRecentEditedTreeItem();
 

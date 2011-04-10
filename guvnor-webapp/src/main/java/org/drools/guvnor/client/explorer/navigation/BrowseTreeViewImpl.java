@@ -28,6 +28,8 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Util;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
@@ -54,36 +56,19 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     @UiField
     Tree tree;
 
-//    private final TreeItem root;
-
     public BrowseTreeViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
 
-//        root = tree.addItem(Util.getHeader(images.ruleAsset(), constants.AssetsTreeView()));
-//
-//        TreeItem find = root.addItem(Util.getHeader(images.find(), constants.Find()));
-//
-//        if (UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_KNOWLEDGE_BASES_VIEW)) {
-//            final TreeItem byStatus = new TreeItem(Util.getHeader(images.statusSmall(), constants.ByStatus()));
-//            itemWidgets.put(byStatus, STATES_ROOT_ID);
-//            setupStatesStructure(byStatus, itemWidgets);
-//            root.addItem(byStatus);
-//        }
-//
-//        TreeItem byCategory = new TreeItem(Util.getHeader(images.chartOrganisation(), constants.ByCategory()));
-//        itemWidgets.put(byCategory, CATEGORY_ROOT_ID);
-
-
         addSelectionHandler();
         addOpenHandler();
-        inbox = new TreeItem(Util.getHeader(images.inbox(), constants.Inbox()));
+        inbox = tree.addItem(Util.getHeader(images.inbox(), constants.Inbox()));
     }
 
     private void addSelectionHandler() {
         tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
             public void onSelection(SelectionEvent<TreeItem> treeItemSelectionEvent) {
                 TreeItem selectedItem = treeItemSelectionEvent.getSelectedItem();
-                presenter.onTreeItemSelection(selectedItem, selectedItem.getTitle());
+                presenter.onTreeItemSelection(selectedItem, selectedItem.getText());
             }
         });
     }
@@ -107,6 +92,17 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
 
     public IsTreeItem addInboxIncomingTreeItem() {
         return inbox.addItem(Util.getHeader(images.categorySmall(), constants.IncomingChanges()));
+    }
+
+    public Collection<IsTreeItem> getChildren(IsTreeItem openedItem) {
+        Collection<IsTreeItem> children = new ArrayList<IsTreeItem>();
+
+        TreeItem parent = openedItem.asTreeItem();
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            children.add(parent.getChild(i));
+        }
+
+        return children;
     }
 
     public IsTreeItem addInboxRecentEditedTreeItem() {

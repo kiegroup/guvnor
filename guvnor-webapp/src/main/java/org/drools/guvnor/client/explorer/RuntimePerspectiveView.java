@@ -14,17 +14,15 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.navigation;
+package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public abstract class NavigationItemBuilder {
+public interface RuntimePerspectiveView extends IsWidget {
 
-    public abstract boolean hasPermissionToBuild();
+    void setPresenter(Presenter presenter);
 
-    public abstract IsWidget getHeader();
 
-    public abstract IsWidget getContent();
-
-    public abstract void setViewFactory(NavigationViewFactory navigationViewFactory);
+    public interface Presenter {
+    }
 }
