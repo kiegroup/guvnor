@@ -27,6 +27,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.OpenPackageCommand;
 import org.drools.guvnor.client.packages.PackageEditor;
 import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.packages.SnapshotView;
@@ -231,7 +232,12 @@ public class TabOpener {
                                                                                                                            explorerViewCenterPanel.close( uuid );
                                                                                                                        }
                                                                                                                    },
-                                                                                                                   refPackageList );
+                                                                                                                   refPackageList,
+                                                                                                                   new OpenPackageCommand() {
+                                                                                                                       public void open(String key, Command refreshPackageListCommand) {
+                                                                                                                    	   openPackageEditor(key, refreshPackageListCommand);
+                                                                                                                       }
+                                                                                                                   });
                                                                              explorerViewCenterPanel.addTab( conf.name,
                                                                                                              ed,
                                                                                                              conf.uuid );
@@ -485,7 +491,7 @@ public class TabOpener {
             }
         };
     }
-
+    
     public void openPackageViewAssets(final String packageUuid,
                                       final String packageName,
                                       String key,

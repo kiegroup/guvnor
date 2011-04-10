@@ -226,7 +226,8 @@ public class VersionBrowser extends Composite {
                             PackageEditor ed = new PackageEditor( conf,
                             		                              true,
                                                                   null,
-                                                                  null );
+                                                                  null,
+                                                                  null);
                             ed.setWidth( "100%" );
                             ed.setHeight( "100%" );
                             //pop.addRow( restore );

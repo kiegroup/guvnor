@@ -4,7 +4,6 @@ import com.google.gwt.core.client.GWT;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
@@ -24,6 +23,7 @@ import org.drools.guvnor.client.ruleeditor.standalone.RealAssetsMultiViewEditorM
 import org.drools.guvnor.client.ruleeditor.standalone.StandaloneEditorInvocationParameters;
 import org.drools.guvnor.client.ruleeditor.standalone.TemporalAssetsMultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.ruleeditor.toolbar.StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 /**
  * Class used to manage the stand-alone version of Guvnor's Editors

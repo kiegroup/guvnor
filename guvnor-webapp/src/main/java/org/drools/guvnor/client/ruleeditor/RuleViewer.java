@@ -86,16 +86,12 @@ public class RuleViewer extends GuvnorEditor {
     private Command                                   closeCommand;
     private Command                                   archiveCommand;
     public Command                                    checkedInCommand;
+    private final OpenItemCommand                     openItemCommand;
+    
     protected RuleAsset                               asset;
-
     private boolean                                   readOnly;
-
     private final RuleViewerSettings                  ruleViewerSettings;
-
     private long                                      lastSaved = System.currentTimeMillis();
-
-    private final OpenItemCommand                     editEvent;
-
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
     /**
@@ -145,7 +141,7 @@ public class RuleViewer extends GuvnorEditor {
                       boolean historicalReadOnly,
                       ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
                       RuleViewerSettings ruleViewerSettings) {
-        this.editEvent = event;
+        this.openItemCommand = event;
         this.asset = asset;
         this.readOnly = historicalReadOnly
                         && asset.isreadonly;
@@ -400,7 +396,7 @@ public class RuleViewer extends GuvnorEditor {
                                                                                                  constants.VerificationReport() );
                                                  ScrollPanel scrollPanel = new ScrollPanel( new VerifierResultWidget( report,
                                                                                                                       false,
-                                                                                                                      editEvent ) );
+                                                                                                                      openItemCommand ) );
                                                  scrollPanel.setWidth( "100%" );
                                                  form.addRow( scrollPanel );
 
@@ -619,8 +615,8 @@ public class RuleViewer extends GuvnorEditor {
                                   String pkg,
                                   String newAssetUUID) {
         Window.alert( constants.CreatedANewItemSuccess( name, pkg ) );
-        if ( editEvent != null ) {
-            editEvent.open( newAssetUUID );
+        if ( openItemCommand != null ) {
+            openItemCommand.open( newAssetUUID );
         }
     }
     
@@ -665,8 +661,8 @@ public class RuleViewer extends GuvnorEditor {
 		if (closeCommand != null) {
 			closeCommand.execute();
 		}		
-		if (editEvent != null) {
-			editEvent.open(newAssetUUID);
+		if (openItemCommand != null) {
+			openItemCommand.open(newAssetUUID);
 		}
 	}
 

@@ -46,8 +46,6 @@ import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigura
 import org.drools.guvnor.client.ruleeditor.toolbar.PackageActionToolbarButtonsConfigurationProvider;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -58,7 +56,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -73,27 +70,31 @@ public class PackageEditor extends PrettyFormLayout {
     private Constants           constants = GWT.create( Constants.class );
     private static Images       images    = GWT.create( Images.class );
 
-    private PackageConfigData   conf;
+    private PackageConfigData conf;
     private ActionToolbar actionToolBar;
     private boolean isHistoricalReadOnly = false;
-    private Command             close;
-    private Command             refreshPackageList;
+    private Command closeCommand;
+    private Command refreshPackageListCommand;
+    private OpenPackageCommand openPackageCommand;
+
     private HorizontalPanel packageConfigurationValidationResult = new HorizontalPanel();;
 
     public PackageEditor(PackageConfigData data,
-                         Command close,
+                         Command closeCommand,
                          Command refreshPackageList) {
-        this(data, false, close, refreshPackageList);
+        this(data, false, closeCommand, refreshPackageList, null);
     }
     
 	public PackageEditor(PackageConfigData data, 
 			boolean historicalReadOnly, 
-			Command close,
-			Command refreshPackageList) {
+			Command closeCommand,
+			Command refreshPackageList,
+			OpenPackageCommand openPackageCommand) {
 		this.conf = data;
 		this.isHistoricalReadOnly = historicalReadOnly;
-		this.close = close;
-		this.refreshPackageList = refreshPackageList;
+		this.closeCommand = closeCommand;
+		this.refreshPackageListCommand = refreshPackageList;
+		this.openPackageCommand = openPackageCommand;
 
 		setWidth("100%");
 		refreshWidgets();
@@ -323,7 +324,6 @@ public class PackageEditor extends PrettyFormLayout {
             conf.catRules.put( rule,
                                category );
         }
-
     }
 
     protected void showCatRuleSelector(Widget w) {
@@ -496,20 +496,15 @@ public class PackageEditor extends PrettyFormLayout {
         pop.addAttribute( constants.NewPackageNameIs(),
                           name );
         Button ok = new Button( constants.OK() );
-        pop.addAttribute( "",
-                          ok );
+        pop.addAttribute( "", ok );
 
         ok.addClickHandler( new ClickHandler() {
-
             public void onClick(ClickEvent event) {
                 RepositoryServiceFactory.getPackageService().renamePackage( conf.uuid,
                                                                      name.getText(),
                                                                      new GenericCallback<String>() {
                                                                          public void onSuccess(String data) {
-                                                                             refreshPackageList.execute();
-                                                                             conf.name = name.getText();
-                                                                             refreshWidgets();
-                                                                             Window.alert( constants.PackageRenamedSuccessfully() );
+                                                                        	 completedRenaming(data);
                                                                              pop.hide();
                                                                          }
                                                                      } );
@@ -518,7 +513,18 @@ public class PackageEditor extends PrettyFormLayout {
 
         pop.show();
     }
-
+    
+	private void completedRenaming(String newAssetUUID) {
+		Window.alert( constants.PackageRenamedSuccessfully() );
+		refreshPackageListCommand.execute();
+		if (closeCommand != null) {
+			closeCommand.execute();
+		}		
+		if (openPackageCommand != null) {
+			openPackageCommand.open(newAssetUUID, refreshPackageListCommand);
+		}
+	}
+	
     /**
      * Will show a copy dialog for copying the whole package.
      */
@@ -545,7 +551,7 @@ public class PackageEditor extends PrettyFormLayout {
                                                                    name.getText(),
                                                                    new GenericCallback<Void>() {
                                                                        public void onSuccess(Void data) {
-                                                                           refreshPackageList.execute();
+                                                                           refreshPackageListCommand.execute();
                                                                            Window.alert( constants.PackageCopiedSuccessfully() );
                                                                            pop.hide();
                                                                            LoadingPopup.close();
@@ -555,7 +561,6 @@ public class PackageEditor extends PrettyFormLayout {
         } );
 
         pop.show();
-
     }
 
     private void doSave(final Command refresh) {
@@ -613,52 +618,19 @@ public class PackageEditor extends PrettyFormLayout {
     private Widget header() {
         return new PackageHeaderWidget( this.conf, isHistoricalReadOnly );
     }
-
-    private Widget description() {
-
-        final TextArea box = new TextArea();
-        box.setText( conf.description );
-        box.addChangeHandler( new ChangeHandler() {
-
-            public void onChange(ChangeEvent event) {
-                conf.description = box.getText();
-            }
-        } );
-        box.setWidth( "400px" );
-        if(isHistoricalReadOnly) {
-        	box.setEnabled(false);
-        }
-
-        return box;
-    }
     
 	private ActionToolbarButtonsConfigurationProvider getConfiguration() {
 		return new PackageActionToolbarButtonsConfigurationProvider();
-
 	}
 
 	private void doArchive() {
 		conf.archived = true;
 		Command ref = new Command() {
 			public void execute() {
-				close.execute();
-				refreshPackageList.execute();
+				closeCommand.execute();
+				refreshPackageListCommand.execute();
 			}
 		};
 		doSave(ref);
 	}
-	
-    private Widget getVersionNumberLabel() {
-        if ( conf.versionNumber == 0 ) {
-            return new SmallLabel( constants.NotCheckedInYet() );
-        } else {
-            return readOnlyText( Long.toString( conf.versionNumber ) );
-        }
-    }
-    
-    private Label readOnlyText(String text) {
-        SmallLabel lbl = new SmallLabel( text );
-        lbl.setWidth( "100%" );
-        return lbl;
-    }
 }

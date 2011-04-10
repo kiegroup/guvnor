@@ -35,23 +35,27 @@ public class PackageEditorWrapper extends Composite {
 	private ActionToolbar actionToolBar;
     private PackageConfigData conf;
     private boolean isHistoricalReadOnly = false;
-    private Command close;
-    private Command refreshPackageList;
+    private Command closeCommand;
+    private Command refreshPackageListCommand;
+    private OpenPackageCommand openPackageCommand;
 
     public PackageEditorWrapper(PackageConfigData data,
-                            Command close,
-                            Command refreshPackageList) {
-        this(data, false, close, refreshPackageList);
+                            Command closeCommand,
+                            Command refreshPackageListCommand,
+                            OpenPackageCommand openPackageCommand) {
+        this(data, false, closeCommand, refreshPackageListCommand, openPackageCommand);
     }
     
 	public PackageEditorWrapper(PackageConfigData data, 
 			boolean isHistoricalReadOnly, 
-			Command close,
-			Command refreshPackageList) {
+			Command closeCommand,
+			Command refreshPackageListCommand,
+			OpenPackageCommand openPackageCommand) {
 		this.conf = data;
 		this.isHistoricalReadOnly = isHistoricalReadOnly;
-		this.close = close;
-		this.refreshPackageList = refreshPackageList;
+		this.closeCommand = closeCommand;
+		this.refreshPackageListCommand = refreshPackageListCommand;
+		this.openPackageCommand = openPackageCommand;
         
         refreshWidgets();
         setWidth("100%");        
@@ -59,7 +63,7 @@ public class PackageEditorWrapper extends Composite {
     
     private void refreshWidgets() {  
     	this.artifactEditor = new ArtifactEditor(conf, null);
-    	this.packageEditor = new PackageEditor(conf, this.isHistoricalReadOnly, this.close, this.refreshPackageList);
+    	this.packageEditor = new PackageEditor(conf, this.isHistoricalReadOnly, this.closeCommand, this.refreshPackageListCommand, this.openPackageCommand);
     	this.actionToolBar = this.packageEditor.getActionToolbar();
     	
     	VerticalPanel vp = new VerticalPanel();
