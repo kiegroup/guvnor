@@ -43,8 +43,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * This is a rule/resource navigator that uses the server side categories to
- * navigate the repository.
- * Uses the the {@link com.google.gwt.user.client.ui.Tree} widget.
+ * navigate the repository. Uses the the
+ * {@link com.google.gwt.user.client.ui.Tree} widget.
  */
 public class CategoryExplorerWidget extends Composite
     implements
@@ -67,6 +67,7 @@ public class CategoryExplorerWidget extends Composite
 
     /**
      * Create a new cat explorer.
+     * 
      * @param handler
      */
     public CategoryExplorerWidget(CategorySelectHandler handler) {
@@ -190,7 +191,7 @@ public class CategoryExplorerWidget extends Composite
                                                      }
                                                      for ( int i = 0; i < list.length; i++ ) {
                                                          TreeItem it = new TreeItem();
-                                                         it.setHTML( "<img src='" + images.categorySmall() + "'/>" + list[i] );
+                                                         it.setHTML( "<img src='" + new Image( images.categorySmall() ).getUrl() + "'/>" + h( list[i] ) );
                                                          it.setUserObject( list[i] );
                                                          it.addItem( new PendingItem() );
 
