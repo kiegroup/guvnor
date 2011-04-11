@@ -138,12 +138,10 @@ public class RepositoryCategoryOperations {
                                                                                 false,
                                                                                 request.getStartRowIndex(),
                                                                                 numRowsToReturn );
-        log.info( result.assets.toString() );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
         boolean bHasMoreRows = result.hasNext;
-        log.info( "" + bHasMoreRows );
         PageResponse<CategoryPageRow> pageResponse = new PageResponse<CategoryPageRow>();
         CategoryRuleListPageRowBuilder categoryRuleListPageRowBuilder = new CategoryRuleListPageRowBuilder();
         List<CategoryPageRow> rowList = categoryRuleListPageRowBuilder.createRows( request,
@@ -152,7 +150,6 @@ public class RepositoryCategoryOperations {
         pageResponse.setStartRowIndex( request.getStartRowIndex() );
         pageResponse.setPageRowList( rowList );
         pageResponse.setLastPage( !bHasMoreRows );
-        log.info( "Starting from " + request.getStartRowIndex() + ", returning" + rowList.size() + " " );
 
         // Fix Total Row Size
         ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
@@ -161,7 +158,6 @@ public class RepositoryCategoryOperations {
                                               -1,
                                               rowList.size(),
                                               bHasMoreRows );
-        log.info( "Total rows:" + pageResponse.getTotalRowSize() );
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Assest with Category (" + request.getCategoryPath() + ") in " + methodDuration + " ms." );
         return pageResponse;
