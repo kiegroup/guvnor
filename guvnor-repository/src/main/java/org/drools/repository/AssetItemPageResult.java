@@ -19,8 +19,6 @@ package org.drools.repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jcr.RangeIterator;
-
 /**
  * Used for holding a page of asset data.
  */
@@ -30,10 +28,10 @@ public class AssetItemPageResult {
     public final boolean hasNext;
     public long currentPosition;
 
-    public AssetItemPageResult(List<AssetItem> categories, RangeIterator it) {
+    public AssetItemPageResult(List<AssetItem> categories, long currentPosition, boolean hasNext) {
         this.assets = categories;
-        this.hasNext = it.hasNext();
-        this.currentPosition = it.getPosition();
+        this.hasNext = hasNext;
+        this.currentPosition = currentPosition;
     }
 
     public AssetItemPageResult() {

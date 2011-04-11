@@ -115,7 +115,7 @@ public class RepositoryCategoryOperationsTest {
         when( rangeIterator.getPosition() ).thenReturn( 1L );
         AssetItemPageResult assetItemPageResult = new AssetItemPageResult( Arrays.asList( mock( AssetItem.class,
                                                                                                 Mockito.RETURNS_MOCKS ) ),
-                                                                           rangeIterator );
+                                                                           1, false );
         when( rulesRepository.findAssetsByCategory( categoryPageRequest.getCategoryPath(),
                                                     false,
                                                     categoryPageRequest.getStartRowIndex(),
