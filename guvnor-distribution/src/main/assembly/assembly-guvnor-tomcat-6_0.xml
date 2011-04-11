@@ -12,7 +12,7 @@
   <dependencySets>
     <dependencySet>
       <includes>
-        <include>org.drools:guvnor-webapp</include>
+        <include>org.drools:guvnor-webapp:war</include>
       </includes>
       <outputDirectory>.</outputDirectory>
       <unpack>true</unpack>
