@@ -16,22 +16,20 @@
 package org.drools.guvnor.server;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.rpc.CategoryPageRequest;
 import org.drools.guvnor.client.rpc.CategoryPageRow;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.server.builder.pagerow.CategoryRuleListPageRowBuilder;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
-import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RulesRepository;
@@ -140,16 +138,21 @@ public class RepositoryCategoryOperations {
                                                                                 false,
                                                                                 request.getStartRowIndex(),
                                                                                 numRowsToReturn );
+        log.info( result.assets.toString() );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
         boolean bHasMoreRows = result.hasNext;
+        log.info( "" + bHasMoreRows );
         PageResponse<CategoryPageRow> pageResponse = new PageResponse<CategoryPageRow>();
-        List<CategoryPageRow> rowList = fillCategoryPageRows( request,
-                                                              result );
+        CategoryRuleListPageRowBuilder categoryRuleListPageRowBuilder = new CategoryRuleListPageRowBuilder();
+        List<CategoryPageRow> rowList = categoryRuleListPageRowBuilder.createRows( request,
+                                                                                   result.assets.iterator() );
+
         pageResponse.setStartRowIndex( request.getStartRowIndex() );
         pageResponse.setPageRowList( rowList );
         pageResponse.setLastPage( !bHasMoreRows );
+        log.info( "Starting from " + request.getStartRowIndex() + ", returning" + rowList.size() + " " );
 
         // Fix Total Row Size
         ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
@@ -158,38 +161,10 @@ public class RepositoryCategoryOperations {
                                               -1,
                                               rowList.size(),
                                               bHasMoreRows );
-
+        log.info( "Total rows:" + pageResponse.getTotalRowSize() );
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Assest with Category (" + request.getCategoryPath() + ") in " + methodDuration + " ms." );
         return pageResponse;
-    }
-
-    private List<CategoryPageRow> fillCategoryPageRows(CategoryPageRequest request,
-                                                       AssetItemPageResult result) {
-        List<CategoryPageRow> rowList = new ArrayList<CategoryPageRow>();
-
-        // Filtering and skipping records to the required page is handled in
-        // repository.findAssetsByState() so we only need to simply copy
-        Iterator<AssetItem> it = result.assets.iterator();
-        while ( it.hasNext() ) {
-            AssetItem assetItem = (AssetItem) it.next();
-            rowList.add( makeCategoryPageRow( assetItem ) );
-        }
-        return rowList;
-    }
-
-    private CategoryPageRow makeCategoryPageRow(AssetItem assetItem) {
-        CategoryPageRow row = new CategoryPageRow();
-        row.setUuid( assetItem.getUUID() );
-        row.setFormat( assetItem.getFormat() );
-        row.setName( assetItem.getName() );
-        row.setDescription( assetItem.getDescription() );
-        row.setAbbreviatedDescription( StringUtils.abbreviate( assetItem.getDescription(),
-                                                               80 ) );
-        row.setLastModified( assetItem.getLastModified().getTime() );
-        row.setStateName( assetItem.getState().getName() );
-        row.setPackageName( assetItem.getPackageName() );
-        return row;
     }
 
     protected void removeCategory(String categoryPath) throws SerializationException {

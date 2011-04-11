@@ -290,7 +290,6 @@ public class RepositoryAssetOperations {
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
         response.setLastPage( !bHasMoreRows );
-        //response.setTotalRowSize( (int)iterator.getSize() );
         ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
         serviceRowSizeHelper.fixTotalRowSize( request,
                                               response,
