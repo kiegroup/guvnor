@@ -66,9 +66,9 @@ public class ActionsAPI {
         throws IOException
     {
         try {
-            Map<String,String> parameters = request.getParameterMap();
+        	String packageName = request.getParameter(Parameters.PackageName.toString());
             String[] pathstr = split (request.getPathTranslated());
-            String packageName = parameters.get(Parameters.PackageName.toString());
+
             if (pathstr [ 0 ].equals("compile")) {
                 if (repository.containsPackage(packageName)) {
                     PackageIterator iter = repository.listPackages();
@@ -82,8 +82,8 @@ public class ActionsAPI {
                     }
             } else if (pathstr [ 0 ].equals ("snapshot"))
                 if(repository.containsPackage(packageName)) {
-                    repository.createPackageSnapshot(packageName, (String)
-                        parameters.get(Parameters.SnapshotName.toString()));
+                	String snapshotName = request.getParameter(Parameters.SnapshotName.toString());
+                    repository.createPackageSnapshot(packageName, snapshotName);
             } else {
                 throw new RulesRepositoryException ("Unknown action request: "
                         + request.getContextPath());
@@ -94,6 +94,7 @@ public class ActionsAPI {
             response.getWriter().write("OK");
 
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new IOException (e.getMessage());
         }
     }
