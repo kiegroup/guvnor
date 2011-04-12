@@ -70,7 +70,7 @@ public class RepositoryAssetOperationsTest {
 
         TableDataResult result = repositoryAssetOperations.loadItemHistory( assetItem );
         assertNotNull( result );
-        assertEquals( "LATEST", result.data[0].values[0] );
+        assertEquals( 0, result.data.length );
     }
 
     @Test
