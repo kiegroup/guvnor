@@ -1181,14 +1181,13 @@ public class RulesRepository {
                                                  RepositoryFilter filter) throws RepositoryException {
         int rows = 0;
         boolean hasNext = false;
-        long currentPosition = skip;
         List<AssetItem> results = new ArrayList<AssetItem>();
 
         PropertyIterator it = n.getReferences();
 
         //Don't use PropertyIterator.skip as this doesn't consider filtered rows
         //Look ahead one extra row to ascertain whether there is an additional page of data
-        while ( it.hasNext() && (numRowsToReturn == -1 || rows < numRowsToReturn + 1) ) {
+        while ( it.hasNext() && (numRowsToReturn == -1 || rows < skip + numRowsToReturn + 1) ) {
 
             Property ruleLink = (Property) it.next();
             Node parentNode = ruleLink.getParent();
@@ -1204,12 +1203,12 @@ public class RulesRepository {
                         //constructed a full "page" of data - we look ahead one additional row to check 
                         //whether there is are additional pages of data)
                         rows++;
-                        int visibleRows = rows - skip;
-                        if ( visibleRows > 0 ) {
-                            if ( visibleRows <= numRowsToReturn ) {
+                        int numRowsInPage = rows - skip;
+                        if ( numRowsInPage > 0 ) {
+                            if ( numRowsInPage <= numRowsToReturn || numRowsToReturn == -1 ) {
                                 results.add( ai );
                             }
-                            hasNext = (visibleRows > numRowsToReturn);
+                            hasNext = (numRowsInPage > numRowsToReturn && numRowsToReturn != -1);
                         }
                     }
                 }
@@ -1217,7 +1216,7 @@ public class RulesRepository {
         }
 
         return new AssetItemPageResult( results,
-                                        currentPosition,
+                                        rows - 1,
                                         hasNext );
     }
 
