@@ -328,7 +328,7 @@ public class RangeConstraintTest {
         ruleToVerify += "rule \"rule4\"\n";
         ruleToVerify += "   when\n";
         ruleToVerify += "       Person(age == 10)\n";
-        ruleToVerify += "       exists (Person (age == 30) OR Person (age == 130))\n";
+        ruleToVerify += "       exists (Person (age == 30) or Person (age == 130))\n";
         ruleToVerify += "   then\n";
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n\n";
