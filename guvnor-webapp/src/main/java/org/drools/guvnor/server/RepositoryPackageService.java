@@ -448,6 +448,20 @@ public class RepositoryPackageService
 
     }
 
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void updateDependency(String uuid,
+                                 String dependencyPath) {
+        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
+        item.updateDependency( dependencyPath );
+        item.checkin( "Update dependency" );
+    }
+
+    public String[] getDependencies(String uuid) {
+        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
+        return item.getDependencies();
+    }
+    
     private JarInputStream typesForModel(List<String> res,
                                          AssetItem asset) throws IOException {
         JarInputStream jis;

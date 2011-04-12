@@ -149,7 +149,7 @@ public class DependencyWidget extends Composite {
                 	return;
                 }
                 if (Window.confirm("Are you sure you want to use version: " + selectedVersion  + " as dependency?")) {
-                    RepositoryServiceFactory.getService().updateDependency(
+                    RepositoryServiceFactory.getPackageService().updateDependency(
                             conf.uuid,
                             encodeDependencyPath(DependencyWidget
                                     .decodeDependencyPath(dependencyPath)[0],

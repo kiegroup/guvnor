@@ -47,5 +47,7 @@ public interface PackageServiceAsync {
     public void compareSnapshots(org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse> cb);
     public void runScenario(java.lang.String p0, org.drools.ide.common.client.modeldriven.testing.Scenario p1, AsyncCallback<org.drools.guvnor.client.rpc.SingleScenarioResult> cb);
     public void runScenariosInPackage(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.BulkTestRunResult> cb);
-
+    public void updateDependency(String uuid, String dependencyPath, AsyncCallback cb);
+    public void getDependencies(String uuid, AsyncCallback<java.lang.String[]> cb);
+ 
 }

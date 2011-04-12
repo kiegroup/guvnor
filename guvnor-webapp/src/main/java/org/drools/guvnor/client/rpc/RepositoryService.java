@@ -118,10 +118,6 @@ public interface RepositoryService
                                 String[] selectedModules,
                                 String[] unselectedModules);
 
-    public void updateDependency(String uuid, String dependencyPath);
-
-    public String[] getDependencies(String uuid);
- 
     /**
      * This checks in a new version of an asset.
      * 

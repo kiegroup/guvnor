@@ -284,18 +284,6 @@ public class ServiceImplementation
               pkgName );
     }
 
-    public void updateDependency(String uuid,
-                                 String dependencyPath) {
-        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
-        item.updateDependency( dependencyPath );
-        item.checkin( "Update dependency" );
-    }
-
-    public String[] getDependencies(String uuid) {
-        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
-        return item.getDependencies();
-    }
-
     /**
      * @deprecated in favour of {@link loadRuleListForState(StatePageRequest)}
      */

@@ -74,7 +74,7 @@ public class DependenciesPagedTable extends AbstractPagedTable<DependenciesPageR
         setDataProvider( new AsyncDataProvider<DependenciesPageRow>() {
             protected void onRangeChanged(HasData<DependenciesPageRow> display) {
                 LoadingPopup.showMessage("please wait...");
-                RepositoryServiceFactory.getService().getDependencies( uuid,
+                RepositoryServiceFactory.getPackageService().getDependencies( uuid,
                         new GenericCallback<String[]>() {
                             public void onSuccess(String[] dependencies) {
                                 LoadingPopup.close();

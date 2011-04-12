@@ -608,12 +608,12 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
 
     public void updateDependency(java.lang.String p0,
                                  java.lang.String p1) {
-        getService().updateDependency( p0,
+    	getPackageService().updateDependency( p0,
                                        p1 );
     }
 
     public java.lang.String[] getDependencies(java.lang.String p0) {
-        return getService().getDependencies( p0 );
+        return getPackageService().getDependencies( p0 );
     }
 
     public java.lang.String checkinVersion(org.drools.guvnor.client.rpc.RuleAsset p0) throws com.google.gwt.user.client.rpc.SerializationException {

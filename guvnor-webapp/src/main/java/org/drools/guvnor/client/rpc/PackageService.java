@@ -255,5 +255,9 @@ public interface PackageService
     public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException;
 
 
+    public void updateDependency(String uuid, String dependencyPath);
+
+    public String[] getDependencies(String uuid);
+ 
 
 }
