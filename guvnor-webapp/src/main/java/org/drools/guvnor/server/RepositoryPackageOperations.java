@@ -50,6 +50,7 @@ import org.drools.guvnor.client.rpc.SnapshotDiff;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.builder.pagerow.SnapshotComparisonPageRowBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
@@ -792,22 +793,15 @@ public class RepositoryPackageOperations {
         // Populate response
         response.setLeftSnapshotName( diffs.leftName );
         response.setRightSnapshotName( diffs.rightName );
-        List<SnapshotComparisonPageRow> rowList = new ArrayList<SnapshotComparisonPageRow>();
-
-        int pageStart = request.getStartRowIndex();
-        int numRowsToReturn = (request.getPageSize() == null ? diffs.diffs.length : request.getPageSize());
-        int maxRow = Math.min( numRowsToReturn,
-                               diffs.diffs.length - request.getStartRowIndex() );
-        for ( int i = pageStart; i < pageStart + maxRow; i++ ) {
-            SnapshotComparisonPageRow pr = new SnapshotComparisonPageRow();
-            pr.setDiff( diffs.diffs[i] );
-            rowList.add( pr );
-        }
+        
+        SnapshotComparisonPageRowBuilder snapshotComparisonPageRowBuilder = new SnapshotComparisonPageRowBuilder();
+        List<SnapshotComparisonPageRow> rowList = snapshotComparisonPageRowBuilder.createRows( request, diffs );
+        
         response.setPageRowList( rowList );
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setTotalRowSize( diffs.diffs.length );
         response.setTotalRowSizeExact( true );
-        response.setLastPage( (pageStart + maxRow == diffs.diffs.length) );
+        response.setLastPage( (request.getStartRowIndex() + rowList.size() == diffs.diffs.length) );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Compared Snapshots ('" + request.getFirstSnapshotName() + "') and ('" + request.getSecondSnapshotName() + "') in package ('" + request.getPackageName() + "') in " + methodDuration + " ms." );

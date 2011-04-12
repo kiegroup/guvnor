@@ -34,7 +34,6 @@ public class CategoryRuleListPageRowBuilder {
         // repository.findAssetsByState() so we only need to simply copy
         while ( iterator.hasNext() ) {
             AssetItem assetItem = (AssetItem) iterator.next();
-            System.out.println( assetItem.toString() );
             rowList.add( makeCategoryPageRow( assetItem ) );
         }
         return rowList;
