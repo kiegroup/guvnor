@@ -13,39 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.guvnor.client.factmodel;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
-/**
- * Represents the GUI data for a fact model definition.
- */
-public class FactMetaModel
+public class AnnotationMetaModel
     implements
     PortableObject {
 
-    private static final long   serialVersionUID = 510L;
+    private static final long serialVersionUID = 510l;
+    public String             name;
+    public Map<String, String> values;
 
-    public String               name;
-
-    public List<FieldMetaModel> fields           = new ArrayList<FieldMetaModel>();
-    public List<AnnotationMetaModel> annotations = new ArrayList<AnnotationMetaModel>();
-
-    public FactMetaModel() {
+    public AnnotationMetaModel() {
     }
 
-    public FactMetaModel(String name) {
+    public AnnotationMetaModel(String name,
+                               Map<String, String> values) {
         this.name = name;
-    }
-
-    public FactMetaModel(String name,
-                         List<FieldMetaModel> fields) {
-        this.name = name;
-        this.fields = fields;
+        this.values=values;
     }
 
 }

@@ -23,11 +23,13 @@ import java.util.Map;
 
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
+import org.drools.guvnor.client.factmodel.AnnotationMetaModel;
 import org.drools.guvnor.client.factmodel.FactMetaModel;
 import org.drools.guvnor.client.factmodel.FactModels;
 import org.drools.guvnor.client.factmodel.FieldMetaModel;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
+import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
@@ -108,6 +110,20 @@ public class FactModelContentHandler extends ContentHandler {
 
                 mm.fields.add(fm);
             }
+            
+            Map<String, AnnotationDescr> annotations = td.getAnnotations();
+            for (Iterator<Map.Entry<String, AnnotationDescr>> iterator = annotations.entrySet().iterator(); iterator.hasNext();) {
+                Map.Entry<String, AnnotationDescr> en = iterator.next();
+                String annotationName = en.getKey();
+                AnnotationDescr descr = en.getValue();
+                Map<String, String> values = descr.getValues();
+                
+                AnnotationMetaModel am = new AnnotationMetaModel(annotationName, values);
+
+                mm.annotations.add(am);
+            }
+
+            
             list.add(mm);
         }
         return list;

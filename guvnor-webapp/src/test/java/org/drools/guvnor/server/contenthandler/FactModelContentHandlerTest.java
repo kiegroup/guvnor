@@ -34,8 +34,6 @@ import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class FactModelContentHandlerTest extends GuvnorTestBase {
@@ -72,7 +70,23 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
     }
 
     @Test
-    public void testFromDrl() throws Exception {
+    public void testFromDrlDeclarationEmpty() throws Exception {
+
+        String drl = "declare FooBar\nend";
+
+        FactModelContentHandler ch = new FactModelContentHandler();
+        List<FactMetaModel> list = ch.toModel( drl );
+        assertEquals( 1,
+                      list.size() );
+        FactMetaModel mm = list.get( 0 );
+        assertEquals( "FooBar",
+                      mm.name );
+        assertEquals( 0,
+                      mm.fields.size() );
+    }
+
+    @Test
+    public void testFromDrlDeclarationWithFields() throws Exception {
         String drl = "declare FooBar\n\tf1: int\n\tf2: String\nend";
 
         FactModelContentHandler ch = new FactModelContentHandler();
@@ -98,17 +112,28 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
                               fm.type );
             }
         }
-
-        drl = "declare FooBar\n\t @role(event)  \nend";
-        try {
-            ch.toModel( drl );
-            fail( "should not parse this" );
-        } catch ( DroolsParserException e ) {
-            assertNotNull( e.getMessage() );
-        }
-
     }
+    
+    @Test
+    public void testFromDrlDeclarationWithAnnotations() throws Exception {
 
+        String drl = "declare FooBar\n\t@role(event)\nend";
+
+        FactModelContentHandler ch = new FactModelContentHandler();
+        List<FactMetaModel> list = ch.toModel( drl );
+        assertEquals( 1,
+                      list.size() );
+        FactMetaModel mm = list.get( 0 );
+        assertEquals( "FooBar",
+                      mm.name );
+        assertEquals( 0,
+                      mm.fields.size() );
+        assertEquals( 1,
+                      mm.annotations.size() );
+        assertEquals( "event",
+                      mm.annotations.get( 0 ).values.get( "value" ) );
+    }
+    
     @Test
     public void testAdvanced() throws Exception {
 
