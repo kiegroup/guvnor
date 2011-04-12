@@ -23,8 +23,8 @@ public class AnnotationMetaModel
     implements
     PortableObject {
 
-    private static final long serialVersionUID = 510l;
-    public String             name;
+    private static final long  serialVersionUID = 510l;
+    public String              name;
     public Map<String, String> values;
 
     public AnnotationMetaModel() {
@@ -33,7 +33,7 @@ public class AnnotationMetaModel
     public AnnotationMetaModel(String name,
                                Map<String, String> values) {
         this.name = name;
-        this.values=values;
+        this.values = values;
     }
 
 }

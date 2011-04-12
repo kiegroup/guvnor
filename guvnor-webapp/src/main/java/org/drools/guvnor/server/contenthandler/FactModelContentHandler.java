@@ -112,15 +112,16 @@ public class FactModelContentHandler extends ContentHandler {
             }
             
             Map<String, AnnotationDescr> annotations = td.getAnnotations();
-            for (Iterator<Map.Entry<String, AnnotationDescr>> iterator = annotations.entrySet().iterator(); iterator.hasNext();) {
+            for ( Iterator<Map.Entry<String, AnnotationDescr>> iterator = annotations.entrySet().iterator(); iterator.hasNext(); ) {
                 Map.Entry<String, AnnotationDescr> en = iterator.next();
                 String annotationName = en.getKey();
                 AnnotationDescr descr = en.getValue();
                 Map<String, String> values = descr.getValues();
-                
-                AnnotationMetaModel am = new AnnotationMetaModel(annotationName, values);
 
-                mm.annotations.add(am);
+                AnnotationMetaModel am = new AnnotationMetaModel( annotationName,
+                                                                  values );
+
+                mm.annotations.add( am );
             }
 
             

@@ -113,7 +113,7 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
             }
         }
     }
-    
+
     @Test
     public void testFromDrlDeclarationWithAnnotations() throws Exception {
 
@@ -133,7 +133,7 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
         assertEquals( "event",
                       mm.annotations.get( 0 ).values.get( "value" ) );
     }
-    
+
     @Test
     public void testAdvanced() throws Exception {
 
