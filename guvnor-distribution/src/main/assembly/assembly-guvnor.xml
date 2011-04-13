@@ -64,11 +64,23 @@
         <exclude>.git/**</exclude>
       </excludes>
     </fileSet>
-    <!-- Reference manual -->
-    <fileSet><!-- TODO use dependencySet instead https://issues.jboss.org/browse/MPJDOCBOOK-65-->
-      <directory>../guvnor-docs/target/docbook/publish/en-US</directory>
-      <outputDirectory>reference_manual</outputDirectory>
-    </fileSet>
   </fileSets>
+
+  <dependencySets>
+    <!-- Reference manual -->
+    <dependencySet>
+      <includes>
+        <include>org.drools:guvnor-docs:jdocbook</include>
+      </includes>
+      <outputDirectory>reference_manual</outputDirectory>
+      <unpack>true</unpack>
+      <unpackOptions>
+        <excludes>
+          <exclude>META-INF/**</exclude>
+        </excludes>
+      </unpackOptions>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+  </dependencySets>
 
 </assembly>
