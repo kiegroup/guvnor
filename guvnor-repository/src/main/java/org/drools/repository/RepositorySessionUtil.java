@@ -17,9 +17,6 @@
 package org.drools.repository;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
@@ -55,9 +52,7 @@ public class RepositorySessionUtil {
         }
 
         // The directory is now empty so delete it
-        dir.delete();
-
-        return assertDeletion( dir );
+        return dir.delete();
 
     }
 
@@ -152,44 +147,6 @@ public class RepositorySessionUtil {
         RulesRepositoryConfigurator.getInstance( null ).shutdown();
         repo.set( null );
         multiThreadedRepository = null;
-    }
-
-    //Check the File has actually been deleted from the underlying File System
-    private static boolean assertDeletion(File dir) {
-        FileInputStream fos = null;
-        boolean result = false;
-        int retries = 3;
-        try {
-            while ( retries > 0 ) {
-                fos = new FileInputStream( dir );
-                try {
-                    Thread.sleep( 500 );
-                } catch ( InterruptedException ie ) {
-                    //Swallow
-                } finally {
-                    if ( fos != null ) {
-                        try {
-                            fos.close();
-                        } catch ( IOException ioe ) {
-                        }
-                    }
-                }
-                retries--;
-            }
-
-        } catch ( FileNotFoundException fnfe ) {
-            //Great it's been deleted!
-            result = true;
-        } finally {
-            if ( fos != null ) {
-                try {
-                    fos.close();
-                } catch ( IOException ioe ) {
-                }
-            }
-        }
-        return result;
-
     }
 
 }

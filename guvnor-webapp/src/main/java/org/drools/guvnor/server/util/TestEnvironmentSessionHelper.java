@@ -107,6 +107,17 @@ public class TestEnvironmentSessionHelper {
     public static synchronized void shutdown() {
         try {
             RulesRepositoryConfigurator.getInstance( null ).shutdown();
+
+            //Wait two seconds (arbitrary) for JCR to terminate and release locks
+            long timeNow = System.currentTimeMillis();
+            long timeInTwoSeconds = timeNow + 2000;
+            while ( System.currentTimeMillis() < timeInTwoSeconds ) {
+                try {
+                    Thread.sleep( 100 );
+                } catch ( InterruptedException ie ) {
+                }
+            }
+
         } catch ( Exception e ) {
             log.error("Could not shut down repository.", e);
         }
