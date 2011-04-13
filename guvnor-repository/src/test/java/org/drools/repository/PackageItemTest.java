@@ -933,6 +933,17 @@ public class PackageItemTest {
         assertEquals(
                 "testDependenciesWithHistoricalVersionAsset1?version=1",
                 dependencies[0]);
+        
+        item.checkout();
+        item.checkin("v2");
+        historicalPackage = getRepo().loadPackage("testDependenciesWithHistoricalVersion", 3);
+        dependencies = historicalPackage.getDependencies();
+        assertEquals(1, dependencies.length);
+        //testDependenciesWithHistoricalVersionAsset1's version is 1 because it was forced to be 
+        //checked in when the package got checked in. 
+        assertEquals(
+                "testDependenciesWithHistoricalVersionAsset1?version=1",
+                dependencies[0]);
      }
 
     @Test

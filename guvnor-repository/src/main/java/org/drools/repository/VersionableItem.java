@@ -607,13 +607,26 @@ public abstract class VersionableItem extends Item {
     	Iterator<AssetItem> assets = ((PackageItem)this).getAssets();
     	while(assets.hasNext()) {
     		AssetItem asset = assets.next();
-    		boolean assetHasHistory = asset.getHistory().hasNext() && asset.getHistory().next().getVersionNumber()!=0;
-    		
-    		if(force || !assetHasHistory) {
+     		
+    		if(force || !assetHasHistory(asset)) {
     			asset.checkout();
     			asset.checkin("Package[" + this.getTitle() + "] checked in");
     		}
     	}
+    }
+    
+    private boolean assetHasHistory(AssetItem asset) {
+		AssetHistoryIterator it = asset.getHistory();      
+		while ( it.hasNext() ) {
+            VersionableItem historical = (VersionableItem) it.next();
+            long versionNumber = historical.getVersionNumber();
+            if ( versionNumber != 0) {
+            	//Version 0 is not a real version. It is the root version
+                return true;
+            }
+        }
+		
+		return false;  	    	
     }
     /**
      * This will check to see if the node is the "head" and
