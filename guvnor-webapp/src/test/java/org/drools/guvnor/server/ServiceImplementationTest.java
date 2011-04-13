@@ -3891,25 +3891,29 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         impl.createUser( "user2" );
         impl.createUser( "user3" );
 
-        PageRequest request = new PageRequest( 0,
-                                               PAGE_SIZE );
-        PageResponse<PermissionsPageRow> response;
-        response = impl.listUserPermissions( request );
+        PageRequest requestPage1 = new PageRequest( 0,
+                                                    PAGE_SIZE );
+        PageResponse<PermissionsPageRow> responsePage1 = impl.listUserPermissions( requestPage1 );
 
-        assertNotNull( response );
-        assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == 0 );
-        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
-        assertFalse( response.isLastPage() );
+        assertNotNull( responsePage1 );
+        assertNotNull( responsePage1.getPageRowList() );
+        assertEquals( 0,
+                      responsePage1.getStartRowIndex() );
+        assertEquals( PAGE_SIZE,
+                      responsePage1.getPageRowList().size() );
+        assertFalse( responsePage1.isLastPage() );
 
-        request.setStartRowIndex( PAGE_SIZE );
-        response = impl.listUserPermissions( request );
+        PageRequest requestPage2 = new PageRequest( PAGE_SIZE,
+                                                    PAGE_SIZE );
+        PageResponse<PermissionsPageRow> responsePage2 = impl.listUserPermissions( requestPage2 );
 
-        assertNotNull( response );
-        assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
-        assertTrue( response.getPageRowList().size() == 1 );
-        assertTrue( response.isLastPage() );
+        assertNotNull( responsePage2 );
+        assertNotNull( responsePage2.getPageRowList() );
+        assertEquals( PAGE_SIZE,
+                      responsePage2.getStartRowIndex() );
+        assertEquals( 1,
+                      responsePage2.getPageRowList().size() );
+        assertTrue( responsePage2.isLastPage() );
     }
 
     @Test
@@ -3928,8 +3932,10 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == 0 );
-        assertTrue( response.getPageRowList().size() == 3 );
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( 3,
+                      response.getPageRowList().size() );
         assertTrue( response.isLastPage() );
     }
 
