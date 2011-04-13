@@ -905,6 +905,35 @@ public class PackageItemTest {
                 "testDependenciesAsset1?version=2",
                 dependencies[0]);
     }
+    
+    @Test
+    public void testDependenciesWithHistoricalVersion() throws Exception {
+        RulesRepository repo = getRepo();
+        PackageItem item = repo.createPackage("testDependenciesWithHistoricalVersion", "lalalala");
+        getRepo().save();
+
+        String[] dependencies = item.getDependencies();
+        assertEquals(dependencies.length, 0);
+
+        AssetItem rule = item.addAsset("testDependenciesWithHistoricalVersionAsset1", "w");
+        
+        dependencies = item.getDependencies();
+        assertEquals(dependencies.length, 1);
+        assertEquals(
+                "testDependenciesWithHistoricalVersionAsset1?version=LATEST",
+                dependencies[0]);
+        
+        item.checkout();
+        item.checkin("v1");
+        PackageItem historicalPackage = getRepo().loadPackage("testDependenciesWithHistoricalVersion", 2);
+        dependencies = historicalPackage.getDependencies();
+        assertEquals(1, dependencies.length);
+        //testDependenciesWithHistoricalVersionAsset1's version is 1 because it was forced to be 
+        //checked in when the package got checked in. 
+        assertEquals(
+                "testDependenciesWithHistoricalVersionAsset1?version=1",
+                dependencies[0]);
+     }
 
     @Test
     public void testListAssetsByFormatForHistoricalPackage() throws Exception {

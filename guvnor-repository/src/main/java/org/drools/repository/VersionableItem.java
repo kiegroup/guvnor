@@ -568,6 +568,7 @@ public abstract class VersionableItem extends Item {
      */
     public void checkin(String comment) {
         checkIsUpdateable();
+        checkInAssetInNecessary(false);
         try {
 
             this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME, Calendar.getInstance() );
@@ -592,6 +593,25 @@ public abstract class VersionableItem extends Item {
         }
     }
 
+	/*
+	 * When we make a version of package (check in the package), we need to know
+	 * the exact version number of child assets that this package contains. If
+	 * the child asset does not have any version yet (it may have been saved,
+	 * but has never been checked in), we need to check in this asset so that we
+	 * have a version number that we can refer to from the versioned package.
+	 */
+    private void checkInAssetInNecessary(boolean force) {
+    	if(!(this instanceof PackageItem)) {
+    		return;
+    	}
+    	Iterator<AssetItem> assets = ((PackageItem)this).getAssets();
+    	while(assets.hasNext()) {
+    		AssetItem asset = assets.next();
+    		if(force || asset.getVersionNumber() ==0) {
+    			asset.checkin("Package[" + this.getTitle() + "] checked in");
+    		}
+    	}
+    }
     /**
      * This will check to see if the node is the "head" and
      * so can be updated (you can't update historical nodes ).
