@@ -17,6 +17,10 @@
 package org.drools.repository;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -31,64 +35,70 @@ import org.slf4j.LoggerFactory;
  */
 public class RepositorySessionUtil {
 
-    private static ThreadLocal<RulesRepository> repo = new ThreadLocal<RulesRepository>();
-    private static Repository multiThreadedRepository;
-    private static Session session = null;
-    private static final Logger log = LoggerFactory.getLogger(RepositorySessionUtil.class);
+    private static ThreadLocal<RulesRepository> repo    = new ThreadLocal<RulesRepository>();
+    private static Repository                   multiThreadedRepository;
+    private static Session                      session = null;
+    private static final Logger                 log     = LoggerFactory.getLogger( RepositorySessionUtil.class );
 
     // private static final Logger log = Logger.getLogger( RepositorySessionUtil.class );
 
-    public static boolean deleteDir( File dir ) {
+    public static boolean deleteDir(File dir) {
 
-        if (dir.isDirectory()) {
+        if ( dir.isDirectory() ) {
             String[] children = dir.list();
-            for (int i = 0; i < children.length; i++) {
-                if (!deleteDir(new File(dir, children[i]))) {
+            for ( int i = 0; i < children.length; i++ ) {
+                if ( !deleteDir( new File( dir,
+                                           children[i] ) ) ) {
                     return false;
                 }
             }
         }
 
         // The directory is now empty so delete it
-        return dir.delete();
+        dir.delete();
+
+        return assertDeletion( dir );
+
     }
 
     public static RulesRepository getRepository() throws RulesRepositoryException {
         RulesRepository repoInstance = repo.get();
-        if (repoInstance == null) {
+        if ( repoInstance == null ) {
 
-            log.info("Creating a new Repository Instance..");
+            log.info( "Creating a new Repository Instance.." );
 
-            File dir = new File("repository");
-            log.info("DELETING test repo: " + dir.getAbsolutePath());
-            deleteDir(dir);
-            log.info("TEST repo was deleted.");
+            File dir = new File( "repository" );
+            log.info( "DELETING test repo: " + dir.getAbsolutePath() );
+            deleteDir( dir );
+            log.info( "TEST repo was deleted." );
 
             try {
                 //configurator = new JackrabbitRepository
                 // create a repo instance (startup)
-            
-                multiThreadedRepository = RulesRepositoryConfigurator.getInstance(null).getJCRRepository();
+
+                multiThreadedRepository = RulesRepositoryConfigurator.getInstance( null ).getJCRRepository();
 
                 // create a session
                 //Session session;
-            
-                session = multiThreadedRepository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
-                RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(session);
+
+                session = multiThreadedRepository.login( new SimpleCredentials( "alan_parsons",
+                                                                                "password".toCharArray() ) );
+                RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator( session );
 
                 // clear out and setup
-                if (admin.isRepositoryInitialized()) {
+                if ( admin.isRepositoryInitialized() ) {
                     admin.clearRulesRepository();
                 }
-                RulesRepositoryConfigurator.getInstance(null).setupRepository(session);
-                repoInstance = new RulesRepository(session);
+                RulesRepositoryConfigurator.getInstance( null ).setupRepository( session );
+                repoInstance = new RulesRepository( session );
 
-                multiThreadedRepository.login(new SimpleCredentials("ADMINISTRATOR", "password".toCharArray()));
+                multiThreadedRepository.login( new SimpleCredentials( "ADMINISTRATOR",
+                                                                      "password".toCharArray() ) );
                 // loonie hack
                 // DroolsRepositoryAccessManager.adminThreadlocal.set( adminSession );
-                repo.set(repoInstance);
-            } catch (Exception e) {
-                throw new RulesRepositoryException(e);
+                repo.set( repoInstance );
+            } catch ( Exception e ) {
+                throw new RulesRepositoryException( e );
             }
         }
 
@@ -96,40 +106,42 @@ public class RepositorySessionUtil {
     }
 
     public static synchronized RulesRepository getMultiThreadedRepository() throws RulesRepositoryException {
-        if (multiThreadedRepository == null) {
-           
-            File dir = new File("repository");
-            log.info("DELETING test repo: " + dir.getAbsolutePath());
-            deleteDir(dir);
-            log.info("TEST repo was deleted.");
+        if ( multiThreadedRepository == null ) {
+
+            File dir = new File( "repository" );
+            log.info( "DELETING test repo: " + dir.getAbsolutePath() );
+            deleteDir( dir );
+            log.info( "TEST repo was deleted." );
 
             try {
                 // create a repo instance (startup)
-                multiThreadedRepository = RulesRepositoryConfigurator.getInstance(null).getJCRRepository();
+                multiThreadedRepository = RulesRepositoryConfigurator.getInstance( null ).getJCRRepository();
 
                 // create a session to config repo
-                Session session = multiThreadedRepository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
-                RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(session);
+                Session session = multiThreadedRepository.login( new SimpleCredentials( "alan_parsons",
+                                                                                        "password".toCharArray() ) );
+                RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator( session );
 
                 // clear out and setup
-                if (admin.isRepositoryInitialized()) {
+                if ( admin.isRepositoryInitialized() ) {
                     admin.clearRulesRepository();
                 }
-                RulesRepositoryConfigurator.getInstance(null).setupRepository( session);
-            } catch (Exception e) {
-                throw new RulesRepositoryException(e);
+                RulesRepositoryConfigurator.getInstance( null ).setupRepository( session );
+            } catch ( Exception e ) {
+                throw new RulesRepositoryException( e );
             }
         }
 
         // associate this repo instance with thread specific sessions every time.
         Session session;
         try {
-            session = multiThreadedRepository.login(new SimpleCredentials("alan_parsons", "password".toCharArray()));
-            RulesRepository threadLocalRepo = new RulesRepository(session);
+            session = multiThreadedRepository.login( new SimpleCredentials( "alan_parsons",
+                                                                            "password".toCharArray() ) );
+            RulesRepository threadLocalRepo = new RulesRepository( session );
             return threadLocalRepo;
-        } catch (LoginException e) {
+        } catch ( LoginException e ) {
             e.printStackTrace();
-        } catch (RepositoryException e) {
+        } catch ( RepositoryException e ) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -137,9 +149,47 @@ public class RepositorySessionUtil {
     }
 
     public static void shutdown() throws RepositoryException {
-        RulesRepositoryConfigurator.getInstance(null).shutdown();
-        repo.set(null);
+        RulesRepositoryConfigurator.getInstance( null ).shutdown();
+        repo.set( null );
         multiThreadedRepository = null;
+    }
+
+    //Check the File has actually been deleted from the underlying File System
+    private static boolean assertDeletion(File dir) {
+        FileInputStream fos = null;
+        boolean result = false;
+        int retries = 3;
+        try {
+            while ( retries > 0 ) {
+                fos = new FileInputStream( dir );
+                try {
+                    Thread.sleep( 500 );
+                } catch ( InterruptedException ie ) {
+                    //Swallow
+                } finally {
+                    if ( fos != null ) {
+                        try {
+                            fos.close();
+                        } catch ( IOException ioe ) {
+                        }
+                    }
+                }
+                retries--;
+            }
+
+        } catch ( FileNotFoundException fnfe ) {
+            //Great it's been deleted!
+            result = true;
+        } finally {
+            if ( fos != null ) {
+                try {
+                    fos.close();
+                } catch ( IOException ioe ) {
+                }
+            }
+        }
+        return result;
+
     }
 
 }
