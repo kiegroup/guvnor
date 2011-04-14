@@ -54,7 +54,7 @@ public class VerificationServiceImplementationTest extends GuvnorTestBase {
 
         AnalysisReport report = verificationService.analysePackage( pkg.getUUID() );
         assertNotNull( report );
-        assertEquals( 1,
+        assertEquals( 0,
                       report.warnings.length );
 
     }
@@ -74,7 +74,7 @@ public class VerificationServiceImplementationTest extends GuvnorTestBase {
         assertNotNull( report );
         assertEquals( 0,
                       report.errors.length );
-        assertEquals( 8,
+        assertEquals( 1,
                       report.warnings.length );
         assertEquals( 1,
                       report.notes.length );
@@ -97,22 +97,10 @@ public class VerificationServiceImplementationTest extends GuvnorTestBase {
 
         assertEquals( 0,
                       report.factUsages[0].fields.length );
-        assertEquals( 1,
+        assertEquals( 0,
                       report.factUsages[1].fields.length );
-        assertEquals( 1,
+        assertEquals( 0,
                       report.factUsages[2].fields.length );
-
-        assertEquals( "a",
-                      report.factUsages[1].fields[0].name );
-        assertEquals( "a",
-                      report.factUsages[2].fields[0].name );
-
-        assertEquals( 3,
-                      report.factUsages[1].fields[0].rules.length );
-        assertEquals( 2,
-                      report.factUsages[2].fields[0].rules.length );
-
-        assertNotNull( report.factUsages[1].fields[0].rules[0] );
 
     }
 

@@ -51,7 +51,7 @@ public class VerifierRunnerTest extends GuvnorTestBase {
                                                                                ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE ) );
 
         assertNotNull( report );
-        assertEquals( 1,
+        assertEquals( 0,
                       report.warnings.length );
 
     }
