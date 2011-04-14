@@ -66,6 +66,7 @@ public class DiscussionWidget extends Composite {
     private Artifact               artifact;
     private ServerPushNotification pushNotify;
     private int                    lastCount        = 0;
+    private boolean         readOnly;
 
     @Override
     protected void onUnload() {
@@ -73,8 +74,9 @@ public class DiscussionWidget extends Composite {
         PushClient.instance().unsubscribe( pushNotify );
     }
 
-    public DiscussionWidget(final Artifact artifact) {
+    public DiscussionWidget(final Artifact artifact, boolean readOnly) {
         this.artifact = artifact;
+        this.readOnly = readOnly;
 
         DecoratedDisclosurePanel discussionPanel = new DecoratedDisclosurePanel( constants.Discussion() );
         discussionPanel.setWidth( "100%" );
@@ -159,10 +161,12 @@ public class DiscussionWidget extends Composite {
         HorizontalPanel hp = new HorizontalPanel();
 
         Button createNewComment = new Button( constants.AddADiscussionComment() );
+        createNewComment.setEnabled(!this.readOnly);
         hp.add( createNewComment );
 
         if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_ADMIN ) ) {
             Button adminClearAll = new Button( constants.EraseAllComments() );
+            adminClearAll.setEnabled(!readOnly);
             hp.add( adminClearAll );
             adminClearAll.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {

@@ -171,9 +171,14 @@ public class VersionChooser extends Composite {
                                                                                                                                    asset.name ),
                                                                                                                     new Integer( 800 ) );
 
-                                                                     RuleViewer viewer = new RuleViewer( asset,
+                                                                     RuleViewerWrapper viewer = new RuleViewerWrapper( asset,
                                                                                                          null,
-                                                                                                         true );
+                                                                                                         null,
+                                                                                                         null,
+                                                                                                         null,
+                                                                                                         true,
+                                                                                                         null,
+                                                                                                         null);
                                                                      viewer.setWidth( "100%" );
                                                                      viewer.setHeight( "100%" );
 

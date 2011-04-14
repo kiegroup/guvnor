@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.PackageEditor;
+import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -223,7 +224,7 @@ public class VersionBrowser extends Composite {
 
 
                         	
-                            PackageEditor ed = new PackageEditor( conf,
+                            PackageEditorWrapper ed = new PackageEditorWrapper( conf,
                             		                              true,
                                                                   null,
                                                                   null,
@@ -265,9 +266,14 @@ public class VersionBrowser extends Composite {
                                                                          }
                                                                      } );
 
-                                                                     RuleViewer viewer = new RuleViewer( asset,
+                                                                     RuleViewerWrapper viewer = new RuleViewerWrapper( asset,
                                                                                                          null,
-                                                                                                         true );
+                                                                                                         null,
+                                                                                                         null,
+                                                                                                         null,
+                                                                                                         true,
+                                                                                                         null,
+                                                                                                         null);
                                                                      viewer.setWidth( "100%" );
                                                                      viewer.setHeight( "100%" );
 

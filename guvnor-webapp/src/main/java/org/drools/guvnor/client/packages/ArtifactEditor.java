@@ -26,7 +26,6 @@ import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
 import org.drools.guvnor.client.ruleeditor.MessageWidget;
 import org.drools.guvnor.client.ruleeditor.MetaDataWidgetNew;
 import org.drools.guvnor.client.ruleeditor.RuleDocumentWidget;
-import org.drools.guvnor.client.ruleeditor.RuleViewerSettings;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
@@ -62,7 +61,6 @@ public class ArtifactEditor extends GuvnorEditor {
     public Command                                    checkedInCommand;
     protected Artifact                                artifact;
     private boolean                                   readOnly;
-    private final RuleViewerSettings                  ruleViewerSettings;
     private long                                      lastSaved = System.currentTimeMillis();
 
     public ArtifactEditor(Artifact artifact,
@@ -70,8 +68,7 @@ public class ArtifactEditor extends GuvnorEditor {
         this( artifact,
               event,
               false,
-              null,
-              null );
+              null);
     }
 
     /**
@@ -84,8 +81,7 @@ public class ArtifactEditor extends GuvnorEditor {
         this( artifact,
               event,
               historicalReadOnly,
-              null,
-              null );
+              null);
     }
 
     /**
@@ -97,37 +93,18 @@ public class ArtifactEditor extends GuvnorEditor {
     public ArtifactEditor(Artifact artifact,
                       final OpenItemCommand event,
                       boolean historicalReadOnly,
-                      ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
-                      RuleViewerSettings ruleViewerSettings) {
+                      ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider) {
         this.artifact = artifact;
-        this.readOnly = historicalReadOnly
-                        && artifact.isreadonly;
-
-        if ( ruleViewerSettings == null ) {
-            this.ruleViewerSettings = new RuleViewerSettings();
-        } else {
-            this.ruleViewerSettings = ruleViewerSettings;
-        }
+        this.readOnly = historicalReadOnly || artifact.isreadonly;
 
         ruleDocumentWidget = new RuleDocumentWidget( artifact,
-                                                     this.ruleViewerSettings.isDocoVisible() );
+                                                     historicalReadOnly);
 
         metaWidget = createMetaWidget();
-        metaWidget.setVisible( this.ruleViewerSettings.isMetaVisible() );
 
         initWidget( uiBinder.createAndBindUi( this ) );
         setWidth( "100%" );
         LoadingPopup.close();
-    }
-
-    public void setDocoVisible(boolean docoVisible) {
-        this.ruleViewerSettings.setDocoVisible( docoVisible );
-        this.ruleDocumentWidget.setVisible( docoVisible );
-    }
-
-    public void setMetaVisible(boolean metaVisible) {
-        this.ruleViewerSettings.setMetaVisible( metaVisible );
-        this.metaWidget.setVisible( metaVisible );
     }
 
     @Override

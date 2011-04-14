@@ -29,14 +29,17 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 
 public class CommentWidget extends DirtyableComposite {
-
     private Constants                      constants = GWT.create( Constants.class );
-
     private final DecoratedTextArea        text;
     private final DecoratedDisclosurePanel disclosurePanel;
+    private boolean         readOnly;
 
-    public CommentWidget(final Artifact artifact) {
+    public CommentWidget(final Artifact artifact, boolean readOnly) {
+        this.readOnly = readOnly;
+
         text = getTextArea();
+        text.setEnabled(!this.readOnly);
+
         disclosurePanel = getDisclosurePanel();
 
         disclosurePanel.setContent( text );
@@ -52,7 +55,6 @@ public class CommentWidget extends DirtyableComposite {
         //}
 
         initWidget( disclosurePanel );
-
     }
 
     private DecoratedDisclosurePanel getDisclosurePanel() {

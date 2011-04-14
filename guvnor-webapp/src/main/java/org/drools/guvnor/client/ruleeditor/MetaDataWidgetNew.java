@@ -75,11 +75,10 @@ public class MetaDataWidgetNew extends Composite {
     private String          currentSectionName;
 
     public MetaDataWidgetNew(final Artifact d,
-                          final boolean readOnly,
+                          boolean readOnly,
                           final String uuid,
                           final Command metaDataRefreshView,
                           final Command fullRefreshView) {
-
         super();
 
         this.uuid = uuid;
@@ -325,7 +324,6 @@ public class MetaDataWidgetNew extends Composite {
         } else {
             return readOnlyText( Long.toString( artifact.versionNumber ) );
         }
-
     }
 
     private Widget readOnlyDate(Date lastModifiedDate) {

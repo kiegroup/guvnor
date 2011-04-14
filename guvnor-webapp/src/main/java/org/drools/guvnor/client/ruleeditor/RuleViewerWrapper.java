@@ -71,7 +71,7 @@ public class RuleViewerWrapper extends GuvnorEditor {
 	}
     
     private void refreshWidgets() {  
-    	this.artifactEditor = new ArtifactEditor(asset, null);
+    	this.artifactEditor = new ArtifactEditor(asset, null, this.isHistoricalReadOnly);
 		this.ruleViewer = new RuleViewer(asset, 
 				this.editEvent,
 				this.closeCommand,

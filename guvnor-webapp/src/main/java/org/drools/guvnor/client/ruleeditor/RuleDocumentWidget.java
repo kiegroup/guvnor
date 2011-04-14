@@ -33,25 +33,26 @@ public class RuleDocumentWidget extends DirtyableComposite {
     final VerticalPanel     layout = new VerticalPanel();
 
     private final Artifact artifact;
+    private boolean         readOnly;
 
     public RuleDocumentWidget(final Artifact artifact,
-                              boolean visible) {
+                              boolean readOnly) {
         this.artifact = artifact;
+        this.readOnly = readOnly;
 
         initWidget( layout );
-
-        setVisible( visible );
+        initLayout();
     }
 
     private void initLayout() {
         layout.clear();
 
-        layout.add( new CommentWidget( artifact ) );
+        layout.add( new CommentWidget( artifact, readOnly ) );
 
 		if (artifact instanceof RuleAsset) {
 	        Scheduler.get().scheduleDeferred( new Command() {
 	            public void execute() {
-	                layout.add( new DiscussionWidget( artifact ) );
+	                layout.add( new DiscussionWidget( artifact, readOnly ) );
 	            }
 	        } );
 		} else {
@@ -60,12 +61,4 @@ public class RuleDocumentWidget extends DirtyableComposite {
 
         layout.setWidth( "100%" );
     }
-
-    public void setVisible(boolean visible) {
-        if ( visible && layout.getWidgetCount() == 0 ) {
-            initLayout();
-        }
-
-        super.setVisible( visible );
-    };
 }

@@ -40,5 +40,9 @@ public class DecoratedTextArea extends Composite {
     public String getText() {
         return textArea.getText();
     }
+    
+    public void setEnabled(boolean enabled) {
+    	textArea.setEnabled(enabled);
+    }  
 
 }
