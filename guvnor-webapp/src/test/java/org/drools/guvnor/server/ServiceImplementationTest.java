@@ -3894,19 +3894,20 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         PageRequest requestPage1 = new PageRequest( 0,
                                                     PAGE_SIZE );
         PageResponse<PermissionsPageRow> responsePage1 = impl.listUserPermissions( requestPage1 );
-
+        
         assertNotNull( responsePage1 );
         assertNotNull( responsePage1.getPageRowList() );
+        
+        System.out.println( "ListUserPermissionsFullResults-page1" );
+        for ( PermissionsPageRow row : responsePage1.getPageRowList() ) {
+            System.out.println( "--> Username = " + row.getUserName() );
+        }
+
         assertEquals( 0,
                       responsePage1.getStartRowIndex() );
         assertEquals( PAGE_SIZE,
                       responsePage1.getPageRowList().size() );
         assertFalse( responsePage1.isLastPage() );
-
-        System.out.println( "ListUserPermissionsFullResults-page1" );
-        for ( PermissionsPageRow row : responsePage1.getPageRowList() ) {
-            System.out.println( "--> Username = " + row.getUserName() );
-        }
 
         PageRequest requestPage2 = new PageRequest( PAGE_SIZE,
                                                     PAGE_SIZE );
@@ -3914,16 +3915,17 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertNotNull( responsePage2 );
         assertNotNull( responsePage2.getPageRowList() );
-        assertEquals( PAGE_SIZE,
-                      responsePage2.getStartRowIndex() );
-        assertEquals( 1,
-                      responsePage2.getPageRowList().size() );
-        assertTrue( responsePage2.isLastPage() );
 
         System.out.println( "ListUserPermissionsFullResults-page2" );
         for ( PermissionsPageRow row : responsePage2.getPageRowList() ) {
             System.out.println( "--> Username = " + row.getUserName() );
         }
+
+        assertEquals( PAGE_SIZE,
+                      responsePage2.getStartRowIndex() );
+        assertEquals( 1,
+                      responsePage2.getPageRowList().size() );
+        assertTrue( responsePage2.isLastPage() );
 
     }
 
@@ -3943,15 +3945,16 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertEquals( 0,
-                      response.getStartRowIndex() );
-        assertEquals( 3,
-                      response.getPageRowList().size() );
 
         System.out.println( "ListUserPermissionsFullResults" );
         for ( PermissionsPageRow row : response.getPageRowList() ) {
             System.out.println( "--> Username = " + row.getUserName() );
         }
+
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( 3,
+                      response.getPageRowList().size() );
 
         assertTrue( response.isLastPage() );
     }
