@@ -41,31 +41,34 @@ public class ArchiveItemTest extends RepositoryTestCase {
         repo.loadDefaultPackage().addAsset( "testFindArchivedAssets4",
                                             "X" );
 
-        AssetItem item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets1" );
+        AssetItem item = repo.loadDefaultPackage().loadAsset( "testFindArchivedAssets1" );
         assertFalse( item.isArchived() );
         item.archiveItem( true );
         item.checkin( "archiving item 1" );
-        item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets1" );
+        item = repo.loadDefaultPackage().loadAsset( "testFindArchivedAssets1" );
         assertTrue( item.isArchived() );
 
-        item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets2" );
+        item = repo.loadDefaultPackage().loadAsset( "testFindArchivedAssets2" );
         assertFalse( item.isArchived() );
         item.archiveItem( true );
         item.checkin( "archiving item 1" );
-        item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets2" );
+        item = repo.loadDefaultPackage().loadAsset( "testFindArchivedAssets2" );
         assertTrue( item.isArchived() );
 
-        item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets3" );
+        item = repo.loadDefaultPackage().loadAsset( "testFindArchivedAssets3" );
         assertFalse( item.isArchived() );
         item.archiveItem( true );
         item.checkin( "archiving item 1" );
-        item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testFindArchivedAssets3" );
+        item = repo.loadDefaultPackage().loadAsset( "testFindArchivedAssets3" );
         assertTrue( item.isArchived() );
     }
 
     @Test
     public void testArchiveBooleanFlag() throws Exception {
-        AssetItem item = RepositorySessionUtil.getRepository().loadDefaultPackage().addAsset( "testArchiveBooleanFlag",
+        
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        
+        AssetItem item = repo.loadDefaultPackage().addAsset( "testArchiveBooleanFlag",
                                                                                               "yeah" );
 
         assertFalse( item.isArchived() );
@@ -78,11 +81,13 @@ public class ArchiveItemTest extends RepositoryTestCase {
 
     @Test
     public void testLoadArchivedAsset() throws Exception {
-        AssetItem itemAdd = RepositorySessionUtil.getRepository().loadDefaultPackage().addAsset( "testArchiveBooleanFlag",
-        "yeah" );
+        
+        RulesRepository repo = RepositorySessionUtil.getRepository();
+        
+        AssetItem itemAdd = repo.loadDefaultPackage().addAsset( "testArchiveBooleanFlag", "yeah" );
         itemAdd.archiveItem( true );
 
-        AssetItem item = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "testArchiveBooleanFlag" );
+        AssetItem item = repo.loadDefaultPackage().loadAsset( "testArchiveBooleanFlag" );
         System.out.println( item );
         assertTrue( item.isArchived() );
     }
@@ -169,7 +174,7 @@ public class ArchiveItemTest extends RepositoryTestCase {
                                             "X" );
         repo.save();
 
-        AssetItem item2 = RepositorySessionUtil.getRepository().loadDefaultPackage().loadAsset( "findRulesByNameArchived1" );
+        AssetItem item2 = repo.loadDefaultPackage().loadAsset( "findRulesByNameArchived1" );
         assertFalse( item2.isArchived() );
 
         item2.archiveItem( true );

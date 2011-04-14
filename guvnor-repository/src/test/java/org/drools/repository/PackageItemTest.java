@@ -26,7 +26,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-public class PackageItemTest {
+public class PackageItemTest extends RepositoryTestCase {
 
     private PackageItem loadGlobalArea() {
         return getRepo().loadGlobalArea();
@@ -271,10 +271,6 @@ public class PackageItemTest {
 
         assertEquals("BOO", res[0]);
         assertEquals("BOO2", res[1]);
-    }
-
-    private RulesRepository getRepo() {
-        return RepositorySessionUtil.getRepository();
     }
 
     @Test

@@ -22,12 +22,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.repository.RepositorySessionUtil;
+import org.drools.repository.RepositoryTestCase;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 
-public class PermissionManagerTest {
+public class PermissionManagerTest extends RepositoryTestCase {
 
     @Test
     public void testLoadSave() throws Exception {

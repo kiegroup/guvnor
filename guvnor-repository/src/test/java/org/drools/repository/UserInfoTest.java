@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
-public class UserInfoTest {
+public class UserInfoTest extends RepositoryTestCase {
 
     @Test
     public void testPersistence() throws Exception {

@@ -29,6 +29,7 @@ import java.util.Properties;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RepositorySessionUtil;
+import org.drools.repository.RepositoryTestCase;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.RulesRepositoryTest;
@@ -38,7 +39,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class RestAPITest {
+public class RestAPITest extends RepositoryTestCase {
     //String someAsset = "packages/SomeName/SomeFile.drl";
     //String getAList = "packages/SomeName"; //will show a list
     //String getPackageConfig = "packages/SomeName/.package"; //should load package config
