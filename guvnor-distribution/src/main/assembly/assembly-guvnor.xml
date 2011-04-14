@@ -41,14 +41,6 @@
       <filtered>true</filtered>
       <outputDirectory/>
     </fileSet>
-    <!-- Binaries -->
-    <fileSet>
-      <directory>target</directory>
-      <includes>
-        <include>guvnor-*.war</include>
-      </includes>
-      <outputDirectory>binaries</outputDirectory>
-    </fileSet>
     <!-- Examples -->
     <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
       <directory>../guvnor-examples</directory>
@@ -67,6 +59,15 @@
   </fileSets>
 
   <dependencySets>
+    <!-- Binaries -->
+    <dependencySet>
+      <includes>
+        <include>org.drools:guvnor-distribution-wars:war</include>
+      </includes>
+      <outputDirectory>binaries</outputDirectory>
+      <outputFileNameMapping>guvnor-${artifact.version}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
     <!-- Reference manual -->
     <dependencySet>
       <includes>

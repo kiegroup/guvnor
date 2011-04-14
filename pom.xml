@@ -66,6 +66,7 @@
       </activation>
       <modules>
         <module>guvnor-docs</module>
+        <module>guvnor-distribution-wars</module>
         <module>guvnor-distribution</module>
       </modules>
     </profile>
