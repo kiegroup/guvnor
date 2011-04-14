@@ -67,8 +67,28 @@ public class TestEnvironmentSessionHelper {
                 }
                 repository = config.getJCRRepository();
 
-                Session testSession = repository.login( new SimpleCredentials( "alan_parsons",
+                //-->Workaround for lock problems
+                int retries = 3;
+                Session testSession = null;
+                while ( retries > 0 ) {
+                    try {
+                        testSession = repository.login( new SimpleCredentials( "alan_parsons",
                                                                                "password".toCharArray() ) );
+                        retries = 0;
+                    } catch ( RepositoryException re ) {
+                        System.err.println( "Failed to get the repository session: Retrying... " );
+                        re.printStackTrace();
+                        retries--;
+                        try {
+                            Thread.sleep( 500 );
+                        } catch ( InterruptedException ie ) {
+                        }
+                    }
+                }
+                if ( testSession == null ) {
+                    throw new IllegalStateException( "Unable to get Repository Session. Refer to previous messages for details." );
+                }
+                //<--
 
                 RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator( testSession );
                 if ( erase && admin.isRepositoryInitialized() ) {
@@ -107,17 +127,6 @@ public class TestEnvironmentSessionHelper {
     public static synchronized void shutdown() {
         try {
             RulesRepositoryConfigurator.getInstance( null ).shutdown();
-
-            //Wait two seconds (arbitrary) for JCR to terminate and release locks
-            long timeNow = System.currentTimeMillis();
-            long timeInTwoSeconds = timeNow + 2000;
-            while ( System.currentTimeMillis() < timeInTwoSeconds ) {
-                try {
-                    Thread.sleep( 100 );
-                } catch ( InterruptedException ie ) {
-                }
-            }
-
         } catch ( Exception e ) {
             log.error("Could not shut down repository.", e);
         }
