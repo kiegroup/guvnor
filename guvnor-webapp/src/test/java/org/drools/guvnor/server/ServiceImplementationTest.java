@@ -3903,6 +3903,11 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       responsePage1.getPageRowList().size() );
         assertFalse( responsePage1.isLastPage() );
 
+        System.out.println( "ListUserPermissionsFullResults-page1" );
+        for ( PermissionsPageRow row : responsePage1.getPageRowList() ) {
+            System.out.println( "--> Username = " + row.getUserName() );
+        }
+
         PageRequest requestPage2 = new PageRequest( PAGE_SIZE,
                                                     PAGE_SIZE );
         PageResponse<PermissionsPageRow> responsePage2 = impl.listUserPermissions( requestPage2 );
@@ -3914,6 +3919,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertEquals( 1,
                       responsePage2.getPageRowList().size() );
         assertTrue( responsePage2.isLastPage() );
+
+        System.out.println( "ListUserPermissionsFullResults-page2" );
+        for ( PermissionsPageRow row : responsePage2.getPageRowList() ) {
+            System.out.println( "--> Username = " + row.getUserName() );
+        }
+
     }
 
     @Test
@@ -3936,6 +3947,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       response.getStartRowIndex() );
         assertEquals( 3,
                       response.getPageRowList().size() );
+
+        System.out.println( "ListUserPermissionsFullResults" );
+        for ( PermissionsPageRow row : response.getPageRowList() ) {
+            System.out.println( "--> Username = " + row.getUserName() );
+        }
+
         assertTrue( response.isLastPage() );
     }
 
