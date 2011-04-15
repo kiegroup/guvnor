@@ -37,16 +37,20 @@ public class RuleViewerWrapper extends GuvnorEditor {
     private RuleAsset asset;
     private boolean isHistoricalReadOnly = false;
     private final RuleViewerSettings                  ruleViewerSettings;
-    private final OpenItemCommand                     editEvent;
+    private final OpenItemCommand                     openItemCommand;
     private Command                                   closeCommand;
     private Command                                   archiveCommand;
     private Command                                   checkedInCommand;
 
     ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
     
-	public RuleViewerWrapper(RuleAsset asset, final OpenItemCommand event, final Command closeCommand, 
-			final Command checkedInCommand, final Command archiveCommand) {
-		this(asset, event, closeCommand, checkedInCommand, archiveCommand, false, null, null);
+	public RuleViewerWrapper(
+			RuleAsset asset,
+			final OpenItemCommand openItemCommand, 
+			final Command closeCommand,
+			final Command checkedInCommand, 
+			final Command archiveCommand) {
+		this(asset, openItemCommand, closeCommand, checkedInCommand, archiveCommand, false, null, null);
 	}
     
 	public RuleViewerWrapper(
@@ -60,7 +64,7 @@ public class RuleViewerWrapper extends GuvnorEditor {
             RuleViewerSettings ruleViewerSettings) {
 		this.asset = asset;
 		this.isHistoricalReadOnly = isHistoricalReadOnly;
-		this.editEvent = event;
+		this.openItemCommand = event;
 		this.ruleViewerSettings = ruleViewerSettings;
 		this.closeCommand = closeCommand;
 		this.checkedInCommand = checkedInCommand;
@@ -71,9 +75,9 @@ public class RuleViewerWrapper extends GuvnorEditor {
 	}
     
     private void refreshWidgets() {  
-    	this.artifactEditor = new ArtifactEditor(asset, null, this.isHistoricalReadOnly);
+    	this.artifactEditor = new ArtifactEditor(asset, this.isHistoricalReadOnly);
 		this.ruleViewer = new RuleViewer(asset, 
-				this.editEvent,
+				this.openItemCommand,
 				this.closeCommand,
 				this.checkedInCommand,
 				this.archiveCommand,

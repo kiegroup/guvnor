@@ -102,9 +102,14 @@ class MessageList {
     }
 
     public LogEntry[] getMessages() {
-        return Arrays.copyOf( messages, current );
+    	//JDK1.5 Incompatible. 
+        //return Arrays.copyOf( messages, current );
+        LogEntry[] result = new LogEntry[current];
+        System.arraycopy(messages, 0, result, 0, Math.min(messages.length, current));   
+        return result;
     }
 
+    
     public synchronized void cleanEntry() {
         messages = new LogEntry[MAX];
         current = 0;

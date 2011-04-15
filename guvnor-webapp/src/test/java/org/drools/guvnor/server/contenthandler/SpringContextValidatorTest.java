@@ -22,7 +22,7 @@ public class SpringContextValidatorTest {
         SpringContextValidator validator = new SpringContextValidator();
         InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("org/drools/guvnor/server/contenthandler/invalid-spring-context.xml");
         validator.setContent(resourceAsStream);
-        assertFalse(validator.validate().isEmpty());
+        assertFalse(validator.validate().length() ==0);
     }
 
     @Test
@@ -30,7 +30,7 @@ public class SpringContextValidatorTest {
         SpringContextValidator validator = new SpringContextValidator();
         InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("org/drools/guvnor/server/contenthandler/malformed-spring-context.xml");
         validator.setContent(resourceAsStream);
-        assertFalse(validator.validate().isEmpty());
+        assertFalse(validator.validate().length() ==0);
     }
         
 }

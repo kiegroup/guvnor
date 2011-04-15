@@ -60,7 +60,6 @@ import com.google.gwt.user.client.ui.Widget;
  * It also captures edits, but it does not load or save anything itself.
  */
 public class MetaDataWidgetNew extends Composite {
-
     private Constants       constants = GWT.create( Constants.class );
     private static Images   images    = GWT.create( Images.class );
 

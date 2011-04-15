@@ -65,7 +65,7 @@ public class PerspectiveEditorPopUp implements Presenter {
     }
 
     private boolean isNullOrEmpty(String name) {
-        return name == null || name.isEmpty();
+        return name == null || name.length() ==0;
     }
 
     public void setConfiguration(IFramePerspectiveConfiguration iFramePerspectiveConfiguration) {

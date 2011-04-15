@@ -85,8 +85,8 @@ public class Backchannel {
             /**
              * Now PAUSE here for a while.... and release after 3hours if nothing done
              */
-            latch.await( 3,
-                         TimeUnit.HOURS );
+            latch.await( 3*60*60,
+                         TimeUnit.SECONDS );
 
             /** In the meantime... response has been set, and then it will be unlatched, and message sent back... */
             return fetchMessageForUser( userName );

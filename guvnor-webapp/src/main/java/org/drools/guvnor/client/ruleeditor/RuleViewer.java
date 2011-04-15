@@ -99,9 +99,9 @@ public class RuleViewer extends GuvnorEditor {
      *            true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
-                      final OpenItemCommand event) {
+                      final OpenItemCommand openItemCommand) {
         this( asset,
-              event,
+        	  openItemCommand,
               null,
               null,
               null,
@@ -115,10 +115,10 @@ public class RuleViewer extends GuvnorEditor {
      *            true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
-                      final OpenItemCommand event,
+                      final OpenItemCommand openItemCommand,
                       boolean historicalReadOnly) {
         this( asset,
-              event,
+        	  openItemCommand,
               null,
               null,
               null,
@@ -134,20 +134,19 @@ public class RuleViewer extends GuvnorEditor {
      *            used to change the default button configuration provider.
      */
     public RuleViewer(RuleAsset asset,
-                      final OpenItemCommand event,
+                      final OpenItemCommand openItemCommand,
                       final Command closeCommand,
           			  final Command checkedInCommand,
           			  final Command archiveCommand,
                       boolean historicalReadOnly,
                       ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
                       RuleViewerSettings ruleViewerSettings) {
-        this.openItemCommand = event;
         this.asset = asset;
-        this.readOnly = historicalReadOnly
-                        && asset.isreadonly;
+        this.openItemCommand = openItemCommand;
         this.closeCommand = closeCommand;
         this.checkedInCommand = checkedInCommand;
         this.archiveCommand = archiveCommand;
+        this.readOnly = historicalReadOnly || asset.isreadonly;
 
         if ( ruleViewerSettings == null ) {
             this.ruleViewerSettings = new RuleViewerSettings();
@@ -487,6 +486,7 @@ public class RuleViewer extends GuvnorEditor {
                                                                       saved[0] = true;
 
                                                                       showInfoMessage( constants.SavedOK() );
+                                                                      closeCurrentViewAndReopen(uuid);
                                                                   }
                                                               } );
     }
@@ -634,8 +634,8 @@ public class RuleViewer extends GuvnorEditor {
                                                                    box.getText(),
                                                                    new GenericCallback<java.lang.String>() {
                     public void onSuccess(String data) {
-                    	completedRenaming( box.getText(),
-                                          data );
+		                Window.alert( constants.ItemHasBeenRenamed() );
+		                closeCurrentViewAndReopen(data);
                         pop.hide();
                     }
 
@@ -654,8 +654,7 @@ public class RuleViewer extends GuvnorEditor {
         pop.show();
     }
     
-	private void completedRenaming(String name, String newAssetUUID) {
-		Window.alert( constants.ItemHasBeenRenamed() );
+	private void closeCurrentViewAndReopen( String newAssetUUID) {
 		if (closeCommand != null) {
 			closeCommand.execute();
 		}		

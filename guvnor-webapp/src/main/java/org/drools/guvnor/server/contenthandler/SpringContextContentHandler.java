@@ -71,7 +71,7 @@ public class SpringContextContentHandler extends PlainTextContentHandler impleme
 
     private BuilderResult createBuilderResult(String message, String name, String format, String uuid) {
 
-        if(message.isEmpty()){
+        if(message.length() ==0){
             return new BuilderResult();
         }else{
             List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();

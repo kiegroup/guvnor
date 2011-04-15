@@ -27,7 +27,6 @@ import org.drools.guvnor.client.ruleeditor.MessageWidget;
 import org.drools.guvnor.client.ruleeditor.MetaDataWidgetNew;
 import org.drools.guvnor.client.ruleeditor.RuleDocumentWidget;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -41,10 +40,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class ArtifactEditor extends GuvnorEditor {
     private Constants     constants = GWT.create( Constants.class );
 
-    interface ArtifactEditorBinder
-        extends
-        UiBinder<Widget, ArtifactEditor> {
-    }
+	interface ArtifactEditorBinder extends UiBinder<Widget, ArtifactEditor> {
+	}
 
     private static ArtifactEditorBinder                   uiBinder  = GWT.create( ArtifactEditorBinder.class );
 
@@ -57,41 +54,33 @@ public class ArtifactEditor extends GuvnorEditor {
     @UiField
     MessageWidget                                     messageWidget;
     
-    private Command                                   closeCommand;
     public Command                                    checkedInCommand;
     protected Artifact                                artifact;
     private boolean                                   readOnly;
-    private long                                      lastSaved = System.currentTimeMillis();
-
-    public ArtifactEditor(Artifact artifact,
-                      final OpenItemCommand event) {
-        this( artifact,
-              event,
-              false,
-              null);
-    }
-
+    private long lastSaved = System.currentTimeMillis();
+    
     /**
-     * @param historicalReadOnly
-     *            true if this is a read only view for historical purposes.
+     * @param Artifact artifact 
      */
-    public ArtifactEditor(Artifact artifact,
-                      final OpenItemCommand event,
-                      boolean historicalReadOnly) {
-        this( artifact,
-              event,
-              historicalReadOnly,
-              null);
+    public ArtifactEditor(Artifact artifact) {
+		this(artifact, false, null);
     }
 
     /**
-     * @param historicalReadOnly
-     *            true if this is a read only view for historical purposes.
+     * @param Artifact artifact 
+     * @param historicalReadOnly true if this is a read only view for historical purposes.
+     */
+	public ArtifactEditor(Artifact artifact, boolean historicalReadOnly) {
+		this(artifact, historicalReadOnly, null);
+    }
+
+    /**
+     * @param Artifact artifact 
+     * @param historicalReadOnly true if this is a read only view for historical purposes.
      * @param actionToolbarButtonsConfigurationProvider
      *            used to change the default button configuration provider.
      */
     public ArtifactEditor(Artifact artifact,
-                      final OpenItemCommand event,
                       boolean historicalReadOnly,
                       ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider) {
         this.artifact = artifact;
@@ -128,11 +117,6 @@ public class ArtifactEditor extends GuvnorEditor {
     protected boolean hasDirty() {
         // not sure how to implement this now.
         return false;
-    }
-
-    /** closes itself */
-    private void close() {
-        closeCommand.execute();
     }
 
     public void showInfoMessage(String message) {
@@ -173,13 +157,4 @@ public class ArtifactEditor extends GuvnorEditor {
 					}
 				});
 	}
-
-    /**
-     * This needs to be called to allow the opened viewer to close itself.
-     * 
-     * @param c
-     */
-    public void setCloseCommand(Command c) {
-        this.closeCommand = c;
-    }
 }

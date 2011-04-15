@@ -62,7 +62,7 @@ public class PackageEditorWrapper extends Composite {
 	}
     
     private void refreshWidgets() {  
-    	this.artifactEditor = new ArtifactEditor(conf, null, this.isHistoricalReadOnly);
+    	this.artifactEditor = new ArtifactEditor(conf, this.isHistoricalReadOnly);
     	this.packageEditor = new PackageEditor(conf, this.isHistoricalReadOnly, this.closeCommand, this.refreshPackageListCommand, this.openPackageCommand);
     	this.actionToolBar = this.packageEditor.getActionToolbar();
     	
