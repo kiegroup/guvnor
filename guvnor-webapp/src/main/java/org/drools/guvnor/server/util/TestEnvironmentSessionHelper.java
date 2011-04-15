@@ -78,6 +78,8 @@ public class TestEnvironmentSessionHelper {
                     } catch ( RepositoryException re ) {
                         System.err.println( "Failed to get the repository session: Retrying... " );
                         re.printStackTrace();
+                        System.err.println( "Atemptng to shutdown repository... " );
+                        shutdown();
                         retries--;
                         try {
                             Thread.sleep( 500 );

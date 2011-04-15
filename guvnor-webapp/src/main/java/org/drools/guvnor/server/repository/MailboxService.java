@@ -78,8 +78,9 @@ public class MailboxService {
             executor.shutdownNow();
             Thread.currentThread().interrupt();
         }
-        INSTANCE=null;
-        log.info("Mailbox service is shutdown.");
+        executor = null;
+        repository = null;
+        log.info( "Mailbox service is shutdown.");
 
     }
 
