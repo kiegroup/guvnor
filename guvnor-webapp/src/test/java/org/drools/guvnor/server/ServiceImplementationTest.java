@@ -3890,7 +3890,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         impl.createUser( "user1" );
         impl.createUser( "user2" );
         impl.createUser( "user3" );
-        //Note "alan_parsons" is an implicit user, so there are four in total
 
         PageRequest requestPage1 = new PageRequest( 0,
                                                     PAGE_SIZE );
@@ -3924,7 +3923,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertEquals( PAGE_SIZE,
                       responsePage2.getStartRowIndex() );
-        assertEquals( 2,
+        assertEquals( 1,
                       responsePage2.getPageRowList().size() );
         assertTrue( responsePage2.isLastPage() );
 
@@ -3938,7 +3937,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         impl.createUser( "user1" );
         impl.createUser( "user2" );
         impl.createUser( "user3" );
-        //Note "alan_parsons" is an implicit user, so there are four in total
 
         PageRequest request = new PageRequest( 0,
                                                null );
@@ -3955,7 +3953,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertEquals( 0,
                       response.getStartRowIndex() );
-        assertEquals( 4,
+        assertEquals( 3,
                       response.getPageRowList().size() );
 
         assertTrue( response.isLastPage() );
