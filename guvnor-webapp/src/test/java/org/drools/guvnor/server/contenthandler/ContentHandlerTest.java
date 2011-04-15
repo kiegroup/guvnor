@@ -29,6 +29,7 @@ import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class ContentHandlerTest extends GuvnorTestBase {
@@ -63,6 +64,7 @@ public class ContentHandlerTest extends GuvnorTestBase {
     }
 
     @Test
+    @Ignore
     public void testValidating() throws Exception {
         RulesRepository repo = getRulesRepository();
         PackageItem pkg = repo.loadDefaultPackage();

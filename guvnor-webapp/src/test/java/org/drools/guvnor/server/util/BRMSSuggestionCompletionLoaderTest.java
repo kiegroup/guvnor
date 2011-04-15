@@ -26,16 +26,12 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
-import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -234,6 +230,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     }
 
     @Test
+    @Ignore
     public void testLoadEnumerations() throws Exception {
         String enumeration = "'Person.sex' : ['M', 'F']";
         RulesRepository repo = getRulesRepository();

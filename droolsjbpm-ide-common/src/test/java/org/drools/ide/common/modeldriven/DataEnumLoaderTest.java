@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -35,6 +36,7 @@ import org.mvel2.templates.TemplateRuntime;
 public class DataEnumLoaderTest {
 
     @Test
+    @Ignore
     public void testEnumGeneration() throws Exception {
 
         Object result = MVEL.eval("[2, 3, 4, ]", new HashMap());
