@@ -17,10 +17,10 @@
 package org.drools.guvnor.server.jaxrs;
 
 import static org.drools.guvnor.server.jaxrs.Translator.ToAsset;
-import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntry;
+//import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntry;
 import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntryAbdera;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackage;
-import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntry;
+//import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntry;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntryAbdera;
 
 import java.io.IOException;
@@ -46,7 +46,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
+import org.apache.abdera.Abdera;
+import org.apache.abdera.factory.Factory;
+import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
+import org.apache.abdera.model.Feed;
+import org.apache.abdera.model.Link;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.files.RepositoryServlet;
@@ -56,9 +61,9 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageHistoryIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
+/*import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
-import org.jboss.resteasy.plugins.providers.atom.Link;
+import org.jboss.resteasy.plugins.providers.atom.Link;*/
 import org.jboss.seam.annotations.Name;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -75,20 +80,20 @@ public class PackageResource extends Resource {
     @GET
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getPackagesAsFeed() {
-        Feed f = new Feed();
+        Factory factory = Abdera.getNewFactory();
+        Feed f = factory.getAbdera().newFeed();
         f.setTitle("Packages");
-        f.setBase(uriInfo.getBaseUriBuilder().path("packages").build());
+        f.setBaseUri(uriInfo.getBaseUriBuilder().path("packages").build().toString());
         PackageIterator iter = repository.listPackages();
         while (iter.hasNext()) {
             try {
                 PackageItem item = iter.next();
-                Entry e = new Entry();
-                e.setTitle(item.getName());                                
-                Link l = new Link();
-                //l.setHref(builder.path(item.getName()).build());
-                l.setHref(uriInfo.getBaseUriBuilder().path("packages").path(item.getName()).build());
-                e.getLinks().add(l);
-                f.getEntries().add(e);
+                Entry e = factory.getAbdera().newEntry();
+                e.setTitle(item.getName());        
+                Link l = factory.newLink();
+                l.setHref(uriInfo.getBaseUriBuilder().path("packages").path(item.getName()).build().toString());
+                e.addLink(l);
+                f.addEntry(e);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -107,17 +112,17 @@ public class PackageResource extends Resource {
         return ret;
     }
 
-    @POST
+/*    @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry createPackageFromDRLAndReturnAsEntry(InputStream is, @Context UriInfo uriInfo) throws IOException,
             DroolsParserException
     {
-        /* Passes the DRL to the FileManagerUtils and has it import the asset as a package */
+         Passes the DRL to the FileManagerUtils and has it import the asset as a package 
         String packageName = RepositoryServlet.getFileManager().importClassicDRL (is, null);
         Entry e = ToPackageEntry(repository.loadPackage(packageName), uriInfo);
         return e;
-    }
+    }*/
 
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
@@ -137,7 +142,7 @@ public class PackageResource extends Resource {
 	public Response createPackageFromAtom(Entry entry, @Context UriInfo uriInfo) {
 		repository.createPackage(entry.getTitle(), entry.getSummary());
 		URI uri = uriInfo.getBaseUriBuilder().path("packages").path(entry.getTitle()).build();
-		entry.setBase(uri);
+		entry.setBaseUri(uri.toString());
 		return Response.created(uri).entity(entry).build();
 	}
 
@@ -150,7 +155,7 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public org.apache.abdera.model.Entry getPackageAsEntry(@PathParam("packageName") String packageName) {
+    public Entry getPackageAsEntry(@PathParam("packageName") String packageName) {
 		return ToPackageEntryAbdera(repository.loadPackage(packageName), uriInfo);
     }
 
@@ -185,7 +190,7 @@ public class PackageResource extends Resource {
         }
     }
     
-    @GET
+/*    @GET
     @Path("{packageName}/versions")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getPackageVersionsAsFeed(@PathParam("packageName") String packageName) throws SerializationException { 
@@ -217,15 +222,15 @@ public class PackageResource extends Resource {
         }
         
         return f;
-    }
-
+    }*/
+/*
     @GET
     @Path("{packageName}/versions/{versionNumber}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry getHistoricalPackageAsEntry(@PathParam("packageName") String packageName,
     		@PathParam("versionNumber") long versionNumber) throws SerializationException {
         return ToPackageEntry(repository.loadPackage(packageName, versionNumber), uriInfo);
-    }
+    }*/
     
     @GET
     @Path("{packageName}/versions/{versionNumber}/source")
@@ -249,7 +254,7 @@ public class PackageResource extends Resource {
         return repository.loadPackage(packageName).getCompiledPackageBytes();
     }
     
-    @GET
+/*    @GET
     @Path("{packageName}/assets")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getAssetsAsAtom(@PathParam("packageName") String packageName) {
@@ -260,7 +265,7 @@ public class PackageResource extends Resource {
         while (iter.hasNext())
             feed.getEntries().add(ToAssetEntry(iter.next(), uriInfo));
         return feed;
-    }
+    }*/
 
     @PUT
     @Path("{packageName}")
@@ -330,7 +335,7 @@ public class PackageResource extends Resource {
         repository.save();
     }
        
-    @GET
+/*    @GET
     @Path("{packageName}/assets/{assetName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public org.apache.abdera.model.Entry getAssetAsAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
@@ -345,7 +350,7 @@ public class PackageResource extends Resource {
             }
         }
         return ret;
-    }
+    }*/
 
     @GET
     @Path("{packageName}/assets/{assetName}")
@@ -402,7 +407,7 @@ public class PackageResource extends Resource {
         return ret;
     }
 
-    @PUT
+/*    @PUT
     @Path("{packageName}/assets/{assetName}")
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     public void updateAssetFromAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName, Entry assetEntry)
@@ -418,14 +423,14 @@ public class PackageResource extends Resource {
             }
         }
 
-        /* Update asset */
+         Update asset 
         ai.checkout();
         ai.updateTitle(assetEntry.getTitle());
         ai.updateDescription(assetEntry.getSummary());
         ai.updateContent(assetEntry.getContent().getText());
         ai.checkin("Check-in (summary): " + assetEntry.getSummary());
         repository.save();
-    }
+    }*/
 
     @PUT
     @Path("{packageName}/assets/{assetName}")

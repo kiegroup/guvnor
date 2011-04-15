@@ -19,9 +19,9 @@ import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.jaxrs.jaxb.*;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
-import org.jboss.resteasy.core.Dispatcher;
-import org.jboss.resteasy.spi.ResteasyDeployment;
-import org.jboss.resteasy.test.EmbeddedContainer;
+//import org.jboss.resteasy.core.Dispatcher;
+//import org.jboss.resteasy.spi.ResteasyDeployment;
+//import org.jboss.resteasy.test.EmbeddedContainer;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -37,25 +37,25 @@ import java.util.UUID;
 
 
 public class RestTestingBase extends GuvnorTestBase {
-    protected static Dispatcher dispatcher;
+    //protected static Dispatcher dispatcher;
 
     @BeforeClass
     public static void Initialize() {
-        try {
+/*        try {
             ResteasyDeployment deployment = EmbeddedContainer.start();
             dispatcher = deployment.getDispatcher();
         } catch (Exception e) {
             e.printStackTrace();
-        }       
+        } */      
     }
 
     @AfterClass
     public static void Destroy() {
-        try {
+/*        try {
             EmbeddedContainer.stop();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
     
     public static String GetContent (InputStream is) throws IOException {
@@ -97,5 +97,10 @@ public class RestTestingBase extends GuvnorTestBase {
         p.setTitle(title);
         p.setDescription("A simple test package with 0 assets.");
         return p;
+    }
+    
+    //Put here to make the code compile. 
+    public String generateBaseUrl() {
+    	return null;
     }
 }

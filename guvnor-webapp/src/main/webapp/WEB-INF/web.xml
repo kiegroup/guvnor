@@ -4,15 +4,7 @@
     xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 
  <display-name>JBoss Drools Guvnor</display-name>
- <context-param>
-  <param-name>resteasy.scan</param-name>
-  <param-value>true</param-value>
- </context-param>
- <context-param>
-  <param-name>resteasy.servlet.mapping.prefix</param-name>
-  <!-- This prefix must be in sync with the Servlet mapping, defined below -->
-  <param-value>/rest</param-value>
- </context-param>
+ 
  <filter>
   <filter-name>Seam Filter</filter-name>
   <filter-class>org.jboss.seam.web.ContextFilter</filter-class>
@@ -93,15 +85,6 @@
   <servlet-name>StandaloneEditorServiceImplementation</servlet-name>
   <servlet-class>org.drools.guvnor.server.StandaloneEditorServiceImplementation</servlet-class>
  </servlet>
- <servlet>
-  <servlet-name>resteasy</servlet-name>
-  <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher</servlet-class>
-  </servlet>
- <servlet-mapping>
-  <servlet-name>resteasy</servlet-name>
-  <!-- mapping must be in sync with context paramters for RestEASY -->
-  <url-pattern>/rest/*</url-pattern>
- </servlet-mapping>
  <servlet-mapping>
   <servlet-name>OryxEditorServlet</servlet-name>
   <url-pattern>/org.drools.guvnor.Guvnor/oryxeditor/*</url-pattern>

@@ -21,9 +21,9 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.MediaType;
 
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
+/*import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
-import org.jboss.resteasy.plugins.providers.atom.Link;
+import org.jboss.resteasy.plugins.providers.atom.Link;*/
 
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
@@ -48,7 +48,7 @@ public class CategoryResource extends Resource {
     final int pageSize = 10;
 
 
-    @GET
+/*    @GET
     @Path("{categoryName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getAssetsAsAtom(@PathParam("categoryName") String encoded) {
@@ -76,7 +76,7 @@ public class CategoryResource extends Resource {
         }
 
         return ret;
-    }
+    }*/
 
     @GET
     @Path("{categoryName}")
@@ -101,7 +101,7 @@ public class CategoryResource extends Resource {
         return ret;
     }
 
-    @GET
+/*    @GET
     @Path("{categoryName}/page/{page}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getAssetsAsAtom(@PathParam("categoryName") String encoded, @PathParam ("page") String page) {
@@ -131,7 +131,7 @@ public class CategoryResource extends Resource {
         }
 
         return ret;
-    }
+    }*/
 
     @GET
     @Path("{categoryName}/page/{page}")

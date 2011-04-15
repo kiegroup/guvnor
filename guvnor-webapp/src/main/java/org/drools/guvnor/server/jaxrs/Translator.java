@@ -35,9 +35,9 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
-import org.jboss.resteasy.plugins.providers.atom.Content;
+/*import org.jboss.resteasy.plugins.providers.atom.Content;
 import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Link;
+import org.jboss.resteasy.plugins.providers.atom.Link;*/
 
 public class Translator {
     public static String NS = "";
@@ -168,7 +168,7 @@ public class Translator {
 		return e;
     }
     
-    public static Entry ToPackageEntry(PackageItem p, UriInfo uriInfo) {
+/*    public static Entry ToPackageEntry(PackageItem p, UriInfo uriInfo) {
         UriBuilder base;
         if(p.isHistoricalVersion()) {
         	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
@@ -209,7 +209,7 @@ public class Translator {
         e.setContent(c);
         
         return e;
-    }
+    }*/
     public static org.apache.abdera.model.Entry ToAssetEntryAbdera(AssetItem a, UriInfo uriInfo) {
         UriBuilder base;
         if(a.isHistoricalVersion()) {
@@ -263,7 +263,7 @@ public class Translator {
 		return e;
     }
 
-    public static Entry ToAssetEntry(AssetItem a, UriInfo uriInfo) {
+/*    public static Entry ToAssetEntry(AssetItem a, UriInfo uriInfo) {
         Entry e = new Entry();
         e.setTitle(a.getTitle());
         e.setSummary(a.getDescription());
@@ -313,5 +313,5 @@ public class Translator {
         e.getLinks().add(l);                
         
         return e;
-    }
+    }*/
 }

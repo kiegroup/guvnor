@@ -23,7 +23,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
-import static org.jboss.resteasy.test.TestPortProvider.generateBaseUrl;
+//import static org.jboss.resteasy.test.TestPortProvider.generateBaseUrl;
 import static org.junit.Assert.assertEquals;
 
 public class CategoryResourceTest extends RestTestingBase {
@@ -33,7 +33,7 @@ public class CategoryResourceTest extends RestTestingBase {
     @Before @Override
     public void setUpGuvnorTestBase() {
         super.setUpGuvnorTestBase();
-        dispatcher.getRegistry().addPerRequestResource(CategoryResource.class);
+        //dispatcher.getRegistry().addPerRequestResource(CategoryResource.class);
     }
 
     @Test @Ignore

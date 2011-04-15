@@ -30,8 +30,8 @@ import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.jboss.resteasy.plugins.providers.atom.AbderaEntryProvider;
-import org.jboss.resteasy.plugins.providers.atom.AbderaFeedProvider;
+//import org.jboss.resteasy.plugins.providers.atom.AbderaEntryProvider;
+//import org.jboss.resteasy.plugins.providers.atom.AbderaFeedProvider;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
@@ -48,7 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.jboss.resteasy.test.TestPortProvider.generateBaseUrl;
+//import static org.jboss.resteasy.test.TestPortProvider.generateBaseUrl;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -59,9 +59,9 @@ public class AssetPackageResourceTest extends RestTestingBase {
     @Before @Override
     public void setUpGuvnorTestBase() {
         super.setUpGuvnorTestBase();
-        dispatcher.getRegistry().addPerRequestResource(PackageResource.class);
-        dispatcher.getProviderFactory().registerProvider(AbderaEntryProvider.class);
-        dispatcher.getProviderFactory().registerProvider(AbderaFeedProvider.class);
+        //dispatcher.getRegistry().addPerRequestResource(PackageResource.class);
+        //dispatcher.getProviderFactory().registerProvider(AbderaEntryProvider.class);
+        //dispatcher.getProviderFactory().registerProvider(AbderaFeedProvider.class);
 
         ServiceImplementation impl = getServiceImplementation();
         //Package version 1(Initial version)

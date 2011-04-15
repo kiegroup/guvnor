@@ -39,8 +39,8 @@ import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.jboss.resteasy.plugins.providers.atom.AbderaEntryProvider;
-import org.jboss.resteasy.plugins.providers.atom.AbderaFeedProvider;
+//import org.jboss.resteasy.plugins.providers.atom.AbderaEntryProvider;
+//import org.jboss.resteasy.plugins.providers.atom.AbderaFeedProvider;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
@@ -48,7 +48,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
 import static org.junit.Assert.*;
-import static org.jboss.resteasy.test.TestPortProvider.*;
+//import static org.jboss.resteasy.test.TestPortProvider.*;
 
 public class BasicPackageResourceTest extends RestTestingBase {
     private Abdera abdera = new Abdera();
@@ -56,9 +56,9 @@ public class BasicPackageResourceTest extends RestTestingBase {
     @Before @Override
     public void setUpGuvnorTestBase() {
         super.setUpGuvnorTestBase();
-        dispatcher.getRegistry().addPerRequestResource(PackageResource.class);
-        dispatcher.getProviderFactory().registerProvider(AbderaEntryProvider.class);
-        dispatcher.getProviderFactory().registerProvider(AbderaFeedProvider.class);
+        //dispatcher.getRegistry().addPerRequestResource(PackageResource.class);
+        //dispatcher.getProviderFactory().registerProvider(AbderaEntryProvider.class);
+        //dispatcher.getProviderFactory().registerProvider(AbderaFeedProvider.class);
         
         ServiceImplementation impl = getServiceImplementation();
         //Package version 1(Initial version)
