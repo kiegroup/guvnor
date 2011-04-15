@@ -275,15 +275,6 @@ public class CellValueFactoryTests {
                                                                              6,
                                                                              dcv8 );
 
-        assertTrue( cell1.getValue() instanceof BigDecimal );
-        assertTrue( cell2.getValue() instanceof Boolean );
-        assertTrue( cell3.getValue() instanceof String );
-        assertTrue( cell4.getValue() instanceof BigDecimal );
-        assertTrue( cell5.getValue() instanceof Date );
-        assertTrue( cell6.getValue() instanceof Boolean );
-        assertTrue( cell7.getValue() instanceof String );
-        assertTrue( cell8.getValue() instanceof String );
-
         assertEquals( cell1.getValue(),
                       new BigDecimal( 1 ) );
         assertEquals( cell2.getValue(),
@@ -354,15 +345,6 @@ public class CellValueFactoryTests {
                                                                              0,
                                                                              6,
                                                                              dcv8 );
-
-        assertTrue( cell1.getValue() instanceof BigDecimal );
-        assertTrue( cell2.getValue() instanceof Boolean );
-        assertTrue( cell3.getValue() instanceof String );
-        assertTrue( cell4.getValue() instanceof BigDecimal );
-        assertTrue( cell5.getValue() instanceof Date );
-        assertTrue( cell6.getValue() instanceof Boolean );
-        assertTrue( cell7.getValue() instanceof String );
-        assertTrue( cell8.getValue() instanceof String );
 
         assertEquals( cell1.getValue(),
                       new BigDecimal( 1 ) );
