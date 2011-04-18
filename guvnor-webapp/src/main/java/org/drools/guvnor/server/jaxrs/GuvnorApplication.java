@@ -24,6 +24,9 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import org.apache.cxf.jaxrs.provider.AtomEntryProvider;
+import org.apache.cxf.jaxrs.provider.AtomFeedProvider;
+
 @ApplicationPath("/")
 public class GuvnorApplication extends Application {
 
@@ -32,6 +35,8 @@ public class GuvnorApplication extends Application {
         Set<Class<?>> classes = new HashSet<Class<?>>();
         classes.add(PackageResource.class);
         classes.add(CategoryResource.class);
+        classes.add(AtomEntryProvider.class);
+        classes.add(AtomFeedProvider.class);
         return classes;
     }
 
