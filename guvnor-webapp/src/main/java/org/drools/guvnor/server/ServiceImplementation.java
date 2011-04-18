@@ -283,28 +283,6 @@ public class ServiceImplementation
     }
 
     /**
-     * @deprecated in favour of {@link loadRuleListForState(StatePageRequest)}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadRuleListForState(String stateName,
-                                                int skip,
-                                                int numRows,
-                                                String tableConfig) throws SerializationException {
-
-        // TODO: May need to use a filter that acts on both package based and
-        // category based.
-        RepositoryFilter filter = new AssetItemFilter();
-        AssetItemPageResult result = getRulesRepository().findAssetsByState( stateName,
-                                                                             false,
-                                                                             skip,
-                                                                             numRows,
-                                                                             filter );
-        TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-        return handler.loadRuleListTable( result );
-    }
-
-    /**
      * @deprecated in favour of {@link AbstractPagedTable}
      */
     @WebRemote

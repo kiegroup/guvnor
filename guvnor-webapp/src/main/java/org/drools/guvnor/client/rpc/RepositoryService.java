@@ -34,21 +34,6 @@ public interface RepositoryService
     extends
     RemoteService {
 
-
-
-    /**
-     * Return a a 2d array/grid of results for rules.
-     * 
-     * @param The
-     *            name of the state.
-     *            
-     * @deprecated in favour of {@link loadRuleListForState(StatePageRequest)}
-     */
-    public TableDataResult loadRuleListForState(String state,
-                                                int skip,
-                                                int numRows,
-                                                String tableConfig) throws SerializationException;
-
     /**
      * Return a list of Assets by status
      * 
