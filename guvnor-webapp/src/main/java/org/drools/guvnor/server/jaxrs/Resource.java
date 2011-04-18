@@ -24,9 +24,7 @@ import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.contexts.Contexts;
 
 public class Resource {
     

@@ -20,6 +20,11 @@ import javax.ws.rs.core.UriBuilder;
 
 import javax.ws.rs.core.MediaType;
 
+import org.apache.abdera.Abdera;
+import org.apache.abdera.factory.Factory;
+import org.apache.abdera.model.Entry;
+import org.apache.abdera.model.Feed;
+import org.apache.abdera.model.Link;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 /*import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
@@ -48,35 +53,36 @@ public class CategoryResource extends Resource {
     final int pageSize = 10;
 
 
-/*    @GET
+    @GET
     @Path("{categoryName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getAssetsAsAtom(@PathParam("categoryName") String encoded) {
-        Feed ret = new Feed();
+        Factory factory = Abdera.getNewFactory();
+        Feed f = factory.getAbdera().newFeed();
         try {
             String decoded = URLDecoder.decode(encoded, Encoding);
             UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-            ret.setTitle(encoded);
+            f.setTitle(encoded);
             AssetItemPageResult result = repository.findAssetsByCategory(
                     decoded, 0, pageSize);
             List<AssetItem> assets = result.assets;
             for (AssetItem item : assets) {
-                Entry e = ToAssetEntry(item, uriInfo);
-                ret.getEntries().add(e);
+                Entry e = ToAssetEntryAbdera(item, uriInfo);
+                f.addEntry(e);
             }
 
             if (result.hasNext) {
-                Link l = new Link();
+            	Link l = factory.newLink();
                 l.setRel("next-page");
-                l.setHref(builder.path("/" + encoded + "/page/1").build());
-                ret.getLinks().add(l);
+                l.setHref(builder.path("/" + encoded + "/page/1").build().toString());
+                f.addLink(l);
             }
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException (e);
         }
 
-        return ret;
-    }*/
+        return f;
+    }
 
     @GET
     @Path("{categoryName}")

@@ -17,10 +17,8 @@
 package org.drools.guvnor.server.jaxrs;
 
 import static org.drools.guvnor.server.jaxrs.Translator.ToAsset;
-//import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntry;
 import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntryAbdera;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackage;
-//import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntry;
 import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntryAbdera;
 
 import java.io.IOException;
@@ -44,7 +42,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import javax.xml.namespace.QName;
 
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
@@ -61,9 +58,6 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageHistoryIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
-/*import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
-import org.jboss.resteasy.plugins.providers.atom.Link;*/
 import org.jboss.seam.annotations.Name;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -412,7 +406,7 @@ public class PackageResource extends Resource {
         return ret;
     }
 
-/*    @PUT
+    @PUT
     @Path("{packageName}/assets/{assetName}")
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     public void updateAssetFromAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName, Entry assetEntry)
@@ -428,14 +422,14 @@ public class PackageResource extends Resource {
             }
         }
 
-         Update asset 
+        //  Update asset 
         ai.checkout();
         ai.updateTitle(assetEntry.getTitle());
         ai.updateDescription(assetEntry.getSummary());
-        ai.updateContent(assetEntry.getContent().getText());
+        ai.updateContent(assetEntry.getContent());
         ai.checkin("Check-in (summary): " + assetEntry.getSummary());
         repository.save();
-    }*/
+    }
 
     @PUT
     @Path("{packageName}/assets/{assetName}")
