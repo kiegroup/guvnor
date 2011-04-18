@@ -89,18 +89,18 @@ public class BackchannelTest {
 
         final Backchannel backchannel = Backchannel.getInstance();
 
-        backchannel.push( "mic",
+        backchannel.push( "mici",
                           new PushResponse( "m",
                                             "b" ) );
-        backchannel.push( "dave",
+        backchannel.push( "davos",
                           new PushResponse( "d",
                                             "b" ) );
-        List<PushResponse> r = backchannel.await( "mic" );
+        List<PushResponse> r = backchannel.await( "mici" );
         assertEquals( 1,
                       r.size() );
         assertEquals( "m",
                       r.get( 0 ).messageType );
-        r = backchannel.await( "dave" );
+        r = backchannel.await( "davos" );
         assertEquals( 1,
                       r.size() );
         assertEquals( "d",
@@ -112,7 +112,7 @@ public class BackchannelTest {
             public void run() {
                 try {
                     @SuppressWarnings("unused")
-                    List<PushResponse> list = backchannel.await( "mic" );
+                    List<PushResponse> list = backchannel.await( "mici" );
                     /*
                     for (PushResponse resp: list) {
                                        System.err.println(resp.messageType + "," + resp.message);
@@ -131,17 +131,17 @@ public class BackchannelTest {
         Thread.sleep( 400 );
 
         assertFalse( check[0] );
-        backchannel.push( "dave",
+        backchannel.push( "davos",
                           new PushResponse( "x",
                                             "y" ) );
         //bc.push("mic", new PushResponse("Q", "W"));
         t.join();
 
         check[0] = false;
-        backchannel.push( "mic",
+        backchannel.push( "mici",
                           new PushResponse( "R",
                                             "T" ) );
-        backchannel.push( "mic",
+        backchannel.push( "mici",
                           new PushResponse( "Q",
                                             "A" ) );
 
@@ -150,7 +150,7 @@ public class BackchannelTest {
         t = new Thread( new Runnable() {
             public void run() {
                 try {
-                    container.add( backchannel.await( "mic" ) );
+                    container.add( backchannel.await( "mici" ) );
                     check[0] = true;
                 } catch ( InterruptedException e ) {
                     fail( "Should not interrupt" );
@@ -182,19 +182,19 @@ public class BackchannelTest {
             spinup( backchannel,
                     i );
         }
-        backchannel.push( "mic",
+        backchannel.push( "mc",
                           new PushResponse( "yo",
                                             "yo" ) );
-        backchannel.push( "mic",
+        backchannel.push( "mc",
                           new PushResponse( "yo",
                                             "yo" ) );
 
         //for (int i=0; i< 1000; i++) {
-        List<PushResponse> res = backchannel.await( "mic" );
+        List<PushResponse> res = backchannel.await( "mc" );
         assertEquals( 2,
                       res.size() );
 
-        res = backchannel.await( "mic" );
+        res = backchannel.await( "mc" );
         assertEquals( 0,
                       res.size() );
         //assertNull(res); //as other concurrent things will be unlatching...
@@ -202,14 +202,14 @@ public class BackchannelTest {
         Thread.sleep( 20 );
 
         for ( int i = 0; i < 20000; i++ ) {
-            backchannel.push( "mic",
+            backchannel.push( "mc",
                               new PushResponse( "yo",
                                                 "yo" ) );
-            backchannel.push( "mic",
+            backchannel.push( "mc",
                               new PushResponse( "yo",
                                                 "yo" ) );
 
-            res = backchannel.await( "mic" );
+            res = backchannel.await( "mc" );
             assertEquals( 2,
                           res.size() );
         }
