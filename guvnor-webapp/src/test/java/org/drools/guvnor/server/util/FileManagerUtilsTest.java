@@ -484,6 +484,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
     }
 
     @Test
+    @Ignore("This test is broken. The approach needs to be revised - i.e. not use FileManagerUtils to handle repository sessions.")
     public void testHeadOOME() throws Exception {
         RulesRepository repo = getRulesRepository();
         PackageItem pkg = repo.createPackage( "testHeadOOME",

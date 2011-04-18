@@ -17,85 +17,84 @@
 package org.drools.repository;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import javax.jcr.Node;
-import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
-import javax.jcr.UnsupportedRepositoryOperationException;
 
-import org.drools.repository.AssetItem;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.RulesRepositoryException;
-import org.drools.repository.VersionableItem;
 import org.junit.Ignore;
 import org.junit.Test;
 
-
-
 /**
- * This is a bit of a hacked scalability test.
- * It will add 5000 odd rule nodes, and then do some basic operations.
- * It will take a LONG time to add these nodes, and does it in batches.
+ * This is a bit of a hacked scalability test. It will add 5000 odd rule nodes,
+ * and then do some basic operations. It will take a LONG time to add these
+ * nodes, and does it in batches.
  */
 public class ScalabilityTest extends RepositoryTestCase {
 
     private static final int NUM = 5000;
-    private RulesRepository repo;
+    private RulesRepository  repo;
 
     @Test
+    @Ignore("Legacy code, needs to be refactored.")
     public void testRun() throws Exception {
         Properties properties = new Properties();
-        properties.put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, "./scalabilityTestRepo");
-        RulesRepositoryConfigurator config = RulesRepositoryConfigurator.getInstance(properties);
+        properties.put( JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY,
+                        "./scalabilityTestRepo" );
+        RulesRepositoryConfigurator config = RulesRepositoryConfigurator.getInstance( properties );
         Session session = config.getJCRRepository().login(
-                                           new SimpleCredentials("alan_parsons", "password".toCharArray()));
-        config.setupRepository(session);
-        repo = new RulesRepository(session);
+                                                           new SimpleCredentials( "alan_parsons",
+                                                                                  "password".toCharArray() ) );
+        config.setupRepository( session );
+        repo = new RulesRepository( session );
 
         long start = System.currentTimeMillis();
         setupData( repo );
-        System.out.println("time to add, version and tag 5000: " + (System.currentTimeMillis() - start));
-        List list = listACat(repo);
-        System.out.println("list size is: " + list.size());
+        System.out.println( "time to add, version and tag 5000: " + (System.currentTimeMillis() - start) );
+        List list = listACat( repo );
+        System.out.println( "list size is: " + list.size() );
 
         start = System.currentTimeMillis();
         AssetItem item = (AssetItem) list.get( 0 );
         item.updateContent( "this is a description" );
         item.checkin( "newer" );
-        System.out.println("time to update and version: " + (System.currentTimeMillis() - start));
+        System.out.println( "time to update and version: " + (System.currentTimeMillis() - start) );
 
         start = System.currentTimeMillis();
         item = (AssetItem) list.get( 42 );
         item.updateContent( "this is a description" );
         item.updateContent( "wooooooooooooooooooooooooooooooooooot" );
         item.checkin( "latest" );
-        System.out.println("time to update and version: " + (System.currentTimeMillis() - start));
+        System.out.println( "time to update and version: " + (System.currentTimeMillis() - start) );
 
     }
 
     private List listACat(RulesRepository repo) {
         long start = System.currentTimeMillis();
-        List results = repo.findAssetsByCategory( "HR/CAT_1", 0, -1  ).assets;
-        System.out.println("Time for listing a cat: " + (System.currentTimeMillis() - start));
+        List results = repo.findAssetsByCategory( "HR/CAT_1",
+                                                  0,
+                                                  -1 ).assets;
+        System.out.println( "Time for listing a cat: " + (System.currentTimeMillis() - start) );
 
         start = System.currentTimeMillis();
-        List results2 = repo.findAssetsByCategory( "HR/CAT_1", 0, -1  ).assets;
-        System.out.println("Time for listing a cat: " + (System.currentTimeMillis() - start));
-
-
-        start = System.currentTimeMillis();
-        results2 = repo.findAssetsByCategory( "HR/CAT_100", 0, -1  ).assets;
-        System.out.println("Time for listing a cat: " + (System.currentTimeMillis() - start));
+        List results2 = repo.findAssetsByCategory( "HR/CAT_1",
+                                                   0,
+                                                   -1 ).assets;
+        System.out.println( "Time for listing a cat: " + (System.currentTimeMillis() - start) );
 
         start = System.currentTimeMillis();
-        results2 = repo.findAssetsByCategory( "HR/CAT_100", 0, -1  ).assets;
-        System.out.println("Time for listing a cat: " + (System.currentTimeMillis() - start));
+        results2 = repo.findAssetsByCategory( "HR/CAT_100",
+                                              0,
+                                              -1 ).assets;
+        System.out.println( "Time for listing a cat: " + (System.currentTimeMillis() - start) );
 
+        start = System.currentTimeMillis();
+        results2 = repo.findAssetsByCategory( "HR/CAT_100",
+                                              0,
+                                              -1 ).assets;
+        System.out.println( "Time for listing a cat: " + (System.currentTimeMillis() - start) );
 
         return results;
     }
@@ -103,16 +102,15 @@ public class ScalabilityTest extends RepositoryTestCase {
     /** To run this, need to hack the addRule method to not save a session */
     private void setupData(RulesRepository repo) throws Exception {
 
-
         int count = 1;
 
         List list = new ArrayList();
 
         String prefix = "HR/";
         String cat = prefix + "CAT_1";
-        for (int i=1; i <= NUM; i++ ) {
+        for ( int i = 1; i <= NUM; i++ ) {
 
-            if (i % 500 == 0) {
+            if ( i % 500 == 0 ) {
                 repo.getSession().save();
                 for ( Iterator iter = list.iterator(); iter.hasNext(); ) {
                     AssetItem element = (AssetItem) iter.next();
@@ -121,15 +119,14 @@ public class ScalabilityTest extends RepositoryTestCase {
                 list.clear();
             }
 
-
-            if (i > 2500) {
+            if ( i > 2500 ) {
                 prefix = "FINANCE/";
             }
 
-            if (count == 100) {
+            if ( count == 100 ) {
                 count = 1;
                 cat = prefix + "CAT_" + i;
-                System.err.println("changing CAT");
+                System.err.println( "changing CAT" );
                 System.gc();
 
             } else {
@@ -137,10 +134,10 @@ public class ScalabilityTest extends RepositoryTestCase {
             }
 
             String ruleName = "rule_" + i + "_" + System.currentTimeMillis();
-            System.out.println("ADDING rule: " + ruleName);
+            System.out.println( "ADDING rule: " + ruleName );
 
-
-            AssetItem item = repo.loadDefaultPackage().addAsset( ruleName, "Foo(bar == " + i + ")panic(" + i + ");" );
+            AssetItem item = repo.loadDefaultPackage().addAsset( ruleName,
+                                                                 "Foo(bar == " + i + ")panic(" + i + ");" );
             item.addCategory( cat );
             list.add( item );
 
