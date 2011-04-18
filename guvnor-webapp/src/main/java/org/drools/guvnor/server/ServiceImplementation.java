@@ -536,17 +536,6 @@ public class ServiceImplementation
         }
     }
 
-    /**
-     * @deprecated in favour of {@link listUserPermissions(PageRequest)}
-     */
-    @Restrict("#{identity.loggedIn}")
-    public Map<String, List<String>> listUserPermissions() {
-        serviceSecurity.checkSecurityIsAdmin();
-
-        PermissionManager pm = new PermissionManager( getRulesRepository() );
-        return pm.listUsers();
-    }
-
     @Restrict("#{identity.loggedIn}")
     public PageResponse<PermissionsPageRow> listUserPermissions(PageRequest request) {
         if ( request == null ) {

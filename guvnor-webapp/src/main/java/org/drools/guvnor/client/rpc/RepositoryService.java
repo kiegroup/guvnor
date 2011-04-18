@@ -201,13 +201,6 @@ public interface RepositoryService
 
     /**
      * @return A map of username : list of permission types for display reasons.
-     * 
-     * @deprecated in favour of {@link listUserPermissions(PageRequest)}
-     */
-    public Map<String, List<String>> listUserPermissions() throws DetailedSerializationException;
-
-    /**
-     * @return A map of username : list of permission types for display reasons.
      */
     public PageResponse<PermissionsPageRow> listUserPermissions(PageRequest request) throws DetailedSerializationException;
 

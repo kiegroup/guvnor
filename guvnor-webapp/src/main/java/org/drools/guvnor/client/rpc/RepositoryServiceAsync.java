@@ -54,7 +54,6 @@ public interface RepositoryServiceAsync {
     public void queryFullText(org.drools.guvnor.client.rpc.QueryPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.QueryPageRow>> cb);
     public void queryMetaData(org.drools.guvnor.client.rpc.QueryMetadataPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.QueryPageRow>> cb);
     public void listUserPermissions(org.drools.guvnor.client.rpc.PageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.PermissionsPageRow>> cb);
-    public void listUserPermissions(AsyncCallback cb);
     public void retrieveUserPermissions(java.lang.String p0, AsyncCallback cb);
     public void updateUserPermissions(java.lang.String p0, java.util.Map p1, AsyncCallback cb);
     public void listAvailablePermissionTypes(AsyncCallback<java.lang.String[]> cb);

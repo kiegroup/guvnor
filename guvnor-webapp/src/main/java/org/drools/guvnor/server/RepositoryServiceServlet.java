@@ -665,11 +665,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public org.drools.guvnor.client.rpc.PageResponse listUserPermissions(org.drools.guvnor.client.rpc.PageRequest p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return getService().listUserPermissions( p0 );
     }
-
-    public java.util.Map listUserPermissions() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
-        return getService().listUserPermissions();
-    }
-
+    
     public java.util.Map retrieveUserPermissions(java.lang.String p0) {
         return getService().retrieveUserPermissions( p0 );
     }
