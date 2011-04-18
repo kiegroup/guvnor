@@ -225,33 +225,6 @@ public interface RepositoryService
      * system. Pass in null and they will not be included in the search (that
      * applies to any field).
      * 
-     * @param qr
-     * @param createdAfter
-     * @param createdBefore
-     * @param modifiedAfter
-     * @param modifiedBefore
-     * @param seekArchived
-     * @param skip
-     * @param numRows
-     * @return
-     * @throws SerializationException
-     * 
-     * @deprecated in favour of {@link queryMetaData(QueryPageRequest)}
-     */
-    public TableDataResult queryMetaData(final MetaDataQuery[] qr,
-                                         Date createdAfter,
-                                         Date createdBefore,
-                                         Date modifiedAfter,
-                                         Date modifiedBefore,
-                                         boolean seekArchived,
-                                         int skip,
-                                         int numRows) throws SerializationException;
-
-    /**
-     * Run a meta data search. All dates are in format as configured for the
-     * system. Pass in null and they will not be included in the search (that
-     * applies to any field).
-     * 
      * @param request
      * @return
      * @throws SerializationException

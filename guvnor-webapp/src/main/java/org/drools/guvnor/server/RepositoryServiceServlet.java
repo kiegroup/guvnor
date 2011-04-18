@@ -680,24 +680,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return getService().queryMetaData( p0 );
     }
 
-    public org.drools.guvnor.client.rpc.TableDataResult queryMetaData(org.drools.guvnor.client.rpc.MetaDataQuery[] p0,
-                                                                      java.util.Date p1,
-                                                                      java.util.Date p2,
-                                                                      java.util.Date p3,
-                                                                      java.util.Date p4,
-                                                                      boolean p5,
-                                                                      int p6,
-                                                                      int p7) throws com.google.gwt.user.client.rpc.SerializationException {
-        return getService().queryMetaData( p0,
-                                           p1,
-                                           p2,
-                                           p3,
-                                           p4,
-                                           p5,
-                                           p6,
-                                           p7 );
-    }
-
     public org.drools.guvnor.client.rpc.PageResponse listUserPermissions(org.drools.guvnor.client.rpc.PageRequest p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return getService().listUserPermissions( p0 );
     }

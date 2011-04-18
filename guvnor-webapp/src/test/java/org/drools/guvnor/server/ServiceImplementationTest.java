@@ -120,7 +120,6 @@ import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -1558,17 +1557,20 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         qr[1] = new MetaDataQuery();
         qr[1].attribute = AssetItem.SOURCE_PROPERTY_NAME;
         qr[1].valueList = "numberwan*";
-        TableDataResult res = impl.queryMetaData( qr,
-                                                  DateUtils.parseDate( "10-Jul-1974",
-                                                                       new DateFormatsImpl() ),
-                                                  null,
-                                                  null,
-                                                  null,
-                                                  false,
-                                                  0,
-                                                  -1 );
+
+        QueryMetadataPageRequest pageRequest = new QueryMetadataPageRequest( Arrays.asList( qr ),
+                                                                             DateUtils.parseDate( "10-Jul-1974",
+                                                                                                                      new DateFormatsImpl() ),
+                                                                             null,
+                                                                             null,
+                                                                             null,
+                                                                             false,
+                                                                             0,
+                                                                             10 );
+        PageResponse<QueryPageRow> queryMetaData = impl.queryMetaData( pageRequest );
+
         assertEquals( 1,
-                      res.data.length );
+                      queryMetaData.getPageRowList().size() );
 
     }
 
@@ -3828,10 +3830,10 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         PageRequest requestPage1 = new PageRequest( 0,
                                                     PAGE_SIZE );
         PageResponse<PermissionsPageRow> responsePage1 = impl.listUserPermissions( requestPage1 );
-        
+
         assertNotNull( responsePage1 );
         assertNotNull( responsePage1.getPageRowList() );
-        
+
         System.out.println( "ListUserPermissionsFullResults-page1" );
         for ( PermissionsPageRow row : responsePage1.getPageRowList() ) {
             System.out.println( "--> Username = " + row.getUserName() );

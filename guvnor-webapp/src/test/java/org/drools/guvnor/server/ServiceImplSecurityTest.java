@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,9 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
+import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.TableDataResult;
@@ -923,16 +927,18 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             qr[0] = new MetaDataQuery();
             qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
             qr[0].valueList = "MetaDataFilterDescription%";
-            TableDataResult result = impl.queryMetaData( qr,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         false,
-                                                         0,
-                                                         -1 );
+            QueryMetadataPageRequest pageRequest = new QueryMetadataPageRequest( Arrays.asList( qr ),
+                                                                                 null,
+                                                                                 null,
+                                                                                 null,
+                                                                                 null,
+                                                                                 false,
+                                                                                 0,
+                                                                                 10 );
+            PageResponse<QueryPageRow> queryMetaData = impl.queryMetaData( pageRequest );
+
             assertEquals( 2,
-                          result.data.length );
+                          queryMetaData.getTotalRowSize() );
         } finally {
             Lifecycle.endApplication();
         }
@@ -1016,331 +1022,303 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             qr[0] = new MetaDataQuery();
             qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
             qr[0].valueList = "MetaDataFilter2Description%";
-            TableDataResult result = impl.queryMetaData( qr,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         false,
-                                                         0,
-                                                         -1 );
+            QueryMetadataPageRequest pageRequest = new QueryMetadataPageRequest( Arrays.asList( qr ),
+                                                                                 null,
+                                                                                 null,
+                                                                                 null,
+                                                                                 null,
+                                                                                 false,
+                                                                                 0,
+                                                                                 10 );
+            PageResponse<QueryPageRow> queryMetaData = impl.queryMetaData( pageRequest );
             assertEquals( 2,
-                          result.data.length );
+                          queryMetaData.getTotalRowSize() );
         } finally {
             Lifecycle.endApplication();
         }
     }
 
-    @Test
-    public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter3() throws Exception {
-        try {
-            ServiceImplementation impl = getServiceImplementation();
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-            String rule9Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData9";
-            String rule10Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData10";
-
-            String package9Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack9";
-            String category9Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat9";
-            PackageItem packageItem9 = impl.getRulesRepository().createPackage( package9Name,
-                                                                                "desc" );
-            @SuppressWarnings("unused")
-            String packageItem9UUID = packageItem9.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      category9Name,
-                                                      "this is a pigeon" );
-            @SuppressWarnings("unused")
-            String uuid9 = impl.createNewRule( rule9Name,
-                                               "MetaDataFilter3Description9",
-                                               category9Name,
-                                               package9Name,
-                                               AssetFormats.DRL );
-
-            String package10Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack10";
-            String category10Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat10";
-            PackageItem packageItem10 = impl.getRulesRepository().createPackage( package10Name,
-                                                                                 "desc" );
-            @SuppressWarnings("unused")
-            String packageItem10UUID = packageItem10.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      category10Name,
-                                                      "this is a sparrow" );
-            @SuppressWarnings("unused")
-            String uuid10 = impl.createNewRule( rule10Name,
-                                                "MetaDataFilter3Description10",
-                                                category10Name,
-                                                package10Name,
-                                                AssetFormats.DRL );
-
-            // Mock up SEAM contexts
-            Map<String, Object> application = new HashMap<String, Object>();
-            Lifecycle.beginApplication( application );
-            Lifecycle.beginCall();
-            MockIdentity midentity = new MockIdentity();
-            RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-            resolver.setEnableRoleBasedAuthorization( true );
-            midentity.addPermissionResolver( resolver );
-
-            Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                              midentity );
-            Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
-
-            List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-            pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
-                                               null,
-                                               category9Name ) );
-            pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
-                                               null,
-                                               category10Name ) );
-
-            MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-            Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                              store );
-
-            // Put permission list in session.
-            RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-            testManager.create();
-            Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                              testManager );
-
-            MetaDataQuery[] qr = new MetaDataQuery[1];
-            qr[0] = new MetaDataQuery();
-            qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
-            qr[0].valueList = "MetaDataFilter3Description%";
-            TableDataResult result = impl.queryMetaData( qr,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         false,
-                                                         0,
-                                                         -1 );
-            assertEquals( 2,
-                          result.data.length );
-        } finally {
-            Lifecycle.endApplication();
+    
+        @Test
+        public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter3() throws Exception {
+            try {
+                ServiceImplementation impl = getServiceImplementation();
+                RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+                String rule9Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData9";
+                String rule10Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData10";
+    
+                String package9Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack9";
+                String category9Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat9";
+                PackageItem packageItem9 = impl.getRulesRepository().createPackage( package9Name,
+                                                                                    "desc" );
+                @SuppressWarnings("unused")
+                String packageItem9UUID = packageItem9.getUUID();
+                repositoryCategoryService.createCategory( "",
+                                                          category9Name,
+                                                          "this is a pigeon" );
+                @SuppressWarnings("unused")
+                String uuid9 = impl.createNewRule( rule9Name,
+                                                   "MetaDataFilter3Description9",
+                                                   category9Name,
+                                                   package9Name,
+                                                   AssetFormats.DRL );
+    
+                String package10Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack10";
+                String category10Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat10";
+                PackageItem packageItem10 = impl.getRulesRepository().createPackage( package10Name,
+                                                                                     "desc" );
+                @SuppressWarnings("unused")
+                String packageItem10UUID = packageItem10.getUUID();
+                repositoryCategoryService.createCategory( "",
+                                                          category10Name,
+                                                          "this is a sparrow" );
+                @SuppressWarnings("unused")
+                String uuid10 = impl.createNewRule( rule10Name,
+                                                    "MetaDataFilter3Description10",
+                                                    category10Name,
+                                                    package10Name,
+                                                    AssetFormats.DRL );
+    
+                // Mock up SEAM contexts
+                Map<String, Object> application = new HashMap<String, Object>();
+                Lifecycle.beginApplication( application );
+                Lifecycle.beginCall();
+                MockIdentity midentity = new MockIdentity();
+                RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+                resolver.setEnableRoleBasedAuthorization( true );
+                midentity.addPermissionResolver( resolver );
+    
+                Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+                                                  midentity );
+                Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
+                                                  impl );
+    
+                List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+                pbps.add( new RoleBasedPermission( "jervis",
+                                                   RoleTypes.ANALYST,
+                                                   null,
+                                                   category9Name ) );
+                pbps.add( new RoleBasedPermission( "jervis",
+                                                   RoleTypes.ANALYST,
+                                                   null,
+                                                   category10Name ) );
+    
+                MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
+                Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
+                                                  store );
+    
+                // Put permission list in session.
+                RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+                testManager.create();
+                Contexts.getSessionContext().set( "roleBasedPermissionManager",
+                                                  testManager );
+    
+                MetaDataQuery[] qr = new MetaDataQuery[1];
+                qr[0] = new MetaDataQuery();
+                qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
+                qr[0].valueList = "MetaDataFilter3Description%";
+                QueryMetadataPageRequest pageRequest = new QueryMetadataPageRequest(Arrays.asList( qr ), null,null,null,null, false, 0, 10);
+                PageResponse<QueryPageRow> queryMetaData = impl.queryMetaData( pageRequest );
+                assertEquals( 2,
+                              queryMetaData.getTotalRowSize());
+            } finally {
+                Lifecycle.endApplication();
+            }
         }
-    }
-
-    @Test
-    public void testTableDisplayHandler() throws Exception {
-        try {
-            ServiceImplementation impl = getServiceImplementation();
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-            String rule11Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData11";
-            String rule12Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData12";
-
-            String package11Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack11";
-            String category11Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat11";
-            PackageItem packageItem11 = impl.getRulesRepository().createPackage( package11Name,
-                                                                                 "desc" );
-            @SuppressWarnings("unused")
-            String packageItem11UUID = packageItem11.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      category11Name,
-                                                      "this is a dock" );
-            @SuppressWarnings("unused")
-            String uuid11 = impl.createNewRule( rule11Name,
-                                                "DisplayHandlerDescription11",
-                                                category11Name,
-                                                package11Name,
-                                                AssetFormats.DRL );
-
-            String package12Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack12";
-            String category12Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat12";
-            PackageItem packageItem12 = impl.getRulesRepository().createPackage( package12Name,
-                                                                                 "desc" );
-            @SuppressWarnings("unused")
-            String packageItem12UUID = packageItem12.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      category12Name,
-                                                      "this is a sparrow" );
-            @SuppressWarnings("unused")
-            String uuid12 = impl.createNewRule( rule12Name,
-                                                "DisplayHandlerDescription12",
-                                                category12Name,
-                                                package12Name,
-                                                AssetFormats.DRL );
-
-            // Mock up SEAM contexts
-            Map<String, Object> application = new HashMap<String, Object>();
-            Lifecycle.beginApplication( application );
-            Lifecycle.beginCall();
-            MockIdentity midentity = new MockIdentity();
-            RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-            resolver.setEnableRoleBasedAuthorization( true );
-            midentity.addPermissionResolver( resolver );
-
-            Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                              midentity );
-            Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
-
-            List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-            pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
-                                               null,
-                                               category11Name ) );
-            pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
-                                               null,
-                                               category12Name ) );
-
-            MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-            Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                              store );
-
-            // Put permission list in session.
-            RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-            testManager.create();
-            Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                              testManager );
-
-            MetaDataQuery[] qr = new MetaDataQuery[1];
-            qr[0] = new MetaDataQuery();
-            qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
-            qr[0].valueList = "DisplayHandlerDescription%";
-
-            TableDataResult result = impl.queryMetaData( qr,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         null,
-                                                         false,
-                                                         1,
-                                                         1 );
-            assertEquals( 1,
-                          result.data.length );
-
-            result = impl.queryMetaData( qr,
-                                         null,
-                                         null,
-                                         null,
-                                         null,
-                                         false,
-                                         0,
-                                         1 );
-            assertEquals( 1,
-                          result.data.length );
-
-            result = impl.queryMetaData( qr,
-                                         null,
-                                         null,
-                                         null,
-                                         null,
-                                         false,
-                                         0,
-                                         4 );
-            assertEquals( 2,
-                          result.data.length );
-
-            result = impl.queryMetaData( qr,
-                                         null,
-                                         null,
-                                         null,
-                                         null,
-                                         false,
-                                         -1,
-                                         4 );
-            assertEquals( 2,
-                          result.data.length );
-
-            result = impl.queryMetaData( qr,
-                                         null,
-                                         null,
-                                         null,
-                                         null,
-                                         false,
-                                         6,
-                                         4 );
-            assertEquals( 0,
-                          result.data.length );
-        } finally {
-            Lifecycle.endApplication();
+    
+        @Test
+        public void testQueryMetadataPager() throws Exception {
+            try {
+                ServiceImplementation impl = getServiceImplementation();
+                RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+                String rule11Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData11";
+                String rule12Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData12";
+    
+                String package11Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack11";
+                String category11Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat11";
+                PackageItem packageItem11 = impl.getRulesRepository().createPackage( package11Name,
+                                                                                     "desc" );
+                @SuppressWarnings("unused")
+                String packageItem11UUID = packageItem11.getUUID();
+                repositoryCategoryService.createCategory( "",
+                                                          category11Name,
+                                                          "this is a dock" );
+                @SuppressWarnings("unused")
+                String uuid11 = impl.createNewRule( rule11Name,
+                                                    "DisplayHandlerDescription11",
+                                                    category11Name,
+                                                    package11Name,
+                                                    AssetFormats.DRL );
+    
+                String package12Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack12";
+                String category12Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat12";
+                PackageItem packageItem12 = impl.getRulesRepository().createPackage( package12Name,
+                                                                                     "desc" );
+                @SuppressWarnings("unused")
+                String packageItem12UUID = packageItem12.getUUID();
+                repositoryCategoryService.createCategory( "",
+                                                          category12Name,
+                                                          "this is a sparrow" );
+                @SuppressWarnings("unused")
+                String uuid12 = impl.createNewRule( rule12Name,
+                                                    "DisplayHandlerDescription12",
+                                                    category12Name,
+                                                    package12Name,
+                                                    AssetFormats.DRL );
+    
+                // Mock up SEAM contexts
+                Map<String, Object> application = new HashMap<String, Object>();
+                Lifecycle.beginApplication( application );
+                Lifecycle.beginCall();
+                MockIdentity midentity = new MockIdentity();
+                RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+                resolver.setEnableRoleBasedAuthorization( true );
+                midentity.addPermissionResolver( resolver );
+    
+                Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+                                                  midentity );
+                Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
+                                                  impl );
+    
+                List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+                pbps.add( new RoleBasedPermission( "jervis",
+                                                   RoleTypes.ANALYST,
+                                                   null,
+                                                   category11Name ) );
+                pbps.add( new RoleBasedPermission( "jervis",
+                                                   RoleTypes.ANALYST,
+                                                   null,
+                                                   category12Name ) );
+    
+                MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
+                Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
+                                                  store );
+    
+                // Put permission list in session.
+                RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+                testManager.create();
+                Contexts.getSessionContext().set( "roleBasedPermissionManager",
+                                                  testManager );
+    
+                MetaDataQuery[] qr = new MetaDataQuery[1];
+                qr[0] = new MetaDataQuery();
+                qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
+                qr[0].valueList = "DisplayHandlerDescription%";
+                QueryMetadataPageRequest pageRequest = new QueryMetadataPageRequest(Arrays.asList( qr ), null,null,null,null, false, 1, 1);
+                PageResponse<QueryPageRow> queryMetaData = impl.queryMetaData( pageRequest );
+                
+                assertEquals( 1,
+                              queryMetaData.getPageRowList().size());
+    
+                pageRequest = new QueryMetadataPageRequest(Arrays.asList( qr ), null,null,null,null, false, 0, 1);
+                queryMetaData = impl.queryMetaData( pageRequest );
+                
+                assertEquals( 1,
+                              queryMetaData.getPageRowList().size() );
+    
+                pageRequest = new QueryMetadataPageRequest(Arrays.asList( qr ), null,null,null,null, false, 0, 4);
+                queryMetaData = impl.queryMetaData( pageRequest );
+                
+                assertEquals( 2,
+                              queryMetaData.getPageRowList().size() );
+    
+                pageRequest = new QueryMetadataPageRequest(Arrays.asList( qr ), null,null,null,null, false, -1, 4);
+                queryMetaData = impl.queryMetaData( pageRequest );
+                
+                
+                assertEquals( 2,
+                              queryMetaData.getPageRowList().size() );
+    
+                pageRequest = new QueryMetadataPageRequest(Arrays.asList( qr ), null,null,null,null, false, 6, 4);
+                queryMetaData = impl.queryMetaData( pageRequest );
+                
+               
+                assertEquals( 0,
+                              queryMetaData.getPageRowList().size() );
+            } finally {
+                Lifecycle.endApplication();
+            }
         }
-    }
-
-    //BRMS-282: listPackages only returns packages that the user has package.readonly permission or higher
-
-    @Test
-    public void testListPackagesPackageAdminAndAnalyst() throws Exception {
-        try {
-            ServiceImplementation impl = getServiceImplementation();
-            RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-            String package1Name = "testListPackagesPackageAdminAndAnalystPack1";
-            String package2Name = "testListPackagesPackageAdminAndAnalystPack2";
-            String category1Name = "testListPackagesPackageAdminAndAnalystCat1";
-            @SuppressWarnings("unused")
-            String package1UUID = (impl.getRulesRepository().createPackage( package1Name,
-                                                                            "desc" )).getUUID();
-            impl.getRulesRepository().createPackage( package2Name,
-                                                     "desc" );
-            repositoryCategoryService.createCategory( "",
-                                                      category1Name,
-                                                      "this is a cat" );
-
-            impl.createNewRule( "testListPackagesPackageAdminAndAnalystRule1",
-                                "description",
-                                null,
-                                package1Name,
-                                AssetFormats.DRL );
-
-            impl.createNewRule( "testListPackagesPackageAdminAndAnalystRule2",
-                                "description",
-                                category1Name,
-                                package2Name,
-                                AssetFormats.DRL );
-
-            impl.createNewRule( "testListPackagesPackageAdminAndAnalystRule3",
-                                "description",
-                                null,
-                                package2Name,
-                                AssetFormats.DRL );
-
-            // Mock up SEAM contexts
-            Map<String, Object> application = new HashMap<String, Object>();
-            Lifecycle.beginApplication( application );
-            Lifecycle.beginCall();
-            MockIdentity midentity = new MockIdentity();
-            RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-            resolver.setEnableRoleBasedAuthorization( true );
-            midentity.addPermissionResolver( resolver );
-            midentity.create();
-
-            Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                              midentity );
-            Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
-
-            List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-            pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_ADMIN,
-                                               package1Name,
-                                               null ) );
-            pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
-                                               null,
-                                               category1Name ) );
-            MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-            Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                              store );
-
-            // Put permission list in session.
-            RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-            testManager.create();
-            Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                              testManager );
-
-            PackageConfigData[] res = repositoryPackageService.listPackages();
-            assertEquals( 1,
-                          res.length );
-        } finally {
-            Lifecycle.endApplication();
+    
+        //BRMS-282: listPackages only returns packages that the user has package.readonly permission or higher
+    
+        @Test
+        public void testListPackagesPackageAdminAndAnalyst() throws Exception {
+            try {
+                ServiceImplementation impl = getServiceImplementation();
+                RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
+                RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+                String package1Name = "testListPackagesPackageAdminAndAnalystPack1";
+                String package2Name = "testListPackagesPackageAdminAndAnalystPack2";
+                String category1Name = "testListPackagesPackageAdminAndAnalystCat1";
+                @SuppressWarnings("unused")
+                String package1UUID = (impl.getRulesRepository().createPackage( package1Name,
+                                                                                "desc" )).getUUID();
+                impl.getRulesRepository().createPackage( package2Name,
+                                                         "desc" );
+                repositoryCategoryService.createCategory( "",
+                                                          category1Name,
+                                                          "this is a cat" );
+    
+                impl.createNewRule( "testListPackagesPackageAdminAndAnalystRule1",
+                                    "description",
+                                    null,
+                                    package1Name,
+                                    AssetFormats.DRL );
+    
+                impl.createNewRule( "testListPackagesPackageAdminAndAnalystRule2",
+                                    "description",
+                                    category1Name,
+                                    package2Name,
+                                    AssetFormats.DRL );
+    
+                impl.createNewRule( "testListPackagesPackageAdminAndAnalystRule3",
+                                    "description",
+                                    null,
+                                    package2Name,
+                                    AssetFormats.DRL );
+    
+                // Mock up SEAM contexts
+                Map<String, Object> application = new HashMap<String, Object>();
+                Lifecycle.beginApplication( application );
+                Lifecycle.beginCall();
+                MockIdentity midentity = new MockIdentity();
+                RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+                resolver.setEnableRoleBasedAuthorization( true );
+                midentity.addPermissionResolver( resolver );
+                midentity.create();
+    
+                Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+                                                  midentity );
+                Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
+                                                  impl );
+    
+                List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
+                pbps.add( new RoleBasedPermission( "jervis",
+                                                   RoleTypes.PACKAGE_ADMIN,
+                                                   package1Name,
+                                                   null ) );
+                pbps.add( new RoleBasedPermission( "jervis",
+                                                   RoleTypes.ANALYST,
+                                                   null,
+                                                   category1Name ) );
+                MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
+                Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
+                                                  store );
+    
+                // Put permission list in session.
+                RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
+                testManager.create();
+                Contexts.getSessionContext().set( "roleBasedPermissionManager",
+                                                  testManager );
+    
+                PackageConfigData[] res = repositoryPackageService.listPackages();
+                assertEquals( 1,
+                              res.length );
+            } finally {
+                Lifecycle.endApplication();
+            }
         }
-    }
 
     @Test
     public void testLoadChildCategories() throws Exception {
@@ -1352,25 +1330,25 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             String category2Name = "testLoadChildCategoriesCat2";
 
             impl.getRulesRepository().createPackage( package1Name,
-                                                     "desc" );
+                                                         "desc" );
             repositoryCategoryService.createCategory( "",
-                                                      category1Name,
-                                                      "this is a cat" );
+                                                          category1Name,
+                                                          "this is a cat" );
             repositoryCategoryService.createCategory( "",
-                                                      category2Name,
-                                                      "this is a cat" );
+                                                          category2Name,
+                                                          "this is a cat" );
 
             impl.createNewRule( "testLoadChildCategoriesRule1",
-                                "description",
-                                category1Name,
-                                package1Name,
-                                AssetFormats.DRL );
+                                    "description",
+                                    category1Name,
+                                    package1Name,
+                                    AssetFormats.DRL );
 
             impl.createNewRule( "testLoadChildCategoriesRule2",
-                                "description",
-                                category2Name,
-                                package1Name,
-                                AssetFormats.DRL );
+                                    "description",
+                                    category2Name,
+                                    package1Name,
+                                    AssetFormats.DRL );
 
             // Mock up SEAM contexts
             Map<String, Object> application = new HashMap<String, Object>();
@@ -1383,28 +1361,28 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             midentity.create();
 
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                              midentity );
+                                                  midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                                  impl );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
-                                               null,
-                                               category1Name ) );
+                                                   RoleTypes.ANALYST,
+                                                   null,
+                                                   category1Name ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
             Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                              store );
+                                                  store );
 
             // Put permission list in session.
             RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
             testManager.create();
             Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                              testManager );
+                                                  testManager );
 
             String[] res = repositoryCategoryService.loadChildCategories( "/" );
             assertEquals( 1,
-                          res.length );
+                              res.length );
         } finally {
             Lifecycle.endApplication();
         }

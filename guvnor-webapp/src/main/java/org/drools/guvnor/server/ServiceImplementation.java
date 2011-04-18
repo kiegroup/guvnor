@@ -40,7 +40,6 @@ import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
-import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
@@ -81,7 +80,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
-import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
@@ -410,82 +408,6 @@ public class ServiceImplementation
                                                      head,
                                                      comment );
 
-    }
-
-    /**
-     * @deprecated in favour of {@link queryMetaData(QueryPageRequest)}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult queryMetaData(final MetaDataQuery[] qr,
-                                         Date createdAfter,
-                                         Date createdBefore,
-                                         Date modifiedAfter,
-                                         Date modifiedBefore,
-                                         boolean seekArchived,
-                                         int skip,
-                                         int numRows) throws SerializationException {
-        if ( numRows == 0 ) {
-            throw new DetailedSerializationException( "Unable to return zero results (bug)",
-                                                      "probably have the parameters around the wrong way, sigh..." );
-        }
-
-        Map<String, String[]> q = new HashMap<String, String[]>() {
-            {
-                for ( int i = 0; i < qr.length; i++ ) {
-                    String vals = (qr[i].valueList == null) ? "" : qr[i].valueList.trim();
-                    if ( vals.length() > 0 ) {
-                        put( qr[i].attribute,
-                             vals.split( ",\\s?" ) );
-                    }
-                }
-            }
-        };
-
-        DateQuery[] dates = new DateQuery[2];
-
-        dates[0] = new DateQuery( "jcr:created",
-                                  isoDate( createdAfter ),
-                                  isoDate( createdBefore ) );
-        dates[1] = new DateQuery( AssetItem.LAST_MODIFIED_PROPERTY_NAME,
-                                  isoDate( modifiedAfter ),
-                                  isoDate( modifiedBefore ) );
-        AssetItemIterator it = getRulesRepository().query( q,
-                                                           seekArchived,
-                                                           dates );
-        // Add Filter to check Permission
-        List<AssetItem> resultList = new ArrayList<AssetItem>();
-
-        RepositoryFilter packageFilter = new PackageFilter();
-        RepositoryFilter categoryFilter = new CategoryFilter();
-
-        while ( it.hasNext() ) {
-            AssetItem ai = it.next();
-            if ( checkPackagePermissionHelper( packageFilter,
-                                               ai,
-                                               RoleTypes.PACKAGE_READONLY ) || checkCategoryPermissionHelper( categoryFilter,
-                                                                                                              ai,
-                                                                                                              RoleTypes.ANALYST_READ ) ) {
-                resultList.add( ai );
-            }
-        }
-
-        return new TableDisplayHandler( "searchresults" ).loadRuleListTable( resultList,
-                                                                             skip,
-                                                                             numRows );
-    }
-
-    private boolean checkPackagePermissionHelper(RepositoryFilter filter,
-                                                 AssetItem item,
-                                                 String roleType) {
-        return filter.accept( getConfigDataHelper( item.getPackage().getUUID() ),
-                              roleType );
-    }
-
-    private PackageConfigData getConfigDataHelper(String uuidStr) {
-        PackageConfigData data = new PackageConfigData();
-        data.uuid = uuidStr;
-        return data;
     }
 
     @WebRemote
@@ -1040,22 +962,6 @@ public class ServiceImplementation
         Calendar cal = Calendar.getInstance();
         cal.setTime( date );
         return cal;
-    }
-
-    private boolean checkCategoryPermissionHelper(RepositoryFilter filter,
-                                                  AssetItem item,
-                                                  String roleType) {
-        List<CategoryItem> tempCateList = item.getCategories();
-        for ( Iterator<CategoryItem> i = tempCateList.iterator(); i.hasNext(); ) {
-            CategoryItem categoryItem = i.next();
-
-            if ( filter.accept( categoryItem.getName(),
-                                roleType ) ) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private String isoDate(Date d) {

@@ -56,7 +56,6 @@ public interface RepositoryServiceAsync {
     public void loadDropDownExpression(java.lang.String[] p0, java.lang.String p1, AsyncCallback<java.lang.String[]> cb);
     public void queryFullText(org.drools.guvnor.client.rpc.QueryPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.QueryPageRow>> cb);
     public void queryMetaData(org.drools.guvnor.client.rpc.QueryMetadataPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.QueryPageRow>> cb);
-    public void queryMetaData(org.drools.guvnor.client.rpc.MetaDataQuery[] p0, java.util.Date p1, java.util.Date p2, java.util.Date p3, java.util.Date p4, boolean p5, int p6, int p7, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void listUserPermissions(org.drools.guvnor.client.rpc.PageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.PermissionsPageRow>> cb);
     public void listUserPermissions(AsyncCallback cb);
     public void retrieveUserPermissions(java.lang.String p0, AsyncCallback cb);
