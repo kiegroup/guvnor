@@ -912,26 +912,13 @@ public class ServiceImplementation
         }
 
         // Setup parameters for generic repository query
-        Map<String, String[]> q = new HashMap<String, String[]>();
-        for ( MetaDataQuery md : request.getMetadata() ) {
-            String vals = (md.valueList == null) ? "" : md.valueList.trim();
-            if ( vals.length() > 0 ) {
-                q.put( md.attribute,
-                       vals.split( ",\\s?" ) );
-            }
-        }
+        Map<String, String[]> queryMap = createQueryMap( request.getMetadata() );
 
-        DateQuery[] dates = new DateQuery[2];
-        dates[0] = new DateQuery( "jcr:created",
-                                  isoDate( request.getCreatedAfter() ),
-                                  isoDate( request.getCreatedBefore() ) );
-        dates[1] = new DateQuery( AssetItem.LAST_MODIFIED_PROPERTY_NAME,
-                                  isoDate( request.getLastModifiedAfter() ),
-                                  isoDate( request.getLastModifiedBefore() ) );
+        DateQuery[] dates = createDateQueryForRepository( request );
 
         // Do query
         long start = System.currentTimeMillis();
-        AssetItemIterator it = getRulesRepository().query( q,
+        AssetItemIterator it = getRulesRepository().query( queryMap,
                                                            request.isSearchArchived(),
                                                            dates );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
@@ -959,6 +946,29 @@ public class ServiceImplementation
         log.debug( "Queried repository (Metadata) in " + methodDuration + " ms." );
         return response;
 
+    }
+
+    private Map<String, String[]> createQueryMap(final List<MetaDataQuery> metaDataQuerys) {
+        Map<String, String[]> queryMap = new HashMap<String, String[]>();
+        for ( MetaDataQuery metaDataQuery : metaDataQuerys ) {
+            String vals = (metaDataQuery.valueList == null) ? "" : metaDataQuery.valueList.trim();
+            if ( vals.length() > 0 ) {
+                queryMap.put( metaDataQuery.attribute,
+                              vals.split( ",\\s?" ) );
+            }
+        }
+        return queryMap;
+    }
+
+    private DateQuery[] createDateQueryForRepository(QueryMetadataPageRequest request) {
+        DateQuery[] dates = new DateQuery[2];
+        dates[0] = new DateQuery( "jcr:created",
+                                  isoDate( request.getCreatedAfter() ),
+                                  isoDate( request.getCreatedBefore() ) );
+        dates[1] = new DateQuery( AssetItem.LAST_MODIFIED_PROPERTY_NAME,
+                                  isoDate( request.getLastModifiedAfter() ),
+                                  isoDate( request.getLastModifiedBefore() ) );
+        return dates;
     }
 
     @WebRemote
