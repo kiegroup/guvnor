@@ -190,31 +190,35 @@ public class PackageResource extends Resource {
         }
     }
     
-/*    @GET
+    @GET
     @Path("{packageName}/versions")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getPackageVersionsAsFeed(@PathParam("packageName") String packageName) throws SerializationException { 
     	PackageItem p = repository.loadPackage(packageName);
-        PackageHistoryIterator it = p.getHistory();        
-        Feed f = new Feed();
+        
+        Factory factory = Abdera.getNewFactory();
+        Feed f = factory.getAbdera().newFeed();
         f.setTitle("Version history of " + p.getName());
+        f.setBaseUri(uriInfo.getBaseUriBuilder().path("packages").build().toString());
+        PackageHistoryIterator it = p.getHistory();        
+
         while (it.hasNext()) {
             try {
                 PackageItem historicalPackage = it.next();
 				if (historicalPackage.getVersionNumber() != 0) {
-					Entry e = new Entry();
+					Entry e = factory.getAbdera().newEntry();
 					e.setTitle(Long.toString(historicalPackage
 							.getVersionNumber()));
 					e.setUpdated(historicalPackage.getLastModified().getTime());
-					Link l = new Link();
+					Link l = factory.newLink();
 					l.setHref(uriInfo
 							.getBaseUriBuilder()
 							.path("packages")
 							.path(p.getName())
 							.path("versions")
-							.path(Long.toString(historicalPackage.getVersionNumber())).build());
-					e.getLinks().add(l);
-					f.getEntries().add(e);
+							.path(Long.toString(historicalPackage.getVersionNumber())).build().toString());
+					e.addLink(l);
+					f.addEntry(e);
 				}
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -222,15 +226,15 @@ public class PackageResource extends Resource {
         }
         
         return f;
-    }*/
-/*
+    }
+
     @GET
     @Path("{packageName}/versions/{versionNumber}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry getHistoricalPackageAsEntry(@PathParam("packageName") String packageName,
     		@PathParam("versionNumber") long versionNumber) throws SerializationException {
-        return ToPackageEntry(repository.loadPackage(packageName, versionNumber), uriInfo);
-    }*/
+        return ToPackageEntryAbdera(repository.loadPackage(packageName, versionNumber), uriInfo);
+    }
     
     @GET
     @Path("{packageName}/versions/{versionNumber}/source")
@@ -254,18 +258,19 @@ public class PackageResource extends Resource {
         return repository.loadPackage(packageName).getCompiledPackageBytes();
     }
     
-/*    @GET
+    @GET
     @Path("{packageName}/assets")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getAssetsAsAtom(@PathParam("packageName") String packageName) {
-        Feed feed = new Feed();
+        Factory factory = Abdera.getNewFactory();
+        Feed feed = factory.getAbdera().newFeed();
         PackageItem p = repository.loadPackage(packageName);
         feed.setTitle(p.getTitle() + "-asset-feed");
         Iterator<AssetItem> iter = p.getAssets();
         while (iter.hasNext())
-            feed.getEntries().add(ToAssetEntry(iter.next(), uriInfo));
+            feed.getEntries().add(ToAssetEntryAbdera(iter.next(), uriInfo));
         return feed;
-    }*/
+    }
 
     @PUT
     @Path("{packageName}")
@@ -335,11 +340,11 @@ public class PackageResource extends Resource {
         repository.save();
     }
        
-/*    @GET
+    @GET
     @Path("{packageName}/assets/{assetName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public org.apache.abdera.model.Entry getAssetAsAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
-    	org.apache.abdera.model.Entry ret = null;
+    public Entry getAssetAsAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
+    	Entry ret = null;
         PackageItem item = repository.loadPackage(packageName);
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
@@ -350,7 +355,7 @@ public class PackageResource extends Resource {
             }
         }
         return ret;
-    }*/
+    }
 
     @GET
     @Path("{packageName}/assets/{assetName}")
