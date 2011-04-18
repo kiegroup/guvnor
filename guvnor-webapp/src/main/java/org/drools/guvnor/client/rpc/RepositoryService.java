@@ -43,15 +43,6 @@ public interface RepositoryService
     public PageResponse<StatePageRow> loadRuleListForState(StatePageRequest request) throws SerializationException;
 
     /**
-     * This will return a TableConfig of header names.
-     * 
-     * @param listName
-     *            The name of the list that we are going to render.
-     * @deprecated in favour of {@link AbstractPagedTable}
-     */
-    public TableConfig loadTableConfig(String listName);
-
-    /**
      * Creates a brand new rule with the initial category. Return the UUID of
      * the item created. This will not check in the rule, but just leave it as
      * saved in the repo.

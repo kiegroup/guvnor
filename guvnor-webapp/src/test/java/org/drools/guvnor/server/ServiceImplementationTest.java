@@ -623,9 +623,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     public void testRuleTableLoad() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        TableConfig conf = impl.loadTableConfig( ExplorerNodeConfig.RULE_LIST_TABLE_ID );
-        assertNotNull( conf.headers );
-        assertNotNull( conf.headerTypes );
 
         CategoryItem cat = impl.getRulesRepository().loadCategory( "/" );
         cat.addCategory( "testRuleTableLoad",

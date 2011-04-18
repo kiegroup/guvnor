@@ -543,10 +543,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public org.drools.guvnor.client.rpc.PageResponse loadRuleListForState(org.drools.guvnor.client.rpc.StatePageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return getService().loadRuleListForState( p0 );
     }
-    
-    public org.drools.guvnor.client.rpc.TableConfig loadTableConfig(java.lang.String p0) {
-        return getService().loadTableConfig( p0 );
-    }
 
     public java.lang.String createNewRule(java.lang.String p0,
                                           java.lang.String p1,

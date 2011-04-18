@@ -51,9 +51,7 @@ import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
-import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
 import org.drools.guvnor.server.builder.pagerow.InboxPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.LogPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.PermissionPageRowBuilder;
@@ -75,7 +73,6 @@ import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
-import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -280,16 +277,6 @@ public class ServiceImplementation
         getRulesRepository().save();
         push( "packageChange",
               pkgName );
-    }
-
-    /**
-     * @deprecated in favour of {@link AbstractPagedTable}
-     */
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public TableConfig loadTableConfig(String listName) {
-        TableDisplayHandler handler = new TableDisplayHandler( listName );
-        return handler.loadTableConfig();
     }
 
     @WebRemote
