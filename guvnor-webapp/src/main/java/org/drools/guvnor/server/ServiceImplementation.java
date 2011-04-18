@@ -51,7 +51,6 @@ import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
-import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.server.builder.pagerow.InboxPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.LogPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.PermissionPageRowBuilder;
@@ -612,30 +611,6 @@ public class ServiceImplementation
         PermissionManager pm = new PermissionManager( getRulesRepository() );
         pm.createUser( userName );
         getRulesRepository().save();
-    }
-
-    /**
-     * @deprecated in favour of {@link loadInbox(InboxPageRequest)}
-     */
-    @Restrict("#{identity.loggedIn}")
-    public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException {
-        try {
-            UserInbox ib = new UserInbox( getRulesRepository() );
-            if ( inboxName.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
-                return UserInbox.toTable( ib.loadRecentOpened(),
-                                          false );
-            } else if ( inboxName.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) ) {
-                return UserInbox.toTable( ib.loadRecentEdited(),
-                                          false );
-            } else {
-                return UserInbox.toTable( ib.loadIncoming(),
-                                          true );
-            }
-        } catch ( Exception e ) {
-            log.error( "Unable to load Inbox: " + e.getMessage() );
-            throw new DetailedSerializationException( "Unable to load Inbox",
-                                                      e.getMessage() );
-        }
     }
 
     @Restrict("#{identity.loggedIn}")

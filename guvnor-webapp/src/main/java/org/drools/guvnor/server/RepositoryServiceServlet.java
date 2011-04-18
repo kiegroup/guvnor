@@ -692,10 +692,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return getService().subscribe();
     }
 
-    public org.drools.guvnor.client.rpc.TableDataResult loadInbox(java.lang.String p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
-        return getService().loadInbox( p0 );
-    }
-
     public org.drools.guvnor.client.rpc.PageResponse loadInbox(org.drools.guvnor.client.rpc.InboxPageRequest p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return getService().loadInbox( p0 );
     }

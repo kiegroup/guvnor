@@ -243,13 +243,6 @@ public interface RepositoryService
     public List<PushResponse> subscribe();
 
     /**
-     * Load the data for a given inbox for the currently logged in user.
-     * 
-     * @deprecated in favour of {@link loadInbox(InboxPageRequest)}
-     */
-    public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException;
-
-    /**
      * Load and process the repository configuration templates.
      */
     public String processTemplate(String name,
