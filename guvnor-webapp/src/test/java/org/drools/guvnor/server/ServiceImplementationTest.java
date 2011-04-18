@@ -85,6 +85,7 @@ import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.cache.RuleBaseCache;
+import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.TableDisplayHandler;
@@ -131,19 +132,23 @@ import com.google.gwt.user.client.rpc.SerializationException;
 public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
-    @Ignore("The whole inbox notification service appears broken")
+    @Ignore("This needs a little re-work as it does not work as expected")
     public void testInboxEvents() throws Exception {
+        RepositoryStartupService.registerCheckinListener();
         ServiceImplementation impl = getServiceImplementation();
+        RepositoryAssetService assetServiceImpl = getRepositoryAssetService();
         assertNotNull( impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
         //this should trigger the fact that the original user edited something
         AssetItem as = impl.getRulesRepository().loadDefaultPackage().addAsset( "testLoadInbox",
                                                                                 "" );
         as.checkin( "" );
+        RuleAsset ras = assetServiceImpl.loadRuleAsset( as.getUUID() );
+        
         TableDataResult res = impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID );
         boolean found = false;
         for ( TableDataRow row : res.data ) {
-            if ( row.id.equals( as.getUUID() ) ) found = true;
+            if ( row.id.equals( ras.uuid ) ) found = true;
         }
         assertTrue( found );
 
@@ -894,8 +899,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("The whole inbox notification service appears broken")
     public void testTrackRecentOpenedChanged() throws Exception {
+        RepositoryStartupService.registerCheckinListener();
         ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         UserInbox ib = new UserInbox( impl.getRulesRepository() );
@@ -1011,8 +1016,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("The whole inbox notification service appears broken")
     public void testCheckin() throws Exception {
+        RepositoryStartupService.registerCheckinListener();
         ServiceImplementation serv = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
