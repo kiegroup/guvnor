@@ -16,17 +16,17 @@
 
 package org.drools.guvnor.server.repository;
 
-import org.drools.repository.RulesRepository;
-import org.drools.repository.UserInfo;
-import org.drools.repository.AssetItem;
-import org.drools.repository.UserInfo.InboxEntry;
+import java.util.Iterator;
+import java.util.List;
+
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
-
-import java.util.List;
-import java.util.Iterator;
+import org.drools.repository.AssetItem;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.UserInfo;
+import org.drools.repository.UserInfo.InboxEntry;
 
 /**
  * This manages the users "inbox".
@@ -97,6 +97,19 @@ public class UserInbox {
         return inboxEntries;
     }
 
+    public List<InboxEntry> loadEntries(final String inboxName){
+        List<InboxEntry> entries;
+        if ( inboxName.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
+            entries = loadRecentOpened();
+        } else if ( inboxName.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) ) {
+            entries = loadRecentEdited();
+        } else {
+            entries = loadIncoming();
+
+        }
+        return entries;
+    }
+    
     public List<InboxEntry> loadRecentEdited() {
         return userInfo.readEntries(INBOX, ExplorerNodeConfig.RECENT_EDITED_ID);
     }

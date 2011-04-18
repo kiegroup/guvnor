@@ -782,39 +782,27 @@ public class ServiceImplementation
         }
 
         String inboxName = request.getInboxName();
-        UserInbox ib = new UserInbox( getRulesRepository() );
-        List<InboxEntry> entries = new ArrayList<InboxEntry>();
+        UserInbox userInbox = new UserInbox( getRulesRepository() );
         PageResponse<InboxPageRow> response = new PageResponse<InboxPageRow>();
         long start = System.currentTimeMillis();
 
         try {
 
             // Do applicable query
-            if ( inboxName.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
-                entries = ib.loadRecentOpened();
-                log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-
-            } else if ( inboxName.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) ) {
-                entries = ib.loadRecentEdited();
-                log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-
-            } else {
-                entries = ib.loadIncoming();
-                log.debug( "Search time: " + (System.currentTimeMillis() - start) );
-
-            }
+            List<InboxEntry> entries = userInbox.loadEntries( inboxName );
+            log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
             // Populate response
-            Iterator<InboxEntry> it = entries.iterator();
+            Iterator<InboxEntry> iterator = entries.iterator();
             InboxPageRowBuilder inboxPageRowBuilder = new InboxPageRowBuilder();
             List<InboxPageRow> rowList = inboxPageRowBuilder.createRows( request,
-                                                                             it );
+                                                                             iterator );
 
             response.setStartRowIndex( request.getStartRowIndex() );
             response.setTotalRowSize( entries.size() );
             response.setTotalRowSizeExact( true );
             response.setPageRowList( rowList );
-            response.setLastPage( !it.hasNext() );
+            response.setLastPage( !iterator.hasNext() );
 
             long methodDuration = System.currentTimeMillis() - start;
             log.debug( "Queried inbox ('" + inboxName + "') in " + methodDuration + " ms." );

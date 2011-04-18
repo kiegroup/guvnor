@@ -21,12 +21,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo.InboxEntry;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class UserInboxTest extends GuvnorTestBase {
@@ -89,6 +88,55 @@ public class UserInboxTest extends GuvnorTestBase {
                       res.get( res.size() - 1 ).assetUUID );
         assertEquals( "Y1",
                       res.get( res.size() - 2 ).assetUUID );
+
+    }
+
+    @Test
+    public void testLoadEntriesRecentlyOpened() {
+        RulesRepository repo = getRulesRepository();
+        UserInbox inb = new UserInbox( repo );
+        inb.clearAll();
+        inb.addToRecentOpened( "QED",
+                               "hey" );
+        List<InboxEntry> es = inb.loadEntries( ExplorerNodeConfig.RECENT_VIEWED_ID );
+        assertEquals( 1,
+                      es.size() );
+        assertEquals( "QED",
+                      es.get( 0 ).assetUUID );
+    }
+
+    @Test
+    public void testLoadEntriesRecentlyEdited() throws Exception {
+        RulesRepository repo = getRulesRepository();
+        UserInbox inb = new UserInbox( repo );
+        inb.clearAll();
+        inb.addToRecentEdited( "ABC",
+                               "This is a note" );
+
+        List<InboxEntry> es = inb.loadEntries( ExplorerNodeConfig.RECENT_EDITED_ID );
+        assertEquals( 1,
+                      es.size() );
+        assertEquals( "ABC",
+                      es.get( 0 ).assetUUID );
+
+    }
+
+    @Test
+    public void testLoadEntriesIncoming() throws Exception {
+        RulesRepository repo = getRulesRepository();
+        AssetItem asset = repo.loadDefaultPackage().addAsset( "testIncomingMarkedRead",
+                                                              "" );
+        UserInbox ib = new UserInbox( repo );
+        ib.clearAll();
+        ib.addToIncoming( asset.getUUID(),
+                          "hey",
+                          "mic" );
+
+        List<InboxEntry> es = ib.loadIncoming();
+        assertEquals( 1,
+                      es.size() );
+        assertEquals( asset.getUUID(),
+                      es.get( 0 ).assetUUID );
 
     }
 
