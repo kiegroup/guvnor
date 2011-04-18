@@ -544,6 +544,20 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return getService().loadRuleListForState( p0 );
     }
 
+    public org.drools.guvnor.client.rpc.TableDataResult loadRuleListForState(java.lang.String p0,
+                                                                             int p1,
+                                                                             int p2,
+                                                                             java.lang.String p3) throws com.google.gwt.user.client.rpc.SerializationException {
+        return getService().loadRuleListForState( p0,
+                                                  p1,
+                                                  p2,
+                                                  p3 );
+    }
+
+    public org.drools.guvnor.client.rpc.TableConfig loadTableConfig(java.lang.String p0) {
+        return getService().loadTableConfig( p0 );
+    }
+
     public java.lang.String createNewRule(java.lang.String p0,
                                           java.lang.String p1,
                                           java.lang.String p2,
@@ -644,6 +658,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return getService().showLog( p0 );
     }
 
+    public org.drools.guvnor.client.rpc.LogEntry[] showLog() {
+        return getService().showLog();
+    }
+
     public void cleanLog() {
         getService().cleanLog();
     }
@@ -662,10 +680,32 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return getService().queryMetaData( p0 );
     }
 
+    public org.drools.guvnor.client.rpc.TableDataResult queryMetaData(org.drools.guvnor.client.rpc.MetaDataQuery[] p0,
+                                                                      java.util.Date p1,
+                                                                      java.util.Date p2,
+                                                                      java.util.Date p3,
+                                                                      java.util.Date p4,
+                                                                      boolean p5,
+                                                                      int p6,
+                                                                      int p7) throws com.google.gwt.user.client.rpc.SerializationException {
+        return getService().queryMetaData( p0,
+                                           p1,
+                                           p2,
+                                           p3,
+                                           p4,
+                                           p5,
+                                           p6,
+                                           p7 );
+    }
+
     public org.drools.guvnor.client.rpc.PageResponse listUserPermissions(org.drools.guvnor.client.rpc.PageRequest p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return getService().listUserPermissions( p0 );
     }
-    
+
+    public java.util.Map listUserPermissions() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
+        return getService().listUserPermissions();
+    }
+
     public java.util.Map retrieveUserPermissions(java.lang.String p0) {
         return getService().retrieveUserPermissions( p0 );
     }
@@ -690,6 +730,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
 
     public java.util.List subscribe() {
         return getService().subscribe();
+    }
+
+    public org.drools.guvnor.client.rpc.TableDataResult loadInbox(java.lang.String p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
+        return getService().loadInbox( p0 );
     }
 
     public org.drools.guvnor.client.rpc.PageResponse loadInbox(org.drools.guvnor.client.rpc.InboxPageRequest p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {

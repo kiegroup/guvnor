@@ -34,6 +34,21 @@ public interface RepositoryService
     extends
     RemoteService {
 
+
+
+    /**
+     * Return a a 2d array/grid of results for rules.
+     * 
+     * @param The
+     *            name of the state.
+     *            
+     * @deprecated in favour of {@link loadRuleListForState(StatePageRequest)}
+     */
+    public TableDataResult loadRuleListForState(String state,
+                                                int skip,
+                                                int numRows,
+                                                String tableConfig) throws SerializationException;
+
     /**
      * Return a list of Assets by status
      * 
@@ -41,6 +56,15 @@ public interface RepositoryService
      *            Request specific details
      */
     public PageResponse<StatePageRow> loadRuleListForState(StatePageRequest request) throws SerializationException;
+
+    /**
+     * This will return a TableConfig of header names.
+     * 
+     * @param listName
+     *            The name of the list that we are going to render.
+     * @deprecated in favour of {@link AbstractPagedTable}
+     */
+    public TableConfig loadTableConfig(String listName);
 
     /**
      * Creates a brand new rule with the initial category. Return the UUID of
@@ -155,6 +179,14 @@ public interface RepositoryService
      * return custom selector names
      */
     public String[] getCustomSelectors() throws SerializationException;
+   
+    /**
+     * This will list the last N log entryies logged by the server. For
+     * debugging purposes in the GUI.
+     * 
+     * @deprecated in favour of {@link showLogEntries()}
+     */
+    public LogEntry[] showLog();
 
     /**
      * This will list log entries logged by the server. For debugging purposes
@@ -193,11 +225,45 @@ public interface RepositoryService
      * system. Pass in null and they will not be included in the search (that
      * applies to any field).
      * 
+     * @param qr
+     * @param createdAfter
+     * @param createdBefore
+     * @param modifiedAfter
+     * @param modifiedBefore
+     * @param seekArchived
+     * @param skip
+     * @param numRows
+     * @return
+     * @throws SerializationException
+     * 
+     * @deprecated in favour of {@link queryMetaData(QueryPageRequest)}
+     */
+    public TableDataResult queryMetaData(final MetaDataQuery[] qr,
+                                         Date createdAfter,
+                                         Date createdBefore,
+                                         Date modifiedAfter,
+                                         Date modifiedBefore,
+                                         boolean seekArchived,
+                                         int skip,
+                                         int numRows) throws SerializationException;
+
+    /**
+     * Run a meta data search. All dates are in format as configured for the
+     * system. Pass in null and they will not be included in the search (that
+     * applies to any field).
+     * 
      * @param request
      * @return
      * @throws SerializationException
      */
     public PageResponse<QueryPageRow> queryMetaData(QueryMetadataPageRequest request) throws SerializationException;
+
+    /**
+     * @return A map of username : list of permission types for display reasons.
+     * 
+     * @deprecated in favour of {@link listUserPermissions(PageRequest)}
+     */
+    public Map<String, List<String>> listUserPermissions() throws DetailedSerializationException;
 
     /**
      * @return A map of username : list of permission types for display reasons.
@@ -241,6 +307,13 @@ public interface RepositoryService
      * Subscribe for a "callback" for a given request.
      */
     public List<PushResponse> subscribe();
+
+    /**
+     * Load the data for a given inbox for the currently logged in user.
+     * 
+     * @deprecated in favour of {@link loadInbox(InboxPageRequest)}
+     */
+    public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException;
 
     /**
      * Load and process the repository configuration templates.

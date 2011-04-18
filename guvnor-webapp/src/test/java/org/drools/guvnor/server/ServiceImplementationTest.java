@@ -120,6 +120,7 @@ import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -128,6 +129,93 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * This is really a collection of integration tests.
  */
 public class ServiceImplementationTest extends GuvnorTestBase {
+
+    @Test
+    public void testInboxEvents() throws Exception {
+        ServiceImplementation impl = getServiceImplementation();
+        assertNotNull( impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
+
+        //this should trigger the fact that the original user edited something
+        AssetItem as = impl.getRulesRepository().loadDefaultPackage().addAsset( "testLoadInbox",
+                                                                                "" );
+        as.checkin( "" );
+        TableDataResult res = impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID );
+        boolean found = false;
+        for ( TableDataRow row : res.data ) {
+            if ( row.id.equals( as.getUUID() ) ) found = true;
+        }
+        assertTrue( found );
+
+        //but should not be in "incoming" yet
+        found = false;
+        res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
+        for ( TableDataRow row : res.data ) {
+            if ( row.id.equals( as.getUUID() ) ) found = true;
+        }
+        assertFalse( found );
+
+        //Now, another user comes along, makes a change...
+        RulesRepository repo2 = new RulesRepository( TestEnvironmentSessionHelper.getSessionFor( "thirdpartyuser" ) );
+        AssetItem as2 = repo2.loadDefaultPackage().loadAsset( "testLoadInbox" );
+        as2.updateContent( "hey" );
+        as2.checkin( "here we go again !" );
+
+        Thread.sleep( 200 );
+
+        //now check that it is in the first users inbox
+        TableDataRow rowMatch = null;
+        res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
+        for ( TableDataRow row : res.data ) {
+            if ( row.id.equals( as.getUUID() ) ) {
+                rowMatch = row;
+                break;
+            }
+        }
+        assertNotNull( rowMatch );
+        assertEquals( as.getName(),
+                      rowMatch.values[0] );
+        assertEquals( "thirdpartyuser",
+                      rowMatch.values[2] ); //should be "from" that user name...
+
+        //shouldn't be in thirdpartyusers inbox
+        UserInbox ib = new UserInbox( repo2 );
+        ib.loadIncoming();
+        assertEquals( 0,
+                      ib.loadIncoming().size() );
+        assertEquals( 1,
+                      ib.loadRecentEdited().size() );
+
+        //ok lets create another user...
+        RulesRepository repo3 = new RulesRepository( TestEnvironmentSessionHelper.getSessionFor( "fourthuser" ) );
+        AssetItem as3 = repo3.loadDefaultPackage().loadAsset( "testLoadInbox" );
+        as3.updateContent( "hey22" );
+        as3.checkin( "here we go again 22!" );
+
+        Thread.sleep( 250 );
+
+        //so should be in thirdpartyuser inbox
+        assertEquals( 1,
+                      ib.loadIncoming().size() );
+
+        //and also still in the original user...
+        found = false;
+        res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
+        for ( TableDataRow row : res.data ) {
+            if ( row.id.equals( as.getUUID() ) ) found = true;
+        }
+        assertTrue( found );
+
+        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+        //now lets open it with first user, and check that it disappears from the incoming...
+        repositoryAssetService.loadRuleAsset( as.getUUID() );
+        found = false;
+        res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
+        for ( TableDataRow row : res.data ) {
+            if ( row.id.equals( as.getUUID() ) ) found = true;
+        }
+        assertFalse( found );
+
+    }
 
     @Test
     public void testCategory() throws Exception {
@@ -536,6 +624,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     public void testRuleTableLoad() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+        TableConfig conf = impl.loadTableConfig( ExplorerNodeConfig.RULE_LIST_TABLE_ID );
+        assertNotNull( conf.headers );
+        assertNotNull( conf.headerTypes );
 
         CategoryItem cat = impl.getRulesRepository().loadCategory( "/" );
         cat.addCategory( "testRuleTableLoad",
@@ -1467,20 +1558,17 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         qr[1] = new MetaDataQuery();
         qr[1].attribute = AssetItem.SOURCE_PROPERTY_NAME;
         qr[1].valueList = "numberwan*";
-
-        QueryMetadataPageRequest pageRequest = new QueryMetadataPageRequest( Arrays.asList( qr ),
-                                                                             DateUtils.parseDate( "10-Jul-1974",
-                                                                                                                      new DateFormatsImpl() ),
-                                                                             null,
-                                                                             null,
-                                                                             null,
-                                                                             false,
-                                                                             0,
-                                                                             10 );
-        PageResponse<QueryPageRow> queryMetaData = impl.queryMetaData( pageRequest );
-
+        TableDataResult res = impl.queryMetaData( qr,
+                                                  DateUtils.parseDate( "10-Jul-1974",
+                                                                       new DateFormatsImpl() ),
+                                                  null,
+                                                  null,
+                                                  null,
+                                                  false,
+                                                  0,
+                                                  -1 );
         assertEquals( 1,
-                      queryMetaData.getPageRowList().size() );
+                      res.data.length );
 
     }
 
@@ -3719,6 +3807,14 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
+    @Deprecated
+    public void testListUserPermisisons() throws Exception {
+        ServiceImplementation serv = getServiceImplementation();
+        Map<String, List<String>> r = serv.listUserPermissions();
+        assertNotNull( r );
+    }
+
+    @Test
     public void testListUserPermissionsPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
@@ -3732,10 +3828,10 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         PageRequest requestPage1 = new PageRequest( 0,
                                                     PAGE_SIZE );
         PageResponse<PermissionsPageRow> responsePage1 = impl.listUserPermissions( requestPage1 );
-
+        
         assertNotNull( responsePage1 );
         assertNotNull( responsePage1.getPageRowList() );
-
+        
         System.out.println( "ListUserPermissionsFullResults-page1" );
         for ( PermissionsPageRow row : responsePage1.getPageRowList() ) {
             System.out.println( "--> Username = " + row.getUserName() );
