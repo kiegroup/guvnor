@@ -1224,7 +1224,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         assertTrue(list.get( 0 ) instanceof AssetItem);
     }
 
-    @Test @Ignore
+    @Test
     public void testImportExportWithShareableNodes() throws Exception {
         RulesRepository repo = getRepo();
         AssetItem item = repo.loadDefaultPackage().addAsset("testImportExportShareableNodeOriginal", "desc");

@@ -682,7 +682,6 @@ public class WebDAVImplTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testThreadLocal() throws Exception {
         Thread t = new Thread( new Runnable() {
             public void run() {

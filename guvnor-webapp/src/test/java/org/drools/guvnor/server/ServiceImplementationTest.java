@@ -131,7 +131,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
-    @Ignore("this test fail intermittently")
     public void testInboxEvents() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         assertNotNull( impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
@@ -218,7 +217,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     }
 
-    @Ignore
     @Test
     public void testCategory() throws Exception {
         ServiceImplementation serviceImplementation = getServiceImplementation();
@@ -251,7 +249,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     }
 
-    @Ignore
     @Test
     public void testDeleteUnversionedRule() throws Exception {
         getRulesRepository();
@@ -297,7 +294,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testAddRuleAndListPackages() throws Exception {
         // ServiceImpl impl = new ServiceImpl(new
         // RulesRepository(SessionHelper.getSession()));
@@ -353,7 +349,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testAttemptDupeRule() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         CategoryItem cat = impl.getRulesRepository().loadCategory( "/" );
@@ -380,7 +375,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testCreateNewRule() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -404,7 +398,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testCreateLinkedAssetItem() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -493,7 +486,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testLinkedAssetItemHistoryRelated() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
@@ -597,7 +589,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     //path name contains Apostrophe is no longer a problem with jackrabbit 2.0
 
     @Test
-    @Ignore
     public void testCreateNewRuleContainsApostrophe() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -629,7 +620,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     @Deprecated
     public void testRuleTableLoad() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -672,7 +662,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     @Deprecated
     public void testDateFormatting() throws Exception {
         Calendar cal = Calendar.getInstance();
@@ -684,7 +673,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     @Deprecated
     public void testLoadRuleAsset() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -770,7 +758,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     @Deprecated
     public void testListAssets() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -836,7 +823,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testLoadArchivedAssets() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -906,7 +892,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testTrackRecentOpenedChanged() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -957,7 +942,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testLoadAssetHistoryAndRestore() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -1023,7 +1007,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testCheckin() throws Exception {
         ServiceImplementation serv = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -1123,7 +1106,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testArchivePackage() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -1160,7 +1142,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testCreatePackage() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -1198,7 +1179,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testLoadPackageConfig() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -1245,7 +1225,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testArchiveAndUnarchivePackageAndHeader() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -1291,7 +1270,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testPackageConfSave() throws Exception {
         RepositoryService impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -1329,7 +1307,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     @Deprecated
     public void testListByFormat() throws Exception {
         RepositoryService impl = getServiceImplementation();
@@ -1454,7 +1431,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     @Deprecated
     public void testListUnregisteredAssetFormats() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -1480,7 +1456,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     @Deprecated
     public void testQuickFind() throws Exception {
         RepositoryService impl = getServiceImplementation();
@@ -1537,7 +1512,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     @Deprecated
     public void testSearchText() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -1565,7 +1539,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     @Deprecated
     public void testSearchMetaData() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -1604,7 +1577,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testStatus() throws Exception {
         RepositoryService impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -1677,7 +1649,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testMovePackage() throws Exception {
         RepositoryService impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -1733,7 +1704,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testCopyAsset() throws Exception {
         RepositoryService impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -1761,7 +1731,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testSnapshot() throws Exception {
         RepositoryService impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -1834,7 +1803,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testSnapshotRebuild() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -1905,7 +1873,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testPackageRebuild() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -1942,7 +1909,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testRemoveCategory() throws Exception {
 
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -1959,7 +1925,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testRemoveAsset() throws Exception {
         RepositoryService impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -2014,7 +1979,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testRemovePackage() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -2029,7 +1993,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testImportPackage() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -2059,7 +2022,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       item.getDescription() );
     }
 
-    @Ignore
     @Test
     public void testExportPackage() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -2100,7 +2062,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testArchiveAsset() throws Exception {
         RepositoryService impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -2177,7 +2138,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testArchiveAssetWhenParentPackageArchived() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -2262,7 +2222,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testLoadSuggestionCompletionEngine() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -2304,7 +2263,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testDiscussion() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
@@ -2376,7 +2334,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
      */
 
     @Test
-    @Ignore
     public void testBinaryPackageCompileAndExecute() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -2458,7 +2415,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
      */
 
     @Test
-    @Ignore
     public void testBinaryPackageCompileAndExecuteWithBRXML() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -2597,7 +2553,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
      */
 
     @Test
-    @Ignore
     public void testLoadAndExecBinary() throws Exception {
         Person p = new Person( "fubar" );
         BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
@@ -2610,7 +2565,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testSuggestionCompletionLoading() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -2630,7 +2584,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testPackageSource() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -2688,7 +2641,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testAssetSource() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -2751,7 +2703,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testBuildAssetWithError() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -2786,7 +2737,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testBuildAsset() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -2858,7 +2808,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testBuildAssetMultipleFunctionsCallingEachOther() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -2904,7 +2853,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testBuildAssetBRXMLAndCopy() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -3003,7 +2951,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testBuildAssetWithPackageConfigError() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -3049,7 +2996,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testRuleNameList() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -3096,7 +3042,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
      */
 
     @Test
-    @Ignore
     public void testBinaryUpToDate() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -3157,7 +3102,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testRunScenario() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -3274,7 +3218,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testRunScenarioWithGeneratedBeans() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -3335,7 +3278,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testRunPackageScenariosWithDeclaredFacts() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -3450,7 +3392,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testRunScenarioWithJar() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -3526,7 +3467,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testRunScenarioWithJarThatHasSourceFiles() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -3594,7 +3534,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testRunPackageScenarios() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RulesRepository repo = impl.getRulesRepository();
@@ -3719,7 +3658,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testListFactTypesAvailableInPackage() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -3758,7 +3696,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testGuidedDTExecute() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -3840,7 +3777,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testLoadDropDown() throws Exception {
         ServiceImplementation serv = new ServiceImplementation();
         String[] pairs = new String[]{"f1=x", "f2=2"};
@@ -3858,7 +3794,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testLoadDropDownNoValuePairs() throws Exception {
         ServiceImplementation serv = new ServiceImplementation();
         String[] pairs = new String[]{null};
@@ -3872,7 +3807,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     @Deprecated
     public void testListUserPermisisons() throws Exception {
         ServiceImplementation serv = getServiceImplementation();
@@ -3993,7 +3927,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testShowLogFullResults() throws Exception {
 
         //Setup data (createUser makes log entries)
@@ -4016,7 +3949,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testQueryFullTextPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
@@ -4073,7 +4005,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testQueryFullTextFullResults() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -4119,7 +4050,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testQuickFindAssetPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
@@ -4177,7 +4107,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testQuickFindAssetFullResults() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -4224,7 +4153,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testQueryMetaDataPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
@@ -4281,7 +4209,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testQueryMetaDataFullResults() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -4327,7 +4254,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testLoadRuleListForCategoryPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
@@ -4381,7 +4307,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testLoadRuleListForCategoryFullResults() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -4424,7 +4349,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testLoadRuleListForStatePagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
@@ -4490,7 +4414,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testLoadRuleListForStateFullResults() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -4545,7 +4468,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testLoadArchivedAssetsPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
@@ -4602,7 +4524,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testLoadArchivedAssetsFullResults() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -4648,7 +4569,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testLoadInboxPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
@@ -4712,7 +4632,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testLoadInboxFullResults() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -4766,7 +4685,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testSnapshotDiffPagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
@@ -4896,7 +4814,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testSnapshotDiffFullResults() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -5038,7 +4955,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testFindAssetPagePagedResults() throws Exception {
 
         final int PAGE_SIZE = 2;
@@ -5097,7 +5013,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testFindAssetPageFullResults() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -5144,7 +5059,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("until repository locking issue is resolved")
     public void testFindAssetPageUnregisteredAssetFormats() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         PackageItem packageItem = impl.getRulesRepository().createPackage( "testFindAssetPageUnregisteredAssetFormats",
@@ -5177,7 +5091,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testManageUserPermissions() throws Exception {
         ServiceImplementation serv = getServiceImplementation();
         Map<String, List<String>> perms = new HashMap<String, List<String>>();
@@ -5190,7 +5103,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testImportSampleRepository() throws Exception {
         ServiceImplementation serv = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -5207,7 +5119,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     //GUVNOR-296
     @Test
-    @Ignore
     public void testHistoryAfterReImportSampleRepository() throws Exception {
 
         QueryPageRequest request;
@@ -5277,7 +5188,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testAddCategories() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -5316,7 +5226,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testSnapshotDiff() throws Exception {
         RepositoryService impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -5446,7 +5355,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore
     public void testWorkspaces() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         impl.createWorkspace( "testWorkspaces1" );

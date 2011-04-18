@@ -47,7 +47,7 @@ public class ScalabilityTest extends RepositoryTestCase {
     private static final int NUM = 5000;
     private RulesRepository repo;
 
-    @Test @Ignore
+    @Test
     public void testRun() throws Exception {
         Properties properties = new Properties();
         properties.put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY, "./scalabilityTestRepo");

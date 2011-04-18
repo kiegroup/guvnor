@@ -60,7 +60,6 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
     }
 /*
     @Test
-    @Ignore
     public void testLoadingRules() throws Exception {
         RulesRepository repo = getRulesRepository();
 

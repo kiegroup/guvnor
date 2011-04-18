@@ -484,7 +484,6 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("Keeps failing, not sure what it tests")
     public void testHeadOOME() throws Exception {
         RulesRepository repo = getRulesRepository();
         PackageItem pkg = repo.createPackage( "testHeadOOME",

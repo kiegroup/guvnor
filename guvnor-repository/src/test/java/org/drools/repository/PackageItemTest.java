@@ -52,7 +52,7 @@ public class PackageItemTest extends RepositoryTestCase {
         assertEquals(prevSize + 1, list.size());
     }
 
-    @Test @Ignore
+    @Test
     public void testAddPackageProperties() throws Exception {
         RulesRepository repo = getRepo();
         PackageItem item = repo.createPackage( "testListPackages1", "lalalala" );
