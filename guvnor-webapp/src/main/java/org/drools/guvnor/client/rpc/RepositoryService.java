@@ -155,14 +155,6 @@ public interface RepositoryService
      * return custom selector names
      */
     public String[] getCustomSelectors() throws SerializationException;
-   
-    /**
-     * This will list the last N log entryies logged by the server. For
-     * debugging purposes in the GUI.
-     * 
-     * @deprecated in favour of {@link showLogEntries()}
-     */
-    public LogEntry[] showLog();
 
     /**
      * This will list log entries logged by the server. For debugging purposes

@@ -644,10 +644,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return getService().showLog( p0 );
     }
 
-    public org.drools.guvnor.client.rpc.LogEntry[] showLog() {
-        return getService().showLog();
-    }
-
     public void cleanLog() {
         getService().cleanLog();
     }

@@ -462,16 +462,6 @@ public class ServiceImplementation
         return repositoryPackageOperations.listRulesInPackage( RulesRepository.RULE_GLOBAL_AREA );
     }
 
-    /**
-     * @deprecated in favour of {@link showLog(PageRequest)}
-     */
-    @WebRemote
-    public LogEntry[] showLog() {
-        serviceSecurity.checkSecurityIsAdmin();
-
-        return LoggingHelper.getMessages();
-    }
-
     @WebRemote
     public PageResponse<LogPageRow> showLog(PageRequest request) {
         if ( request == null ) {

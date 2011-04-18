@@ -49,7 +49,6 @@ public interface RepositoryServiceAsync {
     public void loadSuggestionCompletionEngine(java.lang.String p0, AsyncCallback<org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine> cb);
     public void getCustomSelectors(AsyncCallback<java.lang.String[]> cb);
     public void showLog(org.drools.guvnor.client.rpc.PageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.LogPageRow>> cb);
-    public void showLog(AsyncCallback<org.drools.guvnor.client.rpc.LogEntry[]> cb);
     public void cleanLog(AsyncCallback cb);
     public void loadDropDownExpression(java.lang.String[] p0, java.lang.String p1, AsyncCallback<java.lang.String[]> cb);
     public void queryFullText(org.drools.guvnor.client.rpc.QueryPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.QueryPageRow>> cb);
