@@ -30,6 +30,8 @@ import org.drools.io.Resource;
 
 public class BusinessRuleProviderDefaultImpl implements Service, BusinessRuleProvider {
 
+    private boolean hasDSLSentences = false;
+    
     /*
      * (non-Javadoc)
      *
@@ -40,7 +42,12 @@ public class BusinessRuleProviderDefaultImpl implements Service, BusinessRulePro
     public Reader getKnowledgeReader(Resource ruleResource) throws IOException {
         String brl = loadBrlFile(ruleResource.getReader());
         RuleModel model = BRXMLPersistence.getInstance().unmarshal(brl);
+        this.hasDSLSentences=model.hasDSLSentences();
         return new StringReader(BRDRLPersistence.getInstance().marshal(model));
+    }
+    
+    public boolean hasDSLSentences() {
+        return hasDSLSentences;
     }
 
     private String loadBrlFile(final Reader drl) throws IOException {

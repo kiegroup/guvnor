@@ -1181,6 +1181,7 @@ public class RulesRepository {
                                                  RepositoryFilter filter) throws RepositoryException {
         int rows = 0;
         boolean hasNext = false;
+        long currentPosition = 0;
         List<AssetItem> results = new ArrayList<AssetItem>();
 
         PropertyIterator it = n.getReferences();
@@ -1207,6 +1208,7 @@ public class RulesRepository {
                         if ( numRowsInPage > 0 ) {
                             if ( numRowsInPage <= numRowsToReturn || numRowsToReturn == -1 ) {
                                 results.add( ai );
+                                currentPosition = rows;
                             }
                             hasNext = (numRowsInPage > numRowsToReturn && numRowsToReturn != -1);
                         }
@@ -1216,7 +1218,7 @@ public class RulesRepository {
         }
 
         return new AssetItemPageResult( results,
-                                        rows - 1,
+                                        currentPosition,
                                         hasNext );
     }
 

@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -27,14 +25,15 @@ import org.junit.Test;
 
 public class EditorLauncherTest {
 
-
     @Test
-    public void testIcons()  {
+    @Ignore("EditorLauncher has a static call to GWT.create(..) and hence cannot be a standalone JUnit test")
+    public void testIcons() {
 
-        assertNotNull(EditorLauncher.TYPE_IMAGES);
-        assertNotNull(EditorLauncher.getAssetFormatIcon( "drl" ));
-        assertNotNull(EditorLauncher.getAssetFormatIcon( "JKLGFJSLKGJFDLKGJFKLDJGLFKDJGKLFD" ));
-        assertEquals("model_asset.gif", EditorLauncher.getAssetFormatIcon( AssetFormats.MODEL ));
+        assertNotNull( EditorLauncher.TYPE_IMAGES );
+        assertNotNull( EditorLauncher.getAssetFormatIcon( "drl" ) );
+        assertNotNull( EditorLauncher.getAssetFormatIcon( "JKLGFJSLKGJFDLKGJFKLDJGLFKDJGKLFD" ) );
+        assertEquals( "model_asset.gif",
+                      EditorLauncher.getAssetFormatIcon( AssetFormats.MODEL ) );
     }
-    
+
 }
