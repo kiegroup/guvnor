@@ -80,7 +80,7 @@ public class TestEnvironmentSessionHelper {
                         System.err.println( "Failed to get the repository session: Retrying... " );
                         re.printStackTrace();
                         
-                        System.err.println( "Atemptng to shutdown repository... " );
+                        System.err.println( "Attemptng to shutdown repository... " );
                         shutdown();
                         repository = config.getJCRRepository();
                         
