@@ -74,12 +74,16 @@ public class TestEnvironmentSessionHelper {
                     try {
                         testSession = repository.login( new SimpleCredentials( "alan_parsons",
                                                                                "password".toCharArray() ) );
+                        
                         retries = 0;
                     } catch ( RepositoryException re ) {
                         System.err.println( "Failed to get the repository session: Retrying... " );
                         re.printStackTrace();
+                        
                         System.err.println( "Atemptng to shutdown repository... " );
                         shutdown();
+                        repository = config.getJCRRepository();
+                        
                         retries--;
                         try {
                             Thread.sleep( 500 );
