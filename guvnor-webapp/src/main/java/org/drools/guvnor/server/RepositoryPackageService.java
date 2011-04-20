@@ -164,15 +164,11 @@ public class RepositoryPackageService
         while ( pkit.hasNext() ) {
             PackageItem pkg = pkit.next();
             try {
-                BuilderResult res = this.buildPackage( pkg.getUUID(),
-                                                       true );
-                if ( res != null ) {
+                BuilderResult builderResult = this.buildPackage( pkg.getUUID(),
+                                                                 true );
+                if ( builderResult != null ) {
                     errs.append( "Unable to build package name [" + pkg.getName() + "]\n" );
-                    StringBuilder buf = new StringBuilder();
-                    for ( int i = 0; i < res.getLines().size(); i++ ) {
-                        buf.append( res.getLines().get( i ).toString() );
-                        buf.append( '\n' );
-                    }
+                    StringBuilder buf = createStringBuilderFrom( builderResult );
                     log.warn( buf.toString() );
                 }
             } catch ( Exception e ) {
@@ -184,8 +180,17 @@ public class RepositoryPackageService
 
         if ( errs.toString().length() > 0 ) {
             //throw new DetailedSerializationException( "Unable to rebuild all packages.",
-                                                      //errs.toString() );
+            //errs.toString() );
         }
+    }
+
+    private StringBuilder createStringBuilderFrom(BuilderResult res) {
+        StringBuilder buf = new StringBuilder();
+        for ( int i = 0; i < res.getLines().size(); i++ ) {
+            buf.append( res.getLines().get( i ).toString() );
+            buf.append( '\n' );
+        }
+        return buf;
     }
 
     @WebRemote
@@ -197,10 +202,10 @@ public class RepositoryPackageService
 
     @WebRemote
     public String copyPackage(String sourcePackageName,
-                            String destPackageName) throws SerializationException {
+                              String destPackageName) throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
         return repositoryPackageOperations.copyPackage( sourcePackageName,
-                                                 destPackageName );
+                                                        destPackageName );
     }
 
     @WebRemote
@@ -378,11 +383,7 @@ public class RepositoryPackageService
                 BuilderResult res = this.buildPackage( snap.getUUID(),
                                                        true );
                 if ( res != null ) {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for ( int i = 0; i < res.getLines().size(); i++ ) {
-                        stringBuilder.append( res.getLines().get( i ).toString() );
-                        stringBuilder.append( '\n' );
-                    }
+                    StringBuilder stringBuilder = createStringBuilderFrom( res );
                     throw new DetailedSerializationException( "Unable to rebuild snapshot [" + snapName,
                                                               stringBuilder.toString() + "]" );
                 }
@@ -461,7 +462,7 @@ public class RepositoryPackageService
         PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
         return item.getDependencies();
     }
-    
+
     private JarInputStream typesForModel(List<String> res,
                                          AssetItem asset) throws IOException {
         JarInputStream jis;
