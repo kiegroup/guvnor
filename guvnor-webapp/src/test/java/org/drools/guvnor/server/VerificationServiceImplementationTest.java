@@ -74,7 +74,7 @@ public class VerificationServiceImplementationTest extends GuvnorTestBase {
         assertNotNull( report );
         assertEquals( 0,
                       report.errors.length );
-        assertEquals( 1,
+        assertEquals( 7,
                       report.warnings.length );
         assertEquals( 1,
                       report.notes.length );
