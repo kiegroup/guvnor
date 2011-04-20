@@ -76,9 +76,9 @@ public class RepositoryAssetService
 
     private static final LoggingHelper log                       = LoggingHelper.getLogger( RepositoryAssetService.class );
 
-    private ServiceSecurity            serviceSecurity           = new ServiceSecurity();
+    private final ServiceSecurity            serviceSecurity           = new ServiceSecurity();
 
-    private RepositoryAssetOperations  repositoryAssetOperations = new RepositoryAssetOperations();
+    private final RepositoryAssetOperations  repositoryAssetOperations = new RepositoryAssetOperations();
 
     @Create
     public void create() {

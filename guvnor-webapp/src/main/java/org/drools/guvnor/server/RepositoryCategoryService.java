@@ -41,8 +41,8 @@ public class RepositoryCategoryService
 
     private static final long            serialVersionUID             = 12365;
 
-    private ServiceSecurity              serviceSecurity              = new ServiceSecurity();
-    private RepositoryCategoryOperations repositoryCategoryOperations = new RepositoryCategoryOperations();
+    private final ServiceSecurity              serviceSecurity              = new ServiceSecurity();
+    private final RepositoryCategoryOperations repositoryCategoryOperations = new RepositoryCategoryOperations();
 
     @Create
     public void create() {
