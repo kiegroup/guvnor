@@ -41,6 +41,8 @@ public class RestTestingBase extends GuvnorTestBase {
 
     @BeforeClass
     public static void Initialize() {
+    	RestTestingBase b = new RestTestingBase();
+    	b.setUpGuvnorTestBase();
 /*        try {
             ResteasyDeployment deployment = EmbeddedContainer.start();
             dispatcher = deployment.getDispatcher();
