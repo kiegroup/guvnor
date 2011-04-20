@@ -329,7 +329,7 @@ public class RepositoryPackageOperations {
         PackageItem item = getRulesRepository().loadPackage( data.name );
 
         // If package is being unarchived.
-        boolean unarchived = (data.archived == false && item.isArchived() == true);
+        boolean unarchived = (!data.archived && item.isArchived());
         Calendar packageLastModified = item.getLastModified();
 
         DroolsHeader.updateDroolsHeader( data.header,
@@ -370,26 +370,26 @@ public class RepositoryPackageOperations {
     private static KeyValueTO convertMapToCsv(final Map map) {
         StringBuilder keysBuilder = new StringBuilder();
         StringBuilder valuesBuilder = new StringBuilder();
-        for ( Iterator i = map.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) i.next();
-            if ( keysBuilder.length() > 0 ) {
-                keysBuilder.append( "," );
+        for (Object o : map.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
+            if (keysBuilder.length() > 0) {
+                keysBuilder.append(",");
             }
 
-            if ( valuesBuilder.length() > 0 ) {
-                valuesBuilder.append( "," );
+            if (valuesBuilder.length() > 0) {
+                valuesBuilder.append(",");
             }
 
-            keysBuilder.append( entry.getKey() );
-            valuesBuilder.append( entry.getValue() );
+            keysBuilder.append(entry.getKey());
+            valuesBuilder.append(entry.getValue());
         }
         return new KeyValueTO( keysBuilder.toString(),
                                valuesBuilder.toString() );
     }
 
     private static class KeyValueTO {
-        private String keys;
-        private String values;
+        private final String keys;
+        private final String values;
 
         public KeyValueTO(final String keys,
                           final String values) {

@@ -38,7 +38,7 @@ import org.jboss.seam.web.Session;
  * TODO: convert to executor architecture. Only one instance needed.
  */
 public class Backchannel {
-    private static Backchannel instance = new Backchannel();
+    private static final Backchannel instance = new Backchannel();
 
     public static Backchannel getInstance() {
         return instance;
@@ -47,7 +47,7 @@ public class Backchannel {
     final List<CountDownLatch>            waiting = Collections.synchronizedList( new ArrayList<CountDownLatch>() );
     final Map<String, List<PushResponse>> mailbox = Collections.synchronizedMap( new HashMap<String, List<PushResponse>>() );
 
-    private Timer                         timer;
+    private final Timer                         timer;
 
     private Backchannel() {
         //using a timer to make sure awaiting subs are flushed every now and then, otherwise web threads could be consumed.

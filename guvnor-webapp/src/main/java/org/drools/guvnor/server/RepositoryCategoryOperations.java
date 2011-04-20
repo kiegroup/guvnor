@@ -64,16 +64,15 @@ public class RepositoryCategoryOperations {
 
         CategoryItem item = getRulesRepository().loadCategory( categoryPath );
         List children = item.getChildTags();
-        for ( int i = 0; i < children.size(); i++ ) {
-            String childCategoryName = ((CategoryItem) children.get( i )).getName();
-            if ( filter.acceptNavigate( categoryPath,
-                                        childCategoryName ) ) {
-                resultList.add( childCategoryName );
+        for (Object aChildren : children) {
+            String childCategoryName = ((CategoryItem) aChildren).getName();
+            if (filter.acceptNavigate(categoryPath,
+                    childCategoryName)) {
+                resultList.add(childCategoryName);
             }
         }
 
-        String[] resultArr = resultList.toArray( new String[resultList.size()] );
-        return resultArr;
+        return resultList.toArray( new String[resultList.size()] );
     }
 
     protected Boolean createCategory(String path,
@@ -127,7 +126,7 @@ public class RepositoryCategoryOperations {
 
     }
 
-    protected PageResponse<CategoryPageRow> loadRuleListForCategories(CategoryPageRequest request) throws SerializationException {
+    protected PageResponse<CategoryPageRow> loadRuleListForCategories(CategoryPageRequest request)  {
 
         // Do query
         long start = System.currentTimeMillis();

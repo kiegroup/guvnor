@@ -100,7 +100,7 @@ public class RepositoryAssetOperations {
     }
 
     protected BuilderResult buildAsset(RuleAsset asset)
-                                                       throws SerializationException {
+                                                       {
         BuilderResult result = new BuilderResult();
 
         try {
@@ -160,7 +160,7 @@ public class RepositoryAssetOperations {
     }
 
     protected TableDataResult loadItemHistory(final VersionableItem item)
-                                                                         throws SerializationException {
+                                                                         {
         Iterator<VersionableItem> it = item.getHistory();
         //AssetHistoryIterator it = assetItem.getHistory();
 
@@ -185,8 +185,8 @@ public class RepositoryAssetOperations {
             long versionNumber = historical.getVersionNumber();
             if ( isHistory( item,
                             versionNumber ) ) {
-                result.add( createHistoricalRow( result,
-                                                 historical ) );
+                result.add( createHistoricalRow(
+                        historical ) );
             }
         }
 
@@ -203,8 +203,7 @@ public class RepositoryAssetOperations {
         return versionNumber != 0;
     }
 
-    private TableDataRow createHistoricalRow(List<TableDataRow> result,
-                                             VersionableItem historical) {
+    private TableDataRow createHistoricalRow(VersionableItem historical) {
         final DateFormat dateFormatter = DateFormat.getInstance();
         TableDataRow tableDataRow = new TableDataRow();
         tableDataRow.id = historical.getVersionSnapshotUUID();
@@ -226,7 +225,7 @@ public class RepositoryAssetOperations {
      */
     protected TableDataResult loadArchivedAssets(int skip,
                                                  int numRows)
-                                                             throws SerializationException {
+                                                             {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
         RepositoryFilter filter = new AssetItemFilter();
 
@@ -274,7 +273,7 @@ public class RepositoryAssetOperations {
         return table;
     }
 
-    protected PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) throws SerializationException {
+    protected PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request)  {
         // Do query
         long start = System.currentTimeMillis();
         AssetItemIterator iterator = getRulesRepository().findArchivedAssets();
@@ -317,7 +316,7 @@ public class RepositoryAssetOperations {
                                          int skip,
                                          int numRows,
                                          String tableConfig)
-                                                            throws SerializationException {
+                                                            {
         long start = System.currentTimeMillis();
         PackageItem pkg = getRulesRepository().loadPackageByUUID( packageUuid );
         AssetItemIterator it;
@@ -466,7 +465,7 @@ public class RepositoryAssetOperations {
     }
 
     protected PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request)
-                                                                                throws SerializationException {
+                                                                                {
         log.debug( "Finding asset page of packageUuid ("
                    + request.getPackageUuid() + ")" );
         long start = System.currentTimeMillis();
@@ -516,7 +515,7 @@ public class RepositoryAssetOperations {
         return response;
     }
 
-    protected PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest request) throws SerializationException {
+    protected PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest request)  {
         // Setup parameters
         String search = request.getSearchText().replace( '*',
                                                          '%' );

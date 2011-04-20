@@ -129,10 +129,10 @@ public class ServiceImplementation
     /**
      * This is used for pushing messages back to the client.
      */
-    private ServiceSecurity             serviceSecurity             = new ServiceSecurity();
+    private final ServiceSecurity             serviceSecurity             = new ServiceSecurity();
 
-    private RepositoryAssetOperations   repositoryAssetOperations   = new RepositoryAssetOperations();
-    private RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
+    private final RepositoryAssetOperations   repositoryAssetOperations   = new RepositoryAssetOperations();
+    private final RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
 
     /* This is called also by Seam AND Hosted mode */
     @Create
@@ -432,11 +432,11 @@ public class ServiceImplementation
 
         Map<String, String[]> q = new HashMap<String, String[]>() {
             {
-                for ( int i = 0; i < qr.length; i++ ) {
-                    String vals = (qr[i].valueList == null) ? "" : qr[i].valueList.trim();
-                    if ( vals.length() > 0 ) {
-                        put( qr[i].attribute,
-                             vals.split( ",\\s?" ) );
+                for (MetaDataQuery aQr : qr) {
+                    String vals = (aQr.valueList == null) ? "" : aQr.valueList.trim();
+                    if (vals.length() > 0) {
+                        put(aQr.attribute,
+                                vals.split(",\\s?"));
                     }
                 }
             }
@@ -630,13 +630,14 @@ public class ServiceImplementation
     public String[] loadDropDownExpression(String[] valuePairs,
                                            String expression) {
         Map<String, String> context = new HashMap<String, String>();
-        for ( int i = 0; i < valuePairs.length; i++ ) {
-            if ( valuePairs[i] == null ) {
+
+        for (String valuePair : valuePairs) {
+            if (valuePair == null) {
                 return new String[0];
             }
-            String[] pair = valuePairs[i].split( "=" );
-            context.put( pair[0],
-                         pair[1] );
+            String[] pair = valuePair.split("=");
+            context.put(pair[0],
+                    pair[1]);
         }
         // first interpolate the pairs
         expression = (String) TemplateRuntime.eval( expression,
@@ -857,8 +858,7 @@ public class ServiceImplementation
      * Check to see if app context is active (not in hosted)
      */
     public Boolean isHostedMode() {
-        Boolean hm = Contexts.isApplicationContextActive() ? Boolean.FALSE : Boolean.TRUE;
-        return hm;
+        return Contexts.isApplicationContextActive() ? Boolean.FALSE : Boolean.TRUE;
     }
 
     @WebRemote
@@ -1044,11 +1044,9 @@ public class ServiceImplementation
                                                   AssetItem item,
                                                   String roleType) {
         List<CategoryItem> tempCateList = item.getCategories();
-        for ( Iterator<CategoryItem> i = tempCateList.iterator(); i.hasNext(); ) {
-            CategoryItem categoryItem = i.next();
-
-            if ( filter.accept( categoryItem.getName(),
-                                roleType ) ) {
+        for (CategoryItem categoryItem : tempCateList) {
+            if (filter.accept(categoryItem.getName(),
+                    roleType)) {
                 return true;
             }
         }
