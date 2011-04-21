@@ -20,50 +20,43 @@ import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
-import org.apache.abdera.model.Link;
 import org.apache.abdera.parser.Parser;
-import org.apache.abdera.protocol.client.AbderaClient;
-import org.apache.abdera.protocol.client.ClientResponse;
+import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-//import org.jboss.resteasy.plugins.providers.atom.AbderaEntryProvider;
-//import org.jboss.resteasy.plugins.providers.atom.AbderaFeedProvider;
 import org.junit.*;
+import org.mvel2.util.StringAppender;
 
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-//import static org.jboss.resteasy.test.TestPortProvider.generateBaseUrl;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-public class AssetPackageResourceTest extends RestTestingBase {
+public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
     private Abdera abdera = new Abdera();
+    private static RestTestingBase restTestingBase;
 
-    @Before @Override
-    public void setUpGuvnorTestBase() {
-        super.setUpGuvnorTestBase();
-        //dispatcher.getRegistry().addPerRequestResource(PackageResource.class);
-        //dispatcher.getProviderFactory().registerProvider(AbderaEntryProvider.class);
-        //dispatcher.getProviderFactory().registerProvider(AbderaFeedProvider.class);
+    @BeforeClass
+    public static void startServers() throws Exception {
+       	restTestingBase = new RestTestingBase();
+       	restTestingBase.setup();       	
 
-        ServiceImplementation impl = getServiceImplementation();
+        assertTrue("server did not launch correctly",
+                   launchServer(CXFJAXRSServer.class, true));
+
+        ServiceImplementation impl = restTestingBase.getServiceImplementation();
         //Package version 1(Initial version)
         PackageItem pkg = impl.getRulesRepository().createPackage( "restPackage1",
                                                                    "this is package restPackage1" );
@@ -118,11 +111,15 @@ public class AssetPackageResourceTest extends RestTestingBase {
         rule3.updateContent( "declare Album2\n genre2: String \n end" );
         rule3.checkin( "version 2" );
         //impl.buildPackage(pkg.getUUID(), true);
-        pkg.checkin( "version3" );
+        pkg.checkin( "version3" );            
+    }
+    
+    @AfterClass
+    public static void tearDown() {
+    	restTestingBase.tearDownGuvnorTestBase();
     }
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetAssetsAsAtom() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -135,7 +132,6 @@ public class AssetPackageResourceTest extends RestTestingBase {
     }
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetAssetsAsJaxB() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -148,8 +144,7 @@ public class AssetPackageResourceTest extends RestTestingBase {
     }
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
-    public void testGetAssetsAsJson() throws Exception {
+     public void testGetAssetsAsJson() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
@@ -161,7 +156,6 @@ public class AssetPackageResourceTest extends RestTestingBase {
     }
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetAssetAsAtom() throws Exception {   	
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -196,7 +190,6 @@ public class AssetPackageResourceTest extends RestTestingBase {
     }
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetAssetAsJaxB() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -209,7 +202,6 @@ public class AssetPackageResourceTest extends RestTestingBase {
     }
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetAssetAsJson() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -222,7 +214,6 @@ public class AssetPackageResourceTest extends RestTestingBase {
     }
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetAssetSource() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/source");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -237,7 +228,6 @@ public class AssetPackageResourceTest extends RestTestingBase {
     }
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetAssetBinary() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/binary");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -250,7 +240,6 @@ public class AssetPackageResourceTest extends RestTestingBase {
     }
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testUpdateAssetFromAtom() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -314,4 +303,30 @@ public class AssetPackageResourceTest extends RestTestingBase {
     public void testUpdateAssetFromJson() throws Exception {
         //TODO: implement test
     }
+    
+    public String generateBaseUrl() {
+    	return "http://localhost:9080";
+    }
+    public static String GetContent (InputStream is) throws IOException {
+        StringAppender ret = new StringAppender();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            ret.append(line + "\n");
+        }
+
+        return ret.toString();
+    }
+    
+    public static String GetContent (HttpURLConnection connection) throws IOException {
+        StringAppender ret = new StringAppender();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            ret.append(line + "\n");
+        }
+
+        return ret.toString();
+    }    
+
 }

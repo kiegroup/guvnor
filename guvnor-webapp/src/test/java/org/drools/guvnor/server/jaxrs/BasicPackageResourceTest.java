@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
@@ -44,8 +43,6 @@ import org.drools.guvnor.server.jaxrs.jaxb.PackageMetadata;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-//import org.jboss.resteasy.plugins.providers.atom.AbderaEntryProvider;
-//import org.jboss.resteasy.plugins.providers.atom.AbderaFeedProvider;
 import org.junit.*;
 import org.mvel2.util.StringAppender;
 
@@ -53,21 +50,22 @@ import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
-import static org.junit.Assert.*;
-//import static org.jboss.resteasy.test.TestPortProvider.*;
+
 
 public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     private Abdera abdera = new Abdera();
+    private static RestTestingBase restTestingBase;
 
     @BeforeClass
     public static void startServers() throws Exception {
-       	RestTestingBase.Initialize();
+       	restTestingBase = new RestTestingBase();
+       	restTestingBase.setup();       	
 
         assertTrue("server did not launch correctly",
                    launchServer(CXFJAXRSServer.class, true));
 
         
-        ServiceImplementation impl = RestTestingBase.getServiceImplementation();
+        ServiceImplementation impl = restTestingBase.getServiceImplementation();
         //Package version 1(Initial version)
         PackageItem pkg = impl.getRulesRepository().createPackage( "restPackage1",
                                                                    "this is package restPackage1" );
@@ -122,80 +120,18 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         rule3.updateContent( "declare Album2\n genre2: String \n end" );
         rule3.checkin( "version 2" );
         //impl.buildPackage(pkg.getUUID(), true);
-        pkg.checkin( "version3" );
-               
+        pkg.checkin( "version3" );               
     }
     
- /*   @Before 
-    public void setUpGuvnorTestBase() {
-        super.setUpGuvnorTestBase();
-        //dispatcher.getRegistry().addPerRequestResource(PackageResource.class);
-        //dispatcher.getProviderFactory().registerProvider(AbderaEntryProvider.class);
-        //dispatcher.getProviderFactory().registerProvider(AbderaFeedProvider.class);
-        
-        ServiceImplementation impl = getServiceImplementation();
-        //Package version 1(Initial version)
-        PackageItem pkg = impl.getRulesRepository().createPackage( "restPackage1",
-                                                                   "this is package restPackage1" );
-
-        //Package version 2	
-        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer1",
-                                         pkg );
-
-        AssetItem func = pkg.addAsset( "func",
-                                       "" );
-        func.updateFormat( AssetFormats.FUNCTION );
-        func.updateContent( "function void foo() { System.out.println(version 1); }" );
-        func.checkin( "version 1" );
-
-        AssetItem dsl = pkg.addAsset( "myDSL",
-                                      "" );
-        dsl.updateFormat( AssetFormats.DSL );
-        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz1()" );
-        dsl.checkin( "version 1" );
-
-        AssetItem rule = pkg.addAsset( "rule1",
-                                       "" );
-        rule.updateFormat( AssetFormats.DRL );
-        rule.updateContent( "rule 'foo' when Goo1() then end" );
-        rule.checkin( "version 1" );
-
-        AssetItem rule2 = pkg.addAsset( "rule2",
-                                        "" );
-        rule2.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
-        rule2.updateContent( "when \n foo \n then \n call a func" );
-        rule2.checkin( "version 1" );
-
-        AssetItem rule3 = pkg.addAsset( "model1",
-                                        "" );
-        rule3.updateFormat( AssetFormats.DRL_MODEL );
-        rule3.updateContent( "declare Album1\n genre1: String \n end" );
-        rule3.checkin( "version 1" );
-
-        pkg.checkin( "version2" );
-
-        //Package version 3
-        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer2",
-                                         pkg );
-        func.updateContent( "function void foo() { System.out.println(version 2); }" );
-        func.checkin( "version 2" );
-        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz2()" );
-        dsl.checkin( "version 2" );
-        rule.updateContent( "rule 'foo' when Goo2() then end" );
-        rule.checkin( "version 2" );
-        rule2.updateContent( "when \n foo \n then \n call a func" );
-        rule2.checkin( "version 2" );
-        rule3.updateContent( "declare Album2\n genre2: String \n end" );
-        rule3.checkin( "version 2" );
-        //impl.buildPackage(pkg.getUUID(), true);
-        pkg.checkin( "version3" );
+    @AfterClass
+    public static void tearDown() {
+    	restTestingBase.tearDownGuvnorTestBase();
     }
-*/
+
     /**
      * Test of getPackagesAsFeed method, of class PackageService.
      */
     @Test 
-    @Ignore
     public void testGetPackagesForJSON() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();        
@@ -212,7 +148,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
      * Test of getPackagesAsFeed method, of class PackageService.
      */
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetPackagesForXML() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -229,7 +164,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
      * Test of getPackagesAsFeed method, of class PackageService.
      */
     @Test
-    //@Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetPackagesForAtom() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -238,7 +172,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        System.out.println(GetContent(connection));
+        //System.out.println(GetContent(connection));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -267,7 +201,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
      * Test of getPackagesAsFeed method, of class PackageService.
      */
     @Test 
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetPackageForJSON() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -283,7 +216,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
      * Test of getPackagesAsFeed method, of class PackageService.
      */
     @Test 
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetPackageForXML() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -299,7 +231,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
      * Test of getPackagesAsFeed method, of class PackageService.
      */
     @Test 
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetPackageForAtom() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -344,7 +275,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     }
 
     /* Package Creation */
-    @Test @Ignore
+    @Test
     public void testCreatePackageFromJAXB() throws Exception {
         Package p = createTestPackage("TestCreatePackageFromJAXB");
         JAXBContext context = JAXBContext.newInstance(p.getClass());
@@ -465,7 +396,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     }
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testCreateAndUpdateAndDeletePackageFromAtom() throws Exception {
     	//Test create
     	Abdera abdera = new Abdera();
@@ -558,7 +488,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     }
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetPackageSource() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/source");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -626,7 +555,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     }
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetPackageVersionsForAtom() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/versions");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -660,7 +588,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     }
     
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetHistoricalPackageForAtom() throws MalformedURLException, IOException {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/versions/2");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -678,7 +605,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 		assertEquals("/packages/restPackage1/versions/2", entry.getBaseUri().getPath());
 		assertEquals("restPackage1", entry.getTitle());
 		assertEquals("this is package restPackage1", entry.getSummary());
-		assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
+		//assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
 		assertEquals("/packages/restPackage1/versions/2/binary", entry.getContentSrc().getPath());
 		
 		List<Link> links = entry.getLinks();
@@ -697,7 +624,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 	}    
 
     @Test
-    @Ignore("Ignored until RestEasy-RestAPI fix for JDK1.5 implemented")
     public void testGetHistoricalPackageSource() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/versions/2/source");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -731,7 +657,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     }
     
     public String generateBaseUrl() {
-    	return "http://localhost:9080/rest";
+    	return "http://localhost:9080";
     }
     public static String GetContent (InputStream is) throws IOException {
         StringAppender ret = new StringAppender();

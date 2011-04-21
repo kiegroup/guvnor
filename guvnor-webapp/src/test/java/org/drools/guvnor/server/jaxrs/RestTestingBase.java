@@ -16,38 +16,18 @@
 package org.drools.guvnor.server.jaxrs;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.jaxrs.jaxb.*;
-import org.drools.guvnor.server.jaxrs.jaxb.Package;
-//import org.jboss.resteasy.core.Dispatcher;
-//import org.jboss.resteasy.spi.ResteasyDeployment;
-//import org.jboss.resteasy.test.EmbeddedContainer;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.mvel2.util.StringAppender;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.util.Date;
-import java.util.UUID;
-
 
 public class RestTestingBase extends GuvnorTestBase {
-    @BeforeClass
-    public static void Initialize() {
-    	RestTestingBase b = new RestTestingBase();
-    	b.setUpGuvnorTestBase();
+	
+    public void setup() {
+    	this.setUpGuvnorTestBase();
     }
 
-    @AfterClass
-    public static void Destroy() {
+    public void destroy() {
+    	this.tearDownGuvnorTestBase();
     }
     
-    public static String GetContent (InputStream is) throws IOException {
+/*    public static String GetContent (InputStream is) throws IOException {
         StringAppender ret = new StringAppender();
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         String line;
@@ -86,7 +66,7 @@ public class RestTestingBase extends GuvnorTestBase {
         p.setTitle(title);
         p.setDescription("A simple test package with 0 assets.");
         return p;
-    }
+    }*/
     
     //Put here to make the code compile. 
     public String generateBaseUrl() {

@@ -262,7 +262,7 @@ public class PackageResource extends Resource {
         feed.setTitle(p.getTitle() + "-asset-feed");
         Iterator<AssetItem> iter = p.getAssets();
         while (iter.hasNext())
-            feed.getEntries().add(ToAssetEntryAbdera(iter.next(), uriInfo));
+        	feed.addEntry(ToAssetEntryAbdera(iter.next(), uriInfo));
         return feed;
     }
 

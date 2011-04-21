@@ -19,6 +19,7 @@ package org.drools.guvnor.server.jaxrs;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Content.Type;
+import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.guvnor.server.jaxrs.jaxb.AssetMetadata;
@@ -30,14 +31,10 @@ import org.drools.repository.PackageItem;
 
 import java.net.URI;
 import java.util.*;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 
-/*import org.jboss.resteasy.plugins.providers.atom.Content;
-import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Link;*/
 
 public class Translator {
     public static String NS = "";
@@ -118,7 +115,7 @@ public class Translator {
         return ret;
     }
     
-    public static org.apache.abdera.model.Entry ToPackageEntryAbdera(PackageItem p, UriInfo uriInfo) {
+    public static Entry ToPackageEntryAbdera(PackageItem p, UriInfo uriInfo) {
         UriBuilder base;
         if(p.isHistoricalVersion()) {
         	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
@@ -210,7 +207,7 @@ public class Translator {
         
         return e;
     }*/
-    public static org.apache.abdera.model.Entry ToAssetEntryAbdera(AssetItem a, UriInfo uriInfo) {
+    public static Entry ToAssetEntryAbdera(AssetItem a, UriInfo uriInfo) {
         UriBuilder base;
         if(a.isHistoricalVersion()) {
         	base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path("versions").path(Long.toString(a.getVersionNumber()));
