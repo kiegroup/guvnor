@@ -3870,7 +3870,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertEquals( PAGE_SIZE,
                       responsePage2.getStartRowIndex() );
-        assertEquals( 1,
+        //alan_parson is implicit when running full test suite
+        assertEquals( 2,
                       responsePage2.getPageRowList().size() );
         assertTrue( responsePage2.isLastPage() );
 
@@ -3900,7 +3901,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertEquals( 0,
                       response.getStartRowIndex() );
-        assertEquals( 3,
+        //alan_parson is implicit when running full test suite
+        assertEquals( 4,
                       response.getPageRowList().size() );
 
         assertTrue( response.isLastPage() );
