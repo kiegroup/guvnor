@@ -37,27 +37,14 @@ import java.util.UUID;
 
 
 public class RestTestingBase extends GuvnorTestBase {
-    //protected static Dispatcher dispatcher;
-
     @BeforeClass
     public static void Initialize() {
     	RestTestingBase b = new RestTestingBase();
     	b.setUpGuvnorTestBase();
-/*        try {
-            ResteasyDeployment deployment = EmbeddedContainer.start();
-            dispatcher = deployment.getDispatcher();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } */      
     }
 
     @AfterClass
     public static void Destroy() {
-/*        try {
-            EmbeddedContainer.stop();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
     }
     
     public static String GetContent (InputStream is) throws IOException {

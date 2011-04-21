@@ -65,9 +65,9 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         assertTrue("server did not launch correctly",
                    launchServer(CXFJAXRSServer.class, true));
-        //RestTestingBase.Initialize();
-        /*
-        ServiceImplementation impl = getServiceImplementation();
+
+        
+        ServiceImplementation impl = RestTestingBase.getServiceImplementation();
         //Package version 1(Initial version)
         PackageItem pkg = impl.getRulesRepository().createPackage( "restPackage1",
                                                                    "this is package restPackage1" );
@@ -123,8 +123,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         rule3.checkin( "version 2" );
         //impl.buildPackage(pkg.getUUID(), true);
         pkg.checkin( "version3" );
-        */
-       
+               
     }
     
  /*   @Before 
@@ -239,7 +238,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        System.out.println(GetContent(connection));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);

@@ -128,7 +128,7 @@ public abstract class GuvnorTestBase {
     // Helper methods
     // ************************************************************************
 
-    protected ServiceImplementation getServiceImplementation() {
+    public static ServiceImplementation getServiceImplementation() {
         return (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
     }
 

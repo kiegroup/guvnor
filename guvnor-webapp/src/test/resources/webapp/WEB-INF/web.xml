@@ -36,7 +36,7 @@
 
  <servlet-mapping>
    <servlet-name>CXFServlet</servlet-name>
-   <url-pattern>/rest/*</url-pattern>
+   <url-pattern>/*</url-pattern>
  </servlet-mapping>
 </web-app>
 <!-- END SNIPPET: webxml -->
