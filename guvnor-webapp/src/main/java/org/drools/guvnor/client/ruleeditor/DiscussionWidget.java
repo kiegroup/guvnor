@@ -143,11 +143,11 @@ public class DiscussionWidget extends Composite {
                 }
             }
             HTML hth = new HTML( txtBuilder.toString() );
-            hth.setStyleName( "x-form-field" );
+            hth.setStyleName( "form-field" );
             commentList.add( hth );
         } else {
             Label lbl = new Label( r.note );
-            lbl.setStyleName( "x-form-field" );
+            lbl.setStyleName( "form-field" );
             commentList.add( lbl );
         }
 

@@ -31,8 +31,8 @@ public class ClickableLabel extends HTML {
 
     private static String doText(String text,
                                  boolean enabled) {
-        if ( enabled ) return "<div class='x-form-field'><span class='selectable-label'>" + text + "</span></div>";
-        else return "<div class='x-form-field'>" + text + "</div>";
+        if ( enabled ) return "<div class='form-field'><span class='selectable-label'>" + text + "</span></div>";
+        else return "<div class='form-field'>" + text + "</div>";
     }
 
     public ClickableLabel(String text,

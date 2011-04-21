@@ -133,7 +133,7 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
             }
         };
-        String lbl = "<div class='x-form-field'>" + HumanReadable.getCEDisplayName( "from" ) + "</div>";
+        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName( "from" ) + "</div>";
 
         DirtyableFlexTable panel = new DirtyableFlexTable();
 

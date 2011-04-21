@@ -67,7 +67,7 @@ public class DatePickerLabel extends DatePicker {
                                                },
                                                visualFormatFormatter );
 
-        labelWidget.setStyleName( "x-form-field" );
+        labelWidget.setStyleName( "form-field" );
 
         labelWidget.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {

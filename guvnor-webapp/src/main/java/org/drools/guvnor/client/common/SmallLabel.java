@@ -27,7 +27,7 @@ public class SmallLabel extends HTML {
         extends
         SafeHtmlTemplates {
 
-        @Template("<div class='x-form-field'>{0}</div>")
+        @Template("<div class='form-field'>{0}</div>")
         SafeHtml message(SafeHtml message);
     }
 

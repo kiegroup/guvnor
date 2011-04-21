@@ -82,7 +82,7 @@ public class FromCollectCompositeFactPatternWidget extends FromCompositeFactPatt
         };
 
 
-        String lbl = "<div class='x-form-field'>" + HumanReadable.getCEDisplayName("from collect") + "</div>";
+        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName("from collect") + "</div>";
 
         DirtyableFlexTable panel = new DirtyableFlexTable();
 

@@ -66,7 +66,7 @@ public class FormStyleLayout extends Composite {
      */
     public void addAttribute(String lbl,
                              Widget editor) {
-        HTML label = new HTML( "<div class='x-form-field'>" + lbl + "</div>" );
+        HTML label = new HTML( "<div class='form-field'>" + lbl + "</div>" );
         layout.setWidget( numInLayout,
                           0,
                           label );
@@ -101,7 +101,7 @@ public class FormStyleLayout extends Composite {
      */
     protected void addHeader(ImageResource image,
                              String title) {
-        HTML name = new HTML( "<div class='x-form-field'><b>" + title + "</b></div>" );
+        HTML name = new HTML( "<div class='form-field'><b>" + title + "</b></div>" );
         name.setStyleName( "resource-name-Label" );
         doHeader( image,
                   name );
@@ -131,7 +131,7 @@ public class FormStyleLayout extends Composite {
     protected void addHeader(ImageResource image,
                              String title,
                              Widget titleIcon) {
-        HTML name = new HTML( "<div class='x-form-field'><b>" + title + "</b></div>" );
+        HTML name = new HTML( "<div class='form-field'><b>" + title + "</b></div>" );
         name.setStyleName( "resource-name-Label" );
         HorizontalPanel horiz = new HorizontalPanel();
         horiz.add( name );

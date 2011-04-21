@@ -66,7 +66,7 @@ public class EnumDropDownLabel extends Composite {
 
     private Label getTextLabel(boolean enabled) {
         Label label = new Label();
-        label.setStyleName( "x-form-field" );
+        label.setStyleName( "form-field" );
         if (enabled){
 	        label.addClickHandler(new ClickHandler() {
 	

@@ -388,7 +388,7 @@ public class RuleModeller extends DirtyableComposite
 
             layout.setHTML( currentLayoutRow,
                             0,
-                            "<div class='x-form-field'>" + (i + 1) + ".</div>" );
+                            "<div class='form-field'>" + (i + 1) + ".</div>" );
             layout.getFlexCellFormatter().setHorizontalAlignment( currentLayoutRow,
                                                                   0,
                                                                   HasHorizontalAlignment.ALIGN_CENTER );
@@ -1143,7 +1143,7 @@ public class RuleModeller extends DirtyableComposite
         id += number;
 
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-        horiz.add( new HTML( "<div class='x-form-field' id='" + id + "'>" + number + ".</div>" ) );
+        horiz.add( new HTML( "<div class='form-field' id='" + id + "'>" + number + ".</div>" ) );
 
         return horiz;
     }

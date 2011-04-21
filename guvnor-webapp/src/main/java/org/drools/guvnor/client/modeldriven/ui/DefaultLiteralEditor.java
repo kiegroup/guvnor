@@ -71,7 +71,7 @@ public class DefaultLiteralEditor extends Composite {
         this.constraint = constraint;
         this.numericValue = numericValue;
 
-        textWidget.setStyleName( "x-form-field" );
+        textWidget.setStyleName( "form-field" );
         textWidget.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {

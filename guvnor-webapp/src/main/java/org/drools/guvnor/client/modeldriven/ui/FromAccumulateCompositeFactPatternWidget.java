@@ -72,7 +72,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
             }
         };
 
-        String lbl = "<div class='x-form-field'>" + HumanReadable.getCEDisplayName("from accumulate") + "</div>";
+        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName("from accumulate") + "</div>";
 
         DirtyableFlexTable panel = new DirtyableFlexTable();
 
@@ -148,7 +148,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         int codeTableRow = 0;
         int codeTableCol = 0;
 
-        codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='x-form-field'>Init:</div>"));
+        codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='form-field'>Init:</div>"));
         
         final TextBox initField = new TextBox();
         initField.setTitle("init code");
@@ -156,21 +156,21 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         initField.setEnabled(!this.readOnly);
         codeTable.setWidget(codeTableRow++, codeTableCol--, initField);
 
-        codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='x-form-field'>Action:</div>"));
+        codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='form-field'>Action:</div>"));
         final TextBox actionField = new TextBox();
         actionField.setTitle("action code");
         actionField.setText(getFromAccumulatePattern().getActionCode());
         actionField.setEnabled(!this.readOnly);
         codeTable.setWidget(codeTableRow++, codeTableCol--, actionField);
 
-        codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='x-form-field'>Reverse:</div>"));
+        codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='form-field'>Reverse:</div>"));
         final TextBox reverseField = new TextBox();
         reverseField.setTitle("reverse code.");
         reverseField.setText(getFromAccumulatePattern().getReverseCode());
         reverseField.setEnabled(!this.readOnly);
         codeTable.setWidget(codeTableRow++, codeTableCol--, reverseField);
 
-        codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='x-form-field'>Result:</div>"));
+        codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='form-field'>Result:</div>"));
         final TextBox resultField = new TextBox();
         resultField.setTitle("result code");
         resultField.setText(getFromAccumulatePattern().getResultCode());
@@ -186,7 +186,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         DirtyableFlexTable functionTable = new DirtyableFlexTable();
 
-        functionTable.setWidget(0, 0, new HTML("<div class='x-form-field'>Function:</div>"));
+        functionTable.setWidget(0, 0, new HTML("<div class='form-field'>Function:</div>"));
         final TextBox functionField = new TextBox();
         functionField.setTitle("function code");
         functionField.setText(getFromAccumulatePattern().getFunction());
