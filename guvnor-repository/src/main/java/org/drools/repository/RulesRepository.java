@@ -209,13 +209,14 @@ public class RulesRepository {
                 folderNode = this.session.getRootNode().getNode( RULES_REPOSITORY_NAME + "/" + areaName );
             } catch ( PathNotFoundException e ) {
                 if ( tries == 1 ) {
-                    // hmm..repository must have gotten screwed up. set it
-                    // up again
-                    log.warn( "The repository appears to have become corrupted." );
-                    throw new RulesRepositoryException( "Unable to get the main rule repo node. Repository is not setup correctly.",
+                    // hmm...repository must have gotten screwed up. This can be caused by importing an old
+                	//repository dump which does not contain certain schemas required by the new version  
+                	//of Guvnor. Normally this exception will be handled by the upper layer (for example, create the 
+                	//missing node when the exception is caught.
+                    throw new RulesRepositoryException( "Unable to get node ["+areaName+"]. Repository is not setup correctly.",
                                                         e );
                 } else {
-                    log.error( "Unable to correct repository corruption" );
+                    log.error( "The repository appears to have become corrupted. Unable to correct repository corruption" );
                 }
             } catch ( Exception e ) {
                 log.error( "Caught Exception",
