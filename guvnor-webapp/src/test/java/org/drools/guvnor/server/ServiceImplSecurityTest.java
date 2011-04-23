@@ -638,7 +638,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testCheckinWithPackageReadonly() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
-        RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
+        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String packageUuid = repositoryPackageService.createPackage( "testCheckinWithPackageReadonlyPack",
@@ -655,7 +655,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           "testCheckinWithPackageReadonlyPack",
                                           AssetFormats.DRL );
 
-        RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid );
+        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
         assertNotNull( asset.lastModified );
         asset.metaData.coverage = "boo";
         asset.content = new RuleContentText();
@@ -693,7 +693,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         //now lets see if we can access this asset with the permissions
         try {
-            impl.checkinVersion( asset );
+            repositoryAssetService.checkinVersion( asset );
             fail( "Did not catch expected exception" );
         } catch ( AuthorizationException e ) {
         }
@@ -705,7 +705,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testCheckinPackageDeveloper() throws Exception {
         //try {
         ServiceImplementation impl = getServiceImplementation();
-        RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
+        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String packageName = "testCheckinPackageDeveloperPack1";
@@ -724,7 +724,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           "testCheckinPackageDeveloperPack1",
                                           AssetFormats.DRL );
 
-        RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid );
+        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
         assertNotNull( asset.lastModified );
         asset.metaData.coverage = "boo";
         asset.content = new RuleContentText();
@@ -761,7 +761,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           testManager );
 
         // now lets see if we can access this asset with the permissions
-        String uuid2 = impl.checkinVersion( asset );
+        String uuid2 = repositoryAssetService.checkinVersion( asset );
         assertEquals( uuid,
                       uuid2 );
         //} finally {

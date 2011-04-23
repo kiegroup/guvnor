@@ -42,8 +42,6 @@ public interface RepositoryServiceAsync {
     public void createWorkspace(java.lang.String p0, AsyncCallback cb);
     public void removeWorkspace(java.lang.String p0, AsyncCallback cb);
     public void updateWorkspace(java.lang.String p0, java.lang.String[] p1, java.lang.String[] p2, AsyncCallback cb);
-    public void checkinVersion(org.drools.guvnor.client.rpc.RuleAsset p0, AsyncCallback<java.lang.String> cb);
-    public void restoreVersion(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback cb);
     public void listStates(AsyncCallback<java.lang.String[]> cb);
     public void createState(java.lang.String p0, AsyncCallback<java.lang.String> cb);
     public void renameState(java.lang.String p0, java.lang.String p1, AsyncCallback cb);

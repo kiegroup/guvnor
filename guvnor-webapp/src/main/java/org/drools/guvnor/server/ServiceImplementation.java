@@ -316,102 +316,6 @@ public class ServiceImplementation
         return handler.loadTableConfig();
     }
 
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    /**
-     *
-     * Role-based Authorization check: This method can be accessed if user has
-     * following permissions:
-     * 1. The user has a Analyst role and this role has permission to access the category
-     * which the asset belongs to.
-     * Or.
-     * 2. The user has a package.developer role or higher (i.e., package.admin)
-     * and this role has permission to access the package which the asset belongs to.
-     */
-    public String checkinVersion(RuleAsset asset) throws SerializationException {
-
-        // Verify if the user has permission to access the asset through package
-        // based permission.
-        // If failed, then verify if the user has permission to access the asset
-        // through category
-        // based permission
-        if ( Contexts.isSessionContextActive() ) {
-            boolean passed = false;
-
-            try {
-                Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
-                                                     RoleTypes.PACKAGE_DEVELOPER );
-            } catch ( RuntimeException e ) {
-                if ( asset.metaData.categories.length == 0 ) {
-                    Identity.instance().checkPermission( new CategoryPathType( null ),
-                                                         RoleTypes.ANALYST );
-                } else {
-                    RuntimeException exception = null;
-
-                    for ( String cat : asset.metaData.categories ) {
-                        try {
-                            Identity.instance().checkPermission( new CategoryPathType( cat ),
-                                                                 RoleTypes.ANALYST );
-                            passed = true;
-                        } catch ( RuntimeException re ) {
-                            exception = re;
-                        }
-                    }
-                    if ( !passed ) {
-                        throw exception;
-                    }
-                }
-            }
-        }
-
-        log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.name + "] UUID: [" + asset.uuid + "] " );
-
-        AssetItem repoAsset = getRulesRepository().loadAssetByUUID( asset.uuid );
-        if ( isAssetUpdatedInRepository( asset,
-                                         repoAsset ) ) {
-            return "ERR: Unable to save this asset, as it has been recently updated by [" + repoAsset.getLastContributor() + "]";
-        }
-
-        MetaData meta = asset.metaData;
-        MetaDataMapper metaDataMapper = MetaDataMapper.getInstance();
-        metaDataMapper.copyFromMetaData( meta,
-                                         repoAsset );
-
-        updateEffectiveAndExpiredDate( repoAsset,
-                                       meta );
-
-        repoAsset.updateCategoryList( meta.categories );
-
-        ContentHandler handler = ContentManager.getHandler( repoAsset.getFormat() );
-        handler.storeAssetContent( asset,
-                                   repoAsset );
-
-        if ( !(asset.metaData.format.equals( AssetFormats.TEST_SCENARIO )) || asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
-            PackageItem pkg = repoAsset.getPackage();
-            pkg.updateBinaryUpToDate( false );
-            RuleBaseCache.getInstance().remove( pkg.getUUID() );
-        }
-        repoAsset.checkin( asset.checkinComment );
-
-        return repoAsset.getUUID();
-    }
-
-    @WebRemote
-    @Restrict("#{identity.loggedIn}")
-    public void restoreVersion(String versionUUID,
-                               String assetUUID,
-                               String comment) {
-        AssetItem old = getRulesRepository().loadAssetByUUID( versionUUID );
-        AssetItem head = getRulesRepository().loadAssetByUUID( assetUUID );
-
-        log.info( "USER:" + getCurrentUserName() + " RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber() );
-
-        getRulesRepository().restoreHistoricalAsset( old,
-                                                     head,
-                                                     comment );
-
-    }
-
     /**
      * @deprecated in favour of {@link queryMetaData(QueryPageRequest)}
      */
@@ -1018,26 +922,6 @@ public class ServiceImplementation
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Assest with State (" + request.getStateName() + ") in " + methodDuration + " ms." );
         return response;
-    }
-
-    private void updateEffectiveAndExpiredDate(AssetItem repoAsset,
-                                               MetaData meta) {
-        repoAsset.updateDateEffective( dateToCalendar( meta.dateEffective ) );
-        repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );
-    }
-
-    private boolean isAssetUpdatedInRepository(RuleAsset asset,
-                                               AssetItem repoAsset) {
-        return asset.lastModified.before( repoAsset.getLastModified().getTime() );
-    }
-
-    private Calendar dateToCalendar(Date date) {
-        if ( date == null ) {
-            return null;
-        }
-        Calendar cal = Calendar.getInstance();
-        cal.setTime( date );
-        return cal;
     }
 
     private boolean checkCategoryPermissionHelper(RepositoryFilter filter,

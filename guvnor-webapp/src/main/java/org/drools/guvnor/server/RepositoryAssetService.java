@@ -174,7 +174,67 @@ public class RepositoryAssetService
     public RuleAsset[] loadRuleAssets(String[] uuids) throws SerializationException {
         return loadRuleAssets( Arrays.asList( uuids ) );
     }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    /**
+     *
+     * Role-based Authorization check: This method can be accessed if user has
+     * following permissions:
+     * 1. The user has a Analyst role and this role has permission to access the category
+     * which the asset belongs to.
+     * Or.
+     * 2. The user has a package.developer role or higher (i.e., package.admin)
+     * and this role has permission to access the package which the asset belongs to.
+     */
+    public String checkinVersion(RuleAsset asset) throws SerializationException {
 
+        // Verify if the user has permission to access the asset through package
+        // based permission.
+        // If failed, then verify if the user has permission to access the asset
+        // through category
+        // based permission
+        if ( Contexts.isSessionContextActive() ) {
+            boolean passed = false;
+
+            try {
+                Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
+                                                     RoleTypes.PACKAGE_DEVELOPER );
+            } catch ( RuntimeException e ) {
+                if ( asset.metaData.categories.length == 0 ) {
+                    Identity.instance().checkPermission( new CategoryPathType( null ),
+                                                         RoleTypes.ANALYST );
+                } else {
+                    RuntimeException exception = null;
+
+                    for ( String cat : asset.metaData.categories ) {
+                        try {
+                            Identity.instance().checkPermission( new CategoryPathType( cat ),
+                                                                 RoleTypes.ANALYST );
+                            passed = true;
+                        } catch ( RuntimeException re ) {
+                            exception = re;
+                        }
+                    }
+                    if ( !passed ) {
+                        throw exception;
+                    }
+                }
+            }
+        }
+
+        log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.name + "] UUID: [" + asset.uuid + "] " );
+        return repositoryAssetOperations.checkinVersion( asset );       
+    }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void restoreVersion(String versionUUID,
+                               String assetUUID,
+                               String comment) {
+        repositoryAssetOperations.restoreVersion( versionUUID, assetUUID, comment);
+    }
+    
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadItemHistory(String uuid) throws SerializationException {

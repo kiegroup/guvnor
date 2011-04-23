@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
@@ -44,12 +45,15 @@ import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.builder.pagerow.ArchivedAssetPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.AssetPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QuickFindPageRowBuilder;
+import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.IValidating;
 import org.drools.guvnor.server.repository.MailboxService;
+import org.drools.guvnor.server.security.CategoryPathType;
+import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.AssetFormatHelper;
 import org.drools.guvnor.server.util.AssetLockManager;
@@ -68,6 +72,8 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.VersionableItem;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.remoting.WebRemote;
+import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
@@ -157,6 +163,65 @@ public class RepositoryAssetOperations {
 
         }
         return result;
+    }
+
+    public String checkinVersion(RuleAsset asset) throws SerializationException {
+        AssetItem repoAsset = getRulesRepository().loadAssetByUUID( asset.uuid );
+        if ( isAssetUpdatedInRepository( asset,
+                                         repoAsset ) ) {
+            return "ERR: Unable to save this asset, as it has been recently updated by [" + repoAsset.getLastContributor() + "]";
+        }
+
+        MetaData meta = asset.metaData;
+        MetaDataMapper metaDataMapper = MetaDataMapper.getInstance();
+        metaDataMapper.copyFromMetaData( meta,
+                                         repoAsset );
+
+        repoAsset.updateDateEffective( dateToCalendar( meta.dateEffective ) );
+        repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );
+
+        repoAsset.updateCategoryList( meta.categories );
+        repoAsset.updateDescription(asset.description);
+
+        ContentHandler handler = ContentManager.getHandler( repoAsset.getFormat() );
+        handler.storeAssetContent( asset,
+                                   repoAsset );
+
+        if ( !(asset.metaData.format.equals( AssetFormats.TEST_SCENARIO )) || asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
+            PackageItem pkg = repoAsset.getPackage();
+            pkg.updateBinaryUpToDate( false );
+            RuleBaseCache.getInstance().remove( pkg.getUUID() );
+        }
+        repoAsset.checkin( asset.checkinComment );
+
+        return repoAsset.getUUID();
+    }
+
+    private Calendar dateToCalendar(Date date) {
+        if ( date == null ) {
+            return null;
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime( date );
+        return cal;
+    }
+   
+    private boolean isAssetUpdatedInRepository(RuleAsset asset,
+                                               AssetItem repoAsset) {
+        return asset.lastModified.before( repoAsset.getLastModified().getTime() );
+    }
+    
+    public void restoreVersion(String versionUUID,
+                               String assetUUID,
+                               String comment) {
+        AssetItem old = getRulesRepository().loadAssetByUUID( versionUUID );
+        AssetItem head = getRulesRepository().loadAssetByUUID( assetUUID );
+
+        log.info( "USER:" + getCurrentUserName() + " RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber() );
+
+        getRulesRepository().restoreHistoricalAsset( old,
+                                                     head,
+                                                     comment );
     }
 
     protected TableDataResult loadItemHistory(final VersionableItem item)
@@ -700,4 +765,7 @@ public class RepositoryAssetOperations {
                                                              message ) );
     }
 
+    private String getCurrentUserName() {
+        return getRulesRepository().getSession().getUserID();
+    }
 }

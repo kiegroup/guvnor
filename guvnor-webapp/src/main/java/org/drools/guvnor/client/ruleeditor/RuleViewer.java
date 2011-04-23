@@ -466,7 +466,7 @@ public class RuleViewer extends GuvnorEditor {
         final boolean[] saved = {false};
 
         if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
-        RepositoryServiceFactory.getService().checkinVersion( this.asset,
+        RepositoryServiceFactory.getAssetService().checkinVersion( this.asset,
                                                               new GenericCallback<String>() {
 
                                                                   public void onSuccess(String uuid) {

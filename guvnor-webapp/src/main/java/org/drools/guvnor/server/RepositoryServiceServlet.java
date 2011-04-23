@@ -617,13 +617,13 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
 
     public java.lang.String checkinVersion(org.drools.guvnor.client.rpc.RuleAsset p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return getService().checkinVersion( p0 );
+        return getAssetService().checkinVersion( p0 );
     }
 
     public void restoreVersion(java.lang.String p0,
                                java.lang.String p1,
                                java.lang.String p2) {
-        getService().restoreVersion( p0,
+        getAssetService().restoreVersion( p0,
                                      p1,
                                      p2 );
     }

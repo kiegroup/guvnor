@@ -38,6 +38,8 @@ public interface AssetServiceAsync {
     public void renameAsset(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.String> cb);
     public void loadRuleAsset(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.RuleAsset> cb);
     public void loadRuleAssets(java.lang.String[] p0, AsyncCallback<org.drools.guvnor.client.rpc.RuleAsset[]> cb);
+    public void checkinVersion(RuleAsset asset, AsyncCallback<java.lang.String> cb);
+    public void restoreVersion(String versionUUID, String assetUUID, String comment, AsyncCallback<Void> callback);
     public void loadItemHistory(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadAssetHistory(java.lang.String p0, java.lang.String p1, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadArchivedAssets(int p0, int p1, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);

@@ -292,7 +292,7 @@ public class VersionBrowser extends Composite {
         final CheckinPopup pop = new CheckinPopup( constants.RestoreThisVersionQ() );
         pop.setCommand( new Command() {
             public void execute() {
-                RepositoryServiceFactory.getService().restoreVersion( versionUUID,
+                RepositoryServiceFactory.getAssetService().restoreVersion( versionUUID,
                                                                       uuid,
                                                                       pop.getCheckinComment(),
                                                                       new GenericCallback<Void>() {
