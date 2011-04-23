@@ -16,17 +16,13 @@
 
 package org.drools.guvnor.client.packages;
 
-import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.Artifact;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
 import org.drools.guvnor.client.ruleeditor.MessageWidget;
 import org.drools.guvnor.client.ruleeditor.MetaDataWidgetNew;
 import org.drools.guvnor.client.ruleeditor.RuleDocumentWidget;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -38,8 +34,6 @@ import com.google.gwt.user.client.ui.Widget;
  * The generic editor for all types of artifacts. 
  */
 public class ArtifactEditor extends GuvnorEditor {
-    private Constants     constants = GWT.create( Constants.class );
-
 	interface ArtifactEditorBinder extends UiBinder<Widget, ArtifactEditor> {
 	}
 
@@ -54,7 +48,6 @@ public class ArtifactEditor extends GuvnorEditor {
     @UiField
     MessageWidget                                     messageWidget;
     
-    public Command                                    checkedInCommand;
     protected Artifact                                artifact;
     private boolean                                   readOnly;
     private long lastSaved = System.currentTimeMillis();
@@ -63,7 +56,7 @@ public class ArtifactEditor extends GuvnorEditor {
      * @param Artifact artifact 
      */
     public ArtifactEditor(Artifact artifact) {
-		this(artifact, false, null);
+		this(artifact, false, null, null, null);
     }
 
     /**
@@ -71,7 +64,7 @@ public class ArtifactEditor extends GuvnorEditor {
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
 	public ArtifactEditor(Artifact artifact, boolean historicalReadOnly) {
-		this(artifact, historicalReadOnly, null);
+		this(artifact, historicalReadOnly, null, null, null);
     }
 
     /**
@@ -80,19 +73,23 @@ public class ArtifactEditor extends GuvnorEditor {
      * @param actionToolbarButtonsConfigurationProvider
      *            used to change the default button configuration provider.
      */
-    public ArtifactEditor(Artifact artifact,
-                      boolean historicalReadOnly,
-                      ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider) {
+    public ArtifactEditor(
+            Artifact artifact,
+            boolean historicalReadOnly,
+            Command refreshCommand,
+            final OpenItemCommand openItemCommand,
+            final Command closeCommand) {
         this.artifact = artifact;
         this.readOnly = historicalReadOnly || artifact.isreadonly;
 
-        ruleDocumentWidget = new RuleDocumentWidget( artifact,
-                                                     historicalReadOnly);
+        ruleDocumentWidget = new RuleDocumentWidget(this.artifact,
+                readOnly);
 
-        metaWidget = createMetaWidget();
+        metaWidget = new MetaDataWidgetNew(this.artifact, readOnly,
+                this.artifact.uuid, refreshCommand, openItemCommand, closeCommand);
 
-        initWidget( uiBinder.createAndBindUi( this ) );
-        setWidth( "100%" );
+        initWidget(uiBinder.createAndBindUi(this));
+        setWidth("100%");
         LoadingPopup.close();
     }
 
@@ -100,19 +97,6 @@ public class ArtifactEditor extends GuvnorEditor {
     public boolean isDirty() {
         return (System.currentTimeMillis() - lastSaved) > 3600000;
     }
-
-	private MetaDataWidgetNew createMetaWidget() {
-		return new MetaDataWidgetNew(this.artifact, readOnly,
-				this.artifact.uuid, new Command() {
-					public void execute() {
-						refreshMetaWidgetOnly();
-					}
-				}, new Command() {
-					public void execute() {
-						refreshDataAndView();
-					}
-				});
-	}
 
     protected boolean hasDirty() {
         // not sure how to implement this now.
@@ -122,39 +106,4 @@ public class ArtifactEditor extends GuvnorEditor {
     public void showInfoMessage(String message) {
         messageWidget.showMessage( message );
     }
-
-    public void refreshDataAndView() {
-        LoadingPopup.showMessage( constants.RefreshingItem() );
-        RepositoryServiceFactory.getAssetService().loadRuleAsset( artifact.uuid,
-                                                             new GenericCallback<RuleAsset>() {
-                                                                 public void onSuccess(RuleAsset asset_) {
-                                                                     artifact = asset_;
-                                                                     //doWidgets();
-                                                                     LoadingPopup.close();
-                                                                 }
-                                                             } );
-    }
-
-    /**
-     * This will only refresh the meta data widget if necessary.
-     */
-    public void refreshMetaWidgetOnly() {
-        refreshMetaWidgetOnly( true );
-    }
-
-	private void refreshMetaWidgetOnly(final boolean showBusy) {
-		if (showBusy)
-			LoadingPopup.showMessage(constants.RefreshingItem());
-		RepositoryServiceFactory.getAssetService().loadRuleAsset(artifact.uuid,
-				new GenericCallback<RuleAsset>() {
-					public void onSuccess(RuleAsset asset_) {
-						//FIXME: JLIU
-						//artifact.metaData = asset_.metaData;
-						metaWidget.setMetaData(artifact);
-						metaWidget.refresh();
-						if (showBusy)
-							LoadingPopup.close();
-					}
-				});
-	}
 }

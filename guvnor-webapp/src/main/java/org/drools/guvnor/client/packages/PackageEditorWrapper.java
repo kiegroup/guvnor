@@ -17,9 +17,14 @@
 package org.drools.guvnor.client.packages;
 
 
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -30,7 +35,9 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * This is the package editor and viewer for package configuration.
  */
 public class PackageEditorWrapper extends Composite {
-	private ArtifactEditor artifactEditor;
+    private Constants constants = GWT.create(Constants.class);
+
+    private ArtifactEditor artifactEditor;
 	private PackageEditor packageEditor;
 	private ActionToolbar actionToolBar;
     private PackageConfigData conf;
@@ -38,6 +45,8 @@ public class PackageEditorWrapper extends Composite {
     private Command closeCommand;
     private Command refreshPackageListCommand;
     private OpenPackageCommand openPackageCommand;
+    
+    VerticalPanel layout = new VerticalPanel();
 
     public PackageEditorWrapper(PackageConfigData data,
                             Command closeCommand,
@@ -57,17 +66,27 @@ public class PackageEditorWrapper extends Composite {
 		this.refreshPackageListCommand = refreshPackageListCommand;
 		this.openPackageCommand = openPackageCommand;
         
-        refreshWidgets();
+	    initWidget(layout);
+	    render();
         setWidth("100%");        
 	}
     
-    private void refreshWidgets() {  
+    private void render() {  
     	this.artifactEditor = new ArtifactEditor(conf, this.isHistoricalReadOnly);
-    	this.packageEditor = new PackageEditor(conf, this.isHistoricalReadOnly, this.closeCommand, this.refreshPackageListCommand, this.openPackageCommand);
+        this.packageEditor = new PackageEditor(conf, 
+                this.isHistoricalReadOnly,
+                this.closeCommand, 
+                this.refreshPackageListCommand,
+                this.openPackageCommand, 
+                new Command() {
+                    public void execute() {
+                        refresh();
+                    }
+                });
     	this.actionToolBar = this.packageEditor.getActionToolbar();
     	
-    	VerticalPanel vp = new VerticalPanel();
-    	vp.add(this.actionToolBar);
+        layout.clear();
+    	layout.add(this.actionToolBar);
     	
         TabPanel tPanel = new TabPanel();
         tPanel.setWidth("100%");
@@ -85,9 +104,23 @@ public class PackageEditorWrapper extends Composite {
         tPanel.selectTab(0);        
         
         tPanel.setHeight("100%");
-        vp.add(tPanel);
-        vp.setHeight("100%");
-        
-        initWidget(vp);
+        layout.add(tPanel);
+        layout.setHeight("100%");
     }
+    
+    /**
+     * Will refresh all the data.
+     */
+    public void refresh() {
+        LoadingPopup.showMessage( constants.RefreshingPackageData() );
+        RepositoryServiceFactory.getPackageService().loadPackageConfig( this.conf.uuid,
+                                                                 new GenericCallback<PackageConfigData>() {
+                                                                     public void onSuccess(PackageConfigData data) {
+                                                                         LoadingPopup.close();
+                                                                         conf = data;
+                                                                         render();
+                                                                     }
+                                                                 } );
+    }
+
 }

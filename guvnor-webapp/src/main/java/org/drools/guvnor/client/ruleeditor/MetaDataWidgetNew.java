@@ -27,10 +27,10 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Artifact;
-import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.CapabilitiesManager;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
@@ -60,40 +60,39 @@ import com.google.gwt.user.client.ui.Widget;
  * It also captures edits, but it does not load or save anything itself.
  */
 public class MetaDataWidgetNew extends Composite {
-    private Constants       constants = GWT.create( Constants.class );
-    private static Images   images    = GWT.create( Images.class );
+    private Constants constants = GWT.create(Constants.class);
+    private static Images images = GWT.create(Images.class);
 
-    private Artifact        artifact;
-    private boolean         readOnly;
-    private String          uuid;
-    private Command         metaDataRefreshView;
-    private Command         fullRefreshView;
-    private VerticalPanel   layout    = new VerticalPanel();
-    AssetCategoryEditor     ed;
+    private Artifact artifact;
+    private boolean readOnly;
+    private String uuid;
+    private Command refreshCommand;
+    private OpenItemCommand openItemCommand;
+    private Command closeCommand;
+    private VerticalPanel layout = new VerticalPanel();
+    AssetCategoryEditor ed;
     private FormStyleLayout currentSection;
-    private String          currentSectionName;
+    private String currentSectionName;
 
-    public MetaDataWidgetNew(final Artifact d,
+    public MetaDataWidgetNew(final Artifact artifact,
                           boolean readOnly,
                           final String uuid,
-                          final Command metaDataRefreshView,
-                          final Command fullRefreshView) {
+                          final Command refreshCommand,
+                          final OpenItemCommand openItemCommand,
+                          final Command closeCommand) {
         super();
 
         this.uuid = uuid;
-        this.artifact = d;
+        this.artifact = artifact;
         this.readOnly = readOnly;
 
-        layout.setWidth( "100%" );
-        this.metaDataRefreshView = metaDataRefreshView;
-        this.fullRefreshView = fullRefreshView;
+        this.refreshCommand = refreshCommand;
+        this.openItemCommand = openItemCommand;
+        this.closeCommand = closeCommand;
 
+        layout.setWidth( "100%" );
         initWidget( layout );
         render();
-    }
-
-    public void setMetaData(Artifact data) {
-        this.artifact = data;
     }
 
     private void render() {
@@ -229,7 +228,7 @@ public class MetaDataWidgetNew extends Composite {
         if (!readOnly) {
             addRow(new VersionBrowser(this.uuid,
             		                  !(artifact instanceof RuleAsset),
-                                      fullRefreshView ));
+                                      refreshCommand ));
         }
 
         endSection(true);
@@ -304,7 +303,10 @@ public class MetaDataWidgetNew extends Composite {
                                                                           constants.MovedFromPackage( pkg ),
                                                                           new GenericCallback<java.lang.Void>() {
                                                                               public void onSuccess(Void v) {
-                                                                                  metaDataRefreshView.execute();
+                                                                                  //Refresh wont work here. We have to close and reopen
+                                                                                  //otherwise SuggestionEngine may not be initialized for
+                                                                                  //the target package. 
+                                                                                  closeAndReopen(uuid);
                                                                                   pop.hide();
                                                                               }
 
@@ -316,7 +318,16 @@ public class MetaDataWidgetNew extends Composite {
 
         pop.show();
     }
-
+    
+    private void closeAndReopen( String newAssetUUID) {
+        if (closeCommand != null) {
+            closeCommand.execute();
+        }       
+        if (openItemCommand != null) {
+            openItemCommand.open(newAssetUUID);
+        }
+    }
+    
     private Widget getVersionNumberLabel() {
         if ( artifact.versionNumber == 0 ) {
             return new SmallLabel( constants.NotCheckedInYet() );

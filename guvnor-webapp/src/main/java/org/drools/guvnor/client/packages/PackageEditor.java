@@ -66,7 +66,6 @@ import com.google.gwt.user.client.ui.Widget;
  * This is the package editor and viewer for package configuration.
  */
 public class PackageEditor extends PrettyFormLayout {
-
     private Constants           constants = GWT.create( Constants.class );
     private static Images       images    = GWT.create( Images.class );
 
@@ -76,30 +75,34 @@ public class PackageEditor extends PrettyFormLayout {
     private Command closeCommand;
     private Command refreshPackageListCommand;
     private OpenPackageCommand openPackageCommand;
+    private Command refreshCommand;
 
     private HorizontalPanel packageConfigurationValidationResult = new HorizontalPanel();;
 
     public PackageEditor(PackageConfigData data,
                          Command closeCommand,
                          Command refreshPackageList,
-                         OpenPackageCommand openPackageCommand) {
-        this(data, false, closeCommand, refreshPackageList, openPackageCommand);
+                         OpenPackageCommand openPackageCommand,
+                         Command refreshCommand) {
+        this(data, false, closeCommand, refreshPackageList, openPackageCommand, refreshCommand);
     }
     
-	public PackageEditor(PackageConfigData data, 
-			boolean historicalReadOnly, 
-			Command closeCommand,
-			Command refreshPackageList,
-			OpenPackageCommand openPackageCommand) {
-		this.conf = data;
-		this.isHistoricalReadOnly = historicalReadOnly;
-		this.closeCommand = closeCommand;
-		this.refreshPackageListCommand = refreshPackageList;
-		this.openPackageCommand = openPackageCommand;
+    public PackageEditor(PackageConfigData data, 
+            boolean historicalReadOnly,
+            Command closeCommand, 
+            Command refreshPackageList,
+            OpenPackageCommand openPackageCommand, 
+            Command refreshCommand) {
+        this.conf = data;
+        this.isHistoricalReadOnly = historicalReadOnly;
+        this.closeCommand = closeCommand;
+        this.refreshPackageListCommand = refreshPackageList;
+        this.openPackageCommand = openPackageCommand;
+        this.refreshCommand = refreshCommand;
 
-		setWidth("100%");
-		refreshWidgets();
-	}
+        setWidth("100%");
+        refreshWidgets();
+    }
     
     private void refreshWidgets() {
         clear();
@@ -264,7 +267,6 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private Widget getShowCatRules() {
-
         if ( conf.catRules != null && conf.catRules.size() > 0 ) {
             VerticalPanel vp = new VerticalPanel();
 
@@ -280,8 +282,7 @@ public class PackageEditor extends PrettyFormLayout {
             }
             return (vp);
         }
-        return new HTML( "&nbsp;&nbsp;" ); //NON-NLS
-
+        return new HTML( "&nbsp;&nbsp;" ); 
     }
 
     private Image getRemoveCatRulesIcon(final String rule) {
@@ -575,7 +576,7 @@ public class PackageEditor extends PrettyFormLayout {
         RepositoryServiceFactory.getPackageService().savePackage( this.conf,
                                                            new GenericCallback<Void>() {
                                                                public void onSuccess(Void data) {
-                                                                   reload();
+                                                                   refreshCommand.execute();
                                                                    LoadingPopup.showMessage( constants.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache() );
 
                                                                    SuggestionCompletionCache.getInstance().refreshPackage( conf.name,
@@ -604,21 +605,6 @@ public class PackageEditor extends PrettyFormLayout {
                                                                    showValidatePackageConfigurationResult(data);
                                                                 }
                                                            } );
-    }
-    
-    /**
-     * Will refresh all the data.
-     */
-    public void reload() {
-        LoadingPopup.showMessage( constants.RefreshingPackageData() );
-        RepositoryServiceFactory.getPackageService().loadPackageConfig( this.conf.uuid,
-                                                                 new GenericCallback<PackageConfigData>() {
-                                                                     public void onSuccess(PackageConfigData data) {
-                                                                         LoadingPopup.close();
-                                                                         conf = data;
-                                                                         refreshWidgets();
-                                                                     }
-                                                                 } );
     }
 
     private Widget header() {

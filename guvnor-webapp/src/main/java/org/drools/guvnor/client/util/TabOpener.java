@@ -152,12 +152,13 @@ public class TabOpener {
                         LoadingPopup.close();
                     }
 
+                    //This is used to update package editor when there are changes in its assets(eg, assets removed or renamed)
 					private Command createCheckInAndArchiveCommandForRuleViewer(final RuleAsset ruleAsset) {
                         Command command = new Command() {
                             public void execute() {
-                                PackageEditor packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( ruleAsset.metaData.packageName );
+                                PackageEditorWrapper packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( ruleAsset.metaData.packageName );
                                 if ( packageEditor != null ) {
-                                    packageEditor.reload();
+                                    packageEditor.refresh();
                                 }
                             }
                         };

@@ -257,6 +257,7 @@ public class MultiViewEditor extends GuvnorEditor {
                                                                                                                 closeCommand,
                                                                                                                 null,
                                                                                                                 null,
+                                                                                                                null,
                                                                                                                 false,
                                                                                                                 individualActionToolbarButtonsConfigurationProvider,
                                                                                                                 ruleViewerSettings );

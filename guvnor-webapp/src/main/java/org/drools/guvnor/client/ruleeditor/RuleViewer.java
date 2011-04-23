@@ -63,7 +63,6 @@ import com.google.gwt.user.client.ui.Widget;
  * The main layout parent/controller the rule viewer.
  */
 public class RuleViewer extends GuvnorEditor {
-
     private Constants     constants = GWT.create( Constants.class );
     private static Images images    = GWT.create( Images.class );
 
@@ -87,6 +86,7 @@ public class RuleViewer extends GuvnorEditor {
     private Command                                   archiveCommand;
     public Command                                    checkedInCommand;
     private final OpenItemCommand                     openItemCommand;
+    private Command                                   refreshCommand;
     
     protected RuleAsset                               asset;
     private boolean                                   readOnly;
@@ -102,6 +102,7 @@ public class RuleViewer extends GuvnorEditor {
                       final OpenItemCommand openItemCommand) {
         this( asset,
         	  openItemCommand,
+              null,
               null,
               null,
               null,
@@ -122,6 +123,7 @@ public class RuleViewer extends GuvnorEditor {
               null,
               null,
               null,
+              null,
               historicalReadOnly,
               null,
               null );
@@ -138,6 +140,7 @@ public class RuleViewer extends GuvnorEditor {
                       final Command closeCommand,
           			  final Command checkedInCommand,
           			  final Command archiveCommand,
+          			  final Command refreshCommand,
                       boolean historicalReadOnly,
                       ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
                       RuleViewerSettings ruleViewerSettings) {
@@ -146,6 +149,7 @@ public class RuleViewer extends GuvnorEditor {
         this.closeCommand = closeCommand;
         this.checkedInCommand = checkedInCommand;
         this.archiveCommand = archiveCommand;
+        this.refreshCommand = refreshCommand;
         this.readOnly = historicalReadOnly || asset.isreadonly;
 
         if ( ruleViewerSettings == null ) {
@@ -305,7 +309,7 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     /**
-     * Show the stats change popup.
+     * Show the state change popup.
      */
     private void showStatusChanger() {
         final StatusChangePopup pop = new StatusChangePopup( asset.uuid,
@@ -486,7 +490,7 @@ public class RuleViewer extends GuvnorEditor {
                                                                       saved[0] = true;
 
                                                                       showInfoMessage( constants.SavedOK() );
-                                                                      closeCurrentViewAndReopen(uuid);
+                                                                      refreshCommand.execute();
                                                                   }
                                                               } );
     }
@@ -510,18 +514,6 @@ public class RuleViewer extends GuvnorEditor {
                                                                         }
                                                                     } );
         }
-    }
-
-    public void refreshDataAndView() {
-        LoadingPopup.showMessage( constants.RefreshingItem() );
-        RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.uuid,
-                                                             new GenericCallback<RuleAsset>() {
-                                                                 public void onSuccess(RuleAsset asset_) {
-                                                                     asset = asset_;
-                                                                     initActionToolBar();
-                                                                     LoadingPopup.close();
-                                                                 }
-                                                             } );
     }
 
     /**
@@ -608,15 +600,6 @@ public class RuleViewer extends GuvnorEditor {
 
         form.show();
     }
-
-    private void completedCopying(String name,
-                                  String pkg,
-                                  String newAssetUUID) {
-        Window.alert( constants.CreatedANewItemSuccess( name, pkg ) );
-        if ( openItemCommand != null ) {
-            openItemCommand.open( newAssetUUID );
-        }
-    }
     
     private void doRename() {
         final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
@@ -635,7 +618,7 @@ public class RuleViewer extends GuvnorEditor {
                                                                    new GenericCallback<java.lang.String>() {
                     public void onSuccess(String data) {
 		                Window.alert( constants.ItemHasBeenRenamed() );
-		                closeCurrentViewAndReopen(data);
+		                closeAndReopen(data);
                         pop.hide();
                     }
 
@@ -653,15 +636,6 @@ public class RuleViewer extends GuvnorEditor {
 
         pop.show();
     }
-    
-	private void closeCurrentViewAndReopen( String newAssetUUID) {
-		if (closeCommand != null) {
-			closeCommand.execute();
-		}		
-		if (openItemCommand != null) {
-			openItemCommand.open(newAssetUUID);
-		}
-	}
 
     private void doPromptToGlobal() {
         if ( asset.metaData.packageName.equals( "globalArea" ) ) {
@@ -673,7 +647,7 @@ public class RuleViewer extends GuvnorEditor {
                                                                             new GenericCallback<Void>() {
                                                                                 public void onSuccess(Void data) {
                                                                                     Window.alert( constants.Promoted() );
-                                                                                    refreshDataAndView();
+                                                                                    closeAndReopen(asset.uuid);
                                                                                 }
 
                                                                                 @Override
@@ -681,8 +655,24 @@ public class RuleViewer extends GuvnorEditor {
                                                                                     super.onFailure( t );
                                                                                 }
                                                                             } );
-
         }
-
     }
+    
+    private void closeAndReopen( String newAssetUUID) {
+        if (closeCommand != null) {
+            closeCommand.execute();
+        }       
+        if (openItemCommand != null) {
+            openItemCommand.open(newAssetUUID);
+        }
+    }
+
+    private void completedCopying(String name,
+                                  String pkg,
+                                  String newAssetUUID) {
+        Window.alert( constants.CreatedANewItemSuccess( name, pkg ) );
+        if ( openItemCommand != null ) {
+            openItemCommand.open( newAssetUUID );
+        }
+    }        
 }

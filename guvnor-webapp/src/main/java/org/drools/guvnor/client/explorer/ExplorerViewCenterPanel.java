@@ -23,6 +23,7 @@ import java.util.Map;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.packages.PackageEditor;
+import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
 import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
 
@@ -45,7 +46,7 @@ public class ExplorerViewCenterPanel extends Composite {
      * to keep track of what is dirty, filthy
      */
     private Map<String, GuvnorEditor> openedAssetEditors = new HashMap<String, GuvnorEditor>();
-    private Map<String, PackageEditor> openedPackageEditors = new HashMap<String, PackageEditor>();
+    private Map<String, PackageEditorWrapper> openedPackageEditors = new HashMap<String, PackageEditorWrapper>();
 
     private Map<Panel, String[]> itemWidgets = new HashMap<Panel, String[]>();
 
@@ -107,9 +108,9 @@ public class ExplorerViewCenterPanel extends Composite {
         if (widget instanceof GuvnorEditor) {
             this.openedAssetEditors.put(panelId,
                     (GuvnorEditor) widget);
-        } else if (widget instanceof PackageEditor) {
+        } else if (widget instanceof PackageEditorWrapper) {
             this.getOpenedPackageEditors().put(tabname,
-                    (PackageEditor) widget);
+                    (PackageEditorWrapper) widget);
         }
 
         openedTabs.put(keys,
@@ -170,7 +171,7 @@ public class ExplorerViewCenterPanel extends Composite {
         itemWidgets.remove(tpi);
     }
 
-    public Map<String, PackageEditor> getOpenedPackageEditors() {
+    public Map<String, PackageEditorWrapper> getOpenedPackageEditors() {
         return openedPackageEditors;
     }
 

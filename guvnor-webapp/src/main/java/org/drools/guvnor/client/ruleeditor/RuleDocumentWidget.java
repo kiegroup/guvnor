@@ -55,9 +55,7 @@ public class RuleDocumentWidget extends DirtyableComposite {
 	                layout.add( new DiscussionWidget( artifact, readOnly ) );
 	            }
 	        } );
-		} else {
-			//TODO:
-		}
+		} 
 
         layout.setWidth( "100%" );
     }
