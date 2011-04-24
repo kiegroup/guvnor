@@ -643,7 +643,7 @@
 
       <para>Columns can be resized by hovering over the corresponding divider
       in the table header. The mouse cursor will change and then the column
-      width dragged either narrower or wider. </para>
+      width dragged either narrower or wider.</para>
 
       <figure>
         <title>Decision table</title>
@@ -651,8 +651,8 @@
         <mediaobject>
           <imageobject>
             <imagedata align="center"
-                       fileref="images/Chapter-Guvnor/WebDT.png" format="PNG"
-                       scalefit="1"></imagedata>
+                       fileref="images/Chapter-Guvnor/dtable-complete.png"
+                       format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -673,6 +673,18 @@
               individual rows define seperate rules.</para>
             </listitem>
           </itemizedlist></para>
+
+        <figure>
+          <title>Main components</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/dtable-sections.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
       </section>
 
       <section>
@@ -705,7 +717,7 @@
           <mediaobject>
             <imageobject>
               <imagedata align="center"
-                         fileref="images/Chapter-Guvnor/WebDT-config.png"
+                         fileref="images/Chapter-Guvnor/dtable-column-config.png"
                          format="PNG" scalefit="1"></imagedata>
             </imageobject>
           </mediaobject>
@@ -775,6 +787,18 @@ end</programlisting></para>
 
         <para>This section alows individual rules to be defined using the
         columns defined earlier.</para>
+
+        <figure>
+          <title>Rule definition</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/dtable-body.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
       </section>
 
       <section>
@@ -787,6 +811,18 @@ end</programlisting></para>
         value. When cells are merged they also gain an icon in the top-left of
         the cell that allows rows spanning the merged cell to be
         grouped.</para>
+
+        <figure>
+          <title>Cell merging</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/dtable-merged.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
       </section>
 
       <section>
@@ -799,6 +835,18 @@ end</programlisting></para>
         shown unchanged. Cells in other columns spanning the collapsed rows
         that have different values are highlighted and the first value
         displayed.</para>
+
+        <figure>
+          <title>Column configuration</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/dtable-grouped.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
 
         <para>When the value of a grouped cell is altered all cells that have
         been collapsed also have their values updated.</para>
