@@ -163,25 +163,30 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/source")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getPackageSource(@PathParam("packageName") String packageName) {
+    public Response getPackageSource(@PathParam("packageName") String packageName) {
     	PackageItem item = repository.loadPackage( packageName );
         ContentPackageAssembler asm = new ContentPackageAssembler( item,
                                                                    false );
+        String fileName = packageName;
         String drl = asm.getDRL();
-        return drl;
+        return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + fileName).build();
     }
 
     @GET
     @Path("{packageName}/binary")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public byte[] getPackageBinary(@PathParam("packageName") String packageName) throws SerializationException {
+    public Response getPackageBinary(@PathParam("packageName") String packageName) throws SerializationException {
         PackageItem p = repository.loadPackage(packageName);
+        String fileName = packageName;
+        byte[] result;
         if(p.isBinaryUpToDate()) {
-        	return p.getCompiledPackageBytes();
+            result = p.getCompiledPackageBytes();
         } else {
             packageService.buildPackage(p.getUUID(), true);
-            return repository.loadPackage(packageName).getCompiledPackageBytes();        	
+            result = repository.loadPackage(packageName).getCompiledPackageBytes();        	
         }
+        
+        return Response.ok(result).header("Content-Disposition", "attachment; filename=" + fileName).build();
     }
     
     @GET

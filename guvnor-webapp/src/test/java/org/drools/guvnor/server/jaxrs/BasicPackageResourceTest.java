@@ -497,8 +497,9 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        String result = GetContent(connection);
-        
+        String result = GetContent(connection);        
+  
+        assertEquals("attachment; filename=restPackage1", connection.getHeaderField("Content-Disposition"));
         assertTrue( result.indexOf( "package restPackage1" ) >= 0 );
         assertTrue( result.indexOf( "import com.billasurf.Board" ) >= 0 );
         assertTrue( result.indexOf( "global com.billasurf.Person customer2" ) >= 0 );
