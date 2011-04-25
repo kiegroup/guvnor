@@ -118,47 +118,44 @@ public class MetaDataWidgetNew extends Composite {
     }
 
     private void loadData() {
-        if(artifact instanceof RuleAsset) {     	
-        addAttribute( constants.CategoriesMetaData(),
-                      categories() );
+        if (artifact instanceof RuleAsset) {
+            addAttribute(constants.CategoriesMetaData(), categories());
         }
 
-        addAttribute( constants.LastModified(),
-                      readOnlyDate( artifact.lastModified ) );
-        addAttribute( constants.ModifiedByMetaData(),
-                      readOnlyText( artifact.lastContributor ) );
-        addAttribute( constants.NoteMetaData(),
-                      readOnlyText( artifact.checkinComment ) );
+        addAttribute(constants.LastModified(),
+                readOnlyDate(artifact.lastModified));
+        addAttribute(constants.ModifiedByMetaData(),
+                readOnlyText(artifact.lastContributor));
+        addAttribute(constants.NoteMetaData(),
+                readOnlyText(artifact.checkinComment));
 
-        if ( !readOnly ) {
-            addAttribute( constants.CreatedOnMetaData(),
-                          readOnlyDate( artifact.dateCreated ) );
+        if (!readOnly) {
+            addAttribute(constants.CreatedOnMetaData(),
+                    readOnlyDate(artifact.dateCreated));
         }
-        if(artifact instanceof RuleAsset) {      	
         
-        addAttribute( constants.CreatedByMetaData(),
-                      readOnlyText( ((RuleAsset)artifact).metaData.creator ) );
-        addAttribute( constants.FormatMetaData(),
-                      new SmallLabel( "<b>" + ((RuleAsset)artifact).metaData.format + "</b>" ) );
+        if (artifact instanceof RuleAsset) {
+            addAttribute(constants.CreatedByMetaData(),
+                    readOnlyText(((RuleAsset) artifact).metaData.creator));
+            addAttribute(constants.FormatMetaData(), new SmallLabel("<b>"
+                    + ((RuleAsset) artifact).metaData.format + "</b>"));
 
-        addAttribute( constants.PackageMetaData(),
-                      packageEditor( ((RuleAsset)artifact).metaData.packageName ) );
+            addAttribute(constants.PackageMetaData(),
+                    packageEditor(((RuleAsset) artifact).metaData.packageName));
 
-        addAttribute( constants.IsDisabledMetaData(),
-                      editableBoolean( new FieldBooleanBinding() {
-                                           public boolean getValue() {
-                                               return ((RuleAsset)artifact).metaData.disabled;
-                                           }
+            addAttribute(constants.IsDisabledMetaData(),
+                    editableBoolean(new FieldBooleanBinding() {
+                        public boolean getValue() {
+                            return ((RuleAsset) artifact).metaData.disabled;
+                        }
 
-                                           public void setValue(boolean val) {
-                                        	   ((RuleAsset)artifact).metaData.disabled = val;
-                                           }
-                                       },
-                                       constants.DisableTip() ) );
+                        public void setValue(boolean val) {
+                            ((RuleAsset) artifact).metaData.disabled = val;
+                        }
+                    }, constants.DisableTip()));
         }
 
-        addAttribute( "UUID:",
-                      readOnlyText( uuid ) );
+        addAttribute("UUID:", readOnlyText(uuid));
 
         endSection(true);
 
@@ -218,17 +215,18 @@ public class MetaDataWidgetNew extends Composite {
         endSection( true );
 */       
         startSection(constants.VersionHistory());
-        addAttribute(constants.VersionFeed(),
-        		new HTML("<a href='" + getVersionFeed(artifact) + "' target='_blank'><img src='"
-                + new Image(images.feed()).getUrl() + "'/></a>"));
+        //Do not show version feed for asset due to GUVNOR-1308
+        if (!(artifact instanceof RuleAsset)) {
+            addAttribute(constants.VersionFeed(), new HTML("<a href='"
+                    + getVersionFeed(artifact) + "' target='_blank'><img src='"
+                    + new Image(images.feed()).getUrl() + "'/></a>"));
+        }
 
-        addAttribute(constants.CurrentVersionNumber(),
-                     getVersionNumberLabel());
+        addAttribute(constants.CurrentVersionNumber(), getVersionNumberLabel());
 
         if (!readOnly) {
             addRow(new VersionBrowser(this.uuid,
-            		                  !(artifact instanceof RuleAsset),
-                                      refreshCommand ));
+                    !(artifact instanceof RuleAsset), refreshCommand));
         }
 
         endSection(true);
