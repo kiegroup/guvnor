@@ -23,6 +23,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.testing.ActivateRuleFlowGroup;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
+import org.drools.ide.common.client.modeldriven.testing.FieldData;
 import org.drools.ide.common.client.modeldriven.testing.Fixture;
 import org.drools.ide.common.client.modeldriven.testing.RetractFact;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
@@ -35,7 +36,8 @@ import com.google.gwt.user.client.ui.TextBox;
 
 /**
  * 
- * This button gives a choice of modifying data, based on the positional context.
+ * This button gives a choice of modifying data, based on the positional
+ * context.
  */
 public class NewDataButton extends TestScenarioButton {
 
@@ -173,9 +175,25 @@ public class NewDataButton extends TestScenarioButton {
 
             @Override
             public Fixture getFixture() {
-                return new FactData( valueWidget.getItemText( valueWidget.getSelectedIndex() ),
-                                     factNameTextBox.getText(),
-                                     false );
+                String factName = factNameTextBox.getText();
+                String factType = valueWidget.getItemText( valueWidget.getSelectedIndex() );
+                FactData fd = new FactData( factType,
+                                            factName,
+                                            false );
+
+                //Create new FieldData objects for new Fixture based upon the first existing of the same data-type
+                //Only the "first" existing of the same data-type is checked as second, third etc should have been
+                //based upon the first if they were all created after this fix for GUVNOR-1139 was implemented.
+                List<FactData> existingFactData = scenario.getFactTypesToFactData().get( factType );
+                if ( existingFactData != null ) {
+                    if ( existingFactData.size() > 0 ) {
+                        for ( FieldData fieldData : existingFactData.get( 0 ).getFieldData() )
+                            fd.getFieldData().add( new FieldData( fieldData.getName(),
+                                                                  "" ) );
+                    }
+                }
+
+                return fd;
             }
         }
     }

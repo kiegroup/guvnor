@@ -27,8 +27,8 @@ import java.util.Map;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
- * This represents a test scenario.
- * It also encapsulates the result of a scenario run.
+ * This represents a test scenario. It also encapsulates the result of a
+ * scenario run.
  */
 public class Scenario
     implements
@@ -47,13 +47,14 @@ public class Scenario
     private List<FactData>    globals          = new ArrayList<FactData>();
 
     /**
-     * Fixtures are parts of the test. They may be assertions, globals, data, execution runs etc.
-     * Anything really.
+     * Fixtures are parts of the test. They may be assertions, globals, data,
+     * execution runs etc. Anything really.
      */
     private List<Fixture>     fixtures         = new ArrayList<Fixture>();
 
     /**
-     * This is the date the last time the scenario was run (and what the results apply to).
+     * This is the date the last time the scenario was run (and what the results
+     * apply to).
      */
     private Date              lastRunResult;
 
@@ -69,7 +70,8 @@ public class Scenario
     private boolean           inclusive        = false;
 
     /**
-     * Returns true if this was a totally successful scenario, based on the results contained.
+     * Returns true if this was a totally successful scenario, based on the
+     * results contained.
      */
     public boolean wasSuccessful() {
         for ( Fixture fixture : fixtures ) {
@@ -84,7 +86,8 @@ public class Scenario
     }
 
     /**
-     * Will slip in a fixture after the specified one, but before the next execution trace.
+     * Will slip in a fixture after the specified one, but before the next
+     * execution trace.
      */
     public void insertBetween(Fixture fixtureBeforeTheNewOne,
                               Fixture newFixture) {
@@ -158,9 +161,9 @@ public class Scenario
     }
 
     /**
-    *
-    * @return A mapping of variable names to their fact type.
-    */
+     * 
+     * @return A mapping of variable names to their fact data.
+     */
     public Map<String, FactData> getFactTypes() {
         Map<String, FactData> factTypesByName = new HashMap<String, FactData>();
         for ( Fixture fixture : fixtures ) {
@@ -174,7 +177,7 @@ public class Scenario
     }
 
     /**
-     *
+     * 
      * @return A mapping of variable names to their fact type.
      */
     public Map<String, String> getVariableTypes() {
@@ -194,7 +197,39 @@ public class Scenario
     }
 
     /**
-     * This will return a list of fact names that are in scope (including globals).
+     * 
+     * @return A mapping of Fact types to their Fact definitions.
+     */
+    public Map<String, List<FactData>> getFactTypesToFactData() {
+        Map<String, List<FactData>> map = new HashMap<String, List<FactData>>();
+        for ( Fixture fixture : fixtures ) {
+            if ( fixture instanceof FactData ) {
+                FactData factData = (FactData) fixture;
+                List<FactData> fd = map.get( factData.getType() );
+                if ( fd == null ) {
+                    fd = new ArrayList<FactData>();
+                    map.put( factData.getType(),
+                             fd );
+                }
+                fd.add( factData );
+            }
+        }
+        for ( FactData factData : globals ) {
+            List<FactData> fd = map.get( factData.getType() );
+            if ( fd == null ) {
+                fd = new ArrayList<FactData>();
+                map.put( factData.getType(),
+                         fd );
+            }
+            fd.add( factData );
+        }
+        return map;
+    }
+
+    /**
+     * This will return a list of fact names that are in scope (including
+     * globals).
+     * 
      * @return List<String>
      */
     public List<String> getFactNamesInScope(ExecutionTrace executionTrace,
@@ -260,7 +295,8 @@ public class Scenario
     }
 
     /**
-     * @return true if a fact is actually used (ie if its not, its safe to remove it).
+     * @return true if a fact is actually used (ie if its not, its safe to
+     *         remove it).
      */
     public boolean isFactDataReferenced(FactData factData) {
         int start = fixtures.indexOf( factData ) + 1;
@@ -291,7 +327,7 @@ public class Scenario
     }
 
     /**
-     *
+     * 
      * @return int[0] = failures, int[1] = total;
      */
     public int[] countFailuresTotal() {
