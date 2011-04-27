@@ -24,7 +24,6 @@
      <param-name>javax.ws.rs.Application</param-name>
      <param-value>org.drools.guvnor.server.jaxrs.GuvnorApplication</param-value>
    </init-param>
-   <load-on-startup>1</load-on-startup>
  </servlet> 
  <servlet>
   <servlet-name>guvnorService</servlet-name>
