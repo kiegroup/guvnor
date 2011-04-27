@@ -10,14 +10,15 @@
   	<para>
   	Guvnor supports running on either JackRabbit and ModeShape as the underlaying JCR-2.0 implementation. By
    default Guvnor ships using JackRabbit. However if you want to switch to using ModeShape then you need to
-   install ModeShape as a service in JBossAS-5.x. Check the ModeShape project and download and install the
-   latest ModeShape 'kit'. After installing the kit, you should have a
-   <filename>modeshape-service.jar</filename> directory in your deploy directory. Now we can remove some jars
+   install ModeShape as a service in JBossAS-5.x. Check the ModeShape project and download and install ModeShape 'kit'
+   version 2.5.0 or later. After installing the kit, you should have a
+   <filename>modeshape-service.jar</filename> directory in your deploy directory. Since ModeShape 2.5.0 only
+   support deployment to JBoss-5.x, make sure to also use the guvnor-5.2.0-jboss-as-5.1.war. Now we can remove some jars
    from the guvnor WAR that are no longer needed, and in fact will cause classloading issues if you don't
    remove them:
   	</para>
 
-  	<screen>[localhost ]$ rm -f WEB-INF/lib/jackrabbit-*
+  	<screen>[localhost]$ rm -f WEB-INF/lib/jackrabbit-*
 [localhost]$ rm -f WEB-INF/lib/hibernate-* WEB-INF/persistence-api-1.0.jar WEB-INF/lucene-*.jar
 [localhost]$ rm -f WEB-INF/lib/jcr-2.0.jar</screen>
    
@@ -51,8 +52,8 @@
       <key>org.drools.repository.secure.passwords</key>
       <value>false</value>
       
-      <key>org.drools.repository.admin.password</key>  
-      <value>admin</value>
+      <key>org.drools.repository.logInAdmin.password</key>  
+      <value>logInAdmin</value>
       
       <key>org.drools.repository.mailman.password</key>
       <value>mailman</value>
@@ -97,23 +98,22 @@
 -->]]></programlisting>
 
   	<para>
-  	You may have noticed the settings of two passwords in the modeshape property settings for the 'admin' and
+  	You may have noticed the settings of two passwords in the modeshape property settings for the 'logInAdmin' and
    'mailman' users. These users are used by guvnor to perform background tasks. Now that we are no longer
    allowing for anyone to run as 'guest', we need to ass these two users to the modeshape users and roles
-   files. Open the <filename>conf/props/modeshape-users.properties</filename> file and add the mailman user,
-   so the file looks like:
+   files. Open the <filename>conf/props/modeshape-users.properties</filename> file and add the mailman and 
+   logInAdmin users,
   	</para>
-  	<programlisting>admin=admin
-guest=guest
+  	<programlisting>logInAdmin=logInAdmin
 mailman=mailman</programlisting>
 
   	<para>
-  	Finally open the <filename>conf/props/modeshape-roles.properties</filename> file and add the mailman role,
-   so the file looks like:
+  	Finally open the <filename>conf/props/modeshape-roles.properties</filename> file and add the logInAdmin 
+  	and mailman roles,
   	</para>
   	
-  	<programlisting>admin=connect,readonly,readwrite
-guest=connect,readonly
+  	<programlisting>
+logInAdmin=connect,admin
 mailman=connect,readonly,readwrite</programlisting>
 
  	<para>
