@@ -44,6 +44,7 @@ import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
@@ -196,6 +197,11 @@ public class JBRMSEntryPoint
             @Override
             protected void onUpdate(double progress) {
                 e.getStyle().setOpacity( 1.0 - progress );
+            }
+
+            @Override
+            protected void onComplete() {
+                e.getStyle().setVisibility( Visibility.HIDDEN );
             }
 
         };
