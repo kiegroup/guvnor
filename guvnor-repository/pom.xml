@@ -101,11 +101,37 @@
           <scope>runtime</scope>
           <!-- Not optional so guvnor works out of the box, exclude this dependency if you use modeshape -->
         </dependency>
+        <dependency>
+        <!--  Including just the modeshape connector, not the dependencies. This way the user can switch
+              over to use the modeshape service later -->
+         <groupId>org.drools</groupId>
+          <artifactId>guvnor-repository-connector-modeshape</artifactId>
+          <scope>runtime</scope>
+          <exclusions>
+            <exclusion>
+              <groupId>org.modeshape</groupId>
+              <artifactId>modeshape-jcr</artifactId>
+            </exclusion>
+           <exclusion>
+             <groupId>org.jboss.security</groupId>
+             <artifactId>jboss-idtrust</artifactId>
+           </exclusion>
+           <exclusion>
+             <groupId>org.jboss.security</groupId>
+             <artifactId>jboss-security-spi-bare</artifactId>
+           </exclusion>
+           <exclusion>
+             <groupId>org.jboss.security</groupId>
+             <artifactId>jbosssx-bare</artifactId>
+           </exclusion>
+         </exclusions>
+        </dependency>
       </dependencies>
     </profile>
 
-
-    <profile><!-- Activated with -Dmodeshape. Requires JDK 1.6 -->
+    <profile><!-- Activated with -Dmodeshape. Requires JDK 1.6. Note that we really only support running ModeShape -->
+      <!-- deployed as a service, so we never ship the modeshape jars in the guvnor app. This profile is only here to -->
+      <!-- run the unittest using ModeShape -->
       <!-- TODO use enforcer plugin to enforce JDK 1.6. Currently, who actives ms profile must make manually check JDK1.6 is in use. -->
       <id>modeshapeProfile</id>
       <activation>
