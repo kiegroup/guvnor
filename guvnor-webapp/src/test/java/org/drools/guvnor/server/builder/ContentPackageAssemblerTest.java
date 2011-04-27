@@ -545,7 +545,6 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore()
     public void testEventingExample() throws Exception {
 
         RulesRepository repo = getRulesRepository();
