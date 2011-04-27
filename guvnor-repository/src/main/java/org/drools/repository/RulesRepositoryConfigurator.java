@@ -148,8 +148,8 @@ public class RulesRepositoryConfigurator {
             //Setup the State area
             RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.STATE_AREA, "nt:folder");
 
-            Node configurationArea = RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.CONFIGURATION_AREA, "nt:folder");
-            RulesRepository.addNodeIfNew(configurationArea, RulesRepository.PERSPECTIVES_CONFIGURATION_AREA, "nt:folder");
+//            Node configurationArea = RulesRepository.addNodeIfNew(repositoryNode, RulesRepository.CONFIGURATION_AREA, "nt:folder");
+//            RulesRepository.addNodeIfNew(configurationArea, RulesRepository.PERSPECTIVES_CONFIGURATION_AREA, "nt:folder");
 
             //and we need the "Draft" state
             RulesRepository.addNodeIfNew(repositoryNode.getNode(RulesRepository.STATE_AREA), StateItem.DRAFT_STATE_NAME, StateItem.STATE_NODE_TYPE_NAME);

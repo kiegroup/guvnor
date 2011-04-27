@@ -57,6 +57,7 @@ import org.drools.rule.Rule;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mvel2.MVEL;
 
@@ -544,6 +545,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
     }
 
     @Test
+    @Ignore()
     public void testEventingExample() throws Exception {
 
         RulesRepository repo = getRulesRepository();

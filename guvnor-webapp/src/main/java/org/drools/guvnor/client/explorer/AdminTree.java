@@ -45,7 +45,7 @@ public class AdminTree extends Tree {
                 {constants.ImportExport(), images.saveEdit(), "3"},
                 {constants.RulesVerification(), images.ruleVerification(), "7"},
                 {constants.RepositoryConfiguration(), images.config(), "8"},
-                {constants.PerspectivesConfiguration(), images.config(), "10"},
+//                {constants.PerspectivesConfiguration(), images.config(), "10"},
                 {constants.About(), images.information(), "6"}
         };
 
