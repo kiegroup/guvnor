@@ -16,7 +16,6 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-
 /**
  * Represents first order logic like Or, Not, Exists.
  */
@@ -35,9 +34,7 @@ public class CompositeFactPattern
     /**
      * The patterns.
      */
-    private IFactPattern[]       patterns;
-
-
+    private IFactPattern[]     patterns;
 
     /**
      * This type should be from the contants in this class of course.
@@ -49,17 +46,17 @@ public class CompositeFactPattern
     public CompositeFactPattern() {
     }
 
-    public void clearFactPatterns(){
+    public void clearFactPatterns() {
         this.patterns = new FactPattern[0];
     }
-    
-    public void addFactPatterns(IFactPattern[] patterns){
-        for (int i = 0; i < patterns.length; i++) {
+
+    public void addFactPatterns(IFactPattern[] patterns) {
+        for ( int i = 0; i < patterns.length; i++ ) {
             IFactPattern iFactPattern = patterns[i];
-            this.addFactPattern(iFactPattern);
+            this.addFactPattern( iFactPattern );
         }
     }
-    
+
     public void addFactPattern(final IFactPattern pat) {
         if ( this.patterns == null ) {
             this.patterns = new FactPattern[0];
@@ -67,7 +64,11 @@ public class CompositeFactPattern
 
         final IFactPattern[] list = this.patterns;
         final IFactPattern[] newList = new IFactPattern[list.length + 1];
-        System.arraycopy(list, 0, newList, 0, list.length);
+        System.arraycopy( list,
+                          0,
+                          newList,
+                          0,
+                          list.length );
         newList[list.length] = pat;
 
         this.patterns = newList;
@@ -76,5 +77,30 @@ public class CompositeFactPattern
     public IFactPattern[] getPatterns() {
         return patterns;
     }
-    
+
+    /**
+     * Remove a FactPattern at the provided index. If index is less than zero or
+     * greater than or equal to the number of patterns the effect of this method
+     * is "no operation".
+     * 
+     * @param index
+     * @return true if the deletion was successful, i.e. within range
+     */
+    public boolean removeFactPattern(int index) {
+        final int newSize = ((index >= 0 && index < this.patterns.length) ? this.patterns.length - 1 : this.patterns.length);
+        final IFactPattern[] newList = new IFactPattern[newSize];
+        boolean deleted = false;
+        int newIdx = 0;
+        for ( int i = 0; i < this.patterns.length; i++ ) {
+            if ( i != index ) {
+                newList[newIdx] = this.patterns[i];
+                newIdx++;
+            } else {
+                deleted = true;
+            }
+        }
+        this.patterns = newList;
+        return deleted;
+    }
+
 }

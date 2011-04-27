@@ -16,11 +16,12 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.drools.guvnor.client.common.DirtyableComposite;
+
+import com.google.gwt.user.client.Command;
 
 /**
  * A superclass for the widgets present in RuleModeller. 

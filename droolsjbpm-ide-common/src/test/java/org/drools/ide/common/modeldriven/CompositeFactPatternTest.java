@@ -43,5 +43,38 @@ public class CompositeFactPatternTest {
         assertEquals( y,
                       pat.getPatterns()[1] );
     }
+    
+    @Test
+    public void testPatternRemoval() {
+        final CompositeFactPattern pat = new CompositeFactPattern();
+        final FactPattern x = new FactPattern();
+        pat.addFactPattern( x );
+        final FactPattern y = new FactPattern();
+        pat.addFactPattern( y );
+
+        assertEquals( 2,
+                      pat.getPatterns().length );
+        assertEquals( x,
+                      pat.getPatterns()[0] );
+        assertEquals( y,
+                      pat.getPatterns()[1] );
+        
+        boolean isDeleted = false;
+        isDeleted = pat.removeFactPattern( -1 );
+        assertFalse(isDeleted);
+        
+        isDeleted = pat.removeFactPattern( 10 );
+        assertFalse(isDeleted);
+        
+        isDeleted = pat.removeFactPattern( 0 );
+        assertTrue(isDeleted);
+        
+        assertEquals( 1,
+                      pat.getPatterns().length );
+        assertEquals( y,
+                      pat.getPatterns()[0] );
+        
+    }
+    
 
 }

@@ -460,7 +460,7 @@ public class RuleModeller extends DirtyableComposite
             positionCbo.addItem( constants.Top(),
                                  "0" );
             for ( int i = 1; i < model.lhs.length; i++ ) {
-                positionCbo.addItem( constants.Line0(i),
+                positionCbo.addItem( constants.Line0( i ),
                                      String.valueOf( i ) );
             }
         } else {
@@ -610,7 +610,7 @@ public class RuleModeller extends DirtyableComposite
                                  cmds );
             }
         } );
-        
+
         Button cancel = new Button( constants.Cancel() );
         hp.add( cancel );
         cancel.addClickHandler( new ClickHandler() {
@@ -664,7 +664,7 @@ public class RuleModeller extends DirtyableComposite
             positionCbo.addItem( constants.Top(),
                                  "0" );
             for ( int i = 1; i < model.rhs.length; i++ ) {
-                positionCbo.addItem( constants.Line0(i),
+                positionCbo.addItem( constants.Line0( i ),
                                      String.valueOf( i ) );
             }
         } else {
@@ -798,7 +798,7 @@ public class RuleModeller extends DirtyableComposite
 
         for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
             final String item = completions.getFactTypes()[i];
-            choices.addItem(  constants.LogicallyInsertFact0( item ),
+            choices.addItem( constants.LogicallyInsertFact0( item ),
                              "LINS" + item ); //NON-NLS
             cmds.put( "LINS" + item,
                       new Command() { //NON-NLS
@@ -819,7 +819,8 @@ public class RuleModeller extends DirtyableComposite
                 for ( int i = 0; i < completions.getGlobalCollections().length; i++ ) {
                     final String glob = completions.getGlobalCollections()[i];
                     final String var = bf;
-                    choices.addItem( constants.Append0ToList1( var, glob ),
+                    choices.addItem( constants.Append0ToList1( var,
+                                                               glob ),
                                      "GLOBCOL" + glob + var ); //NON-NLS
                     cmds.put( "GLOBCOL" + glob + var,
                               new Command() { //NON-NLS
@@ -1220,8 +1221,8 @@ public class RuleModeller extends DirtyableComposite
     }
 
     /**
-     * Returns true is a var name has already been used
-     * either by the rule, or as a global.
+     * Returns true is a var name has already been used either by the rule, or
+     * as a global.
      */
     public boolean isVariableNameUsed(String name) {
         SuggestionCompletionEngine completions = SuggestionCompletionCache.getInstance().getEngineFromCache( packageName );
