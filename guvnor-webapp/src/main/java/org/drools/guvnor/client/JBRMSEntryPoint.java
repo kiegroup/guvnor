@@ -69,6 +69,7 @@ public class JBRMSEntryPoint
 
     public void onModuleLoad() {
         loadStyles();
+        hideLoadingPopup();
         checkLogIn();
     }
 
@@ -160,8 +161,6 @@ public class JBRMSEntryPoint
 
             RootLayoutPanel.get().add( perspectivesPanel.getView() );
         }
-
-        hideLoadingPopup();
 
     }
 
