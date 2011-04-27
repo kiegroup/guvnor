@@ -386,10 +386,10 @@ public class MetaDataWidgetNew extends Composite {
         if ( !readOnly ) {
             final CheckBox box = new CheckBox();
             box.setTitle( toolTip );
-            box.setEnabled( bind.getValue() );
+            box.setValue( bind.getValue() );
             ClickHandler listener = new ClickHandler() {
                 public void onClick(ClickEvent w) {
-                    boolean b = box.isEnabled();
+                    boolean b = box.getValue();
                     bind.setValue( b );
                 }
             };
@@ -398,7 +398,7 @@ public class MetaDataWidgetNew extends Composite {
         } else {
             final CheckBox box = new CheckBox();
 
-            box.setEnabled( bind.getValue() );
+            box.setValue( bind.getValue() );
             box.setEnabled( false );
 
             return box;
