@@ -576,10 +576,8 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                                    p1 );
     }
 
-    public void deleteUncheckedRule(java.lang.String p0,
-                                    java.lang.String p1) {
-        getService().deleteUncheckedRule( p0,
-                                          p1 );
+    public void deleteUncheckedRule(java.lang.String p0) {
+        getService().deleteUncheckedRule( p0 );
     }
 
     public void clearRulesRepository() {

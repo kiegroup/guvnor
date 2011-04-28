@@ -266,8 +266,7 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public void deleteUncheckedRule(String uuid,
-                                    String initialPackage) {
+    public void deleteUncheckedRule(String uuid) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new AdminType(),
                                                  RoleTypes.PACKAGE_ADMIN );
@@ -275,13 +274,14 @@ public class ServiceImplementation
 
         AssetItem asset = getRulesRepository().loadAssetByUUID( uuid );
 
-        String pkgName = asset.getPackageName();
+        PackageItem packageItem = asset.getPackage();
+        packageItem.updateBinaryUpToDate(false);
 
         asset.remove();
 
         getRulesRepository().save();
         push( "packageChange",
-              pkgName );
+              packageItem.getName() );
     }
 
     /**

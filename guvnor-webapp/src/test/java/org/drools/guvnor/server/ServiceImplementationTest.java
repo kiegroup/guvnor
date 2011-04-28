@@ -5536,4 +5536,24 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       item.getDependencies()[0] );
     }
 
+    @Test
+    public void testPackageBinaryUpdatedResetWhenDeletingAnAsset() throws Exception {
+        ServiceImplementation serviceImplementation = getServiceImplementation();
+
+        PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage("testPackageBinaryUpdatedResetWhenDeletingAnAsset",
+                "");
+
+        AssetItem assetItem = packageItem.addAsset("temp", "");
+
+        assertNotNull(packageItem.getName());
+        packageItem.updateBinaryUpToDate(true);
+        assertTrue(packageItem.isBinaryUpToDate());
+
+        serviceImplementation.deleteUncheckedRule(assetItem.getUUID());
+
+        PackageItem reloadedPackage = serviceImplementation.getRulesRepository().loadPackage(packageItem.getName());
+
+        assertEquals(packageItem.getName(), reloadedPackage.getName());
+        assertFalse(reloadedPackage.isBinaryUpToDate());
+    }
 }

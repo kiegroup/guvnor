@@ -88,8 +88,7 @@ public interface RepositoryService
     /**
      * Delete un checked in Asset
      */
-    public void deleteUncheckedRule(String ruleName,
-                                    String initialPackage);
+    public void deleteUncheckedRule(String ruleName);
 
     /**
      * Clear the rules repositoty, Use at your own risk.

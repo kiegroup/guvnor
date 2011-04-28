@@ -441,7 +441,6 @@ public class RuleViewer extends GuvnorEditor {
     void doDelete() {
         readOnly = true; // set to not cause the extra confirm popup
         RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.uuid,
-                                                                   this.asset.metaData.packageName,
                                                                    new GenericCallback<Void>() {
                                                                        public void onSuccess(Void o) {
                                                                            close();

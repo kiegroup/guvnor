@@ -80,6 +80,7 @@ public class PackageItem extends VersionableItem {
     public static final String DEPENDENCIES_PROPERTY_NAME     = "drools:dependencies";
 
     private static final String COMPILED_PACKAGE_PROPERTY_NAME = "drools:compiledPackage";
+    private final String BINARY_UP_TO_DATE = "drools:binaryUpToDate";
 
     /**
      * Constructs an object of type RulePackageItem corresponding the specified node
@@ -138,7 +139,7 @@ public class PackageItem extends VersionableItem {
         try {
             checkIsUpdateable();
             this.checkout();
-            node.setProperty("drools:binaryUpToDate", status);
+            node.setProperty(BINARY_UP_TO_DATE, status);
         } catch (RepositoryException e) {
             log.error("fail to update drools:binaryUpToDate of " + getName(), e);
         }
@@ -150,8 +151,8 @@ public class PackageItem extends VersionableItem {
      */
     public boolean isBinaryUpToDate() {
         try {
-            if (this.node.hasProperty("drools:binaryUpToDate")) {
-                return node.getProperty("drools:binaryUpToDate").getBoolean();
+            if (this.node.hasProperty(BINARY_UP_TO_DATE)) {
+                return node.getProperty(BINARY_UP_TO_DATE).getBoolean();
             } else {
                 return false;
             }
