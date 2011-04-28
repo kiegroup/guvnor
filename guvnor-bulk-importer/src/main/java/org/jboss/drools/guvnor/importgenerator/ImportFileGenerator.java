@@ -260,7 +260,7 @@ public class ImportFileGenerator implements Constants{
     }
 
     public void run(CmdArgsParser options) throws Exception{
-    SimpleDateFormat fmt=new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+    SimpleDateFormat fmt=new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     Date startd=new Date();
     DateTime start=new DateTime(startd);
     this.options=options;
