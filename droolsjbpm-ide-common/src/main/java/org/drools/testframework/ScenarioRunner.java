@@ -351,18 +351,28 @@ public class ScenarioRunner {
                     val = eval(field.getValue().substring(1),
                             populatedData);
                 } else if (field.getNature() == FieldData.TYPE_ENUM) {
-                    try {
-                        // The string representation of enum value is using 
-                        // format like CheeseType.CHEDDAR
+                    // The string representation of a java enum value is a
+                    // format like CheeseType.CHEDDAR
+                    String valueOfEnum = field.getValue();
+                    String fullName = null;
+                    if (field.getValue().indexOf(".") != -1) {
                         String classNameOfEnum = field.getValue().substring(0,
-                                field.getValue().indexOf("."));
-                        String valueOfEnum = field.getValue().substring(field.getValue().indexOf(".") + 1);
-                        String fullName = resolver.getFullTypeName(classNameOfEnum);
-
-                        val = eval(fullName + "." + valueOfEnum);
-                    } catch (ClassNotFoundException e) {
-                        //Do nothing. 
+                                field.getValue().lastIndexOf("."));
+                        valueOfEnum = field.getValue().substring(
+                                field.getValue().lastIndexOf(".") + 1);
+                        try {
+                            fullName = resolver
+                                    .getFullTypeName(classNameOfEnum);
+                        } catch (ClassNotFoundException e) {
+                            fullName = classNameOfEnum;
+                        }
                     }
+
+                    if (fullName != null && !"".equals(fullName)) {
+                        valueOfEnum = fullName + "." + valueOfEnum;
+                    }
+                    val = valueOfEnum;
+                    //val = eval(fullName + "." + valueOfEnum);
                 } else {
                     val = field.getValue();
                 }
