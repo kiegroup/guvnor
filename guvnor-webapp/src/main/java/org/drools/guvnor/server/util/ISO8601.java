@@ -13,7 +13,7 @@ public class ISO8601 {
      * @return
      */
     public static String format( Calendar cal ) {
-        SimpleDateFormat ISO8601Format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSSZ");
+        SimpleDateFormat ISO8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         String text = null;
         if (cal!=null) {
             Date date = cal.getTime();
