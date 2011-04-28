@@ -182,7 +182,7 @@ public class GuidedDTDRLOtherwiseHelper {
                 Boolean booleanValue = dcv.getBooleanValue();
                 return (booleanValue == null ? null : booleanValue.toString());
             case DATE :
-                SimpleDateFormat sdf = new SimpleDateFormat( "dd-mmm-yyyy" );
+                SimpleDateFormat sdf = new SimpleDateFormat( "dd-MMM-yyyy" );
                 Date dateValue = dcv.getDateValue();
                 return (dateValue == null ? null : sdf.format( dcv.getDateValue() ));
             case NUMERIC :
