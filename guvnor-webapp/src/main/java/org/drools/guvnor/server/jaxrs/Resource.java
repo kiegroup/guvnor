@@ -27,24 +27,18 @@ import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.RulesRepository;
 
 public class Resource {
-    
-    @Context UriInfo uriInfo;
+    @Context
+    UriInfo uriInfo;
 
-    ServiceImplementation service = RepositoryServiceServlet.getService();
-    RepositoryPackageService packageService = RepositoryServiceServlet.getPackageService();
-    RepositoryAssetService assetService = RepositoryServiceServlet.getAssetService();
-
+    ServiceImplementation service;
+    RepositoryPackageService packageService;
+    RepositoryAssetService assetService;
     RulesRepository repository;
 
     public Resource() {
         service = RepositoryServiceServlet.getService();
         packageService = RepositoryServiceServlet.getPackageService();
-        assetService = RepositoryServiceServlet.getAssetService();    	
-/*        if (!Contexts.isApplicationContextActive()) {
-            try {
-                repository = new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
-            } catch (Exception e) { e.printStackTrace();}
-        } else {*/
-            repository = service.getRulesRepository();}
-        //}
+        assetService = RepositoryServiceServlet.getAssetService();
+        repository = service.getRulesRepository();
     }
+}
