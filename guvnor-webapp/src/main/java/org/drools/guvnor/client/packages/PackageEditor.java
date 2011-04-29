@@ -376,7 +376,7 @@ public class PackageEditor extends PrettyFormLayout {
     private void showValidatePackageConfigurationResult(final ValidatedResponse validatedResponse) {
     	packageConfigurationValidationResult.clear();
     	
-        if ( validatedResponse != null && validatedResponse.hasErrors ) {
+        if ( validatedResponse != null && validatedResponse.hasErrors && !validatedResponse.errorMessage.startsWith("Class")) {
             Image img = new Image( images.warning() );
             packageConfigurationValidationResult.add( img );
             HTML msg = new HTML( "<b>" + constants.ThereWereErrorsValidatingThisPackageConfiguration() + "</b>" ); //NON-NLS
