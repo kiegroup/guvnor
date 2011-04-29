@@ -26,7 +26,6 @@ import javax.ws.rs.core.Application;
 
 import org.apache.cxf.jaxrs.provider.AtomEntryProvider;
 import org.apache.cxf.jaxrs.provider.AtomFeedProvider;
-import org.jboss.seam.contexts.Lifecycle;
 
 @ApplicationPath("/")
 public class GuvnorApplication extends Application {
@@ -40,16 +39,6 @@ public class GuvnorApplication extends Application {
         classes.add(AtomFeedProvider.class);
         return classes;
     }
-
-    @Override 
-    public Set<Object> getSingletons() {
-        //Lifecycle.beginCall();
-        Set<Object> classes = new HashSet<Object>();
-        classes.add(new PackageResource());
-        classes.add(new CategoryResource());
-        //Lifecycle.endCall();
-        return classes;
-    }   
     
 }
 
