@@ -61,10 +61,8 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
      */
     public static ServiceImplementation getService() {
         if ( Contexts.isApplicationContextActive() ) {
-            System.out.println("--------isApplicationContextActive()");
             return (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
         }
-        System.out.println("--------NOT isApplicationContextActive()");
         //this is only for out of container hosted mode in GWT
         synchronized ( RepositoryServiceServlet.class ) {
             ServiceImplementation serviceImplementation = new ServiceImplementation();

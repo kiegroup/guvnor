@@ -36,7 +36,6 @@ public class Resource {
     RulesRepository repository;
 
     public Resource() {
-        System.out.println("--------Resource()");
         service = RepositoryServiceServlet.getService();
         packageService = RepositoryServiceServlet.getPackageService();
         assetService = RepositoryServiceServlet.getAssetService();
