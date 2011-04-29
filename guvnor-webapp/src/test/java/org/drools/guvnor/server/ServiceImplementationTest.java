@@ -3058,7 +3058,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     /**
      * This idea of this is to not compile packages more then we have to.
      */
-
     @Test
     public void testBinaryUpToDate() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -5183,7 +5182,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         TableDataResult result = repositoryAssetService.loadItemHistory( uuid );
         assertNotNull( result );
         TableDataRow[] rows = result.data;
-        assertEquals( 1,
+        assertEquals( 2,
                       rows.length );
 
         //Import sample again
@@ -5204,7 +5203,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertNotNull( result );
         rows = result.data;
-        assertEquals( 1,
+        assertEquals( 0,
                       rows.length );
     }
 
@@ -5481,7 +5480,42 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( drl2.indexOf( "foo" ) >= 0 );
         assertTrue( drl2.indexOf( "declare Album1" ) >= 0 );
     }
+    
+    @Test
+    public void testGetHistoryPackageBinary() throws Exception {
+        ServiceImplementation impl = getServiceImplementation();
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
+        RulesRepository repo = impl.getRulesRepository();
 
+        // create our package
+        PackageItem pkg = repo.createPackage( "testGetHistoryPackageBinary",
+                                              "" );
+        assertFalse( pkg.isBinaryUpToDate() );
+        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
+                                                  pkg );
+        AssetItem rule1 = pkg.addAsset( "rule_1",
+                                        "" );
+        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateContent( "rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end" );
+        rule1.checkin( "" );
+        repo.save();
+        assertFalse( pkg.isBinaryUpToDate() );
+        
+        //Create a history package with no compiled binary stored. 
+        pkg.checkout();
+        pkg.checkin("version1");        
+        //Verify history package binary.
+        PackageItem p = repo.loadPackage("testGetHistoryPackageBinary", 2);
+        assertEquals( "version1", p.getCheckinComment() );
+        assertFalse( p.isBinaryUpToDate() );
+        byte[] result = p.getCompiledPackageBytes();
+        assertNull( result );
+
+        //Build package update package node to store compiled binary. This is wont work for a history version
+        //The best strategy we can do is to force a package build before checkin. TODO.
+        //BuilderResult results = repositoryPackageService.buildPackage(pkg.getUUID(), true);
+    }
+    
     @Test
     public void testDependencyHistoryPackage() throws Exception {
         ServiceImplementation impl = getServiceImplementation();

@@ -38,6 +38,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -89,7 +90,7 @@ public class PackageResource extends Resource {
                 e.addLink(l);
                 f.addEntry(e);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new WebApplicationException(e);
             }
         }
 
@@ -177,7 +178,7 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getPackageBinary(@PathParam("packageName") String packageName) throws SerializationException {
         PackageItem p = repository.loadPackage(packageName);
-        String fileName = packageName;
+        String fileName = packageName + ".pkg";
         byte[] result;
         if(p.isBinaryUpToDate()) {
             result = p.getCompiledPackageBytes();
@@ -220,7 +221,7 @@ public class PackageResource extends Resource {
 					f.addEntry(e);
 				}
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new WebApplicationException(e);
             }
         }
         
@@ -238,23 +239,29 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/versions/{versionNumber}/source")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getHistoricalPackageSource(@PathParam("packageName") String packageName,
+    public Response getHistoricalPackageSource(@PathParam("packageName") String packageName,
     		@PathParam("versionNumber") long versionNumber) {
     	PackageItem item = repository.loadPackage(packageName,  versionNumber);
         ContentPackageAssembler asm = new ContentPackageAssembler( item,
                                                                    false );
+        String fileName = packageName;
         String drl = asm.getDRL();
-        return drl;
+        return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + fileName).build();
     }    
     
     @GET
     @Path("{packageName}/versions/{versionNumber}/binary")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public byte[] getHistoricalPackageBinary(@PathParam("packageName") String packageName,
+    public Response getHistoricalPackageBinary(@PathParam("packageName") String packageName,
     		@PathParam("versionNumber") long versionNumber) throws SerializationException {
         PackageItem p = repository.loadPackage(packageName, versionNumber);
-        packageService.buildPackage(p.getUUID(), true);
-        return repository.loadPackage(packageName).getCompiledPackageBytes();
+        byte[] result = p.getCompiledPackageBytes();
+        if(result != null) {
+            String fileName = packageName + ".pkg";  
+            return Response.ok(result).header("Content-Disposition", "attachment; filename=" + fileName).build();
+        } else {
+            return Response.status(500).entity("This package version has no compiled binary").type("text/plain").build();
+        }
     }
     
     @GET
@@ -405,10 +412,11 @@ public class PackageResource extends Resource {
                     break;
                 }
             }
-        } else
-            throw new RuntimeException ("Package '" + packageName + "' does not exist!");
 
-        return ret;
+            return ret;
+        } else {
+            throw new WebApplicationException(new RuntimeException ("Package '" + packageName + "' does not exist!"));
+        }
     }
 
     @PUT
