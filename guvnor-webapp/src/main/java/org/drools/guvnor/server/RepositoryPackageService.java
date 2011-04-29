@@ -496,7 +496,6 @@ public class RepositoryPackageService
 
     @Restrict("#{identity.loggedIn}")
     public void installSampleRepository() throws SerializationException {
-        serviceSecurity.checkSecurityIsAdmin();
         getRulesRepository().importRepository( this.getClass().getResourceAsStream( "/mortgage-sample-repository.xml" ) );
         this.rebuildPackages();
         this.rebuildSnapshots();
