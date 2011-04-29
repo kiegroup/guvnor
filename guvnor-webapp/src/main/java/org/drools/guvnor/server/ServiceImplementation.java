@@ -16,24 +16,46 @@
 
 package org.drools.guvnor.server;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.jar.JarInputStream;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+import org.drools.ClockType;
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
+import org.drools.base.ClassTypeResolver;
+import org.drools.common.AbstractRuleBase;
+import org.drools.common.InternalRuleBase;
+import org.drools.common.InternalWorkingMemory;
+import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.client.rpc.InboxIncomingPageRow;
 import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.guvnor.client.rpc.LogEntry;
@@ -50,34 +72,38 @@ import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.ScenarioResultSummary;
+import org.drools.guvnor.client.rpc.ScenarioRunResult;
+import org.drools.guvnor.client.rpc.SingleScenarioResult;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
-import org.drools.guvnor.server.builder.pagerow.InboxPageRowBuilder;
-import org.drools.guvnor.server.builder.pagerow.LogPageRowBuilder;
-import org.drools.guvnor.server.builder.pagerow.PermissionPageRowBuilder;
-import org.drools.guvnor.server.builder.pagerow.QueryFullTextPageRowBuilder;
-import org.drools.guvnor.server.builder.pagerow.QueryMetadataPageRowBuilder;
-import org.drools.guvnor.server.builder.pagerow.StatePageRowBuilder;
-import org.drools.guvnor.server.cache.RuleBaseCache;
+import org.drools.guvnor.server.builder.AuditLogReporter;
+import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
+import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
+import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
+import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
+import org.drools.guvnor.server.util.QueryPageRowFactory;
 import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
@@ -91,6 +117,10 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.repository.security.PermissionManager;
+import org.drools.rule.Package;
+import org.drools.runtime.rule.ConsequenceException;
+import org.drools.testframework.RuleCoverageListener;
+import org.drools.testframework.ScenarioRunner;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
@@ -99,6 +129,7 @@ import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.web.Session;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
@@ -127,12 +158,19 @@ public class ServiceImplementation
     private static final LoggingHelper  log                         = LoggingHelper.getLogger( ServiceImplementation.class );
 
     /**
+     * Used for a simple cache of binary packages to avoid serialization from
+     * the database - for test scenarios.
+     */
+    public static Map<String, RuleBase> ruleBaseCache               = Collections.synchronizedMap( new HashMap<String, RuleBase>() );
+
+    /**
      * This is used for pushing messages back to the client.
      */
-    private final ServiceSecurity             serviceSecurity             = new ServiceSecurity();
+    private static Backchannel          backchannel                 = new Backchannel();
+    private ServiceSecurity             serviceSecurity             = new ServiceSecurity();
 
-    private final RepositoryAssetOperations   repositoryAssetOperations   = new RepositoryAssetOperations();
-    private final RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
+    private RepositoryAssetOperations   repositoryAssetOperations   = new RepositoryAssetOperations();
+    private RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
 
     /* This is called also by Seam AND Hosted mode */
     @Create
@@ -149,6 +187,10 @@ public class ServiceImplementation
 
     public RulesRepository getRulesRepository() {
         return repository;
+    }
+
+    public static Backchannel getBackchannel() {
+        return backchannel;
     }
 
     @WebRemote
@@ -211,10 +253,10 @@ public class ServiceImplementation
                                             description,
                                             initialCategory,
                                             format );
-            AssetTemplateCreator assetTemplateCreator = new AssetTemplateCreator();
-            assetTemplateCreator.applyPreBuiltTemplates( ruleName,
-                                                         format,
-                                                         asset );
+
+            applyPreBuiltTemplates( ruleName,
+                                    format,
+                                    asset );
             getRulesRepository().save();
 
             push( "categoryChange",
@@ -266,7 +308,8 @@ public class ServiceImplementation
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public void deleteUncheckedRule(String uuid) {
+    public void deleteUncheckedRule(String uuid,
+                                    String initialPackage) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new AdminType(),
                                                  RoleTypes.PACKAGE_ADMIN );
@@ -274,14 +317,60 @@ public class ServiceImplementation
 
         AssetItem asset = getRulesRepository().loadAssetByUUID( uuid );
 
-        PackageItem packageItem = asset.getPackage();
-        packageItem.updateBinaryUpToDate(false);
+        String pkgName = asset.getPackageName();
 
         asset.remove();
 
         getRulesRepository().save();
         push( "packageChange",
-              packageItem.getName() );
+              pkgName );
+    }
+
+    /**
+     * For some format types, we add some sugar by adding a new template.
+     */
+    private void applyPreBuiltTemplates(String ruleName,
+                                        String format,
+                                        AssetItem asset) {
+        if ( format.equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
+            asset.updateContent( "when\n\nthen\n" );
+        } else if ( format.equals( AssetFormats.FUNCTION ) ) {
+            asset.updateContent( "function <returnType> " + ruleName + "(<args here>) {\n\n\n}" );
+        } else if ( format.equals( AssetFormats.DSL ) ) {
+            asset.updateContent( "[when]Condition sentence template {var}=" + "rule language mapping {var}\n" + "[then]Action sentence template=rule language mapping" );
+        } else if ( format.equals( AssetFormats.DECISION_SPREADSHEET_XLS ) ) {
+            asset.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/SampleDecisionTable.xls" ) );
+            asset.updateBinaryContentAttachmentFileName( "SampleDecisionTable.xls" );
+        } else if ( format.equals( AssetFormats.DRL ) ) {
+            asset.updateContent( "when\n\t#conditions\nthen\n\t#actions" );
+        } else if ( format.equals( AssetFormats.ENUMERATION ) ) {
+
+        } else if ( format.equals( AssetFormats.SPRING_CONTEXT ) ) {
+            try {
+                ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+                BufferedInputStream inContent = new BufferedInputStream( this.getClass().getClassLoader().getResourceAsStream( "spring-context-sample.xml" ) );
+                IOUtils.copy( inContent,
+                              outContent );
+
+                asset.updateContent( outContent.toString() );
+            } catch ( IOException ex ) {
+                log.error( "Error reading spring-context-sample.xml",
+                           ex );
+                throw new IllegalArgumentException( "Error reading spring-context-sample.xml" );
+            }
+        }
+    }
+
+    public void updateDependency(String uuid,
+                                 String dependencyPath) {
+        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
+        item.updateDependency( dependencyPath );
+        item.checkin( "Update dependency" );
+    }
+
+    public String[] getDependencies(String uuid) {
+        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
+        return item.getDependencies();
     }
 
     /**
@@ -316,6 +405,102 @@ public class ServiceImplementation
         return handler.loadTableConfig();
     }
 
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    /**
+     *
+     * Role-based Authorization check: This method can be accessed if user has
+     * following permissions:
+     * 1. The user has a Analyst role and this role has permission to access the category
+     * which the asset belongs to.
+     * Or.
+     * 2. The user has a package.developer role or higher (i.e., package.admin)
+     * and this role has permission to access the package which the asset belongs to.
+     */
+    public String checkinVersion(RuleAsset asset) throws SerializationException {
+
+        // Verify if the user has permission to access the asset through package
+        // based permission.
+        // If failed, then verify if the user has permission to access the asset
+        // through category
+        // based permission
+        if ( Contexts.isSessionContextActive() ) {
+            boolean passed = false;
+
+            try {
+                Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
+                                                     RoleTypes.PACKAGE_DEVELOPER );
+            } catch ( RuntimeException e ) {
+                if ( asset.metaData.categories.length == 0 ) {
+                    Identity.instance().checkPermission( new CategoryPathType( null ),
+                                                         RoleTypes.ANALYST );
+                } else {
+                    RuntimeException exception = null;
+
+                    for ( String cat : asset.metaData.categories ) {
+                        try {
+                            Identity.instance().checkPermission( new CategoryPathType( cat ),
+                                                                 RoleTypes.ANALYST );
+                            passed = true;
+                        } catch ( RuntimeException re ) {
+                            exception = re;
+                        }
+                    }
+                    if ( !passed ) {
+                        throw exception;
+                    }
+                }
+            }
+        }
+
+        log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.metaData.name + "] UUID: [" + asset.uuid + "] " );
+
+        AssetItem repoAsset = getRulesRepository().loadAssetByUUID( asset.uuid );
+        if ( isAssetUpdatedInRepository( asset,
+                                         repoAsset ) ) {
+            return "ERR: Unable to save this asset, as it has been recently updated by [" + repoAsset.getLastContributor() + "]";
+        }
+
+        MetaData meta = asset.metaData;
+        MetaDataMapper metaDataMapper = MetaDataMapper.getInstance();
+        metaDataMapper.copyFromMetaData( meta,
+                                         repoAsset );
+
+        updateEffectiveAndExpiredDate( repoAsset,
+                                       meta );
+
+        repoAsset.updateCategoryList( meta.categories );
+
+        ContentHandler handler = ContentManager.getHandler( repoAsset.getFormat() );
+        handler.storeAssetContent( asset,
+                                   repoAsset );
+
+        if ( !(asset.metaData.format.equals( AssetFormats.TEST_SCENARIO )) || asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
+            PackageItem pkg = repoAsset.getPackage();
+            pkg.updateBinaryUpToDate( false );
+            ServiceImplementation.ruleBaseCache.remove( pkg.getUUID() );
+        }
+        repoAsset.checkin( meta.checkinComment );
+
+        return repoAsset.getUUID();
+    }
+
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void restoreVersion(String versionUUID,
+                               String assetUUID,
+                               String comment) {
+        AssetItem old = getRulesRepository().loadAssetByUUID( versionUUID );
+        AssetItem head = getRulesRepository().loadAssetByUUID( assetUUID );
+
+        log.info( "USER:" + getCurrentUserName() + " RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber() );
+
+        getRulesRepository().restoreHistoricalAsset( old,
+                                                     head,
+                                                     comment );
+
+    }
+
     /**
      * @deprecated in favour of {@link queryMetaData(QueryPageRequest)}
      */
@@ -336,11 +521,11 @@ public class ServiceImplementation
 
         Map<String, String[]> q = new HashMap<String, String[]>() {
             {
-                for (MetaDataQuery aQr : qr) {
-                    String vals = (aQr.valueList == null) ? "" : aQr.valueList.trim();
-                    if (vals.length() > 0) {
-                        put(aQr.attribute,
-                                vals.split(",\\s?"));
+                for ( int i = 0; i < qr.length; i++ ) {
+                    String vals = (qr[i].valueList == null) ? "" : qr[i].valueList.trim();
+                    if ( vals.length() > 0 ) {
+                        put( qr[i].attribute,
+                             vals.split( ",\\s?" ) );
                     }
                 }
             }
@@ -377,19 +562,6 @@ public class ServiceImplementation
         return new TableDisplayHandler( "searchresults" ).loadRuleListTable( resultList,
                                                                              skip,
                                                                              numRows );
-    }
-
-    private boolean checkPackagePermissionHelper(RepositoryFilter filter,
-                                                 AssetItem item,
-                                                 String roleType) {
-        return filter.accept( getConfigDataHelper( item.getPackage().getUUID() ),
-                              roleType );
-    }
-
-    private PackageConfigData getConfigDataHelper(String uuidStr) {
-        PackageConfigData data = new PackageConfigData();
-        data.uuid = uuidStr;
-        return data;
     }
 
     @WebRemote
@@ -442,6 +614,79 @@ public class ServiceImplementation
         return result;
     }
 
+    /**
+     * 
+     * Role-based Authorization check: This method can be accessed if user has
+     * following permissions: 1. The user has a Analyst role and this role has
+     * permission to access the category which the asset belongs to. Or. 2. The
+     * user has a package.developer role or higher (i.e., package.admin) and
+     * this role has permission to access the package which the asset belongs
+     * to.
+     */
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public void changeState(String uuid,
+                            String newState,
+                            boolean wholePackage) {
+
+        if ( !wholePackage ) {
+            AssetItem asset = getRulesRepository().loadAssetByUUID( uuid );
+
+            // Verify if the user has permission to access the asset through
+            // package based permission.
+            // If failed, then verify if the user has permission to access the
+            // asset through category
+            // based permission
+            if ( Contexts.isSessionContextActive() ) {
+                boolean passed = false;
+
+                try {
+                    Identity.instance().checkPermission( new PackageUUIDType( asset.getPackage().getUUID() ),
+                                                         RoleTypes.PACKAGE_DEVELOPER );
+                } catch ( RuntimeException e ) {
+                    if ( asset.getCategories().size() == 0 ) {
+                        Identity.instance().checkPermission( new CategoryPathType( null ),
+                                                             RoleTypes.ANALYST );
+                    } else {
+                        RuntimeException exception = null;
+
+                        for ( CategoryItem cat : asset.getCategories() ) {
+                            try {
+                                Identity.instance().checkPermission( new CategoryPathType( cat.getName() ),
+                                                                     RoleTypes.ANALYST );
+                                passed = true;
+                            } catch ( RuntimeException re ) {
+                                exception = re;
+                            }
+                        }
+                        if ( !passed ) {
+                            throw exception;
+                        }
+                    }
+                }
+            }
+
+            log.info( "USER:" + getCurrentUserName() + " CHANGING ASSET STATUS. Asset name, uuid: " + "[" + asset.getName() + ", " + asset.getUUID() + "]" + " to [" + newState + "]" );
+            String oldState = asset.getStateDescription();
+            asset.updateState( newState );
+
+            push( "statusChange",
+                  oldState );
+            push( "statusChange",
+                  newState );
+
+            addToDiscussionForAsset( asset.getUUID(),
+                                     oldState + " -> " + newState );
+        } else {
+            serviceSecurity.checkSecurityIsPackageDeveloper( uuid );
+
+            PackageItem pkg = getRulesRepository().loadPackageByUUID( uuid );
+            log.info( "USER:" + getCurrentUserName() + " CHANGING Package STATUS. Asset name, uuid: " + "[" + pkg.getName() + ", " + pkg.getUUID() + "]" + " to [" + newState + "]" );
+            pkg.changeStatus( newState );
+        }
+        getRulesRepository().save();
+    }
+
     @WebRemote
     public void clearRulesRepository() {
         serviceSecurity.checkSecurityIsAdmin();
@@ -454,16 +699,32 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageReadOnly( packageName );
-        SuggestionCompletionEngine suggestionCompletionEngine = null;
+
+        SuggestionCompletionEngine result = null;
+        ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
         try {
-            PackageItem packageItem = getRulesRepository().loadPackage( packageName );
-            SuggestionCompletionEngineLoaderInitializer suggestionCompletionEngineLoader = new SuggestionCompletionEngineLoaderInitializer();
-            suggestionCompletionEngine = suggestionCompletionEngineLoader.loadFor( packageItem );
+            PackageItem pkg = getRulesRepository().loadPackage( packageName );
+            BRMSSuggestionCompletionLoader loader = null;
+            List<JarInputStream> jars = BRMSPackageBuilder.getJars( pkg );
+            if ( jars != null && !jars.isEmpty() ) {
+                ClassLoader cl = BRMSPackageBuilder.createClassLoader( jars );
+
+                Thread.currentThread().setContextClassLoader( cl );
+
+                loader = new BRMSSuggestionCompletionLoader( cl );
+            } else {
+                loader = new BRMSSuggestionCompletionLoader();
+            }
+
+            result = loader.getSuggestionEngine( pkg );
+
         } catch ( RulesRepositoryException e ) {
             log.error( "An error occurred loadSuggestionCompletionEngine: " + e.getMessage() );
             throw new SerializationException( e.getMessage() );
+        } finally {
+            Thread.currentThread().setContextClassLoader( originalCL );
         }
-        return suggestionCompletionEngine;
+        return result;
     }
 
     @WebRemote
@@ -477,6 +738,11 @@ public class ServiceImplementation
     public String[] listRulesInGlobalArea() throws SerializationException {
         serviceSecurity.checkSecurityIsPackageReadOnly( RulesRepository.RULE_GLOBAL_AREA );
         return repositoryPackageOperations.listRulesInPackage( RulesRepository.RULE_GLOBAL_AREA );
+    }
+
+    @Restrict("#{identity.loggedIn}")
+    public List<DiscussionRecord> loadDiscussionForAsset(String assetId) {
+        return new Discussion().fromString( getRulesRepository().loadAssetByUUID( assetId ).getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
     }
 
     /**
@@ -502,20 +768,31 @@ public class ServiceImplementation
 
         // Do query
         long start = System.currentTimeMillis();
-        LogEntry[] logEntries = LoggingHelper.getMessages();
+        LogEntry[] entries = LoggingHelper.getMessages();
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
         PageResponse<LogPageRow> response = new PageResponse<LogPageRow>();
         response.setStartRowIndex( request.getStartRowIndex() );
-        response.setTotalRowSize( logEntries.length );
+        response.setTotalRowSize( entries.length );
         response.setTotalRowSizeExact( true );
-        LogPageRowBuilder logPageRowBuilder = new LogPageRowBuilder();
-        List<LogPageRow> rowList = logPageRowBuilder.createRows( request,
-                                                                 logEntries );
 
+        int rowNumber = 0;
+        int rowMinNumber = request.getStartRowIndex();
+        int rowMaxNumber = request.getPageSize() == null ? entries.length : Math.min( rowMinNumber + request.getPageSize(),
+                                                                                      entries.length );
+        int resultsSize = (request.getPageSize() == null ? entries.length : request.getPageSize());
+        List<LogPageRow> rowList = new ArrayList<LogPageRow>( resultsSize );
+        for ( rowNumber = rowMinNumber; rowNumber < rowMaxNumber; rowNumber++ ) {
+            LogEntry e = entries[rowNumber];
+            LogPageRow row = new LogPageRow();
+            row.setSeverity( e.severity );
+            row.setMessage( e.message );
+            row.setTimestamp( e.timestamp );
+            rowList.add( row );
+        }
         response.setPageRowList( rowList );
-        response.setLastPage( (rowList.size() + request.getStartRowIndex()) == logEntries.length );
+        response.setLastPage( rowNumber == entries.length );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Retrieved Log Entries in " + methodDuration + " ms." );
@@ -534,14 +811,13 @@ public class ServiceImplementation
     public String[] loadDropDownExpression(String[] valuePairs,
                                            String expression) {
         Map<String, String> context = new HashMap<String, String>();
-
-        for (String valuePair : valuePairs) {
-            if (valuePair == null) {
+        for ( int i = 0; i < valuePairs.length; i++ ) {
+            if ( valuePairs[i] == null ) {
                 return new String[0];
             }
-            String[] pair = valuePair.split("=");
-            context.put(pair[0],
-                    pair[1]);
+            String[] pair = valuePairs[i].split( "=" );
+            context.put( pair[0],
+                         pair[1] );
         }
         // first interpolate the pairs
         expression = (String) TemplateRuntime.eval( expression,
@@ -598,11 +874,25 @@ public class ServiceImplementation
         response.setTotalRowSize( permissions.size() );
         response.setTotalRowSizeExact( true );
 
-        PermissionPageRowBuilder permissionPageRowBuilder = new PermissionPageRowBuilder();
-        List<PermissionsPageRow> rowList = permissionPageRowBuilder.createRows( request,
-                                                                                permissions );
+        int rowNumber = 0;
+        int rowMinNumber = request.getStartRowIndex();
+        int rowMaxNumber = request.getPageSize() == null ? permissions.size() : rowMinNumber + request.getPageSize();
+        int resultsSize = (request.getPageSize() == null ? permissions.size() : request.getPageSize());
+        List<PermissionsPageRow> rowList = new ArrayList<PermissionsPageRow>( resultsSize );
+        Iterator<String> mapItr = permissions.keySet().iterator();
+        while ( mapItr.hasNext() && rowNumber < rowMaxNumber ) {
+            String userName = mapItr.next();
+            if ( rowNumber >= rowMinNumber ) {
+                List<String> userPermissions = permissions.get( userName );
+                PermissionsPageRow row = new PermissionsPageRow();
+                row.setUserName( userName );
+                row.setUserPermissions( userPermissions );
+                rowList.add( row );
+            }
+            rowNumber++;
+        }
         response.setPageRowList( rowList );
-        response.setLastPage( (rowList.size() + request.getStartRowIndex()) == permissions.size() );
+        response.setLastPage( !mapItr.hasNext() );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Retrieved Log Entries in " + methodDuration + " ms." );
@@ -653,6 +943,41 @@ public class ServiceImplementation
         getRulesRepository().save();
     }
 
+    @Restrict("#{identity.loggedIn}")
+    public List<DiscussionRecord> addToDiscussionForAsset(String assetId,
+                                                          String comment) {
+        RulesRepository repo = getRulesRepository();
+        AssetItem asset = repo.loadAssetByUUID( assetId );
+        Discussion dp = new Discussion();
+        List<DiscussionRecord> discussion = dp.fromString( asset.getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
+        discussion.add( new DiscussionRecord( repo.getSession().getUserID(),
+                                              StringEscapeUtils.escapeXml( comment ) ) );
+        asset.updateStringProperty( dp.toString( discussion ),
+                                    Discussion.DISCUSSION_PROPERTY_KEY,
+                                    false );
+        repo.save();
+
+        push( "discussion",
+              assetId );
+
+        MailboxService.getInstance().recordItemUpdated( asset );
+
+        return discussion;
+    }
+
+    @Restrict("#{identity.loggedIn}")
+    public void clearAllDiscussionsForAsset(final String assetId) {
+        RulesRepository repo = getRulesRepository();
+        AssetItem asset = repo.loadAssetByUUID( assetId );
+        asset.updateStringProperty( "",
+                                    "discussion" );
+        repo.save();
+
+        push( "discussion",
+              assetId );
+
+    }
+
     /**
      * @deprecated in favour of {@link loadInbox(InboxPageRequest)}
      */
@@ -687,27 +1012,38 @@ public class ServiceImplementation
         }
 
         String inboxName = request.getInboxName();
-        UserInbox userInbox = new UserInbox( getRulesRepository() );
+        UserInbox ib = new UserInbox( getRulesRepository() );
+        List<InboxEntry> entries = new ArrayList<InboxEntry>();
         PageResponse<InboxPageRow> response = new PageResponse<InboxPageRow>();
         long start = System.currentTimeMillis();
 
         try {
 
             // Do applicable query
-            List<InboxEntry> entries = userInbox.loadEntries( inboxName );
-            log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+            if ( inboxName.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
+                entries = ib.loadRecentOpened();
+                log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+            } else if ( inboxName.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) ) {
+                entries = ib.loadRecentEdited();
+                log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+            } else {
+                entries = ib.loadIncoming();
+                log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+
+            }
 
             // Populate response
-            Iterator<InboxEntry> iterator = entries.iterator();
-            InboxPageRowBuilder inboxPageRowBuilder = new InboxPageRowBuilder();
-            List<InboxPageRow> rowList = inboxPageRowBuilder.createRows( request,
-                                                                             iterator );
+            Iterator<InboxEntry> it = entries.iterator();
+            List<InboxPageRow> rowList = fillInboxPageRows( request,
+                                                            it );
 
             response.setStartRowIndex( request.getStartRowIndex() );
             response.setTotalRowSize( entries.size() );
             response.setTotalRowSizeExact( true );
             response.setPageRowList( rowList );
-            response.setLastPage( !iterator.hasNext() );
+            response.setLastPage( !it.hasNext() );
 
             long methodDuration = System.currentTimeMillis() - start;
             log.debug( "Queried inbox ('" + inboxName + "') in " + methodDuration + " ms." );
@@ -718,6 +1054,18 @@ public class ServiceImplementation
                                                       e.getMessage() );
         }
         return response;
+    }
+
+    public List<PushResponse> subscribe() {
+        if ( Contexts.isApplicationContextActive() && !Session.instance().isInvalid() ) {
+            try {
+                return backchannel.await( getCurrentUserName() );
+            } catch ( InterruptedException e ) {
+                return new ArrayList<PushResponse>();
+            }
+        } else {
+            return new ArrayList<PushResponse>();
+        }
     }
 
     /**
@@ -762,7 +1110,8 @@ public class ServiceImplementation
      * Check to see if app context is active (not in hosted)
      */
     public Boolean isHostedMode() {
-        return Contexts.isApplicationContextActive() ? Boolean.FALSE : Boolean.TRUE;
+        Boolean hm = Contexts.isApplicationContextActive() ? Boolean.FALSE : Boolean.TRUE;
+        return hm;
     }
 
     @WebRemote
@@ -784,9 +1133,8 @@ public class ServiceImplementation
         // Populate response
         long totalRowsCount = it.getSize();
         PageResponse<QueryPageRow> response = new PageResponse<QueryPageRow>();
-        QueryFullTextPageRowBuilder queryFullTextPageRowBuilder = new QueryFullTextPageRowBuilder();
-        List<QueryPageRow> rowList = queryFullTextPageRowBuilder.createRows( request,
-                                                                                 it );
+        List<QueryPageRow> rowList = fillQueryFullTextPageRows( request,
+                                                                it );
         boolean bHasMoreRows = it.hasNext();
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
@@ -816,13 +1164,26 @@ public class ServiceImplementation
         }
 
         // Setup parameters for generic repository query
-        Map<String, String[]> queryMap = createQueryMap( request.getMetadata() );
+        Map<String, String[]> q = new HashMap<String, String[]>();
+        for ( MetaDataQuery md : request.getMetadata() ) {
+            String vals = (md.valueList == null) ? "" : md.valueList.trim();
+            if ( vals.length() > 0 ) {
+                q.put( md.attribute,
+                       vals.split( ",\\s?" ) );
+            }
+        }
 
-        DateQuery[] dates = createDateQueryForRepository( request );
+        DateQuery[] dates = new DateQuery[2];
+        dates[0] = new DateQuery( "jcr:created",
+                                  isoDate( request.getCreatedAfter() ),
+                                  isoDate( request.getCreatedBefore() ) );
+        dates[1] = new DateQuery( AssetItem.LAST_MODIFIED_PROPERTY_NAME,
+                                  isoDate( request.getLastModifiedAfter() ),
+                                  isoDate( request.getLastModifiedBefore() ) );
 
         // Do query
         long start = System.currentTimeMillis();
-        AssetItemIterator it = getRulesRepository().query( queryMap,
+        AssetItemIterator it = getRulesRepository().query( q,
                                                            request.isSearchArchived(),
                                                            dates );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
@@ -830,9 +1191,8 @@ public class ServiceImplementation
         // Populate response
         long totalRowsCount = it.getSize();
         PageResponse<QueryPageRow> response = new PageResponse<QueryPageRow>();
-        QueryMetadataPageRowBuilder queryMetadataPageRowBuilder = new QueryMetadataPageRowBuilder();
-        List<QueryPageRow> rowList = queryMetadataPageRowBuilder.createRows( request,
-                                                                                 it );
+        List<QueryPageRow> rowList = fillQueryMetadataPageRows( request,
+                                                                it );
         boolean bHasMoreRows = it.hasNext();
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
@@ -850,29 +1210,6 @@ public class ServiceImplementation
         log.debug( "Queried repository (Metadata) in " + methodDuration + " ms." );
         return response;
 
-    }
-
-    private Map<String, String[]> createQueryMap(final List<MetaDataQuery> metaDataQuerys) {
-        Map<String, String[]> queryMap = new HashMap<String, String[]>();
-        for ( MetaDataQuery metaDataQuery : metaDataQuerys ) {
-            String vals = (metaDataQuery.valueList == null) ? "" : metaDataQuery.valueList.trim();
-            if ( vals.length() > 0 ) {
-                queryMap.put( metaDataQuery.attribute,
-                              vals.split( ",\\s?" ) );
-            }
-        }
-        return queryMap;
-    }
-
-    private DateQuery[] createDateQueryForRepository(QueryMetadataPageRequest request) {
-        DateQuery[] dates = new DateQuery[2];
-        dates[0] = new DateQuery( "jcr:created",
-                                  isoDate( request.getCreatedAfter() ),
-                                  isoDate( request.getCreatedBefore() ) );
-        dates[1] = new DateQuery( AssetItem.LAST_MODIFIED_PROPERTY_NAME,
-                                  isoDate( request.getLastModifiedAfter() ),
-                                  isoDate( request.getLastModifiedBefore() ) );
-        return dates;
     }
 
     @WebRemote
@@ -903,10 +1240,8 @@ public class ServiceImplementation
         // Populate response
         boolean bHasMoreRows = result.hasNext;
         PageResponse<StatePageRow> response = new PageResponse<StatePageRow>();
-        StatePageRowBuilder statePageRowBuilder = new StatePageRowBuilder();
-        List<StatePageRow> rowList = statePageRowBuilder.createRows( request,
-                                                                     result.assets.iterator() );
-
+        List<StatePageRow> rowList = fillStatePageRows( request,
+                                                        result );
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setPageRowList( rowList );
         response.setLastPage( !bHasMoreRows );
@@ -924,18 +1259,53 @@ public class ServiceImplementation
         return response;
     }
 
+    private void updateEffectiveAndExpiredDate(AssetItem repoAsset,
+                                               MetaData meta) {
+        repoAsset.updateDateEffective( dateToCalendar( meta.dateEffective ) );
+        repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );
+    }
+
+    private boolean isAssetUpdatedInRepository(RuleAsset asset,
+                                               AssetItem repoAsset) {
+        return asset.metaData.lastModifiedDate.before( repoAsset.getLastModified().getTime() );
+    }
+
+    private Calendar dateToCalendar(Date date) {
+        if ( date == null ) {
+            return null;
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime( date );
+        return cal;
+    }
+
+    private boolean checkPackagePermissionHelper(RepositoryFilter filter,
+                                                 AssetItem item,
+                                                 String roleType) {
+        return filter.accept( getConfigDataHelper( item.getPackage().getUUID() ),
+                              roleType );
+    }
+
     private boolean checkCategoryPermissionHelper(RepositoryFilter filter,
                                                   AssetItem item,
                                                   String roleType) {
         List<CategoryItem> tempCateList = item.getCategories();
-        for (CategoryItem categoryItem : tempCateList) {
-            if (filter.accept(categoryItem.getName(),
-                    roleType)) {
+        for ( Iterator<CategoryItem> i = tempCateList.iterator(); i.hasNext(); ) {
+            CategoryItem categoryItem = i.next();
+
+            if ( filter.accept( categoryItem.getName(),
+                                roleType ) ) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    private PackageConfigData getConfigDataHelper(String uuidStr) {
+        PackageConfigData data = new PackageConfigData();
+        data.uuid = uuidStr;
+        return data;
     }
 
     private String isoDate(Date d) {
@@ -952,16 +1322,142 @@ public class ServiceImplementation
      */
     private void push(String messageType,
                       String message) {
-        Backchannel.getInstance().publish( new PushResponse( messageType,
-                                                             message ) );
+        backchannel.publish( new PushResponse( messageType,
+                                               message ) );
     }
 
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
     }
 
-    public List<PushResponse> subscribe() {
-        return Backchannel.getInstance().subscribe();
+    private List<InboxPageRow> fillInboxPageRows(InboxPageRequest request,
+                                                 Iterator<InboxEntry> it) {
+        int skipped = 0;
+        Integer pageSize = request.getPageSize();
+        int startRowIndex = request.getStartRowIndex();
+        List<InboxPageRow> rowList = new ArrayList<InboxPageRow>();
+        while ( it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
+            InboxEntry ie = (InboxEntry) it.next();
+
+            if ( skipped >= startRowIndex ) {
+                rowList.add( makeInboxPageRow( ie,
+                                               request ) );
+            }
+            skipped++;
+        }
+        return rowList;
+    }
+
+    private List<QueryPageRow> fillQueryFullTextPageRows(QueryPageRequest request,
+                                                         AssetItemIterator it) {
+        int skipped = 0;
+        Integer pageSize = request.getPageSize();
+        int startRowIndex = request.getStartRowIndex();
+        RepositoryFilter filter = new PackageFilter();
+
+        List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
+
+        while ( it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
+            AssetItem assetItem = (AssetItem) it.next();
+
+            // Filter surplus assets
+            if ( checkPackagePermissionHelper( filter,
+                                               assetItem,
+                                               RoleTypes.PACKAGE_READONLY ) ) {
+
+                // Cannot use AssetItemIterator.skip() as it skips non-filtered
+                // assets whereas startRowIndex is the index of the
+                // first displayed asset (i.e. filtered)
+                if ( skipped >= startRowIndex ) {
+                    rowList.add( QueryPageRowFactory.makeQueryPageRow( assetItem ) );
+                }
+                skipped++;
+            }
+        }
+        return rowList;
+    }
+
+    private List<QueryPageRow> fillQueryMetadataPageRows(QueryMetadataPageRequest request,
+                                                         AssetItemIterator it) {
+        int skipped = 0;
+        Integer pageSize = request.getPageSize();
+        int startRowIndex = request.getStartRowIndex();
+        RepositoryFilter packageFilter = new PackageFilter();
+        RepositoryFilter categoryFilter = new CategoryFilter();
+        List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
+
+        while ( it.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
+            AssetItem assetItem = (AssetItem) it.next();
+
+            // Filter surplus assets
+            if ( checkPackagePermissionHelper( packageFilter,
+                                               assetItem,
+                                               RoleTypes.PACKAGE_READONLY ) || checkCategoryPermissionHelper( categoryFilter,
+                                                                                                              assetItem,
+                                                                                                              RoleTypes.ANALYST_READ ) ) {
+
+                // Cannot use AssetItemIterator.skip() as it skips non-filtered
+                // assets whereas startRowIndex is the index of the
+                // first displayed asset (i.e. filtered)
+                if ( skipped >= startRowIndex ) {
+                    rowList.add( QueryPageRowFactory.makeQueryPageRow( assetItem ) );
+                }
+                skipped++;
+            }
+        }
+        return rowList;
+    }
+
+    private InboxPageRow makeInboxPageRow(InboxEntry ie,
+                                          InboxPageRequest request) {
+        InboxPageRow row = null;
+        if ( request.getInboxName().equals( ExplorerNodeConfig.INCOMING_ID ) ) {
+            InboxIncomingPageRow tr = new InboxIncomingPageRow();
+            tr.setUuid( ie.assetUUID );
+            tr.setFormat( AssetFormats.BUSINESS_RULE );
+            tr.setNote( ie.note );
+            tr.setName( ie.note );
+            tr.setTimestamp( new Date( ie.timestamp ) );
+            tr.setFrom( ie.from );
+            row = tr;
+
+        } else {
+            InboxPageRow tr = new InboxPageRow();
+            tr.setUuid( ie.assetUUID );
+            tr.setNote( ie.note );
+            tr.setName( ie.note );
+            tr.setTimestamp( new Date( ie.timestamp ) );
+            row = tr;
+        }
+        return row;
+    }
+
+    private List<StatePageRow> fillStatePageRows(StatePageRequest request,
+                                                 AssetItemPageResult result) {
+        List<StatePageRow> rowList = new ArrayList<StatePageRow>();
+
+        // Filtering and skipping records to the required page is handled in
+        // repository.findAssetsByState() so we only need to simply copy
+        Iterator<AssetItem> it = result.assets.iterator();
+        while ( it.hasNext() ) {
+            AssetItem assetItem = (AssetItem) it.next();
+            rowList.add( makeStatePageRow( assetItem ) );
+        }
+        return rowList;
+    }
+
+    private StatePageRow makeStatePageRow(AssetItem assetItem) {
+        StatePageRow row = new StatePageRow();
+        row.setUuid( assetItem.getUUID() );
+        row.setFormat( assetItem.getFormat() );
+        row.setName( assetItem.getName() );
+        row.setDescription( assetItem.getDescription() );
+        row.setAbbreviatedDescription( StringUtils.abbreviate( assetItem.getDescription(),
+                                                               80 ) );
+        row.setLastModified( assetItem.getLastModified().getTime() );
+        row.setStateName( assetItem.getState().getName() );
+        row.setPackageName( assetItem.getPackageName() );
+        return row;
     }
 
 }
