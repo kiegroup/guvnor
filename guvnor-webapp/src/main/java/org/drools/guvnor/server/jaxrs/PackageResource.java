@@ -51,6 +51,7 @@ import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
 import org.drools.compiler.DroolsParserException;
+import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.files.RepositoryServlet;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
@@ -183,11 +184,26 @@ public class PackageResource extends Resource {
         if(p.isBinaryUpToDate()) {
             result = p.getCompiledPackageBytes();
         } else {
-            packageService.buildPackage(p.getUUID(), true);
-            result = repository.loadPackage(packageName).getCompiledPackageBytes();        	
+            StringBuilder errs = new StringBuilder();
+            BuilderResult builderResult = packageService.buildPackage(p.getUUID(), true);
+            if ( builderResult != null ) {
+                errs.append("Unable to build package name [").append(packageName).append("]\n");
+                StringBuilder buf = createStringBuilderFrom( builderResult );
+                return Response.status(500).entity(buf.toString()).build();
+            }
+            result = repository.loadPackage(packageName).getCompiledPackageBytes(); 
         }
         
         return Response.ok(result).header("Content-Disposition", "attachment; filename=" + fileName).build();
+    }
+    
+    private StringBuilder createStringBuilderFrom(BuilderResult res) {
+        StringBuilder buf = new StringBuilder();
+        for ( int i = 0; i < res.getLines().size(); i++ ) {
+            buf.append( res.getLines().get( i ).toString() );
+            buf.append( '\n' );
+        }
+        return buf;
     }
     
     @GET

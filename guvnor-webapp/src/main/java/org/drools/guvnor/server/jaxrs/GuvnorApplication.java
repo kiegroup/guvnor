@@ -43,11 +43,11 @@ public class GuvnorApplication extends Application {
 
     @Override 
     public Set<Object> getSingletons() {
-        Lifecycle.beginCall();
+        //Lifecycle.beginCall();
         Set<Object> classes = new HashSet<Object>();
         classes.add(new PackageResource());
         classes.add(new CategoryResource());
-        Lifecycle.endCall();
+        //Lifecycle.endCall();
         return classes;
     }   
     
