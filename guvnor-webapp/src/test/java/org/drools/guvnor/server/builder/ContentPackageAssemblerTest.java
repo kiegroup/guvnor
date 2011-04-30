@@ -55,9 +55,6 @@ import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mvel2.MVEL;
 
@@ -67,8 +64,8 @@ import org.mvel2.MVEL;
 public class ContentPackageAssemblerTest extends GuvnorTestBase {
 
     /**
-     * Test package configuration errors,
-     * including header, functions, DSL files.
+     * Test package configuration errors, including header, functions, DSL
+     * files.
      */
     @Test
     public void testPackageConfigWithErrors() throws Exception {
@@ -325,6 +322,51 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         assertTrue( drl.indexOf( "declare Album" ) > -1 );
 
     }
+
+    @Test
+    public void testSimplePackageAttributes() throws Exception {
+        RulesRepository repo = getRulesRepository();
+
+        PackageItem pkg = repo.createPackage( "testSimplePackageAttributes",
+                                              "" );
+
+        DroolsHeader.updateDroolsHeader( "import java.util.HashMap\nno-loop true\nagenda-group \"albums\"\ndialect \"java\"\n",
+                                                  pkg );
+
+        AssetItem rule1 = pkg.addAsset( "rule_1",
+                                        "" );
+        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateContent( "rule 'rule1' \n dialect \"mvel\" \n when Album() \n then \nAlbum a = new Album(); \n end" );
+        rule1.checkin( "" );
+
+        AssetItem model = pkg.addAsset( "model",
+                                        "qed" );
+        model.updateFormat( AssetFormats.DRL_MODEL );
+
+        model.updateContent( "declare Album\n genre: String \n end" );
+        model.checkin( "" );
+
+        repo.save();
+
+        ContentPackageAssembler asm = new ContentPackageAssembler( pkg );
+        assertFalse( asm.hasErrors() );
+
+        assertNotNull( asm.getBinaryPackage() );
+        Package bin = asm.getBinaryPackage();
+        assertEquals( pkg.getName(),
+                      bin.getName() );
+        assertTrue( bin.isValid() );
+
+        assertEquals( 1,
+                      bin.getRules().length );
+        assertEquals( "albums",
+                      bin.getRule( "rule1" ).getAgendaGroup() );
+        assertEquals( true,
+                      bin.getRule( "rule1" ).isNoLoop() );
+        assertEquals( "mvel",
+                      bin.getRule( "rule1" ).getDialect() );
+
+    }
     
     @Test
     public void testSimplePackageWithDeclaredTypesUsingDependency() throws Exception {
@@ -351,7 +393,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         model.updateContent( "declare Album\n genre2: String \n end" );
         model.checkin( "version 1" );
         model.updateContent( "declare Album\n genre3: String \n end" );
-        model.checkin( "version 2" );        
+        model.checkin( "version 2" );
         repo.save();
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg );
@@ -370,10 +412,10 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
 
         assertTrue( drl.indexOf( "genre2" ) == -1 );
         assertTrue( drl.indexOf( "genre3" ) > -1 );
-        
-        pkg.updateDependency("model?version=2");
-        pkg.checkin("Update dependency");
-        
+
+        pkg.updateDependency( "model?version=2" );
+        pkg.checkin( "Update dependency" );
+
         ContentPackageAssembler asm2 = new ContentPackageAssembler( pkg );
         assertFalse( asm2.getErrors().toString(),
                      asm2.hasErrors() );
@@ -385,7 +427,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         assertTrue( bin2.isValid() );
 
         asm2 = new ContentPackageAssembler( pkg,
-                                           false );
+                                            false );
         String drl2 = asm2.getDRL();
 
         assertTrue( drl2.indexOf( "genre2" ) > -1 );
@@ -501,8 +543,8 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
     }
 
     /**
-     * This this case we will test errors that occur in rule assets,
-     * not in functions or package header.
+     * This this case we will test errors that occur in rule assets, not in
+     * functions or package header.
      */
     @Test
     public void testErrorsInRuleAsset() throws Exception {
@@ -710,7 +752,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
                       drl.indexOf( "garbage" ) );
 
     }
-    
+
     @Test
     public void testShowSourceUsingSpecifiedDependencies() throws Exception {
         RulesRepository repo = getRulesRepository();
@@ -727,9 +769,9 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
                                        "" );
         func.updateFormat( AssetFormats.FUNCTION );
         func.updateContent( "function void foo() { System.out.println(version 1); }" );
-        func.checkin( "version 1" );        
+        func.checkin( "version 1" );
         func.updateContent( "function void foo() { System.out.println(version 2); }" );
-        func.checkin( "version 2" ); 
+        func.checkin( "version 2" );
 
         AssetItem dsl = pkg.addAsset( "myDSL",
                                       "" );
@@ -738,14 +780,15 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         dsl.checkin( "version 1" );
         dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz2()" );
         dsl.checkin( "version 2" );
-        
-        AssetItem rule = pkg.addAsset( "rule1", "" );
+
+        AssetItem rule = pkg.addAsset( "rule1",
+                                       "" );
         rule.updateFormat( AssetFormats.DRL );
         rule.updateContent( "rule 'foo' when Goo() then end" );
         rule.checkin( "version 1" );
         rule.updateContent( "rule 'foo' when Eoo() then end" );
         rule.checkin( "version 2" );
-        
+
         AssetItem rule2 = pkg.addAsset( "rule2",
                                         "" );
         rule2.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
@@ -753,7 +796,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         rule2.checkin( "version 1" );
         rule2.updateContent( "when \n foo \n then \n call a func" );
         rule2.checkin( "version 2" );
-        
+
         AssetItem rule3 = pkg.addAsset( "model1",
                                         "" );
         rule3.updateFormat( AssetFormats.DRL_MODEL );
@@ -762,16 +805,16 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         rule3.checkin( "version 1" );
         rule3.updateContent( "declare Album\n genre1: String \n end" );
         rule3.checkin( "version 2" );
-        
+
         repo.save();
-        
+
         //NOTE: dont use version=0. Version 0 is the root node. 
-        pkg.updateDependency("func?version=1");
-        pkg.updateDependency("myDSL?version=1");
-        pkg.updateDependency("rule1?version=1");
-        pkg.updateDependency("rule2?version=1");
-        pkg.updateDependency("model1?version=1");
-        pkg.checkin("Update dependency");
+        pkg.updateDependency( "func?version=1" );
+        pkg.updateDependency( "myDSL?version=1" );
+        pkg.updateDependency( "rule1?version=1" );
+        pkg.updateDependency( "rule2?version=1" );
+        pkg.updateDependency( "model1?version=1" );
+        pkg.checkin( "Update dependency" );
 
         ContentPackageAssembler asm = new ContentPackageAssembler( pkg,
                                                                    false );
@@ -795,39 +838,43 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         assertEquals( -1,
                       drl.indexOf( "garbage" ) );
         assertEquals( -1,
-                drl.indexOf( "Album" ) );
+                      drl.indexOf( "Album" ) );
     }
-    
+
     @Test
     public void testShowSourceForHistoricalPackage() throws Exception {
         RulesRepository repo = getRulesRepository();
-        PackageItem pkg = repo.createPackage( "testShowSourceForHistoricalPackage", "" );
+        PackageItem pkg = repo.createPackage( "testShowSourceForHistoricalPackage",
+                                              "" );
 
         DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer",
                                                   pkg );
         repo.save();
 
-        AssetItem func = pkg.addAsset( "func", "" );
+        AssetItem func = pkg.addAsset( "func",
+                                       "" );
         func.updateFormat( AssetFormats.FUNCTION );
         func.updateContent( "function void foo() { System.out.println(version 1); }" );
-        func.checkin( "version 1" );        
+        func.checkin( "version 1" );
         func.updateContent( "function void foo() { System.out.println(version 2); }" );
-        func.checkin( "version 2" ); 
+        func.checkin( "version 2" );
 
-        AssetItem dsl = pkg.addAsset( "myDSL", "" );
+        AssetItem dsl = pkg.addAsset( "myDSL",
+                                      "" );
         dsl.updateFormat( AssetFormats.DSL );
         dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz1()" );
         dsl.checkin( "version 1" );
         dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz2()" );
         dsl.checkin( "version 2" );
-        
-        AssetItem rule = pkg.addAsset( "rule1", "" );
+
+        AssetItem rule = pkg.addAsset( "rule1",
+                                       "" );
         rule.updateFormat( AssetFormats.DRL );
         rule.updateContent( "rule 'foo' when Goo() then end" );
         rule.checkin( "version 1" );
         rule.updateContent( "rule 'foo' when Eoo() then end" );
         rule.checkin( "version 2" );
-        
+
         AssetItem rule2 = pkg.addAsset( "rule2",
                                         "" );
         rule2.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
@@ -835,7 +882,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         rule2.checkin( "version 1" );
         rule2.updateContent( "when \n foo \n then \n call a func" );
         rule2.checkin( "version 2" );
-        
+
         AssetItem rule3 = pkg.addAsset( "model1",
                                         "" );
         rule3.updateFormat( AssetFormats.DRL_MODEL );
@@ -844,20 +891,21 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         rule3.checkin( "version 1" );
         rule3.updateContent( "declare Album\n genre1: String \n end" );
         rule3.checkin( "version 2" );
-        
+
         repo.save();
-        pkg.checkin("Version 2");
+        pkg.checkin( "Version 2" );
         pkg.checkout();
-        pkg.checkin("Version 3");
-        
-        PackageItem historicalPackage = repo.loadPackage("testShowSourceForHistoricalPackage", 2);
+        pkg.checkin( "Version 3" );
+
+        PackageItem historicalPackage = repo.loadPackage( "testShowSourceForHistoricalPackage",
+                                                          2 );
 
         ContentPackageAssembler asm = new ContentPackageAssembler( historicalPackage,
                                                                    false );
         String drl = asm.getDRL();
 
         assertNotNull( drl );
-        System.out.println(drl);
+        System.out.println( drl );
 
         assertContains( "import com.billasurf.Board\n global com.billasurf.Person customer",
                         drl );
@@ -873,7 +921,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         assertEquals( -1,
                       drl.indexOf( "garbage" ) );
         assertEquals( -1,
-                drl.indexOf( "Album" ) );
+                      drl.indexOf( "Album" ) );
     }
 
     @Test
@@ -1109,7 +1157,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         RuleModel model = new RuleModel();
         model.name = "rule2";
         FactPattern pattern = new FactPattern( "Person" );
-        pattern.setBoundName("p");
+        pattern.setBoundName( "p" );
         ActionSetField action = new ActionSetField( "p" );
         ActionFieldValue value = new ActionFieldValue( "age",
                                                        "42",
@@ -1137,7 +1185,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
         model = new RuleModel();
         model.name = "ruleNODSL";
         pattern = new FactPattern( "Person" );
-        pattern.setBoundName("p");
+        pattern.setBoundName( "p" );
         action = new ActionSetField( "p" );
         value = new ActionFieldValue( "age",
                                       "42",
