@@ -18,22 +18,18 @@ package org.drools.guvnor.server;
 
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.repository.AssetItem;
-import org.drools.repository.RepositoryFilter;
-import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
-public class AssetItemFilter implements RepositoryFilter {
+public class AssetItemFilter extends AbstractFilter<AssetItem> {
+    public AssetItemFilter() {
+        super( AssetItem.class );
+    }
 
-    public boolean accept(Object artifact, String action) {
-        if (!(artifact instanceof AssetItem))
-            return false;
-
-        // for GWT hosted mode - debug only
-        if (!Contexts.isSessionContextActive()) {
-            return true;
-        } else {
-            return Identity.instance().hasPermission(new PackageUUIDType(((AssetItem) artifact).getPackage().getUUID()), action);
-        }
+    @Override
+    protected boolean checkPermission(AssetItem assetItem,
+                                      String action) {
+        return Identity.instance().hasPermission( new PackageUUIDType( assetItem.getPackage().getUUID() ),
+                                                  action );
     }
 
 }
