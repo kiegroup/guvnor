@@ -361,18 +361,25 @@ public class ScenarioRunner {
                         valueOfEnum = field.getValue().substring(
                                 field.getValue().lastIndexOf(".") + 1);
                         try {
+                            //This is a Java enum type if the type can be resolved by ClassTypeResolver
+                            //Revisit: Better way to determine java enum type or Guvnor enum type.
                             fullName = resolver
                                     .getFullTypeName(classNameOfEnum);
+                            if (fullName != null && !"".equals(fullName)) {
+                                valueOfEnum = fullName + "." + valueOfEnum;
+                            }
+                            val = eval(valueOfEnum);
                         } catch (ClassNotFoundException e) {
+                            // This is a Guvnor enum type
                             fullName = classNameOfEnum;
+                            if (fullName != null && !"".equals(fullName)) {
+                                valueOfEnum = fullName + "." + valueOfEnum;
+                            }
+                            val = valueOfEnum;
                         }
+                    } else {
+                        val = valueOfEnum;
                     }
-
-                    if (fullName != null && !"".equals(fullName)) {
-                        valueOfEnum = fullName + "." + valueOfEnum;
-                    }
-                    val = valueOfEnum;
-                    //val = eval(fullName + "." + valueOfEnum);
                 } else {
                     val = field.getValue();
                 }
