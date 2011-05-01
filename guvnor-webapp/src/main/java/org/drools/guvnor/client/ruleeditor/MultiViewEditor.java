@@ -43,18 +43,16 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class MultiViewEditor extends GuvnorEditor {
 
-    private Constants                                 constants       = GWT.create( Constants.class );
+    private Constants                                 constants  = GWT.create( Constants.class );
 
-    private VerticalPanel                             viewsPanel      = new VerticalPanel();
-    private boolean                                   showMetadata    = false;
-    private boolean                                   showDescription = false;
+    private VerticalPanel                             viewsPanel = new VerticalPanel();
     private Command                                   closeCommand;
-    private final Set<MultiViewRow>                   rows            = new HashSet<MultiViewRow>();
-    private Map<String, RuleViewer>                   ruleViews       = new HashMap<String, RuleViewer>();
-    private final OpenItemCommand                       editItemEvent;
+    private final Set<MultiViewRow>                   rows       = new HashSet<MultiViewRow>();
+    private Map<String, RuleViewer>                   ruleViews  = new HashMap<String, RuleViewer>();
+    private final OpenItemCommand                     editItemEvent;
     private ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider;
 
-    private Map<String, RuleAsset>                    assets          = new HashMap<String, RuleAsset>();
+    private Map<String, RuleAsset>                    assets     = new HashMap<String, RuleAsset>();
 
     private MultiViewEditorMenuBarCreator             menuBarCreator;
 
@@ -93,16 +91,16 @@ public class MultiViewEditor extends GuvnorEditor {
     }
 
     public MultiViewEditor(RuleAsset[] assets,
-            OpenItemCommand editItemEvent,
-            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider,
-            MultiViewEditorMenuBarCreator menuBarCreator) {
+                           OpenItemCommand editItemEvent,
+                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider,
+                           MultiViewEditorMenuBarCreator menuBarCreator) {
         this.rows.addAll( createRows( assets ) );
         this.editItemEvent = editItemEvent;
         this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
         this.menuBarCreator = menuBarCreator;
         addAssets( assets );
         init();
-}
+    }
 
     private void addAssets(RuleAsset[] assets) {
         for ( RuleAsset ruleAsset : assets ) {
@@ -193,21 +191,21 @@ public class MultiViewEditor extends GuvnorEditor {
                                if ( assets.containsKey( row.uuid ) ) {
                                    addRuleViewInToSimplePanel( row,
                                                                content,
-                                                               assets.get( row.uuid )  );
+                                                               assets.get( row.uuid ) );
                                } else {
                                    RepositoryServiceFactory.getAssetService().loadRuleAsset( row.uuid,
-                                                                                        new GenericCallback<RuleAsset>() {
+                                                                                             new GenericCallback<RuleAsset>() {
 
-                                                                                            public void onSuccess(final RuleAsset asset) {
-                                                                                                assets.put( asset.uuid,
-                                                                                                            asset );
+                                                                                                 public void onSuccess(final RuleAsset asset) {
+                                                                                                     assets.put( asset.uuid,
+                                                                                                                 asset );
 
-                                                                                                addRuleViewInToSimplePanel( row,
-                                                                                                                            content,
-                                                                                                                            asset );
-                                                                                            }
+                                                                                                     addRuleViewInToSimplePanel( row,
+                                                                                                                                 content,
+                                                                                                                                 asset );
+                                                                                                 }
 
-                                                                                        } );
+                                                                                             } );
 
                                }
                                return content;
@@ -244,7 +242,7 @@ public class MultiViewEditor extends GuvnorEditor {
                                                                   RuleViewerSettings ruleViewerSettings = new RuleViewerSettings();
                                                                   ruleViewerSettings.setDocoVisible( false );
                                                                   ruleViewerSettings.setMetaVisible( false );
-                                                                  ruleViewerSettings.setStandalone(true);
+                                                                  ruleViewerSettings.setStandalone( true );
                                                                   Command closeCommand = new Command() {
                                                                       public void execute() {
                                                                           ruleViews.remove( row.uuid );

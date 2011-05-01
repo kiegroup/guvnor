@@ -19,15 +19,13 @@ package org.drools.guvnor.client.processeditor;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
-import org.drools.guvnor.client.ruleeditor.EditorLauncher;
 import org.drools.guvnor.client.ruleeditor.EditorWidget;
-import org.drools.guvnor.client.ruleeditor.RuleViewerSettings;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Frame;
 
 /**
@@ -58,7 +56,7 @@ public class BusinessProcessEditor extends DirtyableComposite
          } else {
              name = "/designer/editor";
          } **/
-        
+
         name = "/designer/editor/?uuid=" + modelUUID + "&profile=drools";
         frame = new Frame( name );
         frame.getElement().setAttribute( "domain",
@@ -71,10 +69,10 @@ public class BusinessProcessEditor extends DirtyableComposite
     }
 
     private final native String callSave(Document frameDoc) /*-{
-        //window.alert("JSON: " + frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON());
-        return frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON();
-    }-*/;
-    
+                                                            //window.alert("JSON: " + frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON());
+                                                            return frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON();
+                                                            }-*/;
+
     public void onSave() {
         try {
             String s = callSave( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
@@ -83,9 +81,10 @@ public class BusinessProcessEditor extends DirtyableComposite
             }
             ((RuleFlowContentModel) asset.content).setXml( null );
             ((RuleFlowContentModel) asset.content).setJson( s );
-        } catch(Exception e) {
-            GWT.log("JSNI method callSave() threw an exception:", e);
-            Window.alert("JSNI method callSave() threw an exception: " + e);
+        } catch ( Exception e ) {
+            GWT.log( "JSNI method callSave() threw an exception:",
+                     e );
+            Window.alert( "JSNI method callSave() threw an exception: " + e );
         }
     }
 

@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.packages;
 
-
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -28,9 +27,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.ruleeditor.VersionChooser;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
-
 import org.drools.guvnor.client.widgets.tables.DependenciesPagedTable;
-import org.drools.guvnor.client.widgets.tables.DependenciesPagedTableReadOnly;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.FontWeight;
@@ -51,20 +48,21 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DependencyWidget extends Composite {
 
-    private static Images         images    = (Images) GWT.create( Images.class );
-    private Constants             constants = ((Constants) GWT.create( Constants.class ));
+    private static Images          images               = (Images) GWT.create( Images.class );
+    private Constants              constants            = ((Constants) GWT.create( Constants.class ));
 
     private FormStyleLayout        layout;
     private DependenciesPagedTable table;
 
-    private PackageConfigData conf;
-    private boolean isHistoricalReadOnly = false;
-    
-    public DependencyWidget(final PackageConfigData conf, boolean isHistoricalReadOnly) {
+    private PackageConfigData      conf;
+    private boolean                isHistoricalReadOnly = false;
+
+    public DependencyWidget(final PackageConfigData conf,
+                            boolean isHistoricalReadOnly) {
         this.conf = conf;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
         layout = new FormStyleLayout();
-        
+
         VerticalPanel header = new VerticalPanel();
         Label caption = new Label( "Dependencies" );
         caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
@@ -72,31 +70,32 @@ public class DependencyWidget extends Composite {
         header.add( dependencyTip() );
 
         layout.addAttribute( "",
-                header );
+                             header );
 
-/*        layout.addHeader( images.statusLarge(),
-                      header );*/
+        /*        layout.addHeader( images.statusLarge(),
+                              header );*/
 
         VerticalPanel vp = new VerticalPanel();
         vp.setHeight( "100%" );
         vp.setWidth( "100%" );
 
         //pf.startSection();
-		layout.addRow(vp);
+        layout.addRow( vp );
 
-		table = new DependenciesPagedTable(conf.uuid, new OpenItemCommand() {
-			public void open(String path) {
-				showEditor(path);
-			}
+        table = new DependenciesPagedTable( conf.uuid,
+                                            new OpenItemCommand() {
+                                                public void open(String path) {
+                                                    showEditor( path );
+                                                }
 
-			public void open(MultiViewRow[] rows) {
-				// Do nothing, unsupported
-			}
-		});
+                                                public void open(MultiViewRow[] rows) {
+                                                    // Do nothing, unsupported
+                                                }
+                                            } );
 
-		layout.addRow(table);
+        layout.addRow( table );
 
-		initWidget(layout);
+        initWidget( layout );
     }
 
     private Widget dependencyTip() {
@@ -105,75 +104,80 @@ public class DependencyWidget extends Composite {
                           + "This shows exact versions of assets that this package contains."
                           + "</i></small>" ) );
         InfoPopup pop = new InfoPopup( "Edit Dependency",
-                "Edit dependency version to build a package against specific versions of assets" );
+                                       "Edit dependency version to build a package against specific versions of assets" );
         hp.add( pop );
         return hp;
     }
-    
-    public static String[] decodeDependencyPath(String dependencyPath) {
-    	if(dependencyPath.indexOf("?version=") >=0) {
-    		return dependencyPath.split("\\?version=");
-    	} else {
-    		return new String[]{dependencyPath, "LATEST"};
-    	}
-    }
-    
-    public static String encodeDependencyPath(String dependencyPath, String dependencyVersion) {
-    	return dependencyPath + "?version=" + dependencyVersion;
-    }
-       
-    private void showEditor(final String dependencyPath) {
-		final FormStylePopup editor = new FormStylePopup(images.management(), "Edit Dependency");
-/*		editor.addRow(new HTML("<i>" + "Choose the version you want to depend on"
-				+ "</i>"));
-*/
-		editor.addAttribute("Dependency Path: ", new Label(decodeDependencyPath(dependencyPath)[0]));
-		final VersionChooser versionChoose = new VersionChooser( 
-				decodeDependencyPath(dependencyPath)[1],
-				conf.uuid,
-				decodeDependencyPath(dependencyPath)[0],
-                new Command() {
-                    public void execute() {
-                        table.refresh();                        
-                    }				    
-				});
-		editor.addAttribute("Dependency Version: ",  versionChoose);
 
-		HorizontalPanel hp = new HorizontalPanel();
-		Button useSelectedVersionButton = new Button("Use selected version"); 
-		hp.add(useSelectedVersionButton);
-        useSelectedVersionButton.addClickHandler(new ClickHandler() {
+    public static String[] decodeDependencyPath(String dependencyPath) {
+        if ( dependencyPath.indexOf( "?version=" ) >= 0 ) {
+            return dependencyPath.split( "\\?version=" );
+        } else {
+            return new String[]{dependencyPath, "LATEST"};
+        }
+    }
+
+    public static String encodeDependencyPath(String dependencyPath,
+                                              String dependencyVersion) {
+        return dependencyPath + "?version=" + dependencyVersion;
+    }
+
+    private void showEditor(final String dependencyPath) {
+        final FormStylePopup editor = new FormStylePopup( images.management(),
+                                                          "Edit Dependency" );
+        /*		editor.addRow(new HTML("<i>" + "Choose the version you want to depend on"
+        				+ "</i>"));
+        */
+        editor.addAttribute( "Dependency Path: ",
+                             new Label( decodeDependencyPath( dependencyPath )[0] ) );
+        final VersionChooser versionChoose = new VersionChooser(
+                                                                 decodeDependencyPath( dependencyPath )[1],
+                                                                 conf.uuid,
+                                                                 decodeDependencyPath( dependencyPath )[0],
+                                                                 new Command() {
+                                                                     public void execute() {
+                                                                         table.refresh();
+                                                                     }
+                                                                 } );
+        editor.addAttribute( "Dependency Version: ",
+                             versionChoose );
+
+        HorizontalPanel hp = new HorizontalPanel();
+        Button useSelectedVersionButton = new Button( "Use selected version" );
+        hp.add( useSelectedVersionButton );
+        useSelectedVersionButton.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 String selectedVersion = versionChoose.getSelectedVersionName();
-                if(selectedVersion == null) {
-                	return;
+                if ( selectedVersion == null ) {
+                    return;
                 }
-                if (Window.confirm("Are you sure you want to use version: " + selectedVersion  + " as dependency?")) {
+                if ( Window.confirm( "Are you sure you want to use version: " + selectedVersion + " as dependency?" ) ) {
                     RepositoryServiceFactory.getPackageService().updateDependency(
-                            conf.uuid,
-                            encodeDependencyPath(DependencyWidget
-                                    .decodeDependencyPath(dependencyPath)[0],
-                                    selectedVersion),
-                            new GenericCallback<Void>() {
-                                public void onSuccess(Void v) {
-                                    editor.hide();
-                                    table.refresh();
-                                }
-                            });
+                                                                                   conf.uuid,
+                                                                                   encodeDependencyPath( DependencyWidget
+                                                                                                                 .decodeDependencyPath( dependencyPath )[0],
+                                                                                                         selectedVersion ),
+                                                                                   new GenericCallback<Void>() {
+                                                                                       public void onSuccess(Void v) {
+                                                                                           editor.hide();
+                                                                                           table.refresh();
+                                                                                       }
+                                                                                   } );
                 }
             }
-        });
-        useSelectedVersionButton.setEnabled(!isHistoricalReadOnly);
-		
-		Button cancel = new Button(constants.Cancel());
-		hp.add(cancel);
-		cancel.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent w) {
-				editor.hide();
-			}
-		});
-		
-		editor.addAttribute("", hp);
-		editor.show();
-	}
+        } );
+        useSelectedVersionButton.setEnabled( !isHistoricalReadOnly );
+
+        Button cancel = new Button( constants.Cancel() );
+        hp.add( cancel );
+        cancel.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                editor.hide();
+            }
+        } );
+
+        editor.addAttribute( "",
+                             hp );
+        editor.show();
+    }
 }

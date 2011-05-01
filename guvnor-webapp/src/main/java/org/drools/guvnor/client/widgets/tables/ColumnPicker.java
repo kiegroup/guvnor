@@ -37,102 +37,103 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class ColumnPicker<T> {
 
-    private static final TableImageResources TABLE_IMAGE_RESOURCES = GWT.create(TableImageResources.class);
-    private final Image COLUMN_PICKER_IMAGE = new Image(TABLE_IMAGE_RESOURCES.columnPicker());
-    
-    private final CellTable<T> cellTable;
-    private List<ColumnMeta<T>> columnMetaList = new ArrayList<ColumnMeta<T>>();
+    private static final TableImageResources TABLE_IMAGE_RESOURCES = GWT.create( TableImageResources.class );
+    private final Image                      COLUMN_PICKER_IMAGE   = new Image( TABLE_IMAGE_RESOURCES.columnPicker() );
+
+    private final CellTable<T>               cellTable;
+    private List<ColumnMeta<T>>              columnMetaList        = new ArrayList<ColumnMeta<T>>();
 
     public ColumnPicker(CellTable<T> cellTable) {
         this.cellTable = cellTable;
     }
 
-    public void addColumn(Column<T, ?> column, Header<String> header, boolean visible) {
-        addColumn(new ColumnMeta<T>(column, header, visible));
+    public void addColumn(Column<T, ? > column,
+                          Header<String> header,
+                          boolean visible) {
+        addColumn( new ColumnMeta<T>( column,
+                                      header,
+                                      visible ) );
     }
 
     private void addColumn(ColumnMeta<T> columnMeta) {
-        columnMetaList.add(columnMeta);
-        if (columnMeta.isVisible()) {
-            cellTable.addColumn(columnMeta.getColumn(), columnMeta.getHeader());
+        columnMetaList.add( columnMeta );
+        if ( columnMeta.isVisible() ) {
+            cellTable.addColumn( columnMeta.getColumn(),
+                                 columnMeta.getHeader() );
         }
     }
 
     public ToggleButton createToggleButton() {
-        final ToggleButton button = new ToggleButton(COLUMN_PICKER_IMAGE);
-        final PopupPanel popup = new PopupPanel(true);
-        popup.addCloseHandler(new CloseHandler<PopupPanel>() {
+        final ToggleButton button = new ToggleButton( COLUMN_PICKER_IMAGE );
+        final PopupPanel popup = new PopupPanel( true );
+        popup.addCloseHandler( new CloseHandler<PopupPanel>() {
             public void onClose(CloseEvent<PopupPanel> popupPanelCloseEvent) {
-                button.setDown(false);
+                button.setDown( false );
             }
-        });
+        } );
         VerticalPanel popupContent = new VerticalPanel();
-        for (final ColumnMeta<T> columnMeta : columnMetaList) {
-            final CheckBox checkBox = new CheckBox(columnMeta.getHeader().getValue());
-            checkBox.setValue(columnMeta.isVisible());
-            checkBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+        for ( final ColumnMeta<T> columnMeta : columnMetaList ) {
+            final CheckBox checkBox = new CheckBox( columnMeta.getHeader().getValue() );
+            checkBox.setValue( columnMeta.isVisible() );
+            checkBox.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
                 public void onValueChange(ValueChangeEvent<Boolean> booleanValueChangeEvent) {
                     boolean visible = booleanValueChangeEvent.getValue();
-                    if (visible) {
+                    if ( visible ) {
                         // WORKAROUND because CellTable does not support insertColumn at this time
-                        for (ColumnMeta<T> resettingColumnMeta : columnMetaList) {
-                            if (resettingColumnMeta.isVisible()) {
-                                cellTable.removeColumn(resettingColumnMeta.getColumn());
+                        for ( ColumnMeta<T> resettingColumnMeta : columnMetaList ) {
+                            if ( resettingColumnMeta.isVisible() ) {
+                                cellTable.removeColumn( resettingColumnMeta.getColumn() );
                             }
                         }
-                        columnMeta.setVisible(visible);
-                        for (ColumnMeta<T> resettingColumnMeta : columnMetaList) {
-                            if (resettingColumnMeta.isVisible()) {
-                                cellTable.addColumn(resettingColumnMeta.getColumn(), resettingColumnMeta.getHeader());
+                        columnMeta.setVisible( visible );
+                        for ( ColumnMeta<T> resettingColumnMeta : columnMetaList ) {
+                            if ( resettingColumnMeta.isVisible() ) {
+                                cellTable.addColumn( resettingColumnMeta.getColumn(),
+                                                     resettingColumnMeta.getHeader() );
                             }
                         }
                     } else {
-                        columnMeta.setVisible(visible);
-                        cellTable.removeColumn(columnMeta.getColumn());
+                        columnMeta.setVisible( visible );
+                        cellTable.removeColumn( columnMeta.getColumn() );
                     }
                 }
-            });
-            popupContent.add(checkBox);
+            } );
+            popupContent.add( checkBox );
         }
-        popup.add(popupContent);
-        button.addClickHandler(new ClickHandler() {
+        popup.add( popupContent );
+        button.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                if (button.isDown()) {
-                    popup.setPopupPosition(button.getAbsoluteLeft(), button.getAbsoluteTop() + button.getOffsetHeight());
+                if ( button.isDown() ) {
+                    popup.setPopupPosition( button.getAbsoluteLeft(),
+                                            button.getAbsoluteTop() + button.getOffsetHeight() );
                     popup.show();
                 }
                 // Note: no need to hide the popup when clicked when down,
                 // because clicking anywhere outside the popup will hide the popup
             }
-        });
+        } );
         return button;
     }
 
     private static class ColumnMeta<T> {
-        private Column<T, ?> column;
+        private Column<T, ? >  column;
         private Header<String> header;
-        private boolean visible;
+        private boolean        visible;
 
-        private ColumnMeta(Column<T, ?> column, Header<String> header, boolean visible) {
+        private ColumnMeta(Column<T, ? > column,
+                           Header<String> header,
+                           boolean visible) {
             this.column = column;
             this.header = header;
             this.visible = visible;
         }
 
-        public Column<T, ?> getColumn() {
+        public Column<T, ? > getColumn() {
             return column;
-        }
-
-        public void setColumn(Column<T, ?> column) {
-            this.column = column;
         }
 
         public Header<String> getHeader() {
             return header;
-        }
-
-        public void setHeader(Header<String> header) {
-            this.header = header;
         }
 
         public boolean isVisible() {

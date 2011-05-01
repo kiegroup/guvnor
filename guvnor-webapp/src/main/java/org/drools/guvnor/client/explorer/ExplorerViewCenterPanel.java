@@ -20,42 +20,45 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.packages.PackageEditor;
 import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
 import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
+import org.drools.guvnor.client.util.TabOpener;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
-import org.drools.guvnor.client.util.TabOpener;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the tab panel manager.
  */
 public class ExplorerViewCenterPanel extends Composite {
 
-    private final ScrollTabLayoutPanel tabLayoutPanel;
+    private final ScrollTabLayoutPanel        tabLayoutPanel;
 
-    private MultiKeyMap<Panel> openedTabs = new MultiKeyMap<Panel>();
-    private static int id = 0;
+    private MultiKeyMap<Panel>                openedTabs           = new MultiKeyMap<Panel>();
+    private static int                        id                   = 0;
 
     /**
      * to keep track of what is dirty, filthy
      */
-    private Map<String, GuvnorEditor> openedAssetEditors = new HashMap<String, GuvnorEditor>();
+    private Map<String, GuvnorEditor>         openedAssetEditors   = new HashMap<String, GuvnorEditor>();
     private Map<String, PackageEditorWrapper> openedPackageEditors = new HashMap<String, PackageEditorWrapper>();
 
-    private Map<Panel, String[]> itemWidgets = new HashMap<Panel, String[]>();
+    private Map<Panel, String[]>              itemWidgets          = new HashMap<Panel, String[]>();
 
     public ExplorerViewCenterPanel() {
-        tabLayoutPanel = new ScrollTabLayoutPanel(2,
-                Unit.EM);
-        initWidget(tabLayoutPanel);
+        tabLayoutPanel = new ScrollTabLayoutPanel( 2,
+                                                   Unit.EM );
+        initWidget( tabLayoutPanel );
 
-        TabOpener.initIstance(this);
+        TabOpener.initIstance( this );
         TabOpener.getInstance().openFind();
     }
 
@@ -69,9 +72,9 @@ public class ExplorerViewCenterPanel extends Composite {
     public void addTab(final String tabname,
                        IsWidget widget,
                        final String key) {
-        addTab(tabname,
+        addTab( tabname,
                 widget,
-                new String[]{key});
+                new String[]{key} );
     }
 
     /**
@@ -84,14 +87,14 @@ public class ExplorerViewCenterPanel extends Composite {
     public void addTab(final String tabname,
                        IsWidget widget,
                        final String[] keys) {
-        final String panelId = (keys.length == 1 ? keys[0] + id++ : Arrays.toString(keys) + id++);
+        final String panelId = (keys.length == 1 ? keys[0] + id++ : Arrays.toString( keys ) + id++);
 
         ScrollPanel localTP = new ScrollPanel();
-        localTP.add(widget);
-        tabLayoutPanel.add(localTP,
-                newClosableLabel(localTP,
-                        tabname));
-        tabLayoutPanel.selectTab(localTP);
+        localTP.add( widget );
+        tabLayoutPanel.add( localTP,
+                            newClosableLabel( localTP,
+                                              tabname ) );
+        tabLayoutPanel.selectTab( localTP );
 
         //TODO: Dirtyable
         /*        localTP.ad( new PanelListenerAdapter() {
@@ -105,43 +108,43 @@ public class ExplorerViewCenterPanel extends Composite {
                     }
                 } );
         */
-        if (widget instanceof GuvnorEditor) {
-            this.openedAssetEditors.put(panelId,
-                    (GuvnorEditor) widget);
-        } else if (widget instanceof PackageEditorWrapper) {
-            this.getOpenedPackageEditors().put(tabname,
-                    (PackageEditorWrapper) widget);
+        if ( widget instanceof GuvnorEditor ) {
+            this.openedAssetEditors.put( panelId,
+                                         (GuvnorEditor) widget );
+        } else if ( widget instanceof PackageEditorWrapper ) {
+            this.getOpenedPackageEditors().put( tabname,
+                                                (PackageEditorWrapper) widget );
         }
 
-        openedTabs.put(keys,
-                localTP);
-        itemWidgets.put(localTP,
-                keys);
+        openedTabs.put( keys,
+                        localTP );
+        itemWidgets.put( localTP,
+                         keys );
     }
 
     private Widget newClosableLabel(final Panel panel,
                                     final String title) {
-        ClosableLabel closableLabel = new ClosableLabel(title);
+        ClosableLabel closableLabel = new ClosableLabel( title );
 
-        closableLabel.addCloseHandler(new CloseHandler<ClosableLabel>() {
+        closableLabel.addCloseHandler( new CloseHandler<ClosableLabel>() {
             public void onClose(CloseEvent<ClosableLabel> event) {
-                int widgetIndex = tabLayoutPanel.getWidgetIndex(panel);
-                if (widgetIndex == tabLayoutPanel.getSelectedIndex()) {
-                    if (isOnlyOneTabLeft()) {
+                int widgetIndex = tabLayoutPanel.getWidgetIndex( panel );
+                if ( widgetIndex == tabLayoutPanel.getSelectedIndex() ) {
+                    if ( isOnlyOneTabLeft() ) {
                         tabLayoutPanel.clear();
                     } else {
-                        tabLayoutPanel.selectTab(widgetIndex - 1);
+                        tabLayoutPanel.selectTab( widgetIndex - 1 );
                     }
                 }
-                tabLayoutPanel.remove(widgetIndex);
-                String[] keys = itemWidgets.remove(panel);
-                openedTabs.remove(keys);
+                tabLayoutPanel.remove( widgetIndex );
+                String[] keys = itemWidgets.remove( panel );
+                openedTabs.remove( keys );
             }
 
             private boolean isOnlyOneTabLeft() {
                 return tabLayoutPanel.getWidgetCount() == 1;
             }
-        });
+        } );
 
         return closableLabel;
     }
@@ -150,25 +153,25 @@ public class ExplorerViewCenterPanel extends Composite {
      * Will open if existing. If not it will return false;
      */
     public boolean showIfOpen(String key) {
-        if (openedTabs.containsKey(key)) {
+        if ( openedTabs.containsKey( key ) ) {
             LoadingPopup.close();
-            Panel tpi = (Panel) openedTabs.get(key);
-            tabLayoutPanel.selectTab(tpi);
+            Panel tpi = (Panel) openedTabs.get( key );
+            tabLayoutPanel.selectTab( tpi );
             return true;
         }
         return false;
     }
 
     public void close(String key) {
-        Panel tpi = openedTabs.remove(key);
+        Panel tpi = openedTabs.remove( key );
 
-        int widgetIndex = tabLayoutPanel.getWidgetIndex(tpi);
-        if (widgetIndex == tabLayoutPanel.getSelectedIndex()) {
-            tabLayoutPanel.selectTab(widgetIndex - 1);
+        int widgetIndex = tabLayoutPanel.getWidgetIndex( tpi );
+        if ( widgetIndex == tabLayoutPanel.getSelectedIndex() ) {
+            tabLayoutPanel.selectTab( widgetIndex - 1 );
         }
 
-        tabLayoutPanel.remove(widgetIndex);
-        itemWidgets.remove(tpi);
+        tabLayoutPanel.remove( widgetIndex );
+        itemWidgets.remove( tpi );
     }
 
     public Map<String, PackageEditorWrapper> getOpenedPackageEditors() {

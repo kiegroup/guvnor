@@ -27,7 +27,6 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Artifact;
-import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.security.Capabilities;
@@ -146,42 +145,42 @@ public class MetaDataWidget extends Composite {
             addAttribute( constants.CreatedOnMetaData(),
                           readOnlyDate( data.dateCreated ) );
         }
-        if(data instanceof RuleAsset) {    
-        addAttribute( constants.CreatedByMetaData(),
-                      readOnlyText( ((RuleAsset)data).metaData.creator ) );
-        addAttribute( constants.FormatMetaData(),
-                      new SmallLabel( "<b>" + ((RuleAsset)data).metaData.format + "</b>" ) );
+        if ( data instanceof RuleAsset ) {
+            addAttribute( constants.CreatedByMetaData(),
+                          readOnlyText( ((RuleAsset) data).metaData.creator ) );
+            addAttribute( constants.FormatMetaData(),
+                          new SmallLabel( "<b>" + ((RuleAsset) data).metaData.format + "</b>" ) );
 
-        addAttribute( constants.PackageMetaData(),
-                      packageEditor( ((RuleAsset)data).metaData.packageName ) );
+            addAttribute( constants.PackageMetaData(),
+                          packageEditor( ((RuleAsset) data).metaData.packageName ) );
 
-        addAttribute( constants.IsDisabledMetaData(),
-                      editableBoolean( new FieldBooleanBinding() {
-                                           public boolean getValue() {
-                                               return ((RuleAsset)data).metaData.disabled;
-                                           }
+            addAttribute( constants.IsDisabledMetaData(),
+                          editableBoolean( new FieldBooleanBinding() {
+                                               public boolean getValue() {
+                                                   return ((RuleAsset) data).metaData.disabled;
+                                               }
 
-                                           public void setValue(boolean val) {
-                                        	   ((RuleAsset)data).metaData.disabled = val;
-                                           }
-                                       },
-                                       constants.DisableTip() ) );
+                                               public void setValue(boolean val) {
+                                                   ((RuleAsset) data).metaData.disabled = val;
+                                               }
+                                           },
+                                           constants.DisableTip() ) );
         }
         addAttribute( "UUID:",
                       readOnlyText( uuid ) );
 
-        endSection(false);
+        endSection( false );
 
         startSection( constants.OtherMetaData() );
 
         addAttribute( constants.SubjectMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
-                                            return ((RuleAsset)data).metaData.subject;
+                                            return ((RuleAsset) data).metaData.subject;
                                         }
 
                                         public void setValue(String val) {
-                                        	((RuleAsset)data).metaData.subject = val;
+                                            ((RuleAsset) data).metaData.subject = val;
                                         }
                                     },
                                     constants.AShortDescriptionOfTheSubjectMatter() ) );
@@ -189,11 +188,11 @@ public class MetaDataWidget extends Composite {
         addAttribute( constants.TypeMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
-                                            return ((RuleAsset)data).metaData.type;
+                                            return ((RuleAsset) data).metaData.type;
                                         }
 
                                         public void setValue(String val) {
-                                        	((RuleAsset)data).metaData.type = val;
+                                            ((RuleAsset) data).metaData.type = val;
                                         }
 
                                     },
@@ -202,11 +201,11 @@ public class MetaDataWidget extends Composite {
         addAttribute( constants.ExternalLinkMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
-                                            return ((RuleAsset)data).metaData.externalRelation;
+                                            return ((RuleAsset) data).metaData.externalRelation;
                                         }
 
                                         public void setValue(String val) {
-                                        	((RuleAsset)data).metaData.externalRelation = val;
+                                            ((RuleAsset) data).metaData.externalRelation = val;
                                         }
 
                                     },
@@ -215,11 +214,11 @@ public class MetaDataWidget extends Composite {
         addAttribute( constants.SourceMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
-                                            return ((RuleAsset)data).metaData.externalSource;
+                                            return ((RuleAsset) data).metaData.externalSource;
                                         }
 
                                         public void setValue(String val) {
-                                        	((RuleAsset)data).metaData.externalSource = val;
+                                            ((RuleAsset) data).metaData.externalSource = val;
                                         }
 
                                     },
@@ -232,7 +231,7 @@ public class MetaDataWidget extends Composite {
 
         if ( !readOnly ) {
             addRow( new VersionBrowser( this.uuid,
-            		                    false,
+                                        false,
                                         fullRefreshView ) );
         }
 
@@ -247,10 +246,6 @@ public class MetaDataWidget extends Composite {
                               Widget editable) {
         this.currentSection.addAttribute( string,
                                           editable );
-    }
-
-    private void endSection() {
-        endSection( false );
     }
 
     private void endSection(boolean collapsed) {
@@ -298,14 +293,14 @@ public class MetaDataWidget extends Composite {
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 RepositoryServiceFactory.getAssetService().renameAsset( uuid,
-                                                                   box.getText(),
-                                                                   new GenericCallback<java.lang.String>() {
-                                                                       public void onSuccess(String data) {
-                                                                           metaDataRefreshView.execute();
-                                                                           Window.alert( constants.ItemHasBeenRenamed() );
-                                                                           pop.hide();
-                                                                       }
-                                                                   } );
+                                                                        box.getText(),
+                                                                        new GenericCallback<java.lang.String>() {
+                                                                            public void onSuccess(String data) {
+                                                                                metaDataRefreshView.execute();
+                                                                                Window.alert( constants.ItemHasBeenRenamed() );
+                                                                                pop.hide();
+                                                                            }
+                                                                        } );
             }
         } );
 
@@ -332,15 +327,15 @@ public class MetaDataWidget extends Composite {
                     return;
                 }
                 RepositoryServiceFactory.getAssetService().changeAssetPackage( uuid,
-                                                                          sel.getSelectedPackage(),
-                                                                          constants.MovedFromPackage( pkg ),
-                                                                          new GenericCallback<java.lang.Void>() {
-                                                                              public void onSuccess(Void v) {
-                                                                                  metaDataRefreshView.execute();
-                                                                                  pop.hide();
-                                                                              }
+                                                                               sel.getSelectedPackage(),
+                                                                               constants.MovedFromPackage( pkg ),
+                                                                               new GenericCallback<java.lang.Void>() {
+                                                                                   public void onSuccess(Void v) {
+                                                                                       metaDataRefreshView.execute();
+                                                                                       pop.hide();
+                                                                                   }
 
-                                                                          } );
+                                                                               } );
 
             }
 
@@ -362,7 +357,7 @@ public class MetaDataWidget extends Composite {
         if ( lastModifiedDate == null ) {
             return null;
         } else {
-            return new SmallLabel( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(lastModifiedDate) );
+            return new SmallLabel( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT ).format( lastModifiedDate ) );
         }
     }
 
@@ -373,7 +368,7 @@ public class MetaDataWidget extends Composite {
     }
 
     private Widget categories() {
-        ed = new AssetCategoryEditor( ((RuleAsset)data).metaData,
+        ed = new AssetCategoryEditor( ((RuleAsset) data).metaData,
                                       this.readOnly );
         return ed;
     }

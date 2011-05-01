@@ -15,126 +15,125 @@
  */
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.user.client.ui.Composite;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.CapabilitiesManager;
 
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.StackLayoutPanel;
-import org.drools.guvnor.client.util.LazyStackPanel;
 
 /**
  * Navigation panel for the west area.
  */
 public class NavigationPanel extends Composite {
 
-    private StackLayoutPanel layout = new StackLayoutPanel(Unit.EM);
+    private StackLayoutPanel layout = new StackLayoutPanel( Unit.EM );
 
     public NavigationPanel() {
-        initWidget(layout);
+        initWidget( layout );
 
         addCategoriesPanel();
 
-        if (CapabilitiesManager.getInstance().shouldShow(Capabilities.SHOW_PACKAGE_VIEW)) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_PACKAGE_VIEW ) ) {
             addPackagesPanel();
         }
 
-        if (CapabilitiesManager.getInstance().shouldShow(Capabilities.SHOW_QA)) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_QA ) ) {
             addQAPanel();
         }
 
-        if (CapabilitiesManager.getInstance().shouldShow(Capabilities.SHOW_DEPLOYMENT,
-                Capabilities.SHOW_DEPLOYMENT_NEW)) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_DEPLOYMENT,
+                                                           Capabilities.SHOW_DEPLOYMENT_NEW ) ) {
             addDeploymentPanel();
         }
 
-        if (CapabilitiesManager.getInstance().shouldShow(Capabilities.SHOW_ADMIN)) {
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_ADMIN ) ) {
             addAdminPanel();
         }
     }
 
     private void addAdminPanel() {
-        DockLayoutPanel adminDockLayoutPanel = new DockLayoutPanel(Unit.EM);
+        DockLayoutPanel adminDockLayoutPanel = new DockLayoutPanel( Unit.EM );
         AdministrationTree deploymentTreeItem = new AdministrationTree();
-        ScrollPanel adminTreeItemPanel = new ScrollPanel(deploymentTreeItem);
+        ScrollPanel adminTreeItemPanel = new ScrollPanel( deploymentTreeItem );
 
-        adminDockLayoutPanel.add(adminTreeItemPanel);
+        adminDockLayoutPanel.add( adminTreeItemPanel );
 
-        layout.add(adminDockLayoutPanel,
-                deploymentTreeItem.getHeaderHTML(),
-                2);
+        layout.add( adminDockLayoutPanel,
+                    deploymentTreeItem.getHeaderHTML(),
+                    2 );
     }
 
     private void addDeploymentPanel() {
-        DockLayoutPanel deploymentDockLayoutPanel = new DockLayoutPanel(Unit.EM);
+        DockLayoutPanel deploymentDockLayoutPanel = new DockLayoutPanel( Unit.EM );
         DeploymentTree deploymentTreeItem = new DeploymentTree();
-        ScrollPanel deploymentTreeItemPanel = new ScrollPanel(deploymentTreeItem);
+        ScrollPanel deploymentTreeItemPanel = new ScrollPanel( deploymentTreeItem );
 
-        if (CapabilitiesManager.getInstance().shouldShow(Capabilities.SHOW_CREATE_NEW_ASSET)) {
-            deploymentDockLayoutPanel.addNorth(DeploymentNewMenu.getMenu(deploymentTreeItem),
-                    2);
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
+            deploymentDockLayoutPanel.addNorth( DeploymentNewMenu.getMenu( deploymentTreeItem ),
+                                                2 );
         }
 
-        deploymentDockLayoutPanel.add(deploymentTreeItemPanel);
+        deploymentDockLayoutPanel.add( deploymentTreeItemPanel );
 
-        layout.add(deploymentDockLayoutPanel,
-                deploymentTreeItem.getHeaderHTML(),
-                2);
+        layout.add( deploymentDockLayoutPanel,
+                    deploymentTreeItem.getHeaderHTML(),
+                    2 );
     }
 
     private void addQAPanel() {
-        DockLayoutPanel qaDockLayoutPanel = new DockLayoutPanel(Unit.EM);
+        DockLayoutPanel qaDockLayoutPanel = new DockLayoutPanel( Unit.EM );
         QATree qaTreeItem = new QATree();
-        ScrollPanel qaTreeItemPanel = new ScrollPanel(qaTreeItem);
+        ScrollPanel qaTreeItemPanel = new ScrollPanel( qaTreeItem );
 
-        qaDockLayoutPanel.add(qaTreeItemPanel);
+        qaDockLayoutPanel.add( qaTreeItemPanel );
 
-        layout.add(qaDockLayoutPanel,
-                qaTreeItem.getHeaderHTML(),
-                2);
+        layout.add( qaDockLayoutPanel,
+                    qaTreeItem.getHeaderHTML(),
+                    2 );
     }
 
     private void addPackagesPanel() {
-        DockLayoutPanel packageDockLayoutPanel = new DockLayoutPanel(Unit.EM);
+        DockLayoutPanel packageDockLayoutPanel = new DockLayoutPanel( Unit.EM );
         final PackagesTree packagesTreeItem = new PackagesTree();
-        ScrollPanel packagesTreeItemPanel = new ScrollPanel(packagesTreeItem);
+        ScrollPanel packagesTreeItemPanel = new ScrollPanel( packagesTreeItem );
 
-        if (CapabilitiesManager.getInstance().shouldShow(Capabilities.SHOW_CREATE_NEW_ASSET)) {
-            packageDockLayoutPanel.addNorth(PackagesNewMenu.getMenu(packagesTreeItem),
-                    2);
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
+            packageDockLayoutPanel.addNorth( PackagesNewMenu.getMenu( packagesTreeItem ),
+                                             2 );
         }
-        packageDockLayoutPanel.add(packagesTreeItemPanel);
+        packageDockLayoutPanel.add( packagesTreeItemPanel );
 
-        layout.add(packageDockLayoutPanel,
-                packagesTreeItem.getHeaderHTML(),
-                2);
+        layout.add( packageDockLayoutPanel,
+                    packagesTreeItem.getHeaderHTML(),
+                    2 );
 
         //lazy loaded to easy startup wait time.
-        DeferredCommand.addCommand(new Command() {
+        DeferredCommand.addCommand( new Command() {
             public void execute() {
                 packagesTreeItem.loadPackageList();
             }
-        });
+        } );
     }
 
     private void addCategoriesPanel() {
-        DockLayoutPanel browseDockLayoutPanel = new DockLayoutPanel(Unit.EM);
+        DockLayoutPanel browseDockLayoutPanel = new DockLayoutPanel( Unit.EM );
         BrowseTree categoriesTreeItem = new BrowseTree();
-        ScrollPanel categoriesTreeItemPanel = new ScrollPanel(categoriesTreeItem);
+        ScrollPanel categoriesTreeItemPanel = new ScrollPanel( categoriesTreeItem );
 
-        if (CapabilitiesManager.getInstance().shouldShow(Capabilities.SHOW_CREATE_NEW_ASSET)) {
-            browseDockLayoutPanel.addNorth(RulesNewMenu.getMenu(categoriesTreeItem),
-                    2);
+        if ( CapabilitiesManager.getInstance().shouldShow( Capabilities.SHOW_CREATE_NEW_ASSET ) ) {
+            browseDockLayoutPanel.addNorth( RulesNewMenu.getMenu( categoriesTreeItem ),
+                                            2 );
         }
-        browseDockLayoutPanel.add(categoriesTreeItemPanel);
+        browseDockLayoutPanel.add( categoriesTreeItemPanel );
 
-        layout.add(browseDockLayoutPanel,
-                categoriesTreeItem.getHeaderHTML(),
-                2);
+        layout.add( browseDockLayoutPanel,
+                    categoriesTreeItem.getHeaderHTML(),
+                    2 );
     }
 
 }

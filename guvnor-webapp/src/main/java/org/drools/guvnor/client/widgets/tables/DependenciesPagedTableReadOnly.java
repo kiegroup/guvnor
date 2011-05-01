@@ -16,29 +16,12 @@
 
 package org.drools.guvnor.client.widgets.tables;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.packages.DependencyWidget;
 import org.drools.guvnor.client.rpc.DependenciesPageRow;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
-import com.google.gwt.cell.client.ButtonCell;
-import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.TextCell;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextHeader;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SingleSelectionModel;
 
@@ -53,16 +36,12 @@ public class DependenciesPagedTableReadOnly extends DependenciesPagedTable {
         UiBinder<Widget, DependenciesPagedTableReadOnly> {
     }
 
-    private static DependenciesPagedTablReadOnlyeBinder         uiBinder  = GWT.create( DependenciesPagedTablReadOnlyeBinder.class );
-
-
-
     protected SingleSelectionModel<DependenciesPageRow> selectionModel;
 
-
     public DependenciesPagedTableReadOnly(String theUuid,
-            OpenItemCommand openSelectedCommand) {
-        super(theUuid, openSelectedCommand);
+                                          OpenItemCommand openSelectedCommand) {
+        super( theUuid,
+               openSelectedCommand );
     }
 
     @Override
@@ -84,7 +63,7 @@ public class DependenciesPagedTableReadOnly extends DependenciesPagedTable {
         // Add any additional columns
         addAncillaryColumns( columnPicker,
                              sortableHeaderGroup );
-        
+
         cellTable.setWidth( "100%" );
         columnPickerButton = columnPicker.createToggleButton();
     }
