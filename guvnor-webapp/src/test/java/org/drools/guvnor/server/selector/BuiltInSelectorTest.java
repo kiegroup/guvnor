@@ -23,8 +23,6 @@ import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class BuiltInSelectorTest extends GuvnorTestBase {
@@ -34,7 +32,7 @@ public class BuiltInSelectorTest extends GuvnorTestBase {
         ServiceImplementation impl = getServiceImplementation();
         impl.getRulesRepository().loadDefaultPackage();
         impl.getRulesRepository().createPackage( "testBuiltInSelectorPackage",
-                                       "woot" );
+                                                 "woot" );
         impl.getRulesRepository().createState( "Dev" );
         impl.getRulesRepository().createState( "QA" );
 

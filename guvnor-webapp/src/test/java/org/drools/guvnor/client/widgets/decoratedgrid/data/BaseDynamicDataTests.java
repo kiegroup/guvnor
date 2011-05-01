@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.junit.Before;
 
 /**
@@ -51,7 +50,7 @@ public abstract class BaseDynamicDataTests {
         rows.add( makeRow() );
         rows.add( makeRow() );
         rows.add( makeRow() );
-        
+
     }
 
     protected DynamicDataRow makeRow() {

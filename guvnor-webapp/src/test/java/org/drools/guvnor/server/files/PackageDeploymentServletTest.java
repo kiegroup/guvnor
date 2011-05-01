@@ -16,41 +16,23 @@
 
 package org.drools.guvnor.server.files;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.HeadMethod;
-import org.drools.KnowledgeBase;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentFactory;
-import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.util.FileManager;
-import org.drools.definition.KnowledgePackage;
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.RepositoryPackageService;
-import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.io.ResourceChangeScannerConfiguration;
-import org.drools.io.ResourceFactory;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
-//import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class PackageDeploymentServletTest extends GuvnorTestBase {
 
@@ -58,247 +40,248 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
     public void setup() {
         setUpFileManagerUtils();
     }
-/*
-    @Test
-    public void testLoadingRules() throws Exception {
-        RulesRepository repo = getRulesRepository();
 
-        RepositoryPackageService impl = new RepositoryPackageService();
-        impl.setRulesRepository( repo );
+    /*
+        @Test
+        public void testLoadingRules() throws Exception {
+            RulesRepository repo = getRulesRepository();
 
-        PackageItem pkg = repo.createPackage( "testPDSGetPackage",
-                                              "" );
-        AssetItem header = pkg.addAsset( "drools",
-                                         "" );
-        header.updateFormat( "package" );
-        header.updateContent( "import org.drools.guvnor.server.files.SampleFact\n global org.drools.guvnor.server.files.SampleFact sf" );
-        header.checkin( "" );
+            RepositoryPackageService impl = new RepositoryPackageService();
+            impl.setRulesRepository( repo );
 
-        AssetItem asset = pkg.addAsset( "someRule",
-                                        "" );
-        asset.updateContent( "when \n SampleFact() \n then \n System.err.println(42);" );
-        asset.updateFormat( AssetFormats.DRL );
-        asset.checkin( "" );
+            PackageItem pkg = repo.createPackage( "testPDSGetPackage",
+                                                  "" );
+            AssetItem header = pkg.addAsset( "drools",
+                                             "" );
+            header.updateFormat( "package" );
+            header.updateContent( "import org.drools.guvnor.server.files.SampleFact\n global org.drools.guvnor.server.files.SampleFact sf" );
+            header.checkin( "" );
 
-        assertNull( impl.buildPackage( pkg.getUUID(),
-                                       true ) );
+            AssetItem asset = pkg.addAsset( "someRule",
+                                            "" );
+            asset.updateContent( "when \n SampleFact() \n then \n System.err.println(42);" );
+            asset.updateFormat( AssetFormats.DRL );
+            asset.checkin( "" );
 
-        //check source
-        PackageDeploymentServlet serv = new PackageDeploymentServlet();
-        MockHTTPRequest req = new MockHTTPRequest( "/package/testPDSGetPackage/LATEST.drl",
-                                                   null );
-        MockHTTPResponse res = new MockHTTPResponse();
-        serv.doGet( req,
-                    res );
+            assertNull( impl.buildPackage( pkg.getUUID(),
+                                           true ) );
 
-        assertNotNull( res.extractContentBytes() );
-        String drl = res.extractContent();
-        assertTrue( drl.indexOf( "rule" ) > -1 );
+            //check source
+            PackageDeploymentServlet serv = new PackageDeploymentServlet();
+            MockHTTPRequest req = new MockHTTPRequest( "/package/testPDSGetPackage/LATEST.drl",
+                                                       null );
+            MockHTTPResponse res = new MockHTTPResponse();
+            serv.doGet( req,
+                        res );
 
-        //now binary
-        serv = new PackageDeploymentServlet();
-        req = new MockHTTPRequest( "/package/testPDSGetPackage/LATEST",
-                                   null );
-        res = new MockHTTPResponse();
-        serv.doGet( req,
-                    res );
+            assertNotNull( res.extractContentBytes() );
+            String drl = res.extractContent();
+            assertTrue( drl.indexOf( "rule" ) > -1 );
 
-        assertNotNull( res.extractContentBytes() );
-        byte[] bin = res.extractContentBytes();
-        byte[] bin_ = pkg.getCompiledPackageBytes();
+            //now binary
+            serv = new PackageDeploymentServlet();
+            req = new MockHTTPRequest( "/package/testPDSGetPackage/LATEST",
+                                       null );
+            res = new MockHTTPResponse();
+            serv.doGet( req,
+                        res );
 
-        org.drools.rule.Package o = (org.drools.rule.Package) DroolsStreamUtils.streamIn( new ByteArrayInputStream( bin ) );
-        assertNotNull( o );
-        assertEquals( 1,
-                      o.getRules().length );
-        assertEquals( 1,
-                      o.getGlobals().size() );
+            assertNotNull( res.extractContentBytes() );
+            byte[] bin = res.extractContentBytes();
+            byte[] bin_ = pkg.getCompiledPackageBytes();
 
-        assertEquals( bin_.length,
-                      bin.length );
+            org.drools.rule.Package o = (org.drools.rule.Package) DroolsStreamUtils.streamIn( new ByteArrayInputStream( bin ) );
+            assertNotNull( o );
+            assertEquals( 1,
+                          o.getRules().length );
+            assertEquals( 1,
+                          o.getGlobals().size() );
 
-        assertSameArray( bin_,
-                         bin );
+            assertEquals( bin_.length,
+                          bin.length );
 
-        //now some snapshots
-        impl.createPackageSnapshot( "testPDSGetPackage",
-                                    "SNAP1",
-                                    false,
-                                    "hey" );
+            assertSameArray( bin_,
+                             bin );
 
-        serv = new PackageDeploymentServlet();
-        req = new MockHTTPRequest( "/package/testPDSGetPackage/SNAP1.drl",
-                                   null );
-        res = new MockHTTPResponse();
-        serv.doGet( req,
-                    res );
+            //now some snapshots
+            impl.createPackageSnapshot( "testPDSGetPackage",
+                                        "SNAP1",
+                                        false,
+                                        "hey" );
 
-        assertNotNull( res.extractContentBytes() );
-        drl = new String( res.extractContentBytes() );
-        assertTrue( drl.indexOf( "rule" ) > -1 );
+            serv = new PackageDeploymentServlet();
+            req = new MockHTTPRequest( "/package/testPDSGetPackage/SNAP1.drl",
+                                       null );
+            res = new MockHTTPResponse();
+            serv.doGet( req,
+                        res );
 
-        //now binary
-        serv = new PackageDeploymentServlet();
-        req = new MockHTTPRequest( "/package/testPDSGetPackage/SNAP1",
-                                   null );
-        res = new MockHTTPResponse();
-        serv.doGet( req,
-                    res );
+            assertNotNull( res.extractContentBytes() );
+            drl = new String( res.extractContentBytes() );
+            assertTrue( drl.indexOf( "rule" ) > -1 );
 
-        assertNotNull( res.extractContentBytes() );
-        bin = res.extractContentBytes();
-        bin_ = pkg.getCompiledPackageBytes();
-        assertEquals( bin_.length,
-                      bin.length );
+            //now binary
+            serv = new PackageDeploymentServlet();
+            req = new MockHTTPRequest( "/package/testPDSGetPackage/SNAP1",
+                                       null );
+            res = new MockHTTPResponse();
+            serv.doGet( req,
+                        res );
 
-        //now get an individual asset source
-        serv = new PackageDeploymentServlet();
-        req = new MockHTTPRequest( "/package/testPDSGetPackage/SNAP1/someRule.drl",
-                                   null );
-        res = new MockHTTPResponse();
-        serv.doGet( req,
-                    res );
+            assertNotNull( res.extractContentBytes() );
+            bin = res.extractContentBytes();
+            bin_ = pkg.getCompiledPackageBytes();
+            assertEquals( bin_.length,
+                          bin.length );
 
-        assertNotNull( res.extractContentBytes() );
-        drl = res.extractContent();
-        System.err.println( drl );
-        assertTrue( drl.indexOf( "rule" ) > -1 );
-        assertEquals( -1,
-                      drl.indexOf( "package" ) );
+            //now get an individual asset source
+            serv = new PackageDeploymentServlet();
+            req = new MockHTTPRequest( "/package/testPDSGetPackage/SNAP1/someRule.drl",
+                                       null );
+            res = new MockHTTPResponse();
+            serv.doGet( req,
+                        res );
 
-        //now test HEAD
-        serv = new PackageDeploymentServlet();
-        req = new MockHTTPRequest( "/package/testPDSGetPackage/LATEST",
-                                   null );
-        req.method = "HEAD";
-        res = new MockHTTPResponse();
-        serv.doHead( req,
-                     res );
-        assertTrue( res.headers.size() > 0 );
-        String lm = res.headers.get( "Last-Modified" );
-        assertNotNull( lm );
+            assertNotNull( res.extractContentBytes() );
+            drl = res.extractContent();
+            System.err.println( drl );
+            assertTrue( drl.indexOf( "rule" ) > -1 );
+            assertEquals( -1,
+                          drl.indexOf( "package" ) );
 
-        serv = new PackageDeploymentServlet();
-        req = new MockHTTPRequest( "/package/testPDSGetPackage/LATEST",
-                                   null );
-        req.method = "HEAD";
-        res = new MockHTTPResponse();
-        serv.doHead( req,
-                     res );
-        assertTrue( res.headers.size() > 0 );
+            //now test HEAD
+            serv = new PackageDeploymentServlet();
+            req = new MockHTTPRequest( "/package/testPDSGetPackage/LATEST",
+                                       null );
+            req.method = "HEAD";
+            res = new MockHTTPResponse();
+            serv.doHead( req,
+                         res );
+            assertTrue( res.headers.size() > 0 );
+            String lm = res.headers.get( "Last-Modified" );
+            assertNotNull( lm );
 
-        assertEquals( lm,
-                      res.headers.get( "Last-Modified" ) );
+            serv = new PackageDeploymentServlet();
+            req = new MockHTTPRequest( "/package/testPDSGetPackage/LATEST",
+                                       null );
+            req.method = "HEAD";
+            res = new MockHTTPResponse();
+            serv.doHead( req,
+                         res );
+            assertTrue( res.headers.size() > 0 );
 
-        serv = new PackageDeploymentServlet();
-        req = new MockHTTPRequest( "/package/testPDSGetPackage/LATEST.drl",
-                                   null );
-        req.method = "HEAD";
-        res = new MockHTTPResponse();
-        serv.doHead( req,
-                     res );
-        assertTrue( res.headers.size() > 0 );
+            assertEquals( lm,
+                          res.headers.get( "Last-Modified" ) );
 
-        assertEquals( lm,
-                      res.headers.get( "Last-Modified" ) );
-        System.out.println( lm );
+            serv = new PackageDeploymentServlet();
+            req = new MockHTTPRequest( "/package/testPDSGetPackage/LATEST.drl",
+                                       null );
+            req.method = "HEAD";
+            res = new MockHTTPResponse();
+            serv.doHead( req,
+                         res );
+            assertTrue( res.headers.size() > 0 );
 
-        //
-        //now lets run it in a real server !
-        //
-        TJWSEmbeddedJaxrsServer server = new TJWSEmbeddedJaxrsServer();
-        server.setPort(8181);
-        server.addServlet("/package/*", new PackageDeploymentServlet());
-        server.start();
+            assertEquals( lm,
+                          res.headers.get( "Last-Modified" ) );
+            System.out.println( lm );
 
-        ResourceFactory.getResourceChangeNotifierService().start();
-        ResourceFactory.getResourceChangeScannerService().start();
+            //
+            //now lets run it in a real server !
+            //
+            TJWSEmbeddedJaxrsServer server = new TJWSEmbeddedJaxrsServer();
+            server.setPort(8181);
+            server.addServlet("/package/*", new PackageDeploymentServlet());
+            server.start();
 
-        ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
-        sconf.setProperty( "drools.resource.scanner.interval",
-                           "1" );
-        ResourceFactory.getResourceChangeScannerService().configure( sconf );
+            ResourceFactory.getResourceChangeNotifierService().start();
+            ResourceFactory.getResourceChangeScannerService().start();
 
-        String xml = "";
-        xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
-        xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
-        xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
-        xml += "    <add> ";
-        xml += "        <resource source='http://localhost:9000/package/testPDSGetPackage/LATEST.drl' type='DRL' />";
-        xml += "    </add> ";
-        xml += "</change-set>";
+            ResourceChangeScannerConfiguration sconf = ResourceFactory.getResourceChangeScannerService().newResourceChangeScannerConfiguration();
+            sconf.setProperty( "drools.resource.scanner.interval",
+                               "1" );
+            ResourceFactory.getResourceChangeScannerService().configure( sconf );
 
-        FileManager fileManager = new FileManager();
-        fileManager.setUp();
+            String xml = "";
+            xml += "<change-set xmlns='http://drools.org/drools-5.0/change-set'";
+            xml += "    xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'";
+            xml += "    xs:schemaLocation='http://drools.org/drools-5.0/change-set http://anonsvn.jboss.org/repos/labs/labs/jbossrules/trunk/drools-api/src/main/resources/change-set-1.0.0.xsd' >";
+            xml += "    <add> ";
+            xml += "        <resource source='http://localhost:9000/package/testPDSGetPackage/LATEST.drl' type='DRL' />";
+            xml += "    </add> ";
+            xml += "</change-set>";
 
-        File fxml = fileManager.newFile( "changeset.xml" );
-        Writer output = new BufferedWriter( new FileWriter( fxml ) );
-        output.write( xml );
-        output.close();
+            FileManager fileManager = new FileManager();
+            fileManager.setUp();
 
-        KnowledgeAgent ag = KnowledgeAgentFactory.newKnowledgeAgent( "fii",
-                                                                     KnowledgeAgentFactory.newKnowledgeAgentConfiguration() );
-        ag.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
+            File fxml = fileManager.newFile( "changeset.xml" );
+            Writer output = new BufferedWriter( new FileWriter( fxml ) );
+            output.write( xml );
+            output.close();
 
-        KnowledgeBase kb = ag.getKnowledgeBase();
-        assertEquals( 1,
-                      kb.getKnowledgePackages().size() );
-        KnowledgePackage kp = kb.getKnowledgePackages().iterator().next();
-        assertTrue( kb.getKnowledgePackages().size() > 0 );
-        assertEquals( 1,
-                      kp.getRules().size() );
+            KnowledgeAgent ag = KnowledgeAgentFactory.newKnowledgeAgent( "fii",
+                                                                         KnowledgeAgentFactory.newKnowledgeAgentConfiguration() );
+            ag.applyChangeSet( ResourceFactory.newUrlResource( fxml.toURI().toURL() ) );
 
-        //check the HEAD method
-        HttpClient client = new HttpClient();
-        HeadMethod hm = new HeadMethod( "http://localhost:9000/package/testPDSGetPackage/LATEST.drl" );
-        client.executeMethod( hm );
-        Header lastMod = hm.getResponseHeader( "lastModified" );
-        Thread.sleep( 50 );
-        long now = System.currentTimeMillis();
-        long before = Long.parseLong( lastMod.getValue() );
-        assertTrue( before < now );
+            KnowledgeBase kb = ag.getKnowledgeBase();
+            assertEquals( 1,
+                          kb.getKnowledgePackages().size() );
+            KnowledgePackage kp = kb.getKnowledgePackages().iterator().next();
+            assertTrue( kb.getKnowledgePackages().size() > 0 );
+            assertEquals( 1,
+                          kp.getRules().size() );
 
-        //now lets add a rule
-        asset = pkg.addAsset( "someRule2",
-                              "" );
-        asset.updateContent( "when \n SampleFact() \n then \n System.err.println(43);" );
-        asset.updateFormat( AssetFormats.DRL );
-        asset.checkin( "" );
+            //check the HEAD method
+            HttpClient client = new HttpClient();
+            HeadMethod hm = new HeadMethod( "http://localhost:9000/package/testPDSGetPackage/LATEST.drl" );
+            client.executeMethod( hm );
+            Header lastMod = hm.getResponseHeader( "lastModified" );
+            Thread.sleep( 50 );
+            long now = System.currentTimeMillis();
+            long before = Long.parseLong( lastMod.getValue() );
+            assertTrue( before < now );
 
-        assertNull( impl.buildPackage( pkg.getUUID(),
-                                       true ) );
+            //now lets add a rule
+            asset = pkg.addAsset( "someRule2",
+                                  "" );
+            asset.updateContent( "when \n SampleFact() \n then \n System.err.println(43);" );
+            asset.updateFormat( AssetFormats.DRL );
+            asset.checkin( "" );
 
-        Thread.sleep( 3000 );
+            assertNull( impl.buildPackage( pkg.getUUID(),
+                                           true ) );
 
-        kb = ag.getKnowledgeBase();
-        assertEquals( 1,
-                      kb.getKnowledgePackages().size() );
-        kp = kb.getKnowledgePackages().iterator().next();
+            Thread.sleep( 3000 );
 
-        if ( kp.getRules().size() != 2 ) {
-            Thread.sleep( 2000 );
             kb = ag.getKnowledgeBase();
             assertEquals( 1,
                           kb.getKnowledgePackages().size() );
             kp = kb.getKnowledgePackages().iterator().next();
+
+            if ( kp.getRules().size() != 2 ) {
+                Thread.sleep( 2000 );
+                kb = ag.getKnowledgeBase();
+                assertEquals( 1,
+                              kb.getKnowledgePackages().size() );
+                kp = kb.getKnowledgePackages().iterator().next();
+            }
+
+            if ( kp.getRules().size() != 2 ) {
+                Thread.sleep( 2000 );
+                kb = ag.getKnowledgeBase();
+                assertEquals( 1,
+                              kb.getKnowledgePackages().size() );
+                kp = kb.getKnowledgePackages().iterator().next();
+            }
+
+            assertEquals( 2,
+                          kp.getRules().size() );
+
+            server.stop();
+            repo.logout();
+
         }
-
-        if ( kp.getRules().size() != 2 ) {
-            Thread.sleep( 2000 );
-            kb = ag.getKnowledgeBase();
-            assertEquals( 1,
-                          kb.getKnowledgePackages().size() );
-            kp = kb.getKnowledgePackages().iterator().next();
-        }
-
-        assertEquals( 2,
-                      kp.getRules().size() );
-
-        server.stop();
-        repo.logout();
-
-    }
-*/
+    */
     @Test
     public void testScenariosAndChangeSet() throws Exception {
         RulesRepository repo = getRulesRepository();
@@ -397,13 +380,4 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
         byte[] bin = res.extractContentBytes();
         assertTrue( bin.length > 0 );
     }
-
-    private void assertSameArray(byte[] bin_,
-                                 byte[] bin) {
-        for ( int i = 0; i < bin.length; i++ ) {
-            assertEquals( bin_[i],
-                          bin[i] );
-        }
-    }
-
 }

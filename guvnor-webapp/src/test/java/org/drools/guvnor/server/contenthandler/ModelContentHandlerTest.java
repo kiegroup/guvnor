@@ -26,8 +26,6 @@ import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class ModelContentHandlerTest extends GuvnorTestBase {

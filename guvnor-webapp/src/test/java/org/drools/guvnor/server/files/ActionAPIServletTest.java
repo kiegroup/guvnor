@@ -26,8 +26,6 @@ import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.files.ActionsAPI.Parameters;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 /**

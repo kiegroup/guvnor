@@ -23,10 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.jboss.seam.contexts.Contexts;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
@@ -35,7 +32,6 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
     public void testCategoryBasedPermissionAnalyst() throws Exception {
         //NOTE: Have to have this call, otherwise this test will fail others tests. Seems to be related to
         //how Seam context initializes the JCR repository, but dont know the exact cause yet. 
-        ServiceImplementation impl = getServiceImplementation();
 
         String package1Name = "testCategoryBasedPermissionAnalystPackageName1";
         String package2Name = "testCategoryBasedPermissionAnalystPackageName2";

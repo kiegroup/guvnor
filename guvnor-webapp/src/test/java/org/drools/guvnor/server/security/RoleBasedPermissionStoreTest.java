@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
