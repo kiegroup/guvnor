@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.server.files;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -25,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
-import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.server.util.FormData;
 
 /**
@@ -74,7 +72,7 @@ public class AssetFileServlet extends RepositoryServlet {
     }
 
     protected void processAttachmentDownload(String uuid,
-                                           HttpServletResponse response) throws IOException {
+                                             HttpServletResponse response) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         String filename = getFileManager().loadFileAttachmentByUUID( uuid,
                                                                      output );
@@ -93,7 +91,7 @@ public class AssetFileServlet extends RepositoryServlet {
 
         // If the file it doesn't exist.
         if ( "".equals( uploadItem.getFile().getName() ) ) {
-            throw new IOException( "No file selected.");
+            throw new IOException( "No file selected." );
         }
 
         manager.attachFile( uploadItem );

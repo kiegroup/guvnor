@@ -16,15 +16,18 @@
 
 package org.drools.guvnor.server.files;
 
-import org.drools.guvnor.server.RepositoryPackageService;
-import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.repository.*;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.drools.guvnor.server.RepositoryPackageService;
+import org.drools.repository.PackageItem;
+import org.drools.repository.PackageIterator;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 
 /**
  * Basic API for executing simple actions against Guvnor:
@@ -61,41 +64,44 @@ public class ActionsAPI {
      *
      * @throws IOException
      * @throws RulesRepositoryException */
-    public void post(RepositoryPackageService service, RulesRepository repository,
-            HttpServletRequest request, HttpServletResponse response)
-        throws IOException
-    {
+    public void post(RepositoryPackageService service,
+                     RulesRepository repository,
+                     HttpServletRequest request,
+                     HttpServletResponse response)
+                                                  throws IOException {
         try {
-        	String packageName = request.getParameter(Parameters.PackageName.toString());
-            String[] pathstr = split (request.getPathTranslated());
+            String packageName = request.getParameter( Parameters.PackageName.toString() );
+            String[] pathstr = split( request.getPathTranslated() );
 
-            if (pathstr [ 0 ].equals("compile")) {
-                if (repository.containsPackage(packageName)) {
+            if ( pathstr[0].equals( "compile" ) ) {
+                if ( repository.containsPackage( packageName ) ) {
                     PackageIterator iter = repository.listPackages();
-                    while (iter.hasNext()) {
+                    while ( iter.hasNext() ) {
                         PackageItem p = iter.next();
-                        if (p.getName().equals(packageName)) {
+                        if ( p.getName().equals( packageName ) ) {
                             String uuid = p.getUUID();
-                            service.buildPackage(uuid, true);
+                            service.buildPackage( uuid,
+                                                  true );
                             break;
-                        }}
+                        }
                     }
-            } else if (pathstr [ 0 ].equals ("snapshot"))
-                if(repository.containsPackage(packageName)) {
-                	String snapshotName = request.getParameter(Parameters.SnapshotName.toString());
-                    repository.createPackageSnapshot(packageName, snapshotName);
+                }
+            } else if ( pathstr[0].equals( "snapshot" ) ) if ( repository.containsPackage( packageName ) ) {
+                String snapshotName = request.getParameter( Parameters.SnapshotName.toString() );
+                repository.createPackageSnapshot( packageName,
+                                                  snapshotName );
             } else {
-                throw new RulesRepositoryException ("Unknown action request: "
-                        + request.getContextPath());
+                throw new RulesRepositoryException( "Unknown action request: "
+                                                    + request.getContextPath() );
             }
-            
-            response.setContentType( "text/html" );
-            response.setStatus(200);
-            response.getWriter().write("OK");
 
-        } catch (Exception e) {
-        	e.printStackTrace();
-            throw new IOException (e.getMessage());
+            response.setContentType( "text/html" );
+            response.setStatus( 200 );
+            response.getWriter().write( "OK" );
+
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            throw new IOException( e.getMessage() );
         }
     }
 
@@ -103,13 +109,14 @@ public class ActionsAPI {
      * Split from RestAPI
      */
     String[] split(String path) throws UnsupportedEncodingException {
-        if (path.indexOf("action") > -1) {
-            path = path.split("action")[1];
+        if ( path.indexOf( "action" ) > -1 ) {
+            path = path.split( "action" )[1];
         }
-        if (path.startsWith("/")) path = path.substring(1);
-        String[] bits = path.split("/");
-        for (int i = 0; i < bits.length; i++) {
-            bits[i] = URLDecoder.decode(bits[i], "UTF-8");
+        if ( path.startsWith( "/" ) ) path = path.substring( 1 );
+        String[] bits = path.split( "/" );
+        for ( int i = 0; i < bits.length; i++ ) {
+            bits[i] = URLDecoder.decode( bits[i],
+                                         "UTF-8" );
         }
         return bits;
     }

@@ -16,27 +16,35 @@
 
 package org.drools.guvnor.server.files;
 
-import org.drools.guvnor.server.security.PackageNameType;
-import org.drools.guvnor.server.security.RoleTypes;
-import org.drools.guvnor.server.security.CategoryPathType;
-import org.drools.guvnor.server.util.Discussion;
-import org.drools.guvnor.server.util.ISO8601;
-import org.drools.guvnor.client.rpc.DiscussionRecord;
-import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
-import org.drools.repository.AssetItemPageResult;
-import org.drools.core.util.StringUtils;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.Identity;
-import org.jboss.seam.security.AuthorizationException;
-import org.mvel2.templates.TemplateRuntime;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.drools.core.util.StringUtils;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.server.security.CategoryPathType;
+import org.drools.guvnor.server.security.PackageNameType;
+import org.drools.guvnor.server.security.RoleTypes;
+import org.drools.guvnor.server.util.Discussion;
+import org.drools.guvnor.server.util.ISO8601;
+import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemPageResult;
+import org.drools.repository.PackageItem;
+import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.AuthorizationException;
+import org.jboss.seam.security.Identity;
+import org.mvel2.templates.TemplateRuntime;
 
 public class FeedServlet extends RepositoryServlet {
 
@@ -47,20 +55,20 @@ public class FeedServlet extends RepositoryServlet {
         try {
             String url = request.getRequestURI();
             if (url.indexOf("feed/package") > -1) {
-                doAuthorizedAction(request, response, new A() {
-                    public void a() throws Exception {
+                doAuthorizedAction(request, response, new Command() {
+                    public void execute() throws Exception {
                         doPackageFeed(request, response);
                     }
                 });
             } else if (url.indexOf("feed/category") > -1) {
-                doAuthorizedAction(request, response, new A() {
-                    public void a() throws Exception {
+                doAuthorizedAction(request, response, new Command() {
+                    public void execute() throws Exception {
                         doCategoryFeed(request, response);
                     }
                 });
             } else if (url.indexOf("feed/discussion")  > -1) {
-                doAuthorizedAction(request, response, new A() {
-                    public void a() throws Exception {
+                doAuthorizedAction(request, response, new Command() {
+                    public void execute() throws Exception {
                         doDiscussionFeed(request, response);
                     }
                 });
@@ -172,7 +180,7 @@ public class FeedServlet extends RepositoryServlet {
         }
 
         public String getAtom() {
-            Map m = new HashMap();
+            Map<String,AtomFeed> m = new HashMap<String,AtomFeed>();
             m.put("feed", this);
             return (String) TemplateRuntime.eval(TEMPLATE, m);
         }

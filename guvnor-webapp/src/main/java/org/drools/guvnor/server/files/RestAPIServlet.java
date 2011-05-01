@@ -16,126 +16,129 @@
 
 package org.drools.guvnor.server.files;
 
-
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.remoteapi.Response;
 import org.drools.repository.remoteapi.RestAPI;
 import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.Identity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This servlet is the entry point for the rest API.
  */
 public class RestAPIServlet extends RepositoryServlet {
 
-    private static final long serialVersionUID = 510l;
+    private static final long  serialVersionUID = 510l;
     public static final Logger log              = LoggerFactory.getLogger( RestAPIServlet.class );
 
     @Override
     protected void doPost(final HttpServletRequest req,
                           final HttpServletResponse res) throws ServletException,
-                                                       IOException {
-        doAuthorizedAction(req, res, new A() {
-            public void a() throws Exception {
-                    res.setContentType( "text/html" );
-                    RestAPI api = getAPI();
-                    String comment = req.getHeader("Checkin-Comment");
-                    api.post(req.getRequestURI(), req.getInputStream(), (comment != null)? comment : "");
-                    res.getWriter().write( "OK" );
-            }
-        });
+                                                        IOException {
+        doAuthorizedAction( req,
+                            res,
+                            new Command() {
+                                public void execute() throws Exception {
+                                    res.setContentType( "text/html" );
+                                    RestAPI api = getAPI();
+                                    String comment = req.getHeader( "Checkin-Comment" );
+                                    api.post( req.getRequestURI(),
+                                              req.getInputStream(),
+                                              (comment != null) ? comment : "" );
+                                    res.getWriter().write( "OK" );
+                                }
+                            } );
     }
-
-
 
     @Override
     protected void doGet(final HttpServletRequest req,
                          final HttpServletResponse res) throws ServletException,
-                                                 IOException {
-        doAuthorizedAction(req, res, new A() {
-            public void a() throws Exception {
-                    RestAPI api = getAPI();
-                    String qString = req.getQueryString();
-                    String ur = req.getRequestURI();
-                    if (qString != null && qString.length() > 0) {
-                        ur = ur + '?' + qString;
-                    }
-                    Response apiRes = api.get(ur);
-                    res.setContentType( "application/x-download" );
-                    res.setHeader( "Content-Disposition",
-                                   "attachment; filename=data;");
-                    apiRes.writeData(res.getOutputStream());
-                    res.getOutputStream().flush();
-            }
-        });
+                                                       IOException {
+        doAuthorizedAction( req,
+                            res,
+                            new Command() {
+                                public void execute() throws Exception {
+                                    RestAPI api = getAPI();
+                                    String qString = req.getQueryString();
+                                    String ur = req.getRequestURI();
+                                    if ( qString != null && qString.length() > 0 ) {
+                                        ur = ur + '?' + qString;
+                                    }
+                                    Response apiRes = api.get( ur );
+                                    res.setContentType( "application/x-download" );
+                                    res.setHeader( "Content-Disposition",
+                                                   "attachment; filename=data;" );
+                                    apiRes.writeData( res.getOutputStream() );
+                                    res.getOutputStream().flush();
+                                }
+                            } );
 
     }
 
     @Override
-    protected void doPut(final HttpServletRequest req, final HttpServletResponse res)
-            throws ServletException, IOException {
-        doAuthorizedAction(req, res, new A() {
-            public void a() throws Exception {
-                    res.setContentType( "text/html" );
-                    RestAPI api = getAPI();
-                    String comment = req.getHeader("Checkin-Comment");
-                    Calendar lastMod = getModified(req.getHeader("Last-Modified"));
-                    api.put(req.getRequestURI(), lastMod, req.getInputStream(),  (comment != null)? comment : "");
-                    res.getWriter().write( "OK" );
-            }
-        });
+    protected void doPut(final HttpServletRequest req,
+                         final HttpServletResponse res)
+                                                       throws ServletException,
+                                                       IOException {
+        doAuthorizedAction( req,
+                            res,
+                            new Command() {
+                                public void execute() throws Exception {
+                                    res.setContentType( "text/html" );
+                                    RestAPI api = getAPI();
+                                    String comment = req.getHeader( "Checkin-Comment" );
+                                    Calendar lastMod = getModified( req.getHeader( "Last-Modified" ) );
+                                    api.put( req.getRequestURI(),
+                                             lastMod,
+                                             req.getInputStream(),
+                                             (comment != null) ? comment : "" );
+                                    res.getWriter().write( "OK" );
+                                }
+                            } );
     }
 
     Calendar getModified(String f) throws ParseException {
 
-        if (f == null) return null;
+        if ( f == null ) return null;
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = RestAPI.getISODateFormat();
         try {
-            c.setTime(sdf.parse(f));
-        } catch (ParseException e) {
+            c.setTime( sdf.parse( f ) );
+        } catch ( ParseException e ) {
             DateFormat df = DateFormat.getInstance();
-            c.setTime(df.parse(f));
+            c.setTime( df.parse( f ) );
         }
         return c;
     }
 
-
-
     @Override
-    protected void doDelete(final HttpServletRequest req, final HttpServletResponse res)
-            throws ServletException, IOException {
-        doAuthorizedAction(req, res, new A() {
-            public void a() throws Exception {
-                    res.setContentType( "text/html" );
-                    RestAPI api = getAPI();
-                    api.delete(req.getRequestURI());
-                    res.getWriter().write( "OK" );
-            }
-        });
+    protected void doDelete(final HttpServletRequest req,
+                            final HttpServletResponse res)
+                                                          throws ServletException,
+                                                          IOException {
+        doAuthorizedAction( req,
+                            res,
+                            new Command() {
+                                public void execute() throws Exception {
+                                    res.setContentType( "text/html" );
+                                    RestAPI api = getAPI();
+                                    api.delete( req.getRequestURI() );
+                                    res.getWriter().write( "OK" );
+                                }
+                            } );
     }
-
-
-
-
-
 
     /**
      * Get a repository instance.
@@ -143,34 +146,24 @@ public class RestAPIServlet extends RepositoryServlet {
      * return a repo for test puposes if seam is not active.
      */
     static RulesRepository getRepository() {
-        if (Contexts.isApplicationContextActive()) {
+        if ( Contexts.isApplicationContextActive() ) {
             RulesRepository repo = (RulesRepository) Component.getInstance( "repository" );
             return repo;
         } else {
             try {
                 RulesRepository repo = new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) );
                 return repo;
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to get repo to run tests", e);
+            } catch ( Exception e ) {
+                throw new IllegalStateException( "Unable to get repo to run tests",
+                                                 e );
             }
 
         }
 
     }
 
-    RestAPI getAPI()  {
-        return new RestAPI(getRepository());
+    RestAPI getAPI() {
+        return new RestAPI( getRepository() );
     }
-
-
-
-
-
-
-
-
-
-
-
 
 }

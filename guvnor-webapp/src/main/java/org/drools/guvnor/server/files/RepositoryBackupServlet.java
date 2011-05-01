@@ -50,8 +50,8 @@ public class RepositoryBackupServlet extends RepositoryServlet {
     protected void doPost(final HttpServletRequest request,
             final HttpServletResponse response) throws ServletException, IOException {
 
-        doAuthorizedAction(request, response, new A() {
-            public void a() throws Exception {
+        doAuthorizedAction(request, response, new Command() {
+            public void execute() throws Exception {
 
                 String repoConfig = request.getParameter("repoConfig");
 
@@ -86,8 +86,8 @@ public class RepositoryBackupServlet extends RepositoryServlet {
     protected void doGet(final HttpServletRequest req, final HttpServletResponse res)
             throws ServletException, IOException {
 
-        doAuthorizedAction(req, res, new A() {
-            public void a() throws Exception {
+        doAuthorizedAction(req, res, new Command() {
+            public void execute() throws Exception {
 
         try {
             String packageName = req.getParameter("packageName");

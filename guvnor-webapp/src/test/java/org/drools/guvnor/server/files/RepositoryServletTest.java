@@ -16,57 +16,57 @@
 
 package org.drools.guvnor.server.files;
 
-import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.util.codec.Base64;
-import org.drools.guvnor.server.security.MockIdentity;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import static org.junit.Assert.*;
+import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.security.MockIdentity;
+import org.drools.util.codec.Base64;
+import org.junit.Test;
 
 
 public class RepositoryServletTest extends GuvnorTestBase {
 
     @Test
-    public void testAllowUser() throws Exception {
-        setUpMockIdentity(getMockIdentity());
-
-        String authToken = "usr:pwd";
-        String encodedAuthToken = "BASIC " + new String(Base64.encodeBase64(authToken.getBytes()));
-        boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
-        assertTrue(allowed);
-    }
-
-    @Test
-    public void testAllowUserNoBasicAuthenticationHeader() throws Exception {
-        setUpMockIdentity(getMockIdentity());
-
-        String encodedAuthToken = null;
-        boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
-        assertTrue(allowed);
-    }
+        public void testExecutellowUser() throws Exception {
+            setUpMockIdentity(getMockIdentity());
+    
+            String authToken = "usr:pwd";
+            String encodedAuthToken = "BASIC " + new String(Base64.encodeBase64(authToken.getBytes()));
+            boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
+            assertTrue(allowed);
+        }
 
     @Test
-    public void testAllowUserNoBasicAuthenticationHeaderNotAllowLogin() throws Exception {
-        MockIdentity mockIdentity = new MockIdentity();
-        mockIdentity.setIsLoggedIn(false);
-        mockIdentity.setAllowLogin(false);
-        setUpMockIdentity(mockIdentity);
-
-        String encodedAuthToken = null;
-        boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
-        assertFalse(allowed);
-    }
+        public void testExecutellowUserNoBasicAuthenticationHeader() throws Exception {
+            setUpMockIdentity(getMockIdentity());
+    
+            String encodedAuthToken = null;
+            boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
+            assertTrue(allowed);
+        }
 
     @Test
-    public void testAllowUserNotBasicAuthenticationHeader() throws Exception {
-        setUpMockIdentity(getMockIdentity());
+        public void testExecutellowUserNoBasicAuthenticationHeaderNotAllowLogin() throws Exception {
+            MockIdentity mockIdentity = new MockIdentity();
+            mockIdentity.setIsLoggedIn(false);
+            mockIdentity.setAllowLogin(false);
+            setUpMockIdentity(mockIdentity);
+    
+            String encodedAuthToken = null;
+            boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
+            assertFalse(allowed);
+        }
 
-        String encodedAuthToken = "NON-Basic ";
-        boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
-        assertTrue(allowed);
-    }
+    @Test
+        public void testExecutellowUserNotBasicAuthenticationHeader() throws Exception {
+            setUpMockIdentity(getMockIdentity());
+    
+            String encodedAuthToken = "NON-Basic ";
+            boolean allowed = RepositoryServlet.allowUser(encodedAuthToken);
+            assertTrue(allowed);
+        }
 
 
     @Test

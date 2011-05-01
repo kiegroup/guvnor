@@ -136,8 +136,8 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                          final HttpServletResponse res) throws ServletException,
                                                       IOException {
         
-        doAuthorizedAction(req, res, new A() {
-            public void a() throws Exception {
+        doAuthorizedAction(req, res, new Command() {
+            public void execute() throws Exception {
                 PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper( req.getRequestURI() );
 
                 log.info( "PackageName: " + helper.getPackageName() );
