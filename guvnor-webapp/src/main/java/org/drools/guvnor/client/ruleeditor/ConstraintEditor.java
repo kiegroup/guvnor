@@ -20,12 +20,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.MissingResourceException;
 
-import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.ChangeListener;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
@@ -34,42 +31,48 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ConstraintEditor extends Composite {
-    private Constants constants =  GWT.create(Constants.class);
     private ConstraintConfiguration config;
 
     public ConstraintEditor(ConstraintConfiguration config) {
         this.config = config;
 
-        Grid confGrid = new Grid(config.getArgumentKeys().size(), 2);
+        Grid confGrid = new Grid( config.getArgumentKeys().size(),
+                                  2 );
 
         ArrayList<String> list = new ArrayList<String>();
         Map<String, String> argI18N = new HashMap<String, String>();
-        for (String arg : config.getArgumentKeys()) {
-            String i18n = getI18NText(arg);
-            list.add(i18n);
-            argI18N.put(i18n, arg);
+        for ( String arg : config.getArgumentKeys() ) {
+            String i18n = getI18NText( arg );
+            list.add( i18n );
+            argI18N.put( i18n,
+                         arg );
         }
-        Collections.sort(list);
+        Collections.sort( list );
 
         int row = 0;
-        for (String arg : list) {
+        for ( String arg : list ) {
             TextBox argTB = new TextBox();
-            argTB.setText(getConstraintConfiguration().getArgumentValue(arg).toString());
-            argTB.setName(argI18N.get(arg));
-            argTB.setTitle(arg);
-            argTB.addChangeListener(new ChangeListener() {
+            argTB.setText( getConstraintConfiguration().getArgumentValue( arg ).toString() );
+            argTB.setName( argI18N.get( arg ) );
+            argTB.setTitle( arg );
+            argTB.addChangeListener( new ChangeListener() {
                 public void onChange(Widget sender) {
                     TextBox argTB = (TextBox) sender;
-                    getConstraintConfiguration().setArgumentValue(argTB.getName(), argTB.getText());
+                    getConstraintConfiguration().setArgumentValue( argTB.getName(),
+                                                                   argTB.getText() );
                 }
-            });
+            } );
 
-            confGrid.setWidget(row, 0, new Label(arg + ":"));
-            confGrid.setWidget(row, 1, argTB);
+            confGrid.setWidget( row,
+                                0,
+                                new Label( arg + ":" ) );
+            confGrid.setWidget( row,
+                                1,
+                                argTB );
             row++;
         }
 
-        initWidget(confGrid);
+        initWidget( confGrid );
     }
 
     private String getI18NText(String s) {
@@ -88,4 +91,4 @@ public class ConstraintEditor extends Composite {
     public String getConstraintName() {
         return getConstraintConfiguration().getConstraintName();
     }
- }
+}

@@ -32,13 +32,14 @@ public class CommentWidget extends DirtyableComposite {
     private Constants                      constants = GWT.create( Constants.class );
     private final DecoratedTextArea        text;
     private final DecoratedDisclosurePanel disclosurePanel;
-    private boolean         readOnly;
+    private boolean                        readOnly;
 
-    public CommentWidget(final Artifact artifact, boolean readOnly) {
+    public CommentWidget(final Artifact artifact,
+                         boolean readOnly) {
         this.readOnly = readOnly;
 
         text = getTextArea();
-        text.setEnabled(!this.readOnly);
+        text.setEnabled( !this.readOnly );
 
         disclosurePanel = getDisclosurePanel();
 
@@ -51,7 +52,7 @@ public class CommentWidget extends DirtyableComposite {
         } );
 
         //if ( isDescriptionUnSet( artifact ) ) {
-            disclosurePanel.setOpen( true );
+        disclosurePanel.setOpen( true );
         //}
 
         initWidget( disclosurePanel );
@@ -69,10 +70,6 @@ public class CommentWidget extends DirtyableComposite {
         text.setVisibleLines( 5 );
         text.setTitle( constants.RuleDocHint() );
         return text;
-    }
-
-    private boolean isDescriptionUnSet(Artifact data) {
-        return data.description == null || data.description.equals( "" ) || data.description.equals( "<documentation>" );
     }
 
     private void loadData(final Artifact data) {

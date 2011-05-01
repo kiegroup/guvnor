@@ -18,7 +18,18 @@ package org.drools.guvnor.client.util;
 import java.util.Arrays;
 import java.util.List;
 
-import org.drools.guvnor.client.admin.*;
+import org.drools.guvnor.client.admin.ArchivedAssetManager;
+import org.drools.guvnor.client.admin.BackupManager;
+import org.drools.guvnor.client.admin.CategoryManager;
+import org.drools.guvnor.client.admin.LogViewer;
+import org.drools.guvnor.client.admin.PermissionViewer;
+import org.drools.guvnor.client.admin.PerspectivesManager;
+import org.drools.guvnor.client.admin.PerspectivesManagerView;
+import org.drools.guvnor.client.admin.PerspectivesManagerViewImpl;
+import org.drools.guvnor.client.admin.RepoConfigManager;
+import org.drools.guvnor.client.admin.RuleVerifierManager;
+import org.drools.guvnor.client.admin.StateManager;
+import org.drools.guvnor.client.admin.WorkspaceManager;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -28,14 +39,21 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.OpenPackageCommand;
-import org.drools.guvnor.client.packages.PackageEditor;
 import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.packages.SnapshotView;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.qa.AnalysisView;
 import org.drools.guvnor.client.qa.ScenarioPackageView;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.ConfigurationService;
+import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.PushClient;
+import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.ServerPushNotification;
+import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.ruleeditor.RuleViewerWrapper;
@@ -118,8 +136,8 @@ public class TabOpener {
     private void loadRuleAsset(final String uuid,
                                final boolean[] loading) {
         RepositoryServiceFactory.getAssetService().loadRuleAsset( uuid,
-                                                             createGenericCallback( uuid,
-                                                                                    loading ) );
+                                                                  createGenericCallback( uuid,
+                                                                                         loading ) );
     }
 
     private GenericCallback<RuleAsset> createGenericCallback(final String uuid,
@@ -141,10 +159,10 @@ public class TabOpener {
                         //When model is saved update the package view if it is opened.
                         Command checkInAndArchiveCommand = createCheckInAndArchiveCommandForRuleViewer( ruleAsset );
                         RuleViewerWrapper ruleViewer = new RuleViewerWrapper( ruleAsset,
-                                                                createEditEvent(),
-                                                                createCloseCommandForRuleViewer( uuid ),
-                                                                ruleAsset.metaData.format.equals( AssetFormats.MODEL )?checkInAndArchiveCommand:null,
-                                                                ruleAsset.metaData.format.equals( AssetFormats.MODEL )?checkInAndArchiveCommand:null                                                         		
+                                                                              createEditEvent(),
+                                                                              createCloseCommandForRuleViewer( uuid ),
+                                                                              ruleAsset.metaData.format.equals( AssetFormats.MODEL ) ? checkInAndArchiveCommand : null,
+                                                                              ruleAsset.metaData.format.equals( AssetFormats.MODEL ) ? checkInAndArchiveCommand : null
                                                                 );
                         explorerViewCenterPanel.addTab( ruleAsset.name,
                                                         ruleViewer,
@@ -153,7 +171,7 @@ public class TabOpener {
                     }
 
                     //This is used to update package editor when there are changes in its assets(eg, assets removed or renamed)
-					private Command createCheckInAndArchiveCommandForRuleViewer(final RuleAsset ruleAsset) {
+                    private Command createCheckInAndArchiveCommandForRuleViewer(final RuleAsset ruleAsset) {
                         Command command = new Command() {
                             public void execute() {
                                 PackageEditorWrapper packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( ruleAsset.metaData.packageName );
@@ -225,26 +243,28 @@ public class TabOpener {
         if ( !explorerViewCenterPanel.showIfOpen( uuid ) ) {
             LoadingPopup.showMessage( constants.LoadingPackageInformation() );
             RepositoryServiceFactory.getPackageService().loadPackageConfig( uuid,
-                                                                     new GenericCallback<PackageConfigData>() {
-                                                                         public void onSuccess(PackageConfigData conf) {
-                                                                        	 PackageEditorWrapper ed = new PackageEditorWrapper( conf,
-                                                                                                                   new Command() {
-                                                                                                                       public void execute() {
-                                                                                                                           explorerViewCenterPanel.close( uuid );
-                                                                                                                       }
-                                                                                                                   },
-                                                                                                                   refPackageList,
-                                                                                                                   new OpenPackageCommand() {
-                                                                                                                       public void open(String key, Command refreshPackageListCommand) {
-                                                                                                                    	   openPackageEditor(key, refreshPackageListCommand);
-                                                                                                                       }
-                                                                                                                   });
-                                                                             explorerViewCenterPanel.addTab( conf.name,
-                                                                                                             ed,
-                                                                                                             conf.uuid );
-                                                                             LoadingPopup.close();
-                                                                         }
-                                                                     } );
+                                                                            new GenericCallback<PackageConfigData>() {
+                                                                                public void onSuccess(PackageConfigData conf) {
+                                                                                    PackageEditorWrapper ed = new PackageEditorWrapper( conf,
+                                                                                                                                        new Command() {
+                                                                                                                                            public void execute() {
+                                                                                                                                                explorerViewCenterPanel.close( uuid );
+                                                                                                                                            }
+                                                                                                                                        },
+                                                                                                                                        refPackageList,
+                                                                                                                                        new OpenPackageCommand() {
+                                                                                                                                            public void open(String key,
+                                                                                                                                                             Command refreshPackageListCommand) {
+                                                                                                                                                openPackageEditor( key,
+                                                                                                                                                                   refreshPackageListCommand );
+                                                                                                                                            }
+                                                                                                                                        } );
+                                                                                    explorerViewCenterPanel.addTab( conf.name,
+                                                                                                                    ed,
+                                                                                                                    conf.uuid );
+                                                                                    LoadingPopup.close();
+                                                                                }
+                                                                            } );
         }
     }
 
@@ -252,7 +272,7 @@ public class TabOpener {
         if ( !explorerViewCenterPanel.showIfOpen( "FIND" ) ) { // NON-NLS
             explorerViewCenterPanel.addTab( constants.Find(),
                                             new QueryWidget( new OpenItemCommand() {
-                                                
+
                                                 public void open(String uuid) {
                                                     openAsset( uuid );
                                                 }
@@ -271,22 +291,22 @@ public class TabOpener {
                                                   + snap.uuid ) ) {
             LoadingPopup.showMessage( constants.LoadingSnapshot() );
             RepositoryServiceFactory.getPackageService().loadPackageConfig( snap.uuid,
-                                                                     new GenericCallback<PackageConfigData>() {
-                                                                         public void onSuccess(PackageConfigData conf) {
-                                                                             explorerViewCenterPanel.addTab( constants.SnapshotLabel( snap.name ),
-                                                                                                             new SnapshotView( snap,
-                                                                                                                               conf,
-                                                                                                                               new Command() {
-                                                                                                                                   public void execute() {
-                                                                                                                                       explorerViewCenterPanel.close( snap.name
-                                                                                                                                                                      + snap.uuid );
-                                                                                                                                   }
-                                                                                                                               } ),
-                                                                                                             snap.name
-                                                                                                                     + snap.uuid );
-                                                                             LoadingPopup.close();
-                                                                         }
-                                                                     } );
+                                                                            new GenericCallback<PackageConfigData>() {
+                                                                                public void onSuccess(PackageConfigData conf) {
+                                                                                    explorerViewCenterPanel.addTab( constants.SnapshotLabel( snap.name ),
+                                                                                                                    new SnapshotView( snap,
+                                                                                                                                      conf,
+                                                                                                                                      new Command() {
+                                                                                                                                          public void execute() {
+                                                                                                                                              explorerViewCenterPanel.close( snap.name
+                                                                                                                                                                             + snap.uuid );
+                                                                                                                                          }
+                                                                                                                                      } ),
+                                                                                                                    snap.name
+                                                                                                                            + snap.uuid );
+                                                                                    LoadingPopup.close();
+                                                                                }
+                                                                            } );
 
         }
     }
@@ -374,7 +394,7 @@ public class TabOpener {
                                                                                                          new WorkspaceManager(),
                                                                                                          WORKSPACES );
                 break;
-            case 10:
+            case 10 :
                 openPerspectivesManager();
                 break;
         }
@@ -382,13 +402,13 @@ public class TabOpener {
     }
 
     private void openPerspectivesManager() {
-        if (!explorerViewCenterPanel.showIfOpen(PERSPECTIVES_MANAGER)) {
+        if ( !explorerViewCenterPanel.showIfOpen( PERSPECTIVES_MANAGER ) ) {
             PerspectivesManagerView perspectivesManagerView = new PerspectivesManagerViewImpl();
-            new PerspectivesManager(GWT.<ConfigurationServiceAsync>create(ConfigurationService.class),
-                    perspectivesManagerView);
-            explorerViewCenterPanel.addTab(constants.PerspectivesConfiguration(),
-                    perspectivesManagerView,
-                    PERSPECTIVES_MANAGER);
+            new PerspectivesManager( GWT.<ConfigurationServiceAsync> create( ConfigurationService.class ),
+                                     perspectivesManagerView );
+            explorerViewCenterPanel.addTab( constants.PerspectivesConfiguration(),
+                                            perspectivesManagerView,
+                                            PERSPECTIVES_MANAGER );
         }
     }
 
@@ -492,7 +512,7 @@ public class TabOpener {
             }
         };
     }
-    
+
     public void openPackageViewAssets(final String packageUuid,
                                       final String packageName,
                                       String key,
