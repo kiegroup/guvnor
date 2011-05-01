@@ -563,6 +563,8 @@ public class RepositoryPackageService
                 } else {
                     throw err;
                 }
+            } else {
+                throw new DetailedSerializationException("Unable to run the scenario.", e.getMessage());
             }
         } finally {
             Thread.currentThread().setContextClassLoader( originalCL );

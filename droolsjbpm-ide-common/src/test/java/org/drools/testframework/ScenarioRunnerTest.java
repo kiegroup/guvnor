@@ -126,15 +126,17 @@ public class ScenarioRunnerTest extends RuleUnit {
                 Thread.currentThread().getContextClassLoader());
         resolver.addImport("org.drools.Cheese");
         resolver.addImport("org.drools.CheeseType");
-        ScenarioRunner runner = new ScenarioRunner(sc,
-                resolver,
-                new MockWorkingMemory());
+        try {
+            ScenarioRunner runner = new ScenarioRunner(sc, resolver,
+                    new MockWorkingMemory());
 
-        assertTrue(runner.getPopulatedData().containsKey("c1"));
+            assertTrue(runner.getPopulatedData().containsKey("c1"));
 
-        Cheese c = (Cheese) runner.getPopulatedData().get("c1");
-        assertEquals(CheeseType.CHEDDAR,
-                c.getCheeseType());
+            Cheese c = (Cheese) runner.getPopulatedData().get("c1");
+            assertEquals(CheeseType.CHEDDAR, c.getCheeseType());
+        } catch (Exception e) {
+            fail("Unexpected exception");
+        }
     }
 
     @Test
