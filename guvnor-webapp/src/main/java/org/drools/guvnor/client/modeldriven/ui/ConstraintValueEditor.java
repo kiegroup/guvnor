@@ -358,9 +358,9 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         Button lit = new Button( constants.LiteralValue() );
         lit.addClickHandler( new ClickHandler() {
-
             public void onClick(ClickEvent event) {
-                con.setConstraintValueType( isDropDownDataEnum ? SingleFieldConstraint.TYPE_ENUM : SingleFieldConstraint.TYPE_LITERAL );
+                con.setConstraintValueType( isDropDownDataEnum && dropDownData != null ? SingleFieldConstraint.TYPE_ENUM : SingleFieldConstraint.TYPE_LITERAL );
+
                 doTypeChosen( form );
             }
         } );
