@@ -62,7 +62,6 @@
 }
 
 .whiteCenterClass {
-
 }
 
 @sprite .greyTopLeftCornerClass {
@@ -119,4 +118,5 @@
 
 .clean-textarea {
     border: none !important;
+    width: 95%;
 }
