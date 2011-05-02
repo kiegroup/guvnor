@@ -107,6 +107,7 @@ public class CategoryExplorerWidget extends Composite
             this.emptyCategories = p;
             this.panel.add( this.emptyCategories );
         }
+        this.navTreeWidget.setVisible( false );
         emptyCategories.setVisible( true );
 
     }
@@ -160,7 +161,7 @@ public class CategoryExplorerWidget extends Composite
         if ( this.emptyCategories != null ) {
             this.emptyCategories.setVisible( false );
         }
-
+        this.navTreeWidget.setVisible( true );
     }
 
     public void onSelection(SelectionEvent<TreeItem> event) {
