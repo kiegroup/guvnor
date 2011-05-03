@@ -48,6 +48,7 @@ public class GuidedDTDRLOtherwiseHelper {
 
             sfc.setOperator( "not in" );
 
+            List<String> consumedValues = new ArrayList<String>();
             StringBuilder value = new StringBuilder();
             value.append( "( " );
             for ( DTCellValue cv : columnData ) {
@@ -55,14 +56,17 @@ public class GuidedDTDRLOtherwiseHelper {
                 //Ensure cell values start and end with quotes
                 String scv = convertDTCellValueToString( cv );
                 if ( scv != null ) {
-                    if ( !scv.startsWith( "\"" ) ) {
-                        value.append( "\"" );
+                    if ( !consumedValues.contains( scv ) ) {
+                        if ( !scv.startsWith( "\"" ) ) {
+                            value.append( "\"" );
+                        }
+                        value.append( scv );
+                        if ( !scv.endsWith( "\"" ) ) {
+                            value.append( "\"" );
+                        }
+                        value.append( ", " );
                     }
-                    value.append( scv );
-                    if ( !scv.endsWith( "\"" ) ) {
-                        value.append( "\"" );
-                    }
-                    value.append( ", " );
+                    consumedValues.add( scv );
                 }
             }
             value.delete( value.lastIndexOf( "," ),
@@ -90,6 +94,7 @@ public class GuidedDTDRLOtherwiseHelper {
 
             sfc.setOperator( "in" );
 
+            List<String> consumedValues = new ArrayList<String>();
             StringBuilder value = new StringBuilder();
             value.append( "( " );
             for ( DTCellValue cv : columnData ) {
@@ -97,14 +102,17 @@ public class GuidedDTDRLOtherwiseHelper {
                 //Ensure cell values start and end with quotes
                 String scv = convertDTCellValueToString( cv );
                 if ( scv != null ) {
-                    if ( !scv.startsWith( "\"" ) ) {
-                        value.append( "\"" );
+                    if ( !consumedValues.contains( scv ) ) {
+                        if ( !scv.startsWith( "\"" ) ) {
+                            value.append( "\"" );
+                        }
+                        value.append( scv );
+                        if ( !scv.endsWith( "\"" ) ) {
+                            value.append( "\"" );
+                        }
+                        value.append( ", " );
                     }
-                    value.append( scv );
-                    if ( !scv.endsWith( "\"" ) ) {
-                        value.append( "\"" );
-                    }
-                    value.append( ", " );
+                    consumedValues.add( scv );
                 }
             }
             value.delete( value.lastIndexOf( "," ),
