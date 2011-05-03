@@ -398,7 +398,8 @@ public class RuleViewer extends GuvnorEditor {
                                                  ScrollPanel scrollPanel = new ScrollPanel( new VerifierResultWidget( report,
                                                                                                                       false,
                                                                                                                       openItemCommand ) );
-                                                 scrollPanel.setWidth( "100%" );
+                                                 scrollPanel.setWidth( "800px" );
+                                                 scrollPanel.setHeight( "200px" );
                                                  form.addRow( scrollPanel );
 
                                                  LoadingPopup.close();
