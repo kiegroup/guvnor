@@ -173,6 +173,10 @@ public class Scenario
                                      factData );
             }
         }
+        for ( FactData factData : globals ) {
+            factTypesByName.put( factData.getName(),
+                                 factData );
+        }
         return factTypesByName;
     }
 
