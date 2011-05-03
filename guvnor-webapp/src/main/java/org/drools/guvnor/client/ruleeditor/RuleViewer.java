@@ -86,7 +86,7 @@ public class RuleViewer extends GuvnorEditor {
     private Command                                   archiveCommand;
     public Command                                    checkedInCommand;
     private final OpenItemCommand                     openItemCommand;
-    private Command                                   refreshCommand;
+    public Command                                   refreshCommand;
     
     protected RuleAsset                               asset;
     private boolean                                   readOnly;

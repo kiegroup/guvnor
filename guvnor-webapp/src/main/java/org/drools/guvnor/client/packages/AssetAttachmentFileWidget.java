@@ -137,7 +137,11 @@ public abstract class AssetAttachmentFileWidget extends Composite
                 if ( viewer.checkedInCommand != null ) {
                     viewer.checkedInCommand.execute();
                 }
-
+                
+                if ( viewer.refreshCommand!= null ) {
+                    viewer.refreshCommand.execute();
+                }
+                
                 if ( event.getResults().indexOf( "OK" ) > -1 ) {
                     viewer.showInfoMessage( constants.FileWasUploadedSuccessfully() );
                 } else {
