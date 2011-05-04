@@ -25,26 +25,25 @@ import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-
 public class BPELHandler extends ContentHandler {
 
-    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
-            AssetItem item) throws SerializationException {
+    public void retrieveAssetContent(RuleAsset ruleAsset,
+                                     PackageItem packageItem,
+                                     AssetItem assetItem) throws SerializationException {
 
-        // Get the name
+        InputStream inputStream = assetItem.getBinaryContentAttachment();
 
-        InputStream in = item.getBinaryContentAttachment();
-
-        if (in != null) {
+        if ( inputStream != null ) {
             RuleContentText text = new RuleContentText();
-            text.content = asset.name;
-            asset.content = text;
+            text.content = ruleAsset.name;
+            ruleAsset.content = text;
         }
 
     }
 
-    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-            throws SerializationException {
+    public void storeAssetContent(RuleAsset asset,
+                                  AssetItem repoAsset)
+                                                      throws SerializationException {
     }
 
 }

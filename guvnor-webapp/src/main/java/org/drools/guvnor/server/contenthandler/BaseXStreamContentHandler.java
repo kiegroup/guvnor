@@ -38,24 +38,24 @@ public abstract class BaseXStreamContentHandler<T extends PortableObject> extend
     }
 
     @SuppressWarnings("unchecked")
-    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item) throws SerializationException {
-        if (item.getContent() != null && item.getContent().length() > 0) {
+    public void retrieveAssetContent(RuleAsset ruleAsset, PackageItem packageItem, AssetItem assetItem) throws SerializationException {
+        if (assetItem.getContent() != null && assetItem.getContent().length() > 0) {
             try {
-                asset.content = (T) getXStream().fromXML(item.getContent());
+                ruleAsset.content = (T) getXStream().fromXML(assetItem.getContent());
             } catch (RulesRepositoryException e) {
-                log.error("error marshalling asset content: " + asset.name, e);
+                log.error("error marshalling asset content: " + ruleAsset.name, e);
                 throw new SerializationException(e.getMessage());
             }
         } else {
-            asset.content = new WorkingSetConfigData();
+            ruleAsset.content = new WorkingSetConfigData();
         }
     }
 
-    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset) throws SerializationException {
+    public void storeAssetContent(RuleAsset ruleAsset, AssetItem assetItem) throws SerializationException {
         try {
-            repoAsset.updateContent(getXStream().toXML(asset.content));
+            assetItem.updateContent(getXStream().toXML(ruleAsset.content));
         } catch (Exception e) {
-            log.error("error marshalling asset content: " + asset.name, e);
+            log.error("error marshalling asset content: " + ruleAsset.name, e);
             throw new SerializationException(e.getMessage());
         }
     }
