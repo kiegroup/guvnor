@@ -187,32 +187,43 @@ public class BRDRLPersistence
         }
     }
 
-    private static void buildFieldValue(StringBuilder buf,
+    private static class ConstraintValueBuilder {
+
+        private void buildFieldValue(StringBuilder buf,
                                         String fieldType,
                                         String value) {
-        if ( fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-            buf.append( value );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            buf.append( "\"" );
-            buf.append( value );
-            buf.append( "\"" );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            buf.append( value );
-        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-            buf.append( "\"" );
-            buf.append( value );
-            buf.append( "\"" );
-        } else {
-            buf.append( value );
+            if ( fieldType == null ) {
+                //This should ideally be an error however we show leniency to legacy code
+                buf.append( value );
+                return;
+            }
+
+            if ( fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+                buf.append( value );
+            } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+                buf.append( "\"" );
+                buf.append( value );
+                buf.append( "\"" );
+            } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+                buf.append( value );
+            } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
+                buf.append( "\"" );
+                buf.append( value );
+                buf.append( "\"" );
+            } else {
+                buf.append( value );
+            }
+
         }
+
     }
 
-    
     public static class LHSPatternVisitor extends ReflectiveVisitor {
 
-        private StringBuilder buf;
-        private boolean       isDSLEnhanced;
-        private String        indentation;
+        private StringBuilder          buf;
+        private ConstraintValueBuilder helper = new ConstraintValueBuilder();
+        private boolean                isDSLEnhanced;
+        private String                 indentation;
 
         public LHSPatternVisitor(boolean isDSLEnhanced,
                                  StringBuilder b,
@@ -556,9 +567,9 @@ public class BRDRLPersistence
                         buf.append( value );
                     } else {
                         if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
-                            buildFieldValue( buf,
-                                             fieldType,
-                                             value );
+                            helper.buildFieldValue( buf,
+                                                    fieldType,
+                                                    value );
                         }
                     }
                     break;
@@ -568,29 +579,30 @@ public class BRDRLPersistence
                     }
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE :
-                    buildFieldValue( buf,
-                                     fieldType,
-                                     "@{" + value + "}" );
+                    helper.buildFieldValue( buf,
+                                            fieldType,
+                                            "@{" + value + "}" );
                     break;
                 case BaseSingleFieldConstraint.TYPE_ENUM :
-                    buildFieldValue( buf,
-                                     fieldType,
-                                     value );
+                    helper.buildFieldValue( buf,
+                                            fieldType,
+                                            value );
                     break;
                 default :
                     buf.append( value );
             }
             buf.append( " " );
         }
-        
+
     }
 
     public static class RHSActionVisitor extends ReflectiveVisitor {
 
-        private StringBuilder buf;
-        private boolean       isDSLEnhanced;
-        private String        indentation;
-        private int           idx = 0;
+        private StringBuilder          buf;
+        private ConstraintValueBuilder helper = new ConstraintValueBuilder();
+        private boolean                isDSLEnhanced;
+        private String                 indentation;
+        private int                    idx    = 0;
 
         public RHSActionVisitor(boolean isDSLEnhanced,
                                 StringBuilder b,
@@ -748,13 +760,13 @@ public class BRDRLPersistence
                 if ( fieldValues[i].isFormula() ) {
                     buf.append( fieldValues[i].value.substring( 1 ) );
                 } else if ( fieldValues[i].nature == FieldNature.TYPE_TEMPLATE ) {
-                    buildFieldValue( buf,
-                                     fieldValues[i].type,
-                                     "@{" + fieldValues[i].value + "}" );
+                    helper.buildFieldValue( buf,
+                                            fieldValues[i].type,
+                                            "@{" + fieldValues[i].value + "}" );
                 } else {
-                    buildFieldValue( buf,
-                                     fieldValues[i].type,
-                                     fieldValues[i].value );
+                    helper.buildFieldValue( buf,
+                                            fieldValues[i].type,
+                                            fieldValues[i].value );
                 }
                 buf.append( " );\n" );
             }
