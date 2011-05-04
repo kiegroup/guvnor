@@ -25,7 +25,6 @@ import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 

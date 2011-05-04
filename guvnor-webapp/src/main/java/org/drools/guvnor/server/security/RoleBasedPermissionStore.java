@@ -45,32 +45,42 @@ public class RoleBasedPermissionStore {
         Map<String, List<String>> perms = permissionManager
                 .retrieveUserPermissions(userName);
         for (Map.Entry<String, List<String>> permEntry : perms.entrySet()) {
-            String roleType = permEntry.getKey();
-            if (RoleTypes.ADMIN.equals(roleType)) {
-                permissions.add(new RoleBasedPermission(userName, RoleTypes.ADMIN,
-                        null, null));
-            }
-
-            List<String> permissionsPerRole = permEntry.getValue();
-            for (String permissionPerRole : permissionsPerRole) {
-                if (permissionPerRole.startsWith("package=")) {
-                    String packageName = permissionPerRole.substring("package="
-                            .length());
-                    permissions.add(new RoleBasedPermission(userName, roleType,
-                            packageName, null));
-                } else if (permissionPerRole.startsWith("category=")) {
-                    String categoryPath = permissionPerRole
-                            .substring("category=".length());
-                    permissions.add(new RoleBasedPermission(userName, roleType,
-                            null, categoryPath));
-                }
-            }
+            resolvePermissionsAndAdd( userName,
+                                permissions,
+                                permEntry );
         }
 
         return permissions;
     }
 
 
+    private void resolvePermissionsAndAdd(String userName,
+                                    List<RoleBasedPermission> permissions,
+                                    Map.Entry<String, List<String>> permEntry) {
+        String roleType = permEntry.getKey();
+        if (RoleTypes.ADMIN.equals(roleType)) {
+            permissions.add(new RoleBasedPermission(userName, RoleTypes.ADMIN,
+                    null, null));
+        }
+
+        List<String> permissionsPerRole = permEntry.getValue();
+        for (String permissionPerRole : permissionsPerRole) {
+            if (permissionPerRole.startsWith("package=")) {
+                String packageName = permissionPerRole.substring("package="
+                        .length());
+                permissions.add(new RoleBasedPermission(userName, roleType,
+                        packageName, null));
+            } else if (permissionPerRole.startsWith("category=")) {
+                String categoryPath = permissionPerRole
+                        .substring("category=".length());
+                permissions.add(new RoleBasedPermission(userName, roleType,
+                        null, categoryPath));
+            }
+        }
+    }
+
+
+    @SuppressWarnings("unchecked")
     public void addRoleBasedPermissionForTesting(String userName, RoleBasedPermission rbp) {
         PermissionManager permissionManager = new PermissionManager(repository);
         Map<String, List<String>> perms = permissionManager

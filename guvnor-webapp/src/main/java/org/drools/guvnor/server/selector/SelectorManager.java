@@ -41,6 +41,7 @@ public class SelectorManager {
      */
     public final Map<String, AssetSelector> selectors = new HashMap<String, AssetSelector>();
 
+    @SuppressWarnings("rawtypes")
     SelectorManager(String configPath) {
         log.debug("Loading selectors");
         Properties props = new Properties();

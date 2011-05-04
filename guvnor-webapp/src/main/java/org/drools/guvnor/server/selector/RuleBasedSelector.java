@@ -64,6 +64,7 @@ public class RuleBasedSelector implements AssetSelector {
         return evalRules( asset );
     }
 
+    @SuppressWarnings("rawtypes")
     boolean evalRules(Object asset) {
         StatelessSession session = ruleBase.newStatelessSession();
         StatelessSessionResult result = session.executeWithResults( asset );

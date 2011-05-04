@@ -19,36 +19,39 @@ package org.drools.guvnor.server.security;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import javax.security.auth.login.LoginException;
 
-import org.drools.repository.utils.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.drools.core.util.DateUtils;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.security.Capabilities;
+import org.drools.repository.utils.IOUtils;
 import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Identity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This implements security related services.
  */
-public class SecurityServiceImpl implements SecurityService {
+public class SecurityServiceImpl
+    implements
+    SecurityService {
 
     public static final String       GUEST_LOGIN             = "guest";
     private static final Logger      log                     = LoggerFactory.getLogger( SecurityServiceImpl.class );
     static final Map<String, String> PREFERENCES             = loadPrefs();
-    private static String[]          serializationProperties = new String[]{"drools.serialization.private.keyStoreURL", "drools.serialization.private.keyStorePwd", "drools.serialization.private.keyAlias", "drools.serialization.private.keyPwd", "drools.serialization.public.keyStoreURL", "drools.serialization.public.keyStorePwd"};
+    private static String[]          serializationProperties = new String[]{"drools.serialization.private.keyStoreURL", "drools.serialization.private.keyStorePwd", "drools.serialization.private.keyAlias", "drools.serialization.private.keyPwd",
+            "drools.serialization.public.keyStoreURL", "drools.serialization.public.keyStorePwd"};
 
-    public boolean login(String userName, String password) {
+    public boolean login(String userName,
+                         String password) {
 
         if ( userName == null || userName.trim().equals( "" ) ) {
             userName = "logInAdmin";
@@ -74,7 +77,8 @@ public class SecurityServiceImpl implements SecurityService {
             try {
                 Identity.instance().authenticate();
             } catch ( LoginException e ) {
-                log.error( "Unable to login.", e );
+                log.error( "Unable to login.",
+                           e );
                 return false;
             }
             return Identity.instance().isLoggedIn();
@@ -142,7 +146,8 @@ public class SecurityServiceImpl implements SecurityService {
                 Identity.instance().logout();
                 throw new AuthorizationException( " Configuration error - Please refer to the Administration Guide section on installation. You must configure a key store before proceding.  " );
             }
-            return new CapabilityCalculator().calcCapabilities( permissions, PREFERENCES );
+            return new CapabilityCalculator().calcCapabilities( permissions,
+                                                                PREFERENCES );
         } else {
             if ( invalidSecuritySerilizationSetup() ) {
                 throw new AuthorizationException( " Configuration error - Please refer to the Administration Guide section on installation. You must configure a key store before proceding.  " );
@@ -168,13 +173,14 @@ public class SecurityServiceImpl implements SecurityService {
         Properties ps = new Properties();
         InputStream in = null;
         try {
-            in = SecurityServiceImpl.class.getResourceAsStream("/preferences.properties");
-            ps.load(in);
+            in = SecurityServiceImpl.class.getResourceAsStream( "/preferences.properties" );
+            ps.load( in );
             Map<String, String> prefs = new HashMap<String, String>();
             for ( Object o : ps.keySet() ) {
                 String feature = (String) o;
 
-                prefs.put( feature, ps.getProperty( feature ) );
+                prefs.put( feature,
+                           ps.getProperty( feature ) );
             }
 
             setSystemProperties( prefs );
@@ -184,7 +190,7 @@ public class SecurityServiceImpl implements SecurityService {
             log.info( "Couldn't find preferences.properties - using defaults" );
             return new HashMap<String, String>();
         } finally {
-            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly( in );
         }
     }
 
@@ -207,46 +213,59 @@ public class SecurityServiceImpl implements SecurityService {
 
         // Set properties that were specified in the properties file
         if ( prefs.containsKey( dateFormat ) ) {
-            System.setProperty( dateFormat, prefs.get( dateFormat ) );
+            System.setProperty( dateFormat,
+                                prefs.get( dateFormat ) );
         }
         if ( prefs.containsKey( defaultLanguage ) ) {
-            System.setProperty( defaultLanguage, prefs.get( defaultLanguage ) );
+            System.setProperty( defaultLanguage,
+                                prefs.get( defaultLanguage ) );
         }
         if ( prefs.containsKey( defaultCountry ) ) {
-            System.setProperty( defaultCountry, prefs.get( defaultCountry ) );
+            System.setProperty( defaultCountry,
+                                prefs.get( defaultCountry ) );
         }
 
         if ( prefs.containsKey( serializationSign ) ) {
-            System.setProperty( serializationSign, prefs.get( serializationSign ) );
+            System.setProperty( serializationSign,
+                                prefs.get( serializationSign ) );
         }
         if ( prefs.containsKey( privateKeyStoreURL ) ) {
-            System.setProperty( privateKeyStoreURL, prefs.get( privateKeyStoreURL ) );
+            System.setProperty( privateKeyStoreURL,
+                                prefs.get( privateKeyStoreURL ) );
         }
         if ( prefs.containsKey( privateKeyStorePwd ) ) {
-            System.setProperty( privateKeyStorePwd, prefs.get( privateKeyStorePwd ) );
+            System.setProperty( privateKeyStorePwd,
+                                prefs.get( privateKeyStorePwd ) );
         }
         if ( prefs.containsKey( privateKeyAlias ) ) {
-            System.setProperty( privateKeyAlias, prefs.get( privateKeyAlias ) );
+            System.setProperty( privateKeyAlias,
+                                prefs.get( privateKeyAlias ) );
         }
         if ( prefs.containsKey( privateKeyPwd ) ) {
-            System.setProperty( privateKeyPwd, prefs.get( privateKeyPwd ) );
+            System.setProperty( privateKeyPwd,
+                                prefs.get( privateKeyPwd ) );
         }
         if ( prefs.containsKey( publicKeyStoreURL ) ) {
-            System.setProperty( publicKeyStoreURL, prefs.get( publicKeyStoreURL ) );
+            System.setProperty( publicKeyStoreURL,
+                                prefs.get( publicKeyStoreURL ) );
         }
         if ( prefs.containsKey( publicKeyStorePwd ) ) {
-            System.setProperty( publicKeyStorePwd, prefs.get( publicKeyStorePwd ) );
+            System.setProperty( publicKeyStorePwd,
+                                prefs.get( publicKeyStorePwd ) );
         }
 
         // If properties were not set in the file, use the defaults
         if ( !prefs.containsKey( dateFormat ) ) {
-            prefs.put( dateFormat, DateUtils.getDateFormatMask() );
+            prefs.put( dateFormat,
+                       DateUtils.getDateFormatMask() );
         }
         if ( !prefs.containsKey( defaultLanguage ) ) {
-            prefs.put( defaultLanguage, System.getProperty( defaultLanguage ) );
+            prefs.put( defaultLanguage,
+                       System.getProperty( defaultLanguage ) );
         }
         if ( !prefs.containsKey( defaultCountry ) ) {
-            prefs.put( defaultCountry, System.getProperty( defaultCountry ) );
+            prefs.put( defaultCountry,
+                       System.getProperty( defaultCountry ) );
         }
 
         // For security Serialization we DO NOT want to set any default 
