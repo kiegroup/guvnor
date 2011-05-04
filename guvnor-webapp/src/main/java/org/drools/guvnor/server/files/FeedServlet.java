@@ -190,6 +190,7 @@ public class FeedServlet extends RepositoryServlet {
         }
 
 
+        @SuppressWarnings("rawtypes")
         public Collection getEntries() { return entries; }
 
         public String getFeedTitle() { return feedTitle; }

@@ -146,6 +146,7 @@ public class FileManagerUtils {
     /**
      * Get the form data from the inbound request.
      */
+    @SuppressWarnings("rawtypes")
     public static FormData getFormData(HttpServletRequest request) {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload( factory );

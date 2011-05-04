@@ -647,7 +647,6 @@ public class WebDAVImpl implements IWebdavStore {
                 packageItem.checkin( "" );
             }
         } else if(isGlobalAreas(path)) {
-            PackageItem packageItem = loadGlobalAreaFromRepository(repository);
             if ( path.length == 2 ) {
                 //delete asset
                 if ( path[1].startsWith( "._" ) ) {

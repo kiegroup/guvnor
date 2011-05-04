@@ -18,6 +18,7 @@ import org.jboss.seam.security.Identity;
 import com.google.gwt.user.client.rpc.SerializationException;
 
 public class OryxEditorServlet extends HttpServlet {
+
     private static final LoggingHelper log  = LoggingHelper.getLogger(OryxEditorServlet.class);
     
     public void service(HttpServletRequest request, HttpServletResponse response)
