@@ -187,41 +187,10 @@ public class BRDRLPersistence
         }
     }
 
-    private static class ConstraintValueBuilder {
-
-        private void buildFieldValue(StringBuilder buf,
-                                        String fieldType,
-                                        String value) {
-            if ( fieldType == null ) {
-                //This should ideally be an error however we show leniency to legacy code
-                buf.append( value );
-                return;
-            }
-
-            if ( fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-                buf.append( value );
-            } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                buf.append( "\"" );
-                buf.append( value );
-                buf.append( "\"" );
-            } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                buf.append( value );
-            } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-                buf.append( "\"" );
-                buf.append( value );
-                buf.append( "\"" );
-            } else {
-                buf.append( value );
-            }
-
-        }
-
-    }
-
     public static class LHSPatternVisitor extends ReflectiveVisitor {
 
         private StringBuilder          buf;
-        private ConstraintValueBuilder helper = new ConstraintValueBuilder();
+        private DRLConstraintValueBuilder helper = new DRLConstraintValueBuilder();
         private boolean                isDSLEnhanced;
         private String                 indentation;
 
@@ -599,7 +568,7 @@ public class BRDRLPersistence
     public static class RHSActionVisitor extends ReflectiveVisitor {
 
         private StringBuilder          buf;
-        private ConstraintValueBuilder helper = new ConstraintValueBuilder();
+        private DRLConstraintValueBuilder helper = new DRLConstraintValueBuilder();
         private boolean                isDSLEnhanced;
         private String                 indentation;
         private int                    idx    = 0;
