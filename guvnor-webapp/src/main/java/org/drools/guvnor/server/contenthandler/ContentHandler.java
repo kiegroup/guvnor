@@ -65,6 +65,7 @@ public abstract class ContentHandler {
         return findCategoryInChild( item, currentCat );
     }
 
+    @SuppressWarnings("rawtypes")
     private String findCategoryInChild(CategoryItem item, String currentCat) {
         List children = item.getChildTags();
         for ( int i = 0; i < children.size(); i++ ) {
@@ -81,6 +82,7 @@ public abstract class ContentHandler {
         return "";
     }
 
+    @SuppressWarnings("rawtypes")
     private String findKeyforValue(HashMap<String, String> catRules, String catToFind) {
         for ( Iterator i = catRules.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry entry = (Map.Entry) i.next();

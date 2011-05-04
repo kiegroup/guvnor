@@ -43,6 +43,7 @@ public class ContentManager {
 
 
 
+    @SuppressWarnings("rawtypes")
     ContentManager(String configPath) {
         log.debug("Loading content properties");
         Properties props = new Properties();
